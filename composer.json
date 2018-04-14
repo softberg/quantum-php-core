@@ -5,13 +5,13 @@
     "license": "MIT",
     "homepage": "http://quantum.softberg.org",
     "support": {
-        "issues": "https://github.com/softberg/quantum-framework-php/issues",
-        "source": "https://github.com/softberg/quantum-framework-php"
+        "issues": "https://github.com/softberg/quantum-core/issues",
+        "source": "https://github.com/softberg/quantum-core"
     },
     "authors": [
         {
             "name": "Arman Ag",
-            "email": "arman.aghabekyan@gmail.com"
+            "email": "arman.ag@softberg.org"
         }
     ],
     "require": {
@@ -21,5 +21,6 @@
         "psr-4": {
             "Quantum\\": "src/"
         }
-    }
+    },
+	"minimum-stability": "dev"
 }
