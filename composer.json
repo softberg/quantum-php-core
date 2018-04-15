@@ -15,12 +15,15 @@
         }
     ],
     "require": {
-        "php": ">=5.5.3"
+        "php": ">=5.5.3",
+        "j4mie/paris": "^1.5",
+        "wixel/gump": "^1.4",
+        "codeguy/upload": "dev-master"
     },
     "autoload": {
         "psr-4": {
             "Quantum\\": "src/"
         }
     },
-	"minimum-stability": "dev"
+    "minimum-stability": "dev"
 }
