@@ -18,7 +18,8 @@
         "php": ">=5.5.3",
         "j4mie/paris": "^1.5",
         "wixel/gump": "^1.4",
-        "codeguy/upload": "dev-master"
+        "codeguy/upload": "dev-master",
+		"symfony/var-dumper": "3.4.8"
     },
     "autoload": {
         "psr-4": {
