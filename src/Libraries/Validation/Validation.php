@@ -19,8 +19,6 @@ use GUMP;
 /**
  * Validation class
  * 
- * Initialize the database
- * 
  * @package Quantum
  * @subpackage Libraries.Validation
  * @category Libraries

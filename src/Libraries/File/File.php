@@ -17,8 +17,6 @@ namespace Quantum\Libraries\File;
 /**
  * File class
  * 
- * Initialize the database
- * 
  * @package Quantum
  * @subpackage Libraries.File
  * @category Libraries
