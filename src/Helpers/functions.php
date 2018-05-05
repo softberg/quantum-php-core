@@ -358,3 +358,20 @@ if (!function_exists('get_user_ip')) {
     }
 
 }
+
+if (!function_exists('out')) {
+
+    /**
+     * Outputs the dump of variable
+     * 
+     * @param mixed $var
+     * @param bool
+     * @return void
+     */
+    function out($var, $die = false) {
+        Dumper::dump($var);
+        
+        if($die) die;
+    }
+
+}
