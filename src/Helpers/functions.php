@@ -15,6 +15,7 @@ use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Routes\Config;
 use Quantum\Routes\RouteController;
 use Quantum\Libraries\Sessions\SessionManager;
+use Quantum\Libraries\Dumper\Dumper;
 use Quantum\Http\Response;
 use Quantum\Mvc\Qt_Controller;
 use Quantum\Mvc\Qt_View;
