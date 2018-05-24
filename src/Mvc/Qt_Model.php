@@ -52,6 +52,13 @@ abstract class Qt_Model {
     private $currentRoute;
     
     /**
+     * Id column of table
+     * 
+     * @var string 
+     */
+    protected $idColumn = 'id';
+    
+    /**
      * The database table associated with model
      * 
      * @var string 
@@ -82,6 +89,8 @@ abstract class Qt_Model {
             (new Database($currentRoute))->connect();
         
         $this->ormPath = Database::getORM();
+        
+        HookManager::call('setIdColumn', $this->idColumn, $this->ormPath);
     }
 
     /**

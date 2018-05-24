@@ -45,6 +45,19 @@ class IdiormDbal implements DbalInterface {
             'password' => $connectionString['password']
         ));
     }
+    
+    /**
+     * Set Id Column
+     * 
+     * Sets the Id column for table
+     * 
+     * @param string $idColumn
+     * @uses ORM::configure Idiorm
+     * @return void
+     */
+    public static function setIdColumn($idColumn) {
+        ORM::configure('id_column', $idColumn);
+    }
 
     /**
      * Find one

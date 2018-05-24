@@ -33,6 +33,15 @@ interface DbalInterface {
      * @param mixed $connectionString
      */
     public static function dbConnect($connectionString);
+    
+     /**
+     * Set Id Column
+     * 
+     * Sets the Id column for table
+     * 
+     * @param string $idColumn
+     */
+    public static function setIdColumn($idColumn);
 
     /**
      * Find One
