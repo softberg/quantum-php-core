@@ -161,10 +161,10 @@ abstract class Qt_Model {
     public function __call($method, $args = NULL) {
         switch ($method) {
             case 'findOne':
-                $this->orm = HookManager::call($method, array('table' => $this->table, 'args' => $args), $this->ormPath);
+                $this->orm = HookManager::call($method, array('table' => $this->table, 'idColumn' => $this->idColumn, 'args' => $args), $this->ormPath);
                 break;
             case 'findOneBy':
-                $this->orm = HookManager::call($method, array('table' => $this->table, 'args' => $args), $this->ormPath);
+                $this->orm = HookManager::call($method, array('table' => $this->table, 'idColumn' => $this->idColumn, 'args' => $args), $this->ormPath);
                 break;
             case 'criterias':
                 $this->orm = HookManager::call($method, array('table' => $this->table, 'args' => $args), $this->ormPath);
@@ -173,7 +173,7 @@ abstract class Qt_Model {
                 return HookManager::call($method, array('args' => $args, 'orm' => $this->orm), $this->ormPath);
                 break;
              case 'first':
-                $this->orm = HookManager::call($method, $this->orm, $this->ormPath);
+                $this->orm = HookManager::call($method, array('ormObject' => $this->orm, 'idColumn' => $this->idColumn), $this->ormPath);
                 break;
             case 'asArray':
                 return HookManager::call($method, $this->orm, $this->ormPath);

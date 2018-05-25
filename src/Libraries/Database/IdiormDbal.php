@@ -47,19 +47,6 @@ class IdiormDbal implements DbalInterface {
     }
     
     /**
-     * Set Id Column
-     * 
-     * Sets the Id column for table
-     * 
-     * @param string $idColumn
-     * @uses ORM::configure Idiorm
-     * @return void
-     */
-    public static function setIdColumn($idColumn) {
-        ORM::configure('id_column', $idColumn);
-    }
-
-    /**
      * Find one
      * 
      * Gets record by primary key
@@ -69,7 +56,7 @@ class IdiormDbal implements DbalInterface {
      * @return object
      */
     public static function findOne($params) {
-        return ORM::for_table($params['table'])->find_one($params['args'][0]);
+        return ORM::for_table($params['table'])->use_id_column($params['idColumn'])->find_one($params['args'][0]);
     }
 
     /**
@@ -82,7 +69,7 @@ class IdiormDbal implements DbalInterface {
      * @return object
      */
     public static function findOneBy($params) {
-        return ORM::for_table($params['table'])->where($params['args'][0], $params['args'][1])->find_one();
+        return ORM::for_table($params['table'])->where($params['args'][0], $params['args'][1])->use_id_column($params['idColumn'])->find_one();
     }
 
     /**
@@ -109,12 +96,12 @@ class IdiormDbal implements DbalInterface {
      * 
      * Gets the first item
      * 
-     * @param ORM $ormObject
+     * @param array $params
      * @uses ORM Idiorm
      * @return object
      */
-    public function first($ormObject) {
-        return $ormObject->find_one();
+    public function first($params) {
+        return $params['ormObject']->use_id_column($params['idColumn'])->find_one();
     }
     
     /**
