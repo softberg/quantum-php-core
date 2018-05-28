@@ -89,8 +89,6 @@ abstract class Qt_Model {
             (new Database($currentRoute))->connect();
         
         $this->ormPath = Database::getORM();
-        
-        HookManager::call('setIdColumn', $this->idColumn, $this->ormPath);
     }
 
     /**
