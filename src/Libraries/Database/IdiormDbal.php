@@ -114,7 +114,9 @@ class IdiormDbal implements DbalInterface {
      * @return mixed
      */
     public function get($params) {
-        return ($params['args'] && $params['args'][0] == 'object') ? $params['orm']->find_many() : $params['orm']->find_array();
+        $orm = !is_null($params['orm']) ? $params['orm'] : ORM::for_table($params['table']);
+
+        return ($params['args'] && $params['args'][0] == 'object') ? $orm->find_many() : $orm->find_array();
     }
 
     /**
