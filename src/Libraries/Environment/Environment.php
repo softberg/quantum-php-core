@@ -12,7 +12,7 @@
  * @since 1.0.0
  */
 
-namespace Quantum\Libraries;
+namespace Quantum\Libraries\Environment;
 
 use Dotenv\Dotenv;
 
