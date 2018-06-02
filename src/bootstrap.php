@@ -14,13 +14,14 @@
 
 namespace Quantum;
 
-use Quantum\Routes\Config as Config;
-use Quantum\Routes\ModuleLoader as ModuleLoader;
-use Quantum\Routes\Router as Router;
+use Quantum\Routes\Config;
+use Quantum\Routes\ModuleLoader;
+use Quantum\Routes\Router;
 use Quantum\Helpers\Helpers;
+use Quantum\Libraries\Environment;
 use Quantum\Libraries\Libraries;
 use Quantum\Libraries\Sessions\SessionManager;
-use Quantum\Mvc\MvcManager as MvcManager;
+use Quantum\Mvc\MvcManager;
 use Quantum\Mvc\Qt_Model;
 
 /**
@@ -34,7 +35,7 @@ class Bootstrap {
      * Initializes the framework.
      * 
      * This method does not accept parameters and does not return anything.
-     * It runs the router, prephere the config values, helpers, libraries and MVC Manager 
+     * It runs the router, prepare the config values, helpers, libraries and MVC Manager 
      * 
      * @return void
      * @throws Exception if one of these components fails: Router, Config, Helpers, Libraries, MVC MAnager.
@@ -46,6 +47,7 @@ class Bootstrap {
 
         try {
             $router->findRoute();
+            Environment::load();
             Config::load();
             Helpers::load();
             Libraries::load();

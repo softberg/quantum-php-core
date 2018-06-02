@@ -19,7 +19,8 @@
         "j4mie/paris": "^1.5",
         "wixel/gump": "^1.4",
         "codeguy/upload": "dev-master",
-		"symfony/var-dumper": "3.4.8"
+        "symfony/var-dumper": "3.4.8",
+        "vlucas/phpdotenv": "^2.4"
     },
     "autoload": {
         "psr-4": {
