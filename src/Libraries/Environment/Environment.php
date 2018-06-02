@@ -12,7 +12,7 @@
  * @since 1.0.0
  */
 
-namespace Quantum\Libraries\Environment;
+namespace Quantum\Libraries;
 
 use Dotenv\Dotenv;
 
@@ -22,7 +22,7 @@ use Dotenv\Dotenv;
  * @package Quantum
  * @subpackage Libraries.Environment
  * @category Libraries
- * @uses VarDumper
+ * @uses Dotenv
  */
 class Environment {
 
