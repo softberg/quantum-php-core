@@ -376,3 +376,24 @@ if (!function_exists('out')) {
     }
 
 }
+
+if (!function_exists('env')) {
+
+    /**
+     * Gets environment variable
+     * 
+     * @param mixed $var
+     * @param mixed $defaul
+     * @return mixed
+     */
+    function env($var, $default = false) {
+        $val = getenv($var);
+
+        if ($val !== false) {
+            return $val;
+        } elseif ($default) {
+            return $default;
+        }
+    }
+
+}
