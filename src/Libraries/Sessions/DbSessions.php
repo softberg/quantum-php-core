@@ -38,7 +38,7 @@ class DbSessions extends DbSessionHandler implements SessionInterface {
      * @param int $timeout_duration
      * @return void
      */
-    public function __construct($timeout_duration = 1800) {
+    public function __construct($timeout_duration) {
 
         session_set_save_handler(
                 array($this, "_open"), 
@@ -54,6 +54,8 @@ class DbSessions extends DbSessionHandler implements SessionInterface {
         if (!session_id()) {
             @session_start();
         }
+        
+        $timeout_duration = $timeout_duration ? $timeout_duration : 1800;
 
         if (isset($_SESSION['LAST_ACTIVITY']) && time() - $_SESSION['LAST_ACTIVITY'] > $timeout_duration) {
             @session_unset();

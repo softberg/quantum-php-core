@@ -47,7 +47,8 @@ class SessionManager {
      */
     public static function getSessionHandler() {
         $sessionDriver = get_config('session_driver');
-        self::$sessionDriver = isset($sessionDriver) ? $sessionDriver : NULL;
+        
+        self::$sessionDriver = $sessionDriver ? $sessionDriver : 'native';
 
         if (self::$sessionDriver) {
             switch (self::$sessionDriver) {

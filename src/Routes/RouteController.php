@@ -41,5 +41,12 @@ abstract class RouteController {
      * @var mixed 
      */
     public static $currentModule = NULL;
+    
+    /**
+     * Checks CSRF verification on controller level
+     * 
+     * @var string 
+     */
+    public static $csrfVerification = true;
 
 }

@@ -12,7 +12,6 @@
  * @since 1.0.0
  */
 
-
 namespace Quantum\Hooks;
 
 use Quantum\Exceptions\ExceptionMessages;
@@ -52,6 +51,27 @@ class HookDefaults implements HookInterface {
      */
     public static function pageNotFound() {
         throw new RouteException(ExceptionMessages::ROUTE_NOT_FOUND);
+    }
+
+    /**
+     * CSRF Check
+     * 
+     * Checks the CSRF token
+     * 
+     * @return void
+     * @throws RouteException When token not set or mismatched
+     */
+    public static function csrfCheck() {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST' || $_SERVER['REQUEST_METHOD'] == 'PUT' || $_SERVER['REQUEST_METHOD'] == 'DELETE') {
+            $request = Request::all();
+
+            if (!isset($request['token'])) {
+                throw new RouteException(ExceptionMessages::CSRF_TOKEN_NOT_FOUND);
+            }
+            if (!Csrf::checkToken($request['token'])) {
+                throw new RouteException(ExceptionMessages::CSRF_TOKEN_NOT_MATCHED);
+            }
+        }
     }
 
 }

@@ -16,6 +16,8 @@ namespace Quantum\Mvc;
 
 use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Exceptions\RouteException;
+use Quantum\Routes\RouteController;
+use Quantum\Hooks\HookManager;
 
 /**
  * MvcManager Class
@@ -63,6 +65,10 @@ class MvcManager {
 
             if (method_exists($controller, '__before')) {
                 call_user_func_array(array($controller, '__before'), $currentRoute['args']);
+
+                if (RouteController::$csrfVerification) {
+                    HookManager::call('csrfCheck');
+                }
             }
 
             call_user_func_array(array($controller, $action), $currentRoute['args']);

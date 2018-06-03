@@ -29,11 +29,13 @@ class Sessions implements SessionInterface {
      * @param integer $timeout_duration
      * @return void
      */
-    public function __construct($timeout_duration = 1800) {
+    public function __construct($timeout_duration) {
 
         if (!session_id()) {
             @session_start();
         }
+        
+        $timeout_duration = $timeout_duration ? $timeout_duration : 1800;
 
         if (isset($_SESSION['LAST_ACTIVITY']) && time() - $_SESSION['LAST_ACTIVITY'] > $timeout_duration) {
             @session_unset();

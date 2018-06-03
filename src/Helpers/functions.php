@@ -397,3 +397,16 @@ if (!function_exists('env')) {
     }
 
 }
+
+if (!function_exists('csrf_token')) {
+
+    /**
+     * Outputs generated CSRF token
+     * 
+     * @return void
+     */
+    function csrf_token() {
+        echo Csrf::generateToken();
+    }
+
+}
