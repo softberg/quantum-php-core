@@ -16,6 +16,7 @@ namespace Quantum\Hooks;
 
 use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Exceptions\RouteException;
+use Quantum\Http\Request;
 use Quantum\Http\Response;
 
 /**
