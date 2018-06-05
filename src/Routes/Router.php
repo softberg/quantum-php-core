@@ -69,7 +69,7 @@ class Router extends RouteController {
                 $route['uri'] = str_replace('/', '\/', $route['uri']);
                 $route['uri'] = preg_replace('/\[:num\]/', '([0-9]+)', $route['uri']);
                 $route['uri'] = preg_replace('/\[:alpha\]/', '([a-zA-Z]+)', $route['uri']);
-                $route['uri'] = preg_replace('/\[:any\]/', '([^\/].+)', $route['uri']);
+                $route['uri'] = preg_replace('/\[:any\]/', '([^\/]+)', $route['uri']);
                 
                 $request_uri = preg_replace('/[?]/', '', $_SERVER['REQUEST_URI']);
 
