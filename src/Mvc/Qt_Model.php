@@ -185,6 +185,9 @@ abstract class Qt_Model {
             case 'delete':
                 HookManager::call($method, $this->orm, $this->ormPath);
                 break;
+            default:
+                throw new \Exception(_message(ExceptionMessages::UNDEFINED_MODEL_METHOD, $method));
+                break;
         }
     }
 
