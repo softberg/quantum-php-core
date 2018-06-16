@@ -36,35 +36,35 @@ abstract class Qt_Model {
      * @var object 
      */
     private $orm;
-    
+
     /**
      * Path to ORM class
      * 
      * @var string 
      */
     private $ormPath;
-    
+
     /**
      * Current route
      * 
      * @var mixed 
      */
     private $currentRoute;
-    
+
     /**
      * Id column of table
      * 
      * @var string 
      */
     protected $idColumn = 'id';
-    
+
     /**
      * The database table associated with model
      * 
      * @var string 
      */
     protected $table;
-    
+
     /**
      * Models fillable properties 
      * @var array 
@@ -84,10 +84,10 @@ abstract class Qt_Model {
         }
 
         $this->currentRoute = $currentRoute;
-        
-        if(!Database::connected())
+
+        if (!Database::connected())
             (new Database($currentRoute))->connect();
-        
+
         $this->ormPath = Database::getORM();
     }
 
@@ -167,10 +167,26 @@ abstract class Qt_Model {
             case 'criterias':
                 $this->orm = HookManager::call($method, array('table' => $this->table, 'args' => $args), $this->ormPath);
                 return $this;
+            case 'orderBy':
+                $this->orm = HookManager::call($method, array('ormObject' => $this->orm, 'args' => $args), $this->ormPath);
+                return $this;
+                break;
+            case 'groupBy':
+                $this->orm = HookManager::call($method, array('ormObject' => $this->orm, 'args' => $args), $this->ormPath);
+                return $this;
+                break;
+            case 'limit':
+                $this->orm = HookManager::call($method, array('ormObject' => $this->orm, 'args' => $args), $this->ormPath);
+                return $this;
+                break;
+            case 'offset':
+                $this->orm = HookManager::call($method, array('ormObject' => $this->orm, 'args' => $args), $this->ormPath);
+                return $this;
+                break;
             case 'get':
                 return HookManager::call($method, array('args' => $args, 'table' => $this->table, 'orm' => $this->orm), $this->ormPath);
                 break;
-             case 'first':
+            case 'first':
                 $this->orm = HookManager::call($method, array('ormObject' => $this->orm, 'idColumn' => $this->idColumn), $this->ormPath);
                 break;
             case 'asArray':

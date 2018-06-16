@@ -90,6 +90,77 @@ class IdiormDbal implements DbalInterface {
 
         return $orm;
     }
+    
+        /**
+     * Order By
+     * 
+     * Orders the result by ascending or descending 
+     * 
+     * @param array $params
+     * @uses ORM Idiorm
+     * @return object
+     */
+    public static function orderBy($params) {
+        $orderCriterias = array_flip($params['args'][0]);
+        $ormObject = $params['ormObject'];
+        
+        foreach ($orderCriterias as $direction => $column) {
+            if(strtolower($direction) == 'asc') {
+                $ormObject->order_by_asc($column);
+            } else {
+                $ormObject->order_by_desc($column);
+            }
+        }
+        return $ormObject;
+    }    
+    
+    /**
+     * Group By
+     * 
+     * Groups the result by column
+     * 
+     * @param array $params
+     * @uses ORM Idiorm
+     * @return object
+     */
+    public static function groupBy($params) {
+        $column = $params['args'][0];
+        $ormObject = $params['ormObject'];
+        
+        return $ormObject->group_by($column);
+    }
+    
+    /**
+     * Limit
+     * 
+     * Returns the result by given limit
+     * 
+     * @param array $params
+     * @uses ORM Idiorm
+     * @return object
+     */
+    public static function limit($params) {
+        $limit = $params['args'][0];
+        $ormObject = $params['ormObject'];
+        
+        return $ormObject->limit($limit);
+    }
+    
+    /**
+     * Offset
+     * 
+     * Returns the result by given offset
+     * 
+     * @param array $params
+     * @uses ORM Idiorm
+     * @return object
+     */
+    public static function offset($params) {
+        $offset = $params['args'][0];
+        $ormObject = $params['ormObject'];
+        
+        return $ormObject->offset($offset);
+    }
 
     /**
      * First
