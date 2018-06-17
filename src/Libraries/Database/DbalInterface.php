@@ -62,12 +62,48 @@ interface DbalInterface {
     public static function criterias($params);
     
     /**
+     * Order By
+     * 
+     * Should be implemented in classes to order the result
+     * 
+     * @param array $params
+     */
+    public static function orderBy($params);
+    
+    /**
+     * Group By
+     * 
+     * Should be implemented in classes to group the result
+     * 
+     * @param array $params
+     */
+    public static function groupBy($params);
+    
+    /**
+     * Limit
+     * 
+     * Should be implemented in classes to get result by given limit
+     * 
+     * @param array $params
+     */
+    public static function limit($params);
+    
+    /**
+     * Offset
+     * 
+     * Should be implemented in classes to get result by given offset
+     * 
+     * @param array $params
+     */
+    public static function offset($params);
+
+    /**
      * First
      * 
      * Should be implemented in classes to get the first item
      * 
      * @param mixed $params
-     */
+     */    
     public function first($params);
     
     /**

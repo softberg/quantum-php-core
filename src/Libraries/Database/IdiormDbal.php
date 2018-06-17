@@ -84,14 +84,22 @@ class IdiormDbal implements DbalInterface {
     public static function criterias($params) {
         $orm = ORM::for_table($params['table']);
 
-        foreach ($params['args'][0] as $column => $value) {
-            $orm->where($column, $value);
+        foreach ($params['args'] as $arg) {
+            $column = $arg[0];
+            $operation = $arg[1];
+            $value = $arg[2];
+            
+            if($operation == '=') {
+                $orm->where_equal($column, $value);
+            } elseif($operation == '!=') {
+                $orm->where_not_equal($column, $value);
+            }
         }
 
         return $orm;
     }
     
-        /**
+    /**
      * Order By
      * 
      * Orders the result by ascending or descending 
@@ -107,7 +115,7 @@ class IdiormDbal implements DbalInterface {
         foreach ($orderCriterias as $direction => $column) {
             if(strtolower($direction) == 'asc') {
                 $ormObject->order_by_asc($column);
-            } else {
+            } elseif(strtolower($direction) == 'desc') {
                 $ormObject->order_by_desc($column);
             }
         }
