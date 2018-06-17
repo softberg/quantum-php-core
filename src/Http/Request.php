@@ -63,6 +63,18 @@ class Request extends HttpRequest {
     }
 
     /**
+     * Checks to see if request contains file
+     * 
+     * @return bool
+     */
+    public static function hasFile($key) {
+        if (isset($_FILES[$key]) === false) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Gets Сross Site Request Forgery Token
      * 
      * @return string
