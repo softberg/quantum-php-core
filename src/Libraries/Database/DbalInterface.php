@@ -134,7 +134,7 @@ interface DbalInterface {
     public static function save($params);
     
     /**
-     * Save
+     * Delete
      * 
      * Should be implemented in classes for deleting the data from the database
      * 
