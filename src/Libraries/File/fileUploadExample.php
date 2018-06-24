@@ -23,8 +23,7 @@ function uploadProductImages($id) {
     ];
 
     $file->addValidations($params);
-    $file->setName('smbo');
+    $file->setName('image1');
+    $file->modify('resizeToBestFit', [100, 150], 'image2');
     $file->save();
-
-    echo $file->getNameWithExtension();
 }

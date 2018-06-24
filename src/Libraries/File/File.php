@@ -14,6 +14,8 @@
 
 namespace Quantum\Libraries\File;
 
+use Gumlet\ImageResize;
+
 /**
  * File class
  * 
@@ -32,6 +34,34 @@ class File {
     protected $file;
     
     /**
+     * ImageResize function name
+     * 
+     * @var string 
+     */
+    protected $function;
+    
+    /**
+     *  ImageResize function arguments
+     * 
+     * @var array 
+     */
+    protected $params = array();
+    
+    /**
+     *  Alternative name of image
+     * 
+     * @var string 
+     */
+    protected $alternaiveName;
+    
+    /**
+     *  Destination folder
+     * 
+     * @var string 
+     */
+    protected $dest;
+    
+    /**
      * Errors list
      * 
      * @var array 
@@ -48,6 +78,7 @@ class File {
      * @return void
      */
     public function __construct($key, $dest, $overwrite = false) {
+        $this->dest = $dest;
         $storage = new \Upload\Storage\FileSystem($dest, $overwrite);
         $this->file = new \Upload\File($key, $storage);
     }
@@ -95,14 +126,43 @@ class File {
     }
 
     /**
+     * Modify
+     * 
+     * Sets callback function, parameters and alternative name for image modification
+     * @return object
+     */
+    public function modify($function, $params, $altertnaiveName = NULL) {
+        $this->function = $function;
+        $this->params = $params;
+        $this->alternaiveName = $altertnaiveName;
+
+        return $this;
+    }
+
+    /**
      * Save
      * 
      * @uses \Upload\File 
-     * @return boolean
+     * @uses \ImageResize
+     * @return string
      */
     public function save() {
         try {
             $this->file->upload();
+
+            $filename = $this->file->getNameWithExtension();
+
+            if ($this->function) {
+                $func = $this->function;
+                $fileSource = $this->dest . '/' . $this->file->getNameWithExtension();
+                $filename = $this->alternaiveName ? $this->alternaiveName . '.' . $this->file->getExtension() : $this->file->getNameWithExtension();
+
+                $image = new ImageResize($fileSource);
+                call_user_func_array(array($image, $func), $this->params);
+                $image->save($this->dest . '/' . $filename);
+            }
+            return $filename;
+            
         } catch (\Exception $e) {
             $this->errors = $e->getMessage();
             return false;
