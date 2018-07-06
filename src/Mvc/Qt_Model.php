@@ -168,23 +168,23 @@ abstract class Qt_Model {
                 $this->orm = HookManager::call($method, array('table' => $this->table, 'args' => $args), $this->ormPath);
                 return $this;
             case 'orderBy':
-                $this->orm = HookManager::call($method, array('ormObject' => $this->orm, 'args' => $args), $this->ormPath);
+                $this->orm = HookManager::call($method, array('table' => $this->table, 'ormObject' => $this->orm, 'args' => $args), $this->ormPath);
                 return $this;
                 break;
             case 'groupBy':
-                $this->orm = HookManager::call($method, array('ormObject' => $this->orm, 'args' => $args), $this->ormPath);
+                $this->orm = HookManager::call($method, array('table' => $this->table, 'ormObject' => $this->orm, 'args' => $args), $this->ormPath);
                 return $this;
                 break;
             case 'limit':
-                $this->orm = HookManager::call($method, array('ormObject' => $this->orm, 'args' => $args), $this->ormPath);
+                $this->orm = HookManager::call($method, array('table' => $this->table, 'ormObject' => $this->orm, 'args' => $args), $this->ormPath);
                 return $this;
                 break;
             case 'offset':
-                $this->orm = HookManager::call($method, array('ormObject' => $this->orm, 'args' => $args), $this->ormPath);
+                $this->orm = HookManager::call($method, array('table' => $this->table, 'ormObject' => $this->orm, 'args' => $args), $this->ormPath);
                 return $this;
                 break;
             case 'get':
-                return HookManager::call($method, array('args' => $args, 'table' => $this->table, 'orm' => $this->orm), $this->ormPath);
+                return HookManager::call($method, array('args' => $args, 'table' => $this->table, 'ormObject' => $this->orm), $this->ormPath);
                 break;
             case 'first':
                 $this->orm = HookManager::call($method, array('ormObject' => $this->orm, 'idColumn' => $this->idColumn), $this->ormPath);

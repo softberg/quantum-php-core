@@ -89,10 +89,31 @@ class IdiormDbal implements DbalInterface {
             $operation = $arg[1];
             $value = $arg[2];
             
-            if($operation == '=') {
-                $orm->where_equal($column, $value);
-            } elseif($operation == '!=') {
-                $orm->where_not_equal($column, $value);
+            switch($operation) {
+                case '=':
+                    $orm->where_equal($column, $value);
+                    break;
+                case '!=':
+                    $orm->where_not_equal($column, $value);
+                    break;
+                case '>':
+                    $orm->where_gt($column, $value);
+                    break;
+                case '>=':
+                    $orm->where_gte($column, $value);
+                    break;
+                case '<':
+                    $orm->where_lt($column, $value);
+                    break;
+                case '<=':
+                    $orm->where_lte($column, $value);
+                    break;
+                case 'LIKE':
+                    $orm->where_like($column, $value);
+                    break;
+                case 'NOT LIKE':
+                    $orm->where_not_like($column, $value);
+                    break;
             }
         }
 
@@ -110,7 +131,7 @@ class IdiormDbal implements DbalInterface {
      */
     public static function orderBy($params) {
         $orderCriterias = array_flip($params['args'][0]);
-        $ormObject = $params['ormObject'];
+        $ormObject = !is_null($params['ormObject']) ? $params['ormObject'] : ORM::for_table($params['table']);
         
         foreach ($orderCriterias as $direction => $column) {
             if(strtolower($direction) == 'asc') {
@@ -133,7 +154,7 @@ class IdiormDbal implements DbalInterface {
      */
     public static function groupBy($params) {
         $column = $params['args'][0];
-        $ormObject = $params['ormObject'];
+        $ormObject = !is_null($params['ormObject']) ? $params['ormObject'] : ORM::for_table($params['table']);
         
         return $ormObject->group_by($column);
     }
@@ -149,7 +170,7 @@ class IdiormDbal implements DbalInterface {
      */
     public static function limit($params) {
         $limit = $params['args'][0];
-        $ormObject = $params['ormObject'];
+        $ormObject = !is_null($params['ormObject']) ? $params['ormObject'] : ORM::for_table($params['table']);
         
         return $ormObject->limit($limit);
     }
@@ -165,7 +186,7 @@ class IdiormDbal implements DbalInterface {
      */
     public static function offset($params) {
         $offset = $params['args'][0];
-        $ormObject = $params['ormObject'];
+        $ormObject = !is_null($params['ormObject']) ? $params['ormObject'] : ORM::for_table($params['table']);
         
         return $ormObject->offset($offset);
     }
@@ -193,7 +214,7 @@ class IdiormDbal implements DbalInterface {
      * @return mixed
      */
     public function get($params) {
-        $orm = !is_null($params['orm']) ? $params['orm'] : ORM::for_table($params['table']);
+        $orm = !is_null($params['ormObject']) ? $params['ormObject'] : ORM::for_table($params['table']);
 
         return ($params['args'] && $params['args'][0] == 'object') ? $orm->find_many() : $orm->find_array();
     }
