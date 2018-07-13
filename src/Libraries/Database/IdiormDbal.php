@@ -218,6 +218,21 @@ class IdiormDbal implements DbalInterface {
 
         return ($params['args'] && $params['args'][0] == 'object') ? $orm->find_many() : $orm->find_array();
     }
+    
+    /**
+     * Count
+     * 
+     * Counts the result set
+     * 
+     * @param array $params
+     * @uses ORM Idiorm
+     * @return int
+     */
+    public function count($params) {
+        $orm = !is_null($params['ormObject']) ? $params['ormObject'] : ORM::for_table($params['table']);
+
+        return $orm->count();
+    }
 
     /**
      * asArray

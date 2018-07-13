@@ -183,6 +183,9 @@ abstract class Qt_Model {
                 $this->orm = HookManager::call($method, array('table' => $this->table, 'ormObject' => $this->orm, 'args' => $args), $this->ormPath);
                 return $this;
                 break;
+            case 'count':
+                return HookManager::call($method, array('args' => $args, 'table' => $this->table, 'ormObject' => $this->orm), $this->ormPath);
+                break;
             case 'get':
                 return HookManager::call($method, array('args' => $args, 'table' => $this->table, 'ormObject' => $this->orm), $this->ormPath);
                 break;
