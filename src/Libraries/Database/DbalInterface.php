@@ -96,6 +96,24 @@ interface DbalInterface {
      * @param array $params
      */
     public static function offset($params);
+    
+    /**
+     * Get
+     * 
+     *  Should be implemented in classes to get result set
+     * 
+     * @param array $params
+     */
+    public function get($params);
+    
+    /**
+     * Count
+     * 
+     * Should be implemented in classes to get count of result set
+     * 
+     * @param array $params
+     */
+    public function count($params);
 
     /**
      * First
