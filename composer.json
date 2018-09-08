@@ -8,6 +8,9 @@
         "issues": "https://github.com/softberg/quantum-core/issues",
         "source": "https://github.com/softberg/quantum-core"
     },
+	{
+		"version": "1.0.0"
+	}
     "authors": [
         {
             "name": "Arman Ag",
@@ -28,5 +31,6 @@
             "Quantum\\": "src/"
         }
     },
-    "minimum-stability": "stable"
+	"minimum-stability": "dev",
+    "prefer-stable": true
 }
