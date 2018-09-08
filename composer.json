@@ -3,14 +3,12 @@
     "description": "The Quantum Framework",
     "keywords": ["framework", "quantum"],
     "license": "MIT",
+	"version": "1.0.0",
     "homepage": "http://quantum.softberg.org",
     "support": {
         "issues": "https://github.com/softberg/quantum-core/issues",
         "source": "https://github.com/softberg/quantum-core"
     },
-	{
-		"version": "1.0.0"
-	}
     "authors": [
         {
             "name": "Arman Ag",
