@@ -410,3 +410,18 @@ if (!function_exists('csrf_token')) {
     }
 
 }
+
+if (!function_exists('_t')) {
+
+    /**
+     * Gets translation
+     * 
+     * @param $string $key
+     * @return string
+     */
+    function _t($key) {
+        $data = new Data(Lang::getTranslations());
+        return !is_null($data->get($key)) ? $data->get($key) : $key;
+    }
+
+}
