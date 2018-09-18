@@ -25,8 +25,13 @@ namespace Quantum\Libraries\Csrf;
 class Csrf {
 
     public static function generateToken() {
-        $token = base64_encode(openssl_random_pseudo_bytes(32));
-        session()->set('token', $token);
+        if(!session()->has('token')) {
+            $token = base64_encode(openssl_random_pseudo_bytes(32));
+            session()->set('token', $token);
+        } 
+        else {
+            $token = session()->get('token');
+        }
 
         return $token;
     }
