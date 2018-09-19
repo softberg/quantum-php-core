@@ -23,22 +23,22 @@ namespace Quantum\Libraries\Csrf;
  * @category Libraries
  */
 class Csrf {
+    
+    private static $token = NULL;
 
     public static function generateToken() {
-        if(!session()->has('token')) {
-            $token = base64_encode(openssl_random_pseudo_bytes(32));
-            session()->set('token', $token);
+        if(self::$token == NULL) {
+            self::$token = base64_encode(openssl_random_pseudo_bytes(32));
+            session()->set('token', self::$token);
         } 
-        else {
-            $token = session()->get('token');
-        }
 
-        return $token;
+        return self::$token;
     }
 
     public static function checkToken($token) { 
         if (session()->has('token') && session()->get('token') === $token) {
             session()->delete('token');
+            self::$token = NULL;
             return true;
         }
 
