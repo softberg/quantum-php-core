@@ -115,11 +115,6 @@ class ExceptionMessages {
     const CSRF_TOKEN_NOT_MATCHED = 'CSRF Token does not matched';
     
     /**
-     * CSFT token not found message
-     */
-    const CSRF_TOKEN_NOT_FOUND = 'CSRF Token does not exists';
-    
-    /**
      * Inappropriate property message
      */
     const INAPPROPRIATE_PROPERTY = 'Inappropriate property {%1} for fillable object';
