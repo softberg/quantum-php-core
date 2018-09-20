@@ -414,7 +414,7 @@ if (!function_exists('csrf_token')) {
 
 }
 
-if (!function_exists('_t')) {
+if (!function_exists('t')) {
 
     /**
      * Gets translation
@@ -422,9 +422,23 @@ if (!function_exists('_t')) {
      * @param $string $key
      * @return string
      */
-    function _t($key) {
+    function t($key) {
         $data = new Data(Lang::getTranslations());
         return !is_null($data->get($key)) ? $data->get($key) : $key;
+    }
+
+}
+
+if (!function_exists('_t')) {
+
+    /**
+     * Outputs the translation
+     *
+     * @param $string $key
+     * @return string
+     */
+    function _t($key) {
+        echo t($key);
     }
 
 }

@@ -33,9 +33,9 @@ class Helpers {
      * 
      * @return void
      */
-    public static function load() {
-        $helpersDir = BASE_DIR . 'helpers';
-        foreach (glob($helpersDir . "/*.php") as $filename) {
+    public static function load($path = BASE_DIR) {
+        $helpersDir = dirname(dirname($path)) . DS . 'helpers';
+        foreach (glob($helpersDir . DS . "*.php") as $filename) {
             require_once $filename;
         }
     }

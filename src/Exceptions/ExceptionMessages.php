@@ -133,5 +133,15 @@ class ExceptionMessages {
      * Undefined model method
      */
     const UNDEFINED_MODEL_METHOD = 'Model method {%1} is not defined';
+    
+      /**
+     * Misconfigured lang config
+     */
+    const MISCONFIGURED_LANG_CONFIG = 'Misconfigured lang config';
+
+    /**
+     * Misconfigured default lang config
+     */
+    const MISCONFIGURED_LANG_DEFAULT_CONFIG = 'Misconfigured default lang config';
 
 }
