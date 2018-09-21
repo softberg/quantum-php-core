@@ -15,6 +15,7 @@
 namespace Quantum\Libraries\Database;
 
 use Quantum\Mvc\Qt_Model;
+use PDO;
 use ORM;
 
 /**
@@ -42,7 +43,8 @@ class IdiormDbal implements DbalInterface {
         ORM::configure(array(
             'connection_string' => $connectionString['driver'] . ':host=' . $connectionString['host'] . ';dbname=' . $connectionString['dbname'],
             'username' => $connectionString['username'],
-            'password' => $connectionString['password']
+            'password' => $connectionString['password'],
+            'driver_options' => array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES ' . $connectionString['charset'])
         ));
     }
     
