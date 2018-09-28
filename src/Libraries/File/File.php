@@ -32,35 +32,35 @@ class File {
      * @var object 
      */
     protected $file;
-    
+
     /**
      * ImageResize function name
      * 
      * @var string 
      */
     protected $function;
-    
+
     /**
      *  ImageResize function arguments
      * 
      * @var array 
      */
     protected $params = array();
-    
+
     /**
      *  Alternative name of image
      * 
      * @var string 
      */
     protected $alternaiveName;
-    
+
     /**
      *  Destination folder
      * 
      * @var string 
      */
     protected $dest;
-    
+
     /**
      * Errors list
      * 
@@ -162,9 +162,23 @@ class File {
                 $image->save($this->dest . '/' . $filename);
             }
             return $filename;
-            
         } catch (\Exception $e) {
             $this->errors = $e->getMessage();
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Validate
+     * 
+     * @uses \Upload\File 
+     * @return boolean
+     */
+    public function validate() {
+        if ($this->file->validate() === false) {
+            $this->errors = 'File validation failed';
             return false;
         }
 

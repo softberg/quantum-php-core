@@ -34,7 +34,7 @@ class Qt_Controller extends RouteController {
      * @var object 
      */
     private static $instance;
-    
+
     /**
      * The data shared between layout and view
      * 
@@ -42,11 +42,17 @@ class Qt_Controller extends RouteController {
      */
     private $sharedData = array();
 
-    public function __construct() {}
+    public function __construct() {
+        
+    }
 
-    public function __before() {}
+    public function __before() {
+        
+    }
 
-    public function __after() {}
+    public function __after() {
+        
+    }
 
     /**
      * Model Factory 
@@ -71,7 +77,7 @@ class Qt_Controller extends RouteController {
     protected function setLayout($layout) {
         Qt_View::setLayout($layout);
     }
-    
+
     /**
      * Share
      * 
@@ -98,7 +104,7 @@ class Qt_Controller extends RouteController {
         new Qt_View(RouteController::$currentRoute);
         Qt_View::render($view, $params, $output, $this->sharedData);
     }
-    
+
     /**
      * Output
      * 
@@ -155,6 +161,17 @@ class Qt_Controller extends RouteController {
             return $segments[$number];
 
         return NULL;
+    }
+
+    /**
+     * Get current route
+     * 
+     * Gets the nth segment
+     * 
+     * @return string
+     */
+    public function getCurrentRoute() {
+        return ltrim($_SERVER['REQUEST_URI'], '/');
     }
 
 }

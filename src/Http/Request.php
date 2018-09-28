@@ -68,7 +68,7 @@ class Request extends HttpRequest {
      * @return bool
      */
     public static function hasFile($key) {
-        if (isset($_FILES[$key]) === false) {
+        if (isset($_FILES[$key]) === false || (isset($_FILES[$key]['error']) && $_FILES[$key]['error'] != 0)) {
             return false;
         }
         return true;
