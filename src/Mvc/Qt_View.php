@@ -116,7 +116,7 @@ class Qt_View {
      * @return void
      */
     public function output($view, $modulePath, $params = array(), $sharedData = array()) {
-        echo self::$view = self::renderFile(self::findFile($view, $modulePath), $params, $sharedData);
+        echo self::renderFile(self::findFile($view, $modulePath), $params, $sharedData);
     }
 
     /**
