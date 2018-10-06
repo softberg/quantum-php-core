@@ -16,6 +16,7 @@ use Quantum\Routes\Config;
 use Quantum\Routes\RouteController;
 use Quantum\Libraries\Sessions\SessionManager;
 use Quantum\Libraries\Dumper\Dumper;
+use Quantum\Libraries\Config\Config;
 use Dflydev\DotAccessData\Data;
 use Quantum\Libraries\Lang\Lang;
 use Quantum\Libraries\Csrf\Csrf;

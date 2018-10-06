@@ -12,9 +12,10 @@
  * @since 1.0.0
  */
 
-namespace Quantum\Routes;
+namespace Quantum\Libraries\Config;
 
 use Quantum\Exceptions\ExceptionMessages;
+use Quantum\Routes\RouteController;
 
 /**
  * Config Class

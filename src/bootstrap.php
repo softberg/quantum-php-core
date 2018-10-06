@@ -14,13 +14,13 @@
 
 namespace Quantum;
 
-use Quantum\Routes\Config;
 use Quantum\Routes\ModuleLoader;
 use Quantum\Routes\Router;
 use Quantum\Helpers\Helpers;
 use Quantum\Libraries\Environment\Environment;
-use Quantum\Libraries\Libraries;
 use Quantum\Libraries\Sessions\SessionManager;
+use Quantum\Libraries\Config\Config;
+use Quantum\Libraries\Libraries;
 use Quantum\Mvc\MvcManager;
 use Quantum\Mvc\Qt_Model;
 

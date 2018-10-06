@@ -85,6 +85,15 @@ class Lang {
         self::$currentLang = $lang;
         self::load($lang);
     }
+    
+    /**
+     * Gets the current language 
+     * 
+     * @return string
+     */
+    public static function get() {
+        return self::$currentLang;
+    }
 
     /**
      * Gets the translated data

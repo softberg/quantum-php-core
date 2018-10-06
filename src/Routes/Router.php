@@ -65,12 +65,11 @@ class Router extends RouteController {
             $routes_group = array();
 
             foreach ($this->routes as $route) {
-
                 $route['uri'] = str_replace('/', '\/', $route['uri']);
-                $route['uri'] = preg_replace('/\[:num\]/', '([0-9]+)', $route['uri']);
-                $route['uri'] = preg_replace('/\[:alpha\]/', '([a-zA-Z]+)', $route['uri']);
-                $route['uri'] = preg_replace('/\[:any\]/', '([^\/]+)', $route['uri']);
-                
+                $route['uri'] = preg_replace_callback('/\[(:num)(:([0-9]+))*\]/', array($this, 'findPattern'), $route['uri']);
+                $route['uri'] = preg_replace_callback('/\[(:alpha)(:([0-9]+))*\]/', array($this, 'findPattern'), $route['uri']);
+                $route['uri'] = preg_replace_callback('/\[(:any)(:([0-9]+))*\]/', array($this, 'findPattern'), $route['uri']);
+
                 $request_uri = preg_replace('/[?]/', '', $_SERVER['REQUEST_URI']);
 
                 preg_match("/^\/" . $route['uri'] . "$/", $request_uri, $matches);
@@ -78,6 +77,7 @@ class Router extends RouteController {
                 if ($matches) {
                     array_push($matched_uris, $matches[0]);
                     array_shift($matches);
+
                     $route['args'] = $matches;
                     array_push($routes_group, $route);
                 }
@@ -138,6 +138,29 @@ class Router extends RouteController {
         if ($_SERVER['REQUEST_METHOD'] != self::$currentRoute['method']) {
             throw new RouteException(_message(ExceptionMessages::INCORRECT_METHOD, $_SERVER['REQUEST_METHOD']));
         }
+    }
+
+    private function findPattern($matches) {
+        switch($matches[1]) {
+            case ':num':
+                $replacement = '([0-9]';
+                break;
+            case ':alpha':
+                $replacement = '([a-zA-Z]';
+                break;
+            case ':any':
+                $replacement = '([^\/]';
+                break;
+        }
+
+        if (isset($matches[2])) {
+            $replacement .= ')';
+            $replacement .= '{' . $matches[3] . '}';
+        } else {
+            $replacement .= '+)';
+        }
+
+        return $replacement;
     }
 
 }
