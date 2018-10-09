@@ -87,7 +87,9 @@ class Qt_Controller extends RouteController {
      * @return void
      */
     protected function share($data) {
-        $this->sharedData = $data;
+        foreach($data as $key => $val) {
+            $this->sharedData[$key] = $val;
+        }
     }
 
     /**
