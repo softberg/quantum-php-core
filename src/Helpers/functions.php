@@ -223,17 +223,16 @@ if (!function_exists('slugify')) {
      * @return string
      */
     function slugify($text) {
-        $text = preg_replace('~[^\\pL\d]+~u', '-', $text);
+        $text = trim($text, ' ');
+        $text = preg_replace ('/[^\p{L}\p{N}]/u', ' ', $text);
+        $text = preg_replace('/\s+/', '-', $text);
         $text = trim($text, '-');
-        $formattedText = mb_strtolower($text);
-        $text = iconv('utf-8', 'us-ascii//IGNORE', $formattedText);
-        $text = strtolower($formattedText);
-        $text = preg_replace('~[^-\w]+~', '', $formattedText);
-        if (empty($formattedText)) {
+        $text = mb_strtolower($text);
+        if (empty($text)) {
             return 'n-a';
         }
 
-        return $formattedText;
+        return $text;
     }
 
 }

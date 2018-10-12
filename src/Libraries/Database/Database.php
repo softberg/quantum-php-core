@@ -70,7 +70,7 @@ class Database {
      * @uses HookManager::call
      * @return bool
      */
-    public function connected() {
+    public static function connected() {
         if(self::$dbConnections == NULL)
             return false;
         
