@@ -133,7 +133,7 @@ class Qt_View {
         $filePath = MODULES_DIR . '/' . ($modulePath ? $modulePath : self::$currentRoute['module']) . '/Views/' . $file . '.php';
 
         if (!file_exists($filePath)) {
-            throw new \Exception(_message(ExceptionMessages::VIEW_FILE_NOT_FOUND, $file));
+			HookManager::call('fileNotFound', array('file' => $file));
         }
 
         return $filePath;

@@ -54,6 +54,16 @@ class HookDefaults implements HookInterface {
     public static function pageNotFound() {
         throw new RouteException(ExceptionMessages::ROUTE_NOT_FOUND);
     }
+	
+	/**
+     * File not found
+     * 
+     * @return void
+     * @throws Exception When route not found
+     */
+	public static function fileNotFound($args) {
+        throw new \Exception(_message(ExceptionMessages::VIEW_FILE_NOT_FOUND, $args['file']));
+    }
 
     /**
      * CSRF Check
