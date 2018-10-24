@@ -19,6 +19,8 @@ use Quantum\Exceptions\RouteException;
 use Quantum\Libraries\Csrf\Csrf;
 use Quantum\Http\Request;
 use Quantum\Http\Response;
+use Twig_Loader_Filesystem;
+use Twig_Environment;
 
 /**
  * HookDefaults Class
@@ -54,16 +56,6 @@ class HookDefaults implements HookInterface {
     public static function pageNotFound() {
         throw new RouteException(ExceptionMessages::ROUTE_NOT_FOUND);
     }
-	
-	/**
-     * File not found
-     * 
-     * @return void
-     * @throws Exception When route not found
-     */
-	public static function fileNotFound($args) {
-        throw new \Exception(_message(ExceptionMessages::VIEW_FILE_NOT_FOUND, $args['file']));
-    }
 
     /**
      * CSRF Check
@@ -84,6 +76,35 @@ class HookDefaults implements HookInterface {
                 throw new RouteException(ExceptionMessages::CSRF_TOKEN_NOT_MATCHED);
             }
         }
+    }
+
+    /**
+     * Template renderer 
+     * 
+     * Renders Twig template
+     * @uses Twig
+     * @return atring
+     */
+    public static function templateRenderer($data) {
+        $loader = new Twig_Loader_Filesystem(MODULES_DIR . DS . $data['currentModule'] . DS . 'Views');
+        $twig = new Twig_Environment($loader, $data['configs']);
+
+        $definedFunctions = get_defined_functions();
+        
+        $allDefinedFuncitons = array_merge($definedFunctions['internal'], $definedFunctions['user']);
+        
+        foreach ($allDefinedFuncitons as $function) {
+            if (function_exists($function)) {
+                $twig->addFunction(
+                        new \Twig_Function(
+                        $function, 
+                        $function
+                    )
+                );
+            }
+        }
+
+        return $twig->render($data['view'] . '.php', array_merge($data['params'], $data['sharedData']));
     }
 
 }
