@@ -28,6 +28,9 @@ class Csrf {
 
     public static function generateToken() {
         if(self::$token == NULL) {
+			if (session()->has('token')) {
+                session()->delete('token');
+            }
             self::$token = base64_encode(openssl_random_pseudo_bytes(32));
             session()->set('token', self::$token);
         } 
@@ -37,8 +40,6 @@ class Csrf {
 
     public static function checkToken($token) { 
         if (session()->has('token') && session()->get('token') === $token) {
-            session()->delete('token');
-            self::$token = NULL;
             return true;
         }
 
