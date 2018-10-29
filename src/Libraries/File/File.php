@@ -66,7 +66,7 @@ class File {
      * 
      * @var array 
      */
-    protected $errors;
+    protected $errors = array();
 
     /**
      * Class constructor
@@ -178,7 +178,7 @@ class File {
      */
     public function validate() {
         if ($this->file->validate() === false) {
-            $this->errors = 'File validation failed';
+            $this->errors = $this->file->getErrors();
             return false;
         }
 
