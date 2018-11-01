@@ -33,8 +33,8 @@ class Libraries {
      * @return void
      */
     public static function load($path = BASE_DIR) {
-        $helpersDir = dirname(dirname($path)) . DS . 'libraries';
-        foreach (glob($helpersDir . DS . "*.php") as $filename) {
+        $librariesDir = dirname(dirname($path)) . DS . 'libraries';
+        foreach (glob($librariesDir . DS . "*.php") as $filename) {
             require_once $filename;
         }
     }
