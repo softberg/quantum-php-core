@@ -63,8 +63,16 @@ class Qt_Controller extends RouteController {
      * @return \Quantum\Mvc\modelClass
      */
     public function modelFactory($model) {
-        $modelClass = "\\Modules\\" . RouteController::$currentRoute['module'] . "\\Models\\" . $model;
-        return new $modelClass(RouteController::$currentRoute);
+          $modelClass = "\\Modules\\" . RouteController::$currentRoute['module'] . "\\Models\\" . $modelName;
+
+        if (class_exists($modelClass)) {
+            return new $modelClass(RouteController::$currentRoute);
+        } elseif (class_exists("\\Models\\" . $modelName)) {
+            $baseModelClass = "\\Models\\" . $modelName;
+            return new $baseModelClass(RouteController::$currentRoute);
+        } else {
+            HookManager::call("handleModel", $modelName);
+        }
     }
 
     /**

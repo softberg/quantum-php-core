@@ -106,5 +106,15 @@ class HookDefaults implements HookInterface {
 
         return $twig->render($data['view'] . '.php', array_merge($data['params'], $data['sharedData']));
     }
+	
+	/**
+     * Model not found
+     * 
+     * @return void
+     * @throws Exception when model not found
+     */
+    public static function handleModel($modelName) {
+        throw new \Exception(_message(ExceptionMessages::MODEL_NOT_FOUND, $modelName));
+    }
 
 }

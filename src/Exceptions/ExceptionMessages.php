@@ -128,6 +128,11 @@ class ExceptionMessages {
      * Direct model call message
      */
     const DIRECT_MODEL_CALL = 'Models can not be called directly, use "modelFactory" method instead';
+	
+	/**
+     * Model not found message
+     */
+    const MODEL_NOT_FOUND = 'Model {%1} not found';
     
     /**
      * Undefined model method
