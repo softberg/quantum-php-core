@@ -143,45 +143,4 @@ class Qt_Controller extends RouteController {
         return self::$instance;
     }
 
-    /**
-     * Get all segments
-     * 
-     * Gets the segments of current URI
-     * 
-     * @return array
-     */
-    public function getAllSegments() {
-        $parsed = parse_url($_SERVER['REQUEST_URI']);
-        $path = $parsed['path'];
-        return explode('/', $path);
-    }
-
-    /**
-     * Get Segment
-     * 
-     * Gets the nth segment
-     * 
-     * @param integer $number
-     * @return string|null
-     */
-    public function getSegment($number) {
-        $segments = $this->getAllSegments();
-
-        if (isset($segments[$number]))
-            return $segments[$number];
-
-        return NULL;
-    }
-
-    /**
-     * Get current route
-     * 
-     * Gets the nth segment
-     * 
-     * @return string
-     */
-    public function getCurrentRoute() {
-        return ltrim($_SERVER['REQUEST_URI'], '/');
-    }
-
 }
