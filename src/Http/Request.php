@@ -52,6 +52,19 @@ class Request extends HttpRequest {
     public static function post($key, $default = NULL) {
         return parent::getParam(INPUT_POST, $key, $default);
     }
+	
+	/**
+     * Any
+     * 
+     * Responsible for any type of requests
+     * 
+     * @param string $key
+     * @return mixed
+     */
+	public static function any($key) {
+        $allParams = parent::getAllParams();
+		return isset($allParams[$key]) ? $allParams[$key] : NULL;
+    }
 
     /**
      * Gets all params
