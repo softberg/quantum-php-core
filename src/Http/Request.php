@@ -151,7 +151,7 @@ class Request extends HttpRequest {
     /**
      * Get current route
      * 
-     * Gets the nth segment
+     * Gets the current route
      * 
      * @return string
      */

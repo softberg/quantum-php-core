@@ -51,16 +51,16 @@ class Response extends HttpResponse {
      * 
      * Sends JSON response
      * 
-     * @param array $arr
+     * @param mixed $data
      * @param integer $status
      * @return string
      */
-    public static function json(array $arr, $status = NULL) {
+    public static function json($data, $status = NULL) {
         if ($status) {
             parent::setStatus($status);
         }
         parent::setContentType('application/json');
-        return json_encode($arr);
+        return json_encode($data);
     }
 
     /**
@@ -68,11 +68,11 @@ class Response extends HttpResponse {
      * 
      * Outputs JSON response
      * 
-     * @param array $arr
+     * @param mixed $data
      * @param integer $status
      */
-    public static function jsonOutput(array $arr, $status = NULL) {
-        echo self::json($arr, $status);
+    public static function jsonOutput($data, $status = NULL) {
+        echo self::json($data, $status);
     }
 
     /**
