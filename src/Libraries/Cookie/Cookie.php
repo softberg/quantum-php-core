@@ -27,7 +27,7 @@ use Quantum\Routes\RouteController;
 class Cookie {
 
     /**
-     * Gets value from cookie by key
+     * Gets data from cookie by given key
      * 
      * @param string $key
      * @return mixed
@@ -39,7 +39,6 @@ class Cookie {
     /*
      * Gets whole cookie data
      */
-
     public static function all() {
         $allCookies = array();
         if (isset($_COOKIE) && count($_COOKIE)) {
@@ -51,7 +50,7 @@ class Cookie {
     }
 
     /**
-     * Sets cookie data by key
+     * Sets cookie data by given key
      * 
      * @param string $key
      * @param string $value
@@ -67,7 +66,7 @@ class Cookie {
     }
 
     /**
-     * Check if cookie contains a data by key
+     * Check if cookie contains a data by given key
      * 
      * @param string $key
      * @return bool

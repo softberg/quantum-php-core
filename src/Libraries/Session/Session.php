@@ -46,7 +46,7 @@ class Session implements SessionInterface {
     }
 
     /**
-     * Gets value from session by key
+     * Gets value from session by given key
      * 
      * @param string $key
      * @return mixed
@@ -63,7 +63,7 @@ class Session implements SessionInterface {
     }
 
     /**
-     * Check if session contains a key
+     * Check if session contains a data by given key
      * 
      * @param string $key
      * @return bool
@@ -73,7 +73,7 @@ class Session implements SessionInterface {
     }
 
     /**
-     * Sets session value with given key
+     * Sets session value by given key
      * 
      * @param string $key
      * @param mixed $value
@@ -97,7 +97,7 @@ class Session implements SessionInterface {
     }
 
     /**
-     * Sets flash values with given key
+     * Sets flash values by given key
      * 
      * @param string $key
      * @param mixed $value
@@ -107,7 +107,7 @@ class Session implements SessionInterface {
     }
 
     /**
-     * Delete data with given key from session
+     * Delete data from session by given key 
      * 
      * @param string $key
      */
