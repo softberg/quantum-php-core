@@ -53,19 +53,19 @@ interface SessionInterface {
     public function set($key, $value);
     
     /**
-     * Should be implemented in classes to get flesh values by given key
+     * Should be implemented in classes to get flash values by given key
      * 
      * @param string $key
      */
-    public function getFlesh($key);
+    public function getFlash($key);
     
     /**
-     * Should be implemented in classes to set flesh values with given key
+     * Should be implemented in classes to set flash values with given key
      * 
      * @param string $key
      * @param mixed $value
      */
-    public function setFlesh($key, $value);
+    public function setFlash($key, $value);
 
     /**
      * Should be implemented in classes to delete data with given key from session

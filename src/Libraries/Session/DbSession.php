@@ -103,26 +103,26 @@ class DbSession extends DbSessionHandler implements SessionInterface {
     }
 
     /**
-     * Gets flesh values by given key
+     * Gets flash values by given key
      * 
      * @param string $key
      * @return mixed
      */
-    public function getFlesh($key) {
+    public function getFlash($key) {
         if ($this->has($key)) {
-            $fleshData = $_SESSION[$key];
+            $flashData = $_SESSION[$key];
             $this->delete($key);
-            return $fleshData;
+            return $flashData;
         }
     }
 
     /**
-     * Sets flesh values with given key
+     * Sets flash values with given key
      * 
      * @param string $key
      * @param mixed $value
      */
-    public function setFlesh($key, $value) {
+    public function setFlash($key, $value) {
         $this->set($key, $value);
     }
 
