@@ -13,7 +13,7 @@
 
 use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Routes\RouteController;
-use Quantum\Libraries\Sessions\SessionManager;
+use Quantum\Libraries\Session\SessionManager;
 use Quantum\Libraries\Dumper\Dumper;
 use Quantum\Libraries\Config\Config;
 use Dflydev\DotAccessData\Data;

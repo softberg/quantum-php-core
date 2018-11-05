@@ -12,44 +12,24 @@
  * @since 1.0.0
  */
 
-namespace Quantum\Libraries\Sessions;
-
-use Quantum\Routes\RouteController;
-use Quantum\Libraries\Database\Database;
+namespace Quantum\Libraries\Session;
 
 /**
- * DB Sessions class
+ * Session class
  * 
  * @package Quantum
- * @subpackage Libraries.Sessions
+ * @subpackage Libraries.Session
  * @category Libraries
  */
-class DbSessions extends DbSessionHandler implements SessionInterface {
-
-    /**
-     * DB Session table
-     * @var string 
-     */
-    public $sessions_table = 'sessions';
+class Session implements SessionInterface {
 
     /**
      * Class constructor
      * 
-     * @param int $timeout_duration
+     * @param integer $timeout_duration
      * @return void
      */
     public function __construct($timeout_duration) {
-
-        session_set_save_handler(
-                array($this, "_open"), 
-                array($this, "_close"), 
-                array($this, "_read"), 
-                array($this, "_write"), 
-                array($this, "_destroy"), 
-                array($this, "_gc")
-        );
-
-        new Database(RouteController::$currentRoute);
 
         if (!session_id()) {
             @session_start();
@@ -68,8 +48,8 @@ class DbSessions extends DbSessionHandler implements SessionInterface {
     /**
      * Gets value from session by key
      * 
-     * @param type $key
-     * @return type
+     * @param string $key
+     * @return mixed
      */
     public function get($key) {
         return $this->has($key) ? $_SESSION[$key] : NULL;

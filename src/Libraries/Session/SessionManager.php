@@ -12,7 +12,7 @@
  * @since 1.0.0
  */
 
-namespace Quantum\Libraries\Sessions;
+namespace Quantum\Libraries\Session;
 
 use Quantum\Exceptions\ExceptionMessages;
 
@@ -20,7 +20,7 @@ use Quantum\Exceptions\ExceptionMessages;
  * Session Manager class
  * 
  * @package Quantum
- * @subpackage Libraries.Sessions
+ * @subpackage Libraries.Session
  * @category Libraries
  */
 class SessionManager {
@@ -53,10 +53,10 @@ class SessionManager {
         if (self::$sessionDriver) {
             switch (self::$sessionDriver) {
                 case 'native':
-                    self::$sessionHandler = new Sessions(get_config('session_timeout'));
+                    self::$sessionHandler = new Session(get_config('session_timeout'));
                     break;
                 case 'database':
-                    self::$sessionHandler = new DbSessions(get_config('session_timeout'));
+                    self::$sessionHandler = new DbSession(get_config('session_timeout'));
                     break;
             }
         }

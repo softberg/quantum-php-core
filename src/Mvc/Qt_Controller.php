@@ -15,7 +15,7 @@
 namespace Quantum\Mvc;
 
 use Quantum\Routes\RouteController;
-use Quantum\Libraries\Sessions\Sessions;
+use Quantum\Libraries\Session\Session;
 use Quantum\Mvc\Qt_View;
 
 /**

@@ -12,15 +12,15 @@
  * @since 1.0.0
  */
 
-namespace Quantum\Libraries\Sessions;
+namespace Quantum\Libraries\Session;
 
 /**
- * Sessions interface
+ * Session interface
  * 
  * The common interface, which should implemented by session classes
  * 
  * @package Quantum
- * @subpackage Libraries.Sessions
+ * @subpackage Libraries.Session
  * @category Libraries
  */
 interface SessionInterface {

@@ -18,7 +18,7 @@ use Quantum\Routes\ModuleLoader;
 use Quantum\Routes\Router;
 use Quantum\Helpers\Helpers;
 use Quantum\Libraries\Environment\Environment;
-use Quantum\Libraries\Sessions\SessionManager;
+use Quantum\Libraries\Session\SessionManager;
 use Quantum\Libraries\Config\Config;
 use Quantum\Libraries\Libraries;
 use Quantum\Mvc\MvcManager;

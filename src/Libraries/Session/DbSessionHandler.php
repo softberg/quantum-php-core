@@ -12,7 +12,7 @@
  * @since 1.0.0
  */
 
-namespace Quantum\Libraries\Sessions;
+namespace Quantum\Libraries\Session;
 
 use ORM;
 
@@ -20,7 +20,7 @@ use ORM;
  * DB Session handler class
  * 
  * @package Quantum
- * @subpackage Libraries.Sessions
+ * @subpackage Libraries.Session
  * @category Libraries
  */
 class DbSessionHandler extends \SessionHandler {
