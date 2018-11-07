@@ -14,6 +14,7 @@
 
 namespace Quantum\Libraries\Session;
 
+use Quantum\Libraries\Database\Database;
 use ORM;
 
 /**
@@ -28,12 +29,22 @@ class DbSessionHandler extends \SessionHandler {
     /**
      * Initialize session
      */
-    public function _open() {}
+    public function _open() {
+		if (Database::connected()) {
+            return true;
+        }
+        return false;
+	}
     
     /**
      * Close the session
      */
-    public function _close() {}
+    public function _close() {
+		if (!Database::connected()) {
+            return true;
+        }
+        return false;
+	}
     
     /**
      * Read session data
@@ -42,7 +53,8 @@ class DbSessionHandler extends \SessionHandler {
      * @return string
      */
     public function _read($id) {
-        return ORM::for_table($this->sessions_table)->findOne($id)->data;
+		$result = ORM::for_table($this->sessions_table)->findOne($id);
+        return $result ? $result->data : '';
     }
     
     /**

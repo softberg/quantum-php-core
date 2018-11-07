@@ -49,7 +49,9 @@ class DbSession extends DbSessionHandler implements SessionInterface {
                 array($this, "_gc")
         );
 
-        new Database(RouteController::$currentRoute);
+		if (!Database::connected()) {
+            (new Database(RouteController::$currentRoute))->connect();
+        }
 
         if (!session_id()) {
             @session_start();
