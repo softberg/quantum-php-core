@@ -154,8 +154,7 @@ class Router extends RouteController {
         }
 
         if (isset($matches[2])) {
-            $replacement .= ')';
-            $replacement .= '{' . $matches[3] . '}';
+            $replacement .= '{' . $matches[3] . '})';
         } else {
             $replacement .= '+)';
         }
