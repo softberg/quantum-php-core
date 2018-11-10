@@ -59,10 +59,10 @@ class Qt_Controller extends RouteController {
      * 
      * Deliver an object of request model
      * 
-     * @param string $model
+     * @param string $modelName
      * @return \Quantum\Mvc\modelClass
      */
-    public function modelFactory($model) {
+    public function modelFactory($modelName) {
           $modelClass = "\\Modules\\" . RouteController::$currentRoute['module'] . "\\Models\\" . $modelName;
 
         if (class_exists($modelClass)) {
