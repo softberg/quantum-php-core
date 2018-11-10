@@ -50,6 +50,16 @@ class Cookie {
     }
 
     /**
+     * Check if cookie contains a data by given key
+     * 
+     * @param string $key
+     * @return bool
+     */
+    public static function has($key) {
+        return isset($_COOKIE[$key]) ? true : false;
+    }
+
+    /**
      * Sets cookie data by given key
      * 
      * @param string $key
@@ -63,16 +73,6 @@ class Cookie {
      */
     public static function set($key, $value = '', $time = 0, $path = '/', $domain = '', $secure = FALSE, $httponly = FALSE) {
         return setcookie($key, self::encode($value), time() + $time, $path, $domain, $secure, $httponly);
-    }
-
-    /**
-     * Check if cookie contains a data by given key
-     * 
-     * @param string $key
-     * @return bool
-     */
-    public static function has($key) {
-        return isset($_COOKIE[$key]) ? true : false;
     }
 
     /**
@@ -114,7 +114,7 @@ class Cookie {
      * @param string $value
      * @return string
      */
-    public static function decode($value) {
+    private static function decode($value) {
         return base64_decode($value);
     }
 
