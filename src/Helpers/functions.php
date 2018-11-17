@@ -206,10 +206,12 @@ if (!function_exists('get_config')) {
     /**
      * Gets config value by given key
      * 
+     * @param string $key
+     * @param mixed $default
      * @return mixed
      */
-    function get_config($key) {
-        return Config::get($key);
+    function get_config($key, $default = NULL) {
+        return Config::get($key, $default);
     }
 
 }

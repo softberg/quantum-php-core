@@ -89,14 +89,16 @@ class Config {
     /**
      * Gets a config item
      * 
-     * @param type $key config index name
+     * @param string $key
+     * @param mixed $default
      * @return mixed|null The configuration tem or NULL, if the item does not exists
      */
-    public static function get($key) {
+    public static function get($key, $default = NULL) {
         if (isset(self::$configs[$key]))
             return self::$configs[$key];
 
-        return NULL;
+        return $default;
+
     }
 
 }
