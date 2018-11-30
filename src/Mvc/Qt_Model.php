@@ -160,9 +160,11 @@ abstract class Qt_Model {
         switch ($method) {
             case 'findOne':
                 $this->orm = HookManager::call($method, array('table' => $this->table, 'idColumn' => $this->idColumn, 'args' => $args), $this->ormPath);
+                return $this;
                 break;
             case 'findOneBy':
                 $this->orm = HookManager::call($method, array('table' => $this->table, 'idColumn' => $this->idColumn, 'args' => $args), $this->ormPath);
+                return $this;
                 break;
             case 'criterias':
                 $this->orm = HookManager::call($method, array('table' => $this->table, 'args' => $args), $this->ormPath);
@@ -191,18 +193,22 @@ abstract class Qt_Model {
                 break;
             case 'first':
                 $this->orm = HookManager::call($method, array('ormObject' => $this->orm, 'idColumn' => $this->idColumn), $this->ormPath);
+                return $this;
                 break;
             case 'asArray':
                 return HookManager::call($method, $this->orm, $this->ormPath);
                 break;
             case 'create':
                 $this->orm = HookManager::call($method, array('table' => $this->table), $this->ormPath);
+                return $this;
                 break;
             case 'save':
                 HookManager::call($method, $this->orm, $this->ormPath);
+                return $this;
                 break;
             case 'delete':
                 HookManager::call($method, $this->orm, $this->ormPath);
+                return $this;
                 break;
             default:
                 throw new \Exception(_message(ExceptionMessages::UNDEFINED_MODEL_METHOD, $method));
