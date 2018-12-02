@@ -56,7 +56,7 @@ class Router extends RouteController {
      * against the URI to determine current route and current module
      * 
      * @return void
-     * @throws RouteException When repetitve route was found
+     * @throws RouteException When repetitive route was found
      */
     public function findRoute() {
         if (isset($_SERVER['REQUEST_URI'])) {
@@ -66,12 +66,12 @@ class Router extends RouteController {
 
             foreach ($this->routes as $route) {
                 $route['uri'] = str_replace('/', '\/', $route['uri']);
-                $route['uri'] = preg_replace_callback('/\[(:num)(:([0-9]+))*\]/', array($this, 'findPattern'), $route['uri']);
-                $route['uri'] = preg_replace_callback('/\[(:alpha)(:([0-9]+))*\]/', array($this, 'findPattern'), $route['uri']);
-                $route['uri'] = preg_replace_callback('/\[(:any)(:([0-9]+))*\]/', array($this, 'findPattern'), $route['uri']);
+                $route['uri'] = preg_replace_callback('/\[(:num)(:([0-9]+))*\](\?)?/', array($this, 'findPattern'), $route['uri']);
+                $route['uri'] = preg_replace_callback('/\[(:alpha)(:([0-9]+))*\](\?)?/', array($this, 'findPattern'), $route['uri']);
+                $route['uri'] = preg_replace_callback('/\[(:any)(:([0-9]+))*\](\?)?/', array($this, 'findPattern'), $route['uri']);
 
                 $request_uri = preg_replace('/[?]/', '', $_SERVER['REQUEST_URI']);
-
+               
                 preg_match("/^\/" . $route['uri'] . "$/", $request_uri, $matches);
 
                 if ($matches) {
@@ -141,7 +141,7 @@ class Router extends RouteController {
     }
 
     private function findPattern($matches) {
-        switch($matches[1]) {
+        switch ($matches[1]) {
             case ':num':
                 $replacement = '([0-9]';
                 break;
@@ -153,10 +153,19 @@ class Router extends RouteController {
                 break;
         }
 
-        if (isset($matches[2])) {
-            $replacement .= '{' . $matches[3] . '})';
+
+        if (isset($matches[3]) && is_numeric($matches[3])) {
+            if (isset($matches[4]) && $matches[4] == '?') {
+                $replacement .= '{0,' . $matches[3] . '})';
+            } else {
+                $replacement .= '{' . $matches[3] . '})';
+            }
         } else {
-            $replacement .= '+)';
+            if (isset($matches[4]) && $matches[4] == '?') {
+                $replacement .= '*)';
+            } else {
+                $replacement .= '+)';
+            }
         }
 
         return $replacement;
