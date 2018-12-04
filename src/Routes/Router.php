@@ -56,9 +56,9 @@ class Router extends RouteController {
      * against the URI to determine current route and current module
      * 
      * @return void
-     * @throws RouteException When repetitve route was found
+     * @throws RouteException When repetitive route was found
      */
-    public function findRoute() {
+	public function findRoute() {
         if (isset($_SERVER['REQUEST_URI'])) {
 
             $matched_uris = array();
@@ -150,7 +150,7 @@ class Router extends RouteController {
     }
 
     private function findPattern($matches) {
-        switch($matches[1]) {
+        switch ($matches[1]) {
             case ':num':
                 $replacement = '([0-9]';
                 break;
@@ -162,10 +162,19 @@ class Router extends RouteController {
                 break;
         }
 
-        if (isset($matches[2])) {
-            $replacement .= '{' . $matches[3] . '})';
+
+        if (isset($matches[3]) && is_numeric($matches[3])) {
+            if (isset($matches[4]) && $matches[4] == '?') {
+                $replacement .= '{0,' . $matches[3] . '})';
+            } else {
+                $replacement .= '{' . $matches[3] . '})';
+            }
         } else {
-            $replacement .= '+)';
+            if (isset($matches[4]) && $matches[4] == '?') {
+                $replacement .= '*)';
+            } else {
+                $replacement .= '+)';
+            }
         }
 
         return $replacement;
