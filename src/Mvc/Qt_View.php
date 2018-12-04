@@ -111,7 +111,6 @@ class Qt_View {
      * Outputs the view
      * 
      * @param string $view
-     * @param string $modulePath
      * @param array $params
      * @param array $sharedData
      * @uses self::renderFile
@@ -127,7 +126,6 @@ class Qt_View {
      * Finds a given file
      * 
      * @param string $file
-     * @param string $modulePath
      * @return string
      * @throws \Exception When file is not found
      */

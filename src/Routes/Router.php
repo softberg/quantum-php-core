@@ -63,23 +63,32 @@ class Router extends RouteController {
 
             $matched_uris = array();
             $routes_group = array();
+            $request_uri = preg_replace('/[?]/', '', $_SERVER['REQUEST_URI']);
 
             foreach ($this->routes as $route) {
-                $route['uri'] = str_replace('/', '\/', $route['uri']);
-                $route['uri'] = preg_replace_callback('/\[(:num)(:([0-9]+))*\]/', array($this, 'findPattern'), $route['uri']);
-                $route['uri'] = preg_replace_callback('/\[(:alpha)(:([0-9]+))*\]/', array($this, 'findPattern'), $route['uri']);
-                $route['uri'] = preg_replace_callback('/\[(:any)(:([0-9]+))*\]/', array($this, 'findPattern'), $route['uri']);
-
-                $request_uri = preg_replace('/[?]/', '', $_SERVER['REQUEST_URI']);
-
-                preg_match("/^\/" . $route['uri'] . "$/", $request_uri, $matches);
-
-                if ($matches) {
-                    array_push($matched_uris, $matches[0]);
-                    array_shift($matches);
-
-                    $route['args'] = $matches;
+                if(trim(urldecode($request_uri), '/') == $route['uri']) {
+                    $matched_uris[] = $route['uri'];
+                    $route['args'] = [];
                     array_push($routes_group, $route);
+                }
+            }
+
+            if(!$matched_uris) {
+                foreach ($this->routes as $route) {
+                    $route['uri'] = str_replace('/', '\/', $route['uri']);
+                    $route['uri'] = preg_replace_callback('/\[(:num)(:([0-9]+))*\](\?)?/', array($this, 'findPattern'), $route['uri']);
+                    $route['uri'] = preg_replace_callback('/\[(:alpha)(:([0-9]+))*\](\?)?/', array($this, 'findPattern'), $route['uri']);
+                    $route['uri'] = preg_replace_callback('/\[(:any)(:([0-9]+))*\](\?)?/', array($this, 'findPattern'), $route['uri']);
+
+                    preg_match("/^\/" . $route['uri'] . "$/u", urldecode($request_uri), $matches);
+
+                    if ($matches) {
+                        array_push($matched_uris, $matches[0]);
+                        array_shift($matches);
+
+                        $route['args'] = $matches;
+                        array_push($routes_group, $route);
+                    }
                 }
             }
 

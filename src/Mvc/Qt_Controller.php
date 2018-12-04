@@ -121,12 +121,11 @@ class Qt_Controller extends RouteController {
      * Outputs the view
      * 
      * @param string $view
-     * @param string $modulePath
      * @param array $params
      * @return void
      */
-    public function output($view, $modulePath, $params = array()) {
-        Qt_View::output($view, $modulePath, $params, $this->sharedData);
+    public function output($view, $params = array()) {
+        Qt_View::output($view, $params, $this->sharedData);
     }
 
     /**
