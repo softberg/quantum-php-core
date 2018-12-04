@@ -17,6 +17,7 @@ namespace Quantum\Mvc;
 use Quantum\Routes\RouteController;
 use Quantum\Libraries\Session\Session;
 use Quantum\Mvc\Qt_View;
+use Quantum\Hooks\HookManager;
 
 /**
  * Base Controller Class
@@ -67,8 +68,8 @@ class Qt_Controller extends RouteController {
 
         if (class_exists($modelClass)) {
             return new $modelClass(RouteController::$currentRoute);
-        } elseif (class_exists("\\Models\\" . $modelName)) {
-            $baseModelClass = "\\Models\\" . $modelName;
+        } elseif (class_exists("\\Base\\models\\" . $modelName)) {
+            $baseModelClass = "\\Base\\models\\" . $modelName;
             return new $baseModelClass(RouteController::$currentRoute);
         } else {
             HookManager::call("handleModel", $modelName);

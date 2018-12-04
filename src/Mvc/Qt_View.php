@@ -131,9 +131,11 @@ class Qt_View {
      */
     private function findFile($file) {
         $filePath = MODULES_DIR . DS . self::$currentRoute['module'] . DS . 'Views'. DS . $file . '.php';
-
         if (!file_exists($filePath)) {
-            throw new \Exception(_message(ExceptionMessages::VIEW_FILE_NOT_FOUND, $file));
+			$filePath = BASE_DIR . DS . 'base'. DS .'views' . DS . $file . '.php';
+			 if (!file_exists($filePath)) {
+				 throw new \Exception(_message(ExceptionMessages::VIEW_FILE_NOT_FOUND, $file));
+			 }
         }
 
         return $filePath;
