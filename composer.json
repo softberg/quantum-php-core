@@ -23,7 +23,8 @@
         "gumlet/php-image-resize": "1.8.*",
         "symfony/var-dumper": "3.4.8",
         "vlucas/phpdotenv": "^2.4",
-        "dflydev/dot-access-data": "v1.0.0"
+        "dflydev/dot-access-data": "v1.0.0",
+		"twig/twig": "^2.5"
     },
     "autoload": {
         "psr-4": {
