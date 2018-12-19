@@ -375,8 +375,8 @@ if (!function_exists('out')) {
      * @return void
      */
     function out($var, $die = false) {
-        Dumper::dump($var);
-        
+        Dumper::dump($var, $die);
+
         if($die) die;
     }
 

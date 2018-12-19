@@ -112,6 +112,11 @@ class Qt_Controller extends RouteController {
      * @return void
      */
     public function render($view, $params = array(), $output = false) {
+		if(get_config('debug')) {
+            $debugbarRenderer = Debugger::runDebuger($view);
+            $this->share(['debugbarRenderer' => $debugbarRenderer]);
+        }
+		
         new Qt_View(RouteController::$currentRoute);
         Qt_View::render($view, $params, $output, $this->sharedData);
     }

@@ -46,8 +46,8 @@ class Bootstrap {
         $mvcManager = new MvcManager();
 
         try {
-            $router->findRoute();
             Config::load();
+            $router->findRoute();
             Environment::load();
             Helpers::load();
             Libraries::load();

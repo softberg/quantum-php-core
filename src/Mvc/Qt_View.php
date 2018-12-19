@@ -102,6 +102,12 @@ class Qt_View {
 
         if (!empty(self::$layout)) {
             echo self::renderLayout($sharedData);
+			
+			if($sharedData['debugbarRenderer']) {
+                $debugbarRenderer = $sharedData['debugbarRenderer'];
+                echo $debugbarRenderer->renderHead();
+                echo $debugbarRenderer->render();
+            }
         }
     }
 
