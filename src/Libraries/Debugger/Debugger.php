@@ -61,15 +61,21 @@ class Debugger extends DebugBar
         $current_controller = 'modules'. DS . $module . DS . RouteController::$currentRoute['controller'];
         $current_action = RouteController::$currentRoute['action'];
 
-        self::$debugbar->addCollector(new MessagesCollector('routes'));
-        self::$debugbar['routes']->info('Route => ' .  $uri);
-        self::$debugbar['routes']->info('Method => ' .  $method);
-        self::$debugbar['routes']->info('Module => ' .  $module);
-        self::$debugbar['routes']->info('Controller => ' .  $current_controller);
-        self::$debugbar['routes']->info('Action => ' .  $current_action);
+        $route = [
+            'Route' => $uri,
+            'Method' => method,
+            'Module' => $module,
+            'Controller' => $current_controller,
+            'Action' => $current_action,
+            'View' => ''
+        ];
+
         if($view) {
-            self::$debugbar['routes']->info('View => ' . 'modules/'. RouteController::$currentRoute['module'] . '/Views/' . $view);
+            $route[View] = 'modules/'. RouteController::$currentRoute['module'] . '/Views/' . $view;
         }
+        
+        self::$debugbar->addCollector(new MessagesCollector('routes'));
+        self::$debugbar['routes']->info($route);
     }
 
     private static function addOut()
