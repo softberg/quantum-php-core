@@ -444,3 +444,10 @@ if (!function_exists('_t')) {
     }
 
 }
+
+if (!function_exists('mailer')) {
+
+    function mailer() {
+        return $mail = new Mail();
+    }
+}
