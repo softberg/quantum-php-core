@@ -60,6 +60,7 @@ class Debugger extends DebugBar
         $module = RouteController::$currentRoute['module'];
         $current_controller = 'modules'. DS . $module . DS . RouteController::$currentRoute['controller'];
         $current_action = RouteController::$currentRoute['action'];
+		$args = RouteController::$currentRoute['args'];
 
         $route = [
             'Route' => $uri,
@@ -67,7 +68,8 @@ class Debugger extends DebugBar
             'Module' => $module,
             'Controller' => $current_controller,
             'Action' => $current_action,
-            'View' => ''
+            'View' => '',
+			'Args' => $args,
         ];
 
         if($view) {
