@@ -102,8 +102,8 @@ class Qt_View {
 
         if (!empty(self::$layout)) {
             echo self::renderLayout($sharedData);
-			
-			if($sharedData['debugbarRenderer']) {
+
+            if ($sharedData['debugbarRenderer']) {
                 $debugbarRenderer = $sharedData['debugbarRenderer'];
                 echo $debugbarRenderer->renderHead();
                 echo $debugbarRenderer->render();
@@ -136,12 +136,12 @@ class Qt_View {
      * @throws \Exception When file is not found
      */
     private function findFile($file) {
-        $filePath = MODULES_DIR . DS . self::$currentRoute['module'] . DS . 'Views'. DS . $file . '.php';
+        $filePath = MODULES_DIR . DS . self::$currentRoute['module'] . DS . 'Views' . DS . $file . '.php';
         if (!file_exists($filePath)) {
-			$filePath = BASE_DIR . DS . 'base'. DS .'views' . DS . $file . '.php';
-			 if (!file_exists($filePath)) {
-				 throw new \Exception(_message(ExceptionMessages::VIEW_FILE_NOT_FOUND, $file));
-			 }
+            $filePath = BASE_DIR . DS . 'base' . DS . 'views' . DS . $file . '.php';
+            if (!file_exists($filePath)) {
+                throw new \Exception(_message(ExceptionMessages::VIEW_FILE_NOT_FOUND, $file));
+            }
         }
 
         return $filePath;
@@ -163,7 +163,7 @@ class Qt_View {
         if ($templateEngine) {
             $engineName = key($templateEngine);
             $engineConfigs = $templateEngine[$engineName];
-            
+
             return HookManager::call('templateRenderer', [
                         'configs' => $engineConfigs,
                         'currentModule' => self::$currentRoute['module'],
@@ -174,7 +174,6 @@ class Qt_View {
         } else {
             return self::defaultRenderer($view, $parmas, $sharedData);
         }
-        
     }
 
     /**
@@ -189,7 +188,7 @@ class Qt_View {
      */
     private static function defaultRenderer($view, $parmas = array(), $sharedData = array()) {
         $file = self::findFile($view);
-        
+
         ob_start();
         ob_implicit_flush(false);
 

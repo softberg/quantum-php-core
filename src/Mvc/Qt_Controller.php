@@ -38,7 +38,6 @@ class Qt_Controller extends RouteController {
 
     /**
      * The data shared between layout and view
-     * 
      * @var array 
      */
     private $sharedData = array();
@@ -64,7 +63,7 @@ class Qt_Controller extends RouteController {
      * @return \Quantum\Mvc\modelClass
      */
     public function modelFactory($modelName) {
-          $modelClass = "\\Modules\\" . RouteController::$currentRoute['module'] . "\\Models\\" . $modelName;
+        $modelClass = "\\Modules\\" . RouteController::$currentRoute['module'] . "\\Models\\" . $modelName;
 
         if (class_exists($modelClass)) {
             return new $modelClass(RouteController::$currentRoute);
@@ -96,7 +95,7 @@ class Qt_Controller extends RouteController {
      * @return void
      */
     protected function share($data) {
-        foreach($data as $key => $val) {
+        foreach ($data as $key => $val) {
             $this->sharedData[$key] = $val;
         }
     }
@@ -112,11 +111,11 @@ class Qt_Controller extends RouteController {
      * @return void
      */
     public function render($view, $params = array(), $output = false) {
-		if(get_config('debug')) {
+        if (get_config('debug')) {
             $debugbarRenderer = Debugger::runDebuger($view);
             $this->share(['debugbarRenderer' => $debugbarRenderer]);
         }
-		
+
         new Qt_View(RouteController::$currentRoute);
         Qt_View::render($view, $params, $output, $this->sharedData);
     }

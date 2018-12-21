@@ -29,6 +29,12 @@ use Symfony\Component\VarDumper\Dumper\CliDumper;
  */
 class Dumper {
 
+    /**
+     * Outputs the dump of the given variable
+     * 
+     * @param mixed $var
+     * @param boolean $die
+     */
     public static function dump($var, $die) {
         $cloner = new VarCloner;
 
@@ -43,15 +49,15 @@ class Dumper {
 
         $dumper = PHP_SAPI === 'cli' ? new CliDumper : $htmlDumper;
 
-        $output = $dumper->dump($cloner->cloneVar($var));
-		
-		 if(get_config('debug') && $output && !$die) {
+        $output = $dumper->dump($cloner->cloneVar($var), get_config('debug'));
+
+        if (get_config('debug') && $output && !$die) {
             session()->set('output', $var);
-            if( Debugger::$debugbar['messages']) {
+            if (Debugger::$debugbar['messages']) {
                 Debugger::$debugbar['messages']->debug($var);
                 session()->delete('output');
             }
-        } else {
+        } elseif ($output) {
             echo $output;
         }
     }

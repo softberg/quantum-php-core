@@ -1,4 +1,17 @@
 <?php
+
+/**
+ * Quantum PHP Framework
+ * 
+ * An open source software development framework for PHP
+ * 
+ * @package Quantum
+ * @author Arman Ag. <arman.ag@softberg.org>
+ * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
+ * @link http://quantum.softberg.org/
+ * @since 1.2.0
+ */
+
 namespace Quantum\Libraries\Debugger;
 
 use DebugBar\DebugBar;
@@ -10,57 +23,99 @@ use DebugBar\DataCollector\TimeDataCollector;
 use DebugBar\StandardDebugBar;
 use Quantum\Routes\ModuleLoader;
 use Quantum\Routes\RouteController;
-
 use ORM;
 
-class Debugger extends DebugBar
-{
+/**
+ * Debugger class
+ * 
+ * @package Quantum
+ * @subpackage Libraries.Debugger
+ * @category Libraries
+ * @uses DebugBar
+ */
+class Debugger extends DebugBar {
+
+    /**
+     * Debugbar instance
+     * @var object 
+     */
     public static $debugbar;
-    public static $debugbarRenderer = false;
+
+    /**
+     * Debugbar Renderer
+     * @var object 
+     */
+    public static $debugbarRenderer = null;
+
+    /**
+     * Queries
+     * @var array 
+     */
     public static $queries;
-    public static $dump_message;
+
+    /**
+     * Assets url
+     * @var string 
+     */
     public static $assets_url;
 
-    public function __construct()
-    {
+    /**
+     * Class constructor
+     * 
+     * @return void
+     */
+    public function __construct() {
         $this->addCollector(new PhpInfoCollector());
         $this->addCollector(new MessagesCollector());
         $this->addCollector(new RequestDataCollector());
         $this->addCollector(new MemoryCollector());
     }
 
-    public static function runDebuger($view=null)
-    {
+    /**
+     * Runs the debug bar
+     * 
+     * @param string $view
+     * @return object
+     */
+    public static function runDebuger($view = null) {
         self::$debugbar = new Debugger();
         self::$assets_url = base_url() . '/assets/DebugBar/Resources';
         self::addQueries();
-        self::addOut();
+        self::addMessages();
         self::addRoute($view);
 
-        self::$debugbarRenderer = self::$debugbar->getJavascriptRenderer()->setBaseUrl( self::$assets_url);
-        return  self::$debugbarRenderer;
+        self::$debugbarRenderer = self::$debugbar->getJavascriptRenderer()->setBaseUrl(self::$assets_url);
+
+        return self::$debugbarRenderer;
     }
 
-    private static function addQueries()
-    {
+    /**
+     * Collects the queries
+     * 
+     * @return void
+     */
+    private static function addQueries() {
         self::$debugbar->addCollector(new MessagesCollector('queries'));
         self::$queries = ORM::get_query_log();
-        if(self::$queries) {
+        if (self::$queries) {
             foreach (self::$queries as $query) {
                 self::$debugbar['queries']->info($query);
             }
         }
-
     }
 
-    private static function addRoute($view)
-    {
+    /**
+     * Collects the routes
+     * 
+     * @return void
+     */
+    private static function addRoute($view) {
         $uri = RouteController::$currentRoute['uri'];
         $method = RouteController::$currentRoute['method'];
         $module = RouteController::$currentRoute['module'];
-        $current_controller = 'modules'. DS . $module . DS . RouteController::$currentRoute['controller'];
+        $current_controller = 'modules' . DS . $module . DS . RouteController::$currentRoute['controller'];
         $current_action = RouteController::$currentRoute['action'];
-		$args = RouteController::$currentRoute['args'];
+        $args = RouteController::$currentRoute['args'];
 
         $route = [
             'Route' => $uri,
@@ -69,22 +124,27 @@ class Debugger extends DebugBar
             'Controller' => $current_controller,
             'Action' => $current_action,
             'View' => '',
-			'Args' => $args,
+            'Args' => $args,
         ];
 
-        if($view) {
-            $route[View] = 'modules/'. RouteController::$currentRoute['module'] . '/Views/' . $view;
+        if ($view) {
+            $route[View] = 'modules/' . RouteController::$currentRoute['module'] . '/Views/' . $view;
         }
-        
+
         self::$debugbar->addCollector(new MessagesCollector('routes'));
         self::$debugbar['routes']->info($route);
     }
 
-    private static function addOut()
-    {
-        if(session()->get('output')){
+    /**
+     * Collects the messages
+     * 
+     * @return void
+     */
+    private static function addMessages() {
+        if (session()->get('output')) {
             self::$debugbar['messages']->debug(session()->get('output'));
             session()->delete('output');
         }
     }
+
 }
