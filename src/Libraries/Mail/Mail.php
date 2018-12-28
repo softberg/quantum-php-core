@@ -7,7 +7,7 @@ use Quantum\Routes\RouteController;
 
 class Mail
 {
-    private $newMail;
+    private $mail;
 
     public function __construct()
     {
@@ -15,32 +15,42 @@ class Mail
     }
 
     private function phpMailerSettings() {
-        $mail = new PHPMailer(true);
-        $mail->SMTPDebug = 2;                                 // Enable verbose debug output
-        $mail->isSMTP();                                      // Set mailer to use SMTP
-        $mail->Host = env('MAIL_HOST');                       // Specify main and backup SMTP servers
-        $mail->SMTPAuth = true;                               // Enable SMTP authentication
-        $mail->Username = env('MAIL_USERNAME');               // SMTP username
-        $mail->Password = env('MAIL_PASSWORD');               // SMTP password
-        $mail->SMTPSecure = env('MAIL_SMTP_SECURE');          // Enable TLS encryption, `ssl` also accepted
-        $mail->Port =  env('MAIL_PORT');                      // TCP port to connect to
-        $this->newMail = $mail;
+        $mailer = new PHPMailer();
+		if (strlen(env('MAIL_HOST')) > 0) {					      // Enable verbose debug output
+			$mailer->SMTPDebug = 2;                                 // Set mailer to use SMTP
+			$mailer->isSMTP();                                      // Specify main and backup SMTP servers
+			$mailer->Host = env('MAIL_HOST');                       // Enable SMTP authentication
+			$mailer->SMTPAuth = true;                               // Enable TLS encryption, `ssl` also accepted
+			$mailer->SMTPSecure = env('MAIL_SMTP_SECURE');          
+			$mailer->Port =  env('MAIL_PORT');					  // TCP port to connect to
+			$mailer->Username = env('MAIL_USERNAME');               // username
+			$mailer->Password = env('MAIL_PASSWORD');               // password
+		} else {
+			$mailer->isMail();
+		}
+		
+		$mailer->isHTML(true);
+        
+        $this->mail = $mailer;
     }
 
     public function sand($from=[], $users_mail=[], $message, $options=[]) {
-        $this->newMail->setFrom($from['email'], $from['name']);
+        $this->mail->setFrom($from['email'], $from['name']);
         $body = '';
 
-        foreach ($users_mail as $user) {
-            $this->newMail->addAddress($user['email'], $user['name']);
-        }
+		if(array_key_exists('email', $users_mail) {
+			$this->mail->addAddress($users_mail['email'], $users_mail['name']);
+		} else {
+			foreach ($users_mail as $user) {
+				$this->mail->addAddress($user['email'], $user['name']);
+			}
+		}
 
         if($options['subject']) {
-            $this->newMail->Subject = $options['subject'];
+            $this->mail->Subject = $options['subject'];
         }
 
         if($options['template']) {
-            $this->newMail->isHTML(true);
             ob_start();
             ob_implicit_flush(false);
 
@@ -49,8 +59,8 @@ class Mail
             }
 
             $current_module = RouteController::$currentRoute['module'];
-            $view =  MODULES_DIR . '/' . $current_module . '/Views/'. $options['template'] .'.php';
-            require $view;
+            $template =  MODULES_DIR . '/' . $current_module . '/Views/'. $options['template'] .'.php';
+            require $template;
             $body = ob_get_clean();
         } else {
             if(!s_array($message)) {
@@ -58,33 +68,41 @@ class Mail
             }
         }
 
-        $this->newMail->Body = $body;
+        $this->mail->Body = $body;
 
-        if(is_array ($options['files']) && !empty($options['files'])) {
-            foreach ($options['files'] as $file) {
-                $this->newMail->addAttachment($file);
+        if(is_array ($options['attachments']) && count($options['attachments']) > 0) {
+            foreach ($options['attachments'] as $attachment) {
+                $this->mail->addAttachment($attachment);
             }
-        }
+        } else if(!empty($options['attachments'])){
+			$this->mail->addAttachment($options['attachments']);
+		} 
 
-        if(is_array ($options['replayto']) && !empty($options['replayto'])) {
+        if(is_array ($options['replayto']) && count($options['replayto']) > 0) {
             foreach ($options['replayto'] as $replayto) {
-                $this->newMail->addReplyTo($replayto);
+                $this->mail->addReplyTo($replayto);
             }
-        }
+        } else if(!empty($options['replayto'])){
+			$this->mail->addReplyTo($options['replayto']);
+		} 
 
-        if(is_array ($options['cc']) && !empty($options['cc'])) {
+        if(is_array ($options['cc']) && count($options['cc']) > 0) {
             foreach ($options['cc'] as $cc) {
-                $this->newMail->addCC($cc);
+                $this->mail->addCC($cc);
             }
-        }
+        } else if(!empty($options['cc'])){
+			$this->mail->addCC($options['cc']);
+		} 
 
-        if(is_array ($options['bcc']) && !empty($options['bcc'])) {
+        if(is_array ($options['bcc']) && count($options['bcc']) > 0) {
             foreach ($options['bcc'] as $bcc) {
-                $this->newMail->addBCC($bcc);
+                $this->mail->addBCC($bcc);
             }
-        }
+        } else if(!empty($options['bcc'])){
+			$this->mail->addBCC($options['bcc']);
+		} 
 
-        if($this->newMail->send()) {
+        if($this->mail->send()) {
             return true;
         } else {
             return false;
