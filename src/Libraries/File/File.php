@@ -14,6 +14,8 @@
 
 namespace Quantum\Libraries\File;
 
+use Upload\Validation\Mimetype;
+use Upload\Validation\Size;
 use Gumlet\ImageResize;
 
 /**
@@ -111,13 +113,13 @@ class File {
 
             switch ($param['type']) {
                 case 'mime':
-                    array_push($validations, new \Upload\Validation\Mimetype($param['values']));
+                    array_push($validations, new Mimetype($param['values']));
                     break;
                 case 'size':
-                    array_push($validations, new \Upload\Validation\Size($param['values']));
+                    array_push($validations, new Size($param['values']));
                     break;
                 case 'dimensions':
-                    array_push($validations, new \Upload\Validation\Dimensions($param['values']['width'], $param['values']['height']));
+                    array_push($validations, new Dimensions($param['values']['width'], $param['values']['height']));
                     break;
             }
         }
