@@ -14,6 +14,7 @@
 
 namespace Quantum\Libraries\Dumper;
 
+use Quantum\Libraries\Debugger\Debugger;
 use Symfony\Component\VarDumper\VarDumper;
 use Symfony\Component\VarDumper\Cloner\VarCloner;
 use Symfony\Component\VarDumper\Dumper\HtmlDumper;
@@ -35,6 +36,9 @@ class Dumper {
      * @param mixed $var
      * @param boolean $die
      */
+
+    public static $out_data = [];
+
     public static function dump($var, $die) {
         $cloner = new VarCloner;
 
@@ -50,9 +54,11 @@ class Dumper {
         $dumper = PHP_SAPI === 'cli' ? new CliDumper : $htmlDumper;
 
         $output = $dumper->dump($cloner->cloneVar($var), get_config('debug'));
-
         if (get_config('debug') && $output && !$die) {
-            session()->set('output', $var);
+
+            self::$out_data[] = $var;
+            session()->set('output', self::$out_data);
+
             if (Debugger::$debugbar['messages']) {
                 Debugger::$debugbar['messages']->debug($var);
                 session()->delete('output');

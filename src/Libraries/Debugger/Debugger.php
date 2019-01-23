@@ -119,7 +119,7 @@ class Debugger extends DebugBar {
 
         $route = [
             'Route' => $uri,
-            'Method' => method,
+            'Method' => $method,
             'Module' => $module,
             'Controller' => $current_controller,
             'Action' => $current_action,
@@ -128,7 +128,7 @@ class Debugger extends DebugBar {
         ];
 
         if ($view) {
-            $route[View] = 'modules/' . RouteController::$currentRoute['module'] . '/Views/' . $view;
+            $route['View'] = 'modules/' . RouteController::$currentRoute['module'] . '/Views/' . $view;
         }
 
         self::$debugbar->addCollector(new MessagesCollector('routes'));
@@ -141,8 +141,11 @@ class Debugger extends DebugBar {
      * @return void
      */
     private static function addMessages() {
-        if (session()->get('output')) {
-            self::$debugbar['messages']->debug(session()->get('output'));
+        $out_data = session()->get('output');
+        if ($out_data) {
+            foreach ($out_data as $data) {
+                self::$debugbar['messages']->debug($data);
+            }
             session()->delete('output');
         }
     }
