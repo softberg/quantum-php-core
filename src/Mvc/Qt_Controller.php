@@ -112,7 +112,7 @@ class Qt_Controller extends RouteController {
      * @return void
      */
     public function render($view, $params = array(), $output = false) {
-        if (get_config('debug')) {
+        if (filter_var(get_config('debug'), FILTER_VALIDATE_BOOLEAN)) {
             $debugbarRenderer = Debugger::runDebuger($view);
             $this->share(['debugbarRenderer' => $debugbarRenderer]);
         }

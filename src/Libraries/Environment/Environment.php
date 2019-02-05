@@ -27,14 +27,15 @@ use Dotenv\Dotenv;
 class Environment {
 
     public static function load() {
-        $environment = get_config('app_env', 'production');
+        $env = require_once BASE_DIR . '/config/env.php';
         
-        $file = '.env';
-        if($environment != 'production') {
-            $file .= '.' . $environment;
+        $envFile = '.env';
+        
+        if($env['app_env'] != 'production') {
+            $envFile .= '.' . $env['app_env'];
         }
         
-        $dotenv = new Dotenv(BASE_DIR, $file);
+        $dotenv = new Dotenv(BASE_DIR, $envFile);
         $dotenv->load();
     }
 
