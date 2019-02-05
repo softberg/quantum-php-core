@@ -16,15 +16,15 @@ class Mail
 
     private function phpMailerSettings() {
         $mailer = new PHPMailer();
-		if (strlen(env('MAIL_HOST')) > 0) {					      // Enable verbose debug output
-			$mailer->SMTPDebug = 2;                                 // Set mailer to use SMTP
+		if (strlen(env('MAIL_HOST')) > 0) {					        // Enable verbose debug output
+			$mailer->SMTPDebug  = 2;                                 // Set mailer to use SMTP
 			$mailer->isSMTP();                                      // Specify main and backup SMTP servers
-			$mailer->Host = env('MAIL_HOST');                       // Enable SMTP authentication
-			$mailer->SMTPAuth = true;                               // Enable TLS encryption, `ssl` also accepted
+			$mailer->Host       = env('MAIL_HOST');                       // Enable SMTP authentication
+			$mailer->SMTPAuth   = true;                               // Enable TLS encryption, `ssl` also accepted
 			$mailer->SMTPSecure = env('MAIL_SMTP_SECURE');          
-			$mailer->Port =  env('MAIL_PORT');					  // TCP port to connect to
-			$mailer->Username = env('MAIL_USERNAME');               // username
-			$mailer->Password = env('MAIL_PASSWORD');               // password
+			$mailer->Port       = env('MAIL_PORT');					    // TCP port to connect to
+			$mailer->Username   = env('MAIL_USERNAME');               // username
+			$mailer->Password   = env('MAIL_PASSWORD');               // password
 		} else {
 			$mailer->isMail();
 		}
@@ -38,7 +38,7 @@ class Mail
         $this->mail->setFrom($from['email'], $from['name']);
         $body = '';
 
-		if(array_key_exists('email', $users_mail) {
+		if(array_key_exists('email', $users_mail)) {
 			$this->mail->addAddress($users_mail['email'], $users_mail['name']);
 		} else {
 			foreach ($users_mail as $user) {
