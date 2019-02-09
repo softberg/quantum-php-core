@@ -79,8 +79,10 @@ class Router extends RouteController {
                     $route['uri'] = preg_replace_callback('/\[(:num)(:([0-9]+))*\](\?)?/', array($this, 'findPattern'), $route['uri']);
                     $route['uri'] = preg_replace_callback('/\[(:alpha)(:([0-9]+))*\](\?)?/', array($this, 'findPattern'), $route['uri']);
                     $route['uri'] = preg_replace_callback('/\[(:any)(:([0-9]+))*\](\?)?/', array($this, 'findPattern'), $route['uri']);
-
-                    preg_match("/^\/" . $route['uri'] . "$/u", urldecode($request_uri), $matches);
+					
+					$request_uri = parse_url($_SERVER['REQUEST_URI']);
+                    
+                    preg_match("/^\/" . $route['uri'] . "$/u", urldecode($request_uri['path']), $matches);
 
                     if ($matches) {
                         array_push($matched_uris, $matches[0]);
