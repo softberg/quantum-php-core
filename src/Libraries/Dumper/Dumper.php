@@ -53,7 +53,7 @@ class Dumper {
 
         $dumper = PHP_SAPI === 'cli' ? new CliDumper : $htmlDumper;
 
-        $output = $dumper->dump($cloner->cloneVar($var), get_config('debug'));
+        $output = $dumper->dump($cloner->cloneVar($var), filter_var(get_config('debug'), FILTER_VALIDATE_BOOLEAN));
         if (get_config('debug') && $output && !$die) {
 
             self::$out_data[] = $var;
