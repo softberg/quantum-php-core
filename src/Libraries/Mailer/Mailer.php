@@ -35,7 +35,7 @@ class Mailer
         $this->mailer = $phpMailer;
     }
 
-    public function sand($from = [], $addresses = [], $message, $options = [])
+    public function send(array $from, array $addresses, $message, $options = [])
     {
         $this->mailer->setFrom($from['email'], $from['name']);
 

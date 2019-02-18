@@ -11,6 +11,7 @@
  * @since 1.0.0
  */
 
+ use Quantum\Libraries\Mailer\Mailer;
 use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Routes\RouteController;
 use Quantum\Libraries\Session\SessionManager;
@@ -448,6 +449,6 @@ if (!function_exists('_t')) {
 if (!function_exists('mailer')) {
 
     function mailer() {
-        return $mail = new Mail();
+        return new Mail();
     }
 }
