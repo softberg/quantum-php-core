@@ -1,24 +1,59 @@
 <?php
 
+/**
+ * Quantum PHP Framework
+ * 
+ * An open source software development framework for PHP
+ * 
+ * @package Quantum
+ * @author Arman Ag. <arman.ag@softberg.org>
+ * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
+ * @link http://quantum.softberg.org/
+ * @since 1.0.0
+ */
+
 namespace Quantum\Libraries\Mailer;
 
 use PHPMailer\PHPMailer\PHPMailer;
 use Quantum\Routes\RouteController;
 
-class Mailer
-{
+/**
+ * Mailer class
+ * 
+ * @package Quantum
+ * @subpackage Libraries.Mailer
+ * @category Libraries
+ */
+class Mailer {
+
+    /**
+     * PHP Mailer instance
+     * 
+     * @var object 
+     */
     private $mailer;
 
-    public function __construct()
-    {
+    /**
+     * Class constructor 
+     * 
+     * @return void
+     */
+    public function __construct() {
         $this->phpMailerSettings();
     }
 
-    private function phpMailerSettings()
-    {
+    /**
+     * PHP Mailer Settings
+     * 
+     * Configures the PHP Mailer
+     * 
+     * @uses \PHPMailer
+     * @return void
+     */
+    private function phpMailerSettings() {
         $phpMailer = new PHPMailer();
         if (strlen(env('MAIL_HOST')) > 0) {
-            $phpMailer->SMTPDebug = 2;
+            $phpMailer->SMTPDebug = 0;
             $phpMailer->isSMTP();
             $phpMailer->Host = env('MAIL_HOST');
             $phpMailer->SMTPAuth = true;
@@ -35,8 +70,19 @@ class Mailer
         $this->mailer = $phpMailer;
     }
 
-    public function send(array $from, array $addresses, $message, $options = [])
-    {
+    /**
+     * Send 
+     * 
+     * Send the email
+     * 
+     * @param array $from From address
+     * @param array $addresses To addresses
+     * @param type $message Message content
+     * @param type $options Options
+     * @uses \PHPMailer
+     * @return boolean
+     */
+    public function send(array $from, array $addresses, $message, $options = []) {
         $this->mailer->setFrom($from['email'], $from['name']);
 
         $this->createAddresses($addresses);
@@ -46,7 +92,7 @@ class Mailer
         }
 
         $body = '';
-        if ($options['template']) {
+        if (isset($options['template'])) {
             $body = $this->createFromTemplate($message, $options['template']);
         } else {
             if (!is_array($message)) {
@@ -56,19 +102,19 @@ class Mailer
 
         $this->mailer->Body = $body;
 
-        if ($options['attachments']) {
+        if (isset($options['attachments'])) {
             $this->createAttachments($options['attachments']);
         }
 
-        if ($options['replayto']) {
+        if (isset($options['replayto'])) {
             $this->createReplays($options['replayto']);
         }
 
-        if ($options['cc']) {
+        if (isset($options['cc'])) {
             $this->createCCs($options['cc']);
         }
 
-        if ($options['bcc']) {
+        if (isset($options['bcc'])) {
             $this->createBCCs($options['bcc']);
         }
 
@@ -79,8 +125,16 @@ class Mailer
         }
     }
 
-    private function createFromTemplate($message, $template)
-    {
+    /**
+     * Create From Template
+     * 
+     * Create message body from email template
+     * 
+     * @param mixed $message
+     * @param string $template
+     * @return string
+     */
+    private function createFromTemplate($message, $template) {
         ob_start();
         ob_implicit_flush(false);
 
@@ -94,8 +148,15 @@ class Mailer
         return ob_get_clean();
     }
 
-    private function createAttachments($attachments)
-    {
+    /**
+     * Create Attachments
+     * 
+     * Add attachments from a path
+     * 
+     * @param mixed $attachments
+     * @uses \PHPMailer
+     */
+    private function createAttachments($attachments) {
         if (is_array($attachments) && count($attachments) > 0) {
             foreach ($attachments as $attachment) {
                 $this->mailer->addAttachment($attachment);
@@ -103,11 +164,17 @@ class Mailer
         } else if (!empty($attachments)) {
             $this->mailer->addAttachment($attachments);
         }
-
     }
 
-    private function createAddresses($addresses)
-    {
+    /**
+     * Create Addresses
+     * 
+     * Add a "To" addresses
+     * 
+     * @param mixed $addresses
+     * @uses \PHPMailer
+     */
+    private function createAddresses($addresses) {
         if (array_key_exists('email', $addresses)) {
             $this->mailer->addAddress($addresses['email'], $addresses['name']);
         } else {
@@ -115,11 +182,17 @@ class Mailer
                 $this->mailer->addAddress($address['email'], $address['name']);
             }
         }
-
     }
 
-    private function createReplays($addresses)
-    {
+    /**
+     * Create Replays
+     * 
+     * Add a "Reply-To" addresses
+     * 
+     * @param mixed $addresses
+     * @uses \PHPMailer
+     */
+    private function createReplays($addresses) {
         if (is_array($addresses) && count($addresses) > 0) {
             foreach ($addresses as $address) {
                 $this->mailer->addReplyTo($address);
@@ -127,11 +200,17 @@ class Mailer
         } else if (!empty($addresses)) {
             $this->mailer->addReplyTo($addresses);
         }
-
     }
 
-    private function createCCs($addresses)
-    {
+    /**
+     * Create CCs
+     * 
+     * Add a "CC" addresses
+     * 
+     * @param mixed $addresses
+     * @uses \PHPMailer
+     */
+    private function createCCs($addresses) {
         if (is_array($addresses) && count($addresses) > 0) {
             foreach ($addresses as $address) {
                 $this->mailer->addCC($address);
@@ -139,11 +218,17 @@ class Mailer
         } else if (!empty($addresses)) {
             $this->mailer->addCC($addresses);
         }
-
     }
 
-    private function createBCCs($addresses)
-    {
+    /**
+     * Create BCCs
+     * 
+     * Add a "BCC" addresses
+     * 
+     * @param mixed $addresses
+     * @uses \PHPMailer
+     */
+    private function createBCCs($addresses) {
         if (is_array($addresses) && count($addresses) > 0) {
             foreach ($addresses as $address) {
                 $this->mailer->addBCC($address);
@@ -151,7 +236,6 @@ class Mailer
         } else if (!empty($addresses)) {
             $this->mailer->addBCC($addresses);
         }
-
     }
 
 }
