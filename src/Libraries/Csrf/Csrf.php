@@ -14,7 +14,6 @@
 
 namespace Quantum\Libraries\Csrf;
 
-
 /**
  * Cross-Site Request Forgery class
  * 
@@ -23,22 +22,42 @@ namespace Quantum\Libraries\Csrf;
  * @category Libraries
  */
 class Csrf {
-    
+
+    /**
+     * The token
+     * 
+     * @var string 
+     */
     private static $token = NULL;
 
+    /**
+     * Generate Token
+     * 
+     * Generates the CSRF token or return if previously generated
+     * 
+     * @return string
+     */
     public static function generateToken() {
-        if(self::$token == NULL) {
-			if (session()->has('token')) {
+        if (self::$token == NULL) {
+            if (session()->has('token')) {
                 session()->delete('token');
             }
             self::$token = base64_encode(openssl_random_pseudo_bytes(32));
             session()->set('token', self::$token);
-        } 
+        }
 
         return self::$token;
     }
 
-    public static function checkToken($token) { 
+    /**
+     * Checks the token
+     * 
+     * Checks the session token against submitted token
+     * 
+     * @param string $token
+     * @return boolean
+     */
+    public static function checkToken($token) {
         if (session()->has('token') && session()->get('token') === $token) {
             return true;
         }
