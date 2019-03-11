@@ -56,8 +56,16 @@ class Mailer
 
         $this->mailer->Body = $body;
 
+        if(!$message) {
+            $this->mailer->AllowEmpty = true;
+        }
+
         if ($options['attachments']) {
             $this->createAttachments($options['attachments']);
+        }
+
+        if ($options['stringAttachment']) {
+            $this->createStringAttachments($options['stringAttachment']);
         }
 
         if ($options['replayto']) {
@@ -104,6 +112,17 @@ class Mailer
             $this->mailer->addAttachment($attachments);
         }
 
+    }
+
+    private function createStringAttachments($attachments)
+    {
+        if (array_key_exists('string', $attachments)) {
+            $this->mailer->addStringAttachment($attachments['string'], $attachments['name']);
+        } else {
+            foreach ($attachments as $attachment) {
+                $this->mailer->addStringAttachment($attachment['string'], $attachment['name']);
+            }
+        }
     }
 
     private function createAddresses($addresses)
