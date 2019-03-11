@@ -69,9 +69,16 @@ class HookDefaults implements HookInterface {
         if ($_SERVER['REQUEST_METHOD'] == 'POST' || $_SERVER['REQUEST_METHOD'] == 'PUT' || $_SERVER['REQUEST_METHOD'] == 'DELETE') {
             $request = Request::all();
 
-            if (!isset($request['token'])) {
+            if (!isset($request['token']) && !Request::getCSRFToken()) {
                 throw new RouteException(ExceptionMessages::CSRF_TOKEN_NOT_FOUND);
             }
+
+            if (isset($request['token'])) {
+                $token = $request['token'];
+            } elseif (Request::getCSRFToken()) {
+                $token = Request::getCSRFToken();
+            }
+
             if (!Csrf::checkToken($request['token'])) {
                 throw new RouteException(ExceptionMessages::CSRF_TOKEN_NOT_MATCHED);
             }
