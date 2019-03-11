@@ -100,10 +100,16 @@ class Mailer {
             }
         }
 
+        $this->mailer->AllowEmpty = true;
+
         $this->mailer->Body = $body;
 
         if (isset($options['attachments'])) {
             $this->createAttachments($options['attachments']);
+        }
+
+        if (isset($options['stringAttachment'])) {
+            $this->createStringAttachments($options['stringAttachment']);
         }
 
         if (isset($options['replayto'])) {
@@ -163,6 +169,25 @@ class Mailer {
             }
         } else if (!empty($attachments)) {
             $this->mailer->addAttachment($attachments);
+        }
+    }
+
+    /**
+     * Create String Attachments
+     *
+     * Add attachments from a string
+     *
+     * @param mixed $attachments
+     * @uses \PHPMailer
+     */
+    private function createStringAttachments($attachments)
+    {
+        if (array_key_exists('string', $attachments)) {
+            $this->mailer->addStringAttachment($attachments['string'], $attachments['name']);
+        } else {
+            foreach ($attachments as $attachment) {
+                $this->mailer->addStringAttachment($attachment['string'], $attachment['name']);
+            }
         }
     }
 
