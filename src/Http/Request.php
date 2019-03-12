@@ -102,6 +102,24 @@ class Request extends HttpRequest {
             throw new \Exception(ExceptionMessages::CSRF_TOKEN_NOT_FOUND);
         }
     }
+    
+    /**
+     * Gets Authorization Bearer token
+     * 
+     * @return string
+     * @throws \Exception
+     */
+    public function getAuthorizationBearer() {
+        $allHeaders = array_change_key_case(parent::getHeaders(), CASE_UPPER);
+
+        if (array_key_exists('AUTHORIZATION', $allHeaders)) {
+            if (preg_match('/Bearer\s(\S+)/', $allHeaders['AUTHORIZATION'], $matches)) {
+                return $matches[1];
+            }
+        } else {
+            throw new \Exception(ExceptionMessages::AUTH_BEARER_NOT_FOUND);
+        }
+    }
 
     /**
      * isAjax

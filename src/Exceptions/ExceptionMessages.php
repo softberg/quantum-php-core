@@ -110,6 +110,11 @@ class ExceptionMessages {
     const CSRF_TOKEN_NOT_FOUND = 'CSRF Token does not exists';
     
     /**
+     * Authorization: Bearer header not found message
+     */
+    const AUTH_BEARER_NOT_FOUND = 'Authorization: Bearer header not found';
+    
+    /**
      * CSFT token not matched message
      */
     const CSRF_TOKEN_NOT_MATCHED = 'CSRF Token does not matched';
