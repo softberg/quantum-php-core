@@ -1,0 +1,127 @@
+<?php
+
+/**
+ * Quantum PHP Framework
+ * 
+ * An open source software development framework for PHP
+ * 
+ * @package Quantum
+ * @author Arman Ag. <arman.ag@softberg.org>
+ * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
+ * @link http://quantum.softberg.org/
+ * @since 1.0.0
+ */
+
+namespace Quantum\Libraries\Curl;
+
+use Quantum\Exceptions\ExceptionMessages;
+use Quantum\Routes\RouteController;
+use Curl\Curl as PhpCurl;
+use Curl\MultiCurl;
+
+/**
+ * Curl Class
+ * 
+ * @package Quantum
+ * @subpackage Libraries.Curl
+ * @category Libraries 
+ * @uses php-curl-class/php-curl-class
+ */
+class Curl {
+
+    private $curl;
+    private $body = null;
+    private $headers = array();
+    private $errors = array();
+
+    public function __construct($type = null) {
+        if ($type && $type == 'multi') {
+            $this->curl = new MultiCurl();
+        } else {
+            $this->curl = new PhpCurl();
+        }
+    }
+
+    public function run($url = null) {
+        if ($url) {
+            $this->curl->setUrl($url);
+        }
+
+        if ($this->curl instanceof MultiCurl) {
+            $this->curl->start();
+        } else {
+            $this->curl->exec();
+        }
+
+        return $this->fetch();
+    }
+
+    public function setOptions(array $options) {
+        $this->curl->setOpts($options);
+
+        return $this;
+    }
+
+    public function setHeaders(array $headers) {
+        $this->curl->setHeaders($headers);
+
+        return $this;
+    }
+
+    public function getResponseBody() {
+        return $this->body;
+    }
+
+    public function getResponseHeaders() {
+        $requestHeaders = [];
+
+        if ($this->headers instanceof \ArrayAccess) {
+            while ($this->headers->valid()) {
+                $requestHeaders[$this->headers->key()] = $this->headers->current();
+                $this->headers->next();
+            }
+        }
+
+        return $requestHeaders;
+    }
+
+    public function getErrors() {
+        return $this->errors;
+    }
+
+    public function __call($function, $arguments) {
+
+        $this->curl->{$function}(...$arguments);
+
+        return $this->fetch();
+    }
+
+    private function fetch() {
+        if ($this->curl instanceof MultiCurl) {
+            $this->curl->complete(function($instance) {
+                if ($instance->error) {
+                    $this->errors[] = [
+                        'errorCode' => $instance->getErrorCode(),
+                        'errorMessage' => $instance->getErrorMessage()
+                    ];
+                } else {
+                    $this->headers[] = $instance->getResponseHeaders();
+                    $this->body[] = $instance->getResponse();
+                }
+            });
+        } else {
+            if ($this->curl->error) {
+                $this->errors[] = [
+                    'errorCode' => $this->curl->getErrorCode(),
+                    'errorMessage' => $this->curl->getErrorMessage()
+                ];
+            } else {
+                $this->headers = $this->curl->getResponseHeaders();
+                $this->body = $this->curl->getResponse();
+            }
+        }
+
+        return $this;
+    }
+
+}
