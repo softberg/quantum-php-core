@@ -29,11 +29,35 @@ use Curl\MultiCurl;
  */
 class Curl {
 
+    /**
+     * Curl instance
+     * @var object
+     */
     private $curl;
+    
+    /**
+     * Response body
+     * @var mixed 
+     */
     private $body = null;
+    
+    /**
+     * Response headers
+     * @var array
+     */
     private $headers = array();
+    
+    /**
+     * Response error
+     * @var array 
+     */
     private $errors = array();
 
+    /**
+     * Class constructor
+     * 
+     * @param string $type
+     */
     public function __construct($type = null) {
         if ($type && $type == 'multi') {
             $this->curl = new MultiCurl();
@@ -42,6 +66,14 @@ class Curl {
         }
     }
 
+    /**
+     * Run
+     * 
+     * Executes or starts the cURL request
+     * 
+     * @param string $url
+     * @return object
+     */
     public function run($url = null) {
         if ($url) {
             $this->curl->setUrl($url);
@@ -56,22 +88,52 @@ class Curl {
         return $this->fetch();
     }
 
+    /**
+     * Set Options
+     * 
+     * Sets cURL options
+     * 
+     * @param array $options
+     * @return $this
+     */
     public function setOptions(array $options) {
         $this->curl->setOpts($options);
 
         return $this;
     }
 
+    /**
+     * Set Headers
+     * 
+     * Sets the cURL headers
+     * 
+     * @param array $headers
+     * @return $this
+     */
     public function setHeaders(array $headers) {
         $this->curl->setHeaders($headers);
 
         return $this;
     }
 
+    /**
+     * Get Response Body
+     * 
+     * Gets the response body
+     * 
+     * @return mixed
+     */
     public function getResponseBody() {
         return $this->body;
     }
 
+    /**
+     * Get Response Headers
+     * 
+     * Gets the response headers
+     * 
+     * @return array
+     */
     public function getResponseHeaders() {
         $requestHeaders = [];
 
@@ -85,10 +147,22 @@ class Curl {
         return $requestHeaders;
     }
 
+    /**
+     * Returns the errors
+     * 
+     * @return array
+     */
     public function getErrors() {
         return $this->errors;
     }
 
+    /**
+     *  __call magic
+     * 
+     * @param string $function
+     * @param mixed $arguments
+     * @return object
+     */
     public function __call($function, $arguments) {
 
         $this->curl->{$function}(...$arguments);
@@ -96,6 +170,13 @@ class Curl {
         return $this->fetch();
     }
 
+    /**
+     * Fetch
+     * 
+     * Fetches the data from response
+     * 
+     * @return $this
+     */
     private function fetch() {
         if ($this->curl instanceof MultiCurl) {
             $this->curl->complete(function($instance) {
