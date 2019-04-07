@@ -41,16 +41,19 @@ class Bootstrap {
      * @throws Exception if one of these components fails: Router, Config, Helpers, Libraries, MVC MAnager.
      */
     public static function run() {
-
-        $router = new Router(new ModuleLoader);
-        $mvcManager = new MvcManager();
-
         try {
+            $router = new Router();
+
+            (new ModuleLoader())->loadModules($router);
+
+            $router->findRoute();
+
             Environment::load();
             Config::load();
-            $router->findRoute();
             Helpers::load();
             Libraries::load();
+
+            $mvcManager = new MvcManager();
             $mvcManager->runMvc(Router::$currentRoute);
         } catch (\Exception $e) {
             echo $e->getMessage();
