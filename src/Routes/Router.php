@@ -35,19 +35,7 @@ class Router extends RouteController {
      *
      * @var array 
      */
-    private $routes;
-
-    /**
-     * Class constructor
-     * 
-     * Runs the route mapping.
-     * 
-     * @param \Quantum\Routes\ModuleLoader $moduleLoader
-     * @return void
-     */
-    public function __construct(ModuleLoader $moduleLoader) {
-        $this->routes = $moduleLoader->routes;
-    }
+    public $routes = array();
 
     /**
      * Find Route
@@ -58,7 +46,7 @@ class Router extends RouteController {
      * @return void
      * @throws RouteException When repetitive route was found
      */
-	public function findRoute() {
+    public function findRoute() {
         if (isset($_SERVER['REQUEST_URI'])) {
 
             $matched_uris = array();
@@ -66,22 +54,22 @@ class Router extends RouteController {
             $request_uri = preg_replace('/[?]/', '', $_SERVER['REQUEST_URI']);
 
             foreach ($this->routes as $route) {
-                if(trim(urldecode($request_uri), '/') == $route['uri']) {
+                if (trim(urldecode($request_uri), '/') == $route['uri']) {
                     $matched_uris[] = $route['uri'];
                     $route['args'] = [];
                     array_push($routes_group, $route);
                 }
             }
 
-            if(!$matched_uris) {
+            if (!$matched_uris) {
                 foreach ($this->routes as $route) {
                     $route['uri'] = str_replace('/', '\/', $route['uri']);
                     $route['uri'] = preg_replace_callback('/\[(:num)(:([0-9]+))*\](\?)?/', array($this, 'findPattern'), $route['uri']);
                     $route['uri'] = preg_replace_callback('/\[(:alpha)(:([0-9]+))*\](\?)?/', array($this, 'findPattern'), $route['uri']);
                     $route['uri'] = preg_replace_callback('/\[(:any)(:([0-9]+))*\](\?)?/', array($this, 'findPattern'), $route['uri']);
-					
-					$request_uri = parse_url($_SERVER['REQUEST_URI']);
-                    
+
+                    $request_uri = parse_url($_SERVER['REQUEST_URI']);
+
                     preg_match("/^\/" . $route['uri'] . "$/u", urldecode($request_uri['path']), $matches);
 
                     if ($matches) {

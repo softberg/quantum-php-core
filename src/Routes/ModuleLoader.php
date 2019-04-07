@@ -15,6 +15,7 @@
 namespace Quantum\Routes;
 
 use Quantum\Exceptions\ExceptionMessages;
+use Quantum\Routes\Route;
 
 /**
  * ModuleLoader Class
@@ -26,62 +27,35 @@ use Quantum\Exceptions\ExceptionMessages;
  * @category Routes
  */
 class ModuleLoader {
+
     /**
      * List of loaded modules
      * 
      * @var array 
      */
     public $modules = array();
-    
-    /**
-     *  List of routes
-     * 
-     * @var array
-     */
-    public $routes = array();
 
-    /**
-     * Class constructor
-     * 
-     * Runs the module loader
-     * 
-     * @return void
-     */
-    public function __construct() {
-       
-        try {
-            $this->loadModules();
-        } catch (\Exception $e) {
-            echo $e->getMessage();
-            exit;
-        }
-    }
-    
     /**
      * Load Modules
      * 
      * @return void
      * @throws \Exception When module file is not found
      */
-    private function loadModules() {
+    public function loadModules(Router $router) {
         $this->modules = require_once BASE_DIR . '/config/modules.php';
-        
+
         foreach ($this->modules['modules'] as $module) {
-            if(!file_exists(MODULES_DIR . '/' . $module . '/Config/routes.php')) {
+            if (!file_exists(MODULES_DIR . '/' . $module . '/Config/routes.php')) {
                 throw new \Exception(_message(ExceptionMessages::MODULE_NOT_FOUND, $module));
-            } 
-            
-            $routes = require_once MODULES_DIR . '/' . $module . '/Config/routes.php';
-            
-            foreach($routes as $route) {
-                $this->routes[] = array(
-                    'uri' => $route[0],
-                    'method' => $route[1],
-                    'controller' => $route[2],
-                    'action' => $route[3],
-                    'module' => $module,
-                );
             }
+
+            $routesClosure = require_once MODULES_DIR . '/' . $module . '/Config/routes.php';
+
+            if (!$routesClosure instanceof \Closure) {
+                throw new \Exception(ExceptionMessages::ROUTES_NOT_CLOSURE);
+            }
+
+            $routesClosure(new Route($router, $module));
         }
     }
 
