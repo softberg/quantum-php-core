@@ -106,8 +106,14 @@ class Router extends RouteController {
                             }
                         }
                     }
+
                     foreach ($routes_group as $route) {
-                        if ($_SERVER['REQUEST_METHOD'] == $route['method']) {
+                        if (strpos($route['method'], '|') !== false) {
+                            if (in_array($_SERVER['REQUEST_METHOD'], explode('|', $route['method']))) {
+                                self::$currentRoute = $route;
+                                break;
+                            }
+                        } else if ($_SERVER['REQUEST_METHOD'] == $route['method']) {
                             self::$currentRoute = $route;
                             break;
                         }
@@ -134,7 +140,11 @@ class Router extends RouteController {
      * @throws RouteException When Http method is other the defined in config/routes.php of sepcific mosule
      */
     private function checkMethod() {
-        if ($_SERVER['REQUEST_METHOD'] != self::$currentRoute['method']) {
+        if (strpos(self::$currentRoute['method'], '|') !== false) {
+            if (!in_array($_SERVER['REQUEST_METHOD'], explode('|', self::$currentRoute['method']))) {
+                throw new RouteException(_message(ExceptionMessages::INCORRECT_METHOD, $_SERVER['REQUEST_METHOD']));
+            }
+        } else if ($_SERVER['REQUEST_METHOD'] != self::$currentRoute['method']) {
             throw new RouteException(_message(ExceptionMessages::INCORRECT_METHOD, $_SERVER['REQUEST_METHOD']));
         }
     }
