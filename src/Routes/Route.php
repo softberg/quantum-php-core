@@ -27,6 +27,9 @@ use Quantum\Routes\Router;
  */
 class Route {
 
+    private $virtualRoutes = [];
+    private $currentGroup = NULL;
+
     /**
      * List of routes
      *
@@ -48,6 +51,8 @@ class Route {
      * @param string $module
      */
     public function __construct(Router $router, $module) {
+        $this->virtualRoutes['*'] = [];
+
         $this->router = $router;
         $this->module = $module;
     }
@@ -61,15 +66,42 @@ class Route {
      * @param string $action
      * @param array $middlewares
      */
-    public function add($uri, $method, $controller, $action, $middlewares = []) {
-        array_push($this->router->routes, [
+    public function add($uri, $method, $controller, $action) {
+        $this->currentRoute = [
             'uri' => $uri,
             'method' => $method,
             'controller' => $controller,
             'action' => $action,
             'module' => $this->module,
-            'middlewares' => $middlewares
-        ]);
+        ];
+
+        if ($this->currentGroup) {
+            array_push($this->virtualRoutes[$this->currentGroup], $this->currentRoute);
+        } else {
+            array_push($this->virtualRoutes['*'], $this->currentRoute);
+        }
+
+        return $this;
+
+//        array_push($this->router->routes, [
+//            'uri' => $uri,
+//            'method' => $method,
+//            'controller' => $controller,
+//            'action' => $action,
+//            'module' => $this->module,
+//            'middlewares' => $middlewares
+//        ]);
+    }
+
+    public function group($groupName, $callback) {
+        $this->currentGroup = $groupName;
+        $this->virtualRoutes[$groupName] = [];
+        $callback();
+        $this->currentGroup = NULL;
+    }
+
+    public function middlewares($middlewares = []) {
+
     }
 
 }
