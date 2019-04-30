@@ -2,9 +2,9 @@
 
 /**
  * Quantum PHP Framework
- * 
+ *
  * An open source software development framework for PHP
- * 
+ *
  * @package Quantum
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
@@ -18,48 +18,68 @@ use Quantum\Routes\Router;
 
 /**
  * Route Class
- * 
+ *
  * Route class allows to add new route entries
- * 
+ *
  * @package Quantum
  * @subpackage Routes
  * @category Routes
  */
-class Route {
-
+class Route
+{
+    /**
+     *
+     * @var array
+     */
     private $virtualRoutes = [];
-    private $currentGroup = NULL;
 
     /**
-     * List of routes
      *
-     * @var array 
+     * @var string
      */
-    private $router;
+    private $currentGroupName = NULL;
 
     /**
      * Current module
-     * 
-     * @var string 
+     *
+     * @var string
      */
     private $module;
 
     /**
-     * Class constructor
      * 
-     * @param Router $router
+     *
+     * @var boolean
+     */
+    private $isGroupeMiddlewares;
+
+    /**
+     * 
+     *
+     * @var boolean
+     */
+    private $isGroupe = FALSE;
+
+    /**
+     *
+     * @var array
+     */
+    private $currentRoute = [];
+
+    /**
+     * Class constructor
+     *
      * @param string $module
      */
-    public function __construct(Router $router, $module) {
+    public function __construct($module) {
         $this->virtualRoutes['*'] = [];
 
-        $this->router = $router;
         $this->module = $module;
     }
 
     /**
      * Adds new route entry to routes
-     * 
+     *
      * @param string $uri
      * @param string $method
      * @param string $controller
@@ -75,33 +95,80 @@ class Route {
             'module' => $this->module,
         ];
 
-        if ($this->currentGroup) {
-            array_push($this->virtualRoutes[$this->currentGroup], $this->currentRoute);
+        if ($this->currentGroupName) {
+            $this->virtualRoutes[$this->currentGroupName][] = $this->currentRoute;
         } else {
-            array_push($this->virtualRoutes['*'], $this->currentRoute);
+            $this->virtualRoutes['*'][] = $this->currentRoute;
         }
 
         return $this;
-
-//        array_push($this->router->routes, [
-//            'uri' => $uri,
-//            'method' => $method,
-//            'controller' => $controller,
-//            'action' => $action,
-//            'module' => $this->module,
-//            'middlewares' => $middlewares
-//        ]);
     }
 
-    public function group($groupName, $callback) {
-        $this->currentGroup = $groupName;
-        $this->virtualRoutes[$groupName] = [];
-        $callback();
-        $this->currentGroup = NULL;
+    /**
+     *
+     *
+     * @param string $groupName
+     * @param \Closure $callback
+     */
+    public function group(string $groupName, \Closure $callback) {
+        $this->currentGroupName = $groupName;
+
+        $this->isGroupe = TRUE;
+        $this->isGroupeMiddlewares = FALSE;
+        $callback($this);
+        $this->isGroupeMiddlewares = TRUE;
+        $this->currentGroupName = NULL;
+
+        return $this;
     }
 
-    public function middlewares($middlewares = []) {
+    /**
+     *
+     *
+     * @param array $middlewares
+     */
+    public function middlewares(array $middlewares = []) {
+        if (!$this->isGroupe) {
+            end($this->virtualRoutes['*']);
+            $lastKey = key($this->virtualRoutes['*']);
+            $this->virtualRoutes['*'][$lastKey]['middlewares'] = $middlewares;
+        } else {
+            end($this->virtualRoutes);
+            $lastKeyOfFirstRound = key($this->virtualRoutes);
 
+            if (!$this->isGroupeMiddlewares) {
+                end($this->virtualRoutes[$lastKeyOfFirstRound]);
+                $lastKeyOfSecondRound = key($this->virtualRoutes[$lastKeyOfFirstRound]);
+                $this->virtualRoutes[$lastKeyOfFirstRound][$lastKeyOfSecondRound]['middlewares'] = $middlewares;
+            } else {
+                $this->isGroupe = FALSE;
+                
+                foreach ($this->virtualRoutes[$lastKeyOfFirstRound] as &$route) {
+                    $hasMiddleware = end($route);
+                    if (!is_array($hasMiddleware)) {
+                        $route['middlewares'] = $middlewares;
+                    } else {
+                        foreach ($middlewares as $middleware) {
+                            $route['middlewares'][] = $middleware;
+                        }
+                    }
+                }
+            }
+        }
     }
 
+    public function getRuntimeRoutes() {
+        $runtimeRoutes = [];
+
+        foreach ($this->virtualRoutes as $virtualRoute) {
+            foreach ($virtualRoute as $route) {
+                $runtimeRoutes[] = $route;
+            }
+        }
+        return $runtimeRoutes;
+    }
+
+    public function getVirtualRoutes() {
+        return $this->virtualRoutes;
+    }
 }

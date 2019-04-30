@@ -55,7 +55,9 @@ class ModuleLoader {
                 throw new \Exception(ExceptionMessages::ROUTES_NOT_CLOSURE);
             }
 
-            $routesClosure(new Route($router, $module));
+            $route = new Route($module);
+            $routesClosure($route);
+            $router->routes = $route->getRuntimeRoutes();
         }
     }
 
