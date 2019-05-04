@@ -38,6 +38,7 @@ class ModuleLoader {
     /**
      * Load Modules
      * 
+     * @param \Quantum\Routes\Router $router
      * @return void
      * @throws \Exception When module file is not found
      */

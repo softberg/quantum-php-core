@@ -25,19 +25,7 @@ use Quantum\Routes\Router;
  * @subpackage Routes
  * @category Routes
  */
-class Route
-{
-    /**
-     *
-     * @var array
-     */
-    private $virtualRoutes = [];
-
-    /**
-     *
-     * @var string
-     */
-    private $currentGroupName = NULL;
+class Route {
 
     /**
      * Current module
@@ -47,24 +35,40 @@ class Route
     private $module;
 
     /**
-     * 
+     * Identifies the group middleware 
      *
      * @var boolean
      */
     private $isGroupeMiddlewares;
 
     /**
-     * 
+     * Identifies the group
      *
      * @var boolean
      */
     private $isGroupe = FALSE;
 
     /**
-     *
+     * The group name
+     * 
+     * @var string
+     */
+    private $currentGroupName = NULL;
+
+    /**
+     * Current route
+     * 
      * @var array
      */
     private $currentRoute = [];
+    
+    
+    /**
+     * Virtual routes
+     * 
+     * @var array
+     */
+    private $virtualRoutes = [];
 
     /**
      * Class constructor
@@ -85,6 +89,7 @@ class Route
      * @param string $controller
      * @param string $action
      * @param array $middlewares
+     * @return $this
      */
     public function add($uri, $method, $controller, $action) {
         $this->currentRoute = [
@@ -104,12 +109,13 @@ class Route
         return $this;
     }
 
-    /**
-     *
-     *
-     * @param string $groupName
-     * @param \Closure $callback
-     */
+   /**
+    * Starts a named group of routes
+    * 
+    * @param string $groupName
+    * @param \Closure $callback
+    * @return $this
+    */
     public function group(string $groupName, \Closure $callback) {
         $this->currentGroupName = $groupName;
 
@@ -123,9 +129,10 @@ class Route
     }
 
     /**
-     *
+     * Adds middlewares to routes and route groups
      *
      * @param array $middlewares
+     * @return void
      */
     public function middlewares(array $middlewares = []) {
         if (!$this->isGroupe) {
@@ -142,7 +149,7 @@ class Route
                 $this->virtualRoutes[$lastKeyOfFirstRound][$lastKeyOfSecondRound]['middlewares'] = $middlewares;
             } else {
                 $this->isGroupe = FALSE;
-                
+
                 foreach ($this->virtualRoutes[$lastKeyOfFirstRound] as &$route) {
                     $hasMiddleware = end($route);
                     if (!is_array($hasMiddleware)) {
@@ -157,6 +164,11 @@ class Route
         }
     }
 
+    /**
+     * Gets the runtime routes
+     * 
+     * @return array
+     */
     public function getRuntimeRoutes() {
         $runtimeRoutes = [];
 
@@ -168,7 +180,13 @@ class Route
         return $runtimeRoutes;
     }
 
+    /**
+     * Gets virtual routes
+     * 
+     * @return array
+     */
     public function getVirtualRoutes() {
         return $this->virtualRoutes;
     }
+
 }

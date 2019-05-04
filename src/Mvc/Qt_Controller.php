@@ -43,17 +43,11 @@ class Qt_Controller extends RouteController {
      */
     private $sharedData = array();
 
-    public function __construct() {
-        
-    }
+    public function __construct() {}
 
-    public function __before() {
-        
-    }
+    public function __before() {}
 
-    public function __after() {
-        
-    }
+    public function __after() {}
 
     /**
      * Model Factory 

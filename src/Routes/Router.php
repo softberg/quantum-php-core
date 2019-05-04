@@ -149,6 +149,12 @@ class Router extends RouteController {
         }
     }
 
+    /**
+     * Finds url pattern
+     * 
+     * @param string $matches
+     * @return string
+     */
     private function findPattern($matches) {
         switch ($matches[1]) {
             case ':num':
