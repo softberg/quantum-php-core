@@ -149,14 +149,14 @@ class Route {
                 $this->virtualRoutes[$lastKeyOfFirstRound][$lastKeyOfSecondRound]['middlewares'] = $middlewares;
             } else {
                 $this->isGroupe = FALSE;
-
                 foreach ($this->virtualRoutes[$lastKeyOfFirstRound] as &$route) {
                     $hasMiddleware = end($route);
                     if (!is_array($hasMiddleware)) {
                         $route['middlewares'] = $middlewares;
                     } else {
-                        foreach ($middlewares as $middleware) {
-                            $route['middlewares'][] = $middleware;
+						$reversedMiddlewares = array_reverse($middlewares);
+                        foreach ($reversedMiddlewares as $middleware) {
+							array_unshift($route['middlewares'], $middleware);
                         }
                     }
                 }
