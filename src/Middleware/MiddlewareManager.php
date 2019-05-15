@@ -18,6 +18,7 @@ use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Exceptions\RouteException;
 use Quantum\Routes\RouteController;
 use Quantum\Hooks\HookManager;
+use Quantum\Http\Request;
 
 /**
  * MvcManager Class
@@ -39,7 +40,7 @@ class MiddlewareManager {
         $this->module = $currentRoute['module'];
     }
 
-    public function applyMiddlewares($request) {
+    public function applyMiddlewares(Request $request) {
         $modifiedRequest = $request;
         
         $middlewarePath = MODULES_DIR . '/' . $this->module . '/Middlewares/' . current($this->middlewares) . '.php';
