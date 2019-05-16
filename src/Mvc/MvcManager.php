@@ -49,7 +49,7 @@ class MvcManager {
             if (isset($currentRoute['middlewares']) && count($currentRoute['middlewares']) > 0) {
                 $request = (new MiddlewareManager($currentRoute))->applyMiddlewares($request);
             }
-
+            
             $controllerPath = MODULES_DIR . '/' . $currentRoute['module'] . '/Controllers/' . $currentRoute['controller'] . '.php';
 
             if (!file_exists($controllerPath)) {
@@ -77,6 +77,19 @@ class MvcManager {
 
                 if (RouteController::$csrfVerification) {
                     HookManager::call('csrfCheck');
+                }
+            }
+            
+            $reflaction = new \ReflectionMethod($controller, $action);
+            $params = $reflaction->getParameters();
+
+            foreach ($params as $param) {
+                if ($param->getType() == 'Quantum\Http\Request') {
+                    if ($param->getPosition() == 0) {
+                        array_unshift($currentRoute['args'], $request);
+                    } else {
+                        array_push($currentRoute['args'], $request);
+                    }
                 }
             }
 

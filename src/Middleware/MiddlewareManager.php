@@ -66,7 +66,11 @@ class MiddlewareManager {
             });
 
             if (current($this->middlewares)) {
-                $modifiedRequest = $this->applyMiddlewares($modifiedRequest);
+                try {
+                    $modifiedRequest = $this->applyMiddlewares($modifiedRequest);
+                } catch (\TypeError $ex) {
+                    throw new \Exception(_message(ExceptionMessages::MIDDLEWARE_NOT_HANDLED, current($this->middlewares)));
+                }
             }
         }
 

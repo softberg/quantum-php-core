@@ -50,6 +50,21 @@ class ExceptionMessages {
     const ROUTE_NOT_FOUND = 'Route Not Found';
     
     /**
+     * Middleware not found message
+     */
+    const MIDDLEWARE_NOT_FOUND = 'Middleware {%1} not found';
+    
+    /**
+     * Middleware not defined message
+     */
+    const MIDDLEWARE_NOT_DEFINED = 'Middleware {%1} not defined';
+    
+    /**
+     * Middleware not handled correctly
+     */
+    const MIDDLEWARE_NOT_HANDLED = 'Middleware {%1} not handled correctly';
+    
+    /**
      * Controller not found message
      */
     const CONTROLLER_NOT_FOUND = 'Controller {%1} not found';
