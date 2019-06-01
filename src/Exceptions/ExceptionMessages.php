@@ -168,5 +168,10 @@ class ExceptionMessages {
      * Misconfigured default lang config
      */
     const MISCONFIGURED_LANG_DEFAULT_CONFIG = 'Misconfigured default lang config';
+    
+    /**
+     * Unexpected request initialization 
+     */
+    const UNEXPECTED_REQUEST_INITIALIZATION = 'HTTP Request can not be initialized outside of the core';
 
 }

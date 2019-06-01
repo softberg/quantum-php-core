@@ -14,6 +14,8 @@
 
 namespace Quantum\Http;
 
+use Quantum\Exceptions\ExceptionMessages;
+
 /**
  * HttpRequest Class
  * 
@@ -23,78 +25,78 @@ namespace Quantum\Http;
  * @subpackage Http
  * @category Http
  */
-
 abstract class HttpRequest {
 
     /**
-     * Get headers
+     * Request headers
      * 
-     * @return array
+     * @var array
      */
-    private static function getHeaders() {
-        return getallheaders();
-    }
+    private static $__headers = [];
 
     /**
-     * Get Param
+     * Request body
      * 
-     * Gets the param from request by given key
-     * 
-     * @param string $method
-     * @param string $key
-     * @param mixed $default
-     * @return mixed
+     * @var array 
      */
-    private static function getParam($method, $key, $default = NULL) {
-        if ($method == 0) {  // POST Method
-            if (isset($_REQUEST[$key]) && is_array($_REQUEST[$key])) {
-                $param = filter_input($method, $key, FILTER_SANITIZE_STRING, FILTER_REQUIRE_ARRAY);
-            } else {
-                $param = filter_input($method, $key, FILTER_SANITIZE_STRING, FILTER_REQUIRE_SCALAR);
-            }
-        } else if ($method == 1) {  // GET Method
-            $param = filter_input($method, $key, FILTER_SANITIZE_STRING);
+    private static $__request = [];
+
+    /**
+     * Initialize the Request
+     * 
+     * @throws \Exception When called outside of MvcManager
+     */
+    public static function init() {
+        if(get_caller_class() !== 'Quantum\Mvc\MvcManager') {
+            throw new \Exception(ExceptionMessages::UNEXPECTED_REQUEST_INITIALIZATION);
         }
+        
+        $getParams = !empty($_GET) ? filter_input_array(INPUT_GET, FILTER_SANITIZE_STRING, FILTER_REQUIRE_ARRAY) : [];
+        $postParams = !empty($_POST) ? filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING, FILTER_REQUIRE_ARRAY) : [];
+        $inputParams = self::getInputParams(); 
 
-        return $param ? $param : $default;
+        self::$__request = array_merge(
+                self::$__request, 
+                $getParams, 
+                $postParams,
+                $inputParams
+        );
+        
+        self::$__headers = getallheaders();
     }
 
     /**
-     * Get all params
+     * Get Input parameters sent via PUT, PATCH or DELETE methods
      * 
      * @return array
      */
-    private static function getAllParams() {
-        if ($_SERVER['REQUEST_METHOD'] == 'PUT' || $_SERVER['REQUEST_METHOD'] == 'DELETE') {
+    private static function getInputParams() {
+        $inputParams = [];
+        
+        if ($_SERVER['REQUEST_METHOD'] == 'PUT' || 
+            $_SERVER['REQUEST_METHOD'] == 'PATCH' || 
+            $_SERVER['REQUEST_METHOD'] == 'DELETE') {
 
             $input = file_get_contents('php://input');
-
-            $encoded_data = array();
 
             if (isset($_SERVER['CONTENT_TYPE'])) {
                 switch ($_SERVER['CONTENT_TYPE']) {
                     case 'application/x-www-form-urlencoded':
-                        parse_str($input, $encoded_data);
+                        parse_str($input, $inputParams);
                         break;
                     case 'application/json':
-                        $encoded_data = json_decode($input);
+                        $inputParams = json_decode($input);
                         break;
                     default :
-                        $encoded_data = parse_raw_http_request($input);
+                        $inputParams = parse_raw_http_request($input);
                         break;
-                }
-            }
-
-            if ($encoded_data) {
-                foreach ($encoded_data as $key => $val) {
-                    $_REQUEST[$key] = $val;
                 }
             }
         }
 
-        return $_REQUEST;
+        return $inputParams;
     }
-    
+
     /**
      * Set
      * 
@@ -104,55 +106,29 @@ abstract class HttpRequest {
      * @param mixed $value
      */
     public static function set($key, $value) {
-        $_REQUEST[$key] = $value;
+        self::$__request[$key] = $value;
     }
 
     /**
      * Get
      * 
-     * Responsible for get type requests
+     * Retrieves data from request by given key
      * 
      * @param string $key
      * @param string $default
      * @return mixed
      */
     public static function get($key, $default = NULL) {
-        return self::getParam(INPUT_GET, $key, $default);
+        return isset(self::$__request[$key]) ? self::$__request[$key] : $default;
     }
 
     /**
-     * Post
-     * 
-     * Responsible for post type requests
-     * 
-     * @param string $key
-     * @param string $default
-     * @return mixed
-     */
-    public static function post($key, $default = NULL) {
-        return self::getParam(INPUT_POST, $key, $default);
-    }
-
-    /**
-     * Any
-     * 
-     * Responsible for any type of requests
-     * 
-     * @param string $key
-     * @return mixed
-     */
-    public static function any($key) {
-        $allParams = self::getAllParams();
-        return isset($allParams[$key]) ? $allParams[$key] : NULL;
-    }
-
-    /**
-     * Gets all params
+     * Gets all request parameters
      * 
      * @return array
      */
     public static function all() {
-        return self::getAllParams();
+        return self::$__request;
     }
 
     /**
@@ -166,6 +142,15 @@ abstract class HttpRequest {
         }
         return true;
     }
+    
+    /**
+     * Get all request headers
+     * 
+     * @return array
+     */
+    public function allHeaders() {
+        return self::$__headers;
+    }
 
     /**
      * Gets Сross Site Request Forgery Token
@@ -174,7 +159,7 @@ abstract class HttpRequest {
      * @throws \Exception When Token not found
      */
     public static function getCSRFToken() {
-        $allHeaders = array_change_key_case(self::getHeaders(), CASE_UPPER);
+        $allHeaders = array_change_key_case(self::$__headers, CASE_UPPER);
 
         if (array_key_exists('X-CSRF-TOKEN', $allHeaders)) {
             return $allHeaders['X-CSRF-TOKEN'];
@@ -190,7 +175,7 @@ abstract class HttpRequest {
      * @throws \Exception
      */
     public function getAuthorizationBearer() {
-        $allHeaders = array_change_key_case(self::getHeaders(), CASE_UPPER);
+        $allHeaders = array_change_key_case(self::$__request, CASE_UPPER);
 
         if (array_key_exists('AUTHORIZATION', $allHeaders)) {
             if (preg_match('/Bearer\s(\S+)/', $allHeaders['AUTHORIZATION'], $matches)) {
@@ -244,17 +229,6 @@ abstract class HttpRequest {
             return $segments[$number];
 
         return NULL;
-    }
-
-    /**
-     * Get current route
-     * 
-     * Gets the current route
-     * 
-     * @return string
-     */
-    public static function getCurrentRoute() {
-        return ltrim($_SERVER['REQUEST_URI'], '/');
     }
 
 }

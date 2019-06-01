@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Quantum PHP Framework
  * 
@@ -10,8 +11,7 @@
  * @link http://quantum.softberg.org/
  * @since 1.0.0
  */
-
- use Quantum\Libraries\Mailer\Mailer;
+use Quantum\Libraries\Mailer\Mailer;
 use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Routes\RouteController;
 use Quantum\Libraries\Session\SessionManager;
@@ -227,7 +227,7 @@ if (!function_exists('slugify')) {
      */
     function slugify($text) {
         $text = trim($text, ' ');
-        $text = preg_replace ('/[^\p{L}\p{N}]/u', ' ', $text);
+        $text = preg_replace('/[^\p{L}\p{N}]/u', ' ', $text);
         $text = preg_replace('/\s+/', '-', $text);
         $text = trim($text, '-');
         $text = mb_strtolower($text);
@@ -378,7 +378,8 @@ if (!function_exists('out')) {
     function out($var, $die = false) {
         Dumper::dump($var, $die);
 
-        if($die) die;
+        if ($die)
+            die;
     }
 
 }
@@ -448,7 +449,29 @@ if (!function_exists('_t')) {
 
 if (!function_exists('mailer')) {
 
+    /**
+     * Gets the Mail instance
+     * 
+     * @return \Mail
+     */
     function mailer() {
         return new Mail();
     }
+
+}
+
+if (!function_exists('get_caller_class')) {
+
+    /**
+     * Gets the caller class
+     * 
+     * @return string
+     */
+    function get_caller_class() {
+        $caller = debug_backtrace();
+        $caller = $caller[2];
+
+        return isset($caller['class']) ? $caller['class'] : NULL;
+    }
+
 }
