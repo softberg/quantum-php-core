@@ -460,7 +460,7 @@ if (!function_exists('mailer')) {
 
 }
 
-if (!function_exists('get_calling_function')) {
+if (!function_exists('get_caller_class')) {
 
     /**
      * Gets the caller class
