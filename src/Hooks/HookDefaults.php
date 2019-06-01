@@ -66,7 +66,11 @@ class HookDefaults implements HookInterface {
      * @throws RouteException When token not set or mismatched
      */
     public static function csrfCheck() {
-        if ($_SERVER['REQUEST_METHOD'] == 'POST' || $_SERVER['REQUEST_METHOD'] == 'PUT' || $_SERVER['REQUEST_METHOD'] == 'DELETE') {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST' ||
+                $_SERVER['REQUEST_METHOD'] == 'PUT' ||
+                $_SERVER['REQUEST_METHOD'] == 'PATCH' ||
+                $_SERVER['REQUEST_METHOD'] == 'DELETE') {
+
             $request = Request::all();
 
             if (!isset($request['token']) && !Request::getCSRFToken()) {
@@ -79,7 +83,7 @@ class HookDefaults implements HookInterface {
                 $token = Request::getCSRFToken();
             }
 
-            if (!Csrf::checkToken($request['token'])) {
+            if (!Csrf::checkToken($token)) {
                 throw new RouteException(ExceptionMessages::CSRF_TOKEN_NOT_MATCHED);
             }
         }
@@ -97,24 +101,23 @@ class HookDefaults implements HookInterface {
         $twig = new Twig_Environment($loader, $data['configs']);
 
         $definedFunctions = get_defined_functions();
-        
+
         $allDefinedFuncitons = array_merge($definedFunctions['internal'], $definedFunctions['user']);
-        
+
         foreach ($allDefinedFuncitons as $function) {
             if (function_exists($function)) {
                 $twig->addFunction(
                         new \Twig_Function(
-                        $function, 
-                        $function
-                    )
+                        $function, $function
+                        )
                 );
             }
         }
 
         return $twig->render($data['view'] . '.php', array_merge($data['params'], $data['sharedData']));
     }
-	
-	/**
+
+    /**
      * Model not found
      * 
      * @return void

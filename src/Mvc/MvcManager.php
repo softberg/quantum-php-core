@@ -19,6 +19,7 @@ use Quantum\Middleware\MiddlewareManager;
 use Quantum\Exceptions\RouteException;
 use Quantum\Routes\RouteController;
 use Quantum\Hooks\HookManager;
+use Quantum\Http\HttpRequest;
 use Quantum\Http\Request;
 
 /**
@@ -44,13 +45,14 @@ class MvcManager {
     public function runMvc($currentRoute) {
         if ($_SERVER['REQUEST_METHOD'] != 'OPTIONS') {
             
+            HttpRequest::init();
             $request = new Request();
             
             if (isset($currentRoute['middlewares']) && count($currentRoute['middlewares']) > 0) {
                 $request = (new MiddlewareManager($currentRoute))->applyMiddlewares($request);
             }
             
-            $controllerPath = MODULES_DIR . '/' . $currentRoute['module'] . '/Controllers/' . $currentRoute['controller'] . '.php';
+            $controllerPath = MODULES_DIR . DS . $currentRoute['module'] . DS . 'Controllers' . DS . $currentRoute['controller'] . '.php';
 
             if (!file_exists($controllerPath)) {
                 throw new RouteException(_message(ExceptionMessages::CONTROLLER_NOT_FOUND, $currentRoute['controller']));
