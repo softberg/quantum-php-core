@@ -2,9 +2,9 @@
 
 /**
  * Quantum PHP Framework
- * 
+ *
  * An open source software development framework for PHP
- * 
+ *
  * @package Quantum
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
@@ -28,7 +28,7 @@ if (!function_exists('qt_instance')) {
 
     /**
      * Qt Controller instance
-     * 
+     *
      * @return object
      */
     function qt_instance() {
@@ -41,7 +41,7 @@ if (!function_exists('view')) {
 
     /**
      * Rendered view
-     * 
+     *
      * @return string
      */
     function view() {
@@ -54,7 +54,7 @@ if (!function_exists('get_current_module')) {
 
     /**
      * Gets current module
-     * 
+     *
      * @return string
      */
     function get_current_module() {
@@ -67,7 +67,7 @@ if (!function_exists('current_controller')) {
 
     /**
      * Get current controller
-     * 
+     *
      * @return string
      */
     function current_controller() {
@@ -80,7 +80,7 @@ if (!function_exists('current_action')) {
 
     /**
      * Gets current action
-     * 
+     *
      * @return string
      */
     function current_action() {
@@ -93,7 +93,7 @@ if (!function_exists('session')) {
 
     /**
      * Gets session handler
-     * 
+     *
      * @return object
      */
     function session() {
@@ -106,7 +106,7 @@ if (!function_exists('redirect')) {
 
     /**
      * Redirect
-     * 
+     *
      * @param string $url
      * @param integer $code
      */
@@ -124,7 +124,7 @@ if (!function_exists('get_referrer')) {
 
     /**
      * Gets the referrer
-     * 
+     *
      * @return string|null
      */
     function get_referrer() {
@@ -141,7 +141,7 @@ if (!function_exists('current_url')) {
 
     /**
      * Gets current url
-     * 
+     *
      * @return string
      */
     function current_url() {
@@ -154,7 +154,7 @@ if (!function_exists('base_dir')) {
 
     /**
      * Gets base directory
-     * 
+     *
      * @return string
      */
     function base_dir() {
@@ -167,7 +167,7 @@ if (!function_exists('public_dir')) {
 
     /**
      * Gets public directory
-     * 
+     *
      * @return string
      */
     function public_dir() {
@@ -180,7 +180,7 @@ if (!function_exists('uploads_dir')) {
 
     /**
      * Gets uploads directory
-     * 
+     *
      * @return string
      */
     function uploads_dir() {
@@ -193,7 +193,7 @@ if (!function_exists('base_url')) {
 
     /**
      * Gets base url
-     * 
+     *
      * @return string
      */
     function base_url() {
@@ -206,7 +206,7 @@ if (!function_exists('get_config')) {
 
     /**
      * Gets config value by given key
-     * 
+     *
      * @param string $key
      * @param mixed $default
      * @return mixed
@@ -221,7 +221,7 @@ if (!function_exists('slugify')) {
 
     /**
      * Slugifys the string
-     * 
+     *
      * @param string  $text
      * @return string
      */
@@ -244,14 +244,19 @@ if (!function_exists('_message')) {
 
     /**
      * _message
-     * 
+     *
      * @param string $subject
      * @param string $params
      * @return string
      */
     function _message($subject, $params) {
-
-        return preg_replace('/{%\d+}/', $params, $subject);
+        if (is_array($params)) {
+            return preg_replace_callback('/{%\d+}/', function() use (&$params) {
+                return array_shift($params);
+            }, $subject);
+        } else {
+            return preg_replace('/{%\d+}/', $params, $subject);
+        }
     }
 
 }
@@ -260,7 +265,7 @@ if (!function_exists('getallheaders')) {
 
     /**
      * getallheaders
-     * 
+     *
      * @return array
      */
     function getallheaders() {
@@ -283,7 +288,7 @@ if (!function_exists('get_directory_classes')) {
 
     /**
      * Gets directory classes
-     * 
+     *
      * @param string $path
      * @return array
      */
@@ -307,7 +312,7 @@ if (!function_exists('parse_raw_http_request')) {
 
     /**
      * Parses raw http request
-     * 
+     *
      * @param mixed $input
      * @return mixed
      */
@@ -349,7 +354,7 @@ if (!function_exists('get_user_ip')) {
 
     /**
      * Gets user IP
-     * 
+     *
      * @return string
      */
     function get_user_ip() {
@@ -370,7 +375,7 @@ if (!function_exists('out')) {
 
     /**
      * Outputs the dump of variable
-     * 
+     *
      * @param mixed $var
      * @param bool
      * @return void
@@ -388,7 +393,7 @@ if (!function_exists('env')) {
 
     /**
      * Gets environment variable
-     * 
+     *
      * @param mixed $var
      * @param mixed $defaul
      * @return mixed
@@ -409,7 +414,7 @@ if (!function_exists('csrf_token')) {
 
     /**
      * Outputs generated CSRF token
-     * 
+     *
      * @return void
      */
     function csrf_token() {
@@ -422,13 +427,22 @@ if (!function_exists('t')) {
 
     /**
      * Gets translation
-     * 
-     * @param $string $key
+     *
+     * @param string $key
+     * @param mixed $params
      * @return string
      */
-    function t($key) {
+    function t($key, $params = NULL) {
         $data = new Data(Lang::getTranslations());
-        return !is_null($data->get($key)) ? $data->get($key) : $key;
+        if (!is_null($data->get($key))) {
+            if (!is_null($params)) {
+                return _message($data->get($key), $params);
+            } else {
+                return $data->get($key);
+            }
+        } else {
+            return $key;
+        }
     }
 
 }
@@ -438,11 +452,12 @@ if (!function_exists('_t')) {
     /**
      * Outputs the translation
      *
-     * @param $string $key
-     * @return string
+     * @param string $key
+     * @param mixed $params
+     * @return void
      */
-    function _t($key) {
-        echo t($key);
+    function _t($key, $params = NULL) {
+        echo t($key, $params);
     }
 
 }
@@ -451,7 +466,7 @@ if (!function_exists('mailer')) {
 
     /**
      * Gets the Mail instance
-     * 
+     *
      * @return \Mail
      */
     function mailer() {
@@ -464,7 +479,7 @@ if (!function_exists('get_caller_class')) {
 
     /**
      * Gets the caller class
-     * 
+     *
      * @return string
      */
     function get_caller_class() {
@@ -475,3 +490,5 @@ if (!function_exists('get_caller_class')) {
     }
 
 }
+
+
