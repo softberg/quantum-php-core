@@ -491,4 +491,18 @@ if (!function_exists('get_caller_class')) {
 
 }
 
+if (!function_exists('pass_hash')) {
 
+    function pass_hash($pass) {
+        return password_hash (md5($pass), PASSWORD_BCRYPT );
+    }
+
+}
+
+if (!function_exists('pass_check')) {
+
+    function pass_check($pass, $hashpass) {
+        return password_verify(md5($pass), $hashpass );
+    }
+
+}
