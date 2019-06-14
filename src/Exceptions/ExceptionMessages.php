@@ -158,8 +158,13 @@ class ExceptionMessages {
      * Undefined model method
      */
     const UNDEFINED_MODEL_METHOD = 'Model method {%1} is not defined';
+
+    /**
+     * Model not instance of Qt_Model
+     */
+    const NOT_INSTANCEE_OF_MODEL = 'Model {%1} is not instance of {%2}';
     
-      /**
+    /**
      * Misconfigured lang config
      */
     const MISCONFIGURED_LANG_CONFIG = 'Misconfigured lang config';

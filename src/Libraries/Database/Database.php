@@ -35,7 +35,7 @@ class Database {
      * 
      * @var mixed 
      */
-    private $currentRoute;
+    private static $currentRoute;
     
     /**
      * Path to ORM class
@@ -45,11 +45,11 @@ class Database {
     private static $ormPath;
     
     /**
-     * Connection parameters
+     * Active Connection
      * 
      * @var mixed 
      */
-    private static $dbConnections = NULL;
+    private static $activeConnection = NULL;
 
     /**
      * Class constructor 
@@ -59,77 +59,44 @@ class Database {
      */
     public function __construct($currentRoute) {
         $this->currentRoute = $currentRoute;
+
         return $this;
-    }
-    
-    /**
-     * Connected
-     * 
-     * Checks the connection with database
-     * 
-     * @uses HookManager::call
-     * @return bool
-     */
-    public static function connected() {
-        if(self::$dbConnections == NULL)
-            return false;
-        
-        return true;
     }
 
     /**
      * Connect
-     * 
+     *
      * Connects to database
-     * 
+     *
      * @uses HookManager::call
+     * @param $currentRoute
+     * @throws \Exception
      * @return void
      */
-    public function connect() {
-        $dbConfig = $this->getDbConfig();
-        $this->setDbConfig($dbConfig);
-        $this->setORM($dbConfig);
-        HookManager::call('dbConnect', self::$dbConnections, self::$ormPath);
-    }
-    
-    /**
-     * Get ORM
-     * 
-     * Gets the ORM defined in config/database.php if exists, otherwise 
-     * default ORM
-     * 
-     * @return string
-     */
-    public static function getORM() {
-        return self::$ormPath;
+    public static function connect() {
+        if(!self::$activeConnection) {
+            $dbConfig = self::getConfig();
+            self::setORM($dbConfig);
+            self::$activeConnection = HookManager::call('dbConnect', $dbConfig, self::$ormPath);
+        }
     }
 
     /**
-     * Get DB Config
-     * 
-     * Gets db configs from current config/database.php of module or 
+     * Find Db config File
+     *
+     * Finds db configs from current config/database.php of module or
      * from top config/database.php if in module it's not defined
-     * 
+     *
      * @return array
-     * @throws \Exception When config is not found or incorrect
+     * @throws \Exception When config not found
      */
-    private function getDbConfig() {
-        if (file_exists(MODULES_DIR . DS . $this->currentRoute['module'] . '/Config/database.php')) {
-            $dbConfig = require_once MODULES_DIR . DS . $this->currentRoute['module'] . '/Config/database.php';
-
-            if (!empty($dbConfig) && is_array($dbConfig)) {
-                return $dbConfig;
-            } else {
-                throw new \Exception(ExceptionMessages::INCORRECT_CONFIG);
-            }
-        } else {
+    private static function findDbConfigFile() {
+        if (file_exists(MODULES_DIR . DS . get_current_module() . '/Config/database.php')) {
+            return require_once MODULES_DIR . DS . get_current_module() . '/Config/database.php';
+        }
+        else {
             if (file_exists(BASE_DIR . '/config/database.php')) {
-                $dbConfig = require_once BASE_DIR . '/config/database.php';
-                if (!empty($dbConfig) && is_array($dbConfig)) {
-                    return $dbConfig;
-                } else {
-                    throw new \Exception(ExceptionMessages::INCORRECT_CONFIG);
-                }
+                return require_once BASE_DIR . '/config/database.php';
             } else {
                 throw new \Exception(ExceptionMessages::DB_CONFIG_NOT_FOUND);
             }
@@ -137,12 +104,25 @@ class Database {
     }
 
     /**
-     * Sets the db configs
+     * Get DB Config
      * 
-     * @param array $dbConfig
+     * @return array
+     * @throws \Exception When config is not found or incorrect
      */
-    private function setDbConfig(array $dbConfig) {
-        self::$dbConnections = $dbConfig[$dbConfig['current']];
+    private static function getConfig() {
+        $dbConfig = self::findDbConfigFile();
+
+        if (!empty($dbConfig) && is_array($dbConfig) && key_exists('current', $dbConfig)) {
+            $current_key =  $dbConfig['current'];
+
+            if ($current_key && key_exists($current_key, $dbConfig) ) {
+                return $dbConfig[$current_key];
+            } else {
+                throw new \Exception(ExceptionMessages::INCORRECT_CONFIG);
+            }
+        } else {
+            throw new \Exception(ExceptionMessages::INCORRECT_CONFIG);
+        }
     }
 
     /**
@@ -150,8 +130,20 @@ class Database {
      * 
      * @param array $dbConfig
      */
-    private function setORM(array $dbConfig) {
+    private static function setORM(array $dbConfig) {
         self::$ormPath = (isset($dbConfig['orm']) && !empty($dbConfig['orm']) ? $dbConfig['orm'] : '\\Quantum\\Libraries\\Database\\IdiormDbal');
+    }
+
+    /**
+     * Get ORM
+     *
+     * Gets the ORM defined in config/database.php if exists, otherwise
+     * default ORM
+     *
+     * @return string
+     */
+    public static function getORM() {
+        return self::$ormPath;
     }
 
 }
