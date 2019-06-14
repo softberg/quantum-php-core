@@ -71,23 +71,25 @@ abstract class Qt_Model {
      */
     protected $fillable = array();
 
+
     /**
-     * Class constructor 
-     * 
-     * @param mixed $currentRoute
+     * Model Factory
+     * @var string
+     */
+    private $callerFunction= 'modelFactory';
+
+    /**
+     * Class constructor
+     *
      * @return void
      * @throws \Exception When called directly
      */
-    public final function __construct($currentRoute = NULL) {
-        if (!isset($currentRoute)) {
+    public final function __construct() {
+        if (get_caller_function() != $this->callerFunction) {
             throw new \Exception(ExceptionMessages::DIRECT_MODEL_CALL);
         }
 
-        $this->currentRoute = $currentRoute;
-
-        if (!Database::connected())
-            (new Database($currentRoute))->connect();
-
+        Database::connect();
         $this->ormPath = Database::getORM();
     }
 

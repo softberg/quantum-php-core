@@ -14,10 +14,12 @@
 
 namespace Quantum\Mvc;
 
+use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Libraries\Debugger\Debugger;
 use Quantum\Routes\RouteController;
 use Quantum\Libraries\Session\Session;
 use Quantum\Mvc\Qt_View;
+use Quantum\Mvc\Qt_Model;
 use Quantum\Hooks\HookManager;
 
 /**
@@ -50,23 +52,43 @@ class Qt_Controller extends RouteController {
     public function __after() {}
 
     /**
+     * Find model file
+     *
+     * Find Model file from current module or from top module
+     *
+     * @param string $modelName
+     * @return string
+     * @throws \Exception When module not found
+     */
+    private function findModelFile($modelName) {
+        $modelClass = "\\Modules\\" . get_current_module() . "\\Models\\" . $modelName;
+        if (class_exists($modelClass)) {
+            return $modelClass;
+        } elseif (class_exists("\\Base\\models\\" . $modelName)) {
+           return  "\\Base\\models\\" . $modelName;
+        } else {
+            HookManager::call("handleModel", $modelName);
+        }
+    }
+
+    /**
      * Model Factory 
      * 
      * Deliver an object of request model
      * 
      * @param string $modelName
-     * @return \Quantum\Mvc\modelClass
+     * @return Qt_Model
+     * @throws \Exception When model is not istance of Qt_Model
      */
     public function modelFactory($modelName) {
-        $modelClass = "\\Modules\\" . RouteController::$currentRoute['module'] . "\\Models\\" . $modelName;
+        $modelClass = $this->findModelFile($modelName);
 
-        if (class_exists($modelClass)) {
-            return new $modelClass(RouteController::$currentRoute);
-        } elseif (class_exists("\\Base\\models\\" . $modelName)) {
-            $baseModelClass = "\\Base\\models\\" . $modelName;
-            return new $baseModelClass(RouteController::$currentRoute);
+        $model = new $modelClass();
+
+        if($model instanceof Qt_Model) {
+            return $model;
         } else {
-            HookManager::call("handleModel", $modelName);
+            throw new \Exception(_message(ExceptionMessages::NOT_INSTANCEE_OF_MODEL, [$modelName, Qt_Model::class]));
         }
     }
 
