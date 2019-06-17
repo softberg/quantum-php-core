@@ -15,7 +15,6 @@
 namespace Quantum\Libraries\Database;
 
 use Quantum\Exceptions\ExceptionMessages;
-use Quantum\Routes\RouteController;
 use Quantum\Hooks\HookManager;
 use ORM;
 
@@ -31,18 +30,18 @@ use ORM;
 class Database {
 
     /**
-     * Current route
-     * 
-     * @var mixed 
-     */
-    private static $currentRoute;
-    
-    /**
      * Path to ORM class
      * 
      * @var string 
      */
     private static $ormPath;
+
+    /**
+     * Database configurations
+     *
+     * @var array
+     */
+    private static $dbConfig;
     
     /**
      * Active Connection
@@ -52,51 +51,41 @@ class Database {
     private static $activeConnection = NULL;
 
     /**
-     * Class constructor 
-     * 
-     * @param mixed $currentRoute
-     * @return $this Database instance
-     */
-    public function __construct($currentRoute) {
-        $this->currentRoute = $currentRoute;
-
-        return $this;
-    }
-
-    /**
      * Connect
      *
      * Connects to database
      *
      * @uses HookManager::call
-     * @param $currentRoute
      * @throws \Exception
      * @return void
      */
     public static function connect() {
         if(!self::$activeConnection) {
-            $dbConfig = self::getConfig();
-            self::setORM($dbConfig);
-            self::$activeConnection = HookManager::call('dbConnect', $dbConfig, self::$ormPath);
+            self::setORM();
+            self::$activeConnection = HookManager::call('dbConnect', self::getConfig(), self::getORM());
         }
     }
 
     /**
-     * Find Db config File
+     * Set DB Config
      *
-     * Finds db configs from current config/database.php of module or
+     * Finds and sets db configs from current config/database.php of module or
      * from top config/database.php if in module it's not defined
      *
-     * @return array
+     * @return void
      * @throws \Exception When config not found
      */
-    private static function findDbConfigFile() {
+    private static function setConfig() {
         if (file_exists(MODULES_DIR . DS . get_current_module() . '/Config/database.php')) {
-            return require_once MODULES_DIR . DS . get_current_module() . '/Config/database.php';
+            if ( !self::$dbConfig ) {
+                self::$dbConfig = require_once MODULES_DIR . DS . get_current_module() . '/Config/database.php';
+            }
         }
         else {
             if (file_exists(BASE_DIR . '/config/database.php')) {
-                return require_once BASE_DIR . '/config/database.php';
+                if ( !self::$dbConfig )  {
+                    self::$dbConfig = require_once BASE_DIR . '/config/database.php';
+                }
             } else {
                 throw new \Exception(ExceptionMessages::DB_CONFIG_NOT_FOUND);
             }
@@ -110,13 +99,13 @@ class Database {
      * @throws \Exception When config is not found or incorrect
      */
     private static function getConfig() {
-        $dbConfig = self::findDbConfigFile();
+        self::setConfig();
 
-        if (!empty($dbConfig) && is_array($dbConfig) && key_exists('current', $dbConfig)) {
-            $current_key =  $dbConfig['current'];
+        if (!empty(self::$dbConfig) && is_array(self::$dbConfig) && key_exists('current', self::$dbConfig)) {
+            $current_key =  self::$dbConfig['current'];
 
-            if ($current_key && key_exists($current_key, $dbConfig) ) {
-                return $dbConfig[$current_key];
+            if ($current_key && key_exists($current_key, self::$dbConfig) ) {
+                return self::$dbConfig[$current_key];
             } else {
                 throw new \Exception(ExceptionMessages::INCORRECT_CONFIG);
             }
@@ -126,16 +115,16 @@ class Database {
     }
 
     /**
-     * Sets ORM
+     * Sets the ORM
      * 
-     * @param array $dbConfig
+     * @return void
      */
-    private static function setORM(array $dbConfig) {
-        self::$ormPath = (isset($dbConfig['orm']) && !empty($dbConfig['orm']) ? $dbConfig['orm'] : '\\Quantum\\Libraries\\Database\\IdiormDbal');
+    private static function setORM() {
+        self::$ormPath = (isset(self::$dbConfig['orm']) && !empty(self::$dbConfig['orm']) ? $dbConfig['orm'] : '\\Quantum\\Libraries\\Database\\IdiormDbal');
     }
 
     /**
-     * Get ORM
+     * Gets the ORM
      *
      * Gets the ORM defined in config/database.php if exists, otherwise
      * default ORM
