@@ -57,11 +57,12 @@ class Qt_Controller extends RouteController {
      * Find Model file from current module or from top module
      *
      * @param string $modelName
+     * @param string $module
      * @return string
      * @throws \Exception When module not found
      */
-    private function findModelFile($modelName) {
-        $modelClass = "\\Modules\\" . get_current_module() . "\\Models\\" . $modelName;
+    private function findModelFile($modelName, $module) {
+        $modelClass = "\\Modules\\" . ($module ?? get_current_module()) . "\\Models\\" . $modelName;
         if (class_exists($modelClass)) {
             return $modelClass;
         } elseif (class_exists("\\Base\\models\\" . $modelName)) {
@@ -77,11 +78,12 @@ class Qt_Controller extends RouteController {
      * Deliver an object of request model
      * 
      * @param string $modelName
+     * @param string $module
      * @return Qt_Model
      * @throws \Exception When model is not istance of Qt_Model
      */
-    public function modelFactory($modelName) {
-        $modelClass = $this->findModelFile($modelName);
+    public function modelFactory($modelName, $module = null) {
+        $modelClass = $this->findModelFile($modelName, $module);
 
         $model = new $modelClass();
 
