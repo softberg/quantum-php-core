@@ -181,9 +181,9 @@ if (!function_exists('base_url')) {
      *
      * @return string
      */
-    function base_url()
+    function base_url() 
     {
-        return (isset($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
+        return get_config('base_url') ?? (isset($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
     }
 }
 
