@@ -41,7 +41,7 @@ interface DbalInterface {
      * 
      * @param mixed $params
      */
-    public static function findOne($params);
+    public function findOne($params);
 
     /**
      * FindOneBy
@@ -50,7 +50,7 @@ interface DbalInterface {
      * 
      * @param mixed $params
      */
-    public static function findOneBy($params);
+    public function findOneBy($params);
 
     /**
      * Criterias
@@ -59,7 +59,7 @@ interface DbalInterface {
      * 
      * @param mixed $params
      */
-    public static function criterias($params);
+    public function criterias($params);
     
     /**
      * Order By
@@ -68,7 +68,7 @@ interface DbalInterface {
      * 
      * @param array $params
      */
-    public static function orderBy($params);
+    public function orderBy($params);
     
     /**
      * Group By
@@ -77,7 +77,7 @@ interface DbalInterface {
      * 
      * @param array $params
      */
-    public static function groupBy($params);
+    public function groupBy($params);
     
     /**
      * Limit
@@ -86,7 +86,7 @@ interface DbalInterface {
      * 
      * @param array $params
      */
-    public static function limit($params);
+    public function limit($params);
     
     /**
      * Offset
@@ -95,12 +95,12 @@ interface DbalInterface {
      * 
      * @param array $params
      */
-    public static function offset($params);
+    public function offset($params);
     
     /**
      * Get
      * 
-     *  Should be implemented in classes to get result set
+     * Should be implemented in classes to get result set
      * 
      * @param array $params
      */
@@ -110,53 +110,41 @@ interface DbalInterface {
      * Count
      * 
      * Should be implemented in classes to get count of result set
-     * 
-     * @param array $params
      */
-    public function count($params);
+    public function count();
 
     /**
      * First
      * 
      * Should be implemented in classes to get the first item
-     * 
-     * @param mixed $params
      */    
-    public function first($params);
+    public function first();
     
     /**
      * asArray
      * 
      * Should be implemented in classes to cast the orm object to array
-     * 
-     * @param mixed $params
      */
-    public static function asArray($params);
+    public function asArray();
 
     /**
      * Create
      * 
      * Should be implemented in classes for creating new db record
-     * 
-     * @param array $params
      */
-    public static function create($params);
+    public function create();
     
     /**
      * Save
      * 
      * Should be implemented in classes for saving the data into the database
-     * 
-     * @param array $params
      */
-    public static function save($params);
+    public function save();
     
     /**
      * Delete
      * 
      * Should be implemented in classes for deleting the data from the database
-     * 
-     * @param array $params
      */
-    public static function delete($params);
+    public function delete();
 }
