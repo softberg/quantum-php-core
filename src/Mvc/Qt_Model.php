@@ -32,24 +32,11 @@ use ORM;
 abstract class Qt_Model {
 
     /**
-     * ORM
+     * ORM database abstract layer object
+     * 
      * @var object 
      */
     private $orm;
-
-    /**
-     * Path to ORM class
-     * 
-     * @var string 
-     */
-    private $ormPath;
-
-    /**
-     * Current route
-     * 
-     * @var mixed 
-     */
-    private $currentRoute;
 
     /**
      * Id column of table
@@ -71,12 +58,12 @@ abstract class Qt_Model {
      */
     protected $fillable = array();
 
-
     /**
-     * Model Factory
+     * Model factory function
+     * 
      * @var string
      */
-    private $callerFunction= 'modelFactory';
+    private $callerFunction = 'modelFactory';
 
     /**
      * Class constructor
@@ -90,7 +77,8 @@ abstract class Qt_Model {
         }
 
         Database::connect();
-        $this->ormPath = Database::getORM();
+        $ormClass = Database::getORM();
+        $this->orm = new $ormClass($this->table, $this->idColumn);
     }
 
     /**
@@ -134,7 +122,7 @@ abstract class Qt_Model {
      * @return mixed
      */
     public function __get($property) {
-        return isset($this->orm->$property) ? $this->orm->$property : NULL;
+        return isset($this->orm->ormObject->$property) ? $this->orm->ormObject->$property : NULL;
     }
 
     /**
@@ -146,7 +134,7 @@ abstract class Qt_Model {
      * @param mixed $vallue
      */
     public function __set($property, $value) {
-        $this->orm->$property = $value;
+        $this->orm->ormObject->$property = $value;
     }
 
     /**
@@ -161,56 +149,26 @@ abstract class Qt_Model {
     public function __call($method, $args = NULL) {
         switch ($method) {
             case 'findOne':
-                $this->orm = HookManager::call($method, array('table' => $this->table, 'idColumn' => $this->idColumn, 'args' => $args), $this->ormPath);
-                return $this;
-                break;
             case 'findOneBy':
-                $this->orm = HookManager::call($method, array('table' => $this->table, 'idColumn' => $this->idColumn, 'args' => $args), $this->ormPath);
+            case 'first':
+            case 'create':
+                $this->orm->ormObject = $this->orm->{$method}($args);
                 return $this;
                 break;
             case 'criterias':
-                $this->orm = HookManager::call($method, array('table' => $this->table, 'args' => $args), $this->ormPath);
-                return $this;
             case 'orderBy':
-                $this->orm = HookManager::call($method, array('table' => $this->table, 'ormObject' => $this->orm, 'args' => $args), $this->ormPath);
-                return $this;
-                break;
             case 'groupBy':
-                $this->orm = HookManager::call($method, array('table' => $this->table, 'ormObject' => $this->orm, 'args' => $args), $this->ormPath);
-                return $this;
-                break;
             case 'limit':
-                $this->orm = HookManager::call($method, array('table' => $this->table, 'ormObject' => $this->orm, 'args' => $args), $this->ormPath);
-                return $this;
-                break;
             case 'offset':
-                $this->orm = HookManager::call($method, array('table' => $this->table, 'ormObject' => $this->orm, 'args' => $args), $this->ormPath);
+            case 'save':
+            case 'delete':
+                $this->orm->{$method}($args);
                 return $this;
-                break;
-            case 'count':
-                return HookManager::call($method, array('args' => $args, 'table' => $this->table, 'ormObject' => $this->orm), $this->ormPath);
                 break;
             case 'get':
-                return HookManager::call($method, array('args' => $args, 'table' => $this->table, 'ormObject' => $this->orm), $this->ormPath);
-                break;
-            case 'first':
-                $this->orm = HookManager::call($method, array('ormObject' => $this->orm, 'idColumn' => $this->idColumn), $this->ormPath);
-                return $this;
-                break;
+            case 'count':
             case 'asArray':
-                return HookManager::call($method, $this->orm, $this->ormPath);
-                break;
-            case 'create':
-                $this->orm = HookManager::call($method, array('table' => $this->table), $this->ormPath);
-                return $this;
-                break;
-            case 'save':
-                HookManager::call($method, $this->orm, $this->ormPath);
-                return $this;
-                break;
-            case 'delete':
-                HookManager::call($method, $this->orm, $this->ormPath);
-                return $this;
+                return $this->orm->{$method}($args);
                 break;
             default:
                 throw new \Exception(_message(ExceptionMessages::UNDEFINED_MODEL_METHOD, $method));

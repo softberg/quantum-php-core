@@ -31,6 +31,39 @@ use ORM;
 class IdiormDbal implements DbalInterface {
 
     /**
+     * The database table associated with model
+     * 
+     * @var string 
+     */
+    private $table;
+    
+    /**
+     * Id column of table
+     * 
+     * @var string 
+     */
+    private $idColumn;
+    
+    /**
+     * Idiorm object
+     * 
+     * @var object 
+     */
+    public $ormObject;
+
+    /**
+     * Class constructor 
+     * 
+     * @param string $table
+     * @param string $idColumn
+     */
+    public function __construct($table, $idColumn) {
+        $this->table = $table;
+        $this->idColumn = $idColumn;
+        $this->ormObject = ORM::for_table($this->table)->use_id_column($this->idColumn);
+    }
+
+    /**
      * DB Connect
      * 
      * Connects to database
@@ -48,7 +81,7 @@ class IdiormDbal implements DbalInterface {
             'logging' => get_config('debug', false)
         ));
     }
-    
+
     /**
      * Find one
      * 
@@ -58,8 +91,9 @@ class IdiormDbal implements DbalInterface {
      * @uses ORM Idiorm
      * @return object
      */
-    public static function findOne($params) {
-        return ORM::for_table($params['table'])->use_id_column($params['idColumn'])->find_one($params['args'][0]);
+    public function findOne($params) {
+        $result = $this->ormObject->find_one($params[0]);
+        return $result ? $result : $this->ormObject;
     }
 
     /**
@@ -71,8 +105,22 @@ class IdiormDbal implements DbalInterface {
      * @uses ORM Idiorm
      * @return object
      */
-    public static function findOneBy($params) {
-        return ORM::for_table($params['table'])->where($params['args'][0], $params['args'][1])->use_id_column($params['idColumn'])->find_one();
+    public function findOneBy($params) {
+        $result = $this->ormObject->where($params[0], $params[1])->find_one();
+        return $result ? $result : $this->ormObject;
+    }
+
+    /**
+     * First
+     * 
+     * Gets the first item
+     * 
+     * @uses ORM Idiorm
+     * @return object
+     */
+    public function first() {
+        $result = $this->ormObject->find_one();
+        return $result ? $result : $this->ormObject;
     }
 
     /**
@@ -82,47 +130,43 @@ class IdiormDbal implements DbalInterface {
      * 
      * @param array $params
      * @uses ORM Idiorm
-     * @return object
+     * @return void
      */
-    public static function criterias($params) {
-        $orm = ORM::for_table($params['table']);
+    public function criterias($params) {
+        foreach ($params as $param) {
+            $column = $param[0];
+            $operation = $param[1];
+            $value = $param[2];
 
-        foreach ($params['args'] as $arg) {
-            $column = $arg[0];
-            $operation = $arg[1];
-            $value = $arg[2];
-            
-            switch($operation) {
+            switch ($operation) {
                 case '=':
-                    $orm->where_equal($column, $value);
+                    $this->ormObject->where_equal($column, $value);
                     break;
                 case '!=':
-                    $orm->where_not_equal($column, $value);
+                    $this->ormObject->where_not_equal($column, $value);
                     break;
                 case '>':
-                    $orm->where_gt($column, $value);
+                    $this->ormObject->where_gt($column, $value);
                     break;
                 case '>=':
-                    $orm->where_gte($column, $value);
+                    $this->ormObject->where_gte($column, $value);
                     break;
                 case '<':
-                    $orm->where_lt($column, $value);
+                    $this->ormObject->where_lt($column, $value);
                     break;
                 case '<=':
-                    $orm->where_lte($column, $value);
+                    $this->ormObject->where_lte($column, $value);
                     break;
                 case 'LIKE':
-                    $orm->where_like($column, $value);
+                    $this->ormObject->where_like($column, $value);
                     break;
                 case 'NOT LIKE':
-                    $orm->where_not_like($column, $value);
+                    $this->ormObject->where_not_like($column, $value);
                     break;
             }
         }
-
-        return $orm;
     }
-    
+
     /**
      * Order By
      * 
@@ -130,22 +174,20 @@ class IdiormDbal implements DbalInterface {
      * 
      * @param array $params
      * @uses ORM Idiorm
-     * @return object
+     * @return void
      */
-    public static function orderBy($params) {
-        $orderCriterias = array_flip($params['args'][0]);
-        $ormObject = !is_null($params['ormObject']) ? $params['ormObject'] : ORM::for_table($params['table']);
-        
-        foreach ($orderCriterias as $direction => $column) {
-            if(strtolower($direction) == 'asc') {
-                $ormObject->order_by_asc($column);
-            } elseif(strtolower($direction) == 'desc') {
-                $ormObject->order_by_desc($column);
-            }
+    public function orderBy($params) {
+        $orderCriteria = array_flip($params[0]);
+        $direction = key($orderCriteria);
+        $column = $orderCriteria[$direction];
+
+        if (strtolower($direction) == 'asc') {
+            $this->ormObject->order_by_asc($column);
+        } elseif (strtolower($direction) == 'desc') {
+            $this->ormObject->order_by_desc($column);
         }
-        return $ormObject;
-    }    
-    
+    }
+
     /**
      * Group By
      * 
@@ -153,15 +195,12 @@ class IdiormDbal implements DbalInterface {
      * 
      * @param array $params
      * @uses ORM Idiorm
-     * @return object
+     * @return void
      */
-    public static function groupBy($params) {
-        $column = $params['args'][0];
-        $ormObject = !is_null($params['ormObject']) ? $params['ormObject'] : ORM::for_table($params['table']);
-        
-        return $ormObject->group_by($column);
+    public function groupBy($params) {
+        $this->ormObject->group_by($params[0]);
     }
-    
+
     /**
      * Limit
      * 
@@ -169,15 +208,12 @@ class IdiormDbal implements DbalInterface {
      * 
      * @param array $params
      * @uses ORM Idiorm
-     * @return object
+     * @return void
      */
-    public static function limit($params) {
-        $limit = $params['args'][0];
-        $ormObject = !is_null($params['ormObject']) ? $params['ormObject'] : ORM::for_table($params['table']);
-        
-        return $ormObject->limit($limit);
+    public function limit($params) {
+        $this->ormObject->limit($params[0]);
     }
-    
+
     /**
      * Offset
      * 
@@ -185,28 +221,12 @@ class IdiormDbal implements DbalInterface {
      * 
      * @param array $params
      * @uses ORM Idiorm
-     * @return object
+     * @return void
      */
-    public static function offset($params) {
-        $offset = $params['args'][0];
-        $ormObject = !is_null($params['ormObject']) ? $params['ormObject'] : ORM::for_table($params['table']);
-        
-        return $ormObject->offset($offset);
+    public function offset($params) {
+        $this->ormObject->offset($params[0]);
     }
 
-    /**
-     * First
-     * 
-     * Gets the first item
-     * 
-     * @param array $params
-     * @uses ORM Idiorm
-     * @return object
-     */
-    public function first($params) {
-        return $params['ormObject']->use_id_column($params['idColumn'])->find_one();
-    }
-    
     /**
      * Get
      * 
@@ -217,37 +237,31 @@ class IdiormDbal implements DbalInterface {
      * @return mixed
      */
     public function get($params) {
-        $orm = !is_null($params['ormObject']) ? $params['ormObject'] : ORM::for_table($params['table']);
-
-        return ($params['args'] && $params['args'][0] == 'object') ? $orm->find_many() : $orm->find_array();
+        return ($params && $params[0] == 'object') ? $this->ormObject->find_many() : $this->ormObject->find_array();
     }
-    
+
     /**
      * Count
      * 
      * Counts the result set
      * 
-     * @param array $params
      * @uses ORM Idiorm
      * @return int
      */
-    public function count($params) {
-        $orm = !is_null($params['ormObject']) ? $params['ormObject'] : ORM::for_table($params['table']);
-
-        return $orm->count();
+    public function count() {
+        return $this->ormObject->count();
     }
 
     /**
      * asArray
      * 
-     * Casts the orm object to array
+     * Casts the ormObject object to array
      * 
-     * @param ORM $ormObject
      * @uses ORM Idiorm
      * @return array
      */
-    public static function asArray($ormObject) {
-        return $ormObject ? $ormObject->as_array() : array();
+    public function asArray() {
+        return $this->ormObject->as_array();
     }
 
     /**
@@ -255,36 +269,35 @@ class IdiormDbal implements DbalInterface {
      * 
      * Creates new db record
      * 
-     * @param array $params
      * @uses ORM Idiorm
      * @return object
      */
-    public static function create($params) {
-        return ORM::for_table($params['table'])->create();
+    public function create() {
+        return $this->ormObject->create();
     }
-    
+
     /**
      * Save
      * 
      * Saves the data into the database
      * 
-     * @param ORM $ormObject
      * @uses ORM Idiorm
+     * @return void
      */
-    public static function save($ormObject) {
-        $ormObject->save();
+    public function save() {
+        $this->ormObject->save();
     }
-    
+
     /**
      * Delete
      * 
      * Deletes the data from the database
      * 
-     * @param ORM $ormObject
      * @uses ORM Idiorm
+     * @return void
      */
-    public static function delete($ormObject) {
-        $ormObject->delete();
+    public function delete() {
+        $this->ormObject->delete();
     }
 
 }
