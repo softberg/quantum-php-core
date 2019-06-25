@@ -151,6 +151,18 @@ if (!function_exists('base_dir')) {
     }
 }
 
+if (!function_exists('modules_dir')) {
+    /**
+     * Gets public directory
+     *
+     * @return string
+     */
+    function modules_dir($moduleDir = null)
+    {
+        return $moduleDir ?? MODULES_DIR;
+    }
+}
+
 if (!function_exists('public_dir')) {
     /**
      * Gets public directory
