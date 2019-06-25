@@ -2,9 +2,9 @@
 
 /**
  * Quantum PHP Framework
- * 
+ *
  * An open source software development framework for PHP
- * 
+ *
  * @package Quantum
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
@@ -23,24 +23,27 @@ use Quantum\Libraries\Config\Config;
 use Quantum\Libraries\Libraries;
 use Quantum\Mvc\MvcManager;
 use Quantum\Mvc\Qt_Model;
+use Quantum\Loader\Loader;
 
 /**
  * Bootstrap Class
- * 
+ *
  * Bootstrap is the base class which is runner of all necessary components of framework.
  */
-class Bootstrap {
+class Bootstrap
+{
 
     /**
      * Initializes the framework.
-     * 
+     *
      * This method does not accept parameters and does not return anything.
-     * It runs the router, prepare the config values, helpers, libraries and MVC Manager 
-     * 
+     * It runs the router, prepare the config values, helpers, libraries and MVC Manager
+     *
      * @return void
      * @throws Exception if one of these components fails: Router, Config, Helpers, Libraries, MVC MAnager.
      */
-    public static function run() {
+    public static function run()
+    {
         try {
             $router = new Router();
 
@@ -49,7 +52,10 @@ class Bootstrap {
             $router->findRoute();
 
             Environment::load();
-            Config::load();
+
+            $loader = new Loader(Config::getSetup());
+            Config::load($loader);
+
             Helpers::load();
             Libraries::load();
 
