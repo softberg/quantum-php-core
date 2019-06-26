@@ -24,8 +24,7 @@ use Dflydev\DotAccessData\Data;
  * Config class allows to load and import configuration files and get/set/remove config items
  *
  * @package Quantum
- * @subpackage Routes
- * @category Routes
+ * @category Config
  */
 class Config
 {

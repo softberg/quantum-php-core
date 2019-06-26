@@ -2,47 +2,72 @@
 
 /**
  * Quantum PHP Framework
- * 
+ *
  * An open source software development framework for PHP
- * 
+ *
  * @package Quantum
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 1.0.0
+ * @since 1.4.0
  */
 
 namespace Quantum\Middleware;
 
 use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Exceptions\RouteException;
-use Quantum\Routes\RouteController;
-use Quantum\Hooks\HookManager;
 use Quantum\Http\Request;
 
 /**
- * MvcManager Class
- * 
- * MvcManager class determine the controller, action of current module based on
+ * MiddlewareManager Class
+ *
+ * MiddlewareManager class determine the controller, action of current module based on
  * current route
- * 
+ *
  * @package Quantum
- * @subpackage MVC
- * @category MVC
+ * @subpackage Middleware
+ * @category Middleware
  */
-class MiddlewareManager {
+class MiddlewareManager
+{
 
+    /**
+     * Middlewares queue
+     *
+     * @var array
+     */
     private $middlewares = [];
+
+    /**
+     * Current module
+     *
+     * @var string
+     */
     private $module;
 
-    public function __construct($currentRoute) {
+    /**
+     * MiddlewareManager constructor.
+     *
+     * @param string $currentRoute
+     */
+    public function __construct($currentRoute)
+    {
         $this->middlewares = $currentRoute['middlewares'];
         $this->module = $currentRoute['module'];
     }
 
-    public function applyMiddlewares(Request $request) {
+    /**
+     * Apply Middlewares
+     *
+     * @param Request $request
+     * @return mixed|Request
+     * @throws RouteException
+     * @throws \Exception
+     */
+    public function applyMiddlewares(Request $request)
+    {
         $modifiedRequest = $request;
-        
+
         $middlewarePath = MODULES_DIR . '/' . $this->module . '/Middlewares/' . current($this->middlewares) . '.php';
 
         if (!file_exists($middlewarePath)) {
@@ -60,7 +85,7 @@ class MiddlewareManager {
         $currentMiddleware = new $middlewareClass();
 
         if ($currentMiddleware instanceof Qt_Middleware) {
-            $modifiedRequest = $currentMiddleware->apply($request, function($request) {
+            $modifiedRequest = $currentMiddleware->apply($request, function ($request) {
                 next($this->middlewares);
                 return $request;
             });

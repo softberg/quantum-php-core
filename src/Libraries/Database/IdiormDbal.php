@@ -78,7 +78,7 @@ class IdiormDbal implements DbalInterface {
             'username' => $connectionString['username'],
             'password' => $connectionString['password'],
             'driver_options' => array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES ' . $connectionString['charset']),
-            'logging' => get_config('debug', false)
+            'logging' => get_config('debug')
         ));
     }
 
