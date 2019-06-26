@@ -5,7 +5,6 @@ namespace Quantum\Test\Unit;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 use Quantum\Libraries\Config\Config;
-use Quantum\Helpers\Helpers;
 
 class ConfigTest extends TestCase
 {
@@ -27,6 +26,11 @@ class ConfigTest extends TestCase
     public function setUp(): void
     {
         $this->loader = Mockery::mock('Quantum\Loader\Loader');
+    }
+
+    public function tearDown(): void
+    {
+        Mockery::close();
     }
 
     public function testConfigLoad()
@@ -79,11 +83,13 @@ class ConfigTest extends TestCase
 
         Config::set('new-value', 'New Value');
 
-        $this->assertNotNull(Config::get('new-value'));
+        $this->assertTrue(Config::has('new-value'));
 
         $this->assertEquals('New Value', Config::get('new-value'));
 
         Config::set('other.nested', 'Nested Value');
+
+        $this->assertTrue(Config::has('other.nested'));
 
         $this->assertEquals('Nested Value', Config::get('other.nested'));
     }
@@ -93,6 +99,8 @@ class ConfigTest extends TestCase
         $this->assertNotNull(Config::get('test'));
 
         Config::remove('test');
+
+        $this->assertFalse(Config::has('test'));
 
         $this->assertNull(Config::get('test'));
     }
