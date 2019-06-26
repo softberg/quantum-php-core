@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 1.0.0
+ * @since 1.5.0
  */
 
 namespace Quantum\Libraries\Cookie;
@@ -21,23 +21,8 @@ namespace Quantum\Libraries\Cookie;
  * @subpackage Libraries.Cookie
  * @category Libraries
  */
-class Cookie
+class CookieAdapter
 {
-
-    /**
-     * @var CookieAdapter 
-     */
-    private $adapter;
-
-    /**
-     * Cookie constructor
-     *
-     * @param CookieAdapter $adapter
-     */
-    public function __construct(CookieAdapter $adapter)
-    {
-        $this->adapter = $adapter;
-    }
 
     /**
      * Gets data from cookie by given key
@@ -47,7 +32,7 @@ class Cookie
      */
     public function get($key)
     {
-        return $this->adapter->get($key);
+        return $this->has($key) ? $this->decode($_COOKIE[$key]) : null;
     }
 
     /*
@@ -55,7 +40,13 @@ class Cookie
      */
     public function all()
     {
-        return $this->adapter->all();
+        $allCookies = [];
+        if (isset($_COOKIE) && count($_COOKIE)) {
+            foreach ($_COOKIE as $key => $value) {
+                $allCookies[$key] = $this->decode($value);
+            }
+        }
+        return $allCookies;
     }
 
     /**
@@ -66,7 +57,7 @@ class Cookie
      */
     public function has($key)
     {
-        return $this->adapter->has($key);
+        return isset($_COOKIE[$key]) ? true : false;
     }
 
     /**
@@ -81,9 +72,9 @@ class Cookie
      * @param boolean $httponly
      * @return bool
      */
-    public function set($key, $value = '', $time = 0, $path = '/', $domain = '', $secure = FALSE, $httponly = FALSE)
+    public function set($key, $value = '', $time = 0, $path = '/', $domain = '', $secure = false, $httponly = false)
     {
-        return $this->adapter->set($key, $value, $time, $path, $domain, $secure, $httponly);
+        return setcookie($key, $this->encode($value), time() + $time, $path, $domain, $secure, $httponly);
     }
 
     /**
@@ -91,10 +82,15 @@ class Cookie
      *
      * @param string $key
      * @param string $path
+     * @return bool
      */
     public function delete($key, $path = '/')
     {
-        $this->adapter->delete($key, $path);
+        if ($this->has($key)) {
+            return setcookie($key, '', time() - 3600, $path);
+        }
+
+        return false;
     }
 
     /**
@@ -102,7 +98,33 @@ class Cookie
      */
     public function flush()
     {
-        $this->adapter->flush();
+        if (count($_COOKIE) > 0) {
+            foreach ($_COOKIE as $key => $value) {
+                $this->delete($key, '/');
+            }
+        }
+    }
+
+    /**
+     * Encodes the cookie data
+     *
+     * @param string $value
+     * @return string
+     */
+    private function encode($value)
+    {
+        return base64_encode($value);
+    }
+
+    /**
+     * Decodes the cookie data
+     *
+     * @param string $value
+     * @return string
+     */
+    private function decode($value)
+    {
+        return base64_decode($value);
     }
 
 }
