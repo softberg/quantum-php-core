@@ -44,7 +44,7 @@ trait Factory
         if ($model instanceof Qt_Model) {
             return $model;
         } else {
-            throw new \Exception(_message(ExceptionMessages::NOT_INSTANCEE_OF_MODEL, [$modelName, Qt_Model::class]));
+            throw new \Exception(_message(ExceptionMessages::NOT_INSTANCE_OF_MODEL, [$modelName, Qt_Model::class]));
         }
     }
 }

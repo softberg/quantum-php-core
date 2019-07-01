@@ -129,10 +129,10 @@ class Config
      * @param mixed $default
      * @return mixed|null The configuration item or NULL, if the item does not exists
      */
-    public static function get($key, $default = NULL)
+    public static function get($key, $default = null)
     {
         $data = new Data(self::$configs);
-        if ($data->has($key)) {
+        if (self::has($key)) {
             return $data->get($key);
         }
 
@@ -149,7 +149,7 @@ class Config
     public static function has($key)
     {
         $data = new Data(self::$configs);
-        return $data->has($key);
+        return ($data->has($key));
     }
 
     /**

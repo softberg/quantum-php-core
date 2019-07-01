@@ -14,7 +14,7 @@
 
 namespace Quantum\Libraries\Session;
 
-use Quantum\Routes\RouteController;
+use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Libraries\Database\Database;
 
 /**
@@ -64,6 +64,12 @@ class DbSession extends DbSessionHandler implements SessionInterface
             );
 
             $this->orm = Database::getORMInstance(__CLASS__, $this->table, $this->idColumn);
+
+            $tableExists = $this->orm->query('SHOW TABLES LIKE "' . $this->table . '"');
+            if (empty($tableExists)) {
+                throw new \Exception(_message(ExceptionMessages::UNDEFINED_SESSION_TABLE, $this->table));
+            }
+
             @session_start();
         }
 

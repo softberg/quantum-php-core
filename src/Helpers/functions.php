@@ -103,7 +103,7 @@ if (!function_exists('redirect')) {
      * @param string $url
      * @param integer $code
      */
-    function redirect($url, $code = NULL)
+    function redirect($url, $code = null)
     {
         if ($code)
             Response::setStatus($code);
@@ -123,7 +123,7 @@ if (!function_exists('get_referrer')) {
         if (isset($_SERVER['HTTP_REFERER']) && !empty($_SERVER['HTTP_REFERER'])) {
             return $_SERVER['HTTP_REFERER'];
         }
-        return NULL;
+        return null;
     }
 }
 
@@ -193,7 +193,7 @@ if (!function_exists('base_url')) {
      *
      * @return string
      */
-    function base_url() 
+    function base_url()
     {
         return get_config('base_url') ?? (isset($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
     }
@@ -207,9 +207,31 @@ if (!function_exists('get_config')) {
      * @param mixed $default
      * @return mixed
      */
-    function get_config($key, $default = NULL)
+    function get_config($key, $default = null)
     {
         return Config::get($key, $default);
+    }
+}
+
+if (!function_exists('env')) {
+    /**
+     * Gets environment variable
+     *
+     * @param mixed $var
+     * @param mixed $defaul
+     * @return mixed
+     */
+    function env($var, $default = null)
+    {
+        $val = getenv($var);
+
+        $default = var_export($default, true);
+
+        if ($val !== false) {
+            return $val;
+        } elseif ($default) {
+            return $default;
+        }
     }
 }
 
@@ -313,7 +335,7 @@ if (!function_exists('parse_raw_http_request')) {
             foreach ($blocks as $id => $block) {
                 if (empty($block))
                     continue;
-                if (strpos($block, 'application/octet-stream') !== FALSE) {
+                if (strpos($block, 'application/octet-stream') !== false) {
                     preg_match("/name=\"([^\"]*)\".*stream[\n|\r]+([^\n\r].*)?$/s", $block, $matches);
                     if (count($matches) > 0)
                         $encoded_data['files'][$matches[1]] = isset($matches[2]) ? $matches[2] : '';
@@ -364,25 +386,6 @@ if (!function_exists('out')) {
     }
 }
 
-if (!function_exists('env')) {
-    /**
-     * Gets environment variable
-     *
-     * @param mixed $var
-     * @param mixed $defaul
-     * @return mixed
-     */
-    function env($var, $default = false)
-    {
-        $val = getenv($var);
-        if ($val !== false) {
-            return $val;
-        } elseif ($default) {
-            return $default;
-        }
-    }
-}
-
 if (!function_exists('csrf_token')) {
     /**
      * Outputs generated CSRF token
@@ -403,7 +406,7 @@ if (!function_exists('t')) {
      * @param mixed $params
      * @return string
      */
-    function t($key, $params = NULL)
+    function t($key, $params = null)
     {
         $data = new Data(Lang::getTranslations());
         if (!is_null($data->get($key))) {
@@ -426,7 +429,7 @@ if (!function_exists('_t')) {
      * @param mixed $params
      * @return void
      */
-    function _t($key, $params = NULL)
+    function _t($key, $params = null)
     {
         echo t($key, $params);
     }
@@ -454,7 +457,7 @@ if (!function_exists('get_caller_class')) {
     {
         $caller = debug_backtrace();
         $caller = $caller[2];
-        return isset($caller['class']) ? $caller['class'] : NULL;
+        return isset($caller['class']) ? $caller['class'] : null;
     }
 }
 
@@ -469,7 +472,7 @@ if (!function_exists('get_caller_function')) {
     {
         $caller = debug_backtrace();
         $caller = $caller[2];
-        return isset($caller['function']) ? $caller['function'] : NULL;
+        return isset($caller['function']) ? $caller['function'] : null;
     }
 
 }
