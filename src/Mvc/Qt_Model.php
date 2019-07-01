@@ -2,9 +2,9 @@
 
 /**
  * Quantum PHP Framework
- * 
+ *
  * An open source software development framework for PHP
- * 
+ *
  * @package Quantum
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
@@ -21,46 +21,53 @@ use ORM;
 
 /**
  * Base Model Class
- * 
+ *
  * Qt_Model class is a base abstract class that every model should extend,
  * This class also connects to database and prepares object relational mapping
- * 
+ *
  * @package Quantum
  * @subpackage MVC
  * @category MVC
  */
-abstract class Qt_Model {
-
-    /**
-     * ORM database abstract layer object
-     * 
-     * @var object 
-     */
-    private $orm;
+abstract class Qt_Model
+{
 
     /**
      * Id column of table
-     * 
-     * @var string 
+     *
+     * @var string
      */
     protected $idColumn = 'id';
 
     /**
      * The database table associated with model
-     * 
-     * @var string 
+     *
+     * @var string
      */
     protected $table;
 
     /**
-     * Models fillable properties 
-     * @var array 
+     * Models fillable properties
+     * @var array
      */
     protected $fillable = array();
 
     /**
+     * ORM database abstract layer object
+     *
+     * @var object
+     */
+    private $orm;
+
+    /**
+     * The model
+     * @var string
+     */
+    private $model;
+
+    /**
      * Model factory function
-     * 
+     *
      * @var string
      */
     private $callerFunction = 'modelFactory';
@@ -71,26 +78,27 @@ abstract class Qt_Model {
      * @return void
      * @throws \Exception When called directly
      */
-    public final function __construct() {
+    public final function __construct()
+    {
         if (get_caller_function() != $this->callerFunction) {
             throw new \Exception(ExceptionMessages::DIRECT_MODEL_CALL);
         }
 
-        Database::connect();
-        $ormClass = Database::getORM();
-        $this->orm = new $ormClass($this->table, $this->idColumn);
+        $this->model = get_called_class();
+        $this->orm = Database::getORMInstance($this->model, $this->table, $this->idColumn);
     }
 
     /**
      * Fill Object Properties
-     * 
+     *
      * Fills the properties with values
-     * 
+     *
      * @param array $arguments
      * @return void
      * @throws \Exception When the property is not appropriate
      */
-    public function fillObjectProps($arguments) {
+    public function fillObjectProps($arguments)
+    {
         foreach ($arguments as $key => $value) {
             if (!in_array($key, $this->fillable)) {
                 throw new \Exception(_message(ExceptionMessages::INAPPROPRIATE_PROPERTY, $key));
@@ -102,51 +110,55 @@ abstract class Qt_Model {
 
     /**
      * Update rules
-     * 
+     *
      * Updates the validation rules of model
-     * 
+     *
      * @param mixed $key
      * @param mixed $value
      * @return void
      */
-    public function updateRules($key, $value) {
+    public function updateRules($key, $value)
+    {
         $this->rules[$key] = $value;
     }
 
     /**
      * __get magic
-     * 
+     *
      * Allows to access to models property
-     * 
+     *
      * @param string $property
      * @return mixed
      */
-    public function __get($property) {
+    public function __get($property)
+    {
         return isset($this->orm->ormObject->$property) ? $this->orm->ormObject->$property : NULL;
     }
 
     /**
      * __set magic
-     * 
+     *
      * Allows to set values to models properties
-     * 
+     *
      * @param string $property
      * @param mixed $vallue
      */
-    public function __set($property, $value) {
+    public function __set($property, $value)
+    {
         $this->orm->ormObject->$property = $value;
     }
 
     /**
      * __call magic
-     * 
+     *
      * Allows to call models methods
-     * 
+     *
      * @param string $method
      * @param mixed $args
      * @return void
      */
-    public function __call($method, $args = NULL) {
+    public function __call($method, $args = NULL)
+    {
         switch ($method) {
             case 'findOne':
             case 'findOneBy':

@@ -2,9 +2,9 @@
 
 /**
  * Quantum PHP Framework
- * 
+ *
  * An open source software development framework for PHP
- * 
+ *
  * @package Quantum
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
@@ -20,21 +20,22 @@ use ORM;
 
 /**
  * Database class
- * 
+ *
  * Initialize the database
- * 
+ *
  * @package Quantum
  * @subpackage Libraries.Database
  * @category Libraries
  */
-class Database {
+class Database
+{
 
     /**
-     * Path to ORM class
-     * 
-     * @var string 
+     * Default ORM DBAL
+     *
+     * @var string
      */
-    private static $ormPath;
+    private static $defaultOrm = '\\Quantum\\Libraries\\Database\\IdiormDbal';
 
     /**
      * Database configurations
@@ -42,13 +43,50 @@ class Database {
      * @var array
      */
     private static $dbConfig;
-    
+
     /**
      * Active Connection
-     * 
-     * @var mixed 
+     *
+     * @var mixed
      */
-    private static $activeConnection = NULL;
+    private static $activeConnection = null;
+
+    /**
+     * Gets ORM Instance
+     *
+     * @param string $table
+     * @param string $idColumn
+     * @return object
+     * @throws \Exception When table is not defined in user defeind model
+     */
+    public function getORMInstance($model, $table, $idColumn = 'id')
+    {
+        if (!self::connected()) {
+            self::connect();
+        }
+
+        if (empty($table)) {
+            throw new \Exception(_message(ExceptionMessages::MODEL_WITHOUT_TABLE_DEFINED, $model));
+        }
+
+        $ormClass = self::getORMClass();
+        return new $ormClass($table, $idColumn);
+    }
+
+    /**
+     * Connected
+     *
+     * Chechks the active connection
+     *
+     * @return bool
+     */
+    public function connected()
+    {
+        if (self::$activeConnection)
+            return true;
+
+        return false;
+    }
 
     /**
      * Connect
@@ -56,14 +94,11 @@ class Database {
      * Connects to database
      *
      * @uses HookManager::call
-     * @throws \Exception
      * @return void
      */
-    public static function connect() {
-        if(!self::$activeConnection) {
-            self::setORM();
-            self::$activeConnection = HookManager::call('dbConnect', self::getConfig(), self::getORM());
-        }
+    private static function connect()
+    {
+        self::$activeConnection = HookManager::call('dbConnect', self::getConfig(), self::getORMClass());
     }
 
     /**
@@ -75,16 +110,16 @@ class Database {
      * @return void
      * @throws \Exception When config not found
      */
-    private static function setConfig() {
-        if (file_exists(MODULES_DIR . DS . get_current_module() . '/Config/database.php')) {
-            if ( !self::$dbConfig ) {
-                self::$dbConfig = require_once MODULES_DIR . DS . get_current_module() . '/Config/database.php';
+    private static function setConfig()
+    {
+        if (file_exists(MODULES_DIR . DS . get_current_module() . DS . 'Config' . DS . 'database.php')) {
+            if (!self::$dbConfig) {
+                self::$dbConfig = require_once MODULES_DIR . DS . get_current_module() . DS . 'Config' . DS . 'database.php';
             }
-        }
-        else {
-            if (file_exists(BASE_DIR . '/config/database.php')) {
-                if ( !self::$dbConfig )  {
-                    self::$dbConfig = require_once BASE_DIR . '/config/database.php';
+        } else {
+            if (file_exists(BASE_DIR . DS . 'config' . DS . 'database.php')) {
+                if (!self::$dbConfig) {
+                    self::$dbConfig = require_once BASE_DIR . DS . 'config' . DS . 'database.php';
                 }
             } else {
                 throw new \Exception(ExceptionMessages::DB_CONFIG_NOT_FOUND);
@@ -94,17 +129,18 @@ class Database {
 
     /**
      * Get DB Config
-     * 
+     *
      * @return array
      * @throws \Exception When config is not found or incorrect
      */
-    private static function getConfig() {
+    private static function getConfig()
+    {
         self::setConfig();
 
         if (!empty(self::$dbConfig) && is_array(self::$dbConfig) && key_exists('current', self::$dbConfig)) {
-            $current_key =  self::$dbConfig['current'];
+            $current_key = self::$dbConfig['current'];
 
-            if ($current_key && key_exists($current_key, self::$dbConfig) ) {
+            if ($current_key && key_exists($current_key, self::$dbConfig)) {
                 return self::$dbConfig[$current_key];
             } else {
                 throw new \Exception(ExceptionMessages::INCORRECT_CONFIG);
@@ -115,24 +151,15 @@ class Database {
     }
 
     /**
-     * Sets the ORM
-     * 
-     * @return void
-     */
-    private static function setORM() {
-        self::$ormPath = (isset(self::$dbConfig['orm']) && !empty(self::$dbConfig['orm']) ? $dbConfig['orm'] : '\\Quantum\\Libraries\\Database\\IdiormDbal');
-    }
-
-    /**
-     * Gets the ORM
+     * Gets the ORM Class
      *
-     * Gets the ORM defined in config/database.php if exists, otherwise
-     * default ORM
+     * Gets the ORM class defined in config/database.php if exists, otherwise default ORM will be used
      *
      * @return string
      */
-    public static function getORM() {
-        return self::$ormPath;
+    public static function getORMClass()
+    {
+        return (isset(self::$dbConfig['orm']) && !empty(self::$dbConfig['orm']) ? self::$dbConfig['orm'] : self::$defaultOrm);
     }
 
 }

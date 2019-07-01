@@ -2,9 +2,9 @@
 
 /**
  * Quantum PHP Framework
- * 
+ *
  * An open source software development framework for PHP
- * 
+ *
  * @package Quantum
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
@@ -15,79 +15,84 @@
 namespace Quantum\Libraries\Session;
 
 use Quantum\Libraries\Database\Database;
-use ORM;
 
 /**
  * DB Session handler class
- * 
+ *
  * @package Quantum
  * @subpackage Libraries.Session
  * @category Libraries
  */
-class DbSessionHandler extends \SessionHandler {
+class DbSessionHandler
+{
 
     /**
      * Initialize session
      */
-    public function _open() {
-		if (Database::connected()) {
+    public function _open()
+    {
+        if (Database::connected()) {
             return true;
         }
         return false;
-	}
-    
+    }
+
     /**
      * Close the session
      */
-    public function _close() {
-		if (!Database::connected()) {
+    public function _close()
+    {
+        if (!Database::connected()) {
             return true;
         }
         return false;
-	}
-    
+    }
+
     /**
      * Read session data
-     * 
+     *
      * @param string $id The session id
      * @return string
      */
-    public function _read($id) {
-		$result = ORM::for_table($this->sessions_table)->findOne($id);
+    public function _read($id)
+    {
+        $result = $this->orm->query('SELECT * FROM ' . $this->table . " WHERE id = :id", ['id' => $id], false);
         return $result ? $result->data : '';
     }
-    
+
     /**
      * Write session data
-     * 
+     *
      * @param string $id The session id
      * @param mixed $data
      * @return bool
      */
-    public function _write($id, $data) {
+    public function _write($id, $data)
+    {
         $access = time();
-        
-        ORM::for_table($this->sessions_table)->raw_execute("REPLACE INTO " . $this->sessions_table . " VALUES (:id, :access, :data)", ['id' => $id, 'access' => $access, 'data' => $data]);
+        return $this->orm->execute("REPLACE INTO " . $this->table . " VALUES (:id, :access, :data)", ['id' => $id, 'access' => $access, 'data' => $data]);
     }
-    
+
     /**
      * Destroy a session
-     * 
+     *
      * @param type $id The session ID
      * @return bool
      */
-    public function _destroy($id) {
-        ORM::for_table($this->sessions_table)->raw_execute("DELETE FROM " . $this->sessions_table . " WHERE id = :id", ['id' => $id]);
+    public function _destroy($id)
+    {
+        return $this->orm->execute("DELETE FROM " . $this->table . " WHERE id = :id", ['id' => $id]);
     }
-    
+
     /**
      * Cleanup old sessions
-     * 
+     *
      * @param int $max Max lifetime
      */
-    public function _gc($max) {
+    public function _gc($max)
+    {
         $old = time() - $max;
-        
-        ORM::for_table($this->sessions_table)->raw_execute("DELETE * FROM " . $this->sessions_table . " WHERE access < :old", ['old' => $old]);
+
+        return $this->orm->execute("DELETE * FROM " . $this->table . " WHERE access < :old", ['old' => $old]);
     }
 }

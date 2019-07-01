@@ -2,9 +2,9 @@
 
 /**
  * Quantum PHP Framework
- * 
+ *
  * An open source software development framework for PHP
- * 
+ *
  * @package Quantum
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
@@ -20,44 +20,46 @@ use ORM;
 
 /**
  * IdiORM DBAL
- * 
+ *
  * Database Abstract Layer class for IdiOrm
  * Default DBAL for framework
- * 
+ *
  * @package Quantum
  * @subpackage Libraries.Database
  * @category Libraries
  */
-class IdiormDbal implements DbalInterface {
+class IdiormDbal implements DbalInterface
+{
 
     /**
      * The database table associated with model
-     * 
-     * @var string 
+     *
+     * @var string
      */
     private $table;
-    
+
     /**
      * Id column of table
-     * 
-     * @var string 
+     *
+     * @var string
      */
     private $idColumn;
-    
+
     /**
      * Idiorm object
-     * 
-     * @var object 
+     *
+     * @var object
      */
     public $ormObject;
 
     /**
-     * Class constructor 
-     * 
+     * Class constructor
+     *
      * @param string $table
      * @param string $idColumn
      */
-    public function __construct($table, $idColumn) {
+    public function __construct($table, $idColumn)
+    {
         $this->table = $table;
         $this->idColumn = $idColumn;
         $this->ormObject = ORM::for_table($this->table)->use_id_column($this->idColumn);
@@ -65,14 +67,15 @@ class IdiormDbal implements DbalInterface {
 
     /**
      * DB Connect
-     * 
+     *
      * Connects to database
-     * 
+     *
      * @param array $connectionString
      * @uses ORM::configure Idiorm
      * @return void
      */
-    public static function dbConnect($connectionString) {
+    public static function dbConnect($connectionString)
+    {
         ORM::configure(array(
             'connection_string' => $connectionString['driver'] . ':host=' . $connectionString['host'] . ';dbname=' . $connectionString['dbname'],
             'username' => $connectionString['username'],
@@ -84,55 +87,59 @@ class IdiormDbal implements DbalInterface {
 
     /**
      * Find one
-     * 
+     *
      * Gets record by primary key
-     * 
+     *
      * @param array $params
      * @uses ORM Idiorm
      * @return object
      */
-    public function findOne($params) {
+    public function findOne($params)
+    {
         $result = $this->ormObject->find_one($params[0]);
         return $result ? $result : $this->ormObject;
     }
 
     /**
      * FindOneBy
-     * 
+     *
      * Gets record by given column
-     * 
+     *
      * @param array $params
      * @uses ORM Idiorm
      * @return object
      */
-    public function findOneBy($params) {
+    public function findOneBy($params)
+    {
         $result = $this->ormObject->where($params[0], $params[1])->find_one();
         return $result ? $result : $this->ormObject;
     }
 
     /**
      * First
-     * 
+     *
      * Gets the first item
-     * 
+     *
      * @uses ORM Idiorm
      * @return object
      */
-    public function first() {
+    public function first()
+    {
         $result = $this->ormObject->find_one();
         return $result ? $result : $this->ormObject;
     }
 
     /**
      * Criterias
-     * 
+     *
      * Adds where criterias
-     * 
+     *
      * @param array $params
      * @uses ORM Idiorm
      * @return void
      */
-    public function criterias($params) {
+    public function criterias($params)
+    {
         foreach ($params as $param) {
             $column = $param[0];
             $operation = $param[1];
@@ -169,14 +176,15 @@ class IdiormDbal implements DbalInterface {
 
     /**
      * Order By
-     * 
-     * Orders the result by ascending or descending 
-     * 
+     *
+     * Orders the result by ascending or descending
+     *
      * @param array $params
      * @uses ORM Idiorm
      * @return void
      */
-    public function orderBy($params) {
+    public function orderBy($params)
+    {
         $orderCriteria = array_flip($params[0]);
         $direction = key($orderCriteria);
         $column = $orderCriteria[$direction];
@@ -190,114 +198,156 @@ class IdiormDbal implements DbalInterface {
 
     /**
      * Group By
-     * 
+     *
      * Groups the result by column
-     * 
+     *
      * @param array $params
      * @uses ORM Idiorm
      * @return void
      */
-    public function groupBy($params) {
+    public function groupBy($params)
+    {
         $this->ormObject->group_by($params[0]);
     }
 
     /**
      * Limit
-     * 
+     *
      * Returns the result by given limit
-     * 
+     *
      * @param array $params
      * @uses ORM Idiorm
      * @return void
      */
-    public function limit($params) {
+    public function limit($params)
+    {
         $this->ormObject->limit($params[0]);
     }
 
     /**
      * Offset
-     * 
+     *
      * Returns the result by given offset
-     * 
+     *
      * @param array $params
      * @uses ORM Idiorm
      * @return void
      */
-    public function offset($params) {
+    public function offset($params)
+    {
         $this->ormObject->offset($params[0]);
     }
 
     /**
      * Get
-     * 
+     *
      * Gets the result set
-     * 
+     *
      * @param array $params
      * @uses ORM Idiorm
      * @return mixed
      */
-    public function get($params) {
+    public function get($params)
+    {
         return ($params && $params[0] == 'object') ? $this->ormObject->find_many() : $this->ormObject->find_array();
     }
 
     /**
      * Count
-     * 
+     *
      * Counts the result set
-     * 
+     *
      * @uses ORM Idiorm
      * @return int
      */
-    public function count() {
+    public function count()
+    {
         return $this->ormObject->count();
     }
 
     /**
      * asArray
-     * 
+     *
      * Casts the ormObject object to array
-     * 
+     *
      * @uses ORM Idiorm
      * @return array
      */
-    public function asArray() {
+    public function asArray()
+    {
         return $this->ormObject->as_array();
     }
 
     /**
      * Create
-     * 
+     *
      * Creates new db record
-     * 
+     *
      * @uses ORM Idiorm
      * @return object
      */
-    public function create() {
+    public function create()
+    {
         return $this->ormObject->create();
     }
 
     /**
      * Save
-     * 
+     *
      * Saves the data into the database
-     * 
+     *
      * @uses ORM Idiorm
      * @return void
      */
-    public function save() {
+    public function save()
+    {
         $this->ormObject->save();
     }
 
     /**
      * Delete
-     * 
+     *
      * Deletes the data from the database
-     * 
+     *
      * @uses ORM Idiorm
      * @return void
      */
-    public function delete() {
+    public function delete()
+    {
         $this->ormObject->delete();
+    }
+
+    /**
+     * Execute
+     *
+     * Raw execute
+     *
+     * @param string $query
+     * @param array $parameters
+     * @return bool
+     */
+    public function execute($query, $parameters = [])
+    {
+        return $this->ormObject->raw_execute($query, $parameters);
+    }
+
+    /**
+     * Query
+     *
+     * Raw query
+     *
+     * @param string $query
+     * @param array $parameters
+     * @param bool $many
+     * @return array|bool|\IdiormResultSet|ORM
+     */
+    public function query($query, $parameters = [], $many = true)
+    {
+        if ($many) {
+            return $this->ormObject->raw_query($query, $parameters)->find_many();
+        } else {
+            return $this->ormObject->raw_query($query, $parameters)->find_one();
+        }
     }
 
 }
