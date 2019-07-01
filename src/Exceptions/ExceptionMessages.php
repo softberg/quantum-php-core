@@ -163,6 +163,11 @@ class ExceptionMessages {
      * Model not instance of Qt_Model
      */
     const NOT_INSTANCEE_OF_MODEL = 'Model {%1} is not instance of {%2}';
+
+    /**
+     * Model does not have table property defined
+     */
+    const MODEL_WITHOUT_TABLE_DEFINED = 'Model {%1} does not have $table property defined';
     
     /**
      * Misconfigured lang config

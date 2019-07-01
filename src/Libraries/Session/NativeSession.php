@@ -2,9 +2,9 @@
 
 /**
  * Quantum PHP Framework
- * 
+ *
  * An open source software development framework for PHP
- * 
+ *
  * @package Quantum
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
@@ -15,27 +15,29 @@
 namespace Quantum\Libraries\Session;
 
 /**
- * Session class
- * 
+ * Native Session class
+ *
  * @package Quantum
  * @subpackage Libraries.Session
  * @category Libraries
  */
-class Session implements SessionInterface {
+class NativeSession implements SessionInterface
+{
 
     /**
      * Class constructor
-     * 
+     *
      * @param integer $timeout_duration
      * @return void
      */
-    public function __construct($timeout_duration) {
+    public function __construct($timeout_duration)
+    {
 
         if (!session_id()) {
             @session_start();
         }
-        
-        $timeout_duration = $timeout_duration ? $timeout_duration : 1800;
+
+        $timeout_duration = $timeout_duration ?? 1800;
 
         if (isset($_SESSION['LAST_ACTIVITY']) && time() - $_SESSION['LAST_ACTIVITY'] > $timeout_duration) {
             @session_unset();
@@ -47,48 +49,53 @@ class Session implements SessionInterface {
 
     /**
      * Gets value from session by given key
-     * 
+     *
      * @param string $key
      * @return mixed
      */
-    public function get($key) {
-        return $this->has($key) ? $_SESSION[$key] : NULL;
+    public function get($key)
+    {
+        return $this->has($key) ? $_SESSION[$key] : null;
     }
 
     /*
      * Gets whole session data
      */
-    public function all() {
+    public function all()
+    {
         return $_SESSION;
     }
 
     /**
      * Check if session contains a data by given key
-     * 
+     *
      * @param string $key
      * @return bool
      */
-    public function has($key) {
+    public function has($key)
+    {
         return isset($_SESSION[$key]) ? true : false;
     }
 
     /**
      * Sets session value by given key
-     * 
+     *
      * @param string $key
      * @param mixed $value
      */
-    public function set($key, $value) {
+    public function set($key, $value)
+    {
         $_SESSION[$key] = $value;
     }
 
     /**
      * Gets flash values by given key
-     * 
+     *
      * @param string $key
      * @return mixed
      */
-    public function getFlash($key) {
+    public function getFlash($key)
+    {
         if ($this->has($key)) {
             $flashData = $_SESSION[$key];
             $this->delete($key);
@@ -98,20 +105,22 @@ class Session implements SessionInterface {
 
     /**
      * Sets flash values by given key
-     * 
+     *
      * @param string $key
      * @param mixed $value
      */
-    public function setFlash($key, $value) {
+    public function setFlash($key, $value)
+    {
         $this->set($key, $value);
     }
 
     /**
-     * Delete data from session by given key 
-     * 
+     * Delete data from session by given key
+     *
      * @param string $key
      */
-    public function delete($key) {
+    public function delete($key)
+    {
         if ($this->has($key)) {
             unset($_SESSION[$key]);
         }
@@ -120,7 +129,8 @@ class Session implements SessionInterface {
     /**
      * Deletes whole session data
      */
-    public function flush() {
+    public function flush()
+    {
         @session_destroy();
     }
 

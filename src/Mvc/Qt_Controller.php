@@ -14,13 +14,10 @@
 
 namespace Quantum\Mvc;
 
-use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Libraries\Debugger\Debugger;
 use Quantum\Routes\RouteController;
-use Quantum\Libraries\Session\Session;
-use Quantum\Mvc\Qt_View;
-use Quantum\Mvc\Qt_Model;
 use Quantum\Hooks\HookManager;
+use Quantum\Factory\Factory;
 
 /**
  * Base Controller Class
@@ -32,6 +29,8 @@ use Quantum\Hooks\HookManager;
  * @category MVC
  */
 class Qt_Controller extends RouteController {
+
+    use Factory;
 
     /**
      * Reference of the Qt object
@@ -69,28 +68,6 @@ class Qt_Controller extends RouteController {
            return  "\\Base\\models\\" . $modelName;
         } else {
             HookManager::call("handleModel", $modelName);
-        }
-    }
-
-    /**
-     * Model Factory 
-     * 
-     * Deliver an object of request model
-     * 
-     * @param string $modelName
-     * @param string $module
-     * @return Qt_Model
-     * @throws \Exception When model is not istance of Qt_Model
-     */
-    public function modelFactory($modelName, $module = null) {
-        $modelClass = $this->findModelFile($modelName, $module);
-
-        $model = new $modelClass();
-
-        if($model instanceof Qt_Model) {
-            return $model;
-        } else {
-            throw new \Exception(_message(ExceptionMessages::NOT_INSTANCEE_OF_MODEL, [$modelName, Qt_Model::class]));
         }
     }
 
