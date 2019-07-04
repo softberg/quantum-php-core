@@ -15,6 +15,7 @@
 namespace Quantum\Libraries\Session;
 
 use Quantum\Exceptions\ExceptionMessages;
+use Quantum\Libraries\Database\Database;
 
 /**
  * Session Manager class
@@ -27,45 +28,41 @@ class SessionManager
 {
 
     /**
-     * Session driver
-     *
      * @var string
      */
-    private static $sessionDriver = null;
-
-    /**
-     * Session handler
-     *
-     * @var object
-     */
-    private static $sessionHandler = null;
+    private $databaseDriver = 'database';
 
     /**
      * Get session handler
      *
-     * @return object
-     * @throws \Exception When session handler is not correctly configured
+     * @return Session
+     * @throws \Exception
      */
-    public static function getSessionHandler()
+    public function getSessionHandler()
     {
-        self::$sessionDriver = get_config('session_driver', 'native');
+        $sessionHandler = null;
 
-        if (self::$sessionDriver) {
-            switch (self::$sessionDriver) {
-                case 'native':
-                    self::$sessionHandler = new NativeSession(get_config('session_timeout'));
-                    break;
-                case 'database':
-                    self::$sessionHandler = new DbSession(get_config('session_timeout'));
-                    break;
+        $driver = get_config('session_driver');
+
+        if (!session_id()) {
+
+            if ($driver == $this->databaseDriver) {
+                $orm = Database::getORMInstance(null, get_config('session_table', 'sessions'));
+                session_set_save_handler(new DbSessionHandler($orm), true);
             }
+
+            @session_start();
+
         }
 
-        if (self::$sessionHandler) {
-            return self::$sessionHandler;
-        } else {
-            throw new \Exception(ExceptionMessages::MISCONFIGURED_SESSION_HANDLER);
+        if (isset($_SESSION['LAST_ACTIVITY']) && time() - $_SESSION['LAST_ACTIVITY'] > get_config('session_timeout', 1800)) {
+            @session_unset();
+            @session_destroy();
         }
+
+        $_SESSION['LAST_ACTIVITY'] = time();
+
+        return new Session(new SessionStorage($_SESSION));
     }
 
 }

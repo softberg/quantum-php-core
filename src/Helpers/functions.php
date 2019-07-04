@@ -11,8 +11,6 @@
  * @since 1.0.0
  */
 
-use Quantum\Libraries\Mailer\Mailer;
-use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Routes\RouteController;
 use Quantum\Libraries\Session\SessionManager;
 use Quantum\Libraries\Dumper\Dumper;
@@ -89,10 +87,11 @@ if (!function_exists('session')) {
      * Gets session handler
      *
      * @return object
+     * @throws \Exception
      */
     function session()
     {
-        return SessionManager::getSessionHandler();
+        return (new SessionManager())->getSessionHandler();
     }
 }
 
@@ -107,6 +106,7 @@ if (!function_exists('redirect')) {
     {
         if ($code)
             Response::setStatus($code);
+
         Response::setHeader('Location', $url);
         exit;
     }
