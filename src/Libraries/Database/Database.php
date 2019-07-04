@@ -59,7 +59,7 @@ class Database
      * @return object
      * @throws \Exception When table is not defined in user defeind model
      */
-    public function getORMInstance($model, $table, $idColumn = 'id')
+    public static function getORMInstance($model, $table, $idColumn = 'id')
     {
         if (!self::connected()) {
             self::connect();
@@ -80,7 +80,7 @@ class Database
      *
      * @return bool
      */
-    public function connected()
+    public static function connected()
     {
         if (self::$activeConnection)
             return true;
@@ -95,6 +95,7 @@ class Database
      *
      * @uses HookManager::call
      * @return void
+     * @throws \Exception
      */
     private static function connect()
     {

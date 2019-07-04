@@ -66,6 +66,16 @@ class IdiormDbal implements DbalInterface
     }
 
     /**
+     * Get table
+     *
+     * @return string
+     */
+    public function getTable()
+    {
+        return $this->table;
+    }
+
+    /**
      * DB Connect
      *
      * Connects to database
