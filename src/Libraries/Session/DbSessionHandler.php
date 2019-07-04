@@ -9,27 +9,49 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 1.0.0
+ * @since 1.5.0
  */
 
 namespace Quantum\Libraries\Session;
 
 use Quantum\Libraries\Database\Database;
+use Quantum\Libraries\Database\DbalInterface;
+use \SessionHandlerInterface;
 
 /**
- * DB Session handler class
+ * DB Session Handler class
  *
  * @package Quantum
  * @subpackage Libraries.Session
  * @category Libraries
  */
-class DbSessionHandler
+class DbSessionHandler implements SessionHandlerInterface
 {
+    /**
+     * The ORM instance
+     *
+     * @var DbalInterface $orm
+     */
+    private $orm;
+
+    /**
+     * DbSessionHandler constructor.
+     *
+     * @param DbalInterface $orm
+     */
+    public function __construct(DbalInterface $orm)
+    {
+        $this->orm = $orm;
+    }
 
     /**
      * Initialize session
+     *
+     * @param string $save_path
+     * @param string $name
+     * @return bool
      */
-    public function _open()
+    public function open($save_path, $name)
     {
         if (Database::connected()) {
             return true;
@@ -39,8 +61,10 @@ class DbSessionHandler
 
     /**
      * Close the session
+     *
+     * @return bool
      */
-    public function _close()
+    public function close()
     {
         if (!Database::connected()) {
             return true;
@@ -54,9 +78,9 @@ class DbSessionHandler
      * @param string $id The session id
      * @return string
      */
-    public function _read($id)
+    public function read($id)
     {
-        $result = $this->orm->query('SELECT * FROM ' . $this->table . " WHERE id = :id", ['id' => $id], false);
+        $result = $this->orm->query('SELECT * FROM ' . $this->orm->getTable() . " WHERE id = :id", ['id' => $id], false);
         return $result ? $result->data : '';
     }
 
@@ -67,10 +91,10 @@ class DbSessionHandler
      * @param mixed $data
      * @return bool
      */
-    public function _write($id, $data)
+    public function write($id, $data)
     {
         $access = time();
-        return $this->orm->execute("REPLACE INTO " . $this->table . " VALUES (:id, :access, :data)", ['id' => $id, 'access' => $access, 'data' => $data]);
+        return $this->orm->execute("REPLACE INTO " . $this->orm->getTable() . " VALUES (:id, :access, :data)", ['id' => $id, 'access' => $access, 'data' => $data]);
     }
 
     /**
@@ -79,20 +103,21 @@ class DbSessionHandler
      * @param type $id The session ID
      * @return bool
      */
-    public function _destroy($id)
+    public function destroy($id)
     {
-        return $this->orm->execute("DELETE FROM " . $this->table . " WHERE id = :id", ['id' => $id]);
+        return $this->orm->execute("DELETE FROM " . $this->orm->getTable() . " WHERE id = :id", ['id' => $id]);
     }
 
     /**
      * Cleanup old sessions
      *
      * @param int $max Max lifetime
+     * @return bool
      */
-    public function _gc($max)
+    public function gc($max)
     {
         $old = time() - $max;
-
-        return $this->orm->execute("DELETE * FROM " . $this->table . " WHERE access < :old", ['old' => $old]);
+        return $this->orm->execute("DELETE * FROM " . $this->orm->getTable() . " WHERE access < :old", ['old' => $old]);
     }
+
 }
