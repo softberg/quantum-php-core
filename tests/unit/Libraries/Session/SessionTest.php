@@ -17,18 +17,20 @@ class SessionTest extends TestCase
     private $sessionData = [
         'auth' => 'ok',
         'test' => 'good',
-        'store' => 'persists'
+        'store' => 'persist'
     ];
 
     public function setUp(): void
     {
         $this->sessionStorage = new SessionStorage($this->sessionData);
+
         $this->session = new Session($this->sessionStorage);
     }
 
     public function testSessionConstructor()
     {
-        $this->assertInstanceOf('Quantum\Libraries\Session\SessionStorageInterface', $this->sessionStorage);
+        $this->assertInstanceOf('Quantum\Libraries\Session\SessionStorage', $this->sessionStorage);
+
         $this->assertInstanceOf('Quantum\Libraries\Session\Session', $this->session);
     }
 
@@ -36,6 +38,7 @@ class SessionTest extends TestCase
     public function testSessionGet()
     {
         $this->assertEquals('ok', $this->session->get('auth'));
+
         $this->assertNull($this->session->get('not-exists'));
     }
 
