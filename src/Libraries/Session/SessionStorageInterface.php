@@ -17,7 +17,7 @@ namespace Quantum\Libraries\Session;
 /**
  * Session Storage interface
  *
- * The common interface, which should implemented by session classes
+ * The common interface, which should implemented by Session storage classes
  *
  * @package Quantum
  * @subpackage Libraries.Session

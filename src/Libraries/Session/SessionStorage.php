@@ -117,7 +117,7 @@ class SessionStorage implements SessionStorageInterface
     }
 
     /**
-     * Delete data from storage by given key
+     * Deletes data from storage by given key
      *
      * @param string $key
      * @return void
