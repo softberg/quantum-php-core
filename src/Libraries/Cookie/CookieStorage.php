@@ -21,47 +21,67 @@ namespace Quantum\Libraries\Cookie;
  * @subpackage Libraries.Cookie
  * @category Libraries
  */
-class CookieAdapter
+class CookieStorage implements CookieStorageInterface
 {
 
     /**
-     * Gets data from cookie by given key
+     * Cookie storage
+     *
+     * @var array $storage
+     */
+    private $storage = [];
+
+
+    /**
+     * CookieStorage constructor.
+     *
+     * @param array $storage
+     */
+    public function __construct(&$storage = [])
+    {
+        $this->storage = &$storage;
+    }
+
+    /**
+     * Gets data by given key
      *
      * @param string $key
      * @return mixed
      */
     public function get($key)
     {
-        return $this->has($key) ? $this->decode($_COOKIE[$key]) : null;
+        return $this->has($key) ? $this->decode($this->storage[$key]) : null;
     }
 
     /*
-     * Gets whole cookie data
+     * Gets whole data
+     *
+     * @return array
      */
     public function all()
     {
         $allCookies = [];
-        if (isset($_COOKIE) && count($_COOKIE)) {
-            foreach ($_COOKIE as $key => $value) {
-                $allCookies[$key] = $this->decode($value);
-            }
+
+        foreach ($this->storage as $key => $value) {
+            $allCookies[$key] = $this->decode($value);
         }
+
         return $allCookies;
     }
 
     /**
-     * Check if cookie contains a data by given key
+     * Check if storage contains a data by given key
      *
      * @param string $key
      * @return bool
      */
     public function has($key)
     {
-        return isset($_COOKIE[$key]) ? true : false;
+        return isset($this->storage[$key]) ? true : false;
     }
 
     /**
-     * Sets cookie data by given key
+     * Sets data by given key
      *
      * @param string $key
      * @param string $value
@@ -70,36 +90,38 @@ class CookieAdapter
      * @param string $domain
      * @param boolean $secure
      * @param boolean $httponly
-     * @return bool
+     * @return void
      */
     public function set($key, $value = '', $time = 0, $path = '/', $domain = '', $secure = false, $httponly = false)
     {
-        return setcookie($key, $this->encode($value), time() + $time, $path, $domain, $secure, $httponly);
+        $this->storage[$key] = $this->encode($value);
+        setcookie($key, $this->encode($value), $time ? time() + $time : $time, $path, $domain, $secure, $httponly);
     }
 
     /**
-     * Delete cookie data by given key
+     * Deletes data by given key
      *
      * @param string $key
      * @param string $path
-     * @return bool
+     * @return void
      */
     public function delete($key, $path = '/')
     {
         if ($this->has($key)) {
-            return setcookie($key, '', time() - 3600, $path);
+            unset($this->storage[$key]);
+            setcookie($key, '', time() - 3600, $path);
         }
-
-        return false;
     }
 
     /**
      * Deletes whole cookie data
+     *
+     * @return void
      */
     public function flush()
     {
-        if (count($_COOKIE) > 0) {
-            foreach ($_COOKIE as $key => $value) {
+        if (count($this->storage) > 0) {
+            foreach ($this->storage as $key => $value) {
                 $this->delete($key, '/');
             }
         }

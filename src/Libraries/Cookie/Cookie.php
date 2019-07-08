@@ -25,18 +25,18 @@ class Cookie
 {
 
     /**
-     * @var CookieAdapter 
+     * @var CookieStorage $cookieStorage
      */
-    private $adapter;
+    private $cookieStorage;
 
     /**
-     * Cookie constructor
+     * Cookie constructor.
      *
-     * @param CookieAdapter $adapter
+     * @param CookieStorage $cookieStorage
      */
-    public function __construct(CookieAdapter $adapter)
+    public function __construct(CookieStorage $cookieStorage)
     {
-        $this->adapter = $adapter;
+        $this->cookieStorage = $cookieStorage;
     }
 
     /**
@@ -47,7 +47,7 @@ class Cookie
      */
     public function get($key)
     {
-        return $this->adapter->get($key);
+        return $this->cookieStorage->get($key);
     }
 
     /*
@@ -55,7 +55,7 @@ class Cookie
      */
     public function all()
     {
-        return $this->adapter->all();
+        return $this->cookieStorage->all();
     }
 
     /**
@@ -66,7 +66,7 @@ class Cookie
      */
     public function has($key)
     {
-        return $this->adapter->has($key);
+        return $this->cookieStorage->has($key);
     }
 
     /**
@@ -83,7 +83,7 @@ class Cookie
      */
     public function set($key, $value = '', $time = 0, $path = '/', $domain = '', $secure = FALSE, $httponly = FALSE)
     {
-        return $this->adapter->set($key, $value, $time, $path, $domain, $secure, $httponly);
+        return $this->cookieStorage->set($key, $value, $time, $path, $domain, $secure, $httponly);
     }
 
     /**
@@ -94,7 +94,7 @@ class Cookie
      */
     public function delete($key, $path = '/')
     {
-        $this->adapter->delete($key, $path);
+        $this->cookieStorage->delete($key, $path);
     }
 
     /**
@@ -102,7 +102,7 @@ class Cookie
      */
     public function flush()
     {
-        $this->adapter->flush();
+        $this->cookieStorage->flush();
     }
 
 }

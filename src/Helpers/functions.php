@@ -13,6 +13,8 @@
 
 use Quantum\Routes\RouteController;
 use Quantum\Libraries\Session\SessionManager;
+use Quantum\Libraries\Cookie\CookieStorage;
+use Quantum\Libraries\Cookie\Cookie;
 use Quantum\Libraries\Dumper\Dumper;
 use Quantum\Libraries\Config\Config;
 use Dflydev\DotAccessData\Data;
@@ -92,6 +94,19 @@ if (!function_exists('session')) {
     function session()
     {
         return (new SessionManager())->getSessionHandler();
+    }
+}
+
+if (!function_exists('cookie')) {
+    /**
+     * Gets cookie handler
+     *
+     * @return object
+     * @throws \Exception
+     */
+    function cookie()
+    {
+        return new Cookie(new CookieStorage($_COOKIE));
     }
 }
 
