@@ -17,7 +17,6 @@ use Quantum\Libraries\Cookie\CookieStorage;
 use Quantum\Libraries\Cookie\Cookie;
 use Quantum\Libraries\Dumper\Dumper;
 use Quantum\Libraries\Config\Config;
-use Dflydev\DotAccessData\Data;
 use Quantum\Libraries\Lang\Lang;
 use Quantum\Libraries\Csrf\Csrf;
 use Quantum\Http\Response;
@@ -423,16 +422,7 @@ if (!function_exists('t')) {
      */
     function t($key, $params = null)
     {
-        $data = new Data(Lang::getTranslations());
-        if (!is_null($data->get($key))) {
-            if (!is_null($params)) {
-                return _message($data->get($key), $params);
-            } else {
-                return $data->get($key);
-            }
-        } else {
-            return $key;
-        }
+        return Lang::getTranslation($key, $params);
     }
 }
 
