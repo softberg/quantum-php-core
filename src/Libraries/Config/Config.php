@@ -15,8 +15,8 @@
 namespace Quantum\Libraries\Config;
 
 use Quantum\Exceptions\ExceptionMessages;
-use Quantum\Loader\Loader;
 use Dflydev\DotAccessData\Data;
+use Quantum\Loader\Loader;
 
 /**
  * Config Class
@@ -30,30 +30,12 @@ class Config
 {
 
     /**
-     * @var string
-     */
-    public static $module;
-
-    /**
-     * @var string
-     */
-    public static $exceptionMessage = ExceptionMessages::CONFIG_FILE_NOT_FOUND;
-
-    /**
-     * @var string
-     */
-    public static $fileName = 'config';
-
-    /**
-     * @var string
-     */
-    public static $env = 'config';
-
-    /**
+     * Configs
      *
      * @var array
      */
-    public static $configs = array();
+    private static $configs = [];
+
 
     /**
      * Get Setup
@@ -66,11 +48,12 @@ class Config
     {
         return (object)[
             'module' => get_current_module(),
-            'env' => self::$env,
-            'fileName' => self::$fileName,
-            'exceptionMessage' => self::$exceptionMessage,
+            'env' => 'config',
+            'fileName' => 'config',
+            'exceptionMessage' => ExceptionMessages::CONFIG_FILE_NOT_FOUND
         ];
     }
+
 
     /**
      * Load
@@ -100,8 +83,6 @@ class Config
      */
     public static function import(Loader $loader, $fileName)
     {
-        $loader->set('fileName', $fileName);
-
         $allConfigs = self::getAll();
         foreach ($allConfigs as $key => $config) {
             if ($fileName == $key) {

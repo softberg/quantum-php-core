@@ -15,7 +15,7 @@ class ConfigTest extends TestCase
         'langs' => ['en', 'es'],
         'lang_default' => 'en',
         'debug' => 'DEBUG',
-        'test' => 'testing'
+        'test' => 'Testing'
     ];
 
     private $otherConfigData = [
@@ -38,21 +38,17 @@ class ConfigTest extends TestCase
         $this->assertEmpty(Config::getAll());
 
         $this->loader->shouldReceive('load')
-            ->once()
             ->andReturn($this->configData);
 
         Config::load($this->loader);
 
         $this->assertNotEmpty(Config::getAll());
 
-        $this->assertEquals($this->configData, Config::getAll());
-
     }
 
     public function testConfigImport()
     {
-        $this->loader->shouldReceive('load', 'set')
-            ->once()
+        $this->loader->shouldReceive('load')
             ->andReturn($this->otherConfigData);
 
         Config::import($this->loader, 'other');
@@ -69,7 +65,7 @@ class ConfigTest extends TestCase
 
     public function testConfigGet()
     {
-        $this->assertEquals('testing', Config::get('test'));
+        $this->assertEquals('Testing', Config::get('test'));
 
         $this->assertEquals('Default Value', Config::get('not-exists', 'Default Value'));
 
