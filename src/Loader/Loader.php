@@ -25,27 +25,38 @@ class Loader
 
     /**
      * Current module
+     *
      * @var string
      */
     private $module;
 
     /**
      * Environment
+     *
      * @var string
      */
     private $env;
 
     /**
      * File name
+     *
      * @var string
      */
     private $fileName;
 
     /**
      * Hierarchical
+     *
      * @var bool
      */
     private $hierarchical;
+
+    /**
+     * Exception message
+     *
+     * @var string
+     */
+    private $exceptionMessage;
 
     /**
      * File path to load
@@ -65,6 +76,7 @@ class Loader
         $this->env = $repository->env;
         $this->fileName = $repository->fileName;
         $this->hierarchical = $hierarchical;
+        $this->exceptionMessage = $repository->exceptionMessage;
     }
 
     /**
@@ -86,13 +98,15 @@ class Loader
      */
     public function getFilePath()
     {
-        $this->filePath = modules_dir() . DS . $this->module . DS . ucfirst($this->env) . $this->fileName . '.php';
+        $this->filePath = modules_dir() . DS . $this->module . DS . ucfirst($this->env) . DS . $this->fileName . '.php';
         if (!file_exists($this->filePath)) {
             if ($this->hierarchical) {
                 $this->filePath = base_dir() . DS . $this->env . DS . $this->fileName . '.php';
                 if (!file_exists($this->filePath)) {
-                    throw new \Exception($this->exceptionMessage);
+                    throw new \Exception(_message($this->exceptionMessage, $this->filePath));
                 }
+            } else {
+                throw new \Exception(_message($this->exceptionMessage, $this->filePath));
             }
         }
 
