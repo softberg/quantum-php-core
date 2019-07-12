@@ -1,4 +1,4 @@
-> **Note:** This repository contains the core code of the Quantum framework. If you want to start new application visit the main [Quantum repository](https://github.com/softberg/quantum-framework-php).
+> **Note:** This repository contains the core code of the Quantum framework. If you want to start new project visit the main [Quantum repository](https://github.com/softberg/quantum-framework-php).
 
 ## About Quantum Framework
 
