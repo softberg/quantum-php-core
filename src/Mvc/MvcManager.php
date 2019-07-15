@@ -44,7 +44,7 @@ class MvcManager {
      */
     public function runMvc($currentRoute) {
         if ($_SERVER['REQUEST_METHOD'] != 'OPTIONS') {
-            
+
             HttpRequest::init();
             $request = new Request();
             
@@ -74,12 +74,12 @@ class MvcManager {
                 throw new RouteException(_message(ExceptionMessages::ACTION_NOT_DEFINED, $action));
             }
 
-            if (method_exists($controller, '__before')) {
-                call_user_func_array(array($controller, '__before'), $currentRoute['args']);
-            }
-
             if ($controller->csrfVerification ?? true) {
                 HookManager::call('csrfCheck');
+            }
+
+            if (method_exists($controller, '__before')) {
+                call_user_func_array(array($controller, '__before'), $currentRoute['args']);
             }
             
             $reflaction = new \ReflectionMethod($controller, $action);
