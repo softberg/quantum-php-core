@@ -76,10 +76,10 @@ class MvcManager {
 
             if (method_exists($controller, '__before')) {
                 call_user_func_array(array($controller, '__before'), $currentRoute['args']);
+            }
 
-                if (RouteController::$csrfVerification) {
-                    HookManager::call('csrfCheck');
-                }
+            if ($controller->csrfVerification ?? true) {
+                HookManager::call('csrfCheck');
             }
             
             $reflaction = new \ReflectionMethod($controller, $action);
