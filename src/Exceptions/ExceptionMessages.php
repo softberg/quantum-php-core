@@ -186,6 +186,11 @@ class ExceptionMessages
     const MISCONFIGURED_LANG_DEFAULT_CONFIG = 'Misconfigured default lang config';
 
     /**
+     * Translations not found
+     */
+    const TRANSLATION_FILES_NOT_FOUND = 'Translations for language `{%1}` not found';
+
+    /**
      * Unexpected request initialization
      */
     const UNEXPECTED_REQUEST_INITIALIZATION = 'HTTP Request can not be initialized outside of the core';
