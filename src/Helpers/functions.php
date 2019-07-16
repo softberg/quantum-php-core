@@ -13,7 +13,6 @@
 
 use Quantum\Routes\RouteController;
 use Quantum\Libraries\Session\SessionManager;
-use Quantum\Libraries\Cookie\CookieStorage;
 use Quantum\Libraries\Cookie\Cookie;
 use Quantum\Libraries\Dumper\Dumper;
 use Quantum\Libraries\Config\Config;
@@ -105,7 +104,7 @@ if (!function_exists('cookie')) {
      */
     function cookie()
     {
-        return new Cookie(new CookieStorage($_COOKIE));
+        return new Cookie($_COOKIE);
     }
 }
 
