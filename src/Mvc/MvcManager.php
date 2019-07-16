@@ -2,9 +2,9 @@
 
 /**
  * Quantum PHP Framework
- * 
+ *
  * An open source software development framework for PHP
- * 
+ *
  * @package Quantum
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
@@ -15,43 +15,47 @@
 namespace Quantum\Mvc;
 
 use Quantum\Exceptions\ExceptionMessages;
+use Quantum\Factory\Factory;
+use Quantum\Libraries\Csrf\Csrf;
+use Quantum\Libraries\Session\Session;
 use Quantum\Middleware\MiddlewareManager;
 use Quantum\Exceptions\RouteException;
-use Quantum\Routes\RouteController;
 use Quantum\Hooks\HookManager;
 use Quantum\Http\HttpRequest;
 use Quantum\Http\Request;
 
 /**
  * MvcManager Class
- * 
+ *
  * MvcManager class determine the controller, action of current module based on
  * current route
- * 
+ *
  * @package Quantum
  * @subpackage MVC
  * @category MVC
  */
-class MvcManager {
+class MvcManager
+{
 
     /**
      * Run MVC
-     * 
+     *
      * Runs the action of controller of current module
-     * 
+     *
      * @param array $currentRoute
      * @throws RouteException When controller, action not found
      */
-    public function runMvc($currentRoute) {
+    public function runMvc($currentRoute)
+    {
         if ($_SERVER['REQUEST_METHOD'] != 'OPTIONS') {
 
             HttpRequest::init();
             $request = new Request();
-            
+
             if (isset($currentRoute['middlewares']) && count($currentRoute['middlewares']) > 0) {
                 $request = (new MiddlewareManager($currentRoute))->applyMiddlewares($request);
             }
-            
+
             $controllerPath = MODULES_DIR . DS . $currentRoute['module'] . DS . 'Controllers' . DS . $currentRoute['controller'] . '.php';
 
             if (!file_exists($controllerPath)) {
@@ -75,13 +79,13 @@ class MvcManager {
             }
 
             if ($controller->csrfVerification ?? true) {
-                HookManager::call('csrfCheck');
+                Csrf::checkToken($request, \session());
             }
 
             if (method_exists($controller, '__before')) {
                 call_user_func_array(array($controller, '__before'), $currentRoute['args']);
             }
-            
+
             $reflaction = new \ReflectionMethod($controller, $action);
             $params = $reflaction->getParameters();
 

@@ -2,9 +2,9 @@
 
 /**
  * Quantum PHP Framework
- * 
+ *
  * An open source software development framework for PHP
- * 
+ *
  * @package Quantum
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
@@ -16,31 +16,29 @@ namespace Quantum\Hooks;
 
 use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Exceptions\RouteException;
-use Quantum\Libraries\Csrf\Csrf;
-use Quantum\Http\Request;
 use Quantum\Http\Response;
 use Twig_Loader_Filesystem;
 use Twig_Environment;
 
 /**
  * HookDefaults Class
- * 
+ *
  * Default implementations
- * 
+ *
  * @package Quantum
  * @subpackage Hooks
  * @category Hooks
  */
-class HookDefaults implements HookInterface {
+class HookDefaults implements HookInterface
+{
 
     /**
-     * handleHeaders
-     * 
+     * Handle Headers
+     *
      * Allows Cross domain requests
-     * 
-     * @return void
      */
-    public static function handleHeaders() {
+    public static function handleHeaders()
+    {
 
         Response::setHeader('Access-Control-Allow-Origin', '*');
         Response::setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
@@ -49,54 +47,25 @@ class HookDefaults implements HookInterface {
 
     /**
      * Page not found
-     * 
-     * @return void
-     * @throws RouteException When route not found
+     *
+     * @throws RouteException
      */
-    public static function pageNotFound() {
+    public static function pageNotFound()
+    {
         throw new RouteException(ExceptionMessages::ROUTE_NOT_FOUND);
     }
 
     /**
-     * CSRF Check
-     * 
-     * Checks the CSRF token
-     * 
-     * @return void
-     * @throws RouteException When token not set or mismatched
+     * Template renderer
+     *
+     * @param $data
+     * @return string
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
      */
-    public static function csrfCheck() {
-        if ($_SERVER['REQUEST_METHOD'] == 'POST' ||
-                $_SERVER['REQUEST_METHOD'] == 'PUT' ||
-                $_SERVER['REQUEST_METHOD'] == 'PATCH' ||
-                $_SERVER['REQUEST_METHOD'] == 'DELETE') {
-
-            $request = Request::all();
-
-            if (!isset($request['token']) && !Request::getCSRFToken()) {
-                throw new RouteException(ExceptionMessages::CSRF_TOKEN_NOT_FOUND);
-            }
-
-            if (isset($request['token'])) {
-                $token = $request['token'];
-            } elseif (Request::getCSRFToken()) {
-                $token = Request::getCSRFToken();
-            }
-
-            if (!Csrf::checkToken($token)) {
-                throw new RouteException(ExceptionMessages::CSRF_TOKEN_NOT_MATCHED);
-            }
-        }
-    }
-
-    /**
-     * Template renderer 
-     * 
-     * Renders Twig template
-     * @uses Twig
-     * @return atring
-     */
-    public static function templateRenderer($data) {
+    public static function templateRenderer($data)
+    {
         $loader = new Twig_Loader_Filesystem(MODULES_DIR . DS . $data['currentModule'] . DS . 'Views');
         $twig = new Twig_Environment($loader, $data['configs']);
 
@@ -107,9 +76,9 @@ class HookDefaults implements HookInterface {
         foreach ($allDefinedFuncitons as $function) {
             if (function_exists($function)) {
                 $twig->addFunction(
-                        new \Twig_Function(
+                    new \Twig_Function(
                         $function, $function
-                        )
+                    )
                 );
             }
         }
@@ -118,12 +87,13 @@ class HookDefaults implements HookInterface {
     }
 
     /**
-     * Model not found
-     * 
-     * @return void
-     * @throws Exception when model not found
+     * Handling model not found
+     *
+     * @param string $modelName
+     * @throws \Exception
      */
-    public static function handleModel($modelName) {
+    public static function handleModel($modelName)
+    {
         throw new \Exception(_message(ExceptionMessages::MODEL_NOT_FOUND, $modelName));
     }
 
