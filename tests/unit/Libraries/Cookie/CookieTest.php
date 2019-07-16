@@ -2,18 +2,13 @@
 
 namespace Quantum\Test\Unit;
 
-use Mockery;
-use phpmock\mockery\PHPMockery;
 use PHPUnit\Framework\TestCase;
 use Quantum\Libraries\Cookie\Cookie;
-use Quantum\Libraries\Cookie\CookieStorage;
 
 
 class CookieTest extends TestCase
 {
     private $cookie;
-
-    private $cookieStorage;
 
     private $cookieData = [
         'auth' => 'b2s=', // ok
@@ -23,15 +18,11 @@ class CookieTest extends TestCase
 
     public function setUp(): void
     {
-        $this->cookieStorage = new CookieStorage($this->cookieData);
-
-        $this->cookie = new Cookie($this->cookieStorage);
+        $this->cookie = new Cookie($this->cookieData);
     }
 
     public function testCookieConstructor()
     {
-        $this->assertInstanceOf('Quantum\Libraries\Cookie\CookieStorage', $this->cookieStorage);
-
         $this->assertInstanceOf('Quantum\Libraries\Cookie\Cookie', $this->cookie);
     }
 
