@@ -2,17 +2,13 @@
 
 namespace Quantum\Test\Unit;
 
-use Mockery;
 use PHPUnit\Framework\TestCase;
 use Quantum\Libraries\Session\Session;
-use Quantum\Libraries\Session\SessionStorage;
 
 class SessionTest extends TestCase
 {
 
     private $session;
-
-    private $sessionStorage;
 
     private $sessionData = [
         'auth' => 'ok',
@@ -22,15 +18,11 @@ class SessionTest extends TestCase
 
     public function setUp(): void
     {
-        $this->sessionStorage = new SessionStorage($this->sessionData);
-
-        $this->session = new Session($this->sessionStorage);
+        $this->session = new Session($this->sessionData);
     }
 
     public function testSessionConstructor()
     {
-        $this->assertInstanceOf('Quantum\Libraries\Session\SessionStorage', $this->sessionStorage);
-
         $this->assertInstanceOf('Quantum\Libraries\Session\Session', $this->session);
     }
 

@@ -21,59 +21,61 @@ namespace Quantum\Libraries\Session;
  * @subpackage Libraries.Session
  * @category Libraries
  */
-class Session
+class Session implements SessionStorageInterface
 {
 
     /**
-     * @var SessionStorage $sessionStorage
+     * Session storage
+     *
+     * @var array $storage
      */
-    private $sessionStorage;
+    private $storage = [];
+
 
     /**
-     * NativeSession constructor.
+     * Session constructor.
      *
-     * @param SessionInterface $session
-     * @return void
+     * @param array $storage
      */
-    public function __construct(SessionStorage $sessionStorage)
+    public function __construct(&$storage = [])
     {
-        $this->sessionStorage = $sessionStorage;
+        $this->storage = &$storage;
     }
 
     /**
-     * Gets value from session by given key
+     * Gets value by given key
      *
      * @param string $key
      * @return mixed
      */
     public function get($key)
     {
-        return $this->has($key) ? $this->sessionStorage->get($key) : null;
+        return $this->has($key) ? $this->storage[$key] : null;
     }
 
     /*
-     * Gets whole session data
+     * Gets whole data
      *
      * @return array
      */
     public function all()
     {
-        return $this->sessionStorage->all();
+        return $this->storage;
     }
 
     /**
-     * Check if session contains a data by given key
+     * Check if storage contains a data by given key
      *
      * @param string $key
      * @return bool
      */
     public function has($key)
     {
-        return $this->sessionStorage->has($key);
+        return isset($this->storage[$key]) ? true : false;
     }
 
     /**
-     * Sets session value by given key
+     * Sets value by given key
      *
      * @param string $key
      * @param mixed $value
@@ -81,7 +83,7 @@ class Session
      */
     public function set($key, $value)
     {
-        $this->sessionStorage->set($key, $value);
+        $this->storage[$key] = $value;
     }
 
     /**
@@ -115,7 +117,7 @@ class Session
     }
 
     /**
-     * Delete data from session by given key
+     * Deletes data from storage by given key
      *
      * @param string $key
      * @return void
@@ -123,18 +125,19 @@ class Session
     public function delete($key)
     {
         if ($this->has($key)) {
-            $this->sessionStorage->delete($key);
+            unset($this->storage[$key]);
         }
     }
 
     /**
-     * Deletes whole session data
+     * Deletes whole storage data
      *
      * @return void
      */
     public function flush()
     {
-        $this->sessionStorage->flush();
+        $this->storage = [];
+        @session_destroy();
     }
 
     /**
@@ -144,6 +147,6 @@ class Session
      */
     public function getSessionId()
     {
-        $this->sessionStorage->getSessionId();
+        return session_id() ?? null;
     }
 }

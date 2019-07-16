@@ -14,7 +14,6 @@
 
 namespace Quantum\Libraries\Session;
 
-use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Libraries\Database\Database;
 
 /**
@@ -62,7 +61,7 @@ class SessionManager
 
         $_SESSION['LAST_ACTIVITY'] = time();
 
-        return new Session(new SessionStorage($_SESSION));
+        return new Session($_SESSION);
     }
 
 }
