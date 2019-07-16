@@ -14,44 +14,15 @@
 
 namespace Quantum\Libraries\Session;
 
+use Quantum\Storage\StorageInterface;
+
 /**
- * Session Storage interface
+ * Interface SessionStorageInterface
  *
- * The common interface, which should implemented by Session storage classes
- *
- * @package Quantum
- * @subpackage Libraries.Session
- * @category Libraries
+ * @package Quantum\Libraries\Session
  */
-interface SessionStorageInterface
+interface SessionStorageInterface extends StorageInterface
 {
-
-    /**
-     * Should be implemented in derived classes to get value from storage by key
-     *
-     * @param string $key
-     */
-    public function get($key);
-
-    /**
-     * Should be implemented in derived classes to get whole storage data
-     */
-    public function all();
-
-    /**
-     * Should be implemented in derived classes to check if storage contains a key
-     *
-     * @param string $key
-     */
-    public function has($key);
-
-    /**
-     * Should be implemented in derived classes to set storage value with given key
-     *
-     * @param string $key
-     * @param mixed $value
-     */
-    public function set($key, $value);
 
     /**
      * Should be implemented in derived classes to get flash values by given key
@@ -67,18 +38,6 @@ interface SessionStorageInterface
      * @param mixed $value
      */
     public function setFlash($key, $value);
-
-    /**
-     * Should be implemented in derived classes to delete data with given key from session
-     *
-     * @param string $key
-     */
-    public function delete($key);
-
-    /**
-     * Should be implemented in derived classes to delete whole storage data
-     */
-    public function flush();
 
     /**
      * Should be implemented in derived classes to get session ID

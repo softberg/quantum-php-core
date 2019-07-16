@@ -12,17 +12,14 @@
  * @since 1.5.0
  */
 
-namespace Quantum\Libraries\Cookie;
-
-use Quantum\Storage\StorageInterface;
-
+namespace Quantum\Storage;
 
 /**
- * Interface CookieStorageInterface
+ * Interface StorageInterface
  *
- * @package Quantum\Libraries\Cookie
+ * @package Quantum\Storage
  */
-interface CookieStorageInterface extends StorageInterface
+interface StorageInterface
 {
 
     /**
@@ -49,21 +46,15 @@ interface CookieStorageInterface extends StorageInterface
      *
      * @param string $key
      * @param string $value
-     * @param int $time
-     * @param string $path
-     * @param string $domain
-     * @param bool $secure
-     * @param bool $httponly
      */
-    public function set($key, $value = '', $time = 0, $path = '/', $domain = '', $secure = false, $httponly = false);
+    public function set($key, $value);
 
     /**
      * Should be implemented in derived classes to delete data with given key from session
      *
      * @param string $key
-     * @param string $path
      */
-    public function delete($key, $path = '/');
+    public function delete($key);
 
     /**
      * Should be implemented in derived classes to delete whole storage data
