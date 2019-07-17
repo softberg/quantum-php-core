@@ -45,28 +45,25 @@ class Csrf
     /**
      * Generate Token
      *
-     * Generates the CSRF token or return if previously generated
+     * Generates the CSRF token or returns previously generated one
      *
      * @return string
      */
     public static function generateToken(StorageInterface $storage)
     {
         if (self::$token == null) {
-            if ($storage->has('token')) {
-                $storage->delete('token');
-            }
-
+            self::deleteToken($storage);
             self::$token = base64_encode(openssl_random_pseudo_bytes(32));
-
-            $storage->set('token', self::$token);
+            self::setToken($storage, self::$token);
         }
 
         return self::$token;
     }
 
-
     /**
      * Check Token
+     *
+     * Checks the token
      *
      * @param Request $request
      * @param StorageInterface $storage
@@ -81,11 +78,51 @@ class Csrf
                 throw new \Exception(ExceptionMessages::CSRF_TOKEN_NOT_FOUND);
             }
 
-            if ($storage->has('token') && $storage->get('token') !== $token) {
+            if (self::getToken($storage) !== $token) {
                 throw new \Exception(ExceptionMessages::CSRF_TOKEN_NOT_MATCHED);
             }
         }
 
         return true;
+    }
+
+    /**
+     * Delete Token
+     *
+     * Deletes the token from storage
+     *
+     * @param StorageInterface $storage
+     * @return void
+     */
+    public static function deleteToken(StorageInterface $storage)
+    {
+        $storage->delete('token');
+        self::$token = null;
+    }
+
+    /**
+     * Get Token
+     *
+     * Gets the token from storage
+     *
+     * @param StorageInterface $storage
+     * @return string|null
+     */
+    public static function getToken(StorageInterface $storage)
+    {
+        return $storage->has('token') ? $storage->get('token') : null;
+    }
+
+    /**
+     * Set Token
+     *
+     * Sets the token into the storage
+     *
+     * @param StorageInterface $storage
+     * @param string $token
+     */
+    private static function setToken(StorageInterface $storage, $token)
+    {
+        $storage->set('token', $token);
     }
 }

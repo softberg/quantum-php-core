@@ -123,7 +123,7 @@ class ExceptionMessages
     /**
      * CSFT token not found message
      */
-    const CSRF_TOKEN_NOT_FOUND = 'CSRF Token does not exists';
+    const CSRF_TOKEN_NOT_FOUND = 'CSRF Token is missing';
 
     /**
      * Authorization: Bearer header not found message

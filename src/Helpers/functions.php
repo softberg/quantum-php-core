@@ -404,10 +404,11 @@ if (!function_exists('csrf_token')) {
      * Outputs generated CSRF token
      *
      * @return void
+     * @throws \Exception
      */
     function csrf_token()
     {
-        echo Csrf::generateToken();
+        echo Csrf::generateToken(\session());
     }
 }
 
