@@ -16,7 +16,7 @@
         }
     ],
     "require": {
-        "php": ">=5.6",
+        "php": ">=7.0",
         "j4mie/paris": "^1.5",
         "wixel/gump": "^1.4",
         "codeguy/upload": "^1.3",
