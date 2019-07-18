@@ -2,9 +2,9 @@
 
 /**
  * Quantum PHP Framework
- * 
+ *
  * An open source software development framework for PHP
- * 
+ *
  * @package Quantum
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
@@ -27,44 +27,46 @@ use ORM;
 
 /**
  * Debugger class
- * 
+ *
  * @package Quantum
  * @subpackage Libraries.Debugger
  * @category Libraries
  * @uses DebugBar
  */
-class Debugger extends DebugBar {
+class Debugger extends DebugBar
+{
 
     /**
      * Debugbar instance
-     * @var object 
+     * @var object
      */
     public static $debugbar;
 
     /**
      * Debugbar Renderer
-     * @var object 
+     * @var object
      */
     public static $debugbarRenderer = null;
 
     /**
      * Queries
-     * @var array 
+     * @var array
      */
     public static $queries;
 
     /**
      * Assets url
-     * @var string 
+     * @var string
      */
     public static $assets_url;
 
     /**
      * Class constructor
-     * 
+     *
      * @return void
      */
-    public function __construct() {
+    public function __construct()
+    {
         $this->addCollector(new PhpInfoCollector());
         $this->addCollector(new MessagesCollector());
         $this->addCollector(new RequestDataCollector());
@@ -73,28 +75,32 @@ class Debugger extends DebugBar {
 
     /**
      * Runs the debug bar
-     * 
+     *
      * @param string $view
      * @return object
      */
-    public static function runDebuger($view = null) {
+    public static function runDebuger($view = null)
+    {
         self::$debugbar = new Debugger();
         self::$assets_url = base_url() . '/assets/DebugBar/Resources';
         self::addQueries();
         self::addMessages();
         self::addRoute($view);
 
-        self::$debugbarRenderer = self::$debugbar->getJavascriptRenderer()->setBaseUrl(self::$assets_url);
+        self::$debugbarRenderer = self::$debugbar->getJavascriptRenderer()
+            ->setBaseUrl(self::$assets_url)
+            ->addAssets(['custom_debugbar.css'], []);
 
         return self::$debugbarRenderer;
     }
 
     /**
      * Collects the queries
-     * 
+     *
      * @return void
      */
-    private static function addQueries() {
+    private static function addQueries()
+    {
         self::$debugbar->addCollector(new MessagesCollector('queries'));
         self::$queries = ORM::get_query_log();
         if (self::$queries) {
@@ -106,10 +112,11 @@ class Debugger extends DebugBar {
 
     /**
      * Collects the routes
-     * 
+     *
      * @return void
      */
-    private static function addRoute($view) {
+    private static function addRoute($view)
+    {
         $uri = RouteController::$currentRoute['uri'];
         $method = RouteController::$currentRoute['method'];
         $module = RouteController::$currentRoute['module'];
@@ -137,10 +144,11 @@ class Debugger extends DebugBar {
 
     /**
      * Collects the messages
-     * 
+     *
      * @return void
      */
-    private static function addMessages() {
+    private static function addMessages()
+    {
         $out_data = session()->get('output');
         if ($out_data) {
             foreach ($out_data as $data) {
