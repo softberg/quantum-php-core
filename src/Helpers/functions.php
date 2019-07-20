@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Quantum PHP Framework
  *
@@ -23,6 +24,7 @@ use Quantum\Mvc\Qt_Controller;
 use Quantum\Mvc\Qt_View;
 
 if (!function_exists('qt_instance')) {
+
     /**
      * Qt Controller instance
      *
@@ -32,9 +34,11 @@ if (!function_exists('qt_instance')) {
     {
         return Qt_Controller::getInstance();
     }
+
 }
 
 if (!function_exists('view')) {
+
     /**
      * Rendered view
      *
@@ -44,21 +48,39 @@ if (!function_exists('view')) {
     {
         return Qt_View::$view;
     }
+
 }
 
-if (!function_exists('get_current_module')) {
+if (!function_exists('current_middlewares')) {
+
+    /**
+     * Gets current middlewares
+     *
+     * @return string
+     */
+    function current_middlewares()
+    {
+        return RouteController::$currentRoute['middlewares'] ?? null;
+    }
+
+}
+
+if (!function_exists('current_module')) {
+
     /**
      * Gets current module
      *
      * @return string
      */
-    function get_current_module()
+    function current_module()
     {
         return RouteController::$currentModule;
     }
+
 }
 
 if (!function_exists('current_controller')) {
+
     /**
      * Get current controller
      *
@@ -68,9 +90,11 @@ if (!function_exists('current_controller')) {
     {
         return RouteController::$currentRoute['controller'];
     }
+
 }
 
 if (!function_exists('current_action')) {
+
     /**
      * Gets current action
      *
@@ -80,9 +104,25 @@ if (!function_exists('current_action')) {
     {
         return RouteController::$currentRoute['action'];
     }
+
+}
+
+if (!function_exists('current_action_args')) {
+
+    /**
+     * Gets current action args
+     *
+     * @return array
+     */
+    function current_route_args()
+    {
+        return RouteController::$currentRoute['args'] ?? null;
+    }
+
 }
 
 if (!function_exists('session')) {
+
     /**
      * Gets session handler
      *
@@ -93,9 +133,11 @@ if (!function_exists('session')) {
     {
         return (new SessionManager())->getSessionHandler();
     }
+
 }
 
 if (!function_exists('cookie')) {
+
     /**
      * Gets cookie handler
      *
@@ -106,9 +148,11 @@ if (!function_exists('cookie')) {
     {
         return new Cookie($_COOKIE);
     }
+
 }
 
 if (!function_exists('redirect')) {
+    
     /**
      * Redirect
      *
@@ -123,9 +167,11 @@ if (!function_exists('redirect')) {
         Response::setHeader('Location', $url);
         exit;
     }
+
 }
 
 if (!function_exists('get_referrer')) {
+
     /**
      * Gets the referrer
      *
@@ -138,9 +184,11 @@ if (!function_exists('get_referrer')) {
         }
         return null;
     }
+
 }
 
 if (!function_exists('current_url')) {
+
     /**
      * Gets current url
      *
@@ -150,9 +198,11 @@ if (!function_exists('current_url')) {
     {
         return (isset($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
     }
+
 }
 
 if (!function_exists('base_dir')) {
+
     /**
      * Gets base directory
      *
@@ -162,9 +212,11 @@ if (!function_exists('base_dir')) {
     {
         return BASE_DIR;
     }
+
 }
 
 if (!function_exists('modules_dir')) {
+
     /**
      * Gets public directory
      *
@@ -174,9 +226,11 @@ if (!function_exists('modules_dir')) {
     {
         return $moduleDir ?? MODULES_DIR;
     }
+
 }
 
 if (!function_exists('public_dir')) {
+
     /**
      * Gets public directory
      *
@@ -186,9 +240,11 @@ if (!function_exists('public_dir')) {
     {
         return PUBLIC_DIR;
     }
+
 }
 
 if (!function_exists('uploads_dir')) {
+
     /**
      * Gets uploads directory
      *
@@ -198,9 +254,11 @@ if (!function_exists('uploads_dir')) {
     {
         return UPLOADS_DIR;
     }
+
 }
 
 if (!function_exists('base_url')) {
+
     /**
      * Gets base url
      *
@@ -210,9 +268,11 @@ if (!function_exists('base_url')) {
     {
         return get_config('base_url') ?? (isset($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
     }
+
 }
 
 if (!function_exists('get_config')) {
+
     /**
      * Gets config value by given key
      *
@@ -224,9 +284,11 @@ if (!function_exists('get_config')) {
     {
         return Config::get($key, $default);
     }
+
 }
 
 if (!function_exists('env')) {
+
     /**
      * Gets environment variable
      *
@@ -246,9 +308,11 @@ if (!function_exists('env')) {
             return $default;
         }
     }
+
 }
 
 if (!function_exists('slugify')) {
+
     /**
      * Slugifys the string
      *
@@ -267,9 +331,11 @@ if (!function_exists('slugify')) {
         }
         return $text;
     }
+
 }
 
 if (!function_exists('_message')) {
+
     /**
      * _message
      *
@@ -287,9 +353,11 @@ if (!function_exists('_message')) {
             return preg_replace('/{%\d+}/', $params, $subject);
         }
     }
+
 }
 
 if (!function_exists('getallheaders')) {
+
     /**
      * getallheaders
      *
@@ -308,9 +376,11 @@ if (!function_exists('getallheaders')) {
         }
         return $headers;
     }
+
 }
 
 if (!function_exists('get_directory_classes')) {
+
     /**
      * Gets directory classes
      *
@@ -328,9 +398,11 @@ if (!function_exists('get_directory_classes')) {
         }
         return $class_names;
     }
+
 }
 
 if (!function_exists('parse_raw_http_request')) {
+
     /**
      * Parses raw http request
      *
@@ -361,9 +433,11 @@ if (!function_exists('parse_raw_http_request')) {
         }
         return $encoded_data;
     }
+
 }
 
 if (!function_exists('get_user_ip')) {
+
     /**
      * Gets user IP
      *
@@ -381,9 +455,11 @@ if (!function_exists('get_user_ip')) {
         }
         return $user_ip;
     }
+
 }
 
 if (!function_exists('out')) {
+
     /**
      * Outputs the dump of variable
      *
@@ -397,9 +473,11 @@ if (!function_exists('out')) {
         if ($die)
             die;
     }
+
 }
 
 if (!function_exists('csrf_token')) {
+
     /**
      * Outputs generated CSRF token
      *
@@ -410,9 +488,11 @@ if (!function_exists('csrf_token')) {
     {
         echo Csrf::generateToken(\session());
     }
+
 }
 
 if (!function_exists('t')) {
+
     /**
      * Gets translation
      *
@@ -424,9 +504,11 @@ if (!function_exists('t')) {
     {
         return Lang::getTranslation($key, $params);
     }
+
 }
 
 if (!function_exists('_t')) {
+
     /**
      * Outputs the translation
      *
@@ -438,9 +520,11 @@ if (!function_exists('_t')) {
     {
         echo t($key, $params);
     }
+
 }
 
 if (!function_exists('mailer')) {
+
     /**
      * Gets the Mail instance
      *
@@ -450,9 +534,11 @@ if (!function_exists('mailer')) {
     {
         return new Mail();
     }
+
 }
 
 if (!function_exists('get_caller_class')) {
+
     /**
      * Gets the caller class
      *
@@ -464,6 +550,7 @@ if (!function_exists('get_caller_class')) {
         $caller = $caller[2];
         return isset($caller['class']) ? $caller['class'] : null;
     }
+
 }
 
 if (!function_exists('get_caller_function')) {
@@ -471,12 +558,13 @@ if (!function_exists('get_caller_function')) {
     /**
      * Gets the caller function
      *
+     * @param integer $index
      * @return string
      */
-    function get_caller_function()
+    function get_caller_function($index = 2)
     {
         $caller = debug_backtrace();
-        $caller = $caller[2];
+        $caller = $caller[$index];
         return isset($caller['function']) ? $caller['function'] : null;
     }
 
@@ -494,6 +582,7 @@ if (!function_exists('pass_hash')) {
     {
         return password_hash(md5($pass), PASSWORD_BCRYPT);
     }
+
 }
 
 if (!function_exists('pass_check')) {
@@ -509,4 +598,5 @@ if (!function_exists('pass_check')) {
     {
         return password_verify(md5($pass), $hashpass);
     }
+
 }

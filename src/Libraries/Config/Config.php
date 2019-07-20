@@ -47,7 +47,7 @@ class Config
     public static function getSetup()
     {
         return (object)[
-            'module' => get_current_module(),
+            'module' => current_module(),
             'env' => 'config',
             'fileName' => 'config',
             'exceptionMessage' => ExceptionMessages::CONFIG_FILE_NOT_FOUND

@@ -77,7 +77,7 @@ class Lang
      */
     public function loadDir($dirName)
     {
-        $dirPath = modules_dir() . DS . get_current_module() . '/Views/lang/' . $dirName;
+        $dirPath = modules_dir() . DS . current_module() . '/Views/lang/' . $dirName;
 
         $files = glob($dirPath . "/*.php");
         if (count($files) == 0) {
@@ -88,7 +88,7 @@ class Lang
             $fileName = pathinfo($file)['filename'];
 
             $setup = (object)[
-                'module' => get_current_module(),
+                'module' => current_module(),
                 'env' => 'Views' . DS . 'lang' . DS . $dirName,
                 'fileName' => $fileName,
                 'exceptionMessage' => ExceptionMessages::TRANSLATION_FILES_NOT_FOUND
