@@ -16,8 +16,7 @@ namespace Quantum\Mvc;
 
 use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Libraries\Database\Database;
-use Quantum\Hooks\HookManager;
-use ORM;
+use Quantum\Factory\Factory;
 
 /**
  * Base Model Class
@@ -50,7 +49,7 @@ abstract class Qt_Model
      * Models fillable properties
      * @var array
      */
-    protected $fillable = array();
+    protected $fillable = [];
 
     /**
      * ORM database abstract layer object
@@ -70,7 +69,7 @@ abstract class Qt_Model
      *
      * @var string
      */
-    private $callerFunction = 'modelFactory';
+    private $callerFunction = 'getModel';
 
     /**
      * Class constructor
@@ -80,8 +79,8 @@ abstract class Qt_Model
      */
     public final function __construct()
     {
-        if (get_caller_function() != $this->callerFunction) {
-            throw new \Exception(ExceptionMessages::DIRECT_MODEL_CALL);
+        if (get_caller_function(3) != $this->callerFunction) {
+            throw new \Exception(_message(ExceptionMessages::DIRECT_MODEL_CALL, [$this->callerFunction, Factory::class]));
         }
 
         $this->model = get_called_class();
@@ -156,7 +155,9 @@ abstract class Qt_Model
      * @param string $method
      * @param mixed $args
      * @return void
+     * @throws \Exception
      */
+
     public function __call($method, $args = NULL)
     {
         switch ($method) {

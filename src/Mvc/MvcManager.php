@@ -36,75 +36,130 @@ use Quantum\Http\Request;
  */
 class MvcManager
 {
+    /**
+     * @var object
+     */
+    private $controller;
+
+    /**
+     * @var string
+     */
+    private $action;
 
     /**
      * Run MVC
-     *
-     * Runs the action of controller of current module
-     *
      * @param array $currentRoute
-     * @throws RouteException When controller, action not found
+     * @throws RouteException
+     * @throws \ReflectionException
      */
     public function runMvc($currentRoute)
     {
-        if ($_SERVER['REQUEST_METHOD'] != 'OPTIONS') {
+        HttpRequest::init();
+        $request = new Request();
 
-            HttpRequest::init();
-            $request = new Request();
+        if ($request->getMethod() != 'OPTIONS') {
 
-            if (isset($currentRoute['middlewares']) && count($currentRoute['middlewares']) > 0) {
+            if (current_middlewares()) {
                 $request = (new MiddlewareManager($currentRoute))->applyMiddlewares($request);
             }
 
-            $controllerPath = MODULES_DIR . DS . $currentRoute['module'] . DS . 'Controllers' . DS . $currentRoute['controller'] . '.php';
+            $this->controller = $this->getController();
 
-            if (!file_exists($controllerPath)) {
-                throw new RouteException(_message(ExceptionMessages::CONTROLLER_NOT_FOUND, $currentRoute['controller']));
-            }
+            $this->action = $this->getAction();
 
-            require_once $controllerPath;
-
-            $controllerClass = '\\Modules\\' . $currentRoute['module'] . '\\Controllers\\' . $currentRoute['controller'];
-
-            if (!class_exists($controllerClass, FALSE)) {
-                throw new RouteException(_message(ExceptionMessages::CONTROLLER_NOT_DEFINED, $currentRoute['controller']));
-            }
-
-            $controller = new $controllerClass();
-
-            $action = $currentRoute['action'];
-
-            if (!method_exists($controller, $action)) {
-                throw new RouteException(_message(ExceptionMessages::ACTION_NOT_DEFINED, $action));
-            }
-
-            if ($controller->csrfVerification ?? true) {
+            if ($this->controller->csrfVerification ?? true) {
                 Csrf::checkToken($request, \session());
             }
 
-            if (method_exists($controller, '__before')) {
-                call_user_func_array(array($controller, '__before'), $currentRoute['args']);
+            $routeArgs = current_route_args();
+
+            if (method_exists($this->controller, '__before')) {
+                call_user_func_array(array($this->controller, '__before'), $routeArgs);
             }
 
-            $reflaction = new \ReflectionMethod($controller, $action);
-            $params = $reflaction->getParameters();
+            call_user_func_array(array($this->controller, $this->action), $this->getArgs($routeArgs, $request));
 
-            foreach ($params as $param) {
-                if ($param->getType() == 'Quantum\Http\Request') {
-                    if ($param->getPosition() == 0) {
-                        array_unshift($currentRoute['args'], $request);
-                    } else {
-                        array_push($currentRoute['args'], $request);
-                    }
-                }
-            }
-
-            call_user_func_array(array($controller, $action), $currentRoute['args']);
-
-            if (method_exists($controller, '__after')) {
-                call_user_func_array(array($controller, '__after'), $currentRoute['args']);
+            if (method_exists($this->controller, '__after')) {
+                call_user_func_array(array($this->controller, '__after'), $routeArgs);
             }
         }
+    }
+
+    /**
+     * Get Controller
+     *
+     * @return object
+     * @throws RouteException
+     */
+    private function getController()
+    {
+        $controllerPath = modules_dir() . DS . current_module() . DS . 'Controllers' . DS . current_controller() . '.php';
+
+        if (!file_exists($controllerPath)) {
+            throw new RouteException(_message(ExceptionMessages::CONTROLLER_NOT_FOUND, current_controller()));
+        }
+
+        require_once $controllerPath;
+
+        $controllerClass = '\\Modules\\' . current_module() . '\\Controllers\\' . current_controller();
+
+        if (!class_exists($controllerClass, false)) {
+            throw new RouteException(_message(ExceptionMessages::CONTROLLER_NOT_DEFINED, current_controller()));
+        }
+
+        return new $controllerClass();
+    }
+
+    /**
+     * Get Action
+     *
+     * @return string
+     * @throws RouteException
+     */
+    private function getAction()
+    {
+        $action = current_action();
+
+        if (!method_exists($this->controller, $action)) {
+            throw new RouteException(_message(ExceptionMessages::ACTION_NOT_DEFINED, $action));
+        }
+
+        return $action;
+    }
+
+    /**
+     * Get Args
+     *
+     * @param  array $routeArgs
+     * @param Request $request
+     * @return array
+     * @throws \ReflectionException
+     */
+    private function getArgs($routeArgs, Request $request)
+    {
+        $args = [];
+
+        $reflaction = new \ReflectionMethod($this->controller, $this->action);
+        $params = $reflaction->getParameters();
+
+        foreach ($params as $param) {
+            $paramType = $param->getType();
+            if ($paramType) {
+                switch ($paramType) {
+                    case 'Quantum\Http\Request':
+                        array_push($args, $request);
+                        break;
+                    case 'Quantum\Factory\Factory':
+                        array_push($args, new Factory());
+                        break;
+                }
+            } else {
+                array_push($args, current($routeArgs));
+                next($routeArgs);
+            }
+        }
+
+        return $args;
     }
 
 }

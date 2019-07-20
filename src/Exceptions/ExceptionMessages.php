@@ -146,14 +146,14 @@ class ExceptionMessages
     const MISCONFIGURED_SESSION_HANDLER = 'Session handler is not properly configured';
 
     /**
-     * Undefined databse session table
+     * Undefined database session table
      */
     const UNDEFINED_SESSION_TABLE = 'Session table `{%1}` does not exists in database';
 
     /**
      * Direct model call message
      */
-    const DIRECT_MODEL_CALL = 'Models can not be called directly, use "modelFactory" method instead';
+    const DIRECT_MODEL_CALL = 'Models can not be called directly, use `{%1}` method of `{%2}` class instead';
 
     /**
      * Model not found message
@@ -174,6 +174,16 @@ class ExceptionMessages
      * Model does not have table property defined
      */
     const MODEL_WITHOUT_TABLE_DEFINED = 'Model `{%1}` does not have $table property defined';
+    
+    /**
+     * Service not found message
+     */
+    const SERVICE_NOT_FOUND = 'Service `{%1}` not found';
+    
+    /**
+     * Model not instance of Qt_Model
+     */
+    const NOT_INSTANCE_OF_SERVICE = 'Service `{%1}` is not instance of `{%2}`';
 
     /**
      * Misconfigured lang config

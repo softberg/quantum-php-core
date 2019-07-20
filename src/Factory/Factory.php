@@ -15,36 +15,74 @@
 namespace Quantum\Factory;
 
 use Quantum\Exceptions\ExceptionMessages;
+use Quantum\Mvc\Qt_Service;
 use Quantum\Mvc\Qt_Model;
 
 /**
- * Factory Trait
+ * Factory Class
  *
  * @package Quantum
  * @category Factory
  */
-trait Factory
+Class Factory
 {
+
     /**
-     * Model Factory
+     * Get Model
      *
-     * Deliver an object of request model
-     *
-     * @param string $modelName
-     * @param string $module
-     * @return Qt_Model
-     * @throws \Exception When model is not istance of Qt_Model
+     * @param string $modelClass
+     * @return object
+     * @throws \Exception
      */
-    public function modelFactory($modelName, $module = null)
+    public function getModel($modelClass)
     {
-        $modelClass = $this->findModelFile($modelName, $module);
+        $exceptions = [
+            ExceptionMessages::MODEL_NOT_FOUND,
+            ExceptionMessages::NOT_INSTANCE_OF_MODEL
+        ];
 
-        $model = new $modelClass();
-
-        if ($model instanceof Qt_Model) {
-            return $model;
-        } else {
-            throw new \Exception(_message(ExceptionMessages::NOT_INSTANCE_OF_MODEL, [$modelName, Qt_Model::class]));
-        }
+        return $this->get($modelClass, Qt_Model::class, $exceptions);
     }
+
+    /**
+     * Get Service
+     *
+     * @param string $serviceClass
+     * @return object
+     * @throws \Exception
+     */
+    public function getService($serviceClass)
+    {
+        $exceptions = [
+            ExceptionMessages::SERVICE_NOT_FOUND,
+            ExceptionMessages::NOT_INSTANCE_OF_SERVICE
+        ];
+
+        return $this->get($serviceClass, Qt_Service::class, $exceptions);
+    }
+
+    /**
+     * Get
+     *
+     * @param string $class
+     * @param string $type
+     * @param array $exceptions
+     * @return object
+     * @throws \Exception
+     */
+    private function get($class, $type, $exceptions)
+    {
+        if (!class_exists($class)) {
+            throw new \Exception(_message($exceptions[0], $class));
+        }
+
+        $object = new $class();
+
+        if (!$object instanceof $type) {
+            throw new \Exception(_message($exceptions[1], [$class, $type]));
+        }
+
+        return $object;
+    }
+
 }
