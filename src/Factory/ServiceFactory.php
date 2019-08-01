@@ -16,7 +16,6 @@ namespace Quantum\Factory;
 
 use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Mvc\Qt_Service;
-use Quantum\Mvc\Qt_Model;
 
 /**
  * Factory Class
@@ -24,31 +23,24 @@ use Quantum\Mvc\Qt_Model;
  * @package Quantum
  * @category Factory
  */
-abstract Class Factory
+Class ServiceFactory extends Factory
 {
-
-    /**
-     * Get
+/**
+     * Get Service
      *
-     * @param string $class
-     * @param string $type
-     * @param array $exceptions
+     * @param string $serviceClass
      * @return object
      * @throws \Exception
      */
-    protected function getInstance($class, $type, $exceptions)
+    public function get($serviceClass)
     {
-        if (!class_exists($class)) {
-            throw new \Exception(_message($exceptions[0], $class));
-        }
+        $exceptions = [
+            ExceptionMessages::SERVICE_NOT_FOUND,
+            ExceptionMessages::NOT_INSTANCE_OF_SERVICE
+        ];
 
-        $object = new $class();
-
-        if (!$object instanceof $type) {
-            throw new \Exception(_message($exceptions[1], [$class, $type]));
-        }
-
-        return $object;
+        return $this->getInstance($serviceClass, Qt_Service::class, $exceptions);
     }
+
 
 }

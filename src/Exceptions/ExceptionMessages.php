@@ -153,7 +153,17 @@ class ExceptionMessages
     /**
      * Direct model call message
      */
-    const DIRECT_MODEL_CALL = 'Models can not be called directly, use `{%1}` method of `{%2}` class instead';
+    const DIRECT_MODEL_CALL = 'Models can not be called directly, use `{%1}` class instead';
+    
+    /**
+     * Direct service call message
+     */
+    const DIRECT_SERVICE_CALL = 'Services can not be called directly, use `{%1}` class instead';
+    
+    /**
+     * Direct view call message
+     */
+    const DIRECT_VIEW_INCTANCE = 'Views can not be instantiated directly, use `{%1}` class instead';
 
     /**
      * Model not found message

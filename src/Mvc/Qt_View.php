@@ -16,6 +16,7 @@ namespace Quantum\Mvc;
 
 use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Libraries\Config\Config;
+use Quantum\Factory\ViewFactory;
 use Quantum\Hooks\HookManager;
 
 /**
@@ -31,13 +32,6 @@ use Quantum\Hooks\HookManager;
 class Qt_View {
 
     /**
-     * Current route
-     * 
-     * @var mixed 
-     */
-    private static $currentRoute;
-
-    /**
      * Layout file
      * 
      * @var string 
@@ -50,6 +44,14 @@ class Qt_View {
      * @var string 
      */
     public static $view;
+    
+    /**
+     * The data shared between layout and view
+     *
+     * @var array
+     */
+    public static $sharedData = [];
+    
 
     /**
      * Class constructor 
@@ -57,8 +59,11 @@ class Qt_View {
      * @param mixed $currentRoute
      * @return void
      */
-    public function __construct($currentRoute) {
-        self::$currentRoute = $currentRoute;
+    public function __construct() 
+    {
+        if (get_caller_class() != ViewFactory::class) {
+            throw new \Exception(_message(ExceptionMessages::DIRECT_VIEW_INCTANCE, [ViewFactory::class]));
+        }
     }
 
     /**
@@ -136,7 +141,7 @@ class Qt_View {
      * @throws \Exception When file is not found
      */
     private function findFile($file) {
-        $filePath = MODULES_DIR . DS . self::$currentRoute['module'] . DS . 'Views' . DS . $file . '.php';
+        $filePath = MODULES_DIR . DS . current_module() . DS . 'Views' . DS . $file . '.php';
         if (!file_exists($filePath)) {
             $filePath = BASE_DIR . DS . 'base' . DS . 'views' . DS . $file . '.php';
             if (!file_exists($filePath)) {
@@ -166,7 +171,7 @@ class Qt_View {
 
             return HookManager::call('templateRenderer', [
                         'configs' => $engineConfigs,
-                        'currentModule' => self::$currentRoute['module'],
+                        'currentModule' => current_module(),
                         'view' => $view,
                         'params' => $parmas,
                         'sharedData' => $sharedData

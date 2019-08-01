@@ -544,10 +544,10 @@ if (!function_exists('get_caller_class')) {
      *
      * @return string
      */
-    function get_caller_class()
+    function get_caller_class($index = 2)
     {
         $caller = debug_backtrace();
-        $caller = $caller[2];
+        $caller = $caller[$index];
         return isset($caller['class']) ? $caller['class'] : null;
     }
 

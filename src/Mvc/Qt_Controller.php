@@ -14,7 +14,7 @@
 
 namespace Quantum\Mvc;
 
-use Quantum\Libraries\Debugger\Debugger;
+
 use Quantum\Routes\RouteController;
 use Quantum\Hooks\HookManager;
 use Quantum\Factory\Factory;
@@ -28,8 +28,7 @@ use Quantum\Factory\Factory;
  * @subpackage MVC
  * @category MVC
  */
-class Qt_Controller extends RouteController
-{
+class Qt_Controller extends RouteController {
 
     /**
      * Reference of the Qt object
@@ -38,87 +37,19 @@ class Qt_Controller extends RouteController
     private static $instance;
 
     /**
-     * The data shared between layout and view
-     *
-     * @var array
-     */
-    private $sharedData = array();
-
-    /**
-     * Sets a layout
-     *
-     * @param string $layout
-     * @uses Qt_View::setLayout
-     * @return void
-     */
-    protected function setLayout($layout)
-    {
-        Qt_View::setLayout($layout);
-    }
-
-    /**
-     * Share
-     *
-     * Set the shared data, which becomes available in layout and view
-     *
-     * @param mixed $data
-     * @return void
-     */
-    protected function share($data)
-    {
-        foreach ($data as $key => $val) {
-            $this->sharedData[$key] = $val;
-        }
-    }
-
-    /**
-     * Render
-     *
-     * Renders the view
-     *
-     * @param string $view
-     * @param array $params
-     * @param bool $output
-     * @return void
-     */
-    public function render($view, $params = array(), $output = false)
-    {
-        if (filter_var(get_config('debug'), FILTER_VALIDATE_BOOLEAN)) {
-            $debugbarRenderer = Debugger::runDebuger($view);
-            $this->share(['debugbarRenderer' => $debugbarRenderer]);
-        }
-
-        new Qt_View(RouteController::$currentRoute);
-        Qt_View::render($view, $params, $output, $this->sharedData);
-    }
-
-    /**
-     * Output
-     *
-     * Outputs the view
-     *
-     * @param string $view
-     * @param array $params
-     * @return void
-     */
-    public function output($view, $params = array())
-    {
-        Qt_View::output($view, $params, $this->sharedData);
-    }
-
-    /**
      * GetInstance
      *
      * Gets the Qt singleton
      *
      * @return object
      */
-    public static function getInstance()
-    {
+    public static function getInstance() {
         if (self::$instance === null) {
             self::$instance = new self();
         }
+        
         return self::$instance;
     }
+
 
 }

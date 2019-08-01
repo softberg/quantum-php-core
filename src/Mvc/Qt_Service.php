@@ -15,7 +15,7 @@
 namespace Quantum\Mvc;
 
 use Quantum\Exceptions\ExceptionMessages;
-use Quantum\Factory\Factory;
+use Quantum\Factory\ServiceFactory;
 
 /**
  * Base Service Class
@@ -26,7 +26,19 @@ use Quantum\Factory\Factory;
  * @subpackage MVC
  * @category MVC
  */
-abstract class Qt_Service
-{
+abstract class Qt_Service {
+
+    /**
+     * Class constructor
+     *
+     * @return void
+     * @throws \Exception When called directly
+     */
+    public final function __construct()
+    {
+        if (get_caller_class(3) != ServiceFactory::class) {
+            throw new \Exception(_message(ExceptionMessages::DIRECT_SERVICE_CALL, [$this->callerFunction, ServiceFactory::class]));
+        }
+    }
 
 }

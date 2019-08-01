@@ -16,7 +16,7 @@ namespace Quantum\Mvc;
 
 use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Libraries\Database\Database;
-use Quantum\Factory\Factory;
+use Quantum\Factory\ModelFactory;
 
 /**
  * Base Model Class
@@ -65,13 +65,6 @@ abstract class Qt_Model
     private $model;
 
     /**
-     * Model factory function
-     *
-     * @var string
-     */
-    private $callerFunction = 'getModel';
-
-    /**
      * Class constructor
      *
      * @return void
@@ -79,8 +72,8 @@ abstract class Qt_Model
      */
     public final function __construct()
     {
-        if (get_caller_function(3) != $this->callerFunction) {
-            throw new \Exception(_message(ExceptionMessages::DIRECT_MODEL_CALL, [$this->callerFunction, Factory::class]));
+        if (get_caller_class(3) != ModelFactory::class) {
+            throw new \Exception(_message(ExceptionMessages::DIRECT_MODEL_CALL, [$this->callerFunction, ModelFactory::class]));
         }
 
         $this->model = get_called_class();
