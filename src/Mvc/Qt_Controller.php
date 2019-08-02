@@ -16,8 +16,6 @@ namespace Quantum\Mvc;
 
 
 use Quantum\Routes\RouteController;
-use Quantum\Hooks\HookManager;
-use Quantum\Factory\Factory;
 
 /**
  * Base Controller Class
@@ -28,7 +26,8 @@ use Quantum\Factory\Factory;
  * @subpackage MVC
  * @category MVC
  */
-class Qt_Controller extends RouteController {
+class Qt_Controller extends RouteController
+{
 
     /**
      * Reference of the Qt object
@@ -43,11 +42,12 @@ class Qt_Controller extends RouteController {
      *
      * @return object
      */
-    public static function getInstance() {
+    public static function getInstance()
+    {
         if (self::$instance === null) {
             self::$instance = new self();
         }
-        
+
         return self::$instance;
     }
 

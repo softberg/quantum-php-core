@@ -19,8 +19,9 @@ use Quantum\Libraries\Dumper\Dumper;
 use Quantum\Libraries\Config\Config;
 use Quantum\Libraries\Lang\Lang;
 use Quantum\Libraries\Csrf\Csrf;
-use Quantum\Http\Response;
+use Quantum\Factory\ViewFactory;
 use Quantum\Mvc\Qt_Controller;
+use Quantum\Http\Response;
 use Quantum\Mvc\Qt_View;
 
 if (!function_exists('qt_instance')) {
@@ -47,6 +48,22 @@ if (!function_exists('view')) {
     function view()
     {
         return Qt_View::$view;
+    }
+
+}
+
+if (!function_exists('render_partial')) {
+
+    /**
+     * Rendered patial
+     *
+     * @param string $partial
+     * @param array $args
+     */
+    function render_partial($partial, $args = array())
+    {
+        $view = new ViewFactory();
+        $view->output($partial, $args);
     }
 
 }
@@ -152,7 +169,7 @@ if (!function_exists('cookie')) {
 }
 
 if (!function_exists('redirect')) {
-    
+
     /**
      * Redirect
      *

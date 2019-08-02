@@ -37,7 +37,7 @@ abstract class Qt_Service {
     public final function __construct()
     {
         if (get_caller_class(3) != ServiceFactory::class) {
-            throw new \Exception(_message(ExceptionMessages::DIRECT_SERVICE_CALL, [$this->callerFunction, ServiceFactory::class]));
+            throw new \Exception(_message(ExceptionMessages::DIRECT_SERVICE_CALL, [ServiceFactory::class]));
         }
     }
 

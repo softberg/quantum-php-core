@@ -2,9 +2,9 @@
 
 /**
  * Quantum PHP Framework
- * 
+ *
  * An open source software development framework for PHP
- * 
+ *
  * @package Quantum
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
@@ -15,51 +15,52 @@
 namespace Quantum\Mvc;
 
 use Quantum\Exceptions\ExceptionMessages;
+use Quantum\Libraries\Debugger\Debugger;
 use Quantum\Libraries\Config\Config;
 use Quantum\Factory\ViewFactory;
 use Quantum\Hooks\HookManager;
 
 /**
  * Base View Class
- * 
- * Qt_View class is a base class that responsible for rendering and 
+ *
+ * Qt_View class is a base class that responsible for rendering and
  * outputting the view
- * 
+ *
  * @package Quantum
  * @subpackage MVC
  * @category MVC
  */
-class Qt_View {
+class Qt_View
+{
 
     /**
      * Layout file
-     * 
-     * @var string 
+     *
+     * @var string
      */
     private static $layout;
 
     /**
      * View file
-     * 
-     * @var string 
+     *
+     * @var string
      */
     public static $view;
-    
+
     /**
      * The data shared between layout and view
      *
      * @var array
      */
     public static $sharedData = [];
-    
+
 
     /**
-     * Class constructor 
-     * 
-     * @param mixed $currentRoute
-     * @return void
+     * Qt_View constructor.
+     *
+     * @throws \Exception
      */
-    public function __construct() 
+    public function __construct()
     {
         if (get_caller_class() != ViewFactory::class) {
             throw new \Exception(_message(ExceptionMessages::DIRECT_VIEW_INCTANCE, [ViewFactory::class]));
@@ -68,29 +69,31 @@ class Qt_View {
 
     /**
      * Sets a layout
-     * 
+     *
      * @param string $layout
      * @return void
      */
-    public function setLayout($layout) {
+    public function setLayout($layout)
+    {
         self::$layout = $layout;
     }
 
     /**
      * Renders a layout
-     * 
+     *
      * @param array $sharedData
      * @return string
      */
-    public function renderLayout($sharedData = array()) {
+    public function renderLayout($sharedData = [])
+    {
         return self::renderFile(self::$layout, array(), $sharedData);
     }
 
     /**
      * Render
-     * 
+     *
      * Renders a view
-     * 
+     *
      * @param string $view
      * @param array $params
      * @param bool $output
@@ -98,7 +101,8 @@ class Qt_View {
      * @uses self::renderFile
      * @return void
      */
-    public function render($view, $params = array(), $output = false, $sharedData = array()) {
+    public function render($view, $params = array(), $output = false, $sharedData = array())
+    {
         self::$view = self::renderFile($view, $params, $sharedData);
 
         if ($output) {
@@ -108,42 +112,39 @@ class Qt_View {
         if (!empty(self::$layout)) {
             echo self::renderLayout($sharedData);
 
-            if (isset($sharedData['debugbarRenderer']) && !is_null($sharedData['debugbarRenderer'])) {
-                $debugbarRenderer = $sharedData['debugbarRenderer'];
-                echo $debugbarRenderer->renderHead();
-                echo $debugbarRenderer->render();
+            if (filter_var(get_config('debug'), FILTER_VALIDATE_BOOLEAN)) {
+                $this->renderDebugBar($view);
             }
         }
     }
 
     /**
      * Output
-     * 
+     *
      * Outputs the view
-     * 
-     * @param string $view
+     * @param $view
      * @param array $params
      * @param array $sharedData
-     * @uses self::renderFile
-     * @return void
+     * @throws \Exception
      */
-    public function output($view, $params = array(), $sharedData = array()) {
+    public function output($view, $params = [], $sharedData = [])
+    {
         echo self::renderFile($view, $params, $sharedData);
     }
 
     /**
      * Find File
-     * 
+     *
      * Finds a given file
-     * 
-     * @param string $file
+     * @param $file
      * @return string
-     * @throws \Exception When file is not found
+     * @throws \Exception
      */
-    private function findFile($file) {
-        $filePath = MODULES_DIR . DS . current_module() . DS . 'Views' . DS . $file . '.php';
+    private function findFile($file)
+    {
+        $filePath = modules_dir() . DS . current_module() . DS . 'Views' . DS . $file . '.php';
         if (!file_exists($filePath)) {
-            $filePath = BASE_DIR . DS . 'base' . DS . 'views' . DS . $file . '.php';
+            $filePath = base_dir() . DS . 'base' . DS . 'views' . DS . $file . '.php';
             if (!file_exists($filePath)) {
                 throw new \Exception(_message(ExceptionMessages::VIEW_FILE_NOT_FOUND, $file));
             }
@@ -154,15 +155,17 @@ class Qt_View {
 
     /**
      * Render File
-     * 
-     * Renders a view  
-     * 
+     *
+     * Renders a view
+     *
      * @param string $view
      * @param array $parmas
      * @param array $sharedData
-     * @return string
+     * @return object|string
+     * @throws \Exception
      */
-    private function renderFile($view, $parmas = array(), $sharedData = array()) {
+    private function renderFile($view, $parmas = [], $sharedData = [])
+    {
         $templateEngine = Config::get('template_engine');
 
         if ($templateEngine) {
@@ -170,11 +173,10 @@ class Qt_View {
             $engineConfigs = $templateEngine[$engineName];
 
             return HookManager::call('templateRenderer', [
-                        'configs' => $engineConfigs,
-                        'currentModule' => current_module(),
-                        'view' => $view,
-                        'params' => $parmas,
-                        'sharedData' => $sharedData
+                'configs' => $engineConfigs,
+                'view' => $view,
+                'params' => $parmas,
+                'sharedData' => $sharedData
             ]);
         } else {
             return self::defaultRenderer($view, $parmas, $sharedData);
@@ -183,15 +185,16 @@ class Qt_View {
 
     /**
      * Default Renderer
-     * 
-     * Renders html view  
-     * 
+     *
+     * Renders html view
      * @param string $view
      * @param array $parmas
      * @param array $sharedData
      * @return string
+     * @throws \Exception
      */
-    private static function defaultRenderer($view, $parmas = array(), $sharedData = array()) {
+    private static function defaultRenderer($view, $parmas = [], $sharedData = [])
+    {
         $file = self::findFile($view);
 
         ob_start();
@@ -208,6 +211,18 @@ class Qt_View {
         require $file;
 
         return ob_get_clean();
+    }
+
+    /**
+     * Render Debug Bar
+     *
+     * @param string $view
+     */
+    private function renderDebugBar($view)
+    {
+        $debugbarRenderer = Debugger::runDebuger($view);
+        echo $debugbarRenderer->renderHead();
+        echo $debugbarRenderer->render();
     }
 
 }

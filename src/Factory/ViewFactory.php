@@ -19,12 +19,11 @@ use Quantum\Libraries\Debugger\Debugger;
 use Quantum\Mvc\Qt_View;
 
 /**
- * Factory Class
- *
- * @package Quantum
- * @category Factory
+ * Class ViewFactory
+ * @package Quantum\Factory
  */
-Class ViewFactory extends Factory {
+Class ViewFactory extends Factory
+{
 
     /**
      * Get View
@@ -32,7 +31,8 @@ Class ViewFactory extends Factory {
      * @return object
      * @throws \Exception
      */
-    public function view() {
+    public function view()
+    {
         return new Qt_View();
     }
 
@@ -44,25 +44,23 @@ Class ViewFactory extends Factory {
      * @param string $viewFile
      * @param array $params
      * @param bool $output
+     * @throws \Exception
      * @return void
      */
-    public function render($viewFile, $params = [], $output = false) {
-        if (filter_var(get_config('debug'), FILTER_VALIDATE_BOOLEAN)) {
-            $debugbarRenderer = Debugger::runDebuger($viewFile);
-            $this->share(['debugbarRenderer' => $debugbarRenderer]);
-        }
-
+    public function render($viewFile, $params = [], $output = false)
+    {
         $this->view()->render($viewFile, $params, $output, Qt_View::$sharedData);
     }
 
     /**
      * Sets a layout
      *
-     * @param string $layout
-     * @uses Qt_View::setLayout
+     * @param $layout
+     * @throws \Exception
      * @return void
      */
-    public function setLayout($layout) {
+    public function setLayout($layout)
+    {
         $this->view()->setLayout($layout);
     }
 
@@ -73,10 +71,10 @@ Class ViewFactory extends Factory {
      *
      * @param string $view
      * @param array $params
-     * @return void
      */
-    public function output($view, $params = array()) {
-        $this->view->output($view, $params, Qt_View::$sharedData);
+    public function output($view, $params = [])
+    {
+        $this->view()->output($view, $params, Qt_View::$sharedData);
     }
 
     /**
@@ -87,7 +85,8 @@ Class ViewFactory extends Factory {
      * @param mixed $data
      * @return void
      */
-    public function share($data) {
+    public function share($data)
+    {
         foreach ($data as $key => $value) {
             Qt_View::$sharedData[$key] = $value;
         }

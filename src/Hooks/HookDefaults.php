@@ -39,7 +39,6 @@ class HookDefaults implements HookInterface
      */
     public static function handleHeaders()
     {
-
         Response::setHeader('Access-Control-Allow-Origin', '*');
         Response::setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
         Response::setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
@@ -66,7 +65,7 @@ class HookDefaults implements HookInterface
      */
     public static function templateRenderer($data)
     {
-        $loader = new Twig_Loader_Filesystem(MODULES_DIR . DS . $data['currentModule'] . DS . 'Views');
+        $loader = new Twig_Loader_Filesystem(modules_dir() . DS . current_module() . DS . 'Views');
         $twig = new Twig_Environment($loader, $data['configs']);
 
         $definedFunctions = get_defined_functions();
