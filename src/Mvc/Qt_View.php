@@ -86,7 +86,7 @@ class Qt_View
      */
     public function renderLayout($sharedData = [])
     {
-        return self::renderFile(self::$layout, array(), $sharedData);
+        return self::renderFile(self::$layout, [], $sharedData);
     }
 
     /**
@@ -101,7 +101,7 @@ class Qt_View
      * @uses self::renderFile
      * @return void
      */
-    public function render($view, $params = array(), $output = false, $sharedData = array())
+    public function render($view, $params = [], $output = false, $sharedData = [])
     {
         self::$view = self::renderFile($view, $params, $sharedData);
 

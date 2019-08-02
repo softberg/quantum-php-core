@@ -9,13 +9,11 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 1.5.0
+ * @since 1.6.0
  */
 
 namespace Quantum\Factory;
 
-use Quantum\Exceptions\ExceptionMessages;
-use Quantum\Libraries\Debugger\Debugger;
 use Quantum\Mvc\Qt_View;
 
 /**

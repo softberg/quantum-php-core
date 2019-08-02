@@ -14,10 +14,6 @@
 
 namespace Quantum\Factory;
 
-use Quantum\Exceptions\ExceptionMessages;
-use Quantum\Mvc\Qt_Service;
-use Quantum\Mvc\Qt_Model;
-
 /**
  * Factory Class
  *

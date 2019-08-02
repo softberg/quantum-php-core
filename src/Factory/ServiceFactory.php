@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 1.5.0
+ * @since 1.6.0
  */
 
 namespace Quantum\Factory;
@@ -18,7 +18,7 @@ use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Mvc\Qt_Service;
 
 /**
- * Factory Class
+ * ServiceFactory Class
  *
  * @package Quantum
  * @category Factory
@@ -41,6 +41,5 @@ Class ServiceFactory extends Factory
 
         return $this->getInstance($serviceClass, Qt_Service::class, $exceptions);
     }
-
 
 }
