@@ -16,6 +16,7 @@ namespace Quantum\Mvc;
 
 
 use Quantum\Routes\RouteController;
+use Quantum\Factory\ViewFactory;
 
 /**
  * Base Controller Class
@@ -49,6 +50,22 @@ class Qt_Controller extends RouteController
         }
 
         return self::$instance;
+    }
+
+    /**
+     * __call magic
+     *
+     * @param string $function
+     * @param array $arguments
+     * @return mixed
+     */
+    public function __call($function, $arguments)
+    {
+        $view = new ViewFactory();
+
+        if(method_exists($view, $function)) {
+            return $view->$function(...$arguments);
+        }
     }
 
 
