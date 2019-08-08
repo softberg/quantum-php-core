@@ -40,7 +40,7 @@ Class ModelFactory extends Factory
             ExceptionMessages::NOT_INSTANCE_OF_MODEL
         ];
 
-        return parent::get($modelClass, Qt_Model::class, $exceptions);
+        return parent::getInstance($modelClass, Qt_Model::class, $exceptions);
     }
 
 }

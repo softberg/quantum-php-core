@@ -215,4 +215,9 @@ class ExceptionMessages
      */
     const UNEXPECTED_REQUEST_INITIALIZATION = 'HTTP Request can not be initialized outside of the core';
 
+    /**
+    * Undefined method
+    */
+    const UNDEFINED_METHOD = 'The method `{%1}` is not defined';
+
 }

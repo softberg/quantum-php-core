@@ -15,7 +15,9 @@
 namespace Quantum\Mvc;
 
 
+use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Routes\RouteController;
+use Quantum\Factory\ModelFactory;
 use Quantum\Factory\ViewFactory;
 
 /**
@@ -63,9 +65,13 @@ class Qt_Controller extends RouteController
     {
         $view = new ViewFactory();
 
-        if(method_exists($view, $function)) {
+        if (method_exists($view, $function)) {
             return $view->$function(...$arguments);
+        } elseif ($function == 'modelFactory') {
+            return (new ModelFactory())->get(...$arguments);
         }
+
+        throw new \Exception(_message(ExceptionMessages::UNDEFINED_METHOD, $function));
     }
 
 
