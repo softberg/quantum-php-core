@@ -121,6 +121,7 @@ class Debugger extends DebugBar
         $uri = RouteController::$currentRoute['uri'];
         $method = RouteController::$currentRoute['method'];
         $module = RouteController::$currentRoute['module'];
+        $middlewares = RouteController::$currentRoute['middlewares'];
         $current_controller = 'modules' . DS . $module . DS . RouteController::$currentRoute['controller'];
         $current_action = RouteController::$currentRoute['action'];
         $args = RouteController::$currentRoute['args'];
@@ -129,6 +130,7 @@ class Debugger extends DebugBar
             'Route' => $uri,
             'Method' => $method,
             'Module' => $module,
+            'Middlewares' => $middlewares,
             'Controller' => $current_controller,
             'Action' => $current_action,
             'View' => '',
