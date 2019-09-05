@@ -86,6 +86,7 @@ class Debugger extends DebugBar
         self::addQueries();
         self::addMessages();
         self::addRoute($view);
+        self::addMailLog();
 
         self::$debugbarRenderer = self::$debugbar->getJavascriptRenderer()
             ->setBaseUrl(self::$assets_url)
@@ -157,5 +158,24 @@ class Debugger extends DebugBar
             session()->delete('output');
         }
     }
+
+    /**
+     * Collects the mails
+     *
+     * @return void
+     */
+    private static function addMailLog()
+    {
+        $mail_log = session()->get('mail_log');
+        if ($mail_log) {
+            self::$debugbar->addCollector(new MessagesCollector('mail'));
+            $logs = explode('&', $mail_log);
+            foreach ($logs as $log) {
+                self::$debugbar['mail']->info($log);
+            }
+            session()->delete('mail_log');
+        }
+    }
+
 
 }

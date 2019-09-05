@@ -2,9 +2,9 @@
 
 /**
  * Quantum PHP Framework
- * 
+ *
  * An open source software development framework for PHP
- * 
+ *
  * @package Quantum
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
@@ -19,7 +19,7 @@ use Quantum\Routes\RouteController;
 
 /**
  * Mailer class
- * 
+ *
  * @package Quantum
  * @subpackage Libraries.Mailer
  * @category Libraries
@@ -28,14 +28,14 @@ class Mailer {
 
     /**
      * PHP Mailer instance
-     * 
-     * @var object 
+     *
+     * @var object
      */
     private $mailer;
 
     /**
-     * Class constructor 
-     * 
+     * Class constructor
+     *
      * @return void
      */
     public function __construct() {
@@ -44,16 +44,26 @@ class Mailer {
 
     /**
      * PHP Mailer Settings
-     * 
+     *
      * Configures the PHP Mailer
-     * 
+     *
      * @uses \PHPMailer
      * @return void
      */
     private function phpMailerSettings() {
         $phpMailer = new PHPMailer();
         if (strlen(env('MAIL_HOST')) > 0) {
-            $phpMailer->SMTPDebug = 0;
+            if (get_config('debug')) {
+                $phpMailer->SMTPDebug = 1;
+                $phpMailer->Debugoutput = function ($str, $level) {
+                    global $log;
+                    $log .= $str.'&';
+                    session()->set('mail_log', $log);
+                };
+            } else {
+                $phpMailer->SMTPDebug = 0;
+            }
+
             $phpMailer->isSMTP();
             $phpMailer->Host = env('MAIL_HOST');
             $phpMailer->SMTPAuth = true;
@@ -66,15 +76,14 @@ class Mailer {
         }
 
         $phpMailer->isHTML(true);
-
         $this->mailer = $phpMailer;
     }
 
     /**
-     * Send 
-     * 
+     * Send
+     *
      * Send the email
-     * 
+     *
      * @param array $from From address
      * @param array $addresses To addresses
      * @param type $message Message content
@@ -87,7 +96,7 @@ class Mailer {
 
         $this->createAddresses($addresses);
 
-        if ($options['subject']) {
+        if (isset($options['subject'])) {
             $this->mailer->Subject = $options['subject'];
         }
 
@@ -133,9 +142,9 @@ class Mailer {
 
     /**
      * Create From Template
-     * 
+     *
      * Create message body from email template
-     * 
+     *
      * @param mixed $message
      * @param string $template
      * @return string
@@ -156,9 +165,9 @@ class Mailer {
 
     /**
      * Create Attachments
-     * 
+     *
      * Add attachments from a path
-     * 
+     *
      * @param mixed $attachments
      * @uses \PHPMailer
      */
@@ -193,9 +202,9 @@ class Mailer {
 
     /**
      * Create Addresses
-     * 
+     *
      * Add a "To" addresses
-     * 
+     *
      * @param mixed $addresses
      * @uses \PHPMailer
      */
@@ -211,9 +220,9 @@ class Mailer {
 
     /**
      * Create Replays
-     * 
+     *
      * Add a "Reply-To" addresses
-     * 
+     *
      * @param mixed $addresses
      * @uses \PHPMailer
      */
@@ -229,9 +238,9 @@ class Mailer {
 
     /**
      * Create CCs
-     * 
+     *
      * Add a "CC" addresses
-     * 
+     *
      * @param mixed $addresses
      * @uses \PHPMailer
      */
@@ -247,9 +256,9 @@ class Mailer {
 
     /**
      * Create BCCs
-     * 
+     *
      * Add a "BCC" addresses
-     * 
+     *
      * @param mixed $addresses
      * @uses \PHPMailer
      */
