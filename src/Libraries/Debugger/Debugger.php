@@ -168,9 +168,9 @@ class Debugger extends DebugBar
      */
     private static function addMailLog()
     {
+        self::$debugbar->addCollector(new MessagesCollector('mail'));
         $mail_log = session()->get('mail_log');
         if ($mail_log) {
-            self::$debugbar->addCollector(new MessagesCollector('mail'));
             $logs = explode('&', $mail_log);
             foreach ($logs as $log) {
                 self::$debugbar['mail']->info($log);
