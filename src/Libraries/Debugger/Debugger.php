@@ -120,25 +120,20 @@ class Debugger extends DebugBar
     {
         $uri = RouteController::$currentRoute['uri'];
         $method = RouteController::$currentRoute['method'];
-        $module = RouteController::$currentRoute['module'];
-        $middlewares = RouteController::$currentRoute['middlewares'];
-        $current_controller = 'modules' . DS . $module . DS . RouteController::$currentRoute['controller'];
-        $current_action = RouteController::$currentRoute['action'];
-        $args = RouteController::$currentRoute['args'];
 
         $route = [
             'Route' => $uri,
             'Method' => $method,
-            'Module' => $module,
-            'Middlewares' => $middlewares,
-            'Controller' => $current_controller,
-            'Action' => $current_action,
-            'View' => '',
-            'Args' => $args,
+            'Module' => current_module(),
+            'Middlewares' => current_middlewares(),
+            'Controller' => current_module() . DS . current_controller(),
+            'Action' => current_action(),
+            'Args' => current_route_args(),
+            'View' => ''
         ];
 
         if ($view) {
-            $route['View'] = 'modules/' . RouteController::$currentRoute['module'] . '/Views/' . $view;
+            $route['View'] =  current_module() . '/Views/' . $view;
         }
 
         self::$debugbar->addCollector(new MessagesCollector('routes'));

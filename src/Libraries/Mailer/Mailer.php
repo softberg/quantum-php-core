@@ -34,6 +34,13 @@ class Mailer {
     private $mailer;
 
     /**
+     * PHP Mailer Log
+     *
+     * @var string
+     */
+    private $log;
+
+    /**
      * Class constructor
      *
      * @return void
@@ -55,10 +62,10 @@ class Mailer {
         if (strlen(env('MAIL_HOST')) > 0) {
             if (get_config('debug')) {
                 $phpMailer->SMTPDebug = 1;
+
                 $phpMailer->Debugoutput = function ($str, $level) {
-                    global $log;
-                    $log .= $str.'&';
-                    session()->set('mail_log', $log);
+                    $this->log .= $str . '&';
+                    session()->set('mail_log', $this->log);
                 };
             } else {
                 $phpMailer->SMTPDebug = 0;
