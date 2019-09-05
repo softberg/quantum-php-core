@@ -218,7 +218,7 @@ abstract class HttpRequest
      */
     public function getAuthorizationBearer()
     {
-        $allHeaders = array_change_key_case(self::$__request, CASE_UPPER);
+        $allHeaders = array_change_key_case(self::$__headers, CASE_UPPER);
 
         if (array_key_exists('AUTHORIZATION', $allHeaders)) {
             if (preg_match('/Bearer\s(\S+)/', $allHeaders['AUTHORIZATION'], $matches)) {
