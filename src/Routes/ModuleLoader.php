@@ -58,8 +58,9 @@ class ModuleLoader {
 
             $route = new Route($module);
             $routesClosure($route);
-            $router->routes = $route->getRuntimeRoutes();
+            $router->routes = array_merge($router->routes, $route->getRuntimeRoutes());
         }
+
     }
 
 }
