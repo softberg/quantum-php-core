@@ -32,10 +32,10 @@ abstract class HttpResponse {
      * 
      * @var array 
      */
-    public static $statusTexts = array(
+    public static $statusTexts = [
         100 => 'Continue',
         101 => 'Switching Protocols',
-        102 => 'Processing',            // RFC2518
+        102 => 'Processing',
         200 => 'OK',
         201 => 'Created',
         202 => 'Accepted',
@@ -43,9 +43,9 @@ abstract class HttpResponse {
         204 => 'No Content',
         205 => 'Reset Content',
         206 => 'Partial Content',
-        207 => 'Multi-Status',          // RFC4918
-        208 => 'Already Reported',      // RFC5842
-        226 => 'IM Used',               // RFC3229
+        207 => 'Multi-Status',
+        208 => 'Already Reported',
+        226 => 'IM Used',
         300 => 'Multiple Choices',
         301 => 'Moved Permanently',
         302 => 'Found',
@@ -53,7 +53,7 @@ abstract class HttpResponse {
         304 => 'Not Modified',
         305 => 'Use Proxy',
         307 => 'Temporary Redirect',
-        308 => 'Permanent Redirect',    // RFC7238
+        308 => 'Permanent Redirect',
         400 => 'Bad Request',
         401 => 'Unauthorized',
         402 => 'Payment Required',
@@ -72,30 +72,30 @@ abstract class HttpResponse {
         415 => 'Unsupported Media Type',
         416 => 'Range Not Satisfiable',
         417 => 'Expectation Failed',
-        418 => 'I\'m a teapot',                                               // RFC2324
-        421 => 'Misdirected Request',                                         // RFC7540
-        422 => 'Unprocessable Entity',                                        // RFC4918
-        423 => 'Locked',                                                      // RFC4918
-        424 => 'Failed Dependency',                                           // RFC4918
-        425 => 'Reserved for WebDAV advanced collections expired proposal',   // RFC2817
-        426 => 'Upgrade Required',                                            // RFC2817
-        428 => 'Precondition Required',                                       // RFC6585
-        429 => 'Too Many Requests',                                           // RFC6585
-        431 => 'Request Header Fields Too Large',                             // RFC6585
-        451 => 'Unavailable For Legal Reasons',                               // RFC7725
+        418 => 'I\'m a teapot',
+        421 => 'Misdirected Request',
+        422 => 'Unprocessable Entity',
+        423 => 'Locked',
+        424 => 'Failed Dependency',
+        425 => 'Reserved for WebDAV advanced collections expired proposal',
+        426 => 'Upgrade Required',
+        428 => 'Precondition Required',
+        429 => 'Too Many Requests',
+        431 => 'Request Header Fields Too Large',
+        451 => 'Unavailable For Legal Reasons',
         500 => 'Internal Server Error',
         501 => 'Not Implemented',
         502 => 'Bad Gateway',
         503 => 'Service Unavailable',
         504 => 'Gateway Timeout',
         505 => 'HTTP Version Not Supported',
-        506 => 'Variant Also Negotiates (Experimental)',                      // RFC2295
-        507 => 'Insufficient Storage',                                        // RFC4918
-        508 => 'Loop Detected',                                               // RFC5842
-        510 => 'Not Extended',                                                // RFC2774
-        511 => 'Network Authentication Required',                             // RFC6585
-    );
-    
+        506 => 'Variant Also Negotiates (Experimental)',
+        507 => 'Insufficient Storage',
+        508 => 'Loop Detected',
+        510 => 'Not Extended',
+        511 => 'Network Authentication Required',
+    ];
+
     /**
      * Set status
      * 
@@ -135,5 +135,62 @@ abstract class HttpResponse {
     public static function setHeader($key, $value) {
         header($key . ': ' . $value);
     }
-    
+
+    /**
+     * JSON output
+     *
+     * Outputs JSON response
+     *
+     * @param mixed $data
+     * @param integer $status
+     */
+    public static function json($data, $status = null) {
+        if ($status) {
+            self::setStatus($status);
+        }
+
+        self::setContentType('application/json');
+        echo json_encode($data);
+        exit;
+    }
+
+    /**
+     * XML output
+     *
+     * Outputs XML response
+     *
+     * @param array $arr
+     */
+    public static function xml(array $arr) {
+        $simpleXML = new \SimpleXMLElement('<?xml version="1.0"?><data></data>');
+        self::arrayToXML($arr, $simpleXML);
+
+        self::setContentType('application/xml');
+        echo $simpleXML->asXML();
+        exit;
+    }
+
+    /**
+     * ArrayToXML
+     *
+     * Transforms array to XML
+     *
+     * @param array $arr
+     * @param object $simpleXML
+     * @return void
+     */
+    private function arrayToXML(array $arr, &$simpleXML) {
+        foreach ($arr as $key => $value) {
+            if (is_numeric($key)) {
+                $key = 'item' . $key;
+            }
+            if (is_array($value)) {
+                $subnode = $simpleXML->addChild($key);
+                self::arrayToXML($value, $subnode);
+            } else {
+                $simpleXML->addChild("$key", htmlspecialchars("$value"));
+            }
+        }
+    }
+
 }

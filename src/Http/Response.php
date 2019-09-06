@@ -26,93 +26,28 @@ use Quantum\Mvc\Qt_Controller;
  * @subpackage Http
  * @category Http
  */
-class Response extends HttpResponse {
+class Response {
 
     /**
-     * Error Page
-     * 
-     * Outputs error page
-     * 
-     * @param string $file
-     * @param integer $code
-     * @param string $modulePath
-     * @param mixed $params
-     * @return void
+     * __call magic
+     *
+     * @param string $function The function name
+     * @param array $arguments
+     * @return mixed
      */
-    public static function errorPage($file, $code, $modulePath, $params = NULL) {
-        parent::setStatus($code);
-        
-        qt_instance()->output('errors/' . $file, $modulePath, $params);
-        exit;
+    public function __call($function, $arguments) {
+        return HttpResponse::$function(...$arguments);
     }
 
     /**
-     * JSON
-     * 
-     * Sends JSON response
-     * 
-     * @param mixed $data
-     * @param integer $status
-     * @return string
+     * __callStatic magic
+     *
+     * @param string $function The function name
+     * @param array $arguments
+     * @return mixed
      */
-    public static function json($data, $status = NULL) {
-        if ($status) {
-            parent::setStatus($status);
-        }
-        parent::setContentType('application/json');
-        return json_encode($data);
-    }
-
-    /**
-     * JSON output
-     * 
-     * Outputs JSON response
-     * 
-     * @param mixed $data
-     * @param integer $status
-     */
-    public static function jsonOutput($data, $status = NULL) {
-        echo self::json($data, $status);
-    }
-
-    /**
-     * XML
-     * 
-     * Sends XML response
-     * 
-     * @param array $arr
-     * @return string
-     */
-    public static function xml(array $arr) {
-        parent::setContentType('application/xml');
-
-        $simpleXML = new \SimpleXMLElement('<?xml version="1.0"?><data></data>');
-        self::arrayToXML($arr, $simpleXML);
-
-        return $simpleXML->asXML();
-    }
-
-    /**
-     * ArrayToXML
-     * 
-     * Transforms array to XML
-     * 
-     * @param array $arr
-     * @param object $simpleXML
-     * @return void
-     */
-    private function arrayToXML(array $arr, &$simpleXML) {
-        foreach ($arr as $key => $value) {
-            if (is_numeric($key)) {
-                $key = 'item' . $key;
-            }
-            if (is_array($value)) {
-                $subnode = $simpleXML->addChild($key);
-                self::arrayToXML($value, $subnode);
-            } else {
-                $simpleXML->addChild("$key", htmlspecialchars("$value"));
-            }
-        }
+    public static function __callStatic($function, $arguments) {
+        return HttpResponse::$function(...$arguments);
     }
 
 }

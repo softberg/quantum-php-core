@@ -24,7 +24,9 @@ use Quantum\Middleware\MiddlewareManager;
 use Quantum\Exceptions\RouteException;
 use Quantum\Hooks\HookManager;
 use Quantum\Http\HttpRequest;
+use Quantum\Http\HttpResponse;
 use Quantum\Http\Request;
+use Quantum\Http\Response;
 
 /**
  * MvcManager Class
@@ -57,12 +59,14 @@ class MvcManager
     public function runMvc($currentRoute)
     {
         HttpRequest::init();
+
         $request = new Request();
+        $response = new Response();
 
         if ($request->getMethod() != 'OPTIONS') {
 
             if (current_middlewares()) {
-                $request = (new MiddlewareManager($currentRoute))->applyMiddlewares($request);
+                list($request, $response) = (new MiddlewareManager($currentRoute))->applyMiddlewares($request, $response);
             }
 
             $this->controller = $this->getController();
@@ -76,15 +80,17 @@ class MvcManager
             $routeArgs = current_route_args();
 
             if (method_exists($this->controller, '__before')) {
-                call_user_func_array(array($this->controller, '__before'), $this->getArgs($routeArgs, '__before', $request));
+                call_user_func_array(array($this->controller, '__before'), $this->getArgs($routeArgs, '__before', $request, $response));
             }
 
-            call_user_func_array(array($this->controller, $this->action), $this->getArgs($routeArgs, $this->action, $request));
+            call_user_func_array(array($this->controller, $this->action), $this->getArgs($routeArgs, $this->action, $request, $response));
 
             if (method_exists($this->controller, '__after')) {
-                call_user_func_array(array($this->controller, '__after'), $this->getArgs($routeArgs, '__after', $request));
+                call_user_func_array(array($this->controller, '__after'), $this->getArgs($routeArgs, '__after', $request, $response));
             }
+
         }
+
     }
 
     /**
@@ -137,7 +143,7 @@ class MvcManager
      * @return array
      * @throws \ReflectionException
      */
-    private function getArgs($routeArgs, $action, Request $request)
+    private function getArgs($routeArgs, $action, Request $request, Response $response)
     {
         $args = [];
 
@@ -151,6 +157,9 @@ class MvcManager
                 switch ($paramType) {
                     case 'Quantum\Http\Request':
                         array_push($args, $request);
+                        break;
+                    case 'Quantum\Http\Response':
+                        array_push($args, $response);
                         break;
                     case 'Quantum\Factory\ServiceFactory':
                         array_push($args, new ServiceFactory());

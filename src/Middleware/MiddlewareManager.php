@@ -17,6 +17,7 @@ namespace Quantum\Middleware;
 use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Exceptions\RouteException;
 use Quantum\Http\Request;
+use Quantum\Http\Response;
 
 /**
  * MiddlewareManager Class
@@ -64,9 +65,10 @@ class MiddlewareManager
      * @throws RouteException
      * @throws \Exception
      */
-    public function applyMiddlewares(Request $request)
+    public function applyMiddlewares(Request $request, Response $response)
     {
         $modifiedRequest = $request;
+        $modifiedResponse = $response;
 
         $middlewarePath = MODULES_DIR . '/' . $this->module . '/Middlewares/' . current($this->middlewares) . '.php';
 
@@ -85,21 +87,21 @@ class MiddlewareManager
         $currentMiddleware = new $middlewareClass();
 
         if ($currentMiddleware instanceof Qt_Middleware) {
-            $modifiedRequest = $currentMiddleware->apply($request, function ($request) {
+            list($modifiedRequest, $modifiedResponse) = $currentMiddleware->apply($request, $response, function ($request, $response) {
                 next($this->middlewares);
-                return $request;
+                return [$request, $response];
             });
 
             if (current($this->middlewares)) {
                 try {
-                    $modifiedRequest = $this->applyMiddlewares($modifiedRequest);
+                    list($modifiedRequest, $modifiedResponse) = $this->applyMiddlewares($modifiedRequest, $modifiedResponse);
                 } catch (\TypeError $ex) {
                     throw new \Exception(_message(ExceptionMessages::MIDDLEWARE_NOT_HANDLED, current($this->middlewares)));
                 }
             }
         }
 
-        return $modifiedRequest;
+        return [$modifiedRequest, $modifiedResponse];
     }
 
 }

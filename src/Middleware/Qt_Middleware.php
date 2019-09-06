@@ -15,6 +15,7 @@
 namespace Quantum\Middleware;
 
 use Quantum\Http\Request;
+use Quantum\Http\Response;
 
 /**
  * Class Qt_Middleware
@@ -32,6 +33,6 @@ abstract class Qt_Middleware
      * @param \Closure $next
      * @return mixed
      */
-    abstract protected function apply(Request $request, \Closure $next);
+    abstract protected function apply(Request $request, Response $response, \Closure $next);
 
 }
