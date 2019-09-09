@@ -103,6 +103,21 @@ class JWToken extends JWT
     }
 
     /**
+     * Set claims
+     *
+     * @param array $claims
+     * @return $this
+     */
+	public function setClaims(array $claims)
+    {
+        foreach ($claims as $key => $value) {
+            $this->payload[$key] = $value;
+        }
+
+        return $this;
+    }
+
+    /**
      * Sets user data
      *
      * @param array $data

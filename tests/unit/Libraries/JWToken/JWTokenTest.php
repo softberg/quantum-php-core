@@ -19,16 +19,20 @@ class JWTokenTest extends TestCase
 
     public function setUp(): void
     {
+        $claims = [
+            'jti' => uniqid(),
+            'iss' => 'issuer',
+            'aud' => 'audience',
+            'iat' => time(),
+            'nbf' => time() + 1,
+            'exp' => time() + 300
+        ];
+
         $this->jwtToken = new JWToken(JWToken::generateSecretKey());
 
         $this->jwtToken
             ->setLeeway(1)
-            ->setClaim('jti', uniqid())
-            ->setClaim('iss', 'issuer')
-            ->setClaim('aud', 'audience')
-            ->setClaim('iat', time())
-            ->setClaim('nbf', time() + 1)
-            ->setClaim('exp', time() + 300);
+            ->setClaims($claims);
     }
 
     public function testCompose()
@@ -108,6 +112,33 @@ class JWTokenTest extends TestCase
         $this->assertNotNull($this->jwtToken->fetchClaim('sub'));
 
         $this->assertEquals('subject', $this->jwtToken->fetchClaim('sub'));
+
+    }
+
+    public function testSetClaims()
+    {
+        $jwtToken = new JWToken(JWToken::generateSecretKey());
+
+        $claims = [
+            'jti' => uniqid(),
+            'iat' => time(),
+            'nbf' => time() + 1,
+            'exp' => time() + 500
+        ];
+
+        $jwtToken->setLeeway(1)->setClaims($claims);
+
+        $jwtEncoded = $jwtToken->setAlgorithm('HS512')->compose();
+
+        $this->assertEmpty($jwtToken->fetchPayload());
+
+        $jwtToken->retrieve($jwtEncoded, ['HS512']);
+
+        $this->assertNotEmpty($jwtToken->fetchPayload());
+
+        $this->assertIsObject($jwtToken->fetchPayload());
+
+        $this->assertEquals($claims, (array)$jwtToken->fetchPayload());
 
     }
 
