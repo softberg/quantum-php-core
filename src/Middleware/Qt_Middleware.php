@@ -33,6 +33,6 @@ abstract class Qt_Middleware
      * @param \Closure $next
      * @return mixed
      */
-    abstract protected function apply(Request $request, Response $response, \Closure $next);
+    abstract public function apply(Request $request, Response $response, \Closure $next);
 
 }
