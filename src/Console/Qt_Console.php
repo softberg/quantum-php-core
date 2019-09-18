@@ -64,8 +64,18 @@ class Qt_Console
      */
     private function register()
     {
-        $classNames = get_directory_classes(BASE_DIR . DS . 'base' . DS . 'commands');
+        $coreClassNames = get_directory_classes(CORE_DIR . DS . 'Console' . DS . 'Commands');
+        foreach ($coreClassNames as $coreClassName) {
+            $coreCommandClass = '\\Quantum\\Console\\Commands\\' . $coreClassName;
 
+            $coreCommand = new $coreCommandClass();
+
+            if ($coreCommand instanceof Qt_Command) {
+                $this->application->add($coreCommand);
+            }
+        }
+
+        $classNames = get_directory_classes(BASE_DIR . DS . 'base' . DS . 'commands');
         foreach ($classNames as $className) {
             $commandClass = '\\Base\\Commands\\' . $className;
 
