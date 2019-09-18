@@ -60,7 +60,7 @@ abstract class Qt_Command extends Command implements CommandInterface
      * Console command options
      *
      * @var array
-     * @example 'name', 'sortcut', 'type', 'description', 'default']
+     * @example ['name', 'sortcut', 'type', 'description', 'default']
      */
     protected $options = [];
 
