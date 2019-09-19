@@ -2,9 +2,9 @@
 
 /**
  * Quantum PHP Framework
- * 
+ *
  * An open source software development framework for PHP
- * 
+ *
  * @package Quantum
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
@@ -21,9 +21,9 @@ use Quantum\Hooks\HookController;
 
 /**
  * Router Class
- * 
+ *
  * Router class parses URIS and determine routing
- * 
+ *
  * @package Quantum
  * @subpackage Routes
  * @category Routes
@@ -33,16 +33,16 @@ class Router extends RouteController {
     /**
      * List of routes
      *
-     * @var array 
+     * @var array
      */
     public $routes = array();
 
     /**
      * Find Route
-     * 
-     * Matches any routes that may exists in config/routes.php file of specific module 
+     *
+     * Matches any routes that may exists in config/routes.php file of specific module
      * against the URI to determine current route and current module
-     * 
+     *
      * @return void
      * @throws RouteException When repetitive route was found
      */
@@ -54,7 +54,7 @@ class Router extends RouteController {
             $request_uri = preg_replace('/[?]/', '', $_SERVER['REQUEST_URI']);
 
             foreach ($this->routes as $route) {
-                if (trim(urldecode($request_uri), '/') == $route['uri']) {
+                if (rtrim(urldecode($request_uri), '/') == rtrim($route['uri'], '/')) {
                     $matched_uris[] = $route['uri'];
                     $route['args'] = [];
                     array_push($routes_group, $route);
@@ -133,9 +133,9 @@ class Router extends RouteController {
     }
 
     /**
-     * Matches the http method defined in config/routes.php file of specific module 
+     * Matches the http method defined in config/routes.php file of specific module
      * against request method determine current route
-     * 
+     *
      * @return void
      * @throws RouteException When Http method is other the defined in config/routes.php of sepcific mosule
      */
@@ -151,7 +151,7 @@ class Router extends RouteController {
 
     /**
      * Finds url pattern
-     * 
+     *
      * @param string $matches
      * @return string
      */
