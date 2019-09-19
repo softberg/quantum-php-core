@@ -406,13 +406,17 @@ if (!function_exists('get_directory_classes')) {
      */
     function get_directory_classes($path)
     {
-        $allFiles = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path));
-        $phpFiles = new RegexIterator($allFiles, '/\.php$/');
-        $class_names = array();
-        foreach ($phpFiles as $file) {
-            $class = pathinfo($file->getFilename());
-            array_push($class_names, $class['filename']);
+        $class_names = [];
+
+        if(is_dir($path)) {
+            $allFiles = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path));
+            $phpFiles = new RegexIterator($allFiles, '/\.php$/');
+            foreach ($phpFiles as $file) {
+                $class = pathinfo($file->getFilename());
+                array_push($class_names, $class['filename']);
+            }
         }
+
         return $class_names;
     }
 
