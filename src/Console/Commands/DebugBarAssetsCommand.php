@@ -1,27 +1,70 @@
 <?php
 
+/**
+ * Quantum PHP Framework
+ *
+ * An open source software development framework for PHP
+ *
+ * @package Quantum
+ * @author Arman Ag. <arman.ag@softberg.org>
+ * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
+ * @link http://quantum.softberg.org/
+ * @since 1.7.0
+ */
+
 namespace Quantum\Console\Commands;
 
 use Quantum\Console\Qt_Command;
 
+/**
+ * Class DebugBarAssetsCommand
+ * @package Quantum\Console\Commands
+ */
 class DebugBarAssetsCommand extends Qt_Command
 {
+    /**
+     * Command name
+     *
+     * @var string
+     */
     protected $name = 'core:debugbar';
 
-    protected $description = 'Published debugbar assets';
+    /**
+     * Command description
+     *
+     * @var string
+     */
+    protected $description = 'Publishing debugbar assets';
 
-    protected $help = 'Published debugbar assets';
+    /**
+     * Command help text
+     *
+     * @var string
+     */
+    protected $help = 'The command will published debugbar assets';
 
 
+    /**
+     * Executes the command and publishes the debugbar assets
+     *
+     * @return mixed|void
+     */
     public function exec()
     {
-        $vendor_debugbar_assets_path = 'vendor/maximebf/debugbar/src/DebugBar/Resources';
-        $public_debugbar_path = 'public/assets/DebugBar/Resources';
-        $this->recursive_copy($vendor_debugbar_assets_path, $public_debugbar_path);
+        $vendorDebugbarAssetsPath = 'vendor/maximebf/debugbar/src/DebugBar/Resources';
+        $publicDebugbarPath = 'public/assets/DebugBar/Resources';
+        $this->recursive_copy($vendorDebugbarAssetsPath, $publicDebugbarPath);
 
-        $this->info('published debugbar assets');
+        $this->info('Debugbar assets successfully published');
     }
 
+    /**
+     * Recursively copies the debugbar assets
+     *
+     * @param string $src
+     * @param string $dst
+     * @return void
+     */
     private function recursive_copy($src, $dst)
     {
         $dir = opendir($src);
