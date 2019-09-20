@@ -13,6 +13,7 @@
  */
 
 use Quantum\Routes\RouteController;
+use Quantum\Libraries\Environment\Environment;
 use Quantum\Libraries\Session\SessionManager;
 use Quantum\Libraries\Cookie\Cookie;
 use Quantum\Libraries\Dumper\Dumper;
@@ -309,21 +310,13 @@ if (!function_exists('env')) {
     /**
      * Gets environment variable
      *
-     * @param mixed $var
-     * @param mixed $defaul
-     * @return mixed
+     * @param string $var
+     * @param null $default
+     * @return array|false|mixed|null|string
      */
     function env($var, $default = null)
     {
-        $val = getenv($var);
-
-        $default = var_export($default, true);
-
-        if ($val !== false) {
-            return $val;
-        } elseif ($default) {
-            return $default;
-        }
+        return Environment::getValue($var, $default);
     }
 
 }
