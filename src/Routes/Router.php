@@ -28,14 +28,15 @@ use Quantum\Hooks\HookController;
  * @subpackage Routes
  * @category Routes
  */
-class Router extends RouteController {
+class Router extends RouteController
+{
 
     /**
      * List of routes
      *
      * @var array
      */
-    public $routes = array();
+    public $routes = [];
 
     /**
      * Find Route
@@ -46,15 +47,17 @@ class Router extends RouteController {
      * @return void
      * @throws RouteException When repetitive route was found
      */
-    public function findRoute() {
+    public function findRoute()
+    {
         if (isset($_SERVER['REQUEST_URI'])) {
 
-            $matched_uris = array();
-            $routes_group = array();
+            $matched_uris = [];
+            $routes_group = [];
+
             $request_uri = preg_replace('/[?]/', '', $_SERVER['REQUEST_URI']);
 
             foreach ($this->routes as $route) {
-                if (rtrim(urldecode($request_uri), '/') == rtrim($route['uri'], '/')) {
+                if (trim(urldecode($request_uri), '/') == trim($route['uri'], '/')) {
                     $matched_uris[] = $route['uri'];
                     $route['args'] = [];
                     array_push($routes_group, $route);
@@ -64,9 +67,9 @@ class Router extends RouteController {
             if (!$matched_uris) {
                 foreach ($this->routes as $route) {
                     $route['uri'] = str_replace('/', '\/', $route['uri']);
-                    $route['uri'] = preg_replace_callback('/\[(:num)(:([0-9]+))*\](\?)?/', array($this, 'findPattern'), $route['uri']);
-                    $route['uri'] = preg_replace_callback('/\[(:alpha)(:([0-9]+))*\](\?)?/', array($this, 'findPattern'), $route['uri']);
-                    $route['uri'] = preg_replace_callback('/\[(:any)(:([0-9]+))*\](\?)?/', array($this, 'findPattern'), $route['uri']);
+                    $route['uri'] = preg_replace_callback('/(\\\\\/)*\[(:num)(:([0-9]+))*\](\?)?/', array($this, 'findPattern'), $route['uri']);
+                    $route['uri'] = preg_replace_callback('/(\\\\\/)*\[(:alpha)(:([0-9]+))*\](\?)?/', array($this, 'findPattern'), $route['uri']);
+                    $route['uri'] = preg_replace_callback('/(\\\\\/)*\[(:any)(:([0-9]+))*\](\?)?/', array($this, 'findPattern'), $route['uri']);
 
                     $request_uri = parse_url($_SERVER['REQUEST_URI']);
 
@@ -76,7 +79,7 @@ class Router extends RouteController {
                         array_push($matched_uris, $matches[0]);
                         array_shift($matches);
 
-                        $route['args'] = $matches;
+                        $route['args'] = array_diff($matches, ['', '/']);
                         array_push($routes_group, $route);
                     }
                 }
@@ -134,12 +137,13 @@ class Router extends RouteController {
 
     /**
      * Matches the http method defined in config/routes.php file of specific module
-     * against request method determine current route
+     * against request method to determine current route
      *
      * @return void
-     * @throws RouteException When Http method is other the defined in config/routes.php of sepcific mosule
+     * @throws RouteException When Http method is other the defined in config/routes.php of sepcific module
      */
-    private function checkMethod() {
+    private function checkMethod()
+    {
         if (strpos(self::$currentRoute['method'], '|') !== false) {
             if (!in_array($_SERVER['REQUEST_METHOD'], explode('|', self::$currentRoute['method']))) {
                 throw new RouteException(_message(ExceptionMessages::INCORRECT_METHOD, $_SERVER['REQUEST_METHOD']));
@@ -155,28 +159,37 @@ class Router extends RouteController {
      * @param string $matches
      * @return string
      */
-    private function findPattern($matches) {
-        switch ($matches[1]) {
+    private function findPattern($matches)
+    {
+        $replacement = '';
+
+        if (isset($matches[5]) && $matches[5] == '?') {
+            $replacement .= '(\/)*';
+        }
+        else {
+            $replacement .= '(\/)';
+        }
+
+        switch ($matches[2]) {
             case ':num':
-                $replacement = '([0-9]';
+                $replacement .= '([0-9]';
                 break;
             case ':alpha':
-                $replacement = '([a-zA-Z]';
+                $replacement .= '([a-zA-Z]';
                 break;
             case ':any':
-                $replacement = '([^\/]';
+                $replacement .= '([^\/]';
                 break;
         }
 
-
-        if (isset($matches[3]) && is_numeric($matches[3])) {
-            if (isset($matches[4]) && $matches[4] == '?') {
-                $replacement .= '{0,' . $matches[3] . '})';
+        if (isset($matches[4]) && is_numeric($matches[4])) {
+            if (isset($matches[5]) && $matches[5] == '?') {
+                $replacement .= '{0,' . $matches[4] . '})';
             } else {
-                $replacement .= '{' . $matches[3] . '})';
+                $replacement .= '{' . $matches[4] . '})';
             }
         } else {
-            if (isset($matches[4]) && $matches[4] == '?') {
+            if (isset($matches[5]) && $matches[5] == '?') {
                 $replacement .= '*)';
             } else {
                 $replacement .= '+)';
