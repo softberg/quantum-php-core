@@ -3,7 +3,7 @@
     "description": "The Quantum Framework",
     "keywords": ["framework", "quantum"],
     "license": "MIT",
-    "version": "1.6.0",
+    "version": "1.7.0",
     "homepage": "http://quantum.softberg.org",
     "support": {
         "issues": "https://github.com/softberg/quantum-core/issues",
