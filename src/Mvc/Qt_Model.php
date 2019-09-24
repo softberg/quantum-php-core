@@ -77,7 +77,7 @@ abstract class Qt_Model
         }
 
         $this->model = get_called_class();
-        $this->orm = Database::getORMInstance($this->model, $this->table, $this->idColumn);
+        $this->orm = Database::getDbalInstance($this->model, $this->table, $this->idColumn);
     }
 
     /**
@@ -147,38 +147,26 @@ abstract class Qt_Model
      *
      * @param string $method
      * @param mixed $args
-     * @return void
+     * @return mixed
      * @throws \Exception
      */
 
     public function __call($method, $args = NULL)
     {
-        switch ($method) {
-            case 'findOne':
-            case 'findOneBy':
-            case 'first':
-            case 'create':
-                $this->orm->ormObject = $this->orm->{$method}($args);
+        if (method_exists($this->orm, $method)) {
+
+            $result = $this->orm->{$method}($args);
+
+            if (is_array($result) || is_int($result) || is_string($result)) {
+                return $result;
+            } else {
+                if (is_object($result)) {
+                    $this->orm->ormObject = $result;
+                }
                 return $this;
-                break;
-            case 'criterias':
-            case 'orderBy':
-            case 'groupBy':
-            case 'limit':
-            case 'offset':
-            case 'save':
-            case 'delete':
-                $this->orm->{$method}($args);
-                return $this;
-                break;
-            case 'get':
-            case 'count':
-            case 'asArray':
-                return $this->orm->{$method}($args);
-                break;
-            default:
-                throw new \Exception(_message(ExceptionMessages::UNDEFINED_MODEL_METHOD, $method));
-                break;
+            }
+        } else {
+            throw new \Exception(_message(ExceptionMessages::UNDEFINED_MODEL_METHOD, $method));
         }
     }
 
