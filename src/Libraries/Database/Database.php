@@ -35,7 +35,7 @@ class Database
      *
      * @var string
      */
-    private static $defaultOrm = '\\Quantum\\Libraries\\Database\\IdiormDbal';
+    private static $defaultDbal = '\\Quantum\\Libraries\\Database\\IdiormDbal';
 
     /**
      * Database configurations
@@ -59,19 +59,21 @@ class Database
      * @return object
      * @throws \Exception When table is not defined in user defeind model
      */
-    public static function getORMInstance($model, $table, $idColumn = 'id')
+    public static function getDbalInstance($model, $table, $idColumn = 'id')
     {
+        $dbalClass = self::getDbalClass();
+
         if (!self::connected()) {
-            self::connect();
+            self::connect($dbalClass);
         }
 
         if (empty($table)) {
             throw new \Exception(_message(ExceptionMessages::MODEL_WITHOUT_TABLE_DEFINED, $model));
         }
 
-        $ormClass = self::getORMClass();
-        return new $ormClass($table, $idColumn);
+        return new $dbalClass($table, $idColumn);
     }
+
 
     /**
      * Connected
@@ -97,9 +99,9 @@ class Database
      * @return void
      * @throws \Exception
      */
-    private static function connect()
+    private static function connect($dbalClass)
     {
-        self::$activeConnection = HookManager::call('dbConnect', self::getConfig(), self::getORMClass());
+        $dbalClass::dbConnect(self::getConfig());
     }
 
     /**
@@ -158,9 +160,41 @@ class Database
      *
      * @return string
      */
-    public static function getORMClass()
+    public static function getDbalClass()
     {
-        return (isset(self::$dbConfig['orm']) && !empty(self::$dbConfig['orm']) ? self::$dbConfig['orm'] : self::$defaultOrm);
+        $dbalClass = (isset(self::$dbConfig['DBAL']) && !empty(self::$dbConfig['DBAL']) ? self::$dbConfig['DBAL'] : self::$defaultDbal);
+
+        if (class_exists($dbalClass)) {
+            return $dbalClass;
+        }
+    }
+
+    /**
+     * Raw execute
+     *
+     * @param $query
+     * @param $parameters
+     * @return bool
+     */
+    public static function execute($query, $parameters)
+    {
+        $dbalClass = self::getDbalClass();
+
+        return $dbalClass::execute($query, $parameters);
+    }
+
+    /**
+     * Raw query
+     *
+     * @param $query
+     * @param $parameters
+     * @return array
+     */
+    public static function query($query, $parameters)
+    {
+        $dbalClass = self::getDbalClass();
+
+        return $dbalClass::query($query, $parameters);
     }
 
 }

@@ -53,16 +53,23 @@ class IdiormDbal implements DbalInterface
     public $ormObject;
 
     /**
+     * ORM Class
+     *
+     * @var string
+     */
+    private static $ormClass = ORM::class;
+
+    /**
      * Class constructor
      *
      * @param string $table
      * @param string $idColumn
      */
-    public function __construct($table, $idColumn)
+    public function __construct($table, $idColumn = 'id')
     {
         $this->table = $table;
         $this->idColumn = $idColumn;
-        $this->ormObject = ORM::for_table($this->table)->use_id_column($this->idColumn);
+        $this->ormObject = (self::$ormClass)::for_table($this->table)->use_id_column($this->idColumn);
     }
 
     /**
@@ -86,7 +93,7 @@ class IdiormDbal implements DbalInterface
      */
     public static function dbConnect($connectionString)
     {
-        ORM::configure(array(
+        (self::$ormClass)::configure(array(
             'connection_string' => $connectionString['driver'] . ':host=' . $connectionString['host'] . ';dbname=' . $connectionString['dbname'],
             'username' => $connectionString['username'],
             'password' => $connectionString['password'],
@@ -94,7 +101,7 @@ class IdiormDbal implements DbalInterface
             'logging' => get_config('debug', false)
         ));
 
-        return ORM::get_config();
+        return (self::$ormClass)::get_config();
     }
 
     /**
@@ -148,7 +155,7 @@ class IdiormDbal implements DbalInterface
      *
      * @param array $params
      * @uses ORM Idiorm
-     * @return void
+     * @return object
      */
     public function criterias($params)
     {
@@ -184,6 +191,8 @@ class IdiormDbal implements DbalInterface
                     break;
             }
         }
+
+        return $this->ormObject;
     }
 
     /**
@@ -193,7 +202,7 @@ class IdiormDbal implements DbalInterface
      *
      * @param array $params
      * @uses ORM Idiorm
-     * @return void
+     * @return object
      */
     public function orderBy($params)
     {
@@ -206,6 +215,8 @@ class IdiormDbal implements DbalInterface
         } elseif (strtolower($direction) == 'desc') {
             $this->ormObject->order_by_desc($column);
         }
+
+        return $this->ormObject;
     }
 
     /**
@@ -215,11 +226,11 @@ class IdiormDbal implements DbalInterface
      *
      * @param array $params
      * @uses ORM Idiorm
-     * @return void
+     * @return object
      */
     public function groupBy($params)
     {
-        $this->ormObject->group_by($params[0]);
+        return $this->ormObject->group_by($params[0]);
     }
 
     /**
@@ -229,11 +240,11 @@ class IdiormDbal implements DbalInterface
      *
      * @param array $params
      * @uses ORM Idiorm
-     * @return void
+     * @return object
      */
     public function limit($params)
     {
-        $this->ormObject->limit($params[0]);
+        return $this->ormObject->limit($params[0]);
     }
 
     /**
@@ -243,11 +254,11 @@ class IdiormDbal implements DbalInterface
      *
      * @param array $params
      * @uses ORM Idiorm
-     * @return void
+     * @return object
      */
     public function offset($params)
     {
-        $this->ormObject->offset($params[0]);
+        return $this->ormObject->offset($params[0]);
     }
 
     /**
@@ -309,11 +320,11 @@ class IdiormDbal implements DbalInterface
      * Saves the data into the database
      *
      * @uses ORM Idiorm
-     * @return void
+     * @return bool
      */
     public function save()
     {
-        $this->ormObject->save();
+        return $this->ormObject->save();
     }
 
     /**
@@ -322,11 +333,11 @@ class IdiormDbal implements DbalInterface
      * Deletes the data from the database
      *
      * @uses ORM Idiorm
-     * @return void
+     * @return bool
      */
     public function delete()
     {
-        $this->ormObject->delete();
+        return $this->ormObject->delete();
     }
 
     /**
@@ -338,9 +349,9 @@ class IdiormDbal implements DbalInterface
      * @param array $parameters
      * @return bool
      */
-    public function execute($query, $parameters = [])
+    public static function execute($query, $parameters = [])
     {
-        return $this->ormObject->raw_execute($query, $parameters);
+        return (self::$ormClass)::raw_execute($query, $parameters);
     }
 
     /**
@@ -348,18 +359,13 @@ class IdiormDbal implements DbalInterface
      *
      * Raw query
      *
-     * @param string $query
+     * @param $query
      * @param array $parameters
-     * @param bool $many
-     * @return array|bool|\IdiormResultSet|ORM
+     * @return array
      */
-    public function query($query, $parameters = [], $many = true)
+    public static function query($query, $parameters = [])
     {
-        if ($many) {
-            return $this->ormObject->raw_query($query, $parameters)->find_many();
-        } else {
-            return $this->ormObject->raw_query($query, $parameters)->find_one();
-        }
+        return (self::$ormClass)::for_table('dummy')->raw_query($query, $parameters)->find_array();
     }
 
 }

@@ -153,12 +153,12 @@ interface DbalInterface {
      *
      * Should be implemented in classes for executing custom query
      */
-    public function execute($query, $parameters = []);
+    public static function execute($query, $parameters = []);
 
     /**
      * Query
      *
      * Should be implemented in classes for retriving data by custom query
      */
-    public function query($query, $parameters = [], $many = true);
+    public static function query($query, $parameters = []);
 }
