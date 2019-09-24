@@ -74,7 +74,6 @@ class Database
         return new $dbalClass($table, $idColumn);
     }
 
-
     /**
      * Connected
      *
@@ -101,7 +100,7 @@ class Database
      */
     private static function connect($dbalClass)
     {
-        $dbalClass::dbConnect(self::getConfig());
+        self::$activeConnection = $dbalClass::dbConnect(self::getConfig());
     }
 
     /**

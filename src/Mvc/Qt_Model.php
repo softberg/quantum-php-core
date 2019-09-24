@@ -151,11 +151,11 @@ abstract class Qt_Model
      * @throws \Exception
      */
 
-    public function __call($method, $args = NULL)
+    public function __call($method, $args = null)
     {
         if (method_exists($this->orm, $method)) {
 
-            $result = $this->orm->{$method}($args);
+            $result = $this->orm->{$method}(...$args);
 
             if (is_array($result) || is_int($result) || is_string($result)) {
                 return $result;

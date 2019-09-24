@@ -2,9 +2,9 @@
 
 /**
  * Quantum PHP Framework
- * 
+ *
  * An open source software development framework for PHP
- * 
+ *
  * @package Quantum
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
@@ -16,135 +16,159 @@ namespace Quantum\Libraries\Database;
 
 /**
  * Database Abstract Layer interface
- * 
+ *
  * The common interface for DBAL, which should implemented by all DBAL classes
- * 
+ *
  * @package Quantum
  * @subpackage Libraries.Database
  * @category Libraries
  */
-interface DbalInterface {
+interface DbalInterface
+{
 
     /**
      * DB Connect
-     * 
+     *
      * Should be implemented in classes for db connect
-     * 
-     * @param mixed $connectionString
+     *
+     * @param array $connectionDetails
+     * @return array
      */
-    public static function dbConnect($connectionString);
-    
+    public static function dbConnect($connectionDetails);
+
     /**
      * Find One
-     * 
+     *
      * Should be implemented in classes to get record by primary key
-     * 
-     * @param mixed $params
+     *
+     * @param int $id
+     * @return object
      */
-    public function findOne($params);
+    public function findOne($id);
 
     /**
      * FindOneBy
-     * 
+     *
      * Should be implemented in classes to get record by given column
-     * 
-     * @param mixed $params
+     *
+     * @param string $column
+     * @param mixed $value
+     * @return object
      */
-    public function findOneBy($params);
+    public function findOneBy($column, $value);
+
+    /**
+     * First
+     *
+     * Should be implemented in classes to get the first item
+     *
+     * @return object
+     */
+    public function first();
 
     /**
      * Criterias
-     * 
-     * Should be implemented in classes to add where criterias 
-     * 
-     * @param mixed $params
+     *
+     * Should be implemented in classes to add where criterias
+     *
+     * @param array ...$criterias
+     * @return object
      */
-    public function criterias($params);
-    
+    public function criterias(...$criterias);
+
     /**
      * Order By
-     * 
+     *
      * Should be implemented in classes to order the result
-     * 
-     * @param array $params
+     *
+     * @param string $column
+     * @param string $direction
+     * @return object
      */
-    public function orderBy($params);
-    
+    public function orderBy($column, $direction);
+
     /**
      * Group By
-     * 
+     *
      * Should be implemented in classes to group the result
-     * 
-     * @param array $params
+     *
+     * @param string $column
+     * @return object
      */
-    public function groupBy($params);
-    
+    public function groupBy($column);
+
     /**
      * Limit
-     * 
+     *
      * Should be implemented in classes to get result by given limit
-     * 
-     * @param array $params
+     *
+     * @param integer $params
+     * @return object
      */
-    public function limit($params);
-    
+    public function limit($limit);
+
     /**
      * Offset
-     * 
+     *
      * Should be implemented in classes to get result by given offset
-     * 
-     * @param array $params
+     *
+     * @param integer $offset
+     * @return object
      */
-    public function offset($params);
-    
+    public function offset($offset);
+
     /**
      * Get
-     * 
+     *
      * Should be implemented in classes to get result set
-     * 
-     * @param array $params
+     *
+     * @param null $returnType
+     * @return mixed
      */
-    public function get($params);
-    
+    public function get($returnType = null);
+
     /**
      * Count
-     * 
+     *
      * Should be implemented in classes to get count of result set
+     *
+     * @return integer
      */
     public function count();
 
     /**
-     * First
-     * 
-     * Should be implemented in classes to get the first item
-     */    
-    public function first();
-    
-    /**
      * asArray
-     * 
+     *
      * Should be implemented in classes to cast the orm object to array
+     *
+     * @return array
      */
     public function asArray();
 
     /**
      * Create
-     * 
+     *
      * Should be implemented in classes for creating new db record
+     *
+     * @return object
      */
     public function create();
-    
+
     /**
      * Save
-     * 
+     *
      * Should be implemented in classes for saving the data into the database
+     *
+     * @return bool
      */
     public function save();
-    
+
     /**
      * Delete
-     * 
+     *
      * Should be implemented in classes for deleting the data from the database
+     *
+     * @return bool
      */
     public function delete();
 
@@ -152,6 +176,10 @@ interface DbalInterface {
      * Execute
      *
      * Should be implemented in classes for executing custom query
+     *
+     * @param string $query
+     * @param array $parameters
+     * @return bool
      */
     public static function execute($query, $parameters = []);
 
@@ -159,6 +187,10 @@ interface DbalInterface {
      * Query
      *
      * Should be implemented in classes for retriving data by custom query
+     *
+     * @param string $query
+     * @param array $parameters
+     * @return array
      */
     public static function query($query, $parameters = []);
 }

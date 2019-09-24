@@ -87,35 +87,34 @@ class IdiormDbal implements DbalInterface
      *
      * Connects to database
      *
-     * @param array $connectionString
-     * @uses ORM::configure Idiorm
-     * @return void
+     * @param array $connectionDetails
+     * @return array
      */
-    public static function dbConnect($connectionString)
+    public static function dbConnect($connectionDetails)
     {
         (self::$ormClass)::configure(array(
-            'connection_string' => $connectionString['driver'] . ':host=' . $connectionString['host'] . ';dbname=' . $connectionString['dbname'],
-            'username' => $connectionString['username'],
-            'password' => $connectionString['password'],
-            'driver_options' => array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES ' . $connectionString['charset']),
+            'connection_string' => $connectionDetails['driver'] . ':host=' . $connectionDetails['host'] . ';dbname=' . $connectionDetails['dbname'],
+            'username' => $connectionDetails['username'],
+            'password' => $connectionDetails['password'],
+            'driver_options' => array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES ' . $connectionDetails['charset']),
             'logging' => get_config('debug', false)
         ));
 
         return (self::$ormClass)::get_config();
     }
 
+
     /**
      * Find one
      *
      * Gets record by primary key
      *
-     * @param array $params
-     * @uses ORM Idiorm
+     * @param int $id
      * @return object
      */
-    public function findOne($params)
+    public function findOne($id)
     {
-        $result = $this->ormObject->find_one($params[0]);
+        $result = $this->ormObject->find_one($id);
         return $result ? $result : $this->ormObject;
     }
 
@@ -124,13 +123,13 @@ class IdiormDbal implements DbalInterface
      *
      * Gets record by given column
      *
-     * @param array $params
-     * @uses ORM Idiorm
+     * @param string $column
+     * @param mixed $value
      * @return object
      */
-    public function findOneBy($params)
+    public function findOneBy($column, $value)
     {
-        $result = $this->ormObject->where($params[0], $params[1])->find_one();
+        $result = $this->ormObject->where($column, $value)->find_one();
         return $result ? $result : $this->ormObject;
     }
 
@@ -139,7 +138,6 @@ class IdiormDbal implements DbalInterface
      *
      * Gets the first item
      *
-     * @uses ORM Idiorm
      * @return object
      */
     public function first()
@@ -153,16 +151,15 @@ class IdiormDbal implements DbalInterface
      *
      * Adds where criterias
      *
-     * @param array $params
-     * @uses ORM Idiorm
+     * @param array ...$criterias
      * @return object
      */
-    public function criterias($params)
+    public function criterias(...$criterias)
     {
-        foreach ($params as $param) {
-            $column = $param[0];
-            $operation = $param[1];
-            $value = $param[2];
+        foreach ($criterias as $criteria) {
+            $column = $criteria[0];
+            $operation = $criteria[1];
+            $value = $criteria[2];
 
             switch ($operation) {
                 case '=':
@@ -200,16 +197,12 @@ class IdiormDbal implements DbalInterface
      *
      * Orders the result by ascending or descending
      *
-     * @param array $params
-     * @uses ORM Idiorm
+     * @param string $column
+     * @param string $direction
      * @return object
      */
-    public function orderBy($params)
+    public function orderBy($column, $direction)
     {
-        $orderCriteria = array_flip($params[0]);
-        $direction = key($orderCriteria);
-        $column = $orderCriteria[$direction];
-
         if (strtolower($direction) == 'asc') {
             $this->ormObject->order_by_asc($column);
         } elseif (strtolower($direction) == 'desc') {
@@ -224,13 +217,12 @@ class IdiormDbal implements DbalInterface
      *
      * Groups the result by column
      *
-     * @param array $params
-     * @uses ORM Idiorm
+     * @param string $column
      * @return object
      */
-    public function groupBy($params)
+    public function groupBy($column)
     {
-        return $this->ormObject->group_by($params[0]);
+        return $this->ormObject->group_by($column);
     }
 
     /**
@@ -238,13 +230,12 @@ class IdiormDbal implements DbalInterface
      *
      * Returns the result by given limit
      *
-     * @param array $params
-     * @uses ORM Idiorm
+     * @param $limit
      * @return object
      */
-    public function limit($params)
+    public function limit($limit)
     {
-        return $this->ormObject->limit($params[0]);
+        return $this->ormObject->limit($limit);
     }
 
     /**
@@ -256,9 +247,9 @@ class IdiormDbal implements DbalInterface
      * @uses ORM Idiorm
      * @return object
      */
-    public function offset($params)
+    public function offset($offset)
     {
-        return $this->ormObject->offset($params[0]);
+        return $this->ormObject->offset($offset);
     }
 
     /**
@@ -266,13 +257,12 @@ class IdiormDbal implements DbalInterface
      *
      * Gets the result set
      *
-     * @param array $params
-     * @uses ORM Idiorm
+     * @param null $returnType
      * @return mixed
      */
-    public function get($params)
+    public function get($returnType = null)
     {
-        return ($params && $params[0] == 'object') ? $this->ormObject->find_many() : $this->ormObject->find_array();
+        return ($returnType == 'object') ? $this->ormObject->find_many() : $this->ormObject->find_array();
     }
 
     /**
@@ -280,7 +270,6 @@ class IdiormDbal implements DbalInterface
      *
      * Counts the result set
      *
-     * @uses ORM Idiorm
      * @return int
      */
     public function count()
@@ -293,7 +282,6 @@ class IdiormDbal implements DbalInterface
      *
      * Casts the ormObject object to array
      *
-     * @uses ORM Idiorm
      * @return array
      */
     public function asArray()
@@ -306,7 +294,6 @@ class IdiormDbal implements DbalInterface
      *
      * Creates new db record
      *
-     * @uses ORM Idiorm
      * @return object
      */
     public function create()
@@ -319,7 +306,6 @@ class IdiormDbal implements DbalInterface
      *
      * Saves the data into the database
      *
-     * @uses ORM Idiorm
      * @return bool
      */
     public function save()
@@ -332,7 +318,6 @@ class IdiormDbal implements DbalInterface
      *
      * Deletes the data from the database
      *
-     * @uses ORM Idiorm
      * @return bool
      */
     public function delete()
