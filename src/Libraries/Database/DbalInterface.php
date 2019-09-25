@@ -173,6 +173,53 @@ interface DbalInterface
     public function delete();
 
     /**
+     * Join
+     *
+     * Should be implemented in classes for to make joining
+     *
+     * @param string $table
+     * @param array $constraint
+     * @param string $tableAlias
+     * @return object
+     */
+    public function join($table, $constraint, $tableAlias = null);
+
+    /**
+     * Inner Join
+     *
+     * Add an INNER JOIN souce to the query
+     *
+     * @param string $table
+     * @param array $constraint
+     * @param string $tableAlias
+     * @return object
+     */
+    public function innerJoin($table, $constraint, $tableAlias = null);
+
+    /** Left Join
+     *
+     * Add an LEFT JOIN souce to the query
+     *
+     * @param string $table
+     * @param array $constraint
+     * @param string $tableAlias
+     * @return object
+     */
+    public function leftJoin($table, $constraint, $tableAlias = null);
+
+    /**
+     * Right Join
+     *
+     * Add an RIGHT JOIN souce to the query
+     *
+     * @param string $table
+     * @param array $constraint
+     * @param string $tableAlias
+     * @return object
+     */
+    public function rightJoin($table, $constraint, $tableAlias = null);
+
+    /**
      * Execute
      *
      * Should be implemented in classes for executing custom query

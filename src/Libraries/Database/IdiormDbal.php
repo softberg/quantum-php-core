@@ -14,19 +14,16 @@
 
 namespace Quantum\Libraries\Database;
 
-use Quantum\Mvc\Qt_Model;
 use PDO;
 use ORM;
 
 /**
- * IdiORM DBAL
+ * Class IdiormDbal
  *
  * Database Abstract Layer class for IdiOrm
  * Default DBAL for framework
  *
- * @package Quantum
- * @subpackage Libraries.Database
- * @category Libraries
+ * @package Quantum\Libraries\Database
  */
 class IdiormDbal implements DbalInterface
 {
@@ -324,6 +321,69 @@ class IdiormDbal implements DbalInterface
     {
         return $this->ormObject->delete();
     }
+
+    /**
+     * Join
+     *
+     * Add a simple JOIN source to the query
+     *
+     * @param string $table
+     * @param array $constraint
+     * @param string $tableAlias
+     * @return object
+     */
+    public function join($table, $constraint, $tableAlias = null)
+    {
+        return $this->ormObject->join($table, $constraint, $tableAlias);
+    }
+
+    /**
+     * Join
+     *
+     * Add an INNER JOIN souce to the query
+     *
+     * @param string $table
+     * @param array $constraint
+     * @param string $tableAlias
+     * @return object
+     */
+    public function innerJoin($table, $constraint, $tableAlias = null)
+    {
+        return $this->ormObject->inner_join($table, $constraint, $tableAlias);
+    }
+
+    /**
+     * Left Join
+     *
+     * Add an LEFT JOIN souce to the query
+     *
+     * @param string $table
+     * @param array $constraint
+     * @param string $tableAlias
+     * @return object
+     */
+    public function leftJoin($table, $constraint, $tableAlias = null)
+    {
+        $this->ormPatch = IdiormPatch::getInstance()->setOrmObject($this->ormObject);
+        return $this->ormPatch->left_join($table, $constraint, $tableAlias);
+    }
+
+    /**
+     * Right Join
+     *
+     * Add an RIGHT JOIN souce to the query
+     *
+     * @param string $table
+     * @param array $constraint
+     * @param string $tableAlias
+     * @return object
+     */
+    public function rightJoin($table, $constraint, $tableAlias = null)
+    {
+        $this->ormPatch = IdiormPatch::getInstance()->setOrmObject($this->ormObject);
+        return $this->ormPatch->right_join($table, $constraint, $tableAlias);
+    }
+
 
     /**
      * Execute
