@@ -201,11 +201,11 @@ class Database
      *
      * @return string
      */
-    public static function lastQuery()
+    public static function getLastQuery()
     {
         $dbalClass = self::getDbalClass();
 
-        return $dbalClass::lastQuery();
+        return $dbalClass::getLastQuery();
     }
 
     /**
@@ -213,11 +213,11 @@ class Database
      *
      * @return string
      */
-    public static function lastStatement()
+    public static function getLastStatement()
     {
         $dbalClass = self::getDbalClass();
 
-        return $dbalClass::lastStatement();
+        return $dbalClass::getLastStatement();
     }
 
 }

@@ -220,6 +220,20 @@ interface DbalInterface
     public function rightJoin($table, $constraint, $tableAlias = null);
 
     /**
+     * Gets the last query executed
+     *
+     * @return string
+     */
+    public static function getLastQuery();
+
+    /**
+     * Returns the PDOStatement instance last used
+     *
+     * @return string
+     */
+    public static function getLastStatement();
+
+    /**
      * Execute
      *
      * Should be implemented in classes for executing custom query

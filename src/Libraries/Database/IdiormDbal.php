@@ -418,7 +418,7 @@ class IdiormDbal implements DbalInterface
      *
      * @return string
      */
-    public static function lastQuery()
+    public static function getLastQuery()
     {
         return (self::$ormClass)::get_last_query();
     }
@@ -428,7 +428,7 @@ class IdiormDbal implements DbalInterface
      *
      * @return string
      */
-    public static function lastStatement()
+    public static function getLastStatement()
     {
         return (self::$ormClass)::get_last_statement();
     }
