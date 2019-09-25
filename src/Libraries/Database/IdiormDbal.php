@@ -413,4 +413,24 @@ class IdiormDbal implements DbalInterface
         return (self::$ormClass)::for_table('dummy')->raw_query($query, $parameters)->find_array();
     }
 
+    /**
+     * Gets the last query executed
+     *
+     * @return string
+     */
+    public static function lastQuery()
+    {
+        return (self::$ormClass)::get_last_query();
+    }
+
+    /**
+     * Returns the PDOStatement instance last used
+     *
+     * @return string
+     */
+    public static function lastStatement()
+    {
+        return (self::$ormClass)::get_last_statement();
+    }
+
 }

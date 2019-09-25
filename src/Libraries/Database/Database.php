@@ -196,4 +196,28 @@ class Database
         return $dbalClass::query($query, $parameters);
     }
 
+    /**
+     * Gets the last query executed
+     *
+     * @return string
+     */
+    public static function lastQuery()
+    {
+        $dbalClass = self::getDbalClass();
+
+        return $dbalClass::lastQuery();
+    }
+
+    /**
+     * Returns the PDOStatement instance last used
+     *
+     * @return string
+     */
+    public static function lastStatement()
+    {
+        $dbalClass = self::getDbalClass();
+
+        return $dbalClass::lastStatement();
+    }
+
 }
