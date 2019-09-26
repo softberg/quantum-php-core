@@ -20,7 +20,7 @@ use Quantum\Mvc\Qt_View;
  * Class ViewFactory
  * @package Quantum\Factory
  */
-Class ViewFactory extends Factory
+Class ViewFactory
 {
 
     /**

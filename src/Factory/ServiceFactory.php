@@ -18,28 +18,75 @@ use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Mvc\Qt_Service;
 
 /**
- * ServiceFactory Class
- *
- * @package Quantum
- * @category Factory
+ * Class ServiceFactory
+ * @package Quantum\Factory
  */
-Class ServiceFactory extends Factory
+class ServiceFactory
 {
-/**
-     * Get Service
+
+    /**
+     * @var object
+     */
+    private $service;
+
+    /**
+     * Get
+     *
+     * Creates a service by given class
      *
      * @param string $serviceClass
-     * @return object
+     * @return $this
      * @throws \Exception
      */
     public function get($serviceClass)
     {
-        $exceptions = [
-            ExceptionMessages::SERVICE_NOT_FOUND,
-            ExceptionMessages::NOT_INSTANCE_OF_SERVICE
-        ];
+        if (!class_exists($serviceClass)) {
+            throw new \Exception(_message(ExceptionMessages::SERVICE_NOT_FOUND, $serviceClass));
+        }
+        $service = new $serviceClass();
+        if (!$service instanceof Qt_Service) {
+            throw new \Exception(_message(ExceptionMessages::NOT_INSTANCE_OF_SERVICE, [$serviceClass, Qt_Service::class]));
+        }
 
-        return $this->getInstance($serviceClass, Qt_Service::class, $exceptions);
+        $this->service = $service;
+
+        return $this;
+    }
+
+    /**
+     * __call magic
+     *
+     * Allows to call service methods
+     *
+     * @param string $methodName
+     * @param array $arguments
+     * @return mixed
+     */
+    public function __call($methodName, $arguments)
+    {
+        if (is_callable([$this->service, $methodName])) {
+
+            $args = [];
+
+            $reflaction = new \ReflectionMethod($this->service, $methodName);
+            $params = $reflaction->getParameters();
+
+            foreach ($params as $param) {
+                $paramType = $param->getType();
+
+                if ($paramType && $paramType == 'Quantum\Factory\ModelFactory') {
+                    array_push($args, new ModelFactory());
+                } else {
+                    array_push($args, current($arguments));
+                    next($arguments);
+                }
+            }
+
+            return call_user_func([$this->service, $methodName], ...$args);
+
+        } else {
+            throw new \BadMethodCallException(_message(ExceptionMessages::UNDEFINED_METHOD, $methodName));
+        }
     }
 
 }

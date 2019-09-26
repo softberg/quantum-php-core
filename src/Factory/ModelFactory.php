@@ -23,7 +23,7 @@ use Quantum\Mvc\Qt_Model;
  * @package Quantum
  * @category Factory
  */
-Class ModelFactory extends Factory
+Class ModelFactory
 {
 
     /**
@@ -35,12 +35,17 @@ Class ModelFactory extends Factory
      */
     public function get($modelClass)
     {
-        $exceptions = [
-            ExceptionMessages::MODEL_NOT_FOUND,
-            ExceptionMessages::NOT_INSTANCE_OF_MODEL
-        ];
+        if (!class_exists($modelClass)) {
+            throw new \Exception(_message(ExceptionMessages::MODEL_NOT_FOUND, $modelClass));
+        }
 
-        return parent::getInstance($modelClass, Qt_Model::class, $exceptions);
+        $model = new $modelClass();
+
+        if (!$model instanceof Qt_Model) {
+            throw new \Exception(_message(ExceptionMessages::NOT_INSTANCE_OF_MODEL, [$modelClass, Qt_Model::class]));
+        }
+
+        return $model;
     }
 
 }
