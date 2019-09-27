@@ -1,19 +1,17 @@
 <?php
 namespace Quantum\Libraries\Encryption;
 
-class Encryption
+class Cryptor
 {
     private $res;
     private $digest_alg = 'sha512';
     private $private_key_bits = 1024;
     private $private_key_type = OPENSSL_KEYTYPE_RSA;
     private $config = [];
-    private $privKey = '';
-    private $pubKey = '';
     private $keys = [];
     private $encryptedData;
     private $decryptedData;
-    public static $cipher = 'AES-128-CBC';
+    public static $cipher = 'AES-256-CBC';
 
     public function __construct()
     {
@@ -38,17 +36,15 @@ class Encryption
 
     private function set_priv_key()
     {
-        openssl_pkey_export($this->res, $this->privKey);
-        
+        openssl_pkey_export($this->res, $privKey);
         $pubKey = openssl_pkey_get_details($this->res);
-        $this->pubKey = $pubKey["key"];
-        
+
         $this->keys = [
-            'public_key' => base64_encode($this->pubKey),
-            'private_key' => base64_encode($this->privKey)
+            'public_key' => base64_encode($pubKey["key"]),
+            'private_key' =>  base64_encode($privKey),
         ];
     }
-    
+
     public function get_keys($obj = true)
     {
         return $obj ? (object) $this->keys : $this->keys;
@@ -56,13 +52,13 @@ class Encryption
 
     private function public_encrypt($data, $pubKey)
     {
-        openssl_public_encrypt($data, $this->encrypedData, $pubKey);
+        openssl_public_encrypt($data, $this->encryptedData, $pubKey);
     }
 
     public function encrypt_data($data, $pubKey)
     {
         $this->public_encrypt($data, base64_decode($pubKey));
-        return base64_encode($this->encrypedData);
+        return base64_encode($this->encryptedData);
     }
 
     private function private_decrypt($encrypted_data, $privKey)
@@ -94,7 +90,7 @@ class Encryption
 
     public static function encryptString($plaintext)
     {
-       return self::encrypt($plaintext);
+        return self::encrypt($plaintext);
     }
 
     private static function decrypt($ciphertext)
