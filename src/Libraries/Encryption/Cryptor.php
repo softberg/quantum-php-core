@@ -5,28 +5,45 @@ class Cryptor
 {
     private $res;
     private $digest_alg = 'sha512';
-    private $private_key_bits = 1024;
+    private $private_key_bits;
     private $private_key_type = OPENSSL_KEYTYPE_RSA;
     private $config = [];
     private $keys = [];
     private $encryptedData;
     private $decryptedData;
-    public static $cipher = 'AES-256-CBC';
+    private static $cipher;
 
-    public function __construct()
+    public function __construct($cipher = 'AES-256-CBC', $key_bits = 1024)
     {
+        self::setCiper($cipher);
+        $this->setKeyBits($key_bits);
         $this->set_config();
         $this->set_res();
         $this->set_priv_key();
     }
 
-    public function set_config()
+    private function set_config()
     {
         $this->config = [
             "digest_alg" => $this->digest_alg,
             "private_key_type" => $this->private_key_type,
             "private_key_bits" => $this->private_key_bits
         ];
+    }
+
+    private function setKeyBits($key_bits)
+    {
+        $this->private_key_bits = $key_bits;
+    }
+
+    private static function setCiper($cipher)
+    {
+        if (!in_array($cipher, openssl_get_cipher_methods()))
+        {
+            throw new \Exception('The ciper is invalid.');
+        }
+
+        self::$cipher = $cipher;
     }
 
     private function set_res()
@@ -50,63 +67,41 @@ class Cryptor
         return $obj ? (object) $this->keys : $this->keys;
     }
 
-    private function public_encrypt($data, $pubKey)
+    public function encrypt_data(string $data, $pubKey)
     {
-        openssl_public_encrypt($data, $this->encryptedData, $pubKey);
-    }
-
-    public function encrypt_data($data, $pubKey)
-    {
-        $this->public_encrypt($data, base64_decode($pubKey));
+        openssl_public_encrypt($data, $this->encryptedData, base64_decode($pubKey));
         return base64_encode($this->encryptedData);
     }
 
-    private function private_decrypt($encrypted_data, $privKey)
+    public function decrypt_data(string $encrypted_data, $privKey)
     {
-        openssl_private_decrypt($encrypted_data, $this->decryptedData, $privKey);
-    }
-
-    public function decrypt_data($encrypted_data, $privKey)
-    {
-        $this->private_decrypt(base64_decode($encrypted_data), base64_decode($privKey));
+        openssl_private_decrypt(base64_decode($encrypted_data), $this->decryptedData, base64_decode($privKey));
         return $this->decryptedData;
     }
 
-    private static function encrypt($plaintext)
+    public static function encrypt(string $plaintext)
     {
         $key = env('APP_KEY');
-        $ciphertext = '';
-
-        if (in_array(self::$cipher, openssl_get_cipher_methods()))
-        {
-            $ivlen = openssl_cipher_iv_length(self::$cipher);
-            $iv = openssl_random_pseudo_bytes($ivlen);
-            $ciphertext = openssl_encrypt($plaintext, self::$cipher, $key, $options=0, $iv);
-            $ciphertext =  base64_encode(base64_encode($ciphertext) . '::' . base64_encode($iv));
-        }
+        $ivlen = openssl_cipher_iv_length(self::$cipher);
+        $iv = openssl_random_pseudo_bytes($ivlen);
+        $ciphertext = openssl_encrypt($plaintext, self::$cipher, $key, $options=0, $iv);
+        $ciphertext =  base64_encode(base64_encode($ciphertext) . '::' . base64_encode($iv));
 
         return $ciphertext;
     }
 
-    public static function encryptString($plaintext)
-    {
-        return self::encrypt($plaintext);
-    }
-
-    private static function decrypt($ciphertext)
+    public static function decrypt(string $ciphertext)
     {
         $key = env('APP_KEY');
         $data = explode('::', base64_decode($ciphertext), 2);
-        if (in_array(self::$cipher, openssl_get_cipher_methods()))
+
+        if (!$data || count($data) < 2)
         {
-            $plaintext = openssl_decrypt(base64_decode($data[0]), self::$cipher, $key, $options=0, base64_decode($data[1]));
+            throw new \Exception('The ciphertext is invalid.');
         }
 
-        return $plaintext;
-    }
+        $plaintext = openssl_decrypt(base64_decode($data[0]), self::$cipher, $key, $options=0, base64_decode($data[1]));
 
-    public static function decryptString($ciphertext)
-    {
-        return self::decrypt($ciphertext);
+        return  $plaintext;
     }
 }
