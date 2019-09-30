@@ -51,6 +51,10 @@ class Cryptor
     private function set_res()
     {
         $this->res = openssl_pkey_new($this->config);
+
+        if(!$this->res) {
+            throw new \Exception('Could not load openssl.cnf properly.');
+        }
     }
 
     private function set_priv_key()
