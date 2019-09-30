@@ -11,9 +11,9 @@ class Cryptor
     private $keys = [];
     private $encryptedData;
     private $decryptedData;
-    private static $cipher;
+    private static $cipher = 'AES-256-CBC';
 
-    public function __construct($cipher = 'AES-256-CBC', $key_bits = 1024)
+    public function __construct($cipher = null, $key_bits = 1024)
     {
         self::setCiper($cipher);
         $this->setKeyBits($key_bits);
@@ -38,12 +38,14 @@ class Cryptor
 
     private static function setCiper($cipher)
     {
-        if (!in_array($cipher, openssl_get_cipher_methods()))
-        {
-            throw new \Exception('The ciper is invalid.');
-        }
+        if($cipher) {
+            if (!in_array($cipher, openssl_get_cipher_methods()))
+            {
+                throw new \Exception('The ciper is invalid.');
+            }
 
-        self::$cipher = $cipher;
+            self::$cipher = $cipher;
+        }
     }
 
     private function set_res()
