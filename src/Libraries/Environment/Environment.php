@@ -52,19 +52,17 @@ class Environment
      * Gets the environment variable value
      *
      * @param string $key
-     * @param null $default
+     * @param mixed $default
      * @return array|false|mixed|null|string
      */
     public static function getValue($key, $default = null)
     {
         $val = getenv($key);
 
-        $default = var_export($default, true);
-
-        if ($val !== false) {
-            return $val;
-        } elseif ($default) {
+        if ($val === false && $default) {
             return $default;
+        } else {
+            return $val;
         }
     }
 
