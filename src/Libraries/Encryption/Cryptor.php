@@ -1,26 +1,68 @@
 <?php
+/**
+ * Quantum PHP Framework
+ *
+ * An open source software development framework for PHP
+ *
+ * @package Quantum
+ * @author Arman Ag. <arman.ag@softberg.org>
+ * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
+ * @link http://quantum.softberg.org/
+ * @since 1.8.0
+ */
 
 namespace Quantum\Libraries\Encryption;
 
 use Quantum\Exceptions\ExceptionMessages;
 
+/**
+ * Class Cryptor
+ * @package Quantum\Libraries\Encryption
+ */
 class Cryptor
 {
+    /**
+     * @var boolean 
+     */
     private $asymmetric = false;
 
+    /**
+     * @var string 
+     */
     private $appKey;
 
+    /**
+     * @var array 
+     */
     private $keys = [];
 
+    /**
+     * @var string
+     */
     private $digestAlgorithm = 'SHA512';
 
+    /**
+     * @var integer 
+     */
     private $privateKeyType = OPENSSL_KEYTYPE_RSA;
 
+    /**
+     * @var string 
+     */
     private $cipherMethod = 'aes-256-cbc';
 
+    /**
+     * @var integer 
+     */
     private $privateKeyBits = 1024;
 
-
+    /**
+     * Cryptor constructor
+     * 
+     * @param boolean $asymmetric
+     * @return $this
+     * @throws \Exception
+     */
     public function __construct($asymmetric = false)
     {
         if (!$asymmetric) {
@@ -36,6 +78,12 @@ class Cryptor
         return $this;
     }
 
+    /**
+     * Get Public Key
+     * 
+     * @return string
+     * @throws \Exception
+     */
     public function getPublicKey()
     {
         if (!isset($this->keys['public'])) {
@@ -45,6 +93,12 @@ class Cryptor
         return $this->keys['public'];
     }
 
+    /**
+     * Get Private Key
+     * 
+     * @return string
+     * @throws \Exception
+     */
     public function getPrivateKey()
     {
         if (!isset($this->keys['private'])) {
@@ -54,7 +108,14 @@ class Cryptor
         return $this->keys['private'];
     }
 
-
+    /**
+     * Encrypt
+     * 
+     * @param string $plain
+     * @param string|null $publicKey
+     * @return string
+     * @throws \Exception
+     */
     public function encrypt($plain, $publicKey = null)
     {
         if (!$this->asymmetric) {
@@ -73,7 +134,14 @@ class Cryptor
 
     }
 
-
+    /**
+     * Decrypt
+     * 
+     * @param string $encrypted
+     * @param string|null $privateKey
+     * @return string
+     * @throws \Exception
+     */
     public function decrypt($encrypted, $privateKey = null)
     {
         if (!$this->asymmetric) {
@@ -98,6 +166,12 @@ class Cryptor
 
     }
 
+    /**
+     * Generate Key Pair
+     * 
+     * @return void
+     * @throws \Exception
+     */
     private function generateKeyPair()
     {
         $resource = openssl_pkey_new([
@@ -115,6 +189,11 @@ class Cryptor
 
     }
 
+    /**
+     * Initialization Vector 
+     * 
+     * @return string
+     */
     private function iv()
     {
         $length = openssl_cipher_iv_length($this->cipherMethod);
