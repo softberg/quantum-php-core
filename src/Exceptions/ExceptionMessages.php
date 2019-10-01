@@ -25,6 +25,8 @@ namespace Quantum\Exceptions;
 class ExceptionMessages
 {
 
+    const APP_KEY_MISSING = 'APP KEY is missing';
+
     /**
      * Module not found message
      */
@@ -154,12 +156,12 @@ class ExceptionMessages
      * Direct model call message
      */
     const DIRECT_MODEL_CALL = 'Models can not be called directly, use `{%1}` class instead';
-    
+
     /**
      * Direct service call message
      */
     const DIRECT_SERVICE_CALL = 'Services can not be called directly, use `{%1}` class instead';
-    
+
     /**
      * Direct view call message
      */
@@ -184,12 +186,12 @@ class ExceptionMessages
      * Model does not have table property defined
      */
     const MODEL_WITHOUT_TABLE_DEFINED = 'Model `{%1}` does not have $table property defined';
-    
+
     /**
      * Service not found message
      */
     const SERVICE_NOT_FOUND = 'Service `{%1}` not found';
-    
+
     /**
      * Model not instance of Qt_Model
      */
@@ -216,8 +218,38 @@ class ExceptionMessages
     const UNEXPECTED_REQUEST_INITIALIZATION = 'HTTP Request can not be initialized outside of the core';
 
     /**
-    * Undefined method
-    */
+     * Undefined method
+     */
     const UNDEFINED_METHOD = 'The method `{%1}` is not defined';
+
+    /**
+     * Open SSL Public key not created yet
+     */
+    const OPENSSL_PUBLIC_KEY_NOT_CREATED = 'Public key not created yet';
+
+    /**
+     * Open SSL Private key not created yet
+     */
+    const OPENSSL_PRIVATE_KEY_NOT_CREATED = 'Private key not created yet';
+
+    /**
+     * Open SSL Public key is not provided
+     */
+    const OPENSSL_PUBLIC_KEY_NOT_PROVIDED = 'Public key is not provided';
+
+    /**
+     * Open SSL Private key is not provided
+     */
+    const OPENSSL_PRIVATE_KEY_NOT_PROVIDED = 'Private key is not provided';
+
+    /**
+     * Open SSL chiper is invalid
+     */
+    const OPENSSEL_INVALID_CIPHER = 'The cipher is invalid';
+
+    /**
+     * Open SSL config not found
+     */
+    const OPENSSEL_CONFIG_NOT_FOUND = 'Could not load openssl.cnf properly.';
 
 }
