@@ -16,22 +16,20 @@ class Cryptor
 
     private $privateKeyType = OPENSSL_KEYTYPE_RSA;
 
-    private $cipherMethod = 'aes-128-cbc';
+    private $cipherMethod = 'aes-256-cbc';
 
     private $privateKeyBits = 1024;
 
 
-    public function __construct($asymmetric = false, $cipherMethod = 'aes-128-cbc', $keyBits = 1024)
+    public function __construct($asymmetric = false)
     {
         if (!$asymmetric) {
             if (!env('APP_KEY')) {
                 throw new \Exception(ExceptionMessages::APP_KEY_MISSING);
             }
-
             $this->appKey = env('APP_KEY');
-
         } else {
-            $this->setCipherMethod($cipherMethod)->setKeyBits($keyBits)->generateKeyPair();
+            $this->generateKeyPair();
         }
 
         $this->asymmetric = $asymmetric;
@@ -98,22 +96,6 @@ class Cryptor
             return $decrypted;
         }
 
-    }
-
-    private function setKeyBits($keyBits)
-    {
-        $this->privateKeyBits = $keyBits;
-        return $this;
-    }
-
-    private function setCipherMethod($cipherMethod)
-    {
-        if (!in_array($cipherMethod, openssl_get_cipher_methods())) {
-            throw new \Exception(ExceptionMessages::OPENSSEL_INVALID_CIPHER);
-        }
-
-        $this->cipherMethod = $cipherMethod;
-        return $this;
     }
 
     private function generateKeyPair()
