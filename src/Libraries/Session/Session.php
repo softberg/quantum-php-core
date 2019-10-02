@@ -158,11 +158,12 @@ class Session implements SessionStorageInterface
     /**
      * Encodes the session data
      *
-     * @param string $value
+     * @param mixed $value
      * @return string
      */
     private function encode($value)
     {
+        $value = is_array($value) ? implode('::', $value) : $value;
         return Cryptor::encrypt($value);
     }
 
@@ -174,6 +175,12 @@ class Session implements SessionStorageInterface
      */
     private function decode($value)
     {
-        return Cryptor::decrypt($value);
+        $decrypted = Cryptor::decrypt($value);
+
+        if(preg_match('/::/', $decrypted, $matches)) {
+            $decrypted = explode('::', $decrypted);
+        }
+
+        return $decrypted;
     }
 }
