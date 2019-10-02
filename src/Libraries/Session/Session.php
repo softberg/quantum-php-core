@@ -14,6 +14,8 @@
 
 namespace Quantum\Libraries\Session;
 
+use Quantum\Libraries\Encryption\Cryptor;
+
 /**
  * Session class
  *
@@ -50,7 +52,7 @@ class Session implements SessionStorageInterface
      */
     public function get($key)
     {
-        return $this->has($key) ? $this->storage[$key] : null;
+        return $this->has($key) ? $this->decode($this->storage[$key]) : null;
     }
 
     /*
@@ -60,6 +62,9 @@ class Session implements SessionStorageInterface
      */
     public function all()
     {
+        foreach ($this->storage as $key => $value) {
+            $this->storage[$key] = $this->decode($value);
+        }
         return $this->storage;
     }
 
@@ -83,7 +88,7 @@ class Session implements SessionStorageInterface
      */
     public function set($key, $value)
     {
-        $this->storage[$key] = $value;
+        $this->storage[$key] = $this->encode($value);
     }
 
     /**
@@ -148,5 +153,27 @@ class Session implements SessionStorageInterface
     public function getSessionId()
     {
         return session_id() ?? null;
+    }
+
+    /**
+     * Encodes the session data
+     *
+     * @param string $value
+     * @return string
+     */
+    private function encode($value)
+    {
+        return Cryptor::encrypt($value);
+    }
+
+    /**
+     * Decodes the session data
+     *
+     * @param string $value
+     * @return string
+     */
+    private function decode($value)
+    {
+        return Cryptor::decrypt($value);
     }
 }
