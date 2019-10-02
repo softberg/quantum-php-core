@@ -33,6 +33,7 @@ class Cookie implements CookieStorageInterface
      */
     private $storage = [];
 
+    private $cryptor;
 
     /**
      * Cookie constructor.
@@ -42,6 +43,7 @@ class Cookie implements CookieStorageInterface
     public function __construct(&$storage = [])
     {
         $this->storage = &$storage;
+        $this->cryptor = new Cryptor();
     }
 
     /**
@@ -137,7 +139,7 @@ class Cookie implements CookieStorageInterface
      */
     private function encode($value)
     {
-        return Cryptor::encrypt($value);
+        return $this->cryptor->encrypt($value);
     }
 
     /**
@@ -148,7 +150,7 @@ class Cookie implements CookieStorageInterface
      */
     private function decode($value)
     {
-        return Cryptor::decrypt($value);
+        return $this->cryptor->decrypt($value);
     }
 
 }
