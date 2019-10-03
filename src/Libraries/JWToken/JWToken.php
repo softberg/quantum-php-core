@@ -61,9 +61,9 @@ class JWToken extends JWT
      *
      * @param mixed $key
      */
-    public function __construct($key)
+    public function __construct(string $key = null)
     {
-        $this->key = $key;
+        $this->key = $key ?? env('APP_KEY');
     }
 
     /**
@@ -108,7 +108,7 @@ class JWToken extends JWT
      * @param array $claims
      * @return $this
      */
-	public function setClaims(array $claims)
+    public function setClaims(array $claims)
     {
         foreach ($claims as $key => $value) {
             $this->payload[$key] = $value;

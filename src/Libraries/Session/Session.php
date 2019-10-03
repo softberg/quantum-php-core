@@ -14,6 +14,8 @@
 
 namespace Quantum\Libraries\Session;
 
+use Quantum\Libraries\Encryption\Cryptor;
+
 /**
  * Session class
  *
@@ -31,6 +33,8 @@ class Session implements SessionStorageInterface
      */
     private $storage = [];
 
+    private $cryptor;
+
 
     /**
      * Session constructor.
@@ -40,6 +44,7 @@ class Session implements SessionStorageInterface
     public function __construct(&$storage = [])
     {
         $this->storage = &$storage;
+        $this->cryptor = new Cryptor();
     }
 
     /**
@@ -50,7 +55,7 @@ class Session implements SessionStorageInterface
      */
     public function get($key)
     {
-        return $this->has($key) ? $this->storage[$key] : null;
+        return $this->has($key) ? $this->decode($this->storage[$key]) : null;
     }
 
     /*
@@ -60,6 +65,9 @@ class Session implements SessionStorageInterface
      */
     public function all()
     {
+        foreach ($this->storage as $key => $value) {
+            $this->storage[$key] = $this->decode($value);
+        }
         return $this->storage;
     }
 
@@ -83,7 +91,7 @@ class Session implements SessionStorageInterface
      */
     public function set($key, $value)
     {
-        $this->storage[$key] = $value;
+        $this->storage[$key] = $this->encode($value);
     }
 
     /**
@@ -148,5 +156,36 @@ class Session implements SessionStorageInterface
     public function getSessionId()
     {
         return session_id() ?? null;
+    }
+
+    /**
+     * Encodes the session data
+     *
+     * @param mixed $value
+     * @return string
+     */
+    private function encode($value)
+    {
+        $value = is_array($value) ? implode('::', $value) : is_object($value) ? serialize($value) : $value;
+        return $this->cryptor->encrypt($value);
+    }
+
+    /**
+     * Decodes the session data
+     *
+     * @param string $value
+     * @return string
+     */
+    private function decode($value)
+    {
+        $decrypted = $this->cryptor->decrypt($value);
+
+        if($obj_data = @unserialize($decrypted)) {
+            $decrypted = $obj_data;
+        } elseif (preg_match('/::/', $decrypted, $matches)) {
+            $decrypted = explode('::', $decrypted);
+        }
+
+        return $decrypted;
     }
 }

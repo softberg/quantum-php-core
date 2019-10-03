@@ -14,6 +14,8 @@
 
 namespace Quantum\Libraries\Cookie;
 
+use Quantum\Libraries\Encryption\Cryptor;
+
 /**
  * Cookie Class
  *
@@ -31,6 +33,7 @@ class Cookie implements CookieStorageInterface
      */
     private $storage = [];
 
+    private $cryptor;
 
     /**
      * Cookie constructor.
@@ -40,6 +43,7 @@ class Cookie implements CookieStorageInterface
     public function __construct(&$storage = [])
     {
         $this->storage = &$storage;
+        $this->cryptor = new Cryptor();
     }
 
     /**
@@ -135,7 +139,7 @@ class Cookie implements CookieStorageInterface
      */
     private function encode($value)
     {
-        return base64_encode($value);
+        return $this->cryptor->encrypt($value);
     }
 
     /**
@@ -146,7 +150,7 @@ class Cookie implements CookieStorageInterface
      */
     private function decode($value)
     {
-        return base64_decode($value);
+        return $this->cryptor->decrypt($value);
     }
 
 }

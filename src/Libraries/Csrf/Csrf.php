@@ -53,7 +53,7 @@ class Csrf
     {
         if (self::$token == null) {
             self::deleteToken($storage);
-            self::$token = base64_encode(openssl_random_pseudo_bytes(32));
+            self::$token = base64_encode(env('APP_KEY'));
             self::setToken($storage, self::$token);
         }
 
