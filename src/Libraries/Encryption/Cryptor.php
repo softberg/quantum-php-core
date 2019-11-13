@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Quantum PHP Framework
  *
@@ -21,6 +22,7 @@ use Quantum\Exceptions\ExceptionMessages;
  */
 class Cryptor
 {
+
     /**
      * @var boolean 
      */
@@ -131,7 +133,6 @@ class Cryptor
             openssl_public_encrypt($plain, $encrypted, $publicKey);
             return base64_encode($encrypted);
         }
-
     }
 
     /**
@@ -145,6 +146,10 @@ class Cryptor
     public function decrypt($encrypted, $privateKey = null)
     {
         if (!$this->asymmetric) {
+            if (!valid_base64($encrypted)) {
+                return $encrypted;
+            }
+            
             $data = explode('::', base64_decode($encrypted), 2);
 
             if (!$data || count($data) < 2) {
@@ -155,6 +160,7 @@ class Cryptor
             $iv = base64_decode($data[1]);
 
             return openssl_decrypt($encrypted, $this->cipherMethod, $this->appKey, $options = 0, $iv);
+            
         } else {
             if (!$privateKey) {
                 throw new \Exception(ExceptionMessages::OPENSSL_PRIVATE_KEY_NOT_PROVIDED);
@@ -163,7 +169,6 @@ class Cryptor
             openssl_private_decrypt(base64_decode($encrypted), $decrypted, $privateKey);
             return $decrypted;
         }
-
     }
 
     /**
@@ -186,7 +191,6 @@ class Cryptor
 
         openssl_pkey_export($resource, $this->keys['private']);
         $this->keys['public'] = openssl_pkey_get_details($resource)['key'];
-
     }
 
     /**
@@ -199,4 +203,5 @@ class Cryptor
         $length = openssl_cipher_iv_length($this->cipherMethod);
         return openssl_random_pseudo_bytes($length);
     }
+
 }
