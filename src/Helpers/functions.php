@@ -11,7 +11,6 @@
  * @link http://quantum.softberg.org/
  * @since 1.0.0
  */
-
 use Quantum\Routes\RouteController;
 use Quantum\Libraries\Environment\Environment;
 use Quantum\Libraries\Session\SessionManager;
@@ -401,7 +400,7 @@ if (!function_exists('get_directory_classes')) {
     {
         $class_names = [];
 
-        if(is_dir($path)) {
+        if (is_dir($path)) {
             $allFiles = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path));
             $phpFiles = new RegexIterator($allFiles, '/\.php$/');
             foreach ($phpFiles as $file) {
@@ -611,6 +610,30 @@ if (!function_exists('pass_check')) {
     function pass_check($pass, $hashpass)
     {
         return password_verify(md5($pass), $hashpass);
+    }
+
+}
+
+
+if (!function_exists('valid_base64')) {
+
+    function valid_base64($string)
+    {
+        $decoded = base64_decode($string, true);
+
+        // Check if there is no invalid character in string
+        if (!preg_match('/^[a-zA-Z0-9\/\r\n+]*={0,2}$/', $string))
+            return false;
+
+        // Decode the string in strict mode and send the response
+        if (!base64_decode($string, true))
+            return false;
+
+        // Encode and compare it to original one
+        if (base64_encode($decoded) != $string)
+            return false;
+
+        return true;
     }
 
 }
