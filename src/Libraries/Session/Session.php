@@ -32,9 +32,7 @@ class Session implements SessionStorageInterface
      * @var array $storage
      */
     private $storage = [];
-
     private $cryptor;
-
 
     /**
      * Session constructor.
@@ -63,11 +61,13 @@ class Session implements SessionStorageInterface
      *
      * @return array
      */
+
     public function all()
     {
         foreach ($this->storage as $key => $value) {
             $this->storage[$key] = $this->decode($value);
         }
+
         return $this->storage;
     }
 
@@ -166,7 +166,7 @@ class Session implements SessionStorageInterface
      */
     private function encode($value)
     {
-        $value = is_array($value) ? implode('::', $value) : is_object($value) ? serialize($value) : $value;
+        $value = (is_array($value) ||  is_object($value)) ? serialize($value) : $value;
         return $this->cryptor->encrypt($value);
     }
 
@@ -178,14 +178,17 @@ class Session implements SessionStorageInterface
      */
     private function decode($value)
     {
+        if (empty($value)) {
+            return $value;
+        }
+
         $decrypted = $this->cryptor->decrypt($value);
 
-        if($obj_data = @unserialize($decrypted)) {
-            $decrypted = $obj_data;
-        } elseif (preg_match('/::/', $decrypted, $matches)) {
-            $decrypted = explode('::', $decrypted);
-        }
+        if ($data = @unserialize($decrypted)) {
+            $decrypted = $data;
+        } 
 
         return $decrypted;
     }
+
 }
