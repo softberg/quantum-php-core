@@ -120,7 +120,7 @@ class Hasher
      * Gets an info of given hash
      * 
      * @param string $hash
-     * @return array()
+     * @return array
      */
     public function info($hash)
     {

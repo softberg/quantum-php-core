@@ -50,9 +50,7 @@ class HasherTest extends TestCase
 
         $this->assertTrue($this->hasher->needsRehash($hashed));
 
-        $this->hasher->setAlgorithm(PASSWORD_ARGON2I);
-
-        $this->hasher->setCost(11);
+        $this->hasher->setAlgorithm(PASSWORD_ARGON2I)->setCost(11);
 
         $this->assertTrue($this->hasher->needsRehash($hashed));
     }
