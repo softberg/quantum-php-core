@@ -32,7 +32,6 @@ class Cookie implements CookieStorageInterface
      * @var array $storage
      */
     private $storage = [];
-
     private $cryptor;
 
     /**
@@ -62,6 +61,7 @@ class Cookie implements CookieStorageInterface
      *
      * @return array
      */
+
     public function all()
     {
         $allCookies = [];
@@ -97,7 +97,7 @@ class Cookie implements CookieStorageInterface
      * @return void
      */
     public function set($key, $value = '', $time = 0, $path = '/', $domain = '', $secure = false, $httponly = false)
-    {
+	{
         $this->storage[$key] = $this->encode($value);
         setcookie($key, $this->encode($value), $time ? time() + $time : $time, $path, $domain, $secure, $httponly);
     }
@@ -139,6 +139,7 @@ class Cookie implements CookieStorageInterface
      */
     private function encode($value)
     {
+        $value = (is_array($value) || is_object($value)) ? serialize($value) : $value;
         return $this->cryptor->encrypt($value);
     }
 
@@ -150,7 +151,17 @@ class Cookie implements CookieStorageInterface
      */
     private function decode($value)
     {
-        return $this->cryptor->decrypt($value);
+        if (empty($value)) {
+            return $value;
+        }
+
+        $decrypted = $this->cryptor->decrypt($value);
+
+        if ($data = @unserialize($decrypted)) {
+            $decrypted = $data;
+        }
+
+        return $decrypted;
     }
 
 }
