@@ -2,14 +2,18 @@
 
 namespace Quantum\Test\Unit;
 
+use Mockery;
 use PHPUnit\Framework\TestCase;
 use Quantum\Libraries\Cookie\Cookie;
-
+use Quantum\Libraries\Encryption\Cryptor;
 
 class CookieTest extends TestCase
 {
-    private $cookie;
 
+    private $cookie;
+    
+    private $cryptor;
+    
     private $cookieData = [
         'auth' => 'b2s=', // ok
         'test' => 'Z29vZA==', // good
@@ -18,7 +22,17 @@ class CookieTest extends TestCase
 
     public function setUp(): void
     {
-        $this->cookie = new Cookie($this->cookieData);
+        $this->cryptor = Mockery::mock('Quantum\Libraries\Encryption\Cryptor');
+
+        $this->cryptor->shouldReceive('encrypt')->andReturnUsing(function ($arg) {
+            return base64_encode($arg);
+        });
+
+        $this->cryptor->shouldReceive('decrypt')->andReturnUsing(function ($arg) {
+            return base64_decode($arg);
+        });
+
+        $this->cookie = new Cookie($this->cookieData, $this->cryptor);
     }
 
     public function testCookieConstructor()

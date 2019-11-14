@@ -39,10 +39,10 @@ class Cookie implements CookieStorageInterface
      *
      * @param array $storage
      */
-    public function __construct(&$storage = [])
+    public function __construct(&$storage, Cryptor $cryptor)
     {
         $this->storage = &$storage;
-        $this->cryptor = new Cryptor();
+        $this->cryptor = $cryptor;
     }
 
     /**

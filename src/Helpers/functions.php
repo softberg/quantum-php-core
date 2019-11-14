@@ -14,6 +14,7 @@
 use Quantum\Routes\RouteController;
 use Quantum\Libraries\Environment\Environment;
 use Quantum\Libraries\Session\SessionManager;
+use Quantum\Libraries\Encryption\Cryptor;
 use Quantum\Libraries\Cookie\Cookie;
 use Quantum\Libraries\Dumper\Dumper;
 use Quantum\Libraries\Config\Config;
@@ -163,7 +164,7 @@ if (!function_exists('cookie')) {
      */
     function cookie()
     {
-        return new Cookie($_COOKIE);
+        return new Cookie($_COOKIE, new Cryptor);
     }
 
 }
