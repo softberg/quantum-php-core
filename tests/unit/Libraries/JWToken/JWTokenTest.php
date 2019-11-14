@@ -10,6 +10,8 @@ class JWTokenTest extends TestCase
 {
 
     private $jwtToken;
+    
+    private $key = 'appkey';
 
     private $userData = [
         'userId' => 'b08f86af-35da-48f2-8fab-cef3904660bd',
@@ -28,7 +30,7 @@ class JWTokenTest extends TestCase
             'exp' => time() + 300
         ];
 
-        $this->jwtToken = new JWToken(JWToken::generateSecretKey());
+        $this->jwtToken = new JWToken($this->key);
 
         $this->jwtToken
             ->setLeeway(1)
@@ -117,7 +119,7 @@ class JWTokenTest extends TestCase
 
     public function testSetClaims()
     {
-        $jwtToken = new JWToken(JWToken::generateSecretKey());
+        $jwtToken = new JWToken($this->key);
 
         $claims = [
             'jti' => uniqid(),

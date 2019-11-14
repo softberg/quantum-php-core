@@ -176,7 +176,7 @@ class JWToken extends JWT
      */
     public function fetchData()
     {
-        return isset($this->fetchedPayload->data) ? (array)$this->fetchedPayload->data : null;
+        return isset($this->fetchedPayload->data) ? (array) $this->fetchedPayload->data : null;
     }
 
     /**
@@ -188,16 +188,6 @@ class JWToken extends JWT
     public function fetchClaim($key)
     {
         return isset($this->fetchedPayload->$key) ? $this->fetchedPayload->$key : null;
-    }
-
-    /**
-     * Generates key
-     *
-     * @return string
-     */
-    public static function generateSecretKey()
-    {
-        return bin2hex(openssl_random_pseudo_bytes(6)) . '-' . bin2hex(openssl_random_pseudo_bytes(12)) . '-' . bin2hex(openssl_random_pseudo_bytes(6));
     }
 
 }

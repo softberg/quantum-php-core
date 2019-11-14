@@ -500,7 +500,7 @@ if (!function_exists('csrf_token')) {
      */
     function csrf_token()
     {
-        echo Csrf::generateToken(\session());
+        echo Csrf::generateToken(\session(), env('APP_KEY'));
     }
 
 }

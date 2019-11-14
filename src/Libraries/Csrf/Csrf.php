@@ -49,11 +49,11 @@ class Csrf
      *
      * @return string
      */
-    public static function generateToken(StorageInterface $storage)
+    public static function generateToken(StorageInterface $storage, $key)
     {
         if (self::$token == null) {
             self::deleteToken($storage);
-            self::$token = base64_encode(env('APP_KEY'));
+            self::$token = base64_encode($key);
             self::setToken($storage, self::$token);
         }
 

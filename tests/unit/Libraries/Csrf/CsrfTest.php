@@ -10,20 +10,34 @@ use Quantum\Libraries\Session\Session;
 
 class CsrfTest extends TestCase
 {
-
     private $session;
-
+    
     private $request;
-
+    
+    private $cryptor;
+    
     private $storage = [];
+    
+    private $key = 'appkey';
 
     public function setUp(): void
     {
+
         $this->request = Mockery::mock('Quantum\Http\Request');
 
         $this->request->shouldReceive('getMethod')->andReturn('POST');
 
-        $this->session = new Session($this->storage);
+        $this->cryptor = Mockery::mock('Quantum\Libraries\Encryption\Cryptor');
+
+        $this->cryptor->shouldReceive('encrypt')->andReturnUsing(function ($arg) {
+            return base64_encode($arg);
+        });
+
+        $this->cryptor->shouldReceive('decrypt')->andReturnUsing(function ($arg) {
+            return base64_decode($arg);
+        });
+
+        $this->session = new Session($this->storage, $this->cryptor);
     }
 
     public function tearDown(): void
@@ -34,7 +48,7 @@ class CsrfTest extends TestCase
 
     public function testGenerateToken()
     {
-        $token = Csrf::generateToken($this->session);
+        $token = Csrf::generateToken($this->session, $this->key);
 
         $this->assertIsString($token);
 
@@ -45,35 +59,33 @@ class CsrfTest extends TestCase
 
     public function testGetToken()
     {
-        $this->assertNull(Csrf::getToken($this->session));
+        $this->assertNull(Csrf::getToken($this->session, $this->key));
 
-        $token = Csrf::generateToken($this->session);
+        $token = Csrf::generateToken($this->session, $this->key);
 
-        $this->assertNotNull(Csrf::getToken($this->session));
+        $this->assertNotNull(Csrf::getToken($this->session, $this->key));
 
-        $this->assertEquals($token, Csrf::getToken($this->session));
-
+        $this->assertEquals($token, Csrf::getToken($this->session, $this->key));
     }
 
     public function testDeleteToken()
     {
-        Csrf::generateToken($this->session);
+        Csrf::generateToken($this->session, $this->key);
 
-        $this->assertNotNull(Csrf::getToken($this->session));
+        $this->assertNotNull(Csrf::getToken($this->session, $this->key));
 
         Csrf::deleteToken($this->session);
 
-        $this->assertNull(Csrf::getToken($this->session));
+        $this->assertNull(Csrf::getToken($this->session, $this->key));
     }
 
     public function testCheckTokenSuccss()
     {
         $this->request->shouldReceive('getCSRFToken')->andReturnUsing(function () {
-            return Csrf::generateToken($this->session);
+            return Csrf::generateToken($this->session, $this->key);
         });
 
         $this->assertTrue(Csrf::checkToken($this->request, $this->session));
-
     }
 
     public function testCheckTokenMissing()
@@ -102,6 +114,5 @@ class CsrfTest extends TestCase
 
         $this->assertTrue(Csrf::checkToken($this->request, $this->session));
     }
-
 
 }
