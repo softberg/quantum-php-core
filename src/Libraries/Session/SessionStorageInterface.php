@@ -25,6 +25,32 @@ interface SessionStorageInterface extends StorageInterface
 {
 
     /**
+     * Should be implemented in derived classes to get value from storage by key
+     *
+     * @param string $key
+     */
+    public function get($key);
+
+    /**
+     * Should be implemented in derived classes to get whole storage data
+     */
+    public function all();
+
+    /**
+     * Should be implemented in derived classes to check if storage contains a key
+     *
+     * @param string $key
+     */
+    public function has($key);
+
+    /**
+     * Should be implemented in derived classes to set storage value with given key
+     *
+     * @param string $key
+     */
+    public function set($key, $value);
+
+    /**
      * Should be implemented in derived classes to get flash values by given key
      *
      * @param string $key
@@ -40,9 +66,23 @@ interface SessionStorageInterface extends StorageInterface
     public function setFlash($key, $value);
 
     /**
+     * Should be implemented in derived classes to delete data with given key from session
+     *
+     * @param string $key
+     * @param mixed $value
+     */
+    public function delete($key);
+
+    /**
+     *  Should be implemented in derived classes to destroy whole storage data
+     *
+     * @param string $key
+     * @param mixed $value
+     */
+    public function flush();
+
+    /**
      * Should be implemented in derived classes to get session ID
      */
     public function getSessionId();
-
-
 }

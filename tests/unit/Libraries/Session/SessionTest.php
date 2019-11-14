@@ -2,6 +2,7 @@
 
 namespace Quantum\Test\Unit;
 
+use Mockery;
 use PHPUnit\Framework\TestCase;
 use Quantum\Libraries\Session\Session;
 
@@ -9,23 +10,34 @@ class SessionTest extends TestCase
 {
 
     private $session;
+    
+    private $cryptor;
 
     private $sessionData = [
-        'auth' => 'ok',
-        'test' => 'good',
-        'store' => 'persist'
+        'auth' => 'b2s=', // ok
+        'test' => 'Z29vZA==', // good
+        'store' => 'cGVyc2lzdA==' // persist
     ];
 
     public function setUp(): void
     {
-        $this->session = new Session($this->sessionData);
+        $this->cryptor = Mockery::mock('Quantum\Libraries\Encryption\Cryptor');
+
+        $this->cryptor->shouldReceive('encrypt')->andReturnUsing(function ($arg) {
+            return base64_encode($arg);
+        });
+
+        $this->cryptor->shouldReceive('decrypt')->andReturnUsing(function ($arg) {
+            return base64_decode($arg);
+        });
+
+        $this->session = new Session($this->sessionData, $this->cryptor);
     }
 
     public function testSessionConstructor()
     {
         $this->assertInstanceOf('Quantum\Libraries\Session\Session', $this->session);
     }
-
 
     public function testSessionGet()
     {
@@ -36,7 +48,7 @@ class SessionTest extends TestCase
 
     public function testSessionAll()
     {
-        $this->assertEquals($this->sessionData, $this->session->all());
+        $this->assertEquals(array_map('base64_decode', $this->sessionData), $this->session->all());
     }
 
     public function testSessionHas()
@@ -75,7 +87,7 @@ class SessionTest extends TestCase
 
     public function testSessionFlush()
     {
-        $this->assertEquals($this->sessionData, $this->session->all());
+        $this->assertEquals(array_map('base64_decode', $this->sessionData), $this->session->all());
 
         $this->session->flush();
 

@@ -32,6 +32,12 @@ class Session implements SessionStorageInterface
      * @var array $storage
      */
     private $storage = [];
+
+    /**
+     * Cryptor instance
+     * 
+     * @var Quantum\Libraries\Encryption\Cryptor
+     */
     private $cryptor;
 
     /**
@@ -39,10 +45,10 @@ class Session implements SessionStorageInterface
      *
      * @param array $storage
      */
-    public function __construct(&$storage = [])
+    public function __construct(&$storage, Cryptor $cryptor)
     {
         $this->storage = &$storage;
-        $this->cryptor = new Cryptor();
+        $this->cryptor = $cryptor;
     }
 
     /**
@@ -138,7 +144,7 @@ class Session implements SessionStorageInterface
     }
 
     /**
-     * Deletes whole storage data
+     * Destroys whole storage data
      *
      * @return void
      */
@@ -166,7 +172,7 @@ class Session implements SessionStorageInterface
      */
     private function encode($value)
     {
-        $value = (is_array($value) ||  is_object($value)) ? serialize($value) : $value;
+        $value = (is_array($value) || is_object($value)) ? serialize($value) : $value;
         return $this->cryptor->encrypt($value);
     }
 
@@ -186,7 +192,7 @@ class Session implements SessionStorageInterface
 
         if ($data = @unserialize($decrypted)) {
             $decrypted = $data;
-        } 
+        }
 
         return $decrypted;
     }

@@ -15,6 +15,7 @@
 namespace Quantum\Libraries\Session;
 
 use Quantum\Libraries\Database\Database;
+use Quantum\Libraries\Encryption\Cryptor;
 
 /**
  * Session Manager class
@@ -51,7 +52,6 @@ class SessionManager
             }
 
             @session_start();
-
         }
 
         if (isset($_SESSION['LAST_ACTIVITY']) && time() - $_SESSION['LAST_ACTIVITY'] > get_config('session_timeout', 1800)) {
@@ -61,7 +61,7 @@ class SessionManager
 
         $_SESSION['LAST_ACTIVITY'] = time();
 
-        return new Session($_SESSION);
+        return new Session($_SESSION, new Cryptor);
     }
 
 }

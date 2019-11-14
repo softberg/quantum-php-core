@@ -32,6 +32,12 @@ class Cookie implements CookieStorageInterface
      * @var array $storage
      */
     private $storage = [];
+    
+    /**
+     * Cryptor instance
+     * 
+     * @var Quantum\Libraries\Encryption\Cryptor 
+     */
     private $cryptor;
 
     /**
