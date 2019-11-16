@@ -81,6 +81,15 @@ class Cryptor
     }
 
     /**
+     * Checks if the encryption mode is asymmetric
+     * @return bool
+     */
+    public function isAsymmetric()
+    {
+        return $this->asymmetric;
+    }
+
+    /**
      * Get Public Key
      * 
      * @return string
@@ -120,7 +129,7 @@ class Cryptor
      */
     public function encrypt($plain, $publicKey = null)
     {
-        if (!$this->asymmetric) {
+        if (!$this->isAsymmetric()) {
             $iv = $this->iv();
             $encrypted = openssl_encrypt($plain, $this->cipherMethod, $this->appKey, $options = 0, $iv);
 
@@ -145,11 +154,11 @@ class Cryptor
      */
     public function decrypt($encrypted, $privateKey = null)
     {
-        if (!$this->asymmetric) {
+        if (!$this->isAsymmetric()) {
             if (!valid_base64($encrypted)) {
                 return $encrypted;
             }
-            
+
             $data = explode('::', base64_decode($encrypted), 2);
 
             if (!$data || count($data) < 2) {
@@ -160,7 +169,6 @@ class Cryptor
             $iv = base64_decode($data[1]);
 
             return openssl_decrypt($encrypted, $this->cipherMethod, $this->appKey, $options = 0, $iv);
-            
         } else {
             if (!$privateKey) {
                 throw new \Exception(ExceptionMessages::OPENSSL_PRIVATE_KEY_NOT_PROVIDED);
