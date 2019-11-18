@@ -72,7 +72,7 @@ abstract class Qt_Model
      */
     public final function __construct()
     {
-        if (get_caller_class(3) != ModelFactory::class) {
+        if (get_caller_class(2) != ModelFactory::class) {
             throw new \Exception(_message(ExceptionMessages::DIRECT_MODEL_CALL, [$this->callerFunction, ModelFactory::class]));
         }
 
