@@ -54,7 +54,6 @@ class Qt_View
      */
     public static $sharedData = [];
 
-
     /**
      * Qt_View constructor.
      *
@@ -166,6 +165,8 @@ class Qt_View
      */
     private function renderFile($view, $parmas = [], $sharedData = [])
     {
+        $parmas = array_map('strip_tags', $parmas);
+
         $templateEngine = Config::get('template_engine');
 
         if ($templateEngine) {
@@ -173,10 +174,10 @@ class Qt_View
             $engineConfigs = $templateEngine[$engineName];
 
             return HookManager::call('templateRenderer', [
-                'configs' => $engineConfigs,
-                'view' => $view,
-                'params' => $parmas,
-                'sharedData' => $sharedData
+                        'configs' => $engineConfigs,
+                        'view' => $view,
+                        'params' => $parmas,
+                        'sharedData' => $sharedData
             ]);
         } else {
             return self::defaultRenderer($view, $parmas, $sharedData);
