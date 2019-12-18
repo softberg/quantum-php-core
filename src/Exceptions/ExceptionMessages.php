@@ -48,6 +48,11 @@ class ExceptionMessages
     const REPETITIVE_ROUTE_DIFFERENT_MODULES = 'Repetitive Routes in different modules';
 
     /**
+     * Route is not a closure message
+     */
+    const ROUTES_NOT_CLOSURE = 'Route is not a closure';
+
+    /**
      * Route not found message
      */
     const ROUTE_NOT_FOUND = 'Route Not Found';
@@ -95,7 +100,7 @@ class ExceptionMessages
     /**
      * Config file not found message
      */
-    const CONFIG_FILE_NOT_FOUND = 'Config file does not exists';
+    const CONFIG_FILE_NOT_FOUND = 'Config file `{%1}` does not exists';
 
     /**
      * Incorrect config message
@@ -105,7 +110,7 @@ class ExceptionMessages
     /**
      * Config collision message
      */
-    const CONFIG_COLLISION = 'Config key is already in use';
+    const CONFIG_COLLISION = 'Config key `{%1}` is already in use';
 
     /**
      * DB config not found message
@@ -251,5 +256,30 @@ class ExceptionMessages
      * Open SSL config not found
      */
     const OPENSSEL_CONFIG_NOT_FOUND = 'Could not load openssl.cnf properly.';
+
+    /**
+     * Misconfigured session handler  message
+     */
+    const MISCONFIGURED_AUTH_CONFIG = 'Auth config is not properly configured';
+
+    /**
+     * Incorrect auth credentials  message
+     */
+    const INCORRECT_AUTH_CREDENTIALS = 'Incorrect credentials';
+
+    /**
+     * Unauthhorized request  message
+     */
+    const UUAUTHORIZED_REQUEST = 'Unauthorized request';
+
+    /**
+     * Non unique value message
+     */
+    const NON_UNIQUE_VALUE = 'The {%1} field needs to have unique value';
+
+    /**
+     * Non existing value message
+     */
+    const NON_EXISTING_RECORD = 'There is no record matched to {%1}';
 
 }
