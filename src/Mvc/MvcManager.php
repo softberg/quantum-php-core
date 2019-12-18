@@ -19,6 +19,7 @@ use Quantum\Factory\ServiceFactory;
 use Quantum\Factory\ModelFactory;
 use Quantum\Factory\ViewFactory;
 use Quantum\Libraries\Csrf\Csrf;
+use Quantum\Libraries\Lang\Lang;
 use Quantum\Libraries\Session\Session;
 use Quantum\Middleware\MiddlewareManager;
 use Quantum\Exceptions\RouteException;
@@ -62,6 +63,8 @@ class MvcManager
 
         $request = new Request();
         $response = new Response();
+
+        Lang::init($request->getSegment(get_config('lang_segment')));
 
         if ($request->getMethod() != 'OPTIONS') {
 
@@ -152,7 +155,7 @@ class MvcManager
 
         foreach ($params as $param) {
             $paramType = $param->getType();
-            
+
             if ($paramType) {
                 switch ($paramType) {
                     case 'Quantum\Http\Request':
