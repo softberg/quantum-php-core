@@ -118,12 +118,11 @@ class Debugger extends DebugBar
      */
     private static function addRoute($view)
     {
-        $uri = RouteController::$currentRoute['uri'];
-        $method = RouteController::$currentRoute['method'];
-
         $route = [
-            'Route' => $uri,
-            'Method' => $method,
+            'Route' => RouteController::$currentRoute['route'],
+            'Pattern' => RouteController::$currentRoute['pattern'] ?? '',
+            'Uri' => RouteController::$currentRoute['uri'],
+            'Method' => RouteController::$currentRoute['method'],
             'Module' => current_module(),
             'Middlewares' => current_middlewares(),
             'Controller' => current_module() . DS . current_controller(),
@@ -133,7 +132,7 @@ class Debugger extends DebugBar
         ];
 
         if ($view) {
-            $route['View'] =  current_module() . '/Views/' . $view;
+            $route['View'] = current_module() . '/Views/' . $view;
         }
 
         self::$debugbar->addCollector(new MessagesCollector('routes'));
