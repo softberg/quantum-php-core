@@ -103,10 +103,10 @@ class Loader
             if ($this->hierarchical) {
                 $this->filePath = base_dir() . DS . $this->env . DS . $this->fileName . '.php';
                 if (!file_exists($this->filePath)) {
-                    throw new \Exception(_message($this->exceptionMessage, $this->filePath));
+                    throw new \Exception(_message($this->exceptionMessage, $this->fileName));
                 }
             } else {
-                throw new \Exception(_message($this->exceptionMessage, $this->filePath));
+                throw new \Exception(_message($this->exceptionMessage, $this->fileName));
             }
         }
 
@@ -121,7 +121,7 @@ class Loader
      */
     public function load()
     {
-        return require_once $this->getFilePath();
+        return require $this->getFilePath();
     }
 
 }
