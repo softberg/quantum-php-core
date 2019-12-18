@@ -86,7 +86,7 @@ class Config
         $allConfigs = self::getAll();
         foreach ($allConfigs as $key => $config) {
             if ($fileName == $key) {
-                throw new \Exception(ExceptionMessages::CONFIG_COLLISION);
+                throw new \Exception(_message(ExceptionMessages::CONFIG_COLLISION, $key));
             }
         }
 
