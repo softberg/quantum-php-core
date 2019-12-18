@@ -70,11 +70,13 @@ class Session implements SessionStorageInterface
 
     public function all()
     {
+        $allSessions = [];
+
         foreach ($this->storage as $key => $value) {
-            $this->storage[$key] = $this->decode($value);
+            $allSessions[$key] = $this->decode($value);
         }
 
-        return $this->storage;
+        return $allSessions;
     }
 
     /**

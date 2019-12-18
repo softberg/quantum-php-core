@@ -14,14 +14,12 @@
 
 namespace Quantum\Libraries\Session;
 
-use Quantum\Storage\StorageInterface;
-
 /**
  * Interface SessionStorageInterface
  *
  * @package Quantum\Libraries\Session
  */
-interface SessionStorageInterface extends StorageInterface
+interface SessionStorageInterface
 {
 
     /**
