@@ -15,7 +15,6 @@
 namespace Quantum\Libraries\Mailer;
 
 use PHPMailer\PHPMailer\PHPMailer;
-use Quantum\Routes\RouteController;
 
 /**
  * Mailer class
@@ -24,7 +23,8 @@ use Quantum\Routes\RouteController;
  * @subpackage Libraries.Mailer
  * @category Libraries
  */
-class Mailer {
+class Mailer
+{
 
     /**
      * PHP Mailer instance
@@ -45,8 +45,9 @@ class Mailer {
      *
      * @return void
      */
-    public function __construct() {
-        $this->phpMailerSettings();
+    public function __construct()
+    {
+        $this->setupPHPMailer();
     }
 
     /**
@@ -54,30 +55,14 @@ class Mailer {
      *
      * Configures the PHP Mailer
      *
-     * @uses \PHPMailer
      * @return void
+     * @uses \PHPMailer
      */
-    private function phpMailerSettings() {
+    private function setupPHPMailer()
+    {
         $phpMailer = new PHPMailer();
         if (strlen(env('MAIL_HOST')) > 0) {
-            if (get_config('debug')) {
-                $phpMailer->SMTPDebug = 1;
-
-                $phpMailer->Debugoutput = function ($str, $level) {
-                    $this->log .= $str . '&';
-                    session()->set('mail_log', $this->log);
-                };
-            } else {
-                $phpMailer->SMTPDebug = 0;
-            }
-
-            $phpMailer->isSMTP();
-            $phpMailer->Host = env('MAIL_HOST');
-            $phpMailer->SMTPAuth = true;
-            $phpMailer->SMTPSecure = env('MAIL_SMTP_SECURE');
-            $phpMailer->Port = env('MAIL_PORT');
-            $phpMailer->Username = env('MAIL_USERNAME');
-            $phpMailer->Password = env('MAIL_PASSWORD');
+            $this->setupSmtp($phpMailer);
         } else {
             $phpMailer->isMail();
         }
@@ -86,39 +71,61 @@ class Mailer {
         $this->mailer = $phpMailer;
     }
 
+    private function setupSmtp($phpMailer)
+    {
+        $this->setupDebugging($phpMailer);
+
+        $phpMailer->isSMTP();
+        $phpMailer->Host = env('MAIL_HOST');
+        $phpMailer->SMTPAuth = true;
+        $phpMailer->SMTPSecure = env('MAIL_SMTP_SECURE');
+        $phpMailer->Port = env('MAIL_PORT');
+        $phpMailer->Username = env('MAIL_USERNAME');
+        $phpMailer->Password = env('MAIL_PASSWORD');
+    }
+
+    private function setupDebugging()
+    {
+        if (get_config('debug')) {
+            $phpMailer->SMTPDebug = 1;
+            $phpMailer->Debugoutput = function ($str, $level) {
+                $this->log .= $str . '&';
+                session()->set('mail_log', $this->log);
+            };
+        } else {
+            $phpMailer->SMTPDebug = 0;
+        }
+    }
+
     /**
      * Send
      *
      * Send the email
      *
-     * @param array $from From address
-     * @param array $addresses To addresses
-     * @param type $message Message content
-     * @param type $options Options
+     * @param array|null $from
+     * @param array|null $addresses
+     * @param string|null $message
+     * @param array $options
+     * @return bool
      * @uses \PHPMailer
-     * @return boolean
      */
-    public function send(array $from, array $addresses, $message, $options = []) {
-        $this->mailer->setFrom($from['email'], $from['name']);
+    public function send(array $from = null, array $addresses = null, $message = null, $options = [])
+    {
+        if ($from) {
+            $this->createFrom($from);
+        }
 
-        $this->createAddresses($addresses);
+        if ($addresses) {
+            $this->createAddresses($addresses);
+        }
 
         if (isset($options['subject'])) {
-            $this->mailer->Subject = $options['subject'];
+            $this->createSubject($options['subject']);
         }
 
-        $body = '';
-        if (isset($options['template'])) {
-            $body = $this->createFromTemplate($message, $options['template']);
-        } else {
-            if (!is_array($message)) {
-                $body = $message;
-            }
+        if ($message) {
+            $this->createBody($message, $options);
         }
-
-        $this->mailer->AllowEmpty = true;
-
-        $this->mailer->Body = $body;
 
         if (isset($options['attachments'])) {
             $this->createAttachments($options['attachments']);
@@ -148,26 +155,52 @@ class Mailer {
     }
 
     /**
-     * Create From Template
+     * Create From
      *
-     * Create message body from email template
+     * Sets from email and name
+     *
+     * @param array $from
+     * @return $this
+     */
+    public function createFrom(array $from)
+    {
+        $this->mailer->setFrom($from['email'], $from['name']);
+        return $this;
+    }
+
+    /**
+     * Create Subject
+     *
+     * @param string $subject
+     * @return $this
+     */
+    public function createSubject($subject)
+    {
+        $this->mailer->Subject = $subject;
+        return $this;
+    }
+
+    /**
+     * Create Body
      *
      * @param mixed $message
-     * @param string $template
-     * @return string
+     * @param array $options
+     * @return $this
      */
-    private function createFromTemplate($message, $template) {
-        ob_start();
-        ob_implicit_flush(false);
-
-        if (is_array($message) && !empty($message)) {
-            extract($message, EXTR_OVERWRITE);
+    public function createBody($message, $options = [])
+    {
+        $body = '';
+        if (isset($options['template'])) {
+            $body = $this->createFromTemplate($message, $options['template']);
+        } else {
+            if (!is_array($message)) {
+                $body = $message;
+            }
         }
 
-        $current_module = RouteController::$currentRoute['module'];
-        $templatePath = MODULES_DIR . '/' . $current_module . '/Views/' . $template . '.php';
-        require $templatePath;
-        return ob_get_clean();
+        $this->mailer->AllowEmpty = true;
+        $this->mailer->Body = $body;
+        return $this;
     }
 
     /**
@@ -176,9 +209,11 @@ class Mailer {
      * Add attachments from a path
      *
      * @param mixed $attachments
+     * @return $this
      * @uses \PHPMailer
      */
-    private function createAttachments($attachments) {
+    public function createAttachments($attachments)
+    {
         if (is_array($attachments) && count($attachments) > 0) {
             foreach ($attachments as $attachment) {
                 $this->mailer->addAttachment($attachment);
@@ -186,6 +221,8 @@ class Mailer {
         } else if (!empty($attachments)) {
             $this->mailer->addAttachment($attachments);
         }
+
+        return $this;
     }
 
     /**
@@ -194,9 +231,10 @@ class Mailer {
      * Add attachments from a string
      *
      * @param mixed $attachments
+     * @return $this
      * @uses \PHPMailer
      */
-    private function createStringAttachments($attachments)
+    public function createStringAttachments($attachments)
     {
         if (array_key_exists('string', $attachments)) {
             $this->mailer->addStringAttachment($attachments['string'], $attachments['name']);
@@ -205,6 +243,8 @@ class Mailer {
                 $this->mailer->addStringAttachment($attachment['string'], $attachment['name']);
             }
         }
+        return $this;
+
     }
 
     /**
@@ -213,9 +253,11 @@ class Mailer {
      * Add a "To" addresses
      *
      * @param mixed $addresses
+     * @return $this
      * @uses \PHPMailer
      */
-    private function createAddresses($addresses) {
+    public function createAddresses($addresses)
+    {
         if (array_key_exists('email', $addresses)) {
             $this->mailer->addAddress($addresses['email'], $addresses['name']);
         } else {
@@ -223,6 +265,8 @@ class Mailer {
                 $this->mailer->addAddress($address['email'], $address['name']);
             }
         }
+
+        return $this;
     }
 
     /**
@@ -231,9 +275,11 @@ class Mailer {
      * Add a "Reply-To" addresses
      *
      * @param mixed $addresses
+     * @return $this
      * @uses \PHPMailer
      */
-    private function createReplays($addresses) {
+    public function createReplays($addresses)
+    {
         if (is_array($addresses) && count($addresses) > 0) {
             foreach ($addresses as $address) {
                 $this->mailer->addReplyTo($address);
@@ -241,6 +287,8 @@ class Mailer {
         } else if (!empty($addresses)) {
             $this->mailer->addReplyTo($addresses);
         }
+
+        return $this;
     }
 
     /**
@@ -249,9 +297,11 @@ class Mailer {
      * Add a "CC" addresses
      *
      * @param mixed $addresses
+     * @return $this
      * @uses \PHPMailer
      */
-    private function createCCs($addresses) {
+    public function createCCs($addresses)
+    {
         if (is_array($addresses) && count($addresses) > 0) {
             foreach ($addresses as $address) {
                 $this->mailer->addCC($address);
@@ -259,6 +309,8 @@ class Mailer {
         } else if (!empty($addresses)) {
             $this->mailer->addCC($addresses);
         }
+
+        return $this;
     }
 
     /**
@@ -267,9 +319,11 @@ class Mailer {
      * Add a "BCC" addresses
      *
      * @param mixed $addresses
+     * @return $this
      * @uses \PHPMailer
      */
-    private function createBCCs($addresses) {
+    public function createBCCs($addresses)
+    {
         if (is_array($addresses) && count($addresses) > 0) {
             foreach ($addresses as $address) {
                 $this->mailer->addBCC($address);
@@ -277,6 +331,30 @@ class Mailer {
         } else if (!empty($addresses)) {
             $this->mailer->addBCC($addresses);
         }
+
+        return $this;
+    }
+
+    /**
+     * Create From Template
+     *
+     * Create message body from email template
+     *
+     * @param mixed $message
+     * @param string $template
+     * @return string
+     */
+    private function createFromTemplate($message, $template)
+    {
+        ob_start();
+        ob_implicit_flush(false);
+
+        if (!empty($message) && is_array($message)) {
+            extract($message, EXTR_OVERWRITE);
+        }
+
+        require $template . '.php';;
+        return ob_get_clean();
     }
 
 }
