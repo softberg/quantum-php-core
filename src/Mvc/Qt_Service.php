@@ -26,7 +26,8 @@ use Quantum\Factory\ServiceFactory;
  * @subpackage MVC
  * @category MVC
  */
-abstract class Qt_Service {
+abstract class Qt_Service
+{
 
     /**
      * Class constructor
@@ -40,5 +41,7 @@ abstract class Qt_Service {
             throw new \Exception(_message(ExceptionMessages::DIRECT_SERVICE_CALL, [ServiceFactory::class]));
         }
     }
+
+    public function __init() {}
 
 }
