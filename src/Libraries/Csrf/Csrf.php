@@ -15,7 +15,7 @@
 namespace Quantum\Libraries\Csrf;
 
 use Quantum\Exceptions\ExceptionMessages;
-use Quantum\Storage\StorageInterface;
+use Quantum\Libraries\Session\SessionStorageInterface;
 use Quantum\Http\Request;
 
 /**
@@ -49,7 +49,7 @@ class Csrf
      *
      * @return string
      */
-    public static function generateToken(StorageInterface $storage, $key)
+    public static function generateToken(SessionStorageInterface $storage, $key)
     {
         if (self::$token == null) {
             self::deleteToken($storage);
@@ -66,11 +66,11 @@ class Csrf
      * Checks the token
      *
      * @param Request $request
-     * @param StorageInterface $storage
+     * @param SessionStorageInterface $storage
      * @return bool
      * @throws \Exception
      */
-    public static function checkToken(Request $request, StorageInterface $storage)
+    public static function checkToken(Request $request, SessionStorageInterface $storage)
     {
         if (in_array($request->getMethod(), self::$methods)) {
             $token = $request->getCSRFToken();
@@ -91,10 +91,10 @@ class Csrf
      *
      * Deletes the token from storage
      *
-     * @param StorageInterface $storage
+     * @param SessionStorageInterface $storage
      * @return void
      */
-    public static function deleteToken(StorageInterface $storage)
+    public static function deleteToken(SessionStorageInterface $storage)
     {
         $storage->delete('token');
         self::$token = null;
@@ -105,10 +105,10 @@ class Csrf
      *
      * Gets the token from storage
      *
-     * @param StorageInterface $storage
+     * @param SessionStorageInterface $storage
      * @return string|null
      */
-    public static function getToken(StorageInterface $storage)
+    public static function getToken(SessionStorageInterface $storage)
     {
         return $storage->has('token') ? $storage->get('token') : null;
     }
@@ -118,11 +118,12 @@ class Csrf
      *
      * Sets the token into the storage
      *
-     * @param StorageInterface $storage
+     * @param SessionStorageInterface $storage
      * @param string $token
      */
-    private static function setToken(StorageInterface $storage, $token)
+    private static function setToken(SessionStorageInterface $storage, $token)
     {
         $storage->set('token', $token);
     }
+
 }
