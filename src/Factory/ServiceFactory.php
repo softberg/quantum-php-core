@@ -24,6 +24,8 @@ use Quantum\Mvc\Qt_Service;
 class ServiceFactory
 {
 
+    private static $initialized = [];
+
     /**
      * @var object
      */
@@ -38,7 +40,7 @@ class ServiceFactory
      * @return $this
      * @throws \Exception
      */
-    public function get($serviceClass)
+    public function get($serviceClass, $proxy = false)
     {
         if (!class_exists($serviceClass)) {
             throw new \Exception(_message(ExceptionMessages::SERVICE_NOT_FOUND, $serviceClass));
@@ -50,7 +52,18 @@ class ServiceFactory
 
         $this->service = $service;
 
-        return $this;
+        if (!isset(self::$initialized[$serviceClass]) || (isset(self::$initialized[$serviceClass]) && !self::$initialized[$serviceClass])) {
+            if (method_exists($this->service, '__init')) {
+                $this->service->__init();
+                self::$initialized[$serviceClass] = true;
+            }
+        }
+
+        if ($proxy) {
+            return $this;
+        }
+
+        return $this->service;
     }
 
     /**
@@ -83,7 +96,6 @@ class ServiceFactory
             }
 
             return call_user_func([$this->service, $methodName], ...$args);
-
         } else {
             throw new \BadMethodCallException(_message(ExceptionMessages::UNDEFINED_METHOD, $methodName));
         }
