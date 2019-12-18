@@ -155,7 +155,7 @@ class JWToken extends JWT
      */
     public function retrieve($jwt, array $allowed_algs = [])
     {
-        $this->fetchedPayload = parent::decode($jwt, $this->key, $allowed_algs);
+        $this->fetchedPayload = parent::decode($jwt, $this->key, $allowed_algs ?: [$this->algorithm]);
         return $this;
     }
 
