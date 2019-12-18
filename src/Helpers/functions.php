@@ -11,16 +11,21 @@
  * @link http://quantum.softberg.org/
  * @since 1.0.0
  */
-use Quantum\Routes\RouteController;
+
 use Quantum\Libraries\Environment\Environment;
 use Quantum\Libraries\Session\SessionManager;
+use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Libraries\Encryption\Cryptor;
+use Quantum\Libraries\Auth\AuthService;
+use Quantum\Libraries\Auth\AuthManager;
 use Quantum\Libraries\Cookie\Cookie;
 use Quantum\Libraries\Dumper\Dumper;
 use Quantum\Libraries\Config\Config;
+use Quantum\Routes\RouteController;
+use Quantum\Factory\ServiceFactory;
+use Quantum\Factory\ViewFactory;
 use Quantum\Libraries\Lang\Lang;
 use Quantum\Libraries\Csrf\Csrf;
-use Quantum\Factory\ViewFactory;
 use Quantum\Mvc\Qt_Controller;
 use Quantum\Http\Response;
 use Quantum\Mvc\Qt_View;
@@ -134,7 +139,7 @@ if (!function_exists('current_action_args')) {
      */
     function current_route_args()
     {
-        return RouteController::$currentRoute['args'] ?? null;
+        return array_values(RouteController::$currentRoute['args']) ?? null;
     }
 
 }
@@ -551,6 +556,18 @@ if (!function_exists('mailer')) {
 
 }
 
+if (!function_exists('current_lang')) {
+    /**
+     * Gets the current lang
+     *
+     * @return string
+     */
+    function current_lang()
+    {
+        return Lang::get();
+    }
+}
+
 if (!function_exists('get_caller_class')) {
 
     /**
@@ -584,38 +601,6 @@ if (!function_exists('get_caller_function')) {
 
 }
 
-if (!function_exists('pass_hash')) {
-
-    /**
-     * Password Hash
-     *
-     * @param string $pass
-     * @return bool|string
-     */
-    function pass_hash($pass)
-    {
-        return password_hash(md5($pass), PASSWORD_BCRYPT);
-    }
-
-}
-
-if (!function_exists('pass_check')) {
-
-    /**
-     * Password Check
-     *
-     * @param string $pass
-     * @param string $hashpass
-     * @return bool
-     */
-    function pass_check($pass, $hashpass)
-    {
-        return password_verify(md5($pass), $hashpass);
-    }
-
-}
-
-
 if (!function_exists('valid_base64')) {
 
     function valid_base64($string)
@@ -635,6 +620,15 @@ if (!function_exists('valid_base64')) {
             return false;
 
         return true;
+    }
+
+}
+
+if (!function_exists('auth')) {
+
+    function auth()
+    {
+        return AuthManager::getInstance();
     }
 
 }
