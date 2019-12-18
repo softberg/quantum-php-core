@@ -60,7 +60,7 @@ abstract class HttpRequest
 
         $getParams = !empty($_GET) ? filter_input_array(INPUT_GET, FILTER_SANITIZE_STRING, FILTER_REQUIRE_ARRAY) : [];
         $postParams = !empty($_POST) ? filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING, FILTER_REQUIRE_ARRAY) : [];
-        $inputParams = (array) self::getInputParams();
+        $inputParams = (array)self::getInputParams();
 
         self::$__request = array_merge(
             self::$__request,
@@ -152,20 +152,9 @@ abstract class HttpRequest
      * @param string $default
      * @return mixed
      */
-    public static function get($key, $default = NULL)
+    public static function get($key, $default = null)
     {
         return self::has($key) ? self::$__request[$key] : $default;
-    }
-    
-    /**
-     * Delete
-     * 
-     * Deletes the element from request by given key
-     * @param type $key
-     */
-    public static function delete($key)
-    {
-        unset(self::$__request[$key]);
     }
 
     /**
@@ -176,6 +165,17 @@ abstract class HttpRequest
     public static function all()
     {
         return self::$__request;
+    }
+
+    /**
+     * Delete
+     *
+     * Deletes the element from request by given key
+     * @param type $key
+     */
+    public static function delete($key)
+    {
+        unset(self::$__request[$key]);
     }
 
     /**
@@ -199,6 +199,11 @@ abstract class HttpRequest
     public function allHeaders()
     {
         return self::$__headers;
+    }
+
+    public function updateHeader($key, $value)
+    {
+        self::$__headers[$key] = $value;
     }
 
     /**
