@@ -14,15 +14,12 @@
 
 namespace Quantum\Libraries\Cookie;
 
-use Quantum\Storage\StorageInterface;
-
-
 /**
  * Interface CookieStorageInterface
  *
  * @package Quantum\Libraries\Cookie
  */
-interface CookieStorageInterface extends StorageInterface
+interface CookieStorageInterface
 {
 
     /**
@@ -69,5 +66,4 @@ interface CookieStorageInterface extends StorageInterface
      * Should be implemented in derived classes to delete whole storage data
      */
     public function flush();
-
 }
