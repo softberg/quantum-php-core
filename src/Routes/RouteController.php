@@ -33,12 +33,12 @@ abstract class RouteController {
      * 
      * @var mixed 
      */
-    public static $currentRoute = NULL;
+    public static $currentRoute = null;
     
     /**
      * Contains current route information
      * 
      * @var mixed 
      */
-    public static $currentModule = NULL;
+    public static $currentModule = null;
 }

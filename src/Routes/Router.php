@@ -39,6 +39,21 @@ class Router extends RouteController
     public $routes = [];
 
     /**
+     * @var array
+     */
+    private $matchedUris = [];
+
+    /**
+     * @var array
+     */
+    private $routesGroups = [];
+
+    /**
+     * @var string
+     */
+    private $requestUri = '';
+
+    /**
      * Find Route
      *
      * Matches any routes that may exists in config/routes.php file of specific module
@@ -51,66 +66,40 @@ class Router extends RouteController
     {
         if (isset($_SERVER['REQUEST_URI'])) {
 
-            $matched_uris = [];
-            $routes_group = [];
+            $this->findStraightMatches();
 
-            $request_uri = preg_replace('/[?]/', '', $_SERVER['REQUEST_URI']);
-
-            foreach ($this->routes as $route) {
-                if (trim(urldecode($request_uri), '/') == trim($route['uri'], '/')) {
-                    $matched_uris[] = $route['uri'];
-                    $route['args'] = [];
-                    array_push($routes_group, $route);
-                }
+            if (!$this->matchedUris) {
+                $this->findPatternMatches();
             }
 
-            if (!$matched_uris) {
-                foreach ($this->routes as $route) {
-                    $route['uri'] = str_replace('/', '\/', $route['uri']);
-                    $route['uri'] = preg_replace_callback('/(\\\\\/)*\[(:num)(:([0-9]+))*\](\?)?/', array($this, 'findPattern'), $route['uri']);
-                    $route['uri'] = preg_replace_callback('/(\\\\\/)*\[(:alpha)(:([0-9]+))*\](\?)?/', array($this, 'findPattern'), $route['uri']);
-                    $route['uri'] = preg_replace_callback('/(\\\\\/)*\[(:any)(:([0-9]+))*\](\?)?/', array($this, 'findPattern'), $route['uri']);
-
-                    $request_uri = parse_url($_SERVER['REQUEST_URI']);
-
-                    preg_match("/^\/" . $route['uri'] . "$/u", urldecode($request_uri['path']), $matches);
-
-                    if ($matches) {
-                        array_push($matched_uris, $matches[0]);
-                        array_shift($matches);
-
-                        $route['args'] = array_diff($matches, ['', '/']);
-                        array_push($routes_group, $route);
-                    }
-                }
-            }
-
-            if (!$matched_uris) {
-                self::$currentRoute = NULL;
+            if (!$this->matchedUris) {
+                self::$currentRoute = null;
                 HookManager::call('pageNotFound');
             }
 
-            if ($matched_uris) {
-                if (count($routes_group) > 1) {
+            if ($this->matchedUris) {
+                if (count($this->routesGroups)) {
 
-                    self::$currentModule = $routes_group[0]['module'];
+                    $this->routesGroups[0]['uri'] = $this->requestUri ?? '';
 
-                    for ($i = 0; $i < count($routes_group) - 1; $i++) {
-                        for ($j = $i + 1; $j < count($routes_group); $j++) {
-                            if ($routes_group[$i]['method'] == $routes_group[$j]['method']) {
-                                self::$currentRoute = NULL;
-                                throw new RouteException(_message(ExceptionMessages::REPETITIVE_ROUTE_SAME_METHOD, $routes_group[$j]['method']));
+                    self::$currentModule = $this->routesGroups[0]['module'];
+
+                    for ($i = 0; $i < count($this->routesGroups) - 1; $i++) {
+                        for ($j = $i + 1; $j < count($this->routesGroups); $j++) {
+                            if ($this->routesGroups[$i]['method'] == $this->routesGroups[$j]['method']) {
+                                self::$currentRoute = null;
+                                throw new RouteException(_message(ExceptionMessages::REPETITIVE_ROUTE_SAME_METHOD, $this->routesGroups[$j]['method']));
                                 break 2;
                             }
-                            if ($routes_group[$i]['module'] != $routes_group[$j]['module']) {
-                                self::$currentRoute = NULL;
+                            if ($this->routesGroups[$i]['module'] != $this->routesGroups[$j]['module']) {
+                                self::$currentRoute = null;
                                 throw new RouteException(ExceptionMessages::REPETITIVE_ROUTE_DIFFERENT_MODULES);
                                 break 2;
                             }
                         }
                     }
 
-                    foreach ($routes_group as $route) {
+                    foreach ($this->routesGroups as $route) {
                         if (strpos($route['method'], '|') !== false) {
                             if (in_array($_SERVER['REQUEST_METHOD'], explode('|', $route['method']))) {
                                 self::$currentRoute = $route;
@@ -122,8 +111,8 @@ class Router extends RouteController
                         }
                     }
                 } else {
-                    self::$currentModule = $routes_group[0]['module'];
-                    self::$currentRoute = $routes_group[0];
+                    self::$currentModule = $this->routesGroups[0]['module'];
+                    self::$currentRoute = $this->routesGroups[0];
                 }
             }
 
@@ -131,6 +120,50 @@ class Router extends RouteController
 
             if ($_SERVER['REQUEST_METHOD'] != 'OPTIONS') {
                 $this->checkMethod();
+            }
+        }
+    }
+
+    /**
+     * Finds straight matches
+     */
+    private function findStraightMatches()
+    {
+        $this->requestUri = trim(urldecode(preg_replace('/[?]/', '', $_SERVER['REQUEST_URI'])), '/');
+
+        foreach ($this->routes as $route) {
+            if ($this->requestUri == trim($route['route'], '/')) {
+                $route['args'] = [];
+                $this->matchedUris[] = $route['route'];
+                $this->routesGroups[] = $route;
+            }
+        }
+    }
+
+    /**
+     * Finds matches by pattern
+     */
+    private function findPatternMatches()
+    {
+        $this->requestUri = urldecode(parse_url($_SERVER['REQUEST_URI'])['path']);
+
+        foreach ($this->routes as $route) {
+            $pattern = trim($route['route'], '/');
+            $pattern = str_replace('/', '\/', $pattern);
+            $pattern = preg_replace_callback('/(\\\\\/)*\[(:num)(:([0-9]+))*\](\?)?/', array($this, 'getPattern'), $pattern);
+            $pattern = preg_replace_callback('/(\\\\\/)*\[(:alpha)(:([0-9]+))*\](\?)?/', array($this, 'getPattern'), $pattern);
+            $pattern = preg_replace_callback('/(\\\\\/)*\[(:any)(:([0-9]+))*\](\?)?/', array($this, 'getPattern'), $pattern);
+
+            $pattern = mb_substr($pattern, 0, 4) != '(\/)' ? '(\/)?' . $pattern : $pattern;
+
+            preg_match("/^" . $pattern . "$/u", $this->requestUri, $matches);
+
+            if (count($matches)) {
+                $this->matchedUris = $matches[0] ?: '/';
+                array_shift($matches);
+                $route['args'] = array_diff($matches, ['', '/']);
+                $route['pattern'] = $pattern;
+                $this->routesGroups[] = $route;
             }
         }
     }
@@ -159,14 +192,13 @@ class Router extends RouteController
      * @param string $matches
      * @return string
      */
-    private function findPattern($matches)
+    private function getPattern($matches)
     {
         $replacement = '';
 
         if (isset($matches[5]) && $matches[5] == '?') {
-            $replacement .= '(\/)*';
-        }
-        else {
+            $replacement .= '(\/)?';
+        } else {
             $replacement .= '(\/)';
         }
 

@@ -84,16 +84,16 @@ class Route {
     /**
      * Adds new route entry to routes
      *
-     * @param string $uri
+     * @param string $route
      * @param string $method
      * @param string $controller
      * @param string $action
      * @param array $middlewares
      * @return $this
      */
-    public function add($uri, $method, $controller, $action) {
+    public function add($route, $method, $controller, $action) {
         $this->currentRoute = [
-            'uri' => $uri,
+            'route' => $route,
             'method' => $method,
             'controller' => $controller,
             'action' => $action,

@@ -43,14 +43,14 @@ class ModuleLoader {
      * @throws \Exception When module file is not found
      */
     public function loadModules(Router $router) {
-        $this->modules = require_once BASE_DIR . '/config/modules.php';
+        $this->modules = require_once BASE_DIR . DS . 'config' . DS . 'modules.php';
 
         foreach ($this->modules['modules'] as $module) {
-            if (!file_exists(MODULES_DIR . '/' . $module . '/Config/routes.php')) {
+            if (!file_exists(MODULES_DIR . DS . $module . DS . 'Config' . DS . 'routes.php')) {
                 throw new \Exception(_message(ExceptionMessages::MODULE_NOT_FOUND, $module));
             }
 
-            $routesClosure = require_once MODULES_DIR . '/' . $module . '/Config/routes.php';
+            $routesClosure = require_once MODULES_DIR . DS . $module . DS . 'Config' . DS . 'routes.php';
 
             if (!$routesClosure instanceof \Closure) {
                 throw new \Exception(ExceptionMessages::ROUTES_NOT_CLOSURE);
