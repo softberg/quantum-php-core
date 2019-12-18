@@ -2,9 +2,9 @@
 
 /**
  * Quantum PHP Framework
- * 
+ *
  * An open source software development framework for PHP
- * 
+ *
  * @package Quantum
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
@@ -14,23 +14,32 @@
 
 namespace Quantum\Http;
 
+use phpDocumentor\Reflection\Types\Self_;
 use Quantum\Exceptions\ExceptionMessages;
 
 /**
  * HttpResponse Class
- * 
+ *
  * Abstract base http response class
- * 
+ *
  * @package Quantum
  * @subpackage Http
  * @category Http
  */
-abstract class HttpResponse {
-    
+abstract class HttpResponse
+{
+
+    /**
+     * Response body
+     *
+     * @var array
+     */
+    private static $__response = [];
+
     /**
      * Status texts
-     * 
-     * @var array 
+     *
+     * @var array
      */
     public static $statusTexts = [
         100 => 'Continue',
@@ -97,42 +106,108 @@ abstract class HttpResponse {
     ];
 
     /**
+     * Set
+     *
+     * Set new key/value pair into response
+     *
+     * @param string $key
+     * @param mixed $value
+     */
+    public static function set($key, $value)
+    {
+        self::$__response[$key] = $value;
+    }
+
+    /**
+     * Has
+     *
+     * Checks if response contains a data by given key
+     *
+     * @param $key
+     * @return bool
+     */
+    public static function has($key)
+    {
+        return isset(self::$__response[$key]);
+    }
+
+    /**
+     * Get
+     *
+     * Retrieves data from response by given key
+     *
+     * @param string $key
+     * @param string $default
+     * @return mixed
+     */
+    public static function get($key, $default = null)
+    {
+        return self::has($key) ? self::$__response[$key] : $default;
+    }
+
+    /**
+     * Gets all response parameters
+     *
+     * @return array
+     */
+    public static function all()
+    {
+        return self::$__response;
+    }
+
+    /**
+     * Delete
+     *
+     * Deletes the element from response by given key
+     * @param type $key
+     */
+    public static function delete($key)
+    {
+        unset(self::$__response[$key]);
+    }
+
+
+    /**
      * Set status
-     * 
+     *
      * @param integer $status
      * @return void
      */
-    public static function setStatus($status) {
+    public static function setStatus($status)
+    {
         header('HTTP/1.1 ' . $status . ' ' . self::$statusTexts[$status]);
     }
-    
+
     /**
      * Set content type
-     * 
+     *
      * @param string $contentType
      * @return void
      */
-    public static function setContentType($contentType) {
+    public static function setContentType($contentType)
+    {
         self::setHeader('Content-Type', $contentType);
     }
-    
+
     /**
      * Set Сross Site Request Forgery Token
-     * 
+     *
      * @param string $csrfToken
      * @return void
      */
-    public static function setCSRFToken($csrfToken) {
+    public static function setCSRFToken($csrfToken)
+    {
         self::setHeader('X-CSRF-Token', $csrfToken);
     }
 
     /**
      * Set header
-     * 
+     *
      * @param string $key
      * @param string $value
      */
-    public static function setHeader($key, $value) {
+    public static function setHeader($key, $value)
+    {
         header($key . ': ' . $value);
     }
 
@@ -144,13 +219,19 @@ abstract class HttpResponse {
      * @param mixed $data
      * @param integer $status
      */
-    public static function json($data, $status = null) {
+    public static function json($data = null, $status = null)
+    {
+        if ($data) {
+            $data = count(self::$__response) > 0 ? ['data' => (array)$data] : (array)$data;
+            self::$__response = array_merge(self::$__response, $data);
+        }
+
         if ($status) {
             self::setStatus($status);
         }
 
         self::setContentType('application/json');
-        echo json_encode($data);
+        echo json_encode(self::all());
         exit;
     }
 
@@ -161,7 +242,8 @@ abstract class HttpResponse {
      *
      * @param array $arr
      */
-    public static function xml(array $arr) {
+    public static function xml(array $arr)
+    {
         $simpleXML = new \SimpleXMLElement('<?xml version="1.0"?><data></data>');
         self::arrayToXML($arr, $simpleXML);
 
@@ -179,7 +261,8 @@ abstract class HttpResponse {
      * @param object $simpleXML
      * @return void
      */
-    private function arrayToXML(array $arr, &$simpleXML) {
+    private function arrayToXML(array $arr, &$simpleXML)
+    {
         foreach ($arr as $key => $value) {
             if (is_numeric($key)) {
                 $key = 'item' . $key;
