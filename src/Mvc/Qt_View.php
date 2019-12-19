@@ -163,9 +163,9 @@ class Qt_View
      * @return object|string
      * @throws \Exception
      */
-    private function renderFile($view, $parmas = [], $sharedData = [])
+    private function renderFile($view, $params = [], $sharedData = [])
     {
-        $parmas = self::xssFilter($parmas);
+        $params = self::xssFilter($params);
         $sharedData = self::xssFilter($sharedData);
 
         $templateEngine = Config::get('template_engine');
@@ -177,11 +177,11 @@ class Qt_View
             return HookManager::call('templateRenderer', [
                 'configs' => $engineConfigs,
                 'view' => $view,
-                'params' => $parmas,
+                'params' => $params,
                 'sharedData' => $sharedData
             ]);
         } else {
-            return self::defaultRenderer($view, $parmas, $sharedData);
+            return self::defaultRenderer($view, $params, $sharedData);
         }
     }
 
@@ -190,20 +190,20 @@ class Qt_View
      *
      * Renders html view
      * @param string $view
-     * @param array $parmas
+     * @param array $params
      * @param array $sharedData
      * @return string
      * @throws \Exception
      */
-    private static function defaultRenderer($view, $parmas = [], $sharedData = [])
+    private static function defaultRenderer($view, $params = [], $sharedData = [])
     {
         $file = self::findFile($view);
 
         ob_start();
         ob_implicit_flush(false);
 
-        if ($parmas) {
-            extract($parmas, EXTR_OVERWRITE);
+        if ($params) {
+            extract($params, EXTR_OVERWRITE);
         }
 
         if ($sharedData) {
