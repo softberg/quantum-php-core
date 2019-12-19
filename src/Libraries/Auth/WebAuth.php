@@ -23,33 +23,28 @@ use Quantum\Libraries\JWToken\JWToken;
  *
  * @package Quantum\Libraries\Auth
  */
-class WebAuth implements AuthenticableInterface
+class WebAuth extends BaseAuth implements AuthenticableInterface
 {
-
-    /**
-     * Common auth methods
-     */
-    use AuthTools;
 
     /**
      * @var Hasher
      */
-    private $hasher;
+    protected $hasher;
 
     /**
      * @var AuthServiceInterface
      */
-    private $authService;
+    protected $authService;
 
     /**
      * @var array
      */
-    private $keys = [];
+    protected $keys = [];
 
     /**
      * @var string
      */
-    private $authUserKey = 'auth_user';
+    protected $authUserKey = 'auth_user';
 
     /**
      * WebAuth constructor.

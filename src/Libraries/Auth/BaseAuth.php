@@ -11,6 +11,7 @@
  * @link http://quantum.softberg.org/
  * @since 1.9.0
  */
+
 namespace Quantum\Libraries\Auth;
 
 
@@ -21,7 +22,7 @@ use Quantum\Libraries\Mailer\Mailer;
  *
  * @package Quantum\Libraries\Auth
  */
-trait AuthTools
+class BaseAuth
 {
     /**
      * Check
@@ -91,7 +92,7 @@ trait AuthTools
      * @param array $user
      * @return mixed
      */
-    private function filterFields($user)
+    protected function filterFields($user)
     {
         if (count($this->authService->getVisibleFields()) > 0) {
             foreach ($user as $key => $value) {
@@ -110,7 +111,7 @@ trait AuthTools
      * @param $username
      * @return string
      */
-    private function generateToken()
+    protected function generateToken()
     {
         return base64_encode($this->hasher->hash(env('APP_KEY')));
     }

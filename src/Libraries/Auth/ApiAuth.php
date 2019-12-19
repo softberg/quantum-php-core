@@ -25,37 +25,33 @@ use Quantum\Libraries\JWToken\JWToken;
  *
  * @package Quantum\Libraries\Auth
  */
-class ApiAuth implements AuthenticableInterface
+class ApiAuth extends BaseAuth implements AuthenticableInterface
 {
-    /**
-     * Common auth methods
-     */
-    use AuthTools;
 
     /**
      * @var JWToken
      */
-    private $jwt;
+    protected $jwt;
 
     /**
      * @var Hasher
      */
-    private $hasher;
+    protected $hasher;
 
     /**
      * @var AuthServiceInterface
      */
-    private $authService;
+    protected $authService;
 
     /**
      * @var array
      */
-    private $keys = [];
+    protected $keys = [];
 
     /**
      * @var string
      */
-    private $authUserKey = 'auth_user';
+    protected $authUserKey = 'auth_user';
 
     /**
      * ApiAuth constructor.
@@ -151,7 +147,7 @@ class ApiAuth implements AuthenticableInterface
      *
      * @return bool|mixed
      */
-    private function checkRefreshToken()
+    protected function checkRefreshToken()
     {
         $user = $this->authService->get(Request::get($this->keys['refreshTokenKey']));
         if ($user) {
@@ -167,7 +163,7 @@ class ApiAuth implements AuthenticableInterface
      *
      * @param object $user
      */
-    private function setUpdatedTokens($user)
+    protected function setUpdatedTokens($user)
     {
         $username = $user->username;
 
