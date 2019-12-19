@@ -26,9 +26,7 @@ use Quantum\Hooks\HookManager;
  * Qt_View class is a base class that responsible for rendering and
  * outputting the view
  *
- * @package Quantum
- * @subpackage MVC
- * @category MVC
+ * @package Quantum\Mvc
  */
 class Qt_View
 {
@@ -54,6 +52,7 @@ class Qt_View
      */
     public static $sharedData = [];
 
+
     /**
      * Qt_View constructor.
      *
@@ -78,7 +77,7 @@ class Qt_View
     }
 
     /**
-     * Renders a layout
+     * Renders the layout
      *
      * @param array $sharedData
      * @return string
@@ -91,14 +90,13 @@ class Qt_View
     /**
      * Render
      *
-     * Renders a view
+     * Renders the view
      *
-     * @param string $view
+     * @param $view
      * @param array $params
      * @param bool $output
      * @param array $sharedData
-     * @uses self::renderFile
-     * @return void
+     * @throws \Exception
      */
     public function render($view, $params = [], $output = false, $sharedData = [])
     {
@@ -121,6 +119,7 @@ class Qt_View
      * Output
      *
      * Outputs the view
+     *
      * @param $view
      * @param array $params
      * @param array $sharedData
@@ -135,6 +134,7 @@ class Qt_View
      * Find File
      *
      * Finds a given file
+     *
      * @param $file
      * @return string
      * @throws \Exception
@@ -155,7 +155,7 @@ class Qt_View
     /**
      * Render File
      *
-     * Renders a view
+     * Renders the view
      *
      * @param string $view
      * @param array $parmas
@@ -165,7 +165,8 @@ class Qt_View
      */
     private function renderFile($view, $parmas = [], $sharedData = [])
     {
-        $parmas = array_map('strip_tags', $parmas);
+        $parmas = self::xssFilter($parmas);
+        $sharedData = self::xssFilter($sharedData);
 
         $templateEngine = Config::get('template_engine');
 
@@ -174,10 +175,10 @@ class Qt_View
             $engineConfigs = $templateEngine[$engineName];
 
             return HookManager::call('templateRenderer', [
-                        'configs' => $engineConfigs,
-                        'view' => $view,
-                        'params' => $parmas,
-                        'sharedData' => $sharedData
+                'configs' => $engineConfigs,
+                'view' => $view,
+                'params' => $parmas,
+                'sharedData' => $sharedData
             ]);
         } else {
             return self::defaultRenderer($view, $parmas, $sharedData);
@@ -212,6 +213,21 @@ class Qt_View
         require $file;
 
         return ob_get_clean();
+    }
+
+    /**
+     * XSS Filter
+     *
+     * @param mixed $data
+     * @return mixed
+     */
+    private function xssFilter($data)
+    {
+        array_walk_recursive($data, function (&$value) {
+            $value = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+        });
+
+        return $data;
     }
 
     /**
