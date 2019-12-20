@@ -112,7 +112,7 @@ abstract class HttpRequest
      *
      * @return mixed
      */
-    public function getMethod()
+    public static function getMethod()
     {
         return $_SERVER['REQUEST_METHOD'];
     }
@@ -199,7 +199,7 @@ abstract class HttpRequest
      * @param string $key
      * @param mixed $value
      */
-    public function setHeader($key, $value)
+    public static function setHeader($key, $value)
     {
         self::$__headers[$key] = $value;
     }
@@ -221,7 +221,7 @@ abstract class HttpRequest
      * @param $key
      * @return mixed|null
      */
-    public function getHeader($key)
+    public static function getHeader($key)
     {
         return self::hasHeader($key) ? self::$__headers[$key] : null;
     }
@@ -231,7 +231,7 @@ abstract class HttpRequest
      *
      * @return array
      */
-    public function allHeaders()
+    public static function allHeaders()
     {
         return self::$__headers;
     }
@@ -241,7 +241,7 @@ abstract class HttpRequest
      *
      * @param string $key
      */
-    public function deleteHeader($key)
+    public static function deleteHeader($key)
     {
         if (self::hasHeader($key)) {
             unset(self::$__headers[$key]);
@@ -274,7 +274,7 @@ abstract class HttpRequest
      * @return string
      * @throws \Exception
      */
-    public function getAuthorizationBearer()
+    public static function getAuthorizationBearer()
     {
         $allHeaders = array_change_key_case(self::$__headers, CASE_UPPER);
 
@@ -332,7 +332,7 @@ abstract class HttpRequest
         if (isset($segments[$number]))
             return $segments[$number];
 
-        return NULL;
+        return null;
     }
 
 }
