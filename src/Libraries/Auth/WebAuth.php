@@ -14,7 +14,6 @@
 
 namespace Quantum\Libraries\Auth;
 
-use Quantum\Libraries\Mailer\Mailer;
 use Quantum\Libraries\Hasher\Hasher;
 use Quantum\Libraries\JWToken\JWToken;
 

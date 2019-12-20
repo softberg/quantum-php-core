@@ -14,7 +14,6 @@
 
 namespace Quantum\Libraries\Auth;
 
-use Quantum\Http\Request;
 use Quantum\Libraries\Hasher\Hasher;
 use Quantum\Libraries\JWToken\JWToken;
 

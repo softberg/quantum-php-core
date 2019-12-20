@@ -14,7 +14,6 @@
 
 namespace Quantum\Libraries\Auth;
 
-
 use Quantum\Libraries\Mailer\Mailer;
 
 /**
@@ -51,6 +50,8 @@ class BaseAuth
      *
      * @param Mailer $mailer
      * @param string $email
+     * @param string $template
+     * @return string
      */
     public function forget(Mailer $mailer, $email, $template)
     {
@@ -70,6 +71,8 @@ class BaseAuth
                 'resetToken' => $resetToken
             ], ['template' => $template])
             ->send();
+
+        return $resetToken;
     }
 
     /**
@@ -106,9 +109,8 @@ class BaseAuth
     }
 
     /**
-     * Generate Token
-     *
-     * @param $username
+	 * Generate Token
+	 *
      * @return string
      */
     protected function generateToken()
