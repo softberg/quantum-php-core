@@ -175,7 +175,9 @@ abstract class HttpRequest
      */
     public static function delete($key)
     {
-        unset(self::$__request[$key]);
+        if (self::has($key)) {
+            unset(self::$__request[$key]);
+        }
     }
 
     /**
@@ -192,6 +194,39 @@ abstract class HttpRequest
     }
 
     /**
+     * Set Header
+     *
+     * @param string $key
+     * @param mixed $value
+     */
+    public function setHeader($key, $value)
+    {
+        self::$__headers[$key] = $value;
+    }
+
+    /**
+     * Has Header
+     *
+     * @param string $key
+     * @return bool
+     */
+    public static function hasHeader($key)
+    {
+        return isset(self::$__headers[$key]);
+    }
+
+    /**
+     * Get Header
+     *
+     * @param $key
+     * @return mixed|null
+     */
+    public function getHeader($key)
+    {
+        return self::hasHeader($key) ? self::$__headers[$key] : null;
+    }
+
+    /**
      * Get all request headers
      *
      * @return array
@@ -201,9 +236,16 @@ abstract class HttpRequest
         return self::$__headers;
     }
 
-    public function updateHeader($key, $value)
+    /**
+     * Delete Header
+     *
+     * @param string $key
+     */
+    public function deleteHeader($key)
     {
-        self::$__headers[$key] = $value;
+        if (self::hasHeader($key)) {
+            unset(self::$__headers[$key]);
+        }
     }
 
     /**
