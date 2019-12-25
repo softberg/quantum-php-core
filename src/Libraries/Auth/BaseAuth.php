@@ -55,7 +55,7 @@ class BaseAuth
      */
     public function forget(Mailer $mailer, $email, $template)
     {
-        $user = $this->authService->get($email);
+        $user = $this->authService->get($this->keys['usernameKey'], $email);
 
         $resetToken = $this->generateToken();
 

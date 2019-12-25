@@ -76,7 +76,7 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
      */
     public function signin($username, $password)
     {
-        $user = $this->authService->get($username);
+        $user = $this->authService->get($this->keys['usernameKey'], $username);
         if ($user) {
             if ($this->hasher->check($password, $user->{$this->keys['passwordKey']})) {
                 $tokens = $this->getUpdatedTokens($user);
@@ -158,7 +158,7 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
      */
     protected function checkRefreshToken()
     {
-        $user = $this->authService->get(Request::getHeader($this->keys['refreshTokenKey']));
+        $user = $this->authService->get($this->keys['refreshTokenKey'], Request::getHeader($this->keys['refreshTokenKey']));
         if ($user) {
             $this->setUpdatedTokens($user);
             return $user;

@@ -70,7 +70,7 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
      */
     public function signin($username, $password, $remember = false)
     {
-        $user = $this->authService->get($username);
+        $user = $this->authService->get($this->keys['usernameKey'], $username);
         if ($user) {
             if ($this->hasher->check($password, $user->{$this->keys['passwordKey']})) {
                 if ($remember) {
@@ -126,7 +126,7 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
      */
     private function checkRememberToken()
     {
-        $user = $this->authService->get(cookie()->get($this->keys['rememberTokenKey']));
+        $user = $this->authService->get($this->keys['rememberTokenKey'], cookie()->get($this->keys['rememberTokenKey']));
         if ($user) {
             $this->setRememberToken($user);
             return $user;
@@ -161,7 +161,7 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
     private function removeRememberToken()
     {
         if (cookie()->has($this->keys['rememberTokenKey'])) {
-            $user = $this->authService->get(cookie()->get($this->keys['rememberTokenKey']));
+            $user = $this->authService->get($this->keys['rememberTokenKey'], cookie()->get($this->keys['rememberTokenKey']));
 
             $this->authService->update($user->{$this->keys['rememberTokenKey']}, [
                 $this->keys['rememberTokenKey'] => ''

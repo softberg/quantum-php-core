@@ -54,6 +54,7 @@ namespace Quantum\Test\Unit {
         ];
 
         private $keyFields = [
+            'usernameKey' => 'username',
             'passwordKey' => 'password',
             'rememberTokenKey' => 'remember_token',
             'resetTokenKey' => 'reset_token',
@@ -76,10 +77,10 @@ namespace Quantum\Test\Unit {
 
             $this->authService->shouldReceive('getVisibleFields')->andReturn($this->visibleFields);
 
-            $this->authService->shouldReceive('get')->andReturnUsing(function ($field) {
-                if ($field) {
+            $this->authService->shouldReceive('get')->andReturnUsing(function ($field, $value) {
+                if ($value) {
                     foreach (self::$users as $user) {
-                        if (in_array($field, $user)) {
+                        if (in_array($value, $user)) {
                             return (object)$user;
                         }
                     }

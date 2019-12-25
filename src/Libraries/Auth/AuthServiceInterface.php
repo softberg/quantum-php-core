@@ -28,7 +28,7 @@ interface AuthServiceInterface
      * @param string $username
      * @return mixed
      */
-    public function get($username);
+    public function get($field, $value);
 
     /**
      * Add
