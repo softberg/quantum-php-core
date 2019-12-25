@@ -15,6 +15,7 @@
 namespace Quantum\Mvc;
 
 use Quantum\Exceptions\ExceptionMessages;
+use Quantum\Factory\ModelFactory;
 use Quantum\Factory\ServiceFactory;
 
 /**
@@ -41,7 +42,4 @@ abstract class Qt_Service
             throw new \Exception(_message(ExceptionMessages::DIRECT_SERVICE_CALL, [ServiceFactory::class]));
         }
     }
-
-    public function __init() {}
-
 }

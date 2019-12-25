@@ -54,7 +54,21 @@ class ServiceFactory
 
         if (!isset(self::$initialized[$serviceClass]) || (isset(self::$initialized[$serviceClass]) && !self::$initialized[$serviceClass])) {
             if (method_exists($this->service, '__init')) {
-                $this->service->__init();
+
+                $arg = null;
+
+                $reflaction = new \ReflectionMethod($this->service, '__init');
+
+                if(count($reflaction->getParameters())) {
+                    list($param) = $reflaction->getParameters();
+                    $paramType = $param->getType();
+
+                    if ($paramType && $paramType == 'Quantum\Factory\ModelFactory') {
+                        $arg = new ModelFactory();
+                    }
+                }
+
+                $this->service->__init($arg);
                 self::$initialized[$serviceClass] = true;
             }
         }
