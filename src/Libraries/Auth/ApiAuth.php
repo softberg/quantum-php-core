@@ -102,15 +102,18 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
         if (Request::hasHeader($this->keys['refreshTokenKey'])) {
             $refreshToken = Request::getHeader($this->keys['refreshTokenKey']);
 
-            $this->authService->update($refreshToken, [
-                $this->keys['refreshTokenKey'] => ''
-            ]);
+            $user = $this->authService->get($this->keys['refreshTokenKey'], $refreshToken);
+            if($user) {
+                $this->authService->update($refreshToken, [
+                    $this->keys['refreshTokenKey'] => ''
+                ]);
 
-            Request::deleteHeader($this->keys['refreshTokenKey']);
-            Request::deleteHeader('AUTHORIZATION');
-            Response::delete('tokens');
+                Request::deleteHeader($this->keys['refreshTokenKey']);
+                Request::deleteHeader('AUTHORIZATION');
+                Response::delete('tokens');
 
-            return true;
+                return true;
+            }
         }
 
         return false;
