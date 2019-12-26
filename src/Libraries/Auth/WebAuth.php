@@ -72,7 +72,7 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
     {
         $user = $this->authService->get($this->keys['usernameKey'], $username);
         if ($user) {
-            if ($this->hasher->check($password, $user->{$this->keys['passwordKey']})) {
+            if ($this->hasher->check($password, $user[$this->keys['passwordKey']])) {
                 if ($remember) {
                     $this->setRememberToken($user);
                 }
@@ -131,7 +131,6 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
             $this->setRememberToken($user);
             return $user;
         }
-
         return false;
     }
 
@@ -145,7 +144,7 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
     {
         $rememberToken = $this->generateToken();
 
-        $this->authService->update($user->username, [
+        $this->authService->update($this->keys['usernameKey'], $user[$this->keys['usernameKey']], [
             $this->keys['rememberTokenKey'] => $rememberToken
         ]);
 
@@ -162,10 +161,11 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
     {
         if (cookie()->has($this->keys['rememberTokenKey'])) {
             $user = $this->authService->get($this->keys['rememberTokenKey'], cookie()->get($this->keys['rememberTokenKey']));
-
-            $this->authService->update($user->{$this->keys['rememberTokenKey']}, [
-                $this->keys['rememberTokenKey'] => ''
-            ]);
+            if($user) {
+                $this->authService->update($this->keys['rememberTokenKey'], $user[$this->keys['rememberTokenKey']], [
+                    $this->keys['rememberTokenKey'] => ''
+                ]);
+            }
 
             cookie()->delete($this->keys['rememberTokenKey']);
         }

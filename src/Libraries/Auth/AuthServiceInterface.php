@@ -28,7 +28,7 @@ interface AuthServiceInterface
      * @param string $username
      * @return mixed
      */
-    public function get($field, $value);
+    public function get($field, $value) : array;
 
     /**
      * Add
@@ -45,7 +45,7 @@ interface AuthServiceInterface
      * @param array $data
      * @return mixed
      */
-    public function update($field, $data);
+    public function update($field, $value, $data);
 
     /**
      * Get Visible Fields

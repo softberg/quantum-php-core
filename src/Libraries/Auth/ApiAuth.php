@@ -77,11 +77,13 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
     public function signin($username, $password)
     {
         $user = $this->authService->get($this->keys['usernameKey'], $username);
+
         if ($user) {
-            if ($this->hasher->check($password, $user->{$this->keys['passwordKey']})) {
+            if ($this->hasher->check($password, $user[$this->keys['passwordKey']])) {
+
                 $tokens = $this->getUpdatedTokens($user);
 
-                $this->authService->update($username, [
+                $this->authService->update($this->keys['usernameKey'], $username, [
                     $this->keys['refreshTokenKey'] => $tokens[$this->keys['refreshTokenKey']]
                 ]);
 
@@ -103,8 +105,8 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
             $refreshToken = Request::getHeader($this->keys['refreshTokenKey']);
 
             $user = $this->authService->get($this->keys['refreshTokenKey'], $refreshToken);
-            if($user) {
-                $this->authService->update($refreshToken, [
+            if ($user) {
+                $this->authService->update($this->keys['refreshTokenKey'], $refreshToken, [
                     $this->keys['refreshTokenKey'] => ''
                 ]);
 
@@ -146,11 +148,11 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
      * @param object $user
      * @return array
      */
-    public function getUpdatedTokens($user)
+    public function getUpdatedTokens(array $user)
     {
         return [
             $this->keys['refreshTokenKey'] => $this->generateToken(),
-            $this->keys['accessTokenKey'] => base64_encode($this->jwt->setData((array)$this->filterFields($user))->compose())
+            $this->keys['accessTokenKey'] => base64_encode($this->jwt->setData($this->filterFields($user))->compose())
         ];
     }
 
@@ -177,11 +179,9 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
      */
     protected function setUpdatedTokens($user)
     {
-        $username = $user->username;
-
         $tokens = $this->getUpdatedTokens($user);
 
-        $this->authService->update($username, [
+        $this->authService->update($this->keys['usernameKey'], $user[$this->keys['usernameKey']], [
             $this->keys['refreshTokenKey'] => $tokens[$this->keys['refreshTokenKey']]
         ]);
 

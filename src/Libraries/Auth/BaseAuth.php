@@ -65,7 +65,7 @@ class BaseAuth
 
         $mailer
             ->createFrom(['email' => get_config('app_email'), 'name' => get_config('app_name')])
-            ->createAddresses(['email' => $user->username, 'name' => $user->firstname . ' ' . $user->lastname])
+            ->createAddresses(['email' => $user['username'], 'name' => $user['firstname'] . ' ' . $user['lastname']])
             ->createBody([
                 'user' => $user,
                 'resetToken' => $resetToken
@@ -95,12 +95,12 @@ class BaseAuth
      * @param array $user
      * @return mixed
      */
-    protected function filterFields($user)
+    protected function filterFields(array $user)
     {
         if (count($this->authService->getVisibleFields()) > 0) {
             foreach ($user as $key => $value) {
                 if (!in_array($key, $this->authService->getVisibleFields())) {
-                    unset($user->$key);
+                    unset($user[$key]);
                 }
             }
         }
@@ -109,8 +109,8 @@ class BaseAuth
     }
 
     /**
-	 * Generate Token
-	 *
+     * Generate Token
+     *
      * @return string
      */
     protected function generateToken()
