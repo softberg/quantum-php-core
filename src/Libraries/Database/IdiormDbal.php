@@ -57,6 +57,16 @@ class IdiormDbal implements DbalInterface
     private static $ormClass = ORM::class;
 
     /**
+     * Orm Object
+     *
+     * @return mixed
+     */
+    private function ormObject()
+    {
+        return (self::$ormClass)::for_table($this->table)->use_id_column($this->idColumn);
+    }
+
+    /**
      * Class constructor
      *
      * @param string $table
@@ -66,7 +76,7 @@ class IdiormDbal implements DbalInterface
     {
         $this->table = $table;
         $this->idColumn = $idColumn;
-        $this->ormObject = (self::$ormClass)::for_table($this->table)->use_id_column($this->idColumn);
+        $this->ormObject = $this->ormObject();
     }
 
     /**
@@ -112,7 +122,7 @@ class IdiormDbal implements DbalInterface
     public function findOne($id)
     {
         $result = $this->ormObject->find_one($id);
-        return $result ? $result : $this->ormObject;
+        return $result ? $result : $this->ormObject();
     }
 
     /**
@@ -127,7 +137,7 @@ class IdiormDbal implements DbalInterface
     public function findOneBy($column, $value)
     {
         $result = $this->ormObject->where($column, $value)->find_one();
-        return $result ? $result : $this->ormObject;
+        return $result ? $result : $this->ormObject();
     }
 
     /**
@@ -140,7 +150,7 @@ class IdiormDbal implements DbalInterface
     public function first()
     {
         $result = $this->ormObject->find_one();
-        return $result ? $result : $this->ormObject;
+        return $result ? $result : $this->ormObject();
     }
 
     /**
@@ -241,7 +251,6 @@ class IdiormDbal implements DbalInterface
      * Returns the result by given offset
      *
      * @param array $params
-     * @uses ORM Idiorm
      * @return object
      */
     public function offset($offset)
