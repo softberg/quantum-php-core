@@ -83,7 +83,7 @@ class BaseAuth
      */
     public function reset($token, $password)
     {
-        $this->authService->update( $this->keys['passwordKey'], $token, [
+        $this->authService->update( $this->keys['resetTokenKey'], $token, [
             $this->keys['passwordKey'] => $this->hasher->hash($password),
             $this->keys['resetTokenKey'] => ''
         ]);
