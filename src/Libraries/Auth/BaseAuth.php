@@ -59,7 +59,7 @@ class BaseAuth
 
         $resetToken = $this->generateToken();
 
-        $this->authService->update($email, [
+        $this->authService->update($this->keys['usernameKey'], $email, [
             $this->keys['resetTokenKey'] => $resetToken
         ]);
 
@@ -83,7 +83,7 @@ class BaseAuth
      */
     public function reset($token, $password)
     {
-        $this->authService->update($token, [
+        $this->authService->update( $this->keys['passwordKey'], $token, [
             $this->keys['passwordKey'] => $this->hasher->hash($password),
             $this->keys['resetTokenKey'] => ''
         ]);

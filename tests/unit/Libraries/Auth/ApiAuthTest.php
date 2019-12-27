@@ -81,19 +81,19 @@ namespace Quantum\Test\Unit {
                 if ($value) {
                     foreach (self::$users as $user) {
                         if (in_array($value, $user)) {
-                            return (object)$user;
+                            return $user;
                         }
                     }
                 }
-                return null;
+                return [];
             });
 
-            $this->authService->shouldReceive('update')->andReturnUsing(function ($field, $data) {
+            $this->authService->shouldReceive('update')->andReturnUsing(function ($field, $value, $data) {
                 $allFields = array_merge($this->fields, array_values($this->keyFields));
-                if ($field) {
+                if ($value) {
                     foreach (self::$users as &$user) {
-                        if (in_array($field, $user)) {
-                            foreach ($data as $key => $value) {
+                        if (in_array($value, $user)) {
+                            foreach ($data as $key => $val) {
                                 if (in_array($key, $allFields)) {
                                     $user[$key] = $data[$key] ?? '';
                                 }
