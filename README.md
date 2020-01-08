@@ -11,7 +11,7 @@ Very fast and extremely simple PHP MVC framework of the next generation with a m
 composer create-project quantum/project {project-name}
 ```
 
-#### 3. Run built-in PHP server
+#### 2. Run built-in PHP server
 ```bash
 $ php -S localhost:8080 -t public
 ```
