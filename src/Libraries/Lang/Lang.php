@@ -79,25 +79,27 @@ class Lang
     {
         $dirPath = modules_dir() . DS . current_module() . '/Views/lang/' . $dirName;
 
-        $files = glob($dirPath . "/*.php");
-        if (count($files) == 0) {
-            throw new \Exception(_message(ExceptionMessages::TRANSLATION_FILES_NOT_FOUND, $dirName));
-        }
+        if(is_dir($dirPath)) {
+            $files = glob($dirPath . "/*.php");
+            if (count($files) == 0) {
+                throw new \Exception(_message(ExceptionMessages::TRANSLATION_FILES_NOT_FOUND, $dirName));
+            }
 
-        foreach ($files as $file) {
-            $fileName = pathinfo($file)['filename'];
+            foreach ($files as $file) {
+                $fileName = pathinfo($file)['filename'];
 
-            $setup = (object)[
-                'module' => current_module(),
-                'env' => 'Views' . DS . 'lang' . DS . $dirName,
-                'fileName' => $fileName,
-                'exceptionMessage' => ExceptionMessages::TRANSLATION_FILES_NOT_FOUND
+                $setup = (object)[
+                    'module' => current_module(),
+                    'env' => 'Views' . DS . 'lang' . DS . $dirName,
+                    'fileName' => $fileName,
+                    'exceptionMessage' => ExceptionMessages::TRANSLATION_FILES_NOT_FOUND
 
-            ];
+                ];
 
-            $loader = new Loader($setup, false);
+                $loader = new Loader($setup, false);
 
-            self::load($loader, $fileName);
+                self::load($loader, $fileName);
+            }
         }
     }
 
