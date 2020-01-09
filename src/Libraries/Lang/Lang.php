@@ -15,7 +15,7 @@
 namespace Quantum\Libraries\Lang;
 
 use Quantum\Exceptions\ExceptionMessages;
-use Quantum\Routes\RouteController;
+use Quantum\Libraries\Storage\FileSystem;
 use Dflydev\DotAccessData\Data;
 use Quantum\Loader\Loader;
 
@@ -77,16 +77,18 @@ class Lang
      */
     public function loadDir($dirName)
     {
-        $dirPath = modules_dir() . DS . current_module() . '/Views/lang/' . $dirName;
+        $dirPath = modules_dir() . DS . current_module() . DS. 'Views' . DS . 'lang' . DS . $dirName;
 
-        if(is_dir($dirPath)) {
-            $files = glob($dirPath . "/*.php");
+        $fileSystem = new FileSystem();
+        
+        if($fileSystem->isDirectory($dirPath)) {
+            $files = $fileSystem->glob($dirPath . "/*.php");
             if (count($files) == 0) {
                 throw new \Exception(_message(ExceptionMessages::TRANSLATION_FILES_NOT_FOUND, $dirName));
             }
 
             foreach ($files as $file) {
-                $fileName = pathinfo($file)['filename'];
+                $fileName = $fileSystem->fileName($file);
 
                 $setup = (object)[
                     'module' => current_module(),
