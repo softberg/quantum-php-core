@@ -100,7 +100,29 @@ class FileSystem
     }
 
     /**
-     * Exstension
+     * Base name 
+     * 
+     * @param string $file
+     * @return string
+     */
+    public function baseName($file)
+    {
+        return pathinfo($file, PATHINFO_BASENAME);
+    }
+
+    /**
+     * File name
+     * 
+     * @param string $file
+     * @return string
+     */
+    public function fileName($file)
+    {
+        return pathinfo($file, PATHINFO_FILENAME);
+    }
+
+    /**
+     * Extension
      *
      * @param string $file
      * @return string|string[]
