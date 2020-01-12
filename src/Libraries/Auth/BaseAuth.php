@@ -23,6 +23,7 @@ use Quantum\Libraries\Mailer\Mailer;
  */
 class BaseAuth
 {
+
     /**
      * Check
      *
@@ -36,13 +37,38 @@ class BaseAuth
     /**
      * Sign Up
      *
-     * @param array $user
+     * @param array $userData
      * @return mixed
      */
-    public function signup($user)
+    public function signup(Mailer $mailer, $userData)
     {
-        $user[$this->keys['passwordKey']] = $this->hasher->hash($user[$this->keys['passwordKey']]);
-        return $this->authService->add($user);
+        $activationToken = $this->generateToken();
+
+        $userData[$this->keys['passwordKey']] = $this->hasher->hash($userData[$this->keys['passwordKey']]);
+        $userData[$this->keys['activationTokenKey']] = $activationToken;
+
+        $user = $this->authService->add($userData);
+
+        $body = [
+            'user' => $user,
+            'activationToken' => $activationToken
+        ];
+
+        $this->sendMail($mailer, $user, $body);
+
+        return $user;
+    }
+
+    /**
+     * Activate
+     * 
+     * @param string $token
+     */
+    public function activate($token)
+    {
+        $this->authService->update($this->keys['activationTokenKey'], $token, [
+            $this->keys['activationTokenKey'] => ''
+        ]);
     }
 
     /**
@@ -53,7 +79,7 @@ class BaseAuth
      * @param string $template
      * @return string
      */
-    public function forget(Mailer $mailer, $email, $template)
+    public function forget(Mailer $mailer, $email)
     {
         $user = $this->authService->get($this->keys['usernameKey'], $email);
 
@@ -63,14 +89,12 @@ class BaseAuth
             $this->keys['resetTokenKey'] => $resetToken
         ]);
 
-        $mailer
-            ->createFrom(['email' => get_config('app_email'), 'name' => get_config('app_name')])
-            ->createAddresses(['email' => $user['username'], 'name' => $user['firstname'] . ' ' . $user['lastname']])
-            ->createBody([
-                'user' => $user,
-                'resetToken' => $resetToken
-            ], ['template' => $template])
-            ->send();
+        $body = [
+            'user' => $user,
+            'resetToken' => $resetToken
+        ];
+
+        $this->sendMail($mailer, $user, $body);
 
         return $resetToken;
     }
@@ -83,7 +107,7 @@ class BaseAuth
      */
     public function reset($token, $password)
     {
-        $this->authService->update( $this->keys['resetTokenKey'], $token, [
+        $this->authService->update($this->keys['resetTokenKey'], $token, [
             $this->keys['passwordKey'] => $this->hasher->hash($password),
             $this->keys['resetTokenKey'] => ''
         ]);
@@ -117,4 +141,18 @@ class BaseAuth
     {
         return base64_encode($this->hasher->hash(env('APP_KEY')));
     }
+
+    protected function isActivated($user)
+    {
+        return empty($user[$this->keys['activationTokenKey']]) ? true : false;
+    }
+
+    protected function sendMail(Mailer $mailer, array $user, array $body)
+    {
+        $mailer->createFrom(['email' => get_config('app_email'), 'name' => get_config('app_name')])
+                ->createAddresses(['email' => $user['username'], 'name' => $user['firstname'] . ' ' . $user['lastname']])
+                ->createBody($body)
+                ->send();
+    }
+
 }

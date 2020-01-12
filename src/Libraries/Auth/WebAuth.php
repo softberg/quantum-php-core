@@ -14,6 +14,8 @@
 
 namespace Quantum\Libraries\Auth;
 
+use Quantum\Exceptions\ExceptionMessages;
+use Quantum\Exceptions\AuthException;
 use Quantum\Libraries\Hasher\Hasher;
 use Quantum\Libraries\JWToken\JWToken;
 
@@ -61,29 +63,36 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
 
     /**
      * Sign In
-     *
+     * 
      * @param string $username
      * @param string $password
-     * @param bool $remember
-     * @return bool
-     * @throws \Exception
+     * @param boolean $remember
+     * @return boolean
+     * @throws AuthException
      */
     public function signin($username, $password, $remember = false)
     {
         $user = $this->authService->get($this->keys['usernameKey'], $username);
-        if ($user) {
-            if ($this->hasher->check($password, $user[$this->keys['passwordKey']])) {
-                if ($remember) {
-                    $this->setRememberToken($user);
-                }
 
-                session()->set($this->authUserKey, $this->filterFields($user));
-
-                return true;
-            }
+        if (!$user) {
+            throw new AuthException(ExceptionMessages::INCORRECT_AUTH_CREDENTIALS);
         }
 
-        return false;
+        if (!$this->hasher->check($password, $user[$this->keys['passwordKey']])) {
+            throw new AuthException(ExceptionMessages::INCORRECT_AUTH_CREDENTIALS);
+        }
+
+        if (!$this->isActivated($user)) {
+            throw new AuthException(ExceptionMessages::INACTIVE_ACCOUNT);
+        }
+
+        if ($remember) {
+            $this->setRememberToken($user);
+        }
+
+        session()->set($this->authUserKey, $this->filterFields($user));
+
+        return true;
     }
 
     /**
@@ -108,7 +117,7 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
     public function user()
     {
         if (session()->has($this->authUserKey)) {
-            return (object)session()->get($this->authUserKey);
+            return (object) session()->get($this->authUserKey);
         } else if (cookie()->has($this->keys['rememberTokenKey'])) {
             $user = $this->checkRememberToken();
             if ($user) {
@@ -161,7 +170,7 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
     {
         if (cookie()->has($this->keys['rememberTokenKey'])) {
             $user = $this->authService->get($this->keys['rememberTokenKey'], cookie()->get($this->keys['rememberTokenKey']));
-            if($user) {
+            if ($user) {
                 $this->authService->update($this->keys['rememberTokenKey'], $user[$this->keys['rememberTokenKey']], [
                     $this->keys['rememberTokenKey'] => ''
                 ]);

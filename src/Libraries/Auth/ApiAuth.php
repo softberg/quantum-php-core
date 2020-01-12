@@ -14,10 +14,12 @@
 
 namespace Quantum\Libraries\Auth;
 
-use Quantum\Http\Request;
-use Quantum\Http\Response;
-use Quantum\Libraries\Hasher\Hasher;
+use Quantum\Exceptions\ExceptionMessages;
+use Quantum\Exceptions\AuthException;
 use Quantum\Libraries\JWToken\JWToken;
+use Quantum\Libraries\Hasher\Hasher;
+use Quantum\Http\Response;
+use Quantum\Http\Request;
 
 /**
  * Class ApiAuth
@@ -69,29 +71,34 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
 
     /**
      * Sign In
-     *
+     * 
      * @param string $username
-     * @param $password
-     * @return array|bool|mixed
+     * @param string $password
+     * @return array
+     * @throws AuthException
      */
     public function signin($username, $password)
     {
         $user = $this->authService->get($this->keys['usernameKey'], $username);
 
-        if ($user) {
-            if ($this->hasher->check($password, $user[$this->keys['passwordKey']])) {
-
-                $tokens = $this->getUpdatedTokens($user);
-
-                $this->authService->update($this->keys['usernameKey'], $username, [
-                    $this->keys['refreshTokenKey'] => $tokens[$this->keys['refreshTokenKey']]
-                ]);
-
-                return $tokens;
-            }
+        if (!$user) {
+            throw new AuthException(ExceptionMessages::INCORRECT_AUTH_CREDENTIALS);
         }
 
-        return false;
+        if (!$this->hasher->check($password, $user[$this->keys['passwordKey']])) {
+            throw new AuthException(ExceptionMessages::INCORRECT_AUTH_CREDENTIALS);
+        }
+        if (!$this->isActivated($user)) {
+            throw new AuthException(ExceptionMessages::INACTIVE_ACCOUNT);
+        }
+
+        $tokens = $this->getUpdatedTokens($user);
+
+        $this->authService->update($this->keys['usernameKey'], $username, [
+            $this->keys['refreshTokenKey'] => $tokens[$this->keys['refreshTokenKey']]
+        ]);
+
+        return $tokens;
     }
 
     /**
@@ -130,7 +137,7 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
     {
         try {
             $accessToken = base64_decode(Request::getAuthorizationBearer());
-            return (object)$this->jwt->retrieve($accessToken)->fetchData();
+            return (object) $this->jwt->retrieve($accessToken)->fetchData();
         } catch (\Exception $e) {
             if (Request::hasHeader($this->keys['refreshTokenKey'])) {
                 $user = $this->checkRefreshToken();
@@ -189,4 +196,5 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
         Request::setHeader('AUTHORIZATION', 'Bearer ' . $tokens[$this->keys['accessTokenKey']]);
         Response::set('tokens', $tokens);
     }
+
 }
