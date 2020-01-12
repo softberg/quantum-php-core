@@ -34,6 +34,13 @@ class Mailer
     private $mailer;
 
     /**
+     * Template path
+     * 
+     * @var string 
+     */
+    private $templatePath = '';
+
+    /**
      * PHP Mailer Log
      *
      * @var string
@@ -181,17 +188,28 @@ class Mailer
     }
 
     /**
+     * Set Template
+     * 
+     * @param string $templatePath
+     * @return $this
+     */
+    public function setTemplate($templatePath)
+    {
+        $this->templatePath = $templatePath;
+        return $this;
+    }
+
+    /**
      * Create Body
      *
      * @param mixed $message
-     * @param array $options
      * @return $this
      */
-    public function createBody($message, $options = [])
+    public function createBody($message)
     {
         $body = '';
-        if (isset($options['template'])) {
-            $body = $this->createFromTemplate($message, $options['template']);
+        if ($this->templatePath) {
+            $body = $this->createFromTemplate($message, $this->templatePath);
         } else {
             if (!is_array($message)) {
                 $body = $message;
@@ -244,7 +262,6 @@ class Mailer
             }
         }
         return $this;
-
     }
 
     /**
@@ -353,7 +370,8 @@ class Mailer
             extract($message, EXTR_OVERWRITE);
         }
 
-        require $template . '.php';;
+        require $template . '.php';
+        ;
         return ob_get_clean();
     }
 
