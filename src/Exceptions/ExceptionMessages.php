@@ -265,6 +265,11 @@ class ExceptionMessages
     /**
      * Incorrect auth credentials  message
      */
+    const INACTIVE_ACCOUNT = 'The account is not activated';
+    
+    /**
+     * Incorrect auth credentials  message
+     */
     const INCORRECT_AUTH_CREDENTIALS = 'Incorrect credentials';
 
     /**
