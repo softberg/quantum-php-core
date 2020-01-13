@@ -6,7 +6,7 @@ namespace Quantum\Libraries\Auth {
     use Quantum\Libraries\Session\Session;
     use Quantum\Libraries\Cookie\Cookie;
 
-    $sessionStorage = [];
+$sessionStorage = [];
     $cookieStorage = [];
 
     function session()
@@ -30,6 +30,7 @@ namespace Quantum\Libraries\Auth {
     {
         return $key;
     }
+
 }
 
 namespace Quantum\Test\Unit {
@@ -38,59 +39,55 @@ namespace Quantum\Test\Unit {
     use PHPUnit\Framework\TestCase;
     use Quantum\Libraries\Auth\WebAuth;
     use Quantum\Libraries\Hasher\Hasher;
+    use Quantum\Exceptions\AuthException;
+    use Quantum\Exceptions\ExceptionMessages;
 
     class WebAuthTest extends TestCase
     {
+
         private $authService;
-
         private $mailer;
-
         private $webAuth;
-
-        private static $users = [
-            [
-                'username' => 'admin@qt.com',
-                'firstname' => 'Admin',
-                'lastname' => 'User',
-                'role' => 'admin',
-                'password' => '$2y$12$0M78WcmUZYQq85vHZLoNW.CyDUezRxh9Ye8/Z8oWCwJmBrz8p.j7C',
-                'remember_token' => '',
-                'reset_token' => '',
-                'access_token' => '',
-                'refresh_token' => '',
-            ]
+        private static $users = [];
+        private $adminUser = [
+            'username' => 'admin@qt.com',
+            'firstname' => 'Admin',
+            'lastname' => 'User',
+            'role' => 'admin',
+            'password' => 'qwerty',
+            'activation_token' => '',
+            'remember_token' => '',
+            'reset_token' => '',
+            'access_token' => '',
+            'refresh_token' => '',
         ];
-
-        private $newUser = [
+        private $guestUser = [
             'username' => 'guest@qt.com',
             'password' => '123456',
             'firstname' => 'Guest',
             'lastname' => 'User',
         ];
-
         protected $fields = [
             'username',
             'firstname',
             'lastname',
             'role'
         ];
-
         private $keyFields = [
             'usernameKey' => 'username',
             'passwordKey' => 'password',
+            'activationTokenKey' => 'activation_token',
             'rememberTokenKey' => 'remember_token',
             'resetTokenKey' => 'reset_token',
             'accessTokenKey' => 'access_token',
             'refreshTokenKey' => 'refresh_token',
         ];
-
         protected $visibleFields = [
             'username',
             'firstname',
             'lastname',
             'role'
         ];
-
 
         public function setUp(): void
         {
@@ -139,7 +136,7 @@ namespace Quantum\Test\Unit {
                     self::$users[1] = $user;
                 }
 
-                return (object)$user;
+                return $user;
             });
 
             $this->mailer = Mockery::mock('Quantum\Libraries\Mailer\Mailer');
@@ -154,6 +151,15 @@ namespace Quantum\Test\Unit {
 
             $this->webAuth = new WebAuth($this->authService, new Hasher);
 
+            $admin = $this->webAuth->signup($this->mailer, $this->adminUser);
+
+            $this->webAuth->activate($admin['activation_token']);
+        }
+
+        public function tearDown(): void
+        {
+            self::$users = [];
+
             $this->webAuth->signout();
         }
 
@@ -162,10 +168,17 @@ namespace Quantum\Test\Unit {
             $this->assertInstanceOf('Quantum\Libraries\Auth\WebAuth', $this->webAuth);
         }
 
-        public function testSignin()
+        public function testSigninIncorrectCredetials()
         {
-            $this->assertFalse($this->webAuth->signin('guest@qt.com', '123456'));
+            $this->expectException(AuthException::class);
 
+            $this->expectExceptionMessage(ExceptionMessages::INCORRECT_AUTH_CREDENTIALS);
+
+            $this->webAuth->signin('admin@qt.com', '111111');
+        }
+
+        public function testSigninCorrectCredentials()
+        {
             $this->assertTrue($this->webAuth->signin('admin@qt.com', 'qwerty'));
 
             $this->assertTrue($this->webAuth->signin('admin@qt.com', 'qwerty', true));
@@ -182,7 +195,6 @@ namespace Quantum\Test\Unit {
             $this->webAuth->signout();
 
             $this->assertFalse(\Quantum\Libraries\Auth\session()->has('auth_user'));
-
         }
 
         public function testUser()
@@ -209,11 +221,23 @@ namespace Quantum\Test\Unit {
             $this->assertTrue($this->webAuth->check());
         }
 
-        public function testSignup()
+        public function testSignupAndSigninWithoutActivation()
         {
-            $this->assertFalse($this->webAuth->signin('guest@qt.com', '123456'));
 
-            $this->webAuth->signup($this->newUser);
+            $this->expectException(AuthException::class);
+
+            $this->expectExceptionMessage(ExceptionMessages::INACTIVE_ACCOUNT);
+
+            $this->webAuth->signup($this->mailer, $this->guestUser);
+
+            $this->assertTrue($this->webAuth->signin('guest@qt.com', '123456'));
+        }
+
+        public function testSignupAndActivteAccount()
+        {
+            $user = $this->webAuth->signup($this->mailer, $this->guestUser);
+
+            $this->webAuth->activate($user['activation_token']);
 
             $this->assertTrue($this->webAuth->signin('guest@qt.com', '123456'));
         }
@@ -224,9 +248,9 @@ namespace Quantum\Test\Unit {
 
             $this->webAuth->reset($resetToken, '123456789');
 
-            $this->assertFalse($this->webAuth->signin('admin@qt.com', 'qwerty'));
-
             $this->assertTrue($this->webAuth->signin('admin@qt.com', '123456789'));
         }
+
     }
+
 }

@@ -6,6 +6,7 @@ namespace Quantum\Libraries\JWToken {
     {
         return 'somerandomstring';
     }
+
 }
 
 namespace Quantum\Test\Unit {
@@ -16,52 +17,49 @@ namespace Quantum\Test\Unit {
     use Quantum\Libraries\Auth\ApiAuth;
     use Quantum\Libraries\Hasher\Hasher;
     use Quantum\Libraries\JWToken\JWToken;
+    use Quantum\Exceptions\AuthException;
+    use Quantum\Exceptions\ExceptionMessages;
 
     class ApiAuthTest extends TestCase
     {
+
         private $apiAuth;
-
         private $authService;
-
         private $mailer;
-
-        private static $users = [
-            [
-                'username' => 'admin@qt.com',
-                'firstname' => 'Admin',
-                'lastname' => 'User',
-                'role' => 'admin',
-                'password' => '$2y$12$0M78WcmUZYQq85vHZLoNW.CyDUezRxh9Ye8/Z8oWCwJmBrz8p.j7C',
-                'remember_token' => '',
-                'reset_token' => '',
-                'access_token' => '',
-                'refresh_token' => '',
-            ]
+        private static $users = [];
+        private $adminUser = [
+            'username' => 'admin@qt.com',
+            'firstname' => 'Admin',
+            'lastname' => 'User',
+            'role' => 'admin',
+            'password' => 'qwerty',
+            'activation_token' => '',
+            'remember_token' => '',
+            'reset_token' => '',
+            'access_token' => '',
+            'refresh_token' => '',
         ];
-
-        private $newUser = [
+        private $guestUser = [
             'username' => 'guest@qt.com',
             'password' => '123456',
             'firstname' => 'Guest',
             'lastname' => 'User',
         ];
-
         protected $fields = [
             'username',
             'firstname',
             'lastname',
             'role'
         ];
-
         private $keyFields = [
             'usernameKey' => 'username',
             'passwordKey' => 'password',
+            'activationTokenKey' => 'activation_token',
             'rememberTokenKey' => 'remember_token',
             'resetTokenKey' => 'reset_token',
             'accessTokenKey' => 'access_token',
             'refreshTokenKey' => 'refresh_token',
         ];
-
         protected $visibleFields = [
             'username',
             'firstname',
@@ -116,7 +114,7 @@ namespace Quantum\Test\Unit {
                     self::$users[1] = $user;
                 }
 
-                return (object)$user;
+                return $user;
             });
 
             $this->mailer = Mockery::mock('Quantum\Libraries\Mailer\Mailer');
@@ -130,17 +128,26 @@ namespace Quantum\Test\Unit {
             $this->mailer->shouldReceive('send')->andReturn(true);
 
             $jwt = (new JWToken())
-                ->setLeeway(1)
-                ->setClaims([
-                    'jti' => uniqid(),
-                    'iss' => 'issuer',
-                    'aud' => 'audience',
-                    'iat' => time(),
-                    'nbf' => time() + 1,
-                    'exp' => time() + 60
-                ]);
+                    ->setLeeway(1)
+                    ->setClaims([
+                'jti' => uniqid(),
+                'iss' => 'issuer',
+                'aud' => 'audience',
+                'iat' => time(),
+                'nbf' => time() + 1,
+                'exp' => time() + 60
+            ]);
 
             $this->apiAuth = new ApiAuth($this->authService, new Hasher, $jwt);
+
+            $admin = $this->apiAuth->signup($this->mailer, $this->adminUser);
+
+            $this->apiAuth->activate($admin['activation_token']);
+        }
+
+        public function tearDown(): void
+        {
+            self::$users = [];
 
             $this->apiAuth->signout();
         }
@@ -150,10 +157,17 @@ namespace Quantum\Test\Unit {
             $this->assertInstanceOf('Quantum\Libraries\Auth\ApiAuth', $this->apiAuth);
         }
 
-        public function testSignin()
+        public function testSigninIncorrectCredetials()
         {
-            $this->assertFalse($this->apiAuth->signin('guest@qt.com', '123456'));
+            $this->expectException(AuthException::class);
 
+            $this->expectExceptionMessage(ExceptionMessages::INCORRECT_AUTH_CREDENTIALS);
+
+            $this->apiAuth->signin('admin@qt.com', '111111');
+        }
+
+        public function testSigninCorrectCredentials()
+        {
             $this->assertIsArray($this->apiAuth->signin('admin@qt.com', 'qwerty'));
 
             $this->assertArrayHasKey('access_token', $this->apiAuth->signin('admin@qt.com', 'qwerty'));
@@ -191,6 +205,8 @@ namespace Quantum\Test\Unit {
             Request::deleteHeader('AUTHORIZATION');
 
             $this->assertEquals('admin@qt.com', $this->apiAuth->user()->username);
+
+            $this->apiAuth->signout();
         }
 
         public function testCheck()
@@ -206,11 +222,23 @@ namespace Quantum\Test\Unit {
             $this->assertTrue($this->apiAuth->check());
         }
 
-        public function testSignup()
+        public function testSignupAndSigninWithoutActivation()
         {
-            $this->assertFalse($this->apiAuth->signin('guest@qt.com', '123456'));
 
-            $this->apiAuth->signup($this->newUser);
+            $this->expectException(AuthException::class);
+
+            $this->expectExceptionMessage(ExceptionMessages::INACTIVE_ACCOUNT);
+
+            $this->apiAuth->signup($this->mailer, $this->guestUser);
+
+            $this->assertTrue($this->apiAuth->signin('guest@qt.com', '123456'));
+        }
+
+        public function testSignupAndActivteAccount()
+        {
+            $user = $this->apiAuth->signup($this->mailer, $this->guestUser);
+
+            $this->apiAuth->activate($user['activation_token']);
 
             $this->assertIsArray($this->apiAuth->signin('guest@qt.com', '123456'));
 
@@ -225,13 +253,13 @@ namespace Quantum\Test\Unit {
 
             $this->apiAuth->reset($resetToken, '123456789');
 
-            $this->assertFalse($this->apiAuth->signin('admin@qt.com', 'qwerty'));
-
             $this->assertIsArray($this->apiAuth->signin('admin@qt.com', '123456789'));
 
             $this->assertArrayHasKey('access_token', $this->apiAuth->signin('admin@qt.com', '123456789'));
 
             $this->assertArrayHasKey('refresh_token', $this->apiAuth->signin('admin@qt.com', '123456789'));
         }
+
     }
+
 }
