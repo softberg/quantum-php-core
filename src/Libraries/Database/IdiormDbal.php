@@ -103,7 +103,7 @@ class IdiormDbal implements DbalInterface
             'connection_string' => $connectionDetails['driver'] . ':host=' . $connectionDetails['host'] . ';dbname=' . $connectionDetails['dbname'],
             'username' => $connectionDetails['username'],
             'password' => $connectionDetails['password'],
-            'driver_options' => array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES ' . $connectionDetails['charset']),
+            'driver_options' => array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES ' . $connectionDetails['charset'] ?? 'utf8'),
             'logging' => get_config('debug', false)
         ));
 
