@@ -91,7 +91,7 @@ class Mailer
         $phpMailer->Password = env('MAIL_PASSWORD');
     }
 
-    private function setupDebugging()
+    private function setupDebugging($phpMailer)
     {
         if (get_config('debug')) {
             $phpMailer->SMTPDebug = 1;
