@@ -47,18 +47,6 @@ class Validator
     private $customValidations = [];
 
     /**
-     * Class constructor
-     *
-     * @param string $lang
-     *
-     * @return void
-     */
-    public function __construct(string $lang = 'en')
-    {
-
-    }
-
-    /**
      * Add rule
      *
      * Add rule in rules list
