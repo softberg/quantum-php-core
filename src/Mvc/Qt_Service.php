@@ -15,7 +15,6 @@
 namespace Quantum\Mvc;
 
 use Quantum\Exceptions\ExceptionMessages;
-use Quantum\Factory\ModelFactory;
 use Quantum\Factory\ServiceFactory;
 
 /**
