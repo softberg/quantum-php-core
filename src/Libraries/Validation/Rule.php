@@ -12,7 +12,7 @@
  * @since 1.0.0
  */
 
-namespace Quantum\Libraries\Validation2;
+namespace Quantum\Libraries\Validation;
 
 /**
  * Rule class
