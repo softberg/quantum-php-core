@@ -35,7 +35,7 @@ Class ModelFactory
      * @return object
      * @throws \Exception
      */
-    public function get($modelClass)
+    public function get($modelClass): Qt_Model
     {
         if (!class_exists($modelClass)) {
             throw new ModelException(Helper::_message(ExceptionMessages::MODEL_NOT_FOUND, $modelClass));
