@@ -32,9 +32,11 @@ namespace Quantum\Services {
     class TestService extends Qt_Service
     {
 
+        public static $count = 0;
+
         public function __init()
         {
-            echo '*';
+            self::$count++;
         }
 
     }
@@ -62,6 +64,8 @@ namespace Quantum\Test\Unit {
             $reflectionProperty = new \ReflectionProperty(ServiceFactory::class, 'initialized');
             $reflectionProperty->setAccessible(true);
             $reflectionProperty->setValue(ServiceFactory::class, []);
+            
+            TestService::$count = 0;
         }
 
         public function testServiceGet()
@@ -75,15 +79,19 @@ namespace Quantum\Test\Unit {
 
         public function testServiceGetAndInit()
         {
-            /* Calling 3 tiems to verify __init() method works once */
+            /* Calling 3 tiems to verify __init() method works only once */
 
             $this->serviceFactory->get(TestService::class);
 
-            $this->serviceFactory->get(TestService::class);
+            $this->assertEquals(1, TestService::$count);
 
             $this->serviceFactory->get(TestService::class);
 
-            $this->expectOutputString('*');
+            $this->assertEquals(1, TestService::$count);
+
+            $this->serviceFactory->get(TestService::class);
+
+            $this->assertEquals(1, TestService::$count);
         }
 
         public function testServiceProxy()
@@ -95,15 +103,19 @@ namespace Quantum\Test\Unit {
 
         public function testServiceProxyAndInit()
         {
-            /* Calling 3 tiems to verify __init() method works once */
+            /* Calling 3 tiems to verify __init() method works only once */
 
             $this->serviceFactory->proxy(TestService::class);
 
-            $this->serviceFactory->proxy(TestService::class);
+            $this->assertEquals(1, TestService::$count);
 
             $this->serviceFactory->proxy(TestService::class);
 
-            $this->expectOutputString('*');
+            $this->assertEquals(1, TestService::$count);
+
+            $this->serviceFactory->proxy(TestService::class);
+
+            $this->assertEquals(1, TestService::$count);
         }
 
         public function testServiceCreate()
@@ -121,11 +133,15 @@ namespace Quantum\Test\Unit {
 
             $this->serviceFactory->create(TestService::class);
 
-            $this->serviceFactory->create(TestService::class);
+            $this->assertEquals(1, TestService::$count);
 
             $this->serviceFactory->create(TestService::class);
 
-            $this->expectOutputString('***');
+            $this->assertEquals(2, TestService::$count);
+
+            $this->serviceFactory->create(TestService::class);
+
+            $this->assertEquals(3, TestService::$count);
         }
 
     }
