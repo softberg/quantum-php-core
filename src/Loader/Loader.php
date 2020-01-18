@@ -14,6 +14,8 @@
 
 namespace Quantum\Loader;
 
+use Quantum\Libraries\Storage\FileSystem;
+
 /**
  * Loader Class
  *
@@ -122,6 +124,24 @@ class Loader
     public function load()
     {
         return require $this->getFilePath();
+    }
+
+    /**
+     * 
+     * LoadFiles
+     * 
+     * Loads .php files from given directory
+     * 
+     * @param string $path
+     */
+    public static function loadFiles($path)
+    {
+
+        $fileSystem = new FileSystem();
+
+        foreach ($fileSystem->glob($path . DS . "*.php") as $filename) {
+            require_once $filename;
+        }
     }
 
 }
