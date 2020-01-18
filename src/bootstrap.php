@@ -14,15 +14,11 @@
 
 namespace Quantum;
 
-use Quantum\Routes\ModuleLoader;
-use Quantum\Routes\Router;
-use Quantum\Helpers\Helpers;
 use Quantum\Libraries\Environment\Environment;
-use Quantum\Libraries\Session\SessionManager;
 use Quantum\Libraries\Config\Config;
-use Quantum\Libraries\Libraries;
+use Quantum\Routes\ModuleLoader;
 use Quantum\Mvc\MvcManager;
-use Quantum\Mvc\Qt_Model;
+use Quantum\Routes\Router;
 use Quantum\Loader\Loader;
 
 /**
@@ -40,7 +36,7 @@ class Bootstrap
      * It runs the router, prepare the config values, helpers, libraries and MVC Manager
      *
      * @return void
-     * @throws Exception if one of these components fails: Router, Config, Helpers, Libraries, MVC MAnager.
+     * @throws Exception if one of these components fails: Router, Config, Helpers, Libraries, MVC Manager.
      */
     public static function run()
     {
@@ -56,8 +52,8 @@ class Bootstrap
             $loader = new Loader(Config::getSetup());
             Config::load($loader);
 
-            Helpers::load();
-            Libraries::load();
+            Loader::loadFiles(base_dir() . DS . 'helpers');
+            Loader::loadFiles(base_dir() . DS . 'libraries');
 
             $mvcManager = new MvcManager();
             $mvcManager->runMvc(Router::$currentRoute);
