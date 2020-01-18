@@ -16,9 +16,11 @@ namespace Quantum\Mvc;
 
 use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Libraries\Debugger\Debugger;
+use Quantum\Exceptions\ViewException;
 use Quantum\Libraries\Config\Config;
 use Quantum\Factory\ViewFactory;
 use Quantum\Hooks\HookManager;
+use Quantum\Helpers\Helper;
 
 /**
  * Base View Class
@@ -26,7 +28,8 @@ use Quantum\Hooks\HookManager;
  * Qt_View class is a base class that responsible for rendering and
  * outputting the view
  *
- * @package Quantum\Mvc
+ * @package Quantum
+ * @category MVC
  */
 class Qt_View
 {
@@ -52,16 +55,15 @@ class Qt_View
      */
     public static $sharedData = [];
 
-
     /**
      * Qt_View constructor.
      *
-     * @throws \Exception
+     * @throws ViewException
      */
     public function __construct()
     {
         if (get_caller_class() != ViewFactory::class) {
-            throw new \Exception(_message(ExceptionMessages::DIRECT_VIEW_INCTANCE, [ViewFactory::class]));
+            throw new ViewException(Helper::_message(ExceptionMessages::DIRECT_VIEW_INCTANCE, [ViewFactory::class]));
         }
     }
 
@@ -77,14 +79,18 @@ class Qt_View
     }
 
     /**
-     * Renders the layout
+     * Share
      *
-     * @param array $sharedData
-     * @return string
+     * Set the shared data, which becomes available in layout and view
+     *
+     * @param mixed $data
+     * @return void
      */
-    public function renderLayout($sharedData = [])
+    public function share($data)
     {
-        return self::renderFile(self::$layout, [], $sharedData);
+        foreach ($data as $key => $value) {
+            Qt_View::$sharedData[$key] = $value;
+        }
     }
 
     /**
@@ -92,22 +98,16 @@ class Qt_View
      *
      * Renders the view
      *
-     * @param $view
+     * @param string $view
      * @param array $params
-     * @param bool $output
-     * @param array $sharedData
-     * @throws \Exception
+     * @throws ViewException
      */
-    public function render($view, $params = [], $output = false, $sharedData = [])
+    public function render($view, $params = [])
     {
-        self::$view = self::renderFile($view, $params, $sharedData);
-
-        if ($output) {
-            echo self::$view;
-        }
+        self::$view = self::renderFile($view, $params);
 
         if (!empty(self::$layout)) {
-            echo self::renderLayout($sharedData);
+            echo self::renderFile(self::$layout);
 
             if (filter_var(get_config('debug'), FILTER_VALIDATE_BOOLEAN)) {
                 $this->renderDebugBar($view);
@@ -120,14 +120,13 @@ class Qt_View
      *
      * Outputs the view
      *
-     * @param $view
+     * @param string $view
      * @param array $params
-     * @param array $sharedData
-     * @throws \Exception
+     * @throws ViewException
      */
-    public function output($view, $params = [], $sharedData = [])
+    public function output($view, $params = [])
     {
-        echo self::renderFile($view, $params, $sharedData);
+        echo self::renderFile($view, $params);
     }
 
     /**
@@ -137,7 +136,7 @@ class Qt_View
      *
      * @param $file
      * @return string
-     * @throws \Exception
+     * @throws ViewException
      */
     private function findFile($file)
     {
@@ -145,7 +144,7 @@ class Qt_View
         if (!file_exists($filePath)) {
             $filePath = base_dir() . DS . 'base' . DS . 'views' . DS . $file . '.php';
             if (!file_exists($filePath)) {
-                throw new \Exception(_message(ExceptionMessages::VIEW_FILE_NOT_FOUND, $file));
+                throw new ViewException(Helper::_message(ExceptionMessages::VIEW_FILE_NOT_FOUND, $file));
             }
         }
 
@@ -159,14 +158,15 @@ class Qt_View
      *
      * @param string $view
      * @param array $parmas
-     * @param array $sharedData
      * @return object|string
-     * @throws \Exception
+     * @throws ViewException
      */
-    private function renderFile($view, $params = [], $sharedData = [])
+    private function renderFile($view, $params = [])
     {
-        $params = self::xssFilter($params);
-        $sharedData = self::xssFilter($sharedData);
+        $viewData = self::xssFilter($params);
+        $sharedData = self::xssFilter(self::$sharedData);
+
+        $params = array_merge($viewData, $sharedData);
 
         $templateEngine = Config::get('template_engine');
 
@@ -175,13 +175,12 @@ class Qt_View
             $engineConfigs = $templateEngine[$engineName];
 
             return HookManager::call('templateRenderer', [
-                'configs' => $engineConfigs,
-                'view' => $view,
-                'params' => $params,
-                'sharedData' => $sharedData
+                        'configs' => $engineConfigs,
+                        'view' => $view,
+                        'params' => $params
             ]);
         } else {
-            return self::defaultRenderer($view, $params, $sharedData);
+            return self::defaultRenderer($view, $params);
         }
     }
 
@@ -189,13 +188,13 @@ class Qt_View
      * Default Renderer
      *
      * Renders html view
+     * 
      * @param string $view
      * @param array $params
-     * @param array $sharedData
      * @return string
-     * @throws \Exception
+     * @throws ViewException
      */
-    private static function defaultRenderer($view, $params = [], $sharedData = [])
+    private static function defaultRenderer($view, $params = [])
     {
         $file = self::findFile($view);
 
@@ -204,10 +203,6 @@ class Qt_View
 
         if ($params) {
             extract($params, EXTR_OVERWRITE);
-        }
-
-        if ($sharedData) {
-            extract($sharedData, EXTR_OVERWRITE);
         }
 
         require $file;
