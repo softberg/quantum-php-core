@@ -17,6 +17,7 @@ namespace Quantum\Factory;
 use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Exceptions\ServiceException;
 use Quantum\Factory\ModelFactory;
+use Quantum\Helpers\Helper;
 use Quantum\Mvc\Qt_Service;
 
 /**
@@ -167,12 +168,12 @@ class ServiceFactory
     private function getInstance($serviceClass)
     {
         if (!class_exists($serviceClass)) {
-            throw new ServiceException(_message(ExceptionMessages::SERVICE_NOT_FOUND, $serviceClass));
+            throw new ServiceException(Helper::_message(ExceptionMessages::SERVICE_NOT_FOUND, $serviceClass));
         }
         $service = new $serviceClass();
 
         if (!$service instanceof Qt_Service) {
-            throw new ServiceException(_message(ExceptionMessages::NOT_INSTANCE_OF_SERVICE, [$serviceClass, Qt_Service::class]));
+            throw new ServiceException(Helper::_message(ExceptionMessages::NOT_INSTANCE_OF_SERVICE, [$serviceClass, Qt_Service::class]));
         }
 
         return $service;
