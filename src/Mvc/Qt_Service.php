@@ -28,17 +28,9 @@ use Quantum\Factory\ServiceFactory;
  */
 abstract class Qt_Service
 {
-
+    
     /**
      * Class constructor
-     *
-     * @return void
-     * @throws \Exception When called directly
      */
-    public final function __construct()
-    {
-        if (get_caller_class(2) != ServiceFactory::class) {
-            throw new \Exception(_message(ExceptionMessages::DIRECT_SERVICE_CALL, [ServiceFactory::class]));
-        }
-    }
+    public final function __construct() {}
 }

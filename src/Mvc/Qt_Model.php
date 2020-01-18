@@ -16,7 +16,9 @@ namespace Quantum\Mvc;
 
 use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Libraries\Database\Database;
+use Quantum\Exceptions\ModelException;
 use Quantum\Factory\ModelFactory;
+use Quantum\Helpers\Helper;
 
 /**
  * Base Model Class
@@ -72,10 +74,6 @@ abstract class Qt_Model
      */
     public final function __construct()
     {
-        if (get_caller_class(2) != ModelFactory::class) {
-            throw new \Exception(_message(ExceptionMessages::DIRECT_MODEL_CALL, [$this->callerFunction, ModelFactory::class]));
-        }
-
         $this->model = get_called_class();
         $this->orm = Database::getDbalInstance($this->model, $this->table, $this->idColumn);
     }
@@ -93,7 +91,7 @@ abstract class Qt_Model
     {
         foreach ($arguments as $key => $value) {
             if (!in_array($key, $this->fillable)) {
-                throw new \Exception(_message(ExceptionMessages::INAPPROPRIATE_PROPERTY, $key));
+                throw new ModelException(Helper::_message(ExceptionMessages::INAPPROPRIATE_PROPERTY, $key));
             }
 
             $this->$key = $value;
@@ -150,7 +148,6 @@ abstract class Qt_Model
      * @return mixed
      * @throws \Exception
      */
-
     public function __call($method, $args = null)
     {
         if (method_exists($this->orm, $method)) {
@@ -166,7 +163,7 @@ abstract class Qt_Model
                 return $this;
             }
         } else {
-            throw new \Exception(_message(ExceptionMessages::UNDEFINED_MODEL_METHOD, $method));
+            throw new ModelException(Helper::_message(ExceptionMessages::UNDEFINED_MODEL_METHOD, $method));
         }
     }
 
