@@ -1,31 +1,5 @@
 <?php
 
-namespace Quantum\Factory {
-
-    function _message($subject, $params)
-    {
-        if (is_array($params)) {
-            return preg_replace_callback('/{%\d+}/', function () use (&$params) {
-                return array_shift($params);
-            }, $subject);
-        } else {
-            return preg_replace('/{%\d+}/', $params, $subject);
-        }
-    }
-
-}
-
-namespace Quantum\Mvc {
-
-    use Quantum\Factory\ServiceFactory;
-
-    function get_caller_class()
-    {
-        return ServiceFactory::class;
-    }
-
-}
-
 namespace Quantum\Services {
 
     use Quantum\Mvc\Qt_Service;
@@ -46,6 +20,7 @@ namespace Quantum\Services {
 
 namespace Quantum\Test\Unit {
 
+    use Mockery;
     use PHPUnit\Framework\TestCase;
     use Quantum\Exceptions\ServiceException;
     use Quantum\Factory\ServiceFactory;
@@ -58,6 +33,18 @@ namespace Quantum\Test\Unit {
 
         public function setUp(): void
         {
+            $this->helperMock = Mockery::mock('overload:Quantum\Helpers\Helper');
+
+            $this->helperMock->shouldReceive('_message')->andReturnUsing(function($subject, $params) {
+                if (is_array($params)) {
+                    return preg_replace_callback('/{%\d+}/', function () use (&$params) {
+                        return array_shift($params);
+                    }, $subject);
+                } else {
+                    return preg_replace('/{%\d+}/', $params, $subject);
+                }
+            });
+
             $this->serviceFactory = new ServiceFactory();
         }
 
