@@ -19,11 +19,6 @@ namespace Quantum\Mvc {
 
     use Quantum\Factory\ServiceFactory;
 
-    function _message($message, $args)
-    {
-        return $message;
-    }
-
     function get_caller_class()
     {
         return ServiceFactory::class;
