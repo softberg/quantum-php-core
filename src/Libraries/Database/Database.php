@@ -114,9 +114,9 @@ class Database
      */
     private static function setConfig()
     {
-        if (file_exists(MODULES_DIR . DS . current_module() . DS . 'Config' . DS . 'database.php')) {
+        if (file_exists(modules_dir() . DS . current_module() . DS . 'Config' . DS . 'database.php')) {
             if (!self::$dbConfig) {
-                self::$dbConfig = require_once MODULES_DIR . DS . current_module() . DS . 'Config' . DS . 'database.php';
+                self::$dbConfig = require_once modules_dir() . DS . current_module() . DS . 'Config' . DS . 'database.php';
             }
         } else {
             if (file_exists(BASE_DIR . DS . 'config' . DS . 'database.php')) {
