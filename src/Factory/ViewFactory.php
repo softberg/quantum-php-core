@@ -24,70 +24,33 @@ Class ViewFactory
 {
 
     /**
-     * Get View
-     *
-     * @return object
-     * @throws \Exception
+     * @var AuthenticableInterface
      */
-    public function view()
-    {
-        return new Qt_View();
-    }
+    private static $viewInstance = null;
 
     /**
-     * Render
+     * GetInstance
      *
-     * Renders the view
-     *
-     * @param string $viewFile
-     * @param array $params
-     * @param bool $output
-     * @throws \Exception
-     * @return void
+     * @return Qt_View
      */
-    public function render($viewFile, $params = [], $output = false)
+    public static function getInstance()
     {
-        $this->view()->render($viewFile, $params, $output, Qt_View::$sharedData);
-    }
-
-    /**
-     * Sets a layout
-     *
-     * @param $layout
-     * @throws \Exception
-     * @return void
-     */
-    public function setLayout($layout)
-    {
-        $this->view()->setLayout($layout);
-    }
-
-    /**
-     * Output
-     *
-     * Outputs the view
-     *
-     * @param string $view
-     * @param array $params
-     */
-    public function output($view, $params = [])
-    {
-        $this->view()->output($view, $params, Qt_View::$sharedData);
-    }
-
-    /**
-     * Share
-     *
-     * Set the shared data, which becomes available in layout and view
-     *
-     * @param mixed $data
-     * @return void
-     */
-    public function share($data)
-    {
-        foreach ($data as $key => $value) {
-            Qt_View::$sharedData[$key] = $value;
+        if (self::$viewInstance === null) {
+            self::$viewInstance = new Qt_View();
         }
+
+        return self::$viewInstance;
+    }
+
+    /**
+     * __call magic 
+     * 
+     * @param string $method
+     * @param array $args
+     */
+    public function __call($method, $args = null)
+    {
+        self::getInstance()->{$method}(...$args);
     }
 
 }
