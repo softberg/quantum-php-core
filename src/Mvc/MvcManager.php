@@ -20,12 +20,9 @@ use Quantum\Factory\ModelFactory;
 use Quantum\Factory\ViewFactory;
 use Quantum\Libraries\Csrf\Csrf;
 use Quantum\Libraries\Lang\Lang;
-use Quantum\Libraries\Session\Session;
 use Quantum\Middleware\MiddlewareManager;
 use Quantum\Exceptions\RouteException;
-use Quantum\Hooks\HookManager;
 use Quantum\Http\HttpRequest;
-use Quantum\Http\HttpResponse;
 use Quantum\Http\Request;
 use Quantum\Http\Response;
 
