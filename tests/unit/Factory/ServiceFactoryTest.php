@@ -2,9 +2,15 @@
 
 namespace Quantum\Factory {
 
-    function _message($message, $args)
+    function _message($subject, $params)
     {
-        return preg_replace('/{%\d+}/', $args, $message);
+        if (is_array($params)) {
+            return preg_replace_callback('/{%\d+}/', function () use (&$params) {
+                return array_shift($params);
+            }, $subject);
+        } else {
+            return preg_replace('/{%\d+}/', $params, $subject);
+        }
     }
 
 }
@@ -46,6 +52,7 @@ namespace Quantum\Services {
 namespace Quantum\Test\Unit {
 
     use PHPUnit\Framework\TestCase;
+    use Quantum\Exceptions\ServiceException;
     use Quantum\Factory\ServiceFactory;
     use Quantum\Services\TestService;
 
@@ -64,7 +71,7 @@ namespace Quantum\Test\Unit {
             $reflectionProperty = new \ReflectionProperty(ServiceFactory::class, 'initialized');
             $reflectionProperty->setAccessible(true);
             $reflectionProperty->setValue(ServiceFactory::class, []);
-            
+
             TestService::$count = 0;
         }
 
@@ -142,6 +149,24 @@ namespace Quantum\Test\Unit {
             $this->serviceFactory->create(TestService::class);
 
             $this->assertEquals(3, TestService::$count);
+        }
+
+        public function testServiceNotFound()
+        {
+            $this->expectException(ServiceException::class);
+
+            $this->expectExceptionMessage('Service `NonExistentClass` not found');
+
+            $this->serviceFactory->get(\NonExistentClass::class);
+        }
+
+        public function testServiceNotInstanceOfQtService()
+        {
+            $this->expectException(ServiceException::class);
+
+            $this->expectExceptionMessage('Service `Mockery\Undefined` is not instance of `Quantum\Mvc\Qt_Service`');
+
+            $this->serviceFactory->get(\Mockery\Undefined::class);
         }
 
     }
