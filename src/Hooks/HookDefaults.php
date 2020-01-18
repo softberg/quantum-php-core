@@ -82,7 +82,7 @@ class HookDefaults implements HookInterface
             }
         }
 
-        return $twig->render($data['view'] . '.php', array_merge($data['params'], $data['sharedData']));
+        return $twig->render($data['view'] . '.php', $data['params']);
     }
 
     /**
