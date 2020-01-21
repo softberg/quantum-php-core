@@ -275,7 +275,7 @@ class ExceptionMessages
     /**
      * Unauthhorized request  message
      */
-    const UUAUTHORIZED_REQUEST = 'Unauthorized request';
+    const UNAUTHORIZED_REQUEST = 'Unauthorized request';
 
     /**
      * Non unique value message
