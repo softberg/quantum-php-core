@@ -66,9 +66,10 @@ class BaseAuth
      */
     public function activate($token)
     {
-        $this->authService->update($this->keys['activationTokenKey'], $token, [
-            $this->keys['activationTokenKey'] => ''
-        ]);
+        $this->authService->update(
+                $this->keys['activationTokenKey'],
+                $token, [$this->keys['activationTokenKey'] => '']
+        );
     }
 
     /**
@@ -85,9 +86,11 @@ class BaseAuth
 
         $resetToken = $this->generateToken();
 
-        $this->authService->update($this->keys['usernameKey'], $email, [
-            $this->keys['resetTokenKey'] => $resetToken
-        ]);
+        $this->authService->update(
+                $this->keys['usernameKey'],
+                $email,
+                [$this->keys['resetTokenKey'] => $resetToken]
+        );
 
         $body = [
             'user' => $user,
@@ -107,10 +110,11 @@ class BaseAuth
      */
     public function reset($token, $password)
     {
-        $this->authService->update($this->keys['resetTokenKey'], $token, [
-            $this->keys['passwordKey'] => $this->hasher->hash($password),
-            $this->keys['resetTokenKey'] => ''
-        ]);
+        $this->authService->update(
+                $this->keys['resetTokenKey'],
+                $token,
+                [$this->keys['passwordKey'] => $this->hasher->hash($password), $this->keys['resetTokenKey'] => '']
+        );
     }
 
     /**
@@ -149,8 +153,10 @@ class BaseAuth
 
     protected function sendMail(Mailer $mailer, array $user, array $body)
     {
+        $fullName = (isset($user['firstname']) && isset($user['lastname'])) ? $user['firstname'] . ' ' . $user['lastname'] : '';
+
         $mailer->createFrom(['email' => get_config('app_email'), 'name' => get_config('app_name')])
-                ->createAddresses(['email' => $user['username'], 'name' => $user['firstname'] . ' ' . $user['lastname']])
+                ->createAddresses(['email' => $user['username'], 'name' => $fullName])
                 ->createBody($body)
                 ->send();
     }
