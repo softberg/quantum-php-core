@@ -218,11 +218,28 @@ class Qt_View
      */
     private function xssFilter($data)
     {
-        array_walk_recursive($data, function (&$value) {
-            $value = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
-        });
+        if (is_string($data)) {
+            $this->cleaner($data);
+            $data = [$data];
+        } else {
+            array_walk_recursive($data, [$this, 'cleaner']);
+        }
 
         return $data;
+    }
+
+    /**
+     * Cleaner
+     * 
+     * @param mixed $value
+     */
+    private function cleaner(&$value)
+    {
+        if (is_object($value)) {
+            $this->xssFilter($value);
+        } else {
+            $value = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+        }
     }
 
     /**
