@@ -92,11 +92,7 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
             throw new AuthException(ExceptionMessages::INACTIVE_ACCOUNT);
         }
 
-        $tokens = $this->getUpdatedTokens($user);
-
-        $this->authService->update($this->keys['usernameKey'], $username, [
-            $this->keys['refreshTokenKey'] => $tokens[$this->keys['refreshTokenKey']]
-        ]);
+        $tokens = $this->setUpdatedTokens($user);
 
         return $tokens;
     }
@@ -108,21 +104,26 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
      */
     public function signout()
     {
-        if (Request::hasHeader($this->keys['refreshTokenKey'])) {
-            $refreshToken = Request::getHeader($this->keys['refreshTokenKey']);
 
-            $user = $this->authService->get($this->keys['refreshTokenKey'], $refreshToken);
-            if ($user) {
-                $this->authService->update($this->keys['refreshTokenKey'], $refreshToken, [
-                    $this->keys['refreshTokenKey'] => ''
-                ]);
+        $refreshToken = Request::getHeader($this->keys['refreshTokenKey']);
 
-                Request::deleteHeader($this->keys['refreshTokenKey']);
-                Request::deleteHeader('AUTHORIZATION');
-                Response::delete('tokens');
+        $user = $this->authService->get($this->keys['refreshTokenKey'], $refreshToken);
 
-                return true;
-            }
+        if ($user) {
+            $this->authService->update(
+                    $this->keys['refreshTokenKey'],
+                    $refreshToken,
+                    [
+                        $this->authUserKey => $user,
+                        $this->keys['refreshTokenKey'] => ''
+                    ]
+            );
+
+            Request::deleteHeader($this->keys['refreshTokenKey']);
+            Request::deleteHeader('AUTHORIZATION');
+            Response::delete('tokens');
+
+            return true;
         }
 
         return false;
@@ -171,6 +172,7 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
     protected function checkRefreshToken()
     {
         $user = $this->authService->get($this->keys['refreshTokenKey'], Request::getHeader($this->keys['refreshTokenKey']));
+
         if ($user) {
             $this->setUpdatedTokens($user);
             return $user;
@@ -188,13 +190,20 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
     {
         $tokens = $this->getUpdatedTokens($user);
 
-        $this->authService->update($this->keys['usernameKey'], $user[$this->keys['usernameKey']], [
-            $this->keys['refreshTokenKey'] => $tokens[$this->keys['refreshTokenKey']]
-        ]);
+        $this->authService->update(
+                $this->keys['usernameKey'],
+                $user[$this->keys['usernameKey']],
+                [
+                    $this->authUserKey => $user,
+                    $this->keys['refreshTokenKey'] => $tokens[$this->keys['refreshTokenKey']]
+                ]
+        );
 
         Request::setHeader($this->keys['refreshTokenKey'], $tokens[$this->keys['refreshTokenKey']]);
         Request::setHeader('AUTHORIZATION', 'Bearer ' . $tokens[$this->keys['accessTokenKey']]);
         Response::set('tokens', $tokens);
+
+        return $tokens;
     }
 
 }
