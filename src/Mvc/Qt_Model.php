@@ -96,20 +96,8 @@ abstract class Qt_Model
 
             $this->$key = $value;
         }
-    }
-
-    /**
-     * Update rules
-     *
-     * Updates the validation rules of model
-     *
-     * @param mixed $key
-     * @param mixed $value
-     * @return void
-     */
-    public function updateRules($key, $value)
-    {
-        $this->rules[$key] = $value;
+        
+        return $this;
     }
 
     /**
