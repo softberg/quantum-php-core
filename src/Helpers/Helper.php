@@ -24,16 +24,16 @@ class Helper
 {
 
     /**
-     * __call magic
+     * __callStatic magic
      * 
      * @param string $function
      * @param mixed|null $args
      * @return mixed
      */
-    public function __call($function, $args = null)
+    public static function __callStatic($function, $args = null)
     {
         if (function_exists($function)) {
-            return $function(...$arguments);
+            return $function(...$args);
         }
     }
 
