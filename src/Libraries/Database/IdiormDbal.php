@@ -16,6 +16,7 @@ namespace Quantum\Libraries\Database;
 
 use PDO;
 use ORM;
+use Quantum\Mvc\Qt_Model;
 
 /**
  * Class IdiormDbal
@@ -110,6 +111,27 @@ class IdiormDbal implements DbalInterface
         return (self::$ormClass)::get_config();
     }
 
+    /**
+     * Select 
+     * 
+     * Selects the given table columns 
+     * 
+     * @param mixed $columns
+     * @return array
+     */
+    public function select(...$columns)
+    {
+        array_walk($columns, function(&$column) {
+            if (is_array($column)) {
+                $column = array_flip($column);
+            }
+        });
+
+        $iterator = new \RecursiveIteratorIterator(new \RecursiveArrayIterator($columns));
+        $columns = iterator_to_array($iterator, true);
+
+        return $this->ormObject->select_many($columns);
+    }
 
     /**
      * Find one
@@ -332,6 +354,19 @@ class IdiormDbal implements DbalInterface
     }
 
     /**
+     * 
+     * Delete All
+     * 
+     * Deletes all records by previously applied criteria
+     * 
+     * @return bool
+     */
+    public function deleteAll()
+    {
+        return $this->ormObject->delete_many();
+    }
+
+    /**
      * Join
      *
      * Add a simple JOIN source to the query
@@ -393,6 +428,18 @@ class IdiormDbal implements DbalInterface
         return $this->ormPatch->right_join($table, $constraint, $tableAlias);
     }
 
+    /**
+     * Join To
+     * 
+     * Joins two models
+     * 
+     * @param Qt_Model $model
+     * @return object
+     */
+    public function joinTo(Qt_Model $model)
+    {
+        return $this->ormObject->join($model->table, [$this->table . '.' . $this->idColumn, '=', $model->table . '.' . $model->foreignKey]);
+    }
 
     /**
      * Execute

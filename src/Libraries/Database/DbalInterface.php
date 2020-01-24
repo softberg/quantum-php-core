@@ -37,6 +37,16 @@ interface DbalInterface
     public static function dbConnect($connectionDetails);
 
     /**
+     * Select
+     * 
+     * Should be implemented in classes to select table columns
+     * 
+     * @param mixed $columns
+     * @return array
+     */
+    public function select(...$columns);
+
+    /**
      * Find One
      *
      * Should be implemented in classes to get record by primary key
@@ -173,6 +183,16 @@ interface DbalInterface
     public function delete();
 
     /**
+     * 
+     * Delete All
+     * 
+     * Deletes all records by previously applied criteria
+     * 
+     * @return bool
+     */
+    public function deleteAll();
+
+    /**
      * Join
      *
      * Should be implemented in classes for to make joining
@@ -218,6 +238,16 @@ interface DbalInterface
      * @return object
      */
     public function rightJoin($table, $constraint, $tableAlias = null);
+
+    /**
+     * Join To
+     * 
+     * Joins two models
+     * 
+     * @param Qt_Model $model
+     * @return object
+     */
+    public function joinTo(Qt_Model $model);
 
     /**
      * Gets the last query executed
