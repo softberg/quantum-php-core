@@ -110,6 +110,12 @@ class BaseAuth
      */
     public function reset($token, $password)
     {
+        $user = $this->authService->get($this->keys['resetTokenKey'], $token);
+        
+        if(!$this->isActivated($user)) {
+            $this->activate($token);
+        }
+        
         $this->authService->update(
                 $this->keys['resetTokenKey'],
                 $token,
@@ -125,7 +131,7 @@ class BaseAuth
      */
     protected function filterFields(array $user)
     {
-        if (count($this->authService->getVisibleFields()) > 0) {
+        if (count($this->authService->getVisibleFields())) {
             foreach ($user as $key => $value) {
                 if (!in_array($key, $this->authService->getVisibleFields())) {
                     unset($user[$key]);
