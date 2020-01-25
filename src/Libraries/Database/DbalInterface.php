@@ -247,7 +247,7 @@ interface DbalInterface
      * @param Qt_Model $model
      * @return object
      */
-    public function joinTo(Qt_Model $model);
+    public function joinTo(\Quantum\Mvc\Qt_Model $model);
 
     /**
      * Gets the last query executed
