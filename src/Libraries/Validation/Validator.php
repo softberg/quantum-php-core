@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 1.0.0
+ * @since 2.0.0
  */
 
 namespace Quantum\Libraries\Validation;
@@ -26,7 +26,7 @@ class Validator
 {
 
     /**
-     * PHP Mailer Log
+     * Rules
      *
      * @var array
      */
@@ -183,9 +183,9 @@ class Validator
     /**
      * Get validation errors
      *
-     * @return array|null
+     * @return array
      */
-    public function getErrors()
+    public function getErrors(): array
     {
         if (count($this->errors)) {
             $messages = [];
@@ -207,10 +207,10 @@ class Validator
                 }
             }
 
-            dump($messages);
+            return $messages;
         }
 
-        return null;
+        return [];
     }
 
      /**
@@ -1051,7 +1051,7 @@ class Validator
     private function unique(string $field, string $value, $param = null)
     {
         $qtInstance = qt_instance();
-        $model = $qtInstance->modelFactory(strtoupper($param));
+        $model = $qtInstance->modelFactory(ucfirst($param));
 
         $model->findOneBy($field, $value);
 
