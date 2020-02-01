@@ -14,8 +14,9 @@
 
 namespace Quantum\Libraries\Lang;
 
-use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Libraries\Storage\FileSystem;
+use Quantum\Exceptions\ExceptionMessages;
+use Quantum\Exceptions\LangException;
 use Dflydev\DotAccessData\Data;
 use Quantum\Loader\Loader;
 
@@ -54,11 +55,11 @@ class Lang
         $languages = get_config('langs');
 
         if (!$languages) {
-            throw new \Exception(ExceptionMessages::MISCONFIGURED_LANG_CONFIG);
+            throw new LangException(ExceptionMessages::MISCONFIGURED_LANG_CONFIG);
         }
 
         if (empty($lang) && !get_config('lang_default')) {
-            throw new \Exception(ExceptionMessages::MISCONFIGURED_LANG_DEFAULT_CONFIG);
+            throw new LangException(ExceptionMessages::MISCONFIGURED_LANG_DEFAULT_CONFIG);
         }
 
         if (empty($lang) || !in_array($lang, $languages)) {
@@ -77,14 +78,14 @@ class Lang
      */
     public function loadDir($dirName)
     {
-        $dirPath = modules_dir() . DS . current_module() . DS. 'Views' . DS . 'lang' . DS . $dirName;
+        $dirPath = modules_dir() . DS . current_module() . DS. 'Resources' . DS . 'lang' . DS . $dirName;
 
         $fileSystem = new FileSystem();
         
         if($fileSystem->isDirectory($dirPath)) {
             $files = $fileSystem->glob($dirPath . "/*.php");
             if (count($files) == 0) {
-                throw new \Exception(_message(ExceptionMessages::TRANSLATION_FILES_NOT_FOUND, $dirName));
+                throw new LangException(_message(ExceptionMessages::TRANSLATION_FILES_NOT_FOUND, $dirName));
             }
 
             foreach ($files as $file) {
@@ -92,7 +93,7 @@ class Lang
 
                 $setup = (object)[
                     'module' => current_module(),
-                    'env' => 'Views' . DS . 'lang' . DS . $dirName,
+                    'env' => 'Resources' . DS . 'lang' . DS . $dirName,
                     'fileName' => $fileName,
                     'exceptionMessage' => ExceptionMessages::TRANSLATION_FILES_NOT_FOUND
 
