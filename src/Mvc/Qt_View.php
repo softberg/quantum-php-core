@@ -249,7 +249,7 @@ class Qt_View
      */
     private function renderDebugBar($view)
     {
-        $debugbarRenderer = Debugger::runDebuger($view);
+        $debugbarRenderer = (new Debugger())->run($view);
         echo $debugbarRenderer->renderHead();
         echo $debugbarRenderer->render();
     }

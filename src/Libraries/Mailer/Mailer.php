@@ -97,7 +97,7 @@ class Mailer
             $phpMailer->SMTPDebug = 1;
             $phpMailer->Debugoutput = function ($str, $level) {
                 $this->log .= $str . '&';
-                session()->set('mail_log', $this->log);
+                session()->set('__mailLog', $this->log);
             };
         } else {
             $phpMailer->SMTPDebug = 0;

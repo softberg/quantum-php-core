@@ -19,10 +19,6 @@ use DebugBar\DataCollector\MemoryCollector;
 use DebugBar\DataCollector\MessagesCollector;
 use DebugBar\DataCollector\PhpInfoCollector;
 use DebugBar\DataCollector\RequestDataCollector;
-use DebugBar\DataCollector\TimeDataCollector;
-use DebugBar\StandardDebugBar;
-use Quantum\Routes\ModuleLoader;
-use Quantum\Routes\RouteController;
 use ORM;
 
 /**
@@ -38,27 +34,31 @@ class Debugger extends DebugBar
 
     /**
      * Debugbar instance
+     * 
      * @var object
      */
-    public static $debugbar;
-
-    /**
-     * Debugbar Renderer
-     * @var object
-     */
-    public static $debugbarRenderer = null;
+    private $debugbar;
 
     /**
      * Queries
+     * 
      * @var array
      */
-    public static $queries;
+    private $queries = [];
 
     /**
      * Assets url
+     * 
      * @var string
      */
-    public static $assets_url;
+    private $assetsUrl = '/assets/DebugBar/Resources';
+
+    /**
+     * Custom CSS
+     * 
+     * @var string 
+     */
+    private $customCss = 'custom_debugbar.css';
 
     /**
      * Class constructor
@@ -79,99 +79,108 @@ class Debugger extends DebugBar
      * @param string $view
      * @return object
      */
-    public static function runDebuger($view = null)
+    public function run($view = null)
     {
-        self::$debugbar = new Debugger();
-        self::$assets_url = base_url() . '/assets/DebugBar/Resources';
-        self::addQueries();
-        self::addMessages();
-        self::addRoute($view);
-        self::addMailLog();
+        $this->debugbar = new Debugger();
 
-        self::$debugbarRenderer = self::$debugbar->getJavascriptRenderer()
-            ->setBaseUrl(self::$assets_url)
-            ->addAssets(['custom_debugbar.css'], []);
+        $this->tabMessages();
+        $this->tabQueries();
+        $this->tabRoutes($view);
+        $this->tabMailLog();
 
-        return self::$debugbarRenderer;
+        return $debugbarRenderer = $this->debugbar
+                ->getJavascriptRenderer()
+                ->setBaseUrl(base_url() . $this->assetsUrl)
+                ->addAssets([$this->customCss], []);
     }
 
     /**
-     * Collects the queries
+     * Tab Messages
+     * 
+     * Output debug messages in Messages tab
      *
      * @return void
      */
-    private static function addQueries()
+    private function tabMessages()
     {
-        self::$debugbar->addCollector(new MessagesCollector('queries'));
-        self::$queries = ORM::get_query_log();
-        if (self::$queries) {
-            foreach (self::$queries as $query) {
-                self::$debugbar['queries']->info($query);
+        $outputData = session()->get('__debugOutput');
+
+        if ($outputData) {
+            foreach ($outputData as $data) {
+                $this->debugbar['messages']->debug($data);
+            }
+            session()->delete('__debugOutput');
+        }
+    }
+
+    /**
+     * Tab Queries
+     * 
+     * Outputs  the queries in Queries tab
+     *
+     * @return void
+     */
+    private function tabQueries()
+    {
+        $this->debugbar->addCollector(new MessagesCollector('queries'));
+
+        $this->queries = ORM::get_query_log();
+        if ($this->queries) {
+            foreach ($this->queries as $query) {
+                $this->debugbar['queries']->info($query);
             }
         }
     }
 
     /**
+     * Tab Routes
+     * 
      * Collects the routes
      *
      * @return void
      */
-    private static function addRoute($view)
+    private function tabRoutes($view)
     {
+        $this->debugbar->addCollector(new MessagesCollector('routes'));
+        
         $route = [
-            'Route' => RouteController::$currentRoute['route'],
-            'Pattern' => RouteController::$currentRoute['pattern'] ?? '',
-            'Uri' => RouteController::$currentRoute['uri'],
-            'Method' => RouteController::$currentRoute['method'],
+            'Route' => current_route(),
+            'Pattern' => current_route_pattern(),
+            'Uri' => current_route_uri(),
+            'Method' => current_route_method(),
             'Module' => current_module(),
             'Middlewares' => current_middlewares(),
             'Controller' => current_module() . DS . current_controller(),
             'Action' => current_action(),
             'Args' => current_route_args(),
-            'View' => ''
         ];
 
         if ($view) {
-            $route['View'] = current_module() . '/Views/' . $view;
+            $route['View'] = current_module() . DS . 'Views' . DS . $view;
         }
 
-        self::$debugbar->addCollector(new MessagesCollector('routes'));
-        self::$debugbar['routes']->info($route);
+        $this->debugbar['routes']->info($route);
     }
 
     /**
-     * Collects the messages
+     * Tab Mail
+     * 
+     * Outputs the mail log in Mail tab
      *
      * @return void
      */
-    private static function addMessages()
+    private function tabMailLog()
     {
-        $out_data = session()->get('output');
-        if ($out_data) {
-            foreach ($out_data as $data) {
-                self::$debugbar['messages']->debug($data);
-            }
-            session()->delete('output');
-        }
-    }
+        $this->debugbar->addCollector(new MessagesCollector('mail'));
 
-    /**
-     * Collects the mails
-     *
-     * @return void
-     */
-    private static function addMailLog()
-    {
-        self::$debugbar->addCollector(new MessagesCollector('mail'));
-        $mail_log = session()->get('mail_log');
-        if ($mail_log) {
-            $logs = explode('&', $mail_log);
+        $mailLog = session()->get('__mailLog');
+        if ($mailLog) {
+            $logs = explode('&', $mailLog);
             foreach ($logs as $log) {
-                self::$debugbar['mail']->info($log);
+                $this->debugbar['mail']->info($log);
             }
-            session()->delete('mail_log');
+            session()->delete('__mailLog');
         }
     }
-
 
 }
