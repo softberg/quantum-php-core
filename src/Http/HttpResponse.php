@@ -14,9 +14,6 @@
 
 namespace Quantum\Http;
 
-use phpDocumentor\Reflection\Types\Self_;
-use Quantum\Exceptions\ExceptionMessages;
-
 /**
  * HttpResponse Class
  *
@@ -222,7 +219,6 @@ abstract class HttpResponse
     public static function json($data = null, $status = null)
     {
         if ($data) {
-            $data = count(self::$__response) > 0 ? ['data' => (array)$data] : (array)$data;
             self::$__response = array_merge(self::$__response, $data);
         }
 
