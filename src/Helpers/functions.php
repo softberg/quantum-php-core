@@ -14,15 +14,12 @@
 
 use Quantum\Libraries\Environment\Environment;
 use Quantum\Libraries\Session\SessionManager;
-use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Libraries\Encryption\Cryptor;
-use Quantum\Libraries\Auth\AuthService;
 use Quantum\Libraries\Auth\AuthManager;
 use Quantum\Libraries\Cookie\Cookie;
 use Quantum\Libraries\Dumper\Dumper;
 use Quantum\Libraries\Config\Config;
 use Quantum\Routes\RouteController;
-use Quantum\Factory\ServiceFactory;
 use Quantum\Factory\ViewFactory;
 use Quantum\Libraries\Lang\Lang;
 use Quantum\Libraries\Csrf\Csrf;
@@ -61,12 +58,12 @@ if (!function_exists('view')) {
 if (!function_exists('render_partial')) {
 
     /**
-     * Rendered patial
+     * Rendered partial
      *
      * @param string $partial
      * @param array $args
      */
-    function render_partial($partial, $args = array())
+    function render_partial($partial, $args = [])
     {
         $view = new ViewFactory();
         $view->output($partial, $args);
@@ -371,29 +368,6 @@ if (!function_exists('_message')) {
 
 }
 
-if (!function_exists('getallheaders')) {
-
-    /**
-     * getallheaders
-     *
-     * @return array
-     */
-    function getallheaders()
-    {
-        if (!is_array($_SERVER)) {
-            return array();
-        }
-        $headers = array();
-        foreach ($_SERVER as $name => $value) {
-            if (substr($name, 0, 5) == 'HTTP_') {
-                $headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))))] = $value;
-            }
-        }
-        return $headers;
-    }
-
-}
-
 if (!function_exists('get_directory_classes')) {
 
     /**
@@ -431,7 +405,7 @@ if (!function_exists('parse_raw_http_request')) {
     function parse_raw_http_request($input)
     {
         preg_match('/boundary=(.*)$/', $_SERVER['CONTENT_TYPE'], $matches);
-        $encoded_data = array();
+        $encoded_data = [];
         if (count($matches) > 0) {
             $boundary = $matches[1];
             $blocks = preg_split("/-+$boundary/", $input);
