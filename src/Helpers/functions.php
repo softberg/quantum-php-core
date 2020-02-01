@@ -11,7 +11,6 @@
  * @link http://quantum.softberg.org/
  * @since 1.0.0
  */
-
 use Quantum\Libraries\Environment\Environment;
 use Quantum\Libraries\Session\SessionManager;
 use Quantum\Libraries\Encryption\Cryptor;
@@ -127,10 +126,24 @@ if (!function_exists('current_action')) {
 
 }
 
-if (!function_exists('current_action_args')) {
+if (!function_exists('current_route')) {
 
     /**
-     * Gets current action args
+     * Gets current route
+     *
+     * @return string
+     */
+    function current_route()
+    {
+        return RouteController::$currentRoute['route'] ?? null;
+    }
+
+}
+
+if (!function_exists('current_route_args')) {
+
+    /**
+     * Gets current route args
      *
      * @return array
      */
@@ -140,6 +153,49 @@ if (!function_exists('current_action_args')) {
     }
 
 }
+
+if (!function_exists('current_route_pattern')) {
+
+    /**
+     * Gets current route pattern
+     *
+     * @return array
+     */
+    function current_route_pattern()
+    {
+        return RouteController::$currentRoute['pattern'] ?? '';
+    }
+
+}
+
+if (!function_exists('current_route_method')) {
+
+    /**
+     * Gets current route method
+     *
+     * @return array
+     */
+    function current_route_method()
+    {
+        return RouteController::$currentRoute['method'] ?? '';
+    }
+
+}
+
+if (!function_exists('current_route_uri')) {
+
+    /**
+     * Gets current route uri
+     *
+     * @return array
+     */
+    function current_route_uri()
+    {
+        return RouteController::$currentRoute['uri'] ?? '';
+    }
+
+}
+
 
 if (!function_exists('session')) {
 
@@ -463,8 +519,10 @@ if (!function_exists('out')) {
     function out($var, $die = false)
     {
         Dumper::dump($var, $die);
-        if ($die)
+
+        if ($die) {
             die;
+        }
     }
 
 }
@@ -531,6 +589,7 @@ if (!function_exists('mailer')) {
 }
 
 if (!function_exists('current_lang')) {
+
     /**
      * Gets the current lang
      *
@@ -540,6 +599,7 @@ if (!function_exists('current_lang')) {
     {
         return Lang::get();
     }
+
 }
 
 if (!function_exists('get_caller_class')) {
