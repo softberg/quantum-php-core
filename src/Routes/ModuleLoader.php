@@ -14,6 +14,7 @@
 
 namespace Quantum\Routes;
 
+use Quantum\Exceptions\ModuleLoaderException;
 use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Routes\Route;
 
@@ -26,41 +27,41 @@ use Quantum\Routes\Route;
  * @subpackage Routes
  * @category Routes
  */
-class ModuleLoader {
+class ModuleLoader
+{
 
     /**
      * List of loaded modules
      * 
      * @var array 
      */
-    public $modules = array();
+    public $modules = [];
 
     /**
      * Load Modules
      * 
      * @param \Quantum\Routes\Router $router
-     * @return void
      * @throws \Exception When module file is not found
      */
-    public function loadModules(Router $router) {
+    public function loadModules(Router $router)
+    {
         $this->modules = require_once BASE_DIR . DS . 'config' . DS . 'modules.php';
 
         foreach ($this->modules['modules'] as $module) {
             if (!file_exists(MODULES_DIR . DS . $module . DS . 'Config' . DS . 'routes.php')) {
-                throw new \Exception(_message(ExceptionMessages::MODULE_NOT_FOUND, $module));
+                throw new ModuleLoaderException(_message(ExceptionMessages::MODULE_NOT_FOUND, $module));
             }
 
             $routesClosure = require_once MODULES_DIR . DS . $module . DS . 'Config' . DS . 'routes.php';
 
             if (!$routesClosure instanceof \Closure) {
-                throw new \Exception(ExceptionMessages::ROUTES_NOT_CLOSURE);
+                throw new ModuleLoaderException(ExceptionMessages::ROUTES_NOT_CLOSURE);
             }
 
             $route = new Route($module);
             $routesClosure($route);
-            $router->routes = array_merge($router->routes, $route->getRuntimeRoutes());
+            $router->setRoutes(array_merge($router->getRoutes(), $route->getRuntimeRoutes()));
         }
-
     }
 
 }

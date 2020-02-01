@@ -125,7 +125,29 @@ class Router extends RouteController
     }
 
     /**
+     * Set Routes
+     * 
+     * @param array $routes
+     */
+    public function setRoutes($routes)
+    {
+        $this->routes = $routes;
+    }
+
+    /**
+     * Get Routes
+     * 
+     * @return array
+     */
+    public function getRoutes()
+    {
+        return $this->routes;
+    }
+
+    /**
      * Finds straight matches
+     * 
+     * @return void
      */
     private function findStraightMatches()
     {
@@ -142,6 +164,8 @@ class Router extends RouteController
 
     /**
      * Finds matches by pattern
+     * 
+     * @return void
      */
     private function findPatternMatches()
     {
@@ -169,10 +193,11 @@ class Router extends RouteController
     }
 
     /**
+     * Check Method
+     * 
      * Matches the http method defined in config/routes.php file of specific module
      * against request method to determine current route
      *
-     * @return void
      * @throws RouteException When Http method is other the defined in config/routes.php of sepcific module
      */
     private function checkMethod()

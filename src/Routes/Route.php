@@ -14,8 +14,6 @@
 
 namespace Quantum\Routes;
 
-use Quantum\Routes\Router;
-
 /**
  * Route Class
  *
@@ -25,7 +23,8 @@ use Quantum\Routes\Router;
  * @subpackage Routes
  * @category Routes
  */
-class Route {
+class Route
+{
 
     /**
      * Current module
@@ -61,8 +60,7 @@ class Route {
      * @var array
      */
     private $currentRoute = [];
-    
-    
+
     /**
      * Virtual routes
      * 
@@ -75,7 +73,8 @@ class Route {
      *
      * @param string $module
      */
-    public function __construct($module) {
+    public function __construct($module)
+    {
         $this->virtualRoutes['*'] = [];
 
         $this->module = $module;
@@ -91,7 +90,8 @@ class Route {
      * @param array $middlewares
      * @return $this
      */
-    public function add($route, $method, $controller, $action) {
+    public function add($route, $method, $controller, $action)
+    {
         $this->currentRoute = [
             'route' => $route,
             'method' => $method,
@@ -109,14 +109,15 @@ class Route {
         return $this;
     }
 
-   /**
-    * Starts a named group of routes
-    * 
-    * @param string $groupName
-    * @param \Closure $callback
-    * @return $this
-    */
-    public function group(string $groupName, \Closure $callback) {
+    /**
+     * Starts a named group of routes
+     * 
+     * @param string $groupName
+     * @param \Closure $callback
+     * @return $this
+     */
+    public function group(string $groupName, \Closure $callback)
+    {
         $this->currentGroupName = $groupName;
 
         $this->isGroupe = TRUE;
@@ -134,7 +135,8 @@ class Route {
      * @param array $middlewares
      * @return void
      */
-    public function middlewares(array $middlewares = []) {
+    public function middlewares(array $middlewares = [])
+    {
         if (!$this->isGroupe) {
             end($this->virtualRoutes['*']);
             $lastKey = key($this->virtualRoutes['*']);
@@ -154,9 +156,9 @@ class Route {
                     if (!is_array($hasMiddleware)) {
                         $route['middlewares'] = $middlewares;
                     } else {
-						$reversedMiddlewares = array_reverse($middlewares);
+                        $reversedMiddlewares = array_reverse($middlewares);
                         foreach ($reversedMiddlewares as $middleware) {
-							array_unshift($route['middlewares'], $middleware);
+                            array_unshift($route['middlewares'], $middleware);
                         }
                     }
                 }
@@ -169,7 +171,8 @@ class Route {
      * 
      * @return array
      */
-    public function getRuntimeRoutes() {
+    public function getRuntimeRoutes()
+    {
         $runtimeRoutes = [];
 
         foreach ($this->virtualRoutes as $virtualRoute) {
@@ -185,7 +188,8 @@ class Route {
      * 
      * @return array
      */
-    public function getVirtualRoutes() {
+    public function getVirtualRoutes()
+    {
         return $this->virtualRoutes;
     }
 
