@@ -32,11 +32,13 @@ class Environment
     public static $envPath = BASE_DIR . DS . '.env';
 
     /**
+     * Load
+     * 
      * Loads the environment variables from .env file
      */
     public static function load()
     {
-        $env = require_once BASE_DIR . '/config/env.php';
+        $env = require_once BASE_DIR . DS . 'config' . DS . 'env.php';
 
         $envFile = '.env';
 
@@ -49,6 +51,8 @@ class Environment
     }
 
     /**
+     * Get Value
+     * 
      * Gets the environment variable value
      *
      * @param string $key
@@ -67,6 +71,8 @@ class Environment
     }
 
     /**
+     * Update Row
+     * 
      * Creates or updates the row in .env
      *
      * @param string $keyName
@@ -75,7 +81,9 @@ class Environment
      */
     public static function updateRow($keyName, $value)
     {
-        if ($oldRow = self::getRow($keyName)) {
+        $oldRow = self::getRow($keyName);
+        
+        if ($oldRow) {
             file_put_contents(self::$envPath, preg_replace(
                 '/^' . $oldRow . '/m',
                 $keyName . "=" . $value . "\r\n",

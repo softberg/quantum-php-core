@@ -41,13 +41,13 @@ class Bootstrap
     public static function run()
     {
         try {
+            Environment::load();
+
             $router = new Router();
 
             (new ModuleLoader())->loadModules($router);
 
             $router->findRoute();
-
-            Environment::load();
 
             $loader = new Loader(Config::getSetup());
             Config::load($loader);
