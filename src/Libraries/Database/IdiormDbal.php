@@ -100,13 +100,18 @@ class IdiormDbal implements DbalInterface
      */
     public static function dbConnect($connectionDetails)
     {
-        (self::$ormClass)::configure(array(
+        $attributes = [
+            PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES ' . $connectionDetails['charset'] ?? 'utf8',
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+        ];
+
+        (self::$ormClass)::configure([
             'connection_string' => $connectionDetails['driver'] . ':host=' . $connectionDetails['host'] . ';dbname=' . $connectionDetails['dbname'],
             'username' => $connectionDetails['username'],
             'password' => $connectionDetails['password'],
-            'driver_options' => array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES ' . $connectionDetails['charset'] ?? 'utf8'),
+            'driver_options' => $attributes,
             'logging' => get_config('debug', false)
-        ));
+        ]);
 
         return (self::$ormClass)::get_config();
     }
