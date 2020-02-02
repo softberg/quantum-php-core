@@ -88,10 +88,9 @@ class Debugger extends DebugBar
         $this->tabRoutes($view);
         $this->tabMailLog();
 
-        return $debugbarRenderer = $this->debugbar
-                ->getJavascriptRenderer()
-                ->setBaseUrl(base_url() . $this->assetsUrl)
-                ->addAssets([$this->customCss], []);
+        return $this->debugbar->getJavascriptRenderer()
+                        ->setBaseUrl(base_url() . $this->assetsUrl)
+                        ->addAssets([$this->customCss], []);
     }
 
     /**
@@ -142,7 +141,7 @@ class Debugger extends DebugBar
     private function tabRoutes($view)
     {
         $this->debugbar->addCollector(new MessagesCollector('routes'));
-        
+
         $route = [
             'Route' => current_route(),
             'Pattern' => current_route_pattern(),
