@@ -21,9 +21,9 @@ class HasherTest extends TestCase
     {
         $this->assertEquals(PASSWORD_BCRYPT, $this->hasher->getAlgorithm());
 
-        $this->hasher->setAlgorithm(PASSWORD_ARGON2I);
+        $this->hasher->setAlgorithm(PASSWORD_DEFAULT);
 
-        $this->assertEquals(PASSWORD_ARGON2I, $this->hasher->getAlgorithm());
+        $this->assertEquals(PASSWORD_DEFAULT, $this->hasher->getAlgorithm());
     }
 
     public function testSetAndGetCost()
@@ -50,7 +50,7 @@ class HasherTest extends TestCase
 
         $this->assertTrue($this->hasher->needsRehash($hashed));
 
-        $this->hasher->setAlgorithm(PASSWORD_ARGON2I)->setCost(11);
+        $this->hasher->setAlgorithm(PASSWORD_DEFAULT)->setCost(11);
 
         $this->assertTrue($this->hasher->needsRehash($hashed));
     }
