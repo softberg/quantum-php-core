@@ -3,7 +3,7 @@
 > **Note:** This repository contains the core code of the Quantum framework. If you want to start new project visit the main [Quantum PHP Project repository](https://github.com/softberg/quantum-framework-php).
 
 [![Build Status](https://travis-ci.org/softberg/quantum-php-core.svg?branch=master)](https://travis-ci.org/softberg/quantum-php-core)
-[![GitHub](https://img.shields.io/github/license/softberg/quantum-php-core)](https://github.com/softberg/quantum-php-project/blob/master/LICENSE)
+[![GitHub](https://img.shields.io/github/license/softberg/quantum-php-core)](https://github.com/softberg/quantum-php-core/blob/master/LICENSE)
 [![Packagist Version](https://img.shields.io/packagist/v/quantum/framework)](https://packagist.org/packages/quantum/framework)
 
 Very fast and extremely simple PHP MVC framework of the next generation with a modular structure that allows you to create any kind of projects.
