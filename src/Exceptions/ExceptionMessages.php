@@ -19,7 +19,6 @@ namespace Quantum\Exceptions;
  *
  *
  * @package Quantum
- * @subpackage Exceptions
  * @category Exceptions
  */
 class ExceptionMessages

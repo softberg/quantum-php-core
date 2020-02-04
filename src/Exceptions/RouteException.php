@@ -15,11 +15,9 @@
 namespace Quantum\Exceptions;
 
 /**
- * Route Exception base class
- * 
+ * RouteException class
  * 
  * @package Quantum
- * @subpackage Exceptions
  * @category Exceptions
  */
 class RouteException extends \Exception {

@@ -18,7 +18,6 @@ namespace Quantum\Exceptions;
  * ServiceException class
  * 
  * @package Quantum
- * @subpackage Exceptions
  * @category Exceptions
  */
 class ServiceException extends \Exception

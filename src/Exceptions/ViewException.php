@@ -15,10 +15,9 @@
 namespace Quantum\Exceptions;
 
 /**
- * ServiceException class
+ * ViewException class
  * 
  * @package Quantum
- * @subpackage Exceptions
  * @category Exceptions
  */
 class ViewException extends \Exception
