@@ -15,8 +15,7 @@
 namespace Quantum\Libraries\Database;
 
 use Quantum\Exceptions\ExceptionMessages;
-use Quantum\Hooks\HookManager;
-use ORM;
+use Quantum\Exceptions\DatabaseException;
 
 /**
  * Database class
@@ -35,7 +34,7 @@ class Database
      *
      * @var string
      */
-    private static $defaultDbal = '\\Quantum\\Libraries\\Database\\IdiormDbal';
+    private static $defaultDbal = IdiormDbal::class;
 
     /**
      * Database configurations
@@ -57,7 +56,7 @@ class Database
      * @param string $table
      * @param string $idColumn
      * @return object
-     * @throws \Exception When table is not defined in user defeind model
+     * @throws DatabaseException When table is not defined in user defined model
      */
     public static function getDbalInstance($model, $table, $idColumn = 'id')
     {
@@ -68,7 +67,7 @@ class Database
         }
 
         if (empty($table)) {
-            throw new \Exception(_message(ExceptionMessages::MODEL_WITHOUT_TABLE_DEFINED, $model));
+            throw new DatabaseException(_message(ExceptionMessages::MODEL_WITHOUT_TABLE_DEFINED, $model));
         }
 
         return new $dbalClass($table, $idColumn);
@@ -77,7 +76,7 @@ class Database
     /**
      * Connected
      *
-     * Chechks the active connection
+     * Checks the active connection
      *
      * @return bool
      */
@@ -96,7 +95,7 @@ class Database
      *
      * @uses HookManager::call
      * @return void
-     * @throws \Exception
+     * @throws DatabaseException
      */
     private static function connect($dbalClass)
     {
@@ -106,11 +105,11 @@ class Database
     /**
      * Set DB Config
      *
-     * Finds and sets db configs from current config/database.php of module or
+     * Finds and sets the DB configs from current config/database.php of module or
      * from top config/database.php if in module it's not defined
      *
      * @return void
-     * @throws \Exception When config not found
+     * @throws DatabaseException When config not found
      */
     private static function setConfig()
     {
@@ -124,7 +123,7 @@ class Database
                     self::$dbConfig = require_once BASE_DIR . DS . 'config' . DS . 'database.php';
                 }
             } else {
-                throw new \Exception(ExceptionMessages::DB_CONFIG_NOT_FOUND);
+                throw new DatabaseException(ExceptionMessages::DB_CONFIG_NOT_FOUND);
             }
         }
     }
@@ -133,7 +132,7 @@ class Database
      * Get DB Config
      *
      * @return array
-     * @throws \Exception When config is not found or incorrect
+     * @throws DatabaseException When config is not found or incorrect
      */
     private static function getConfig()
     {
@@ -145,10 +144,10 @@ class Database
             if ($current_key && key_exists($current_key, self::$dbConfig)) {
                 return self::$dbConfig[$current_key];
             } else {
-                throw new \Exception(ExceptionMessages::INCORRECT_CONFIG);
+                throw new DatabaseException(ExceptionMessages::INCORRECT_CONFIG);
             }
         } else {
-            throw new \Exception(ExceptionMessages::INCORRECT_CONFIG);
+            throw new DatabaseException(ExceptionMessages::INCORRECT_CONFIG);
         }
     }
 
@@ -218,6 +217,19 @@ class Database
         $dbalClass = self::getDbalClass();
 
         return $dbalClass::getLastStatement();
+    }
+
+    /**
+     * Get an array containing all the queries 
+     * run on a specified connection up to now.
+     *
+     * @return array
+     */
+    public static function getQueryLog()
+    {
+        $dbalClass = self::getDbalClass();
+        
+        return $dbalClass::getQueryLog();
     }
 
 }

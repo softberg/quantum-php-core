@@ -494,4 +494,15 @@ class IdiormDbal implements DbalInterface
         return (self::$ormClass)::get_last_statement();
     }
 
+    /**
+     * Get an array containing all the queries 
+     * run on a specified connection up to now.
+     *
+     * @return array
+     */
+    public static function getQueryLog()
+    {
+        return (self::$ormClass)::get_query_log();
+    }
+
 }

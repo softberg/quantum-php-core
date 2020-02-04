@@ -19,7 +19,7 @@ use DebugBar\DataCollector\MemoryCollector;
 use DebugBar\DataCollector\MessagesCollector;
 use DebugBar\DataCollector\PhpInfoCollector;
 use DebugBar\DataCollector\RequestDataCollector;
-use ORM;
+use Quantum\Libraries\Database\Database as DB;
 
 /**
  * Debugger class
@@ -38,13 +38,6 @@ class Debugger extends DebugBar
      * @var object
      */
     private $debugbar;
-
-    /**
-     * Queries
-     * 
-     * @var array
-     */
-    private $queries = [];
 
     /**
      * Assets url
@@ -115,7 +108,7 @@ class Debugger extends DebugBar
     /**
      * Tab Queries
      * 
-     * Outputs  the queries in Queries tab
+     * Outputs the query log in Queries tab
      *
      * @return void
      */
@@ -123,9 +116,10 @@ class Debugger extends DebugBar
     {
         $this->debugbar->addCollector(new MessagesCollector('queries'));
 
-        $this->queries = ORM::get_query_log();
-        if ($this->queries) {
-            foreach ($this->queries as $query) {
+        $queryLog = DB::getQueryLog();
+        
+        if (count($queryLog)) {
+            foreach ($queryLog as $query) {
                 $this->debugbar['queries']->info($query);
             }
         }
