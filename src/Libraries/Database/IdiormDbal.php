@@ -44,6 +44,13 @@ class IdiormDbal implements DbalInterface
     private $idColumn;
 
     /**
+     * Foreign keys
+     * 
+     * @var array 
+     */
+    private $foreignKeys = [];
+
+    /**
      * Idiorm object
      *
      * @var object
@@ -443,7 +450,42 @@ class IdiormDbal implements DbalInterface
      */
     public function joinTo(Qt_Model $model)
     {
-        return $this->ormObject->join($model->table, [$this->table . '.' . $this->idColumn, '=', $model->table . '.' . $model->foreignKey]);
+        $resultObject = $this->ormObject->join($model->table,
+                [
+                    $model->table . '.' . $model->foreignKeys[$this->table],
+                    '=',
+                    $this->table . '.' . $this->idColumn
+                ]
+        );
+
+        $this->table = $model->table;
+        $this->idColumn = $model->idColumn;
+        $this->foreignKeys = $model->foreignKeys;
+
+        return $resultObject;
+    }
+
+    /**
+     * Join Through 
+     * 
+     * @param Qt_Model $model
+     * @return object
+     */
+    public function joinThrough(Qt_Model $model)
+    {
+        $resultObject = $this->ormObject->join($model->table,
+                [
+                    $model->table . '.' . $model->idColumn,
+                    '=',
+                    $this->table . '.' . $this->foreignKeys[$model->table]
+                ]
+        );
+
+        $this->table = $model->table;
+        $this->idColumn = $model->idColumn;
+        $this->foreignKeys = $model->foreignKeys;
+
+        return $resultObject;
     }
 
     /**

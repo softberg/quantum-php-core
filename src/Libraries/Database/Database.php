@@ -49,16 +49,16 @@ class Database
      * @var mixed
      */
     private static $activeConnection = null;
-
+    
     /**
-     * Gets ORM Instance
-     *
+     * 
+     * @param string $modelName
      * @param string $table
      * @param string $idColumn
-     * @return object
+     * @return \Quantum\Libraries\Database\dbalClass
      * @throws DatabaseException When table is not defined in user defined model
      */
-    public static function getDbalInstance($model, $table, $idColumn = 'id')
+    public static function getDbalInstance($modelName, $table, $idColumn = 'id')
     {
         $dbalClass = self::getDbalClass();
 
@@ -67,7 +67,7 @@ class Database
         }
 
         if (empty($table)) {
-            throw new DatabaseException(_message(ExceptionMessages::MODEL_WITHOUT_TABLE_DEFINED, $model));
+            throw new DatabaseException(_message(ExceptionMessages::MODEL_WITHOUT_TABLE_DEFINED, $modelName));
         }
 
         return new $dbalClass($table, $idColumn);

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Quantum PHP Framework
  *
@@ -21,6 +22,7 @@ use ORM;
  */
 class IdiormPatch extends ORM
 {
+
     /**
      * @var object
      */
@@ -76,7 +78,7 @@ class IdiormPatch extends ORM
      */
     public function left_join($table, $constraint, $table_alias = null)
     {
-        return $this->ormObject->_add_join_source("LEFT", $table, $constraint, $table_alias);
+        return $this->addJoin("LEFT", $table, $constraint, $table_alias);
     }
 
     /**
@@ -89,6 +91,21 @@ class IdiormPatch extends ORM
      */
     public function right_join($table, $constraint, $table_alias = null)
     {
-        return $this->ormObject->_add_join_source("RIGHT", $table, $constraint, $table_alias);
+        return $this->addJoin("RIGHT", $table, $constraint, $table_alias);
     }
+
+    /**
+     *  Add Join 
+     * 
+     * @param string $operator
+     * @param string $table
+     * @param array $constraint
+     * @param string $table_alias
+     * @return object
+     */
+    public function addJoin($operator, $table, $constraint, $table_alias)
+    {
+        return $this->ormObject->_add_join_source($operator, $table, $constraint, $table_alias);
+    }
+
 }

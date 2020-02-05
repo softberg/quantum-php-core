@@ -34,18 +34,25 @@ abstract class Qt_Model
 {
 
     /**
-     * Id column of table
-     *
-     * @var string
-     */
-    protected $idColumn = 'id';
-
-    /**
      * The database table associated with model
      *
      * @var string
      */
-    protected $table;
+    public $table;
+
+    /**
+     * Id column of table
+     *
+     * @var string
+     */
+    public $idColumn = 'id';
+
+    /**
+     * Foreign keys
+     * 
+     * @var array 
+     */
+    public $foreignKeys = [];
 
     /**
      * Models fillable properties
@@ -96,7 +103,7 @@ abstract class Qt_Model
 
             $this->$key = $value;
         }
-        
+
         return $this;
     }
 
@@ -110,7 +117,7 @@ abstract class Qt_Model
      */
     public function __get($property)
     {
-        return isset($this->orm->ormObject->$property) ? $this->orm->ormObject->$property : NULL;
+        return isset($this->orm->ormObject->$property) ? $this->orm->ormObject->$property : null;
     }
 
     /**
