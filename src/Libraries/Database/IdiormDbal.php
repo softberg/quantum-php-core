@@ -221,11 +221,20 @@ class IdiormDbal implements DbalInterface
                 case '<=':
                     $this->ormObject->where_lte($column, $value);
                     break;
+                case 'IN':
+                    $this->ormObject->where_in($column, $value);
+                    break;
+                case 'NOT IN':
+                    $this->ormObject->where_not_in($column, $value);
+                    break;
                 case 'LIKE':
                     $this->ormObject->where_like($column, $value);
                     break;
                 case 'NOT LIKE':
                     $this->ormObject->where_not_like($column, $value);
+                    break;
+                case '#=#':
+                    $this->whereColumnsEqual($column, $value);
                     break;
             }
         }
@@ -545,6 +554,18 @@ class IdiormDbal implements DbalInterface
     public static function getQueryLog()
     {
         return (self::$ormClass)::get_query_log();
+    }
+
+    /**
+     * Compares column from one table to column to other table
+     * 
+     * @param string $columnOne
+     * @param string $columnTwo
+     * @return object
+     */
+    private function whereColumnsEqual($columnOne, $columnTwo)
+    {
+        return $this->ormObject->where_raw($columnOne . ' = ' . $columnTwo);
     }
 
 }
