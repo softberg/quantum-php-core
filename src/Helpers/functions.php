@@ -347,6 +347,20 @@ if (!function_exists('base_url')) {
 
 }
 
+if (!function_exists('asset')) {
+
+    /**
+     * Asset url
+     *
+     * @return string
+     */
+    function asset($filePath)
+    {
+        return base_url() . '/assets/' . $filePath;
+    }
+
+}
+
 if (!function_exists('get_config')) {
 
     /**
