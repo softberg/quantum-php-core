@@ -24,7 +24,7 @@ use GUMP;
  * @category Libraries
  * @uses \GUMP
  */
-class Validation extends \GUMP {
+class Validation extends GUMP {
 
     /**
      * Get class instance
