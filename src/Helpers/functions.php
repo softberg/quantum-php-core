@@ -13,6 +13,7 @@
  */
 use Quantum\Libraries\Environment\Environment;
 use Quantum\Libraries\Session\SessionManager;
+use Quantum\Libraries\Asset\AssetManager;
 use Quantum\Libraries\Encryption\Cryptor;
 use Quantum\Libraries\Auth\AuthManager;
 use Quantum\Libraries\Cookie\Cookie;
@@ -357,6 +358,39 @@ if (!function_exists('asset')) {
     function asset($filePath)
     {
         return base_url() . '/assets/' . $filePath;
+    }
+
+}
+
+if (!function_exists('assets')) {
+
+    /**
+     * Assets
+     *
+     * @return string
+     */
+    function assets($type)
+    {
+        switch ($type) {
+            case 'css':
+                $cssAssets = AssetManager::publishCSS();
+
+                if (count($cssAssets)) {
+                    foreach ($cssAssets as $cssAsset) {
+                        echo '<link rel="stylesheet" type="text/css" href="' . asset($cssAsset) . '">' . PHP_EOL;
+                    }
+                }
+                break;
+            case 'js':
+                $jsAssets = AssetManager::publishJS();
+
+                if (count($jsAssets)) {
+                    foreach ($jsAssets as $jsAsset) {
+                        echo '<script src="' . asset($jsAsset) . '"></script>' . PHP_EOL;
+                    }
+                }
+                break;
+        }
     }
 
 }
