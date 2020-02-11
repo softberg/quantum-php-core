@@ -199,39 +199,39 @@ class IdiormDbal implements DbalInterface
     {
         foreach ($criterias as $criteria) {
             $column = $criteria[0];
-            $operation = $criteria[1];
+            $operator = $criteria[1];
             $value = $criteria[2];
 
-            switch ($operation) {
+            switch ($operator) {
                 case '=':
-                    $this->ormObject->where_equal($column, $value);
+                    $this->addCriteria($column, $operator, $value, 'where_equal');
                     break;
                 case '!=':
-                    $this->ormObject->where_not_equal($column, $value);
+                    $this->addCriteria($column, $operator, $value, 'where_not_equal');
                     break;
                 case '>':
-                    $this->ormObject->where_gt($column, $value);
+                    $this->addCriteria($column, $operator, $value, 'where_gt');
                     break;
                 case '>=':
-                    $this->ormObject->where_gte($column, $value);
+                    $this->addCriteria($column, $operator, $value, 'where_gte');
                     break;
                 case '<':
-                    $this->ormObject->where_lt($column, $value);
+                    $this->addCriteria($column, $operator, $value, 'where_lt');
                     break;
                 case '<=':
-                    $this->ormObject->where_lte($column, $value);
+                    $this->addCriteria($column, $operator, $value, 'where_lte');
                     break;
                 case 'IN':
-                    $this->ormObject->where_in($column, $value);
+                    $this->addCriteria($column, $operator, $value, 'where_in');
                     break;
                 case 'NOT IN':
-                    $this->ormObject->where_not_in($column, $value);
+                    $this->addCriteria($column, $operator, $value, 'where_not_in');
                     break;
                 case 'LIKE':
-                    $this->ormObject->where_like($column, $value);
+                    $this->addCriteria($column, $operator, $value, 'where_like');
                     break;
                 case 'NOT LIKE':
-                    $this->ormObject->where_not_like($column, $value);
+                    $this->addCriteria($column, $operator, $value, 'where_not_like');
                     break;
                 case '#=#':
                     $this->whereColumnsEqual($column, $value);
@@ -566,6 +566,23 @@ class IdiormDbal implements DbalInterface
     private function whereColumnsEqual($columnOne, $columnTwo)
     {
         return $this->ormObject->where_raw($columnOne . ' = ' . $columnTwo);
+    }
+
+    /**
+     * Add Criteria 
+     * 
+     * @param string $column
+     * @param string $operator
+     * @param mixed $value
+     * @param string $func
+     */
+    private function addCriteria($column, $operator, $value, $func)
+    {
+        if (is_array($value) && key($value) == 'fn') {
+            $this->ormObject->where_raw($column . ' ' . $operator . ' ' . $value['fn']);
+        } else {
+            $this->ormObject->$func($column, $operator, $value);
+        }
     }
 
 }
