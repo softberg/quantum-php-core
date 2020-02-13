@@ -163,7 +163,6 @@ abstract class HttpResponse
         unset(self::$__response[$key]);
     }
 
-
     /**
      * Set status
      *
@@ -270,6 +269,15 @@ abstract class HttpResponse
                 $simpleXML->addChild("$key", htmlspecialchars("$value"));
             }
         }
+    }
+
+    public function redirect($url, $code = null)
+    {
+        if ($code) {
+            self::setStatus($code);
+        }
+
+        self::setHeader('Location', $url);
     }
 
 }

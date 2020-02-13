@@ -24,6 +24,7 @@ use Quantum\Factory\ViewFactory;
 use Quantum\Libraries\Lang\Lang;
 use Quantum\Libraries\Csrf\Csrf;
 use Quantum\Mvc\Qt_Controller;
+use Quantum\Http\Request;
 use Quantum\Http\Response;
 use Quantum\Mvc\Qt_View;
 
@@ -238,11 +239,51 @@ if (!function_exists('redirect')) {
      */
     function redirect($url, $code = null)
     {
-        if ($code)
-            Response::setStatus($code);
-
-        Response::setHeader('Location', $url);
+        Response::redirect($url, $code);
         exit;
+    }
+
+}
+
+if (!function_exists('redirectWith')) {
+
+    /**
+     * Redirect with
+     *
+     * @param string $url
+     * @param array $data
+     * @param integer $code
+     */
+    function redirectWith($url, $data, $code = null)
+    {
+        session()->set('__prev_request', $data);
+        Response::redirect($url, $code);
+        exit;
+    }
+
+}
+
+if (!function_exists('old')) {
+
+    /**
+     * Redirect with
+     *
+     * @param string $key
+     */
+    function old($key)
+    {
+        if (session()->has('__prev_request')) {
+            $prevRequest = session()->get('__prev_request');
+
+            if (array_key_exists($key, $prevRequest)) {
+                $value = $prevRequest[$key];
+                unset($prevRequest[$key]);
+                session()->set('__prev_request', $prevRequest);
+                return $value;
+            }
+        }
+
+        return null;
     }
 
 }
@@ -256,10 +297,7 @@ if (!function_exists('get_referrer')) {
      */
     function get_referrer()
     {
-        if (isset($_SERVER['HTTP_REFERER']) && !empty($_SERVER['HTTP_REFERER'])) {
-            return $_SERVER['HTTP_REFERER'];
-        }
-        return null;
+        return Request::getReferrer();
     }
 
 }
@@ -273,7 +311,7 @@ if (!function_exists('current_url')) {
      */
     function current_url()
     {
-        return (isset($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+        return Request::getCurrentUrl();
     }
 
 }

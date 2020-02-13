@@ -79,8 +79,8 @@ abstract class HttpRequest
         $inputParams = [];
 
         if ($_SERVER['REQUEST_METHOD'] == 'PUT' ||
-            $_SERVER['REQUEST_METHOD'] == 'PATCH' ||
-            $_SERVER['REQUEST_METHOD'] == 'DELETE') {
+                $_SERVER['REQUEST_METHOD'] == 'PATCH' ||
+                $_SERVER['REQUEST_METHOD'] == 'DELETE') {
 
             $input = file_get_contents('php://input');
 
@@ -345,8 +345,23 @@ abstract class HttpRequest
     {
         $segments = self::getAllSegments();
 
-        if (isset($segments[$number]))
+        if (isset($segments[$number])) {
             return $segments[$number];
+        }
+
+        return null;
+    }
+
+    public function getCurrentUrl()
+    {
+        return (isset($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+    }
+
+    public function getReferrer()
+    {
+        if (isset($_SERVER['HTTP_REFERER']) && !empty($_SERVER['HTTP_REFERER'])) {
+            return $_SERVER['HTTP_REFERER'];
+        }
 
         return null;
     }
