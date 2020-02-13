@@ -581,7 +581,7 @@ class IdiormDbal implements DbalInterface
         if (is_array($value) && key($value) == 'fn') {
             $this->ormObject->where_raw($column . ' ' . $operator . ' ' . $value['fn']);
         } else {
-            $this->ormObject->$func($column, $operator, $value);
+            $this->ormObject->$func($column, $value);
         }
     }
 
