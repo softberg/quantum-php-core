@@ -15,6 +15,7 @@
 namespace Quantum\Libraries\Auth;
 
 use Quantum\Exceptions\ExceptionMessages;
+use Quantum\Exceptions\AuthException;
 use Quantum\Libraries\JWToken\JWToken;
 use Quantum\Libraries\Hasher\Hasher;
 use Quantum\Libraries\Config\Config;
@@ -28,6 +29,7 @@ use Quantum\Loader\Loader;
  */
 class AuthManager
 {
+
     /**
      * @var AuthenticableInterface
      */
@@ -44,24 +46,20 @@ class AuthManager
     private $authType = null;
 
     /**
-     * GetInstance
-     *
+     * Get
+     * 
      * @return WebAuth|ApiAuth|AuthenticableInterface
-     * @throws \Exception
+     * @throws AuthException
      */
-    public static function getInstance()
+    public function get()
     {
-        if (self::$authInstance === null) {
-            new self();
-        }
-
         return self::$authInstance;
     }
 
     /**
      * AuthManager constructor.
      *
-     * @throws \Exception
+     * @throws AuthException
      */
     private function __construct()
     {
@@ -78,7 +76,7 @@ class AuthManager
                     break;
             }
         } else {
-            throw new \Exception(ExceptionMessages::MISCONFIGURED_AUTH_CONFIG);
+            throw new AuthException(ExceptionMessages::MISCONFIGURED_AUTH_CONFIG);
         }
     }
 
@@ -90,11 +88,11 @@ class AuthManager
     private function authService()
     {
         if (!Config::has('auth')) {
-            $loaderSetup = (object)[
-                'module' => current_module(),
-                'env' => 'config',
-                'fileName' => 'auth',
-                'exceptionMessage' => ExceptionMessages::CONFIG_FILE_NOT_FOUND
+            $loaderSetup = (object) [
+                        'module' => current_module(),
+                        'env' => 'config',
+                        'fileName' => 'auth',
+                        'exceptionMessage' => ExceptionMessages::CONFIG_FILE_NOT_FOUND
             ];
 
             $loader = new Loader($loaderSetup);
@@ -104,7 +102,7 @@ class AuthManager
 
         $this->authType = get_config('auth.type');
 
-        $this->authService = (new ServiceFactory)->get(get_config('auth.service'));
+        $this->authService = (new ServiceFactory)->create(get_config('auth.service'));
     }
 
 }

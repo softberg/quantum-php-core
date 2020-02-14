@@ -749,6 +749,12 @@ if (!function_exists('get_caller_function')) {
 
 if (!function_exists('valid_base64')) {
 
+    /**
+     * Validates base64 string
+     * 
+     * @param string $string
+     * @return boolean
+     */
     function valid_base64($string)
     {
         $decoded = base64_decode($string, true);
@@ -772,9 +778,14 @@ if (!function_exists('valid_base64')) {
 
 if (!function_exists('auth')) {
 
+    /**
+     * Gets the Auth instance
+     * 
+     * @return WebAuth|ApiAuth|AuthenticableInterface
+     */
     function auth()
     {
-        return AuthManager::getInstance();
+        return (new AuthManager())->get();
     }
 
 }
