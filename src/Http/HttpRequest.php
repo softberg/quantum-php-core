@@ -66,7 +66,7 @@ abstract class HttpRequest
                 self::$__request, $getParams, $postParams, $inputParams
         );
 
-        self::$__headers = self::getRequstHeaders();
+        self::$__headers = getallheaders();
     }
 
     /**
@@ -100,25 +100,6 @@ abstract class HttpRequest
         }
 
         return $inputParams;
-    }
-
-    /**
-     * Get All Headers
-     * 
-     * @return array
-     */
-    private static function getRequstHeaders()
-    {
-        $headers = [];
-
-        if (is_array($_SERVER)) {
-            foreach ($_SERVER as $name => $value) {
-                if (substr($name, 0, 5) == 'HTTP_') {
-                    $headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))))] = $value;
-                }
-            }
-        }
-        return $headers;
     }
 
     /**
