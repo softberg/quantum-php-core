@@ -85,7 +85,7 @@ class AuthManager
      *
      * @throws \Exception
      */
-    private function authService()
+    public function authService()
     {
         if (!Config::has('auth')) {
             $loaderSetup = (object) [
