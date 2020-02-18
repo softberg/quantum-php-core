@@ -457,7 +457,7 @@ class IdiormDbal implements DbalInterface
      * @param Qt_Model $model
      * @return object
      */
-    public function joinTo(Qt_Model $model)
+    public function joinTo(Qt_Model $model, $switch = true)
     {
         $resultObject = $this->ormObject->join($model->table,
                 [
@@ -467,9 +467,11 @@ class IdiormDbal implements DbalInterface
                 ]
         );
 
-        $this->table = $model->table;
-        $this->idColumn = $model->idColumn;
-        $this->foreignKeys = $model->foreignKeys;
+        if ($switch) {
+            $this->table = $model->table;
+            $this->idColumn = $model->idColumn;
+            $this->foreignKeys = $model->foreignKeys;
+        }
 
         return $resultObject;
     }
@@ -480,7 +482,7 @@ class IdiormDbal implements DbalInterface
      * @param Qt_Model $model
      * @return object
      */
-    public function joinThrough(Qt_Model $model)
+    public function joinThrough(Qt_Model $model, $switch = true)
     {
         $resultObject = $this->ormObject->join($model->table,
                 [
@@ -490,9 +492,11 @@ class IdiormDbal implements DbalInterface
                 ]
         );
 
-        $this->table = $model->table;
-        $this->idColumn = $model->idColumn;
-        $this->foreignKeys = $model->foreignKeys;
+        if ($switch) {
+            $this->table = $model->table;
+            $this->idColumn = $model->idColumn;
+            $this->foreignKeys = $model->foreignKeys;
+        }
 
         return $resultObject;
     }
