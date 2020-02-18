@@ -12,7 +12,7 @@
  * @since 1.2.0
  */
 
-namespace Quantum\Libraries\Debugger;
+namespace Quantum\Debugger;
 
 use DebugBar\DebugBar;
 use DebugBar\DataCollector\MemoryCollector;
@@ -24,9 +24,7 @@ use Quantum\Libraries\Database\Database as DB;
 /**
  * Debugger class
  *
- * @package Quantum
- * @subpackage Libraries.Debugger
- * @category Libraries
+ * @package Quantum\Debugger
  * @uses DebugBar
  */
 class Debugger extends DebugBar

@@ -12,13 +12,13 @@
  * @since 1.0.0
  */
 
-namespace Quantum\Libraries\Environment;
+namespace Quantum\Environment;
 
 use Dotenv\Dotenv;
 
 /**
  * Class Environment
- * @package Quantum\Libraries\Environment
+ * @package Quantum\Environment
  * @uses Dotenv
  */
 class Environment

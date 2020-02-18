@@ -15,11 +15,11 @@
 namespace Quantum\Mvc;
 
 use Quantum\Exceptions\ExceptionMessages;
-use Quantum\Libraries\Debugger\Debugger;
 use Quantum\Exceptions\ViewException;
 use Quantum\Libraries\Config\Config;
 use Quantum\Factory\ViewFactory;
 use Quantum\Hooks\HookManager;
+use Quantum\Debugger\Debugger;
 use Quantum\Helpers\Helper;
 
 /**
