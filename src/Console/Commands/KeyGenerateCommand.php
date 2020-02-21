@@ -28,7 +28,7 @@ class KeyGenerateCommand extends Qt_Command
      *
      * @var string
      */
-    protected $name = 'core:key-generate';
+    protected $name = 'core:key';
 
     /**
      * Command description
