@@ -38,9 +38,10 @@ class BaseAuth
      * Sign Up
      *
      * @param array $userData
+     * @param array|null $customData
      * @return mixed
      */
-    public function signup(Mailer $mailer, $userData)
+     public function signup(Mailer $mailer, $userData, $customData = null)
     {
         $activationToken = $this->generateToken();
 
@@ -53,6 +54,10 @@ class BaseAuth
             'user' => $user,
             'activationToken' => $activationToken
         ];
+
+        if($customData) {
+            $body = array_merge($body, $customData);
+        }
 
         $this->sendMail($mailer, $user, $body);
 
