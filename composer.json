@@ -1,9 +1,9 @@
 {
     "name": "quantum/framework",
-    "description": "The Quantum Framework",
-    "keywords": ["framework", "quantum"],
+    "description": "The Quantum PHP Framework",
+    "keywords": ["framework", "php", "quantum"],
     "license": "MIT",
-    "version": "1.9.9",
+    "version": "1.9.10",
     "homepage": "http://quantum.softberg.org",
     "support": {
         "issues": "https://github.com/softberg/quantum-core/issues",
