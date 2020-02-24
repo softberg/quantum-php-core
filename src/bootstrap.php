@@ -14,7 +14,7 @@
 
 namespace Quantum;
 
-use Quantum\Libraries\Environment\Environment;
+use Quantum\Environment\Environment;
 use Quantum\Libraries\Config\Config;
 use Quantum\Routes\ModuleLoader;
 use Quantum\Mvc\MvcManager;

@@ -9,24 +9,17 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 1.0.0
+ * @since 2.0.0
  */
 
 namespace Quantum\Http;
 
-use Quantum\Exceptions\ExceptionMessages;
-use Quantum\Mvc\Qt_Controller;
-
 /**
- * Response Class
- * 
- * Sends response from server
- * 
- * @package Quantum
- * @subpackage Http
- * @category Http
+ * Class Response
+ * @package Quantum\Http
  */
-class Response {
+class Response
+{
 
     /**
      * __call magic
@@ -35,7 +28,8 @@ class Response {
      * @param array $arguments
      * @return mixed
      */
-    public function __call($function, $arguments) {
+    public function __call($function, $arguments)
+    {
         return HttpResponse::$function(...$arguments);
     }
 
@@ -46,7 +40,8 @@ class Response {
      * @param array $arguments
      * @return mixed
      */
-    public static function __callStatic($function, $arguments) {
+    public static function __callStatic($function, $arguments)
+    {
         return HttpResponse::$function(...$arguments);
     }
 
