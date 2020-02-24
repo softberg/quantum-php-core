@@ -76,7 +76,7 @@ class Lang
      * @param string $dirName
      * @throws \Exception
      */
-    public function loadDir($dirName)
+    public static function loadDir($dirName)
     {
         $dirPath = modules_dir() . DS . current_module() . DS. 'Resources' . DS . 'lang' . DS . $dirName;
 
