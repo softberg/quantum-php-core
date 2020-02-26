@@ -38,6 +38,7 @@ use Quantum\Http\Response;
  */
 class MvcManager
 {
+
     /**
      * @var object
      */
@@ -88,9 +89,7 @@ class MvcManager
             if (method_exists($this->controller, '__after')) {
                 call_user_func_array(array($this->controller, '__after'), $this->getArgs($routeArgs, '__after', $request, $response));
             }
-
         }
-
     }
 
     /**
@@ -150,30 +149,35 @@ class MvcManager
         $reflaction = new \ReflectionMethod($this->controller, $action);
         $params = $reflaction->getParameters();
 
-        foreach ($params as $param) {
-            $paramType = $param->getType();
+        if (count($params)) {
+            foreach ($params as $param) {
+                $paramType = $param->getType();
 
-            if ($paramType) {
-                switch ($paramType) {
-                    case 'Quantum\Http\Request':
-                        array_push($args, $request);
-                        break;
-                    case 'Quantum\Http\Response':
-                        array_push($args, $response);
-                        break;
-                    case 'Quantum\Factory\ServiceFactory':
-                        array_push($args, new ServiceFactory());
-                        break;
-                    case 'Quantum\Factory\ModelFactory':
-                        array_push($args, new ModelFactory());
-                        break;
-                    case 'Quantum\Factory\ViewFactory':
-                        array_push($args, new ViewFactory());
-                        break;
+                if ($paramType) {
+                    switch ($paramType) {
+                        case 'Quantum\Http\Request':
+                            array_push($args, $request);
+                            break;
+                        case 'Quantum\Http\Response':
+                            array_push($args, $response);
+                            break;
+                        case 'Quantum\Factory\ServiceFactory':
+                            array_push($args, new ServiceFactory());
+                            break;
+                        case 'Quantum\Factory\ModelFactory':
+                            array_push($args, new ModelFactory());
+                            break;
+                        case 'Quantum\Factory\ViewFactory':
+                            array_push($args, new ViewFactory());
+                            break;
+                        default :
+                            array_push($args, current($routeArgs));
+                            next($routeArgs);
+                    }
+                } else {
+                    array_push($args, current($routeArgs));
+                    next($routeArgs);
                 }
-            } else {
-                array_push($args, current($routeArgs));
-                next($routeArgs);
             }
         }
 
