@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Quantum PHP Framework
  * 
@@ -9,7 +8,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 1.0.0
+ * @since 2.0.0
  */
 
 namespace Quantum\Http;
@@ -17,15 +16,11 @@ namespace Quantum\Http;
 use Quantum\Http\HttpRequest;
 
 /**
- * Request Class
- * 
- * Receive requests 
- * 
- * @package Quantum
- * @subpackage Http
- * @category Http
+ * Class Request
+ * @package Quantum\Http
  */
-class Request {
+class Request
+{
 
     /**
      * __call magic
@@ -34,7 +29,8 @@ class Request {
      * @param array $arguments 
      * @return mixed
      */
-    public function __call($function, $arguments) {
+    public function __call($function, $arguments)
+    {
         return HttpRequest::$function(...$arguments);
     }
 
@@ -45,7 +41,8 @@ class Request {
      * @param array $arguments 
      * @return mixed
      */
-    public static function __callStatic($function, $arguments) {
+    public static function __callStatic($function, $arguments)
+    {
         return HttpRequest::$function(...$arguments);
     }
 

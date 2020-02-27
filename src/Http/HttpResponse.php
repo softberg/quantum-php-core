@@ -212,7 +212,9 @@ abstract class HttpResponse
      */
     public static function delete($key)
     {
-        unset(self::$__response[$key]);
+        if (self::has($key)) {
+            unset(self::$__response[$key]);
+        }
     }
 
     /**
@@ -226,7 +228,7 @@ abstract class HttpResponse
     }
 
     /**
-     * Checks the response header by given key
+     * Checks the response header existence by given key
      * @param string $key
      * @return bool
      */
@@ -255,7 +257,7 @@ abstract class HttpResponse
     }
 
     /**
-     * Deletes the Header by given key
+     * Deletes the header by given key
      * @param string $key
      */
     public static function deleteHeader($key)

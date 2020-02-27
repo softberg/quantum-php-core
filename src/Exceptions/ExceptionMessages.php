@@ -265,7 +265,7 @@ class ExceptionMessages
      * Incorrect auth credentials  message
      */
     const INACTIVE_ACCOUNT = 'The account is not activated';
-    
+
     /**
      * Incorrect auth credentials  message
      */
@@ -285,5 +285,10 @@ class ExceptionMessages
      * Non existing value message
      */
     const NON_EXISTING_RECORD = 'There is no record matched to {%1}';
+
+    /**
+     * Upload file not found message
+     */
+    const UPLOADED_FILE_NOT_FOUND = 'Cannot find uploaded file identified by key `{$1}`';
 
 }
