@@ -11,13 +11,13 @@
  * @link http://quantum.softberg.org/
  * @since 1.0.0
  */
-use Quantum\Libraries\Environment\Environment;
 use Quantum\Libraries\Session\SessionManager;
 use Quantum\Libraries\Asset\AssetManager;
 use Quantum\Libraries\Encryption\Cryptor;
 use Quantum\Libraries\Auth\AuthManager;
 use Quantum\Libraries\Cookie\Cookie;
 use Quantum\Libraries\Dumper\Dumper;
+use Quantum\Environment\Environment;
 use Quantum\Libraries\Config\Config;
 use Quantum\Routes\RouteController;
 use Quantum\Factory\ViewFactory;
