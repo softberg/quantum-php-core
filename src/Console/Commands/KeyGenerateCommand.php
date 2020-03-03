@@ -15,7 +15,7 @@
 namespace Quantum\Console\Commands;
 
 use Quantum\Console\Qt_Command;
-use Quantum\Libraries\Environment\Environment;
+use Quantum\Environment\Environment;
 
 /**
  * Class KeyGenerateCommand

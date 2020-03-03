@@ -200,7 +200,7 @@ class IdiormDbal implements DbalInterface
         foreach ($criterias as $criteria) {
             $column = $criteria[0];
             $operator = $criteria[1];
-            $value = $criteria[2];
+            $value = $criteria[2] ?? null;
 
             switch ($operator) {
                 case '=':
@@ -232,6 +232,12 @@ class IdiormDbal implements DbalInterface
                     break;
                 case 'NOT LIKE':
                     $this->addCriteria($column, $operator, $value, 'where_not_like');
+                    break;
+                case 'IS NULL':
+                    $this->addCriteria($column, $operator, $value, 'where_null');
+                    break;
+                case 'IS NOT NULL':
+                    $this->addCriteria($column, $operator, $value, 'where_not_null');
                     break;
                 case '#=#':
                     $this->whereColumnsEqual($column, $value);
