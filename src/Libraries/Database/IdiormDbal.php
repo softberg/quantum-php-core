@@ -198,6 +198,12 @@ class IdiormDbal implements DbalInterface
     public function criterias(...$criterias)
     {
         foreach ($criterias as $criteria) {
+            
+            if (is_array($criteria[0])) {
+                $this->scoppedORCriteria($criteria);
+                continue;
+            }
+            
             $column = $criteria[0];
             $operator = $criteria[1];
             $value = $criteria[2] ?? null;
@@ -576,6 +582,35 @@ class IdiormDbal implements DbalInterface
     private function whereColumnsEqual($columnOne, $columnTwo)
     {
         return $this->ormObject->where_raw($columnOne . ' = ' . $columnTwo);
+    }
+
+    /**
+     * Adds one or more OR criteria in brackets 
+     * 
+     * @param array $criteria
+     */
+    private function scoppedORCriteria($criteria)
+    {
+        $clause = '';
+        $params = [];
+
+        foreach ($criteria as $index => $orCriteria) {
+            if ($index == 0) {
+                $clause .= '(';
+            }
+
+            $clause .= '`' . $orCriteria[0] . '` ' . $orCriteria[1] . ' ?';
+
+            if ($index == count($criteria) - 1) {
+                $clause .= ')';
+            } else {
+                $clause .= ' OR ';
+            }
+
+            array_push($params, $orCriteria[2]);
+        }
+
+        $this->ormObject->where_raw($clause, $params);
     }
 
     /**
