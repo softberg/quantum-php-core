@@ -198,53 +198,66 @@ class IdiormDbal implements DbalInterface
     public function criterias(...$criterias)
     {
         foreach ($criterias as $criteria) {
-            $column = $criteria[0];
-            $operator = $criteria[1];
+
+            if (is_array($criteria[0])) {
+                $this->scoppedORCriteria($criteria);
+                continue;
+            }
+
             $value = $criteria[2] ?? null;
 
-            switch ($operator) {
-                case '=':
-                    $this->addCriteria($column, $operator, $value, 'where_equal');
-                    break;
-                case '!=':
-                    $this->addCriteria($column, $operator, $value, 'where_not_equal');
-                    break;
-                case '>':
-                    $this->addCriteria($column, $operator, $value, 'where_gt');
-                    break;
-                case '>=':
-                    $this->addCriteria($column, $operator, $value, 'where_gte');
-                    break;
-                case '<':
-                    $this->addCriteria($column, $operator, $value, 'where_lt');
-                    break;
-                case '<=':
-                    $this->addCriteria($column, $operator, $value, 'where_lte');
-                    break;
-                case 'IN':
-                    $this->addCriteria($column, $operator, $value, 'where_in');
-                    break;
-                case 'NOT IN':
-                    $this->addCriteria($column, $operator, $value, 'where_not_in');
-                    break;
-                case 'LIKE':
-                    $this->addCriteria($column, $operator, $value, 'where_like');
-                    break;
-                case 'NOT LIKE':
-                    $this->addCriteria($column, $operator, $value, 'where_not_like');
-                    break;
-                case 'IS NULL':
-                    $this->addCriteria($column, $operator, $value, 'where_null');
-                    break;
-                case 'IS NOT NULL':
-                    $this->addCriteria($column, $operator, $value, 'where_not_null');
-                    break;
-                case '#=#':
-                    $this->whereColumnsEqual($column, $value);
-                    break;
-            }
+            $this->criteria($criteria[0], $criteria[1], $value);
         }
 
+        return $this->ormObject;
+    }
+    
+    /**
+     * Criteria
+     * 
+     * @param string $column
+     * @param string $operator
+     * @param mixed|null $value
+     * @return object
+     */
+    public function criteria($column, $operator, $value = null)
+    {
+        switch ($operator) {
+            case '=':
+                $this->addCriteria($column, $operator, $value, 'where_equal');
+                break;
+            case '!=':
+                $this->addCriteria($column, $operator, $value, 'where_not_equal');
+                break;
+            case '>':
+                $this->addCriteria($column, $operator, $value, 'where_gt');
+                break;
+            case '>=':
+                $this->addCriteria($column, $operator, $value, 'where_gte');
+                break;
+            case '<':
+                $this->addCriteria($column, $operator, $value, 'where_lt');
+                break;
+            case '<=':
+                $this->addCriteria($column, $operator, $value, 'where_lte');
+                break;
+            case 'IN':
+                $this->addCriteria($column, $operator, $value, 'where_in');
+                break;
+            case 'NOT IN':
+                $this->addCriteria($column, $operator, $value, 'where_not_in');
+                break;
+            case 'LIKE':
+                $this->addCriteria($column, $operator, $value, 'where_like');
+                break;
+            case 'NOT LIKE':
+                $this->addCriteria($column, $operator, $value, 'where_not_like');
+                break;
+            case '#=#':
+                $this->whereColumnsEqual($column, $value);
+                break;
+        }
+        
         return $this->ormObject;
     }
 
@@ -576,6 +589,35 @@ class IdiormDbal implements DbalInterface
     private function whereColumnsEqual($columnOne, $columnTwo)
     {
         return $this->ormObject->where_raw($columnOne . ' = ' . $columnTwo);
+    }
+
+    /**
+     * Adds one or more OR criteria in brackets 
+     * 
+     * @param array $criteria
+     */
+    private function scoppedORCriteria($criteria)
+    {
+        $clause = '';
+        $params = [];
+
+        foreach ($criteria as $index => $orCriteria) {
+            if ($index == 0) {
+                $clause .= '(';
+            }
+
+            $clause .= '`' . $orCriteria[0] . '` ' . $orCriteria[1] . ' ?';
+
+            if ($index == count($criteria) - 1) {
+                $clause .= ')';
+            } else {
+                $clause .= ' OR ';
+            }
+
+            array_push($params, $orCriteria[2]);
+        }
+
+        $this->ormObject->where_raw($clause, $params);
     }
 
     /**
