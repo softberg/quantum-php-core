@@ -198,59 +198,66 @@ class IdiormDbal implements DbalInterface
     public function criterias(...$criterias)
     {
         foreach ($criterias as $criteria) {
-            
+
             if (is_array($criteria[0])) {
                 $this->scoppedORCriteria($criteria);
                 continue;
             }
-            
-            $column = $criteria[0];
-            $operator = $criteria[1];
+
             $value = $criteria[2] ?? null;
 
-            switch ($operator) {
-                case '=':
-                    $this->addCriteria($column, $operator, $value, 'where_equal');
-                    break;
-                case '!=':
-                    $this->addCriteria($column, $operator, $value, 'where_not_equal');
-                    break;
-                case '>':
-                    $this->addCriteria($column, $operator, $value, 'where_gt');
-                    break;
-                case '>=':
-                    $this->addCriteria($column, $operator, $value, 'where_gte');
-                    break;
-                case '<':
-                    $this->addCriteria($column, $operator, $value, 'where_lt');
-                    break;
-                case '<=':
-                    $this->addCriteria($column, $operator, $value, 'where_lte');
-                    break;
-                case 'IN':
-                    $this->addCriteria($column, $operator, $value, 'where_in');
-                    break;
-                case 'NOT IN':
-                    $this->addCriteria($column, $operator, $value, 'where_not_in');
-                    break;
-                case 'LIKE':
-                    $this->addCriteria($column, $operator, $value, 'where_like');
-                    break;
-                case 'NOT LIKE':
-                    $this->addCriteria($column, $operator, $value, 'where_not_like');
-                    break;
-                case 'IS NULL':
-                    $this->addCriteria($column, $operator, $value, 'where_null');
-                    break;
-                case 'IS NOT NULL':
-                    $this->addCriteria($column, $operator, $value, 'where_not_null');
-                    break;
-                case '#=#':
-                    $this->whereColumnsEqual($column, $value);
-                    break;
-            }
+            $this->criteria($criteria[0], $criteria[1], $value);
         }
 
+        return $this->ormObject;
+    }
+    
+    /**
+     * Criteria
+     * 
+     * @param string $column
+     * @param string $operator
+     * @param mixed|null $value
+     * @return object
+     */
+    public function criteria($column, $operator, $value = null)
+    {
+        switch ($operator) {
+            case '=':
+                $this->addCriteria($column, $operator, $value, 'where_equal');
+                break;
+            case '!=':
+                $this->addCriteria($column, $operator, $value, 'where_not_equal');
+                break;
+            case '>':
+                $this->addCriteria($column, $operator, $value, 'where_gt');
+                break;
+            case '>=':
+                $this->addCriteria($column, $operator, $value, 'where_gte');
+                break;
+            case '<':
+                $this->addCriteria($column, $operator, $value, 'where_lt');
+                break;
+            case '<=':
+                $this->addCriteria($column, $operator, $value, 'where_lte');
+                break;
+            case 'IN':
+                $this->addCriteria($column, $operator, $value, 'where_in');
+                break;
+            case 'NOT IN':
+                $this->addCriteria($column, $operator, $value, 'where_not_in');
+                break;
+            case 'LIKE':
+                $this->addCriteria($column, $operator, $value, 'where_like');
+                break;
+            case 'NOT LIKE':
+                $this->addCriteria($column, $operator, $value, 'where_not_like');
+                break;
+            case '#=#':
+                $this->whereColumnsEqual($column, $value);
+                break;
+        }
+        
         return $this->ormObject;
     }
 
