@@ -16,7 +16,6 @@ use Quantum\Libraries\Asset\AssetManager;
 use Quantum\Libraries\Encryption\Cryptor;
 use Quantum\Libraries\Auth\AuthManager;
 use Quantum\Libraries\Cookie\Cookie;
-use Quantum\Libraries\Dumper\Dumper;
 use Quantum\Environment\Environment;
 use Quantum\Libraries\Config\Config;
 use Quantum\Routes\RouteController;
@@ -24,8 +23,9 @@ use Quantum\Factory\ViewFactory;
 use Quantum\Libraries\Lang\Lang;
 use Quantum\Libraries\Csrf\Csrf;
 use Quantum\Mvc\Qt_Controller;
-use Quantum\Http\Request;
+use Quantum\Dumper\Dumper;
 use Quantum\Http\Response;
+use Quantum\Http\Request;
 use Quantum\Mvc\Qt_View;
 
 if (!function_exists('qt_instance')) {

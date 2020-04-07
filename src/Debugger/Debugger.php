@@ -93,13 +93,13 @@ class Debugger extends DebugBar
      */
     private function tabMessages()
     {
-        $outputData = session()->get('__debugOutput');
+        $outputData = session()->get('_qt_debug_output');
 
         if ($outputData) {
             foreach ($outputData as $data) {
                 $this->debugbar['messages']->debug($data);
             }
-            session()->delete('__debugOutput');
+            session()->delete('_qt_debug_output');
         }
     }
 
@@ -115,8 +115,8 @@ class Debugger extends DebugBar
         $this->debugbar->addCollector(new MessagesCollector('queries'));
 
         $queryLog = DB::getQueryLog();
-        
-        if (count($queryLog)) {
+
+        if ($queryLog) {
             foreach ($queryLog as $query) {
                 $this->debugbar['queries']->info($query);
             }
@@ -164,13 +164,13 @@ class Debugger extends DebugBar
     {
         $this->debugbar->addCollector(new MessagesCollector('mail'));
 
-        $mailLog = session()->get('__mailLog');
+        $mailLog = session()->get('_qt_mailer_log');
         if ($mailLog) {
             $logs = explode('&', $mailLog);
             foreach ($logs as $log) {
                 $this->debugbar['mail']->info($log);
             }
-            session()->delete('__mailLog');
+            session()->delete('_qt_mailer_log');
         }
     }
 
