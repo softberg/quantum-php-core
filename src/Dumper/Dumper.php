@@ -12,7 +12,7 @@
  * @since 1.0.0
  */
 
-namespace Quantum\Libraries\Dumper;
+namespace Quantum\Dumper;
 
 use Symfony\Component\VarDumper\Cloner\VarCloner;
 use Symfony\Component\VarDumper\Dumper\HtmlDumper;
@@ -49,9 +49,9 @@ class Dumper
     public function dump($var, $die)
     {
         if (get_config('debug') && !$die) {
-            $debugOutput = session()->get('__debugOutput') ?? [];
+            $debugOutput = session()->get('_qt_debug_output') ?? [];
             array_push($debugOutput, $var);
-            session()->set('__debugOutput', $debugOutput);
+            session()->set('_qt_debug_output', $debugOutput);
         } else {
             $cloner = new VarCloner();
             $dumper = PHP_SAPI === 'cli' ? new CliDumper() : new HtmlDumper();
