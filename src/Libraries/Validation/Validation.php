@@ -45,7 +45,7 @@ class Validation extends GUMP {
      * @param array $validators
      * @return mixed
      */
-    public static function is_valid(array $data, array $validators) {
+    public static function is_valid(array $data, array $validators, array $fields_error_messages = []) {
         $gump = self::get_instance();
 
         $gump->validation_rules($validators);
