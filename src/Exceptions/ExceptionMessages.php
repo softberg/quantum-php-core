@@ -272,7 +272,7 @@ class ExceptionMessages
     const INCORRECT_AUTH_CREDENTIALS = 'Incorrect credentials';
 
     /**
-     * Unauthhorized request  message
+     * Unauthorized request  message
      */
     const UNAUTHORIZED_REQUEST = 'Unauthorized request';
 
@@ -285,5 +285,10 @@ class ExceptionMessages
      * Non existing value message
      */
     const NON_EXISTING_RECORD = 'There is no record matched to {%1}';
+    
+    /**
+     * Non equal values message
+     */
+    const NON_EQUAL_VALUES = 'Values are not equal';
 
 }
