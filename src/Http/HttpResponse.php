@@ -234,16 +234,22 @@ abstract class HttpResponse
      * XML output
      *
      * Outputs XML response
-     *
+     * 
      * @param array $arr
+     * @param string $root
      */
-    public static function xml(array $arr)
+    public static function xml(array $arr, string $root = '<data></data>')
     {
-        $simpleXML = new \SimpleXMLElement('<?xml version="1.0"?><data></data>');
+        self::setContentType('application/xml');
+
+        $simpleXML = new \SimpleXMLElement('<?xml version="1.0"?>' . $root);
         self::arrayToXML($arr, $simpleXML);
 
-        self::setContentType('application/xml');
-        echo $simpleXML->asXML();
+        $dom = new \DOMDocument();
+        $dom->loadXML($simpleXML->asXML());
+        $dom->formatOutput = true;
+        echo $dom->saveXML();
+
         exit;
     }
 
@@ -262,11 +268,32 @@ abstract class HttpResponse
             if (is_numeric($key)) {
                 $key = 'item' . $key;
             }
+
+            $tag = $key;
+            $attributes = null;
+
+            if (strpos($key, '@') !== false) {
+                list($tag, $attributes) = explode('@', $key);
+                $attributes = json_decode($attributes);
+            }
+
             if (is_array($value)) {
-                $subnode = $simpleXML->addChild($key);
-                self::arrayToXML($value, $subnode);
+                $child = $simpleXML->addChild($tag);
+                if ($attributes) {
+                    foreach ($attributes as $attrKey => $attrVal) {
+                        $child->addAttribute($attrKey, $attrVal);
+                    }
+                }
+
+                self::arrayToXML($value, $child);
             } else {
-                $simpleXML->addChild("$key", htmlspecialchars("$value"));
+                $child = $simpleXML->addChild($tag, htmlspecialchars($value));
+
+                if ($attributes) {
+                    foreach ($attributes as $attrKey => $attrVal) {
+                        $child->addAttribute($attrKey, $attrVal);
+                    }
+                }
             }
         }
     }
