@@ -11,14 +11,14 @@ namespace Quantum\Libraries\JWToken {
 
 namespace Quantum\Test\Unit {
 
-    use Mockery;
-    use PHPUnit\Framework\TestCase;
-    use Quantum\Http\Request;
-    use Quantum\Libraries\Auth\ApiAuth;
-    use Quantum\Libraries\Hasher\Hasher;
+    use Quantum\Exceptions\ExceptionMessages;
     use Quantum\Libraries\JWToken\JWToken;
     use Quantum\Exceptions\AuthException;
-    use Quantum\Exceptions\ExceptionMessages;
+    use Quantum\Libraries\Hasher\Hasher;
+    use Quantum\Libraries\Auth\ApiAuth;
+    use PHPUnit\Framework\TestCase;
+    use Quantum\Loader\Loader;
+    use Mockery;
 
     class ApiAuthTest extends TestCase
     {
@@ -69,6 +69,10 @@ namespace Quantum\Test\Unit {
 
         public function setUp(): void
         {
+            $loader = new Loader();
+            
+            $loader->loadDir(dirname(__DIR__, 4) . DS . 'src' . DS . 'Helpers' . DS . 'functions');
+            
             $this->authService = Mockery::mock('Quantum\Libraries\Auth\AuthServiceInterface');
 
             $this->authService->shouldReceive('getDefinedKeys')->andReturn($this->keyFields);
@@ -119,11 +123,11 @@ namespace Quantum\Test\Unit {
 
             $this->mailer = Mockery::mock('Quantum\Libraries\Mailer\Mailer');
 
-            $this->mailer->shouldReceive('createFrom')->andReturn($this->mailer);
+            $this->mailer->shouldReceive('setFrom')->andReturn($this->mailer);
 
-            $this->mailer->shouldReceive('createAddresses')->andReturn($this->mailer);
+            $this->mailer->shouldReceive('setAddress')->andReturn($this->mailer);
 
-            $this->mailer->shouldReceive('createBody')->andReturn($this->mailer);
+            $this->mailer->shouldReceive('setBody')->andReturn($this->mailer);
 
             $this->mailer->shouldReceive('send')->andReturn(true);
 
@@ -157,7 +161,7 @@ namespace Quantum\Test\Unit {
             $this->assertInstanceOf('Quantum\Libraries\Auth\ApiAuth', $this->apiAuth);
         }
 
-        public function testSigninIncorrectCredetials()
+        public function testApiSigninIncorrectCredetials()
         {
             $this->expectException(AuthException::class);
 
@@ -166,7 +170,7 @@ namespace Quantum\Test\Unit {
             $this->apiAuth->signin('admin@qt.com', '111111');
         }
 
-        public function testSigninCorrectCredentials()
+        public function testApiSigninCorrectCredentials()
         {
             $this->assertIsArray($this->apiAuth->signin('admin@qt.com', 'qwerty'));
 
@@ -175,13 +179,9 @@ namespace Quantum\Test\Unit {
             $this->assertArrayHasKey('refresh_token', $this->apiAuth->signin('admin@qt.com', 'qwerty'));
         }
 
-        public function testSignOut()
+        public function testApiSignOut()
         {
             $tokens = $this->apiAuth->signin('admin@qt.com', 'qwerty');
-
-            Request::setHeader('AUTHORIZATION', 'Bearer ' . $tokens['access_token']);
-
-            Request::setHeader('refresh_token', $tokens['refresh_token']);
 
             $this->assertTrue($this->apiAuth->check());
 
@@ -190,39 +190,33 @@ namespace Quantum\Test\Unit {
             $this->assertFalse($this->apiAuth->check());
         }
 
-        public function testUser()
+        public function testApiUser()
         {
             $tokens = $this->apiAuth->signin('admin@qt.com', 'qwerty');
-
-            Request::setHeader('AUTHORIZATION', 'Bearer ' . $tokens['access_token']);
-
-            Request::setHeader('refresh_token', $tokens['refresh_token']);
 
             $this->assertEquals('admin@qt.com', $this->apiAuth->user()->username);
 
             $this->assertEquals('admin', $this->apiAuth->user()->role);
-
-            Request::deleteHeader('AUTHORIZATION');
-
-            $this->assertEquals('admin@qt.com', $this->apiAuth->user()->username);
-
+            
             $this->apiAuth->signout();
+
+            $this->assertNull($this->apiAuth->user());
         }
 
-        public function testCheck()
+        public function testApiCheck()
         {
             $this->assertFalse($this->apiAuth->check());
 
             $tokens = $this->apiAuth->signin('admin@qt.com', 'qwerty');
 
-            Request::setHeader('AUTHORIZATION', 'Bearer ' . $tokens['access_token']);
-
-            Request::setHeader('refresh_token', $tokens['refresh_token']);
-
             $this->assertTrue($this->apiAuth->check());
+            
+            $this->apiAuth->signout();
+            
+            $this->assertFalse($this->apiAuth->check());
         }
 
-        public function testSignupAndSigninWithoutActivation()
+        public function testApiSignupAndSigninWithoutActivation()
         {
 
             $this->expectException(AuthException::class);
@@ -234,7 +228,7 @@ namespace Quantum\Test\Unit {
             $this->assertTrue($this->apiAuth->signin('guest@qt.com', '123456'));
         }
 
-        public function testSignupAndActivteAccount()
+        public function testApiSignupAndActivteAccount()
         {
             $user = $this->apiAuth->signup($this->mailer, $this->guestUser);
 
@@ -247,7 +241,7 @@ namespace Quantum\Test\Unit {
             $this->assertArrayHasKey('refresh_token', $this->apiAuth->signin('guest@qt.com', '123456'));
         }
 
-        public function testForgetReset()
+        public function testApiForgetReset()
         {
             $resetToken = $this->apiAuth->forget($this->mailer, 'admin@qt.com', 'tpl');
 
