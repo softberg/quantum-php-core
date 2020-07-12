@@ -18,9 +18,9 @@ use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Exceptions\AuthException;
 use Quantum\Libraries\JWToken\JWToken;
 use Quantum\Libraries\Hasher\Hasher;
-use Quantum\Libraries\Config\Config;
 use Quantum\Factory\ServiceFactory;
 use Quantum\Loader\Loader;
+use stdClass;
 
 /**
  * Class AuthManager
@@ -71,7 +71,7 @@ class AuthManager
                     self::$authInstance = new WebAuth($this->authService, new Hasher);
                     break;
                 case 'api':
-                    $jwt = (new JWToken())->setLeeway(1)->setClaims(get_config('auth.claims'));
+                    $jwt = (new JWToken())->setLeeway(1)->setClaims(config()->get('auth.claims'));
                     self::$authInstance = new ApiAuth($this->authService, new Hasher, $jwt);
                     break;
             }
@@ -87,22 +87,22 @@ class AuthManager
      */
     public function authService()
     {
-        if (!Config::has('auth')) {
-            $loaderSetup = (object) [
-                        'module' => current_module(),
-                        'env' => 'config',
-                        'fileName' => 'auth',
-                        'exceptionMessage' => ExceptionMessages::CONFIG_FILE_NOT_FOUND
-            ];
+        if (!config()->has('auth')) {
+            
+            $loaderSetup = new stdClass();
+            $loaderSetup->module = current_module();
+            $loaderSetup->env = 'config';
+            $loaderSetup->fileName = 'auth';
+            $loaderSetup->exceptionMessage = ExceptionMessages::CONFIG_FILE_NOT_FOUND;
 
-            $loader = new Loader($loaderSetup);
+            $loader = (new Loader())->setup($loaderSetup);
 
-            Config::import($loader, 'auth');
+            config()->import($loader, 'auth');
         }
 
-        $this->authType = get_config('auth.type');
+        $this->authType = config()->get('auth.type');
 
-        $this->authService = (new ServiceFactory)->create(get_config('auth.service'));
+        $this->authService = (new ServiceFactory)->create(config()->get('auth.service'));
     }
 
 }

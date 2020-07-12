@@ -166,9 +166,9 @@ class BaseAuth
     {
         $fullName = (isset($user['firstname']) && isset($user['lastname'])) ? $user['firstname'] . ' ' . $user['lastname'] : '';
 
-        $mailer->createFrom(['email' => get_config('app_email'), 'name' => get_config('app_name')])
-                ->createAddresses(['email' => $user['username'], 'name' => $fullName])
-                ->createBody($body)
+        $mailer->setFrom(config()->get('app_email'), config()->get('app_name'))
+                ->setAddress($user['username'], $fullName)
+                ->setBody($body)
                 ->send();
     }
 
