@@ -14,7 +14,11 @@
 
 namespace Quantum\Environment;
 
+use Quantum\Exceptions\ExceptionMessages;
+use Quantum\Libraries\Storage\FileSystem;
+use Quantum\Loader\Loader;
 use Dotenv\Dotenv;
+use stdClass;
 
 /**
  * Class Environment
@@ -25,91 +29,134 @@ class Environment
 {
 
     /**
-     * Path to .env file
-     *
-     * @var string
+     * Environment file
+     * @var string 
      */
-    public static $envPath = BASE_DIR . DS . '.env';
+    private $envFile = '.env';
 
     /**
-     * Load
-     * 
-     * Loads the environment variables from .env file
+     * Loaded env content
+     * @var array 
      */
-    public static function load()
+    private $envContent = null;
+
+    /**
+     * Instance of Environment
+     * @var Environment 
+     */
+    private static $envInstance = null;
+
+    /**
+     * File System
+     * @var Quantum\Libraries\Storage\FileSystem
+     */
+    private $fs;
+
+    /**
+     * Environment setup
+     * @var object 
+     */
+    private $setup = null;
+
+    /**
+     * Class constructor
+     */
+    private function __construct()
     {
-        $env = require_once BASE_DIR . DS . 'config' . DS . 'env.php';
+        $this->fs = new FileSystem();
 
-        $envFile = '.env';
-
-        if ($env['app_env'] != 'production') {
-            $envFile .= '.' . $env['app_env'];
-        }
-
-        $dotenv = new Dotenv(BASE_DIR, $envFile);
-        $dotenv->load();
+        $this->setup = new stdClass();
+        $this->setup->module = null;
+        $this->setup->env = 'config';
+        $this->setup->fileName = 'env';
+        $this->setup->exceptionMessage = ExceptionMessages::CONFIG_FILE_NOT_FOUND;
     }
 
     /**
-     * Get Value
-     * 
+     * GetInstance
+     * @return Environment
+     */
+    public static function getInstance()
+    {
+        if (self::$envInstance === null) {
+            self::$envInstance = new self();
+        }
+
+        return self::$envInstance;
+    }
+
+    /**
+     * Loads the environment variables from .env file
+     */
+    public function load(Loader $loader)
+    {
+        $env = $loader->setup($this->setup)->load();
+        if ($env['app_env'] != 'production') {
+            $this->envFile = '.env.' . $env['app_env'];
+        }
+
+        $this->envContent = (new Dotenv(base_dir(), $this->envFile))->load();
+    }
+
+    /**
      * Gets the environment variable value
-     *
      * @param string $key
      * @param mixed $default
-     * @return array|false|mixed|null|string
+     * @return mixed
      */
-    public static function getValue($key, $default = null)
+    public function getValue($key, $default = null)
     {
         $val = getenv($key);
 
-        if ($val === false && $default) {
-            return $default;
+        if ($val === false) {
+            if ($default) {
+                return $default;
+            }
+
+            return null;
         } else {
             return $val;
         }
     }
 
     /**
-     * Update Row
-     * 
      * Creates or updates the row in .env
-     *
-     * @param string $keyName
+     * @param string $key
      * @param string $value
-     * @return void
      */
-    public static function updateRow($keyName, $value)
+    public function updateRow($key, $value)
     {
-        $oldRow = self::getRow($keyName);
-        
-        if ($oldRow) {
-            file_put_contents(self::$envPath, preg_replace(
-                '/^' . $oldRow . '/m',
-                $keyName . "=" . $value . "\r\n",
-                file_get_contents(self::$envPath)
-            ));
+        $oldRow = $this->getRow($key);
 
+        $envFilePath = base_dir() . DS . $this->envFile;
+
+        if ($oldRow) {
+            $this->fs->put($envFilePath, preg_replace(
+                            '/^' . $oldRow . '/m',
+                            $key . "=" . $value . PHP_EOL,
+                            $this->fs->get($envFilePath)
+            ));
         } else {
-            file_put_contents(self::$envPath, $keyName . "=" . $value . "\r\n", FILE_APPEND);
+            $this->fs->put($envFilePath, $key . "=" . $value . PHP_EOL, FILE_APPEND);
         }
+
+        $this->envContent = (new Dotenv(base_dir(), $this->envFile))->overload();
     }
 
     /**
      * Gets the row of .env file by given key
-     *
-     * @param $keyName
-     * @return string
+     * @param $key
+     * @return string|null
      */
-    private static function getRow($keyName)
+    private function getRow($key)
     {
-        $envKeys = file(self::$envPath);
-
-        foreach ($envKeys as $envKey) {
-            if (preg_match('/^' . $keyName . '=/', $envKey)) {
-                return preg_quote($envKey, '/');
+        foreach ($this->envContent as $row) {
+            if (preg_match('/^' . $key . '=/', $row)) {
+                return preg_quote($row, '/');
             }
         }
+
+        return null;
     }
 
 }
