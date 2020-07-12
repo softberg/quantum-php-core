@@ -5,19 +5,17 @@ namespace Quantum\Test\Unit;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 use Quantum\Exceptions\ExceptionMessages;
+use Quantum\Exceptions\CsrfException;
 use Quantum\Libraries\Csrf\Csrf;
 use Quantum\Libraries\Session\Session;
 
 class CsrfTest extends TestCase
 {
+
     private $session;
-    
     private $request;
-    
     private $cryptor;
-    
     private $storage = [];
-    
     private $key = 'appkey';
 
     public function setUp(): void
@@ -38,21 +36,22 @@ class CsrfTest extends TestCase
         });
 
         $this->session = new Session($this->storage, $this->cryptor);
+
+        Csrf::deleteToken($this->session);
     }
 
     public function tearDown(): void
     {
         Mockery::close();
-        Csrf::deleteToken($this->session);
     }
 
     public function testGenerateToken()
     {
         $token = Csrf::generateToken($this->session, $this->key);
 
-        $this->assertIsString($token);
-
         $this->assertNotEmpty($token);
+
+        $this->assertIsString($token);
 
         $this->assertEquals(Csrf::getToken($this->session), $token);
     }
@@ -95,7 +94,7 @@ class CsrfTest extends TestCase
             return null;
         });
 
-        $this->expectException(\Exception::class);
+        $this->expectException(CsrfException::class);
 
         $this->expectExceptionMessage(ExceptionMessages::CSRF_TOKEN_NOT_FOUND);
 
@@ -108,7 +107,7 @@ class CsrfTest extends TestCase
             return 'wrong-csrf-token';
         });
 
-        $this->expectException(\Exception::class);
+        $this->expectException(CsrfException::class);
 
         $this->expectExceptionMessage(ExceptionMessages::CSRF_TOKEN_NOT_MATCHED);
 
