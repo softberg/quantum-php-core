@@ -1,5 +1,7 @@
 <?php
 
+use Quantum\Libraries\Asset\AssetManager;
+
 if (!function_exists('assets')) {
 
     /**
