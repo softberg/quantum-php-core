@@ -17,39 +17,35 @@ namespace Quantum\Mvc;
 use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Libraries\Database\Database;
 use Quantum\Exceptions\ModelException;
-use Quantum\Factory\ModelFactory;
 use Quantum\Helpers\Helper;
+use Quantum\Loader\Loader;
 
 /**
  * Base Model Class
  *
- * Qt_Model class is a base abstract class that every model should extend,
+ * QtModel class is a base abstract class that every model should extend,
  * This class also connects to database and prepares object relational mapping
  *
  * @package Quantum
- * @subpackage MVC
  * @category MVC
  */
-abstract class Qt_Model
+abstract class QtModel
 {
 
     /**
      * The database table associated with model
-     *
      * @var string
      */
     public $table;
 
     /**
      * Id column of table
-     *
      * @var string
      */
     public $idColumn = 'id';
 
     /**
      * Foreign keys
-     * 
      * @var array 
      */
     public $foreignKeys = [];
@@ -62,7 +58,6 @@ abstract class Qt_Model
 
     /**
      * ORM database abstract layer object
-     *
      * @var object
      */
     private $orm;
@@ -77,12 +72,12 @@ abstract class Qt_Model
      * Class constructor
      *
      * @return void
-     * @throws \Exception When called directly
+     * @throws ModelException When called directly
      */
     public final function __construct()
     {
         $this->model = get_called_class();
-        $this->orm = Database::getDbalInstance($this->model, $this->table, $this->idColumn);
+        $this->orm = (new Database(new Loader()))->getORM($this->model, $this->table, $this->idColumn);
     }
 
     /**
@@ -92,7 +87,7 @@ abstract class Qt_Model
      *
      * @param array $arguments
      * @return void
-     * @throws \Exception When the property is not appropriate
+     * @throws ModelException When the property is not appropriate
      */
     public function fillObjectProps($arguments)
     {
@@ -126,7 +121,7 @@ abstract class Qt_Model
      * Allows to set values to models properties
      *
      * @param string $property
-     * @param mixed $vallue
+     * @param mixed $value
      */
     public function __set($property, $value)
     {
@@ -141,7 +136,7 @@ abstract class Qt_Model
      * @param string $method
      * @param mixed $args
      * @return mixed
-     * @throws \Exception
+     * @throws ModelException
      */
     public function __call($method, $args = null)
     {
