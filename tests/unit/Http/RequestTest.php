@@ -70,17 +70,17 @@ namespace Quantum\Test\Unit {
             $this->assertEquals('POST', $request->getMethod());
         }
 
-        public function testSetGetScheme()
+        public function testSetGetProtocol()
         {
             $request = new Request();
 
             $request->create('GET', 'https://test.com');
 
-            $this->assertEquals('https', $request->getScheme());
+            $this->assertEquals('https', $request->getProtocol());
 
-            $request->setScheme('http');
+            $request->setProtocol('http');
 
-            $this->assertEquals('http', $request->getScheme());
+            $this->assertEquals('http', $request->getProtocol());
         }
 
         public function testSetGetHost()
@@ -154,6 +154,22 @@ namespace Quantum\Test\Unit {
             $request->delete('name');
 
             $this->assertNotEquals('John', $request->get('name'));
+
+            $request->create('POST', '/', ['content' => '<h1>Big text</h1>']);
+
+            $this->assertEquals('Big text', $request->get('content'));
+
+            $this->assertEquals('<h1>Big text</h1>', $request->get('content', null, true));
+
+            $request->create('POST', '/', ['content' => ['status' => 'ok', 'message' => '<h1>Big text</h1>']]);
+
+            $content = $request->get('content');
+
+            $this->assertEquals('Big text', $content['message']);
+
+            $content = $request->get('content', null, true);
+
+            $this->assertEquals('<h1>Big text</h1>', $content['message']);
         }
 
         public function testRequestAll()
@@ -161,6 +177,18 @@ namespace Quantum\Test\Unit {
             $request = new Request();
 
             $this->assertEmpty($request->all());
+
+            $file = [
+                'image' => [
+                    'size' => 500,
+                    'name' => 'foo.jpg',
+                    'tmp_name' => __FILE__ . 'php8fe1.tmp',
+                    'type' => 'image/jpg',
+                    'error' => 0,
+                ],
+            ];
+
+            $request->create('POST', '/upload', ['name' => 'John'], $file);
 
             $request->set('name', 'John');
 
@@ -172,25 +200,59 @@ namespace Quantum\Test\Unit {
         public function testHasGetFile()
         {
             $request = new Request();
-            
+
             $this->assertFalse($request->hasFile('image'));
 
             $file = [
                 'image' => [
                     'size' => 500,
                     'name' => 'foo.jpg',
-                    'tmp_name' => __FILE__,
+                    'tmp_name' => __FILE__ . 'php8fe1.tmp',
                     'type' => 'image/jpg',
                     'error' => 0,
                 ],
             ];
-            
-            $request->create('POST', '/upload', $file);
-            
+
+            $request->create('POST', '/upload', null, $file);
+
             $this->assertTrue($request->hasFile('image'));
-            
-            $this->assertIsArray($request->getFile('image'));
-            
+
+            $image = $request->getFile('image');
+
+            $this->assertIsObject($image);
+
+            $this->assertEquals('foo.jpg', $image->name);
+        }
+
+        public function testGetMultipleFiles()
+        {
+            $request = new Request();
+
+            $this->assertFalse($request->hasFile('image'));
+
+            $files = [
+                'image' => [
+                    'size' => [500, 800],
+                    'name' => ['foo.jpg', 'bar.png'],
+                    'tmp_name' => [__FILE__ . 'php8fe2.tmp', __FILE__ . 'php8fe3.tmp'],
+                    'type' => ['image/jpg', 'image/png'],
+                    'error' => [0, 0],
+                ],
+            ];
+
+            $request->create('POST', '/upload', null, $files);
+
+            $this->assertTrue($request->hasFile('image'));
+
+            $image = $request->getFile('image');
+
+            $this->assertIsArray($image);
+
+            $this->assertIsObject($image[0]);
+
+            $this->assertEquals('foo.jpg', $image[0]->name);
+
+            $this->assertEquals('bar.png', $image[1]->name);
         }
 
         public function testRequestHeaderSetHasGetDelete()
@@ -275,31 +337,6 @@ namespace Quantum\Test\Unit {
             $request->setHeader('X-REQUESTED-WITH', 'xmlhttprequest');
 
             $this->assertTrue($request->isAjax());
-        }
-
-        public function testGetCurrentUrl()
-        {
-            $request = new Request();
-
-            $request->create('GET', 'https://test.com/');
-
-            $this->assertEquals('https://test.com/', $request->getCurrentUrl());
-
-            $request->create('GET', 'http://test.com/user/12');
-
-            $this->assertEquals('http://test.com/user/12', $request->getCurrentUrl());
-
-            $request->create('GET', 'http://test.com/user/12?firstname=John&lastname=Doe');
-
-            $this->assertEquals('http://test.com/user/12?firstname=John&lastname=Doe', $request->getCurrentUrl());
-
-            $request->create('GET', 'http://test.com/?firstname=John&lastname=Doe');
-
-            $this->assertEquals('http://test.com/?firstname=John&lastname=Doe', $request->getCurrentUrl());
-
-            $request->create('GET', 'http://test.com:8080/?firstname=John&lastname=Doe');
-
-            $this->assertEquals('http://test.com:8080/?firstname=John&lastname=Doe', $request->getCurrentUrl());
         }
 
     }

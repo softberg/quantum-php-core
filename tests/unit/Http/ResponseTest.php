@@ -65,7 +65,7 @@ class ResponseTest extends TestCase
     {
         $response = new Response();
 
-        $this->assertNull($response->getStatusCode());
+        $this->assertEquals(200, $response->getStatusCode());
 
         $response->setStatusCode(301);
 
@@ -97,7 +97,7 @@ class ResponseTest extends TestCase
 
         $this->assertEquals('/', $response->getHeader('Location'));
 
-        $this->assertNull($response->getStatusCode());
+        $this->assertEquals(200, $response->getStatusCode());
 
         $response->redirect('/home', 301);
 
@@ -125,7 +125,7 @@ class ResponseTest extends TestCase
         $response->json([
             'gender' => 'male',
             'role' => 'user'
-        ], 200);
+                ], 200);
 
         $this->assertEquals('{"firstname":"John","lastname":"Doe","age":25,"gender":"male","role":"user"}', $response->getContent());
 
@@ -143,9 +143,9 @@ class ResponseTest extends TestCase
         $response->xml();
 
         $xml = "<?xml version=\"1.0\"?>\n" .
-                "<data>" .
-                "<firstname>John</firstname>" .
-                "<lastname>Doe</lastname>" .
+                "<data>\n" .
+                "  <firstname>John</firstname>\n" .
+                "  <lastname>Doe</lastname>\n" .
                 "</data>\n";
 
         $this->assertEquals($xml, $response->getContent());
@@ -153,10 +153,10 @@ class ResponseTest extends TestCase
         $response->set('age', 25);
 
         $xml = "<?xml version=\"1.0\"?>\n" .
-                "<data>" .
-                "<firstname>John</firstname>" .
-                "<lastname>Doe</lastname>" .
-                "<age>25</age>" .
+                "<data>\n" .
+                "  <firstname>John</firstname>\n" .
+                "  <lastname>Doe</lastname>\n" .
+                "  <age>25</age>\n" .
                 "</data>\n";
 
         $this->assertEquals($xml, $response->getContent());
@@ -164,18 +164,95 @@ class ResponseTest extends TestCase
         $response->xml([
             'gender' => 'male',
             'role' => 'user'
-        ], 200);
+        ]);
 
         $xml = "<?xml version=\"1.0\"?>\n" .
-                "<data>" .
-                "<firstname>John</firstname>" .
-                "<lastname>Doe</lastname>" .
-                "<age>25</age>" .
-                "<gender>male</gender>" .
-                "<role>user</role>" .
+                "<data>\n" .
+                "  <firstname>John</firstname>\n" .
+                "  <lastname>Doe</lastname>\n" .
+                "  <age>25</age>\n" .
+                "  <gender>male</gender>\n" .
+                "  <role>user</role>\n" .
                 "</data>\n";
 
         $this->assertEquals($xml, $response->getContent());
+    }
+
+    public function testResponseXmlWithNestedArray()
+    {
+        $response = new Response();
+
+        $response->xml([
+            'article' => [
+                'title' => 'Todays news',
+                'description' => 'News content'
+            ]
+        ]);
+
+        $xml = "<?xml version=\"1.0\"?>\n" .
+                "<data>\n" .
+                "  <article>\n" .
+                "    <title>Todays news</title>\n" .
+                "    <description>News content</description>\n" .
+                "  </article>\n" .
+                "</data>\n";
+
+        $this->assertEquals($xml, $response->getContent());
+    }
+
+    public function testResponseXmlWithArguments()
+    {
+        $response = new Response();
+
+        $response->xml([
+            'article@{"type":"post"}' => [
+                'title' => 'Todays news',
+                'description@{"content":"html"}' => 'News content'
+            ]
+        ]);
+
+        $xml = "<?xml version=\"1.0\"?>\n" .
+                "<data>\n" .
+                "  <article type=\"post\">\n" .
+                "    <title>Todays news</title>\n" .
+                "    <description content=\"html\">News content</description>\n" .
+                "  </article>\n" .
+                "</data>\n";
+
+        $this->assertEquals($xml, $response->getContent());
+    }
+
+    public function testResponseXmlWithCustomRoot()
+    {
+        $response = new Response();
+
+        $response->xml([
+            'article@{"type":"post"}' => [
+                'title' => 'Todays news',
+                'description@{"content":"html"}' => 'News content'
+            ]
+                ], '<custom></custom>', 200);
+
+        $xml = "<?xml version=\"1.0\"?>\n" .
+                "<custom>\n" .
+                "  <article type=\"post\">\n" .
+                "    <title>Todays news</title>\n" .
+                "    <description content=\"html\">News content</description>\n" .
+                "  </article>\n" .
+                "</custom>\n";
+
+        $this->assertEquals($xml, $response->getContent());
+    }
+
+    public function testResponseHtmlContent()
+    {
+        $response = new Response();
+
+        $response->html('<div>John Doe</div>');
+
+        $this->assertEquals('<div>John Doe</div>', $response->getContent());
+
+        $this->assertEquals(200, $response->getStatusCode());
     }
 
 }
