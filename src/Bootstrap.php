@@ -17,9 +17,14 @@ namespace Quantum;
 use Quantum\Environment\Environment;
 use Quantum\Libraries\Config\Config;
 use Quantum\Routes\ModuleLoader;
+use Quantum\Libraries\Lang\Lang;
+use Quantum\Environment\Server;
+use Quantum\Http\HttpRequest;
 use Quantum\Mvc\MvcManager;
 use Quantum\Routes\Router;
 use Quantum\Loader\Loader;
+use Quantum\Http\Response;
+use Quantum\Http\Request;
 
 /**
  * Bootstrap Class
@@ -41,25 +46,37 @@ class Bootstrap
     public static function run()
     {
         try {
-            Environment::load();
+            $loader = new Loader();
 
-            $router = new Router();
+            $loader->loadDir(HELPERS_DIR . DS . 'functions');
 
-            (new ModuleLoader())->loadModules($router);
+            Environment::getInstance()->load($loader);
+
+            HttpRequest::init(new Server);
+
+            $request = new Request();
+            $response = new Response();
+
+            $router = new Router($request, $response);
+
+            (new ModuleLoader($router))->loadModulesRoutes();
 
             $router->findRoute();
 
-            $loader = new Loader(Config::getSetup());
-            Config::load($loader);
+            Config::getInstance()->load($loader);
 
-            Loader::loadFiles(base_dir() . DS . 'helpers');
-            Loader::loadFiles(base_dir() . DS . 'libraries');
+            $loader->loadDir(base_dir() . DS . 'helpers');
+            $loader->loadDir(base_dir() . DS . 'libraries');
 
-            $mvcManager = new MvcManager();
-            $mvcManager->runMvc(Router::$currentRoute);
+            Lang::getInstance()->setLang($request->getSegment(config()->get('lang_segment')))->load($loader);
+
+            (new MvcManager())->runMvc($request, $response);
+
+            $response->send();
+            exit(0);
         } catch (\Exception $e) {
             echo $e->getMessage();
-            exit;
+            exit(1);
         }
     }
 
