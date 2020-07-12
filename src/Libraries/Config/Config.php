@@ -9,155 +9,174 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 1.0.0
+ * @since 2.0.0
  */
 
 namespace Quantum\Libraries\Config;
 
 use Quantum\Exceptions\ExceptionMessages;
+use Quantum\Exceptions\ConfigException;
+use Quantum\Contracts\StorageInterface;
 use Dflydev\DotAccessData\Data;
 use Quantum\Loader\Loader;
+use stdClass;
 
 /**
- * Config Class
- *
- * Config class allows to load and import configuration files and get/set/remove config items
- *
- * @package Quantum
- * @category Config
+ * Class Config
+ * @package Quantum\Libraries\Config
  */
-class Config
+class Config implements StorageInterface
 {
 
     /**
      * Configs
-     *
      * @var array
      */
     private static $configs = [];
 
+    /**
+     * Instance of Config
+     * @var Config 
+     */
+    private static $configInstance = null;
 
     /**
-     * Get Setup
-     *
-     * Gets the config setup
-     *
-     * @return object
+     * Config setup
+     * @var object 
      */
-    public static function getSetup()
+    private $setup = null;
+
+    /**
+     * Class constructor
+     */
+    private function __construct()
     {
-        return (object)[
-            'module' => current_module(),
-            'env' => 'config',
-            'fileName' => 'config',
-            'exceptionMessage' => ExceptionMessages::CONFIG_FILE_NOT_FOUND
-        ];
+        $this->setup = new stdClass();
+        $this->setup->module = current_module();
+        $this->setup->env = 'config';
+        $this->setup->fileName = 'config';
+        $this->setup->exceptionMessage = ExceptionMessages::CONFIG_FILE_NOT_FOUND;
     }
 
+    /**
+     * GetInstance
+     * @return Lang
+     */
+    public static function getInstance()
+    {
+        if (self::$configInstance === null) {
+            self::$configInstance = new self();
+        }
+
+        return self::$configInstance;
+    }
 
     /**
-     * Load
-     *
      * Loads configuration
-     *
      * @param Loader $loader
-     * @return void
-     * @throws \Exception When config file is not found
+     * @throws ConfigException When config file is not found
      */
-    public static function load(Loader $loader)
+    public function load(Loader $loader)
     {
+        if (!$this->setup) {
+            throw new ConfigException(_message(ExceptionMessages::SETUP_NOT_PROVIDED, __CLASS__));
+        }
+
         if (empty(self::$configs)) {
-            self::$configs = $loader->load();
+            self::$configs = $loader->setup($this->setup)->load();
         }
     }
 
     /**
-     * Import
-     *
-     * Imports new config
-     *
+     * Imports new config file
      * @param Loader $loader
      * @param string $fileName
-     * @return void
-     * @throws \Exception When config file is not found or there are config collision between modules
+     * @throws ConfigException When config file is not found or there are config collision between modules
      */
-    public static function import(Loader $loader, $fileName)
+    public function import(Loader $loader, $fileName)
     {
-        $allConfigs = self::getAll();
-        foreach ($allConfigs as $key => $config) {
-            if ($fileName == $key) {
-                throw new \Exception(_message(ExceptionMessages::CONFIG_COLLISION, $key));
-            }
+        if ($this->has($fileName)) {
+            throw new ConfigException(_message(ExceptionMessages::CONFIG_COLLISION, $fileName));
+        }
+
+        if (!$this->setup) {
+            throw new ConfigException(_message(ExceptionMessages::SETUP_NOT_PROVIDED, __CLASS__));
         }
 
         self::$configs[$fileName] = $loader->load();
     }
 
     /**
-     * Gets all the config data
-     *
+     * Gets the config item by given key
+     * @param string $key
+     * @param mixed $default
+     * @return mixed|null The configuration item or NULL, if the item does not exists
+     */
+    public function get($key, $default = null)
+    {
+        $data = new Data(self::$configs);
+
+        if ($this->has($key)) {
+            return $data->get($key);
+        }
+
+        return $default;
+    }
+
+    /**
+     * Get all configs
      * @return array
      */
-    public static function getAll()
+    public function all(): array
     {
         return self::$configs;
     }
 
     /**
-     * Gets a config item
-     *
-     * @param string $key
-     * @param mixed $default
-     * @return mixed|null The configuration item or NULL, if the item does not exists
-     */
-    public static function get($key, $default = null)
-    {
-        $data = new Data(self::$configs);
-        if (self::has($key)) {
-            return $data->get($key);
-        }
-
-        return $default;
-
-    }
-
-    /**
      * Checks config data
-     *
      * @param string $key
      * @return bool
      */
-    public static function has($key)
+    public function has($key)
     {
         $data = new Data(self::$configs);
+
         return ($data->has($key));
     }
 
     /**
      * Sets new value
-     *
      * @param string $key
      * @param mixed $value
      * @return void
      */
-    public static function set($key, $value)
+    public function set($key, $value)
     {
         $data = new Data(self::$configs);
+
         $data->set($key, $value);
         self::$configs = $data->export();
     }
 
     /**
-     * Removes data from config
-     *
+     * Removes the data from config
      * @param $key
-     * @return void
      */
-    public static function remove($key)
+    public function delete($key)
     {
         $data = new Data(self::$configs);
+
         $data->remove($key);
         self::$configs = $data->export();
+    }
+
+    /**
+     * Deletes whole config data
+     * @return void
+     */
+    public function flush()
+    {
+        self::$configs = [];
     }
 
 }

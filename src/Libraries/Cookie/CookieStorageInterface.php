@@ -9,41 +9,22 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 1.5.0
+ * @since 2.0.0
  */
 
 namespace Quantum\Libraries\Cookie;
 
+use Quantum\Contracts\StorageInterface;
+
 /**
  * Interface CookieStorageInterface
- *
  * @package Quantum\Libraries\Cookie
  */
-interface CookieStorageInterface
+interface CookieStorageInterface extends StorageInterface
 {
 
     /**
-     * Should be implemented in derived classes to get value from storage by key
-     *
-     * @param string $key
-     */
-    public function get($key);
-
-    /**
-     * Should be implemented in derived classes to get whole storage data
-     */
-    public function all();
-
-    /**
-     * Should be implemented in derived classes to check if storage contains a key
-     *
-     * @param string $key
-     */
-    public function has($key);
-
-    /**
      * Should be implemented in derived classes to set storage value with given key
-     *
      * @param string $key
      * @param string $value
      * @param int $time
@@ -56,14 +37,8 @@ interface CookieStorageInterface
 
     /**
      * Should be implemented in derived classes to delete data with given key from session
-     *
      * @param string $key
      * @param string $path
      */
     public function delete($key, $path = '/');
-
-    /**
-     * Should be implemented in derived classes to delete whole storage data
-     */
-    public function flush();
 }
