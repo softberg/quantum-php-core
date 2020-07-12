@@ -9,56 +9,55 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 1.0.0
+ * @since 2.0.0
  */
 
 namespace Quantum\Libraries\Curl;
 
-use Quantum\Exceptions\ExceptionMessages;
-use Quantum\Routes\RouteController;
 use Curl\Curl as PhpCurl;
 use Curl\MultiCurl;
+use ArrayAccess;
 
 /**
  * Curl Class
  * 
  * @package Quantum
- * @subpackage Libraries.Curl
  * @category Libraries 
  * @uses php-curl-class/php-curl-class
  */
-class Curl {
+class Curl
+{
 
     /**
      * Curl instance
      * @var object
      */
     private $curl;
-    
+
     /**
      * Response body
      * @var mixed 
      */
-    private $body = null;
-    
+    private $responseBody = null;
+
     /**
      * Response headers
      * @var array
      */
-    private $headers = array();
-    
+    private $responseHeaders = [];
+
     /**
      * Response error
      * @var array 
      */
-    private $errors = array();
+    private $errors = [];
 
     /**
      * Class constructor
-     * 
      * @param string $type
      */
-    public function __construct($type = null) {
+    public function __construct($type = null)
+    {
         if ($type && $type == 'multi') {
             $this->curl = new MultiCurl();
         } else {
@@ -67,14 +66,62 @@ class Curl {
     }
 
     /**
-     * Run
-     * 
+     * Sets the options
+     * @param array $options
+     * @return $this
+     */
+    public function setOptions(array $options)
+    {
+        $this->curl->setOpts($options);
+
+        return $this;
+    }
+
+    /**
+     * Gets the option
+     * @param int $option
+     * @return mixed
+     */
+    public function getOption($option)
+    {
+        return $this->curl->getOpt($option);
+    }
+
+    /**
+     * Sets the request headers
+     * @param array $headers
+     * @return $this
+     */
+    public function setRequestHeaders(array $headers)
+    {
+        $this->curl->setHeaders($headers);
+
+        return $this;
+    }
+
+    /**
+     * Gets single request header or all headers after curl exec
+     * @param string $header
+     * @return mixed
+     */
+    public function getRequestHeaders($header = null)
+    {
+        $requestHeaders = $this->curl->getRequestHeaders();
+
+        if ($header) {
+            return $requestHeaders[$header] ?? null;
+        }
+
+        return $requestHeaders;
+    }
+
+    /**
      * Executes or starts the cURL request
-     * 
      * @param string $url
      * @return object
      */
-    public function run($url = null) {
+    public function run($url = null)
+    {
         if ($url) {
             $this->curl->setUrl($url);
         }
@@ -89,81 +136,69 @@ class Curl {
     }
 
     /**
-     * Set Options
-     * 
-     * Sets cURL options
-     * 
-     * @param array $options
-     * @return $this
-     */
-    public function setOptions(array $options) {
-        $this->curl->setOpts($options);
-
-        return $this;
-    }
-
-    /**
-     * Set Headers
-     * 
-     * Sets the cURL headers
-     * 
-     * @param array $headers
-     * @return $this
-     */
-    public function setHeaders(array $headers) {
-        $this->curl->setHeaders($headers);
-
-        return $this;
-    }
-
-    /**
-     * Get Response Body
-     * 
      * Gets the response body
-     * 
      * @return mixed
      */
-    public function getResponseBody() {
-        return $this->body;
+    public function getResponseBody()
+    {
+        return $this->responseBody;
     }
 
     /**
-     * Get Response Headers
-     * 
      * Gets the response headers
-     * 
      * @return array
      */
-    public function getResponseHeaders() {
-        $requestHeaders = [];
+    public function getResponseHeaders($header = null)
+    {
+        $responseHeaders = [];
 
-        if ($this->headers instanceof \ArrayAccess) {
-            while ($this->headers->valid()) {
-                $requestHeaders[$this->headers->key()] = $this->headers->current();
-                $this->headers->next();
+        if ($this->responseHeaders instanceof ArrayAccess) {
+            while ($this->responseHeaders->valid()) {
+                $responseHeaders[$this->responseHeaders->key()] = $this->responseHeaders->current();
+                $this->responseHeaders->next();
             }
         }
 
-        return $requestHeaders;
+        $this->responseHeaders->rewind();
+
+        if ($header) {
+            return $responseHeaders[$header] ?? null;
+        }
+
+        return $responseHeaders;
+    }
+
+    /**
+     * Gets the curl info
+     * @param $option
+     * @return type
+     */
+    public function info($option = null)
+    {
+        if ($option) {
+            return $this->curl->getInfo($option);
+        }
+
+        return $this->curl->getInfo();
     }
 
     /**
      * Returns the errors
-     * 
      * @return array
      */
-    public function getErrors() {
+    public function getErrors()
+    {
         return $this->errors;
     }
 
     /**
      *  __call magic
-     * 
      * @param string $function
      * @param mixed $arguments
      * @return object
      */
-    public function __call($function, $arguments) {
+    public function __call($function, $arguments)
+    {
 
         $this->curl->{$function}(...$arguments);
 
@@ -171,34 +206,32 @@ class Curl {
     }
 
     /**
-     * Fetch
-     * 
      * Fetches the data from response
-     * 
      * @return $this
      */
-    private function fetch() {
+    private function fetch()
+    {
         if ($this->curl instanceof MultiCurl) {
             $this->curl->complete(function($instance) {
                 if ($instance->error) {
                     $this->errors[] = [
-                        'errorCode' => $instance->getErrorCode(),
-                        'errorMessage' => $instance->getErrorMessage()
+                        'code' => $instance->getErrorCode(),
+                        'nessage' => $instance->getErrorMessage()
                     ];
                 } else {
-                    $this->headers[] = $instance->getResponseHeaders();
-                    $this->body[] = $instance->getResponse();
+                    $this->responseHeaders[] = $instance->getResponseHeaders();
+                    $this->responseBody[] = $instance->getResponse();
                 }
             });
         } else {
             if ($this->curl->error) {
                 $this->errors[] = [
-                    'errorCode' => $this->curl->getErrorCode(),
-                    'errorMessage' => $this->curl->getErrorMessage()
+                    'code' => $this->curl->getErrorCode(),
+                    'nessage' => $this->curl->getErrorMessage()
                 ];
             } else {
-                $this->headers = $this->curl->getResponseHeaders();
-                $this->body = $this->curl->getResponse();
+                $this->responseHeaders = $this->curl->getResponseHeaders();
+                $this->responseBody = $this->curl->getResponse();
             }
         }
 
