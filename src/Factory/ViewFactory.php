@@ -9,12 +9,12 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 1.6.0
+ * @since 2.0.0
  */
 
 namespace Quantum\Factory;
 
-use Quantum\Mvc\Qt_View;
+use Quantum\Mvc\QtView;
 
 /**
  * Class ViewFactory
@@ -24,19 +24,20 @@ Class ViewFactory
 {
 
     /**
-     * @var AuthenticableInterface
+     * Instance of QtView
+     * @var QtView 
      */
     private static $viewInstance = null;
 
     /**
      * GetInstance
      *
-     * @return Qt_View
+     * @return QtView
      */
     public static function getInstance()
     {
         if (self::$viewInstance === null) {
-            self::$viewInstance = new Qt_View();
+            self::$viewInstance = new QtView();
         }
 
         return self::$viewInstance;
@@ -50,7 +51,7 @@ Class ViewFactory
      */
     public function __call($method, $args = null)
     {
-        self::getInstance()->{$method}(...$args);
+        return self::getInstance()->{$method}(...$args);
     }
 
 }

@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 1.6.0
+ * @since 2.0.0
  */
 
 namespace Quantum\Factory;
@@ -18,7 +18,7 @@ use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Exceptions\ServiceException;
 use Quantum\Factory\ModelFactory;
 use Quantum\Helpers\Helper;
-use Quantum\Mvc\Qt_Service;
+use Quantum\Mvc\QtService;
 
 /**
  * Class ServiceFactory
@@ -27,77 +27,48 @@ use Quantum\Mvc\Qt_Service;
 class ServiceFactory
 {
 
-    private static $initialized = [];
-
     /**
-     * @var object
+     * Instantiated services 
+     * @var array 
      */
-    private $service;
+    private $instantiated = [];
 
     /**
-     * Get
-     *
      * Creates and initialize the service once
-     *
      * @param string $serviceClass
-     * @return $this
-     * @throws \Exception
+     * @return QtService
+     * @throws ServiceException
      */
-    public function get($serviceClass): Qt_Service
+    public function get($serviceClass): QtService
     {
-        $this->service = $this->getInstance($serviceClass);
-
-        if (method_exists($this->service, '__init')) {
-            $this->initOnce($serviceClass);
-        }
-
-        return $this->service;
+        return $this->locate($serviceClass);
     }
 
     /**
-     * Create
-     * 
      * Creates and initialize the service
-     * 
      * @param string $serviceClass
-     * @return Qt_Service
+     * @return QtService
      */
-    public function create($serviceClass): Qt_Service
+    public function create($serviceClass): QtService
     {
-        $this->service = $this->getInstance($serviceClass);
-
-        if (method_exists($this->service, '__init')) {
-            $this->service->__init(...$this->getArgs('__init'));
-        }
-
-        return $this->service;
+        return $this->instantiate($serviceClass);
     }
 
     /**
-     * Proxy
-     * 
      * Creates and initialize the service once,
      * directs the method calls in chain to service 
-     * 
      * @param string $serviceClass
      * @return \self
      */
     public function proxy($serviceClass): self
     {
-        $this->service = $this->getInstance($serviceClass);
-
-        if (method_exists($this->service, '__init')) {
-            $this->initOnce($serviceClass);
-        }
+        $this->locate($serviceClass);
 
         return $this;
     }
 
     /**
-     * __call magic
-     *
      * Allows to call service methods
-     *
      * @param string $methodName
      * @param array $arguments
      * @return mixed
@@ -112,34 +83,57 @@ class ServiceFactory
     }
 
     /**
-     * Init Once
-     * 
-     * Initialize the service once
-     * 
+     * Locates the service
      * @param string $serviceClass
+     * @return QtService
      */
-    private function initOnce($serviceClass)
+    private function locate($serviceClass): QtService
     {
-        if (!isset(self::$initialized[$serviceClass]) || (isset(self::$initialized[$serviceClass]) && !self::$initialized[$serviceClass])) {
-            $this->service->__init(...$this->getArgs('__init'));
-            self::$initialized[$serviceClass] = true;
+        if (isset($this->instantiated[$serviceClass])) {
+            return $this->instantiated[$serviceClass];
         }
+
+        return $this->instantiate($serviceClass);
     }
 
     /**
-     * Get Args
-     * 
+     * Instantiates the service
+     * @param string $serviceClass
+     * @return QtService
+     * @throws ServiceException
+     */
+    private function instantiate($serviceClass): QtService
+    {
+        if (!class_exists($serviceClass)) {
+            throw new ServiceException(Helper::_message(ExceptionMessages::SERVICE_NOT_FOUND, $serviceClass));
+        }
+
+        $service = new $serviceClass();
+
+        if (!$service instanceof QtService) {
+            throw new ServiceException(Helper::_message(ExceptionMessages::NOT_INSTANCE_OF_SERVICE, [$serviceClass, QtService::class]));
+        }
+
+        $this->instantiated[$serviceClass] = $service;
+
+        if (method_exists($service, '__init')) {
+            $service->__init(...$this->getArgs($service, '__init'));
+        }
+
+        return $service;
+    }
+
+    /**
      * Gets arguments
-     * 
      * @param string $methodName
      * @param array $arguments
      * @return array
      */
-    private function getArgs($methodName, $arguments = [])
+    private function getArgs(QtService $service, $methodName, $arguments = [])
     {
         $args = [];
 
-        $reflaction = new \ReflectionMethod($this->service, $methodName);
+        $reflaction = new \ReflectionMethod($service, $methodName);
         $params = $reflaction->getParameters();
 
         foreach ($params as $param) {
@@ -154,29 +148,6 @@ class ServiceFactory
         }
 
         return $args;
-    }
-
-    /**
-     * Get Instance
-     * 
-     * Gets service instance 
-     * 
-     * @param string $serviceClass
-     * @return Qt_Service
-     * @throws ServiceException
-     */
-    private function getInstance($serviceClass)
-    {
-        if (!class_exists($serviceClass)) {
-            throw new ServiceException(Helper::_message(ExceptionMessages::SERVICE_NOT_FOUND, $serviceClass));
-        }
-        $service = new $serviceClass();
-
-        if (!$service instanceof Qt_Service) {
-            throw new ServiceException(Helper::_message(ExceptionMessages::NOT_INSTANCE_OF_SERVICE, [$serviceClass, Qt_Service::class]));
-        }
-
-        return $service;
     }
 
 }
