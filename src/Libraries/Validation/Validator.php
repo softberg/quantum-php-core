@@ -525,7 +525,7 @@ class Validator
             }
 
             if (function_exists('checkdnsrr') && function_exists('idn_to_ascii')) {
-                if (checkdnsrr(idn_to_ascii($url), 'A') === false) {
+                if (checkdnsrr(idn_to_ascii($url, 0, INTL_IDNA_VARIANT_UTS46), 'A') === false) {
                     $error = true;
                 }
             } else {
