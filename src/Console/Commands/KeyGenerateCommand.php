@@ -9,46 +9,41 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 1.7.0
+ * @since 2.0.0
  */
 
 namespace Quantum\Console\Commands;
 
-use Quantum\Console\Qt_Command;
+use Quantum\Console\QtCommand;
 use Quantum\Environment\Environment;
 
 /**
  * Class KeyGenerateCommand
  * @package Quantum\Console\Commands
  */
-class KeyGenerateCommand extends Qt_Command
+class KeyGenerateCommand extends QtCommand
 {
+
     /**
      * Command name
-     *
      * @var string
      */
     protected $name = 'core:key';
 
     /**
      * Command description
-     *
      * @var string
      */
     protected $description = 'Generates and stores the application key';
 
     /**
      * Command help text
-     *
      * @var string
      */
     protected $help = 'The command will generate APP_KEY and store in .env file';
 
     /**
-     * Command argument
-     *
      * The length of the key that will be generated (default 32)
-     *
      * @var array
      */
     protected $options = [
@@ -57,7 +52,6 @@ class KeyGenerateCommand extends Qt_Command
 
     /**
      * Executes the command and stores the generated key to .env file
-     *
      * @return mixed|void
      * @throws \Exception
      */
@@ -74,7 +68,6 @@ class KeyGenerateCommand extends Qt_Command
 
     /**
      * Generates random string
-     *
      * @return string
      * @throws \Exception
      */

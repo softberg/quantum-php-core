@@ -14,13 +14,13 @@
 
 namespace Quantum\Console\Commands;
 
-use Quantum\Console\Qt_Command;
+use Quantum\Console\QtCommand;
 
 /**
  * Class WelcomeCommand
  * @package Quantum\Console\Commands
  */
-class WelcomeCommand extends Qt_Command
+class WelcomeCommand extends QtCommand
 {
 
     /**
