@@ -122,9 +122,9 @@ class HelperTest extends TestCase
 
     public function testAsset()
     {
-        $this->assertSame(asset('style.css'), ASSETS_DIR . DS . 'style.css');
+        $this->assertSame(asset('style.css'), asset_url() . '/style.css');
 
-        $this->assertSame(asset('js/script.js'), ASSETS_DIR . DS . 'js/script.js');
+        $this->assertSame(asset('js/script.js'), asset_url() . '/js/script.js');
     }
 
     public function testPublishedAssets()
@@ -144,10 +144,10 @@ class HelperTest extends TestCase
         $assetManager->publishCSS();
         $assetManager->publishJS();
 
-        $expectedOutput = '<link rel="stylesheet" type="text/css" href="' . ASSETS_DIR . DS . 'fakepath/style.css">' . PHP_EOL .
-                '<link rel="stylesheet" type="text/css" href="' . ASSETS_DIR . DS . 'fakepath/responsive.css">' . PHP_EOL .
-                '<script src="' . ASSETS_DIR . DS . 'fakepath/bootstrap.js"></script>' . PHP_EOL .
-                '<script src="' . ASSETS_DIR . DS . 'fakepath/bootstrap-datepicker.min.js"></script>' . PHP_EOL;
+        $expectedOutput = '<link rel="stylesheet" type="text/css" href="' . asset_url() . '/fakepath/style.css">' . PHP_EOL .
+                '<link rel="stylesheet" type="text/css" href="' . asset_url() . '/fakepath/responsive.css">' . PHP_EOL .
+                '<script src="' . asset_url() . '/fakepath/bootstrap.js"></script>' . PHP_EOL .
+                '<script src="' . asset_url() . '/fakepath/bootstrap-datepicker.min.js"></script>' . PHP_EOL;
 
 
         $this->expectOutputString($expectedOutput);

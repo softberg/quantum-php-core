@@ -49,7 +49,7 @@ class CurlTest extends TestCase
             'User-Agent' => 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'
         ]);
 
-        $this->curl->run('http://example.com');
+        $this->curl->run('https://httpbin.org');
 
         $this->assertIsObject($this->curl->getRequestHeaders());
 
@@ -73,7 +73,7 @@ class CurlTest extends TestCase
 
     public function testGetRresponseBody()
     {
-        $this->curl->run('https://example.com');
+        $this->curl->run('https://httpbin.org');
 
         $this->assertNotNull($this->curl->getResponseBody());
 
@@ -82,13 +82,13 @@ class CurlTest extends TestCase
 
     public function testCurlInfo()
     {
-        $this->curl->run('https://example.com');
+        $this->curl->run('https://httpbin.org');
 
         $this->assertIsArray($this->curl->info());
 
         $this->assertEquals(200, $this->curl->info(CURLINFO_HTTP_CODE));
 
-        $this->assertEquals('https://example.com', $this->curl->info(CURLINFO_EFFECTIVE_URL));
+        $this->assertEquals('https://httpbin.org', $this->curl->info(CURLINFO_EFFECTIVE_URL));
 
         $this->assertFalse($this->curl->info(CURLOPT_PRIVATE));
     }
