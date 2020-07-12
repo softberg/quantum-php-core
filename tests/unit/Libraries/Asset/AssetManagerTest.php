@@ -13,6 +13,26 @@ class AssetManagerTest extends TestCase
     public function setUp(): void
     {
         $this->assetManager = new AssetManager();
+
+        $reflectionClass = new \ReflectionClass(AssetManager::class);
+
+        $reflectionPropertyCssAssetStore = $reflectionClass->getProperty('cssAssetStore');
+
+        $reflectionPropertyCssAssetStore->setAccessible(true);
+
+        $reflectionPropertyCssAssetStore->setValue([
+            'ordered' => [],
+            'unordered' => [],
+        ]);
+        
+        $reflectionPropertyJsAssetStore = $reflectionClass->getProperty('jsAssetStore');
+
+        $reflectionPropertyJsAssetStore->setAccessible(true);
+
+        $reflectionPropertyJsAssetStore->setValue([
+            'ordered' => [],
+            'unordered' => [],
+        ]);
     }
 
     public function testRegisterAndPublishCSS()
