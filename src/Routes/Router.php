@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 1.0.0
+ * @since 2.0.0
  */
 
 namespace Quantum\Routes;
@@ -17,7 +17,8 @@ namespace Quantum\Routes;
 use Quantum\Exceptions\RouteException;
 use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Hooks\HookManager;
-use Quantum\Hooks\HookController;
+use Quantum\Http\Response;
+use Quantum\Http\Request;
 
 /**
  * Router Class
@@ -25,108 +26,89 @@ use Quantum\Hooks\HookController;
  * Router class parses URIS and determine routing
  *
  * @package Quantum
- * @subpackage Routes
  * @category Routes
  */
 class Router extends RouteController
 {
 
     /**
+     * Request instance
+     * @var Request;
+     */
+    private $request;
+
+    /**
+     * Response instance
+     * @var Response;
+     */
+    private $response;
+
+    /**
      * List of routes
-     *
      * @var array
      */
-    public $routes = [];
+    private $routes = [];
 
     /**
+     * matched routes
      * @var array
      */
-    private $matchedUris = [];
+    private $matchedRoutes = [];
 
     /**
-     * @var array
-     */
-    private $routesGroups = [];
-
-    /**
+     * Matched URI
      * @var string
      */
-    private $requestUri = '';
+    private $matchedUri = null;
 
     /**
-     * Find Route
-     *
-     * Matches any routes that may exists in config/routes.php file of specific module
+     * Router constructor.
+     * @param Request $request
+     */
+    public function __construct(Request $request, Response $response)
+    {
+        $this->request = $request;
+        $this->response = $response;
+    }
+
+    /**
+     * Finds the route defined in config/routes.php file of specific module
      * against the URI to determine current route and current module
-     *
-     * @return void
-     * @throws RouteException When repetitive route was found
+     * @throws RouteException
      */
     public function findRoute()
     {
-        if (isset($_SERVER['REQUEST_URI'])) {
+        $this->resetRoutes();
 
-            $this->findStraightMatches();
+        $uri = $this->request->getUri();
 
-            if (!$this->matchedUris) {
-                $this->findPatternMatches();
-            }
+        $this->findStraightMatches($uri);
 
-            if (!$this->matchedUris) {
-                self::$currentRoute = null;
-                HookManager::call('pageNotFound');
-            }
-
-            if ($this->matchedUris) {
-                if (count($this->routesGroups)) {
-
-                    $this->routesGroups[0]['uri'] = $this->requestUri ?? '';
-
-                    self::$currentModule = $this->routesGroups[0]['module'];
-
-                    for ($i = 0; $i < count($this->routesGroups) - 1; $i++) {
-                        for ($j = $i + 1; $j < count($this->routesGroups); $j++) {
-                            if ($this->routesGroups[$i]['method'] == $this->routesGroups[$j]['method']) {
-                                self::$currentRoute = null;
-                                throw new RouteException(_message(ExceptionMessages::REPETITIVE_ROUTE_SAME_METHOD, $this->routesGroups[$j]['method']));
-                                break 2;
-                            }
-                            if ($this->routesGroups[$i]['module'] != $this->routesGroups[$j]['module']) {
-                                self::$currentRoute = null;
-                                throw new RouteException(ExceptionMessages::REPETITIVE_ROUTE_DIFFERENT_MODULES);
-                                break 2;
-                            }
-                        }
-                    }
-
-                    foreach ($this->routesGroups as $route) {
-                        if (strpos($route['method'], '|') !== false) {
-                            if (in_array($_SERVER['REQUEST_METHOD'], explode('|', $route['method']))) {
-                                self::$currentRoute = $route;
-                                break;
-                            }
-                        } else if ($_SERVER['REQUEST_METHOD'] == $route['method']) {
-                            self::$currentRoute = $route;
-                            break;
-                        }
-                    }
-                } else {
-                    self::$currentModule = $this->routesGroups[0]['module'];
-                    self::$currentRoute = $this->routesGroups[0];
-                }
-            }
-
-            HookManager::call('handleHeaders');
-
-            if ($_SERVER['REQUEST_METHOD'] != 'OPTIONS') {
-                $this->checkMethod();
-            }
+        if (!count($this->matchedRoutes)) {
+            $this->findPatternMatches($uri);
         }
+
+        if (!count($this->matchedRoutes)) {
+            HookManager::call('pageNotFound', $this->response);
+        }
+
+        if (count($this->matchedRoutes) > 1) {
+            $this->checkCollision();
+        }
+
+        $matchedRoute = current($this->matchedRoutes);
+
+        if ($this->request->getMethod() != 'OPTIONS') {
+            $this->checkMethod($matchedRoute);
+        }
+
+        $matchedRoute['uri'] = $this->request->getUri();
+
+        parent::$currentRoute = $matchedRoute;
     }
 
     /**
      * Set Routes
-     * 
      * @param array $routes
      */
     public function setRoutes($routes)
@@ -136,7 +118,6 @@ class Router extends RouteController
 
     /**
      * Get Routes
-     * 
      * @return array
      */
     public function getRoutes()
@@ -144,76 +125,95 @@ class Router extends RouteController
         return $this->routes;
     }
 
+    private function resetRoutes()
+    {
+        parent::$currentRoute = null;
+        $this->matchedUri = null;
+        $this->matchedRoutes = [];
+    }
+
     /**
      * Finds straight matches
-     * 
      * @return void
      */
-    private function findStraightMatches()
+    private function findStraightMatches($uri)
     {
-        $this->requestUri = trim(urldecode(preg_replace('/[?]/', '', $_SERVER['REQUEST_URI'])), '/');
+        $requestUri = trim(urldecode(preg_replace('/[?]/', '', $uri)), '/');
 
         foreach ($this->routes as $route) {
-            if ($this->requestUri == trim($route['route'], '/')) {
+            if ($requestUri == trim($route['route'], '/')) {
                 $route['args'] = [];
-                $this->matchedUris[] = $route['route'];
-                $this->routesGroups[] = $route;
+                $this->matchedUri = $route['route'];
+                $this->matchedRoutes[] = $route;
             }
         }
     }
 
     /**
      * Finds matches by pattern
-     * 
      * @return void
      */
-    private function findPatternMatches()
+    private function findPatternMatches($uri)
     {
-        $this->requestUri = urldecode(parse_url($_SERVER['REQUEST_URI'])['path']);
+        $requestUri = urldecode(parse_url($uri)['path']);
 
         foreach ($this->routes as $route) {
             $pattern = trim($route['route'], '/');
             $pattern = str_replace('/', '\/', $pattern);
-            $pattern = preg_replace_callback('/(\\\\\/)*\[(:num)(:([0-9]+))*\](\?)?/', array($this, 'getPattern'), $pattern);
-            $pattern = preg_replace_callback('/(\\\\\/)*\[(:alpha)(:([0-9]+))*\](\?)?/', array($this, 'getPattern'), $pattern);
-            $pattern = preg_replace_callback('/(\\\\\/)*\[(:any)(:([0-9]+))*\](\?)?/', array($this, 'getPattern'), $pattern);
+            $pattern = preg_replace_callback('/(\\\\\/)*\[(:num)(:([0-9]+))*\](\?)?/', [$this, 'getPattern'], $pattern);
+            $pattern = preg_replace_callback('/(\\\\\/)*\[(:alpha)(:([0-9]+))*\](\?)?/', [$this, 'getPattern'], $pattern);
+            $pattern = preg_replace_callback('/(\\\\\/)*\[(:any)(:([0-9]+))*\](\?)?/', [$this, 'getPattern'], $pattern);
 
             $pattern = mb_substr($pattern, 0, 4) != '(\/)' ? '(\/)?' . $pattern : $pattern;
 
-            preg_match("/^" . $pattern . "$/u", $this->requestUri, $matches);
+            preg_match("/^" . $pattern . "$/u", $requestUri, $matches);
 
             if (count($matches)) {
-                $this->matchedUris = $matches[0] ?: '/';
+                $this->matchedUri = reset($matches) ?: '/';
                 array_shift($matches);
                 $route['args'] = array_diff($matches, ['', '/']);
                 $route['pattern'] = $pattern;
-                $this->routesGroups[] = $route;
+                $this->matchedRoutes[] = $route;
             }
         }
     }
 
     /**
-     * Check Method
-     * 
-     * Matches the http method defined in config/routes.php file of specific module
-     * against request method to determine current route
-     *
-     * @throws RouteException When Http method is other the defined in config/routes.php of sepcific module
+     * Checks the route collisions
+     * @throws RouteException
      */
-    private function checkMethod()
+    private function checkCollision()
     {
-        if (strpos(self::$currentRoute['method'], '|') !== false) {
-            if (!in_array($_SERVER['REQUEST_METHOD'], explode('|', self::$currentRoute['method']))) {
-                throw new RouteException(_message(ExceptionMessages::INCORRECT_METHOD, $_SERVER['REQUEST_METHOD']));
+        for ($i = 0; $i < count($this->matchedRoutes) - 1; $i++) {
+            for ($j = $i + 1; $j < count($this->matchedRoutes); $j++) {
+                if ($this->matchedRoutes[$i]['method'] == $this->matchedRoutes[$j]['method']) {
+                    throw new RouteException(_message(ExceptionMessages::REPETITIVE_ROUTE_SAME_METHOD, $this->matchedRoutes[$j]['method']));
+                }
+                if ($this->matchedRoutes[$i]['module'] != $this->matchedRoutes[$j]['module']) {
+                    throw new RouteException(ExceptionMessages::REPETITIVE_ROUTE_DIFFERENT_MODULES);
+                }
             }
-        } else if ($_SERVER['REQUEST_METHOD'] != self::$currentRoute['method']) {
-            throw new RouteException(_message(ExceptionMessages::INCORRECT_METHOD, $_SERVER['REQUEST_METHOD']));
         }
     }
 
     /**
-     * Finds url pattern
-     *
+     * Checks the request method against defined route method
+     * @param array $matchedRoute
+     * @throws RouteException
+     */
+    private function checkMethod($matchedRoute)
+    {
+        if (strpos($matchedRoute['method'], '|') !== false) {
+            if (!in_array($this->request->getMethod(), explode('|', $matchedRoute['method']))) {
+                throw new RouteException(_message(ExceptionMessages::INCORRECT_METHOD, $this->request->getMethod()));
+            }
+        } else if ($this->request->getMethod() != $matchedRoute['method']) {
+            throw new RouteException(_message(ExceptionMessages::INCORRECT_METHOD, $this->request->getMethod()));
+        }
+    }
+
+    /**
+     * Finds URL pattern
      * @param string $matches
      * @return string
      */

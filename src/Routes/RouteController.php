@@ -9,12 +9,10 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 1.0.0
+ * @since 2.0.0
  */
 
 namespace Quantum\Routes;
-
-use Quantum\Exceptions\RouteException;
 
 /**
  * RouterController Class
@@ -22,23 +20,24 @@ use Quantum\Exceptions\RouteException;
  * Base abstract class
  * 
  * @package Quantum
- * @subpackage Routes
  * @category Routes
  */
-
-abstract class RouteController {
+abstract class RouteController
+{
 
     /**
      * Contains current route information
-     * 
-     * @var mixed 
+     * @var array 
      */
-    public static $currentRoute = null;
-    
+    protected static $currentRoute = null;
+
     /**
-     * Contains current route information
-     * 
-     * @var mixed 
+     * Gets the current route
+     * @return array
      */
-    public static $currentModule = null;
+    public static function getCurrentRoute()
+    {
+        return self::$currentRoute;
+    }
+
 }
