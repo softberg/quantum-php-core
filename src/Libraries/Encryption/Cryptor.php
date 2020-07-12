@@ -9,12 +9,13 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 1.8.0
+ * @since 2.0.0
  */
 
 namespace Quantum\Libraries\Encryption;
 
 use Quantum\Exceptions\ExceptionMessages;
+use Quantum\Exceptions\CryptorException;
 
 /**
  * Class Cryptor
@@ -24,52 +25,64 @@ class Cryptor
 {
 
     /**
+     * Asymmetric factor
      * @var boolean 
      */
     private $asymmetric = false;
 
     /**
+     * Application key
      * @var string 
      */
     private $appKey;
 
     /**
+     * Public and private keys
      * @var array 
      */
     private $keys = [];
 
     /**
+     * Digest algorithm
      * @var string
      */
     private $digestAlgorithm = 'SHA512';
 
     /**
+     * Key type
      * @var integer 
      */
     private $privateKeyType = OPENSSL_KEYTYPE_RSA;
 
     /**
+     * Cipher method
      * @var string 
      */
     private $cipherMethod = 'aes-256-cbc';
 
     /**
+     * Key bites
      * @var integer 
      */
     private $privateKeyBits = 1024;
 
     /**
+     * The Initialization Vector 
+     * @var string 
+     */
+    private $iv = null;
+
+    /**
      * Cryptor constructor
-     * 
      * @param boolean $asymmetric
      * @return $this
-     * @throws \Exception
+     * @throws CryptorException
      */
     public function __construct($asymmetric = false)
     {
         if (!$asymmetric) {
             if (!env('APP_KEY')) {
-                throw new \Exception(ExceptionMessages::APP_KEY_MISSING);
+                throw new CryptorException(ExceptionMessages::APP_KEY_MISSING);
             }
             $this->appKey = env('APP_KEY');
         } else {
@@ -90,53 +103,51 @@ class Cryptor
     }
 
     /**
-     * Get Public Key
-     * 
+     * Gets the Public Key
      * @return string
-     * @throws \Exception
+     * @throws CryptorException
      */
     public function getPublicKey()
     {
         if (!isset($this->keys['public'])) {
-            throw new \Exception(ExceptionMessages::OPENSSL_PUBLIC_KEY_NOT_CREATED);
+            throw new CryptorException(ExceptionMessages::OPENSSL_PUBLIC_KEY_NOT_CREATED);
         }
 
         return $this->keys['public'];
     }
 
     /**
-     * Get Private Key
-     * 
+     * Gets the Private Key
      * @return string
-     * @throws \Exception
+     * @throws CryptorException
      */
     public function getPrivateKey()
     {
         if (!isset($this->keys['private'])) {
-            throw new \Exception(ExceptionMessages::OPENSSL_PRIVATE_KEY_NOT_CREATED);
+            throw new CryptorException(ExceptionMessages::OPENSSL_PRIVATE_KEY_NOT_CREATED);
         }
 
         return $this->keys['private'];
     }
 
     /**
-     * Encrypt
-     * 
+     * Encrypts the plain text
      * @param string $plain
      * @param string|null $publicKey
      * @return string
-     * @throws \Exception
+     * @throws CryptorException
      */
     public function encrypt($plain, $publicKey = null)
     {
         if (!$this->isAsymmetric()) {
-            $iv = $this->iv();
-            $encrypted = openssl_encrypt($plain, $this->cipherMethod, $this->appKey, $options = 0, $iv);
+            $this->iv = $this->iv();
+            
+            $encrypted = openssl_encrypt($plain, $this->cipherMethod, $this->appKey, $options = 0, $this->iv);
 
-            return base64_encode(base64_encode($encrypted) . '::' . base64_encode($iv));
+            return base64_encode(base64_encode($encrypted) . '::' . base64_encode($this->iv));
         } else {
             if (!$publicKey) {
-                throw new \Exception(ExceptionMessages::OPENSSL_PUBLIC_KEY_NOT_PROVIDED);
+                throw new CryptorException(ExceptionMessages::OPENSSL_PUBLIC_KEY_NOT_PROVIDED);
             }
 
             openssl_public_encrypt($plain, $encrypted, $publicKey);
@@ -145,12 +156,11 @@ class Cryptor
     }
 
     /**
-     * Decrypt
-     * 
+     * Decrypts the encrypted text
      * @param string $encrypted
      * @param string|null $privateKey
      * @return string
-     * @throws \Exception
+     * @throws CryptorException
      */
     public function decrypt($encrypted, $privateKey = null)
     {
@@ -162,7 +172,7 @@ class Cryptor
             $data = explode('::', base64_decode($encrypted), 2);
 
             if (!$data || count($data) < 2) {
-                throw new \Exception(ExceptionMessages::OPENSSEL_INVALID_CIPHER);
+                throw new CryptorException(ExceptionMessages::OPENSSEL_INVALID_CIPHER);
             }
 
             $encrypted = base64_decode($data[0]);
@@ -171,7 +181,7 @@ class Cryptor
             return openssl_decrypt($encrypted, $this->cipherMethod, $this->appKey, $options = 0, $iv);
         } else {
             if (!$privateKey) {
-                throw new \Exception(ExceptionMessages::OPENSSL_PRIVATE_KEY_NOT_PROVIDED);
+                throw new CryptorException(ExceptionMessages::OPENSSL_PRIVATE_KEY_NOT_PROVIDED);
             }
 
             openssl_private_decrypt(base64_decode($encrypted), $decrypted, $privateKey);
@@ -180,10 +190,28 @@ class Cryptor
     }
 
     /**
-     * Generate Key Pair
-     * 
+     * Gets the Initialization Vector used
+     * @return string
+     */
+    public function getIV()
+    {
+        return $this->iv;
+    }
+
+    /**
+     * Generates the Initialization Vector 
+     * @return string
+     */
+    private function iv()
+    {
+        $length = openssl_cipher_iv_length($this->cipherMethod);
+        return openssl_random_pseudo_bytes($length);
+    }
+
+    /**
+     * Generates Key Pair
      * @return void
-     * @throws \Exception
+     * @throws CryptorException
      */
     private function generateKeyPair()
     {
@@ -194,22 +222,11 @@ class Cryptor
         ]);
 
         if (!$resource) {
-            throw new \Exception(ExceptionMessages::OPENSSEL_CONFIG_NOT_FOUND);
+            throw new CryptorException(ExceptionMessages::OPENSSEL_CONFIG_NOT_FOUND);
         }
 
         openssl_pkey_export($resource, $this->keys['private']);
         $this->keys['public'] = openssl_pkey_get_details($resource)['key'];
-    }
-
-    /**
-     * Initialization Vector 
-     * 
-     * @return string
-     */
-    private function iv()
-    {
-        $length = openssl_cipher_iv_length($this->cipherMethod);
-        return openssl_random_pseudo_bytes($length);
     }
 
 }
