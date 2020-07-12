@@ -14,6 +14,9 @@
 
 namespace Quantum\Http;
 
+use SimpleXMLElement;
+use DOMDocument;
+
 /**
  * Class HttpResponse
  * @package Quantum\Http
@@ -46,13 +49,19 @@ abstract class HttpResponse
      * Status code
      * @var int 
      */
-    private static $__statusCode = null;
+    private static $__statusCode = 200;
 
     /**
      * Response
      * @var array
      */
     private static $__response = [];
+
+    /**
+     * XML root element
+     * @var string 
+     */
+    private static $xmlRoot = '<data></data>';
 
     /**
      * Status texts
@@ -124,15 +133,13 @@ abstract class HttpResponse
     ];
 
     /**
-     * Sends HTTP headers and content
+     * Sends all response data to the client and finishes the request.
      */
     public static function send()
     {
         foreach (self::$__headers as $key => $value) {
             header($key . ': ' . $value);
         }
-
-        header('HTTP/1.1 ' . self::$__statusCode . ' ' . self::$statusTexts[self::$__statusCode]);
 
         echo self::getContent();
     }
@@ -152,6 +159,9 @@ abstract class HttpResponse
             case self::CONTENT_XML:
                 $content = self::arrayToXml(self::all());
                 break;
+            case self::CONTENT_HTML:
+                $content = self::get('_qt_rendered_view');
+                break;
             default :
                 break;
         }
@@ -162,7 +172,7 @@ abstract class HttpResponse
     public static function flush()
     {
         self::$__headers = [];
-        self::$__statusCode = null;
+        self::$__statusCode = 200;
         self::$__response = [];
     }
 
@@ -327,10 +337,12 @@ abstract class HttpResponse
         }
 
         self::setHeader('Location', $url);
+
+        self::send();
     }
 
     /**
-     * Outputs the JSON response
+     * Prepares the JSON response
      * @param array|null $data
      * @param int|null $code
      */
@@ -350,13 +362,15 @@ abstract class HttpResponse
     }
 
     /**
-     * Outputs the XML response
+     * Prepares the XML response
      * @param array|null $data
      * @param int|null $code
      */
-    public static function xml(array $data = null, $code = null)
+    public static function xml(array $data = null, $root = '<data></data>', $code = null)
     {
         self::setContentType(self::CONTENT_XML);
+
+        self::$xmlRoot = $root;
 
         if ($code) {
             self::setStatusCode($code);
@@ -370,26 +384,74 @@ abstract class HttpResponse
     }
 
     /**
-     * Transforms array to XML
-     * @param array $data
+     * Prepares the HTML content
+     * @param string $html
+     * @param int|null $code
      */
-    private static function arrayToXML(array $data)
+    public static function html(string $html, $code = null)
     {
-        $simpleXML = new \SimpleXMLElement('<?xml version="1.0"?><data></data>');
+        self::setContentType(self::CONTENT_HTML);
 
-        foreach ($data as $key => $value) {
+        if ($code) {
+            self::setStatusCode($code);
+        }
+
+        self::$__response['_qt_rendered_view'] = $html;
+    }
+
+    /**
+     * Transforms array to XML
+     * @param array $arr
+     * @param string $root
+     * @return string
+     */
+    private static function arrayToXML(array $arr)
+    {
+//        dump(['<data></data>', self::$xmlRoot]);
+        
+        $simpleXML = new SimpleXMLElement(self::$xmlRoot);
+        self::composeXML($arr, $simpleXML);
+
+        $dom = new DOMDocument();
+        $dom->loadXML($simpleXML->asXML());
+        $dom->formatOutput = true;
+        return $dom->saveXML();
+    }
+
+    private static function composeXML(array $arr, &$simpleXML)
+    {
+        foreach ($arr as $key => $value) {
             if (is_numeric($key)) {
                 $key = 'item' . $key;
             }
+
+            $tag = $key;
+            $attributes = null;
+
+            if (strpos($key, '@') !== false) {
+                list($tag, $attributes) = explode('@', $key);
+                $attributes = json_decode($attributes);
+            }
+
             if (is_array($value)) {
-                $subnode = $simpleXML->addChild($key);
-                self::arrayToXML($value, $subnode);
+                $child = $simpleXML->addChild($tag);
+                if ($attributes) {
+                    foreach ($attributes as $attrKey => $attrVal) {
+                        $child->addAttribute($attrKey, $attrVal);
+                    }
+                }
+
+                self::composeXML($value, $child);
             } else {
-                $simpleXML->addChild("$key", htmlspecialchars("$value"));
+                $child = $simpleXML->addChild($tag, htmlspecialchars($value));
+
+                if ($attributes) {
+                    foreach ($attributes as $attrKey => $attrVal) {
+                        $child->addAttribute($attrKey, $attrVal);
+                    }
+                }
             }
         }
-
-        return $simpleXML->asXML();
     }
 
 }

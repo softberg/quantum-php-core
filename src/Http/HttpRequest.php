@@ -16,7 +16,7 @@ namespace Quantum\Http;
 
 use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Exceptions\RequestException;
-use Quantum\Libraries\Environment\Server;
+use Quantum\Environment\Server;
 use Quantum\Bootstrap;
 
 /**
@@ -54,7 +54,7 @@ abstract class HttpRequest
      * Scheme
      * @var string 
      */
-    private static $__scheme = null;
+    private static $__protocol = null;
 
     /**
      * Host name
@@ -106,7 +106,7 @@ abstract class HttpRequest
 
         self::$__method = self::$server->method();
 
-        self::$__scheme = self::$server->scheme();
+        self::$__protocol = self::$server->protocol();
 
         self::$__host = self::$server->host();
 
@@ -125,7 +125,46 @@ abstract class HttpRequest
                 self::getRawInputs()
         );
 
-        self::$__files = self::handleFiles();
+        self::$__files = self::handleFiles($_FILES);
+    }
+
+    /**
+     * Creates new request for internal use
+     * @param string $method
+     * @param string $url
+     * @param array|null $file
+     */
+    public static function create(string $method, string $url, array $data = null, array $file = null)
+    {
+        $parsed = parse_url($url);
+
+        self::setMethod($method);
+
+        if (isset($parsed['scheme'])) {
+            self::setProtocol($parsed['scheme']);
+        }
+
+        if (isset($parsed['host'])) {
+            self::setHost($parsed['host']);
+        }
+
+        if (isset($parsed['port'])) {
+            self::setPort($parsed['port']);
+        }
+        if (isset($parsed['path'])) {
+            self::setUri($parsed['path']);
+        }
+        if (isset($parsed['query'])) {
+            self::setQuery($parsed['query']);
+        }
+
+        if ($data) {
+            self::$__request = $data;
+        }
+
+        if ($file) {
+            self::$__files = self::handleFiles($file);
+        }
     }
 
     /**
@@ -136,7 +175,7 @@ abstract class HttpRequest
         self::$__headers = [];
         self::$__request = [];
         self::$__files = [];
-        self::$__scheme = null;
+        self::$__protocol = null;
         self::$__host = null;
         self::$__port = null;
         self::$__uri = null;
@@ -167,21 +206,21 @@ abstract class HttpRequest
     }
 
     /**
-     * Gets the scheme
+     * Gets the protocol
      * @return string
      */
-    public static function getScheme()
+    public static function getProtocol()
     {
-        return self::$__scheme;
+        return self::$__protocol;
     }
 
     /**
-     * Sets the scheme
-     * @param string $scheme
+     * Sets the protocol
+     * @param string $protocol
      */
-    public static function setScheme(string $scheme)
+    public static function setProtocol(string $protocol)
     {
-        self::$__scheme = $scheme;
+        self::$__protocol = $protocol;
     }
 
     /**
@@ -257,41 +296,6 @@ abstract class HttpRequest
     }
 
     /**
-     * Creates new request for internal use
-     * @param string $method
-     * @param string $url
-     * @param array|null $file
-     */
-    public static function create(string $method, string $url, array $file = null)
-    {
-        $parsed = parse_url($url);
-
-        self::setMethod($method);
-
-        if (isset($parsed['scheme'])) {
-            self::setScheme($parsed['scheme']);
-        }
-
-        if (isset($parsed['host'])) {
-            self::setHost($parsed['host']);
-        }
-
-        if (isset($parsed['port'])) {
-            self::setPort($parsed['port']);
-        }
-        if (isset($parsed['path'])) {
-            self::setUri($parsed['path']);
-        }
-        if (isset($parsed['query'])) {
-            self::setQuery($parsed['query']);
-        }
-
-        if ($file) {
-            self::$__files = $file;
-        }
-    }
-
-    /**
      * Sets new key/value pair into request
      * @param string $key
      * @param mixed $value
@@ -315,11 +319,24 @@ abstract class HttpRequest
      * Retrieves data from request by given key
      * @param string $key
      * @param string $default
+     * @param bool $raw
      * @return mixed
      */
-    public static function get($key, $default = null)
+    public static function get($key, $default = null, $raw = false)
     {
-        return self::has($key) ? self::$__request[$key] : $default;
+        $data = $default;
+
+        if (self::has($key)) {
+            if ($raw) {
+                $data = self::$__request[$key];
+            } else {
+                $data = is_array(self::$__request[$key]) ?
+                        filter_var_array(self::$__request[$key], FILTER_SANITIZE_STRING) :
+                        filter_var(self::$__request[$key], FILTER_SANITIZE_STRING);
+            }
+        }
+
+        return $data;
     }
 
     /**
@@ -328,7 +345,7 @@ abstract class HttpRequest
      */
     public static function all()
     {
-        return self::$__request;
+        return array_merge(self::$__request, self::$__files);
     }
 
     /**
@@ -373,7 +390,7 @@ abstract class HttpRequest
      */
     public static function setHeader($key, $value)
     {
-        self::$__headers[strtoupper($key)] = $value;
+        self::$__headers[$key] = $value;
     }
 
     /**
@@ -453,8 +470,8 @@ abstract class HttpRequest
 
         if (self::has('token')) {
             $csrfToken = self::get('token');
-        } elseif (self::hasHeader('X-CSRF-TOKEN')) {
-            $csrfToken = self::getHeader('X-CSRF-TOKEN');
+        } elseif (self::hasHeader('X-csrf-token')) {
+            $csrfToken = self::getHeader('X-csrf-token');
         }
 
         return $csrfToken;
@@ -468,8 +485,8 @@ abstract class HttpRequest
     {
         $bearerToken = null;
 
-        if (self::hasHeader('AUTHORIZATION')) {
-            if (preg_match('/Bearer\s(\S+)/', self::getHeader('AUTHORIZATION'), $matches)) {
+        if (self::hasHeader('Authorization')) {
+            if (preg_match('/Bearer\s(\S+)/', self::getHeader('Authorization'), $matches)) {
                 $bearerToken = $matches[1];
             }
         }
@@ -491,15 +508,6 @@ abstract class HttpRequest
     }
 
     /**
-     * Gets the current URL
-     * @return string
-     */
-    public static function getCurrentUrl()
-    {
-        return self::getScheme() . '://' . self::getHost() . (self::getPort() ? ':' . self::getPort() : '') . '/' . self::getUri() . (self::getQuery() ? '?' . self::getQuery() : '');
-    }
-
-    /**
      * Gets the referrer
      * @return string
      */
@@ -517,7 +525,7 @@ abstract class HttpRequest
         $getParams = [];
 
         if (!empty($_GET)) {
-            $getParams = filter_input_array(INPUT_GET, FILTER_SANITIZE_STRING, FILTER_REQUIRE_ARRAY);
+            $getParams = filter_input_array(INPUT_GET, FILTER_DEFAULT, FILTER_REQUIRE_ARRAY);
         }
 
         return $getParams;
@@ -532,7 +540,7 @@ abstract class HttpRequest
         $postParams = [];
 
         if (!empty($_POST)) {
-            $postParams = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING, FILTER_REQUIRE_ARRAY);
+            $postParams = filter_input_array(INPUT_POST, FILTER_DEFAULT, FILTER_REQUIRE_ARRAY);
         }
 
         return $postParams;
@@ -546,9 +554,7 @@ abstract class HttpRequest
     {
         $inputParams = [];
 
-        if (self::$__method == 'PUT' ||
-                self::$__method == 'PATCH' ||
-                self::$__method == 'DELETE') {
+        if (in_array(self::$__method, ['PUT', 'PATCH', 'DELETE'])) {
 
             $input = file_get_contents('php://input');
 
@@ -571,33 +577,33 @@ abstract class HttpRequest
     }
 
     /**
-     * Get uploaded files
+     * Handles uploaded files
      */
-    private static function handleFiles()
+    private static function handleFiles($_files)
     {
-        if (!count($_FILES)) {
+        if (!count($_files)) {
             return [];
         }
 
-        $key = key($_FILES);
+        $key = key($_files);
 
         if ($key) {
-            if (!is_array($_FILES[$key]['name'])) {
-                return $_FILES;
+            if (!is_array($_files[$key]['name'])) {
+                return [$key => (object) $_files[$key]];
             } else {
-                $files = [];
-                
-                foreach ($_FILES[$key]['name'] as $index => $name) {
-                    $files[$key][$index] = [
-                        'name' => $name,
-                        'type' => $_FILES[$key]['type'][$index],
-                        'tmp_name' => $_FILES[$key]['tmp_name'][$index],
-                        'error' => $_FILES[$key]['error'][$index],
-                        'size' => $_FILES[$key]['size'][$index],
+                $formattedFiles = [];
+
+                foreach ($_files[$key]['name'] as $index => $name) {
+                    $formattedFiles[$key][$index] = (object) [
+                                'name' => $name,
+                                'type' => $_files[$key]['type'][$index],
+                                'tmp_name' => $_files[$key]['tmp_name'][$index],
+                                'error' => $_files[$key]['error'][$index],
+                                'size' => $_files[$key]['size'][$index],
                     ];
                 }
 
-                return $files;
+                return $formattedFiles;
             }
         }
     }
