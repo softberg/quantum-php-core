@@ -5,19 +5,19 @@ namespace Quantum\Test\Unit;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 use Quantum\Libraries\Config\Config;
+use Quantum\Loader\Loader;
 
 class ConfigTest extends TestCase
 {
 
-    private $loader;
-
+    private $loaderMock;
+    private $config;
     private $configData = [
         'langs' => ['en', 'es'],
         'lang_default' => 'en',
         'debug' => 'DEBUG',
         'test' => 'Testing'
     ];
-
     private $otherConfigData = [
         'more' => 'info',
         'preview' => 'yes',
@@ -25,7 +25,17 @@ class ConfigTest extends TestCase
 
     public function setUp(): void
     {
-        $this->loader = Mockery::mock('Quantum\Loader\Loader');
+        $loader = new Loader();
+
+        $loader->loadDir(dirname(__DIR__, 4) . DS . 'src' . DS . 'Helpers' . DS . 'functions');
+
+        $this->loaderMock = Mockery::mock('Quantum\Loader\Loader');
+
+        $this->loaderMock->shouldReceive('setup')->andReturn($this->loaderMock);
+
+        $this->config = Config::getInstance();
+
+        $this->config->flush();
     }
 
     public function tearDown(): void
@@ -35,71 +45,99 @@ class ConfigTest extends TestCase
 
     public function testConfigLoad()
     {
-        $this->assertEmpty(Config::getAll());
+        $this->assertEmpty($this->config->all());
 
-        $this->loader->shouldReceive('load')
-            ->andReturn($this->configData);
+        $this->loaderMock->shouldReceive('load')->andReturn($this->configData);
 
-        Config::load($this->loader);
+        $this->config->load($this->loaderMock);
 
-        $this->assertNotEmpty(Config::getAll());
+        $this->assertNotEmpty($this->config->all());
 
+        $this->assertIsArray($this->config->all());
     }
 
     public function testConfigImport()
     {
-        $this->loader->shouldReceive('load')
-            ->andReturn($this->otherConfigData);
+        $this->loaderMock->shouldReceive('load')->andReturn($this->otherConfigData);
 
-        Config::import($this->loader, 'other');
+        $this->config->import($this->loaderMock, 'other');
 
-        $this->assertEquals('info', Config::get('other.more'));
+        $this->assertEquals('info', $this->config->get('other.more'));
     }
 
     public function testConfigHas()
     {
-        $this->assertFalse(Config::has('foo'));
+        $this->loaderMock->shouldReceive('load')->andReturn($this->configData);
 
-        $this->assertTrue(Config::has('test'));
+        $this->config->load($this->loaderMock);
+
+        $this->assertFalse($this->config->has('foo'));
+
+        $this->assertTrue($this->config->has('test'));
     }
 
     public function testConfigGet()
     {
-        $this->assertEquals('Testing', Config::get('test'));
+        $this->loaderMock->shouldReceive('load')->andReturn($this->configData);
 
-        $this->assertEquals('Default Value', Config::get('not-exists', 'Default Value'));
+        $this->config->load($this->loaderMock);
+        
+        $this->assertEquals('Testing', $this->config->get('test'));
 
-        $this->assertNull(Config::get('not-exists'));
+        $this->assertEquals('Default Value', $this->config->get('not-exists', 'Default Value'));
 
+        $this->assertNull($this->config->get('not-exists'));
     }
 
     public function testConfigSet()
     {
-        $this->assertNull(Config::get('new-value'));
+        $this->loaderMock->shouldReceive('load')->andReturn($this->configData);
 
-        Config::set('new-value', 'New Value');
+        $this->config->load($this->loaderMock);
+        
+        $this->assertNull($this->config->get('new-value'));
 
-        $this->assertTrue(Config::has('new-value'));
+        $this->config->set('new-value', 'New Value');
 
-        $this->assertEquals('New Value', Config::get('new-value'));
+        $this->assertTrue($this->config->has('new-value'));
 
-        Config::set('other.nested', 'Nested Value');
+        $this->assertEquals('New Value', $this->config->get('new-value'));
 
-        $this->assertTrue(Config::has('other.nested'));
+        $this->config->set('other.nested', 'Nested Value');
 
-        $this->assertEquals('Nested Value', Config::get('other.nested'));
+        $this->assertTrue($this->config->has('other.nested'));
+
+        $this->assertEquals('Nested Value', $this->config->get('other.nested'));
     }
 
-    public function testConfigRemove()
+    public function testConfigDelete()
     {
-        $this->assertNotNull(Config::get('test'));
+        $this->loaderMock->shouldReceive('load')->andReturn($this->configData);
 
-        Config::remove('test');
+        $this->config->load($this->loaderMock);
+        
+        $this->assertNotNull($this->config->get('test'));
 
-        $this->assertFalse(Config::has('test'));
+        $this->config->delete('test');
 
-        $this->assertNull(Config::get('test'));
+        $this->assertFalse($this->config->has('test'));
+
+        $this->assertNull($this->config->get('test'));
     }
 
+    public function testConfigFlush()
+    {
+        $this->loaderMock->shouldReceive('load')->andReturn($this->configData);
+
+        $this->config->load($this->loaderMock);
+        
+        $this->assertNotEmpty($this->config->all());
+
+        $this->assertIsArray($this->config->all());
+
+        $this->config->flush();
+
+        $this->assertEmpty($this->config->all());
+    }
 
 }
