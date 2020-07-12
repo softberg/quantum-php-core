@@ -9,19 +9,20 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 1.4.0
+ * @since 2.0.0
  */
 
 namespace Quantum\Middleware;
 
 use Quantum\Http\Request;
 use Quantum\Http\Response;
+use Closure;
 
 /**
- * Class Qt_Middleware
+ * Class QtMiddleware
  * @package Quantum\Middleware
  */
-abstract class Qt_Middleware
+abstract class QtMiddleware
 {
 
     /**
@@ -30,9 +31,10 @@ abstract class Qt_Middleware
      * Applies the middleware
      *
      * @param Request $request
-     * @param \Closure $next
+     * @param Response $response
+     * @param Closure $next
      * @return mixed
      */
-    abstract public function apply(Request $request, Response $response, \Closure $next);
+    abstract public function apply(Request $request, Response $response, Closure $next);
 
 }
