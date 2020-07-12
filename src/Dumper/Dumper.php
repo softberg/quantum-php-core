@@ -48,7 +48,7 @@ class Dumper
      */
     public function dump($var, $die)
     {
-        if (get_config('debug') && !$die) {
+        if (config()->get('debug') && !$die) {
             $debugOutput = session()->get('_qt_debug_output') ?? [];
             array_push($debugOutput, $var);
             session()->set('_qt_debug_output', $debugOutput);
