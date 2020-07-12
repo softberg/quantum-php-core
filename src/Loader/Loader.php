@@ -9,16 +9,16 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 1.5.0
+ * @since 2.0.0
  */
 
 namespace Quantum\Loader;
 
 use Quantum\Libraries\Storage\FileSystem;
+use Quantum\Exceptions\LoaderException;
 
 /**
  * Loader Class
- *
  * @package Quantum
  * @category Loader
  */
@@ -27,63 +27,67 @@ class Loader
 
     /**
      * Current module
-     *
      * @var string
      */
     private $module;
 
     /**
      * Environment
-     *
      * @var string
      */
     private $env;
 
     /**
      * File name
-     *
      * @var string
      */
     private $fileName;
 
     /**
      * Hierarchical
-     *
      * @var bool
      */
     private $hierarchical;
 
     /**
      * Exception message
-     *
-     * @var string
      */
     private $exceptionMessage;
 
     /**
-     * File path to load
-     * @var string
+     * File System
+     * @var Quantum\Libraries\Storage\FileSystem
      */
-    private $filePath = null;
+    private $fs;
 
     /**
      * Loader constructor.
-     *
      * @param object $repository
      * @param bool $hierarchical
      */
-    public function __construct($repository, $hierarchical = true)
+    public function __construct($hierarchical = true)
+    {
+        $this->fs = new FileSystem();
+        $this->hierarchical = $hierarchical;
+    }
+
+    /**
+     * Setups the loader
+     * @param object $repository
+     * @return $this
+     */
+    public function setup($repository)
     {
         $this->module = $repository->module;
         $this->env = $repository->env;
         $this->fileName = $repository->fileName;
-        $this->hierarchical = $hierarchical;
         $this->exceptionMessage = $repository->exceptionMessage;
+
+        return $this;
     }
 
     /**
-     * Set new value
-     *
+     * Sets new value
      * @param string $property
      * @param mixed $value
      */
@@ -93,33 +97,34 @@ class Loader
     }
 
     /**
-     * Get File Path
-     *
-     * @return string
-     * @throws \Exception
+     * Loads .php files from given directory
+     * @param string $dir
      */
-    public function getFilePath()
+    public function loadDir($dir)
     {
-        $this->filePath = modules_dir() . DS . $this->module . DS . ucfirst($this->env) . DS . $this->fileName . '.php';
-        if (!file_exists($this->filePath)) {
-            if ($this->hierarchical) {
-                $this->filePath = base_dir() . DS . $this->env . DS . $this->fileName . '.php';
-                if (!file_exists($this->filePath)) {
-                    throw new \Exception(_message($this->exceptionMessage, $this->fileName));
-                }
-            } else {
-                throw new \Exception(_message($this->exceptionMessage, $this->fileName));
-            }
+        foreach ($this->fs->glob($dir . DS . "*.php") as $filename) {
+            $this->loadFile($filename);
         }
-
-        return $this->filePath;
     }
 
     /**
-     * Load
-     *
+     * Loads .php file
+     * @param string $path
+     * @throws LoaderException
+     */
+    public function loadFile($path)
+    {
+        if (!$this->fs->exists($path)) {
+            throw new LoaderException(_message($this->exceptionMessage, $path));
+        }
+
+        require_once $path;
+    }
+
+    /**
+     * Loads the content
      * @return mixed
-     * @throws \Exception
+     * @throws LoaderException
      */
     public function load()
     {
@@ -127,21 +132,26 @@ class Loader
     }
 
     /**
-     * 
-     * LoadFiles
-     * 
-     * Loads .php files from given directory
-     * 
-     * @param string $path
+     * Gets the file path
+     * @return string
+     * @throws LoaderException
      */
-    public static function loadFiles($path)
+    private function getFilePath()
     {
+        $filePath = modules_dir() . DS . $this->module . DS . ucfirst($this->env) . DS . $this->fileName . '.php';
 
-        $fileSystem = new FileSystem();
-
-        foreach ($fileSystem->glob($path . DS . "*.php") as $filename) {
-            require_once $filename;
+        if (!file_exists($filePath)) {
+            if ($this->hierarchical) {
+                $filePath = base_dir() . DS . $this->env . DS . $this->fileName . '.php';
+                if (!$this->fs->exists($filePath)) {
+                    throw new LoaderException(_message($this->exceptionMessage, $this->fileName));
+                }
+            } else {
+                throw new LoaderException(_message($this->exceptionMessage, $this->fileName));
+            }
         }
+
+        return $filePath;
     }
 
 }
