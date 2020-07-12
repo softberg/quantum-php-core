@@ -16,25 +16,21 @@ namespace Quantum\Libraries\Validation;
 
 /**
  * Rule class
- *
  * @package Quantum
- * @subpackage Libraries.Rule
  * @category Libraries
  */
-
-class Rule {
+class Rule
+{
 
     /**
-     * Set rule
-     *
+     * Sets the rule
      * @param string $rule 
      * @param mixed|null $params 
-     * 
      * @return array
      */
     public static function set(string $rule, $params = null): array
     {
-        if(is_null($params)) {
+        if (is_null($params)) {
             $params = null;
         }
 

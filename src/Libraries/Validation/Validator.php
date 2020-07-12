@@ -14,47 +14,44 @@
 
 namespace Quantum\Libraries\Validation;
 
-/**
- * Validator class
- *
- * @package Quantum
- * @subpackage Libraries.Validator
- * @category Libraries
- */
+use Quantum\Libraries\Upload\File;
+use Quantum\Factory\ModelFactory;
 
+/**
+ * Class Validator
+ * @package Quantum\Libraries\Validator
+ */
 class Validator
 {
 
     /**
      * Rules
-     *
      * @var array
      */
     private $rules = [];
 
     /**
      * Validation Errors
-     *
      * @var array
      */
     private $errors = [];
 
     /**
+     * Request data
+     * @var array 
+     */
+    private $data = [];
+
+    /**
      * Custom validations
-     *
      * @var array
      */
     private $customValidations = [];
 
     /**
-     * Add rule
-     *
-     * Add rule in rules list
-     *
+     * Add a rules for given field
      * @param string $field
      * @param array $rules
-     *
-     * @return void
      */
     public function addRule(string $field, array $rules)
     {
@@ -70,13 +67,8 @@ class Validator
     }
 
     /**
-     * Add rules
-     *
-     * Add rules in rules list
-     *
+     * Adds rules for multiple fields
      * @param array $rules
-     *
-     * @return void
      */
     public function addRules(array $rules)
     {
@@ -88,14 +80,9 @@ class Validator
     }
 
     /**
-     * Update rules
-     *
-     * Update rule in rules list
-     *
+     * Updates the single rule in rules list for given field
      * @param string $field
      * @param array $rule
-     *
-     * @return void
      */
     public function updateRule(string $field, array $rule)
     {
@@ -107,14 +94,9 @@ class Validator
     }
 
     /**
-     * Delete rules
-     *
-     * Delete rule in rules list
-     *
+     * Deletes the the rule in rules list for given field
      * @param string $field
      * @param string|null $rule
-     *
-     * @return void
      */
     public function deleteRule(string $field, string $rule = null)
     {
@@ -132,25 +114,25 @@ class Validator
     }
 
     /**
-     * Validates by rules
-     *
+     * Validates the data against the rules
      * @param array $data
-     *
      * @return mixed
      */
     public function isValid(array $data)
     {
+        $this->data = $data;
+
         if (count($this->rules) && count($data)) {
             foreach ($data as $field => $value) {
-                if (isset($this->rules[$field])) {
-                    foreach ($this->rules[$field] as $method => $param) {
+                if (isset($this->rules[$field])) { 
+                    foreach ($this->rules[$field] as $method => $param) { 
                         if (is_callable([$this, $method])) {
                             $this->$method($field, $value, $param);
-                        } elseif(isset($this->customValidations[$method])) {
+                        } elseif (isset($this->customValidations[$method])) {
                             $data = [
-                                'rule' => $method, 
-                                'field' => $field, 
-                                'value' => $value, 
+                                'rule' => $method,
+                                'field' => $field,
+                                'value' => $value,
                                 'param' => $param ?? null
                             ];
 
@@ -165,24 +147,21 @@ class Validator
     }
 
     /**
-     * Add custom validation
-     *
+     * Adds custom validation
      * @param string $rule
      * @param Closure $function
      * @param null|mixed $params
-     *
      * @return mixed
      */
     public function addValidation(string $rule, \Closure $function)
     {
-        if(!empty($rule) && is_callable($function)) {
-            $this->customValidations[$rule] =  $function;
+        if (!empty($rule) && is_callable($function)) {
+            $this->customValidations[$rule] = $function;
         }
     }
 
     /**
-     * Get validation errors
-     *
+     * Gets validation errors
      * @return array
      */
     public function getErrors(): array
@@ -213,36 +192,51 @@ class Validator
         return [];
     }
 
-     /**
-     * Call custome function defined by developer
-     *
+    /**
+     * Adds validation Error
+     * @param string $field
+     * @param string $rule
+     * @param null|mixed $param
+     */
+    protected function addError($field, $rule, $param = null)
+    {
+        if (!isset($this->errors[$field])) {
+            $this->errors[$field] = [];
+        }
+
+        $this->errors[$field][$rule] = $param;
+    }
+
+    public function flushErrors()
+    {
+        $this->errors = [];
+    }
+
+    /**
+     * Calls custom function defined by developer
      * @param Closure $function : boolean
      * @param array $data
-     *
-     * @return void
      */
-    private function callCustomFunction(\Closure $function, array $data) {
+    protected function callCustomFunction(\Closure $function, array $data)
+    {
         if (empty($data['value'])) {
             return true;
         }
 
-        if(is_callable($function)) {
-            if(!$function($data['value'], $data['param'])) {
+        if (is_callable($function)) {
+            if (!$function($data['value'], $data['param'])) {
                 $this->addError($data['field'], $data['rule'], $data['param']);
             }
         }
     }
 
     /**
-     * Check Field Required
-     *
+     * Checks Field Required
      * @param string $field
      * @param string $value
      * @param null|mixed $param
-     *
-     * @return void
      */
-    private function required(string $field, string $value, $param = null)
+    protected function required(string $field, string $value, $param = null)
     {
         if ($value === false || $value === 0 || $value === 0.0 || $value === '0' || empty($value)) {
             $this->addError($field, 'required', $param);
@@ -250,15 +244,12 @@ class Validator
     }
 
     /**
-     * Check Email
-     *
+     * Checks Email
      * @param string $field
      * @param string $value
      * @param null|mixed $param
-     *
-     * @return void
      */
-    private function email(string $field, string $value, $param = null)
+    protected function email(string $field, string $value, $param = null)
     {
         if (empty($value)) {
             return true;
@@ -270,15 +261,12 @@ class Validator
     }
 
     /**
-     * Check Min Length
-     *
+     * Checks the min Length
      * @param string $field
      * @param string $value
      * @param null|mixed $param
-     *
-     * @return void
      */
-    private function minLen(string $field, string $value, $param = null)
+    protected function minLen(string $field, string $value, $param = null)
     {
         $error = false;
 
@@ -302,15 +290,12 @@ class Validator
     }
 
     /**
-     * Check Max Length
-     *
+     * Checks the max Length
      * @param string $field
      * @param string $value
      * @param null|mixed $param
-     *
-     * @return void
      */
-    private function maxLen(string $field, string $value, $param = null)
+    protected function maxLen(string $field, string $value, $param = null)
     {
         $error = false;
 
@@ -334,15 +319,12 @@ class Validator
     }
 
     /**
-     * Check Exact length
-     *
+     * Checks the exact length
      * @param string $field
      * @param string $value
      * @param null|mixed $param
-     *
-     * @return void
      */
-    private function exactLen(string $field, string $value, $param = null)
+    protected function exactLen(string $field, string $value, $param = null)
     {
         $error = false;
 
@@ -366,15 +348,13 @@ class Validator
     }
 
     /**
-     * Check Alpha Characters
-     *
+     * Checks the alpha characters
      * @param string $field
      * @param string $value
      * @param null|mixed $param
-     *
      * @return void
      */
-    private function alpha(string $field, string $value, $param = null)
+    protected function alpha(string $field, string $value, $param = null)
     {
         if (empty($value)) {
             return true;
@@ -386,15 +366,12 @@ class Validator
     }
 
     /**
-     * Check Alpha Numeric Characters
-     *
+     * Checks the alpha and numeric characters
      * @param string $field
      * @param string $value
      * @param null|mixed $param
-     *
-     * @return void
      */
-    private function alphaNumeric(string $field, string $value, $param = null)
+    protected function alphaNumeric(string $field, string $value, $param = null)
     {
         if (empty($value)) {
             return true;
@@ -406,15 +383,12 @@ class Validator
     }
 
     /**
-     * Check Alpha Dash Characters
-     *
+     * Checks the alpha and dash characters
      * @param string $field
      * @param string $value
      * @param null|mixed $param
-     *
-     * @return void
      */
-    private function alphaDash(string $field, string $value, $param = null)
+    protected function alphaDash(string $field, string $value, $param = null)
     {
         if (empty($value)) {
             return true;
@@ -426,15 +400,12 @@ class Validator
     }
 
     /**
-     * Check Alpha Numeric Space Characters
-     *
+     * Checks the alpha numeric and space characters
      * @param string $field
      * @param string $value
      * @param null|mixed $param
-     *
-     * @return void
      */
-    private function alphaSpace(string $field, string $value, $param = null)
+    protected function alphaSpace(string $field, string $value, $param = null)
     {
         if (empty($value)) {
             return true;
@@ -446,15 +417,12 @@ class Validator
     }
 
     /**
-     * Check Numeric Value
-     *
+     * Checks the numeric value
      * @param string $field
      * @param string $value
      * @param null|mixed $param
-     *
-     * @return void
      */
-    private function numeric(string $field, string $value, $param = null)
+    protected function numeric(string $field, string $value, $param = null)
     {
         if (empty($value)) {
             return true;
@@ -466,15 +434,12 @@ class Validator
     }
 
     /**
-     * Check Integer Value
-     *
+     * Checks the integer value
      * @param string $field
      * @param string $value
      * @param null|mixed $param
-     *
-     * @return void
      */
-    private function integer(string $field, string $value, $param = null)
+    protected function integer(string $field, string $value, $param = null)
     {
         if (empty($value)) {
             return true;
@@ -486,15 +451,29 @@ class Validator
     }
 
     /**
-     * Check Boolean Value
-     *
+     * Checks the float value
      * @param string $field
      * @param string $value
      * @param null|mixed $param
-     *
-     * @return void
      */
-    private function boolean(string $field, string $value, $param = null)
+    protected function float(string $field, string $value, $param = null)
+    {
+        if (empty($value)) {
+            return true;
+        }
+
+        if (filter_var($value, FILTER_VALIDATE_FLOAT) === false) {
+            $this->addError($field, 'float', $param);
+        }
+    }
+
+    /**
+     * Checks the boolean value
+     * @param string $field
+     * @param string $value
+     * @param null|mixed $param
+     */
+    protected function boolean(string $field, string $value, $param = null)
     {
         if (empty($value) && $value !== 0) {
             return true;
@@ -508,35 +487,12 @@ class Validator
     }
 
     /**
-     * Check Float Value
-     *
+     * Checks for valid URL or subdomain
      * @param string $field
      * @param string $value
      * @param null|mixed $param
-     *
-     * @return void
      */
-    private function float(string $field, string $value, $param = null)
-    {
-        if (empty($value)) {
-            return true;
-        }
-
-        if (filter_var($value, FILTER_VALIDATE_FLOAT) === false) {
-            $this->addError($field, 'float', $param);
-        }
-    }
-
-    /**
-     * Check for valid URL or subdomain
-     *
-     * @param string $field
-     * @param string $value
-     * @param null|mixed $param
-     *
-     * @return void
-     */
-    private function url(string $field, string $value, $param = null)
+    protected function url(string $field, string $value, $param = null)
     {
         if (empty($value)) {
             return true;
@@ -548,15 +504,12 @@ class Validator
     }
 
     /**
-     * Check to see if the url exists
-     *
+     * Checks to see if the url exists
      * @param string $field
      * @param string $value
      * @param null|mixed $param
-     *
-     * @return void
      */
-    private function urlExists(string $field, string $value, $param = null)
+    protected function urlExists(string $field, string $value, $param = null)
     {
         if (empty($value)) {
             return true;
@@ -590,15 +543,12 @@ class Validator
     }
 
     /**
-     * Check for valid IP address
-     *
+     * Checks for valid IP address
      * @param string $field
      * @param string $value
      * @param null|mixed $param
-     *
-     * @return void
      */
-    private function ip(string $field, string $value, $param = null)
+    protected function ip(string $field, string $value, $param = null)
     {
         if (empty($value)) {
             return true;
@@ -610,15 +560,12 @@ class Validator
     }
 
     /**
-     * Check for valid IPv4 address
-     *
+     * Checks for valid IPv4 address
      * @param string $field
      * @param string $value
      * @param null|mixed $param
-     *
-     * @return void
      */
-    private function ipv4(string $field, string $value, $param = null)
+    protected function ipv4(string $field, string $value, $param = null)
     {
         if (empty($value)) {
             return true;
@@ -630,15 +577,12 @@ class Validator
     }
 
     /**
-     * Check for valid IPv6 address
-     *
+     * Check sfor valid IPv6 address
      * @param string $field
      * @param string $value
      * @param null|mixed $param
-     *
-     * @return void
      */
-    private function ipv6(string $field, string $value, $param = null)
+    protected function ipv6(string $field, string $value, $param = null)
     {
         if (empty($value)) {
             return true;
@@ -650,15 +594,12 @@ class Validator
     }
 
     /**
-     * Check for a valid credit card number
-     *
+     * Checks for a valid credit card number
      * @param string $field
      * @param string $value
      * @param null|mixed $param
-     *
-     * @return void
      */
-    private function creditCard(string $field, string $value, $param = null)
+    protected function creditCard(string $field, string $value, $param = null)
     {
         if (empty($value)) {
             return true;
@@ -700,15 +641,12 @@ class Validator
     }
 
     /**
-     * Check for a valid format human name
-     *
+     * Checks for a valid format human name
      * @param string $field
      * @param string $value
      * @param null|mixed $param
-     *
-     * @return void
      */
-    private function name(string $field, string $value, $param = null)
+    protected function name(string $field, string $value, $param = null)
     {
         if (empty($value)) {
             return true;
@@ -720,15 +658,12 @@ class Validator
     }
 
     /**
-     * Verify that a value is contained within the pre-defined value set
-     *
+     * Verifies that a value is contained within the pre-defined value set
      * @param string $field
      * @param string $value
      * @param null|mixed $param
-     *
-     * @return void
      */
-    private function contains(string $field, string $value, $param = null)
+    protected function contains(string $field, string $value, $param = null)
     {
         if (empty($value)) {
             return true;
@@ -749,23 +684,22 @@ class Validator
     }
 
     /**
-     * Verify that a value is contained within the pre-defined value set. // "value1;value2;value3;..."
-     *
+     * Verifies that a value is contained within the pre-defined value set.
      * @param string $field
      * @param string $value
-     * @param null|mixed $param
-     *
-     * @return void
+     * @param array $param
      */
-    private function containsList(string $field, string $value, $param = null)
+    protected function containsList(string $field, string $value, array $param)
     {
         if (empty($value)) {
             return true;
         }
 
-        $param = trim(strtolower($param));
+        $param = array_map(function($param) {
+            return trim(strtolower($param));
+        }, $param);
+
         $value = trim(strtolower($value));
-        $param = explode(';', $param);
 
         if (!in_array($value, $param)) {
             $this->addError($field, 'containsList', 'null');
@@ -773,23 +707,22 @@ class Validator
     }
 
     /**
-     * Verify that a value is not contained within the pre-defined value set. // "value1;value2;value3;..."
-     *
+     * Verifies that a value is not contained within the pre-defined value set.
      * @param string $field
      * @param string $value
-     * @param null|mixed $param
-     *
-     * @return void
+     * @param array $param
      */
-    private function doesntContainsList(string $field, string $value, $param = null)
+    protected function doesntContainsList(string $field, string $value, array $param)
     {
         if (empty($value)) {
             return true;
         }
 
-        $param = trim(strtolower($param));
+        $param = array_map(function($param) {
+            return trim(strtolower($param));
+        }, $param);
+
         $value = trim(strtolower($value));
-        $param = explode(';', $param);
 
         if (in_array($value, $param)) {
             $this->addError($field, 'doesntContainsList', null);
@@ -798,14 +731,11 @@ class Validator
 
     /**
      * Checks that the provided string is a likely street address.
-     *
      * @param string $field
      * @param string $value
      * @param null|mixed $param
-     *
-     * @return void
      */
-    private function streetAddress(string $field, string $value, $param = null)
+    protected function streetAddress(string $field, string $value, $param = null)
     {
         if (empty($value)) {
             return true;
@@ -823,15 +753,12 @@ class Validator
     }
 
     /**
-     * Check for a valid IBAN
-     *
+     * Checks for a valid IBAN
      * @param string $field
      * @param string $value
      * @param null|mixed $param
-     *
-     * @return void
      */
-    private function iban(string $field, string $value, $param = null)
+    protected function iban(string $field, string $value, $param = null)
     {
         if (empty($value)) {
             return true;
@@ -859,15 +786,12 @@ class Validator
     }
 
     /**
-     * Determine if the provided numeric value is lower to a specific value
-     *
+     * Determines if the provided numeric value is lower to a specific value
      * @param string $field
      * @param string $value
      * @param null|mixed $param
-     *
-     * @return void
      */
-    private function minNumeric(string $field, string $value, $param = null)
+    protected function minNumeric(string $field, string $value, $param = null)
     {
         if (empty($value)) {
             return true;
@@ -879,15 +803,12 @@ class Validator
     }
 
     /**
-     * Determine if the provided numeric value is higher to a specific value
-     *
+     * Determines if the provided numeric value is higher to a specific value
      * @param string $field
      * @param string $value
      * @param null|mixed $param
-     *
-     * @return void
      */
-    private function maxNumeric(string $field, string $value, $param = null)
+    protected function maxNumeric(string $field, string $value, $param = null)
     {
         if (empty($value)) {
             return true;
@@ -899,15 +820,12 @@ class Validator
     }
 
     /**
-     * Determine if the provided input is a valid date
-     *
+     * Determines if the provided input is a valid date
      * @param string $field
      * @param string $value
-     * @param null|mixed $param
-     *
-     * @return void
+     * @param null|string $param format
      */
-    private function date(string $field, string $value, $param = null)
+    protected function date(string $field, string $value, $param = null)
     {
         if (empty($value)) {
             return true;
@@ -921,7 +839,6 @@ class Validator
                 $this->addError($field, 'date', $param);
             }
         } else {
-            $param = 'Y-m-d';
             $date = \DateTime::createFromFormat($param, $value);
 
             if ($date === false || $value != date($param, $date->getTimestamp())) {
@@ -932,14 +849,11 @@ class Validator
 
     /**
      * Ensures the value starts with a certain character / set of character
-     *
      * @param string $field
      * @param string $value
      * @param null|mixed $param
-     *
-     * @return void
      */
-    private function starts(string $field, string $value, $param = null)
+    protected function starts(string $field, string $value, $param = null)
     {
         if (empty($value)) {
             return true;
@@ -951,21 +865,18 @@ class Validator
     }
 
     /**
-     * Validate phone number // 555-555-5555 , 5555425555, 555 555 5555, 1(519) 555-4444, 1 (519) 555-4422, 1-555-555-5555
-     *
+     * Validates the phone number // 555-555-5555 , 5555425555, 555 555 5555, 1(519) 555-4444, 1 (519) 555-4422, +1-555-555-5555
      * @param string $field
      * @param string $value
      * @param null|mixed $param
-     *
-     * @return void
      */
-    private function phoneNumber(string $field, string $value, $param = null)
+    protected function phoneNumber(string $field, string $value, $param = null)
     {
         if (empty($value)) {
             return true;
         }
 
-        $regex = '/^(\d[\s-]?)?[\(\[\s-]{0,2}?\d{3}[\)\]\s-]{0,2}?\d{3}[\s-]?\d{4}$/i';
+        $regex = '/^(\+*\d[\s-]?)?[\(\[\s-]{0,2}?\d{3}[\)\]\s-]{0,2}?\d{3}[\s-]?\d{4}$/i';
 
         if (!preg_match($regex, $value)) {
             $this->addError($field, 'phoneNumber', $param);
@@ -974,14 +885,11 @@ class Validator
 
     /**
      * Custom regex validator
-     *
      * @param string $field
      * @param string $value
      * @param null|mixed $param
-     *
-     * @return void
      */
-    private function regex(string $field, string $value, $param = null)
+    protected function regex(string $field, string $value, $param = null)
     {
         if (empty($value)) {
             return true;
@@ -993,15 +901,12 @@ class Validator
     }
 
     /**
-     * JSON validator
-     *
+     * Validates JSON string
      * @param string $field
      * @param string $value
      * @param null|mixed $param
-     *
-     * @return void
      */
-    private function jsonString(string $field, string $value, $param = null)
+    protected function jsonString(string $field, string $value, $param = null)
     {
         if (empty($value)) {
             return true;
@@ -1015,67 +920,139 @@ class Validator
     }
 
     /**
-     * Determine if the provided input meets age requirement
-     *
+     * Validates same value for both fields
      * @param string $field
      * @param string $value
      * @param null|mixed $param
-     *
-     * @return void
      */
-    private function minAge(string $field, string $value, $param = null)
+    protected function same(string $field, string $value, $param = null)
     {
         if (empty($value)) {
             return true;
         }
 
-        $cdate1 = new \DateTime(date('Y-m-d', strtotime($value)));
-        $today = new \DateTime(date('d-m-Y'));
-
-        $interval = $cdate1->diff($today);
-        $age = $interval->y;
-
-        if ($age <= $param) {
-            $this->addError($field, 'minAge', $param);
+        if ($value != $this->data[$param]) {
+            $this->addError($field, 'same', $param);
         }
     }
 
     /**
-     * Validate uniqueness
-     *
+     * Validates uniqueness
      * @param string $field
-     * @param string $value
+     * @param object $value
      * @param null|mixed $param
-     * @return void
      */
-    private function unique(string $field, string $value, $param = null)
+    protected function unique(string $field, $value, $param = null)
     {
-        $qtInstance = qt_instance();
-        $model = $qtInstance->modelFactory(ucfirst($param));
+        if (empty($value)) {
+            return true;
+        }
 
-        $model->findOneBy($field, $value);
+        $model = (new ModelFactory())->get(ucfirst($param));
 
-        if (!empty($model->asArray())) {
+        $row = $model->findOneBy($field, $value);
+
+        if ($row->count()) {
             $this->addError($field, 'unique', null);
         }
     }
 
     /**
-     * Add Validation Error
-     *
+     * Validates file size
      * @param string $field
-     * @param string $value
-     * @param null|mixed $param
-     *
-     * @return void
+     * @param object $value
+     * @param mixed $param
      */
-    private function addError($field, $rule, $param = null)
+    protected function fileSize(string $field, $value, $param)
     {
-        if (!isset($this->errors[$field])) {
-            $this->errors[$field] = [];
+        if (empty($value)) {
+            return true;
         }
 
-        $this->errors[$field][$rule] = $param;
+        $file = new File($value);
+
+        if (!is_array($param)) {
+            if ($file->getSize() > $param) {
+                $this->addError($field, 'fileSize', $param);
+            }
+        } else {
+            if ($file->getSize() < $param[0] || $file->getSize() > $param[1]) {
+                $this->addError($field, 'fileSize', $param);
+            }
+        }
+    }
+
+    /**
+     * Validates file mime type
+     * @param string $field
+     * @param object $value
+     * @param mixed $param
+     */
+    protected function fileMimeType(string $field, $value, $param)
+    {
+        if (empty($value)) {
+            return true;
+        }
+
+        $file = new File($value);
+
+        if (!is_array($param)) {
+            if ($file->getMimetype() != $param) {
+                $this->addError($field, 'fileMimeType', $param);
+            }
+        } else {
+            if (!in_array($file->getMimetype(), $param)) {
+                $this->addError($field, 'fileMimeType', $param);
+            }
+        }
+    }
+
+    /**
+     * Validates file extension
+     * @param string $field
+     * @param object $value
+     * @param mixed $param
+     */
+    protected function fileExtension(string $field, $value, $param)
+    {
+        if (empty($value)) {
+            return true;
+        }
+
+        $file = new File($value);
+
+        if (!is_array($param)) {
+            if ($file->getExtension() != $param) {
+                $this->addError($field, 'fileExtension', $param);
+            }
+        } else {
+            if (!in_array($file->getExtension(), $param)) {
+                $this->addError($field, 'fileExtension', $param);
+            }
+        }
+    }
+
+    /**
+     * Validates image dimensions
+     * @param string $field
+     * @param type $value
+     * @param type $param
+     */
+    protected function imageDimensions(string $field, $value, $param)
+    {
+        if (empty($value)) {
+            return true;
+        }
+
+        $file = new File($value);
+
+        $dimensions = $file->getDimensions();
+
+        if ($dimensions) {
+            if ($dimensions['width'] != $param[0] || $dimensions['height'] != $param[1]) {
+                $this->addError($field, 'imageDimensions', $param);
+            }
+        }
     }
 
 }
