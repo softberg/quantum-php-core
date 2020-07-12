@@ -9,47 +9,47 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 1.7.0
+ * @since 2.0.0
  */
 
 namespace Quantum\Console;
 
 use Symfony\Component\Console\Application;
+use Quantum\Loader\Loader;
 
 /**
- * Class Qt_Console
+ * Class QtConsole
  * @package Quantum\Console
  */
-class Qt_Console
+class QtConsole
 {
+
     /**
      * Console application name
-     *
      * @var string
      */
     private $name = 'Qt Console Application';
 
     /**
      * Console application version
-     *
      * @var string
      */
-    private $version = '1.0.0';
+    private $version = '2.0.0';
 
     /**
      * Console application instance
-     *
-     * @var
+     * @var Application
      */
     private $application;
 
     /**
-     * Initialise the console applicaiotn
-     *
+     * Initialize the console application
      * @return mixed
      */
     public function init()
     {
+        (new Loader())->loadDir(HELPERS_DIR . DS . 'functions');
+
         $this->application = new Application($this->name, $this->version);
 
         $this->register();
@@ -59,18 +59,18 @@ class Qt_Console
 
     /**
      * Registers commands
-     *
      * @return void
      */
     private function register()
     {
         $coreClassNames = get_directory_classes(CORE_DIR . DS . 'Console' . DS . 'Commands');
+
         foreach ($coreClassNames as $coreClassName) {
             $coreCommandClass = '\\Quantum\\Console\\Commands\\' . $coreClassName;
 
             $coreCommand = new $coreCommandClass();
 
-            if ($coreCommand instanceof Qt_Command) {
+            if ($coreCommand instanceof QtCommand) {
                 $this->application->add($coreCommand);
             }
         }
@@ -81,7 +81,7 @@ class Qt_Console
 
             $command = new $commandClass();
 
-            if ($command instanceof Qt_Command) {
+            if ($command instanceof QtCommand) {
                 $this->application->add($command);
             }
         }
@@ -89,11 +89,11 @@ class Qt_Console
 
     /**
      * Runs the application
-     *
      * @return mixed
      */
     private function run()
     {
         return $this->application->run();
     }
+
 }
