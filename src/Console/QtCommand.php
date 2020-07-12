@@ -22,35 +22,32 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Class Qt_Command
+ * Class QtCommand
  * @package Quantum\Console
  */
-abstract class Qt_Command extends Command implements CommandInterface
+abstract class QtCommand extends Command implements CommandInterface
 {
+
     /**
      * Console command name
-     *
      * @var string
      */
     protected $name;
 
     /**
      * Console command description.
-     *
      * @var string
      */
     protected $description;
 
     /**
      * Console command help text
-     *
      * @var string
      */
     protected $help;
 
     /**
      * Console command input arguments
-     *
      * @var array
      * @example ['name', 'type', 'description']
      */
@@ -58,7 +55,6 @@ abstract class Qt_Command extends Command implements CommandInterface
 
     /**
      * Console command options
-     *
      * @var array
      * @example ['name', 'sortcut', 'type', 'description', 'default']
      */
@@ -75,8 +71,7 @@ abstract class Qt_Command extends Command implements CommandInterface
     private $output;
 
     /**
-     * Qt_Command constructor.
-     *
+     * QtCommand constructor.
      * @return void
      */
     public function __construct()
@@ -90,7 +85,6 @@ abstract class Qt_Command extends Command implements CommandInterface
 
     /**
      * Configures the current command.
-     *
      * @return void
      */
     protected function configure()
@@ -101,7 +95,6 @@ abstract class Qt_Command extends Command implements CommandInterface
 
     /**
      * Executes the current command.
-     *
      * @param InputInterface $input
      * @param OutputInterface $output
      * @return int|null|void
@@ -115,9 +108,8 @@ abstract class Qt_Command extends Command implements CommandInterface
 
     /**
      * Returns the argument value for a given argument name.
-     *
      * @param string|null $key
-     * @return null|string|string[]
+     * @return null|string
      */
     protected function getArgument($key = null)
     {
@@ -126,7 +118,6 @@ abstract class Qt_Command extends Command implements CommandInterface
 
     /**
      * Returns the option value for a given option name.
-     *
      * @param null $key
      * @return bool|null|string|string[]
      */
@@ -137,9 +128,7 @@ abstract class Qt_Command extends Command implements CommandInterface
 
     /**
      * Outputs the string to console
-     *
      * @param string $string
-     * @return void
      */
     public function output(string $string)
     {
@@ -148,9 +137,7 @@ abstract class Qt_Command extends Command implements CommandInterface
 
     /**
      * Outputs the string to console as info
-     *
      * @param string $string
-     * @return void
      */
     protected function info(string $string)
     {
@@ -159,9 +146,7 @@ abstract class Qt_Command extends Command implements CommandInterface
 
     /**
      * Outputs the string to console as comment
-     *
      * @param string $string
-     * @return void
      */
     protected function comment(string $string)
     {
@@ -170,7 +155,6 @@ abstract class Qt_Command extends Command implements CommandInterface
 
     /**
      * Outputs the string to console as question
-     *
      * @param string $string
      * @return void
      */
@@ -181,7 +165,6 @@ abstract class Qt_Command extends Command implements CommandInterface
 
     /**
      * Outputs the string to console as error
-     *
      * @param string $string
      * @return void
      */
@@ -192,8 +175,6 @@ abstract class Qt_Command extends Command implements CommandInterface
 
     /**
      * Sets command arguments
-     *
-     * @return void
      */
     private function setArguments()
     {
@@ -214,8 +195,6 @@ abstract class Qt_Command extends Command implements CommandInterface
 
     /**
      * Sets command options
-     *
-     * @return void
      */
     private function setOptions()
     {
@@ -236,4 +215,5 @@ abstract class Qt_Command extends Command implements CommandInterface
             }
         }
     }
+
 }
