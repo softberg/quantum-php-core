@@ -14,6 +14,8 @@
 
 namespace Quantum\Libraries\Database;
 
+use Quantum\Mvc\QtModel;
+
 /**
  * Database Abstract Layer interface
  *
@@ -240,28 +242,43 @@ interface DbalInterface
     public function rightJoin($table, $constraint, $tableAlias = null);
 
     /**
-     * Join To
-     * 
      * Joins two models
      * 
-     * @param Qt_Model $model
+     * @param QtModel $model
      * @return object
      */
-    public function joinTo(\Quantum\Mvc\Qt_Model $model);
+    public function joinTo(QtModel $model);
+    
+   /**
+     * Joins through connector model
+     * 
+     * @param QtModel $model
+     * @return bool $switch
+     */
+    public function joinThrough(QtModel $model, $switch = true);
 
     /**
      * Gets the last query executed
      *
      * @return string
      */
-    public static function getLastQuery();
+    public static function lastQuery();
 
     /**
      * Returns the PDOStatement instance last used
      *
      * @return string
      */
-    public static function getLastStatement();
+    public static function lastStatement();
+    
+    
+    /**
+     * Get an array containing all the queries 
+     * run on a specified connection up to now.
+     *
+     * @return array
+     */
+    public static function queryLog();
 
     /**
      * Execute
