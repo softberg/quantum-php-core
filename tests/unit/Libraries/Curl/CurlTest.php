@@ -57,7 +57,7 @@ class CurlTest extends TestCase
 
         $this->assertEquals('Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)', $this->curl->getRequestHeaders('User-Agent'));
 
-        $this->assertNull($this->curl->getRequestHeaders('Custom-header'));
+        $this->assertNull($this->curl->getRequestHeaders('custom-header'));
     }
 
     public function testGetResponseHeaders()
@@ -66,11 +66,9 @@ class CurlTest extends TestCase
 
         $this->assertIsArray($this->curl->getResponseHeaders());
         
-        dump($this->curl->getResponseHeaders());
-
         $this->assertEquals('application/json', $this->curl->getResponseHeaders('content-type'));
 
-        $this->assertNull($this->curl->getResponseHeaders('Custom-header'));
+        $this->assertNull($this->curl->getResponseHeaders('custom-header'));
     }
 
     public function testGetRresponseBody()
@@ -103,7 +101,7 @@ class CurlTest extends TestCase
 
         $this->assertEquals(6, current($this->curl->getErrors())['code']);
 
-        $this->assertEquals('Couldn\'t resolve host name: Could not resolve host: test.comx', current($this->curl->getErrors())['nessage']);
+        $this->assertEquals('Couldn\'t resolve host name: Could not resolve host: test.comx', current($this->curl->getErrors())['message']);
     }
 
     public function testMultiCurl()

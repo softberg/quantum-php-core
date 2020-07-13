@@ -154,7 +154,7 @@ class Curl
 
         if ($this->responseHeaders instanceof ArrayAccess) {
             while ($this->responseHeaders->valid()) {
-                $responseHeaders[$this->responseHeaders->key()] = $this->responseHeaders->current();
+                $responseHeaders[strtolower($this->responseHeaders->key())] = $this->responseHeaders->current();
                 $this->responseHeaders->next();
             }
         }
@@ -216,7 +216,7 @@ class Curl
                 if ($instance->error) {
                     $this->errors[] = [
                         'code' => $instance->getErrorCode(),
-                        'nessage' => $instance->getErrorMessage()
+                        'message' => $instance->getErrorMessage()
                     ];
                 } else {
                     $this->responseHeaders[] = $instance->getResponseHeaders();
@@ -227,7 +227,7 @@ class Curl
             if ($this->curl->error) {
                 $this->errors[] = [
                     'code' => $this->curl->getErrorCode(),
-                    'nessage' => $this->curl->getErrorMessage()
+                    'message' => $this->curl->getErrorMessage()
                 ];
             } else {
                 $this->responseHeaders = $this->curl->getResponseHeaders();
