@@ -38,16 +38,6 @@ namespace Quantum\Loader {
         return 'test';
     }
 
-//    function _message($subject, $params)
-//    {
-//        if (is_array($params)) {
-//            return preg_replace_callback('/{%\d+}/', function () use (&$params) {
-//                return array_shift($params);
-//            }, $subject);
-//        } else {
-//            return preg_replace('/{%\d+}/', $params, $subject);
-//        }
-//    }
 }
 
 namespace Quantum\Test\Unit {
@@ -78,6 +68,22 @@ namespace Quantum\Test\Unit {
             $loader->loadDir(dirname(__DIR__, 4) . DS . 'src' . DS . 'Helpers' . DS . 'functions');
 
             $loader->loadFile(dirname(__DIR__, 4) . DS . 'src' . DS . 'constants.php');
+
+            $data = 'iVBORw0KGgoAAAANSUhEUgAAABwAAAASCAMAAAB/2U7WAAAABl'
+                    . 'BMVEUAAAD///+l2Z/dAAAASUlEQVR4XqWQUQoAIAxC2/0vXZDr'
+                    . 'EX4IJTRkb7lobNUStXsB0jIXIAMSsQnWlsV+wULF4Avk9fLq2r'
+                    . '8a5HSE35Q3eO2XP1A1wQkZSgETvDtKdQAAAABJRU5ErkJggg==';
+
+            $img = imagecreatefromstring(base64_decode($data));
+
+            imagepng($img, __DIR__ . DS . 'php8fe1.tmp');
+
+            imagedestroy($img);
+        }
+
+        public function tearDown(): void
+        {
+            unlink(__DIR__ . DS . 'php8fe1.tmp');
         }
 
         public function testValidatorConstructor()
@@ -929,13 +935,13 @@ namespace Quantum\Test\Unit {
             $this->request->create('POST', '/upload', null, $file);
 
             $this->validator->addRule('image', [
-                Rule::set('fileSize', 10000)
+                Rule::set('fileSize', 1000)
             ]);
 
             $this->assertTrue($this->validator->isValid($this->request->all()));
 
             $this->validator->addRule('image', [
-                Rule::set('fileSize', [5000, 9000])
+                Rule::set('fileSize', [500, 9000])
             ]);
 
             $this->assertFalse($this->validator->isValid($this->request->all()));
@@ -962,7 +968,7 @@ namespace Quantum\Test\Unit {
             $this->request->create('POST', '/upload', null, $file);
 
             $this->validator->addRule('image', [
-                Rule::set('fileMimeType', 'image/jpeg')
+                Rule::set('fileMimeType', 'image/png')
             ]);
 
             $this->assertTrue($this->validator->isValid($this->request->all()));
@@ -974,7 +980,7 @@ namespace Quantum\Test\Unit {
             $this->assertTrue($this->validator->isValid($this->request->all()));
 
             $this->validator->addRule('image', [
-                Rule::set('fileMimeType', ['image/gif', 'image/png'])
+                Rule::set('fileMimeType', ['image/gif', 'image/jpg'])
             ]);
 
             $this->assertFalse($this->validator->isValid($this->request->all()));
@@ -1040,7 +1046,7 @@ namespace Quantum\Test\Unit {
             $this->request->create('POST', '/upload', null, $file);
 
             $this->validator->addRule('image', [
-                Rule::set('imageDimensions', [300, 300])
+                Rule::set('imageDimensions', [28, 18])
             ]);
 
             $this->assertTrue($this->validator->isValid($this->request->all()));
