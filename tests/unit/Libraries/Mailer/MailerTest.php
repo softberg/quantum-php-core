@@ -182,7 +182,7 @@ namespace Quantum\Test\Unit {
 
             $this->mailer->setBody('Lorem ipsum dolor sit amet');
 
-            $this->assertFalse($this->mailer->send());
+            $this->assertTrue($this->mailer->send());
 
             $from = ['john@hotmail.com', 'John Doe'];
 
@@ -192,7 +192,7 @@ namespace Quantum\Test\Unit {
 
             $options = ['subject' => 'Lorem'];
             
-            $this->assertFalse($this->mailer->send($from, $to, $message, $options));
+            $this->assertTrue($this->mailer->send($from, $to, $message, $options));
         }
 
     }
