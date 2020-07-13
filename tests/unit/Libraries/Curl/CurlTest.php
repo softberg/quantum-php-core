@@ -65,6 +65,8 @@ class CurlTest extends TestCase
         $this->curl->run('https://httpbin.org/get');
 
         $this->assertIsArray($this->curl->getResponseHeaders());
+        
+        dump($this->curl->getResponseHeaders());
 
         $this->assertEquals('application/json', $this->curl->getResponseHeaders('content-type'));
 
@@ -82,13 +84,13 @@ class CurlTest extends TestCase
 
     public function testCurlInfo()
     {
-        $this->curl->run('https://httpbin.org');
+        $this->curl->run('https://httpbin.org/');
 
         $this->assertIsArray($this->curl->info());
 
         $this->assertEquals(200, $this->curl->info(CURLINFO_HTTP_CODE));
 
-        $this->assertEquals('https://httpbin.org', $this->curl->info(CURLINFO_EFFECTIVE_URL));
+        $this->assertEquals('https://httpbin.org/', $this->curl->info(CURLINFO_EFFECTIVE_URL));
 
         $this->assertFalse($this->curl->info(CURLOPT_PRIVATE));
     }
