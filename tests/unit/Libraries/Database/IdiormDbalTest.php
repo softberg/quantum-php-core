@@ -677,7 +677,7 @@ namespace Quantum\Test\Unit {
 
         /** Method chaining is not working here  */
 
-        /** Right join can not be tested this time becuse the sqlite does not support */
+        /** Right join can not be tested this time because the sqlite does not support */
         public function testLeftJoinAndRightJoin()
         {
             $userModel = new IdiormDbal('user_events');
@@ -702,7 +702,6 @@ namespace Quantum\Test\Unit {
         /** Method chaining is not working here  */
         public function testJoinToAndJoinThrough()
         {
-
             $this->databaseMock = Mockery::mock('overload:Quantum\Libraries\Database\Database');
 
             $this->databaseMock->shouldReceive('getORM')->andReturn(new IdiormDbal('users'));
@@ -723,21 +722,13 @@ namespace Quantum\Test\Unit {
 
             $userModel->joinThrough($eventModel);
 
-            $userModel->groupBy('usr_id');
+            $user = $userModel->first();
 
-            $users = $userModel->get();
+            $this->assertEquals('John', $user->firstname);
 
-            $this->assertEquals('John', $users[0]['firstname']);
+            $this->assertEquals('Writer', $user->profession_title);
 
-            $this->assertEquals('Writer', $users[0]['profession_title']);
-
-            $this->assertEquals('Dance', $users[0]['event_title']);
-
-            $this->assertEquals('Jane', $users[1]['firstname']);
-
-            $this->assertEquals('Singer', $users[1]['profession_title']);
-
-            $this->assertEquals('Music', $users[1]['event_title']);
+            $this->assertEquals('Dance', $user->event_title);
         }
 
         /** Method chaining is not working here  */
