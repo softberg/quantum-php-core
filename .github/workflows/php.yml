@@ -14,6 +14,9 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - name: Install sendmail
+      run: sudo apt-get install sendmail
+  
     - name: Validate composer.json and composer.lock
       run: composer validate
 
