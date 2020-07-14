@@ -384,6 +384,7 @@ abstract class HttpResponse
     }
 
     /**
+
      * Prepares the HTML content
      * @param string $html
      * @param int|null $code
@@ -406,9 +407,7 @@ abstract class HttpResponse
      * @return string
      */
     private static function arrayToXML(array $arr)
-    {
-//        dump(['<data></data>', self::$xmlRoot]);
-        
+    {        
         $simpleXML = new SimpleXMLElement(self::$xmlRoot);
         self::composeXML($arr, $simpleXML);
 
