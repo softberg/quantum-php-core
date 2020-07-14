@@ -42,19 +42,19 @@ class SessionManager
     {
         $sessionHandler = null;
 
-        $driver = get_config('session_driver');
+        $driver = config()->get('session_driver');
 
         if (!session_id()) {
 
             if ($driver == $this->databaseDriver) {
-                $orm = Database::getORMInstance(null, get_config('session_table', 'sessions'));
+                $orm = Database::getORMInstance(null, config()->get('session_table', 'sessions'));
                 session_set_save_handler(new DbSessionHandler($orm), true);
             }
 
             @session_start();
         }
 
-        if (isset($_SESSION['LAST_ACTIVITY']) && time() - $_SESSION['LAST_ACTIVITY'] > get_config('session_timeout', 1800)) {
+        if (isset($_SESSION['LAST_ACTIVITY']) && time() - $_SESSION['LAST_ACTIVITY'] > config()->get('session_timeout', 1800)) {
             @session_unset();
             @session_destroy();
         }

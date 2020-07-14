@@ -9,15 +9,16 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 1.4.0
+ * @since 2.0.0
  */
 
 namespace Quantum\Middleware;
 
+use Quantum\Exceptions\MiddlewareException;
 use Quantum\Exceptions\ExceptionMessages;
-use Quantum\Exceptions\RouteException;
 use Quantum\Http\Request;
 use Quantum\Http\Response;
+use Exception;
 
 /**
  * MiddlewareManager Class
@@ -26,7 +27,6 @@ use Quantum\Http\Response;
  * current route
  *
  * @package Quantum
- * @subpackage Middleware
  * @category Middleware
  */
 class MiddlewareManager
@@ -34,59 +34,55 @@ class MiddlewareManager
 
     /**
      * Middlewares queue
-     *
      * @var array
      */
     private $middlewares = [];
 
     /**
      * Current module
-     *
      * @var string
      */
     private $module;
 
     /**
      * MiddlewareManager constructor.
-     *
-     * @param string $currentRoute
      */
-    public function __construct($currentRoute)
+    public function __construct()
     {
-        $this->middlewares = $currentRoute['middlewares'];
-        $this->module = $currentRoute['module'];
+        $this->middlewares = current_middlewares();
+        $this->module = current_module();
     }
 
     /**
      * Apply Middlewares
-     *
      * @param Request $request
-     * @return mixed|Request
-     * @throws RouteException
-     * @throws \Exception
+     * @param Response $response
+     * @return array
+     * @throws Exception
+     * @throws MiddlewareException
      */
     public function applyMiddlewares(Request $request, Response $response)
     {
         $modifiedRequest = $request;
         $modifiedResponse = $response;
 
-        $middlewarePath = MODULES_DIR . '/' . $this->module . '/Middlewares/' . current($this->middlewares) . '.php';
+        $middlewarePath = modules_dir() . DS . $this->module . DS . 'Middlewares' . DS . current($this->middlewares) . '.php';
 
         if (!file_exists($middlewarePath)) {
-            throw new \Exception(_message(ExceptionMessages::MIDDLEWARE_NOT_FOUND, current($this->middlewares)));
+            throw new MiddlewareException(_message(ExceptionMessages::MIDDLEWARE_NOT_FOUND, current($this->middlewares)));
         }
 
         require_once $middlewarePath;
 
         $middlewareClass = '\\Modules\\' . $this->module . '\\Middlewares\\' . current($this->middlewares);
 
-        if (!class_exists($middlewareClass, FALSE)) {
-            throw new RouteException(_message(ExceptionMessages::MIDDLEWARE_NOT_DEFINED, current($this->middlewares)));
+        if (!class_exists($middlewareClass, false)) {
+            throw new MiddlewareException(_message(ExceptionMessages::MIDDLEWARE_NOT_DEFINED, current($this->middlewares)));
         }
 
         $currentMiddleware = new $middlewareClass();
 
-        if ($currentMiddleware instanceof Qt_Middleware) {
+        if ($currentMiddleware instanceof QtMiddleware) {
             list($modifiedRequest, $modifiedResponse) = $currentMiddleware->apply($request, $response, function ($request, $response) {
                 next($this->middlewares);
                 return [$request, $response];

@@ -9,158 +9,143 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 1.0.0
+ * @since 2.0.0
  */
 
 namespace Quantum\Libraries\Database;
 
 use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Exceptions\DatabaseException;
+use Quantum\Helpers\Helper;
+use Quantum\Loader\Loader;
+use stdClass;
 
 /**
  * Database class
- *
- * Initialize the database
- *
  * @package Quantum
- * @subpackage Libraries.Database
- * @category Libraries
+ * @subpackage Libraries
+ * @category Database
  */
 class Database
 {
 
     /**
-     * Default ORM DBAL
-     *
-     * @var string
+     * Loader object
+     * @var Loader 
      */
-    private static $defaultDbal = IdiormDbal::class;
+    private $loader;
+
+    /**
+     * Database setup
+     * @var object 
+     */
+    private $setup = null;
 
     /**
      * Database configurations
-     *
+     * @var array 
+     */
+    private static $configs = [];
+
+    /**
+     * Default Database Abstract Layer class
+     * @var IdiormDbal
+     */
+    private static $defaultDbalClass = IdiormDbal::class;
+
+    /**
+     * Database common methods
      * @var array
      */
-    private static $dbConfig;
+    private static $commonMethods = ['execute', 'query', 'lastQuery', 'lastStatement', 'queryLog'];
 
     /**
      * Active Connection
-     *
      * @var mixed
      */
-    private static $activeConnection = null;
-    
+    private $activeConnection = null;
+
     /**
-     * 
+     * Database constructor.
+     * @param Loader $loader
+     */
+    public function __construct(Loader $loader)
+    {
+        $this->loader = $loader;
+
+        $this->setup = new stdClass();
+        $this->setup->module = current_module();
+        $this->setup->env = 'config';
+        $this->setup->fileName = 'database';
+        $this->setup->exceptionMessage = ExceptionMessages::CONFIG_FILE_NOT_FOUND;
+    }
+
+    /**
+     * Gets the ORM
      * @param string $modelName
      * @param string $table
      * @param string $idColumn
-     * @return \Quantum\Libraries\Database\dbalClass
+     * @return IdiormDbal
      * @throws DatabaseException When table is not defined in user defined model
      */
-    public static function getDbalInstance($modelName, $table, $idColumn = 'id')
+    public function getORM($modelName, $table, $idColumn = 'id'): IdiormDbal
     {
-        $dbalClass = self::getDbalClass();
+        $dbalClass = $this->getDbalClass();
 
-        if (!self::connected()) {
-            self::connect($dbalClass);
+        if (!$this->connected()) {
+            $this->connect($dbalClass);
         }
 
         if (empty($table)) {
-            throw new DatabaseException(_message(ExceptionMessages::MODEL_WITHOUT_TABLE_DEFINED, $modelName));
+            throw new DatabaseException(Helper::_message(ExceptionMessages::MODEL_WITHOUT_TABLE_DEFINED, $modelName));
         }
 
         return new $dbalClass($table, $idColumn);
     }
 
     /**
-     * Connected
-     *
      * Checks the active connection
-     *
      * @return bool
      */
-    public static function connected()
+    public function connected()
     {
-        if (self::$activeConnection)
+        if ($this->activeConnection) {
             return true;
+        }
 
         return false;
     }
 
     /**
-     * Connect
-     *
      * Connects to database
-     *
-     * @uses HookManager::call
-     * @return void
      * @throws DatabaseException
      */
-    private static function connect($dbalClass)
+    public function connect($dbalClass)
     {
-        self::$activeConnection = $dbalClass::dbConnect(self::getConfig());
-    }
+        $configs = $this->loader->setup($this->setup)->load();
 
-    /**
-     * Set DB Config
-     *
-     * Finds and sets the DB configs from current config/database.php of module or
-     * from top config/database.php if in module it's not defined
-     *
-     * @return void
-     * @throws DatabaseException When config not found
-     */
-    private static function setConfig()
-    {
-        if (file_exists(modules_dir() . DS . current_module() . DS . 'Config' . DS . 'database.php')) {
-            if (!self::$dbConfig) {
-                self::$dbConfig = require_once modules_dir() . DS . current_module() . DS . 'Config' . DS . 'database.php';
-            }
-        } else {
-            if (file_exists(BASE_DIR . DS . 'config' . DS . 'database.php')) {
-                if (!self::$dbConfig) {
-                    self::$dbConfig = require_once BASE_DIR . DS . 'config' . DS . 'database.php';
-                }
-            } else {
-                throw new DatabaseException(ExceptionMessages::DB_CONFIG_NOT_FOUND);
-            }
-        }
-    }
-
-    /**
-     * Get DB Config
-     *
-     * @return array
-     * @throws DatabaseException When config is not found or incorrect
-     */
-    private static function getConfig()
-    {
-        self::setConfig();
-
-        if (!empty(self::$dbConfig) && is_array(self::$dbConfig) && key_exists('current', self::$dbConfig)) {
-            $current_key = self::$dbConfig['current'];
-
-            if ($current_key && key_exists($current_key, self::$dbConfig)) {
-                return self::$dbConfig[$current_key];
-            } else {
-                throw new DatabaseException(ExceptionMessages::INCORRECT_CONFIG);
-            }
-        } else {
+        if (!key_exists('current', $configs)) {
             throw new DatabaseException(ExceptionMessages::INCORRECT_CONFIG);
         }
+
+        $currentKey = $configs['current'];
+
+        if (!key_exists($currentKey, $configs)) {
+            throw new DatabaseException(ExceptionMessages::INCORRECT_CONFIG);
+        }
+
+        self::$configs = $configs[$currentKey];
+
+        $this->activeConnection = $dbalClass::dbConnect(self::$configs);
     }
 
     /**
-     * Gets the ORM Class
-     *
-     * Gets the ORM class defined in config/database.php if exists, otherwise default ORM will be used
-     *
+     * Gets the ORM class defined in config, otherwise default ORM will be used
      * @return string
      */
     public static function getDbalClass()
     {
-        $dbalClass = (isset(self::$dbConfig['DBAL']) && !empty(self::$dbConfig['DBAL']) ? self::$dbConfig['DBAL'] : self::$defaultDbal);
+        $dbalClass = (isset(self::$configs['DBAL']) && !empty(self::$configs['DBAL']) ? self::$configs['DBAL'] : self::$defaultDbalClass);
 
         if (class_exists($dbalClass)) {
             return $dbalClass;
@@ -168,68 +153,16 @@ class Database
     }
 
     /**
-     * Raw execute
-     *
-     * @param $query
-     * @param $parameters
-     * @return bool
+     * Gives access to some common methods 
+     * @param type $method
+     * @param type $arguments
      */
-    public static function execute($query, $parameters)
+    public static function __callStatic($method, $arguments = null)
     {
-        $dbalClass = self::getDbalClass();
-
-        return $dbalClass::execute($query, $parameters);
-    }
-
-    /**
-     * Raw query
-     *
-     * @param $query
-     * @param $parameters
-     * @return array
-     */
-    public static function query($query, $parameters)
-    {
-        $dbalClass = self::getDbalClass();
-
-        return $dbalClass::query($query, $parameters);
-    }
-
-    /**
-     * Gets the last query executed
-     *
-     * @return string
-     */
-    public static function getLastQuery()
-    {
-        $dbalClass = self::getDbalClass();
-
-        return $dbalClass::getLastQuery();
-    }
-
-    /**
-     * Returns the PDOStatement instance last used
-     *
-     * @return string
-     */
-    public static function getLastStatement()
-    {
-        $dbalClass = self::getDbalClass();
-
-        return $dbalClass::getLastStatement();
-    }
-
-    /**
-     * Get an array containing all the queries 
-     * run on a specified connection up to now.
-     *
-     * @return array
-     */
-    public static function getQueryLog()
-    {
-        $dbalClass = self::getDbalClass();
-        
-        return $dbalClass::getQueryLog();
+        if (in_array($method, self::$commonMethods)) {
+            $dbalClass = self::getDbalClass();
+            return $dbalClass::$method(...$arguments);
+        }
     }
 
 }

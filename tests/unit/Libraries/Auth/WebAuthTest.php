@@ -35,12 +35,13 @@ $sessionStorage = [];
 
 namespace Quantum\Test\Unit {
 
-    use Mockery;
-    use PHPUnit\Framework\TestCase;
-    use Quantum\Libraries\Auth\WebAuth;
-    use Quantum\Libraries\Hasher\Hasher;
-    use Quantum\Exceptions\AuthException;
     use Quantum\Exceptions\ExceptionMessages;
+    use Quantum\Exceptions\AuthException;
+    use Quantum\Libraries\Hasher\Hasher;
+    use Quantum\Libraries\Auth\WebAuth;
+    use PHPUnit\Framework\TestCase;
+    use Quantum\Loader\Loader;
+    use Mockery;
 
     class WebAuthTest extends TestCase
     {
@@ -91,6 +92,10 @@ namespace Quantum\Test\Unit {
 
         public function setUp(): void
         {
+            $loader = new Loader();
+
+            $loader->loadDir(dirname(__DIR__, 4) . DS . 'src' . DS . 'Helpers' . DS . 'functions');
+
             $this->authService = Mockery::mock('Quantum\Libraries\Auth\AuthServiceInterface');
 
             $this->authService->shouldReceive('getDefinedKeys')->andReturn($this->keyFields);
@@ -141,11 +146,11 @@ namespace Quantum\Test\Unit {
 
             $this->mailer = Mockery::mock('Quantum\Libraries\Mailer\Mailer');
 
-            $this->mailer->shouldReceive('createFrom')->andReturn($this->mailer);
+            $this->mailer->shouldReceive('setFrom')->andReturn($this->mailer);
 
-            $this->mailer->shouldReceive('createAddresses')->andReturn($this->mailer);
+            $this->mailer->shouldReceive('setAddress')->andReturn($this->mailer);
 
-            $this->mailer->shouldReceive('createBody')->andReturn($this->mailer);
+            $this->mailer->shouldReceive('setBody')->andReturn($this->mailer);
 
             $this->mailer->shouldReceive('send')->andReturn(true);
 
@@ -168,7 +173,7 @@ namespace Quantum\Test\Unit {
             $this->assertInstanceOf('Quantum\Libraries\Auth\WebAuth', $this->webAuth);
         }
 
-        public function testSigninIncorrectCredetials()
+        public function testWebSigninIncorrectCredetials()
         {
             $this->expectException(AuthException::class);
 
@@ -177,14 +182,14 @@ namespace Quantum\Test\Unit {
             $this->webAuth->signin('admin@qt.com', '111111');
         }
 
-        public function testSigninCorrectCredentials()
+        public function testWebSigninCorrectCredentials()
         {
             $this->assertTrue($this->webAuth->signin('admin@qt.com', 'qwerty'));
 
             $this->assertTrue($this->webAuth->signin('admin@qt.com', 'qwerty', true));
         }
 
-        public function testSignout()
+        public function testWebSignout()
         {
             $this->assertFalse(\Quantum\Libraries\Auth\session()->has('auth_user'));
 
@@ -197,7 +202,7 @@ namespace Quantum\Test\Unit {
             $this->assertFalse(\Quantum\Libraries\Auth\session()->has('auth_user'));
         }
 
-        public function testUser()
+        public function testWebUser()
         {
             $this->webAuth->signin('admin@qt.com', 'qwerty');
 
@@ -212,7 +217,7 @@ namespace Quantum\Test\Unit {
             $this->assertEquals('admin@qt.com', $this->webAuth->user()->username);
         }
 
-        public function testCheck()
+        public function testWebCheck()
         {
             $this->assertFalse($this->webAuth->check());
 
@@ -221,7 +226,7 @@ namespace Quantum\Test\Unit {
             $this->assertTrue($this->webAuth->check());
         }
 
-        public function testSignupAndSigninWithoutActivation()
+        public function testWebSignupAndSigninWithoutActivation()
         {
 
             $this->expectException(AuthException::class);
@@ -233,7 +238,7 @@ namespace Quantum\Test\Unit {
             $this->assertTrue($this->webAuth->signin('guest@qt.com', '123456'));
         }
 
-        public function testSignupAndActivteAccount()
+        public function testWebSignupAndActivteAccount()
         {
             $user = $this->webAuth->signup($this->mailer, $this->guestUser);
 
@@ -242,7 +247,7 @@ namespace Quantum\Test\Unit {
             $this->assertTrue($this->webAuth->signin('guest@qt.com', '123456'));
         }
 
-        public function testForgetReset()
+        public function testWebForgetReset()
         {
             $resetToken = $this->webAuth->forget($this->mailer, 'admin@qt.com', 'tpl');
 

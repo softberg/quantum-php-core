@@ -9,38 +9,32 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 1.8.0
+ * @since 2.0.0
  */
 
 namespace Quantum\Libraries\Hasher;
 
 /**
  * Hasher class
- *
- * @package Quantum
- * @subpackage Libraries.Hasher
- * @category Libraries
+ * @package Quantum\Libraries\Hasher
  */
 class Hasher
 {
 
     /**
      * The algorithm
-     * 
      * @var int 
      */
     private $algorithm = PASSWORD_BCRYPT;
 
     /**
      * The cost
-     * 
      * @var int 
      */
     private $cost = 12;
 
     /**
      * Sets the algorithm
-     * 
      * @param int $algorithm
      * @return $this
      */
@@ -52,7 +46,6 @@ class Hasher
 
     /**
      * Gets the current algorithm 
-     * 
      * @return int
      */
     public function getAlgorithm()
@@ -62,7 +55,6 @@ class Hasher
 
     /**
      * Sets the cost
-     * 
      * @param int $cost
      * @return $this
      */
@@ -74,7 +66,6 @@ class Hasher
 
     /**
      * Gets the current cost
-     * 
      * @return int
      */
     public function getCost()
@@ -84,7 +75,6 @@ class Hasher
 
     /**
      * Hashes the given string
-     * 
      * @param string $password
      * @return string
      */
@@ -95,7 +85,6 @@ class Hasher
 
     /**
      * Checks if re-hash needed
-     * 
      * @param string $hash
      * @return bool
      */
@@ -106,7 +95,6 @@ class Hasher
 
     /**
      * Checks the given string against the hash
-     * 
      * @param string $password
      * @param string $hash
      * @return bool
@@ -118,7 +106,6 @@ class Hasher
 
     /**
      * Gets an info of given hash
-     * 
      * @param string $hash
      * @return array
      */

@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 1.0.0
+ * @since 2.0.0
  */
 
 namespace Quantum\Libraries\Lang;
@@ -22,143 +22,145 @@ use Quantum\Loader\Loader;
 
 /**
  * Language class
- *
- * @package Quantum
- * @subpackage Libraries.Lang
- * @category Libraries
+ * @package Quantum\Libraries\Lang
  */
 class Lang
 {
 
     /**
      * Current language
-     *
      * @var strinng
      */
     private static $currentLang;
 
     /**
      * Translations
-     *
      * @var array
      */
     private static $translations = [];
 
     /**
-     * Initiates the Lang
-     *
-     * @param string $lang
-     * @throws \Exception
+     * Lang dir
+     * @var string 
      */
-    public static function init($lang = null)
-    {
-        $languages = get_config('langs');
+    private $langDir;
 
-        if (!$languages) {
+    /**
+     * File System
+     * @var Quantum\Libraries\Storage\FileSystem
+     */
+    private $fs;
+
+    /**
+     * Instance of Lang
+     * @var Lang 
+     */
+    private static $langInstance = null;
+
+    /**
+     * Lang constructor.
+     * @param string $lang
+     * @throws LangException
+     */
+    private function __construct()
+    {
+        if (!config()->has('langs')) {
             throw new LangException(ExceptionMessages::MISCONFIGURED_LANG_CONFIG);
         }
 
-        if (empty($lang) && !get_config('lang_default')) {
-            throw new LangException(ExceptionMessages::MISCONFIGURED_LANG_DEFAULT_CONFIG);
-        }
-
-        if (empty($lang) || !in_array($lang, $languages)) {
-            $lang = get_config('lang_default');
-        }
-
-        self::set($lang);
-        self::loadDir($lang);
+        $this->fs = new FileSystem();
     }
 
     /**
-     * Loads directory of translation files
-     *
-     * @param string $dirName
-     * @throws \Exception
+     * GetInstance
+     * @return Lang
      */
-    public static function loadDir($dirName)
+    public static function getInstance()
     {
-        $dirPath = modules_dir() . DS . current_module() . DS. 'Resources' . DS . 'lang' . DS . $dirName;
-
-        $fileSystem = new FileSystem();
-        
-        if($fileSystem->isDirectory($dirPath)) {
-            $files = $fileSystem->glob($dirPath . "/*.php");
-            if (count($files) == 0) {
-                throw new LangException(_message(ExceptionMessages::TRANSLATION_FILES_NOT_FOUND, $dirName));
-            }
-
-            foreach ($files as $file) {
-                $fileName = $fileSystem->fileName($file);
-
-                $setup = (object)[
-                    'module' => current_module(),
-                    'env' => 'Resources' . DS . 'lang' . DS . $dirName,
-                    'fileName' => $fileName,
-                    'exceptionMessage' => ExceptionMessages::TRANSLATION_FILES_NOT_FOUND
-
-                ];
-
-                $loader = new Loader($setup, false);
-
-                self::load($loader, $fileName);
-            }
+        if (self::$langInstance === null) {
+            self::$langInstance = new self();
         }
+
+        return self::$langInstance;
     }
 
     /**
-     * Loads lang file
-     *
+     * Loads translations
      * @param Loader $loader
-     * @param string $fileName
-     * @throws \Exception
+     * @throws LangException
      */
-    public static function load(Loader $loader, $fileName)
+    public function load(Loader $loader)
     {
-        self::$translations[$fileName] = $loader->load();
+        $langDir = modules_dir() . DS . current_module() . DS . 'Resources' . DS . 'lang' . DS . $this->getLang();
+
+        $files = $this->fs->glob($langDir . "/*.php");
+
+        if (count($files) == 0) {
+            throw new LangException(_message(ExceptionMessages::TRANSLATION_FILES_NOT_FOUND, $this->getLang()));
+        }
+
+        foreach ($files as $file) {
+            $fileName = $this->fs->fileName($file);
+
+            $setup = (object) [
+                        'module' => current_module(),
+                        'env' => 'Resources' . DS . 'lang' . DS . $this->getLang(),
+                        'fileName' => $fileName,
+                        'exceptionMessage' => ExceptionMessages::TRANSLATION_FILES_NOT_FOUND
+            ];
+
+            self::$translations[$fileName] = $loader->setup($setup)->load();
+        }
     }
 
     /**
      * Sets current language
-     *
      * @param string $lang
-     * @return void
+     * @return $this
+     * @throws LangException
      */
-    public static function set($lang)
+    public function setLang($lang)
     {
+        if (empty($lang) && !config()->get('lang_default')) {
+            throw new LangException(ExceptionMessages::MISCONFIGURED_LANG_DEFAULT_CONFIG);
+        }
+
+        if (empty($lang) || !in_array($lang, config()->get('langs'))) {
+            $lang = config()->get('lang_default');
+        }
+
         self::$currentLang = $lang;
+        return $this;
     }
 
     /**
      * Gets the current language
-     *
      * @return string
      */
-    public static function get()
+    public function getLang()
     {
         return self::$currentLang;
     }
 
     /**
-     * Gets the whole translations of current languge
-     *
+     * Gets the whole translations of current language
      * @return array
      */
-    public static function getTranslations()
+    public function getTranslations()
     {
         return self::$translations;
     }
 
     /**
      * Gets the translation by given key
-     *
      * @param $key
      * @param mixed $params
      * @return array|mixed|null|string
      */
-    public static function getTranslation($key, $params = null)
+    public function getTranslation($key, $params = null)
     {
         $data = new Data(self::$translations);
+
         if ($data->has($key)) {
             if (!is_null($params)) {
                 return _message($data->get($key), $params);

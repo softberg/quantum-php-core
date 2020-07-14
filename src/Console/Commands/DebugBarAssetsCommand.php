@@ -9,44 +9,40 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 1.7.0
+ * @since 2.0.0
  */
 
 namespace Quantum\Console\Commands;
 
-use Quantum\Console\Qt_Command;
+use Quantum\Console\QtCommand;
 
 /**
  * Class DebugBarAssetsCommand
  * @package Quantum\Console\Commands
  */
-class DebugBarAssetsCommand extends Qt_Command
+class DebugBarAssetsCommand extends QtCommand
 {
+
     /**
      * Command name
-     *
      * @var string
      */
     protected $name = 'core:debugbar';
 
     /**
      * Command description
-     *
      * @var string
      */
     protected $description = 'Publishing debugbar assets';
 
     /**
      * Command help text
-     *
      * @var string
      */
     protected $help = 'The command will published debugbar assets';
 
-
     /**
      * Executes the command and publishes the debugbar assets
-     *
      * @return mixed|void
      */
     public function exec()
@@ -60,7 +56,6 @@ class DebugBarAssetsCommand extends Qt_Command
 
     /**
      * Recursively copies the debugbar assets
-     *
      * @param string $src
      * @param string $dst
      * @return void
@@ -81,4 +76,5 @@ class DebugBarAssetsCommand extends Qt_Command
         }
         closedir($dir);
     }
+
 }

@@ -120,7 +120,7 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
             );
 
             Request::deleteHeader($this->keys['refreshTokenKey']);
-            Request::deleteHeader('AUTHORIZATION');
+            Request::deleteHeader('Authorization');
             Response::delete('tokens');
 
             return true;
@@ -200,7 +200,7 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
         );
 
         Request::setHeader($this->keys['refreshTokenKey'], $tokens[$this->keys['refreshTokenKey']]);
-        Request::setHeader('AUTHORIZATION', 'Bearer ' . $tokens[$this->keys['accessTokenKey']]);
+        Request::setHeader('Authorization', 'Bearer ' . $tokens[$this->keys['accessTokenKey']]);
         Response::set('tokens', $tokens);
 
         return $tokens;

@@ -9,13 +9,14 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 1.0.0
+ * @since 2.0.0
  */
 
 namespace Quantum\Libraries\Csrf;
 
-use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Libraries\Session\SessionStorageInterface;
+use Quantum\Exceptions\ExceptionMessages;
+use Quantum\Exceptions\CsrfException;
 use Quantum\Http\Request;
 
 /**
@@ -30,23 +31,18 @@ class Csrf
 
     /**
      * The token
-     *
      * @var string
      */
     private static $token = null;
 
     /**
      * Request methods
-     *
      * @var array
      */
     private static $methods = ['POST', 'PUT', 'PATCH', 'DELETE'];
 
     /**
-     * Generate Token
-     *
      * Generates the CSRF token or returns previously generated one
-     *
      * @return string
      */
     public static function generateToken(SessionStorageInterface $storage, $key)
@@ -61,25 +57,22 @@ class Csrf
     }
 
     /**
-     * Check Token
-     *
      * Checks the token
-     *
      * @param Request $request
      * @param SessionStorageInterface $storage
      * @return bool
-     * @throws \Exception
+     * @throws CsrfException
      */
     public static function checkToken(Request $request, SessionStorageInterface $storage)
     {
         if (in_array($request->getMethod(), self::$methods)) {
             $token = $request->getCSRFToken();
             if (!$token) {
-                throw new \Exception(ExceptionMessages::CSRF_TOKEN_NOT_FOUND);
+                throw new CsrfException(ExceptionMessages::CSRF_TOKEN_NOT_FOUND);
             }
 
             if (self::getToken($storage) !== $token) {
-                throw new \Exception(ExceptionMessages::CSRF_TOKEN_NOT_MATCHED);
+                throw new CsrfException(ExceptionMessages::CSRF_TOKEN_NOT_MATCHED);
             }
         }
 
@@ -87,12 +80,8 @@ class Csrf
     }
 
     /**
-     * Delete Token
-     *
      * Deletes the token from storage
-     *
      * @param SessionStorageInterface $storage
-     * @return void
      */
     public static function deleteToken(SessionStorageInterface $storage)
     {
@@ -101,10 +90,7 @@ class Csrf
     }
 
     /**
-     * Get Token
-     *
      * Gets the token from storage
-     *
      * @param SessionStorageInterface $storage
      * @return string|null
      */
@@ -114,10 +100,7 @@ class Csrf
     }
 
     /**
-     * Set Token
-     *
      * Sets the token into the storage
-     *
      * @param SessionStorageInterface $storage
      * @param string $token
      */

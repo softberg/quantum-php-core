@@ -15,16 +15,14 @@
 namespace Quantum\Mvc;
 
 use Quantum\Exceptions\ExceptionMessages;
+use Quantum\Middleware\MiddlewareManager;
+use Quantum\Exceptions\RouteException;
 use Quantum\Factory\ServiceFactory;
 use Quantum\Factory\ModelFactory;
 use Quantum\Factory\ViewFactory;
 use Quantum\Libraries\Csrf\Csrf;
-use Quantum\Libraries\Lang\Lang;
-use Quantum\Middleware\MiddlewareManager;
-use Quantum\Exceptions\RouteException;
-use Quantum\Http\HttpRequest;
-use Quantum\Http\Request;
 use Quantum\Http\Response;
+use Quantum\Http\Request;
 
 /**
  * MvcManager Class
@@ -51,23 +49,18 @@ class MvcManager
 
     /**
      * Run MVC
-     * @param array $currentRoute
+     * @param Request $request
+     * @param Response $response
      * @throws RouteException
      * @throws \ReflectionException
      */
-    public function runMvc($currentRoute)
+    public function runMvc(Request $request, Response $response)
     {
-        HttpRequest::init();
-
-        $request = new Request();
-        $response = new Response();
-
-        Lang::init($request->getSegment(get_config('lang_segment')));
 
         if ($request->getMethod() != 'OPTIONS') {
 
             if (current_middlewares()) {
-                list($request, $response) = (new MiddlewareManager($currentRoute))->applyMiddlewares($request, $response);
+                list($request, $response) = (new MiddlewareManager())->applyMiddlewares($request, $response);
             }
 
             $this->controller = $this->getController();

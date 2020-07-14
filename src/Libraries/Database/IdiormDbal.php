@@ -9,14 +9,17 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 1.0.0
+ * @since 2.0.0
  */
 
 namespace Quantum\Libraries\Database;
 
 use PDO;
 use ORM;
-use Quantum\Mvc\Qt_Model;
+use Quantum\Mvc\QtModel;
+use RecursiveArrayIterator;
+use RecursiveIteratorIterator;
+use Quantum\Helpers\Helper;
 
 /**
  * Class IdiormDbal
@@ -31,52 +34,36 @@ class IdiormDbal implements DbalInterface
 
     /**
      * The database table associated with model
-     *
      * @var string
      */
     private $table;
 
     /**
      * Id column of table
-     *
      * @var string
      */
     private $idColumn;
 
     /**
      * Foreign keys
-     * 
      * @var array 
      */
     private $foreignKeys = [];
 
     /**
      * Idiorm object
-     *
      * @var object
      */
     public $ormObject;
 
     /**
      * ORM Class
-     *
      * @var string
      */
     private static $ormClass = ORM::class;
 
     /**
-     * Orm Object
-     *
-     * @return mixed
-     */
-    private function ormObject()
-    {
-        return (self::$ormClass)::for_table($this->table)->use_id_column($this->idColumn);
-    }
-
-    /**
      * Class constructor
-     *
      * @param string $table
      * @param string $idColumn
      */
@@ -89,7 +76,6 @@ class IdiormDbal implements DbalInterface
 
     /**
      * Get table
-     *
      * @return string
      */
     public function getTable()
@@ -98,58 +84,32 @@ class IdiormDbal implements DbalInterface
     }
 
     /**
-     * DB Connect
-     *
      * Connects to database
-     *
      * @param array $connectionDetails
      * @return array
      */
-    public static function dbConnect($connectionDetails)
+    public static function dbConnect($connectionDetails): array
     {
+        $connectionString = self::buildConnectionString($connectionDetails);
+
         $attributes = [
-            PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES ' . $connectionDetails['charset'] ?? 'utf8',
+            PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES ' . ($connectionDetails['charset'] ?? 'utf8'),
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
         ];
 
         (self::$ormClass)::configure([
-            'connection_string' => $connectionDetails['driver'] . ':host=' . $connectionDetails['host'] . ';dbname=' . $connectionDetails['dbname'],
-            'username' => $connectionDetails['username'],
-            'password' => $connectionDetails['password'],
+            'connection_string' => $connectionString,
+            'username' => $connectionDetails['username'] ?? null,
+            'password' => $connectionDetails['password'] ?? null,
             'driver_options' => $attributes,
-            'logging' => get_config('debug', false)
+            'logging' => config()->get('debug', false)
         ]);
 
         return (self::$ormClass)::get_config();
     }
 
     /**
-     * Select 
-     * 
-     * Selects the given table columns 
-     * 
-     * @param mixed $columns
-     * @return array
-     */
-    public function select(...$columns)
-    {
-        array_walk($columns, function(&$column) {
-            if (is_array($column)) {
-                $column = array_flip($column);
-            }
-        });
-
-        $iterator = new \RecursiveIteratorIterator(new \RecursiveArrayIterator($columns));
-        $columns = iterator_to_array($iterator, true);
-
-        return $this->ormObject->select_many($columns);
-    }
-
-    /**
-     * Find one
-     *
-     * Gets record by primary key
-     *
+     * Gets the record by primary key
      * @param int $id
      * @return object
      */
@@ -160,10 +120,7 @@ class IdiormDbal implements DbalInterface
     }
 
     /**
-     * FindOneBy
-     *
      * Gets record by given column
-     *
      * @param string $column
      * @param mixed $value
      * @return object
@@ -175,10 +132,7 @@ class IdiormDbal implements DbalInterface
     }
 
     /**
-     * First
-     *
      * Gets the first item
-     *
      * @return object
      */
     public function first()
@@ -188,30 +142,52 @@ class IdiormDbal implements DbalInterface
     }
 
     /**
-     * Criterias
-     *
-     * Adds where criterias
-     *
-     * @param array ...$criterias
-     * @return object
+     * Casts the ormObject object to array
+     * @return array
      */
-    public function criterias(...$criterias)
+    public function asArray()
     {
-        foreach ($criterias as $criteria) {
-
-            if (is_array($criteria[0])) {
-                $this->scoppedORCriteria($criteria);
-                continue;
-            }
-
-            $value = $criteria[2] ?? null;
-
-            $this->criteria($criteria[0], $criteria[1], $value);
-        }
-
-        return $this->ormObject;
+        return $this->ormObject->as_array();
     }
-    
+
+    /**
+     * Counts the result set
+     * @return int
+     */
+    public function count()
+    {
+        return $this->ormObject->count();
+    }
+
+    /**
+     * Gets the result set
+     * @param null|string $returnType
+     * @return mixed
+     */
+    public function get($returnType = null)
+    {
+        return ($returnType == 'object') ? $this->ormObject->find_many() : $this->ormObject->find_array();
+    }
+
+    /**
+     * Selects the given table columns 
+     * @param mixed $columns
+     * @return array
+     */
+    public function select(...$columns)
+    {
+        array_walk($columns, function(&$column) {
+            if (is_array($column)) {
+                $column = array_flip($column);
+            }
+        });
+
+        $iterator = new RecursiveIteratorIterator(new RecursiveArrayIterator($columns));
+        $columns = iterator_to_array($iterator, true);
+
+        return $this->ormObject->select_many($columns);
+    }
+
     /**
      * Criteria
      * 
@@ -253,39 +229,64 @@ class IdiormDbal implements DbalInterface
             case 'NOT LIKE':
                 $this->addCriteria($column, $operator, $value, 'where_not_like');
                 break;
+            case 'NULL':
+                $this->addCriteria($column, $operator, $value, 'where_null');
+                break;
+            case 'NOT NULL':
+                $this->addCriteria($column, $operator, $value, 'where_not_null');
+                break;
             case '#=#':
                 $this->whereColumnsEqual($column, $value);
                 break;
         }
-        
+
         return $this->ormObject;
     }
 
     /**
-     * Order By
-     *
+     * Adds where criterias
+     * @param array ...$criterias
+     * @return object
+     */
+    public function criterias(...$criterias)
+    {
+        foreach ($criterias as $criteria) {
+
+            if (is_array($criteria[0])) {
+                $this->scoppedORCriteria($criteria);
+                continue;
+            }
+
+            $value = $criteria[2] ?? null;
+
+            $this->criteria($criteria[0], $criteria[1], $value);
+        }
+
+        return $this->ormObject;
+    }
+
+    /**
      * Orders the result by ascending or descending
-     *
      * @param string $column
      * @param string $direction
      * @return object
      */
     public function orderBy($column, $direction)
     {
-        if (strtolower($direction) == 'asc') {
-            $this->ormObject->order_by_asc($column);
-        } elseif (strtolower($direction) == 'desc') {
-            $this->ormObject->order_by_desc($column);
+        switch (strtolower($direction)) {
+            case 'asc':
+                $this->ormObject->order_by_asc($column);
+                break;
+            case 'desc':
+                $this->ormObject->order_by_desc($column);
+                break;
         }
 
         return $this->ormObject;
     }
 
     /**
-     * Group By
-     *
      * Groups the result by column
-     *
      * @param string $column
      * @return object
      */
@@ -295,11 +296,8 @@ class IdiormDbal implements DbalInterface
     }
 
     /**
-     * Limit
-     *
      * Returns the result by given limit
-     *
-     * @param $limit
+     * @param int $limit
      * @return object
      */
     public function limit($limit)
@@ -308,11 +306,8 @@ class IdiormDbal implements DbalInterface
     }
 
     /**
-     * Offset
-     *
-     * Returns the result by given offset
-     *
-     * @param array $params
+     * Returns the result by given offset (works when limit also applied)
+     * @param int $params
      * @return object
      */
     public function offset($offset)
@@ -321,47 +316,7 @@ class IdiormDbal implements DbalInterface
     }
 
     /**
-     * Get
-     *
-     * Gets the result set
-     *
-     * @param null $returnType
-     * @return mixed
-     */
-    public function get($returnType = null)
-    {
-        return ($returnType == 'object') ? $this->ormObject->find_many() : $this->ormObject->find_array();
-    }
-
-    /**
-     * Count
-     *
-     * Counts the result set
-     *
-     * @return int
-     */
-    public function count()
-    {
-        return $this->ormObject->count();
-    }
-
-    /**
-     * asArray
-     *
-     * Casts the ormObject object to array
-     *
-     * @return array
-     */
-    public function asArray()
-    {
-        return $this->ormObject->as_array();
-    }
-
-    /**
-     * Create
-     *
      * Creates new db record
-     *
      * @return object
      */
     public function create()
@@ -370,10 +325,7 @@ class IdiormDbal implements DbalInterface
     }
 
     /**
-     * Save
-     *
      * Saves the data into the database
-     *
      * @return bool
      */
     public function save()
@@ -382,10 +334,7 @@ class IdiormDbal implements DbalInterface
     }
 
     /**
-     * Delete
-     *
      * Deletes the data from the database
-     *
      * @return bool
      */
     public function delete()
@@ -394,11 +343,7 @@ class IdiormDbal implements DbalInterface
     }
 
     /**
-     * 
-     * Delete All
-     * 
      * Deletes all records by previously applied criteria
-     * 
      * @return bool
      */
     public function deleteAll()
@@ -407,10 +352,7 @@ class IdiormDbal implements DbalInterface
     }
 
     /**
-     * Join
-     *
      * Add a simple JOIN source to the query
-     *
      * @param string $table
      * @param array $constraint
      * @param string $tableAlias
@@ -422,10 +364,7 @@ class IdiormDbal implements DbalInterface
     }
 
     /**
-     * Join
-     *
-     * Add an INNER JOIN souce to the query
-     *
+     * Add an INNER JOIN source to the query
      * @param string $table
      * @param array $constraint
      * @param string $tableAlias
@@ -437,10 +376,7 @@ class IdiormDbal implements DbalInterface
     }
 
     /**
-     * Left Join
-     *
-     * Add an LEFT JOIN souce to the query
-     *
+     * Add an LEFT JOIN source to the query
      * @param string $table
      * @param array $constraint
      * @param string $tableAlias
@@ -453,10 +389,7 @@ class IdiormDbal implements DbalInterface
     }
 
     /**
-     * Right Join
-     *
-     * Add an RIGHT JOIN souce to the query
-     *
+     * Add an RIGHT JOIN source to the query
      * @param string $table
      * @param array $constraint
      * @param string $tableAlias
@@ -469,14 +402,11 @@ class IdiormDbal implements DbalInterface
     }
 
     /**
-     * Join To
-     * 
      * Joins two models
-     * 
-     * @param Qt_Model $model
+     * @param QtModel $model
      * @return object
      */
-    public function joinTo(Qt_Model $model, $switch = true)
+    public function joinTo(QtModel $model, $switch = true)
     {
         $resultObject = $this->ormObject->join($model->table,
                 [
@@ -496,12 +426,11 @@ class IdiormDbal implements DbalInterface
     }
 
     /**
-     * Join Through 
-     * 
-     * @param Qt_Model $model
+     * Joins through connector model
+     * @param QtModel $model
      * @return object
      */
-    public function joinThrough(Qt_Model $model, $switch = true)
+    public function joinThrough(QtModel $model, $switch = true)
     {
         $resultObject = $this->ormObject->join($model->table,
                 [
@@ -521,10 +450,7 @@ class IdiormDbal implements DbalInterface
     }
 
     /**
-     * Execute
-     *
      * Raw execute
-     *
      * @param string $query
      * @param array $parameters
      * @return bool
@@ -535,10 +461,7 @@ class IdiormDbal implements DbalInterface
     }
 
     /**
-     * Query
-     *
      * Raw query
-     *
      * @param $query
      * @param array $parameters
      * @return array
@@ -553,7 +476,7 @@ class IdiormDbal implements DbalInterface
      *
      * @return string
      */
-    public static function getLastQuery()
+    public static function lastQuery()
     {
         return (self::$ormClass)::get_last_query();
     }
@@ -563,7 +486,7 @@ class IdiormDbal implements DbalInterface
      *
      * @return string
      */
-    public static function getLastStatement()
+    public static function lastStatement()
     {
         return (self::$ormClass)::get_last_statement();
     }
@@ -574,14 +497,51 @@ class IdiormDbal implements DbalInterface
      *
      * @return array
      */
-    public static function getQueryLog()
+    public static function queryLog()
     {
+
         return (self::$ormClass)::get_query_log();
     }
 
     /**
+     * Orm Object
+     * @return mixed
+     */
+    private function ormObject()
+    {
+        return (self::$ormClass)::for_table($this->table)->use_id_column($this->idColumn);
+    }
+
+    /**
+     * Builds connection string
+     * @param array $connectionDetails
+     * @return string
+     */
+    private static function buildConnectionString($connectionDetails)
+    {
+        $connectionString = $connectionDetails['driver'] . ':';
+
+        if ($connectionDetails['driver'] == 'sqlite') {
+            $connectionString .= $connectionDetails['database'];
+        } else {
+            $connectionString .= 'host=' . $connectionDetails['host'] . ';';
+
+            if (isset($connectionDetails['port'])) {
+                $connectionString .= 'post=' . $connectionDetails['port'] . ';';
+            }
+
+            $connectionString .= 'dbname=' . $connectionDetails['dbname'] . ';';
+
+            if (isset($connectionDetails['charset'])) {
+                $connectionString .= 'charset=' . $connectionDetails['charset'] . ';';
+            }
+        }
+
+        return $connectionString;
+    }
+
+    /**
      * Compares column from one table to column to other table
-     * 
      * @param string $columnOne
      * @param string $columnTwo
      * @return object
@@ -593,7 +553,6 @@ class IdiormDbal implements DbalInterface
 
     /**
      * Adds one or more OR criteria in brackets 
-     * 
      * @param array $criteria
      */
     private function scoppedORCriteria($criteria)
@@ -621,8 +580,7 @@ class IdiormDbal implements DbalInterface
     }
 
     /**
-     * Add Criteria 
-     * 
+     * Adds Criteria 
      * @param string $column
      * @param string $operator
      * @param mixed $value
@@ -630,7 +588,7 @@ class IdiormDbal implements DbalInterface
      */
     private function addCriteria($column, $operator, $value, $func)
     {
-        if (is_array($value) && key($value) == 'fn') {
+        if (is_array($value) && count($value) == 1 && key($value) == 'fn') {
             $this->ormObject->where_raw($column . ' ' . $operator . ' ' . $value['fn']);
         } else {
             $this->ormObject->$func($column, $value);

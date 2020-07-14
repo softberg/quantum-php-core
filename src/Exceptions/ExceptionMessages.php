@@ -97,6 +97,11 @@ class ExceptionMessages
     const UNDECLARED_HOOK_NAME = 'The Hook `{%1}` was not declared';
 
     /**
+     * Setup not provided to load
+     */
+    const SETUP_NOT_PROVIDED = '{%1} setup not provided';
+
+    /**
      * Config file not found message
      */
     const CONFIG_FILE_NOT_FOUND = 'Config file `{%1}` does not exists';
@@ -112,14 +117,14 @@ class ExceptionMessages
     const CONFIG_COLLISION = 'Config key `{%1}` is already in use';
 
     /**
-     * DB config not found message
+     * View file not found message
      */
-    const DB_CONFIG_NOT_FOUND = 'Database config file does not exists';
+    const VIEW_FILE_NOT_FOUND = 'File `{%1}.php` does not exists';
 
     /**
      * View file not found message
      */
-    const VIEW_FILE_NOT_FOUND = 'File `{%1}.php` does not exists';
+    const LAYOUT_NOT_SET = 'Layout is not set';
 
     /**
      * Invalid response status message
@@ -182,7 +187,7 @@ class ExceptionMessages
     const UNDEFINED_MODEL_METHOD = 'Model method `{%1}` is not defined';
 
     /**
-     * Model not instance of Qt_Model
+     * Model not instance of QtModel
      */
     const NOT_INSTANCE_OF_MODEL = 'Model `{%1}` is not instance of `{%2}`';
 
@@ -197,7 +202,7 @@ class ExceptionMessages
     const SERVICE_NOT_FOUND = 'Service `{%1}` not found';
 
     /**
-     * Model not instance of Qt_Model
+     * Model not instance of QtModel
      */
     const NOT_INSTANCE_OF_SERVICE = 'Service `{%1}` is not instance of `{%2}`';
 
@@ -265,7 +270,7 @@ class ExceptionMessages
      * Incorrect auth credentials  message
      */
     const INACTIVE_ACCOUNT = 'The account is not activated';
-    
+
     /**
      * Incorrect auth credentials  message
      */
@@ -285,10 +290,35 @@ class ExceptionMessages
      * Non existing value message
      */
     const NON_EXISTING_RECORD = 'There is no record matched to {%1}';
-    
+
     /**
      * Non equal values message
      */
     const NON_EQUAL_VALUES = 'Values are not equal';
+
+    /**
+     * Upload file not found message
+     */
+    const UPLOADED_FILE_NOT_FOUND = 'Cannot find uploaded file identified by key `{%1}`';
+
+    /**
+     * 
+     */
+    const DIRECTORY_NOT_EXIST = 'Directory `{%1}` does not exists';
+
+    /**
+     * 
+     */
+    const DIRECTORY_NOT_WRITABLE = 'Directory `{%1}` not writable';
+
+    /**
+     * 
+     */
+    const FILE_NOT_UPLOADED = 'The uploaded file was not sent with a POST request';
+
+    /**
+     * 
+     */
+    const FILE_ALREADY_EXISTS = 'File already exists';
 
 }

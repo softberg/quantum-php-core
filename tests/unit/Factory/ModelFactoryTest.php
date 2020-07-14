@@ -2,9 +2,9 @@
 
 namespace Quantum\Models {
 
-    use Quantum\Mvc\Qt_Model;
+    use Quantum\Mvc\QtModel;
 
-    class TestModel extends Qt_Model {}
+    class TestModel extends QtModel {}
 
 }
 
@@ -31,7 +31,7 @@ namespace Quantum\Test\Unit {
         {
             $this->databaseMock = Mockery::mock('overload:Quantum\Libraries\Database\Database');
 
-            $this->databaseMock->shouldReceive('getDbalInstance')->andReturn(new \stdClass());
+            $this->databaseMock->shouldReceive('getORM')->andReturn(new \stdClass());
 
             $this->helperMock = Mockery::mock('overload:Quantum\Helpers\Helper');
 
@@ -52,7 +52,7 @@ namespace Quantum\Test\Unit {
         {
             $model = $this->modelFactory->get(TestModel::class);
 
-            $this->assertInstanceOf('Quantum\Mvc\Qt_Model', $model);
+            $this->assertInstanceOf('Quantum\Mvc\QtModel', $model);
 
             $this->assertInstanceOf('Quantum\Models\TestModel', $model);
         }
@@ -70,7 +70,7 @@ namespace Quantum\Test\Unit {
         {
             $this->expectException(ModelException::class);
 
-            $this->expectExceptionMessage('Model `Mockery\Undefined` is not instance of `Quantum\Mvc\Qt_Model`');
+            $this->expectExceptionMessage('Model `Mockery\Undefined` is not instance of `Quantum\Mvc\QtModel`');
 
             $this->modelFactory->get(\Mockery\Undefined::class);
         }

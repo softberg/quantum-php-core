@@ -9,29 +9,59 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 1.0.0
+ * @since 2.0.0
  */
 
 namespace Quantum\Http;
 
+use SimpleXMLElement;
+use DOMDocument;
+
 /**
- * HttpResponse Class
- *
- * Abstract base http response class
- *
- * @package Quantum
- * @subpackage Http
- * @category Http
+ * Class HttpResponse
+ * @package Quantum\Http
  */
 abstract class HttpResponse
 {
 
     /**
-     * Response body
-     *
+     * HTML content type
+     */
+    const CONTENT_HTML = 'text/html';
+
+    /**
+     * XML content type
+     */
+    const CONTENT_XML = 'application/xml';
+
+    /**
+     * JSON content type
+     */
+    const CONTENT_JSON = 'application/json';
+
+    /**
+     * Response headers
+     * @var type 
+     */
+    private static $__headers = [];
+
+    /**
+     * Status code
+     * @var int 
+     */
+    private static $__statusCode = 200;
+
+    /**
+     * Response
      * @var array
      */
     private static $__response = [];
+
+    /**
+     * XML root element
+     * @var string 
+     */
+    private static $xmlRoot = '<data></data>';
 
     /**
      * Status texts
@@ -103,10 +133,51 @@ abstract class HttpResponse
     ];
 
     /**
-     * Set
-     *
-     * Set new key/value pair into response
-     *
+     * Sends all response data to the client and finishes the request.
+     */
+    public static function send()
+    {
+        foreach (self::$__headers as $key => $value) {
+            header($key . ': ' . $value);
+        }
+
+        echo self::getContent();
+    }
+
+    /**
+     * Gets the response content
+     * @return string
+     */
+    public static function getContent(): string
+    {
+        $content = '';
+
+        switch (self::getContentType()) {
+            case self::CONTENT_JSON:
+                $content = json_encode(self::all());
+                break;
+            case self::CONTENT_XML:
+                $content = self::arrayToXml(self::all());
+                break;
+            case self::CONTENT_HTML:
+                $content = self::get('_qt_rendered_view');
+                break;
+            default :
+                break;
+        }
+
+        return $content;
+    }
+
+    public static function flush()
+    {
+        self::$__headers = [];
+        self::$__statusCode = 200;
+        self::$__response = [];
+    }
+
+    /**
+     * Sets new key/value pair into response
      * @param string $key
      * @param mixed $value
      */
@@ -116,10 +187,7 @@ abstract class HttpResponse
     }
 
     /**
-     * Has
-     *
      * Checks if response contains a data by given key
-     *
      * @param $key
      * @return bool
      */
@@ -129,10 +197,7 @@ abstract class HttpResponse
     }
 
     /**
-     * Get
-     *
-     * Retrieves data from response by given key
-     *
+     * Gets the data from response by given key
      * @param string $key
      * @param string $default
      * @return mixed
@@ -144,7 +209,6 @@ abstract class HttpResponse
 
     /**
      * Gets all response parameters
-     *
      * @return array
      */
     public static function all()
@@ -153,32 +217,100 @@ abstract class HttpResponse
     }
 
     /**
-     * Delete
-     *
      * Deletes the element from response by given key
      * @param type $key
      */
     public static function delete($key)
     {
-        unset(self::$__response[$key]);
+        if (self::has($key)) {
+            unset(self::$__response[$key]);
+        }
     }
 
     /**
-     * Set status
-     *
-     * @param integer $status
-     * @return void
+     * Sets the response header
+     * @param string $key
+     * @param string $value
      */
-    public static function setStatus($status)
+    public static function setHeader($key, $value)
     {
-        header('HTTP/1.1 ' . $status . ' ' . self::$statusTexts[$status]);
+        self::$__headers[$key] = $value;
     }
 
     /**
-     * Set content type
-     *
+     * Checks the response header existence by given key
+     * @param string $key
+     * @return bool
+     */
+    public static function hasHeader($key)
+    {
+        return isset(self::$__headers[$key]);
+    }
+
+    /**
+     * Gets the response header by given key
+     * @param $key
+     * @return mixed|null
+     */
+    public static function getHeader($key)
+    {
+        return self::hasHeader($key) ? self::$__headers[$key] : null;
+    }
+
+    /**
+     * Get all response headers
+     * @return array
+     */
+    public static function allHeaders()
+    {
+        return self::$__headers;
+    }
+
+    /**
+     * Deletes the header by given key
+     * @param string $key
+     */
+    public static function deleteHeader($key)
+    {
+        if (self::hasHeader($key)) {
+            unset(self::$__headers[$key]);
+        }
+    }
+
+    /**
+     * Set the status code
+     * @param integer $code
+     */
+    public static function setStatusCode(int $code)
+    {
+        if (!array_key_exists($code, self::$statusTexts)) {
+            throw new \InvalidArgumentException(sprintf('The HTTP status code "%s" is not valid.', $code));
+        }
+
+        self::$__statusCode = $code;
+    }
+
+    /**
+     * Gets the status code
+     * @return int
+     */
+    public static function getStatusCode()
+    {
+        return self::$__statusCode;
+    }
+
+    /**
+     * Gets the status text
+     * @return string
+     */
+    public static function getStatusText()
+    {
+        return self::$statusTexts[self::$__statusCode];
+    }
+
+    /**
+     * Sets the content type
      * @param string $contentType
-     * @return void
      */
     public static function setContentType($contentType)
     {
@@ -186,83 +318,106 @@ abstract class HttpResponse
     }
 
     /**
-     * Set Сross Site Request Forgery Token
-     *
-     * @param string $csrfToken
-     * @return void
+     * Gets the content type
      */
-    public static function setCSRFToken($csrfToken)
+    public static function getContentType()
     {
-        self::setHeader('X-CSRF-Token', $csrfToken);
+        return self::getHeader('Content-Type');
     }
 
     /**
-     * Set header
-     *
-     * @param string $key
-     * @param string $value
+     * Redirect
+     * @param string $url
+     * @param int|null $code
      */
-    public static function setHeader($key, $value)
+    public static function redirect($url, $code = null)
     {
-        header($key . ': ' . $value);
+        if ($code) {
+            self::setStatusCode($code);
+        }
+
+        self::setHeader('Location', $url);
+
+        self::send();
     }
 
     /**
-     * JSON output
-     *
-     * Outputs JSON response
-     *
-     * @param mixed $data
-     * @param integer $status
+     * Prepares the JSON response
+     * @param array|null $data
+     * @param int|null $code
      */
-    public static function json($data = null, $status = null)
+    public static function json(array $data = null, $code = null)
     {
+        self::setContentType(self::CONTENT_JSON);
+
+        if ($code) {
+            self::setStatusCode($code);
+        }
+
         if ($data) {
-            self::$__response = array_merge(self::$__response, $data);
+            foreach ($data as $key => $value) {
+                self::$__response[$key] = $value;
+            }
         }
-
-        if ($status) {
-            self::setStatus($status);
-        }
-
-        self::setContentType('application/json');
-        echo json_encode(self::all());
-        exit;
     }
 
     /**
-     * XML output
-     *
-     * Outputs XML response
-     * 
+     * Prepares the XML response
+     * @param array|null $data
+     * @param int|null $code
+     */
+    public static function xml(array $data = null, $root = '<data></data>', $code = null)
+    {
+        self::setContentType(self::CONTENT_XML);
+
+        self::$xmlRoot = $root;
+
+        if ($code) {
+            self::setStatusCode($code);
+        }
+
+        if ($data) {
+            foreach ($data as $key => $value) {
+                self::$__response[$key] = $value;
+            }
+        }
+    }
+
+    /**
+
+     * Prepares the HTML content
+     * @param string $html
+     * @param int|null $code
+     */
+    public static function html(string $html, $code = null)
+    {
+        self::setContentType(self::CONTENT_HTML);
+
+        if ($code) {
+            self::setStatusCode($code);
+        }
+
+        self::$__response['_qt_rendered_view'] = $html;
+    }
+
+    /**
+     * Transforms array to XML
      * @param array $arr
      * @param string $root
+     * @return string
      */
-    public static function xml(array $arr, string $root = '<data></data>')
-    {
-        self::setContentType('application/xml');
+    private static function arrayToXML(array $arr)
+    {        
+        $simpleXML = new SimpleXMLElement(self::$xmlRoot);
+        self::composeXML($arr, $simpleXML);
 
-        $simpleXML = new \SimpleXMLElement('<?xml version="1.0"?>' . $root);
-        self::arrayToXML($arr, $simpleXML);
-
-        $dom = new \DOMDocument();
+        $dom = new DOMDocument();
         $dom->loadXML($simpleXML->asXML());
         $dom->formatOutput = true;
-        echo $dom->saveXML();
-
-        exit;
+        return $dom->saveXML();
     }
 
-    /**
-     * ArrayToXML
-     *
-     * Transforms array to XML
-     *
-     * @param array $arr
-     * @param object $simpleXML
-     * @return void
-     */
-    private function arrayToXML(array $arr, &$simpleXML)
+    private static function composeXML(array $arr, &$simpleXML)
     {
         foreach ($arr as $key => $value) {
             if (is_numeric($key)) {
@@ -285,7 +440,7 @@ abstract class HttpResponse
                     }
                 }
 
-                self::arrayToXML($value, $child);
+                self::composeXML($value, $child);
             } else {
                 $child = $simpleXML->addChild($tag, htmlspecialchars($value));
 
@@ -296,15 +451,6 @@ abstract class HttpResponse
                 }
             }
         }
-    }
-
-    public function redirect($url, $code = null)
-    {
-        if ($code) {
-            self::setStatus($code);
-        }
-
-        self::setHeader('Location', $url);
     }
 
 }
