@@ -17,7 +17,7 @@ if (!function_exists('current_middlewares')) {
 
     /**
      * Gets current middlewares
-     * @return string
+     * @return string|null
      */
     function current_middlewares()
     {
@@ -30,11 +30,11 @@ if (!function_exists('current_module')) {
 
     /**
      * Gets current module
-     * @return string
+     * @return string|null
      */
     function current_module()
     {
-        return RouteController::getCurrentRoute()['module'];
+        return RouteController::getCurrentRoute()['module'] ?? null;
     }
 
 }
@@ -43,11 +43,11 @@ if (!function_exists('current_controller')) {
 
     /**
      * Get current controller
-     * @return string
+     * @return string|null
      */
     function current_controller()
     {
-        return RouteController::getCurrentRoute()['controller'];
+        return RouteController::getCurrentRoute()['controller'] ?? null;
     }
 
 }
@@ -56,11 +56,11 @@ if (!function_exists('current_action')) {
 
     /**
      * Gets current action
-     * @return string
+     * @return string|null
      */
     function current_action()
     {
-        return RouteController::getCurrentRoute()['action'];
+        return RouteController::getCurrentRoute()['action'] ?? null;
     }
 
 }
@@ -69,7 +69,7 @@ if (!function_exists('current_route')) {
 
     /**
      * Gets current route
-     * @return string
+     * @return string|null
      */
     function current_route()
     {
@@ -86,7 +86,7 @@ if (!function_exists('current_route_args')) {
      */
     function current_route_args()
     {
-        return array_values(RouteController::getCurrentRoute()['args']) ?? null;
+        return array_values(RouteController::getCurrentRoute()['args']) ?? [];
     }
 
 }

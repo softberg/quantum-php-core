@@ -9,7 +9,7 @@ before_install:
     
 before_script: 
     - composer self-update
-    - composer update
+    - composer install --prefer-dist --no-progress --no-suggest
     
 script: 
     - vendor/bin/phpunit --stderr
