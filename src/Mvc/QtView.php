@@ -17,11 +17,11 @@ namespace Quantum\Mvc;
 use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Exceptions\ViewException;
-use Quantum\Libraries\Config\Config;
 use Quantum\Factory\ViewFactory;
 use Quantum\Hooks\HookManager;
 use Quantum\Debugger\Debugger;
 use Quantum\Helpers\Helper;
+use Error;
 
 /**
  * Base View Class
@@ -46,7 +46,7 @@ class QtView
      * @var string
      */
     private $view = null;
-    
+
     /**
      * Rendered debug bar
      * @var type 
@@ -247,16 +247,21 @@ class QtView
     {
         $file = $this->findFile($view);
 
-        ob_start();
-        ob_implicit_flush(false);
+        try {
+            ob_start();
+            ob_implicit_flush(false);
 
-        if ($params) {
-            extract($params, EXTR_OVERWRITE);
+            if ($params) {
+                extract($params, EXTR_OVERWRITE);
+            }
+
+            require $file;
+
+            return ob_get_clean();
+        } catch (Error $e) {
+            ob_clean();
+            exit($e->getMessage());
         }
-
-        require $file;
-
-        return ob_get_clean();
     }
 
     /**
