@@ -137,12 +137,12 @@ class QtView
      */
     public function render($view, $params = []): string
     {
-        if ($params) {
-            $this->data = array_merge($this->data, $params);
-        }
-
         if (!$this->layout) {
             throw new ViewException(ExceptionMessages::LAYOUT_NOT_SET);
+        }
+
+        if ($params) {
+            $this->data = array_merge($this->data, $params);
         }
 
         $this->view = $this->renderFile($view);
@@ -241,7 +241,7 @@ class QtView
      * @param string $view
      * @param array $params
      * @return string
-     * @throws ViewException
+     * @throws \Error
      */
     private function defaultRenderer($view, $params = [])
     {
