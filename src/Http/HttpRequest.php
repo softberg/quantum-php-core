@@ -455,8 +455,8 @@ abstract class HttpRequest
      */
     public static function getAllSegments()
     {
-        $segments = explode('/', parse_url(self::$__uri)['path']);
-        array_unshift($segments, '');
+        $segments = explode('/', trim(parse_url(self::$__uri)['path'], '/'));
+        array_unshift($segments, 'zero_segment');
         return $segments;
     }
 

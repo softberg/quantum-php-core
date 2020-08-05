@@ -167,7 +167,7 @@ class BaseAuth
         $fullName = (isset($user['firstname']) && isset($user['lastname'])) ? $user['firstname'] . ' ' . $user['lastname'] : '';
 
         $mailer->setFrom(config()->get('app_email'), config()->get('app_name'))
-                ->setAddress($user['username'], $fullName)
+                ->setAddress($user[$this->keys['usernameKey']], $fullName)
                 ->setBody($body)
                 ->send();
     }
