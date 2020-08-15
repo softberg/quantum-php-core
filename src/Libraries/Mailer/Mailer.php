@@ -405,24 +405,24 @@ class Mailer
     {
         $this->mailer->setFrom($this->from['email'], $this->from['name']);
 
-        if ($this->addresses) {
+        if (!empty($this->addresses)) {
             foreach ($this->addresses as $address) {
                 $this->mailer->addAddress($address['email'], $address['name']);
             }
         }
 
-        if ($this->replyToAddresses) {
+        if (!empty($this->replyToAddresses)) {
             foreach ($this->replyToAddresses as $address) {
                 $this->mailer->addReplyTo($address['email'], $address['name']);
             }
         }
 
-        if ($this->ccAddresses) {
+        if (!empty($this->ccAddresses)) {
             foreach ($this->ccAddresses as $address) {
                 $this->mailer->addCC($address['email'], $address['name']);
             }
         }
-        if ($this->bccAddresses) {
+        if (!empty($this->bccAddresses)) {
             foreach ($this->bccAddresses as $address) {
                 $this->mailer->addBCC($address['email'], $address['name']);
             }
@@ -444,13 +444,13 @@ class Mailer
             $this->mailer->Body = $body;
         }
 
-        if ($this->attachments) {
+        if (!empty($this->attachments)) {
             foreach ($this->attachments as $attachment) {
                 $this->mailer->addAttachment($attachment);
             }
         }
 
-        if ($this->stringAttachments) {
+        if (!empty($this->stringAttachments)) {
             foreach ($this->stringAttachments as $attachment) {
                 $this->mailer->addStringAttachment($attachment['content'], $attachment['filename']);
             }
