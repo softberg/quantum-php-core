@@ -212,7 +212,7 @@ class Validator
 
     /**
      * Calls custom function defined by developer
-     * @param Closure $function : boolean
+     * @param \Closure $function : boolean
      * @param array $data
      */
     protected function callCustomFunction(\Closure $function, array $data)
