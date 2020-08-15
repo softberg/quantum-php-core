@@ -19,7 +19,6 @@ use ORM;
 use Quantum\Mvc\QtModel;
 use RecursiveArrayIterator;
 use RecursiveIteratorIterator;
-use Quantum\Helpers\Helper;
 
 /**
  * Class IdiormDbal
@@ -51,11 +50,17 @@ class IdiormDbal implements DbalInterface
     private $foreignKeys = [];
 
     /**
+     * Idiorm Patch object
+     * @var IdiormPatch 
+     */
+    private $ormPatch = null;
+
+    /**
      * Idiorm object
      * @var object
      */
     public $ormObject;
-
+    
     /**
      * ORM Class
      * @var string
