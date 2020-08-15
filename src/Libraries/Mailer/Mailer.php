@@ -354,23 +354,23 @@ class Mailer
     public function send(array $from = null, array $address = null, $message = null, $options = [])
     {
         if ($from) {
-            $this->setFrom(...$from);
+            $this->setFrom(extract($from));
         }
 
         if ($address) {
-            $this->setAddress(...$address);
+            $this->setAddress(extract($address));
         }
 
         if (isset($options['replayto'])) {
-            $this->setReplay(...$options['replayto']);
+            $this->setReplay(extract($options['replayto']));
         }
 
         if (isset($options['cc'])) {
-            $this->setCC(...$options['cc']);
+            $this->setCC(extract($options['cc']));
         }
 
         if (isset($options['bcc'])) {
-            $this->setBCC(...$options['bcc']);
+            $this->setBCC(extract($options['bcc']));
         }
 
         if (isset($options['subject'])) {
@@ -386,7 +386,7 @@ class Mailer
         }
 
         if (isset($options['stringAttachment'])) {
-            $this->setStringAttachments($options['content'], $options['filename']);
+            $this->setStringAttachment($options['content'], $options['filename']);
         }
 
         $this->prepare();
