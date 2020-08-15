@@ -28,6 +28,8 @@ use Quantum\Loader\Loader;
  *
  * @package Quantum
  * @category MVC
+ * @method object findOneBy($column, $value)
+ * @method int count()
  */
 abstract class QtModel
 {

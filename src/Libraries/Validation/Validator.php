@@ -72,10 +72,8 @@ class Validator
      */
     public function addRules(array $rules)
     {
-        if (is_array($rules)) {
-            foreach ($rules as $field => $params) {
-                $this->addRule($field, $params);
-            }
+        foreach ($rules as $field => $params) {
+            $this->addRule($field, $params);
         }
     }
 
@@ -149,7 +147,7 @@ class Validator
     /**
      * Adds custom validation
      * @param string $rule
-     * @param Closure $function
+     * @param \Closure $function
      * @param null|mixed $params
      * @return mixed
      */
@@ -238,7 +236,7 @@ class Validator
      */
     protected function required(string $field, string $value, $param = null)
     {
-        if ($value === false || $value === 0 || $value === 0.0 || $value === '0' || empty($value)) {
+        if ($value === false || $value === '0' || empty($value)) {
             $this->addError($field, 'required', $param);
         }
     }
@@ -352,7 +350,6 @@ class Validator
      * @param string $field
      * @param string $value
      * @param null|mixed $param
-     * @return void
      */
     protected function alpha(string $field, string $value, $param = null)
     {
@@ -360,7 +357,7 @@ class Validator
             return true;
         }
 
-        if (preg_match('/^([a-zÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÒÓÔÕÖßÙÚÛÜÝàáâãäåçèéêëìíîïðòóôõöùúûüýÿ])+$/i', $value) == false) {
+        if (preg_match('/^([a-zÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÒÓÔÕÖßÙÚÛÜÝàáâãäåçèéêëìíîïðòóôõöùúûüýÿ])+$/i', $value) === 0) {
             $this->addError($field, 'alpha', $param);
         }
     }
@@ -377,7 +374,7 @@ class Validator
             return true;
         }
 
-        if (preg_match('/^([a-z0-9ÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÒÓÔÕÖßÙÚÛÜÝàáâãäåçèéêëìíîïðòóôõöùúûüýÿ])+$/i', $value) == false) {
+        if (preg_match('/^([a-z0-9ÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÒÓÔÕÖßÙÚÛÜÝàáâãäåçèéêëìíîïðòóôõöùúûüýÿ])+$/i', $value) === 0) {
             $this->addError($field, 'alphaNumeric', $param);
         }
     }
@@ -394,7 +391,7 @@ class Validator
             return true;
         }
 
-        if (preg_match('/^([a-zÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÒÓÔÕÖßÙÚÛÜÝàáâãäåçèéêëìíîïðòóôõöùúûüýÿ_-])+$/i', $value) == false) {
+        if (preg_match('/^([a-zÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÒÓÔÕÖßÙÚÛÜÝàáâãäåçèéêëìíîïðòóôõöùúûüýÿ_-])+$/i', $value) === 0) {
             $this->addError($field, 'alphaDash', $param);
         }
     }
@@ -411,7 +408,7 @@ class Validator
             return true;
         }
 
-        if (preg_match('/^([a-z0-9ÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÒÓÔÕÖßÙÚÛÜÝàáâãäåçèéêëìíîïðòóôõöùúûüýÿ\s])+$/i', $value) == false) {
+        if (preg_match('/^([a-z0-9ÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÒÓÔÕÖßÙÚÛÜÝàáâãäåçèéêëìíîïðòóôõöùúûüýÿ\s])+$/i', $value) === 0) {
             $this->addError($field, 'alphaSpace', $param);
         }
     }
@@ -614,7 +611,7 @@ class Validator
         }
 
         if ($number_length == 0) {
-            return $this->addError($field, 'creditCard', $param);
+            $this->addError($field, 'creditCard', $param);
         }
 
         $parity = $number_length % 2;
@@ -652,7 +649,7 @@ class Validator
             return true;
         }
 
-        if (preg_match("/^([a-z \p{L} '-])+$/i", $value) == false) {
+        if (preg_match("/^([a-z \p{L} '-])+$/i", $value) === 0) {
             $this->addError($field, 'name', $param);
         }
     }
@@ -914,7 +911,7 @@ class Validator
 
         $value = htmlspecialchars_decode($value, ENT_QUOTES);
 
-        if (!is_string($value) || !is_object(json_decode($value))) {
+        if (!is_object(json_decode($value))) {
             $this->addError($field, 'jsonString', $param);
         }
     }
@@ -1035,8 +1032,8 @@ class Validator
     /**
      * Validates image dimensions
      * @param string $field
-     * @param type $value
-     * @param type $param
+     * @param object $value
+     * @param array $param
      */
     protected function imageDimensions(string $field, $value, $param)
     {
