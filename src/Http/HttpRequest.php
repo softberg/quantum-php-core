@@ -88,7 +88,7 @@ abstract class HttpRequest
 
     /**
      * Server
-     * @var Quantum\Environment\Server 
+     * @var \Quantum\Environment\Server 
      */
     private static $server;
 
@@ -116,7 +116,7 @@ abstract class HttpRequest
 
         self::$__query = self::$server->query();
 
-        self::$__headers = array_change_key_case(getallheaders(), CASE_UPPER);
+        self::$__headers = array_change_key_case((array) getallheaders(), CASE_UPPER);
 
         self::$__request = array_merge(
                 self::$__request,
@@ -243,7 +243,7 @@ abstract class HttpRequest
 
     /**
      * Gets the port
-     * @return int
+     * @return string
      */
     public static function getPort()
     {
@@ -252,9 +252,9 @@ abstract class HttpRequest
 
     /**
      * Sets the port
-     * @param int $port
+     * @param string $port
      */
-    public static function setPort(int $port)
+    public static function setPort($port)
     {
         self::$__port = $port;
     }
@@ -307,7 +307,7 @@ abstract class HttpRequest
 
     /**
      * Checks if request contains a data by given key
-     * @param $key
+     * @param string $key
      * @return bool
      */
     public static function has($key)
@@ -350,7 +350,7 @@ abstract class HttpRequest
 
     /**
      * Deletes the element from request by given key
-     * @param type $key
+     * @param string $key
      */
     public static function delete($key)
     {
@@ -525,7 +525,7 @@ abstract class HttpRequest
         $getParams = [];
 
         if (!empty($_GET)) {
-            $getParams = filter_input_array(INPUT_GET, FILTER_DEFAULT, FILTER_REQUIRE_ARRAY);
+            $getParams = filter_input_array(INPUT_GET, FILTER_DEFAULT);
         }
 
         return $getParams;
@@ -540,7 +540,7 @@ abstract class HttpRequest
         $postParams = [];
 
         if (!empty($_POST)) {
-            $postParams = filter_input_array(INPUT_POST, FILTER_DEFAULT, FILTER_REQUIRE_ARRAY);
+            $postParams = filter_input_array(INPUT_POST, FILTER_DEFAULT);
         }
 
         return $postParams;
