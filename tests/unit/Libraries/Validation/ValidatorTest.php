@@ -176,6 +176,64 @@ namespace Quantum\Test\Unit {
             ];
 
             $this->assertFalse($this->validator->isValid($data));
+
+            $this->validator->flushRules(); 
+
+            $data = [
+                'name' => '',
+                'email' => 'john@gmail.com',
+                'age' => 0
+            ];
+
+            $this->assertTrue($this->validator->isValid($data));
+
+            $this->validator->addRules([
+                'phone' => [
+                    Rule::set('required'),
+                    Rule::set('minLen', 8),
+                ]
+            ]);
+
+            $data = [
+                'name' => 'John',
+                'email' => 'john@gmail.com',
+                'age' => 36,
+            ];
+
+            $this->assertFalse($this->validator->isValid($data));
+
+        }
+
+        public function testDifferentMultipleFields(){
+            $this->validator->addRules([
+                'name' => [
+                    Rule::set('maxLen', 30)
+                ],
+                'email' => [
+                    Rule::set('required'),
+                    Rule::set('email')
+                ],
+                'age' => [
+                    Rule::set('required'),
+                    Rule::set('minNumeric', 16),
+                ],
+            ]);
+
+            $data = [
+                'email' => 'john@gmail.com',
+                'age' => 36,
+            ];
+
+            $this->assertTrue($this->validator->isValid($data));
+
+            $data = [
+                'name' => '',
+                'email' => 'john@gmail.com',
+                'age' => 36,
+            ];
+
+            $this->assertTrue($this->validator->isValid($data));
+
         }
 
         public function testCustomValidator()
@@ -204,6 +262,8 @@ namespace Quantum\Test\Unit {
             $this->assertTrue($this->validator->isValid(['text' => 'something']));
 
             $this->assertFalse($this->validator->isValid(['text' => '']));
+
+            $this->assertFalse($this->validator->isValid(['custom' => 'customValue']));
 
             $errors = $this->validator->getErrors();
 
