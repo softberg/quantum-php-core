@@ -339,6 +339,27 @@ namespace Quantum\Test\Unit {
             $this->assertTrue($request->isAjax());
         }
 
+        public function testSetGetQueryParam(){
+            $request = new Request();
+
+            $request->setQueryParam('name', 'John');
+
+            $request->setQueryParam('age', 36);
+
+            $this->assertEquals('John', $request->getQueryParam('name'));
+
+            $this->assertEquals(36, $request->getQueryParam('age'));
+
+            $this->assertEquals(null, $request->getQueryParam('otherKey'));
+
+            $this->assertEquals('name=John&age=36', $request->getQuery());
+
+            $request->setQuery('phone=055090607&email=test@test.com');   
+            
+            $this->assertEquals('test@test.com', $request->getQueryParam('email'));
+
+        }
+
     }
 
 }
