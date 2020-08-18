@@ -17,6 +17,7 @@ namespace Quantum\Http;
 /**
  * Class Response
  * @package Quantum\Http
+ * @method void send()
  */
 class Response
 {

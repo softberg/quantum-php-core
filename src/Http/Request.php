@@ -18,6 +18,7 @@ use Quantum\Http\HttpRequest;
 /**
  * Class Request
  * @package Quantum\Http
+ * @method string|null getSegment($number)
  */
 class Request
 {
