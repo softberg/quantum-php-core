@@ -111,6 +111,11 @@ class Validator
         }
     }
 
+    public function flushRules(){
+        $this->rules = []; 
+        $this->flushErrors();
+    }
+
     /**
      * Validates the data against the rules
      * @param array $data
@@ -118,12 +123,21 @@ class Validator
      */
     public function isValid(array $data)
     {
-        $this->data = $data;
+        $this->data = $data; 
+        
+        if (count($this->rules)) { 
 
-        if (count($this->rules) && count($data)) {
+            foreach($this->rules as $field => $rule){
+                if(!array_key_exists($field, $data)){
+                    $data[$field] = '';
+                }
+            }
+            
             foreach ($data as $field => $value) {
+
                 if (isset($this->rules[$field])) { 
                     foreach ($this->rules[$field] as $method => $param) { 
+
                         if (is_callable([$this, $method])) {
                             $this->$method($field, $value, $param);
                         } elseif (isset($this->customValidations[$method])) {
@@ -140,7 +154,6 @@ class Validator
                 }
             }
         }
-
         return count($this->errors) ? false : true;
     }
 
