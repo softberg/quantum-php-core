@@ -237,7 +237,7 @@ abstract class HttpRequest
      * @param string $host
      */
     public static function setHost(string $host)
-    {
+    {   
         self::$__host = $host;
     }
 
@@ -293,6 +293,38 @@ abstract class HttpRequest
     public static function setQuery(string $query)
     {
         self::$__query = $query;
+    }
+
+    /**
+     * Sets the query param
+     * @param string $key
+     * @param string $value
+     * @return string
+     */
+    public static function setQueryParam(string $key, string $value)
+    {
+        $queryParams = self::$__query ? explode('&', self::$__query) : []; 
+        array_push($queryParams, $key . '=' . $value);  
+        self::$__query =  implode('&', $queryParams);   
+    }
+
+    /**
+     * Gets the query param
+     * @param string $key
+     * @return string|null
+     */
+    public static function getQueryParam(string $key)
+    {  
+        $query = explode('&', self::$__query);    
+
+        foreach($query as $items){
+           $item = explode('=', $items); 
+           if($item[0] == $key){
+                return $item[1];
+           }
+        }
+
+        return null;
     }
 
     /**
