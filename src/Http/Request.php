@@ -19,6 +19,12 @@ use Quantum\Http\HttpRequest;
  * Class Request
  * @package Quantum\Http
  * @method string|null getSegment($number)
+ * @method string getPort()
+ * @method string getHost()
+ * @method string getProtocol()
+ * @method string getQuery()
+ * @method string getReferrer()
+ * @method string|null getUri()
  */
 class Request
 {
