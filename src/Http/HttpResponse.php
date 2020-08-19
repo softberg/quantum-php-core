@@ -218,7 +218,7 @@ abstract class HttpResponse
 
     /**
      * Deletes the element from response by given key
-     * @param type $key
+     * @param string $key
      */
     public static function delete($key)
     {

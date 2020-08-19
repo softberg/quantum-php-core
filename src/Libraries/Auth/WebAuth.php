@@ -74,7 +74,7 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
     {
         $user = $this->authService->get($this->keys['usernameKey'], $username);
 
-        if (!$user) {
+        if (empty($user)) {
             throw new AuthException(ExceptionMessages::INCORRECT_AUTH_CREDENTIALS);
         }
 
@@ -136,7 +136,7 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
     private function checkRememberToken()
     {
         $user = $this->authService->get($this->keys['rememberTokenKey'], cookie()->get($this->keys['rememberTokenKey']));
-        if ($user) {
+        if (!empty($user)) {
             $this->setRememberToken($user);
             return $user;
         }
@@ -146,10 +146,10 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
     /**
      * Set Remember Token
      *
-     * @param object $user
+     * @param array $user
      * @throws \Exception
      */
-    private function setRememberToken($user)
+    private function setRememberToken(array $user)
     {
         $rememberToken = $this->generateToken();
 
@@ -170,7 +170,8 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
     {
         if (cookie()->has($this->keys['rememberTokenKey'])) {
             $user = $this->authService->get($this->keys['rememberTokenKey'], cookie()->get($this->keys['rememberTokenKey']));
-            if ($user) {
+            
+            if (!empty($user)) {
                 $this->authService->update($this->keys['rememberTokenKey'], $user[$this->keys['rememberTokenKey']], [
                     $this->keys['rememberTokenKey'] => ''
                 ]);

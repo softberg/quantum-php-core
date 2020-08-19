@@ -68,11 +68,11 @@ class AuthManager
         if ($this->authType && $this->authService) {
             switch ($this->authType) {
                 case 'web':
-                    self::$authInstance = new WebAuth($this->authService, new Hasher);
+                    self::$authInstance = new WebAuth(/** @scrutinizer ignore-type */ $this->authService, new Hasher);
                     break;
                 case 'api':
-                    $jwt = (new JWToken())->setLeeway(1)->setClaims(config()->get('auth.claims'));
-                    self::$authInstance = new ApiAuth($this->authService, new Hasher, $jwt);
+                    $jwt = (new JWToken())->setLeeway(1)->setClaims((array) config()->get('auth.claims'));
+                    self::$authInstance = new ApiAuth(/** @scrutinizer ignore-type */ $this->authService, new Hasher, $jwt);
                     break;
             }
         } else {
@@ -88,7 +88,7 @@ class AuthManager
     public function authService()
     {
         if (!config()->has('auth')) {
-            
+
             $loaderSetup = new stdClass();
             $loaderSetup->module = current_module();
             $loaderSetup->env = 'config';
