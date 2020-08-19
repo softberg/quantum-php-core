@@ -17,8 +17,8 @@ namespace Quantum\Http;
 /**
  * Class Response
  * @package Quantum\Http
- * @method void send()
- * @method void redirect($url, $code = null)
+ * @method static void send()
+ * @method static void redirect($url, $code = null)
  */
 class Response
 {
