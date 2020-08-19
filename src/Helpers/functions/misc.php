@@ -91,7 +91,7 @@ if (!function_exists('_message')) {
      * _message
      * @param string $subject
      * @param string $params
-     * @return string|array
+     * @return string
      */
     function _message($subject, $params)
     {

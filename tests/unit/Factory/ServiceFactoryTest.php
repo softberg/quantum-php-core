@@ -25,11 +25,11 @@ namespace Quantum\Services {
 
 namespace Quantum\Test\Unit {
 
-    use Mockery;
     use PHPUnit\Framework\TestCase;
     use Quantum\Exceptions\ServiceException;
     use Quantum\Factory\ServiceFactory;
     use Quantum\Services\TestService;
+    use Quantum\Loader\Loader;
 
     class ServiceFactoryTest extends TestCase
     {
@@ -38,17 +38,9 @@ namespace Quantum\Test\Unit {
 
         public function setUp(): void
         {
-            $this->helperMock = Mockery::mock('overload:Quantum\Helpers\Helper');
+            $loader = new Loader();
 
-            $this->helperMock->shouldReceive('_message')->andReturnUsing(function($subject, $params) {
-                if (is_array($params)) {
-                    return preg_replace_callback('/{%\d+}/', function () use (&$params) {
-                        return array_shift($params);
-                    }, $subject);
-                } else {
-                    return preg_replace('/{%\d+}/', $params, $subject);
-                }
-            });
+            $loader->loadDir(dirname(__DIR__, 3) . DS . 'src' . DS . 'Helpers' . DS . 'functions');
 
             $this->serviceFactory = new ServiceFactory();
         }

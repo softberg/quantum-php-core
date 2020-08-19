@@ -28,22 +28,13 @@ namespace Quantum\Mvc {
         return 'test';
     }
 
-    function base_dir()
-    {
-        return 'base';
-    }
-
-    function get_config($data)
-    {
-        return false;
-    }
-
 }
 
 namespace Quantum\Test\Unit {
 
     use PHPUnit\Framework\TestCase;
     use Quantum\Exceptions\ViewException;
+    use Quantum\Loader\Loader;
     use Quantum\Mvc\QtView;
 
     class QtViewTest extends TestCase
@@ -57,8 +48,12 @@ namespace Quantum\Test\Unit {
 
         public function setUp(): void
         {
-            $this->view = new QtView();
+            $loader = new Loader();
+            
+            $loader->loadDir(dirname(__DIR__, 3) . DS . 'src' . DS . 'Helpers' . DS . 'functions');
 
+            $this->view = new QtView();
+            
             $this->viewsDir = \Quantum\Mvc\modules_dir() . DS . \Quantum\Mvc\current_module() . DS . 'Views';
 
             if (!is_dir($this->viewsDir))
