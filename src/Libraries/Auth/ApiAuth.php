@@ -104,7 +104,7 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
 
         $user = $this->authService->get($this->keys['refreshTokenKey'], $refreshToken);
 
-        if ($user) {
+        if (!empty($user)) {
             $this->authService->update(
                     $this->keys['refreshTokenKey'],
                     $refreshToken,
