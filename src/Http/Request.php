@@ -25,6 +25,11 @@ use Quantum\Http\HttpRequest;
  * @method static string getQuery()
  * @method static string getReferrer()
  * @method static string|null getUri()
+ * @method static void setHeader($key, $value)
+ * @method static mixed|null getHeader($key)
+ * @method static bool hasHeader($key)
+ * @method static void deleteHeader($key)
+ * @method static string getAuthorizationBearer()
  */
 class Request
 {

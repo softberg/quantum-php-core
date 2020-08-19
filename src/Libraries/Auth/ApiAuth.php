@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 1.9.0
+ * @since 2.0.0
  */
 
 namespace Quantum\Libraries\Auth;
@@ -23,7 +23,6 @@ use Quantum\Http\Request;
 
 /**
  * Class ApiAuth
- *
  * @package Quantum\Libraries\Auth
  */
 class ApiAuth extends BaseAuth implements AuthenticableInterface
@@ -56,7 +55,6 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
 
     /**
      * ApiAuth constructor.
-     *
      * @param AuthServiceInterface $authService
      * @param Hasher $hasher
      * @param JWToken|null $jwt
@@ -71,7 +69,6 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
 
     /**
      * Sign In
-     * 
      * @param string $username
      * @param string $password
      * @return array
@@ -81,7 +78,7 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
     {
         $user = $this->authService->get($this->keys['usernameKey'], $username);
 
-        if (!$user) {
+        if (empty($user)) {
             throw new AuthException(ExceptionMessages::INCORRECT_AUTH_CREDENTIALS);
         }
 
@@ -99,12 +96,10 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
 
     /**
      * Sign Out
-     *
      * @return bool|mixed
      */
     public function signout()
     {
-
         $refreshToken = Request::getHeader($this->keys['refreshTokenKey']);
 
         $user = $this->authService->get($this->keys['refreshTokenKey'], $refreshToken);
@@ -131,7 +126,6 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
 
     /**
      * User
-     *
      * @return mixed|object|null
      */
     public function user()
@@ -152,7 +146,6 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
 
     /**
      * Get Updated Tokens
-     *
      * @param object $user
      * @return array
      */
@@ -166,14 +159,13 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
 
     /**
      * Check Refresh Token
-     *
      * @return bool|mixed
      */
     protected function checkRefreshToken()
     {
         $user = $this->authService->get($this->keys['refreshTokenKey'], Request::getHeader($this->keys['refreshTokenKey']));
 
-        if ($user) {
+        if (!empty($user)) {
             $this->setUpdatedTokens($user);
             return $user;
         }
@@ -183,10 +175,9 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
 
     /**
      * Set Updated Tokens
-     *
-     * @param object $user
+     * @param array $user
      */
-    protected function setUpdatedTokens($user)
+    protected function setUpdatedTokens(array $user)
     {
         $tokens = $this->getUpdatedTokens($user);
 

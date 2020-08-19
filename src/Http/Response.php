@@ -19,6 +19,10 @@ namespace Quantum\Http;
  * @package Quantum\Http
  * @method static void send()
  * @method static void redirect($url, $code = null)
+ * @method static void set($key, $value)
+ * @method static bool has($key)
+ * @method static mixed get($key, $default = null)
+ * @method static void delete($key)
  */
 class Response
 {
