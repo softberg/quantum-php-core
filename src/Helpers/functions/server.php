@@ -87,18 +87,24 @@ if (!function_exists('parse_raw_http_request')) {
         if (count($matches) > 0) {
             $boundary = $matches[1];
             $blocks = preg_split("/-+$boundary/", $input);
-            array_pop($blocks);
-            foreach ($blocks as $id => $block) {
-                if (empty($block))
-                    continue;
-                if (strpos($block, 'application/octet-stream') !== false) {
-                    preg_match("/name=\"([^\"]*)\".*stream[\n|\r]+([^\n\r].*)?$/s", $block, $matches);
-                    if (count($matches) > 0)
-                        $encoded_data['files'][$matches[1]] = isset($matches[2]) ? $matches[2] : '';
-                } else {
-                    preg_match('/name=\"([^\"]*)\"[\n|\r]+([^\n\r].*)?\r$/s', $block, $matches);
-                    if (count($matches) > 0)
-                        $encoded_data[$matches[1]] = isset($matches[2]) ? $matches[2] : '';
+
+            if (is_array($blocks)) {
+                array_pop($blocks);
+                
+                foreach ($blocks as $id => $block) {
+                    if (empty($block))
+                        continue;
+                    if (strpos($block, 'application/octet-stream') !== false) {
+                        preg_match("/name=\"([^\"]*)\".*stream[\n|\r]+([^\n\r].*)?$/s", $block, $matches);
+                        if (count($matches) > 0) {
+                            $encoded_data['files'][$matches[1]] = isset($matches[2]) ? $matches[2] : '';
+                        }
+                    } else {
+                        preg_match('/name=\"([^\"]*)\"[\n|\r]+([^\n\r].*)?\r$/s', $block, $matches);
+                        if (count($matches) > 0) {
+                            $encoded_data[$matches[1]] = isset($matches[2]) ? $matches[2] : '';
+                        }
+                    }
                 }
             }
         }

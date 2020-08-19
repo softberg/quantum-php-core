@@ -155,7 +155,7 @@ class Lang
      * Gets the translation by given key
      * @param $key
      * @param mixed $params
-     * @return array|mixed|null|string
+     * @return string
      */
     public function getTranslation($key, $params = null)
     {

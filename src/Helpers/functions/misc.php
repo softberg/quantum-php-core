@@ -16,14 +16,14 @@ use Quantum\Libraries\Encryption\Cryptor;
 use Quantum\Libraries\Auth\AuthManager;
 use Quantum\Libraries\Mailer\Mailer;
 use Quantum\Libraries\Cookie\Cookie;
-use Quantum\Libraries\Dumper\Dumper;
 use Quantum\Libraries\Csrf\Csrf;
+use Quantum\Dumper\Dumper;
 
 if (!function_exists('session')) {
 
     /**
      * Gets session handler
-     * @return Quantum\Libraries\Session
+     * @return \Quantum\Libraries\Session\Session
      */
     function session()
     {
@@ -49,7 +49,7 @@ if (!function_exists('auth')) {
 
     /**
      * Gets the Auth instance
-     * @return WebAuth|ApiAuth|AuthenticableInterface
+     * @return \Quantum\Libraries\Auth\WebAuth|Quantum\Libraries\Auth\ApiAuth|Quantum\Libraries\Auth\AuthenticableInterface
      */
     function auth()
     {
@@ -62,7 +62,7 @@ if (!function_exists('mailer')) {
 
     /**
      * Gets the Mail instance
-     * @return \Mail
+     * @return Mailer
      */
     function mailer()
     {
