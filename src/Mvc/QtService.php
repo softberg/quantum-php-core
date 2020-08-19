@@ -24,6 +24,7 @@ use Quantum\Exceptions\ExceptionMessages;
  *
  * @package Quantum
  * @category MVC
+ * @method void __init(...$args)
  */
 class QtService
 {
@@ -36,12 +37,12 @@ class QtService
 
     /**
      * Gets the QtService singleton instance
-     * @return QtController
+     * @return QtService
      */
     public static function getInstance()
     {
         if (self::$instance === null) {
-            self::$instance = new self();
+            self::$instance = new static();
         }
 
         return self::$instance;

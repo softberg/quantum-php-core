@@ -14,6 +14,11 @@ namespace Quantum\Services {
             self::$count++;
         }
 
+        public function hello()
+        {
+            return 'Hello';
+        }
+
     }
 
 }
@@ -79,30 +84,6 @@ namespace Quantum\Test\Unit {
             $this->assertEquals(1, TestService::$count);
         }
 
-        public function testServiceProxyInstance()
-        {
-            $service = $this->serviceFactory->proxy(TestService::class);
-
-            $this->assertInstanceOf('Quantum\Factory\ServiceFactory', $service);
-        }
-
-        public function testServiceProxyAndInit()
-        {
-            /* Calling 3 tiems to verify __init() method works only once */
-
-            $this->serviceFactory->proxy(TestService::class);
-
-            $this->assertEquals(1, TestService::$count);
-
-            $this->serviceFactory->proxy(TestService::class);
-
-            $this->assertEquals(1, TestService::$count);
-
-            $this->serviceFactory->proxy(TestService::class);
-
-            $this->assertEquals(1, TestService::$count);
-        }
-
         public function testServiceCreateInstance()
         {
             $service = $this->serviceFactory->create(TestService::class);
@@ -129,6 +110,13 @@ namespace Quantum\Test\Unit {
             $this->assertEquals(3, TestService::$count);
         }
 
+        public function testServiceMethodCall()
+        {
+            $this->assertEquals('Hello', $this->serviceFactory->get(TestService::class)->hello());
+
+            $this->assertEquals('Hello', $this->serviceFactory->create(TestService::class)->hello());
+        }
+
         public function testServiceNotFound()
         {
             $this->expectException(ServiceException::class);
@@ -136,15 +124,6 @@ namespace Quantum\Test\Unit {
             $this->expectExceptionMessage('Service `NonExistentClass` not found');
 
             $this->serviceFactory->get(\NonExistentClass::class);
-        }
-
-        public function testServiceNotInstanceOfQtService()
-        {
-            $this->expectException(ServiceException::class);
-
-            $this->expectExceptionMessage('Service `Mockery\Undefined` is not instance of `Quantum\Mvc\QtService`');
-
-            $this->serviceFactory->get(\Mockery\Undefined::class);
         }
 
     }
