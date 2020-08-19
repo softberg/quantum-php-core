@@ -14,6 +14,7 @@ namespace Quantum\Test\Unit {
     use PHPUnit\Framework\TestCase;
     use Quantum\Factory\ModelFactory;
     use Quantum\Exceptions\ModelException;
+    use Quantum\Loader\Loader;
     use Quantum\Models\TestModel;
 
     /**
@@ -29,6 +30,11 @@ namespace Quantum\Test\Unit {
 
         public function setUp(): void
         {
+            
+            $loader = new Loader();
+            
+            $loader->loadDir(dirname(__DIR__, 3) . DS . 'src' . DS . 'Helpers' . DS . 'functions');
+            
             $this->databaseMock = Mockery::mock('overload:Quantum\Libraries\Database\Database');
 
             $this->databaseMock->shouldReceive('getORM')->andReturn(new \stdClass());

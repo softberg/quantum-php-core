@@ -90,7 +90,7 @@ if (!function_exists('_message')) {
     /**
      * _message
      * @param string $subject
-     * @param string $params
+     * @param string|array $params
      * @return string
      */
     function _message($subject, $params)
