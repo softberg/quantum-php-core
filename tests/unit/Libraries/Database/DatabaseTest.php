@@ -54,6 +54,7 @@ namespace Quantum\Test\Unit {
     use Quantum\Models\UserModel;
     use Quantum\Libraries\Database\Database;
     use Quantum\Exceptions\DatabaseException;
+    use Quantum\Loader\Loader;
 
     /**
      * @runTestsInSeparateProcesses
@@ -94,6 +95,10 @@ namespace Quantum\Test\Unit {
         public function setUp(): void
         {
 
+            $loader = new Loader();
+
+            $loader->loadDir(dirname(__DIR__, 4) . DS . 'src' . DS . 'Helpers' . DS . 'functions');
+            
             $loaderMock = Mockery::mock('Quantum\Loader\Loader');
 
             $this->idiormDbalMock = Mockery::mock('overload:Quantum\Libraries\Database\IdiormDbal');
@@ -115,18 +120,6 @@ namespace Quantum\Test\Unit {
             $this->idiormDbalMock->shouldReceive('lastStatement')->andReturn($this->queries[1]);
 
             $this->idiormDbalMock->shouldReceive('queryLog')->andReturn($this->queries);
-
-            $this->helperMock = Mockery::mock('overload:Quantum\Helpers\Helper');
-
-            $this->helperMock->shouldReceive('_message')->andReturnUsing(function($subject, $params) {
-                if (is_array($params)) {
-                    return preg_replace_callback('/{%\d+}/', function () use (&$params) {
-                        return array_shift($params);
-                    }, $subject);
-                } else {
-                    return preg_replace('/{%\d+}/', $params, $subject);
-                }
-            });
         }
 
         public function tearDown(): void
