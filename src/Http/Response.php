@@ -23,6 +23,9 @@ namespace Quantum\Http;
  * @method static bool has($key)
  * @method static mixed get($key, $default = null)
  * @method static void delete($key)
+ * @method static mixed|null setHeader($key, $value)
+ * @method static string getHeader($key)
+ * @method static book hasHeader($key)
  */
 class Response
 {

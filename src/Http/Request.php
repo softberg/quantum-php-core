@@ -30,6 +30,7 @@ use Quantum\Http\HttpRequest;
  * @method static bool hasHeader($key)
  * @method static void deleteHeader($key)
  * @method static string getAuthorizationBearer()
+ * @method static string getCSRFToken()
  */
 class Request
 {

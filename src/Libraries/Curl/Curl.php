@@ -20,7 +20,6 @@ use ArrayAccess;
 
 /**
  * Curl Class
- * 
  * @package Quantum
  * @category Libraries 
  * @uses php-curl-class/php-curl-class
@@ -171,7 +170,7 @@ class Curl
     /**
      * Gets the curl info
      * @param $option
-     * @return type
+     * @return mixed
      */
     public function info($option = null)
     {
