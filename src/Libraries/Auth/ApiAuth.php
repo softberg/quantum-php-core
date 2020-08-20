@@ -126,7 +126,7 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
 
     /**
      * User
-     * @return mixed|object|null
+     * @return mixed|null
      */
     public function user()
     {

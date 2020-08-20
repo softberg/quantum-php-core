@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 1.9.0
+ * @since 2.0.0
  */
 
 namespace Quantum\Libraries\Auth;
@@ -21,7 +21,6 @@ use Quantum\Libraries\JWToken\JWToken;
 
 /**
  * Class WebAuth
- *
  * @package Quantum\Libraries\Auth
  */
 class WebAuth extends BaseAuth implements AuthenticableInterface
@@ -49,7 +48,6 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
 
     /**
      * WebAuth constructor.
-     *
      * @param AuthServiceInterface $authService
      * @param Hasher $hasher
      * @param JWToken|null $jwt
@@ -63,7 +61,6 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
 
     /**
      * Sign In
-     * 
      * @param string $username
      * @param string $password
      * @param boolean $remember
@@ -97,7 +94,6 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
 
     /**
      * Sign Out
-     *
      * @throws \Exception
      */
     public function signout()
@@ -110,9 +106,7 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
 
     /**
      * User
-     *
      * @return mixed|null
-     * @throws \Exception
      */
     public function user()
     {
@@ -129,7 +123,6 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
 
     /**
      * Check Remember Token
-     *
      * @return bool|mixed
      * @throws \Exception
      */
@@ -145,7 +138,6 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
 
     /**
      * Set Remember Token
-     *
      * @param array $user
      * @throws \Exception
      */
@@ -163,7 +155,6 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
 
     /**
      * Remove Remember Token
-     *
      * @throws \Exception
      */
     private function removeRememberToken()
