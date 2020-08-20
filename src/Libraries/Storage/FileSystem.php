@@ -136,7 +136,7 @@ class FileSystem
      * Put
      * @param string $file
      * @param string $data
-     * @param bool $lock
+     * @param bool|int $lock
      * @return false|int
      */
     public function put($file, $data, $lock = false)

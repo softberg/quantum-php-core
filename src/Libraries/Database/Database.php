@@ -49,7 +49,7 @@ class Database
 
     /**
      * Default Database Abstract Layer class
-     * @var IdiormDbal
+     * @var string
      */
     private static $defaultDbalClass = IdiormDbal::class;
 
@@ -97,7 +97,7 @@ class Database
         }
 
         if (empty($table)) {
-            throw new DatabaseException(Helper::_message(ExceptionMessages::MODEL_WITHOUT_TABLE_DEFINED, $modelName));
+            throw new DatabaseException(_message(ExceptionMessages::MODEL_WITHOUT_TABLE_DEFINED, $modelName));
         }
 
         return new $dbalClass($table, $idColumn);
@@ -154,8 +154,8 @@ class Database
 
     /**
      * Gives access to some common methods 
-     * @param type $method
-     * @param type $arguments
+     * @param string $method
+     * @param array|null $arguments
      */
     public static function __callStatic($method, $arguments = null)
     {

@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 1.0.0
+ * @since 2.0.0
  */
 
 namespace Quantum\Libraries\Database;
@@ -22,7 +22,6 @@ use Quantum\Mvc\QtModel;
  * The common interface for DBAL, which should implemented by all DBAL classes
  *
  * @package Quantum
- * @subpackage Libraries.Database
  * @category Libraries
  */
 interface DbalInterface
@@ -30,9 +29,6 @@ interface DbalInterface
 
     /**
      * DB Connect
-     *
-     * Should be implemented in classes for db connect
-     *
      * @param array $connectionDetails
      * @return array
      */
@@ -40,9 +36,6 @@ interface DbalInterface
 
     /**
      * Select
-     * 
-     * Should be implemented in classes to select table columns
-     * 
      * @param mixed $columns
      * @return array
      */
@@ -50,9 +43,6 @@ interface DbalInterface
 
     /**
      * Find One
-     *
-     * Should be implemented in classes to get record by primary key
-     *
      * @param int $id
      * @return object
      */
@@ -60,9 +50,6 @@ interface DbalInterface
 
     /**
      * FindOneBy
-     *
-     * Should be implemented in classes to get record by given column
-     *
      * @param string $column
      * @param mixed $value
      * @return object
@@ -71,18 +58,12 @@ interface DbalInterface
 
     /**
      * First
-     *
-     * Should be implemented in classes to get the first item
-     *
      * @return object
      */
     public function first();
 
     /**
      * Criterias
-     *
-     * Should be implemented in classes to add where criterias
-     *
      * @param array ...$criterias
      * @return object
      */
@@ -90,9 +71,6 @@ interface DbalInterface
 
     /**
      * Order By
-     *
-     * Should be implemented in classes to order the result
-     *
      * @param string $column
      * @param string $direction
      * @return object
@@ -101,9 +79,6 @@ interface DbalInterface
 
     /**
      * Group By
-     *
-     * Should be implemented in classes to group the result
-     *
      * @param string $column
      * @return object
      */
@@ -111,9 +86,6 @@ interface DbalInterface
 
     /**
      * Limit
-     *
-     * Should be implemented in classes to get result by given limit
-     *
      * @param integer $params
      * @return object
      */
@@ -121,9 +93,6 @@ interface DbalInterface
 
     /**
      * Offset
-     *
-     * Should be implemented in classes to get result by given offset
-     *
      * @param integer $offset
      * @return object
      */
@@ -131,74 +100,49 @@ interface DbalInterface
 
     /**
      * Get
-     *
-     * Should be implemented in classes to get result set
-     *
-     * @param null $returnType
+     * @param null|string $returnType
      * @return mixed
      */
     public function get($returnType = null);
 
     /**
      * Count
-     *
-     * Should be implemented in classes to get count of result set
-     *
      * @return integer
      */
     public function count();
 
     /**
      * asArray
-     *
-     * Should be implemented in classes to cast the orm object to array
-     *
      * @return array
      */
     public function asArray();
 
     /**
      * Create
-     *
-     * Should be implemented in classes for creating new db record
-     *
      * @return object
      */
     public function create();
 
     /**
      * Save
-     *
-     * Should be implemented in classes for saving the data into the database
-     *
      * @return bool
      */
     public function save();
 
     /**
      * Delete
-     *
-     * Should be implemented in classes for deleting the data from the database
-     *
      * @return bool
      */
     public function delete();
 
     /**
-     * 
      * Delete All
-     * 
-     * Deletes all records by previously applied criteria
-     * 
      * @return bool
      */
     public function deleteAll();
 
     /**
      * Join
-     *
-     * Should be implemented in classes for to make joining
-     *
      * @param string $table
      * @param array $constraint
      * @param string $tableAlias
@@ -208,9 +152,7 @@ interface DbalInterface
 
     /**
      * Inner Join
-     *
      * Add an INNER JOIN souce to the query
-     *
      * @param string $table
      * @param array $constraint
      * @param string $tableAlias
@@ -218,10 +160,9 @@ interface DbalInterface
      */
     public function innerJoin($table, $constraint, $tableAlias = null);
 
-    /** Left Join
-     *
+    /** 
+     * Left Join
      * Add an LEFT JOIN souce to the query
-     *
      * @param string $table
      * @param array $constraint
      * @param string $tableAlias
@@ -231,9 +172,7 @@ interface DbalInterface
 
     /**
      * Right Join
-     *
      * Add an RIGHT JOIN souce to the query
-     *
      * @param string $table
      * @param array $constraint
      * @param string $tableAlias
@@ -243,7 +182,6 @@ interface DbalInterface
 
     /**
      * Joins two models
-     * 
      * @param QtModel $model
      * @return object
      */
@@ -251,7 +189,6 @@ interface DbalInterface
     
    /**
      * Joins through connector model
-     * 
      * @param QtModel $model
      * @return bool $switch
      */
@@ -259,14 +196,12 @@ interface DbalInterface
 
     /**
      * Gets the last query executed
-     *
      * @return string
      */
     public static function lastQuery();
 
     /**
      * Returns the PDOStatement instance last used
-     *
      * @return string
      */
     public static function lastStatement();
@@ -275,16 +210,12 @@ interface DbalInterface
     /**
      * Get an array containing all the queries 
      * run on a specified connection up to now.
-     *
      * @return array
      */
     public static function queryLog();
 
     /**
      * Execute
-     *
-     * Should be implemented in classes for executing custom query
-     *
      * @param string $query
      * @param array $parameters
      * @return bool
@@ -293,9 +224,6 @@ interface DbalInterface
 
     /**
      * Query
-     *
-     * Should be implemented in classes for retriving data by custom query
-     *
      * @param string $query
      * @param array $parameters
      * @return array

@@ -171,7 +171,7 @@ class Cryptor
 
             $data = explode('::', base64_decode($encrypted), 2);
 
-            if (!$data || count($data) < 2) {
+            if (empty($data) || count($data) < 2) {
                 throw new CryptorException(ExceptionMessages::OPENSSEL_INVALID_CIPHER);
             }
 
