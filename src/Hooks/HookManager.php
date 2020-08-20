@@ -9,13 +9,12 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 1.0.0
+ * @since 2.0.0
  */
 
 namespace Quantum\Hooks;
 
 use Quantum\Exceptions\ExceptionMessages;
-use Quantum\Exceptions\RouteException;
 
 /**
  * HookManager Class
@@ -37,7 +36,7 @@ class HookManager {
      * @return object
      * @throws \Exception When Hook not found
      */
-    public static function call($hookName, $args = array(), $alternativePath = NULL) {
+    public static function call($hookName, $args = [], $alternativePath = null) {
         $hookImplementer = self::hasImplementer($hookName);
 
         if (!empty($hookImplementer)) {
@@ -67,11 +66,11 @@ class HookManager {
 
         $duplicates = 0;
 
-        $hookImplementer = NULL;
+        $hookImplementer = null;
 
         foreach ($classNames as $className) {
             $implementerClass = '\\Hooks\\' . $className;
-            if (class_exists($implementerClass, TRUE)) {
+            if (class_exists($implementerClass, true)) {
                 $class = new \ReflectionClass('\\Hooks\\' . $className);
                 if ($class->implementsInterface('Quantum\\Hooks\\HookInterface')) {
                     if ($class->hasMethod($hookName)) {
@@ -94,9 +93,9 @@ class HookManager {
      * 
      * @param string $hookName
      * @param string $alternativePath
-     * @return boolean
+     * @return bool|string
      */
-    private static function hasDefaultImplementer($hookName, $alternativePath = NULL) {
+    private static function hasDefaultImplementer($hookName, $alternativePath = null) {
         $classPath = $alternativePath ? $alternativePath : '\\Quantum\\Hooks\\HookDefaults';
         $class = new \ReflectionClass($classPath);
 
@@ -104,7 +103,7 @@ class HookManager {
             return $class->getName();
         }
 
-        return FALSE;
+        return false;
     }
 
 }
