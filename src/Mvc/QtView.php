@@ -158,6 +158,7 @@ class QtView
      * Renders partial view
      * @param string $view
      * @param array $params
+     * @return string
      * @throws ViewException
      */
     public function renderPartial($view, $params = []): string
