@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 1.0.0
+ * @since 2.0.0
  */
 
 namespace Quantum\Environment;
@@ -48,7 +48,7 @@ class Environment
 
     /**
      * File System
-     * @var Quantum\Libraries\Storage\FileSystem
+     * @var FileSystem
      */
     private $fs;
 

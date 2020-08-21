@@ -20,7 +20,6 @@ use Quantum\Exceptions\ViewException;
 use Quantum\Factory\ViewFactory;
 use Quantum\Hooks\HookManager;
 use Quantum\Debugger\Debugger;
-use Quantum\Helpers\Helper;
 use Error;
 
 /**
@@ -49,7 +48,7 @@ class QtView
 
     /**
      * Rendered debug bar
-     * @var type 
+     * @var string|null 
      */
     private $debugBar = null;
 
@@ -66,7 +65,7 @@ class QtView
     public function __construct()
     {
         if (get_caller_class() != ViewFactory::class) {
-            throw new ViewException(Helper::_message(ExceptionMessages::DIRECT_VIEW_INCTANCE, [ViewFactory::class]));
+            throw new ViewException(_message(ExceptionMessages::DIRECT_VIEW_INCTANCE, [ViewFactory::class]));
         }
     }
 
@@ -133,6 +132,7 @@ class QtView
      * Renders the view
      * @param string $view
      * @param array $params
+     * @return string
      * @throws ViewException
      */
     public function render($view, $params = []): string
@@ -141,7 +141,7 @@ class QtView
             throw new ViewException(ExceptionMessages::LAYOUT_NOT_SET);
         }
 
-        if ($params) {
+        if (!empty($params)) {
             $this->data = array_merge($this->data, $params);
         }
 
@@ -158,11 +158,12 @@ class QtView
      * Renders partial view
      * @param string $view
      * @param array $params
+     * @return string
      * @throws ViewException
      */
     public function renderPartial($view, $params = []): string
     {
-        if ($params) {
+        if (!empty($params)) {
             $this->data = array_merge($this->data, $params);
         }
 
@@ -202,7 +203,7 @@ class QtView
         if (!$fileSystem->exists($filePath)) {
             $filePath = base_dir() . DS . 'base' . DS . 'views' . DS . $file . '.php';
             if (!$fileSystem->exists($filePath)) {
-                throw new ViewException(Helper::_message(ExceptionMessages::VIEW_FILE_NOT_FOUND, $file));
+                throw new ViewException(_message(ExceptionMessages::VIEW_FILE_NOT_FOUND, $file));
             }
         }
 
@@ -213,7 +214,7 @@ class QtView
      * Renders the view
      * @param string $view
      * @param array $parmas
-     * @return object|string
+     * @return mixed
      * @throws ViewException
      */
     private function renderFile($view)
@@ -249,9 +250,9 @@ class QtView
 
         try {
             ob_start();
-            ob_implicit_flush(false);
+            ob_implicit_flush(0);
 
-            if ($params) {
+            if (!empty($params)) {
                 extract($params, EXTR_OVERWRITE);
             }
 
@@ -297,6 +298,7 @@ class QtView
     /**
      * Render Debug Bar
      * @param string $view
+     * @return string
      */
     private function renderDebugBar($view)
     {

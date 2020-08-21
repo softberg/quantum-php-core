@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 1.5.0
+ * @since 2.0.0
  */
 
 namespace Quantum\Libraries\Cookie;
@@ -18,9 +18,7 @@ use Quantum\Libraries\Encryption\Cryptor;
 
 /**
  * Cookie Class
- *
  * @package Quantum
- * @subpackage Libraries.Cookie
  * @category Libraries
  */
 class Cookie implements CookieStorageInterface
@@ -28,21 +26,18 @@ class Cookie implements CookieStorageInterface
 
     /**
      * Cookie storage
-     *
      * @var array $storage
      */
     private $storage = [];
     
     /**
      * Cryptor instance
-     * 
-     * @var Quantum\Libraries\Encryption\Cryptor 
+     * @var Cryptor
      */
     private $cryptor;
 
     /**
      * Cookie constructor.
-     *
      * @param array $storage
      */
     public function __construct(&$storage, Cryptor $cryptor)
@@ -53,7 +48,6 @@ class Cookie implements CookieStorageInterface
 
     /**
      * Gets data by given key
-     *
      * @param string $key
      * @return mixed
      */
@@ -64,7 +58,6 @@ class Cookie implements CookieStorageInterface
 
     /*
      * Gets whole data
-     *
      * @return array
      */
 
@@ -81,7 +74,6 @@ class Cookie implements CookieStorageInterface
 
     /**
      * Check if storage contains a data by given key
-     *
      * @param string $key
      * @return bool
      */
@@ -92,7 +84,6 @@ class Cookie implements CookieStorageInterface
 
     /**
      * Sets data by given key
-     *
      * @param string $key
      * @param string $value
      * @param integer $time
@@ -110,7 +101,6 @@ class Cookie implements CookieStorageInterface
 
     /**
      * Deletes data by given key
-     *
      * @param string $key
      * @param string $path
      * @return void
@@ -125,7 +115,6 @@ class Cookie implements CookieStorageInterface
 
     /**
      * Deletes whole cookie data
-     *
      * @return void
      */
     public function flush()
@@ -139,8 +128,7 @@ class Cookie implements CookieStorageInterface
 
     /**
      * Encodes the cookie data
-     *
-     * @param string $value
+     * @param mixed $value
      * @return string
      */
     private function encode($value)
@@ -151,7 +139,6 @@ class Cookie implements CookieStorageInterface
 
     /**
      * Decodes the cookie data
-     *
      * @param string $value
      * @return string
      */

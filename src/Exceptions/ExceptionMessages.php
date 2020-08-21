@@ -137,6 +137,11 @@ class ExceptionMessages
     const CSRF_TOKEN_NOT_FOUND = 'CSRF Token is missing';
 
     /**
+     * JWT payload not found message
+     */
+    const JWT_PAYLOAD_NOT_FOUND = 'JWT payload is missing';
+
+    /**
      * Authorization: Bearer header not found message
      */
     const AUTH_BEARER_NOT_FOUND = 'Authorization: Bearer header not found';

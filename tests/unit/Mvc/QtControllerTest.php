@@ -4,7 +4,10 @@ namespace Quantum\Controllers {
 
     use Quantum\Mvc\QtController;
 
-    class TestController extends QtController {}
+    class TestController extends QtController
+    {
+        
+    }
 
 }
 
@@ -14,6 +17,7 @@ namespace Quantum\Test\Unit {
     use PHPUnit\Framework\TestCase;
     use Quantum\Mvc\QtController;
     use Quantum\Controllers\TestController;
+    use Quantum\Loader\Loader;
 
     /**
      * @runTestsInSeparateProcesses
@@ -24,23 +28,15 @@ namespace Quantum\Test\Unit {
 
         public function setUp(): void
         {
-            $this->helperMock = Mockery::mock('overload:Quantum\Helpers\Helper');
+            $loader = new Loader();
 
-            $this->helperMock->shouldReceive('_message')->andReturnUsing(function($subject, $params) {
-                if (is_array($params)) {
-                    return preg_replace_callback('/{%\d+}/', function () use (&$params) {
-                        return array_shift($params);
-                    }, $subject);
-                } else {
-                    return preg_replace('/{%\d+}/', $params, $subject);
-                }
-            });
+            $loader->loadDir(dirname(__DIR__, 3) . DS . 'src' . DS . 'Helpers' . DS . 'functions');
         }
 
         public function testGetInstance()
         {
             $this->assertInstanceOf('Quantum\Mvc\QtController', QtController::getInstance());
-            
+
             $this->assertInstanceOf('Quantum\Mvc\QtController', new TestController());
         }
 

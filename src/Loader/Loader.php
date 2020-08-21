@@ -56,7 +56,7 @@ class Loader
 
     /**
      * File System
-     * @var Quantum\Libraries\Storage\FileSystem
+     * @var FileSystem
      */
     private $fs;
 

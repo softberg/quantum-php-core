@@ -9,34 +9,32 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 1.5.0
+ * @since 2.0.0
  */
 
 namespace Quantum\Libraries\Session;
 
-use Quantum\Libraries\Database\Database;
 use Quantum\Libraries\Database\DbalInterface;
+use Quantum\Libraries\Database\Database;
+use Quantum\Loader\Loader;
 use \SessionHandlerInterface;
 
 /**
  * DB Session Handler class
- *
  * @package Quantum
- * @subpackage Libraries.Session
  * @category Libraries
  */
 class DbSessionHandler implements SessionHandlerInterface
 {
+
     /**
      * The ORM instance
-     *
      * @var DbalInterface $orm
      */
     private $orm;
 
     /**
      * DbSessionHandler constructor.
-     *
      * @param DbalInterface $orm
      */
     public function __construct(DbalInterface $orm)
@@ -46,14 +44,13 @@ class DbSessionHandler implements SessionHandlerInterface
 
     /**
      * Initialize session
-     *
      * @param string $save_path
      * @param string $name
      * @return bool
      */
     public function open($save_path, $name)
     {
-        if (Database::connected()) {
+        if ((new Database(new Loader()))->connected()) {
             return true;
         }
         return false;
@@ -61,12 +58,11 @@ class DbSessionHandler implements SessionHandlerInterface
 
     /**
      * Close the session
-     *
      * @return bool
      */
     public function close()
     {
-        if (!Database::connected()) {
+        if (!(new Database(new Loader()))->connected()) {
             return true;
         }
         return false;
@@ -74,7 +70,6 @@ class DbSessionHandler implements SessionHandlerInterface
 
     /**
      * Read session data
-     *
      * @param string $id The session id
      * @return string
      */
@@ -86,7 +81,6 @@ class DbSessionHandler implements SessionHandlerInterface
 
     /**
      * Write session data
-     *
      * @param string $id The session id
      * @param mixed $data
      * @return bool
@@ -99,8 +93,7 @@ class DbSessionHandler implements SessionHandlerInterface
 
     /**
      * Destroy a session
-     *
-     * @param type $id The session ID
+     * @param int $id The session ID
      * @return bool
      */
     public function destroy($id)
@@ -110,7 +103,6 @@ class DbSessionHandler implements SessionHandlerInterface
 
     /**
      * Cleanup old sessions
-     *
      * @param int $max Max lifetime
      * @return bool
      */

@@ -29,7 +29,7 @@ class Lang
 
     /**
      * Current language
-     * @var strinng
+     * @var string
      */
     private static $currentLang;
 
@@ -47,7 +47,7 @@ class Lang
 
     /**
      * File System
-     * @var Quantum\Libraries\Storage\FileSystem
+     * @var FileSystem
      */
     private $fs;
 
@@ -95,7 +95,7 @@ class Lang
 
         $files = $this->fs->glob($langDir . "/*.php");
 
-        if (count($files) == 0) {
+        if (is_array($files) && count($files) == 0) {
             throw new LangException(_message(ExceptionMessages::TRANSLATION_FILES_NOT_FOUND, $this->getLang()));
         }
 
@@ -125,7 +125,7 @@ class Lang
             throw new LangException(ExceptionMessages::MISCONFIGURED_LANG_DEFAULT_CONFIG);
         }
 
-        if (empty($lang) || !in_array($lang, config()->get('langs'))) {
+        if (empty($lang) || !in_array($lang, (array) config()->get('langs'))) {
             $lang = config()->get('lang_default');
         }
 
@@ -155,7 +155,7 @@ class Lang
      * Gets the translation by given key
      * @param $key
      * @param mixed $params
-     * @return array|mixed|null|string
+     * @return string
      */
     public function getTranslation($key, $params = null)
     {

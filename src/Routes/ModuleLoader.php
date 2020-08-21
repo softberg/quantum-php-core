@@ -39,19 +39,19 @@ class ModuleLoader
     
     /**
      * Router instance
-     * @var Quantum\Routes\Router 
+     * @var Router
      */
     private $router;
     
     /**
      * FileSystem instance
-     * @var Quantum\Libraries\Storage\FileSystem
+     * @var FileSystem
      */
     private $fileSystem;
 
     /**
      * Class constructor.
-     * @param \Quantum\Routes\Router $router
+     * @param Router $router
      */
     public function __construct(Router $router)
     {
@@ -61,7 +61,7 @@ class ModuleLoader
 
     /**
      * Load Modules
-     * @param Quantum\Routes\Router $router
+     * @param Router $router
      * @throws ModuleLoaderException
      */
     public function loadModulesRoutes()

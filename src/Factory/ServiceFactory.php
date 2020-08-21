@@ -17,7 +17,6 @@ namespace Quantum\Factory;
 use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Exceptions\ServiceException;
 use Quantum\Factory\ModelFactory;
-use Quantum\Helpers\Helper;
 use Quantum\Mvc\QtService;
 
 /**
@@ -55,34 +54,6 @@ class ServiceFactory
     }
 
     /**
-     * Creates and initialize the service once,
-     * directs the method calls in chain to service 
-     * @param string $serviceClass
-     * @return \self
-     */
-    public function proxy($serviceClass): self
-    {
-        $this->locate($serviceClass);
-
-        return $this;
-    }
-
-    /**
-     * Allows to call service methods
-     * @param string $methodName
-     * @param array $arguments
-     * @return mixed
-     */
-    public function __call($methodName, $arguments)
-    {
-        if (is_callable([$this->service, $methodName])) {
-            return call_user_func([$this->service, $methodName], ...$this->getArgs($methodName, $arguments));
-        } else {
-            throw new \BadMethodCallException(_message(ExceptionMessages::UNDEFINED_METHOD, $methodName));
-        }
-    }
-
-    /**
      * Locates the service
      * @param string $serviceClass
      * @return QtService
@@ -105,13 +76,13 @@ class ServiceFactory
     private function instantiate($serviceClass): QtService
     {
         if (!class_exists($serviceClass)) {
-            throw new ServiceException(Helper::_message(ExceptionMessages::SERVICE_NOT_FOUND, $serviceClass));
+            throw new ServiceException(_message(ExceptionMessages::SERVICE_NOT_FOUND, $serviceClass));
         }
-
-        $service = new $serviceClass();
+        
+        $service = $serviceClass::getInstance();
 
         if (!$service instanceof QtService) {
-            throw new ServiceException(Helper::_message(ExceptionMessages::NOT_INSTANCE_OF_SERVICE, [$serviceClass, QtService::class]));
+            throw new ServiceException(_message(ExceptionMessages::NOT_INSTANCE_OF_SERVICE, [$serviceClass, QtService::class]));
         }
 
         $this->instantiated[$serviceClass] = $service;

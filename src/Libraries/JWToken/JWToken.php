@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 1.0.0
+ * @since 2.0.0
  */
 
 namespace Quantum\Libraries\JWToken;
@@ -21,44 +21,38 @@ use Firebase\JWT\JWT;
 /**
  * JWToken Class
  * @package Quantum
- * @subpackage Libraries.JWTToken
  * @category Libraries
- * @uses \Firebase\JWT\
+ * @uses JWT
  */
 class JWToken extends JWT
 {
 
     /**
      * JWT secret key
-     *
      * @var string
      */
     private $key;
 
     /**
      * Encryption algorithm
-     *
      * @var string
      */
     private $algorithm = 'HS256';
 
     /**
      * Payload data
-     *
      * @var array
      */
     private $payload = [];
 
     /**
      * Fetched payload
-     *
-     * @var array
+     * @var object
      */
     private $fetchedPayload = [];
 
     /**
      * JWToken constructor.
-     *
      * @param mixed $key
      */
     public function __construct(string $key = null)
@@ -68,7 +62,6 @@ class JWToken extends JWT
 
     /**
      * Sets extra leeway time
-     *
      * @return $this
      */
     public function setLeeway($leeway)
@@ -79,7 +72,6 @@ class JWToken extends JWT
 
     /**
      * Sets the encryption algorithm
-     *
      * @param string $algorithm
      * @return $this
      */
@@ -91,7 +83,6 @@ class JWToken extends JWT
 
     /**
      * Sets the claim
-     *
      * @param string $key
      * @param mixed $value
      * @return $this
@@ -104,7 +95,6 @@ class JWToken extends JWT
 
     /**
      * Set claims
-     *
      * @param array $claims
      * @return $this
      */
@@ -119,7 +109,6 @@ class JWToken extends JWT
 
     /**
      * Sets user data
-     *
      * @param array $data
      * @return $this
      */
@@ -131,7 +120,6 @@ class JWToken extends JWT
 
     /**
      * Composes and signs the JWT
-     *
      * @param mixed $keyId
      * @param mixed $head
      * @return string
@@ -148,7 +136,6 @@ class JWToken extends JWT
 
     /**
      * Retrieve and verifies the JWT
-     *
      * @param string $jwt
      * @param array $allowed_algs
      * @return $this
@@ -161,8 +148,7 @@ class JWToken extends JWT
 
     /**
      * Fetches the payload
-     *
-     * @return array
+     * @return object
      */
     public function fetchPayload()
     {
@@ -171,8 +157,7 @@ class JWToken extends JWT
 
     /**
      * Fetches the user data
-     *
-     * @return array|null
+     * @return mixed|null
      */
     public function fetchData()
     {
@@ -181,7 +166,6 @@ class JWToken extends JWT
 
     /**
      * Fetches the claim
-     *
      * @param string $key
      * @return mixed|null
      */

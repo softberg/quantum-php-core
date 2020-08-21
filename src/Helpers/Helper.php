@@ -19,6 +19,7 @@ namespace Quantum\Helpers;
  *
  * @package Quantum
  * @category Helpers
+ * @method string|array _message($subject, $params)
  */
 class Helper
 {

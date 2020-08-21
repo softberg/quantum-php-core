@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 1.2.0
+ * @since 2.0.0
  */
 
 namespace Quantum\Debugger;
@@ -19,11 +19,11 @@ use DebugBar\DataCollector\MemoryCollector;
 use DebugBar\DataCollector\MessagesCollector;
 use DebugBar\DataCollector\PhpInfoCollector;
 use DebugBar\DataCollector\RequestDataCollector;
-use Quantum\Libraries\Database\Database as DB;
+use Quantum\Libraries\Database\Database;
+use Quantum\Loader\Loader;
 
 /**
  * Debugger class
- *
  * @package Quantum\Debugger
  * @uses DebugBar
  */
@@ -32,14 +32,12 @@ class Debugger extends DebugBar
 
     /**
      * Debugbar instance
-     * 
      * @var object
      */
     private $debugbar;
 
     /**
      * Assets url
-     * 
      * @var string
      */
     private $assetsUrl = '/assets/DebugBar/Resources';
@@ -47,13 +45,11 @@ class Debugger extends DebugBar
     /**
      * Custom CSS
      * 
-     * @var string 
      */
     private $customCss = 'custom_debugbar.css';
 
     /**
      * Class constructor
-     *
      * @return void
      */
     public function __construct()
@@ -66,7 +62,6 @@ class Debugger extends DebugBar
 
     /**
      * Runs the debug bar
-     *
      * @param string $view
      * @return object
      */
@@ -86,10 +81,7 @@ class Debugger extends DebugBar
 
     /**
      * Tab Messages
-     * 
      * Output debug messages in Messages tab
-     *
-     * @return void
      */
     private function tabMessages()
     {
@@ -105,18 +97,15 @@ class Debugger extends DebugBar
 
     /**
      * Tab Queries
-     * 
      * Outputs the query log in Queries tab
-     *
-     * @return void
      */
     private function tabQueries()
     {
         $this->debugbar->addCollector(new MessagesCollector('queries'));
 
-        $queryLog = DB::getQueryLog();
+        $queryLog = (new Database(new Loader()))->queryLog();
 
-        if ($queryLog) {
+        if (!empty($queryLog)) {
             foreach ($queryLog as $query) {
                 $this->debugbar['queries']->info($query);
             }
@@ -125,10 +114,7 @@ class Debugger extends DebugBar
 
     /**
      * Tab Routes
-     * 
      * Collects the routes
-     *
-     * @return void
      */
     private function tabRoutes($view)
     {
@@ -155,10 +141,7 @@ class Debugger extends DebugBar
 
     /**
      * Tab Mail
-     * 
      * Outputs the mail log in Mail tab
-     *
-     * @return void
      */
     private function tabMailLog()
     {

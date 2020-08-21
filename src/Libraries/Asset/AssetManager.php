@@ -118,7 +118,7 @@ class AssetManager
     /**
      * Set Position
      * 
-     * @param arraye $arr
+     * @param array $arr
      * @param int $key
      * @param mixed $value
      */

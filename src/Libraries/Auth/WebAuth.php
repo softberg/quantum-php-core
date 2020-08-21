@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 1.9.0
+ * @since 2.0.0
  */
 
 namespace Quantum\Libraries\Auth;
@@ -21,7 +21,6 @@ use Quantum\Libraries\JWToken\JWToken;
 
 /**
  * Class WebAuth
- *
  * @package Quantum\Libraries\Auth
  */
 class WebAuth extends BaseAuth implements AuthenticableInterface
@@ -49,7 +48,6 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
 
     /**
      * WebAuth constructor.
-     *
      * @param AuthServiceInterface $authService
      * @param Hasher $hasher
      * @param JWToken|null $jwt
@@ -63,7 +61,6 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
 
     /**
      * Sign In
-     * 
      * @param string $username
      * @param string $password
      * @param boolean $remember
@@ -74,7 +71,7 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
     {
         $user = $this->authService->get($this->keys['usernameKey'], $username);
 
-        if (!$user) {
+        if (empty($user)) {
             throw new AuthException(ExceptionMessages::INCORRECT_AUTH_CREDENTIALS);
         }
 
@@ -97,7 +94,6 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
 
     /**
      * Sign Out
-     *
      * @throws \Exception
      */
     public function signout()
@@ -110,9 +106,7 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
 
     /**
      * User
-     *
      * @return mixed|null
-     * @throws \Exception
      */
     public function user()
     {
@@ -129,14 +123,13 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
 
     /**
      * Check Remember Token
-     *
      * @return bool|mixed
      * @throws \Exception
      */
     private function checkRememberToken()
     {
         $user = $this->authService->get($this->keys['rememberTokenKey'], cookie()->get($this->keys['rememberTokenKey']));
-        if ($user) {
+        if (!empty($user)) {
             $this->setRememberToken($user);
             return $user;
         }
@@ -145,11 +138,10 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
 
     /**
      * Set Remember Token
-     *
-     * @param object $user
+     * @param array $user
      * @throws \Exception
      */
-    private function setRememberToken($user)
+    private function setRememberToken(array $user)
     {
         $rememberToken = $this->generateToken();
 
@@ -163,14 +155,14 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
 
     /**
      * Remove Remember Token
-     *
      * @throws \Exception
      */
     private function removeRememberToken()
     {
         if (cookie()->has($this->keys['rememberTokenKey'])) {
             $user = $this->authService->get($this->keys['rememberTokenKey'], cookie()->get($this->keys['rememberTokenKey']));
-            if ($user) {
+            
+            if (!empty($user)) {
                 $this->authService->update($this->keys['rememberTokenKey'], $user[$this->keys['rememberTokenKey']], [
                     $this->keys['rememberTokenKey'] => ''
                 ]);

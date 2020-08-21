@@ -5,6 +5,7 @@ namespace Quantum\Test\Unit;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 use Quantum\Mvc\QtService;
+use Quantum\Loader\Loader;
 
 /**
  * @runTestsInSeparateProcesses
@@ -15,17 +16,9 @@ class QtServiceTest extends TestCase
 
     public function setUp(): void
     {
-        $this->helperMock = Mockery::mock('overload:Quantum\Helpers\Helper');
+        $loader = new Loader();
 
-        $this->helperMock->shouldReceive('_message')->andReturnUsing(function($subject, $params) {
-            if (is_array($params)) {
-                return preg_replace_callback('/{%\d+}/', function () use (&$params) {
-                    return array_shift($params);
-                }, $subject);
-            } else {
-                return preg_replace('/{%\d+}/', $params, $subject);
-            }
-        });
+        $loader->loadDir(dirname(__DIR__, 3) . DS . 'src' . DS . 'Helpers' . DS . 'functions');
     }
 
     public function testGetInstance()

@@ -13,7 +13,6 @@
  */
 use Quantum\Libraries\Config\Config;
 use Quantum\Environment\Environment;
-use Quantum\Loader\Loader;
 
 if (!function_exists('config')) {
 
@@ -33,7 +32,7 @@ if (!function_exists('env')) {
     /**
      * Gets environment variable
      * @param string $var
-     * @param null $default
+     * @param mixed|null $default
      * @return array|false|mixed|null|string
      */
     function env($var, $default = null)
