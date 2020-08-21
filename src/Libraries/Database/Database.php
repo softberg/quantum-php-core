@@ -81,9 +81,9 @@ class Database
 
     /**
      * Gets the ORM
-     * @param type $table
-     * @param type $modelName
-     * @param type $idColumn
+     * @param string $table
+     * @param string|null $modelName
+     * @param string $idColumn
      * @return \Quantum\Libraries\Database\IdiormDbal
      * @throws DatabaseException
      */

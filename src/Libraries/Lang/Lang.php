@@ -95,7 +95,7 @@ class Lang
 
         $files = $this->fs->glob($langDir . "/*.php");
 
-        if (count($files) == 0) {
+        if (is_array($files) && count($files) == 0) {
             throw new LangException(_message(ExceptionMessages::TRANSLATION_FILES_NOT_FOUND, $this->getLang()));
         }
 

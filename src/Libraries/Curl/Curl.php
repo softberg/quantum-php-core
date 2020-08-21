@@ -41,7 +41,7 @@ class Curl
 
     /**
      * Response headers
-     * @var \ArrayAccess
+     * @var \ArrayAccess|\Countable|\Iterator
      */
     private $responseHeaders = [];
 
@@ -151,11 +151,9 @@ class Curl
     {
         $responseHeaders = [];
 
-        if ($this->responseHeaders instanceof ArrayAccess) {
-            while ($this->responseHeaders->valid()) {
-                $responseHeaders[strtolower($this->responseHeaders->key())] = $this->responseHeaders->current();
-                $this->responseHeaders->next();
-            }
+        while ($this->responseHeaders->valid()) {
+            $responseHeaders[strtolower($this->responseHeaders->key())] = $this->responseHeaders->current();
+            $this->responseHeaders->next();
         }
 
         $this->responseHeaders->rewind();

@@ -125,7 +125,7 @@ class FileSystem
      * Extension
      *
      * @param string $file
-     * @return string|string[]
+     * @return string
      */
     public function extension($file)
     {

@@ -61,7 +61,7 @@ class HookDefaults implements HookInterface
     public static function templateRenderer($data)
     {
         $loader = new FilesystemLoader(modules_dir() . DS . current_module() . DS . 'Views');
-        $twig = new Twig\Environment($loader, $data['configs']);
+        $twig = new \Twig\Environment($loader, $data['configs']);
 
         $definedFunctions = get_defined_functions();
 
