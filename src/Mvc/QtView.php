@@ -65,7 +65,7 @@ class QtView
     public function __construct()
     {
         if (get_caller_class() != ViewFactory::class) {
-            throw new ViewException_message(ExceptionMessages::DIRECT_VIEW_INCTANCE, [ViewFactory::class]);
+            throw new ViewException(_message(ExceptionMessages::DIRECT_VIEW_INCTANCE, [ViewFactory::class]));
         }
     }
 
@@ -140,7 +140,7 @@ class QtView
             throw new ViewException(ExceptionMessages::LAYOUT_NOT_SET);
         }
 
-        if ($params) {
+        if (!empty($params)) {
             $this->data = array_merge($this->data, $params);
         }
 
@@ -161,7 +161,7 @@ class QtView
      */
     public function renderPartial($view, $params = []): string
     {
-        if ($params) {
+        if (!empty($params)) {
             $this->data = array_merge($this->data, $params);
         }
 
@@ -248,9 +248,9 @@ class QtView
 
         try {
             ob_start();
-            ob_implicit_flush(false);
+            ob_implicit_flush(0);
 
-            if ($params) {
+            if (!empty($params)) {
                 extract($params, EXTR_OVERWRITE);
             }
 

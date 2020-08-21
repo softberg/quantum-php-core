@@ -39,7 +39,7 @@ class ModuleLoader
     
     /**
      * Router instance
-     * @var Quantum\Routes\Router 
+     * @var Router
      */
     private $router;
     
