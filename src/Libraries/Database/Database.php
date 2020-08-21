@@ -81,13 +81,13 @@ class Database
 
     /**
      * Gets the ORM
-     * @param string $modelName
-     * @param string $table
-     * @param string $idColumn
-     * @return IdiormDbal
-     * @throws DatabaseException When table is not defined in user defined model
+     * @param type $table
+     * @param type $modelName
+     * @param type $idColumn
+     * @return \Quantum\Libraries\Database\IdiormDbal
+     * @throws DatabaseException
      */
-    public function getORM($modelName, $table, $idColumn = 'id'): IdiormDbal
+    public function getORM($table, $modelName = null, $idColumn = 'id'): IdiormDbal
     {
         $dbalClass = $this->getDbalClass();
 

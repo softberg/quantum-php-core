@@ -138,7 +138,7 @@ namespace Quantum\Test\Unit {
 
             $this->expectExceptionMessage('Model `' . UserModel::class . '` does not have $table property defined');
 
-            $this->database->getORM(UserModel::class, '');
+            $this->database->getORM('', UserModel::class);
         }
 
         public function testConnectAndConnected()

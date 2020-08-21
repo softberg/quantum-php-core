@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 1.0.0
+ * @since 2.0.0
  */
 
 namespace Quantum\Hooks;
@@ -17,16 +17,14 @@ namespace Quantum\Hooks;
 use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Exceptions\RouteException;
 use Quantum\Http\Response;
-use Twig_Loader_Filesystem;
-use Twig_Environment;
+use Twig\Loader\FilesystemLoader;
+use Twig\TwigFunction;
 
 /**
  * HookDefaults Class
- *
  * Default implementations
- *
+ * 
  * @package Quantum
- * @subpackage Hooks
  * @category Hooks
  */
 class HookDefaults implements HookInterface
@@ -34,7 +32,6 @@ class HookDefaults implements HookInterface
 
     /**
      * Handle Headers
-     *
      * Allows Cross domain requests
      */
     public static function handleHeaders()
@@ -46,7 +43,6 @@ class HookDefaults implements HookInterface
 
     /**
      * Page not found
-     *
      * @throws RouteException
      */
     public static function pageNotFound()
@@ -56,7 +52,6 @@ class HookDefaults implements HookInterface
 
     /**
      * Template renderer
-     *
      * @param $data
      * @return string
      * @throws \Twig\Error\LoaderError
@@ -65,8 +60,8 @@ class HookDefaults implements HookInterface
      */
     public static function templateRenderer($data)
     {
-        $loader = new Twig_Loader_Filesystem(modules_dir() . DS . current_module() . DS . 'Views');
-        $twig = new Twig_Environment($loader, $data['configs']);
+        $loader = new FilesystemLoader(modules_dir() . DS . current_module() . DS . 'Views');
+        $twig = new Twig\Environment($loader, $data['configs']);
 
         $definedFunctions = get_defined_functions();
 
@@ -74,11 +69,7 @@ class HookDefaults implements HookInterface
 
         foreach ($allDefinedFuncitons as $function) {
             if (function_exists($function)) {
-                $twig->addFunction(
-                    new \Twig_Function(
-                        $function, $function
-                    )
-                );
+                $twig->addFunction(new TwigFunction($function, $function));
             }
         }
 

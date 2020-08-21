@@ -28,6 +28,12 @@ interface DbalInterface
 {
 
     /**
+     * Get table
+     * @return string
+     */
+    public function getTable();
+
+    /**
      * DB Connect
      * @param array $connectionDetails
      * @return array
@@ -160,7 +166,7 @@ interface DbalInterface
      */
     public function innerJoin($table, $constraint, $tableAlias = null);
 
-    /** 
+    /**
      * Left Join
      * Add an LEFT JOIN souce to the query
      * @param string $table
@@ -186,8 +192,8 @@ interface DbalInterface
      * @return object
      */
     public function joinTo(QtModel $model);
-    
-   /**
+
+    /**
      * Joins through connector model
      * @param QtModel $model
      * @return bool $switch
@@ -205,8 +211,7 @@ interface DbalInterface
      * @return string
      */
     public static function lastStatement();
-    
-    
+
     /**
      * Get an array containing all the queries 
      * run on a specified connection up to now.

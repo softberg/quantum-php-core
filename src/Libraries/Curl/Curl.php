@@ -41,7 +41,7 @@ class Curl
 
     /**
      * Response headers
-     * @var array
+     * @var \ArrayAccess
      */
     private $responseHeaders = [];
 

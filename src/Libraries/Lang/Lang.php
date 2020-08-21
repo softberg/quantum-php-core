@@ -29,7 +29,7 @@ class Lang
 
     /**
      * Current language
-     * @var strinng
+     * @var string
      */
     private static $currentLang;
 
@@ -47,7 +47,7 @@ class Lang
 
     /**
      * File System
-     * @var Quantum\Libraries\Storage\FileSystem
+     * @var FileSystem
      */
     private $fs;
 
@@ -125,7 +125,7 @@ class Lang
             throw new LangException(ExceptionMessages::MISCONFIGURED_LANG_DEFAULT_CONFIG);
         }
 
-        if (empty($lang) || !in_array($lang, config()->get('langs'))) {
+        if (empty($lang) || !in_array($lang, (array) config()->get('langs'))) {
             $lang = config()->get('lang_default');
         }
 

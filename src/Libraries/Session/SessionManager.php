@@ -9,19 +9,19 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 1.0.0
+ * @since 2.0.0
  */
 
 namespace Quantum\Libraries\Session;
 
 use Quantum\Libraries\Database\Database;
 use Quantum\Libraries\Encryption\Cryptor;
+use Quantum\Loader\Loader;
 
 /**
  * Session Manager class
  *
  * @package Quantum
- * @subpackage Libraries.Session
  * @category Libraries
  */
 class SessionManager
@@ -34,20 +34,17 @@ class SessionManager
 
     /**
      * Get session handler
-     *
      * @return Session
      * @throws \Exception
      */
     public function getSessionHandler()
     {
-        $sessionHandler = null;
-
         $driver = config()->get('session_driver');
 
         if (!session_id()) {
 
             if ($driver == $this->databaseDriver) {
-                $orm = Database::getORMInstance(null, config()->get('session_table', 'sessions'));
+                $orm = (new Database(new Loader()))->getORM(config()->get('session_table', 'sessions'));
                 session_set_save_handler(new DbSessionHandler($orm), true);
             }
 
@@ -55,7 +52,6 @@ class SessionManager
         }
 
         if (isset($_SESSION['LAST_ACTIVITY']) && time() - $_SESSION['LAST_ACTIVITY'] > config()->get('session_timeout', 1800)) {
-            @session_unset();
             @session_destroy();
         }
 

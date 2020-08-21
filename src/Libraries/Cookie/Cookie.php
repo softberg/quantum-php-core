@@ -128,7 +128,7 @@ class Cookie implements CookieStorageInterface
 
     /**
      * Encodes the cookie data
-     * @param string $value
+     * @param mixed $value
      * @return string
      */
     private function encode($value)
