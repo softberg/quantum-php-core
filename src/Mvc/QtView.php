@@ -212,7 +212,7 @@ class QtView
      * Renders the view
      * @param string $view
      * @param array $parmas
-     * @return object|string
+     * @return mixed
      * @throws ViewException
      */
     private function renderFile($view)

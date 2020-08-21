@@ -24,6 +24,11 @@ use stdClass;
  * @package Quantum
  * @subpackage Libraries
  * @category Database
+ * @method static array queryLog()
+ * @method static string lastStatement()
+ * @method static string lastQuery()
+ * @method static bool($query, $parameters = [])
+ * @method static array query($query, $parameters = [])
  */
 class Database
 {
