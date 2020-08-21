@@ -105,7 +105,7 @@ class Debugger extends DebugBar
 
         $queryLog = (new Database(new Loader()))->queryLog();
 
-        if ($queryLog) {
+        if (!empty($queryLog)) {
             foreach ($queryLog as $query) {
                 $this->debugbar['queries']->info($query);
             }

@@ -132,6 +132,7 @@ class QtView
      * Renders the view
      * @param string $view
      * @param array $params
+     * @return string
      * @throws ViewException
      */
     public function render($view, $params = []): string
