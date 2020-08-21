@@ -17,7 +17,6 @@ namespace Quantum\Mvc;
 use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Libraries\Database\Database;
 use Quantum\Exceptions\ModelException;
-use Quantum\Helpers\Helper;
 use Quantum\Loader\Loader;
 
 /**
@@ -89,7 +88,7 @@ abstract class QtModel
     {
         foreach ($arguments as $key => $value) {
             if (!in_array($key, $this->fillable)) {
-                throw new ModelException(Helper::_message(ExceptionMessages::INAPPROPRIATE_PROPERTY, $key));
+                throw new ModelException(_message(ExceptionMessages::INAPPROPRIATE_PROPERTY, $key));
             }
 
             $this->$key = $value;
@@ -140,7 +139,7 @@ abstract class QtModel
                 return $this;
             }
         } else {
-            throw new ModelException(Helper::_message(ExceptionMessages::UNDEFINED_MODEL_METHOD, $method));
+            throw new ModelException(_message(ExceptionMessages::UNDEFINED_MODEL_METHOD, $method));
         }
     }
 

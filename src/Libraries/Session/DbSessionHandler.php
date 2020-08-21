@@ -62,7 +62,7 @@ class DbSessionHandler implements SessionHandlerInterface
      */
     public function close()
     {
-        if (!Database::connected()) {
+        if (!(new Database(new Loader()))->connected()) {
             return true;
         }
         return false;

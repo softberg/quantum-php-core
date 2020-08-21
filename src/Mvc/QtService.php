@@ -14,7 +14,6 @@
 
 namespace Quantum\Mvc;
 
-use Quantum\Helpers\Helper;
 use Quantum\Exceptions\ExceptionMessages;
 
 /**
@@ -57,7 +56,7 @@ class QtService
      */
     public function __call($method, $arguments)
     {
-        throw new \BadMethodCallException(Helper::_message(ExceptionMessages::UNDEFINED_METHOD, $method));
+        throw new \BadMethodCallException(_message(ExceptionMessages::UNDEFINED_METHOD, $method));
     }
 
 }

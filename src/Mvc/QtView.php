@@ -20,7 +20,6 @@ use Quantum\Exceptions\ViewException;
 use Quantum\Factory\ViewFactory;
 use Quantum\Hooks\HookManager;
 use Quantum\Debugger\Debugger;
-use Quantum\Helpers\Helper;
 use Error;
 
 /**
@@ -49,7 +48,7 @@ class QtView
 
     /**
      * Rendered debug bar
-     * @var type 
+     * @var string|null 
      */
     private $debugBar = null;
 
@@ -66,7 +65,7 @@ class QtView
     public function __construct()
     {
         if (get_caller_class() != ViewFactory::class) {
-            throw new ViewException(Helper::_message(ExceptionMessages::DIRECT_VIEW_INCTANCE, [ViewFactory::class]));
+            throw new ViewException_message(ExceptionMessages::DIRECT_VIEW_INCTANCE, [ViewFactory::class]);
         }
     }
 
@@ -202,7 +201,7 @@ class QtView
         if (!$fileSystem->exists($filePath)) {
             $filePath = base_dir() . DS . 'base' . DS . 'views' . DS . $file . '.php';
             if (!$fileSystem->exists($filePath)) {
-                throw new ViewException(Helper::_message(ExceptionMessages::VIEW_FILE_NOT_FOUND, $file));
+                throw new ViewException(_message(ExceptionMessages::VIEW_FILE_NOT_FOUND, $file));
             }
         }
 
@@ -297,6 +296,7 @@ class QtView
     /**
      * Render Debug Bar
      * @param string $view
+     * @return string
      */
     private function renderDebugBar($view)
     {

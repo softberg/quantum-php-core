@@ -23,6 +23,7 @@ namespace Quantum\Test\Unit {
     use PHPUnit\Framework\TestCase;
     use Quantum\Models\StubModel;
     use Quantum\Exceptions\ModelException;
+    use Quantum\Loader\Loader;
 
     /**
      * @runTestsInSeparateProcesses
@@ -39,8 +40,13 @@ namespace Quantum\Test\Unit {
 
         public function setUp(): void
         {
+
+            $loader = new Loader();
+
+            $loader->loadDir(dirname(__DIR__, 3) . DS . 'src' . DS . 'Helpers' . DS . 'functions');
+
             $dbal = Mockery::mock();
-            
+
             $dbal->ormObject = Mockery::mock();
 
             $this->databaseMock = Mockery::mock('overload:Quantum\Libraries\Database\Database');
@@ -48,16 +54,6 @@ namespace Quantum\Test\Unit {
             $this->databaseMock->shouldReceive('getORM')->andReturn($dbal);
 
             $this->helperMock = Mockery::mock('overload:Quantum\Helpers\Helper');
-
-            $this->helperMock->shouldReceive('_message')->andReturnUsing(function($subject, $params) {
-                if (is_array($params)) {
-                    return preg_replace_callback('/{%\d+}/', function () use (&$params) {
-                        return array_shift($params);
-                    }, $subject);
-                } else {
-                    return preg_replace('/{%\d+}/', $params, $subject);
-                }
-            });
 
             $this->model = new StubModel();
         }

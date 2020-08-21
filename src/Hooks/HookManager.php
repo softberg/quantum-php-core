@@ -31,7 +31,7 @@ class HookManager {
      * Call method
      * 
      * @param string $hookName
-     * @param array $args
+     * @param mixed $args
      * @param string $alternativePath
      * @return object
      * @throws \Exception When Hook not found
