@@ -157,6 +157,16 @@ class ExceptionMessages
     const INAPPROPRIATE_PROPERTY = 'Inappropriate property `{%1}` for fillable object';
 
     /**
+     * Session start error message
+     */
+    const RUNTIME_SESSION_START = 'Can not start the session';
+    
+    /**
+     * Session destroy error  message
+     */
+    const RUNTIME_SESSION_DESTROY = 'Can not destroy the session';
+    
+    /**
      * Misconfigured session handler  message
      */
     const MISCONFIGURED_SESSION_HANDLER = 'Session handler is not properly configured';
