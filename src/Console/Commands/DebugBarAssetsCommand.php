@@ -80,8 +80,9 @@ class DebugBarAssetsCommand extends QtCommand
                     }
                 }
             }
+            
+            closedir($dir);
         }
-        closedir($dir);
     }
 
 }
