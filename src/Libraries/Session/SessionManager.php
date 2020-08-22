@@ -50,13 +50,13 @@ class SessionManager
             }
 
             if (@session_start() === false) {
-                throw new \RuntimeException(_message(ExceptionMessages::RUNTIME_SESSION_START));
+                throw new \RuntimeException(ExceptionMessages::RUNTIME_SESSION_START);
             }
         }
 
         if (isset($_SESSION['LAST_ACTIVITY']) && time() - $_SESSION['LAST_ACTIVITY'] > config()->get('session_timeout', 1800)) {
             if (@session_destroy() === false) {
-                throw new \RuntimeException(_message(ExceptionMessages::RUNTIME_SESSION_DESTROY));
+                throw new \RuntimeException(ExceptionMessages::RUNTIME_SESSION_DESTROY);
             }
         }
 
