@@ -14,6 +14,7 @@
 
 namespace Quantum\Console\Commands;
 
+use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Console\QtCommand;
 
 /**
@@ -58,23 +59,30 @@ class DebugBarAssetsCommand extends QtCommand
      * Recursively copies the debugbar assets
      * @param string $src
      * @param string $dst
-     * @return void
+     * @throws \RuntimeException
      */
     private function recursive_copy($src, $dst)
     {
         $dir = opendir($src);
-        @mkdir($dst);
-        while (($file = readdir($dir))) {
-            if (($file != '.') && ($file != '..')) {
-                if (is_dir($src . '/' . $file)) {
-                    self::recursive_copy($src . '/' . $file, $dst . '/' . $file);
-                } else {
-                    if ($file)
-                        copy($src . '/' . $file, $dst . '/' . $file);
+
+        if (@mkdir($dst) === false) {
+            throw new \RuntimeException(_message(ExceptionMessages::DIRECTORY_CANT_BE_CREATED, $dst));
+        }
+
+        if (is_resource($dir)) {
+            while (($file = readdir($dir))) {
+                if (($file != '.') && ($file != '..')) {
+                    if (is_dir($src . '/' . $file)) {
+                        $this->recursive_copy($src . '/' . $file, $dst . '/' . $file);
+                    } else {
+                        if ($file)
+                            copy($src . '/' . $file, $dst . '/' . $file);
+                    }
                 }
             }
+            
+            closedir($dir);
         }
-        closedir($dir);
     }
 
 }

@@ -167,7 +167,7 @@ class QtView
             $this->data = array_merge($this->data, $params);
         }
 
-        return $this->renderFile($view, $params);
+        return $this->renderFile($view);
     }
 
     /**

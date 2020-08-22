@@ -75,7 +75,7 @@ class DbSessionHandler implements SessionHandlerInterface
      */
     public function read($id)
     {
-        $result = $this->orm->query('SELECT * FROM ' . $this->orm->getTable() . " WHERE id = :id", ['id' => $id], false);
+        $result = $this->orm->query('SELECT * FROM ' . $this->orm->getTable() . " WHERE id = :id", ['id' => $id]);
         return $result ? $result->data : '';
     }
 
