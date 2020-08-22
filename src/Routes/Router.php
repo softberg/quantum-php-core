@@ -184,8 +184,10 @@ class Router extends RouteController
      */
     private function checkCollision()
     {
-        for ($i = 0; $i < count($this->matchedRoutes) - 1; $i++) {
-            for ($j = $i + 1; $j < count($this->matchedRoutes); $j++) {
+        $length = count($this->matchedRoutes);
+
+        for ($i = 0; $i < $length - 1; $i++) {
+            for ($j = $i + 1; $j < $length; $j++) {
                 if ($this->matchedRoutes[$i]['method'] == $this->matchedRoutes[$j]['method']) {
                     throw new RouteException(_message(ExceptionMessages::REPETITIVE_ROUTE_SAME_METHOD, $this->matchedRoutes[$j]['method']));
                 }
