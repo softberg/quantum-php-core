@@ -340,5 +340,10 @@ class ExceptionMessages
      * File already exists message
      */
     const FILE_ALREADY_EXISTS = 'File already exists';
+    
+    /**
+     * Script execution terminated message
+     */
+    const EXECUTION_TERMINATED = 'Execution was terminated';
 
 }
