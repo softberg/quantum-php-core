@@ -79,7 +79,7 @@ class ServiceFactory
             throw new ServiceException(_message(ExceptionMessages::SERVICE_NOT_FOUND, $serviceClass));
         }
         
-        $service = $serviceClass::getInstance();
+        $service = new $serviceClass();
 
         if (!$service instanceof QtService) {
             throw new ServiceException(_message(ExceptionMessages::NOT_INSTANCE_OF_SERVICE, [$serviceClass, QtService::class]));

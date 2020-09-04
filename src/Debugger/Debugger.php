@@ -20,7 +20,6 @@ use DebugBar\DataCollector\MessagesCollector;
 use DebugBar\DataCollector\PhpInfoCollector;
 use DebugBar\DataCollector\RequestDataCollector;
 use Quantum\Libraries\Database\Database;
-use Quantum\Loader\Loader;
 
 /**
  * Debugger class
@@ -103,7 +102,7 @@ class Debugger extends DebugBar
     {
         $this->debugbar->addCollector(new MessagesCollector('queries'));
 
-        $queryLog = (new Database(new Loader()))->queryLog();
+        $queryLog = Database::queryLog();
 
         if (!empty($queryLog)) {
             foreach ($queryLog as $query) {
