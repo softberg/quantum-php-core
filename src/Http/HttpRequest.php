@@ -116,7 +116,7 @@ abstract class HttpRequest
 
         self::$__query = self::$server->query();
 
-        self::$__headers = array_change_key_case((array) getallheaders(), CASE_UPPER);
+        self::$__headers = array_change_key_case((array) getallheaders(), CASE_LOWER);
 
         self::$__request = array_merge(
                 self::$__request,
@@ -422,7 +422,7 @@ abstract class HttpRequest
      */
     public static function setHeader($key, $value)
     {
-        self::$__headers[$key] = $value;
+        self::$__headers[strtolower($key)] = $value;
     }
 
     /**
@@ -432,7 +432,7 @@ abstract class HttpRequest
      */
     public static function hasHeader($key)
     {
-        return isset(self::$__headers[$key]);
+        return isset(self::$__headers[strtolower($key)]);
     }
 
     /**
@@ -442,7 +442,7 @@ abstract class HttpRequest
      */
     public static function getHeader($key)
     {
-        return self::hasHeader($key) ? self::$__headers[$key] : null;
+        return self::hasHeader($key) ? self::$__headers[strtolower($key)] : null;
     }
 
     /**
@@ -461,7 +461,7 @@ abstract class HttpRequest
     public static function deleteHeader($key)
     {
         if (self::hasHeader($key)) {
-            unset(self::$__headers[$key]);
+            unset(self::$__headers[strtolower($key)]);
         }
     }
 
@@ -517,7 +517,7 @@ abstract class HttpRequest
     {
         $bearerToken = null;
 
-        if (self::hasHeader('Authorization')) {
+        if (self::hasHeader('Authorization')) { 
             if (preg_match('/Bearer\s(\S+)/', self::getHeader('Authorization'), $matches)) {
                 $bearerToken = $matches[1];
             }

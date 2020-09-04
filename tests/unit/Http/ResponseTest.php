@@ -3,6 +3,7 @@
 namespace Quantum\Test\Unit;
 
 use PHPUnit\Framework\TestCase;
+use Quantum\Exceptions\StopExecutionException;
 use Quantum\Http\Response;
 
 class ResponseTest extends TestCase
@@ -91,15 +92,19 @@ class ResponseTest extends TestCase
 
         $this->assertFalse($response->hasHeader('Location'));
 
-        $response->redirect('/');
-
+        try {
+            $response->redirect('/');
+        } catch (StopExecutionException $e) {}
+        
         $this->assertTrue($response->hasHeader('Location'));
 
         $this->assertEquals('/', $response->getHeader('Location'));
 
         $this->assertEquals(200, $response->getStatusCode());
 
-        $response->redirect('/home', 301);
+        try {
+            $response->redirect('/home', 301);
+        } catch (StopExecutionException $e) {}
 
         $this->assertEquals('/home', $response->getHeader('Location'));
 

@@ -40,12 +40,6 @@ class Lang
     private static $translations = [];
 
     /**
-     * Lang dir
-     * @var string 
-     */
-    private $langDir;
-
-    /**
      * File System
      * @var FileSystem
      */

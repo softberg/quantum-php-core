@@ -338,7 +338,7 @@ abstract class HttpResponse
 
         self::setHeader('Location', $url);
 
-        self::send();
+        stop();
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace Quantum\Test\Unit;
 
 use PHPUnit\Framework\TestCase;
+use Quantum\Exceptions\StopExecutionException;
 use Quantum\Libraries\Asset\AssetManager;
 use Quantum\Libraries\Session\Session;
 use Quantum\Libraries\Config\Config;
@@ -74,22 +75,27 @@ class HelperTest extends TestCase
         $this->assertEquals('http://test.com:8080/?firstname=John&lastname=Doe', current_url());
     }
 
-    public function testRedirect()
+    public function testRedirecting()
     {
         $this->assertFalse($this->response->hasHeader('Location'));
-
-        redirect('/home');
-
+        
+        try {
+            redirect('/home');
+        } catch (StopExecutionException $e) {}
+       
         $this->assertTrue($this->response->hasHeader('Location'));
 
         $this->assertEquals('/home', $this->response->getHeader('Location'));
+
     }
 
     public function testRedirectWithOldData()
     {
         $this->request->create('POST', '/', ['firstname' => 'Josh', 'lastname' => 'Doe']);
-
-        redirectWith('/signup', $this->request->all());
+        
+        try {
+            redirectWith('/signup', $this->request->all());
+        } catch (StopExecutionException $e) {}
 
         $this->assertTrue($this->response->hasHeader('Location'));
 
