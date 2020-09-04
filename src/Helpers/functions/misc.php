@@ -11,8 +11,11 @@
  * @link http://quantum.softberg.org/
  * @since 2.0.0
  */
+
+use Quantum\Exceptions\StopExecutionException;
 use Quantum\Libraries\Session\SessionManager;
 use Quantum\Libraries\Encryption\Cryptor;
+use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Libraries\Auth\AuthManager;
 use Quantum\Libraries\Mailer\Mailer;
 use Quantum\Libraries\Cookie\Cookie;
@@ -212,6 +215,18 @@ if (!function_exists('get_caller_function')) {
         $caller = $caller[$index];
 
         return $caller['function'] ?? null;
+    }
+
+}
+
+if (!function_exists('stop')) {
+
+    /**
+     * Throws Stop Execution Exception 
+     */
+    function stop()
+    {
+        throw new StopExecutionException(ExceptionMessages::EXECUTION_TERMINATED);
     }
 
 }
