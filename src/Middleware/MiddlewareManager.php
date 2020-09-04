@@ -92,7 +92,7 @@ class MiddlewareManager
                 try {
                     list($modifiedRequest, $modifiedResponse) = $this->applyMiddlewares($modifiedRequest, $modifiedResponse);
                 } catch (\TypeError $ex) {
-                    throw new \Exception(_message(ExceptionMessages::MIDDLEWARE_NOT_HANDLED, current($this->middlewares)));
+                    throw new MiddlewareException(_message(ExceptionMessages::MIDDLEWARE_NOT_HANDLED, current($this->middlewares)));
                 }
             }
         }
