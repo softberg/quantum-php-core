@@ -14,6 +14,7 @@
 
 namespace Quantum;
 
+use Quantum\Exceptions\StopExecutionException;
 use Quantum\Environment\Environment;
 use Quantum\Libraries\Config\Config;
 use Quantum\Routes\ModuleLoader;
@@ -70,7 +71,9 @@ class Bootstrap
 
             Lang::getInstance()->setLang($request->getSegment(config()->get('lang_segment')))->load($loader);
 
-            (new MvcManager())->runMvc($request, $response);
+            try {
+                (new MvcManager())->runMvc($request, $response);
+            } catch (StopExecutionException $e) {}
 
             $response->send();
             exit(0);
