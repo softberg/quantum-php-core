@@ -73,7 +73,9 @@ class Bootstrap
 
             try {
                 (new MvcManager())->runMvc($request, $response);
-            } catch (StopExecutionException $e) {}
+            } catch (StopExecutionException $e) {
+                /* No need to do anything */
+            }
 
             $response->send();
             exit(0);
