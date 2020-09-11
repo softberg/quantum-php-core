@@ -60,7 +60,7 @@ class DebugBarAssetsCommand extends QtCommand
      */
     public function exec()
     {
-        $this->recursive_copy($this->$vendorDebugbarFolderPath, $this->publicDebugbarFolderPath);
+        $this->recursive_copy($this->vendorDebugbarFolderPath, $this->publicDebugbarFolderPath);
 
         $this->info('Debugbar assets successfully published');
     }
