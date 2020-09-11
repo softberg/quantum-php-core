@@ -65,10 +65,6 @@ class DebugBarAssetsCommand extends QtCommand
     {
         $dir = opendir($src);
 
-        if (@mkdir($dst, 0777, true) === false) {
-            throw new \RuntimeException(_message(ExceptionMessages::DIRECTORY_CANT_BE_CREATED, $dst));
-        }
-
         if (is_resource($dir)) {
             while (($file = readdir($dir))) {
                 if (($file != '.') && ($file != '..')) {
