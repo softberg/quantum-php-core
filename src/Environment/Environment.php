@@ -38,7 +38,7 @@ class Environment
      * Loaded env content
      * @var array 
      */
-    private $envContent = null;
+    private $envContent = [];
 
     /**
      * Instance of Environment
