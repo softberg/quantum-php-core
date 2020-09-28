@@ -136,12 +136,12 @@ class FileSystem
      * Put
      * @param string $file
      * @param string $data
-     * @param bool|int $lock
+     * @param int $flag
      * @return false|int
      */
-    public function put($file, $data, $lock = false)
+    public function put($file, $data, $flag = 0)
     {
-        return file_put_contents($file, $data, $lock ? LOCK_EX : 0);
+        return file_put_contents($file, $data, $flag);
     }
 
     /**
