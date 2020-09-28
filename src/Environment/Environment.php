@@ -87,6 +87,7 @@ class Environment
 
     /**
      * Loads the environment variables from .env file
+     * @return $this
      */
     public function load(Loader $loader)
     {
@@ -96,6 +97,7 @@ class Environment
         }
 
         $this->envContent = (new Dotenv(base_dir(), $this->envFile))->load();
+        return $this;
     }
 
     /**
