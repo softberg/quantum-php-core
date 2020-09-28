@@ -16,7 +16,6 @@ namespace Quantum\Libraries\Database;
 
 use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Exceptions\DatabaseException;
-use Quantum\Helpers\Helper;
 use Quantum\Loader\Loader;
 use stdClass;
 
@@ -25,6 +24,11 @@ use stdClass;
  * @package Quantum
  * @subpackage Libraries
  * @category Database
+ * @method static array queryLog()
+ * @method static string lastStatement()
+ * @method static string lastQuery()
+ * @method static bool($query, $parameters = [])
+ * @method static array query($query, $parameters = [])
  */
 class Database
 {
@@ -49,7 +53,7 @@ class Database
 
     /**
      * Default Database Abstract Layer class
-     * @var IdiormDbal
+     * @var string
      */
     private static $defaultDbalClass = IdiormDbal::class;
 
@@ -82,13 +86,13 @@ class Database
 
     /**
      * Gets the ORM
-     * @param string $modelName
      * @param string $table
+     * @param string|null $modelName
      * @param string $idColumn
-     * @return IdiormDbal
-     * @throws DatabaseException When table is not defined in user defined model
+     * @return \Quantum\Libraries\Database\IdiormDbal
+     * @throws DatabaseException
      */
-    public function getORM($modelName, $table, $idColumn = 'id'): IdiormDbal
+    public function getORM($table, $modelName = null, $idColumn = 'id'): IdiormDbal
     {
         $dbalClass = $this->getDbalClass();
 
@@ -97,7 +101,7 @@ class Database
         }
 
         if (empty($table)) {
-            throw new DatabaseException(Helper::_message(ExceptionMessages::MODEL_WITHOUT_TABLE_DEFINED, $modelName));
+            throw new DatabaseException(_message(ExceptionMessages::MODEL_WITHOUT_TABLE_DEFINED, $modelName));
         }
 
         return new $dbalClass($table, $idColumn);
@@ -154,8 +158,8 @@ class Database
 
     /**
      * Gives access to some common methods 
-     * @param type $method
-     * @param type $arguments
+     * @param string $method
+     * @param array|null $arguments
      */
     public static function __callStatic($method, $arguments = null)
     {

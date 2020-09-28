@@ -18,6 +18,20 @@ use Quantum\Http\HttpRequest;
 /**
  * Class Request
  * @package Quantum\Http
+ * @method static string|null getSegment($number)
+ * @method static string getPort()
+ * @method static string getHost()
+ * @method static string getProtocol()
+ * @method static string getQuery()
+ * @method static string getReferrer()
+ * @method static string|null getUri()
+ * @method static void setHeader($key, $value)
+ * @method static mixed|null getHeader($key)
+ * @method static bool hasHeader($key)
+ * @method static void deleteHeader($key)
+ * @method static string getAuthorizationBearer()
+ * @method static string getCSRFToken()
+ * @method static mixed getMethod()
  */
 class Request
 {

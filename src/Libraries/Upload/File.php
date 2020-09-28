@@ -30,7 +30,7 @@ class File extends SplFileInfo
 
     /**
      * File System
-     * @var Quantum\Libraries\Storage\FileSystem
+     * @var FileSystem
      */
     protected $fs;
 
@@ -98,7 +98,7 @@ class File extends SplFileInfo
 
     /**
      * Class constructor
-     * @param type $file
+     * @param object $file
      */
     public function __construct(object $file)
     {

@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 1.9.0
+ * @since 2.0.0
  */
 
 namespace Quantum\Libraries\Auth;
@@ -18,15 +18,19 @@ use Quantum\Libraries\Mailer\Mailer;
 
 /**
  * Trait AuthTools
- *
  * @package Quantum\Libraries\Auth
  */
-class BaseAuth
+abstract class BaseAuth
 {
 
     /**
+     * User
+     * @return mixed|null
+     */
+    protected abstract function user();
+
+    /**
      * Check
-     *
      * @return bool
      */
     public function check()
@@ -36,12 +40,11 @@ class BaseAuth
 
     /**
      * Sign Up
-     *
      * @param array $userData
      * @param array|null $customData
      * @return mixed
      */
-     public function signup(Mailer $mailer, $userData, $customData = null)
+    public function signup(Mailer $mailer, $userData, $customData = null)
     {
         $activationToken = $this->generateToken();
 
@@ -55,7 +58,7 @@ class BaseAuth
             'activationToken' => $activationToken
         ];
 
-        if($customData) {
+        if ($customData) {
             $body = array_merge($body, $customData);
         }
 
@@ -66,7 +69,6 @@ class BaseAuth
 
     /**
      * Activate
-     * 
      * @param string $token
      */
     public function activate($token)
@@ -79,7 +81,6 @@ class BaseAuth
 
     /**
      * Forget
-     *
      * @param Mailer $mailer
      * @param string $email
      * @param string $template
@@ -109,18 +110,17 @@ class BaseAuth
 
     /**
      * Reset
-     *
      * @param string $token
      * @param string $password
      */
     public function reset($token, $password)
     {
         $user = $this->authService->get($this->keys['resetTokenKey'], $token);
-        
-        if(!$this->isActivated($user)) {
+
+        if (!$this->isActivated($user)) {
             $this->activate($token);
         }
-        
+
         $this->authService->update(
                 $this->keys['resetTokenKey'],
                 $token,
@@ -130,7 +130,6 @@ class BaseAuth
 
     /**
      * Filter Fields
-     *
      * @param array $user
      * @return mixed
      */
@@ -149,7 +148,6 @@ class BaseAuth
 
     /**
      * Generate Token
-     *
      * @return string
      */
     protected function generateToken()
@@ -157,11 +155,22 @@ class BaseAuth
         return base64_encode($this->hasher->hash(env('APP_KEY')));
     }
 
+    /**
+     * Is user account activated
+     * @param mixed $user
+     * @return bool
+     */
     protected function isActivated($user)
     {
         return empty($user[$this->keys['activationTokenKey']]) ? true : false;
     }
 
+    /**
+     * Send email
+     * @param Mailer $mailer
+     * @param array $user
+     * @param array $body
+     */
     protected function sendMail(Mailer $mailer, array $user, array $body)
     {
         $fullName = (isset($user['firstname']) && isset($user['lastname'])) ? $user['firstname'] . ' ' . $user['lastname'] : '';

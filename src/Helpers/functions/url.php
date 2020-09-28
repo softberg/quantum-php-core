@@ -81,7 +81,7 @@ if (!function_exists('old')) {
         if (session()->has('__prev_request')) {
             $prevRequest = session()->get('__prev_request');
 
-            if (array_key_exists($key, $prevRequest)) {
+            if (is_array($prevRequest) && array_key_exists($key, $prevRequest)) {
                 $value = $prevRequest[$key];
                 unset($prevRequest[$key]);
                 session()->set('__prev_request', $prevRequest);

@@ -14,7 +14,6 @@
 
 namespace Quantum\Mvc;
 
-use Quantum\Helpers\Helper;
 use Quantum\Exceptions\ExceptionMessages;
 
 /**
@@ -24,6 +23,7 @@ use Quantum\Exceptions\ExceptionMessages;
  *
  * @package Quantum
  * @category MVC
+ * @method void __init(...$args)
  */
 class QtService
 {
@@ -36,12 +36,12 @@ class QtService
 
     /**
      * Gets the QtService singleton instance
-     * @return QtController
+     * @return QtService
      */
     public static function getInstance()
     {
         if (self::$instance === null) {
-            self::$instance = new self();
+            self::$instance = new static();
         }
 
         return self::$instance;
@@ -56,7 +56,7 @@ class QtService
      */
     public function __call($method, $arguments)
     {
-        throw new \BadMethodCallException(Helper::_message(ExceptionMessages::UNDEFINED_METHOD, $method));
+        throw new \BadMethodCallException(_message(ExceptionMessages::UNDEFINED_METHOD, $method));
     }
 
 }

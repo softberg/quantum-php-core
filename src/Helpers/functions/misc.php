@@ -11,19 +11,22 @@
  * @link http://quantum.softberg.org/
  * @since 2.0.0
  */
+
+use Quantum\Exceptions\StopExecutionException;
 use Quantum\Libraries\Session\SessionManager;
 use Quantum\Libraries\Encryption\Cryptor;
+use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Libraries\Auth\AuthManager;
 use Quantum\Libraries\Mailer\Mailer;
 use Quantum\Libraries\Cookie\Cookie;
-use Quantum\Libraries\Dumper\Dumper;
 use Quantum\Libraries\Csrf\Csrf;
+use Quantum\Dumper\Dumper;
 
 if (!function_exists('session')) {
 
     /**
      * Gets session handler
-     * @return Quantum\Libraries\Session
+     * @return \Quantum\Libraries\Session\Session
      */
     function session()
     {
@@ -49,7 +52,7 @@ if (!function_exists('auth')) {
 
     /**
      * Gets the Auth instance
-     * @return WebAuth|ApiAuth|AuthenticableInterface
+     * @return \Quantum\Libraries\Auth\WebAuth|Quantum\Libraries\Auth\ApiAuth|Quantum\Libraries\Auth\AuthenticableInterface
      */
     function auth()
     {
@@ -62,7 +65,7 @@ if (!function_exists('mailer')) {
 
     /**
      * Gets the Mail instance
-     * @return \Mail
+     * @return Mailer
      */
     function mailer()
     {
@@ -90,8 +93,8 @@ if (!function_exists('_message')) {
     /**
      * _message
      * @param string $subject
-     * @param string $params
-     * @return string|array
+     * @param string|array $params
+     * @return string
      */
     function _message($subject, $params)
     {
@@ -212,6 +215,18 @@ if (!function_exists('get_caller_function')) {
         $caller = $caller[$index];
 
         return $caller['function'] ?? null;
+    }
+
+}
+
+if (!function_exists('stop')) {
+
+    /**
+     * Throws Stop Execution Exception 
+     */
+    function stop()
+    {
+        throw new StopExecutionException(ExceptionMessages::EXECUTION_TERMINATED);
     }
 
 }

@@ -9,11 +9,12 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 1.0.0
+ * @since 2.0.0
  */
 
 namespace Quantum;
 
+use Quantum\Exceptions\StopExecutionException;
 use Quantum\Environment\Environment;
 use Quantum\Libraries\Config\Config;
 use Quantum\Routes\ModuleLoader;
@@ -74,6 +75,8 @@ class Bootstrap
 
             $response->send();
             exit(0);
+        } catch (StopExecutionException $e) {
+            $response->send();
         } catch (\Exception $e) {
             echo $e->getMessage();
             exit(1);

@@ -14,6 +14,7 @@
 
 namespace Quantum\Console\Commands;
 
+use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Console\QtCommand;
 
 /**
@@ -40,41 +41,60 @@ class DebugBarAssetsCommand extends QtCommand
      * @var string
      */
     protected $help = 'The command will published debugbar assets';
+    
+    /**
+     * Path to public debug bar resources
+     * @var string 
+     */
+    private $publicDebugbarFolderPath = 'public/assets/DebugBar/Resources';
+    
+    /**
+     * Path to vendor debug bar resources
+     * @var string 
+     */
+    private $vendorDebugbarFolderPath = 'vendor/maximebf/debugbar/src/DebugBar/Resources';
 
     /**
-     * Executes the command and publishes the debugbar assets
+     * Executes the command and publishes the debug bar assets
      * @return mixed|void
      */
     public function exec()
     {
-        $vendorDebugbarAssetsPath = 'vendor/maximebf/debugbar/src/DebugBar/Resources';
-        $publicDebugbarPath = 'public/assets/DebugBar/Resources';
-        $this->recursive_copy($vendorDebugbarAssetsPath, $publicDebugbarPath);
+        $this->recursive_copy($this->vendorDebugbarFolderPath, $this->publicDebugbarFolderPath);
 
         $this->info('Debugbar assets successfully published');
     }
 
     /**
-     * Recursively copies the debugbar assets
+     * Recursively copies the debug bar assets
      * @param string $src
      * @param string $dst
-     * @return void
+     * @throws \RuntimeException
      */
     private function recursive_copy($src, $dst)
     {
         $dir = opendir($src);
-        @mkdir($dst);
-        while (($file = readdir($dir))) {
-            if (($file != '.') && ($file != '..')) {
-                if (is_dir($src . '/' . $file)) {
-                    self::recursive_copy($src . '/' . $file, $dst . '/' . $file);
-                } else {
-                    if ($file)
-                        copy($src . '/' . $file, $dst . '/' . $file);
-                }
+
+        if ($dst != $this->publicDebugbarFolderPath) {
+            if (@mkdir($dst) === false) {
+                throw new \RuntimeException(_message(ExceptionMessages::DIRECTORY_CANT_BE_CREATED, $dst));
             }
         }
-        closedir($dir);
+
+        if (is_resource($dir)) {
+            while (($file = readdir($dir))) {
+                if (($file != '.') && ($file != '..')) {
+                    if (is_dir($src . '/' . $file)) {
+                        $this->recursive_copy($src . '/' . $file, $dst . '/' . $file);
+                    } else {
+                        if ($file)
+                            copy($src . '/' . $file, $dst . '/' . $file);
+                    }
+                }
+            }
+
+            closedir($dir);
+        }
     }
 
 }

@@ -17,7 +17,7 @@ if (!function_exists('current_middlewares')) {
 
     /**
      * Gets current middlewares
-     * @return string|null
+     * @return array|null
      */
     function current_middlewares()
     {

@@ -216,7 +216,7 @@ class Mailer
     /**
      * Creates "BCC" addresses
      * @param string $email
-     * @param type $name
+     * @param string|null $name
      * @return $this
      */
     public function setBCC(string $email, $name = null)
@@ -494,7 +494,7 @@ class Mailer
     private function createFromTemplate()
     {
         ob_start();
-        ob_implicit_flush(false);
+        ob_implicit_flush(0);
 
         if (!empty($this->message) && is_array($this->message)) {
             extract($this->message, EXTR_OVERWRITE);

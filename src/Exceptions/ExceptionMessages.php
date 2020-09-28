@@ -137,6 +137,11 @@ class ExceptionMessages
     const CSRF_TOKEN_NOT_FOUND = 'CSRF Token is missing';
 
     /**
+     * JWT payload not found message
+     */
+    const JWT_PAYLOAD_NOT_FOUND = 'JWT payload is missing';
+
+    /**
      * Authorization: Bearer header not found message
      */
     const AUTH_BEARER_NOT_FOUND = 'Authorization: Bearer header not found';
@@ -151,6 +156,16 @@ class ExceptionMessages
      */
     const INAPPROPRIATE_PROPERTY = 'Inappropriate property `{%1}` for fillable object';
 
+    /**
+     * Session start error message
+     */
+    const RUNTIME_SESSION_START = 'Can not start the session';
+    
+    /**
+     * Session destroy error  message
+     */
+    const RUNTIME_SESSION_DESTROY = 'Can not destroy the session';
+    
     /**
      * Misconfigured session handler  message
      */
@@ -302,23 +317,33 @@ class ExceptionMessages
     const UPLOADED_FILE_NOT_FOUND = 'Cannot find uploaded file identified by key `{%1}`';
 
     /**
-     * 
+     * Directory can not be created message
+     */
+    const DIRECTORY_CANT_BE_CREATED = 'Directory `{%1}` could not be created';
+    
+    /**
+     * Directory does not exists message
      */
     const DIRECTORY_NOT_EXIST = 'Directory `{%1}` does not exists';
 
     /**
-     * 
+     * Directory is not writable message
      */
     const DIRECTORY_NOT_WRITABLE = 'Directory `{%1}` not writable';
 
     /**
-     * 
+     * File was not sent with a POST request message
      */
     const FILE_NOT_UPLOADED = 'The uploaded file was not sent with a POST request';
 
     /**
-     * 
+     * File already exists message
      */
     const FILE_ALREADY_EXISTS = 'File already exists';
+    
+    /**
+     * Script execution terminated message
+     */
+    const EXECUTION_TERMINATED = 'Execution was terminated';
 
 }

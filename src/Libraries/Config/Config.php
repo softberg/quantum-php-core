@@ -60,7 +60,7 @@ class Config implements StorageInterface
 
     /**
      * GetInstance
-     * @return Lang
+     * @return Config
      */
     public static function getInstance()
     {

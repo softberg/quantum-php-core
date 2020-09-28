@@ -41,7 +41,7 @@ abstract class HttpResponse
 
     /**
      * Response headers
-     * @var type 
+     * @var array 
      */
     private static $__headers = [];
 
@@ -218,7 +218,7 @@ abstract class HttpResponse
 
     /**
      * Deletes the element from response by given key
-     * @param type $key
+     * @param string $key
      */
     public static function delete($key)
     {
@@ -332,13 +332,13 @@ abstract class HttpResponse
      */
     public static function redirect($url, $code = null)
     {
-        if ($code) {
+        if (!is_null($code)) {
             self::setStatusCode($code);
         }
 
         self::setHeader('Location', $url);
 
-        self::send();
+        stop();
     }
 
     /**
@@ -350,7 +350,7 @@ abstract class HttpResponse
     {
         self::setContentType(self::CONTENT_JSON);
 
-        if ($code) {
+        if (!is_null($code)) {
             self::setStatusCode($code);
         }
 
@@ -372,7 +372,7 @@ abstract class HttpResponse
 
         self::$xmlRoot = $root;
 
-        if ($code) {
+        if (!is_null($code)) {
             self::setStatusCode($code);
         }
 
@@ -393,7 +393,7 @@ abstract class HttpResponse
     {
         self::setContentType(self::CONTENT_HTML);
 
-        if ($code) {
+        if (!is_null($code)) {
             self::setStatusCode($code);
         }
 
@@ -407,7 +407,7 @@ abstract class HttpResponse
      * @return string
      */
     private static function arrayToXML(array $arr)
-    {        
+    {
         $simpleXML = new SimpleXMLElement(self::$xmlRoot);
         self::composeXML($arr, $simpleXML);
 

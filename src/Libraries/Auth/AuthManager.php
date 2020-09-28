@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 1.9.0
+ * @since 2.0.0
  */
 
 namespace Quantum\Libraries\Auth;
@@ -36,18 +36,12 @@ class AuthManager
     private static $authInstance = null;
 
     /**
-     * @var AuthServiceInterface
-     */
-    private $authService = null;
-
-    /**
      * @var string
      */
     private $authType = null;
 
     /**
      * Get
-     * 
      * @return WebAuth|ApiAuth|AuthenticableInterface
      * @throws AuthException
      */
@@ -58,21 +52,20 @@ class AuthManager
 
     /**
      * AuthManager constructor.
-     *
      * @throws AuthException
      */
     public function __construct()
     {
-        $this->authService();
+        $authService = $this->authService();
 
-        if ($this->authType && $this->authService) {
+        if ($this->authType && $authService) {
             switch ($this->authType) {
                 case 'web':
-                    self::$authInstance = new WebAuth($this->authService, new Hasher);
+                    self::$authInstance = new WebAuth(/** @scrutinizer ignore-type */ $authService, new Hasher);
                     break;
                 case 'api':
-                    $jwt = (new JWToken())->setLeeway(1)->setClaims(config()->get('auth.claims'));
-                    self::$authInstance = new ApiAuth($this->authService, new Hasher, $jwt);
+                    $jwt = (new JWToken())->setLeeway(1)->setClaims((array) config()->get('auth.claims'));
+                    self::$authInstance = new ApiAuth(/** @scrutinizer ignore-type */ $authService, new Hasher, $jwt);
                     break;
             }
         } else {
@@ -82,13 +75,13 @@ class AuthManager
 
     /**
      * Auth Service
-     *
+     * @return \Quantum\Mvc\QtService
      * @throws \Exception
      */
     public function authService()
     {
         if (!config()->has('auth')) {
-            
+
             $loaderSetup = new stdClass();
             $loaderSetup->module = current_module();
             $loaderSetup->env = 'config';
@@ -102,7 +95,7 @@ class AuthManager
 
         $this->authType = config()->get('auth.type');
 
-        $this->authService = (new ServiceFactory)->create(config()->get('auth.service'));
+        return (new ServiceFactory)->create(config()->get('auth.service'));
     }
 
 }

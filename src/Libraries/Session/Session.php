@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 1.5.0
+ * @since 2.0.0
  */
 
 namespace Quantum\Libraries\Session;
@@ -18,9 +18,7 @@ use Quantum\Libraries\Encryption\Cryptor;
 
 /**
  * Session class
- *
  * @package Quantum
- * @subpackage Libraries.Session
  * @category Libraries
  */
 class Session implements SessionStorageInterface
@@ -28,21 +26,18 @@ class Session implements SessionStorageInterface
 
     /**
      * Session storage
-     *
      * @var array $storage
      */
     private $storage = [];
 
     /**
      * Cryptor instance
-     * 
-     * @var Quantum\Libraries\Encryption\Cryptor
+     * @var Cryptor
      */
     private $cryptor;
 
     /**
      * Session constructor.
-     *
      * @param array $storage
      */
     public function __construct(&$storage, Cryptor $cryptor)
@@ -53,7 +48,6 @@ class Session implements SessionStorageInterface
 
     /**
      * Gets value by given key
-     *
      * @param string $key
      * @return mixed
      */
@@ -64,7 +58,6 @@ class Session implements SessionStorageInterface
 
     /*
      * Gets whole data
-     *
      * @return array
      */
 
@@ -81,7 +74,6 @@ class Session implements SessionStorageInterface
 
     /**
      * Check if storage contains a data by given key
-     *
      * @param string $key
      * @return bool
      */
@@ -92,10 +84,8 @@ class Session implements SessionStorageInterface
 
     /**
      * Sets value by given key
-     *
      * @param string $key
      * @param mixed $value
-     * @return void
      */
     public function set($key, $value)
     {
@@ -104,7 +94,6 @@ class Session implements SessionStorageInterface
 
     /**
      * Gets flash values by given key
-     *
      * @param string $key
      * @return mixed|null
      */
@@ -122,10 +111,8 @@ class Session implements SessionStorageInterface
 
     /**
      * Sets flash values by given key
-     *
      * @param string $key
      * @param mixed $value
-     * @return void
      */
     public function setFlash($key, $value)
     {
@@ -134,9 +121,7 @@ class Session implements SessionStorageInterface
 
     /**
      * Deletes data from storage by given key
-     *
      * @param string $key
-     * @return void
      */
     public function delete($key)
     {
@@ -147,18 +132,15 @@ class Session implements SessionStorageInterface
 
     /**
      * Destroys whole storage data
-     *
-     * @return void
      */
     public function flush()
     {
         $this->storage = [];
-        @session_destroy();
+        session_destroy();
     }
 
     /**
-     * Gets session Id
-     *
+     * Gets the session Id
      * @return null|string
      */
     public function getSessionId()
@@ -168,7 +150,6 @@ class Session implements SessionStorageInterface
 
     /**
      * Encodes the session data
-     *
      * @param mixed $value
      * @return string
      */
@@ -180,7 +161,6 @@ class Session implements SessionStorageInterface
 
     /**
      * Decodes the session data
-     *
      * @param string $value
      * @return string
      */

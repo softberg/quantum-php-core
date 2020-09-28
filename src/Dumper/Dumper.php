@@ -46,10 +46,10 @@ class Dumper
      * @param mixed $var
      * @param bool $die
      */
-    public function dump($var, $die)
+    public static function dump($var, $die)
     {
         if (config()->get('debug') && !$die) {
-            $debugOutput = session()->get('_qt_debug_output') ?? [];
+            $debugOutput = (array) session()->get('_qt_debug_output') ?? [];
             array_push($debugOutput, $var);
             session()->set('_qt_debug_output', $debugOutput);
         } else {

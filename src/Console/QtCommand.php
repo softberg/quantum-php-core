@@ -9,14 +9,13 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 1.7.0
+ * @since 2.0.0
  */
 
 namespace Quantum\Console;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -109,7 +108,7 @@ abstract class QtCommand extends Command implements CommandInterface
     /**
      * Returns the argument value for a given argument name.
      * @param string|null $key
-     * @return null|string
+     * @return null|string|string[]
      */
     protected function getArgument($key = null)
     {
@@ -118,7 +117,7 @@ abstract class QtCommand extends Command implements CommandInterface
 
     /**
      * Returns the option value for a given option name.
-     * @param null $key
+     * @param string $key
      * @return bool|null|string|string[]
      */
     protected function getOption($key = null)
