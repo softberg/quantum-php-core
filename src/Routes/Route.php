@@ -102,6 +102,30 @@ class Route
     }
 
     /**
+     * Adds new get route entry to routes
+     * @param string $route
+     * @param string $controller
+     * @param string $action
+     * @return $this
+     */
+    public function get($route, $controller, $action)
+    {
+        return $this->add($route, 'GET', $controller, $action);
+    }
+
+    /**
+     * Adds new post route entry to routes
+     * @param string $route
+     * @param string $controller
+     * @param string $action
+     * @return $this
+     */
+    public function post($route, $controller, $action)
+    {
+        return $this->add($route, 'POST', $controller, $action);
+    }
+
+    /**
      * Starts a named group of routes
      * @param string $groupName
      * @param Closure $callback
