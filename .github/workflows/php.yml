@@ -10,13 +10,14 @@ jobs:
   build:
 
     runs-on: ubuntu-lates 
-    
-    strategy:
-      matrix:        
-        php-versions: ['7.2', '7.3']
 
     steps:
     - uses: actions/checkout@v2
+    
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '7.2'
 
     - name: Install sendmail
       run: sudo apt-get install sendmail
