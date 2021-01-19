@@ -9,7 +9,11 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-lates 
+    
+    strategy:
+      matrix:        
+        php-versions: ['7.2', '7.3']
 
     steps:
     - uses: actions/checkout@v2
