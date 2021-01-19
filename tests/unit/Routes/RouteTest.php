@@ -32,6 +32,40 @@ namespace Quantum\Test\Unit {
             $this->assertCount(1, $this->route->getVirtualRoutes()['*']);
         }
 
+        public function testGetRoute()
+        {
+            $this->assertEmpty($this->route->getRuntimeRoutes());
+
+            $this->assertEmpty($this->route->getVirtualRoutes()['*']);
+
+            $this->route->get('signin', 'AuthController', 'signin');
+
+            $this->assertIsArray($this->route->getRuntimeRoutes());
+
+            $this->assertIsArray($this->route->getVirtualRoutes());
+
+            $this->assertCount(1, $this->route->getRuntimeRoutes());
+
+            $this->assertCount(1, $this->route->getVirtualRoutes()['*']);
+        }
+
+        public function testPostRoute()
+        {
+            $this->assertEmpty($this->route->getRuntimeRoutes());
+
+            $this->assertEmpty($this->route->getVirtualRoutes()['*']);
+
+            $this->route->post('signin', 'AuthController', 'signin');
+
+            $this->assertIsArray($this->route->getRuntimeRoutes());
+
+            $this->assertIsArray($this->route->getVirtualRoutes());
+
+            $this->assertCount(1, $this->route->getRuntimeRoutes());
+
+            $this->assertCount(1, $this->route->getVirtualRoutes()['*']);
+        }
+
         public function testGroupRoute()
         {
             $route = $this->route;
