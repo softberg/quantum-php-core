@@ -15,6 +15,47 @@ namespace Quantum\Test\Unit {
             $this->route = new Route('Test');
         }
 
+        public function testCallbackRoute()
+        {
+            $this->assertEmpty($this->route->getRuntimeRoutes());
+
+            $this->assertEmpty($this->route->getVirtualRoutes()['*']);
+
+            $this->route->post('userinfo', function(){});
+
+            $this->route->get('userinfo', function(){});
+
+            $this->route->add('userinfo/add','GET', function(){});
+
+            $this->assertIsArray($this->route->getRuntimeRoutes());
+
+            $this->assertIsArray($this->route->getVirtualRoutes());
+
+            $this->assertCount(3, $this->route->getRuntimeRoutes());
+
+            $this->assertCount(3, $this->route->getVirtualRoutes()['*']);
+
+            $virtualRoutes = $this->route->getVirtualRoutes()['*'];
+
+            $routePost = $virtualRoutes[0];
+
+            $routeGet = $virtualRoutes[1];
+
+            $routeAdd = $virtualRoutes[2];
+
+            $this->assertEquals('POST', $routePost['method']);
+
+            $this->assertEquals('GET', $routeGet['method']);
+
+            $this->assertEquals('GET', $routeAdd['method']);
+
+            $this->assertTrue(is_callable($routePost['callback']));
+
+            $this->assertTrue(is_callable($routeGet['callback']));
+
+            $this->assertTrue(is_callable($routeAdd['callback']));
+
+        }
         public function testAddRoute()
         {
             $this->assertEmpty($this->route->getRuntimeRoutes());

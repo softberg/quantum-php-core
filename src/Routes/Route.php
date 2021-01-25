@@ -78,51 +78,54 @@ class Route
      * Adds new route entry to routes
      * @param string $route
      * @param string $method
-     * @param string $controller
-     * @param string $action
+     * @param array $params
      * @return $this
      */
-    public function add($route, $method, $controller, $action)
+    public function add($route, $method, ...$params)
     {
         $this->currentRoute = [
             'route' => $route,
             'method' => $method,
-            'controller' => $controller,
-            'action' => $action,
-            'module' => $this->module,
+            'module' => $this->module
         ];
+
+        if(is_callable($params[0])) {
+
+            $this->currentRoute['callback'] = $params[0];
+        } else {
+
+            $this->currentRoute['controller'] = $params[0];
+            $this->currentRoute['action'] = $params[1];
+        }
 
         if ($this->currentGroupName) {
             $this->virtualRoutes[$this->currentGroupName][] = $this->currentRoute;
         } else {
             $this->virtualRoutes['*'][] = $this->currentRoute;
         }
-
         return $this;
     }
 
     /**
      * Adds new get route entry to routes
      * @param string $route
-     * @param string $controller
-     * @param string $action
+     * @param array $params
      * @return $this
      */
-    public function get($route, $controller, $action)
+    public function get($route, ...$params)
     {
-        return $this->add($route, 'GET', $controller, $action);
+        return $this->add($route,'GET', ...$params);
     }
 
     /**
      * Adds new post route entry to routes
      * @param string $route
-     * @param string $controller
-     * @param string $action
+     * @param array $params
      * @return $this
      */
-    public function post($route, $controller, $action)
+    public function post($route, ...$params)
     {
-        return $this->add($route, 'POST', $controller, $action);
+        return $this->add($route,'POST', ...$params);
     }
 
     /**
