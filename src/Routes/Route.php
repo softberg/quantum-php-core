@@ -90,10 +90,8 @@ class Route
         ];
 
         if(is_callable($params[0])) {
-
             $this->currentRoute['callback'] = $params[0];
         } else {
-
             $this->currentRoute['controller'] = $params[0];
             $this->currentRoute['action'] = $params[1];
         }
