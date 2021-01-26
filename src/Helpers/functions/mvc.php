@@ -65,6 +65,19 @@ if (!function_exists('current_action')) {
 
 }
 
+if (!function_exists('route_callback')) {
+
+    /**
+     * Get current callback
+     * @return \Closure $callback|null
+     */
+    function route_callback()
+    {
+        return RouteController::getCurrentRoute()['callback'] ?? null;
+    }
+
+}
+
 if (!function_exists('current_route')) {
 
     /**

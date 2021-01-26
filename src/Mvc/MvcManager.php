@@ -63,26 +63,34 @@ class MvcManager
                 list($request, $response) = (new MiddlewareManager())->applyMiddlewares($request, $response);
             }
 
-            $this->controller = $this->getController();
-
-            $this->action = $this->getAction();
-
-            if ($this->controller->csrfVerification ?? true) {
-                Csrf::checkToken($request, \session());
-            }
-
             $routeArgs = current_route_args();
 
-            if (method_exists($this->controller, '__before')) {
-                call_user_func_array(array($this->controller, '__before'), $this->getArgs($routeArgs, '__before', $request, $response));
-            }
+            $callback = route_callback();
 
-            call_user_func_array(array($this->controller, $this->action), $this->getArgs($routeArgs, $this->action, $request, $response));
+            if ($callback){
+                call_user_func_array($callback, $this->getCallbackArgs($routeArgs, $callback, $request, $response));
+            } else {
 
-            if (method_exists($this->controller, '__after')) {
-                call_user_func_array(array($this->controller, '__after'), $this->getArgs($routeArgs, '__after', $request, $response));
+                $this->controller = $this->getController();
+
+                $this->action = $this->getAction();
+
+                if ($this->controller->csrfVerification ?? true) {
+                    Csrf::checkToken($request, \session());
+                }
+
+                if (method_exists($this->controller, '__before')) {
+                    call_user_func_array(array($this->controller, '__before'), $this->getArgs($routeArgs, '__before', $request, $response));
+                }
+
+                call_user_func_array(array($this->controller, $this->action), $this->getArgs($routeArgs, $this->action, $request, $response));
+
+                if (method_exists($this->controller, '__after')) {
+                    call_user_func_array(array($this->controller, '__after'), $this->getArgs($routeArgs, '__after', $request, $response));
+                }
             }
         }
+
     }
 
     /**
@@ -129,18 +137,51 @@ class MvcManager
 
     /**
      * Get Args
-     *
      * @param  array $routeArgs
+     * @param  string $action
      * @param Request $request
+     * @param Response $response
      * @return array
      * @throws \ReflectionException
      */
     private function getArgs($routeArgs, $action, Request $request, Response $response)
     {
-        $args = [];
-
         $reflaction = new \ReflectionMethod($this->controller, $action);
         $params = $reflaction->getParameters();
+
+        return $this->collectParams($routeArgs, $params, $request, $response);
+    }
+
+    /**
+     * Get Callback Args
+     *
+     * @param  array $routeArgs
+     * @param  \Closure $callback
+     * @param Request $request
+     * @param Response $response
+     * @return array
+     * @throws \ReflectionFunction
+     */
+    private function getCallbackArgs($routeArgs, $callback, Request $request, Response $response) {
+
+        $reflaction = new \ReflectionFunction($callback);
+        $params = $reflaction->getParameters();
+
+        return $this->collectParams($routeArgs, $params, $request, $response);
+    }
+
+    /**
+     * Collect Params
+     *
+     * @param  array $routeArgs
+     * @param  array $params
+     * @param Request $request
+     * @param Response $response
+     * @return array
+     */
+    private function collectParams($routeArgs, $params, Request $request, Response $response)
+    {
+        $args = [];
 
         if (count($params)) {
             foreach ($params as $param) {
