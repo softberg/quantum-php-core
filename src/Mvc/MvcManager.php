@@ -156,7 +156,7 @@ class MvcManager
      * Get Callback Args
      *
      * @param  array $routeArgs
-     * @param  Closure $callback
+     * @param  \Closure $callback
      * @param Request $request
      * @param Response $response
      * @return array

@@ -69,7 +69,7 @@ if (!function_exists('route_callback')) {
 
     /**
      * Get current callback
-     * @return Closure $callback
+     * @return \Closure $callback|null
      */
     function route_callback()
     {
