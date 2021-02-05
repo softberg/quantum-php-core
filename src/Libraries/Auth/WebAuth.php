@@ -18,6 +18,7 @@ use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Exceptions\AuthException;
 use Quantum\Libraries\Hasher\Hasher;
 use Quantum\Libraries\JWToken\JWToken;
+use Quantum\Libraries\Mailer\Mailer;
 
 /**
  * Class WebAuth
@@ -64,6 +65,7 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
      * @param string $username
      * @param string $password
      * @param boolean $remember
+     * @param Mailer $mailer
      * @return boolean
      * @throws AuthException
      */
@@ -87,7 +89,7 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
             $this->setRememberToken($user);
         }
 
-        if (config()->get('tow_step_verification')) {
+        if (config()->get('two_step_verification')) {
 
             $user = $this->towStepVerification($mailer, $user);
         }
@@ -129,15 +131,20 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
 
     /**
      * Verify
+     * @param int $code
      * @return bool
      * @throws \Exception
      */
 
-    public function verify()
+    public function verify($code)
     {
         if (session()->has($this->authUserKey)) {
 
             $user = (array) $this->user();
+
+            if ($code != $user[$this->keys['verificationCode']]) {
+                throw new AuthException(ExceptionMessages::INCORRECT_VERIFICATION_CODE);
+            }
 
             $this->authService->update($this->keys['usernameKey'], $user[$this->keys['usernameKey']], [
                 $this->keys['verificationCode'] => null

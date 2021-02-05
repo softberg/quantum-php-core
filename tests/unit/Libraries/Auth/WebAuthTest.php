@@ -32,6 +32,11 @@ $sessionStorage = [];
         return $key;
     }
 
+    function random_number()
+    {
+        return 111111;
+    }
+
 }
 
 namespace Quantum\Test\Unit {
@@ -265,7 +270,7 @@ namespace Quantum\Test\Unit {
         public function testApiWithoutVerification()
         {
             $configData = [
-                'tow_step_verification' => false
+                'two_step_verification' => false
             ];
 
             $loader = Mockery::mock('Quantum\Loader\Loader');
@@ -284,7 +289,7 @@ namespace Quantum\Test\Unit {
         public function testApiWithVerification()
         {
             $configData = [
-                'tow_step_verification' => true
+                'two_step_verification' => true
             ];
 
             $loader = Mockery::mock('Quantum\Loader\Loader');
@@ -303,7 +308,7 @@ namespace Quantum\Test\Unit {
         public function testWebVerify()
         {
             $configData = [
-                'tow_step_verification' => true
+                'two_step_verification' => true
             ];
 
             $loader = Mockery::mock('Quantum\Loader\Loader');
@@ -316,7 +321,7 @@ namespace Quantum\Test\Unit {
 
             $this->webAuth->signin($this->mailer, 'admin@qt.com', 'qwerty');
 
-            $this->assertTrue($this->webAuth->verify());
+            $this->assertTrue($this->webAuth->verify(111111));
         }
     }
 }

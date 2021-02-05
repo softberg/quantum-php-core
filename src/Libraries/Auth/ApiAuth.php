@@ -89,7 +89,7 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
             throw new AuthException(ExceptionMessages::INACTIVE_ACCOUNT);
         }
 
-        if (config()->get('tow_step_verification')) {
+        if (config()->get('two_step_verification')) {
 
            $user = $this->towStepVerification($mailer, $user);
         }
@@ -164,11 +164,17 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
 
     /**
      * Verify
+     * @param int $code
      * @return array
+     * @throws \Exception
      */
-    public function verify()
+    public function verify($code)
     {
         $user = (array) $this->user();
+
+        if ($code != $user[$this->keys['verificationCode']]) {
+            throw new AuthException(ExceptionMessages::INCORRECT_VERIFICATION_CODE);
+        }
 
         $this->authService->update($this->keys['usernameKey'], $user[$this->keys['usernameKey']], [
             $this->keys['verificationCode'] => null
@@ -200,6 +206,7 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
     /**
      * Set Updated Tokens
      * @param array $user
+     * @return array
      */
     protected function setUpdatedTokens(array $user)
     {

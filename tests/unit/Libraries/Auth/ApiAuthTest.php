@@ -181,7 +181,7 @@ namespace Quantum\Test\Unit {
         {
 
             $configData = [
-                'tow_step_verification' => true
+                'two_step_verification' => true
             ];
 
             $loader = Mockery::mock('Quantum\Loader\Loader');
@@ -279,7 +279,7 @@ namespace Quantum\Test\Unit {
         public function testApiVerify()
         {
             $configData = [
-                'tow_step_verification' => true
+                'two_step_verification' => true
             ];
 
             $loader = Mockery::mock('Quantum\Loader\Loader');
@@ -292,7 +292,7 @@ namespace Quantum\Test\Unit {
 
             $this->apiAuth->signin($this->mailer, 'admin@qt.com', 'qwerty');
 
-            $tokens = $this->apiAuth->verify();
+            $tokens = $this->apiAuth->verify(111111);
 
             $this->assertArrayHasKey('access_token',$tokens);
 
@@ -304,7 +304,7 @@ namespace Quantum\Test\Unit {
         public function testApiWithoutVerification()
         {
             $configData = [
-                'tow_step_verification' => false
+                'two_step_verification' => false
             ];
 
             $loader = Mockery::mock('Quantum\Loader\Loader');
@@ -323,7 +323,7 @@ namespace Quantum\Test\Unit {
         public function testApiWithVerification()
         {
             $configData = [
-                'tow_step_verification' => true
+                'two_step_verification' => true
             ];
 
             $loader = Mockery::mock('Quantum\Loader\Loader');

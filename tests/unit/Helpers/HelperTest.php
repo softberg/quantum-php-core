@@ -53,7 +53,7 @@ class HelperTest extends TestCase
         $this->session = new Session($this->sessionData, $cryptor);
     }
 
-    public function testMiscHelper()
+    public function testRandomNumber()
     {
         $this->assertIsInt(random_number());
 
