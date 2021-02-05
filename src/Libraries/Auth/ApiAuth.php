@@ -74,7 +74,7 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
      * @return array
      * @throws AuthException
      */
-    public function signin($username, $password)
+    public function signin($mailer, $username, $password)
     {
         $user = $this->authService->get($this->keys['usernameKey'], $username);
 
@@ -87,6 +87,11 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
         }
         if (!$this->isActivated($user)) {
             throw new AuthException(ExceptionMessages::INACTIVE_ACCOUNT);
+        }
+
+        if (config()->get('tow_step_verification')) {
+
+           $user = $this->towStepVerification($mailer, $user);
         }
 
         $tokens = $this->setUpdatedTokens($user);
@@ -155,6 +160,25 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
             $this->keys['refreshTokenKey'] => $this->generateToken(),
             $this->keys['accessTokenKey'] => base64_encode($this->jwt->setData($this->filterFields($user))->compose())
         ];
+    }
+
+    /**
+     * Verify
+     * @return array
+     */
+    public function verify()
+    {
+        $user = (array) $this->user();
+
+        $this->authService->update($this->keys['usernameKey'], $user[$this->keys['usernameKey']], [
+            $this->keys['verificationCode'] => null
+        ]);
+
+        $user['verification_code'] = null;
+
+        $tokens = $this->setUpdatedTokens($user);
+
+        return $tokens;
     }
 
     /**

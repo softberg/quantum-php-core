@@ -67,7 +67,7 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
      * @return boolean
      * @throws AuthException
      */
-    public function signin($username, $password, $remember = false)
+    public function signin($mailer, $username, $password, $remember = false)
     {
         $user = $this->authService->get($this->keys['usernameKey'], $username);
 
@@ -85,6 +85,11 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
 
         if ($remember) {
             $this->setRememberToken($user);
+        }
+
+        if (config()->get('tow_step_verification')) {
+
+            $user = $this->towStepVerification($mailer, $user);
         }
 
         session()->set($this->authUserKey, $this->filterFields($user));
@@ -107,6 +112,7 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
     /**
      * User
      * @return mixed|null
+     * @throws \Exception
      */
     public function user()
     {
@@ -119,6 +125,32 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
             }
         }
         return null;
+    }
+
+    /**
+     * Verify
+     * @return bool
+     * @throws \Exception
+     */
+
+    public function verify()
+    {
+        if (session()->has($this->authUserKey)) {
+
+            $user = (array) $this->user();
+
+            $this->authService->update($this->keys['usernameKey'], $user[$this->keys['usernameKey']], [
+                $this->keys['verificationCode'] => null
+            ]);
+
+            $user = $this->authService->get($this->keys['usernameKey'], $user[$this->keys['usernameKey']]);
+
+            session()->set($this->authUserKey, $this->filterFields($user));
+            return true;
+        } else  {
+
+            return false;
+        }
     }
 
     /**

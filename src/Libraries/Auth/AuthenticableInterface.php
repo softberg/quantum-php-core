@@ -37,11 +37,12 @@ interface AuthenticableInterface
     /**
      * Sign In
      *
+     * @param Mailer $mailer
      * @param string $username
      * @param $password
      * @return mixed
      */
-    public function signin($username, $password);
+    public function signin($mailer, $username, $password);
 
     /**
      * Sign Out
