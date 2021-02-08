@@ -39,6 +39,18 @@ abstract class BaseAuth
     }
 
     /**
+     * Check Verification
+     * @return bool
+     */
+    public function checkVerification()
+    {
+        if (isset($this->user()->verification_code) && !empty($this->user()->verification_code)){
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Sign Up
      * @param array $userData
      * @param array|null $customData
@@ -181,4 +193,28 @@ abstract class BaseAuth
                 ->send();
     }
 
+    /**
+     * Tow Step Verification
+     * @param array $user
+     * @param Mailer $mailer
+     * @return array $user
+     */
+
+    protected function towStepVerification($mailer, $user)
+    {
+        $body = [
+            'user' => $user,
+            'code' => random_number(6)
+        ];
+
+        $this->authService->update($this->keys['usernameKey'], $user[$this->keys['usernameKey']], [
+            $this->keys['verificationCode'] => $body['code']
+        ]);
+
+        $user['verification_code'] = $body['code'];
+
+        $this->sendMail($mailer, $user, $body);
+
+        return $user;
+    }
 }

@@ -16,6 +16,8 @@ namespace Quantum\Libraries\Auth;
 
 use Quantum\Libraries\Hasher\Hasher;
 use Quantum\Libraries\JWToken\JWToken;
+use Quantum\Libraries\Mailer\Mailer;
+
 
 /**
  * Interface AuthenticableInterface
@@ -37,11 +39,12 @@ interface AuthenticableInterface
     /**
      * Sign In
      *
+     * @param Mailer $mailer
      * @param string $username
      * @param $password
      * @return mixed
      */
-    public function signin($username, $password);
+    public function signin(Mailer $mailer, $username, $password);
 
     /**
      * Sign Out

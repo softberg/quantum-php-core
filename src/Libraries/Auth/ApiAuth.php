@@ -74,7 +74,7 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
      * @return array
      * @throws AuthException
      */
-    public function signin($username, $password)
+    public function signin($mailer, $username, $password)
     {
         $user = $this->authService->get($this->keys['usernameKey'], $username);
 
@@ -87,6 +87,11 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
         }
         if (!$this->isActivated($user)) {
             throw new AuthException(ExceptionMessages::INACTIVE_ACCOUNT);
+        }
+
+        if (config()->get('two_step_verification')) {
+
+           $user = $this->towStepVerification($mailer, $user);
         }
 
         $tokens = $this->setUpdatedTokens($user);
@@ -158,6 +163,31 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
     }
 
     /**
+     * Verify
+     * @param int $code
+     * @return array
+     * @throws \Exception
+     */
+    public function verify($code)
+    {
+        $user = (array) $this->user();
+
+        if ($code != $user[$this->keys['verificationCode']]) {
+            throw new AuthException(ExceptionMessages::INCORRECT_VERIFICATION_CODE);
+        }
+
+        $this->authService->update($this->keys['usernameKey'], $user[$this->keys['usernameKey']], [
+            $this->keys['verificationCode'] => null
+        ]);
+
+        $user['verification_code'] = null;
+
+        $tokens = $this->setUpdatedTokens($user);
+
+        return $tokens;
+    }
+
+    /**
      * Check Refresh Token
      * @return bool|mixed
      */
@@ -176,6 +206,7 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
     /**
      * Set Updated Tokens
      * @param array $user
+     * @return array
      */
     protected function setUpdatedTokens(array $user)
     {

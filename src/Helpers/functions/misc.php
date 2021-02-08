@@ -230,3 +230,20 @@ if (!function_exists('stop')) {
     }
 
 }
+
+if (!function_exists('random_number')) {
+
+    /**
+     * Generates random number sequence
+     * @param int $length
+     * @return int
+     */
+    function random_number($length = 10)
+    {
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= rand(0, 9);
+        }
+        return (int) $randomString;
+    }
+}
