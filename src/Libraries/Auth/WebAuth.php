@@ -62,10 +62,10 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
 
     /**
      * Sign In
+     * @param Mailer $mailer
      * @param string $username
      * @param string $password
      * @param boolean $remember
-     * @param Mailer $mailer
      * @return boolean
      * @throws AuthException
      */
@@ -89,12 +89,24 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
             $this->setRememberToken($user);
         }
 
-        if (config()->get('two_step_verification')) {
+        if (filter_var(config()->get('2SV'), FILTER_VALIDATE_BOOLEAN)) {
 
-            $user = $this->towStepVerification($mailer, $user);
+            $otp_token = $this->generateOtpToken($user[$this->keys['usernameKey']]);
+
+            $time = new \DateTime();
+
+            $time->add(new \DateInterval('PT' . config()->get('otp_expiry_time') . 'M'));
+
+            $otp_expiry_time = $time->format('Y-m-d H:i');
+
+            $this->towStepVerification($mailer, $user, $otp_expiry_time, $otp_token);
+
+            return $otp_token;
+
+        } else {
+
+            session()->set($this->authUserKey, $this->filterFields($user));
         }
-
-        session()->set($this->authUserKey, $this->filterFields($user));
 
         return true;
     }
@@ -136,28 +148,59 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
      * @throws \Exception
      */
 
-    public function verify($code)
+    public function verify($code, $otp_token)
     {
-        if (session()->has($this->authUserKey)) {
+        $user = $this->authService->get($this->keys['otpToken'], $otp_token);
 
-            $user = (array) $this->user();
+        if (new \DateTime() >= new \DateTime($user[$this->keys['otpExpiryIn']])){
+            throw new AuthException(ExceptionMessages::VERIFICATION_CODE_EXPIRY_IN);
+        }
 
-            if ($code != $user[$this->keys['verificationCode']]) {
-                throw new AuthException(ExceptionMessages::INCORRECT_VERIFICATION_CODE);
-            }
+        if ($code != $user[$this->keys['otpKey']]) {
+            throw new AuthException(ExceptionMessages::INCORRECT_VERIFICATION_CODE);
+        }
 
-            $this->authService->update($this->keys['usernameKey'], $user[$this->keys['usernameKey']], [
-                $this->keys['verificationCode'] => null
-            ]);
+        $this->authService->update($this->keys['usernameKey'], $user[$this->keys['usernameKey']], [
+            $this->keys['otpKey'] => null,
+            $this->keys['otpExpiryIn'] => null,
+            $this->keys['otpToken'] => null,
+        ]);
 
-            $user = $this->authService->get($this->keys['usernameKey'], $user[$this->keys['usernameKey']]);
+        $user = $this->authService->get($this->keys['usernameKey'], $user[$this->keys['usernameKey']]);
 
-            session()->set($this->authUserKey, $this->filterFields($user));
-            return true;
-        } else  {
+        session()->set($this->authUserKey, $this->filterFields($user));
+
+        return true;
+    }
+
+    /**
+     * Resend Otp
+     * @param Mailer $mailer
+     * @param string $otp_token
+     * @return bool|mixed
+     * @throws \Exception
+     */
+
+    public function resendOtp($mailer, $otp_token)
+    {
+        $user = $this->authService->get($this->keys['otpToken'], $otp_token);
+
+        if (empty($user)) {
 
             return false;
         }
+
+        $otp_token = $this->generateOtpToken($user[$this->keys['usernameKey']]);
+
+        $time = new \DateTime();
+
+        $time->add(new \DateInterval('PT' . config()->get('otp_expiry_time') . 'M'));
+
+        $stamp = $time->format('Y-m-d H:i');
+
+        $this->towStepVerification($mailer, $user, $stamp, $otp_token);
+
+        return $otp_token;
     }
 
     /**
@@ -200,7 +243,7 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
     {
         if (cookie()->has($this->keys['rememberTokenKey'])) {
             $user = $this->authService->get($this->keys['rememberTokenKey'], cookie()->get($this->keys['rememberTokenKey']));
-            
+
             if (!empty($user)) {
                 $this->authService->update($this->keys['rememberTokenKey'], $user[$this->keys['rememberTokenKey']], [
                     $this->keys['rememberTokenKey'] => ''
@@ -210,5 +253,4 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
             cookie()->delete($this->keys['rememberTokenKey']);
         }
     }
-
 }

@@ -14,6 +14,7 @@
 
 namespace Quantum\Libraries\Auth;
 
+use Quantum\Libraries\Hasher\Hasher;
 use Quantum\Libraries\Mailer\Mailer;
 
 /**
@@ -167,6 +168,18 @@ abstract class BaseAuth
         return base64_encode($this->hasher->hash(env('APP_KEY')));
     }
 
+
+    /**
+     * Generate Otp Token
+     * @param string $username
+     * @return string
+     */
+
+    protected function generateOtpToken($username)
+    {
+        $hasher = new Hasher();
+        return base64_encode($hasher->hash($username));
+    }
     /**
      * Is user account activated
      * @param mixed $user
@@ -197,10 +210,12 @@ abstract class BaseAuth
      * Tow Step Verification
      * @param array $user
      * @param Mailer $mailer
+     * @param string $otp_expiry_in
+     * @param string $otp_token
      * @return array $user
      */
 
-    protected function towStepVerification($mailer, $user)
+    protected function towStepVerification($mailer, $user, $otp_expiry_in, $otp_token)
     {
         $body = [
             'user' => $user,
@@ -208,10 +223,11 @@ abstract class BaseAuth
         ];
 
         $this->authService->update($this->keys['usernameKey'], $user[$this->keys['usernameKey']], [
-            $this->keys['verificationCode'] => $body['code']
+            $this->keys['otpKey'] => $body['code'],
+            $this->keys['otpExpiryIn'] => $otp_expiry_in,
+            $this->keys['otpToken'] => $otp_token,
         ]);
 
-        $user['verification_code'] = $body['code'];
 
         $this->sendMail($mailer, $user, $body);
 
