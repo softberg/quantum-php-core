@@ -20,6 +20,7 @@ use Quantum\Libraries\JWToken\JWToken;
 use Quantum\Libraries\Hasher\Hasher;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
+use Quantum\Libraries\Mailer\Mailer;
 
 /**
  * Class ApiAuth
@@ -71,7 +72,7 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
      * Sign In
      * @param string $username
      * @param string $password
-     * @return array
+     * @return mixed|array
      * @throws AuthException
      */
     public function signin($mailer, $username, $password)
@@ -89,14 +90,26 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
             throw new AuthException(ExceptionMessages::INACTIVE_ACCOUNT);
         }
 
-        if (config()->get('two_step_verification')) {
+        if (filter_var(config()->get('2SV'), FILTER_VALIDATE_BOOLEAN)) {
 
-           $user = $this->towStepVerification($mailer, $user);
+            $otp_token = $this->generateOtpToken($user[$this->keys['usernameKey']]);
+
+            $time = new \DateTime();
+
+            $time->add(new \DateInterval('PT' . config()->get('otp_expiry_time') . 'M'));
+
+            $otp_expiry_time = $time->format('Y-m-d H:i');
+
+            $this->towStepVerification($mailer, $user, $otp_expiry_time, $otp_token);
+
+            return $otp_token;
+
+        } else {
+
+            $tokens = $this->setUpdatedTokens($user);
+
+            return $tokens;
         }
-
-        $tokens = $this->setUpdatedTokens($user);
-
-        return $tokens;
     }
 
     /**
@@ -164,27 +177,62 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
 
     /**
      * Verify
-     * @param int $code
+     * @param int $otp
+     * @param string $otp_token
      * @return array
      * @throws \Exception
      */
-    public function verify($code)
+    public function verify($otp, $otp_token)
     {
-        $user = (array) $this->user();
+        $user = $this->authService->get($this->keys['otpToken'], $otp_token);
 
-        if ($code != $user[$this->keys['verificationCode']]) {
+        if (new \DateTime() >= new \DateTime($user[$this->keys['otpExpiryIn']])){
+            throw new AuthException(ExceptionMessages::VERIFICATION_CODE_EXPIRY_IN);
+        }
+
+        if ($otp != $user[$this->keys['otpKey']]) {
             throw new AuthException(ExceptionMessages::INCORRECT_VERIFICATION_CODE);
         }
 
         $this->authService->update($this->keys['usernameKey'], $user[$this->keys['usernameKey']], [
-            $this->keys['verificationCode'] => null
+            $this->keys['otpKey'] => null,
+            $this->keys['otpExpiryIn'] => null,
+            $this->keys['otpToken'] => null,
         ]);
 
-        $user['verification_code'] = null;
-
-        $tokens = $this->setUpdatedTokens($user);
+        $tokens = $this->setUpdatedTokens($this->filterFields($user));
 
         return $tokens;
+    }
+
+    /**
+     * Resend Otp
+     * @param Mailer $mailer
+     * @param string $otp_token
+     * @return bool|mixed
+     * @throws AuthException
+     */
+
+    public function resendOtp($mailer, $otp_token)
+    {
+        $user = $this->authService->get($this->keys['otpToken'], $otp_token);
+
+        if (empty($user)) {
+
+            throw new AuthException(ExceptionMessages::INCORRECT_AUTH_CREDENTIALS);
+        }
+
+        $otp_token = $this->generateOtpToken($user[$this->keys['usernameKey']]);
+
+        $time = new \DateTime();
+
+        $time->add(new \DateInterval('PT' . config()->get('otp_expiry_time') . 'M'));
+
+        $stamp = $time->format('Y-m-d H:i');
+
+        $this->towStepVerification($mailer, $user, $stamp, $otp_token);
+
+        return $otp_token;
     }
 
     /**

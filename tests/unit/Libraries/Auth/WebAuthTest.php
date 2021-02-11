@@ -89,14 +89,15 @@ namespace Quantum\Test\Unit {
             'resetTokenKey' => 'reset_token',
             'accessTokenKey' => 'access_token',
             'refreshTokenKey' => 'refresh_token',
-            'verificationCode' => 'verification_code',
+            'otpKey' => 'otp',
+            'otpExpiryIn' => 'otp_expiry_in',
+            'otpToken' => 'otp_token'
         ];
         protected $visibleFields = [
             'username',
             'firstname',
             'lastname',
-            'role',
-            'verification_code'
+            'role'
         ];
 
         public function setUp(): void
@@ -267,10 +268,11 @@ namespace Quantum\Test\Unit {
             $this->assertTrue($this->webAuth->signin($this->mailer, 'admin@qt.com', '123456789'));
         }
 
-        public function testApiWithoutVerification()
+        public function testWebWithoutVerification()
         {
             $configData = [
-                'two_step_verification' => false
+                '2SV' => false,
+                'otp_expiry_time' => 2
             ];
 
             $loader = Mockery::mock('Quantum\Loader\Loader');
@@ -281,15 +283,14 @@ namespace Quantum\Test\Unit {
 
             Config::getInstance()->load($loader);
 
-            $this->webAuth->signin($this->mailer, 'admin@qt.com', 'qwerty');
-
-            $this->assertFalse($this->webAuth->checkVerification());
+            $this->assertTrue($this->webAuth->signin($this->mailer, 'admin@qt.com', 'qwerty'));
         }
 
-        public function testApiWithVerification()
+        public function testWebWithVerification()
         {
             $configData = [
-                'two_step_verification' => true
+                '2SV' => true,
+                'otp_expiry_time' => 2
             ];
 
             $loader = Mockery::mock('Quantum\Loader\Loader');
@@ -300,15 +301,14 @@ namespace Quantum\Test\Unit {
 
             Config::getInstance()->load($loader);
 
-            $this->webAuth->signin($this->mailer, 'admin@qt.com', 'qwerty');
-
-            $this->assertTrue($this->webAuth->checkVerification());
+            $this->assertIsString($this->webAuth->signin($this->mailer, 'admin@qt.com', 'qwerty'));
         }
 
         public function testWebVerify()
         {
             $configData = [
-                'two_step_verification' => true
+                '2SV' => true,
+                'otp_expiry_time' => 2
             ];
 
             $loader = Mockery::mock('Quantum\Loader\Loader');
@@ -319,9 +319,29 @@ namespace Quantum\Test\Unit {
 
             Config::getInstance()->load($loader);
 
-            $this->webAuth->signin($this->mailer, 'admin@qt.com', 'qwerty');
+            $otp_token = $this->webAuth->signin($this->mailer, 'admin@qt.com', 'qwerty');
 
-            $this->assertTrue($this->webAuth->verify(111111));
+            $this->assertTrue($this->webAuth->verify(111111, $otp_token));
+        }
+
+        public function testWebResendOtp()
+        {
+            $configData = [
+                '2SV' => true,
+                'otp_expiry_time' => 2
+            ];
+
+            $loader = Mockery::mock('Quantum\Loader\Loader');
+
+            $loader->shouldReceive('setup')->andReturn($loader);
+
+            $loader->shouldReceive('load')->andReturn($configData);
+
+            Config::getInstance()->load($loader);
+
+            $otp_token = $this->webAuth->signin($this->mailer, 'admin@qt.com', 'qwerty');
+
+            $this->assertIsString($this->webAuth->resendOtp($this->mailer, $otp_token));
         }
     }
 }

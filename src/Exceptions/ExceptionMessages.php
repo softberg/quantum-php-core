@@ -152,6 +152,11 @@ class ExceptionMessages
     const INCORRECT_VERIFICATION_CODE = 'Incorrect verification code.';
 
     /**
+     * Verification code expiry in
+     */
+    const VERIFICATION_CODE_EXPIRY_IN = 'Verification code expiry in.';
+
+    /**
      * CSFT token not matched message
      */
     const CSRF_TOKEN_NOT_MATCHED = 'CSRF Token does not matched';
