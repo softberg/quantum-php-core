@@ -72,7 +72,7 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
      * Sign In
      * @param string $username
      * @param string $password
-     * @return array
+     * @return mixed|array
      * @throws AuthException
      */
     public function signin($mailer, $username, $password)

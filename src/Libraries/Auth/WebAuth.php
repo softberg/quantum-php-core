@@ -66,7 +66,7 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
      * @param string $username
      * @param string $password
      * @param boolean $remember
-     * @return boolean
+     * @return mixed|boolean
      * @throws AuthException
      */
     public function signin($mailer, $username, $password, $remember = false)
