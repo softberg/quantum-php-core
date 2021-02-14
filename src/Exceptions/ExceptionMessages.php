@@ -154,7 +154,7 @@ class ExceptionMessages
     /**
      * Verification code expiry in
      */
-    const VERIFICATION_CODE_EXPIRY_IN = 'Verification code expiry in.';
+    const VERIFICATION_CODE_EXPIRED = 'Verification code expired';
 
     /**
      * CSFT token not matched message
