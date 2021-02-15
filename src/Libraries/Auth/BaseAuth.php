@@ -14,16 +14,70 @@
 
 namespace Quantum\Libraries\Auth;
 
-use Quantum\Libraries\Hasher\Hasher;
 use Quantum\Libraries\Mailer\Mailer;
 
 /**
- * Trait AuthTools
+ * Class BaseAuth
  * @package Quantum\Libraries\Auth
  */
 abstract class BaseAuth
 {
 
+    /**
+     * One time password length
+     */
+    const OTP_LENGTH = 6;
+    
+    /**
+     * One time password key
+     */
+    const OTP_KEY = 'otpKey';
+    
+    /**
+     * One time password expiry key
+     */
+    const OTP_EXPIRY_KEY = 'otpExpiryKey';
+    
+    /**
+     * One time password token key
+     */
+    const OTP_TOKEN_KEY = 'otpTokenKey';
+
+    /**
+     * Username key
+     */
+    const USERNAME_KEY = 'usernameKey';
+    
+    /**
+     * Password key
+     */
+    const PASSWORD_KEY = 'passwordKey';
+
+    /**
+     * Access token key
+     */
+    const ACCESS_TOKEN_KEY = 'accessTokenKey';
+
+    /**
+     * Refresh token key
+     */
+    const REFRESH_TOKEN_KEY = 'refreshTokenKey';
+    
+    /**
+     * Activation token key
+     */
+    const ACTIVATION_TOKEN_KEY = 'activationTokenKey';
+    
+    /**
+     * Reset token key
+     */
+    const RESET_TOKEN_KEY = 'resetTokenKey';
+    
+    /**
+     * Remember token key
+     */
+    const REMEMBER_TOKEN_KEY = 'rememberTokenKey';
+    
     /**
      * User
      * @return mixed|null
@@ -45,7 +99,7 @@ abstract class BaseAuth
      */
     public function checkVerification()
     {
-        if (isset($this->user()->verification_code) && !empty($this->user()->verification_code)){
+        if (isset($this->user()->verification_code) && !empty($this->user()->verification_code)) {
             return true;
         }
         return false;
@@ -61,8 +115,8 @@ abstract class BaseAuth
     {
         $activationToken = $this->generateToken();
 
-        $userData[$this->keys['passwordKey']] = $this->hasher->hash($userData[$this->keys['passwordKey']]);
-        $userData[$this->keys['activationTokenKey']] = $activationToken;
+        $userData[$this->keys[self::PASSWORD_KEY]] = $this->hasher->hash($userData[$this->keys[self::PASSWORD_KEY]]);
+        $userData[$this->keys[self::ACTIVATION_TOKEN_KEY]] = $activationToken;
 
         $user = $this->authService->add($userData);
 
@@ -87,28 +141,29 @@ abstract class BaseAuth
     public function activate($token)
     {
         $this->authService->update(
-                $this->keys['activationTokenKey'],
-                $token, [$this->keys['activationTokenKey'] => '']
+                $this->keys[self::ACTIVATION_TOKEN_KEY], 
+                $token, 
+                [$this->keys[self::ACTIVATION_TOKEN_KEY] => '']
         );
     }
 
     /**
      * Forget
      * @param Mailer $mailer
-     * @param string $email
+     * @param string $username
      * @param string $template
      * @return string
      */
-    public function forget(Mailer $mailer, $email)
+    public function forget(Mailer $mailer, $username)
     {
-        $user = $this->authService->get($this->keys['usernameKey'], $email);
+        $user = $this->authService->get($this->keys[self::USERNAME_KEY], $username);
 
         $resetToken = $this->generateToken();
 
         $this->authService->update(
-                $this->keys['usernameKey'],
-                $email,
-                [$this->keys['resetTokenKey'] => $resetToken]
+                $this->keys[self::USERNAME_KEY], 
+                $username, 
+                [$this->keys[self::RESET_TOKEN_KEY] => $resetToken]
         );
 
         $body = [
@@ -128,17 +183,56 @@ abstract class BaseAuth
      */
     public function reset($token, $password)
     {
-        $user = $this->authService->get($this->keys['resetTokenKey'], $token);
+        $user = $this->authService->get($this->keys[self::RESET_TOKEN_KEY], $token);
 
         if (!$this->isActivated($user)) {
             $this->activate($token);
         }
 
         $this->authService->update(
-                $this->keys['resetTokenKey'],
-                $token,
-                [$this->keys['passwordKey'] => $this->hasher->hash($password), $this->keys['resetTokenKey'] => '']
+                $this->keys[self::RESET_TOKEN_KEY], 
+                $token, 
+                [
+                    $this->keys[self::PASSWORD_KEY] => $this->hasher->hash($password), 
+                    $this->keys[self::RESET_TOKEN_KEY] => ''
+                ]
         );
+    }
+    
+    /**
+     * Two Step Verification
+     * @param Mailer $mailer
+     * @param array $user
+     * @return string
+     */
+    protected function twoStepVerification(Mailer $mailer, $user)
+    {
+        $otp = random_number(self::OTP_LENGTH);
+        
+        $otpToken = $this->generateToken($user[$this->keys[self::USERNAME_KEY]]);
+        
+        $time = new \DateTime();
+
+        $time->add(new \DateInterval('PT' . config()->get('otp_expires') . 'M'));
+
+        $this->authService->update(
+                $this->keys[self::USERNAME_KEY], 
+                $user[$this->keys[self::USERNAME_KEY]], 
+                [
+                    $this->keys[self::OTP_KEY] => $otp,
+                    $this->keys[self::OTP_EXPIRY_KEY] => $time->format('Y-m-d H:i'),
+                    $this->keys[self::OTP_TOKEN_KEY] => $otpToken,
+                ]
+        );
+
+        $body = [
+            'user' => $user,
+            'code' => $otp
+        ];
+        
+        $this->sendMail($mailer, $user, $body);
+
+        return $otpToken;
     }
 
     /**
@@ -161,25 +255,14 @@ abstract class BaseAuth
 
     /**
      * Generate Token
+     * @param mixed|null $val
      * @return string
      */
-    protected function generateToken()
+    protected function generateToken($val = null)
     {
-        return base64_encode($this->hasher->hash(env('APP_KEY')));
+        return base64_encode($this->hasher->hash($val ?: env('APP_KEY')));
     }
 
-
-    /**
-     * Generate Otp Token
-     * @param string $username
-     * @return string
-     */
-
-    protected function generateOtpToken($username)
-    {
-        $hasher = new Hasher();
-        return base64_encode($hasher->hash($username));
-    }
     /**
      * Is user account activated
      * @param mixed $user
@@ -187,7 +270,7 @@ abstract class BaseAuth
      */
     protected function isActivated($user)
     {
-        return empty($user[$this->keys['activationTokenKey']]) ? true : false;
+        return empty($user[$this->keys[self::ACTIVATION_TOKEN_KEY]]) ? true : false;
     }
 
     /**
@@ -201,36 +284,9 @@ abstract class BaseAuth
         $fullName = (isset($user['firstname']) && isset($user['lastname'])) ? $user['firstname'] . ' ' . $user['lastname'] : '';
 
         $mailer->setFrom(config()->get('app_email'), config()->get('app_name'))
-                ->setAddress($user[$this->keys['usernameKey']], $fullName)
+                ->setAddress($user[$this->keys[self::USERNAME_KEY]], $fullName)
                 ->setBody($body)
                 ->send();
     }
 
-    /**
-     * Tow Step Verification
-     * @param array $user
-     * @param Mailer $mailer
-     * @param string $otp_expiry_in
-     * @param string $otp_token
-     * @return array $user
-     */
-
-    protected function towStepVerification($mailer, $user, $otp_expiry_in, $otp_token)
-    {
-        $body = [
-            'user' => $user,
-            'code' => random_number(6)
-        ];
-
-        $this->authService->update($this->keys['usernameKey'], $user[$this->keys['usernameKey']], [
-            $this->keys['otpKey'] => $body['code'],
-            $this->keys['otpExpiryIn'] => $otp_expiry_in,
-            $this->keys['otpToken'] => $otp_token,
-        ]);
-
-
-        $this->sendMail($mailer, $user, $body);
-
-        return $user;
-    }
 }

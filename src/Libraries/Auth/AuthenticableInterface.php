@@ -28,15 +28,6 @@ interface AuthenticableInterface
 {
 
     /**
-     * AuthenticableInterface constructor.
-     *
-     * @param AuthServiceInterface $authService
-     * @param Hasher $hasher
-     * @param JWToken|null $jwt
-     */
-    public function __construct(AuthServiceInterface $authService, Hasher $hasher, JWToken $jwt = null);
-
-    /**
      * Sign In
      *
      * @param Mailer $mailer
