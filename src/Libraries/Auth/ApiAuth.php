@@ -173,7 +173,7 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
      * @return array
      * @throws AuthException
      */
-    public function verify($otp, $otpToken)
+    public function verifyOtp($otp, $otpToken)
     {
         $user = $this->authService->get($this->keys[self::OTP_TOKEN_KEY], $otpToken);
 

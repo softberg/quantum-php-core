@@ -64,8 +64,8 @@ namespace Quantum\Test\Unit {
             'accessTokenKey' => 'access_token',
             'refreshTokenKey' => 'refresh_token',
             'otpKey' => 'otp',
-            'otpExpiryIn' => 'otp_expiry_in',
-            'otpToken' => 'otp_token'
+            'otpExpiryKey' => 'otp_expiry_in',
+            'otpTokenKey' => 'otp_token'
         ];
         protected $visibleFields = [
             'username',
@@ -282,7 +282,7 @@ namespace Quantum\Test\Unit {
         {
             $configData = [
                 '2SV' => true,
-                'otp_expiry_time' => 2
+                'otp_expires' => 2
             ];
 
             $loader = Mockery::mock('Quantum\Loader\Loader');
@@ -295,7 +295,7 @@ namespace Quantum\Test\Unit {
 
             $otp_token = $this->apiAuth->signin($this->mailer, 'admin@qt.com', 'qwerty');
 
-            $tokens = $this->apiAuth->verify(111111, $otp_token);
+            $tokens = $this->apiAuth->verifyOtp(111111, $otp_token);
 
             $this->assertArrayHasKey('access_token',$tokens);
 
@@ -307,7 +307,7 @@ namespace Quantum\Test\Unit {
         {
             $configData = [
                 '2SV' => false,
-                'otp_expiry_time' => 2
+                'otp_expires' => 2
             ];
 
             $loader = Mockery::mock('Quantum\Loader\Loader');
@@ -328,7 +328,7 @@ namespace Quantum\Test\Unit {
         {
             $configData = [
                 '2SV' => true,
-                'otp_expiry_time' => 2
+                'otp_expires' => 2
             ];
 
             $loader = Mockery::mock('Quantum\Loader\Loader');
@@ -346,7 +346,7 @@ namespace Quantum\Test\Unit {
         {
             $configData = [
                 '2SV' => true,
-                'otp_expiry_time' => 2
+                'otp_expires' => 2
             ];
 
             $loader = Mockery::mock('Quantum\Loader\Loader');
