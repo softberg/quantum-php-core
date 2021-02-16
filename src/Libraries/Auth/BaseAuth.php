@@ -151,7 +151,6 @@ abstract class BaseAuth
      * Forget
      * @param Mailer $mailer
      * @param string $username
-     * @param string $template
      * @return string
      */
     public function forget(Mailer $mailer, $username)
@@ -204,6 +203,7 @@ abstract class BaseAuth
      * @param Mailer $mailer
      * @param array $user
      * @return string
+     * @throws \Exception
      */
     protected function twoStepVerification(Mailer $mailer, $user)
     {

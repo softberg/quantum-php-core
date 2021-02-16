@@ -90,8 +90,8 @@ namespace Quantum\Test\Unit {
             'accessTokenKey' => 'access_token',
             'refreshTokenKey' => 'refresh_token',
             'otpKey' => 'otp',
-            'otpExpiryIn' => 'otp_expiry_in',
-            'otpToken' => 'otp_token'
+            'otpExpiryKey' => 'otp_expiry_in',
+            'otpTokenKey' => 'otp_token'
         ];
         protected $visibleFields = [
             'username',
@@ -290,7 +290,7 @@ namespace Quantum\Test\Unit {
         {
             $configData = [
                 '2SV' => true,
-                'otp_expiry_time' => 2
+                'otp_expires' => 2
             ];
 
             $loader = Mockery::mock('Quantum\Loader\Loader');
@@ -301,6 +301,7 @@ namespace Quantum\Test\Unit {
 
             Config::getInstance()->load($loader);
 
+
             $this->assertIsString($this->webAuth->signin($this->mailer, 'admin@qt.com', 'qwerty'));
         }
 
@@ -308,7 +309,7 @@ namespace Quantum\Test\Unit {
         {
             $configData = [
                 '2SV' => true,
-                'otp_expiry_time' => 2
+                'otp_expires' => 2
             ];
 
             $loader = Mockery::mock('Quantum\Loader\Loader');
@@ -321,14 +322,14 @@ namespace Quantum\Test\Unit {
 
             $otp_token = $this->webAuth->signin($this->mailer, 'admin@qt.com', 'qwerty');
 
-            $this->assertTrue($this->webAuth->verify(111111, $otp_token));
+            $this->assertTrue($this->webAuth->verifyOtp(111111, $otp_token));
         }
 
         public function testWebResendOtp()
         {
             $configData = [
                 '2SV' => true,
-                'otp_expiry_time' => 2
+                'otp_expires' => 2
             ];
 
             $loader = Mockery::mock('Quantum\Loader\Loader');
