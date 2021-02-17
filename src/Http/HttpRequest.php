@@ -192,6 +192,16 @@ abstract class HttpRequest
     }
 
     /**
+     * Check the request method
+     * @param string $method
+     * @return boolean
+     */
+    public static function isMethod(string $method)
+    {
+        return strcasecmp($method, self::$__method) == 0;
+    }
+
+    /**
      * Sets the request method
      * @param string $method
      * @throws RequestException
