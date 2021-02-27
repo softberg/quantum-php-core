@@ -17,6 +17,7 @@ namespace Quantum\Mvc;
 use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Middleware\MiddlewareManager;
 use Quantum\Exceptions\RouteException;
+use Quantum\Libraries\Mailer\Mailer;
 use Quantum\Factory\ServiceFactory;
 use Quantum\Factory\ModelFactory;
 use Quantum\Factory\ViewFactory;
@@ -189,20 +190,23 @@ class MvcManager
 
                 if ($paramType) {
                     switch ($paramType) {
-                        case 'Quantum\Http\Request':
+                        case Request::class:
                             array_push($args, $request);
                             break;
-                        case 'Quantum\Http\Response':
+                        case Response::class:
                             array_push($args, $response);
                             break;
-                        case 'Quantum\Factory\ServiceFactory':
+                        case ServiceFactory::class:
                             array_push($args, new ServiceFactory());
                             break;
-                        case 'Quantum\Factory\ModelFactory':
+                        case ModelFactory::class:
                             array_push($args, new ModelFactory());
                             break;
-                        case 'Quantum\Factory\ViewFactory':
+                        case ViewFactory::class:
                             array_push($args, new ViewFactory());
+                            break;
+                        case Mailer::class:
+                            array_push($args, new Mailer());
                             break;
                         default :
                             array_push($args, current($routeArgs));
