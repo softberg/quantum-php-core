@@ -41,22 +41,32 @@ class DebugBarAssetsCommand extends QtCommand
      * @var string
      */
     protected $help = 'The command will published debugbar assets';
+    
+    /**
+     * Path to public debug bar resources
+     * @var string 
+     */
+    private $publicDebugbarFolderPath = 'public/assets/DebugBar/Resources';
+    
+    /**
+     * Path to vendor debug bar resources
+     * @var string 
+     */
+    private $vendorDebugbarFolderPath = 'vendor/maximebf/debugbar/src/DebugBar/Resources';
 
     /**
-     * Executes the command and publishes the debugbar assets
+     * Executes the command and publishes the debug bar assets
      * @return mixed|void
      */
     public function exec()
     {
-        $vendorDebugbarAssetsPath = 'vendor/maximebf/debugbar/src/DebugBar/Resources';
-        $publicDebugbarPath = 'public/assets/DebugBar/Resources';
-        $this->recursive_copy($vendorDebugbarAssetsPath, $publicDebugbarPath);
+        $this->recursive_copy($this->vendorDebugbarFolderPath, $this->publicDebugbarFolderPath);
 
         $this->info('Debugbar assets successfully published');
     }
 
     /**
-     * Recursively copies the debugbar assets
+     * Recursively copies the debug bar assets
      * @param string $src
      * @param string $dst
      * @throws \RuntimeException
@@ -65,8 +75,10 @@ class DebugBarAssetsCommand extends QtCommand
     {
         $dir = opendir($src);
 
-        if (@mkdir($dst) === false) {
-            throw new \RuntimeException(_message(ExceptionMessages::DIRECTORY_CANT_BE_CREATED, $dst));
+        if ($dst != $this->publicDebugbarFolderPath) {
+            if (@mkdir($dst) === false) {
+                throw new \RuntimeException(_message(ExceptionMessages::DIRECTORY_CANT_BE_CREATED, $dst));
+            }
         }
 
         if (is_resource($dir)) {
@@ -80,7 +92,7 @@ class DebugBarAssetsCommand extends QtCommand
                     }
                 }
             }
-            
+
             closedir($dir);
         }
     }

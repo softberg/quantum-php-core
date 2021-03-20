@@ -147,6 +147,16 @@ class ExceptionMessages
     const AUTH_BEARER_NOT_FOUND = 'Authorization: Bearer header not found';
 
     /**
+     * Incorrect verification code
+     */
+    const INCORRECT_VERIFICATION_CODE = 'Incorrect verification code.';
+
+    /**
+     * Verification code expiry in
+     */
+    const VERIFICATION_CODE_EXPIRED = 'Verification code expired';
+
+    /**
      * CSFT token not matched message
      */
     const CSRF_TOKEN_NOT_MATCHED = 'CSRF Token does not matched';

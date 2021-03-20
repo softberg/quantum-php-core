@@ -16,6 +16,8 @@ namespace Quantum\Libraries\Auth;
 
 use Quantum\Libraries\Hasher\Hasher;
 use Quantum\Libraries\JWToken\JWToken;
+use Quantum\Libraries\Mailer\Mailer;
+
 
 /**
  * Interface AuthenticableInterface
@@ -26,22 +28,14 @@ interface AuthenticableInterface
 {
 
     /**
-     * AuthenticableInterface constructor.
-     *
-     * @param AuthServiceInterface $authService
-     * @param Hasher $hasher
-     * @param JWToken|null $jwt
-     */
-    public function __construct(AuthServiceInterface $authService, Hasher $hasher, JWToken $jwt = null);
-
-    /**
      * Sign In
      *
+     * @param Mailer $mailer
      * @param string $username
      * @param $password
      * @return mixed
      */
-    public function signin($username, $password);
+    public function signin(Mailer $mailer, $username, $password);
 
     /**
      * Sign Out

@@ -70,6 +70,25 @@ namespace Quantum\Test\Unit {
             $this->assertEquals('POST', $request->getMethod());
         }
 
+        public function testIsMethod()
+        {
+            $request = new Request();
+
+            $request->create('GET', '/');
+
+            $this->assertTrue( $request->isMethod('GET'));
+
+            $this->assertTrue( $request->isMethod('get'));
+
+            $this->assertFalse( $request->isMethod('POST'));
+
+            $request->setMethod('POST');
+
+            $this->assertTrue( $request->isMethod('POST'));
+
+            $this->assertTrue( $request->isMethod('post'));
+        }
+
         public function testSetGetProtocol()
         {
             $request = new Request();

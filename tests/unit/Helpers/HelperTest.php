@@ -53,6 +53,15 @@ class HelperTest extends TestCase
         $this->session = new Session($this->sessionData, $cryptor);
     }
 
+    public function testRandomNumber()
+    {
+        $this->assertIsInt(random_number());
+
+        $this->assertIsInt(random_number(5));
+
+        $this->assertEquals(0,random_number(''));
+    }
+
     public function testBaseUrl()
     {
         $this->request->create('GET', 'https://test.com');
@@ -453,5 +462,7 @@ class HelperTest extends TestCase
 
         $this->assertEquals('Hello John, greetings from Jenny', _message('Hello {%1}, greetings from {%2}', ['John', 'Jenny']));
     }
+
+
 
 }

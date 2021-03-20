@@ -19,6 +19,7 @@ namespace Quantum\Test\Unit {
     use PHPUnit\Framework\TestCase;
     use Quantum\Loader\Loader;
     use Mockery;
+    use Quantum\Libraries\Config\Config;
 
     class ApiAuthTest extends TestCase
     {
@@ -38,6 +39,9 @@ namespace Quantum\Test\Unit {
             'reset_token' => '',
             'access_token' => '',
             'refresh_token' => '',
+            'otp' => '',
+            'otp_expiry_in' => '',
+            'otp_token' => ''
         ];
         private $guestUser = [
             'username' => 'guest@qt.com',
@@ -59,6 +63,9 @@ namespace Quantum\Test\Unit {
             'resetTokenKey' => 'reset_token',
             'accessTokenKey' => 'access_token',
             'refreshTokenKey' => 'refresh_token',
+            'otpKey' => 'otp',
+            'otpExpiryKey' => 'otp_expiry_in',
+            'otpTokenKey' => 'otp_token'
         ];
         protected $visibleFields = [
             'username',
@@ -67,12 +74,16 @@ namespace Quantum\Test\Unit {
             'role'
         ];
 
+
         public function setUp(): void
         {
+
             $loader = new Loader();
-            
+
             $loader->loadDir(dirname(__DIR__, 4) . DS . 'src' . DS . 'Helpers' . DS . 'functions');
-            
+
+            config()->flush();
+
             $this->authService = Mockery::mock('Quantum\Libraries\Auth\AuthServiceInterface');
 
             $this->authService->shouldReceive('getDefinedKeys')->andReturn($this->keyFields);
@@ -167,21 +178,34 @@ namespace Quantum\Test\Unit {
 
             $this->expectExceptionMessage(ExceptionMessages::INCORRECT_AUTH_CREDENTIALS);
 
-            $this->apiAuth->signin('admin@qt.com', '111111');
+            $this->apiAuth->signin($this->mailer, 'admin@qt.com', '111111');
         }
 
         public function testApiSigninCorrectCredentials()
         {
-            $this->assertIsArray($this->apiAuth->signin('admin@qt.com', 'qwerty'));
 
-            $this->assertArrayHasKey('access_token', $this->apiAuth->signin('admin@qt.com', 'qwerty'));
+            $configData = [
+                '2SV' => false
+            ];
 
-            $this->assertArrayHasKey('refresh_token', $this->apiAuth->signin('admin@qt.com', 'qwerty'));
+            $loader = Mockery::mock('Quantum\Loader\Loader');
+
+            $loader->shouldReceive('setup')->andReturn($loader);
+
+            $loader->shouldReceive('load')->andReturn($configData);
+
+            Config::getInstance()->load($loader);
+
+            $this->assertIsArray($this->apiAuth->signin($this->mailer, 'admin@qt.com', 'qwerty'));
+
+            $this->assertArrayHasKey('access_token', $this->apiAuth->signin($this->mailer, 'admin@qt.com', 'qwerty'));
+
+            $this->assertArrayHasKey('refresh_token', $this->apiAuth->signin($this->mailer, 'admin@qt.com', 'qwerty'));
         }
 
         public function testApiSignOut()
         {
-            $tokens = $this->apiAuth->signin('admin@qt.com', 'qwerty');
+            $tokens = $this->apiAuth->signin($this->mailer, 'admin@qt.com', 'qwerty');
 
             $this->assertTrue($this->apiAuth->check());
 
@@ -192,12 +216,12 @@ namespace Quantum\Test\Unit {
 
         public function testApiUser()
         {
-            $tokens = $this->apiAuth->signin('admin@qt.com', 'qwerty');
+            $tokens = $this->apiAuth->signin($this->mailer, 'admin@qt.com', 'qwerty');
 
             $this->assertEquals('admin@qt.com', $this->apiAuth->user()->username);
 
             $this->assertEquals('admin', $this->apiAuth->user()->role);
-            
+
             $this->apiAuth->signout();
 
             $this->assertNull($this->apiAuth->user());
@@ -207,7 +231,7 @@ namespace Quantum\Test\Unit {
         {
             $this->assertFalse($this->apiAuth->check());
 
-            $tokens = $this->apiAuth->signin('admin@qt.com', 'qwerty');
+            $this->apiAuth->signin($this->mailer, 'admin@qt.com', 'qwerty');
 
             $this->assertTrue($this->apiAuth->check());
             
@@ -225,7 +249,7 @@ namespace Quantum\Test\Unit {
 
             $this->apiAuth->signup($this->mailer, $this->guestUser);
 
-            $this->assertTrue($this->apiAuth->signin('guest@qt.com', '123456'));
+            $this->assertTrue($this->apiAuth->signin($this->mailer, 'guest@qt.com', '123456'));
         }
 
         public function testApiSignupAndActivteAccount()
@@ -234,11 +258,11 @@ namespace Quantum\Test\Unit {
 
             $this->apiAuth->activate($user['activation_token']);
 
-            $this->assertIsArray($this->apiAuth->signin('guest@qt.com', '123456'));
+            $this->assertIsArray($this->apiAuth->signin($this->mailer, 'guest@qt.com', '123456'));
 
-            $this->assertArrayHasKey('access_token', $this->apiAuth->signin('guest@qt.com', '123456'));
+            $this->assertArrayHasKey('access_token', $this->apiAuth->signin($this->mailer, 'guest@qt.com', '123456'));
 
-            $this->assertArrayHasKey('refresh_token', $this->apiAuth->signin('guest@qt.com', '123456'));
+            $this->assertArrayHasKey('refresh_token', $this->apiAuth->signin($this->mailer, 'guest@qt.com', '123456'));
         }
 
         public function testApiForgetReset()
@@ -247,13 +271,95 @@ namespace Quantum\Test\Unit {
 
             $this->apiAuth->reset($resetToken, '123456789');
 
-            $this->assertIsArray($this->apiAuth->signin('admin@qt.com', '123456789'));
+            $this->assertIsArray($this->apiAuth->signin($this->mailer, 'admin@qt.com', '123456789'));
 
-            $this->assertArrayHasKey('access_token', $this->apiAuth->signin('admin@qt.com', '123456789'));
+            $this->assertArrayHasKey('access_token', $this->apiAuth->signin($this->mailer, 'admin@qt.com', '123456789'));
 
-            $this->assertArrayHasKey('refresh_token', $this->apiAuth->signin('admin@qt.com', '123456789'));
+            $this->assertArrayHasKey('refresh_token', $this->apiAuth->signin($this->mailer, 'admin@qt.com', '123456789'));
         }
 
-    }
+        public function testApiVerify()
+        {
+            $configData = [
+                '2SV' => true,
+                'otp_expires' => 2
+            ];
 
+            $loader = Mockery::mock('Quantum\Loader\Loader');
+
+            $loader->shouldReceive('setup')->andReturn($loader);
+
+            $loader->shouldReceive('load')->andReturn($configData);
+
+            Config::getInstance()->load($loader);
+
+            $otp_token = $this->apiAuth->signin($this->mailer, 'admin@qt.com', 'qwerty');
+
+            $tokens = $this->apiAuth->verifyOtp(111111, $otp_token);
+
+            $this->assertArrayHasKey('access_token',$tokens);
+
+            $this->assertArrayHasKey('refresh_token',$tokens);
+
+        }
+
+        public function testApiSigninWithoutVerification()
+        {
+            $configData = [
+                '2SV' => false,
+                'otp_expires' => 2
+            ];
+
+            $loader = Mockery::mock('Quantum\Loader\Loader');
+
+            $loader->shouldReceive('setup')->andReturn($loader);
+
+            $loader->shouldReceive('load')->andReturn($configData);
+
+            Config::getInstance()->load($loader);
+
+            $this->assertArrayHasKey('access_token', $this->apiAuth->signin($this->mailer, 'admin@qt.com', 'qwerty'));
+
+            $this->assertArrayHasKey('refresh_token', $this->apiAuth->signin($this->mailer, 'admin@qt.com', 'qwerty'));
+
+        }
+
+        public function testApiSigninWithVerification()
+        {
+            $configData = [
+                '2SV' => true,
+                'otp_expires' => 2
+            ];
+
+            $loader = Mockery::mock('Quantum\Loader\Loader');
+
+            $loader->shouldReceive('setup')->andReturn($loader);
+
+            $loader->shouldReceive('load')->andReturn($configData);
+
+            Config::getInstance()->load($loader);
+
+            $this->assertIsString($this->apiAuth->signin($this->mailer, 'admin@qt.com', 'qwerty'));
+        }
+
+        public function testApiResendOtp()
+        {
+            $configData = [
+                '2SV' => true,
+                'otp_expires' => 2
+            ];
+
+            $loader = Mockery::mock('Quantum\Loader\Loader');
+
+            $loader->shouldReceive('setup')->andReturn($loader);
+
+            $loader->shouldReceive('load')->andReturn($configData);
+
+            Config::getInstance()->load($loader);
+
+            $otp_token = $this->apiAuth->signin($this->mailer, 'admin@qt.com', 'qwerty');
+
+            $this->assertIsString($this->apiAuth->resendOtp($this->mailer, $otp_token));
+        }
+    }
 }
