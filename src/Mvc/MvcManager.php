@@ -22,6 +22,7 @@ use Quantum\Factory\ServiceFactory;
 use Quantum\Factory\ModelFactory;
 use Quantum\Factory\ViewFactory;
 use Quantum\Libraries\Csrf\Csrf;
+use Quantum\Loader\Loader;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 
@@ -207,6 +208,9 @@ class MvcManager
                             break;
                         case Mailer::class:
                             array_push($args, new Mailer());
+                            break;
+                        case Loader::class:
+                            array_push($args, new Loader());
                             break;
                         default :
                             array_push($args, current($routeArgs));

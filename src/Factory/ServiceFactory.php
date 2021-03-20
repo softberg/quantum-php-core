@@ -110,11 +110,18 @@ class ServiceFactory
         foreach ($params as $param) {
             $paramType = $param->getType();
 
-            if ($paramType && $paramType == ModelFactory::class) {
-                array_push($args, new ModelFactory());
-            } else {
-                array_push($args, current($arguments));
-                next($arguments);
+            if ($paramType) {
+                switch ($paramType) {
+                    case ModelFactory::class:
+                        array_push($args, new ModelFactory());
+                        break;
+                    case Loader::class:
+                        array_push($args, new Loader());
+                        break;
+                    default :
+                        array_push($args, current($arguments));
+                        next($arguments);
+                }
             }
         }
 
