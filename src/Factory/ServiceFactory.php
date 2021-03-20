@@ -18,6 +18,7 @@ use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Exceptions\ServiceException;
 use Quantum\Factory\ModelFactory;
 use Quantum\Mvc\QtService;
+use Quantum\Loader\Loader;
 
 /**
  * Class ServiceFactory
