@@ -78,7 +78,7 @@ class AuthManager
     /**
      * Auth Service
      * @param Loader $loader
-     * @return Quantum\Mvc\QtService
+     * @return AuthServiceInterface
      * @throws \Exception
      */
     public function authService(Loader $loader): AuthServiceInterface
