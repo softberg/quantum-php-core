@@ -14,8 +14,6 @@
 
 namespace Quantum\Libraries\Auth;
 
-use Quantum\Libraries\Mailer\Mailer;
-
 /**
  * Class BaseAuth
  * @package Quantum\Libraries\Auth
@@ -111,7 +109,7 @@ abstract class BaseAuth
      * @param array|null $customData
      * @return mixed
      */
-    public function signup(Mailer $mailer, $userData, $customData = null)
+    public function signup($userData, $customData = null)
     {
         $activationToken = $this->generateToken();
 
@@ -128,8 +126,11 @@ abstract class BaseAuth
         if ($customData) {
             $body = array_merge($body, $customData);
         }
+        
+        $this->mailer->setSubject(t('common.activate_account'));
+        $this->mailer->setTemplate(base_dir() . DS . 'base' . DS . 'views' . DS . 'email' . DS . 'activate');
 
-        $this->sendMail($mailer, $user, $body);
+        $this->sendMail($user, $body);
 
         return $user;
     }
@@ -149,11 +150,10 @@ abstract class BaseAuth
 
     /**
      * Forget
-     * @param Mailer $mailer
      * @param string $username
      * @return string
      */
-    public function forget(Mailer $mailer, $username)
+    public function forget($username)
     {
         $user = $this->authService->get($this->keys[self::USERNAME_KEY], $username);
 
@@ -169,8 +169,11 @@ abstract class BaseAuth
             'user' => $user,
             'resetToken' => $resetToken
         ];
+        
+        $this->mailer->setSubject(t('common.reset_password'));
+        $this->mailer->setTemplate(base_dir() . DS . 'base' . DS . 'views' . DS . 'email' . DS . 'reset');
 
-        $this->sendMail($mailer, $user, $body);
+        $this->sendMail($user, $body);
 
         return $resetToken;
     }
@@ -200,12 +203,11 @@ abstract class BaseAuth
     
     /**
      * Two Step Verification
-     * @param Mailer $mailer
      * @param array $user
      * @return string
      * @throws \Exception
      */
-    protected function twoStepVerification(Mailer $mailer, $user)
+    protected function twoStepVerification($user)
     {
         $otp = random_number(self::OTP_LENGTH);
         
@@ -230,7 +232,10 @@ abstract class BaseAuth
             'code' => $otp
         ];
         
-        $this->sendMail($mailer, $user, $body);
+        $this->mailer->setSubject(t('common.otp'));
+        $this->mailer->setTemplate(base_dir() . DS . 'base' . DS . 'views' . DS . 'email' . DS . 'verification');
+        
+        $this->sendMail($user, $body);
 
         return $otpToken;
     }
@@ -275,15 +280,14 @@ abstract class BaseAuth
 
     /**
      * Send email
-     * @param Mailer $mailer
      * @param array $user
      * @param array $body
      */
-    protected function sendMail(Mailer $mailer, array $user, array $body)
+    protected function sendMail(array $user, array $body)
     {
         $fullName = (isset($user['firstname']) && isset($user['lastname'])) ? $user['firstname'] . ' ' . $user['lastname'] : '';
 
-        $mailer->setFrom(config()->get('app_email'), config()->get('app_name'))
+        $this->mailer->setFrom(config()->get('app_email'), config()->get('app_name'))
                 ->setAddress($user[$this->keys[self::USERNAME_KEY]], $fullName)
                 ->setBody($body)
                 ->send();

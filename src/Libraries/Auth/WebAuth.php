@@ -27,6 +27,11 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
 {
 
     /**
+     * @var Mailer
+     */
+    protected $mailer;
+    
+    /**
      * @var Hasher
      */
     protected $hasher;
@@ -49,10 +54,12 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
     /**
      * WebAuth constructor.
      * @param AuthServiceInterface $authService
+     * @param Mailer $mailer
      * @param Hasher $hasher
      */
-    public function __construct(AuthServiceInterface $authService, Hasher $hasher)
+    public function __construct(AuthServiceInterface $authService, Mailer $mailer, Hasher $hasher)
     {
+        $this->mailer = $mailer;
         $this->hasher = $hasher;
         $this->authService = $authService;
         $this->keys = $this->authService->getDefinedKeys();
@@ -60,17 +67,15 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
 
     /**
      * Sign In
-     * @param Mailer $mailer
      * @param string $username
      * @param string $password
      * @param boolean $remember
      * @return string|boolean
      * @throws AuthException
      */
-    public function signin($mailer, $username, $password, $remember = false)
+    public function signin($username, $password, $remember = false)
     {
         $user = $this->authService->get($this->keys[self::USERNAME_KEY], $username);
-
         if (empty($user)) {
             throw new AuthException(ExceptionMessages::INCORRECT_AUTH_CREDENTIALS);
         }
@@ -88,7 +93,7 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
         }
 
         if (filter_var(config()->get('2SV'), FILTER_VALIDATE_BOOLEAN)) {
-            $otpToken = $this->twoStepVerification($mailer, $user);
+            $otpToken = $this->twoStepVerification($user);
             return $otpToken;
 
         } else {
@@ -166,12 +171,11 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
 
     /**
      * Resend OTP
-     * @param Mailer $mailer
      * @param string $otpToken
      * @return string
      * @throws \Exception
      */
-    public function resendOtp(Mailer $mailer, $otpToken)
+    public function resendOtp($otpToken)
     {
         $user = $this->authService->get($this->keys[self::OTP_TOKEN_KEY], $otpToken);
 
@@ -179,7 +183,7 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
             throw new AuthException(ExceptionMessages::INCORRECT_AUTH_CREDENTIALS);
         }
 
-        return $this->twoStepVerification($mailer, $user);
+        return $this->twoStepVerification($user);
 
     }
 

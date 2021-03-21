@@ -17,10 +17,10 @@ namespace Quantum\Libraries\Auth;
 use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Exceptions\AuthException;
 use Quantum\Libraries\JWToken\JWToken;
+use Quantum\Libraries\Mailer\Mailer;
 use Quantum\Libraries\Hasher\Hasher;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
-use Quantum\Libraries\Mailer\Mailer;
 
 /**
  * Class ApiAuth
@@ -28,6 +28,11 @@ use Quantum\Libraries\Mailer\Mailer;
  */
 class ApiAuth extends BaseAuth implements AuthenticableInterface
 {
+
+    /**
+     * @var Mailer
+     */
+    protected $mailer;
 
     /**
      * @var JWToken
@@ -57,11 +62,13 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
     /**
      * ApiAuth constructor.
      * @param AuthServiceInterface $authService
+     * @param Mailer $mailer
      * @param Hasher $hasher
      * @param JWToken|null $jwt
      */
-    public function __construct(AuthServiceInterface $authService, Hasher $hasher, JWToken $jwt = null)
+    public function __construct(AuthServiceInterface $authService, Mailer $mailer, Hasher $hasher, JWToken $jwt = null)
     {
+        $this->mailer = $mailer;
         $this->jwt = $jwt;
         $this->hasher = $hasher;
         $this->authService = $authService;
@@ -75,7 +82,7 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
      * @return string|array
      * @throws AuthException
      */
-    public function signin($mailer, $username, $password)
+    public function signin($username, $password)
     {
         $user = $this->authService->get($this->keys[self::USERNAME_KEY], $username);
 
@@ -86,15 +93,14 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
         if (!$this->hasher->check($password, $user[$this->keys[self::PASSWORD_KEY]])) {
             throw new AuthException(ExceptionMessages::INCORRECT_AUTH_CREDENTIALS);
         }
-        
+
         if (!$this->isActivated($user)) {
             throw new AuthException(ExceptionMessages::INACTIVE_ACCOUNT);
         }
 
         if (filter_var(config()->get('2SV'), FILTER_VALIDATE_BOOLEAN)) {
-            $otpToken = $this->twoStepVerification($mailer, $user);
+            $otpToken = $this->twoStepVerification($user);
             return $otpToken;
-
         } else {
             $tokens = $this->setUpdatedTokens($user);
             return $tokens;
@@ -143,7 +149,7 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
         } catch (\Exception $e) {
             if (Request::hasHeader($this->keys[self::REFRESH_TOKEN_KEY])) {
                 $user = $this->checkRefreshToken();
-                
+
                 if ($user) {
                     $this->setUpdatedTokens($user);
                     return $this->user();
@@ -180,14 +186,14 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
         if (empty($user) || $otp != $user[$this->keys[self::OTP_KEY]]) {
             throw new AuthException(ExceptionMessages::INCORRECT_VERIFICATION_CODE);
         }
-        
-        if (new \DateTime() >= new \DateTime($user[$this->keys[self::OTP_EXPIRY_KEY]])){
+
+        if (new \DateTime() >= new \DateTime($user[$this->keys[self::OTP_EXPIRY_KEY]])) {
             throw new AuthException(ExceptionMessages::VERIFICATION_CODE_EXPIRED);
         }
 
         $this->authService->update(
-                $this->keys[self::USERNAME_KEY], 
-                $user[$this->keys[self::USERNAME_KEY]], 
+                $this->keys[self::USERNAME_KEY],
+                $user[$this->keys[self::USERNAME_KEY]],
                 [
                     $this->keys[self::OTP_KEY] => null,
                     $this->keys[self::OTP_EXPIRY_KEY] => null,
@@ -202,13 +208,11 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
 
     /**
      * Resend OTP
-     * @param Mailer $mailer
      * @param string $otpToken
      * @return string
      * @throws AuthException
      */
-
-    public function resendOtp(Mailer $mailer, $otpToken)
+    public function resendOtp($otpToken)
     {
         $user = $this->authService->get($this->keys[self::OTP_TOKEN_KEY], $otpToken);
 
@@ -216,7 +220,7 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
             throw new AuthException(ExceptionMessages::INCORRECT_AUTH_CREDENTIALS);
         }
 
-        return $this->twoStepVerification($mailer, $user);
+        return $this->twoStepVerification($user);
     }
 
     /**
