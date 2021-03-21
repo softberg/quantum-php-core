@@ -15,8 +15,9 @@
 namespace Quantum\Libraries\Auth;
 
 use Quantum\Exceptions\ExceptionMessages;
-use Quantum\Exceptions\AuthException;
 use Quantum\Libraries\JWToken\JWToken;
+use Quantum\Exceptions\AuthException;
+use Quantum\Libraries\Mailer\Mailer;
 use Quantum\Libraries\Hasher\Hasher;
 use Quantum\Factory\ServiceFactory;
 use Quantum\Loader\Loader;
@@ -52,20 +53,21 @@ class AuthManager
 
     /**
      * AuthManager constructor.
+     * @param Loader $loader
      * @throws AuthException
      */
-    public function __construct()
+    public function __construct(Loader $loader)
     {
-        $authService = $this->authService();
+        $authService = $this->authService($loader);
 
         if ($this->authType && $authService) {
             switch ($this->authType) {
                 case 'web':
-                    self::$authInstance = new WebAuth(/** @scrutinizer ignore-type */ $authService, new Hasher);
+                    self::$authInstance = new WebAuth($authService, new Mailer, new Hasher);
                     break;
                 case 'api':
                     $jwt = (new JWToken())->setLeeway(1)->setClaims((array) config()->get('auth.claims'));
-                    self::$authInstance = new ApiAuth(/** @scrutinizer ignore-type */ $authService, new Hasher, $jwt);
+                    self::$authInstance = new ApiAuth($authService, new Mailer, new Hasher, $jwt);
                     break;
             }
         } else {
@@ -75,10 +77,11 @@ class AuthManager
 
     /**
      * Auth Service
-     * @return \Quantum\Mvc\QtService
+     * @param Loader $loader
+     * @return AuthServiceInterface
      * @throws \Exception
      */
-    public function authService()
+    public function authService(Loader $loader): AuthServiceInterface
     {
         if (!config()->has('auth')) {
 
@@ -88,7 +91,7 @@ class AuthManager
             $loaderSetup->fileName = 'auth';
             $loaderSetup->exceptionMessage = ExceptionMessages::CONFIG_FILE_NOT_FOUND;
 
-            $loader = (new Loader())->setup($loaderSetup);
+            $loader->setup($loaderSetup);
 
             config()->import($loader, 'auth');
         }

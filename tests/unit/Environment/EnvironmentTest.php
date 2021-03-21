@@ -13,6 +13,7 @@ namespace Quantum\Test\Unit {
 
     use PHPUnit\Framework\TestCase;
     use Quantum\Environment\Environment;
+    use Quantum\Libraries\Storage\FileSystem;
     use Quantum\Loader\Loader;
     use Mockery;
 
@@ -32,7 +33,9 @@ namespace Quantum\Test\Unit {
                 'app_env' => 'staging'
             ]);
 
-            $loader = new Loader();
+            $fs = new FileSystem();
+            
+            $loader = new Loader($fs);
 
             $loader->loadDir(dirname(__DIR__, 3) . DS . 'src' . DS . 'Helpers' . DS . 'functions');
 
@@ -42,7 +45,7 @@ namespace Quantum\Test\Unit {
 
             file_put_contents($envPathStaging, "DEBUG=TRUE\nAPP_KEY=stg_123456\n");
 
-            $this->env = Environment::getInstance();
+            $this->env = Environment::getInstance($fs);
         }
 
         public function testEnvLoadAndGetValue()

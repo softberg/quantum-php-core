@@ -15,6 +15,7 @@
 namespace Quantum\Console;
 
 use Symfony\Component\Console\Application;
+use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Loader\Loader;
 
 /**
@@ -48,7 +49,7 @@ class QtConsole
      */
     public function init()
     {
-        (new Loader())->loadDir(HELPERS_DIR . DS . 'functions');
+        (new Loader(new FileSystem))->loadDir(HELPERS_DIR . DS . 'functions');
 
         $this->application = new Application($this->name, $this->version);
 

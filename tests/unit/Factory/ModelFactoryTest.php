@@ -14,6 +14,7 @@ namespace Quantum\Test\Unit {
     use PHPUnit\Framework\TestCase;
     use Quantum\Factory\ModelFactory;
     use Quantum\Exceptions\ModelException;
+    use Quantum\Libraries\Storage\FileSystem;
     use Quantum\Loader\Loader;
     use Quantum\Models\TestModel;
 
@@ -31,7 +32,7 @@ namespace Quantum\Test\Unit {
         public function setUp(): void
         {
             
-            $loader = new Loader();
+            $loader = new Loader(new FileSystem);
             
             $loader->loadDir(dirname(__DIR__, 3) . DS . 'src' . DS . 'Helpers' . DS . 'functions');
             

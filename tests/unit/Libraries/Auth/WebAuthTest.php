@@ -6,7 +6,6 @@ namespace Quantum\Libraries\Auth {
     use Quantum\Libraries\Session\Session;
     use Quantum\Libraries\Cookie\Cookie;
 
-
 $sessionStorage = [];
     $cookieStorage = [];
 
@@ -47,6 +46,7 @@ namespace Quantum\Test\Unit {
     use Quantum\Libraries\Auth\WebAuth;
     use Quantum\Libraries\Config\Config;
     use PHPUnit\Framework\TestCase;
+    use Quantum\Libraries\Storage\FileSystem;
     use Quantum\Loader\Loader;
     use Mockery;
 
@@ -102,9 +102,11 @@ namespace Quantum\Test\Unit {
 
         public function setUp(): void
         {
-            $loader = new Loader();
+            $loader = new Loader(new FileSystem);
 
             $loader->loadDir(dirname(__DIR__, 4) . DS . 'src' . DS . 'Helpers' . DS . 'functions');
+
+            $loader->loadFile(dirname(__DIR__, 4) . DS . 'src' . DS . 'constants.php');
 
             config()->flush();
 
@@ -162,13 +164,19 @@ namespace Quantum\Test\Unit {
 
             $this->mailer->shouldReceive('setAddress')->andReturn($this->mailer);
 
+            $this->mailer->shouldReceive('setSubject')->andReturn($this->mailer);
+
             $this->mailer->shouldReceive('setBody')->andReturn($this->mailer);
+
+            $this->mailer->shouldReceive('setTemplate')->andReturn($this->mailer);
 
             $this->mailer->shouldReceive('send')->andReturn(true);
 
-            $this->webAuth = new WebAuth($this->authService, new Hasher);
+            config()->set('langs', true);
 
-            $admin = $this->webAuth->signup($this->mailer, $this->adminUser);
+            $this->webAuth = new WebAuth($this->authService, $this->mailer, new Hasher);
+
+            $admin = $this->webAuth->signup($this->adminUser);
 
             $this->webAuth->activate($admin['activation_token']);
         }
@@ -191,21 +199,21 @@ namespace Quantum\Test\Unit {
 
             $this->expectExceptionMessage(ExceptionMessages::INCORRECT_AUTH_CREDENTIALS);
 
-            $this->webAuth->signin($this->mailer, 'admin@qt.com', '111111');
+            $this->webAuth->signin('admin@qt.com', '111111');
         }
 
         public function testWebSigninCorrectCredentials()
         {
-            $this->assertTrue($this->webAuth->signin($this->mailer, 'admin@qt.com', 'qwerty'));
+            $this->assertTrue($this->webAuth->signin('admin@qt.com', 'qwerty'));
 
-            $this->assertTrue($this->webAuth->signin($this->mailer, 'admin@qt.com', 'qwerty', true));
+            $this->assertTrue($this->webAuth->signin('admin@qt.com', 'qwerty', true));
         }
 
         public function testWebSignout()
         {
             $this->assertFalse(\Quantum\Libraries\Auth\session()->has('auth_user'));
 
-            $this->webAuth->signin($this->mailer, 'admin@qt.com', 'qwerty');
+            $this->webAuth->signin('admin@qt.com', 'qwerty');
 
             $this->assertTrue(\Quantum\Libraries\Auth\session()->has('auth_user'));
 
@@ -216,13 +224,13 @@ namespace Quantum\Test\Unit {
 
         public function testWebUser()
         {
-            $this->webAuth->signin($this->mailer, 'admin@qt.com', 'qwerty');
+            $this->webAuth->signin('admin@qt.com', 'qwerty');
 
             $this->assertEquals('admin@qt.com', $this->webAuth->user()->username);
 
             $this->assertEquals('admin', $this->webAuth->user()->role);
 
-            $this->webAuth->signin($this->mailer,'admin@qt.com', 'qwerty', true);
+            $this->webAuth->signin('admin@qt.com', 'qwerty', true);
 
             \Quantum\Libraries\Auth\session()->delete('auth_user');
 
@@ -233,7 +241,7 @@ namespace Quantum\Test\Unit {
         {
             $this->assertFalse($this->webAuth->check());
 
-            $this->webAuth->signin($this->mailer, 'admin@qt.com', 'qwerty');
+            $this->webAuth->signin('admin@qt.com', 'qwerty');
 
             $this->assertTrue($this->webAuth->check());
         }
@@ -245,104 +253,69 @@ namespace Quantum\Test\Unit {
 
             $this->expectExceptionMessage(ExceptionMessages::INACTIVE_ACCOUNT);
 
-            $this->webAuth->signup($this->mailer, $this->guestUser);
+            $this->webAuth->signup($this->guestUser);
 
-            $this->assertTrue($this->webAuth->signin($this->mailer, 'guest@qt.com', '123456'));
+            $this->assertTrue($this->webAuth->signin('guest@qt.com', '123456'));
         }
 
         public function testWebSignupAndActivteAccount()
         {
-            $user = $this->webAuth->signup($this->mailer, $this->guestUser);
+            $user = $this->webAuth->signup($this->guestUser);
 
             $this->webAuth->activate($user['activation_token']);
 
-            $this->assertTrue($this->webAuth->signin($this->mailer, 'guest@qt.com', '123456'));
+            $this->assertTrue($this->webAuth->signin('guest@qt.com', '123456'));
         }
 
         public function testWebForgetReset()
         {
-            $resetToken = $this->webAuth->forget($this->mailer, 'admin@qt.com', 'tpl');
+            $resetToken = $this->webAuth->forget('admin@qt.com', 'tpl');
 
             $this->webAuth->reset($resetToken, '123456789');
 
-            $this->assertTrue($this->webAuth->signin($this->mailer, 'admin@qt.com', '123456789'));
+            $this->assertTrue($this->webAuth->signin('admin@qt.com', '123456789'));
         }
 
         public function testWebWithoutVerification()
         {
-            $configData = [
-                '2SV' => false,
-                'otp_expiry_time' => 2
-            ];
+            config()->set('2SV', false);
 
-            $loader = Mockery::mock('Quantum\Loader\Loader');
+            config()->set('otp_expiry_time', 2);
 
-            $loader->shouldReceive('setup')->andReturn($loader);
-
-            $loader->shouldReceive('load')->andReturn($configData);
-
-            Config::getInstance()->load($loader);
-
-            $this->assertTrue($this->webAuth->signin($this->mailer, 'admin@qt.com', 'qwerty'));
+            $this->assertTrue($this->webAuth->signin('admin@qt.com', 'qwerty'));
         }
 
         public function testWebWithVerification()
         {
-            $configData = [
-                '2SV' => true,
-                'otp_expires' => 2
-            ];
+            config()->set('2SV', true);
 
-            $loader = Mockery::mock('Quantum\Loader\Loader');
+            config()->set('otp_expires', 2);
 
-            $loader->shouldReceive('setup')->andReturn($loader);
-
-            $loader->shouldReceive('load')->andReturn($configData);
-
-            Config::getInstance()->load($loader);
-
-
-            $this->assertIsString($this->webAuth->signin($this->mailer, 'admin@qt.com', 'qwerty'));
+            $this->assertIsString($this->webAuth->signin('admin@qt.com', 'qwerty'));
         }
 
         public function testWebVerify()
         {
-            $configData = [
-                '2SV' => true,
-                'otp_expires' => 2
-            ];
+            config()->set('2SV', true);
 
-            $loader = Mockery::mock('Quantum\Loader\Loader');
+            config()->set('otp_expires', 2);
 
-            $loader->shouldReceive('setup')->andReturn($loader);
-
-            $loader->shouldReceive('load')->andReturn($configData);
-
-            Config::getInstance()->load($loader);
-
-            $otp_token = $this->webAuth->signin($this->mailer, 'admin@qt.com', 'qwerty');
+            $otp_token = $this->webAuth->signin('admin@qt.com', 'qwerty');
 
             $this->assertTrue($this->webAuth->verifyOtp(111111, $otp_token));
         }
 
         public function testWebResendOtp()
         {
-            $configData = [
-                '2SV' => true,
-                'otp_expires' => 2
-            ];
+            config()->set('2SV', true);
 
-            $loader = Mockery::mock('Quantum\Loader\Loader');
+            config()->set('otp_expires', 2);
 
-            $loader->shouldReceive('setup')->andReturn($loader);
+            $otp_token = $this->webAuth->signin('admin@qt.com', 'qwerty');
 
-            $loader->shouldReceive('load')->andReturn($configData);
-
-            Config::getInstance()->load($loader);
-
-            $otp_token = $this->webAuth->signin($this->mailer, 'admin@qt.com', 'qwerty');
-
-            $this->assertIsString($this->webAuth->resendOtp($this->mailer, $otp_token));
+            $this->assertIsString($this->webAuth->resendOtp($otp_token));
         }
+
     }
+
 }

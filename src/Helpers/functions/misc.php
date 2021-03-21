@@ -14,12 +14,14 @@
 
 use Quantum\Exceptions\StopExecutionException;
 use Quantum\Libraries\Session\SessionManager;
+use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Libraries\Encryption\Cryptor;
 use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Libraries\Auth\AuthManager;
 use Quantum\Libraries\Mailer\Mailer;
 use Quantum\Libraries\Cookie\Cookie;
 use Quantum\Libraries\Csrf\Csrf;
+use Quantum\Loader\Loader;
 use Quantum\Dumper\Dumper;
 
 if (!function_exists('session')) {
@@ -30,7 +32,8 @@ if (!function_exists('session')) {
      */
     function session()
     {
-        return (new SessionManager())->getSessionHandler();
+        $loader = new Loader(new FileSystem);
+        return (new SessionManager())->getSessionHandler($loader);
     }
 
 }
@@ -56,7 +59,8 @@ if (!function_exists('auth')) {
      */
     function auth()
     {
-        return (new AuthManager())->get();
+        $loader = new Loader(new FileSystem);
+        return (new AuthManager($loader))->get();
     }
 
 }

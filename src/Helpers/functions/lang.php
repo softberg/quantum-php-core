@@ -11,6 +11,7 @@
  * @link http://quantum.softberg.org/
  * @since 2.0.0
  */
+use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Libraries\Lang\Lang;
 
 if (!function_exists('current_lang')) {
@@ -21,7 +22,7 @@ if (!function_exists('current_lang')) {
      */
     function current_lang()
     {
-        return Lang::getInstance()->getLang();
+        return Lang::getInstance(new FileSystem)->getLang();
     }
 
 }
@@ -36,7 +37,7 @@ if (!function_exists('t')) {
      */
     function t($key, $params = null)
     {
-        return Lang::getInstance()->getTranslation($key, $params);
+        return Lang::getInstance(new FileSystem)->getTranslation($key, $params);
     }
 
 }

@@ -53,6 +53,7 @@ class Config implements StorageInterface
     {
         $this->setup = new stdClass();
         $this->setup->module = current_module();
+        $this->setup->hierarchical = true;
         $this->setup->env = 'config';
         $this->setup->fileName = 'config';
         $this->setup->exceptionMessage = ExceptionMessages::CONFIG_FILE_NOT_FOUND;

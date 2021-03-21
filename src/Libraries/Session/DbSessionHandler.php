@@ -29,17 +29,25 @@ class DbSessionHandler implements SessionHandlerInterface
 
     /**
      * The ORM instance
-     * @var DbalInterface $orm
+     * @var DbalInterface
      */
     private $orm;
+    
+    /**
+     * Loader instance
+     * @var Loader
+     */
+    private $loаder;
 
     /**
      * DbSessionHandler constructor.
      * @param DbalInterface $orm
+     * @param Loader $loader
      */
-    public function __construct(DbalInterface $orm)
+    public function __construct(DbalInterface $orm, Loader $loader)
     {
         $this->orm = $orm;
+        $this->loаder = $loader;
     }
 
     /**
@@ -50,7 +58,7 @@ class DbSessionHandler implements SessionHandlerInterface
      */
     public function open($save_path, $name)
     {
-        if ((new Database(new Loader()))->connected()) {
+        if ((new Database($this->loаder))->connected()) {
             return true;
         }
         return false;
@@ -62,7 +70,7 @@ class DbSessionHandler implements SessionHandlerInterface
      */
     public function close()
     {
-        if (!(new Database(new Loader()))->connected()) {
+        if (!(new Database($this->loаder))->connected()) {
             return true;
         }
         return false;

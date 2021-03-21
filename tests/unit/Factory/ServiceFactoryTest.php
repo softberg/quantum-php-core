@@ -29,6 +29,7 @@ namespace Quantum\Test\Unit {
     use Quantum\Exceptions\ServiceException;
     use Quantum\Factory\ServiceFactory;
     use Quantum\Services\TestService;
+    use Quantum\Libraries\Storage\FileSystem;
     use Quantum\Loader\Loader;
 
     class ServiceFactoryTest extends TestCase
@@ -38,7 +39,7 @@ namespace Quantum\Test\Unit {
 
         public function setUp(): void
         {
-            $loader = new Loader();
+            $loader = new Loader(new FileSystem);
 
             $loader->loadDir(dirname(__DIR__, 3) . DS . 'src' . DS . 'Helpers' . DS . 'functions');
 

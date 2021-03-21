@@ -11,6 +11,7 @@
  * @link http://quantum.softberg.org/
  * @since 2.0.0
  */
+use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Libraries\Config\Config;
 use Quantum\Environment\Environment;
 
@@ -37,7 +38,7 @@ if (!function_exists('env')) {
      */
     function env($var, $default = null)
     {
-        return Environment::getInstance()->getValue($var, $default);
+        return Environment::getInstance(new FileSystem)->getValue($var, $default);
     }
 
 }

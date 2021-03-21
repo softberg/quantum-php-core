@@ -56,23 +56,23 @@ class Lang
      * @param string $lang
      * @throws LangException
      */
-    private function __construct()
+    private function __construct(FileSystem $fs)
     {
         if (!config()->has('langs')) {
             throw new LangException(ExceptionMessages::MISCONFIGURED_LANG_CONFIG);
         }
 
-        $this->fs = new FileSystem();
+        $this->fs = $fs;
     }
 
     /**
      * GetInstance
      * @return Lang
      */
-    public static function getInstance()
+    public static function getInstance(FileSystem $fs)
     {
         if (self::$langInstance === null) {
-            self::$langInstance = new self();
+            self::$langInstance = new self($fs);
         }
 
         return self::$langInstance;

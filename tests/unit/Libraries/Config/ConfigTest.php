@@ -5,6 +5,7 @@ namespace Quantum\Test\Unit;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 use Quantum\Libraries\Config\Config;
+use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Loader\Loader;
 
 class ConfigTest extends TestCase
@@ -25,7 +26,7 @@ class ConfigTest extends TestCase
 
     public function setUp(): void
     {
-        $loader = new Loader();
+        $loader = new Loader(new FileSystem);
 
         $loader->loadDir(dirname(__DIR__, 4) . DS . 'src' . DS . 'Helpers' . DS . 'functions');
 

@@ -15,6 +15,7 @@
 namespace Quantum\Factory;
 
 use Quantum\Exceptions\ExceptionMessages;
+use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Exceptions\ServiceException;
 use Quantum\Factory\ModelFactory;
 use Quantum\Mvc\QtService;
@@ -117,7 +118,7 @@ class ServiceFactory
                         array_push($args, new ModelFactory());
                         break;
                     case Loader::class:
-                        array_push($args, new Loader());
+                        array_push($args, new Loader(new FileSystem));
                         break;
                     default :
                         array_push($args, current($arguments));

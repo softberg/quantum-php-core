@@ -15,6 +15,7 @@
 namespace Quantum;
 
 use Quantum\Exceptions\StopExecutionException;
+use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Environment\Environment;
 use Quantum\Libraries\Config\Config;
 use Quantum\Routes\ModuleLoader;
@@ -47,11 +48,14 @@ class Bootstrap
     public static function run()
     {
         try {
-            $loader = new Loader();
+            
+            $fs = new FileSystem();
+            
+            $loader = new Loader($fs);
 
             $loader->loadDir(HELPERS_DIR . DS . 'functions');
 
-            Environment::getInstance()->load($loader);
+            Environment::getInstance($fs)->load($loader);
 
             HttpRequest::init(new Server);
 
@@ -69,7 +73,7 @@ class Bootstrap
             $loader->loadDir(base_dir() . DS . 'helpers');
             $loader->loadDir(base_dir() . DS . 'libraries');
 
-            Lang::getInstance()->setLang($request->getSegment(config()->get('lang_segment')))->load($loader);
+            Lang::getInstance($fs)->setLang($request->getSegment(config()->get('lang_segment')))->load($loader);
 
             (new MvcManager())->runMvc($request, $response);
 

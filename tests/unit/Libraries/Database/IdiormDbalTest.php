@@ -54,6 +54,7 @@ namespace Quantum\Test\Unit {
     use Quantum\Models\CUserEventModel;
     use Quantum\Models\CUserProfessionModel;
     use Quantum\Libraries\Database\IdiormDbal;
+    use Quantum\Libraries\Storage\FileSystem;
 
     /**
      * @runTestsInSeparateProcesses
@@ -152,7 +153,7 @@ namespace Quantum\Test\Unit {
                         (110, 220, '2020-04-15 11:10:12')
                     ");
 
-            $loader = new Loader();
+            $loader = new Loader(new FileSystem);
 
             $loader->loadDir(dirname(__DIR__, 4) . DS . 'src' . DS . 'Helpers' . DS . 'functions');
         }
@@ -706,13 +707,13 @@ namespace Quantum\Test\Unit {
 
             $this->databaseMock->shouldReceive('getORM')->andReturn(new IdiormDbal('users'));
 
-            $userModel = new CUserModel();
+            $userModel = (new \Quantum\Factory\ModelFactory)->get(CUserModel::class);
 
-            $userProfessionModel = new CUserProfessionModel();
+            $userProfessionModel = (new \Quantum\Factory\ModelFactory)->get(CUserProfessionModel::class);
+            
+            $userEventModel = (new \Quantum\Factory\ModelFactory)->get(CUserEventModel::class);
 
-            $userEventModel = new CUserEventModel();
-
-            $eventModel = new CEventModel();
+            $eventModel = (new \Quantum\Factory\ModelFactory)->get(CEventModel::class);
 
             $userModel->select(['users.id' => 'usr_id'], 'firstname', ['user_professions.title' => 'profession_title'], ['events.title' => 'event_title']);
 
