@@ -15,6 +15,7 @@
 namespace Quantum\Mvc;
 
 use Quantum\Exceptions\ExceptionMessages;
+use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Middleware\MiddlewareManager;
 use Quantum\Exceptions\RouteException;
 use Quantum\Libraries\Mailer\Mailer;
@@ -210,7 +211,7 @@ class MvcManager
                             array_push($args, new Mailer());
                             break;
                         case Loader::class:
-                            array_push($args, new Loader());
+                            array_push($args, new Loader(new FileSystem));
                             break;
                         default :
                             array_push($args, current($routeArgs));

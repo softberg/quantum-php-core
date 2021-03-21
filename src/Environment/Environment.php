@@ -61,12 +61,13 @@ class Environment
     /**
      * Class constructor
      */
-    private function __construct()
+    private function __construct(FileSystem $fs)
     {
-        $this->fs = new FileSystem();
+        $this->fs = $fs;
 
         $this->setup = new stdClass();
         $this->setup->module = null;
+        $this->setup->hierarchical = true;
         $this->setup->env = 'config';
         $this->setup->fileName = 'env';
         $this->setup->exceptionMessage = ExceptionMessages::CONFIG_FILE_NOT_FOUND;
@@ -76,10 +77,10 @@ class Environment
      * GetInstance
      * @return Environment
      */
-    public static function getInstance()
+    public static function getInstance(FileSystem $fs)
     {
         if (self::$envInstance === null) {
-            self::$envInstance = new self();
+            self::$envInstance = new self($fs);
         }
 
         return self::$envInstance;
@@ -92,6 +93,7 @@ class Environment
     public function load(Loader $loader)
     {
         $env = $loader->setup($this->setup)->load();
+
         if ($env['app_env'] != 'production') {
             $this->envFile = '.env.' . $env['app_env'];
         }

@@ -30,6 +30,7 @@ namespace Quantum\Test\Unit {
     use Mockery;
     use PHPUnit\Framework\TestCase;
     use Quantum\Libraries\Lang\Lang;
+    use Quantum\Libraries\Storage\FileSystem;
     use Quantum\Loader\Loader;
 
     class LangTest extends TestCase
@@ -52,7 +53,7 @@ namespace Quantum\Test\Unit {
 
             $this->loaderMock->shouldReceive('load')->andReturn($this->langData);
 
-            $loader = new Loader();
+            $loader = new Loader(new FileSystem);
 
             $loader->loadDir(dirname(__DIR__, 4) . DS . 'src' . DS . 'Helpers' . DS . 'functions');
 
@@ -72,7 +73,7 @@ namespace Quantum\Test\Unit {
 
             file_put_contents($this->langDir . DS . 'custom.php', null);
 
-            $this->lang = Lang::getInstance();
+            $this->lang = Lang::getInstance(new FileSystem);
 
             $this->lang->setLang('en');
 

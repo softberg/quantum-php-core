@@ -47,6 +47,7 @@ namespace Quantum\Test\Unit {
     use Quantum\Libraries\Validation\Rule;
     use Quantum\Factory\ModelFactory;
     use PHPUnit\Framework\TestCase;
+    use Quantum\Libraries\Storage\FileSystem;
     use Quantum\Loader\Loader;
     use Quantum\Http\Request;
     use Mockery;
@@ -63,7 +64,7 @@ namespace Quantum\Test\Unit {
 
             $this->validator = new Validator();
 
-            $loader = new Loader();
+            $loader = new Loader(new FileSystem);
 
             $loader->loadDir(dirname(__DIR__, 4) . DS . 'src' . DS . 'Helpers' . DS . 'functions');
 

@@ -14,6 +14,7 @@
 
 namespace Quantum\Mvc;
 
+use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Libraries\Database\Database;
 use Quantum\Exceptions\ModelException;
@@ -71,12 +72,13 @@ abstract class QtModel
 
     /**
      * Class constructor
+     * @param Loader $loader
      * @throws ModelException When called directly
      */
-    public final function __construct()
+    public final function __construct(Loader $loader)
     {
         $this->model = get_called_class();
-        $this->orm = (new Database(new Loader()))->getORM($this->table, $this->model, $this->idColumn);
+        $this->orm = (new Database($loader))->getORM($this->table, $this->model, $this->idColumn);
     }
 
     /**

@@ -14,9 +14,10 @@
 
 namespace Quantum\Console\Commands;
 
+use Quantum\Libraries\Storage\FileSystem;
+use Quantum\Environment\Environment;
 use Quantum\Console\QtCommand;
 use Quantum\Loader\Loader;
-use Quantum\Environment\Environment;
 
 /**
  * Class KeyGenerateCommand
@@ -59,9 +60,13 @@ class KeyGenerateCommand extends QtCommand
     public function exec()
     {
         $key = $this->generateRandomKey();
+        
+        $fs = new FileSystem();
+        
+        $loader = new Loader($fs);
 
         if ($key) {
-            Environment::getInstance()->load(new Loader())->updateRow('APP_KEY', $key);
+            Environment::getInstance($fs)->load($loader)->updateRow('APP_KEY', $key);
         }
 
         $this->info('Application key successfully generated and stored.');

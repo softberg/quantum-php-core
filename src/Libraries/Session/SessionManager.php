@@ -15,8 +15,8 @@
 namespace Quantum\Libraries\Session;
 
 use Quantum\Exceptions\ExceptionMessages;
-use Quantum\Libraries\Database\Database;
 use Quantum\Libraries\Encryption\Cryptor;
+use Quantum\Libraries\Database\Database;
 use Quantum\Loader\Loader;
 
 /**
@@ -35,18 +35,19 @@ class SessionManager
 
     /**
      * Get session handler
+     * @param Loader $loader
      * @return Session
      * @throws \RuntimeException
      */
-    public function getSessionHandler()
+    public function getSessionHandler(Loader $loader)
     {
         $driver = config()->get('session_driver');
 
         if (!session_id()) {
 
             if ($driver == $this->databaseDriver) {
-                $orm = (new Database(new Loader()))->getORM(config()->get('session_table', 'sessions'));
-                session_set_save_handler(new DbSessionHandler($orm), true);
+                $orm = (new Database($loader))->getORM(config()->get('session_table', 'sessions'));
+                session_set_save_handler(new DbSessionHandler($orm, $loader), true);
             }
 
             if (@session_start() === false) {

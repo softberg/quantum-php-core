@@ -59,29 +59,28 @@ class Loader
      * @var FileSystem
      */
     private $fs;
-
+    
     /**
-     * Loader constructor.
-     * @param object $repository
-     * @param bool $hierarchical
+     * Class constructor
+     * @param FileSystem $fs
      */
-    public function __construct($hierarchical = true)
+    public function __construct(FileSystem $fs = null)
     {
-        $this->fs = new FileSystem();
-        $this->hierarchical = $hierarchical;
+        $this->fs = $fs;
     }
 
     /**
      * Setups the loader
-     * @param object $repository
+     * @param object $setup
      * @return $this
      */
-    public function setup($repository)
+    public function setup($setup)
     {
-        $this->module = $repository->module;
-        $this->env = $repository->env;
-        $this->fileName = $repository->fileName;
-        $this->exceptionMessage = $repository->exceptionMessage;
+        $this->hierarchical = $setup->hierarchical ?? false;
+        $this->module = $setup->module;
+        $this->env = $setup->env;
+        $this->fileName = $setup->fileName;
+        $this->exceptionMessage = $setup->exceptionMessage;
 
         return $this;
     }
@@ -90,10 +89,13 @@ class Loader
      * Sets new value
      * @param string $property
      * @param mixed $value
+     * @return $this
      */
     public function set($property, $value)
     {
         $this->$property = $value;
+        
+        return $this;
     }
 
     /**

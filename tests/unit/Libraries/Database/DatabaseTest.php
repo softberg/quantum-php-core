@@ -54,6 +54,7 @@ namespace Quantum\Test\Unit {
     use Quantum\Models\UserModel;
     use Quantum\Libraries\Database\Database;
     use Quantum\Exceptions\DatabaseException;
+    use Quantum\Libraries\Storage\FileSystem;
     use Quantum\Loader\Loader;
 
     /**
@@ -95,7 +96,7 @@ namespace Quantum\Test\Unit {
         public function setUp(): void
         {
 
-            $loader = new Loader();
+            $loader = new Loader(new FileSystem);
 
             $loader->loadDir(dirname(__DIR__, 4) . DS . 'src' . DS . 'Helpers' . DS . 'functions');
             

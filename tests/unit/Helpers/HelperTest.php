@@ -10,6 +10,7 @@ use Quantum\Libraries\Config\Config;
 use Quantum\Libraries\Lang\Lang;
 use Quantum\Libraries\Csrf\Csrf;
 use Quantum\Factory\ViewFactory;
+use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Loader\Loader;
 use Quantum\Routes\Router;
 use Quantum\Http\Request;
@@ -28,7 +29,7 @@ class HelperTest extends TestCase
     public function setUp(): void
     {
 
-        $loader = new Loader();
+        $loader = new Loader(new FileSystem);
 
         $loader->loadDir(dirname(__DIR__, 3) . DS . 'src' . DS . 'Helpers' . DS . 'functions');
 
@@ -306,7 +307,7 @@ class HelperTest extends TestCase
 
         $loader->shouldReceive('load')->andReturn($configData);
 
-        Config::getInstance()->load($loader);
+        Config::getInstance(new FileSystem)->load($loader);
 
         $this->assertFalse(config()->has('not-exists'));
 
@@ -383,7 +384,7 @@ class HelperTest extends TestCase
 
         $this->assertNull(current_lang());
 
-        Lang::getInstance()->setLang('en');
+        Lang::getInstance(new FileSystem)->setLang('en');
 
         $this->assertNotNull(current_lang());
 
@@ -417,7 +418,7 @@ class HelperTest extends TestCase
             'test' => 'Testing'
         ]);
 
-        Lang::getInstance()->setLang('en')->load($loaderMock);
+        Lang::getInstance(new FileSystem)->setLang('en')->load($loaderMock);
 
         $this->assertEquals('Learn more', t('custom.learn_more'));
 
