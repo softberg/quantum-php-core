@@ -73,7 +73,8 @@ class Debugger extends DebugBar
         $this->tabRoutes($view);
         $this->tabMailLog();
 
-        return $this->debugbar->getJavascriptRenderer()
+        return $this->debugbar
+                        ->getJavascriptRenderer()
                         ->setBaseUrl(base_url() . $this->assetsUrl)
                         ->addAssets([$this->customCss], []);
     }

@@ -22,9 +22,6 @@ use Closure;
 
 /**
  * ModuleLoader Class
- * 
- * ModuleLoader class allows loads modules
- * 
  * @package Quantum
  * @category Routes
  */
@@ -32,56 +29,33 @@ class ModuleLoader
 {
 
     /**
-     * List of loaded modules
-     * @var array 
-     */
-    public $modules = [];
-    
-    /**
-     * Router instance
-     * @var Router
-     */
-    private $router;
-    
-    /**
-     * FileSystem instance
-     * @var FileSystem
-     */
-    private $fileSystem;
-
-    /**
-     * Class constructor.
-     * @param Router $router
-     */
-    public function __construct(Router $router)
-    {
-        $this->router = $router;
-        $this->fileSystem = new FileSystem();
-    }
-
-    /**
      * Load Modules
      * @param Router $router
+     * @param FileSystem $fs
      * @throws ModuleLoaderException
      */
-    public function loadModulesRoutes()
+    public static function loadModulesRoutes(Router $router, FileSystem $fs)
     {
-        $this->modules = require_once base_dir() . DS . 'config' . DS . 'modules.php';
+        $modules = require_once base_dir() . DS . 'config' . DS . 'modules.php';
 
-        foreach ($this->modules['modules'] as $module) {
-            if (!$this->fileSystem->exists(modules_dir() . DS . $module . DS . 'Config' . DS . 'routes.php')) {
+        foreach ($modules['modules'] as $module) {
+            $moduleRoutes = modules_dir() . DS . $module . DS . 'Config' . DS . 'routes.php';
+
+            if (!$fs->exists($moduleRoutes)) {
                 throw new ModuleLoaderException(_message(ExceptionMessages::MODULE_NOT_FOUND, $module));
             }
 
-            $routesClosure = require_once modules_dir() . DS . $module . DS . 'Config' . DS . 'routes.php';
+            $routesClosure = require_once $moduleRoutes;
 
             if (!$routesClosure instanceof Closure) {
                 throw new ModuleLoaderException(ExceptionMessages::ROUTES_NOT_CLOSURE);
             }
 
             $route = new Route($module);
+
             $routesClosure($route);
-            $this->router->setRoutes(array_merge($this->router->getRoutes(), $route->getRuntimeRoutes()));
+
+            $router->setRoutes(array_merge($router->getRoutes(), $route->getRuntimeRoutes()));
         }
     }
 

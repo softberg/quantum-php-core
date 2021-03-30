@@ -27,44 +27,41 @@ use Quantum\Routes\Router;
 use Quantum\Loader\Loader;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
+use Quantum\Di\Di;
 
 /**
  * Bootstrap Class
- *
  * Bootstrap is the base class which is runner of all necessary components of framework.
  */
 class Bootstrap
 {
 
     /**
-     * Initializes the framework.
-     *
-     * This method does not accept parameters and does not return anything.
-     * It runs the router, prepare the config values, helpers, libraries and MVC Manager
-     *
-     * @return void
-     * @throws Exception if one of these components fails: Router, Config, Helpers, Libraries, MVC Manager.
+     * Boots the framework.
+     * @throws \Exception|StopExecutionException
      */
     public static function run()
     {
         try {
-            
-            $fs = new FileSystem();
-            
-            $loader = new Loader($fs);
 
-            $loader->loadDir(HELPERS_DIR . DS . 'functions');
+            self::loadCoreFuncations();
 
-            Environment::getInstance($fs)->load($loader);
+            Di::loadDefinitions();
+
+            $loader = Di::get(Loader::class);
+
+            $fs = Di::get(FileSystem::class);
+
+            Environment::getInstance()->load($loader);
 
             HttpRequest::init(new Server);
 
-            $request = new Request();
-            $response = new Response();
+            $request = Di::get(Request::class);
+            $response = Di::get(Response::class);
 
             $router = new Router($request, $response);
 
-            (new ModuleLoader($router))->loadModulesRoutes();
+            ModuleLoader::loadModulesRoutes($router, $fs);
 
             $router->findRoute();
 
@@ -73,9 +70,11 @@ class Bootstrap
             $loader->loadDir(base_dir() . DS . 'helpers');
             $loader->loadDir(base_dir() . DS . 'libraries');
 
-            Lang::getInstance($fs)->setLang($request->getSegment(config()->get('lang_segment')))->load($loader);
+            Lang::getInstance()
+                    ->setLang($request->getSegment(config()->get('lang_segment')))
+                    ->load($loader, $fs);
 
-            (new MvcManager())->runMvc($request, $response);
+            MvcManager::runMvc($request, $response);
 
             $response->send();
             exit(0);
@@ -84,6 +83,13 @@ class Bootstrap
         } catch (\Exception $e) {
             echo $e->getMessage();
             exit(1);
+        }
+    }
+
+    public static function loadCoreFuncations()
+    {
+        foreach (glob(HELPERS_DIR . DS . 'functions' . DS . '*.php') as $filename) {
+            require_once $filename;
         }
     }
 

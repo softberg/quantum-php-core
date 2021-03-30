@@ -34,20 +34,20 @@ class DebugBarAssetsCommand extends QtCommand
      * Command description
      * @var string
      */
-    protected $description = 'Publishing debugbar assets';
+    protected $description = 'Publishes debugbar assets';
 
     /**
      * Command help text
      * @var string
      */
-    protected $help = 'The command will published debugbar assets';
-    
+    protected $help = 'The command will publish debugbar assets';
+
     /**
      * Path to public debug bar resources
      * @var string 
      */
     private $publicDebugbarFolderPath = 'public/assets/DebugBar/Resources';
-    
+
     /**
      * Path to vendor debug bar resources
      * @var string 
@@ -76,7 +76,7 @@ class DebugBarAssetsCommand extends QtCommand
         $dir = opendir($src);
 
         if ($dst != $this->publicDebugbarFolderPath) {
-            if (@mkdir($dst) === false) {
+            if (@mkdir($dst, 777, true) === false) {
                 throw new \RuntimeException(_message(ExceptionMessages::DIRECTORY_CANT_BE_CREATED, $dst));
             }
         }
@@ -87,8 +87,9 @@ class DebugBarAssetsCommand extends QtCommand
                     if (is_dir($src . '/' . $file)) {
                         $this->recursive_copy($src . '/' . $file, $dst . '/' . $file);
                     } else {
-                        if ($file)
-                            copy($src . '/' . $file, $dst . '/' . $file);
+                        if ($file) {
+                            @copy($src . '/' . $file, $dst . '/' . $file);
+                        }
                     }
                 }
             }

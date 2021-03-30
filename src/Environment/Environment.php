@@ -47,12 +47,6 @@ class Environment
     private static $envInstance = null;
 
     /**
-     * File System
-     * @var FileSystem
-     */
-    private $fs;
-
-    /**
      * Environment setup
      * @var object 
      */
@@ -61,10 +55,8 @@ class Environment
     /**
      * Class constructor
      */
-    private function __construct(FileSystem $fs)
+    private function __construct()
     {
-        $this->fs = $fs;
-
         $this->setup = new stdClass();
         $this->setup->module = null;
         $this->setup->hierarchical = true;
@@ -77,10 +69,10 @@ class Environment
      * GetInstance
      * @return Environment
      */
-    public static function getInstance(FileSystem $fs)
+    public static function getInstance()
     {
         if (self::$envInstance === null) {
-            self::$envInstance = new self($fs);
+            self::$envInstance = new self();
         }
 
         return self::$envInstance;
@@ -125,23 +117,24 @@ class Environment
 
     /**
      * Creates or updates the row in .env
+     * @param FileSystem $fs
      * @param string $key
      * @param string $value
      */
-    public function updateRow($key, $value)
+    public function updateRow(FileSystem $fs, $key, $value)
     {
         $oldRow = $this->getRow($key);
 
         $envFilePath = base_dir() . DS . $this->envFile;
 
         if ($oldRow) {
-            $this->fs->put($envFilePath, preg_replace(
+            $fs->put($envFilePath, preg_replace(
                             '/^' . $oldRow . '/m',
                             $key . "=" . $value . PHP_EOL,
-                            $this->fs->get($envFilePath)
+                            $fs->get($envFilePath)
             ));
         } else {
-            $this->fs->put($envFilePath, $key . "=" . $value . PHP_EOL, FILE_APPEND);
+            $fs->put($envFilePath, $key . "=" . $value . PHP_EOL, FILE_APPEND);
         }
 
         $this->envContent = (new Dotenv(base_dir(), $this->envFile))->overload();
