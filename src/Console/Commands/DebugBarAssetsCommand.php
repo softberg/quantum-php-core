@@ -76,7 +76,7 @@ class DebugBarAssetsCommand extends QtCommand
         $dir = opendir($src);
 
         if ($dst != $this->publicDebugbarFolderPath) {
-            if (@mkdir($dst, 777, true) === false) {
+            if (mkdir($dst, 777, true) === false) {
                 throw new \RuntimeException(_message(ExceptionMessages::DIRECTORY_CANT_BE_CREATED, $dst));
             }
         }
@@ -88,7 +88,7 @@ class DebugBarAssetsCommand extends QtCommand
                         $this->recursive_copy($src . '/' . $file, $dst . '/' . $file);
                     } else {
                         if ($file) {
-                            @copy($src . '/' . $file, $dst . '/' . $file);
+                            copy($src . '/' . $file, $dst . '/' . $file);
                         }
                     }
                 }

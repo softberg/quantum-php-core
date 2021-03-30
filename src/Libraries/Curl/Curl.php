@@ -152,7 +152,7 @@ class Curl
         $responseHeaders = [];
 
         while ($this->responseHeaders->valid()) {
-            $responseHeaders[strtolower($this->responseHeaders->key())] = $this->responseHeaders->current();
+            $responseHeaders[strtolower((string) $this->responseHeaders->key())] = $this->responseHeaders->current();
             $this->responseHeaders->next();
         }
 
@@ -209,7 +209,7 @@ class Curl
     private function fetch()
     {
         if ($this->curl instanceof MultiCurl) {
-            $this->curl->complete(function($instance) {
+            $this->curl->complete(function ($instance) {
                 if ($instance->error) {
                     $this->errors[] = [
                         'code' => $instance->getErrorCode(),

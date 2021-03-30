@@ -247,7 +247,7 @@ abstract class HttpRequest
      * @param string $host
      */
     public static function setHost(string $host)
-    {   
+    {
         self::$__host = $host;
     }
 
@@ -313,9 +313,9 @@ abstract class HttpRequest
      */
     public static function setQueryParam(string $key, string $value)
     {
-        $queryParams = self::$__query ? explode('&', self::$__query) : []; 
-        array_push($queryParams, $key . '=' . $value);  
-        self::$__query =  implode('&', $queryParams);   
+        $queryParams = self::$__query ? explode('&', self::$__query) : [];
+        array_push($queryParams, $key . '=' . $value);
+        self::$__query = implode('&', $queryParams);
     }
 
     /**
@@ -324,14 +324,14 @@ abstract class HttpRequest
      * @return string|null
      */
     public static function getQueryParam(string $key)
-    {  
-        $query = explode('&', self::$__query);    
+    {
+        $query = explode('&', self::$__query);
 
-        foreach($query as $items){
-           $item = explode('=', $items); 
-           if($item[0] == $key){
+        foreach ($query as $items) {
+            $item = explode('=', $items);
+            if ($item[0] == $key) {
                 return $item[1];
-           }
+            }
         }
 
         return null;
@@ -504,7 +504,7 @@ abstract class HttpRequest
 
     /**
      * Gets Сross Site Request Forgery Token
-     * @return string
+     * @return string|null
      */
     public static function getCSRFToken()
     {
@@ -527,8 +527,10 @@ abstract class HttpRequest
     {
         $bearerToken = null;
 
-        if (self::hasHeader('Authorization')) { 
-            if (preg_match('/Bearer\s(\S+)/', self::getHeader('Authorization'), $matches)) {
+        $authorization = (string) self::getHeader('Authorization');
+
+        if (self::hasHeader('Authorization')) {
+            if (preg_match('/Bearer\s(\S+)/', $authorization, $matches)) {
                 $bearerToken = $matches[1];
             }
         }
@@ -560,7 +562,7 @@ abstract class HttpRequest
 
     /**
      * Gets the GET params
-     * @return array
+     * @return array|null
      */
     private static function getParams(): array
     {
@@ -575,7 +577,7 @@ abstract class HttpRequest
 
     /**
      * Gets the POST params
-     * @return array
+     * @return array|null
      */
     private static function postParams(): array
     {

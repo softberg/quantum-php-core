@@ -85,7 +85,7 @@ class Debugger extends DebugBar
      */
     private function tabMessages()
     {
-        $outputData = session()->get('_qt_debug_output');
+        $outputData = (array) session()->get('_qt_debug_output');
 
         if ($outputData) {
             foreach ($outputData as $data) {

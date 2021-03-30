@@ -106,7 +106,7 @@ class Mailer
     {
         $this->mailer = new PHPMailer();
 
-        if (strlen(env('MAIL_HOST')) > 0) {
+        if (strlen((string) env('MAIL_HOST')) > 0) {
             $this->setupSmtp();
             $this->setupDebugging();
         } else {

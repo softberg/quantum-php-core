@@ -133,7 +133,7 @@ class QtView
      * Renders the view
      * @param string $view
      * @param array $params
-     * @return string
+     * @return string|null
      * @throws ViewException
      */
     public function render($view, $params = []): string
@@ -159,7 +159,7 @@ class QtView
      * Renders partial view
      * @param string $view
      * @param array $params
-     * @return string
+     * @return string|null
      * @throws ViewException
      */
     public function renderPartial($view, $params = []): string

@@ -48,7 +48,7 @@ class Di
 
     /**
      * Create and inject dependencies.
-     * @param string|\Closure $entry
+     * @param string|callable $entry
      * @param array $additional
      * @return array
      */

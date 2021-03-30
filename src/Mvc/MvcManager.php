@@ -113,7 +113,7 @@ class MvcManager
     {
         $action = current_action();
 
-        if (!method_exists(self::$controller, $action)) {
+        if ($action && !method_exists(self::$controller, $action)) {
             throw new RouteException(_message(ExceptionMessages::ACTION_NOT_DEFINED, $action));
         }
 

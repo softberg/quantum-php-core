@@ -78,11 +78,11 @@ if (!function_exists('parse_raw_http_request')) {
      */
     function parse_raw_http_request($input)
     {
-        $server = new Server();
+        $contentType = (string) (new Server)->contentType();
 
         $encoded_data = [];
 
-        preg_match('/boundary=(.*)$/', $server->get('CONTENT_TYPE'), $matches);
+        preg_match('/boundary=(.*)$/', $contentType, $matches);
 
         if (count($matches) > 0) {
             $boundary = $matches[1];
@@ -90,7 +90,7 @@ if (!function_exists('parse_raw_http_request')) {
 
             if (is_array($blocks)) {
                 array_pop($blocks);
-                
+
                 foreach ($blocks as $id => $block) {
                     if (empty($block))
                         continue;
