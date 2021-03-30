@@ -55,6 +55,7 @@ namespace Quantum\Test\Unit {
     use Quantum\Models\CUserProfessionModel;
     use Quantum\Libraries\Database\IdiormDbal;
     use Quantum\Libraries\Storage\FileSystem;
+    use Quantum\Di\Di;
 
     /**
      * @runTestsInSeparateProcesses
@@ -156,6 +157,8 @@ namespace Quantum\Test\Unit {
             $loader = new Loader(new FileSystem);
 
             $loader->loadDir(dirname(__DIR__, 4) . DS . 'src' . DS . 'Helpers' . DS . 'functions');
+            
+            Di::loadDefinitions();
         }
 
         public function tearDown(): void
