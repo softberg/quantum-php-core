@@ -20,6 +20,7 @@ use Quantum\Exceptions\ViewException;
 use Quantum\Factory\ViewFactory;
 use Quantum\Hooks\HookManager;
 use Quantum\Debugger\Debugger;
+use Quantum\Di\Di;
 use Error;
 
 /**
@@ -196,13 +197,13 @@ class QtView
      */
     private function findFile($file)
     {
-        $fileSystem = new FileSystem();
+        $fs = Di::get(FileSystem::class);
 
         $filePath = modules_dir() . DS . current_module() . DS . 'Views' . DS . $file . '.php';
 
-        if (!$fileSystem->exists($filePath)) {
+        if (!$fs->exists($filePath)) {
             $filePath = base_dir() . DS . 'base' . DS . 'views' . DS . $file . '.php';
-            if (!$fileSystem->exists($filePath)) {
+            if (!$fs->exists($filePath)) {
                 throw new ViewException(_message(ExceptionMessages::VIEW_FILE_NOT_FOUND, $file));
             }
         }

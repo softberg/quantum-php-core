@@ -11,10 +11,8 @@
  * @link http://quantum.softberg.org/
  * @since 2.0.0
  */
-
 use Quantum\Exceptions\StopExecutionException;
 use Quantum\Libraries\Session\SessionManager;
-use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Libraries\Encryption\Cryptor;
 use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Libraries\Auth\AuthManager;
@@ -23,17 +21,17 @@ use Quantum\Libraries\Cookie\Cookie;
 use Quantum\Libraries\Csrf\Csrf;
 use Quantum\Loader\Loader;
 use Quantum\Dumper\Dumper;
+use Quantum\Di\Di;
 
 if (!function_exists('session')) {
 
     /**
-     * Gets session handler
+     * Gets the session handler
      * @return \Quantum\Libraries\Session\Session
      */
     function session()
     {
-        $loader = new Loader(new FileSystem);
-        return (new SessionManager())->getSessionHandler($loader);
+        return SessionManager::getHandler(Di::get(Loader::class));
     }
 
 }
@@ -54,13 +52,12 @@ if (!function_exists('cookie')) {
 if (!function_exists('auth')) {
 
     /**
-     * Gets the Auth instance
-     * @return \Quantum\Libraries\Auth\WebAuth|Quantum\Libraries\Auth\ApiAuth|Quantum\Libraries\Auth\AuthenticableInterface
+     * Gets the Auth handler
+     * @return \Quantum\Libraries\Auth\WebAuth|Quantum\Libraries\Auth\ApiAuth
      */
     function auth()
     {
-        $loader = new Loader(new FileSystem);
-        return (new AuthManager($loader))->get();
+        return AuthManager::getHandler(Di::get(Loader::class));
     }
 
 }
@@ -73,7 +70,7 @@ if (!function_exists('mailer')) {
      */
     function mailer()
     {
-        return new Mailer();
+        return Di::get(Mailer::class);
     }
 
 }
@@ -250,4 +247,5 @@ if (!function_exists('random_number')) {
         }
         return (int) $randomString;
     }
+
 }

@@ -15,8 +15,8 @@
 namespace Quantum\Console;
 
 use Symfony\Component\Console\Application;
-use Quantum\Libraries\Storage\FileSystem;
-use Quantum\Loader\Loader;
+use Quantum\Bootstrap;
+use Quantum\Di\Di;
 
 /**
  * Class QtConsole
@@ -49,13 +49,16 @@ class QtConsole
      */
     public function init()
     {
-        (new Loader(new FileSystem))->loadDir(HELPERS_DIR . DS . 'functions');
+
+        Bootstrap::loadCoreFuncations();
+
+        Di::loadDefinitions();
 
         $this->application = new Application($this->name, $this->version);
 
         $this->register();
 
-        return $this->run();
+        return $this->application->run();
     }
 
     /**
@@ -86,15 +89,6 @@ class QtConsole
                 $this->application->add($command);
             }
         }
-    }
-
-    /**
-     * Runs the application
-     * @return mixed
-     */
-    private function run()
-    {
-        return $this->application->run();
     }
 
 }

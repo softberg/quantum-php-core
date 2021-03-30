@@ -18,6 +18,7 @@ use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Environment\Environment;
 use Quantum\Console\QtCommand;
 use Quantum\Loader\Loader;
+use Quantum\Di\Di;
 
 /**
  * Class KeyGenerateCommand
@@ -61,12 +62,11 @@ class KeyGenerateCommand extends QtCommand
     {
         $key = $this->generateRandomKey();
         
-        $fs = new FileSystem();
-        
-        $loader = new Loader($fs);
+        $fs = Di::get(FileSystem::class);
+        $loader = Di::get(Loader::class);
 
         if ($key) {
-            Environment::getInstance($fs)->load($loader)->updateRow('APP_KEY', $key);
+            Environment::getInstance()->load($loader)->updateRow($fs, 'APP_KEY', $key);
         }
 
         $this->info('Application key successfully generated and stored.');

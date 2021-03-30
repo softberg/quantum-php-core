@@ -16,6 +16,7 @@ namespace Quantum\Libraries\Validation;
 
 use Quantum\Libraries\Upload\File;
 use Quantum\Factory\ModelFactory;
+use Quantum\Di\Di;
 
 /**
  * Class Validator
@@ -959,7 +960,7 @@ protected function unique(string $field, $value, $param = null)
         return true;
     }
 
-    $model = (new ModelFactory())->get(ucfirst($param));
+    $model = Di::get(ModelFactory::class)->get(ucfirst($param));
 
     $row = $model->findOneBy($field, $value);
 

@@ -14,6 +14,7 @@
 use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Libraries\Config\Config;
 use Quantum\Environment\Environment;
+use Quantum\Di\Di;
 
 if (!function_exists('config')) {
 
@@ -38,7 +39,7 @@ if (!function_exists('env')) {
      */
     function env($var, $default = null)
     {
-        return Environment::getInstance(new FileSystem)->getValue($var, $default);
+        return Environment::getInstance()->getValue($var, $default);
     }
 
 }
