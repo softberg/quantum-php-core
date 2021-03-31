@@ -15,6 +15,7 @@ use Quantum\Loader\Loader;
 use Quantum\Routes\Router;
 use Quantum\Http\Request;
 use Quantum\Http\Response;
+use Quantum\Di\Di;
 use Mockery;
 
 class HelperTest extends TestCase
@@ -34,6 +35,8 @@ class HelperTest extends TestCase
         $loader->loadDir(dirname(__DIR__, 3) . DS . 'src' . DS . 'Helpers' . DS . 'functions');
 
         $loader->loadFile(dirname(__DIR__, 3) . DS . 'src' . DS . 'constants.php');
+        
+        Di::loadDefinitions();
 
         $this->request = new Request();
 
@@ -418,7 +421,7 @@ class HelperTest extends TestCase
             'test' => 'Testing'
         ]);
 
-        Lang::getInstance(new FileSystem)->setLang('en')->load($loaderMock);
+        Lang::getInstance()->setLang('en')->load($loaderMock, new FileSystem);
 
         $this->assertEquals('Learn more', t('custom.learn_more'));
 

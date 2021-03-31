@@ -16,6 +16,7 @@ namespace Quantum\Libraries\Validation;
 
 use Quantum\Libraries\Upload\File;
 use Quantum\Factory\ModelFactory;
+use Quantum\Di\Di;
 
 /**
  * Class Validator
@@ -672,9 +673,9 @@ protected function name(string $field, string $value, $param = null)
  * Verifies that a value is contained within the pre-defined value set
  * @param string $field
  * @param string $value
- * @param null|mixed $param
+ * @param string $param
  */
-protected function contains(string $field, string $value, $param = null)
+protected function contains(string $field, string $value, $param)
 {
     if (empty($value)) {
         return true;
@@ -862,9 +863,9 @@ protected function date(string $field, string $value, $param = null)
  * Ensures the value starts with a certain character / set of character
  * @param string $field
  * @param string $value
- * @param null|mixed $param
+ * @param string $param
  */
-protected function starts(string $field, string $value, $param = null)
+protected function starts(string $field, string $value, $param)
 {
     if (empty($value)) {
         return true;
@@ -898,9 +899,9 @@ protected function phoneNumber(string $field, string $value, $param = null)
  * Custom regex validator
  * @param string $field
  * @param string $value
- * @param null|mixed $param
+ * @param string $param
  */
-protected function regex(string $field, string $value, $param = null)
+protected function regex(string $field, string $value, $param)
 {
     if (empty($value)) {
         return true;
@@ -951,15 +952,15 @@ protected function same(string $field, string $value, $param = null)
  * Validates uniqueness
  * @param string $field
  * @param object $value
- * @param null|mixed $param
+ * @param string $param
  */
-protected function unique(string $field, $value, $param = null)
+protected function unique(string $field, $value, $param)
 {
     if (empty($value)) {
         return true;
     }
 
-    $model = (new ModelFactory())->get(ucfirst($param));
+    $model = Di::get(ModelFactory::class)->get(ucfirst($param));
 
     $row = $model->findOneBy($field, $value);
 

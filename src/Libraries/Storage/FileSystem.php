@@ -107,7 +107,7 @@ class FileSystem
      */
     public function baseName($file)
     {
-        return pathinfo($file, PATHINFO_BASENAME);
+        return (string) pathinfo($file, PATHINFO_BASENAME);
     }
 
     /**
@@ -118,7 +118,7 @@ class FileSystem
      */
     public function fileName($file)
     {
-        return pathinfo($file, PATHINFO_FILENAME);
+        return (string) pathinfo($file, PATHINFO_FILENAME);
     }
 
     /**
@@ -129,7 +129,7 @@ class FileSystem
      */
     public function extension($file)
     {
-        return pathinfo($file, PATHINFO_EXTENSION);
+        return (string) pathinfo($file, PATHINFO_EXTENSION);
     }
 
     /**

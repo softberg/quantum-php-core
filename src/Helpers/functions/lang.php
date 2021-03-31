@@ -13,6 +13,7 @@
  */
 use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Libraries\Lang\Lang;
+use Quantum\Di\Di;
 
 if (!function_exists('current_lang')) {
 
@@ -22,7 +23,7 @@ if (!function_exists('current_lang')) {
      */
     function current_lang()
     {
-        return Lang::getInstance(new FileSystem)->getLang();
+        return Lang::getInstance(Di::get(FileSystem::class))->getLang();
     }
 
 }
@@ -37,7 +38,7 @@ if (!function_exists('t')) {
      */
     function t($key, $params = null)
     {
-        return Lang::getInstance(new FileSystem)->getTranslation($key, $params);
+        return Lang::getInstance(Di::get(FileSystem::class))->getTranslation($key, $params);
     }
 
 }

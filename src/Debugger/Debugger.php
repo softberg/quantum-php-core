@@ -73,7 +73,8 @@ class Debugger extends DebugBar
         $this->tabRoutes($view);
         $this->tabMailLog();
 
-        return $this->debugbar->getJavascriptRenderer()
+        return $this->debugbar
+                        ->getJavascriptRenderer()
                         ->setBaseUrl(base_url() . $this->assetsUrl)
                         ->addAssets([$this->customCss], []);
     }
@@ -84,7 +85,7 @@ class Debugger extends DebugBar
      */
     private function tabMessages()
     {
-        $outputData = session()->get('_qt_debug_output');
+        $outputData = (array) session()->get('_qt_debug_output');
 
         if ($outputData) {
             foreach ($outputData as $data) {

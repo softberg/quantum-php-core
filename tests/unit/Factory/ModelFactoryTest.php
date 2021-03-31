@@ -4,7 +4,10 @@ namespace Quantum\Models {
 
     use Quantum\Mvc\QtModel;
 
-    class TestModel extends QtModel {}
+    class TestModel extends QtModel
+    {
+        
+    }
 
 }
 
@@ -17,6 +20,7 @@ namespace Quantum\Test\Unit {
     use Quantum\Libraries\Storage\FileSystem;
     use Quantum\Loader\Loader;
     use Quantum\Models\TestModel;
+    use Quantum\Di\Di;
 
     /**
      * @runTestsInSeparateProcesses
@@ -31,18 +35,21 @@ namespace Quantum\Test\Unit {
 
         public function setUp(): void
         {
-            
             $loader = new Loader(new FileSystem);
-            
+
+            $loader->loadFile(dirname(__DIR__, 3) . DS . 'src' . DS . 'constants.php');
+
             $loader->loadDir(dirname(__DIR__, 3) . DS . 'src' . DS . 'Helpers' . DS . 'functions');
-            
+
+            Di::loadDefinitions();
+
             $this->databaseMock = Mockery::mock('overload:Quantum\Libraries\Database\Database');
 
             $this->databaseMock->shouldReceive('getORM')->andReturn(new \stdClass());
 
             $this->helperMock = Mockery::mock('overload:Quantum\Helpers\Helper');
 
-            $this->helperMock->shouldReceive('_message')->andReturnUsing(function($subject, $params) {
+            $this->helperMock->shouldReceive('_message')->andReturnUsing(function ($subject, $params) {
                 if (is_array($params)) {
                     return preg_replace_callback('/{%\d+}/', function () use (&$params) {
                         return array_shift($params);

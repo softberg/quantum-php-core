@@ -25,6 +25,7 @@ namespace Quantum\Test\Unit {
     use Quantum\Exceptions\ModelException;
     use Quantum\Libraries\Storage\FileSystem;
     use Quantum\Loader\Loader;
+    use Quantum\Di\Di;
 
     /**
      * @runTestsInSeparateProcesses
@@ -45,6 +46,8 @@ namespace Quantum\Test\Unit {
             $loader = new Loader(new FileSystem);
 
             $loader->loadDir(dirname(__DIR__, 3) . DS . 'src' . DS . 'Helpers' . DS . 'functions');
+            
+            Di::loadDefinitions();
 
             $dbal = Mockery::mock();
 

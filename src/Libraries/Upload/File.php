@@ -18,6 +18,7 @@ use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Exceptions\FileUploadException;
 use Gumlet\ImageResize;
+use Quantum\Di\Di;
 use SplFileInfo;
 use finfo;
 
@@ -102,7 +103,7 @@ class File extends SplFileInfo
      */
     public function __construct(object $file)
     {
-        $this->fs = new FileSystem();
+        $this->fs = Di::get(FileSystem::class);
 
         $this->originalName = $file->name;
         $this->errorCode = $file->error;

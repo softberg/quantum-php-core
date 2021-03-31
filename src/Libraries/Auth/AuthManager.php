@@ -21,11 +21,11 @@ use Quantum\Libraries\Mailer\Mailer;
 use Quantum\Libraries\Hasher\Hasher;
 use Quantum\Factory\ServiceFactory;
 use Quantum\Loader\Loader;
+use Quantum\Di\Di;
 use stdClass;
 
 /**
  * Class AuthManager
- *
  * @package Quantum\Libraries\Auth
  */
 class AuthManager
@@ -39,29 +39,19 @@ class AuthManager
     /**
      * @var string
      */
-    private $authType = null;
+    private static $authType = null;
 
     /**
-     * Get
-     * @return WebAuth|ApiAuth|AuthenticableInterface
+     * GetHandler
+     * @return WebAuth|ApiAuth
      * @throws AuthException
      */
-    public function get()
+    public static function getHandler(Loader $loader)
     {
-        return self::$authInstance;
-    }
+        $authService = self::authService($loader);
 
-    /**
-     * AuthManager constructor.
-     * @param Loader $loader
-     * @throws AuthException
-     */
-    public function __construct(Loader $loader)
-    {
-        $authService = $this->authService($loader);
-
-        if ($this->authType && $authService) {
-            switch ($this->authType) {
+        if (self::$authType && $authService) {
+            switch (self::$authType) {
                 case 'web':
                     self::$authInstance = new WebAuth($authService, new Mailer, new Hasher);
                     break;
@@ -73,6 +63,8 @@ class AuthManager
         } else {
             throw new AuthException(ExceptionMessages::MISCONFIGURED_AUTH_CONFIG);
         }
+
+        return self::$authInstance;
     }
 
     /**
@@ -81,7 +73,7 @@ class AuthManager
      * @return AuthServiceInterface
      * @throws \Exception
      */
-    public function authService(Loader $loader): AuthServiceInterface
+    public static function authService(Loader $loader): AuthServiceInterface
     {
         if (!config()->has('auth')) {
 
@@ -96,9 +88,9 @@ class AuthManager
             config()->import($loader, 'auth');
         }
 
-        $this->authType = config()->get('auth.type');
+        self::$authType = config()->get('auth.type');
 
-        return (new ServiceFactory)->create(config()->get('auth.service'));
+        return Di::get(ServiceFactory::class)->create(config()->get('auth.service'));
     }
 
 }

@@ -15,11 +15,11 @@
 namespace Quantum\Factory;
 
 use Quantum\Exceptions\ExceptionMessages;
-use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Exceptions\ServiceException;
 use Quantum\Factory\ModelFactory;
 use Quantum\Mvc\QtService;
 use Quantum\Loader\Loader;
+use Quantum\Di\Di;
 
 /**
  * Class ServiceFactory
@@ -115,10 +115,10 @@ class ServiceFactory
             if ($paramType) {
                 switch ($paramType) {
                     case ModelFactory::class:
-                        array_push($args, new ModelFactory());
+                        array_push($args, Di::get(ModelFactory::class));
                         break;
                     case Loader::class:
-                        array_push($args, new Loader(new FileSystem));
+                        array_push($args, Di::get(Loader::class));
                         break;
                     default :
                         array_push($args, current($arguments));

@@ -15,40 +15,26 @@
 namespace Quantum\Mvc;
 
 use Quantum\Exceptions\ExceptionMessages;
-use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Middleware\MiddlewareManager;
 use Quantum\Exceptions\RouteException;
-use Quantum\Libraries\Mailer\Mailer;
-use Quantum\Factory\ServiceFactory;
-use Quantum\Factory\ModelFactory;
-use Quantum\Factory\ViewFactory;
 use Quantum\Libraries\Csrf\Csrf;
-use Quantum\Loader\Loader;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
+use Quantum\Di\Di;
 
 /**
  * MvcManager Class
- *
- * MvcManager class determine the controller, action of current module based on
- * current route
- *
+ * 
  * @package Quantum
- * @subpackage MVC
  * @category MVC
  */
 class MvcManager
 {
 
     /**
-     * @var object
+     * @var QtController
      */
-    private $controller;
-
-    /**
-     * @var string
-     */
-    private $action;
+    private static $controller;
 
     /**
      * Run MVC
@@ -57,7 +43,7 @@ class MvcManager
      * @throws RouteException
      * @throws \ReflectionException
      */
-    public function runMvc(Request $request, Response $response)
+    public static function runMvc(Request $request, Response $response)
     {
 
         if ($request->getMethod() != 'OPTIONS') {
@@ -70,39 +56,36 @@ class MvcManager
 
             $callback = route_callback();
 
-            if ($callback){
-                call_user_func_array($callback, $this->getCallbackArgs($routeArgs, $callback, $request, $response));
+            if ($callback) {
+                call_user_func_array($callback, self::getCallbackArgs($routeArgs, $callback, $request, $response));
             } else {
+                self::$controller = self::getController();
 
-                $this->controller = $this->getController();
+                $action = self::getAction();
 
-                $this->action = $this->getAction();
-
-                if ($this->controller->csrfVerification ?? true) {
-                    Csrf::checkToken($request, \session());
+                if (self::$controller->csrfVerification ?? true) {
+                    Csrf::checkToken($request, session());
                 }
 
-                if (method_exists($this->controller, '__before')) {
-                    call_user_func_array(array($this->controller, '__before'), $this->getArgs($routeArgs, '__before', $request, $response));
+                if (method_exists(self::$controller, '__before')) {
+                    call_user_func_array([self::$controller, '__before'], self::getArgs($routeArgs, '__before', $request, $response));
                 }
 
-                call_user_func_array(array($this->controller, $this->action), $this->getArgs($routeArgs, $this->action, $request, $response));
+                call_user_func_array([self::$controller, $action], self::getArgs($routeArgs, $action, $request, $response));
 
-                if (method_exists($this->controller, '__after')) {
-                    call_user_func_array(array($this->controller, '__after'), $this->getArgs($routeArgs, '__after', $request, $response));
+                if (method_exists(self::$controller, '__after')) {
+                    call_user_func_array([self::$controller, '__after'], self::getArgs($routeArgs, '__after', $request, $response));
                 }
             }
         }
-
     }
 
     /**
      * Get Controller
-     *
      * @return object
      * @throws RouteException
      */
-    private function getController()
+    private static function getController()
     {
         $controllerPath = modules_dir() . DS . current_module() . DS . 'Controllers' . DS . current_controller() . '.php';
 
@@ -123,15 +106,14 @@ class MvcManager
 
     /**
      * Get Action
-     *
      * @return string
      * @throws RouteException
      */
-    private function getAction()
+    private static function getAction()
     {
         $action = current_action();
 
-        if (!method_exists($this->controller, $action)) {
+        if ($action && !method_exists(self::$controller, $action)) {
             throw new RouteException(_message(ExceptionMessages::ACTION_NOT_DEFINED, $action));
         }
 
@@ -142,89 +124,24 @@ class MvcManager
      * Get Args
      * @param  array $routeArgs
      * @param  string $action
-     * @param Request $request
-     * @param Response $response
      * @return array
      * @throws \ReflectionException
      */
-    private function getArgs($routeArgs, $action, Request $request, Response $response)
+    private static function getArgs($routeArgs, $action)
     {
-        $reflaction = new \ReflectionMethod($this->controller, $action);
-        $params = $reflaction->getParameters();
-
-        return $this->collectParams($routeArgs, $params, $request, $response);
+        return Di::autowire(get_class(self::$controller) . ':' . $action, $routeArgs);
     }
 
     /**
      * Get Callback Args
-     *
      * @param  array $routeArgs
      * @param  \Closure $callback
-     * @param Request $request
-     * @param Response $response
      * @return array
-     * @throws \ReflectionFunction
+     * @throws \ReflectionException
      */
-    private function getCallbackArgs($routeArgs, $callback, Request $request, Response $response) {
-
-        $reflaction = new \ReflectionFunction($callback);
-        $params = $reflaction->getParameters();
-
-        return $this->collectParams($routeArgs, $params, $request, $response);
-    }
-
-    /**
-     * Collect Params
-     *
-     * @param  array $routeArgs
-     * @param  array $params
-     * @param Request $request
-     * @param Response $response
-     * @return array
-     */
-    private function collectParams($routeArgs, $params, Request $request, Response $response)
+    private static function getCallbackArgs($routeArgs, $callback)
     {
-        $args = [];
-
-        if (count($params)) {
-            foreach ($params as $param) {
-                $paramType = $param->getType();
-
-                if ($paramType) {
-                    switch ($paramType) {
-                        case Request::class:
-                            array_push($args, $request);
-                            break;
-                        case Response::class:
-                            array_push($args, $response);
-                            break;
-                        case ServiceFactory::class:
-                            array_push($args, new ServiceFactory());
-                            break;
-                        case ModelFactory::class:
-                            array_push($args, new ModelFactory());
-                            break;
-                        case ViewFactory::class:
-                            array_push($args, new ViewFactory());
-                            break;
-                        case Mailer::class:
-                            array_push($args, new Mailer());
-                            break;
-                        case Loader::class:
-                            array_push($args, new Loader(new FileSystem));
-                            break;
-                        default :
-                            array_push($args, current($routeArgs));
-                            next($routeArgs);
-                    }
-                } else {
-                    array_push($args, current($routeArgs));
-                    next($routeArgs);
-                }
-            }
-        }
-
-        return $args;
+        return Di::autowire($callback, $routeArgs);
     }
 
 }

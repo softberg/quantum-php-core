@@ -40,12 +40,6 @@ class Lang
     private static $translations = [];
 
     /**
-     * File System
-     * @var FileSystem
-     */
-    private $fs;
-
-    /**
      * Instance of Lang
      * @var Lang 
      */
@@ -56,23 +50,21 @@ class Lang
      * @param string $lang
      * @throws LangException
      */
-    private function __construct(FileSystem $fs)
+    private function __construct()
     {
         if (!config()->has('langs')) {
             throw new LangException(ExceptionMessages::MISCONFIGURED_LANG_CONFIG);
         }
-
-        $this->fs = $fs;
     }
 
     /**
      * GetInstance
      * @return Lang
      */
-    public static function getInstance(FileSystem $fs)
+    public static function getInstance()
     {
         if (self::$langInstance === null) {
-            self::$langInstance = new self($fs);
+            self::$langInstance = new self();
         }
 
         return self::$langInstance;
@@ -83,18 +75,18 @@ class Lang
      * @param Loader $loader
      * @throws LangException
      */
-    public function load(Loader $loader)
+    public function load(Loader $loader, FileSystem $fs)
     {
         $langDir = modules_dir() . DS . current_module() . DS . 'Resources' . DS . 'lang' . DS . $this->getLang();
 
-        $files = $this->fs->glob($langDir . "/*.php");
+        $files = $fs->glob($langDir . "/*.php");
 
         if (is_array($files) && count($files) == 0) {
             throw new LangException(_message(ExceptionMessages::TRANSLATION_FILES_NOT_FOUND, $this->getLang()));
         }
 
         foreach ($files as $file) {
-            $fileName = $this->fs->fileName($file);
+            $fileName = $fs->fileName($file);
 
             $setup = (object) [
                         'module' => current_module(),
