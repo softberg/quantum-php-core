@@ -136,7 +136,7 @@ class QtView
      * @return string|null
      * @throws ViewException
      */
-    public function render($view, $params = []): string
+    public function render($view, $params = []): ?string
     {
         if (!$this->layout) {
             throw new ViewException(ExceptionMessages::LAYOUT_NOT_SET);
@@ -162,7 +162,7 @@ class QtView
      * @return string|null
      * @throws ViewException
      */
-    public function renderPartial($view, $params = []): string
+    public function renderPartial($view, $params = []): ?string
     {
         if (!empty($params)) {
             $this->data = array_merge($this->data, $params);

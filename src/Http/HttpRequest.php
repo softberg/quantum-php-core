@@ -448,7 +448,7 @@ abstract class HttpRequest
     /**
      * Gets the request header by given key
      * @param $key
-     * @return mixed|null
+     * @return string|null
      */
     public static function getHeader($key)
     {
@@ -564,7 +564,7 @@ abstract class HttpRequest
      * Gets the GET params
      * @return array|null
      */
-    private static function getParams(): array
+    private static function getParams(): ?array
     {
         $getParams = [];
 
@@ -579,7 +579,7 @@ abstract class HttpRequest
      * Gets the POST params
      * @return array|null
      */
-    private static function postParams(): array
+    private static function postParams(): ?array
     {
         $postParams = [];
 

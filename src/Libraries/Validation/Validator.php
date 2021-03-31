@@ -952,9 +952,9 @@ protected function same(string $field, string $value, $param = null)
  * Validates uniqueness
  * @param string $field
  * @param object $value
- * @param null|mixed $param
+ * @param string $param
  */
-protected function unique(string $field, $value, $param = null)
+protected function unique(string $field, $value, $param)
 {
     if (empty($value)) {
         return true;
