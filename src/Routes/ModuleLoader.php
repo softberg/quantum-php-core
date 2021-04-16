@@ -15,9 +15,8 @@
 namespace Quantum\Routes;
 
 use Quantum\Exceptions\ModuleLoaderException;
-use Quantum\Exceptions\ExceptionMessages;
+use Quantum\Exceptions\RouteException;
 use Quantum\Libraries\Storage\FileSystem;
-use Quantum\Routes\Route;
 use Closure;
 
 /**
@@ -33,6 +32,7 @@ class ModuleLoader
      * @param Router $router
      * @param FileSystem $fs
      * @throws ModuleLoaderException
+     * @throws RouteException
      */
     public static function loadModulesRoutes(Router $router, FileSystem $fs)
     {
@@ -42,13 +42,13 @@ class ModuleLoader
             $moduleRoutes = modules_dir() . DS . $module . DS . 'Config' . DS . 'routes.php';
 
             if (!$fs->exists($moduleRoutes)) {
-                throw new ModuleLoaderException(_message(ExceptionMessages::MODULE_NOT_FOUND, $module));
+                throw new ModuleLoaderException(_message(ModuleLoaderException::MODULE_NOT_FOUND, $module));
             }
 
             $routesClosure = require_once $moduleRoutes;
 
             if (!$routesClosure instanceof Closure) {
-                throw new ModuleLoaderException(ExceptionMessages::ROUTES_NOT_CLOSURE);
+                throw new RouteException(RouteException::ROUTES_NOT_CLOSURE);
             }
 
             $route = new Route($module);

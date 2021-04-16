@@ -14,7 +14,7 @@
 
 namespace Quantum\Http;
 
-use Quantum\Exceptions\ExceptionMessages;
+use Quantum\Exceptions\FileUploadException;
 use Quantum\Exceptions\RequestException;
 use Quantum\Environment\Server;
 use Quantum\Bootstrap;
@@ -99,7 +99,7 @@ abstract class HttpRequest
     public static function init(Server $server)
     {
         if (get_caller_class() !== Bootstrap::class) {
-            throw new RequestException(ExceptionMessages::UNEXPECTED_REQUEST_INITIALIZATION);
+            throw new RequestException(RequestException::UNEXPECTED_REQUEST_INITIALIZATION);
         }
 
         self::$server = $server;
@@ -209,7 +209,7 @@ abstract class HttpRequest
     public static function setMethod(string $method)
     {
         if (!in_array($method, self::$availableMetods)) {
-            throw new RequestException();
+            throw new RequestException(RequestException::METHOD_NOT_AVAILABLE);
         }
 
         self::$__method = $method;
@@ -419,7 +419,7 @@ abstract class HttpRequest
     public static function getFile($key)
     {
         if (!self::hasFile($key)) {
-            throw new \InvalidArgumentException(_message(ExceptionMessages::UPLOADED_FILE_NOT_FOUND, $key));
+            throw new \InvalidArgumentException(_message(FileUploadException::UPLOADED_FILE_NOT_FOUND, $key));
         }
 
         return self::$__files[$key];

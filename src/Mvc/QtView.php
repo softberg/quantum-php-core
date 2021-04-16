@@ -14,7 +14,6 @@
 
 namespace Quantum\Mvc;
 
-use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Exceptions\ViewException;
 use Quantum\Factory\ViewFactory;
@@ -66,7 +65,7 @@ class QtView
     public function __construct()
     {
         if (get_caller_class() != ViewFactory::class) {
-            throw new ViewException(_message(ExceptionMessages::DIRECT_VIEW_INCTANCE, [ViewFactory::class]));
+            throw new ViewException(_message(ViewException::DIRECT_VIEW_INCTANCE, [ViewFactory::class]));
         }
     }
 
@@ -139,7 +138,7 @@ class QtView
     public function render($view, $params = []): ?string
     {
         if (!$this->layout) {
-            throw new ViewException(ExceptionMessages::LAYOUT_NOT_SET);
+            throw new ViewException(ViewException::LAYOUT_NOT_SET);
         }
 
         if (!empty($params)) {
@@ -204,7 +203,7 @@ class QtView
         if (!$fs->exists($filePath)) {
             $filePath = base_dir() . DS . 'base' . DS . 'views' . DS . $file . '.php';
             if (!$fs->exists($filePath)) {
-                throw new ViewException(_message(ExceptionMessages::VIEW_FILE_NOT_FOUND, $file));
+                throw new ViewException(_message(ViewException::VIEW_FILE_NOT_FOUND, $file));
             }
         }
 

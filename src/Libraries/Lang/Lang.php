@@ -15,7 +15,6 @@
 namespace Quantum\Libraries\Lang;
 
 use Quantum\Libraries\Storage\FileSystem;
-use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Exceptions\LangException;
 use Dflydev\DotAccessData\Data;
 use Quantum\Loader\Loader;
@@ -53,7 +52,7 @@ class Lang
     private function __construct()
     {
         if (!config()->has('langs')) {
-            throw new LangException(ExceptionMessages::MISCONFIGURED_LANG_CONFIG);
+            throw new LangException(LangException::MISCONFIGURED_LANG_CONFIG);
         }
     }
 
@@ -82,7 +81,7 @@ class Lang
         $files = $fs->glob($langDir . "/*.php");
 
         if (is_array($files) && count($files) == 0) {
-            throw new LangException(_message(ExceptionMessages::TRANSLATION_FILES_NOT_FOUND, $this->getLang()));
+            throw new LangException(_message(LangException::TRANSLATION_FILES_NOT_FOUND, $this->getLang()));
         }
 
         foreach ($files as $file) {
@@ -92,7 +91,7 @@ class Lang
                         'module' => current_module(),
                         'env' => 'Resources' . DS . 'lang' . DS . $this->getLang(),
                         'fileName' => $fileName,
-                        'exceptionMessage' => ExceptionMessages::TRANSLATION_FILES_NOT_FOUND
+                        'exceptionMessage' => LangException::TRANSLATION_FILES_NOT_FOUND
             ];
 
             self::$translations[$fileName] = $loader->setup($setup)->load();
@@ -108,7 +107,7 @@ class Lang
     public function setLang($lang)
     {
         if (empty($lang) && !config()->get('lang_default')) {
-            throw new LangException(ExceptionMessages::MISCONFIGURED_LANG_DEFAULT_CONFIG);
+            throw new LangException(LangException::MISCONFIGURED_LANG_DEFAULT_CONFIG);
         }
 
         if (empty($lang) || !in_array($lang, (array) config()->get('langs'))) {

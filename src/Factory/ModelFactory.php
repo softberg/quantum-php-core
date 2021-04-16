@@ -14,7 +14,6 @@
 
 namespace Quantum\Factory;
 
-use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Exceptions\ModelException;
 use Quantum\Loader\Loader;
 use Quantum\Mvc\QtModel;
@@ -39,13 +38,13 @@ Class ModelFactory
     public function get($modelClass): QtModel
     {
         if (!class_exists($modelClass)) {
-            throw new ModelException(_message(ExceptionMessages::MODEL_NOT_FOUND, $modelClass));
+            throw new ModelException(_message(ModelException::MODEL_NOT_FOUND, $modelClass));
         }
 
         $model = new $modelClass(Di::get(Loader::class));
 
         if (!$model instanceof QtModel) {
-            throw new ModelException(_message(ExceptionMessages::NOT_INSTANCE_OF_MODEL, [$modelClass, QtModel::class]));
+            throw new ModelException(_message(ModelException::NOT_INSTANCE_OF_MODEL, [$modelClass, QtModel::class]));
         }
 
         return $model;

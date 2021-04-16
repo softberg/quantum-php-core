@@ -22,5 +22,8 @@ namespace Quantum\Exceptions;
  */
 class ModuleLoaderException extends \Exception
 {
-    
+    /**
+     * Module not found message
+     */
+    const MODULE_NOT_FOUND = 'Module `{%1}` not found';
 }

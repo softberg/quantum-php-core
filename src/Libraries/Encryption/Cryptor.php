@@ -14,8 +14,8 @@
 
 namespace Quantum\Libraries\Encryption;
 
-use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Exceptions\CryptorException;
+use Quantum\Exceptions\AppException;
 
 /**
  * Class Cryptor
@@ -76,13 +76,13 @@ class Cryptor
      * Cryptor constructor
      * @param boolean $asymmetric
      * @return $this
-     * @throws CryptorException
+     * @throws AppException
      */
     public function __construct($asymmetric = false)
     {
         if (!$asymmetric) {
             if (!env('APP_KEY')) {
-                throw new CryptorException(ExceptionMessages::APP_KEY_MISSING);
+                throw new AppException(AppException::APP_KEY_MISSING);
             }
             $this->appKey = env('APP_KEY');
         } else {
@@ -110,7 +110,7 @@ class Cryptor
     public function getPublicKey()
     {
         if (!isset($this->keys['public'])) {
-            throw new CryptorException(ExceptionMessages::OPENSSL_PUBLIC_KEY_NOT_CREATED);
+            throw new CryptorException(CryptorException::OPENSSL_PUBLIC_KEY_NOT_CREATED);
         }
 
         return $this->keys['public'];
@@ -124,7 +124,7 @@ class Cryptor
     public function getPrivateKey()
     {
         if (!isset($this->keys['private'])) {
-            throw new CryptorException(ExceptionMessages::OPENSSL_PRIVATE_KEY_NOT_CREATED);
+            throw new CryptorException(CryptorException::OPENSSL_PRIVATE_KEY_NOT_CREATED);
         }
 
         return $this->keys['private'];
@@ -147,7 +147,7 @@ class Cryptor
             return base64_encode(base64_encode($encrypted) . '::' . base64_encode($this->iv));
         } else {
             if (!$publicKey) {
-                throw new CryptorException(ExceptionMessages::OPENSSL_PUBLIC_KEY_NOT_PROVIDED);
+                throw new CryptorException(CryptorException::OPENSSL_PUBLIC_KEY_NOT_PROVIDED);
             }
 
             openssl_public_encrypt($plain, $encrypted, $publicKey);
@@ -172,7 +172,7 @@ class Cryptor
             $data = explode('::', base64_decode($encrypted), 2);
 
             if (empty($data) || count($data) < 2) {
-                throw new CryptorException(ExceptionMessages::OPENSSEL_INVALID_CIPHER);
+                throw new CryptorException(CryptorException::OPENSSEL_INVALID_CIPHER);
             }
 
             $encrypted = base64_decode($data[0]);
@@ -181,7 +181,7 @@ class Cryptor
             return openssl_decrypt($encrypted, $this->cipherMethod, $this->appKey, $options = 0, $iv);
         } else {
             if (!$privateKey) {
-                throw new CryptorException(ExceptionMessages::OPENSSL_PRIVATE_KEY_NOT_PROVIDED);
+                throw new CryptorException(CryptorException::OPENSSL_PRIVATE_KEY_NOT_PROVIDED);
             }
 
             openssl_private_decrypt(base64_decode($encrypted), $decrypted, $privateKey);
@@ -222,7 +222,7 @@ class Cryptor
         ]);
 
         if (!$resource) {
-            throw new CryptorException(ExceptionMessages::OPENSSEL_CONFIG_NOT_FOUND);
+            throw new CryptorException(CryptorException::OPENSSEL_CONFIG_NOT_FOUND);
         }
 
         openssl_pkey_export($resource, $this->keys['private']);

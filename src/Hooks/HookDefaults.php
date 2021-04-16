@@ -14,7 +14,7 @@
 
 namespace Quantum\Hooks;
 
-use Quantum\Exceptions\ExceptionMessages;
+use Quantum\Exceptions\ModelException;
 use Quantum\Exceptions\RouteException;
 use Quantum\Http\Response;
 use Twig\Loader\FilesystemLoader;
@@ -47,7 +47,7 @@ class HookDefaults implements HookInterface
      */
     public static function pageNotFound()
     {
-        throw new RouteException(ExceptionMessages::ROUTE_NOT_FOUND);
+        throw new RouteException(RouteException::ROUTE_NOT_FOUND);
     }
 
     /**
@@ -84,7 +84,7 @@ class HookDefaults implements HookInterface
      */
     public static function handleModel($modelName)
     {
-        throw new \Exception(_message(ExceptionMessages::MODEL_NOT_FOUND, $modelName));
+        throw new \Exception(_message(ModelException::MODEL_NOT_FOUND, $modelName));
     }
 
 }

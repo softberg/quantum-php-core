@@ -19,7 +19,6 @@ namespace Quantum\Test\Unit {
     use PHPUnit\Framework\TestCase;
     use Quantum\Libraries\Encryption\Cryptor;
     use Quantum\Exceptions\CryptorException;
-    use Quantum\Exceptions\ExceptionMessages;
 
     class CryptorTest extends TestCase
     {
@@ -101,7 +100,7 @@ namespace Quantum\Test\Unit {
 
             $this->expectException(CryptorException::class);
 
-            $this->expectExceptionMessage(ExceptionMessages::OPENSSL_PUBLIC_KEY_NOT_PROVIDED);
+            $this->expectExceptionMessage(CryptorException::OPENSSL_PUBLIC_KEY_NOT_PROVIDED);
 
             $this->cryptor->encrypt($this->phraseOne);
         }
@@ -116,7 +115,7 @@ namespace Quantum\Test\Unit {
 
             $this->expectException(CryptorException::class);
 
-            $this->expectExceptionMessage(ExceptionMessages::OPENSSL_PRIVATE_KEY_NOT_PROVIDED);
+            $this->expectExceptionMessage(CryptorException::OPENSSL_PRIVATE_KEY_NOT_PROVIDED);
 
             $this->cryptor->decrypt($encrypted);
         }

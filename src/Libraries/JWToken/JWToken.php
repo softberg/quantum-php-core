@@ -14,8 +14,8 @@
 
 namespace Quantum\Libraries\JWToken;
 
-use Quantum\Exceptions\ExceptionMessages;
 use Firebase\JWT\BeforeValidException;
+use Quantum\Exceptions\JwtException;
 use Firebase\JWT\JWT;
 
 /**
@@ -128,7 +128,7 @@ class JWToken extends JWT
     public function compose($keyId = null, $head = null)
     {
         if (empty($this->payload)) {
-            throw new BeforeValidException(ExceptionMessages::JWT_PAYLOAD_NOT_FOUND);
+            throw new BeforeValidException(JwtException::JWT_PAYLOAD_NOT_FOUND);
         }
 
         return parent::encode($this->payload, $this->key, $this->algorithm, $keyId, $head);

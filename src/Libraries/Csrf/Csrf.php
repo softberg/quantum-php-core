@@ -15,7 +15,6 @@
 namespace Quantum\Libraries\Csrf;
 
 use Quantum\Libraries\Session\SessionStorageInterface;
-use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Exceptions\CsrfException;
 use Quantum\Http\Request;
 
@@ -68,11 +67,11 @@ class Csrf
         if (in_array($request->getMethod(), self::$methods)) {
             $token = $request->getCSRFToken();
             if (!$token) {
-                throw new CsrfException(ExceptionMessages::CSRF_TOKEN_NOT_FOUND);
+                throw new CsrfException(CsrfException::CSRF_TOKEN_NOT_FOUND);
             }
 
             if (self::getToken($storage) !== $token) {
-                throw new CsrfException(ExceptionMessages::CSRF_TOKEN_NOT_MATCHED);
+                throw new CsrfException(CsrfException::CSRF_TOKEN_NOT_MATCHED);
             }
         }
 

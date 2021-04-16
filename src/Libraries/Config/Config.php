@@ -14,7 +14,6 @@
 
 namespace Quantum\Libraries\Config;
 
-use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Exceptions\ConfigException;
 use Quantum\Contracts\StorageInterface;
 use Dflydev\DotAccessData\Data;
@@ -56,7 +55,7 @@ class Config implements StorageInterface
         $this->setup->hierarchical = true;
         $this->setup->env = 'config';
         $this->setup->fileName = 'config';
-        $this->setup->exceptionMessage = ExceptionMessages::CONFIG_FILE_NOT_FOUND;
+        $this->setup->exceptionMessage = ConfigException::CONFIG_FILE_NOT_FOUND;
     }
 
     /**
@@ -80,7 +79,7 @@ class Config implements StorageInterface
     public function load(Loader $loader)
     {
         if (!$this->setup) {
-            throw new ConfigException(_message(ExceptionMessages::SETUP_NOT_PROVIDED, __CLASS__));
+            throw new ConfigException(_message(ConfigException::SETUP_NOT_PROVIDED, __CLASS__));
         }
 
         if (empty(self::$configs)) {
@@ -97,11 +96,11 @@ class Config implements StorageInterface
     public function import(Loader $loader, $fileName)
     {
         if ($this->has($fileName)) {
-            throw new ConfigException(_message(ExceptionMessages::CONFIG_COLLISION, $fileName));
+            throw new ConfigException(_message(ConfigException::CONFIG_COLLISION, $fileName));
         }
 
         if (!$this->setup) {
-            throw new ConfigException(_message(ExceptionMessages::SETUP_NOT_PROVIDED, __CLASS__));
+            throw new ConfigException(_message(ConfigException::SETUP_NOT_PROVIDED, __CLASS__));
         }
 
         self::$configs[$fileName] = $loader->load();

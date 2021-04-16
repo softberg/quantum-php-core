@@ -2,9 +2,9 @@
 
 /**
  * Quantum PHP Framework
- * 
+ *
  * An open source software development framework for PHP
- * 
+ *
  * @package Quantum
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
@@ -16,24 +16,19 @@ namespace Quantum\Exceptions;
 
 /**
  * ServiceException class
- * 
+ *
  * @package Quantum
  * @category Exceptions
  */
-class ServiceException extends \Exception
+class SessionException extends \Exception
 {
     /**
-     * Service not found message
+     * Session start error message
      */
-    const SERVICE_NOT_FOUND = 'Service `{%1}` not found';
+    const RUNTIME_SESSION_START = 'Can not start the session';
 
     /**
-     * Model not instance of QtModel
+     * Session destroy error  message
      */
-    const NOT_INSTANCE_OF_SERVICE = 'Service `{%1}` is not instance of `{%2}`';
-
-    /**
-     * Undefined method
-     */
-    const UNDEFINED_METHOD = 'The method `{%1}` is not defined';
+    const RUNTIME_SESSION_DESTROY = 'Can not destroy the session';
 }

@@ -4,7 +4,6 @@ namespace Quantum\Test\Unit;
 
 use Mockery;
 use PHPUnit\Framework\TestCase;
-use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Exceptions\CsrfException;
 use Quantum\Libraries\Csrf\Csrf;
 use Quantum\Libraries\Session\Session;
@@ -96,7 +95,7 @@ class CsrfTest extends TestCase
 
         $this->expectException(CsrfException::class);
 
-        $this->expectExceptionMessage(ExceptionMessages::CSRF_TOKEN_NOT_FOUND);
+        $this->expectExceptionMessage(CsrfException::CSRF_TOKEN_NOT_FOUND);
 
         $this->assertTrue(Csrf::checkToken($this->request, $this->session));
     }
@@ -109,7 +108,7 @@ class CsrfTest extends TestCase
 
         $this->expectException(CsrfException::class);
 
-        $this->expectExceptionMessage(ExceptionMessages::CSRF_TOKEN_NOT_MATCHED);
+        $this->expectExceptionMessage(CsrfException::CSRF_TOKEN_NOT_MATCHED);
 
         $this->assertTrue(Csrf::checkToken($this->request, $this->session));
     }

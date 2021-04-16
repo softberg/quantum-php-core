@@ -14,7 +14,7 @@
 
 namespace Quantum\Environment;
 
-use Quantum\Exceptions\ExceptionMessages;
+use Quantum\Exceptions\ConfigException;
 use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Loader\Loader;
 use Dotenv\Dotenv;
@@ -62,7 +62,7 @@ class Environment
         $this->setup->hierarchical = true;
         $this->setup->env = 'config';
         $this->setup->fileName = 'env';
-        $this->setup->exceptionMessage = ExceptionMessages::CONFIG_FILE_NOT_FOUND;
+        $this->setup->exceptionMessage = ConfigException::CONFIG_FILE_NOT_FOUND;
     }
 
     /**

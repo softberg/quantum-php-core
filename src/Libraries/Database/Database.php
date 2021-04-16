@@ -14,8 +14,9 @@
 
 namespace Quantum\Libraries\Database;
 
-use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Exceptions\DatabaseException;
+use Quantum\Exceptions\ConfigException;
+use Quantum\Exceptions\ModelException;
 use Quantum\Loader\Loader;
 use stdClass;
 
@@ -81,7 +82,7 @@ class Database
         $this->setup->module = current_module();
         $this->setup->env = 'config';
         $this->setup->fileName = 'database';
-        $this->setup->exceptionMessage = ExceptionMessages::CONFIG_FILE_NOT_FOUND;
+        $this->setup->exceptionMessage = ConfigException::CONFIG_FILE_NOT_FOUND;
     }
 
     /**
@@ -90,7 +91,7 @@ class Database
      * @param string|null $modelName
      * @param string $idColumn
      * @return \Quantum\Libraries\Database\IdiormDbal
-     * @throws DatabaseException
+     * @throws ModelException
      */
     public function getORM($table, $modelName = null, $idColumn = 'id'): IdiormDbal
     {
@@ -101,7 +102,7 @@ class Database
         }
 
         if (empty($table)) {
-            throw new DatabaseException(_message(ExceptionMessages::MODEL_WITHOUT_TABLE_DEFINED, $modelName));
+            throw new ModelException(_message(ModelException::MODEL_WITHOUT_TABLE_DEFINED, $modelName));
         }
 
         return new $dbalClass($table, $idColumn);
@@ -129,13 +130,13 @@ class Database
         $configs = $this->loader->setup($this->setup)->load();
 
         if (!key_exists('current', $configs)) {
-            throw new DatabaseException(ExceptionMessages::INCORRECT_CONFIG);
+            throw new DatabaseException(DatabaseException::INCORRECT_CONFIG);
         }
 
         $currentKey = $configs['current'];
 
         if (!key_exists($currentKey, $configs)) {
-            throw new DatabaseException(ExceptionMessages::INCORRECT_CONFIG);
+            throw new DatabaseException(DatabaseException::INCORRECT_CONFIG);
         }
 
         self::$configs = $configs[$currentKey];

@@ -14,7 +14,7 @@
 
 namespace Quantum\Hooks;
 
-use Quantum\Exceptions\ExceptionMessages;
+use Quantum\Exceptions\HookException;
 
 /**
  * HookManager Class
@@ -34,7 +34,7 @@ class HookManager {
      * @param mixed $args
      * @param string $alternativePath
      * @return mixed
-     * @throws \Exception When Hook not found
+     * @throws HookException When Hook not found
      */
     public static function call($hookName, $args = [], $alternativePath = null) {
         $hookImplementer = self::hasImplementer($hookName);
@@ -49,7 +49,7 @@ class HookManager {
             if ($defaultImplementer) {
                 return $defaultImplementer::$hookName($args);
             } else {
-                throw new \Exception(_message(ExceptionMessages::UNDECLARED_HOOK_NAME, $hookName));
+                throw new HookException(_message(HookException::UNDECLARED_HOOK_NAME, $hookName));
             }
         }
     }
@@ -59,7 +59,7 @@ class HookManager {
      * 
      * @param string $hookName
      * @return string Implementer class name
-     * @throws \Exception When duplicate hook name detected
+     * @throws HookException When duplicate hook name detected
      */
     private static function hasImplementer($hookName) {
         $classNames = get_directory_classes(BASE_DIR . DS . 'hooks');
@@ -82,7 +82,7 @@ class HookManager {
         }
 
         if ($duplicates > 1) {
-            throw new \Exception(ExceptionMessages::DUPLICATE_HOOK_IMPLEMENTER);
+            throw new HookException(HookException::DUPLICATE_HOOK_IMPLEMENTER);
         }
 
         return $hookImplementer;

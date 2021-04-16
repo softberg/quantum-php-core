@@ -14,7 +14,6 @@
 use Quantum\Exceptions\StopExecutionException;
 use Quantum\Libraries\Session\SessionManager;
 use Quantum\Libraries\Encryption\Cryptor;
-use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Libraries\Auth\AuthManager;
 use Quantum\Libraries\Mailer\Mailer;
 use Quantum\Libraries\Cookie\Cookie;
@@ -227,7 +226,7 @@ if (!function_exists('stop')) {
      */
     function stop()
     {
-        throw new StopExecutionException(ExceptionMessages::EXECUTION_TERMINATED);
+        throw new StopExecutionException(StopExecutionException::EXECUTION_TERMINATED);
     }
 
 }

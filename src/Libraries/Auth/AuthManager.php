@@ -14,7 +14,7 @@
 
 namespace Quantum\Libraries\Auth;
 
-use Quantum\Exceptions\ExceptionMessages;
+use Quantum\Exceptions\ConfigException;
 use Quantum\Libraries\JWToken\JWToken;
 use Quantum\Exceptions\AuthException;
 use Quantum\Libraries\Mailer\Mailer;
@@ -61,7 +61,7 @@ class AuthManager
                     break;
             }
         } else {
-            throw new AuthException(ExceptionMessages::MISCONFIGURED_AUTH_CONFIG);
+            throw new AuthException(AuthException::MISCONFIGURED_AUTH_CONFIG);
         }
 
         return self::$authInstance;
@@ -81,7 +81,7 @@ class AuthManager
             $loaderSetup->module = current_module();
             $loaderSetup->env = 'config';
             $loaderSetup->fileName = 'auth';
-            $loaderSetup->exceptionMessage = ExceptionMessages::CONFIG_FILE_NOT_FOUND;
+            $loaderSetup->exceptionMessage = ConfigException::CONFIG_FILE_NOT_FOUND;
 
             $loader->setup($loaderSetup);
 
