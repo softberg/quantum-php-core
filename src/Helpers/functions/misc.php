@@ -109,25 +109,6 @@ if (!function_exists('_message')) {
 
 }
 
-if (!function_exists('out')) {
-
-    /**
-     * Outputs the dump of variable
-     * @param mixed $var
-     * @param bool
-     * @return void
-     */
-    function out($var, $die = false)
-    {
-        Dumper::dump($var, $die);
-
-        if ($die) {
-            die;
-        }
-    }
-
-}
-
 if (!function_exists('valid_base64')) {
 
     /**
