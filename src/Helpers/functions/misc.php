@@ -19,7 +19,6 @@ use Quantum\Libraries\Mailer\Mailer;
 use Quantum\Libraries\Cookie\Cookie;
 use Quantum\Libraries\Csrf\Csrf;
 use Quantum\Loader\Loader;
-use Quantum\Dumper\Dumper;
 use Quantum\Di\Di;
 
 if (!function_exists('session')) {
