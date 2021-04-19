@@ -18,7 +18,7 @@ use Quantum\Exceptions\ConfigException;
 use Quantum\Contracts\StorageInterface;
 use Dflydev\DotAccessData\Data;
 use Quantum\Loader\Loader;
-use stdClass;
+use Quantum\Loader\Setup;
 
 /**
  * Class Config
@@ -40,25 +40,6 @@ class Config implements StorageInterface
     private static $configInstance = null;
 
     /**
-     * Config setup
-     * @var object 
-     */
-    private $setup = null;
-
-    /**
-     * Class constructor
-     */
-    private function __construct()
-    {
-        $this->setup = new stdClass();
-        $this->setup->module = current_module();
-        $this->setup->hierarchical = true;
-        $this->setup->env = 'config';
-        $this->setup->fileName = 'config';
-        $this->setup->exceptionMessage = ConfigException::CONFIG_FILE_NOT_FOUND;
-    }
-
-    /**
      * GetInstance
      * @return Config
      */
@@ -74,16 +55,12 @@ class Config implements StorageInterface
     /**
      * Loads configuration
      * @param Loader $loader
-     * @throws ConfigException When config file is not found
+     * @throws \Quantum\Exceptions\LoaderException
      */
     public function load(Loader $loader)
     {
-        if (!$this->setup) {
-            throw new ConfigException(_message(ConfigException::SETUP_NOT_PROVIDED, __CLASS__));
-        }
-
         if (empty(self::$configs)) {
-            self::$configs = $loader->setup($this->setup)->load();
+            self::$configs = $loader->setup(new Setup('config', 'config', true))->load();
         }
     }
 
@@ -91,16 +68,13 @@ class Config implements StorageInterface
      * Imports new config file
      * @param Loader $loader
      * @param string $fileName
-     * @throws ConfigException When config file is not found or there are config collision between modules
+     * @throws ConfigException
+     * @throws \Quantum\Exceptions\LoaderException
      */
     public function import(Loader $loader, $fileName)
     {
         if ($this->has($fileName)) {
             throw new ConfigException(_message(ConfigException::CONFIG_COLLISION, $fileName));
-        }
-
-        if (!$this->setup) {
-            throw new ConfigException(_message(ConfigException::SETUP_NOT_PROVIDED, __CLASS__));
         }
 
         self::$configs[$fileName] = $loader->load();
@@ -110,7 +84,7 @@ class Config implements StorageInterface
      * Gets the config item by given key
      * @param string $key
      * @param mixed $default
-     * @return mixed|null The configuration item or NULL, if the item does not exists
+     * @return array|mixed|null
      */
     public function get($key, $default = null)
     {

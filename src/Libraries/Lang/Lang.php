@@ -18,6 +18,7 @@ use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Exceptions\LangException;
 use Dflydev\DotAccessData\Data;
 use Quantum\Loader\Loader;
+use Quantum\Loader\Setup;
 
 /**
  * Language class
@@ -72,7 +73,9 @@ class Lang
     /**
      * Loads translations
      * @param Loader $loader
+     * @param FileSystem $fs
      * @throws LangException
+     * @throws \Quantum\Exceptions\LoaderException
      */
     public function load(Loader $loader, FileSystem $fs)
     {
@@ -87,12 +90,10 @@ class Lang
         foreach ($files as $file) {
             $fileName = $fs->fileName($file);
 
-            $setup = (object) [
-                        'module' => current_module(),
-                        'env' => 'Resources' . DS . 'lang' . DS . $this->getLang(),
-                        'fileName' => $fileName,
-                        'exceptionMessage' => LangException::TRANSLATION_FILES_NOT_FOUND
-            ];
+            $setup = new Setup();
+            $setup->setEnv('Resources' . DS . 'lang' . DS . $this->getLang());
+            $setup->setFilename($fileName);
+            $setup->setExceptionMessage(LangException::TRANSLATION_FILES_NOT_FOUND);
 
             self::$translations[$fileName] = $loader->setup($setup)->load();
         }

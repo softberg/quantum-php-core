@@ -15,10 +15,9 @@
 namespace Quantum\Libraries\Database;
 
 use Quantum\Exceptions\DatabaseException;
-use Quantum\Exceptions\ConfigException;
 use Quantum\Exceptions\ModelException;
 use Quantum\Loader\Loader;
-use stdClass;
+use Quantum\Loader\Setup;
 
 /**
  * Database class
@@ -39,12 +38,6 @@ class Database
      * @var Loader 
      */
     private $loader;
-
-    /**
-     * Database setup
-     * @var object 
-     */
-    private $setup = null;
 
     /**
      * Database configurations
@@ -77,12 +70,6 @@ class Database
     public function __construct(Loader $loader)
     {
         $this->loader = $loader;
-
-        $this->setup = new stdClass();
-        $this->setup->module = current_module();
-        $this->setup->env = 'config';
-        $this->setup->fileName = 'database';
-        $this->setup->exceptionMessage = ConfigException::CONFIG_FILE_NOT_FOUND;
     }
 
     /**
@@ -127,7 +114,7 @@ class Database
      */
     public function connect($dbalClass)
     {
-        $configs = $this->loader->setup($this->setup)->load();
+        $configs = $this->loader->setup(new Setup('config', 'database'))->load();
 
         if (!key_exists('current', $configs)) {
             throw new DatabaseException(DatabaseException::INCORRECT_CONFIG);

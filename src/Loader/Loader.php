@@ -71,16 +71,16 @@ class Loader
 
     /**
      * Setups the loader
-     * @param object $setup
+     * @param Setup $setup
      * @return $this
      */
-    public function setup($setup)
+    public function setup(Setup $setup)
     {
-        $this->hierarchical = $setup->hierarchical ?? false;
-        $this->module = $setup->module;
-        $this->env = $setup->env;
-        $this->fileName = $setup->fileName;
-        $this->exceptionMessage = $setup->exceptionMessage;
+        $this->hierarchical = $setup->getHierarchy();
+        $this->module = $setup->getModule();
+        $this->env = $setup->getEnv();
+        $this->fileName = $setup->getFilename();
+        $this->exceptionMessage = $setup->getExceptionMessage();
 
         return $this;
     }
@@ -101,6 +101,7 @@ class Loader
     /**
      * Loads .php files from given directory
      * @param string $dir
+     * @throws LoaderException
      */
     public function loadDir($dir)
     {

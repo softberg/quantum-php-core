@@ -14,11 +14,10 @@
 
 namespace Quantum\Environment;
 
-use Quantum\Exceptions\ConfigException;
 use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Loader\Loader;
+use Quantum\Loader\Setup;
 use Dotenv\Dotenv;
-use stdClass;
 
 /**
  * Class Environment
@@ -47,25 +46,6 @@ class Environment
     private static $envInstance = null;
 
     /**
-     * Environment setup
-     * @var object 
-     */
-    private $setup = null;
-
-    /**
-     * Class constructor
-     */
-    private function __construct()
-    {
-        $this->setup = new stdClass();
-        $this->setup->module = null;
-        $this->setup->hierarchical = true;
-        $this->setup->env = 'config';
-        $this->setup->fileName = 'env';
-        $this->setup->exceptionMessage = ConfigException::CONFIG_FILE_NOT_FOUND;
-    }
-
-    /**
      * GetInstance
      * @return Environment
      */
@@ -84,7 +64,7 @@ class Environment
      */
     public function load(Loader $loader)
     {
-        $env = $loader->setup($this->setup)->load();
+        $env = $loader->setup(new Setup('config', 'env', true))->load();
 
         if ($env['app_env'] != 'production') {
             $this->envFile = '.env.' . $env['app_env'];

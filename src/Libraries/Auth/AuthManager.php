@@ -14,15 +14,14 @@
 
 namespace Quantum\Libraries\Auth;
 
-use Quantum\Exceptions\ConfigException;
 use Quantum\Libraries\JWToken\JWToken;
 use Quantum\Exceptions\AuthException;
 use Quantum\Libraries\Mailer\Mailer;
 use Quantum\Libraries\Hasher\Hasher;
 use Quantum\Factory\ServiceFactory;
 use Quantum\Loader\Loader;
+use Quantum\Loader\Setup;
 use Quantum\Di\Di;
-use stdClass;
 
 /**
  * Class AuthManager
@@ -77,13 +76,7 @@ class AuthManager
     {
         if (!config()->has('auth')) {
 
-            $loaderSetup = new stdClass();
-            $loaderSetup->module = current_module();
-            $loaderSetup->env = 'config';
-            $loaderSetup->fileName = 'auth';
-            $loaderSetup->exceptionMessage = ConfigException::CONFIG_FILE_NOT_FOUND;
-
-            $loader->setup($loaderSetup);
+            $loader->setup(new Setup('config', 'auth'));
 
             config()->import($loader, 'auth');
         }
