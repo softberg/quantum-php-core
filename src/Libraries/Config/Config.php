@@ -84,7 +84,7 @@ class Config implements StorageInterface
      * Gets the config item by given key
      * @param string $key
      * @param mixed $default
-     * @return array|mixed|null
+     * @return mixed|null
      */
     public function get($key, $default = null)
     {
