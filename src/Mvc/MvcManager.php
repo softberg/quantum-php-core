@@ -109,7 +109,7 @@ class MvcManager
      * @return string
      * @throws ControllerException
      */
-    private static function getAction(): string
+    private static function getAction(): ?string
     {
         $action = current_action();
 
