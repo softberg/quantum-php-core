@@ -51,6 +51,7 @@ namespace Quantum\Test\Unit {
 
     use Mockery;
     use PHPUnit\Framework\TestCase;
+    use Quantum\Exceptions\ModelException;
     use Quantum\Models\UserModel;
     use Quantum\Libraries\Database\Database;
     use Quantum\Exceptions\DatabaseException;
@@ -135,7 +136,7 @@ namespace Quantum\Test\Unit {
 
         public function testGetORMWithoutTableDefined()
         {
-            $this->expectException(DatabaseException::class);
+            $this->expectException(ModelException::class);
 
             $this->expectExceptionMessage('Model `' . UserModel::class . '` does not have $table property defined');
 

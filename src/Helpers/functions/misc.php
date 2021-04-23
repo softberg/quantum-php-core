@@ -14,13 +14,11 @@
 use Quantum\Exceptions\StopExecutionException;
 use Quantum\Libraries\Session\SessionManager;
 use Quantum\Libraries\Encryption\Cryptor;
-use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Libraries\Auth\AuthManager;
 use Quantum\Libraries\Mailer\Mailer;
 use Quantum\Libraries\Cookie\Cookie;
 use Quantum\Libraries\Csrf\Csrf;
 use Quantum\Loader\Loader;
-use Quantum\Dumper\Dumper;
 use Quantum\Di\Di;
 
 if (!function_exists('session')) {
@@ -105,25 +103,6 @@ if (!function_exists('_message')) {
             }, $subject);
         } else {
             return preg_replace('/{%\d+}/', $params, $subject);
-        }
-    }
-
-}
-
-if (!function_exists('out')) {
-
-    /**
-     * Outputs the dump of variable
-     * @param mixed $var
-     * @param bool
-     * @return void
-     */
-    function out($var, $die = false)
-    {
-        Dumper::dump($var, $die);
-
-        if ($die) {
-            die;
         }
     }
 
@@ -227,7 +206,7 @@ if (!function_exists('stop')) {
      */
     function stop()
     {
-        throw new StopExecutionException(ExceptionMessages::EXECUTION_TERMINATED);
+        throw new StopExecutionException(StopExecutionException::EXECUTION_TERMINATED);
     }
 
 }

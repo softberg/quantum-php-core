@@ -17,7 +17,6 @@ namespace Quantum\Routes {
 
 namespace Quantum\Test\Unit {
 
-    use Quantum\Exceptions\ExceptionMessages;
     use Quantum\Exceptions\RouteException;
     use PHPUnit\Framework\TestCase;
     use Quantum\Routes\Router;
@@ -42,7 +41,7 @@ namespace Quantum\Test\Unit {
             $hookManager = Mockery::mock('overload:Quantum\Hooks\HookManager');
 
             $hookManager->shouldReceive('call')->andReturnUsing(function() {
-                throw new RouteException(ExceptionMessages::ROUTE_NOT_FOUND);
+                throw new RouteException(RouteException::ROUTE_NOT_FOUND);
             });
 
             $reflectionClass = new \ReflectionClass(Router::class);
@@ -196,7 +195,7 @@ namespace Quantum\Test\Unit {
 
             $this->expectException(RouteException::class);
 
-            $this->expectExceptionMessage(ExceptionMessages::ROUTE_NOT_FOUND);
+            $this->expectExceptionMessage(RouteException::ROUTE_NOT_FOUND);
 
             $this->router->findRoute();
         }

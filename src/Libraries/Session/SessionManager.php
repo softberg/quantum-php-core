@@ -14,7 +14,7 @@
 
 namespace Quantum\Libraries\Session;
 
-use Quantum\Exceptions\ExceptionMessages;
+use Quantum\Exceptions\SessionException;
 use Quantum\Libraries\Encryption\Cryptor;
 use Quantum\Libraries\Database\Database;
 use Quantum\Loader\Loader;
@@ -50,13 +50,13 @@ class SessionManager
             }
 
             if (@session_start() === false) {
-                throw new \RuntimeException(ExceptionMessages::RUNTIME_SESSION_START);
+                throw new \RuntimeException(SessionException::RUNTIME_SESSION_START);
             }
         }
 
         if (isset($_SESSION['LAST_ACTIVITY']) && time() - $_SESSION['LAST_ACTIVITY'] > config()->get('session_timeout', 1800)) {
             if (@session_destroy() === false) {
-                throw new \RuntimeException(ExceptionMessages::RUNTIME_SESSION_DESTROY);
+                throw new \RuntimeException(SessionException::RUNTIME_SESSION_DESTROY);
             }
         }
 

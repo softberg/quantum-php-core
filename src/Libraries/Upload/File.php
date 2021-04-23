@@ -14,9 +14,8 @@
 
 namespace Quantum\Libraries\Upload;
 
-use Quantum\Libraries\Storage\FileSystem;
-use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Exceptions\FileUploadException;
+use Quantum\Libraries\Storage\FileSystem;
 use Gumlet\ImageResize;
 use Quantum\Di\Di;
 use SplFileInfo;
@@ -93,7 +92,7 @@ class File extends SplFileInfo
 
     /**
      * Upload error code
-     * @var  int
+     * @var int
      */
     protected $errorCode;
 
@@ -212,21 +211,21 @@ class File extends SplFileInfo
         }
 
         if ($this->isUploaded() === false) {
-            throw new FileUploadException(ExceptionMessages::FILE_NOT_UPLOADED);
+            throw new FileUploadException(FileUploadException::FILE_NOT_UPLOADED);
         }
 
         if (!$this->fs->isDirectory($dest)) {
-            throw new \InvalidArgumentException(_message(ExceptionMessages::DIRECTORY_NOT_EXIST, $dest));
+            throw new \InvalidArgumentException(_message(FileUploadException::DIRECTORY_NOT_EXIST, $dest));
         }
 
         if (!$this->fs->isWritable($dest)) {
-            throw new \InvalidArgumentException(_message(ExceptionMessages::DIRECTORY_NOT_WRITABLE, $dest));
+            throw new \InvalidArgumentException(_message(FileUploadException::DIRECTORY_NOT_WRITABLE, $dest));
         }
 
         $filePath = $dest . DS . $this->getNameWithExtension();
 
         if ($overwrite === false && $this->fs->exists($filePath)) {
-            throw new FileUploadException(ExceptionMessages::FILE_ALREADY_EXISTS);
+            throw new FileUploadException(FileUploadException::FILE_ALREADY_EXISTS);
         }
 
         $this->moveUploadedFile($filePath);

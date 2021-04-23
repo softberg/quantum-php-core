@@ -62,12 +62,12 @@ abstract class QtCommand extends Command implements CommandInterface
     /**
      * @var \Symfony\Component\Console\Input\InputInterface
      */
-    private $input;
+    protected $input;
 
     /**
      * @var \Symfony\Component\Console\Output\OutputInterface;
      */
-    private $output;
+    protected $output;
 
     /**
      * QtCommand constructor.
@@ -203,13 +203,13 @@ abstract class QtCommand extends Command implements CommandInterface
                     $this->addOption($option[0], $option[1], InputOption::VALUE_NONE, $option[3]);
                     break;
                 case 'required':
-                    $this->addOption($option[0], $option[1], InputOption::VALUE_REQUIRED, $option[3], $option[4]);
+                    $this->addOption($option[0], $option[1], InputOption::VALUE_REQUIRED, $option[3], $option[4] ?? '');
                     break;
                 case 'optional':
-                    $this->addOption($option[0], $option[1], InputOption::VALUE_OPTIONAL, $option[3], $option[4]);
+                    $this->addOption($option[0], $option[1], InputOption::VALUE_OPTIONAL, $option[3], $option[4] ?? '');
                     break;
                 case 'array':
-                    $this->addOption($option[0], $option[1], InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, $option[3], $option[4]);
+                    $this->addOption($option[0], $option[1], InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, $option[3], $option[4] ?? '');
                     break;
             }
         }

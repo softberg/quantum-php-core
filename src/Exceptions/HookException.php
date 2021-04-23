@@ -2,33 +2,33 @@
 
 /**
  * Quantum PHP Framework
- * 
+ *
  * An open source software development framework for PHP
- * 
+ *
  * @package Quantum
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.0.0
+ * @since 2.3.0
  */
 
 namespace Quantum\Exceptions;
 
 /**
- * ViewException class
- * 
+ * AuthException class
+ *
  * @package Quantum
  * @category Exceptions
  */
-class RequestException extends \Exception
+class HookException extends \Exception
 {
     /**
-     * Unexpected request initialization
+     * Duplicate hook implementer message
      */
-    const UNEXPECTED_REQUEST_INITIALIZATION = 'HTTP Request can not be initialized outside of the core';
+    const DUPLICATE_HOOK_IMPLEMENTER = 'Duplicate Hook implementer was detected';
 
     /**
-     * Unavailable request method
+     * Undeclared hook name message
      */
-    const METHOD_NOT_AVAILABLE = 'Provided request method is not available';
+    const UNDECLARED_HOOK_NAME = 'The Hook `{%1}` was not declared';
 }

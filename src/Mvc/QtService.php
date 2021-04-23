@@ -14,7 +14,7 @@
 
 namespace Quantum\Mvc;
 
-use Quantum\Exceptions\ExceptionMessages;
+use Quantum\Exceptions\ServiceException;
 
 /**
  * Base Service Class
@@ -56,7 +56,7 @@ class QtService
      */
     public function __call($method, $arguments)
     {
-        throw new \BadMethodCallException(_message(ExceptionMessages::UNDEFINED_METHOD, $method));
+        throw new \BadMethodCallException(_message(ServiceException::UNDEFINED_METHOD, $method));
     }
 
 }

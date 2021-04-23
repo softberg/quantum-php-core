@@ -14,8 +14,8 @@
 
 namespace Quantum\Mvc;
 
+use Quantum\Exceptions\ControllerException;
 use Quantum\Routes\RouteController;
-use Quantum\Exceptions\ExceptionMessages;
 use BadMethodCallException;
 
 
@@ -58,7 +58,7 @@ class QtController extends RouteController
      */
     public function __call($method, $arguments)
     {
-        throw new BadMethodCallException(_message(ExceptionMessages::UNDEFINED_METHOD, $method));
+        throw new BadMethodCallException(_message(ControllerException::UNDEFINED_METHOD, $method));
     }
 
 }

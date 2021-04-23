@@ -15,6 +15,7 @@
 namespace Quantum\Console\Commands;
 
 use Quantum\Console\QtCommand;
+use Figlet\Figlet;
 
 /**
  * Class WelcomeCommand
@@ -47,18 +48,13 @@ class WelcomeCommand extends QtCommand
      */
     public function exec()
     {
-        $text = <<< HEREDOC
-   ____  __  _____    _   __________  ____  ___   ____  __  ______     ___    ___
-  / __ \/ / / /   |  / | / /_  __/ / / /  |/  /  / __ \/ / / / __ \   |__ \  |__ \
- / / / / / / / /| | /  |/ / / / / / / / /|_/ /  / /_/ / /_/ / /_/ /   __/ /  __/ / 
-/ /_/ / /_/ / ___ |/ /|  / / / / /_/ / /  / /  / ____/ __  / ____/   / __/_ / __/  
-\___\_\____/_/  |_/_/ |_/ /_/  \____/_/  /_/  /_/   /_/ /_/_/       /____(_)____/   
-                                                                                 
-                
-HEREDOC;
+        $figlet = new Figlet();
 
-        $this->info($text);
-        $this->info('- - - Q U A N T U M   P H P   F R A M E W O R K   2.2   I N S T A L L E D - - -');
+        $figlet->setFont('slant.flf')->setSmushMode(Figlet::SM_SMUSH);
+
+        $this->info($figlet->render('QUANTUM PHP ' . env('APP_VERSION')));
+
+        $this->info('- - - Q U A N T U M   P H P   F R A M E W O R K  ' . env('APP_VERSION') . '  I N S T A L L E D - - -');
     }
 
 }

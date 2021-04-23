@@ -15,7 +15,6 @@
 namespace Quantum\Middleware;
 
 use Quantum\Exceptions\MiddlewareException;
-use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Http\Request;
 use Quantum\Http\Response;
 use Exception;
@@ -69,7 +68,7 @@ class MiddlewareManager
         $middlewarePath = modules_dir() . DS . $this->module . DS . 'Middlewares' . DS . current($this->middlewares) . '.php';
 
         if (!file_exists($middlewarePath)) {
-            throw new MiddlewareException(_message(ExceptionMessages::MIDDLEWARE_NOT_FOUND, current($this->middlewares)));
+            throw new MiddlewareException(_message(MiddlewareException::MIDDLEWARE_NOT_FOUND, current($this->middlewares)));
         }
 
         require_once $middlewarePath;
@@ -77,7 +76,7 @@ class MiddlewareManager
         $middlewareClass = '\\Modules\\' . $this->module . '\\Middlewares\\' . current($this->middlewares);
 
         if (!class_exists($middlewareClass, false)) {
-            throw new MiddlewareException(_message(ExceptionMessages::MIDDLEWARE_NOT_DEFINED, current($this->middlewares)));
+            throw new MiddlewareException(_message(MiddlewareException::MIDDLEWARE_NOT_DEFINED, current($this->middlewares)));
         }
 
         $currentMiddleware = new $middlewareClass();
@@ -92,7 +91,7 @@ class MiddlewareManager
                 try {
                     list($modifiedRequest, $modifiedResponse) = $this->applyMiddlewares($modifiedRequest, $modifiedResponse);
                 } catch (\TypeError $ex) {
-                    throw new MiddlewareException(_message(ExceptionMessages::MIDDLEWARE_NOT_HANDLED, current($this->middlewares)));
+                    throw new MiddlewareException(_message(MiddlewareException::MIDDLEWARE_NOT_HANDLED, current($this->middlewares)));
                 }
             }
         }

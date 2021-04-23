@@ -15,7 +15,6 @@
 namespace Quantum\Routes;
 
 use Quantum\Exceptions\RouteException;
-use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Hooks\HookManager;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
@@ -189,10 +188,10 @@ class Router extends RouteController
         for ($i = 0; $i < $length - 1; $i++) {
             for ($j = $i + 1; $j < $length; $j++) {
                 if ($this->matchedRoutes[$i]['method'] == $this->matchedRoutes[$j]['method']) {
-                    throw new RouteException(_message(ExceptionMessages::REPETITIVE_ROUTE_SAME_METHOD, $this->matchedRoutes[$j]['method']));
+                    throw new RouteException(_message(RouteException::REPETITIVE_ROUTE_SAME_METHOD, $this->matchedRoutes[$j]['method']));
                 }
                 if ($this->matchedRoutes[$i]['module'] != $this->matchedRoutes[$j]['module']) {
-                    throw new RouteException(ExceptionMessages::REPETITIVE_ROUTE_DIFFERENT_MODULES);
+                    throw new RouteException(RouteException::REPETITIVE_ROUTE_DIFFERENT_MODULES);
                 }
             }
         }
@@ -207,10 +206,10 @@ class Router extends RouteController
     {
         if (strpos($matchedRoute['method'], '|') !== false) {
             if (!in_array($this->request->getMethod(), explode('|', $matchedRoute['method']))) {
-                throw new RouteException(_message(ExceptionMessages::INCORRECT_METHOD, $this->request->getMethod()));
+                throw new RouteException(_message(RouteException::INCORRECT_METHOD, $this->request->getMethod()));
             }
         } else if ($this->request->getMethod() != $matchedRoute['method']) {
-            throw new RouteException(_message(ExceptionMessages::INCORRECT_METHOD, $this->request->getMethod()));
+            throw new RouteException(_message(RouteException::INCORRECT_METHOD, $this->request->getMethod()));
         }
     }
 

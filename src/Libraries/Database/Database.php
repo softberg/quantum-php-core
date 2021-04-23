@@ -14,10 +14,10 @@
 
 namespace Quantum\Libraries\Database;
 
-use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Exceptions\DatabaseException;
+use Quantum\Exceptions\ModelException;
 use Quantum\Loader\Loader;
-use stdClass;
+use Quantum\Loader\Setup;
 
 /**
  * Database class
@@ -38,12 +38,6 @@ class Database
      * @var Loader 
      */
     private $loader;
-
-    /**
-     * Database setup
-     * @var object 
-     */
-    private $setup = null;
 
     /**
      * Database configurations
@@ -76,12 +70,6 @@ class Database
     public function __construct(Loader $loader)
     {
         $this->loader = $loader;
-
-        $this->setup = new stdClass();
-        $this->setup->module = current_module();
-        $this->setup->env = 'config';
-        $this->setup->fileName = 'database';
-        $this->setup->exceptionMessage = ExceptionMessages::CONFIG_FILE_NOT_FOUND;
     }
 
     /**
@@ -90,7 +78,7 @@ class Database
      * @param string|null $modelName
      * @param string $idColumn
      * @return \Quantum\Libraries\Database\IdiormDbal
-     * @throws DatabaseException
+     * @throws ModelException
      */
     public function getORM($table, $modelName = null, $idColumn = 'id'): IdiormDbal
     {
@@ -101,7 +89,7 @@ class Database
         }
 
         if (empty($table)) {
-            throw new DatabaseException(_message(ExceptionMessages::MODEL_WITHOUT_TABLE_DEFINED, $modelName));
+            throw new ModelException(_message(ModelException::MODEL_WITHOUT_TABLE_DEFINED, $modelName));
         }
 
         return new $dbalClass($table, $idColumn);
@@ -126,16 +114,16 @@ class Database
      */
     public function connect($dbalClass)
     {
-        $configs = $this->loader->setup($this->setup)->load();
+        $configs = $this->loader->setup(new Setup('config', 'database'))->load();
 
         if (!key_exists('current', $configs)) {
-            throw new DatabaseException(ExceptionMessages::INCORRECT_CONFIG);
+            throw new DatabaseException(DatabaseException::INCORRECT_CONFIG);
         }
 
         $currentKey = $configs['current'];
 
         if (!key_exists($currentKey, $configs)) {
-            throw new DatabaseException(ExceptionMessages::INCORRECT_CONFIG);
+            throw new DatabaseException(DatabaseException::INCORRECT_CONFIG);
         }
 
         self::$configs = $configs[$currentKey];

@@ -14,7 +14,7 @@
 
 namespace Quantum\Mvc;
 
-use Quantum\Exceptions\ExceptionMessages;
+use Quantum\Exceptions\ControllerException;
 use Quantum\Middleware\MiddlewareManager;
 use Quantum\Exceptions\RouteException;
 use Quantum\Libraries\Csrf\Csrf;
@@ -83,14 +83,14 @@ class MvcManager
     /**
      * Get Controller
      * @return object
-     * @throws RouteException
+     * @throws ControllerException
      */
     private static function getController()
     {
         $controllerPath = modules_dir() . DS . current_module() . DS . 'Controllers' . DS . current_controller() . '.php';
 
         if (!file_exists($controllerPath)) {
-            throw new RouteException(_message(ExceptionMessages::CONTROLLER_NOT_FOUND, current_controller()));
+            throw new ControllerException(_message(ControllerException::CONTROLLER_NOT_FOUND, current_controller()));
         }
 
         require_once $controllerPath;
@@ -98,7 +98,7 @@ class MvcManager
         $controllerClass = '\\Modules\\' . current_module() . '\\Controllers\\' . current_controller();
 
         if (!class_exists($controllerClass, false)) {
-            throw new RouteException(_message(ExceptionMessages::CONTROLLER_NOT_DEFINED, current_controller()));
+            throw new ControllerException(_message(ControllerException::CONTROLLER_NOT_DEFINED, current_controller()));
         }
 
         return new $controllerClass();
@@ -107,14 +107,14 @@ class MvcManager
     /**
      * Get Action
      * @return string
-     * @throws RouteException
+     * @throws ControllerException
      */
     private static function getAction()
     {
         $action = current_action();
 
         if ($action && !method_exists(self::$controller, $action)) {
-            throw new RouteException(_message(ExceptionMessages::ACTION_NOT_DEFINED, $action));
+            throw new ControllerException(_message(ControllerException::ACTION_NOT_DEFINED, $action));
         }
 
         return $action;

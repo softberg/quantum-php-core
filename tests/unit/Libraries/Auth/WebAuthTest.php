@@ -40,7 +40,6 @@ $sessionStorage = [];
 
 namespace Quantum\Test\Unit {
 
-    use Quantum\Exceptions\ExceptionMessages;
     use Quantum\Exceptions\AuthException;
     use Quantum\Libraries\Hasher\Hasher;
     use Quantum\Libraries\Auth\WebAuth;
@@ -197,7 +196,7 @@ namespace Quantum\Test\Unit {
         {
             $this->expectException(AuthException::class);
 
-            $this->expectExceptionMessage(ExceptionMessages::INCORRECT_AUTH_CREDENTIALS);
+            $this->expectExceptionMessage(AuthException::INCORRECT_AUTH_CREDENTIALS);
 
             $this->webAuth->signin('admin@qt.com', '111111');
         }
@@ -251,7 +250,7 @@ namespace Quantum\Test\Unit {
 
             $this->expectException(AuthException::class);
 
-            $this->expectExceptionMessage(ExceptionMessages::INACTIVE_ACCOUNT);
+            $this->expectExceptionMessage(AuthException::INACTIVE_ACCOUNT);
 
             $this->webAuth->signup($this->guestUser);
 

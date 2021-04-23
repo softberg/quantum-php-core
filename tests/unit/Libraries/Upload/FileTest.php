@@ -6,7 +6,6 @@ namespace Quantum\Test\Unit {
     use PHPUnit\Framework\TestCase;
     use Quantum\Libraries\Upload\File;
     use Quantum\Exceptions\FileUploadException;
-    use Quantum\Exceptions\ExceptionMessages;
     use Quantum\Http\Request;
 
     class FileDouble extends File
@@ -178,7 +177,7 @@ namespace Quantum\Test\Unit {
 
             $this->expectException(FileUploadException::class);
 
-            $this->expectExceptionMessage(ExceptionMessages::FILE_NOT_UPLOADED);
+            $this->expectExceptionMessage(FileUploadException::FILE_NOT_UPLOADED);
 
             $file = new File($image);
 
@@ -212,7 +211,7 @@ namespace Quantum\Test\Unit {
 
             $this->expectException(FileUploadException::class);
 
-            $this->expectExceptionMessage(ExceptionMessages::FILE_ALREADY_EXISTS);
+            $this->expectExceptionMessage(FileUploadException::FILE_ALREADY_EXISTS);
 
             $file->save(dirname(__FILE__));
         }

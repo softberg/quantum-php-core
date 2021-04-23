@@ -11,7 +11,6 @@ namespace Quantum\Libraries\JWToken {
 
 namespace Quantum\Test\Unit {
 
-    use Quantum\Exceptions\ExceptionMessages;
     use Quantum\Libraries\JWToken\JWToken;
     use Quantum\Exceptions\AuthException;
     use Quantum\Libraries\Hasher\Hasher;
@@ -184,7 +183,7 @@ namespace Quantum\Test\Unit {
         {
             $this->expectException(AuthException::class);
 
-            $this->expectExceptionMessage(ExceptionMessages::INCORRECT_AUTH_CREDENTIALS);
+            $this->expectExceptionMessage(AuthException::INCORRECT_AUTH_CREDENTIALS);
 
             $this->apiAuth->signin('admin@qt.com', '111111');
         }
@@ -253,7 +252,7 @@ namespace Quantum\Test\Unit {
 
             $this->expectException(AuthException::class);
 
-            $this->expectExceptionMessage(ExceptionMessages::INACTIVE_ACCOUNT);
+            $this->expectExceptionMessage(AuthException::INACTIVE_ACCOUNT);
 
             $this->apiAuth->signup($this->guestUser);
 

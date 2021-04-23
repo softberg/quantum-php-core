@@ -14,7 +14,6 @@
 
 namespace Quantum\Libraries\Auth;
 
-use Quantum\Exceptions\ExceptionMessages;
 use Quantum\Exceptions\AuthException;
 use Quantum\Libraries\Hasher\Hasher;
 use Quantum\Libraries\Mailer\Mailer;
@@ -77,15 +76,15 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
     {
         $user = $this->authService->get($this->keys[self::USERNAME_KEY], $username);
         if (empty($user)) {
-            throw new AuthException(ExceptionMessages::INCORRECT_AUTH_CREDENTIALS);
+            throw new AuthException(AuthException::INCORRECT_AUTH_CREDENTIALS);
         }
 
         if (!$this->hasher->check($password, $user[$this->keys[self::PASSWORD_KEY]])) {
-            throw new AuthException(ExceptionMessages::INCORRECT_AUTH_CREDENTIALS);
+            throw new AuthException(AuthException::INCORRECT_AUTH_CREDENTIALS);
         }
 
         if (!$this->isActivated($user)) {
-            throw new AuthException(ExceptionMessages::INACTIVE_ACCOUNT);
+            throw new AuthException(AuthException::INACTIVE_ACCOUNT);
         }
 
         if ($remember) {
@@ -147,11 +146,11 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
         $user = $this->authService->get($this->keys[self::OTP_TOKEN_KEY], $otpToken);
 
         if (empty($user) || $otp != $user[$this->keys[self::OTP_KEY]]) {
-            throw new AuthException(ExceptionMessages::INCORRECT_VERIFICATION_CODE);
+            throw new AuthException(AuthException::INCORRECT_VERIFICATION_CODE);
         }
  
         if (new \DateTime() >= new \DateTime($user[$this->keys[self::OTP_EXPIRY_KEY]])){
-            throw new AuthException(ExceptionMessages::VERIFICATION_CODE_EXPIRED);
+            throw new AuthException(AuthException::VERIFICATION_CODE_EXPIRED);
         }
 
         $this->authService->update(
@@ -180,7 +179,7 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
         $user = $this->authService->get($this->keys[self::OTP_TOKEN_KEY], $otpToken);
 
         if (empty($user)) {
-            throw new AuthException(ExceptionMessages::INCORRECT_AUTH_CREDENTIALS);
+            throw new AuthException(AuthException::INCORRECT_AUTH_CREDENTIALS);
         }
 
         return $this->twoStepVerification($user);
