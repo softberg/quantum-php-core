@@ -87,7 +87,7 @@ class Debugger extends DebugBar
     {
         $outputData = (array) session()->get('_qt_debug_output');
 
-        if ($outputData) {
+        if (count($outputData)) {
             foreach ($outputData as $data) {
                 $this->debugbar['messages']->debug($data);
             }
