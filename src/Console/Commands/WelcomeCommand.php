@@ -51,8 +51,6 @@ class WelcomeCommand extends QtCommand
      */
     public function exec()
     {
-        Di::loadDefinitions();
-
         $loader = Di::get(Loader::class);
 
         Environment::getInstance()->load($loader);

@@ -16,6 +16,7 @@ namespace Quantum\Console;
 
 use Symfony\Component\Console\Application;
 use Quantum\Bootstrap;
+use Quantum\Di\Di;
 
 
 /**
@@ -50,6 +51,8 @@ class QtConsole
     public function init()
     {
         Bootstrap::loadCoreFuncations();
+
+        Di::loadDefinitions();
 
         $this->application = new Application($this->name, $this->version);
 
