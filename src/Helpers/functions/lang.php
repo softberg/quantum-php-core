@@ -23,7 +23,7 @@ if (!function_exists('current_lang')) {
      */
     function current_lang()
     {
-        return Lang::getInstance(Di::get(FileSystem::class))->getLang();
+        return Lang::getInstance()->getLang();
     }
 
 }
@@ -38,7 +38,7 @@ if (!function_exists('t')) {
      */
     function t($key, $params = null)
     {
-        return Lang::getInstance(Di::get(FileSystem::class))->getTranslation($key, $params);
+        return Lang::getInstance()->getTranslation($key, $params);
     }
 
 }

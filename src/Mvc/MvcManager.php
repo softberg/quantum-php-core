@@ -9,18 +9,18 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 1.0.0
+ * @since 2.3.0
  */
 
 namespace Quantum\Mvc;
 
 use Quantum\Exceptions\ControllerException;
 use Quantum\Middleware\MiddlewareManager;
-use Quantum\Exceptions\RouteException;
 use Quantum\Libraries\Csrf\Csrf;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 use Quantum\Di\Di;
+use Closure;
 
 /**
  * MvcManager Class
@@ -37,11 +37,11 @@ class MvcManager
     private static $controller;
 
     /**
-     * Run MVC
      * @param Request $request
      * @param Response $response
-     * @throws RouteException
-     * @throws \ReflectionException
+     * @throws ControllerException
+     * @throws \Quantum\Exceptions\CsrfException
+     * @throws \Quantum\Exceptions\MiddlewareException
      */
     public static function runMvc(Request $request, Response $response)
     {
@@ -57,7 +57,7 @@ class MvcManager
             $callback = route_callback();
 
             if ($callback) {
-                call_user_func_array($callback, self::getCallbackArgs($routeArgs, $callback, $request, $response));
+                call_user_func_array($callback, self::getCallbackArgs($callback, $routeArgs));
             } else {
                 self::$controller = self::getController();
 
@@ -68,13 +68,13 @@ class MvcManager
                 }
 
                 if (method_exists(self::$controller, '__before')) {
-                    call_user_func_array([self::$controller, '__before'], self::getArgs($routeArgs, '__before', $request, $response));
+                    call_user_func_array([self::$controller, '__before'], self::getArgs('__before', $routeArgs));
                 }
 
-                call_user_func_array([self::$controller, $action], self::getArgs($routeArgs, $action, $request, $response));
+                call_user_func_array([self::$controller, $action], self::getArgs($action, $routeArgs));
 
                 if (method_exists(self::$controller, '__after')) {
-                    call_user_func_array([self::$controller, '__after'], self::getArgs($routeArgs, '__after', $request, $response));
+                    call_user_func_array([self::$controller, '__after'], self::getArgs('__after', $routeArgs));
                 }
             }
         }
@@ -82,10 +82,10 @@ class MvcManager
 
     /**
      * Get Controller
-     * @return object
+     * @return QtController
      * @throws ControllerException
      */
-    private static function getController()
+    private static function getController(): QtController
     {
         $controllerPath = modules_dir() . DS . current_module() . DS . 'Controllers' . DS . current_controller() . '.php';
 
@@ -109,7 +109,7 @@ class MvcManager
      * @return string
      * @throws ControllerException
      */
-    private static function getAction()
+    private static function getAction(): string
     {
         $action = current_action();
 
@@ -122,24 +122,22 @@ class MvcManager
 
     /**
      * Get Args
-     * @param  array $routeArgs
-     * @param  string $action
+     * @param string $action
+     * @param array $routeArgs
      * @return array
-     * @throws \ReflectionException
      */
-    private static function getArgs($routeArgs, $action)
+    private static function getArgs(string $action, array $routeArgs): array
     {
         return Di::autowire(get_class(self::$controller) . ':' . $action, $routeArgs);
     }
 
     /**
      * Get Callback Args
+     * @param  Closure $callback
      * @param  array $routeArgs
-     * @param  \Closure $callback
      * @return array
-     * @throws \ReflectionException
      */
-    private static function getCallbackArgs($routeArgs, $callback)
+    private static function getCallbackArgs(Closure $callback, array $routeArgs): array
     {
         return Di::autowire($callback, $routeArgs);
     }
