@@ -14,8 +14,11 @@
 
 namespace Quantum\Console\Commands;
 
+use Quantum\Environment\Environment;
 use Quantum\Console\QtCommand;
+use Quantum\Loader\Loader;
 use Figlet\Figlet;
+use Quantum\Di\Di;
 
 /**
  * Class WelcomeCommand
@@ -48,6 +51,10 @@ class WelcomeCommand extends QtCommand
      */
     public function exec()
     {
+        $loader = Di::get(Loader::class);
+
+        Environment::getInstance()->load($loader);
+
         $figlet = new Figlet();
 
         $figlet->setFont('slant.flf')->setSmushMode(Figlet::SM_SMUSH);
