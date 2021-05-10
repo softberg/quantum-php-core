@@ -40,6 +40,9 @@ class AuthManager
      * @param \Quantum\Loader\Loader $loader
      * @return \Quantum\Libraries\Auth\ApiAuth|\Quantum\Libraries\Auth\WebAuth
      * @throws \Quantum\Exceptions\AuthException
+     * @throws \Quantum\Exceptions\ConfigException
+     * @throws \Quantum\Exceptions\DiException
+     * @throws \Quantum\Exceptions\LoaderException
      */
     public static function getHandler(Loader $loader)
     {
@@ -48,18 +51,14 @@ class AuthManager
         if (self::$authType && $authService) {
             switch (self::$authType) {
                 case 'web':
-                    $authInstance = WebAuth::getInstance($authService, new Mailer, new Hasher);
-                    break;
+                    return WebAuth::getInstance($authService, new Mailer, new Hasher);
                 case 'api':
                     $jwt = (new JWToken())->setLeeway(1)->setClaims((array)config()->get('auth.claims'));
-                    $authInstance = ApiAuth::getInstance($authService, new Mailer, new Hasher, $jwt);
-                    break;
+                    return ApiAuth::getInstance($authService, new Mailer, new Hasher, $jwt);
             }
         } else {
             throw new AuthException(AuthException::MISCONFIGURED_AUTH_CONFIG);
         }
-
-        return $authInstance;
     }
 
     /**
