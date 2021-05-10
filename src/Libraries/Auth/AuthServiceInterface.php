@@ -9,14 +9,13 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 1.9.0
+ * @since 2.4.0
  */
 
 namespace Quantum\Libraries\Auth;
 
 /**
  * Interface AuthServiceInterface
- *
  * @package Quantum\Libraries\Auth
  */
 interface AuthServiceInterface
@@ -24,40 +23,31 @@ interface AuthServiceInterface
 
     /**
      * Get
-     *
-     * @param string $username
-     * @return mixed
+     * @param string $field
+     * @param string|null $value
+     * @return \Quantum\Libraries\Auth\User|null
      */
-    public function get($field, $value) : array;
+    public function get(string $field, ?string $value): ?User;
 
     /**
      * Add
-     *
-     * @param array $user
-     * @return mixed
+     * @param array $data
+     * @return \Quantum\Libraries\Auth\User
      */
-    public function add($user);
+    public function add(array $data): User;
 
     /**
      * Update
-     *
-     * @param mixed $username
+     * @param string $field
+     * @param string $value
      * @param array $data
-     * @return mixed
+     * @return \Quantum\Libraries\Auth\User|null
      */
-    public function update($field, $value, $data);
+    public function update(string $field, string $value, array $data): ?User;
 
     /**
-     * Get Visible Fields
-     *
-     * @return mixed
-     */
-    public function getVisibleFields();
-
-    /**
-     * Get Defined Keys
-     *
+     * User Schema
      * @return array
      */
-    public function getDefinedKeys();
+    public function userSchema(): array;
 }

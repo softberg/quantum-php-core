@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.0.0
+ * @since 2.4.0
  */
 
 namespace Quantum\Libraries\Auth;
@@ -31,19 +31,15 @@ class AuthManager
 {
 
     /**
-     * @var AuthenticableInterface
-     */
-    private static $authInstance = null;
-
-    /**
-     * @var string
+     * @var string|null
      */
     private static $authType = null;
 
     /**
-     * GetHandler
-     * @return WebAuth|ApiAuth
-     * @throws AuthException
+     * Get Handler
+     * @param \Quantum\Loader\Loader $loader
+     * @return \Quantum\Libraries\Auth\ApiAuth|\Quantum\Libraries\Auth\WebAuth
+     * @throws \Quantum\Exceptions\AuthException
      */
     public static function getHandler(Loader $loader)
     {
@@ -52,25 +48,27 @@ class AuthManager
         if (self::$authType && $authService) {
             switch (self::$authType) {
                 case 'web':
-                    self::$authInstance = new WebAuth($authService, new Mailer, new Hasher);
+                    $authInstance = WebAuth::getInstance($authService, new Mailer, new Hasher);
                     break;
                 case 'api':
-                    $jwt = (new JWToken())->setLeeway(1)->setClaims((array) config()->get('auth.claims'));
-                    self::$authInstance = new ApiAuth($authService, new Mailer, new Hasher, $jwt);
+                    $jwt = (new JWToken())->setLeeway(1)->setClaims((array)config()->get('auth.claims'));
+                    $authInstance = ApiAuth::getInstance($authService, new Mailer, new Hasher, $jwt);
                     break;
             }
         } else {
             throw new AuthException(AuthException::MISCONFIGURED_AUTH_CONFIG);
         }
 
-        return self::$authInstance;
+        return $authInstance;
     }
 
     /**
      * Auth Service
-     * @param Loader $loader
-     * @return AuthServiceInterface
-     * @throws \Exception
+     * @param \Quantum\Loader\Loader $loader
+     * @return \Quantum\Libraries\Auth\AuthServiceInterface
+     * @throws \Quantum\Exceptions\ConfigException
+     * @throws \Quantum\Exceptions\DiException
+     * @throws \Quantum\Exceptions\LoaderException
      */
     public static function authService(Loader $loader): AuthServiceInterface
     {

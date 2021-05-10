@@ -11,25 +11,37 @@ namespace Quantum\Libraries\JWToken {
 
 namespace Quantum\Test\Unit {
 
+    use Quantum\Libraries\Storage\FileSystem;
     use Quantum\Libraries\JWToken\JWToken;
     use Quantum\Exceptions\AuthException;
     use Quantum\Libraries\Hasher\Hasher;
     use Quantum\Libraries\Auth\ApiAuth;
+    use Quantum\Libraries\Config\Config;
+    use Quantum\Libraries\Auth\User;
     use PHPUnit\Framework\TestCase;
-    use Quantum\Libraries\Storage\FileSystem;
     use Quantum\Loader\Loader;
     use Mockery;
-    use Quantum\Libraries\Config\Config;
+
+
+    function auto_increment(array $collection, string $field)
+    {
+        $max = 0;
+        foreach ($collection as $item) {
+            $max = max($max, $item[$field]);
+        }
+        return ++$max;
+    }
+
 
     class ApiAuthTest extends TestCase
     {
 
         private $apiAuth;
         private $authService;
-        private $mailer;
         private static $users = [];
+
         private $adminUser = [
-            'username' => 'admin@qt.com',
+            'email' => 'admin@qt.com',
             'firstname' => 'Admin',
             'lastname' => 'User',
             'role' => 'admin',
@@ -44,34 +56,27 @@ namespace Quantum\Test\Unit {
             'otp_token' => ''
         ];
         private $guestUser = [
-            'username' => 'guest@qt.com',
+            'email' => 'guest@qt.com',
             'password' => '123456',
             'firstname' => 'Guest',
             'lastname' => 'User',
         ];
-        protected $fields = [
-            'username',
-            'firstname',
-            'lastname',
-            'role'
-        ];
-        private $keyFields = [
-            'usernameKey' => 'username',
-            'passwordKey' => 'password',
-            'activationTokenKey' => 'activation_token',
-            'rememberTokenKey' => 'remember_token',
-            'resetTokenKey' => 'reset_token',
-            'accessTokenKey' => 'access_token',
-            'refreshTokenKey' => 'refresh_token',
-            'otpKey' => 'otp',
-            'otpExpiryKey' => 'otp_expiry_in',
-            'otpTokenKey' => 'otp_token'
-        ];
-        protected $visibleFields = [
-            'username',
-            'firstname',
-            'lastname',
-            'role'
+
+        protected $userSchema = [
+            'id' => ['name' => 'id', 'visible' => false],
+            'firstname' => ['name' => 'firstname', 'visible' => true],
+            'lastname' => ['name' => 'lastname', 'visible' => true],
+            'role' => ['name' => 'role', 'visible' => true],
+            'username' => ['name' => 'email', 'visible' => true],
+            'password' => ['name' => 'password', 'visible' => false],
+            'activationToken' => ['name' => 'activation_token', 'visible' => false],
+            'rememberToken' => ['name' => 'remember_token', 'visible' => false],
+            'resetToken' => ['name' => 'reset_token', 'visible' => false],
+            'accessToken' => ['name' => 'access_token', 'visible' => false],
+            'refreshToken' => ['name' => 'refresh_token', 'visible' => false],
+            'otp' => ['name' => 'otp', 'visible' => false],
+            'otpExpiry' => ['name' => 'otp_expires', 'visible' => false],
+            'otpToken' => ['name' => 'otp_token', 'visible' => false],
         ];
 
         public function setUp(): void
@@ -87,84 +92,99 @@ namespace Quantum\Test\Unit {
 
             $this->authService = Mockery::mock('Quantum\Libraries\Auth\AuthServiceInterface');
 
-            $this->authService->shouldReceive('getDefinedKeys')->andReturn($this->keyFields);
-
-            $this->authService->shouldReceive('getVisibleFields')->andReturn($this->visibleFields);
+            $this->authService->shouldReceive('userSchema')->andReturn($this->userSchema);
 
             $this->authService->shouldReceive('get')->andReturnUsing(function ($field, $value) {
-                if ($value) {
-                    foreach (self::$users as $user) {
-                        if (in_array($value, $user)) {
-                            return $user;
-                        }
+                foreach (self::$users as $userData) {
+                    if (in_array($value, $userData)) {
+                        return (new User())->setData($userData);
                     }
                 }
-                return [];
+
+                return null;
             });
 
             $this->authService->shouldReceive('update')->andReturnUsing(function ($field, $value, $data) {
-                $allFields = array_merge($this->fields, array_values($this->keyFields));
-                if ($value) {
-                    foreach (self::$users as &$user) {
-                        if (in_array($value, $user)) {
-                            foreach ($data as $key => $val) {
-                                if (in_array($key, $allFields)) {
-                                    $user[$key] = $data[$key] ?? '';
-                                }
+
+                $user = $this->authService->get($field, $value);
+
+                if (!$user) {
+                    return null;
+                }
+
+                foreach ($data as $key => $val) {
+                    if ($user->hasField($key)) {
+                        $user->setFieldValue($key, $val ?? '');
+                    }
+                }
+
+                foreach (self::$users as &$userData) {
+                    if (in_array($user->getFieldValue('id'), $userData)) {
+                        $userData = $user->getData();
+                    }
+                }
+
+                return $user;
+
+            });
+
+            $this->authService->shouldReceive('add')->andReturnUsing(function ($data) {
+
+                $user = new User();
+
+                $user->setFields($this->authService->userSchema());
+
+                foreach ($data as $key => $val) {
+                    foreach ($this->authService->userSchema() as $field) {
+                        if (isset($field['name'])) {
+                            if ($field['name'] == 'id') {
+                                $user->setFieldValue('id', auto_increment(self::$users, 'id'));
+                            }
+
+                            if ($field['name'] == $key) {
+                                $user->setFieldValue($key, $val ?? '');
                             }
                         }
                     }
                 }
-            });
 
-            $this->authService->shouldReceive('add')->andReturnUsing(function ($data) {
-                $user = [];
-                $allFields = array_merge($this->fields, array_values($this->keyFields));
-                foreach ($allFields as $field) {
-                    $user[$field] = $data[$field] ?? '';
-                }
-
-                if (count(self::$users) > 0) {
-                    array_push(self::$users, $user);
-                } else {
-                    self::$users[1] = $user;
-                }
+                self::$users[] = $user->getData();
 
                 return $user;
             });
 
-            $this->mailer = Mockery::mock('Quantum\Libraries\Mailer\Mailer');
+            $mailer = Mockery::mock('Quantum\Libraries\Mailer\Mailer');
 
-            $this->mailer->shouldReceive('setFrom')->andReturn($this->mailer);
+            $mailer->shouldReceive('setFrom')->andReturn($mailer);
 
-            $this->mailer->shouldReceive('setAddress')->andReturn($this->mailer);
+            $mailer->shouldReceive('setAddress')->andReturn($mailer);
 
-            $this->mailer->shouldReceive('setSubject')->andReturn($this->mailer);
+            $mailer->shouldReceive('setSubject')->andReturn($mailer);
 
-            $this->mailer->shouldReceive('setBody')->andReturn($this->mailer);
+            $mailer->shouldReceive('setBody')->andReturn($mailer);
 
-            $this->mailer->shouldReceive('setTemplate')->andReturn($this->mailer);
+            $mailer->shouldReceive('setTemplate')->andReturn($mailer);
 
-            $this->mailer->shouldReceive('send')->andReturn(true);
+            $mailer->shouldReceive('send')->andReturn(true);
 
             $jwt = (new JWToken())
-                    ->setLeeway(1)
-                    ->setClaims([
-                'jti' => uniqid(),
-                'iss' => 'issuer',
-                'aud' => 'audience',
-                'iat' => time(),
-                'nbf' => time() + 1,
-                'exp' => time() + 60
-            ]);
+                ->setLeeway(1)
+                ->setClaims([
+                    'jti' => uniqid(),
+                    'iss' => 'issuer',
+                    'aud' => 'audience',
+                    'iat' => time(),
+                    'nbf' => time() + 1,
+                    'exp' => time() + 60
+                ]);
 
             config()->set('langs', true);
 
-            $this->apiAuth = new ApiAuth($this->authService, $this->mailer, new Hasher, $jwt);
+            $this->apiAuth = ApiAuth::getInstance($this->authService, $mailer, new Hasher, $jwt);
 
             $admin = $this->apiAuth->signup($this->adminUser);
 
-            $this->apiAuth->activate($admin['activation_token']);
+            $this->apiAuth->activate($admin->getFieldValue('activation_token'));
         }
 
         public function tearDown(): void
@@ -190,7 +210,6 @@ namespace Quantum\Test\Unit {
 
         public function testApiSigninCorrectCredentials()
         {
-
             $configData = [
                 '2SV' => false
             ];
@@ -225,9 +244,9 @@ namespace Quantum\Test\Unit {
         {
             $tokens = $this->apiAuth->signin('admin@qt.com', 'qwerty');
 
-            $this->assertEquals('admin@qt.com', $this->apiAuth->user()->username);
+            $this->assertEquals('admin@qt.com', $this->apiAuth->user()->getFieldValue('email'));
 
-            $this->assertEquals('admin', $this->apiAuth->user()->role);
+            $this->assertEquals('admin', $this->apiAuth->user()->getFieldValue('role'));
 
             $this->apiAuth->signout();
 
@@ -263,7 +282,7 @@ namespace Quantum\Test\Unit {
         {
             $user = $this->apiAuth->signup($this->guestUser);
 
-            $this->apiAuth->activate($user['activation_token']);
+            $this->apiAuth->activate($user->getFieldValue('activation_token'));
 
             $this->assertIsArray($this->apiAuth->signin('guest@qt.com', '123456'));
 
@@ -288,7 +307,7 @@ namespace Quantum\Test\Unit {
         public function testApiVerify()
         {
             config()->set('2SV', true);
-            
+
             config()->set('otp_expires', 2);
 
             $otp_token = $this->apiAuth->signin('admin@qt.com', 'qwerty');
@@ -303,7 +322,7 @@ namespace Quantum\Test\Unit {
         public function testApiSigninWithoutVerification()
         {
             config()->set('2SV', false);
-            
+
             config()->set('otp_expires', 2);
 
             $this->assertArrayHasKey('access_token', $this->apiAuth->signin('admin@qt.com', 'qwerty'));
@@ -314,7 +333,7 @@ namespace Quantum\Test\Unit {
         public function testApiSigninWithVerification()
         {
             config()->set('2SV', true);
-            
+
             config()->set('otp_expires', 2);
 
             $this->assertIsString($this->apiAuth->signin('admin@qt.com', 'qwerty'));
@@ -323,9 +342,9 @@ namespace Quantum\Test\Unit {
         public function testApiResendOtp()
         {
             config()->set('2SV', true);
-            
+
             config()->set('otp_expires', 2);
-            
+
             $otp_token = $this->apiAuth->signin('admin@qt.com', 'qwerty');
 
             $this->assertIsString($this->apiAuth->resendOtp($otp_token));
