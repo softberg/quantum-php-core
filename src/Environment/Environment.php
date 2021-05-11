@@ -93,9 +93,16 @@ class Environment
     }
 
     /**
+     * Gets the environment variable value
+     * @param string $key
+     * @param mixed $default
+     * @return mixed
+     */
+
+    /**
      * @param $key
-     * @param null $default
-     * @return array|mixed|string|null
+     * @param string|mixed $default
+     * @return mixed
      */
     public function getValue($key, $default = null)
     {
