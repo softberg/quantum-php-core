@@ -39,11 +39,11 @@ interface AuthServiceInterface
     /**
      * Update
      * @param string $field
-     * @param string $value
+     * @param string|null $value
      * @param array $data
      * @return \Quantum\Libraries\Auth\User|null
      */
-    public function update(string $field, string $value, array $data): ?User;
+    public function update(string $field, ?string $value, array $data): ?User;
 
     /**
      * User Schema

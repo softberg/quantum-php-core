@@ -17,9 +17,8 @@ namespace Quantum\Libraries\Session;
 use Quantum\Libraries\Encryption\Cryptor;
 
 /**
- * Session class
- * @package Quantum
- * @category Libraries
+ * Class Session
+ * @package Quantum\Libraries\Session
  */
 class Session implements SessionStorageInterface
 {
@@ -32,36 +31,27 @@ class Session implements SessionStorageInterface
 
     /**
      * Cryptor instance
-     * @var Cryptor
+     * @var \Quantum\Libraries\Encryption\Cryptor
      */
     private $cryptor;
 
     /**
      * Session constructor.
      * @param array $storage
+     * @param \Quantum\Libraries\Encryption\Cryptor $cryptor
      */
-    public function __construct(&$storage, Cryptor $cryptor)
+    public function __construct(array &$storage, Cryptor $cryptor)
     {
         $this->storage = &$storage;
         $this->cryptor = $cryptor;
     }
 
     /**
-     * Gets value by given key
-     * @param string $key
-     * @return mixed
-     */
-    public function get($key)
-    {
-        return $this->has($key) ? $this->decode($this->storage[$key]) : null;
-    }
-
-    /*
-     * Gets whole data
+     * Gets all data
      * @return array
+     * @throws \Quantum\Exceptions\CryptorException
      */
-
-    public function all()
+    public function all(): array
     {
         $allSessions = [];
 
@@ -77,27 +67,42 @@ class Session implements SessionStorageInterface
      * @param string $key
      * @return bool
      */
-    public function has($key)
+    public function has(string $key): bool
     {
-        return isset($this->storage[$key]) ? true : false;
+        return isset($this->storage[$key]);
+    }
+
+    /**
+     * Gets value by given key
+     * @param string $key
+     * @return mixed|null
+     * @throws \Quantum\Exceptions\CryptorException
+     */
+    public function get(string $key)
+    {
+        return $this->has($key) ? $this->decode($this->storage[$key]) : null;
     }
 
     /**
      * Sets value by given key
      * @param string $key
      * @param mixed $value
+     * @return $this
+     * @throws \Quantum\Exceptions\CryptorException
      */
-    public function set($key, $value)
+    public function set(string $key, $value): self
     {
         $this->storage[$key] = $this->encode($value);
+        return $this;
     }
 
     /**
-     * Gets flash values by given key
+     * Gets flash value by given key
      * @param string $key
-     * @return mixed|null
+     * @return mixed|string|null
+     * @throws \Quantum\Exceptions\CryptorException
      */
-    public function getFlash($key)
+    public function getFlash(string $key)
     {
         $flashData = null;
 
@@ -110,20 +115,23 @@ class Session implements SessionStorageInterface
     }
 
     /**
-     * Sets flash values by given key
+     * Sets flash value by given key
      * @param string $key
      * @param mixed $value
+     * @return $this
+     * @throws \Quantum\Exceptions\CryptorException
      */
-    public function setFlash($key, $value)
+    public function setFlash(string $key, $value): self
     {
         $this->set($key, $value);
+        return $this;
     }
 
     /**
      * Deletes data from storage by given key
      * @param string $key
      */
-    public function delete($key)
+    public function delete(string $key)
     {
         if ($this->has($key)) {
             unset($this->storage[$key]);
@@ -143,7 +151,7 @@ class Session implements SessionStorageInterface
      * Gets the session Id
      * @return null|string
      */
-    public function getSessionId()
+    public function getSessionId(): ?string
     {
         return session_id() ?? null;
     }
@@ -152,8 +160,9 @@ class Session implements SessionStorageInterface
      * Encodes the session data
      * @param mixed $value
      * @return string
+     * @throws \Quantum\Exceptions\CryptorException
      */
-    private function encode($value)
+    private function encode($value): string
     {
         $value = (is_array($value) || is_object($value)) ? serialize($value) : $value;
         return $this->cryptor->encrypt($value);
@@ -162,9 +171,10 @@ class Session implements SessionStorageInterface
     /**
      * Decodes the session data
      * @param string $value
-     * @return string
+     * @return mixed|string
+     * @throws \Quantum\Exceptions\CryptorException
      */
-    private function decode($value)
+    private function decode(string $value)
     {
         if (empty($value)) {
             return $value;

@@ -215,25 +215,27 @@ abstract class BaseAuth
     {
         $user = $this->authService->get($this->keyFields[self::USERNAME_KEY], $username);
 
-        $resetToken = $this->generateToken();
+        if ($user) {
+            $resetToken = $this->generateToken();
 
-        $this->authService->update(
-            $this->keyFields[self::USERNAME_KEY],
-            $username,
-            [$this->keyFields[self::RESET_TOKEN_KEY] => $resetToken]
-        );
+            $this->authService->update(
+                $this->keyFields[self::USERNAME_KEY],
+                $username,
+                [$this->keyFields[self::RESET_TOKEN_KEY] => $resetToken]
+            );
 
-        $body = [
-            'user' => $user,
-            'resetToken' => $resetToken
-        ];
+            $body = [
+                'user' => $user,
+                'resetToken' => $resetToken
+            ];
 
-        $this->mailer->setSubject(t('common.reset_password'));
-        $this->mailer->setTemplate(base_dir() . DS . 'base' . DS . 'views' . DS . 'email' . DS . 'reset');
+            $this->mailer->setSubject(t('common.reset_password'));
+            $this->mailer->setTemplate(base_dir() . DS . 'base' . DS . 'views' . DS . 'email' . DS . 'reset');
 
-        $this->sendMail($user, $body);
+            $this->sendMail($user, $body);
 
-        return $resetToken;
+            return $resetToken;
+        }
     }
 
     /**
@@ -245,18 +247,20 @@ abstract class BaseAuth
     {
         $user = $this->authService->get($this->keyFields[self::RESET_TOKEN_KEY], $token);
 
-        if (!$this->isActivated($user)) {
-            $this->activate($token);
-        }
+        if ($user) {
+            if (!$this->isActivated($user)) {
+                $this->activate($token);
+            }
 
-        $this->authService->update(
-            $this->keyFields[self::RESET_TOKEN_KEY],
-            $token,
-            [
-                $this->keyFields[self::PASSWORD_KEY] => $this->hasher->hash($password),
-                $this->keyFields[self::RESET_TOKEN_KEY] => ''
-            ]
-        );
+            $this->authService->update(
+                $this->keyFields[self::RESET_TOKEN_KEY],
+                $token,
+                [
+                    $this->keyFields[self::PASSWORD_KEY] => $this->hasher->hash($password),
+                    $this->keyFields[self::RESET_TOKEN_KEY] => ''
+                ]
+            );
+        }
     }
 
     /**
@@ -264,6 +268,7 @@ abstract class BaseAuth
      * @param string $otpToken
      * @return string
      * @throws \Quantum\Exceptions\AuthException
+     * @throws \Exception
      */
     public function resendOtp(string $otpToken): string
     {
@@ -375,7 +380,7 @@ abstract class BaseAuth
      */
     protected function isActivated(User $user): bool
     {
-        return empty($user->getFieldValue($this->keyFields[self::ACTIVATION_TOKEN_KEY])) ? true : false;
+        return empty($user->getFieldValue($this->keyFields[self::ACTIVATION_TOKEN_KEY]));
     }
 
     /**

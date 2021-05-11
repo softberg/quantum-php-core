@@ -20,9 +20,8 @@ use Quantum\Libraries\Database\Database;
 use Quantum\Loader\Loader;
 
 /**
- * Session Manager class
- * @package Quantum
- * @category Libraries
+ * Class SessionManager
+ * @package Quantum\Libraries\Session
  */
 class SessionManager
 {
@@ -34,17 +33,16 @@ class SessionManager
 
     /**
      * GetHandler
-     * @param Loader $loader
-     * @return Session
+     * @param \Quantum\Loader\Loader $loader
+     * @return \Quantum\Libraries\Session\Session
+     * @throws \Quantum\Exceptions\ModelException
      * @throws \RuntimeException
      */
-    public static function getHandler(Loader $loader)
+    public static function getHandler(Loader $loader): Session
     {
-        $driver = config()->get('session_driver');
-
         if (!session_id()) {
 
-            if ($driver == self::$databaseDriver) {
+            if (self::$databaseDriver == config()->get('session_driver')) {
                 $orm = (new Database($loader))->getORM(config()->get('session_table', 'sessions'));
                 session_set_save_handler(new DbSessionHandler($orm, $loader), true);
             }

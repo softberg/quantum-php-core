@@ -22,12 +22,6 @@ interface StorageInterface
 {
 
     /**
-     * Should be implemented in derived classes to get value from storage by key
-     * @param string $key
-     */
-    public function get($key);
-
-    /**
      * Should be implemented in derived classes to get whole storage data
      */
     public function all();
@@ -36,20 +30,26 @@ interface StorageInterface
      * Should be implemented in derived classes to check if storage contains a key
      * @param string $key
      */
-    public function has($key);
+    public function has(string $key);
+
+    /**
+     * Should be implemented in derived classes to get value from storage by key
+     * @param string $key
+     */
+    public function get(string $key);
 
     /**
      * Should be implemented in derived classes to set storage value with given key
      * @param string $key
-     * @param string $value
+     * @param mixed $value
      */
-    public function set($key, $value);
+    public function set(string $key, $value);
 
     /**
      * Should be implemented in derived classes to delete data with given key from session
      * @param string $key
      */
-    public function delete($key);
+    public function delete(string $key);
 
     /**
      * Should be implemented in derived classes to delete whole storage data

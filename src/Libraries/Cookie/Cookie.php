@@ -17,9 +17,8 @@ namespace Quantum\Libraries\Cookie;
 use Quantum\Libraries\Encryption\Cryptor;
 
 /**
- * Cookie Class
- * @package Quantum
- * @category Libraries
+ * Class Cookie
+ * @package Quantum\Libraries\Cookie
  */
 class Cookie implements CookieStorageInterface
 {
@@ -29,38 +28,29 @@ class Cookie implements CookieStorageInterface
      * @var array $storage
      */
     private $storage = [];
-    
+
     /**
      * Cryptor instance
-     * @var Cryptor
+     * @var \Quantum\Libraries\Encryption\Cryptor
      */
     private $cryptor;
 
     /**
      * Cookie constructor.
      * @param array $storage
+     * @param \Quantum\Libraries\Encryption\Cryptor $cryptor
      */
-    public function __construct(&$storage, Cryptor $cryptor)
+    public function __construct(array &$storage, Cryptor $cryptor)
     {
         $this->storage = &$storage;
         $this->cryptor = $cryptor;
     }
 
     /**
-     * Gets data by given key
-     * @param string $key
-     * @return mixed
-     */
-    public function get($key)
-    {
-        return $this->has($key) ? $this->decode($this->storage[$key]) : null;
-    }
-
-    /*
-     * Gets whole data
+     * Gets all data
      * @return array
+     * @throws \Quantum\Exceptions\CryptorException
      */
-
     public function all()
     {
         $allCookies = [];
@@ -77,24 +67,36 @@ class Cookie implements CookieStorageInterface
      * @param string $key
      * @return bool
      */
-    public function has($key)
+    public function has(string $key): bool
     {
-        return isset($this->storage[$key]) ? true : false;
+        return isset($this->storage[$key]);
+    }
+
+    /**
+     * Gets data by given key
+     * @param string $key
+     * @return string|null
+     * @throws \Quantum\Exceptions\CryptorException
+     */
+    public function get(string $key): ?string
+    {
+        return $this->has($key) ? $this->decode($this->storage[$key]) : null;
     }
 
     /**
      * Sets data by given key
      * @param string $key
      * @param string $value
-     * @param integer $time
+     * @param int $time
      * @param string $path
      * @param string $domain
-     * @param boolean $secure
-     * @param boolean $httponly
-     * @return void
+     * @param bool $secure
+     * @param bool $httponly
+     * @return \Quantum\Contracts\StorageInterface|\Quantum\Libraries\Cookie\CookieStorageInterface|void
+     * @throws \Quantum\Exceptions\CryptorException
      */
-    public function set($key, $value = '', $time = 0, $path = '/', $domain = '', $secure = false, $httponly = false)
-	{
+    public function set(string $key, $value = '', int $time = 0, string $path = '/', string $domain = '', bool $secure = false, bool $httponly = false)
+    {
         $this->storage[$key] = $this->encode($value);
         setcookie($key, $this->encode($value), $time ? time() + $time : $time, $path, $domain, $secure, $httponly);
     }
@@ -105,7 +107,7 @@ class Cookie implements CookieStorageInterface
      * @param string $path
      * @return void
      */
-    public function delete($key, $path = '/')
+    public function delete(string $key, string $path = '/')
     {
         if ($this->has($key)) {
             unset($this->storage[$key]);
@@ -115,11 +117,10 @@ class Cookie implements CookieStorageInterface
 
     /**
      * Deletes whole cookie data
-     * @return void
      */
     public function flush()
     {
-        if (count($this->storage) > 0) {
+        if (count($this->storage)) {
             foreach ($this->storage as $key => $value) {
                 $this->delete($key, '/');
             }
@@ -130,8 +131,9 @@ class Cookie implements CookieStorageInterface
      * Encodes the cookie data
      * @param mixed $value
      * @return string
+     * @throws \Quantum\Exceptions\CryptorException
      */
-    private function encode($value)
+    private function encode($value): string
     {
         $value = (is_array($value) || is_object($value)) ? serialize($value) : $value;
         return $this->cryptor->encrypt($value);
@@ -140,9 +142,10 @@ class Cookie implements CookieStorageInterface
     /**
      * Decodes the cookie data
      * @param string $value
-     * @return string
+     * @return mixed
+     * @throws \Quantum\Exceptions\CryptorException
      */
-    private function decode($value)
+    private function decode(string $value)
     {
         if (empty($value)) {
             return $value;

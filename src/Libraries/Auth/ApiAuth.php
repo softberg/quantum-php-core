@@ -179,10 +179,7 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
     public function verifyOtp(int $otp, string $otpToken): array
     {
         $user = $this->verifyAndUpdateOtp($otp, $otpToken);
-
-        $tokens = $this->setUpdatedTokens($user);
-
-        return $tokens;
+        return $this->setUpdatedTokens($user);
     }
 
     /**
@@ -191,9 +188,7 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
      */
     protected function checkRefreshToken(): ?User
     {
-        $user = $this->authService->get($this->keyFields[self::REFRESH_TOKEN_KEY], Request::getHeader($this->keyFields[self::REFRESH_TOKEN_KEY]));
-
-        return $user ?: null;
+        return $this->authService->get($this->keyFields[self::REFRESH_TOKEN_KEY], Request::getHeader($this->keyFields[self::REFRESH_TOKEN_KEY]));
     }
 
     /**

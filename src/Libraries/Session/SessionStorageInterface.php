@@ -24,20 +24,21 @@ interface SessionStorageInterface extends StorageInterface
 {
 
     /**
-     * Should be implemented in derived classes to get flash values by given key
+     * Gets flash value by given key
      * @param string $key
      */
-    public function getFlash($key);
+    public function getFlash(string $key);
 
     /**
-     * Should be implemented in derived classes to set flash values with given key
+     * Sets flash value by given key
      * @param string $key
      * @param mixed $value
      */
-    public function setFlash($key, $value);
+    public function setFlash(string $key, $value);
 
     /**
-     * Should be implemented in derived classes to get session ID
+     * Gets the session Id
+     * @return string|null
      */
-    public function getSessionId();
+    public function getSessionId(): ?string;
 }
