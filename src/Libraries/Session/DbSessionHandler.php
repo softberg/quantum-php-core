@@ -63,7 +63,7 @@ class DbSessionHandler implements SessionHandlerInterface
      */
     public function open($save_path, $name)
     {
-        if ((new Database($this->loаder))->connected()) {
+        if ((new Database($this->loader))->connected()) {
             return true;
         }
         return false;
@@ -75,7 +75,7 @@ class DbSessionHandler implements SessionHandlerInterface
      */
     public function close()
     {
-        if (!(new Database($this->loаder))->connected()) {
+        if (!(new Database($this->loader))->connected()) {
             return true;
         }
         return false;

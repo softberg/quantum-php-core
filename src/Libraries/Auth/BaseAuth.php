@@ -205,13 +205,13 @@ abstract class BaseAuth
             [$this->keyFields[self::ACTIVATION_TOKEN_KEY] => '']
         );
     }
-
+    
     /**
      * Forget
      * @param string $username
-     * @return string
+     * @return string|null
      */
-    public function forget(string $username): string
+    public function forget(string $username): ?string
     {
         $user = $this->authService->get($this->keyFields[self::USERNAME_KEY], $username);
 

@@ -69,7 +69,7 @@ class Session implements SessionStorageInterface
      */
     public function has(string $key): bool
     {
-        return isset($this->storage[$key]);
+        return isset($this->storage[$key]) && !empty($this->storage[$key]);
     }
 
     /**
