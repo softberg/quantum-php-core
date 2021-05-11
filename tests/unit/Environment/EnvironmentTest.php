@@ -12,7 +12,6 @@ class EnvironmentTest extends TestCase
 {
 
     private $env;
-    private $fs;
     private $loaderMock;
 
     public function setUp(): void
@@ -25,15 +24,15 @@ class EnvironmentTest extends TestCase
             'app_env' => 'staging'
         ]);
 
-        $this->fs = new FileSystem();
+        $fs = new FileSystem();
 
-        $loader = new Loader($this->fs);
+        $loader = new Loader($fs);
 
         $loader->loadDir(dirname(__DIR__, 3) . DS . 'src' . DS . 'Helpers' . DS . 'functions');
 
         $loader->loadFile(dirname(__DIR__, 3) . DS . 'src' . DS . 'constants.php');
 
-        $this->fs->put(base_dir() . DS . '.env.staging', "DEBUG=TRUE\nAPP_KEY=stg_123456\n");
+        $fs->put(base_dir() . DS . '.env.staging', "DEBUG=TRUE\nAPP_KEY=stg_123456\n");
 
         $this->env = Environment::getInstance();
     }
@@ -57,7 +56,7 @@ class EnvironmentTest extends TestCase
 
         $this->assertEquals('stg_123456', $this->env->getValue('APP_KEY'));
 
-        $this->env->updateRow($this->fs, 'APP_KEY', 'stg_456789');
+        $this->env->updateRow('APP_KEY', 'stg_456789');
 
         $this->assertEquals('stg_456789', $this->env->getValue('APP_KEY'));
     }
