@@ -85,7 +85,7 @@ class QtConsole
             }
         }
 
-        $classNames = get_directory_classes(BASE_DIR . DS . 'base' . DS . 'commands');
+        $classNames = get_directory_classes(BASE_DIR . DS . 'base' . DS . 'Commands');
         foreach ($classNames as $className) {
             $commandClass = '\\Base\\Commands\\' . $className;
 

@@ -9,11 +9,10 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.0.0
+ * @since 2.4.0
  */
 
 namespace Quantum\Http\Request;
-
 
 use Quantum\Exceptions\RequestException;
 use Quantum\Environment\Server;
@@ -26,9 +25,9 @@ use Quantum\Bootstrap;
 abstract class HttpRequest
 {
 
-    use \Quantum\Http\Request\Server;
     use Header;
     use Body;
+    use Url;
     use Query;
     use Params;
     use File;
@@ -148,7 +147,7 @@ abstract class HttpRequest
      * Gets the request method
      * @return string|null
      */
-    public static function getMethod()
+    public static function getMethod(): ?string
     {
         return self::$__method;
     }
@@ -156,7 +155,7 @@ abstract class HttpRequest
     /**
      * Sets the request method
      * @param string $method
-     * @throws RequestException
+     * @throws \Quantum\Exceptions\RequestException
      */
     public static function setMethod(string $method)
     {
@@ -251,9 +250,9 @@ abstract class HttpRequest
 
     /**
      * Gets the referrer
-     * @return string
+     * @return string|null
      */
-    public static function getReferrer(): string
+    public static function getReferrer(): ?string
     {
         return self::$server->referrer();
     }

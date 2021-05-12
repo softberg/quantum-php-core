@@ -1,11 +1,26 @@
 <?php
 
+/**
+ * Quantum PHP Framework
+ *
+ * An open source software development framework for PHP
+ *
+ * @package Quantum
+ * @author Arman Ag. <arman.ag@softberg.org>
+ * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
+ * @link http://quantum.softberg.org/
+ * @since 2.4.0
+ */
 
 namespace Quantum\Http\Request;
 
-
+/**
+ * Trait Header
+ * @package Quantum\Http\Request
+ */
 trait Header
 {
+
     /**
      * Request headers
      * @var array
@@ -61,4 +76,5 @@ trait Header
             unset(self::$__headers[strtolower($key)]);
         }
     }
+
 }

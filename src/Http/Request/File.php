@@ -1,12 +1,26 @@
 <?php
 
+/**
+ * Quantum PHP Framework
+ *
+ * An open source software development framework for PHP
+ *
+ * @package Quantum
+ * @author Arman Ag. <arman.ag@softberg.org>
+ * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
+ * @link http://quantum.softberg.org/
+ * @since 2.4.0
+ */
+
 namespace Quantum\Http\Request;
 
-
-use Quantum\Exceptions\FileUploadException;
-
+/**
+ * Trait File
+ * @package Quantum\Http\Request
+ */
 trait File
 {
+
     /**
      * Files
      * @var array
@@ -26,7 +40,7 @@ trait File
     /**
      * Gets the file info by given key
      * @param string $key
-     * @return array
+     * @return array|object
      * @throws \InvalidArgumentException
      */
     public static function getFile(string $key)
@@ -34,14 +48,13 @@ trait File
         if (!self::hasFile($key)) {
             throw new \InvalidArgumentException(_message(FileUploadException::UPLOADED_FILE_NOT_FOUND, $key));
         }
-//dd(self::$__files[$key]);
+
         return self::$__files[$key];
     }
 
     /**
-     * Handles uploaded files
      * @param array $_files
-     * @return array
+     * @return array|object[]
      */
     private static function handleFiles(array $_files): array
     {
@@ -70,5 +83,7 @@ trait File
                 return $formattedFiles;
             }
         }
+
     }
+
 }

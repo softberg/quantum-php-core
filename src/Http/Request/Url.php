@@ -1,11 +1,26 @@
 <?php
 
+/**
+ * Quantum PHP Framework
+ *
+ * An open source software development framework for PHP
+ *
+ * @package Quantum
+ * @author Arman Ag. <arman.ag@softberg.org>
+ * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
+ * @link http://quantum.softberg.org/
+ * @since 2.4.0
+ */
 
 namespace Quantum\Http\Request;
 
-
-trait Server
+/**
+ * Trait Url
+ * @package Quantum\Http\Request
+ */
+trait Url
 {
+
     /**
      * Scheme
      * @var string
@@ -34,7 +49,7 @@ trait Server
      * Gets the protocol
      * @return string
      */
-    public static function getProtocol()
+    public static function getProtocol(): ?string
     {
         return self::$__protocol;
     }
@@ -70,7 +85,7 @@ trait Server
      * Gets the port
      * @return string
      */
-    public static function getPort()
+    public static function getPort(): ?string
     {
         return self::$__port;
     }
@@ -79,7 +94,7 @@ trait Server
      * Sets the port
      * @param string $port
      */
-    public static function setPort($port)
+    public static function setPort(string $port)
     {
         self::$__port = $port;
     }
@@ -88,7 +103,7 @@ trait Server
      * Gets the URI
      * @return string|null
      */
-    public static function getUri()
+    public static function getUri(): ?string
     {
         return self::$__uri;
     }
@@ -101,4 +116,5 @@ trait Server
     {
         self::$__uri = ltrim($uri, '/');
     }
+
 }

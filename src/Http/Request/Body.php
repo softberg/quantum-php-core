@@ -1,11 +1,26 @@
 <?php
 
+/**
+ * Quantum PHP Framework
+ *
+ * An open source software development framework for PHP
+ *
+ * @package Quantum
+ * @author Arman Ag. <arman.ag@softberg.org>
+ * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
+ * @link http://quantum.softberg.org/
+ * @since 2.4.0
+ */
 
 namespace Quantum\Http\Request;
 
-
+/**
+ * Trait Body
+ * @package Quantum\Http\Request
+ */
 trait Body
 {
+
     /**
      * Request body
      * @var array
