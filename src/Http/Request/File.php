@@ -14,6 +14,8 @@
 
 namespace Quantum\Http\Request;
 
+use Quantum\Exceptions\FileUploadException;
+
 /**
  * Trait File
  * @package Quantum\Http\Request
