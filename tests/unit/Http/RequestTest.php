@@ -20,7 +20,7 @@ namespace Quantum\Test\Unit {
     use Quantum\Libraries\Session\Session;
     use PHPUnit\Framework\TestCase;
     use Quantum\Libraries\Csrf\Csrf;
-    use Quantum\Http\HttpRequest;
+    use Quantum\Http\Request\HttpRequest;
     use Quantum\Http\Request;
 
     class RequestTest extends TestCase
