@@ -82,7 +82,7 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
     public function signin(string $username, string $password)
     {
         $user = $this->authService->get($this->keyFields[self::USERNAME_KEY], $username);
-//dump($user);
+
         if (!$user) {
             throw new AuthException(AuthException::INCORRECT_AUTH_CREDENTIALS);
         }

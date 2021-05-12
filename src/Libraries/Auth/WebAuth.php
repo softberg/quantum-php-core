@@ -124,7 +124,7 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
      */
     public function user(): ?User
     {
-        if (session()->has($this->authUserKey)) {
+        if (session()->has($this->authUserKey) && is_array(session()->get($this->authUserKey))) {
             return (new User())->setData(session()->get($this->authUserKey));
         } else if (cookie()->has($this->keyFields[self::REMEMBER_TOKEN_KEY])) {
             $user = $this->checkRememberToken();
