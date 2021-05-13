@@ -13,7 +13,7 @@ class ResponseTest extends TestCase
 
     public function setUp(): void
     {
-        Response::init();
+        Response::init(true);
 
         $loader = new Loader(new FileSystem);
 

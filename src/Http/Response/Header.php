@@ -22,12 +22,6 @@ trait Header
 {
 
     /**
-     * Response
-     * @var array
-     */
-    private static $__response = [];
-
-    /**
      * Response headers
      * @var array
      */

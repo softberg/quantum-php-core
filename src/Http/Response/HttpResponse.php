@@ -14,7 +14,6 @@
 
 namespace Quantum\Http\Response;
 
-use Quantum\Exceptions\RequestException;
 use Quantum\Exceptions\HttpException;
 use Quantum\Bootstrap;
 use SimpleXMLElement;
@@ -65,11 +64,12 @@ abstract class HttpResponse
 
     /**
      * Initialize the Response
+     * @param bool $test
      * @throws \Quantum\Exceptions\HttpException
      */
-    public static function init()
+    public static function init($test = false)
     {
-        if (get_caller_class(3) !== Bootstrap::class) {
+        if (!$test && get_caller_class(3) !== Bootstrap::class) {
             throw new HttpException(HttpException::UNEXPECTED_RESPONSE_INITIALIZATION);
         }
 

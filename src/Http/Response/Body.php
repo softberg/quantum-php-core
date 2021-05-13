@@ -22,6 +22,12 @@ trait Body
 {
 
     /**
+     * Response
+     * @var array
+     */
+    private static $__response = [];
+    
+    /**
      * Checks if response contains a data by given key
      * @param string $key
      * @return bool

@@ -94,7 +94,7 @@ abstract class HttpRequest
      * @param string $url
      * @param array|null $data
      * @param array|null $file
-     * @throws \Quantum\Exceptions\RequestException
+     * @throws \Quantum\Exceptions\HttpException
      */
     public static function create(string $method, string $url, array $data = null, array $file = null)
     {
@@ -156,12 +156,12 @@ abstract class HttpRequest
     /**
      * Sets the request method
      * @param string $method
-     * @throws \Quantum\Exceptions\RequestException
+     * @throws \Quantum\Exceptions\HttpException
      */
     public static function setMethod(string $method)
     {
         if (!in_array($method, self::$availableMethods)) {
-            throw new RequestException(RequestException::METHOD_NOT_AVAILABLE);
+            throw new HttpException(HttpException::METHOD_NOT_AVAILABLE);
         }
 
         self::$__method = $method;

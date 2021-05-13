@@ -1,383 +1,374 @@
 <?php
 
-namespace Quantum\Http {
+namespace Quantum\Test\Unit;
 
-    function get_caller_class()
+use Mockery;
+use Quantum\Libraries\Session\Session;
+use PHPUnit\Framework\TestCase;
+use Quantum\Libraries\Csrf\Csrf;
+use Quantum\Http\Request\HttpRequest;
+use Quantum\Http\Request;
+use Quantum\Libraries\Storage\FileSystem;
+use Quantum\Loader\Loader;
+
+class RequestTest extends TestCase
+{
+
+    private $session;
+    private $sessionData = [];
+
+    public function setUp(): void
     {
-        return 'Quantum\Bootstrap';
+        $cryptor = Mockery::mock('Quantum\Libraries\Encryption\Cryptor');
+
+        $cryptor->shouldReceive('encrypt')->andReturnUsing(function ($arg) {
+            return base64_encode($arg);
+        });
+
+        $cryptor->shouldReceive('decrypt')->andReturnUsing(function ($arg) {
+            return base64_decode($arg);
+        });
+
+        $loader = new Loader(new FileSystem);
+
+        $loader->loadDir(dirname(__DIR__, 3) . DS . 'src' . DS . 'Helpers' . DS . 'functions');
+
+        $loader->loadFile(dirname(__DIR__, 3) . DS . 'src' . DS . 'constants.php');
+
+        $this->session = new Session($this->sessionData, $cryptor);
+
+        $server = Mockery::mock('Quantum\Environment\Server');
+
+        $server->shouldReceive('method')->andReturn('GET');
+
+        $server->shouldReceive('method')->andReturn('GET');
     }
 
-    function getallheaders()
+    public function tearDown(): void
     {
-        return [];
+        HttpRequest::flush();
     }
 
-}
-
-namespace Quantum\Test\Unit {
-
-    use Mockery;
-    use Quantum\Libraries\Session\Session;
-    use PHPUnit\Framework\TestCase;
-    use Quantum\Libraries\Csrf\Csrf;
-    use Quantum\Http\Request\HttpRequest;
-    use Quantum\Http\Request;
-
-    class RequestTest extends TestCase
+    public function testSetGetMethod()
     {
+        $request = new Request();
 
-        private $server;
-        private $session;
-        private $cryptor;
-        private $sessionData = [];
+        $request->create('GET', '/');
 
-        public function setUp(): void
-        {
-            $this->cryptor = Mockery::mock('Quantum\Libraries\Encryption\Cryptor');
+        $this->assertEquals('GET', $request->getMethod());
 
-            $this->cryptor->shouldReceive('encrypt')->andReturnUsing(function ($arg) {
-                return base64_encode($arg);
-            });
+        $request->setMethod('POST');
 
-            $this->cryptor->shouldReceive('decrypt')->andReturnUsing(function ($arg) {
-                return base64_decode($arg);
-            });
+        $this->assertEquals('POST', $request->getMethod());
+    }
 
-            $this->session = new Session($this->sessionData, $this->cryptor);
+    public function testIsMethod()
+    {
+        $request = new Request();
 
-            $this->server = Mockery::mock('Quantum\Environment\Server');
+        $request->create('GET', '/');
 
-            $this->server->shouldReceive('method')->andReturn('GET');
+        $this->assertTrue($request->isMethod('GET'));
 
-            $this->server->shouldReceive('method')->andReturn('GET');
-        }
+        $this->assertTrue($request->isMethod('get'));
 
-        public function tearDown(): void
-        {
-            HttpRequest::flush();
-        }
+        $this->assertFalse($request->isMethod('POST'));
 
-        public function testSetGetMethod()
-        {
-            $request = new Request();
+        $request->setMethod('POST');
 
-            $request->create('GET', '/');
+        $this->assertTrue($request->isMethod('POST'));
 
-            $this->assertEquals('GET', $request->getMethod());
+        $this->assertTrue($request->isMethod('post'));
+    }
 
-            $request->setMethod('POST');
+    public function testSetGetProtocol()
+    {
+        $request = new Request();
 
-            $this->assertEquals('POST', $request->getMethod());
-        }
+        $request->create('GET', 'https://test.com');
 
-        public function testIsMethod()
-        {
-            $request = new Request();
+        $this->assertEquals('https', $request->getProtocol());
 
-            $request->create('GET', '/');
+        $request->setProtocol('http');
 
-            $this->assertTrue( $request->isMethod('GET'));
+        $this->assertEquals('http', $request->getProtocol());
+    }
 
-            $this->assertTrue( $request->isMethod('get'));
+    public function testSetGetHost()
+    {
+        $request = new Request();
 
-            $this->assertFalse( $request->isMethod('POST'));
+        $request->create('GET', 'https://test.com/dashboard');
 
-            $request->setMethod('POST');
+        $this->assertEquals('test.com', $request->getHost());
 
-            $this->assertTrue( $request->isMethod('POST'));
+        $request->setHost('tester.com');
 
-            $this->assertTrue( $request->isMethod('post'));
-        }
+        $this->assertEquals('tester.com', $request->getHost());
+    }
 
-        public function testSetGetProtocol()
-        {
-            $request = new Request();
+    public function testSetGetPort()
+    {
+        $request = new Request();
 
-            $request->create('GET', 'https://test.com');
+        $request->create('GET', 'https://test.com:8080/dashboard');
 
-            $this->assertEquals('https', $request->getProtocol());
+        $this->assertEquals('8080', $request->getPort());
 
-            $request->setProtocol('http');
+        $request->setPort('9000');
 
-            $this->assertEquals('http', $request->getProtocol());
-        }
+        $this->assertEquals('9000', $request->getPort());
+    }
 
-        public function testSetGetHost()
-        {
-            $request = new Request();
+    public function testSetGetUri()
+    {
+        $request = new Request();
 
-            $request->create('GET', 'https://test.com/dashboard');
+        $request->create('GET', 'http://test.com/post/12');
 
-            $this->assertEquals('test.com', $request->getHost());
+        $this->assertEquals('post/12', $request->getUri());
 
-            $request->setHost('tester.com');
+        $request->setUri('post/edit/12');
 
-            $this->assertEquals('tester.com', $request->getHost());
-        }
+        $this->assertEquals('post/edit/12', $request->getUri());
+    }
 
-        public function testSetGetPort()
-        {
-            $request = new Request();
+    public function testSetGetQuery()
+    {
+        $request = new Request();
 
-            $request->create('GET', 'https://test.com:8080/dashboard');
+        $request->create('GET', 'http://test.com:8080/user?firstname=john&lastname=doe');
 
-            $this->assertEquals('8080', $request->getPort());
+        $this->assertEquals('firstname=john&lastname=doe', $request->getQuery());
 
-            $request->setPort('9000');
+        $request->create('GET', 'http://test.com:8080/?firstname=john&lastname=doe');
 
-            $this->assertEquals('9000', $request->getPort());
-        }
+        $this->assertEquals('firstname=john&lastname=doe', $request->getQuery());
 
-        public function testSetGetUri()
-        {
-            $request = new Request();
+        $request->setQuery('age=30&gender=male');
 
-            $request->create('GET', 'http://test.com/post/12');
+        $this->assertEquals('age=30&gender=male', $request->getQuery());
+    }
 
-            $this->assertEquals('post/12', $request->getUri());
+    public function testRequestSetHasGetDelete()
+    {
+        $request = new Request();
 
-            $request->setUri('post/edit/12');
+        $this->assertFalse($request->has('name'));
 
-            $this->assertEquals('post/edit/12', $request->getUri());
-        }
+        $request->set('name', 'John');
 
-        public function testSetGetQuery()
-        {
-            $request = new Request();
+        $this->assertTrue($request->has('name'));
 
-            $request->create('GET', 'http://test.com:8080/user?firstname=john&lastname=doe');
+        $this->assertEquals('John', $request->get('name'));
 
-            $this->assertEquals('firstname=john&lastname=doe', $request->getQuery());
+        $request->delete('name');
 
-            $request->create('GET', 'http://test.com:8080/?firstname=john&lastname=doe');
+        $this->assertNotEquals('John', $request->get('name'));
 
-            $this->assertEquals('firstname=john&lastname=doe', $request->getQuery());
+        $request->create('POST', '/', ['content' => '<h1>Big text</h1>']);
 
-            $request->setQuery('age=30&gender=male');
+        $this->assertEquals('Big text', $request->get('content'));
 
-            $this->assertEquals('age=30&gender=male', $request->getQuery());
-        }
+        $this->assertEquals('<h1>Big text</h1>', $request->get('content', null, true));
 
-        public function testRequestSetHasGetDelete()
-        {
-            $request = new Request();
+        $request->create('POST', '/', ['content' => ['status' => 'ok', 'message' => '<h1>Big text</h1>']]);
 
-            $this->assertFalse($request->has('name'));
+        $content = $request->get('content');
 
-            $request->set('name', 'John');
+        $this->assertEquals('Big text', $content['message']);
 
-            $this->assertTrue($request->has('name'));
+        $content = $request->get('content', null, true);
 
-            $this->assertEquals('John', $request->get('name'));
+        $this->assertEquals('<h1>Big text</h1>', $content['message']);
+    }
 
-            $request->delete('name');
+    public function testRequestAll()
+    {
+        $request = new Request();
 
-            $this->assertNotEquals('John', $request->get('name'));
+        $this->assertEmpty($request->all());
 
-            $request->create('POST', '/', ['content' => '<h1>Big text</h1>']);
+        $file = [
+            'image' => [
+                'size' => 500,
+                'name' => 'foo.jpg',
+                'tmp_name' => __FILE__ . 'php8fe1.tmp',
+                'type' => 'image/jpg',
+                'error' => 0,
+            ],
+        ];
 
-            $this->assertEquals('Big text', $request->get('content'));
+        $request->create('POST', '/upload', ['name' => 'John'], $file);
 
-            $this->assertEquals('<h1>Big text</h1>', $request->get('content', null, true));
+        $request->set('name', 'John');
 
-            $request->create('POST', '/', ['content' => ['status' => 'ok', 'message' => '<h1>Big text</h1>']]);
+        $this->assertNotEmpty($request->all());
 
-            $content = $request->get('content');
+        $this->assertIsArray($request->all());
+    }
 
-            $this->assertEquals('Big text', $content['message']);
+    public function testHasGetFile()
+    {
+        $request = new Request();
 
-            $content = $request->get('content', null, true);
+        $this->assertFalse($request->hasFile('image'));
 
-            $this->assertEquals('<h1>Big text</h1>', $content['message']);
-        }
+        $file = [
+            'image' => [
+                'size' => 500,
+                'name' => 'foo.jpg',
+                'tmp_name' => __FILE__ . 'php8fe1.tmp',
+                'type' => 'image/jpg',
+                'error' => 0,
+            ],
+        ];
 
-        public function testRequestAll()
-        {
-            $request = new Request();
+        $request->create('POST', '/upload', null, $file);
 
-            $this->assertEmpty($request->all());
+        $this->assertTrue($request->hasFile('image'));
 
-            $file = [
-                'image' => [
-                    'size' => 500,
-                    'name' => 'foo.jpg',
-                    'tmp_name' => __FILE__ . 'php8fe1.tmp',
-                    'type' => 'image/jpg',
-                    'error' => 0,
-                ],
-            ];
+        $image = $request->getFile('image');
 
-            $request->create('POST', '/upload', ['name' => 'John'], $file);
+        $this->assertIsObject($image);
 
-            $request->set('name', 'John');
+        $this->assertEquals('foo.jpg', $image->name);
+    }
 
-            $this->assertNotEmpty($request->all());
+    public function testGetMultipleFiles()
+    {
+        $request = new Request();
 
-            $this->assertIsArray($request->all());
-        }
+        $this->assertFalse($request->hasFile('image'));
 
-        public function testHasGetFile()
-        {
-            $request = new Request();
+        $files = [
+            'image' => [
+                'size' => [500, 800],
+                'name' => ['foo.jpg', 'bar.png'],
+                'tmp_name' => [__FILE__ . 'php8fe2.tmp', __FILE__ . 'php8fe3.tmp'],
+                'type' => ['image/jpg', 'image/png'],
+                'error' => [0, 0],
+            ],
+        ];
 
-            $this->assertFalse($request->hasFile('image'));
+        $request->create('POST', '/upload', null, $files);
 
-            $file = [
-                'image' => [
-                    'size' => 500,
-                    'name' => 'foo.jpg',
-                    'tmp_name' => __FILE__ . 'php8fe1.tmp',
-                    'type' => 'image/jpg',
-                    'error' => 0,
-                ],
-            ];
+        $this->assertTrue($request->hasFile('image'));
 
-            $request->create('POST', '/upload', null, $file);
+        $image = $request->getFile('image');
 
-            $this->assertTrue($request->hasFile('image'));
+        $this->assertIsArray($image);
 
-            $image = $request->getFile('image');
+        $this->assertIsObject($image[0]);
 
-            $this->assertIsObject($image);
+        $this->assertEquals('foo.jpg', $image[0]->name);
 
-            $this->assertEquals('foo.jpg', $image->name);
-        }
+        $this->assertEquals('bar.png', $image[1]->name);
+    }
 
-        public function testGetMultipleFiles()
-        {
-            $request = new Request();
+    public function testRequestHeaderSetHasGetDelete()
+    {
+        $request = new Request();
 
-            $this->assertFalse($request->hasFile('image'));
+        $this->assertFalse($request->hasHeader('name'));
 
-            $files = [
-                'image' => [
-                    'size' => [500, 800],
-                    'name' => ['foo.jpg', 'bar.png'],
-                    'tmp_name' => [__FILE__ . 'php8fe2.tmp', __FILE__ . 'php8fe3.tmp'],
-                    'type' => ['image/jpg', 'image/png'],
-                    'error' => [0, 0],
-                ],
-            ];
+        $request->setHeader('X-CUSTOM', 'Custom');
 
-            $request->create('POST', '/upload', null, $files);
+        $this->assertTrue($request->hasHeader('X-CUSTOM'));
 
-            $this->assertTrue($request->hasFile('image'));
+        $this->assertEquals('Custom', $request->getHeader('X-CUSTOM'));
 
-            $image = $request->getFile('image');
+        $request->delete('X-CUSTOM');
 
-            $this->assertIsArray($image);
+        $this->assertNotEquals('Custom', $request->get('X-CUSTOM'));
+    }
 
-            $this->assertIsObject($image[0]);
+    public function testRequestHeaderAll()
+    {
+        $request = new Request();
 
-            $this->assertEquals('foo.jpg', $image[0]->name);
+        $this->assertEmpty($request->allHeaders());
 
-            $this->assertEquals('bar.png', $image[1]->name);
-        }
+        $request->setHeader('X-CUSTOM', 'Custom');
 
-        public function testRequestHeaderSetHasGetDelete()
-        {
-            $request = new Request();
+        $this->assertNotEmpty($request->allHeaders());
 
-            $this->assertFalse($request->hasHeader('name'));
+        $this->assertIsArray($request->allHeaders());
+    }
 
-            $request->setHeader('X-CUSTOM', 'Custom');
+    public function testGetSegments()
+    {
+        $request = new Request();
 
-            $this->assertTrue($request->hasHeader('X-CUSTOM'));
+        $request->create('GET', 'post/12/notes');
 
-            $this->assertEquals('Custom', $request->getHeader('X-CUSTOM'));
+        $this->assertIsArray($request->getAllSegments());
 
-            $request->delete('X-CUSTOM');
+        $this->assertEquals('post', $request->getSegment(1));
 
-            $this->assertNotEquals('Custom', $request->get('X-CUSTOM'));
-        }
+        $this->assertEquals('12', $request->getSegment(2));
 
-        public function testRequestHeaderAll()
-        {
-            $request = new Request();
+        $this->assertNull($request->getSegment(10));
+    }
 
-            $this->assertEmpty($request->allHeaders());
+    public function testGetCSRFToken()
+    {
+        $request = new Request();
 
-            $request->setHeader('X-CUSTOM', 'Custom');
+        $this->assertNull($request->getCSRFToken());
 
-            $this->assertNotEmpty($request->allHeaders());
+        $token = Csrf::generateToken($this->session, 'token');
 
-            $this->assertIsArray($request->allHeaders());
-        }
+        $request->set('token', $token);
 
-        public function testGetSegments()
-        {
-            $request = new Request();
+        $this->assertNotNull($request->getCSRFToken());
+    }
 
-            $request->create('GET', 'post/12/notes');
+    public function testGetAuthorizationBearer()
+    {
+        $request = new Request();
 
-            $this->assertIsArray($request->getAllSegments());
+        $bearerToken = md5('random');
 
-            $this->assertEquals('post', $request->getSegment(1));
+        $this->assertNull($request->getAuthorizationBearer());
 
-            $this->assertEquals('12', $request->getSegment(2));
+        $request->setHeader('Authorization', 'Bearer ' . $bearerToken);
 
-            $this->assertNull($request->getSegment(10));
-        }
+        $this->assertNotNull($request->getAuthorizationBearer());
 
-        public function testGetCSRFToken()
-        {
-            $request = new Request();
+        $this->assertEquals($bearerToken, $request->getAuthorizationBearer());
+    }
 
-            $this->assertNull($request->getCSRFToken());
+    public function testIsAjax()
+    {
+        $request = new Request();
 
-            $token = Csrf::generateToken($this->session, 'token');
+        $request->create('POST', '/save');
 
-            $request->set('token', $token);
+        $request->setHeader('X-REQUESTED-WITH', 'xmlhttprequest');
 
-            $this->assertNotNull($request->getCSRFToken());
-        }
+        $this->assertTrue($request->isAjax());
+    }
 
-        public function testGetAuthorizationBearer()
-        {
-            $request = new Request();
+    public function testSetGetQueryParam()
+    {
+        $request = new Request();
 
-            $bearerToken = md5('random');
+        $request->setQueryParam('name', 'John');
 
-            $this->assertNull($request->getAuthorizationBearer());
+        $request->setQueryParam('age', 36);
 
-            $request->setHeader('Authorization', 'Bearer ' . $bearerToken);
+        $this->assertEquals('John', $request->getQueryParam('name'));
 
-            $this->assertNotNull($request->getAuthorizationBearer());
+        $this->assertEquals(36, $request->getQueryParam('age'));
 
-            $this->assertEquals($bearerToken, $request->getAuthorizationBearer());
-        }
+        $this->assertEquals(null, $request->getQueryParam('otherKey'));
 
-        public function testIsAjax()
-        {
-            $request = new Request();
+        $this->assertEquals('name=John&age=36', $request->getQuery());
 
-            $request->create('POST', '/save');
+        $request->setQuery('phone=055090607&email=test@test.com');
 
-            $request->setHeader('X-REQUESTED-WITH', 'xmlhttprequest');
-
-            $this->assertTrue($request->isAjax());
-        }
-
-        public function testSetGetQueryParam(){
-            $request = new Request();
-
-            $request->setQueryParam('name', 'John');
-
-            $request->setQueryParam('age', 36);
-
-            $this->assertEquals('John', $request->getQueryParam('name'));
-
-            $this->assertEquals(36, $request->getQueryParam('age'));
-
-            $this->assertEquals(null, $request->getQueryParam('otherKey'));
-
-            $this->assertEquals('name=John&age=36', $request->getQuery());
-
-            $request->setQuery('phone=055090607&email=test@test.com');   
-            
-            $this->assertEquals('test@test.com', $request->getQueryParam('email'));
-
-        }
+        $this->assertEquals('test@test.com', $request->getQueryParam('email'));
 
     }
 
