@@ -14,7 +14,7 @@
 
 namespace Quantum\Http\Request;
 
-use Quantum\Exceptions\RequestException;
+use Quantum\Exceptions\HttpException;
 use Quantum\Environment\Server;
 use Quantum\Bootstrap;
 
@@ -53,12 +53,13 @@ abstract class HttpRequest
     /**
      * Initialize the Request
      * @param \Quantum\Environment\Server $server
-     * @throws \Quantum\Exceptions\RequestException
+     * @throws \Quantum\Exceptions\HttpException
      */
     public static function init(Server $server)
     {
-        if (get_caller_class() !== Bootstrap::class) {
-            throw new RequestException(RequestException::UNEXPECTED_REQUEST_INITIALIZATION);
+
+        if (get_caller_class(3) !== Bootstrap::class) {
+            throw new HttpException(HttpException::UNEXPECTED_REQUEST_INITIALIZATION);
         }
 
         self::$server = $server;

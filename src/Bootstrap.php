@@ -21,7 +21,6 @@ use Quantum\Libraries\Config\Config;
 use Quantum\Routes\ModuleLoader;
 use Quantum\Libraries\Lang\Lang;
 use Quantum\Environment\Server;
-use Quantum\Http\HttpRequest;
 use Quantum\Mvc\MvcManager;
 use Quantum\Routes\Router;
 use Quantum\Loader\Loader;
@@ -54,10 +53,11 @@ class Bootstrap
 
             Environment::getInstance()->load($loader);
 
-            HttpRequest::init(new Server);
-
             $request = Di::get(Request::class);
             $response = Di::get(Response::class);
+
+            $request->init(new Server);
+            $response->init();
 
             $router = new Router($request, $response);
 
