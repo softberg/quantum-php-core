@@ -9,10 +9,18 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.0.0
+ * @since 2.4.0
  */
 
 namespace Quantum\Libraries\Validation;
+
+;
+use Quantum\Libraries\Validation\Rules\General;
+use Quantum\Libraries\Validation\Rules\Type;
+use Quantum\Libraries\Validation\Rules\File;
+use Quantum\Libraries\Validation\Rules\Lists;
+use Quantum\Libraries\Validation\Rules\Length;
+use Quantum\Libraries\Validation\Rules\Resource;
 
 /**
  * Class Validator
@@ -21,7 +29,12 @@ namespace Quantum\Libraries\Validation;
 class Validator
 {
 
-    use ValidationRules;
+    use General;
+    use Type;
+    use File;
+    use Lists;
+    use Length;
+    use Resource;
 
     /**
      * Rules
