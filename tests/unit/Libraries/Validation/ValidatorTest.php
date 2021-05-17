@@ -42,6 +42,7 @@ namespace Quantum\Loader {
 
 namespace Quantum\Test\Unit {
 
+    use Quantum\Di\Di;
     use Quantum\Libraries\Validation\Validator;
     use Quantum\Libraries\Database\IdiormDbal;
     use Quantum\Libraries\Validation\Rule;
@@ -69,6 +70,8 @@ namespace Quantum\Test\Unit {
             $loader->loadDir(dirname(__DIR__, 4) . DS . 'src' . DS . 'Helpers' . DS . 'functions');
 
             $loader->loadFile(dirname(__DIR__, 4) . DS . 'src' . DS . 'constants.php');
+
+            Di::loadDefinitions();
 
             $data = 'iVBORw0KGgoAAAANSUhEUgAAABwAAAASCAMAAAB/2U7WAAAABl'
                     . 'BMVEUAAAD///+l2Z/dAAAASUlEQVR4XqWQUQoAIAxC2/0vXZDr'
@@ -488,17 +491,17 @@ namespace Quantum\Test\Unit {
                 Rule::set('boolean')
             ]);
 
-            $this->assertTrue($this->validator->isValid(['text' => true]));
+                $this->assertTrue($this->validator->isValid(['text' => true]));
 
-            $this->assertTrue($this->validator->isValid(['text' => 'true']));
+                $this->assertTrue($this->validator->isValid(['text' => 'true']));
 
-            $this->assertTrue($this->validator->isValid(['text' => 1]));
+                $this->assertTrue($this->validator->isValid(['text' => 1]));
 
-            $this->assertTrue($this->validator->isValid(['text' => 0]));
+                $this->assertTrue($this->validator->isValid(['text' => 0]));
 
-            $this->assertTrue($this->validator->isValid(['text' => 'false']));
+                $this->assertTrue($this->validator->isValid(['text' => 'false']));
 
-            $this->assertTrue($this->validator->isValid(['text' => false]));
+                $this->assertTrue($this->validator->isValid(['text' => false]));
 
             $this->assertFalse($this->validator->isValid(['text' => 'something']));
 
