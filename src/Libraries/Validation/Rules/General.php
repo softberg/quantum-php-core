@@ -49,7 +49,7 @@ trait General
      * Checks Email
      * @param string $field
      * @param string $value
-     * @param null $param
+     * @param null|mixed $param
      */
     protected function email(string $field, string $value, $param = null)
     {
