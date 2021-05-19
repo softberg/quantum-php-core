@@ -140,7 +140,7 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
     public function user(): ?User
     {
         try {
-            $accessToken = base64_decode(Request::getAuthorizationBearer());
+            $accessToken = base64_decode((string)Request::getAuthorizationBearer());
             return (new User())->setData($this->jwt->retrieve($accessToken)->fetchData());
         } catch (\Exception $e) {
             if (Request::hasHeader($this->keyFields[self::REFRESH_TOKEN_KEY])) {

@@ -56,9 +56,9 @@ trait File
 
     /**
      * @param array $_files
-     * @return array|object[]
+     * @return array|object[]|null
      */
-    private static function handleFiles(array $_files): array
+    private static function handleFiles(array $_files): ?array
     {
         if (!count($_files)) {
             return [];

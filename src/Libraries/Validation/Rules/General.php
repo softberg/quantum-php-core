@@ -40,7 +40,7 @@ trait General
      */
     protected function required(string $field, string $value, $param = null)
     {
-        if ($value == false || $value === '0' || empty($value)) {
+        if ($value == false || empty($value)) {
             $this->addError($field, 'required', $param);
         }
     }
