@@ -22,6 +22,14 @@ trait Lists
 {
 
     /**
+     * Adds validation Error
+     * @param string $field
+     * @param string $rule
+     * @param mixed|null $param
+     */
+    abstract protected function addError(string $field, string $rule, $param = null);
+
+    /**
      * Verifies that a value is contained within the pre-defined value set
      * @param string $field
      * @param string $value

@@ -22,6 +22,14 @@ trait Length
 {
 
     /**
+     * Adds validation Error
+     * @param string $field
+     * @param string $rule
+     * @param mixed|null $param
+     */
+    abstract protected function addError(string $field, string $rule, $param = null);
+
+    /**
      * Checks the min Length
      * @param string $field
      * @param string $value
