@@ -24,6 +24,14 @@ trait File
 {
 
     /**
+     * Adds validation Error
+     * @param string $field
+     * @param string $rule
+     * @param mixed|null $param
+     */
+    abstract protected function addError(string $field, string $rule, $param = null);
+
+    /**
      * Validates file size
      * @param string $field
      * @param object $value
