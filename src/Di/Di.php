@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.2.0
+ * @since 2.4.0
  */
 
 namespace Quantum\Di;
@@ -36,7 +36,7 @@ class Di
     /**
      * @var array
      */
-    private static $contianer = [];
+    private static $container = [];
 
     /**
      * Loads dependency definitions
@@ -51,8 +51,9 @@ class Di
      * @param string|callable $entry
      * @param array $additional
      * @return array
+     * @throws \ReflectionException|\Quantum\Exceptions\DiException
      */
-    public static function autowire($entry, array $additional = [])
+    public static function autowire($entry, array $additional = []): array
     {
         if (is_callable($entry)) {
             $reflaction = new ReflectionFunction($entry);
@@ -67,7 +68,7 @@ class Di
         foreach ($reflaction->getParameters() as $param) {
             $type = $param->getType();
 
-            if (!$type || !self::instatiatable($type)) {
+            if (!$type || !self::instantiable($type)) {
                 array_push($params, current($additional));
                 next($additional);
                 continue;
@@ -85,7 +86,7 @@ class Di
      * Gets the dependency from the container
      * @param string $dependency
      * @return mixed
-     * @throws DiException
+     * @throws DiException|\ReflectionException
      */
     public static function get(string $dependency)
     {
@@ -93,16 +94,17 @@ class Di
             throw new DiException(_message(DiException::NOT_FOUND, $dependency));
         }
 
-        if (!isset(self::$contianer[$dependency])) {
+        if (!isset(self::$container[$dependency])) {
             self::instantiate($dependency);
         }
 
-        return self::$contianer[$dependency];
+        return self::$container[$dependency];
     }
 
     /**
      * Instantiates the dependency
      * @param string $dependency
+     * @throws \Quantum\Exceptions\DiException|\ReflectionException
      */
     protected static function instantiate(string $dependency)
     {
@@ -116,7 +118,7 @@ class Di
             foreach ($constructor->getParameters() as $param) {
                 $type = (string) $param->getType();
 
-                if (!$type || !self::instatiatable($type)) {
+                if (!$type || !self::instantiable($type)) {
                     continue;
                 }
 
@@ -124,15 +126,15 @@ class Di
             }
         }
 
-        self::$contianer[$dependency] = new $dependency(...$params);
+        self::$container[$dependency] = new $dependency(...$params);
     }
 
     /**
      * Checks if the class is instantiable
      * @param mixed $type
-     * @return boolean
+     * @return bool
      */
-    protected static function instatiatable($type)
+    protected static function instantiable($type): bool
     {
         return $type != 'Closure' && !is_callable($type) && class_exists($type);
     }
@@ -141,7 +143,7 @@ class Di
      * Gets the core dependencies 
      * @return array
      */
-    private static function coreDependencies()
+    private static function coreDependencies(): array
     {
         return [
             \Quantum\Http\Request::class,
