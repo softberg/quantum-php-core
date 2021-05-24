@@ -306,7 +306,7 @@ class Mailer
      * @param string $attachments
      * @return $this
      */
-    public function setAttachment(string  $attachments): Mailer
+    public function setAttachment(string $attachments): Mailer
     {
         array_push($this->attachments, $attachments);
 
@@ -440,22 +440,6 @@ class Mailer
     {
         $this->mailer->setFrom($this->from['email'], $this->from['name']);
 
-        if (!empty($this->addresses)) {
-            $this->fillProperties('addAddress', $this->addresses);
-        }
-
-        if (!empty($this->replyToAddresses)) {
-            $this->fillProperties('addReplyTo', $this->replyToAddresses);
-        }
-
-        if (!empty($this->ccAddresses)) {
-            $this->fillProperties('addCC', $this->ccAddresses);
-        }
-
-        if (!empty($this->bccAddresses)) {
-            $this->fillProperties('addBCC', $this->bccAddresses);
-        }
-
         if ($this->subject) {
             $this->mailer->Subject = $this->subject;
         }
@@ -470,32 +454,37 @@ class Mailer
             $this->mailer->Body = $body;
         }
 
-        if (!empty($this->attachments)) {
-            $this->fillProperties('addAttachment', $this->attachments);
-        }
+        $this->fillProperties('addAddress', $this->addresses);
 
-        if (!empty($this->stringAttachments)) {
-            $this->fillProperties('addStringAttachment', $this->stringAttachments);
-        }
+        $this->fillProperties('addReplyTo', $this->replyToAddresses);
 
+        $this->fillProperties('addCC', $this->ccAddresses);
+
+        $this->fillProperties('addBCC', $this->bccAddresses);
+
+        $this->fillProperties('addAttachment', $this->attachments);
+
+        $this->fillProperties('addStringAttachment', $this->stringAttachments);
     }
 
     /**
      * Files the php mailer properties
      * @param string $method
-     * @param mixed $fields
+     * @param array $fields
      */
-    private function fillProperties(string $method, $fields)
+    private function fillProperties(string $method, array $fields = [])
     {
-        foreach ($fields as $field) {
-            if (is_string($field)) {
-                $this->mailer->$method($field);
-            } else {
-                $valOne = current($field);
-                next($field);
-                $valTwo = current($field);
-                $this->mailer->$method($valOne, $valTwo);
-                reset($field);
+        if (!empty($fields)) {
+            foreach ($fields as $field) {
+                if (is_string($field)) {
+                    $this->mailer->$method($field);
+                } else {
+                    $valOne = current($field);
+                    next($field);
+                    $valTwo = current($field);
+                    $this->mailer->$method($valOne, $valTwo);
+                    reset($field);
+                }
             }
         }
     }
