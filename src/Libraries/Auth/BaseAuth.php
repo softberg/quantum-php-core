@@ -397,12 +397,17 @@ abstract class BaseAuth
      * Send email
      * @param \Quantum\Libraries\Auth\User $user
      * @param array $body
+     * @throws \PHPMailer\PHPMailer\Exception
+     * @throws \Quantum\Exceptions\DiException
      */
     protected function sendMail(User $user, array $body)
     {
         $fullName = ($user->hasField('firstname') && $user->hasField('lastname')) ? $user->getFieldValue('firstname') . ' ' . $user->getFieldValue('lastname') : '';
 
-        $this->mailer->setFrom(config()->get('app_email'), config()->get('app_name'))
+        $appEmail = config()->get('app_email') ?: '';
+        $appName = config()->get('app_name') ?: '';
+
+        $this->mailer->setFrom($appEmail, $appName)
             ->setAddress($user->getFieldValue($this->keyFields[self::USERNAME_KEY]), $fullName)
             ->setBody($body)
             ->send();

@@ -105,7 +105,7 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
      * Sign Out
      * @return bool
      */
-    public function signout()
+    public function signout(): bool
     {
         if (session()->has($this->authUserKey)) {
             session()->delete($this->authUserKey);

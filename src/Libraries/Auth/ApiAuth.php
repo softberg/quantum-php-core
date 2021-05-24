@@ -106,7 +106,7 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
      * Sign Out
      * @return bool
      */
-    public function signout()
+    public function signout(): bool
     {
         $refreshToken = Request::getHeader($this->keyFields[self::REFRESH_TOKEN_KEY]);
 
