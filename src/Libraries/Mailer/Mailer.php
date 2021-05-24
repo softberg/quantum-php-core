@@ -303,12 +303,14 @@ class Mailer
 
     /**
      * Sets attachments from the path on the filesystem
-     * @param array $attachments
+     * @param string $attachments
      * @return $this
      */
-    public function setAttachments(array $attachments): Mailer
+    public function setAttachment(string  $attachments): Mailer
     {
-        $this->attachments = $attachments;
+        array_push($this->attachments, $attachments);
+
+//        $this->attachments = $attachments;
         return $this;
     }
 
@@ -360,7 +362,7 @@ class Mailer
     public function send(?array $from = null, ?array $address = null, ?string $message = null, ?array $options = []): bool
     {
         if ($from) {
-            $this->setFrom(extract($from));
+            $this->setFrom(...$from);
         }
 
         if ($address) {
@@ -427,7 +429,7 @@ class Mailer
     private function getFilename(string $lastMessageId): string
     {
         preg_match('/<(.*?)@/', $lastMessageId, $matches);
-        return $matches[1] . '.eml' ;
+        return $matches[1] . '.eml';
     }
 
     /**
@@ -439,26 +441,19 @@ class Mailer
         $this->mailer->setFrom($this->from['email'], $this->from['name']);
 
         if (!empty($this->addresses)) {
-            foreach ($this->addresses as $address) {
-                $this->mailer->addAddress($address['email'], $address['name']);
-            }
+            $this->fillProperties('addAddress', $this->addresses);
         }
 
         if (!empty($this->replyToAddresses)) {
-            foreach ($this->replyToAddresses as $address) {
-                $this->mailer->addReplyTo($address['email'], $address['name']);
-            }
+            $this->fillProperties('addReplyTo', $this->replyToAddresses);
         }
 
         if (!empty($this->ccAddresses)) {
-            foreach ($this->ccAddresses as $address) {
-                $this->mailer->addCC($address['email'], $address['name']);
-            }
+            $this->fillProperties('addCC', $this->ccAddresses);
         }
+
         if (!empty($this->bccAddresses)) {
-            foreach ($this->bccAddresses as $address) {
-                $this->mailer->addBCC($address['email'], $address['name']);
-            }
+            $this->fillProperties('addBCC', $this->bccAddresses);
         }
 
         if ($this->subject) {
@@ -476,14 +471,31 @@ class Mailer
         }
 
         if (!empty($this->attachments)) {
-            foreach ($this->attachments as $attachment) {
-                $this->mailer->addAttachment($attachment);
-            }
+            $this->fillProperties('addAttachment', $this->attachments);
         }
 
         if (!empty($this->stringAttachments)) {
-            foreach ($this->stringAttachments as $attachment) {
-                $this->mailer->addStringAttachment($attachment['content'], $attachment['filename']);
+            $this->fillProperties('addStringAttachment', $this->stringAttachments);
+        }
+
+    }
+
+    /**
+     * Files the php mailer properties
+     * @param string $method
+     * @param mixed $fields
+     */
+    private function fillProperties(string $method, $fields)
+    {
+        foreach ($fields as $field) {
+            if (is_string($field)) {
+                $this->mailer->$method($field);
+            } else {
+                $valOne = current($field);
+                next($field);
+                $valTwo = current($field);
+                $this->mailer->$method($valOne, $valTwo);
+                reset($field);
             }
         }
     }

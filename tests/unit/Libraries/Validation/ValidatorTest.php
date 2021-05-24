@@ -543,7 +543,7 @@ namespace Quantum\Test\Unit {
 
             $this->assertTrue($this->validator->isValid(['text' => 'http://google.com']));
 
-            $this->assertFalse($this->validator->isValid(['text' => 'http://something.com']));
+            $this->assertFalse($this->validator->isValid(['text' => 'http://someunregistereddomain.com']));
 
             $errors = $this->validator->getErrors();
 
