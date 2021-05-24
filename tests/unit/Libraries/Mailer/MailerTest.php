@@ -156,11 +156,11 @@ class MailerTest extends TestCase
         $this->assertEquals('image.jpg', current($this->mailer->getAttachments()));
     }
 
-    public function testSetGetStringAttachment()
+    public function testSetGetStringAttachments()
     {
         $this->mailer->setStringAttachment('content of the document', 'document.txt');
 
-        $attachment = $this->mailer->getStringAttachment();
+        $attachment = $this->mailer->getStringAttachments();
 
         $this->assertIsArray($attachment);
 

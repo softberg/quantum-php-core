@@ -102,7 +102,7 @@ class Mailer
     private $log;
 
     /**
-     * Class constructor
+     * Mailer constructor.
      */
     public function __construct()
     {
@@ -222,7 +222,7 @@ class Mailer
      * @param string|null $name
      * @return $this
      */
-    public function setBCC(string $email, ?string $name = null)
+    public function setBCC(string $email, ?string $name = null): Mailer
     {
         array_push($this->bccAddresses, [
             'email' => $email,
@@ -309,8 +309,6 @@ class Mailer
     public function setAttachment(string $attachments): Mailer
     {
         array_push($this->attachments, $attachments);
-
-//        $this->attachments = $attachments;
         return $this;
     }
 
@@ -324,7 +322,7 @@ class Mailer
     }
 
     /**
-     * Sets attachments from the string
+     * Sets attachment from the string
      * @param string $content
      * @param string $filename
      * @return $this
@@ -343,7 +341,7 @@ class Mailer
      * Gets the string attachments
      * @return array
      */
-    public function getStringAttachment(): array
+    public function getStringAttachments(): array
     {
         return $this->stringAttachments;
     }
