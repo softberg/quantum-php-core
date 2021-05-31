@@ -48,6 +48,7 @@ namespace Quantum\Test\Unit {
 
     use Mockery;
     use PHPUnit\Framework\TestCase;
+    use Quantum\Libraries\Database\Database;
     use Quantum\Loader\Loader;
     use Quantum\Models\CUserModel;
     use Quantum\Models\CEventModel;
@@ -254,7 +255,7 @@ namespace Quantum\Test\Unit {
 
             $this->assertEquals('Jane', $users[1]['firstname']);
 
-            $users = $userModel->get('object');
+            $users = $userModel->get(2);
 
             $this->assertEquals('John', $users[0]->firstname);
 
@@ -265,7 +266,7 @@ namespace Quantum\Test\Unit {
         {
             $userModel = new IdiormDbal('users');
 
-            $userModel->select('id', 'age');
+            $user = $userModel->select('id', 'age');
 
             $user = $userModel->first();
 
@@ -273,7 +274,7 @@ namespace Quantum\Test\Unit {
 
             $userModel = new IdiormDbal('users');
 
-            $userModel->select('id', ['firstname' => 'name'], ['lastname' => 'surname']);
+            $user = $userModel->select('id', ['firstname' => 'name'], ['lastname' => 'surname']);
 
             $user = $userModel->first();
 
@@ -578,7 +579,7 @@ namespace Quantum\Test\Unit {
 
             $event->title = 'Biking';
 
-            $event->country = 'New Zeland';
+            $event->country = 'New Zealand';
 
             $event->started_at = '2020-07-11 11:00:00';
 
@@ -592,7 +593,7 @@ namespace Quantum\Test\Unit {
 
             $this->assertEquals('Biking', $bikingEvent->title);
 
-            $this->assertEquals('New Zeland', $bikingEvent->country);
+            $this->assertEquals('New Zealand', $bikingEvent->country);
 
             $this->assertEquals('2020-07-11 11:00:00', $bikingEvent->started_at);
         }
@@ -706,14 +707,25 @@ namespace Quantum\Test\Unit {
         /** Method chaining is not working here  */
         public function testJoinToAndJoinThrough()
         {
-            $this->databaseMock = Mockery::mock('overload:Quantum\Libraries\Database\Database');
 
-            $this->databaseMock->shouldReceive('getORM')->andReturn(new IdiormDbal('users'));
+            $loader = new Loader(new FileSystem);
+
+            $loader->loadDir(dirname(__DIR__, 4) . DS . 'src' . DS . 'Helpers' . DS . 'functions');
+
+            $loaderMock = Mockery::mock('Quantum\Loader\Loader');
+
+            $loaderMock->shouldReceive('setup')->andReturn($loaderMock);
+
+            $loaderMock->shouldReceive('load')->andReturn($this->dbConfigs);
+
+            $db = Database::getInstance($loaderMock);
+
+            $db->getORM('users');
 
             $userModel = (new \Quantum\Factory\ModelFactory)->get(CUserModel::class);
 
             $userProfessionModel = (new \Quantum\Factory\ModelFactory)->get(CUserProfessionModel::class);
-            
+
             $userEventModel = (new \Quantum\Factory\ModelFactory)->get(CUserEventModel::class);
 
             $eventModel = (new \Quantum\Factory\ModelFactory)->get(CEventModel::class);
