@@ -67,14 +67,6 @@ namespace Quantum\Test\Unit {
 
         private $dbConfigs = [
             'current' => 'sqlite',
-            'mysql' => array(
-                'driver' => 'mysql',
-                'host' => 'localhost',
-                'dbname' => 'database',
-                'username' => 'username',
-                'password' => 'password',
-                'charset' => 'charset',
-            ),
             'sqlite' => array(
                 'driver' => 'sqlite',
                 'database' => ':memory:'

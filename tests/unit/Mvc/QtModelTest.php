@@ -4,10 +4,10 @@ namespace Quantum\Models {
 
     use Quantum\Mvc\QtModel;
 
-    class StubModel extends QtModel
+    class ProfileModel extends QtModel
     {
 
-        public $table = 'test';
+        public $table = 'profiles';
         protected $fillable = [
             'firstname',
             'lastname'
@@ -21,7 +21,9 @@ namespace Quantum\Test\Unit {
 
     use Mockery;
     use PHPUnit\Framework\TestCase;
-    use Quantum\Models\StubModel;
+    use Quantum\Libraries\Database\Database;
+    use Quantum\Libraries\Database\IdiormDbal;
+    use Quantum\Models\ProfileModel;
     use Quantum\Exceptions\ModelException;
     use Quantum\Libraries\Storage\FileSystem;
     use Quantum\Loader\Loader;
@@ -35,31 +37,47 @@ namespace Quantum\Test\Unit {
     {
 
         private $model;
+
         private $testObject = [
             'firstname' => 'John',
             'lastname' => 'Doe'
         ];
 
+        private $dbConfigs = [
+            'current' => 'sqlite',
+            'sqlite' => array(
+                'driver' => 'sqlite',
+                'database' => ':memory:'
+            ),
+        ];
+
         public function setUp(): void
         {
+
+            (new idiormDbal('profiles'))->execute("CREATE TABLE profiles (
+                        id INTEGER PRIMARY KEY,
+                        firstname VARCHAR(255),
+                        lastname VARCHAR(255),
+                        created_at DATETIME
+                    )");
 
             $loader = new Loader(new FileSystem);
 
             $loader->loadDir(dirname(__DIR__, 3) . DS . 'src' . DS . 'Helpers' . DS . 'functions');
-            
+
+            $loaderMock = Mockery::mock('Quantum\Loader\Loader');
+
+            $loaderMock->shouldReceive('setup')->andReturn($loaderMock);
+
+            $loaderMock->shouldReceive('load')->andReturn($this->dbConfigs);
+
+            $db = Database::getInstance($loaderMock);
+
+            $db->getORM('users');
+
             Di::loadDefinitions();
 
-            $dbal = Mockery::mock();
-
-            $dbal->ormObject = Mockery::mock();
-
-            $this->databaseMock = Mockery::mock('overload:Quantum\Libraries\Database\Database');
-
-            $this->databaseMock->shouldReceive('getORM')->andReturn($dbal);
-
-            $this->helperMock = Mockery::mock('overload:Quantum\Helpers\Helper');
-            
-            $this->model = (new \Quantum\Factory\ModelFactory)->get(StubModel::class);
+            $this->model = (new \Quantum\Factory\ModelFactory)->get(ProfileModel::class);
         }
 
         public function tearDown(): void
