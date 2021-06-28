@@ -53,7 +53,7 @@ class FileLogger implements ReportableInterface
      */
     public function report($level, $message, array $context = [])
     {
-        $this->fs->append($this->logFile, $message, FILE_APPEND);
+        $this->fs->append($this->logFile, $message);
     }
 
 }
