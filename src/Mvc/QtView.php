@@ -48,7 +48,7 @@ class QtView
 
     /**
      * Rendered debug bar
-     * @var string|null 
+     * @var string|null
      */
     private $debugBar = null;
 
@@ -65,7 +65,7 @@ class QtView
     public function __construct()
     {
         if (get_caller_class() != ViewFactory::class) {
-            throw new ViewException(_message(ViewException::DIRECT_VIEW_INCTANCE, [ViewFactory::class]));
+            throw new ViewException(_message(ViewException::DIRECT_VIEW_INCTANCE, [ViewFactory::class]), E_WARNING);
         }
     }
 
@@ -109,7 +109,7 @@ class QtView
     }
 
     /**
-     * Sets multiple view parameters 
+     * Sets multiple view parameters
      * @param array $params
      */
     public function setParams(array $params)
@@ -138,7 +138,7 @@ class QtView
     public function render($view, $params = []): ?string
     {
         if (!$this->layout) {
-            throw new ViewException(ViewException::LAYOUT_NOT_SET);
+            throw new ViewException(ViewException::LAYOUT_NOT_SET, E_ERROR);
         }
 
         if (!empty($params)) {
@@ -203,7 +203,7 @@ class QtView
         if (!$fs->exists($filePath)) {
             $filePath = base_dir() . DS . 'base' . DS . 'views' . DS . $file . '.php';
             if (!$fs->exists($filePath)) {
-                throw new ViewException(_message(ViewException::VIEW_FILE_NOT_FOUND, $file));
+                throw new ViewException(_message(ViewException::VIEW_FILE_NOT_FOUND, $file), E_ERROR);
             }
         }
 
@@ -228,9 +228,9 @@ class QtView
             $engineConfigs = $templateEngine[$engineName];
 
             return HookManager::call('templateRenderer', [
-                        'configs' => $engineConfigs,
-                        'view' => $view,
-                        'params' => $params
+                'configs' => $engineConfigs,
+                'view' => $view,
+                'params' => $params
             ]);
         } else {
             return $this->defaultRenderer($view, $params);
