@@ -25,6 +25,11 @@ if (!defined('BASE_DIR')) {
 }
 
 /**
+ * Logs direcroty
+ */
+const LOGS_DIR = BASE_DIR . DS . 'logs';
+
+/**
  * Vendor directory.
  */
 const VENDOR_DIR = BASE_DIR . DS . 'vendor';
