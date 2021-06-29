@@ -246,8 +246,6 @@ class QtView
      */
     private function defaultRenderer($view, $params = [])
     {
-        $file = $this->findFile($view);
-
         try {
             ob_start();
             ob_implicit_flush(0);
@@ -256,7 +254,7 @@ class QtView
                 extract($params, EXTR_OVERWRITE);
             }
 
-            require $file;
+            require $this->findFile($view);
 
             return ob_get_clean();
         } catch (Error $e) {
