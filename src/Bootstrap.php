@@ -21,7 +21,6 @@ use Quantum\Libraries\Config\Config;
 use Quantum\Routes\ModuleLoader;
 use Quantum\Libraries\Lang\Lang;
 use Quantum\Environment\Server;
-use Quantum\Http\HttpRequest;
 use Quantum\Mvc\MvcManager;
 use Quantum\Routes\Router;
 use Quantum\Loader\Loader;
@@ -38,15 +37,20 @@ class Bootstrap
 
     /**
      * Boots the framework.
-     * @throws \Exception|StopExecutionException
+     * @throws \Quantum\Exceptions\ControllerException
+     * @throws \Quantum\Exceptions\CsrfException
+     * @throws \Quantum\Exceptions\DiException
+     * @throws \Quantum\Exceptions\EnvException
+     * @throws \Quantum\Exceptions\LangException
+     * @throws \Quantum\Exceptions\LoaderException
+     * @throws \Quantum\Exceptions\MiddlewareException
+     * @throws \Quantum\Exceptions\ModuleLoaderException
+     * @throws \Quantum\Exceptions\RouteException
+     * @throws \ReflectionException
      */
     public static function run()
     {
         try {
-
-            self::loadCoreFuncations();
-
-            Di::loadDefinitions();
 
             $loader = Di::get(Loader::class);
 
@@ -54,10 +58,11 @@ class Bootstrap
 
             Environment::getInstance()->load($loader);
 
-            HttpRequest::init(new Server);
-
             $request = Di::get(Request::class);
             $response = Di::get(Response::class);
+
+            $request->init(new Server);
+            $response->init();
 
             $router = new Router($request, $response);
 
@@ -71,26 +76,17 @@ class Bootstrap
             $loader->loadDir(base_dir() . DS . 'libraries');
 
             Lang::getInstance()
-                    ->setLang($request->getSegment(config()->get('lang_segment')))
-                    ->load($loader, $fs);
+                ->setLang($request->getSegment(config()->get('lang_segment')))
+                ->load($loader, $fs);
 
             MvcManager::runMvc($request, $response);
 
-            $response->send();
-            exit(0);
+            stop();
         } catch (StopExecutionException $e) {
             $response->send();
-        } catch (\Exception $e) {
-            echo $e->getMessage();
-            exit(1);
         }
+
     }
 
-    public static function loadCoreFuncations()
-    {
-        foreach (glob(HELPERS_DIR . DS . 'functions' . DS . '*.php') as $filename) {
-            require_once $filename;
-        }
-    }
 
 }

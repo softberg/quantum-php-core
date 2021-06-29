@@ -4,9 +4,12 @@ namespace Quantum\Test\Unit {
 
     use Mockery;
     use PHPUnit\Framework\TestCase;
+    use Quantum\Di\Di;
+    use Quantum\Libraries\Storage\FileSystem;
     use Quantum\Libraries\Upload\File;
     use Quantum\Exceptions\FileUploadException;
     use Quantum\Http\Request;
+    use Quantum\Loader\Loader;
 
     class FileDouble extends File
     {
@@ -32,6 +35,14 @@ namespace Quantum\Test\Unit {
         public function setUp(): void
         {
             $this->request = new Request();
+
+            $loader = new Loader(new FileSystem);
+
+            $loader->loadDir(dirname(__DIR__, 4) . DS . 'src' . DS . 'Helpers' . DS . 'functions');
+
+            $loader->loadFile(dirname(__DIR__, 4) . DS . 'src' . DS . 'constants.php');
+
+            Di::loadDefinitions();
 
             $this->file = [
                 'image' => [

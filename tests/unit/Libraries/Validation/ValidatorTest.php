@@ -42,6 +42,7 @@ namespace Quantum\Loader {
 
 namespace Quantum\Test\Unit {
 
+    use Quantum\Di\Di;
     use Quantum\Libraries\Validation\Validator;
     use Quantum\Libraries\Database\IdiormDbal;
     use Quantum\Libraries\Validation\Rule;
@@ -70,10 +71,12 @@ namespace Quantum\Test\Unit {
 
             $loader->loadFile(dirname(__DIR__, 4) . DS . 'src' . DS . 'constants.php');
 
+            Di::loadDefinitions();
+
             $data = 'iVBORw0KGgoAAAANSUhEUgAAABwAAAASCAMAAAB/2U7WAAAABl'
-                    . 'BMVEUAAAD///+l2Z/dAAAASUlEQVR4XqWQUQoAIAxC2/0vXZDr'
-                    . 'EX4IJTRkb7lobNUStXsB0jIXIAMSsQnWlsV+wULF4Avk9fLq2r'
-                    . '8a5HSE35Q3eO2XP1A1wQkZSgETvDtKdQAAAABJRU5ErkJggg==';
+                . 'BMVEUAAAD///+l2Z/dAAAASUlEQVR4XqWQUQoAIAxC2/0vXZDr'
+                . 'EX4IJTRkb7lobNUStXsB0jIXIAMSsQnWlsV+wULF4Avk9fLq2r'
+                . '8a5HSE35Q3eO2XP1A1wQkZSgETvDtKdQAAAABJRU5ErkJggg==';
 
             $img = imagecreatefromstring(base64_decode($data));
 
@@ -178,7 +181,7 @@ namespace Quantum\Test\Unit {
 
             $this->assertFalse($this->validator->isValid($data));
 
-            $this->validator->flushRules(); 
+            $this->validator->flushRules();
 
             $data = [
                 'name' => '',
@@ -205,7 +208,8 @@ namespace Quantum\Test\Unit {
 
         }
 
-        public function testDifferentMultipleFields(){
+        public function testDifferentMultipleFields()
+        {
             $this->validator->addRules([
                 'name' => [
                     Rule::set('maxLen', 30)
@@ -522,7 +526,7 @@ namespace Quantum\Test\Unit {
 
             $this->assertTrue($this->validator->isValid(['text' => 'http://subdomain.something.com']));
 
-            $this->assertFalse($this->validator->isValid(['text' => 'something.com']));
+            $this->assertFalse($this->validator->isValid(['text' => 'something']));
 
             $errors = $this->validator->getErrors();
 
@@ -531,7 +535,7 @@ namespace Quantum\Test\Unit {
             $this->assertEquals('validation.url', $errors['text'][0]);
         }
 
-        public function testUrlExists()
+        public function testThatUrlExists()
         {
             $this->validator->addRule('text', [
                 Rule::set('urlExists')
@@ -539,7 +543,7 @@ namespace Quantum\Test\Unit {
 
             $this->assertTrue($this->validator->isValid(['text' => 'http://google.com']));
 
-            $this->assertFalse($this->validator->isValid(['text' => 'http://something.com']));
+            $this->assertFalse($this->validator->isValid(['text' => 'http://someunregistereddomain.com']));
 
             $errors = $this->validator->getErrors();
 

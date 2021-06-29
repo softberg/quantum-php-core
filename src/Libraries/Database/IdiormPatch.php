@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 1.8.0
+ * @since 2.4.0
  */
 
 namespace Quantum\Libraries\Database;
@@ -33,18 +33,12 @@ class IdiormPatch extends ORM
      */
     private static $instance = null;
 
-    /**
-     * IdiormPatch constructor.
-     * @param object $ormObject
-     */
     private function __construct()
     {
-        //
     }
 
     /**
      * Get Instance
-     *
      * @return IdiormPatch
      */
     public static function getInstance()
@@ -58,11 +52,10 @@ class IdiormPatch extends ORM
 
     /**
      * Set ORM Object
-     *
      * @param $ormObject
      * @return $this
      */
-    public function setOrmObject($ormObject)
+    public function setOrmObject($ormObject): IdiormPatch
     {
         $this->ormObject = $ormObject;
         return $this;
@@ -70,40 +63,37 @@ class IdiormPatch extends ORM
 
     /**
      * Add an LEFT JOIN source to the query
-     *
      * @param string $table
      * @param array $constraint
-     * @param string $table_alias
+     * @param string|null $table_alias
      * @return object
      */
-    public function left_join($table, $constraint, $table_alias = null)
+    public function left_join(string $table, array $constraint, string $table_alias = null): object
     {
         return $this->addJoin("LEFT", $table, $constraint, $table_alias);
     }
 
     /**
      * Add an RIGHT JOIN source to the query
-     *
      * @param string $table
      * @param array $constraint
-     * @param string $table_alias
+     * @param string|null $table_alias
      * @return object
      */
-    public function right_join($table, $constraint, $table_alias = null)
+    public function right_join(string $table, array $constraint, string $table_alias = null): object
     {
         return $this->addJoin("RIGHT", $table, $constraint, $table_alias);
     }
 
     /**
-     *  Add Join 
-     * 
+     * Add Join
      * @param string $operator
      * @param string $table
      * @param array $constraint
-     * @param string $table_alias
+     * @param string|null $table_alias
      * @return object
      */
-    public function addJoin($operator, $table, $constraint, $table_alias)
+    public function addJoin(string $operator, string $table, array $constraint, string $table_alias = null): object
     {
         return $this->ormObject->_add_join_source($operator, $table, $constraint, $table_alias);
     }

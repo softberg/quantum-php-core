@@ -17,35 +17,6 @@ namespace Quantum\Models {
 
 }
 
-namespace Quantum\Libraries\Database {
-
-    if (!function_exists('modules_dir')) {
-
-        function modules_dir()
-        {
-            return __DIR__ . DS . 'modules';
-        }
-
-    }
-
-    if (!function_exists('current_module')) {
-
-        function current_module()
-        {
-            return 'test';
-        }
-
-    }
-
-    if (!function_exists('base_dir')) {
-
-        function base_dir()
-        {
-            return '/';
-        }
-
-    }
-}
 
 namespace Quantum\Test\Unit {
 
@@ -81,18 +52,20 @@ namespace Quantum\Test\Unit {
                 'prefix' => '',
             ),
         ];
+
         private $queries = [
             'UPDATE users WHERE id=:id',
             'SELECT * FROM users WHERE id=:id'
         ];
+
         private $resultUser = [
             'id' => 1,
             'firstname' => 'John',
             'lastname' => 'Doe'
         ];
-        private $database;
+
+        private $db;
         private $idiormDbalMock;
-        private $helperMock;
 
         public function setUp(): void
         {
@@ -109,7 +82,7 @@ namespace Quantum\Test\Unit {
 
             $loaderMock->shouldReceive('load')->andReturn($this->dbConfigs);
 
-            $this->database = new Database($loaderMock);
+            $this->db = Database::getInstance($loaderMock);
 
             $this->idiormDbalMock->shouldReceive('dbConnect')->andReturn(['connection_string']);
 
@@ -131,7 +104,7 @@ namespace Quantum\Test\Unit {
 
         public function testGetORM()
         {
-            $this->assertInstanceOf(\Quantum\Libraries\Database\IdiormDbal::class, $this->database->getORM(UserModel::class, 'test'));
+            $this->assertInstanceOf(\Quantum\Libraries\Database\IdiormDbal::class, $this->db->getORM(UserModel::class, 'test'));
         }
 
         public function testGetORMWithoutTableDefined()
@@ -140,34 +113,34 @@ namespace Quantum\Test\Unit {
 
             $this->expectExceptionMessage('Model `' . UserModel::class . '` does not have $table property defined');
 
-            $this->database->getORM('', UserModel::class);
+            $this->db->getORM('', UserModel::class);
         }
 
         public function testConnectAndConnected()
         {
-            $this->assertFalse($this->database->connected());
+            $this->assertFalse($this->db->connected());
 
-            $this->database->connect($this->idiormDbalMock);
+            $this->db->connect('Quantum\Libraries\Database\IdiormDbal');
 
-            $this->assertTrue($this->database->connected());
+            $this->assertTrue($this->db->connected());
         }
 
         public function testGetDbalClass()
         {
-            $this->assertEquals(\Quantum\Libraries\Database\IdiormDbal::class, $this->database->getDbalClass());
+            $this->assertEquals(\Quantum\Libraries\Database\IdiormDbal::class, $this->db->getDbalClass());
         }
 
         public function testCommonMethods()
         {
-            $this->assertTrue($this->database::execute('UPDATE users WHERE id=:id', ['id' => 1]));
+            $this->assertTrue($this->db::execute('UPDATE users WHERE id=:id', ['id' => 1]));
 
-            $this->assertIsArray($this->database::query('SELECT * FROM users WHERE id=:id', ['id' => 1]));
+            $this->assertIsArray($this->db::query('SELECT * FROM users WHERE id=:id', ['id' => 1]));
 
-            $this->assertIsString($this->database::lastQuery());
+            $this->assertIsString($this->db::lastQuery());
 
-            $this->assertIsString($this->database::lastStatement());
+            $this->assertIsString($this->db::lastStatement());
 
-            $this->assertIsArray($this->database::queryLog());
+            $this->assertIsArray($this->db::queryLog());
         }
 
     }

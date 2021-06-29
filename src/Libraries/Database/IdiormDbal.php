@@ -9,27 +9,44 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.0.0
+ * @since 2.4.0
  */
 
 namespace Quantum\Libraries\Database;
 
+use Quantum\Libraries\Database\Statements\Criteria;
+use Quantum\Libraries\Database\Statements\Result;
+use Quantum\Libraries\Database\Statements\Model;
+use Quantum\Libraries\Database\Statements\Query;
+use Quantum\Libraries\Database\Statements\Join;
+use RecursiveIteratorIterator;
+use RecursiveArrayIterator;
 use PDO;
 use ORM;
-use Quantum\Mvc\QtModel;
-use RecursiveArrayIterator;
-use RecursiveIteratorIterator;
+
 
 /**
  * Class IdiormDbal
- *
- * Database Abstract Layer class for IdiOrm
- * Default DBAL for framework
- *
  * @package Quantum\Libraries\Database
  */
 class IdiormDbal implements DbalInterface
 {
+
+    use Model;
+    use Result;
+    use Criteria;
+    use Join;
+    use Query;
+
+    /**
+     * Type array
+     */
+    const TYPE_ARRAY = 1;
+
+    /**
+     * Type object
+     */
+    const TYPE_OBJECT = 2;
 
     /**
      * The database table associated with model
@@ -45,13 +62,13 @@ class IdiormDbal implements DbalInterface
 
     /**
      * Foreign keys
-     * @var array 
+     * @var array
      */
     private $foreignKeys = [];
 
     /**
      * Idiorm Patch object
-     * @var IdiormPatch 
+     * @var \Quantum\Libraries\Database\IdiormPatch
      */
     private $ormPatch = null;
 
@@ -60,7 +77,7 @@ class IdiormDbal implements DbalInterface
      * @var object
      */
     public $ormObject;
-    
+
     /**
      * ORM Class
      * @var string
@@ -72,7 +89,7 @@ class IdiormDbal implements DbalInterface
      * @param string $table
      * @param string $idColumn
      */
-    public function __construct($table, $idColumn = 'id')
+    public function __construct(string $table, string $idColumn = 'id')
     {
         $this->table = $table;
         $this->idColumn = $idColumn;
@@ -81,19 +98,18 @@ class IdiormDbal implements DbalInterface
 
     /**
      * Get table
-     * @return string
+     * @inheritDoc
      */
-    public function getTable()
+    public function getTable(): string
     {
         return $this->table;
     }
 
     /**
      * Connects to database
-     * @param array $connectionDetails
-     * @return array
+     * @inheritDoc
      */
-    public static function dbConnect($connectionDetails): array
+    public static function dbConnect(array $connectionDetails): array
     {
         $connectionString = self::buildConnectionString($connectionDetails);
 
@@ -114,74 +130,12 @@ class IdiormDbal implements DbalInterface
     }
 
     /**
-     * Gets the record by primary key
-     * @param int $id
-     * @return object
+     * Selects the values from provided table columns
+     * @inheritDoc
      */
-    public function findOne($id)
+    public function select(...$columns): object
     {
-        $result = $this->ormObject->find_one($id);
-        return $result ? $result : $this->ormObject();
-    }
-
-    /**
-     * Gets record by given column
-     * @param string $column
-     * @param mixed $value
-     * @return object
-     */
-    public function findOneBy($column, $value)
-    {
-        $result = $this->ormObject->where($column, $value)->find_one();
-        return $result ? $result : $this->ormObject();
-    }
-
-    /**
-     * Gets the first item
-     * @return object
-     */
-    public function first()
-    {
-        $result = $this->ormObject->find_one();
-        return $result ? $result : $this->ormObject();
-    }
-
-    /**
-     * Casts the ormObject object to array
-     * @return array
-     */
-    public function asArray()
-    {
-        return $this->ormObject->as_array();
-    }
-
-    /**
-     * Counts the result set
-     * @return int
-     */
-    public function count()
-    {
-        return $this->ormObject->count();
-    }
-
-    /**
-     * Gets the result set
-     * @param null|string $returnType
-     * @return mixed
-     */
-    public function get($returnType = null)
-    {
-        return ($returnType == 'object') ? $this->ormObject->find_many() : $this->ormObject->find_array();
-    }
-
-    /**
-     * Selects the given table columns 
-     * @param mixed $columns
-     * @return array
-     */
-    public function select(...$columns)
-    {
-        array_walk($columns, function(&$column) {
+        array_walk($columns, function (&$column) {
             if (is_array($column)) {
                 $column = array_flip($column);
             }
@@ -194,89 +148,10 @@ class IdiormDbal implements DbalInterface
     }
 
     /**
-     * Criteria
-     * 
-     * @param string $column
-     * @param string $operator
-     * @param mixed|null $value
-     * @return object
-     */
-    public function criteria($column, $operator, $value = null)
-    {
-        switch ($operator) {
-            case '=':
-                $this->addCriteria($column, $operator, $value, 'where_equal');
-                break;
-            case '!=':
-                $this->addCriteria($column, $operator, $value, 'where_not_equal');
-                break;
-            case '>':
-                $this->addCriteria($column, $operator, $value, 'where_gt');
-                break;
-            case '>=':
-                $this->addCriteria($column, $operator, $value, 'where_gte');
-                break;
-            case '<':
-                $this->addCriteria($column, $operator, $value, 'where_lt');
-                break;
-            case '<=':
-                $this->addCriteria($column, $operator, $value, 'where_lte');
-                break;
-            case 'IN':
-                $this->addCriteria($column, $operator, $value, 'where_in');
-                break;
-            case 'NOT IN':
-                $this->addCriteria($column, $operator, $value, 'where_not_in');
-                break;
-            case 'LIKE':
-                $this->addCriteria($column, $operator, $value, 'where_like');
-                break;
-            case 'NOT LIKE':
-                $this->addCriteria($column, $operator, $value, 'where_not_like');
-                break;
-            case 'NULL':
-                $this->addCriteria($column, $operator, $value, 'where_null');
-                break;
-            case 'NOT NULL':
-                $this->addCriteria($column, $operator, $value, 'where_not_null');
-                break;
-            case '#=#':
-                $this->whereColumnsEqual($column, $value);
-                break;
-        }
-
-        return $this->ormObject;
-    }
-
-    /**
-     * Adds where criterias
-     * @param array ...$criterias
-     * @return object
-     */
-    public function criterias(...$criterias)
-    {
-        foreach ($criterias as $criteria) {
-
-            if (is_array($criteria[0])) {
-                $this->scoppedORCriteria($criteria);
-                continue;
-            }
-
-            $value = $criteria[2] ?? null;
-
-            $this->criteria($criteria[0], $criteria[1], $value);
-        }
-
-        return $this->ormObject;
-    }
-
-    /**
      * Orders the result by ascending or descending
-     * @param string $column
-     * @param string $direction
-     * @return object
+     * @inheritDoc
      */
-    public function orderBy($column, $direction)
+    public function orderBy(string $column, string $direction): object
     {
         switch (strtolower($direction)) {
             case 'asc':
@@ -291,221 +166,39 @@ class IdiormDbal implements DbalInterface
     }
 
     /**
-     * Groups the result by column
-     * @param string $column
-     * @return object
+     * Groups the result by given column
+     * @inheritDoc
      */
-    public function groupBy($column)
+    public function groupBy(string $column): object
     {
         return $this->ormObject->group_by($column);
     }
 
     /**
-     * Returns the result by given limit
-     * @param int $limit
-     * @return object
+     * Returns the limited result set
+     * @inheritDoc
      */
-    public function limit($limit)
+    public function limit(int $limit): object
     {
         return $this->ormObject->limit($limit);
     }
 
     /**
      * Returns the result by given offset (works when limit also applied)
-     * @param int $params
-     * @return object
+     * @inheritDoc
      */
-    public function offset($offset)
+    public function offset(int $offset): object
     {
         return $this->ormObject->offset($offset);
     }
 
     /**
-     * Creates new db record
-     * @return object
-     */
-    public function create()
-    {
-        return $this->ormObject->create();
-    }
-
-    /**
-     * Saves the data into the database
-     * @return bool
-     */
-    public function save()
-    {
-        return $this->ormObject->save();
-    }
-
-    /**
-     * Deletes the data from the database
-     * @return bool
-     */
-    public function delete()
-    {
-        return $this->ormObject->delete();
-    }
-
-    /**
      * Deletes all records by previously applied criteria
-     * @return bool
+     * @inheritDoc
      */
-    public function deleteAll()
+    public function deleteAll(): bool
     {
         return $this->ormObject->delete_many();
-    }
-
-    /**
-     * Add a simple JOIN source to the query
-     * @param string $table
-     * @param array $constraint
-     * @param string $tableAlias
-     * @return object
-     */
-    public function join($table, $constraint, $tableAlias = null)
-    {
-        return $this->ormObject->join($table, $constraint, $tableAlias);
-    }
-
-    /**
-     * Add an INNER JOIN source to the query
-     * @param string $table
-     * @param array $constraint
-     * @param string $tableAlias
-     * @return object
-     */
-    public function innerJoin($table, $constraint, $tableAlias = null)
-    {
-        return $this->ormObject->inner_join($table, $constraint, $tableAlias);
-    }
-
-    /**
-     * Add an LEFT JOIN source to the query
-     * @param string $table
-     * @param array $constraint
-     * @param string $tableAlias
-     * @return object
-     */
-    public function leftJoin($table, $constraint, $tableAlias = null)
-    {
-        $this->ormPatch = IdiormPatch::getInstance()->setOrmObject($this->ormObject);
-        return $this->ormPatch->left_join($table, $constraint, $tableAlias);
-    }
-
-    /**
-     * Add an RIGHT JOIN source to the query
-     * @param string $table
-     * @param array $constraint
-     * @param string $tableAlias
-     * @return object
-     */
-    public function rightJoin($table, $constraint, $tableAlias = null)
-    {
-        $this->ormPatch = IdiormPatch::getInstance()->setOrmObject($this->ormObject);
-        return $this->ormPatch->right_join($table, $constraint, $tableAlias);
-    }
-
-    /**
-     * Joins two models
-     * @param QtModel $model
-     * @return object
-     */
-    public function joinTo(QtModel $model, $switch = true)
-    {
-        $resultObject = $this->ormObject->join($model->table,
-                [
-                    $model->table . '.' . $model->foreignKeys[$this->table],
-                    '=',
-                    $this->table . '.' . $this->idColumn
-                ]
-        );
-
-        if ($switch) {
-            $this->table = $model->table;
-            $this->idColumn = $model->idColumn;
-            $this->foreignKeys = $model->foreignKeys;
-        }
-
-        return $resultObject;
-    }
-
-    /**
-     * Joins through connector model
-     * @param QtModel $model
-     * @return object
-     */
-    public function joinThrough(QtModel $model, $switch = true)
-    {
-        $resultObject = $this->ormObject->join($model->table,
-                [
-                    $model->table . '.' . $model->idColumn,
-                    '=',
-                    $this->table . '.' . $this->foreignKeys[$model->table]
-                ]
-        );
-
-        if ($switch) {
-            $this->table = $model->table;
-            $this->idColumn = $model->idColumn;
-            $this->foreignKeys = $model->foreignKeys;
-        }
-
-        return $resultObject;
-    }
-
-    /**
-     * Raw execute
-     * @param string $query
-     * @param array $parameters
-     * @return bool
-     */
-    public static function execute($query, $parameters = [])
-    {
-        return (self::$ormClass)::raw_execute($query, $parameters);
-    }
-
-    /**
-     * Raw query
-     * @param $query
-     * @param array $parameters
-     * @return array
-     */
-    public static function query($query, $parameters = [])
-    {
-        return (self::$ormClass)::for_table('dummy')->raw_query($query, $parameters)->find_array();
-    }
-
-    /**
-     * Gets the last query executed
-     *
-     * @return string
-     */
-    public static function lastQuery()
-    {
-        return (self::$ormClass)::get_last_query();
-    }
-
-    /**
-     * Returns the PDOStatement instance last used
-     *
-     * @return string
-     */
-    public static function lastStatement()
-    {
-        return (self::$ormClass)::get_last_statement();
-    }
-
-    /**
-     * Get an array containing all the queries 
-     * run on a specified connection up to now.
-     *
-     * @return array
-     */
-    public static function queryLog()
-    {
-
-        return (self::$ormClass)::get_query_log();
     }
 
     /**
@@ -522,7 +215,7 @@ class IdiormDbal implements DbalInterface
      * @param array $connectionDetails
      * @return string
      */
-    private static function buildConnectionString($connectionDetails)
+    private static function buildConnectionString(array $connectionDetails): string
     {
         $connectionString = $connectionDetails['driver'] . ':';
 
@@ -543,61 +236,6 @@ class IdiormDbal implements DbalInterface
         }
 
         return $connectionString;
-    }
-
-    /**
-     * Compares column from one table to column to other table
-     * @param string $columnOne
-     * @param string $columnTwo
-     * @return object
-     */
-    private function whereColumnsEqual($columnOne, $columnTwo)
-    {
-        return $this->ormObject->where_raw($columnOne . ' = ' . $columnTwo);
-    }
-
-    /**
-     * Adds one or more OR criteria in brackets 
-     * @param array $criteria
-     */
-    private function scoppedORCriteria($criteria)
-    {
-        $clause = '';
-        $params = [];
-
-        foreach ($criteria as $index => $orCriteria) {
-            if ($index == 0) {
-                $clause .= '(';
-            }
-
-            $clause .= '`' . $orCriteria[0] . '` ' . $orCriteria[1] . ' ?';
-
-            if ($index == count($criteria) - 1) {
-                $clause .= ')';
-            } else {
-                $clause .= ' OR ';
-            }
-
-            array_push($params, $orCriteria[2]);
-        }
-
-        $this->ormObject->where_raw($clause, $params);
-    }
-
-    /**
-     * Adds Criteria 
-     * @param string $column
-     * @param string $operator
-     * @param mixed $value
-     * @param string $func
-     */
-    private function addCriteria($column, $operator, $value, $func)
-    {
-        if (is_array($value) && count($value) == 1 && key($value) == 'fn') {
-            $this->ormObject->where_raw($column . ' ' . $operator . ' ' . $value['fn']);
-        } else {
-            $this->ormObject->$func($column, $value);
-        }
     }
 
 }

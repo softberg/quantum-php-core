@@ -24,7 +24,7 @@ interface CookieStorageInterface extends StorageInterface
 {
 
     /**
-     * Should be implemented in derived classes to set storage value with given key
+     * Sets data by given key
      * @param string $key
      * @param string $value
      * @param int $time
@@ -33,12 +33,12 @@ interface CookieStorageInterface extends StorageInterface
      * @param bool $secure
      * @param bool $httponly
      */
-    public function set($key, $value = '', $time = 0, $path = '/', $domain = '', $secure = false, $httponly = false);
+    public function set(string $key, $value = '', int $time = 0, string $path = '/', string $domain = '', bool $secure = false, bool $httponly = false);
 
     /**
-     * Should be implemented in derived classes to delete data with given key from session
+     * Deletes data by given key
      * @param string $key
      * @param string $path
      */
-    public function delete($key, $path = '/');
+    public function delete(string $key, string $path = '/');
 }

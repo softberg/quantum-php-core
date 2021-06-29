@@ -15,9 +15,9 @@
 namespace Quantum\Console;
 
 use Symfony\Component\Console\Application;
-use Quantum\Bootstrap;
+use Quantum\Loader\Loader;
 use Quantum\Di\Di;
-
+use Quantum\App;
 
 /**
  * Class QtConsole
@@ -50,9 +50,15 @@ class QtConsole
      */
     public function init()
     {
-        Bootstrap::loadCoreFuncations();
+
+        App::loadCoreFuncations();
 
         Di::loadDefinitions();
+
+        $loader = Di::get(Loader::class);
+
+        $loader->loadDir(base_dir() . DS . 'helpers');
+        $loader->loadDir(base_dir() . DS . 'libraries');
 
         $this->application = new Application($this->name, $this->version);
 
@@ -79,7 +85,7 @@ class QtConsole
             }
         }
 
-        $classNames = get_directory_classes(BASE_DIR . DS . 'base' . DS . 'commands');
+        $classNames = get_directory_classes(BASE_DIR . DS . 'base' . DS . 'Commands');
         foreach ($classNames as $className) {
             $commandClass = '\\Base\\Commands\\' . $className;
 

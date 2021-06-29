@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 1.9.0
+ * @since 2.4.0
  */
 
 namespace Quantum\Libraries\Auth;
@@ -18,15 +18,16 @@ namespace Quantum\Libraries\Auth;
  * Interface AuthenticableInterface
  * @package Quantum\Libraries\Auth
  */
-interface AuthenticableInterface {
+interface AuthenticableInterface
+{
 
     /**
      * Sign In
      * @param string $username
-     * @param $password
+     * @param string $password
      * @return mixed
      */
-    public function signin($username, $password);
+    public function signin(string $username, string $password);
 
     /**
      * Sign Out
@@ -38,11 +39,11 @@ interface AuthenticableInterface {
      * Check
      * @return bool
      */
-    public function check();
+    public function check(): bool;
 
     /**
      * User
-     * @return mixed
+     * @return \Quantum\Libraries\Auth\User|null
      */
-    public function user();
+    public function user(): ?User;
 }

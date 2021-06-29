@@ -20,34 +20,39 @@ use Quantum\Loader\Loader;
 use \SessionHandlerInterface;
 
 /**
- * DB Session Handler class
- * @package Quantum
- * @category Libraries
+ * Class DbSessionHandler
+ * @package Quantum\Libraries\Session
  */
 class DbSessionHandler implements SessionHandlerInterface
 {
 
     /**
      * The ORM instance
-     * @var DbalInterface
+     * @var \Quantum\Libraries\Database\DbalInterface
      */
     private $orm;
-    
+
     /**
      * Loader instance
-     * @var Loader
+     * @var \Quantum\Loader\Loader
      */
-    private $loаder;
+    private $loader;
 
     /**
      * DbSessionHandler constructor.
      * @param DbalInterface $orm
      * @param Loader $loader
      */
+
+    /**
+     * DbSessionHandler constructor.
+     * @param \Quantum\Libraries\Database\DbalInterface $orm
+     * @param \Quantum\Loader\Loader $loader
+     */
     public function __construct(DbalInterface $orm, Loader $loader)
     {
         $this->orm = $orm;
-        $this->loаder = $loader;
+        $this->loader = $loader;
     }
 
     /**
@@ -58,7 +63,7 @@ class DbSessionHandler implements SessionHandlerInterface
      */
     public function open($save_path, $name)
     {
-        if ((new Database($this->loаder))->connected()) {
+        if ((new Database($this->loader))->connected()) {
             return true;
         }
         return false;
@@ -70,7 +75,7 @@ class DbSessionHandler implements SessionHandlerInterface
      */
     public function close()
     {
-        if (!(new Database($this->loаder))->connected()) {
+        if (!(new Database($this->loader))->connected()) {
             return true;
         }
         return false;

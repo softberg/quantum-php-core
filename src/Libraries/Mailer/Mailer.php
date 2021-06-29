@@ -9,12 +9,14 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.0.0
+ * @since 2.4.0
  */
 
 namespace Quantum\Libraries\Mailer;
 
 use PHPMailer\PHPMailer\PHPMailer;
+use Quantum\Libraries\Storage\FileSystem;
+use Quantum\Di\Di;
 
 /**
  * Mailer class
@@ -22,38 +24,38 @@ use PHPMailer\PHPMailer\PHPMailer;
  * @package Quantum
  * @subpackage Libraries.Mailer
  * @category Libraries
- * @uses \PHPMailer
+ * @uses \PHPMailer\PHPMailer\PHPMailer
  */
 class Mailer
 {
 
     /**
      * PHP Mailer instance
-     * @var object
+     * @var \PHPMailer\PHPMailer\PHPMailer
      */
     private $mailer;
 
     /**
      * From address and name
-     * @var array 
+     * @var array
      */
     private $from = [];
 
     /**
      * To addresses
-     * @var array 
+     * @var array
      */
     private $addresses = [];
 
     /**
      * Reply To addresses
-     * @var array 
+     * @var array
      */
     private $replyToAddresses = [];
 
     /**
      * CC addresses
-     * @var array 
+     * @var array
      */
     private $ccAddresses = [];
 
@@ -65,13 +67,13 @@ class Mailer
 
     /**
      * Email subject
-     * @var string 
+     * @var string
      */
     private $subject = null;
 
     /**
      * Email body
-     * @var string|array 
+     * @var string|array
      */
     private $message = null;
 
@@ -82,14 +84,14 @@ class Mailer
     private $attachments = [];
 
     /**
-     * Email attachments created from string 
+     * Email attachments created from string
      * @var array
      */
     private $stringAttachments = [];
 
     /**
      * Template path
-     * @var string 
+     * @var string
      */
     private $templatePath;
 
@@ -100,13 +102,13 @@ class Mailer
     private $log;
 
     /**
-     * Class constructor
+     * Mailer constructor.
      */
     public function __construct()
     {
         $this->mailer = new PHPMailer();
 
-        if (strlen((string) env('MAIL_HOST')) > 0) {
+        if (config()->has('MAIL_HOST')) {
             $this->setupSmtp();
             $this->setupDebugging();
         } else {
@@ -118,11 +120,12 @@ class Mailer
     }
 
     /**
-     * Creates the from email and the name
-     * @param array $from
+     * Sets the from email and the name
+     * @param string $email
+     * @param string|null $name
      * @return $this
      */
-    public function setFrom($email, $name = null)
+    public function setFrom(string $email, ?string $name = null): Mailer
     {
         $this->from['email'] = $email;
         $this->from['name'] = $name;
@@ -133,18 +136,18 @@ class Mailer
      * Gets from email and the name
      * @return array
      */
-    public function getFrom()
+    public function getFrom(): array
     {
         return $this->from;
     }
 
     /**
-     * Creates "To" addresses
+     * Sets "To" addresses
      * @param string $email
-     * @param string $name
+     * @param string|null $name
      * @return $this
      */
-    public function setAddress(string $email, string $name = null)
+    public function setAddress(string $email, ?string $name = null): Mailer
     {
         array_push($this->addresses, [
             'email' => $email,
@@ -158,18 +161,18 @@ class Mailer
      * Gets "To" addresses
      * @return array
      */
-    public function getAddresses()
+    public function getAddresses(): array
     {
         return $this->addresses;
     }
 
     /**
-     * Creates "Reply-To" addresses
+     * Sets "Reply-To" addresses
      * @param string $email
-     * @param string $name
+     * @param string|null $name
      * @return $this
      */
-    public function setReplay(string $email, string $name = null)
+    public function setReplay(string $email, ?string $name = null): Mailer
     {
         array_push($this->replyToAddresses, [
             'email' => $email,
@@ -183,18 +186,18 @@ class Mailer
      * Gets "Reply-To" addresses
      * @return array
      */
-    public function getReplayes()
+    public function getReplayes(): array
     {
         return $this->replyToAddresses;
     }
 
     /**
-     * Creates "CC" addresses
+     * Sets "CC" addresses
      * @param string $email
-     * @param string $name
+     * @param string|null $name
      * @return $this
      */
-    public function setCC(string $email, string $name = null)
+    public function setCC(string $email, ?string $name = null): Mailer
     {
         array_push($this->ccAddresses, [
             'email' => $email,
@@ -208,18 +211,18 @@ class Mailer
      * Gets "CC" addresses
      * @return array
      */
-    public function getCCs()
+    public function getCCs(): array
     {
         return $this->ccAddresses;
     }
 
     /**
-     * Creates "BCC" addresses
+     * Sets "BCC" addresses
      * @param string $email
      * @param string|null $name
      * @return $this
      */
-    public function setBCC(string $email, $name = null)
+    public function setBCC(string $email, ?string $name = null): Mailer
     {
         array_push($this->bccAddresses, [
             'email' => $email,
@@ -233,17 +236,17 @@ class Mailer
      * Get "BCC" addresses
      * @return array
      */
-    public function getBCCs()
+    public function getBCCs(): array
     {
         return $this->bccAddresses;
     }
 
     /**
-     * Creates the subject
+     * Sets the subject
      * @param string $subject
      * @return $this
      */
-    public function setSubject($subject)
+    public function setSubject(string $subject): Mailer
     {
         $this->subject = $subject;
         return $this;
@@ -253,7 +256,7 @@ class Mailer
      * Gets the subject
      * @return string
      */
-    public function getSubject()
+    public function getSubject(): ?string
     {
         return $this->subject;
     }
@@ -263,7 +266,7 @@ class Mailer
      * @param string $templatePath
      * @return $this
      */
-    public function setTemplate($templatePath)
+    public function setTemplate(string $templatePath): Mailer
     {
         $this->templatePath = $templatePath;
         return $this;
@@ -273,17 +276,17 @@ class Mailer
      * Gets the template
      * @return string
      */
-    public function getTemplate()
+    public function getTemplate(): string
     {
         return $this->templatePath;
     }
 
     /**
-     * Creates the body
+     * Sets the body
      * @param string|array $message
      * @return $this
      */
-    public function setBody($message)
+    public function setBody($message): Mailer
     {
         $this->message = $message;
         return $this;
@@ -299,13 +302,13 @@ class Mailer
     }
 
     /**
-     * Creates attachments from the path on the filesystem
-     * @param mixed $attachments
+     * Sets attachments from the path on the filesystem
+     * @param string $attachments
      * @return $this
      */
-    public function setAttachments(array $attachments)
+    public function setAttachment(string $attachments): Mailer
     {
-        $this->attachments = $attachments;
+        array_push($this->attachments, $attachments);
         return $this;
     }
 
@@ -313,18 +316,18 @@ class Mailer
      * Gets the attachments
      * @return array
      */
-    public function getAttachments()
+    public function getAttachments(): array
     {
         return $this->attachments;
     }
 
     /**
-     * Creates attachments from the string
+     * Sets attachment from the string
      * @param string $content
      * @param string $filename
      * @return $this
      */
-    public function setStringAttachment($content, $filename)
+    public function setStringAttachment(string $content, string $filename): Mailer
     {
         array_push($this->stringAttachments, [
             'content' => $content,
@@ -338,7 +341,7 @@ class Mailer
      * Gets the string attachments
      * @return array
      */
-    public function getStringAttachment()
+    public function getStringAttachments(): array
     {
         return $this->stringAttachments;
     }
@@ -346,95 +349,100 @@ class Mailer
     /**
      * Sends the email
      * @param array|null $from
-     * @param array|null $addresses
+     * @param array|null $address
      * @param string|null $message
-     * @param array $options
+     * @param array|null $options
      * @return bool
+     * @throws \PHPMailer\PHPMailer\Exception
+     * @throws \Quantum\Exceptions\DiException
+     * @throws \ReflectionException
      */
-    public function send(array $from = null, array $address = null, $message = null, $options = [])
+    public function send(?array $from = null, ?array $address = null, ?string $message = null, ?array $options = []): bool
     {
         if ($from) {
-            $this->setFrom(extract($from));
+            $this->setFrom(...$from);
         }
 
         if ($address) {
-            $this->setAddress(extract($address));
-        }
-
-        if (isset($options['replayto'])) {
-            $this->setReplay(extract($options['replayto']));
-        }
-
-        if (isset($options['cc'])) {
-            $this->setCC(extract($options['cc']));
-        }
-
-        if (isset($options['bcc'])) {
-            $this->setBCC(extract($options['bcc']));
-        }
-
-        if (isset($options['subject'])) {
-            $this->setSubject($options['subject']);
+            $this->setAddress(...$address);
         }
 
         if ($message) {
             $this->setBody($message);
         }
 
-        if (isset($options['attachments'])) {
-            $this->setAttachments($options['attachments']);
-        }
-
-        if (isset($options['stringAttachment'])) {
-            $this->setStringAttachment($options['content'], $options['filename']);
-        }
+        $this->setOptions($options);
 
         $this->prepare();
 
-        if ($this->mailer->send()) {
-            return true;
+        if (config()->has('mail_trap')) {
+            $sent = $this->mailer->preSend();
+            $this->saveMessage($this->mailer->getLastMessageID(), $this->mailer->getSentMIMEMessage());
+            return $sent;
         } else {
-            return false;
+            return $this->mailer->send();
         }
     }
 
     /**
+     * Save the message on local file
+     * @param string $id
+     * @param string $content
+     * @throws \Quantum\Exceptions\DiException
+     * @throws \ReflectionException
+     */
+    private function saveMessage(string $id, string $content)
+    {
+        $fs = Di::get(FileSystem::class);
+
+        $emailsDirectory = base_dir() . DS . 'base' . DS . 'emails';
+
+        if ($fs->isDirectory($emailsDirectory)) {
+            $fs->put($emailsDirectory . DS . $this->getFilename($id), $content);
+        }
+    }
+
+    /**
+     * Sets the options
+     * @param array $options
+     */
+    private function setOptions(array $options)
+    {
+        foreach ($options as $name => $params) {
+            if (method_exists(__CLASS__, $method = 'set' . ucfirst($name))) {
+                if (is_array($params)) {
+                    $this->$method(...$params);
+                } else {
+                    $this->$method($params);
+                }
+            }
+        }
+    }
+
+    /**
+     * Fetches message ID
+     * @param string $lastMessageId
+     * @return string
+     */
+    private function getFilename(string $lastMessageId): string
+    {
+        preg_match('/<(.*?)@/', $lastMessageId, $matches);
+        return $matches[1] . '.eml';
+    }
+
+    /**
      * Prepares the data
+     * @throws \PHPMailer\PHPMailer\Exception
      */
     private function prepare()
     {
         $this->mailer->setFrom($this->from['email'], $this->from['name']);
-
-        if (!empty($this->addresses)) {
-            foreach ($this->addresses as $address) {
-                $this->mailer->addAddress($address['email'], $address['name']);
-            }
-        }
-
-        if (!empty($this->replyToAddresses)) {
-            foreach ($this->replyToAddresses as $address) {
-                $this->mailer->addReplyTo($address['email'], $address['name']);
-            }
-        }
-
-        if (!empty($this->ccAddresses)) {
-            foreach ($this->ccAddresses as $address) {
-                $this->mailer->addCC($address['email'], $address['name']);
-            }
-        }
-        if (!empty($this->bccAddresses)) {
-            foreach ($this->bccAddresses as $address) {
-                $this->mailer->addBCC($address['email'], $address['name']);
-            }
-        }
 
         if ($this->subject) {
             $this->mailer->Subject = $this->subject;
         }
 
         if ($this->message) {
-            $body = '';
-
             if ($this->templatePath) {
                 $body = $this->createFromTemplate();
             } else {
@@ -444,15 +452,37 @@ class Mailer
             $this->mailer->Body = $body;
         }
 
-        if (!empty($this->attachments)) {
-            foreach ($this->attachments as $attachment) {
-                $this->mailer->addAttachment($attachment);
-            }
-        }
+        $this->fillProperties('addAddress', $this->addresses);
 
-        if (!empty($this->stringAttachments)) {
-            foreach ($this->stringAttachments as $attachment) {
-                $this->mailer->addStringAttachment($attachment['content'], $attachment['filename']);
+        $this->fillProperties('addReplyTo', $this->replyToAddresses);
+
+        $this->fillProperties('addCC', $this->ccAddresses);
+
+        $this->fillProperties('addBCC', $this->bccAddresses);
+
+        $this->fillProperties('addAttachment', $this->attachments);
+
+        $this->fillProperties('addStringAttachment', $this->stringAttachments);
+    }
+
+    /**
+     * Files the php mailer properties
+     * @param string $method
+     * @param array $fields
+     */
+    private function fillProperties(string $method, array $fields = [])
+    {
+        if (!empty($fields)) {
+            foreach ($fields as $field) {
+                if (is_string($field)) {
+                    $this->mailer->$method($field);
+                } else {
+                    $valOne = current($field);
+                    next($field);
+                    $valTwo = current($field);
+                    $this->mailer->$method($valOne, $valTwo);
+                    reset($field);
+                }
             }
         }
     }
@@ -464,11 +494,11 @@ class Mailer
     {
         $this->mailer->isSMTP();
         $this->mailer->SMTPAuth = true;
-        $this->mailer->Host = env('MAIL_HOST');
-        $this->mailer->SMTPSecure = env('MAIL_SMTP_SECURE');
-        $this->mailer->Port = env('MAIL_PORT');
-        $this->mailer->Username = env('MAIL_USERNAME');
-        $this->mailer->Password = env('MAIL_PASSWORD');
+        $this->mailer->Host = config()->get('mail_host');
+        $this->mailer->SMTPSecure = config()->get('mail_secure');
+        $this->mailer->Port = config()->get('mail_port');
+        $this->mailer->Username = config()->get('mail_username');
+        $this->mailer->Password = config()->get('mail_password');
     }
 
     /**
@@ -476,7 +506,7 @@ class Mailer
      */
     private function setupDebugging()
     {
-        if (config()->get('debug')) {
+        if (config()->has('debug')) {
             $this->mailer->SMTPDebug = 1;
             $this->mailer->Debugoutput = function ($str, $level) {
                 $this->log .= $str . '&';
@@ -491,7 +521,7 @@ class Mailer
      * Create message body from email template
      * @return string
      */
-    private function createFromTemplate()
+    private function createFromTemplate(): string
     {
         ob_start();
         ob_implicit_flush(0);

@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.0.0
+ * @since 2.4.0
  */
 
 namespace Quantum\Libraries\Auth;
@@ -24,62 +24,64 @@ use Quantum\Libraries\Mailer\Mailer;
  */
 class WebAuth extends BaseAuth implements AuthenticableInterface
 {
-
     /**
-     * @var Mailer
+     * Instance of WebAuth
+     * @var WebAuth
      */
-    protected $mailer;
-    
-    /**
-     * @var Hasher
-     */
-    protected $hasher;
-
-    /**
-     * @var AuthServiceInterface
-     */
-    protected $authService;
-
-    /**
-     * @var array
-     */
-    protected $keys = [];
-
-    /**
-     * @var string
-     */
-    protected $authUserKey = 'auth_user';
+    private static $instance;
 
     /**
      * WebAuth constructor.
-     * @param AuthServiceInterface $authService
-     * @param Mailer $mailer
-     * @param Hasher $hasher
+     * @param \Quantum\Libraries\Auth\AuthServiceInterface $authService
+     * @param \Quantum\Libraries\Mailer\Mailer $mailer
+     * @param \Quantum\Libraries\Hasher\Hasher $hasher
+     * @throws \Quantum\Exceptions\AuthException
      */
-    public function __construct(AuthServiceInterface $authService, Mailer $mailer, Hasher $hasher)
+    private function __construct(AuthServiceInterface $authService, Mailer $mailer, Hasher $hasher)
     {
         $this->mailer = $mailer;
         $this->hasher = $hasher;
         $this->authService = $authService;
-        $this->keys = $this->authService->getDefinedKeys();
+
+        $userSchema = $this->authService->userSchema();
+
+        $this->verifySchema($userSchema);
+    }
+
+    /**
+     * Get Instance
+     * @param \Quantum\Libraries\Auth\AuthServiceInterface $authService
+     * @param \Quantum\Libraries\Mailer\Mailer $mailer
+     * @param \Quantum\Libraries\Hasher\Hasher $hasher
+     * @return \Quantum\Libraries\Auth\WebAuth
+     * @throws \Quantum\Exceptions\AuthException
+     */
+    public static function getInstance(AuthServiceInterface $authService, Mailer $mailer, Hasher $hasher)
+    {
+        if (self::$instance === null) {
+            self::$instance = new self($authService, $mailer, $hasher);
+        }
+
+        return self::$instance;
     }
 
     /**
      * Sign In
      * @param string $username
      * @param string $password
-     * @param boolean $remember
-     * @return string|boolean
-     * @throws AuthException
+     * @param bool $remember
+     * @return bool|string
+     * @throws \Quantum\Exceptions\AuthException
      */
-    public function signin($username, $password, $remember = false)
+    public function signin(string $username, string $password, bool $remember = false)
     {
-        $user = $this->authService->get($this->keys[self::USERNAME_KEY], $username);
-        if (empty($user)) {
+        $user = $this->authService->get($this->keyFields[self::USERNAME_KEY], $username);
+
+        if (!$user) {
             throw new AuthException(AuthException::INCORRECT_AUTH_CREDENTIALS);
         }
 
-        if (!$this->hasher->check($password, $user[$this->keys[self::PASSWORD_KEY]])) {
+        if (!$this->hasher->check($password, $user->getFieldValue($this->keyFields[self::PASSWORD_KEY]))) {
             throw new AuthException(AuthException::INCORRECT_AUTH_CREDENTIALS);
         }
 
@@ -92,151 +94,119 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
         }
 
         if (filter_var(config()->get('2SV'), FILTER_VALIDATE_BOOLEAN)) {
-            $otpToken = $this->twoStepVerification($user);
-            return $otpToken;
-
+            return $this->twoStepVerification($user);
         } else {
-            session()->set($this->authUserKey, $this->filterFields($user));
+            session()->set($this->authUserKey, $this->getVisibleFields($user));
             return true;
         }
     }
 
     /**
      * Sign Out
-     * @throws \Exception
+     * @return bool
      */
-    public function signout()
+    public function signout(): bool
     {
         if (session()->has($this->authUserKey)) {
             session()->delete($this->authUserKey);
             $this->removeRememberToken();
+
+            return true;
         }
+
+        return false;
     }
 
     /**
      * User
-     * @return object|null
+     * @return \Quantum\Libraries\Auth\User|null
      * @throws \Exception
      */
-    public function user()
+    public function user(): ?User
     {
-        if (session()->has($this->authUserKey)) {
-            return (object) session()->get($this->authUserKey);
-        } else if (cookie()->has($this->keys[self::REMEMBER_TOKEN_KEY])) {
+        if (session()->has($this->authUserKey) && is_array(session()->get($this->authUserKey))) {
+            return (new User())->setData(session()->get($this->authUserKey));
+        } else if (cookie()->has($this->keyFields[self::REMEMBER_TOKEN_KEY])) {
             $user = $this->checkRememberToken();
-            
+
             if ($user) {
-                $this->setRememberToken($user);
+                session()->set($this->authUserKey, $this->getVisibleFields($user));
                 return $this->user();
             }
         }
-        
+
         return null;
     }
 
     /**
      * Verify OTP
-     * @param integer $otp
+     * @param int $otp
      * @param string $otpToken
      * @return bool
-     * @throws AuthException
+     * @throws \Quantum\Exceptions\AuthException
      */
-    public function verifyOtp($otp, $otpToken)
+    public function verifyOtp(int $otp, string $otpToken): bool
     {
-        $user = $this->authService->get($this->keys[self::OTP_TOKEN_KEY], $otpToken);
+        $user = $this->verifyAndUpdateOtp($otp, $otpToken);
 
-        if (empty($user) || $otp != $user[$this->keys[self::OTP_KEY]]) {
-            throw new AuthException(AuthException::INCORRECT_VERIFICATION_CODE);
-        }
- 
-        if (new \DateTime() >= new \DateTime($user[$this->keys[self::OTP_EXPIRY_KEY]])){
-            throw new AuthException(AuthException::VERIFICATION_CODE_EXPIRED);
-        }
-
-        $this->authService->update(
-                $this->keys[self::USERNAME_KEY], 
-                $user[$this->keys[self::USERNAME_KEY]], 
-                [
-                    $this->keys[self::OTP_KEY] => null,
-                    $this->keys[self::OTP_EXPIRY_KEY] => null,
-                    $this->keys[self::OTP_TOKEN_KEY] => null,
-                ]
-        );
-
-        session()->set($this->authUserKey, $this->filterFields($user));
+        session()->set($this->authUserKey, $this->getVisibleFields($user));
 
         return true;
     }
 
     /**
-     * Resend OTP
-     * @param string $otpToken
-     * @return string
-     * @throws \Exception
-     */
-    public function resendOtp($otpToken)
-    {
-        $user = $this->authService->get($this->keys[self::OTP_TOKEN_KEY], $otpToken);
-
-        if (empty($user)) {
-            throw new AuthException(AuthException::INCORRECT_AUTH_CREDENTIALS);
-        }
-
-        return $this->twoStepVerification($user);
-
-    }
-
-    /**
      * Check Remember Token
-     * @return bool|mixed
-     * @throws \Exception
+     * @return bool|User
      */
     private function checkRememberToken()
     {
-        $user = $this->authService->get($this->keys[self::REMEMBER_TOKEN_KEY], cookie()->get($this->keys[self::REMEMBER_TOKEN_KEY]));
-        
-        if (!empty($user)) {
-            return $user;
+        $user = $this->authService->get($this->keyFields[self::REMEMBER_TOKEN_KEY], cookie()->get($this->keyFields[self::REMEMBER_TOKEN_KEY]));
+
+        if (!$user) {
+            return false;
         }
-        
-        return false;
+
+        if (filter_var(config()->get('2SV'), FILTER_VALIDATE_BOOLEAN) && !empty($user->getFieldValue($this->keyFields[self::OTP_TOKEN_KEY]))) {
+            return false;
+        }
+
+        return $user;
     }
 
     /**
-     * Set Remember Token
-     * @param array $user
-     * @throws \Exception
+     * et Remember Token
+     * @param \Quantum\Libraries\Auth\User $user
      */
-    private function setRememberToken(array $user)
+    private function setRememberToken(User $user)
     {
         $rememberToken = $this->generateToken();
 
-        $this->authService->update($this->keys[self::USERNAME_KEY], $user[$this->keys[self::USERNAME_KEY]], [
-            $this->keys[self::REMEMBER_TOKEN_KEY] => $rememberToken
-        ]);
+        $this->authService->update(
+            $this->keyFields[self::USERNAME_KEY],
+            $user->getFieldValue($this->keyFields[self::USERNAME_KEY]),
+            [$this->keyFields[self::REMEMBER_TOKEN_KEY] => $rememberToken]
+        );
 
-        session()->set($this->authUserKey, $this->filterFields($user));
-        cookie()->set($this->keys[self::REMEMBER_TOKEN_KEY], $rememberToken);
+        cookie()->set($this->keyFields[self::REMEMBER_TOKEN_KEY], $rememberToken);
     }
 
     /**
-     * Remove Remember Token
-     * @throws \Exception
+     * Remove Remebmber token
      */
     private function removeRememberToken()
     {
-        if (cookie()->has($this->keys[self::REMEMBER_TOKEN_KEY])) {
-            $user = $this->authService->get($this->keys[self::REMEMBER_TOKEN_KEY], cookie()->get($this->keys[self::REMEMBER_TOKEN_KEY]));
+        if (cookie()->has($this->keyFields[self::REMEMBER_TOKEN_KEY])) {
+            $user = $this->authService->get($this->keyFields[self::REMEMBER_TOKEN_KEY], cookie()->get($this->keyFields[self::REMEMBER_TOKEN_KEY]));
 
-            if (!empty($user)) {
+            if ($user) {
                 $this->authService->update(
-                        $this->keys[self::REMEMBER_TOKEN_KEY], 
-                        $user[$this->keys[self::REMEMBER_TOKEN_KEY]], 
-                        [$this->keys[self::REMEMBER_TOKEN_KEY] => '']
+                    $this->keyFields[self::REMEMBER_TOKEN_KEY],
+                    $user->getFieldValue($this->keyFields[self::REMEMBER_TOKEN_KEY]),
+                    [$this->keyFields[self::REMEMBER_TOKEN_KEY] => '']
                 );
             }
 
-            cookie()->delete($this->keys[self::REMEMBER_TOKEN_KEY]);
+            cookie()->delete($this->keyFields[self::REMEMBER_TOKEN_KEY]);
         }
     }
 }

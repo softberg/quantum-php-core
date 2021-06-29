@@ -6,7 +6,7 @@ namespace Quantum\Models {
 
     class TestModel extends QtModel
     {
-        
+        public $table = 'test';
     }
 
 }
@@ -17,6 +17,8 @@ namespace Quantum\Test\Unit {
     use PHPUnit\Framework\TestCase;
     use Quantum\Factory\ModelFactory;
     use Quantum\Exceptions\ModelException;
+    use Quantum\Libraries\Database\Database;
+    use Quantum\Libraries\Database\IdiormDbal;
     use Quantum\Libraries\Storage\FileSystem;
     use Quantum\Loader\Loader;
     use Quantum\Models\TestModel;
@@ -30,34 +32,38 @@ namespace Quantum\Test\Unit {
     {
 
         private $modelFactory;
-        private $databaseMock;
-        private $helperMock;
+
+        private $dbConfigs = [
+            'current' => 'sqlite',
+            'sqlite' => array(
+                'driver' => 'sqlite',
+                'database' => ':memory:'
+            ),
+        ];
 
         public function setUp(): void
         {
+            (new idiormDbal('test'))->execute("CREATE TABLE profiles (
+                        id INTEGER PRIMARY KEY
+                    )");
+
             $loader = new Loader(new FileSystem);
 
             $loader->loadFile(dirname(__DIR__, 3) . DS . 'src' . DS . 'constants.php');
 
             $loader->loadDir(dirname(__DIR__, 3) . DS . 'src' . DS . 'Helpers' . DS . 'functions');
 
+            $loaderMock = Mockery::mock('Quantum\Loader\Loader');
+
+            $loaderMock->shouldReceive('setup')->andReturn($loaderMock);
+
+            $loaderMock->shouldReceive('load')->andReturn($this->dbConfigs);
+
+            $db = Database::getInstance($loaderMock);
+
+            $db->getORM('test');
+
             Di::loadDefinitions();
-
-            $this->databaseMock = Mockery::mock('overload:Quantum\Libraries\Database\Database');
-
-            $this->databaseMock->shouldReceive('getORM')->andReturn(new \stdClass());
-
-            $this->helperMock = Mockery::mock('overload:Quantum\Helpers\Helper');
-
-            $this->helperMock->shouldReceive('_message')->andReturnUsing(function ($subject, $params) {
-                if (is_array($params)) {
-                    return preg_replace_callback('/{%\d+}/', function () use (&$params) {
-                        return array_shift($params);
-                    }, $subject);
-                } else {
-                    return preg_replace('/{%\d+}/', $params, $subject);
-                }
-            });
 
             $this->modelFactory = new ModelFactory();
         }

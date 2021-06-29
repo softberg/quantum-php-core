@@ -31,207 +31,217 @@ interface DbalInterface
      * Get table
      * @return string
      */
-    public function getTable();
+    public function getTable(): string;
 
     /**
-     * DB Connect
+     * Connects to database
      * @param array $connectionDetails
      * @return array
      */
-    public static function dbConnect($connectionDetails);
+    public static function dbConnect(array $connectionDetails): array;
 
     /**
-     * Select
+     * Selects the values from provided table columns
      * @param mixed $columns
-     * @return array
+     * @return object
      */
-    public function select(...$columns);
+    public function select(...$columns): object;
 
     /**
-     * Find One
+     * Finds the record by primary key
      * @param int $id
      * @return object
      */
-    public function findOne($id);
+    public function findOne(int $id): object;
 
     /**
-     * FindOneBy
+     * Finds the record by given column and value
      * @param string $column
      * @param mixed $value
      * @return object
      */
-    public function findOneBy($column, $value);
+    public function findOneBy(string $column, $value): object;
 
     /**
-     * First
+     * Gets the first item
      * @return object
      */
-    public function first();
+    public function first(): object;
 
     /**
-     * Criterias
+     * Adds a criteria to query
+     * @param string $column
+     * @param string $operator
+     * @param mixed|null $value
+     * @return object
+     */
+    public function criteria(string $column, string $operator, $value = null): object;
+
+    /**
+     * Adds criteria to query
      * @param array ...$criterias
      * @return object
      */
-    public function criterias(...$criterias);
+    public function criterias(...$criterias): object;
 
     /**
-     * Order By
+     * Orders the result by ascending or descending
      * @param string $column
      * @param string $direction
      * @return object
      */
-    public function orderBy($column, $direction);
+    public function orderBy(string $column, string $direction): object;
 
     /**
-     * Group By
+     * Groups the result by given column
      * @param string $column
      * @return object
      */
-    public function groupBy($column);
+    public function groupBy(string $column): object;
 
     /**
-     * Limit
-     * @param integer $params
+     * Returns the limited result set
+     * @param int $limit
      * @return object
      */
-    public function limit($limit);
+    public function limit(int $limit): object;
 
     /**
-     * Offset
+     * Returns the result by given offset (works when limit also applied)
      * @param integer $offset
      * @return object
      */
-    public function offset($offset);
+    public function offset(int $offset): object;
 
     /**
-     * Get
-     * @param null|string $returnType
+     * Gets the result set
+     * @param int|null $returnType
      * @return mixed
      */
-    public function get($returnType = null);
+    public function get(?int $returnType);
 
     /**
      * Count
-     * @return integer
+     * @return int
      */
-    public function count();
+    public function count(): int;
 
     /**
-     * asArray
+     * Returns the result as array
      * @return array
      */
-    public function asArray();
+    public function asArray(): array;
 
     /**
-     * Create
+     * Creates new db record
      * @return object
      */
-    public function create();
+    public function create(): object;
 
     /**
-     * Save
+     * Saves the data into the database
      * @return bool
      */
-    public function save();
+    public function save(): bool;
 
     /**
-     * Delete
+     * Deletes the record from the database
      * @return bool
      */
-    public function delete();
+    public function delete(): bool;
 
     /**
-     * Delete All
+     * Deletes all records by previously applied criteria
      * @return bool
      */
-    public function deleteAll();
+    public function deleteAll(): bool;
 
     /**
-     * Join
+     * Adds a simple JOIN source to the query
      * @param string $table
      * @param array $constraint
-     * @param string $tableAlias
+     * @param string|null $tableAlias
      * @return object
      */
-    public function join($table, $constraint, $tableAlias = null);
+    public function join(string $table, array $constraint, ?string $tableAlias = null): object;
 
     /**
-     * Inner Join
-     * Add an INNER JOIN souce to the query
+     * Adds an INNER JOIN source to the query
      * @param string $table
      * @param array $constraint
-     * @param string $tableAlias
+     * @param string|null $tableAlias
      * @return object
      */
-    public function innerJoin($table, $constraint, $tableAlias = null);
+    public function innerJoin(string $table, array $constraint, ?string $tableAlias = null): object;
 
     /**
-     * Left Join
-     * Add an LEFT JOIN souce to the query
+     * Adds an LEFT JOIN source to the query
      * @param string $table
      * @param array $constraint
-     * @param string $tableAlias
+     * @param string|null $tableAlias
      * @return object
      */
-    public function leftJoin($table, $constraint, $tableAlias = null);
+    public function leftJoin(string $table, array $constraint, ?string $tableAlias = null): object;
 
     /**
-     * Right Join
-     * Add an RIGHT JOIN souce to the query
+     * Adds an RIGHT JOIN source to the query
      * @param string $table
      * @param array $constraint
-     * @param string $tableAlias
+     * @param string|null $tableAlias
      * @return object
      */
-    public function rightJoin($table, $constraint, $tableAlias = null);
+    public function rightJoin(string $table, array $constraint, ?string $tableAlias = null): object;
 
     /**
      * Joins two models
      * @param QtModel $model
+     * @param bool $switch
      * @return object
      */
-    public function joinTo(QtModel $model);
+    public function joinTo(QtModel $model, bool $switch = true): object;
 
     /**
      * Joins through connector model
      * @param QtModel $model
-     * @return bool $switch
+     * @param bool $switch
+     * @return object
      */
-    public function joinThrough(QtModel $model, $switch = true);
+    public function joinThrough(QtModel $model, bool $switch = true): object;
+
+    /**
+     * Raw execute
+     * @param string $query
+     * @param array $parameters
+     * @return bool
+     */
+    public static function execute(string $query, array $parameters = []): bool;
+
+    /**
+     * Raw query
+     * @param string $query
+     * @param array $parameters
+     * @return array
+     */
+    public static function query(string $query, array $parameters = []): array;
 
     /**
      * Gets the last query executed
      * @return string
      */
-    public static function lastQuery();
+    public static function lastQuery(): string;
 
     /**
      * Returns the PDOStatement instance last used
-     * @return string
+     * @return object
      */
-    public static function lastStatement();
+    public static function lastStatement(): object;
 
     /**
      * Get an array containing all the queries 
      * run on a specified connection up to now.
      * @return array
      */
-    public static function queryLog();
+    public static function queryLog(): array;
 
-    /**
-     * Execute
-     * @param string $query
-     * @param array $parameters
-     * @return bool
-     */
-    public static function execute($query, $parameters = []);
 
-    /**
-     * Query
-     * @param string $query
-     * @param array $parameters
-     * @return array
-     */
-    public static function query($query, $parameters = []);
 }

@@ -15,8 +15,10 @@
 namespace Quantum\Environment;
 
 use Quantum\Libraries\Storage\FileSystem;
+use Quantum\Exceptions\EnvException;
 use Quantum\Loader\Loader;
 use Quantum\Loader\Setup;
+use Quantum\Di\Di;
 use Dotenv\Dotenv;
 
 /**
@@ -28,26 +30,32 @@ class Environment
 {
 
     /**
+     * FileSystem instance
+     * @var \Quantum\Libraries\Storage\FileSystem
+     */
+    private $fs;
+
+    /**
      * Environment file
-     * @var string 
+     * @var string
      */
     private $envFile = '.env';
 
     /**
      * Loaded env content
-     * @var array 
+     * @var array
      */
     private $envContent = [];
 
     /**
      * Instance of Environment
-     * @var Environment 
+     * @var \Quantum\Environment\Environment
      */
     private static $envInstance = null;
 
     /**
      * GetInstance
-     * @return Environment
+     * @return \Quantum\Environment\Environment
      */
     public static function getInstance()
     {
@@ -59,8 +67,12 @@ class Environment
     }
 
     /**
-     * Loads the environment variables from .env file
+     * Loads environment variables from .env file
+     * @param \Quantum\Loader\Loader $loader
      * @return $this
+     * @throws \Quantum\Exceptions\DiException
+     * @throws \Quantum\Exceptions\EnvException
+     * @throws \Quantum\Exceptions\LoaderException
      */
     public function load(Loader $loader)
     {
@@ -70,6 +82,12 @@ class Environment
             $this->envFile = '.env.' . $env['app_env'];
         }
 
+        $this->fs = Di::get(FileSystem::class);
+
+        if (!$this->fs->exists(BASE_DIR . DS . $this->envFile)) {
+            throw new EnvException(EnvException::ENV_FILE_NOT_FOUND);
+        }
+
         $this->envContent = (new Dotenv(base_dir(), $this->envFile))->load();
         return $this;
     }
@@ -77,10 +95,10 @@ class Environment
     /**
      * Gets the environment variable value
      * @param string $key
-     * @param mixed $default
+     * @param null|mixed $default
      * @return mixed
      */
-    public function getValue($key, $default = null)
+    public function getValue(string $key, $default = null)
     {
         $val = getenv($key);
 
@@ -97,24 +115,23 @@ class Environment
 
     /**
      * Creates or updates the row in .env
-     * @param FileSystem $fs
      * @param string $key
      * @param string $value
      */
-    public function updateRow(FileSystem $fs, $key, $value)
+    public function updateRow($key, $value)
     {
         $oldRow = $this->getRow($key);
 
         $envFilePath = base_dir() . DS . $this->envFile;
 
         if ($oldRow) {
-            $fs->put($envFilePath, preg_replace(
-                            '/^' . $oldRow . '/m',
-                            $key . "=" . $value . PHP_EOL,
-                            $fs->get($envFilePath)
+            $this->fs->put($envFilePath, preg_replace(
+                '/^' . $oldRow . '/m',
+                $key . "=" . $value . PHP_EOL,
+                $this->fs->get($envFilePath)
             ));
         } else {
-            $fs->put($envFilePath, $key . "=" . $value . PHP_EOL, FILE_APPEND);
+            $this->fs->put($envFilePath, $key . "=" . $value . PHP_EOL, FILE_APPEND);
         }
 
         $this->envContent = (new Dotenv(base_dir(), $this->envFile))->overload();

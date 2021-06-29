@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.0.0
+ * @since 2.4.0
  */
 
 namespace Quantum\Libraries\Auth;
@@ -29,67 +29,65 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
 {
 
     /**
-     * @var Mailer
+     * Instance of ApiAuth
+     * @var \Quantum\Libraries\Auth\ApiAuth
      */
-    protected $mailer;
-
-    /**
-     * @var JWToken
-     */
-    protected $jwt;
-
-    /**
-     * @var Hasher
-     */
-    protected $hasher;
-
-    /**
-     * @var AuthServiceInterface
-     */
-    protected $authService;
-
-    /**
-     * @var array
-     */
-    protected $keys = [];
-
-    /**
-     * @var string
-     */
-    protected $authUserKey = 'auth_user';
+    private static $instance;
 
     /**
      * ApiAuth constructor.
-     * @param AuthServiceInterface $authService
-     * @param Mailer $mailer
-     * @param Hasher $hasher
-     * @param JWToken|null $jwt
+     * @param \Quantum\Libraries\Auth\AuthServiceInterface $authService
+     * @param \Quantum\Libraries\Mailer\Mailer $mailer
+     * @param \Quantum\Libraries\Hasher\Hasher $hasher
+     * @param \Quantum\Libraries\JWToken\JWToken|null $jwt
+     * @throws \Quantum\Exceptions\AuthException
      */
-    public function __construct(AuthServiceInterface $authService, Mailer $mailer, Hasher $hasher, JWToken $jwt = null)
+    private function __construct(AuthServiceInterface $authService, Mailer $mailer, Hasher $hasher, JWToken $jwt = null)
     {
         $this->mailer = $mailer;
         $this->jwt = $jwt;
         $this->hasher = $hasher;
         $this->authService = $authService;
-        $this->keys = $this->authService->getDefinedKeys();
+
+        $userSchema = $this->authService->userSchema();
+
+        $this->verifySchema($userSchema);
+    }
+
+    /**
+     * Get Instance
+     * @param \Quantum\Libraries\Auth\AuthServiceInterface $authService
+     * @param \Quantum\Libraries\Mailer\Mailer $mailer
+     * @param \Quantum\Libraries\Hasher\Hasher $hasher
+     * @param \Quantum\Libraries\JWToken\JWToken|null $jwt
+     * @return \Quantum\Libraries\Auth\ApiAuth
+     * @throws \Quantum\Exceptions\AuthException
+     */
+    public static function getInstance(AuthServiceInterface $authService, Mailer $mailer, Hasher $hasher, JWToken $jwt = null)
+    {
+        if (self::$instance === null) {
+            self::$instance = new self($authService, $mailer, $hasher, $jwt);
+        }
+
+        return self::$instance;
     }
 
     /**
      * Sign In
      * @param string $username
      * @param string $password
-     * @return string|array
-     * @throws AuthException
+     * @return array|string
+     * @throws \Quantum\Exceptions\AuthException
      */
-    public function signin($username, $password)
+    public function signin(string $username, string $password)
     {
-        $user = $this->authService->get($this->keys[self::USERNAME_KEY], $username);
+        $user = $this->authService->get($this->keyFields[self::USERNAME_KEY], $username);
 
-        if (empty($user)) {
+        if (!$user) {
             throw new AuthException(AuthException::INCORRECT_AUTH_CREDENTIALS);
         }
 
-        if (!$this->hasher->check($password, $user[$this->keys[self::PASSWORD_KEY]])) {
+        if (!$this->hasher->check($password, $user->getFieldValue($this->keyFields[self::PASSWORD_KEY]))) {
             throw new AuthException(AuthException::INCORRECT_AUTH_CREDENTIALS);
         }
 
@@ -98,35 +96,33 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
         }
 
         if (filter_var(config()->get('2SV'), FILTER_VALIDATE_BOOLEAN)) {
-            $otpToken = $this->twoStepVerification($user);
-            return $otpToken;
+            return $this->twoStepVerification($user);
         } else {
-            $tokens = $this->setUpdatedTokens($user);
-            return $tokens;
+            return $this->setUpdatedTokens($user);
         }
     }
 
     /**
      * Sign Out
-     * @return bool|mixed
+     * @return bool
      */
-    public function signout()
+    public function signout(): bool
     {
-        $refreshToken = Request::getHeader($this->keys[self::REFRESH_TOKEN_KEY]);
+        $refreshToken = Request::getHeader($this->keyFields[self::REFRESH_TOKEN_KEY]);
 
-        $user = $this->authService->get($this->keys[self::REFRESH_TOKEN_KEY], $refreshToken);
+        $user = $this->authService->get($this->keyFields[self::REFRESH_TOKEN_KEY], $refreshToken);
 
-        if (!empty($user)) {
+        if ($user) {
             $this->authService->update(
-                    $this->keys[self::REFRESH_TOKEN_KEY],
-                    $refreshToken,
-                    [
-                        $this->authUserKey => $user,
-                        $this->keys[self::REFRESH_TOKEN_KEY] => ''
-                    ]
+                $this->keyFields[self::REFRESH_TOKEN_KEY],
+                $refreshToken,
+                [
+                    $this->authUserKey => $this->getVisibleFields($user),
+                    $this->keyFields[self::REFRESH_TOKEN_KEY] => ''
+                ]
             );
 
-            Request::deleteHeader($this->keys[self::REFRESH_TOKEN_KEY]);
+            Request::deleteHeader($this->keyFields[self::REFRESH_TOKEN_KEY]);
             Request::deleteHeader('Authorization');
             Response::delete('tokens');
 
@@ -138,15 +134,16 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
 
     /**
      * User
-     * @return object|null
+     * @return mixed|\Quantum\Libraries\Auth\User|null
+     * @throws \Exception
      */
-    public function user()
+    public function user(): ?User
     {
         try {
-            $accessToken = base64_decode(Request::getAuthorizationBearer());
-            return (object) $this->jwt->retrieve($accessToken)->fetchData();
+            $accessToken = base64_decode((string)Request::getAuthorizationBearer());
+            return (new User())->setData($this->jwt->retrieve($accessToken)->fetchData());
         } catch (\Exception $e) {
-            if (Request::hasHeader($this->keys[self::REFRESH_TOKEN_KEY])) {
+            if (Request::hasHeader($this->keyFields[self::REFRESH_TOKEN_KEY])) {
                 $user = $this->checkRefreshToken();
 
                 if ($user) {
@@ -154,109 +151,66 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
                     return $this->user();
                 }
             }
+
             return null;
         }
     }
 
     /**
      * Get Updated Tokens
-     * @param array $user
+     * @param \Quantum\Libraries\Auth\User $user
      * @return array
      */
-    public function getUpdatedTokens(array $user)
+    public function getUpdatedTokens(User $user): array
     {
         return [
-            $this->keys[self::REFRESH_TOKEN_KEY] => $this->generateToken(),
-            $this->keys[self::ACCESS_TOKEN_KEY] => base64_encode($this->jwt->setData($this->filterFields($user))->compose())
+            $this->keyFields[self::REFRESH_TOKEN_KEY] => $this->generateToken(),
+            $this->keyFields[self::ACCESS_TOKEN_KEY] => base64_encode($this->jwt->setData($this->getVisibleFields($user))->compose())
         ];
     }
 
     /**
      * Verify OTP
-     * @param integer $otp
+     * @param int $otp
      * @param string $otpToken
      * @return array
-     * @throws AuthException
+     * @throws \Quantum\Exceptions\AuthException
      */
-    public function verifyOtp($otp, $otpToken)
+    public function verifyOtp(int $otp, string $otpToken): array
     {
-        $user = $this->authService->get($this->keys[self::OTP_TOKEN_KEY], $otpToken);
-
-        if (empty($user) || $otp != $user[$this->keys[self::OTP_KEY]]) {
-            throw new AuthException(AuthException::INCORRECT_VERIFICATION_CODE);
-        }
-
-        if (new \DateTime() >= new \DateTime($user[$this->keys[self::OTP_EXPIRY_KEY]])) {
-            throw new AuthException(AuthException::VERIFICATION_CODE_EXPIRED);
-        }
-
-        $this->authService->update(
-                $this->keys[self::USERNAME_KEY],
-                $user[$this->keys[self::USERNAME_KEY]],
-                [
-                    $this->keys[self::OTP_KEY] => null,
-                    $this->keys[self::OTP_EXPIRY_KEY] => null,
-                    $this->keys[self::OTP_TOKEN_KEY] => null,
-                ]
-        );
-
-        $tokens = $this->setUpdatedTokens($this->filterFields($user));
-
-        return $tokens;
-    }
-
-    /**
-     * Resend OTP
-     * @param string $otpToken
-     * @return string
-     * @throws AuthException
-     */
-    public function resendOtp($otpToken)
-    {
-        $user = $this->authService->get($this->keys[self::OTP_TOKEN_KEY], $otpToken);
-
-        if (empty($user)) {
-            throw new AuthException(AuthException::INCORRECT_AUTH_CREDENTIALS);
-        }
-
-        return $this->twoStepVerification($user);
+        $user = $this->verifyAndUpdateOtp($otp, $otpToken);
+        return $this->setUpdatedTokens($user);
     }
 
     /**
      * Check Refresh Token
-     * @return bool|mixed
+     * @return \Quantum\Libraries\Auth\User|null
      */
-    protected function checkRefreshToken()
+    protected function checkRefreshToken(): ?User
     {
-        $user = $this->authService->get($this->keys[self::REFRESH_TOKEN_KEY], Request::getHeader($this->keys[self::REFRESH_TOKEN_KEY]));
-
-        if (!empty($user)) {
-            return $user;
-        }
-
-        return false;
+        return $this->authService->get($this->keyFields[self::REFRESH_TOKEN_KEY], Request::getHeader($this->keyFields[self::REFRESH_TOKEN_KEY]));
     }
 
     /**
      * Set Updated Tokens
-     * @param array $user
-     * @return array
+     * @param \Quantum\Libraries\Auth\User $user
+     * @return array Tokens
      */
-    protected function setUpdatedTokens(array $user)
+    protected function setUpdatedTokens(User $user): array
     {
         $tokens = $this->getUpdatedTokens($user);
 
         $this->authService->update(
-                $this->keys[self::USERNAME_KEY],
-                $user[$this->keys[self::USERNAME_KEY]],
-                [
-                    $this->authUserKey => $user,
-                    $this->keys[self::REFRESH_TOKEN_KEY] => $tokens[$this->keys[self::REFRESH_TOKEN_KEY]]
-                ]
+            $this->keyFields[self::USERNAME_KEY],
+            $user->getFieldValue($this->keyFields[self::USERNAME_KEY]),
+            [
+                $this->authUserKey => $this->getVisibleFields($user),
+                $this->keyFields[self::REFRESH_TOKEN_KEY] => $tokens[$this->keyFields[self::REFRESH_TOKEN_KEY]]
+            ]
         );
 
-        Request::setHeader($this->keys[self::REFRESH_TOKEN_KEY], $tokens[$this->keys[self::REFRESH_TOKEN_KEY]]);
-        Request::setHeader('Authorization', 'Bearer ' . $tokens[$this->keys[self::ACCESS_TOKEN_KEY]]);
+        Request::setHeader($this->keyFields[self::REFRESH_TOKEN_KEY], $tokens[$this->keyFields[self::REFRESH_TOKEN_KEY]]);
+        Request::setHeader('Authorization', 'Bearer ' . $tokens[$this->keyFields[self::ACCESS_TOKEN_KEY]]);
         Response::set('tokens', $tokens);
 
         return $tokens;

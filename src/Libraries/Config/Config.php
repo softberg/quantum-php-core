@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.0.0
+ * @since 2.4.0
  */
 
 namespace Quantum\Libraries\Config;
@@ -35,15 +35,15 @@ class Config implements StorageInterface
 
     /**
      * Instance of Config
-     * @var Config 
+     * @var \Quantum\Libraries\Config\Config
      */
     private static $configInstance = null;
 
     /**
      * GetInstance
-     * @return Config
+     * @return \Quantum\Libraries\Config\Config|null
      */
-    public static function getInstance()
+    public static function getInstance(): ?Config
     {
         if (self::$configInstance === null) {
             self::$configInstance = new self();
@@ -54,7 +54,7 @@ class Config implements StorageInterface
 
     /**
      * Loads configuration
-     * @param Loader $loader
+     * @param \Quantum\Loader\Loader $loader
      * @throws \Quantum\Exceptions\LoaderException
      */
     public function load(Loader $loader)
@@ -66,12 +66,12 @@ class Config implements StorageInterface
 
     /**
      * Imports new config file
-     * @param Loader $loader
+     * @param \Quantum\Loader\Loader $loader
      * @param string $fileName
-     * @throws ConfigException
+     * @throws \Quantum\Exceptions\ConfigException
      * @throws \Quantum\Exceptions\LoaderException
      */
-    public function import(Loader $loader, $fileName)
+    public function import(Loader $loader, string $fileName)
     {
         if ($this->has($fileName)) {
             throw new ConfigException(_message(ConfigException::CONFIG_COLLISION, $fileName));
@@ -86,7 +86,7 @@ class Config implements StorageInterface
      * @param mixed $default
      * @return mixed|null
      */
-    public function get($key, $default = null)
+    public function get(string $key, $default = null)
     {
         $data = new Data(self::$configs);
 
@@ -111,11 +111,11 @@ class Config implements StorageInterface
      * @param string $key
      * @return bool
      */
-    public function has($key)
+    public function has(string $key): bool
     {
         $data = new Data(self::$configs);
 
-        return ($data->has($key));
+        return !empty($data->get($key));
     }
 
     /**
@@ -124,7 +124,7 @@ class Config implements StorageInterface
      * @param mixed $value
      * @return void
      */
-    public function set($key, $value)
+    public function set(string $key, $value)
     {
         $data = new Data(self::$configs);
 
@@ -134,9 +134,9 @@ class Config implements StorageInterface
 
     /**
      * Removes the data from config
-     * @param $key
+     * @param string $key
      */
-    public function delete($key)
+    public function delete(string $key)
     {
         $data = new Data(self::$configs);
 
@@ -146,7 +146,6 @@ class Config implements StorageInterface
 
     /**
      * Deletes whole config data
-     * @return void
      */
     public function flush()
     {

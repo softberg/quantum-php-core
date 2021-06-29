@@ -11,6 +11,7 @@
  * @link http://quantum.softberg.org/
  * @since 2.0.0
  */
+
 use Quantum\Factory\ViewFactory;
 
 if (!function_exists('view')) {
@@ -36,6 +37,20 @@ if (!function_exists('partial')) {
     function partial($partial, $args = [])
     {
         return ViewFactory::getInstance()->renderPartial($partial, $args);
+    }
+
+}
+
+if (!function_exists('view_param')) {
+
+    /**
+     * Gets the param passed to view
+     * @param string $key
+     * @return mixed|null
+     */
+    function view_param($key)
+    {
+        return ViewFactory::getInstance()->getParam($key);
     }
 
 }

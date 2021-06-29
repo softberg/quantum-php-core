@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.0.0
+ * @since 2.4.0
  */
 
 namespace Quantum\Libraries\Database;
@@ -20,28 +20,22 @@ use Quantum\Loader\Loader;
 use Quantum\Loader\Setup;
 
 /**
- * Database class
- * @package Quantum
- * @subpackage Libraries
- * @category Database
- * @method static array queryLog()
- * @method static string lastStatement()
- * @method static string lastQuery()
- * @method static bool($query, $parameters = [])
- * @method static array query($query, $parameters = [])
+ * Class Database
+ * @package Quantum\Libraries\Database
+ * @method
  */
 class Database
 {
 
     /**
      * Loader object
-     * @var Loader 
+     * @var \Quantum\Loader\Loader
      */
     private $loader;
 
     /**
      * Database configurations
-     * @var array 
+     * @var array
      */
     private static $configs = [];
 
@@ -64,12 +58,32 @@ class Database
     private $activeConnection = null;
 
     /**
+     * Instance of Database
+     * @var \Quantum\Libraries\Database\Database
+     */
+    private static $instance;
+
+    /**
      * Database constructor.
-     * @param Loader $loader
+     * @param \Quantum\Loader\Loader $loader
      */
     public function __construct(Loader $loader)
     {
         $this->loader = $loader;
+    }
+
+    /**
+     * Get Instance
+     * @param \Quantum\Loader\Loader $loader
+     * @return \Quantum\Libraries\Database\Database
+     */
+    public static function getInstance(Loader $loader): Database
+    {
+        if (self::$instance === null) {
+            self::$instance = new self($loader);
+        }
+
+        return self::$instance;
     }
 
     /**
@@ -78,9 +92,11 @@ class Database
      * @param string|null $modelName
      * @param string $idColumn
      * @return \Quantum\Libraries\Database\IdiormDbal
-     * @throws ModelException
+     * @throws \Quantum\Exceptions\DatabaseException
+     * @throws \Quantum\Exceptions\LoaderException
+     * @throws \Quantum\Exceptions\ModelException
      */
-    public function getORM($table, $modelName = null, $idColumn = 'id'): IdiormDbal
+    public function getORM(string $table, string $modelName = null, string $idColumn = 'id'): IdiormDbal
     {
         $dbalClass = $this->getDbalClass();
 
@@ -99,7 +115,7 @@ class Database
      * Checks the active connection
      * @return bool
      */
-    public function connected()
+    public function connected(): bool
     {
         if ($this->activeConnection) {
             return true;
@@ -110,9 +126,11 @@ class Database
 
     /**
      * Connects to database
-     * @throws DatabaseException
+     * @param string $dbalClass
+     * @throws \Quantum\Exceptions\DatabaseException
+     * @throws \Quantum\Exceptions\LoaderException
      */
-    public function connect($dbalClass)
+    public function connect(string $dbalClass)
     {
         $configs = $this->loader->setup(new Setup('config', 'database'))->load();
 
@@ -135,7 +153,7 @@ class Database
      * Gets the ORM class defined in config, otherwise default ORM will be used
      * @return string
      */
-    public static function getDbalClass()
+    public static function getDbalClass(): string
     {
         $dbalClass = (isset(self::$configs['DBAL']) && !empty(self::$configs['DBAL']) ? self::$configs['DBAL'] : self::$defaultDbalClass);
 
@@ -145,11 +163,12 @@ class Database
     }
 
     /**
-     * Gives access to some common methods 
+     * Gives access to some common methods
      * @param string $method
      * @param array|null $arguments
+     * @return mixed
      */
-    public static function __callStatic($method, $arguments = null)
+    public static function __callStatic(string $method, array $arguments = null)
     {
         if (in_array($method, self::$commonMethods)) {
             $dbalClass = self::getDbalClass();

@@ -9,10 +9,16 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.0.0
+ * @since 2.4.0
  */
 
 namespace Quantum\Libraries\Auth;
+
+use Quantum\Exceptions\AuthException;
+use Quantum\Libraries\JWToken\JWToken;
+use Quantum\Libraries\Hasher\Hasher;
+use Quantum\Libraries\Mailer\Mailer;
+use ReflectionClass;
 
 /**
  * Class BaseAuth
@@ -22,99 +28,151 @@ abstract class BaseAuth
 {
 
     /**
-     * One time password length
-     */
-    const OTP_LENGTH = 6;
-    
-    /**
      * One time password key
      */
-    const OTP_KEY = 'otpKey';
-    
+    const OTP_KEY = 'otp';
+
     /**
      * One time password expiry key
      */
-    const OTP_EXPIRY_KEY = 'otpExpiryKey';
-    
+    const OTP_EXPIRY_KEY = 'otpExpiry';
+
     /**
      * One time password token key
      */
-    const OTP_TOKEN_KEY = 'otpTokenKey';
+    const OTP_TOKEN_KEY = 'otpToken';
 
     /**
      * Username key
      */
-    const USERNAME_KEY = 'usernameKey';
-    
+    const USERNAME_KEY = 'username';
+
     /**
      * Password key
      */
-    const PASSWORD_KEY = 'passwordKey';
+    const PASSWORD_KEY = 'password';
 
     /**
      * Access token key
      */
-    const ACCESS_TOKEN_KEY = 'accessTokenKey';
+    const ACCESS_TOKEN_KEY = 'accessToken';
 
     /**
      * Refresh token key
      */
-    const REFRESH_TOKEN_KEY = 'refreshTokenKey';
-    
+    const REFRESH_TOKEN_KEY = 'refreshToken';
+
     /**
      * Activation token key
      */
-    const ACTIVATION_TOKEN_KEY = 'activationTokenKey';
-    
+    const ACTIVATION_TOKEN_KEY = 'activationToken';
+
     /**
      * Reset token key
      */
-    const RESET_TOKEN_KEY = 'resetTokenKey';
-    
+    const RESET_TOKEN_KEY = 'resetToken';
+
     /**
      * Remember token key
      */
-    const REMEMBER_TOKEN_KEY = 'rememberTokenKey';
-    
+    const REMEMBER_TOKEN_KEY = 'rememberToken';
+
+    /**
+     * @var \Quantum\Libraries\Mailer\Mailer
+     */
+    protected $mailer;
+
+    /**
+     * @var \Quantum\Libraries\Hasher\Hasher
+     */
+    protected $hasher;
+
+    /**
+     * @var \Quantum\Libraries\JWToken\JWToken
+     */
+    protected $jwt;
+
+    /**
+     * @var \Quantum\Libraries\Auth\AuthServiceInterface
+     */
+    protected $authService;
+
+    /**
+     * @var string
+     */
+    protected $authUserKey = 'auth_user';
+
+    /**
+     * @var int
+     */
+    protected $otpLenght = 6;
+
+    /**
+     * @var array
+     */
+    protected $keyFields = [];
+
+    /**
+     * @var array
+     */
+    protected $visibleFields = [];
+
     /**
      * User
-     * @return mixed|null
+     * @return \Quantum\Libraries\Auth\User|null
      */
-    protected abstract function user();
+    protected abstract function user(): ?User;
+
+    /**
+     * Verify user schema
+     * @param array $schema
+     * @throws \Quantum\Exceptions\AuthException
+     */
+    protected function verifySchema(array $schema)
+    {
+        $reflectionClass = new ReflectionClass($this);
+        $constants = $reflectionClass->getConstants();
+
+        foreach ($constants as $constant) {
+            if (!in_array($constant, array_keys($schema))) {
+                throw new AuthException(AuthException::INCORRECT_USER_SCHEMA);
+            }
+
+            if (!isset($schema[$constant]['name'])) {
+                throw new AuthException(AuthException::INCORRECT_USER_SCHEMA);
+            }
+
+            $this->keyFields[$constant] = $schema[$constant]['name'];
+        }
+
+        foreach ($schema as $field) {
+            if ($field['visible']) {
+                $this->visibleFields[] = $field['name'];
+            }
+        }
+    }
 
     /**
      * Check
      * @return bool
      */
-    public function check()
+    public function check(): bool
     {
         return !is_null($this->user());
-    }
-
-    /**
-     * Check Verification
-     * @return bool
-     */
-    public function checkVerification()
-    {
-        if (isset($this->user()->verification_code) && !empty($this->user()->verification_code)) {
-            return true;
-        }
-        return false;
     }
 
     /**
      * Sign Up
      * @param array $userData
      * @param array|null $customData
-     * @return mixed
+     * @return \Quantum\Libraries\Auth\User
      */
-    public function signup($userData, $customData = null)
+    public function signup(array $userData, array $customData = null): User
     {
         $activationToken = $this->generateToken();
 
-        $userData[$this->keys[self::PASSWORD_KEY]] = $this->hasher->hash($userData[$this->keys[self::PASSWORD_KEY]]);
-        $userData[$this->keys[self::ACTIVATION_TOKEN_KEY]] = $activationToken;
+        $userData[$this->keyFields[self::PASSWORD_KEY]] = $this->hasher->hash($userData[$this->keyFields[self::PASSWORD_KEY]]);
+        $userData[$this->keyFields[self::ACTIVATION_TOKEN_KEY]] = $activationToken;
 
         $user = $this->authService->add($userData);
 
@@ -126,7 +184,7 @@ abstract class BaseAuth
         if ($customData) {
             $body = array_merge($body, $customData);
         }
-        
+
         $this->mailer->setSubject(t('common.activate_account'));
         $this->mailer->setTemplate(base_dir() . DS . 'base' . DS . 'views' . DS . 'email' . DS . 'activate');
 
@@ -139,43 +197,45 @@ abstract class BaseAuth
      * Activate
      * @param string $token
      */
-    public function activate($token)
+    public function activate(string $token)
     {
         $this->authService->update(
-                $this->keys[self::ACTIVATION_TOKEN_KEY], 
-                $token, 
-                [$this->keys[self::ACTIVATION_TOKEN_KEY] => '']
+            $this->keyFields[self::ACTIVATION_TOKEN_KEY],
+            $token,
+            [$this->keyFields[self::ACTIVATION_TOKEN_KEY] => '']
         );
     }
-
+    
     /**
      * Forget
      * @param string $username
-     * @return string
+     * @return string|null
      */
-    public function forget($username)
+    public function forget(string $username): ?string
     {
-        $user = $this->authService->get($this->keys[self::USERNAME_KEY], $username);
+        $user = $this->authService->get($this->keyFields[self::USERNAME_KEY], $username);
 
-        $resetToken = $this->generateToken();
+        if ($user) {
+            $resetToken = $this->generateToken();
 
-        $this->authService->update(
-                $this->keys[self::USERNAME_KEY], 
-                $username, 
-                [$this->keys[self::RESET_TOKEN_KEY] => $resetToken]
-        );
+            $this->authService->update(
+                $this->keyFields[self::USERNAME_KEY],
+                $username,
+                [$this->keyFields[self::RESET_TOKEN_KEY] => $resetToken]
+            );
 
-        $body = [
-            'user' => $user,
-            'resetToken' => $resetToken
-        ];
-        
-        $this->mailer->setSubject(t('common.reset_password'));
-        $this->mailer->setTemplate(base_dir() . DS . 'base' . DS . 'views' . DS . 'email' . DS . 'reset');
+            $body = [
+                'user' => $user,
+                'resetToken' => $resetToken
+            ];
 
-        $this->sendMail($user, $body);
+            $this->mailer->setSubject(t('common.reset_password'));
+            $this->mailer->setTemplate(base_dir() . DS . 'base' . DS . 'views' . DS . 'email' . DS . 'reset');
 
-        return $resetToken;
+            $this->sendMail($user, $body);
+
+            return $resetToken;
+        }
     }
 
     /**
@@ -183,114 +243,174 @@ abstract class BaseAuth
      * @param string $token
      * @param string $password
      */
-    public function reset($token, $password)
+    public function reset(string $token, string $password)
     {
-        $user = $this->authService->get($this->keys[self::RESET_TOKEN_KEY], $token);
+        $user = $this->authService->get($this->keyFields[self::RESET_TOKEN_KEY], $token);
 
-        if (!$this->isActivated($user)) {
-            $this->activate($token);
+        if ($user) {
+            if (!$this->isActivated($user)) {
+                $this->activate($token);
+            }
+
+            $this->authService->update(
+                $this->keyFields[self::RESET_TOKEN_KEY],
+                $token,
+                [
+                    $this->keyFields[self::PASSWORD_KEY] => $this->hasher->hash($password),
+                    $this->keyFields[self::RESET_TOKEN_KEY] => ''
+                ]
+            );
+        }
+    }
+
+    /**
+     * Resend OTP
+     * @param string $otpToken
+     * @return string
+     * @throws \Quantum\Exceptions\AuthException
+     * @throws \Exception
+     */
+    public function resendOtp(string $otpToken): string
+    {
+        $user = $this->authService->get($this->keyFields[self::OTP_TOKEN_KEY], $otpToken);
+
+        if (!$user) {
+            throw new AuthException(AuthException::INCORRECT_AUTH_CREDENTIALS);
         }
 
-        $this->authService->update(
-                $this->keys[self::RESET_TOKEN_KEY], 
-                $token, 
-                [
-                    $this->keys[self::PASSWORD_KEY] => $this->hasher->hash($password), 
-                    $this->keys[self::RESET_TOKEN_KEY] => ''
-                ]
-        );
+        return $this->twoStepVerification($user);
+
     }
-    
+
     /**
      * Two Step Verification
-     * @param array $user
+     * @param \Quantum\Libraries\Auth\User $user
      * @return string
      * @throws \Exception
      */
-    protected function twoStepVerification($user)
+    protected function twoStepVerification(User $user): string
     {
-        $otp = random_number(self::OTP_LENGTH);
-        
-        $otpToken = $this->generateToken($user[$this->keys[self::USERNAME_KEY]]);
-        
+        $otp = random_number($this->otpLenght);
+
+        $otpToken = $this->generateToken($user->getFieldValue($this->keyFields[self::USERNAME_KEY]));
+
         $time = new \DateTime();
 
         $time->add(new \DateInterval('PT' . config()->get('otp_expires') . 'M'));
 
         $this->authService->update(
-                $this->keys[self::USERNAME_KEY], 
-                $user[$this->keys[self::USERNAME_KEY]], 
-                [
-                    $this->keys[self::OTP_KEY] => $otp,
-                    $this->keys[self::OTP_EXPIRY_KEY] => $time->format('Y-m-d H:i'),
-                    $this->keys[self::OTP_TOKEN_KEY] => $otpToken,
-                ]
+            $this->keyFields[self::USERNAME_KEY],
+            $user->getFieldValue($this->keyFields[self::USERNAME_KEY]),
+            [
+                $this->keyFields[self::OTP_KEY] => $otp,
+                $this->keyFields[self::OTP_EXPIRY_KEY] => $time->format('Y-m-d H:i'),
+                $this->keyFields[self::OTP_TOKEN_KEY] => $otpToken,
+            ]
         );
 
         $body = [
             'user' => $user,
             'code' => $otp
         ];
-        
+
         $this->mailer->setSubject(t('common.otp'));
         $this->mailer->setTemplate(base_dir() . DS . 'base' . DS . 'views' . DS . 'email' . DS . 'verification');
-        
+
         $this->sendMail($user, $body);
 
         return $otpToken;
     }
 
     /**
-     * Filter Fields
-     * @param array $user
-     * @return mixed
+     * Verify and update OTP
+     * @param int $otp
+     * @param string $otpToken
+     * @return \Quantum\Libraries\Auth\User
+     * @throws \Quantum\Exceptions\AuthException
      */
-    protected function filterFields(array $user)
+    protected function verifyAndUpdateOtp(int $otp, string $otpToken): User
     {
-        if (count($this->authService->getVisibleFields())) {
-            foreach ($user as $key => $value) {
-                if (!in_array($key, $this->authService->getVisibleFields())) {
-                    unset($user[$key]);
-                }
-            }
+        $user = $this->authService->get($this->keyFields[self::OTP_TOKEN_KEY], $otpToken);
+
+        if (!$user || $otp != $user->getFieldValue($this->keyFields[self::OTP_KEY])) {
+            throw new AuthException(AuthException::INCORRECT_VERIFICATION_CODE);
         }
+
+        if (new \DateTime() >= new \DateTime($user->getFieldValue($this->keyFields[self::OTP_EXPIRY_KEY]))) {
+            throw new AuthException(AuthException::VERIFICATION_CODE_EXPIRED);
+        }
+
+        $this->authService->update(
+            $this->keyFields[self::USERNAME_KEY],
+            $user->getFieldValue($this->keyFields[self::USERNAME_KEY]),
+            [
+                $this->keyFields[self::OTP_KEY] => null,
+                $this->keyFields[self::OTP_EXPIRY_KEY] => null,
+                $this->keyFields[self::OTP_TOKEN_KEY] => null,
+            ]
+        );
 
         return $user;
     }
 
     /**
+     * Filters and gets the visible fields
+     * @param \Quantum\Libraries\Auth\User $user
+     * @return array
+     */
+    protected function getVisibleFields(User $user): array
+    {
+        $userData = $user->getData();
+
+        if (count($this->visibleFields)) {
+            foreach ($userData as $field => $value) {
+                if (!in_array($field, $this->visibleFields)) {
+                    unset($userData[$field]);
+                }
+            }
+        }
+
+        return $userData;
+    }
+
+    /**
+     * Is user account activated
+     * @param \Quantum\Libraries\Auth\User $user
+     * @return bool
+     */
+    protected function isActivated(User $user): bool
+    {
+        return empty($user->getFieldValue($this->keyFields[self::ACTIVATION_TOKEN_KEY]));
+    }
+
+    /**
      * Generate Token
-     * @param mixed|null $val
+     * @param string|null $val
      * @return string
      */
-    protected function generateToken($val = null)
+    protected function generateToken(string $val = null): string
     {
         return base64_encode($this->hasher->hash($val ?: env('APP_KEY')));
     }
 
     /**
-     * Is user account activated
-     * @param mixed $user
-     * @return bool
-     */
-    protected function isActivated($user)
-    {
-        return empty($user[$this->keys[self::ACTIVATION_TOKEN_KEY]]) ? true : false;
-    }
-
-    /**
      * Send email
-     * @param array $user
+     * @param \Quantum\Libraries\Auth\User $user
      * @param array $body
+     * @throws \PHPMailer\PHPMailer\Exception
+     * @throws \Quantum\Exceptions\DiException
      */
-    protected function sendMail(array $user, array $body)
+    protected function sendMail(User $user, array $body)
     {
-        $fullName = (isset($user['firstname']) && isset($user['lastname'])) ? $user['firstname'] . ' ' . $user['lastname'] : '';
+        $fullName = ($user->hasField('firstname') && $user->hasField('lastname')) ? $user->getFieldValue('firstname') . ' ' . $user->getFieldValue('lastname') : '';
 
-        $this->mailer->setFrom(config()->get('app_email'), config()->get('app_name'))
-                ->setAddress($user[$this->keys[self::USERNAME_KEY]], $fullName)
-                ->setBody($body)
-                ->send();
+        $appEmail = config()->get('app_email') ?: '';
+        $appName = config()->get('app_name') ?: '';
+
+        $this->mailer->setFrom($appEmail, $appName)
+            ->setAddress($user->getFieldValue($this->keyFields[self::USERNAME_KEY]), $fullName)
+            ->setBody($body)
+            ->send();
     }
 
 }

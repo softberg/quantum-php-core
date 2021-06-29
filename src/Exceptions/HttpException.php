@@ -20,12 +20,17 @@ namespace Quantum\Exceptions;
  * @package Quantum
  * @category Exceptions
  */
-class RequestException extends \Exception
+class HttpException extends \Exception
 {
     /**
      * Unexpected request initialization
      */
     const UNEXPECTED_REQUEST_INITIALIZATION = 'HTTP Request can not be initialized outside of the core';
+
+    /**
+     * Unexpected response initialization
+     */
+    const UNEXPECTED_RESPONSE_INITIALIZATION = 'HTTP Response can not be initialized outside of the core';
 
     /**
      * Unavailable request method

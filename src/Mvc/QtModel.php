@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.0.0
+ * @since 2.4.0
  */
 
 namespace Quantum\Mvc;
@@ -19,15 +19,8 @@ use Quantum\Exceptions\ModelException;
 use Quantum\Loader\Loader;
 
 /**
- * Base Model Class
- * 
- * QtModel class is a base abstract class that every model should extend,
- * This class also connects to database and prepares object relational mapping
- *
- * @package Quantum
- * @category MVC
- * @method object findOneBy($column, $value)
- * @method int count()
+ * Class QtModel
+ * @package Quantum\Mvc
  */
 abstract class QtModel
 {
@@ -46,7 +39,7 @@ abstract class QtModel
 
     /**
      * Foreign keys
-     * @var array 
+     * @var array
      */
     public $foreignKeys = [];
 
@@ -66,25 +59,28 @@ abstract class QtModel
      * The model
      * @var string|null
      */
-    private $model = null;
+    private $model;
 
     /**
-     * Class constructor
-     * @param Loader $loader
-     * @throws ModelException When called directly
+     * QtModel constructor.
+     * @param \Quantum\Loader\Loader $loader
+     * @throws \Quantum\Exceptions\DatabaseException
+     * @throws \Quantum\Exceptions\LoaderException
+     * @throws \Quantum\Exceptions\ModelException
      */
     public final function __construct(Loader $loader)
     {
         $this->model = get_called_class();
-        $this->orm = (new Database($loader))->getORM($this->table, $this->model, $this->idColumn);
+        $this->orm = Database::getInstance($loader)->getORM($this->table, $this->model, $this->idColumn);
     }
 
     /**
-     * Fill Object Properties
+     * Fills the object properties
      * @param array $arguments
-     * @throws ModelException When the property is not appropriate
+     * @return \Quantum\Mvc\QtModel
+     * @throws \Quantum\Exceptions\ModelException
      */
-    public function fillObjectProps($arguments)
+    public function fillObjectProps(array $arguments): QtModel
     {
         foreach ($arguments as $key => $value) {
             if (!in_array($key, $this->fillable)) {
@@ -102,9 +98,9 @@ abstract class QtModel
      * @param string $property
      * @return mixed
      */
-    public function __get($property)
+    public function __get(string $property)
     {
-        return isset($this->orm->ormObject->$property) ? $this->orm->ormObject->$property : null;
+        return $this->orm->ormObject->$property ?? null;
     }
 
     /**
@@ -112,7 +108,7 @@ abstract class QtModel
      * @param string $property
      * @param mixed $value
      */
-    public function __set($property, $value)
+    public function __set(string $property, $value)
     {
         $this->orm->ormObject->$property = $value;
     }
@@ -120,11 +116,11 @@ abstract class QtModel
     /**
      * Allows to call models methods
      * @param string $method
-     * @param mixed $args
-     * @return mixed
-     * @throws ModelException
+     * @param mixed|null $args
+     * @return $this|array|int|string
+     * @throws \Quantum\Exceptions\ModelException
      */
-    public function __call($method, $args = null)
+    public function __call(string $method, $args = null)
     {
         if (method_exists($this->orm, $method)) {
 
@@ -136,6 +132,7 @@ abstract class QtModel
                 if (is_object($result)) {
                     $this->orm->ormObject = $result;
                 }
+
                 return $this;
             }
         } else {

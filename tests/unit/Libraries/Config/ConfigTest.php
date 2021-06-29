@@ -17,7 +17,8 @@ class ConfigTest extends TestCase
         'langs' => ['en', 'es'],
         'lang_default' => 'en',
         'debug' => 'DEBUG',
-        'test' => 'Testing'
+        'test' => 'Testing',
+        'none' => ''
     ];
     private $otherConfigData = [
         'more' => 'info',
@@ -75,6 +76,8 @@ class ConfigTest extends TestCase
         $this->assertFalse($this->config->has('foo'));
 
         $this->assertTrue($this->config->has('test'));
+
+        $this->assertFalse($this->config->has('none'));
     }
 
     public function testConfigGet()

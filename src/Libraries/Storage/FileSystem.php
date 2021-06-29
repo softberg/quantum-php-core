@@ -88,6 +88,11 @@ class FileSystem
         return file_get_contents($file);
     }
 
+    public function getLines($filename, $offset, $length, $flags = null)
+    {
+        return array_slice(file($filename, $flags), $offset, $length, true);
+    }
+
     /**
      * Size
      *
@@ -100,25 +105,25 @@ class FileSystem
     }
 
     /**
-     * Base name 
-     * 
+     * Base name
+     *
      * @param string $file
      * @return string
      */
     public function baseName($file)
     {
-        return (string) pathinfo($file, PATHINFO_BASENAME);
+        return (string)pathinfo($file, PATHINFO_BASENAME);
     }
 
     /**
      * File name
-     * 
+     *
      * @param string $file
      * @return string
      */
     public function fileName($file)
     {
-        return (string) pathinfo($file, PATHINFO_FILENAME);
+        return (string)pathinfo($file, PATHINFO_FILENAME);
     }
 
     /**
@@ -129,7 +134,7 @@ class FileSystem
      */
     public function extension($file)
     {
-        return (string) pathinfo($file, PATHINFO_EXTENSION);
+        return (string)pathinfo($file, PATHINFO_EXTENSION);
     }
 
     /**

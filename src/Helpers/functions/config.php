@@ -11,10 +11,9 @@
  * @link http://quantum.softberg.org/
  * @since 2.0.0
  */
-use Quantum\Libraries\Storage\FileSystem;
+
 use Quantum\Libraries\Config\Config;
 use Quantum\Environment\Environment;
-use Quantum\Di\Di;
 
 if (!function_exists('config')) {
 
@@ -22,7 +21,7 @@ if (!function_exists('config')) {
      * Config facade
      * @return Quantum\Libraries\Config\Config
      */
-    function config()
+    function config(): Config
     {
         return Config::getInstance();
     }
@@ -35,9 +34,9 @@ if (!function_exists('env')) {
      * Gets environment variable
      * @param string $var
      * @param mixed|null $default
-     * @return array|false|mixed|null|string
+     * @return mixed|null
      */
-    function env($var, $default = null)
+    function env(string $var, $default = null)
     {
         return Environment::getInstance()->getValue($var, $default);
     }

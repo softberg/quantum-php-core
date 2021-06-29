@@ -46,4 +46,9 @@ class AuthException extends \Exception
      * Misconfigured session handler  message
      */
     const MISCONFIGURED_AUTH_CONFIG = 'Auth config is not properly configured';
+
+    /**
+     * Incorrect user schema
+     */
+    const INCORRECT_USER_SCHEMA = 'User schema does not contains all key fields';
 }
