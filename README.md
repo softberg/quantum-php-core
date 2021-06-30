@@ -2,7 +2,7 @@
 
 > **Note:** This repository contains the core code of the Quantum framework. If you want to start a new project visit the main [Quantum PHP Project repository](https://github.com/softberg/quantum-framework-php).
 
-[![Build Status](https://travis-ci.org/softberg/quantum-php-core.svg?branch=master)](https://travis-ci.org/softberg/quantum-php-core)
+[![Build Status](https://travis-ci.com/softberg/quantum-php-core.svg?branch=master)](https://travis-ci.com/softberg/quantum-php-core)
 [![GitHub](https://img.shields.io/github/license/softberg/quantum-php-core)](https://github.com/softberg/quantum-php-core/blob/master/LICENSE)
 [![Scrutinizer code quality](https://shields.cdn.bka.li/scrutinizer/quality/g/softberg/quantum-php-core)](https://scrutinizer-ci.com/g/softberg/quantum-php-core)
 [![Packagist Version](https://img.shields.io/packagist/v/quantum/framework)](https://packagist.org/packages/quantum/framework)
