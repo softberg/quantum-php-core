@@ -15,9 +15,6 @@
 namespace Quantum\Libraries\Auth;
 
 use Quantum\Exceptions\AuthException;
-use Quantum\Libraries\JWToken\JWToken;
-use Quantum\Libraries\Hasher\Hasher;
-use Quantum\Libraries\Mailer\Mailer;
 use ReflectionClass;
 
 /**
@@ -166,6 +163,9 @@ abstract class BaseAuth
      * @param array $userData
      * @param array|null $customData
      * @return \Quantum\Libraries\Auth\User
+     * @throws \PHPMailer\PHPMailer\Exception
+     * @throws \Quantum\Exceptions\DiException
+     * @throws \ReflectionException
      */
     public function signup(array $userData, array $customData = null): User
     {
@@ -205,11 +205,14 @@ abstract class BaseAuth
             [$this->keyFields[self::ACTIVATION_TOKEN_KEY] => '']
         );
     }
-    
+
     /**
      * Forget
      * @param string $username
      * @return string|null
+     * @throws \PHPMailer\PHPMailer\Exception
+     * @throws \Quantum\Exceptions\DiException
+     * @throws \ReflectionException
      */
     public function forget(string $username): ?string
     {
@@ -399,6 +402,7 @@ abstract class BaseAuth
      * @param array $body
      * @throws \PHPMailer\PHPMailer\Exception
      * @throws \Quantum\Exceptions\DiException
+     * @throws \ReflectionException
      */
     protected function sendMail(User $user, array $body)
     {
