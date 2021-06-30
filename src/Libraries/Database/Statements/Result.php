@@ -11,6 +11,7 @@
  * @link http://quantum.softberg.org/
  * @since 2.4.0
  */
+
 namespace Quantum\Libraries\Database\Statements;
 
 /**
@@ -19,6 +20,13 @@ namespace Quantum\Libraries\Database\Statements;
  */
 trait Result
 {
+
+    /**
+     * Orm Object
+     * @return mixed
+     */
+    protected abstract function ormObject();
+
     /**
      * Finds the record by primary key
      * @inheritDoc

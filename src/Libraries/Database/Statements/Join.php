@@ -22,6 +22,31 @@ use Quantum\Mvc\QtModel;
  */
 Trait Join
 {
+
+    /**
+     * The database table associated with model
+     * @var string
+     */
+    private $table;
+
+    /**
+     * Id column of table
+     * @var string
+     */
+    private $idColumn;
+
+    /**
+     * Foreign keys
+     * @var array
+     */
+    private $foreignKeys = [];
+
+    /**
+     * Idiorm Patch object
+     * @var \Quantum\Libraries\Database\IdiormPatch
+     */
+    private $ormPatch = null;
+
     /**
      * Adds a simple JOIN source to the query
      * @inheritDoc

@@ -205,7 +205,7 @@ class IdiormDbal implements DbalInterface
      * Orm Object
      * @return mixed
      */
-    private function ormObject()
+    protected function ormObject()
     {
         return (self::$ormClass)::for_table($this->table)->use_id_column($this->idColumn);
     }

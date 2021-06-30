@@ -57,11 +57,11 @@ class DbSessionHandler implements SessionHandlerInterface
 
     /**
      * Initialize session
-     * @param string $save_path
+     * @param string $path
      * @param string $name
      * @return bool
      */
-    public function open($save_path, $name)
+    public function open($path, $name)
     {
         if ((new Database($this->loader))->connected()) {
             return true;
@@ -116,12 +116,12 @@ class DbSessionHandler implements SessionHandlerInterface
 
     /**
      * Cleanup old sessions
-     * @param int $max Max lifetime
+     * @param int $max_lifetime Max lifetime
      * @return bool
      */
-    public function gc($max)
+    public function gc($max_lifetime)
     {
-        $old = time() - $max;
+        $old = time() - $max_lifetime;
         return $this->orm->execute("DELETE * FROM " . $this->orm->getTable() . " WHERE access < :old", ['old' => $old]);
     }
 
