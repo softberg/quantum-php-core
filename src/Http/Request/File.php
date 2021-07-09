@@ -66,6 +66,10 @@ trait File
 
         $key = key($_files);
 
+        if ($_files[$key]['error'] !== UPLOAD_ERR_OK) {
+            return [];
+        }
+
         if ($key) {
             if (!is_array($_files[$key]['name'])) {
                 return [$key => (object)$_files[$key]];
