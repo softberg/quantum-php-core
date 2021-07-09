@@ -74,7 +74,7 @@ class FileSystem
      */
     public function exists($file)
     {
-        return file_exists($file);
+        return file_exists($file) && is_file($file);
     }
 
     /**
