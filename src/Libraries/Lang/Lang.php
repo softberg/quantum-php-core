@@ -121,9 +121,9 @@ class Lang
 
     /**
      * Gets the current language
-     * @return string
+     * @return string|null
      */
-    public function getLang()
+    public function getLang(): ?string
     {
         return self::$currentLang;
     }

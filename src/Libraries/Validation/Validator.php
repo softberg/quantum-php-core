@@ -14,7 +14,6 @@
 
 namespace Quantum\Libraries\Validation;
 
-;
 use Quantum\Libraries\Validation\Rules\General;
 use Quantum\Libraries\Validation\Rules\Type;
 use Quantum\Libraries\Validation\Rules\File;
@@ -135,9 +134,9 @@ class Validator
     /**
      * Validates the data against the rules
      * @param array $data
-     * @return mixed
+     * @return bool
      */
-    public function isValid(array $data)
+    public function isValid(array $data): bool
     {
         $this->data = $data;
 
