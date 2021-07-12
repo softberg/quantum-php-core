@@ -34,22 +34,18 @@ trait File
     /**
      * Validates file size
      * @param string $field
-     * @param object $value
+     * @param \Quantum\Libraries\Upload\File $file
      * @param mixed $param
      */
-    protected function fileSize(string $field, object $value, $param)
+    protected function fileSize(string $field, FileUpload $file, $param)
     {
-        if (!empty($value)) {
-            $file = new FileUpload($value);
-
-            if (!is_array($param)) {
-                if ($file->getSize() > $param) {
-                    $this->addError($field, 'fileSize', $param);
-                }
-            } else {
-                if ($file->getSize() < $param[0] || $file->getSize() > $param[1]) {
-                    $this->addError($field, 'fileSize', $param);
-                }
+        if (!is_array($param)) {
+            if ($file->getSize() > $param) {
+                $this->addError($field, 'fileSize', $param);
+            }
+        } else {
+            if ($file->getSize() < $param[0] || $file->getSize() > $param[1]) {
+                $this->addError($field, 'fileSize', $param);
             }
         }
     }
@@ -57,22 +53,18 @@ trait File
     /**
      * Validates file mime type
      * @param string $field
-     * @param object $value
+     * @param \Quantum\Libraries\Upload\File $file
      * @param mixed $param
      */
-    protected function fileMimeType(string $field, object $value, $param)
+    protected function fileMimeType(string $field, FileUpload $file, $param)
     {
-        if (!empty($value)) {
-            $file = new FileUpload($value);
-
-            if (!is_array($param)) {
-                if ($file->getMimetype() != $param) {
-                    $this->addError($field, 'fileMimeType', $param);
-                }
-            } else {
-                if (!in_array($file->getMimetype(), $param)) {
-                    $this->addError($field, 'fileMimeType', $param);
-                }
+        if (!is_array($param)) {
+            if ($file->getMimetype() != $param) {
+                $this->addError($field, 'fileMimeType', $param);
+            }
+        } else {
+            if (!in_array($file->getMimetype(), $param)) {
+                $this->addError($field, 'fileMimeType', $param);
             }
         }
     }
@@ -80,22 +72,18 @@ trait File
     /**
      * Validates file extension
      * @param string $field
-     * @param object $value
+     * @param \Quantum\Libraries\Upload\File $file
      * @param mixed $param
      */
-    protected function fileExtension(string $field, object $value, $param)
+    protected function fileExtension(string $field, FileUpload $file, $param)
     {
-        if (!empty($value)) {
-            $file = new FileUpload($value);
-
-            if (!is_array($param)) {
-                if ($file->getExtension() != $param) {
-                    $this->addError($field, 'fileExtension', $param);
-                }
-            } else {
-                if (!in_array($file->getExtension(), $param)) {
-                    $this->addError($field, 'fileExtension', $param);
-                }
+        if (!is_array($param)) {
+            if ($file->getExtension() != $param) {
+                $this->addError($field, 'fileExtension', $param);
+            }
+        } else {
+            if (!in_array($file->getExtension(), $param)) {
+                $this->addError($field, 'fileExtension', $param);
             }
         }
     }
@@ -103,20 +91,16 @@ trait File
     /**
      * Validates image dimensions
      * @param string $field
-     * @param object $value
+     * @param \Quantum\Libraries\Upload\File $file
      * @param array $param
      */
-    protected function imageDimensions(string $field, object $value, array $param)
+    protected function imageDimensions(string $field, FileUpload $file, array $param)
     {
-        if (!empty($value)) {
-            $file = new FileUpload($value);
+        $dimensions = $file->getDimensions();
 
-            $dimensions = $file->getDimensions();
-
-            if (!empty($dimensions)) {
-                if ($dimensions['width'] != $param[0] || $dimensions['height'] != $param[1]) {
-                    $this->addError($field, 'imageDimensions', $param);
-                }
+        if (!empty($dimensions)) {
+            if ($dimensions['width'] != $param[0] || $dimensions['height'] != $param[1]) {
+                $this->addError($field, 'imageDimensions', $param);
             }
         }
     }

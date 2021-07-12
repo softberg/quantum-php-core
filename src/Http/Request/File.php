@@ -14,6 +14,7 @@
 
 namespace Quantum\Http\Request;
 
+use Quantum\Libraries\Upload\File as FileUpload;
 use Quantum\Exceptions\FileUploadException;
 
 /**
@@ -40,9 +41,9 @@ trait File
     }
 
     /**
-     * Gets the file info by given key
+     * Gets the file or array of file objects
      * @param string $key
-     * @return array|object
+     * @return mixed
      * @throws \InvalidArgumentException
      */
     public static function getFile(string $key)
@@ -55,35 +56,33 @@ trait File
     }
 
     /**
-     * @param array $_files
-     * @return array|object[]|null
+     * @param array $files
+     * @return array|\Quantum\Libraries\Upload\File[]|null
+     * @throws \Quantum\Exceptions\DiException
+     * @throws \ReflectionException
      */
-    private static function handleFiles(array $_files): ?array
+    private static function handleFiles(array $files): ?array
     {
-        if (!count($_files)) {
+        if (!count($files)) {
             return [];
         }
 
-        $key = key($_files);
-
-        if ($_files[$key]['error'] !== UPLOAD_ERR_OK) {
-            return [];
-        }
+        $key = key($files);
 
         if ($key) {
-            if (!is_array($_files[$key]['name'])) {
-                return [$key => (object)$_files[$key]];
+            if (!is_array($files[$key]['name'])) {
+                return [$key => new FileUpload($files[$key])];
             } else {
                 $formattedFiles = [];
 
-                foreach ($_files[$key]['name'] as $index => $name) {
-                    $formattedFiles[$key][$index] = (object)[
+                foreach ($files[$key]['name'] as $index => $name) {
+                    $formattedFiles[$key][$index] = new FileUpload([
                         'name' => $name,
-                        'type' => $_files[$key]['type'][$index],
-                        'tmp_name' => $_files[$key]['tmp_name'][$index],
-                        'error' => $_files[$key]['error'][$index],
-                        'size' => $_files[$key]['size'][$index],
-                    ];
+                        'type' => $files[$key]['type'][$index],
+                        'tmp_name' => $files[$key]['tmp_name'][$index],
+                        'error' => $files[$key]['error'][$index],
+                        'size' => $files[$key]['size'][$index],
+                    ]);
                 }
 
                 return $formattedFiles;
