@@ -17,7 +17,7 @@ class CurlTest extends TestCase
         $this->multiCurl = new Curl('multi');
     }
 
-    public function testFileConstructor()
+    public function testCurlConstructor()
     {
         $this->assertInstanceOf('Quantum\Libraries\Curl\Curl', $this->curl);
 

@@ -3,12 +3,14 @@
 namespace Quantum\Test\Unit;
 
 use Mockery;
+use Quantum\Di\Di;
 use Quantum\Libraries\Session\Session;
 use PHPUnit\Framework\TestCase;
 use Quantum\Libraries\Csrf\Csrf;
 use Quantum\Http\Request\HttpRequest;
 use Quantum\Http\Request;
 use Quantum\Libraries\Storage\FileSystem;
+use Quantum\Libraries\Upload\File;
 use Quantum\Loader\Loader;
 
 class RequestTest extends TestCase
@@ -28,6 +30,8 @@ class RequestTest extends TestCase
         $cryptor->shouldReceive('decrypt')->andReturnUsing(function ($arg) {
             return base64_decode($arg);
         });
+
+        Di::loadDefinitions();
 
         $loader = new Loader(new FileSystem);
 
@@ -212,15 +216,13 @@ class RequestTest extends TestCase
     {
         $request = new Request();
 
-        $this->assertFalse($request->hasFile('image'));
-
         $file = [
             'image' => [
                 'size' => 500,
                 'name' => 'foo.jpg',
-                'tmp_name' => __FILE__ . 'php8fe1.tmp',
+                'tmp_name' => '/tmp/php8fe2.tmp',
                 'type' => 'image/jpg',
-                'error' => 0,
+                'error' => 4,
             ],
         ];
 
@@ -230,9 +232,13 @@ class RequestTest extends TestCase
 
         $image = $request->getFile('image');
 
-        $this->assertIsObject($image);
+        $this->assertInstanceOf(File::class, $image);
 
-        $this->assertEquals('foo.jpg', $image->name);
+        $this->assertEquals('foo.jpg', $image->getNameWithExtension());
+
+        $this->assertEquals(4, $image->getErrorCode());
+
+        $this->assertEquals('No file was uploaded', $image->getErrorMessage());
     }
 
     public function testGetMultipleFiles()
@@ -245,7 +251,7 @@ class RequestTest extends TestCase
             'image' => [
                 'size' => [500, 800],
                 'name' => ['foo.jpg', 'bar.png'],
-                'tmp_name' => [__FILE__ . 'php8fe2.tmp', __FILE__ . 'php8fe3.tmp'],
+                'tmp_name' => ['/tmp/php8fe2.tmp', '/tmp/php8fe3.tmp'],
                 'type' => ['image/jpg', 'image/png'],
                 'error' => [0, 0],
             ],
@@ -259,11 +265,11 @@ class RequestTest extends TestCase
 
         $this->assertIsArray($image);
 
-        $this->assertIsObject($image[0]);
+        $this->assertInstanceOf(File::class, $image[0]);
 
-        $this->assertEquals('foo.jpg', $image[0]->name);
+        $this->assertEquals('foo.jpg', $image[0]->getNameWithExtension());
 
-        $this->assertEquals('bar.png', $image[1]->name);
+        $this->assertEquals('bar.png', $image[1]->getNameWithExtension());
     }
 
     public function testRequestHeaderSetHasGetDelete()

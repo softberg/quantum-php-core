@@ -62,8 +62,6 @@ class HelperTest extends TestCase
         $this->assertIsInt(random_number());
 
         $this->assertIsInt(random_number(5));
-
-        $this->assertEquals(0,random_number(''));
     }
 
     public function testBaseUrl()
