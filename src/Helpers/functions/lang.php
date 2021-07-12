@@ -11,17 +11,16 @@
  * @link http://quantum.softberg.org/
  * @since 2.0.0
  */
-use Quantum\Libraries\Storage\FileSystem;
+
 use Quantum\Libraries\Lang\Lang;
-use Quantum\Di\Di;
 
 if (!function_exists('current_lang')) {
 
     /**
      * Gets the current lang
-     * @return string
+     * @return string|null
      */
-    function current_lang()
+    function current_lang(): ?string
     {
         return Lang::getInstance()->getLang();
     }
@@ -36,7 +35,7 @@ if (!function_exists('t')) {
      * @param mixed $params
      * @return string
      */
-    function t($key, $params = null)
+    function t(string $key, $params = null): string
     {
         return Lang::getInstance()->getTranslation($key, $params);
     }
@@ -49,9 +48,8 @@ if (!function_exists('_t')) {
      * Outputs the translation
      * @param string $key
      * @param mixed $params
-     * @return void
      */
-    function _t($key, $params = null)
+    function _t(string $key, $params = null)
     {
         echo t($key, $params);
     }

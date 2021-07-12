@@ -12,15 +12,13 @@
  * @since 2.0.0
  */
 
-use Quantum\Libraries\Asset\AssetManager;
-
 if (!function_exists('base_dir')) {
 
     /**
      * Gets base directory
      * @return string
      */
-    function base_dir()
+    function base_dir(): string
     {
         return BASE_DIR;
     }
@@ -31,9 +29,10 @@ if (!function_exists('modules_dir')) {
 
     /**
      * Gets modules directory
+     * @param string|null $moduleDir
      * @return string
      */
-    function modules_dir($moduleDir = null)
+    function modules_dir(string $moduleDir = null): string
     {
         return $moduleDir ?? MODULES_DIR;
     }
@@ -46,7 +45,7 @@ if (!function_exists('public_dir')) {
      * Gets public directory
      * @return string
      */
-    function public_dir()
+    function public_dir(): string
     {
         return PUBLIC_DIR;
     }
@@ -59,7 +58,7 @@ if (!function_exists('uploads_dir')) {
      * Gets uploads directory
      * @return string
      */
-    function uploads_dir()
+    function uploads_dir(): string
     {
         return UPLOADS_DIR;
     }
@@ -72,7 +71,7 @@ if (!function_exists('assets_dir')) {
      * Gets assets directory
      * @return string
      */
-    function assets_dir()
+    function assets_dir(): string
     {
         return ASSETS_DIR;
     }
@@ -83,43 +82,13 @@ if (!function_exists('asset')) {
 
     /**
      * Asset url
+     * @param string $filePath
      * @return string
      */
-    function asset($filePath)
+    function asset(string $filePath): string
     {
         return assets_dir() . DS . $filePath;
     }
 
 }
 
-if (!function_exists('assets')) {
-
-    /**
-     * Assets
-     * @return string
-     */
-    function assets($type)
-    {
-        switch ($type) {
-            case 'css':
-                $cssAssets = AssetManager::publishCSS();
-
-                if (count($cssAssets)) {
-                    foreach ($cssAssets as $cssAsset) {
-                        echo '<link rel="stylesheet" type="text/css" href="' . asset($cssAsset) . '">' . PHP_EOL;
-                    }
-                }
-                break;
-            case 'js':
-                $jsAssets = AssetManager::publishJS();
-
-                if (count($jsAssets)) {
-                    foreach ($jsAssets as $jsAsset) {
-                        echo '<script src="' . asset($jsAsset) . '"></script>' . PHP_EOL;
-                    }
-                }
-                break;
-        }
-    }
-
-}

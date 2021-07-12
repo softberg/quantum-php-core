@@ -11,10 +11,12 @@
  * @link http://quantum.softberg.org/
  * @since 2.0.0
  */
+
 use Quantum\Exceptions\StopExecutionException;
 use Quantum\Libraries\Session\SessionManager;
 use Quantum\Libraries\Encryption\Cryptor;
 use Quantum\Libraries\Auth\AuthManager;
+use Quantum\Libraries\Session\Session;
 use Quantum\Libraries\Mailer\Mailer;
 use Quantum\Libraries\Cookie\Cookie;
 use Quantum\Libraries\Csrf\Csrf;
@@ -26,8 +28,11 @@ if (!function_exists('session')) {
     /**
      * Gets the session handler
      * @return \Quantum\Libraries\Session\Session
+     * @throws \Quantum\Exceptions\DiException
+     * @throws \Quantum\Exceptions\ModelException
+     * @throws \ReflectionException
      */
-    function session()
+    function session(): Session
     {
         return SessionManager::getHandler(Di::get(Loader::class));
     }
@@ -40,7 +45,7 @@ if (!function_exists('cookie')) {
      * Gets cookie handler
      * @return Quantum\Libraries\Cookie\Cookie
      */
-    function cookie()
+    function cookie(): Cookie
     {
         return new Cookie($_COOKIE, new Cryptor);
     }
@@ -51,7 +56,12 @@ if (!function_exists('auth')) {
 
     /**
      * Gets the Auth handler
-     * @return \Quantum\Libraries\Auth\WebAuth|Quantum\Libraries\Auth\ApiAuth
+     * @return \Quantum\Libraries\Auth\ApiAuth|\Quantum\Libraries\Auth\WebAuth
+     * @throws \Quantum\Exceptions\AuthException
+     * @throws \Quantum\Exceptions\ConfigException
+     * @throws \Quantum\Exceptions\DiException
+     * @throws \Quantum\Exceptions\LoaderException
+     * @throws \ReflectionException
      */
     function auth()
     {
@@ -64,9 +74,11 @@ if (!function_exists('mailer')) {
 
     /**
      * Gets the Mail instance
-     * @return Mailer
+     * @return \Quantum\Libraries\Mailer\Mailer
+     * @throws \Quantum\Exceptions\DiException
+     * @throws \ReflectionException
      */
-    function mailer()
+    function mailer(): Mailer
     {
         return Di::get(Mailer::class);
     }
@@ -77,8 +89,9 @@ if (!function_exists('csrf_token')) {
 
     /**
      * Outputs generated CSRF token
-     * @return void
-     * @throws CsrfException
+     * @throws \Quantum\Exceptions\DiException
+     * @throws \Quantum\Exceptions\ModelException
+     * @throws \ReflectionException
      */
     function csrf_token()
     {
@@ -95,7 +108,7 @@ if (!function_exists('_message')) {
      * @param string|array $params
      * @return string
      */
-    function _message($subject, $params)
+    function _message(string $subject, $params): string
     {
         if (is_array($params)) {
             return preg_replace_callback('/{%\d+}/', function () use (&$params) {
@@ -115,7 +128,7 @@ if (!function_exists('valid_base64')) {
      * @param string $string
      * @return boolean
      */
-    function valid_base64($string)
+    function valid_base64(string $string): bool
     {
         $decoded = base64_decode($string, true);
 
@@ -146,7 +159,7 @@ if (!function_exists('get_directory_classes')) {
      * @param string $path
      * @return array
      */
-    function get_directory_classes($path)
+    function get_directory_classes(string $path): array
     {
         $class_names = [];
 
@@ -170,9 +183,9 @@ if (!function_exists('get_caller_class')) {
     /**
      * Gets the caller class
      * @param integer $index
-     * @return string
+     * @return string|null
      */
-    function get_caller_class($index = 2)
+    function get_caller_class(int $index = 2): ?string
     {
         $caller = debug_backtrace();
         $caller = $caller[$index];
@@ -187,9 +200,9 @@ if (!function_exists('get_caller_function')) {
     /**
      * Gets the caller function
      * @param integer $index
-     * @return string
+     * @return string|null
      */
-    function get_caller_function($index = 2)
+    function get_caller_function(int $index = 2): ?string
     {
         $caller = debug_backtrace();
         $caller = $caller[$index];
@@ -202,7 +215,8 @@ if (!function_exists('get_caller_function')) {
 if (!function_exists('stop')) {
 
     /**
-     * Throws Stop Execution Exception 
+     * Throws Stop Execution Exception
+     * @throws \Quantum\Exceptions\StopExecutionException
      */
     function stop()
     {
@@ -218,7 +232,7 @@ if (!function_exists('random_number')) {
      * @param int $length
      * @return int
      */
-    function random_number($length = 10)
+    function random_number(int $length = 10): int
     {
         $randomString = '';
         for ($i = 0; $i < $length; $i++) {

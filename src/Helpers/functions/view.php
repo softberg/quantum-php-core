@@ -20,7 +20,7 @@ if (!function_exists('view')) {
      * Rendered view
      * @return string
      */
-    function view()
+    function view(): string
     {
         return ViewFactory::getInstance()->getView();
     }
@@ -33,8 +33,10 @@ if (!function_exists('partial')) {
      * Rendered partial
      * @param string $partial
      * @param array $args
+     * @return string|null
+     * @throws \Quantum\Exceptions\ViewException
      */
-    function partial($partial, $args = [])
+    function partial(string $partial, array $args = []): ?string
     {
         return ViewFactory::getInstance()->renderPartial($partial, $args);
     }
@@ -48,7 +50,7 @@ if (!function_exists('view_param')) {
      * @param string $key
      * @return mixed|null
      */
-    function view_param($key)
+    function view_param(string $key)
     {
         return ViewFactory::getInstance()->getParam($key);
     }
@@ -60,7 +62,7 @@ if (!function_exists('debugbar')) {
     /**
      * Rendered debug bar
      */
-    function debugbar()
+    function debugbar(): ?string
     {
         return ViewFactory::getInstance()->getDebugbar();
     }

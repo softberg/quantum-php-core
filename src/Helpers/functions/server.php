@@ -11,6 +11,7 @@
  * @link http://quantum.softberg.org/
  * @since 2.0.0
  */
+
 use Quantum\Environment\Server;
 
 if (!function_exists('get_user_ip')) {
@@ -19,11 +20,9 @@ if (!function_exists('get_user_ip')) {
      * Gets user IP
      * @return string|null
      */
-    function get_user_ip()
+    function get_user_ip(): ?string
     {
         $server = new Server();
-
-        $user_ip = null;
 
         if ($server->get('HTTP_CLIENT_IP')) {
             $user_ip = $server->get('HTTP_CLIENT_IP');
@@ -46,13 +45,13 @@ if (!function_exists('getallheaders')) {
      * Declaring here for Nginx server
      * @return array	
      */
-    function getallheaders()
+    function getallheaders(): array
     {
         $server = new Server();
 
         $data = $server->all();
 
-        if (!empty($data)) {
+        if (empty($data)) {
             return [];
         }
 
@@ -74,9 +73,9 @@ if (!function_exists('parse_raw_http_request')) {
     /**
      * Parses raw http request
      * @param mixed $input
-     * @return mixed
+     * @return array
      */
-    function parse_raw_http_request($input)
+    function parse_raw_http_request($input): array
     {
         $contentType = (string) (new Server)->contentType();
 

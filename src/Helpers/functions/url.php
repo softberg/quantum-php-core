@@ -11,6 +11,7 @@
  * @link http://quantum.softberg.org/
  * @since 2.0.0
  */
+
 use Quantum\Http\Request;
 use Quantum\Http\Response;
 
@@ -20,7 +21,7 @@ if (!function_exists('base_url')) {
      * Gets the base url
      * @return string
      */
-    function base_url()
+    function base_url(): string
     {
         return config()->get('base_url') ?? Request::getProtocol() . '://' . Request::getHost() . (Request::getPort() ? ':' . Request::getPort() : '');
     }
@@ -33,7 +34,7 @@ if (!function_exists('current_url')) {
      * Gets the current url
      * @return string
      */
-    function current_url()
+    function current_url(): string
     {
         return Request::getProtocol() . '://' . Request::getHost() . (Request::getPort() ? ':' . Request::getPort() : '') . '/' . Request::getUri() . (Request::getQuery() ? '?' . Request::getQuery() : '');
     }
@@ -45,9 +46,9 @@ if (!function_exists('redirect')) {
     /**
      * Redirect
      * @param string $url
-     * @param integer $code
+     * @param integer|null $code
      */
-    function redirect($url, $code = null)
+    function redirect(string $url, int $code = null)
     {
         Response::redirect($url, $code);
     }
@@ -60,9 +61,13 @@ if (!function_exists('redirectWith')) {
      * Redirect with
      * @param string $url
      * @param array $data
-     * @param integer $code
+     * @param int|null $code
+     * @throws \Quantum\Exceptions\CryptorException
+     * @throws \Quantum\Exceptions\DiException
+     * @throws \Quantum\Exceptions\ModelException
+     * @throws \ReflectionException
      */
-    function redirectWith($url, $data, $code = null)
+    function redirectWith(string $url, array $data, int $code = null)
     {
         session()->set('__prev_request', $data);
         Response::redirect($url, $code);
@@ -75,8 +80,13 @@ if (!function_exists('old')) {
     /**
      * Keeps old input values after redirect
      * @param string $key
+     * @return mixed|null
+     * @throws \Quantum\Exceptions\CryptorException
+     * @throws \Quantum\Exceptions\DiException
+     * @throws \Quantum\Exceptions\ModelException
+     * @throws \ReflectionException
      */
-    function old($key)
+    function old(string $key)
     {
         if (session()->has('__prev_request')) {
             $prevRequest = session()->get('__prev_request');
@@ -100,7 +110,7 @@ if (!function_exists('get_referrer')) {
      * Gets the referrer
      * @return string|null
      */
-    function get_referrer()
+    function get_referrer(): ?string
     {
         return Request::getReferrer();
     }
@@ -114,7 +124,7 @@ if (!function_exists('slugify')) {
      * @param string $text
      * @return string
      */
-    function slugify($text)
+    function slugify(string $text): string
     {
         $text = trim($text, ' ');
         $text = preg_replace('/[^\p{L}\p{N}]/u', ' ', $text);
@@ -135,7 +145,7 @@ if (!function_exists('asset_url')) {
      * Gets the assets url
      * @return string
      */
-    function asset_url()
+    function asset_url(): string
     {
         return base_url() . '/assets';
     }
