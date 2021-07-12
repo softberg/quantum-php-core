@@ -43,7 +43,7 @@ use Quantum\Http\Request\HttpRequest;
  * @method static void all()
  * @method static array delete(string $key)
  * @method static bool hasFile(string $key)
- * @method static array getFile(string $key)
+ * @method static \Quantum\Libraries\Upload\File getFile(string $key)
  * @method static bool hasHeader(string $key)
  * @method static mixed|null getHeader(string $key)
  * @method static void setHeader(string $key, $value)

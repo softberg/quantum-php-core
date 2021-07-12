@@ -51,9 +51,11 @@ abstract class HttpRequest
     private static $server;
 
     /**
-     * Initialize the Request
+     * Initiates the Request
      * @param \Quantum\Environment\Server $server
+     * @throws \Quantum\Exceptions\DiException
      * @throws \Quantum\Exceptions\HttpException
+     * @throws \ReflectionException
      */
     public static function init(Server $server)
     {
@@ -93,10 +95,12 @@ abstract class HttpRequest
      * @param string $method
      * @param string $url
      * @param array|null $data
-     * @param array|null $file
+     * @param array|null $files
+     * @throws \Quantum\Exceptions\DiException
      * @throws \Quantum\Exceptions\HttpException
+     * @throws \ReflectionException
      */
-    public static function create(string $method, string $url, array $data = null, array $file = null)
+    public static function create(string $method, string $url, array $data = null, array $files = null)
     {
         $parsed = parse_url($url);
 
@@ -124,8 +128,8 @@ abstract class HttpRequest
             self::$__request = $data;
         }
 
-        if ($file) {
-            self::$__files = self::handleFiles($file);
+        if ($files) {
+            self::$__files = self::handleFiles($files);
         }
     }
 
