@@ -74,9 +74,9 @@ class QtView
 
     /**
      * Gets the layout
-     * @return string
+     * @return string|null
      */
-    public function getLayout(): string
+    public function getLayout(): ?string
     {
         return $this->layout;
     }
@@ -122,11 +122,13 @@ class QtView
     }
 
     /**
-     * Renders the view
      * @param string $view
      * @param array $params
      * @return string|null
+     * @throws \Quantum\Exceptions\DiException
+     * @throws \Quantum\Exceptions\HookException
      * @throws \Quantum\Exceptions\ViewException
+     * @throws \ReflectionException
      */
     public function render(string $view, array $params = []): ?string
     {
@@ -152,7 +154,10 @@ class QtView
      * @param string $view
      * @param array $params
      * @return string|null
+     * @throws \Quantum\Exceptions\DiException
+     * @throws \Quantum\Exceptions\HookException
      * @throws \Quantum\Exceptions\ViewException
+     * @throws \ReflectionException
      */
     public function renderPartial(string $view, array $params = []): ?string
     {
@@ -200,7 +205,10 @@ class QtView
      * Renders the view
      * @param string $view
      * @return mixed|string
+     * @throws \Quantum\Exceptions\DiException
      * @throws \Quantum\Exceptions\HookException
+     * @throws \Quantum\Exceptions\ViewException
+     * @throws \ReflectionException
      */
     private function renderFile(string $view)
     {
@@ -231,7 +239,7 @@ class QtView
      * @throws \Quantum\Exceptions\ViewException
      * @throws \ReflectionException
      */
-    private function defaultRenderer(string $view, array $params = [])
+    private function defaultRenderer(string $view, array $params = []): string
     {
         try {
             ob_start();
