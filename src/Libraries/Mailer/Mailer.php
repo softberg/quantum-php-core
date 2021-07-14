@@ -97,12 +97,6 @@ class Mailer
     private $templatePath;
 
     /**
-     * PHP Mailer Log
-     * @var string
-     */
-    private $log;
-
-    /**
      * Mailer constructor.
      */
     public function __construct()

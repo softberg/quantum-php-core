@@ -41,12 +41,6 @@ class QtView
     private $view = null;
 
     /**
-     * Rendered debug bar
-     * @var string|null
-     */
-    private $debugBar = null;
-
-    /**
      * View data
      * @var array
      */
@@ -234,12 +228,12 @@ class QtView
      * Default Renderer
      * @param string $view
      * @param array $params
-     * @return string
+     * @return string|null
      * @throws \Quantum\Exceptions\DiException
      * @throws \Quantum\Exceptions\ViewException
      * @throws \ReflectionException
      */
-    private function defaultRenderer(string $view, array $params = []): string
+    private function defaultRenderer(string $view, array $params = []): ?string
     {
         try {
             ob_start();
