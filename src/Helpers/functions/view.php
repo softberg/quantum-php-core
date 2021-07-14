@@ -12,6 +12,7 @@
  * @since 2.0.0
  */
 
+use Quantum\Debugger\Debugger;
 use Quantum\Factory\ViewFactory;
 
 if (!function_exists('view')) {
@@ -20,7 +21,7 @@ if (!function_exists('view')) {
      * Rendered view
      * @return string
      */
-    function view(): string
+    function view()
     {
         return ViewFactory::getInstance()->getView();
     }
@@ -33,10 +34,8 @@ if (!function_exists('partial')) {
      * Rendered partial
      * @param string $partial
      * @param array $args
-     * @return string|null
-     * @throws \Quantum\Exceptions\ViewException
      */
-    function partial(string $partial, array $args = []): ?string
+    function partial($partial, $args = [])
     {
         return ViewFactory::getInstance()->renderPartial($partial, $args);
     }
@@ -50,7 +49,7 @@ if (!function_exists('view_param')) {
      * @param string $key
      * @return mixed|null
      */
-    function view_param(string $key)
+    function view_param($key)
     {
         return ViewFactory::getInstance()->getParam($key);
     }
@@ -61,10 +60,15 @@ if (!function_exists('debugbar')) {
 
     /**
      * Rendered debug bar
+     * @return string|null
      */
-    function debugbar(): ?string
+    function debugbar()
     {
-        return ViewFactory::getInstance()->getDebugbar();
+        if (filter_var(config()->get('debug'), FILTER_VALIDATE_BOOLEAN)) {
+            return (new Debugger())->render();
+        }
+
+        return null;
     }
 
 }

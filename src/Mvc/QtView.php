@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.0.0
+ * @since 2.5.0
  */
 
 namespace Quantum\Mvc;
@@ -18,18 +18,12 @@ use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Exceptions\ViewException;
 use Quantum\Factory\ViewFactory;
 use Quantum\Hooks\HookManager;
-use Quantum\Debugger\Debugger;
 use Quantum\Di\Di;
 use Error;
 
 /**
- * Base View Class
- *
- * QtView class is a base class that responsible for rendering and
- * outputting the view
- *
- * @package Quantum
- * @category MVC
+ * Class QtView
+ * @package Quantum\Mvc
  */
 class QtView
 {
@@ -72,9 +66,8 @@ class QtView
     /**
      * Sets a layout
      * @param string $layout
-     * @return void
      */
-    public function setLayout($layout)
+    public function setLayout(string $layout)
     {
         $this->layout = $layout;
     }
@@ -83,7 +76,7 @@ class QtView
      * Gets the layout
      * @return string
      */
-    public function getLayout()
+    public function getLayout(): string
     {
         return $this->layout;
     }
@@ -133,9 +126,9 @@ class QtView
      * @param string $view
      * @param array $params
      * @return string|null
-     * @throws ViewException
+     * @throws \Quantum\Exceptions\ViewException
      */
-    public function render($view, $params = []): ?string
+    public function render(string $view, array $params = []): ?string
     {
         if (!$this->layout) {
             throw new ViewException(ViewException::LAYOUT_NOT_SET, E_ERROR);
@@ -148,7 +141,7 @@ class QtView
         $this->view = $this->renderFile($view);
 
         if (filter_var(config()->get('debug'), FILTER_VALIDATE_BOOLEAN)) {
-            $this->debugBar = $this->renderDebugBar($view);
+            HookManager::call('updateDebuggerStore', ['view' => $view]);
         }
 
         return $this->renderFile($this->layout);
@@ -159,9 +152,9 @@ class QtView
      * @param string $view
      * @param array $params
      * @return string|null
-     * @throws ViewException
+     * @throws \Quantum\Exceptions\ViewException
      */
-    public function renderPartial($view, $params = []): ?string
+    public function renderPartial(string $view, array $params = []): ?string
     {
         if (!empty($params)) {
             $this->data = array_merge($this->data, $params);
@@ -171,19 +164,10 @@ class QtView
     }
 
     /**
-     * Gets the rendered debugbar
-     * @return string
-     */
-    public function getDebugbar()
-    {
-        return $this->debugBar;
-    }
-
-    /**
      * Gets the rendered view
      * @return string
      */
-    public function getView()
+    public function getView(): string
     {
         return $this->view;
     }
@@ -192,9 +176,11 @@ class QtView
      * Finds a given file
      * @param string $file
      * @return string
-     * @throws ViewException
+     * @throws \Quantum\Exceptions\DiException
+     * @throws \Quantum\Exceptions\ViewException
+     * @throws \ReflectionException
      */
-    private function findFile($file)
+    private function findFile(string $file): string
     {
         $fs = Di::get(FileSystem::class);
 
@@ -213,11 +199,10 @@ class QtView
     /**
      * Renders the view
      * @param string $view
-     * @param array $parmas
-     * @return mixed
-     * @throws ViewException
+     * @return mixed|string
+     * @throws \Quantum\Exceptions\HookException
      */
-    private function renderFile($view)
+    private function renderFile(string $view)
     {
         $params = $this->xssFilter($this->data);
 
@@ -242,9 +227,11 @@ class QtView
      * @param string $view
      * @param array $params
      * @return string
-     * @throws \Error
+     * @throws \Quantum\Exceptions\DiException
+     * @throws \Quantum\Exceptions\ViewException
+     * @throws \ReflectionException
      */
-    private function defaultRenderer($view, $params = [])
+    private function defaultRenderer(string $view, array $params = [])
     {
         try {
             ob_start();
@@ -291,18 +278,6 @@ class QtView
         } else {
             $value = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
         }
-    }
-
-    /**
-     * Render Debug Bar
-     * @param string $view
-     * @return string
-     */
-    private function renderDebugBar($view)
-    {
-        $debugbarRenderer = (new Debugger())->run($view);
-
-        return $debugbarRenderer->renderHead() . $debugbarRenderer->render();
     }
 
 }

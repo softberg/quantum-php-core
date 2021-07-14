@@ -15,6 +15,7 @@
 namespace Quantum\Libraries\Mailer;
 
 use PHPMailer\PHPMailer\PHPMailer;
+use Quantum\Debugger\Debugger;
 use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Di\Di;
 
@@ -508,10 +509,11 @@ class Mailer
     {
         if (config()->has('debug')) {
             $this->mailer->SMTPDebug = 1;
-            $this->mailer->Debugoutput = function ($str, $level) {
-                $this->log .= $str . '&';
-                session()->set('_qt_mailer_log', $this->log);
+
+            $this->mailer->Debugoutput = function ($data, $level) {
+                Debugger::addToStore(Debugger::MAILS, $level, $data);
             };
+
         } else {
             $this->mailer->SMTPDebug = 0;
         }

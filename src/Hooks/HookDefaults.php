@@ -14,10 +14,13 @@
 
 namespace Quantum\Hooks;
 
+use Quantum\Libraries\Database\Database;
 use Quantum\Exceptions\ModelException;
 use Quantum\Exceptions\RouteException;
-use Quantum\Http\Response;
+use Quantum\Routes\RouteController;
 use Twig\Loader\FilesystemLoader;
+use Quantum\Debugger\Debugger;
+use Quantum\Http\Response;
 use Twig\TwigFunction;
 
 /**
@@ -52,7 +55,7 @@ class HookDefaults implements HookInterface
 
     /**
      * Template renderer
-     * @param $data
+     * @param array $data
      * @return string
      * @throws \Twig\Error\LoaderError
      * @throws \Twig\Error\RuntimeError
@@ -77,14 +80,23 @@ class HookDefaults implements HookInterface
     }
 
     /**
-     * Handling model not found
-     *
-     * @param string $modelName
-     * @throws \Exception
+     * Updates debugger store
+     * @param array $data
      */
-    public static function handleModel($modelName)
+    public static function updateDebuggerStore($data)
     {
-        throw new \Exception(_message(ModelException::MODEL_NOT_FOUND, $modelName));
+        $currentRoute = RouteController::getCurrentRoute();
+
+        $routeInfo  = [];
+
+        array_walk($currentRoute, function ($value, $key) use (&$routeInfo) {
+            $routeInfo[ucfirst($key)] = $value;
+        });
+
+        $routeInfo['View'] = current_module() . DS . 'Views' . DS . $data['view'];
+
+        Debugger::addToStore(Debugger::ROUTES, 'info', $routeInfo);
+        Debugger::addToStore(Debugger::QUERIES, 'info', Database::queryLog());
     }
 
 }
