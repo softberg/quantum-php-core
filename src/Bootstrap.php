@@ -79,7 +79,7 @@ class Bootstrap
                 ->setLang($request->getSegment(config()->get('lang_segment')))
                 ->load($loader, $fs);
 
-            MvcManager::runMvc($request, $response);
+            MvcManager::handle($request, $response);
 
             stop();
         } catch (StopExecutionException $e) {

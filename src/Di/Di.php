@@ -47,25 +47,24 @@ class Di
     }
 
     /**
-     * Create and inject dependencies.
-     * @param string|callable $entry
+     * Creates and injects dependencies.
+     * @param callable $entry
      * @param array $additional
      * @return array
-     * @throws \ReflectionException|\Quantum\Exceptions\DiException
+     * @throws \Quantum\Exceptions\DiException
+     * @throws \ReflectionException
      */
-    public static function autowire($entry, array $additional = []): array
+    public static function autowire(callable $entry, array $additional = []): array
     {
-        if (is_callable($entry)) {
-            $reflaction = new ReflectionFunction($entry);
+        if (is_closure($entry)) {
+            $reflection = new ReflectionFunction($entry);
         } else {
-            list($controller, $action) = explode(':', $entry);
-
-            $reflaction = new ReflectionMethod($controller, $action);
+            $reflection = new ReflectionMethod(...$entry);
         }
 
         $params = [];
 
-        foreach ($reflaction->getParameters() as $param) {
+        foreach ($reflection->getParameters() as $param) {
             $type = $param->getType();
 
             if (!$type || !self::instantiable($type)) {
@@ -86,7 +85,8 @@ class Di
      * Gets the dependency from the container
      * @param string $dependency
      * @return mixed
-     * @throws DiException|\ReflectionException
+     * @throws \Quantum\Exceptions\DiException
+     * @throws \ReflectionException
      */
     public static function get(string $dependency)
     {
