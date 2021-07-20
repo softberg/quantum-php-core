@@ -9,14 +9,13 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 1.9.0
+ * @since 2.5.0
  */
 
 namespace Quantum\Libraries\Storage;
 
 /**
  * Class FileSystem
- *
  * @package Quantum\Libraries\Storage
  */
 class FileSystem
@@ -24,202 +23,204 @@ class FileSystem
 
     /**
      * Is File
-     *
-     * @param string $file
+     * @param string $filename
      * @return bool
      */
-    public function isFile($file)
+    public function isFile(string $filename): bool
     {
-        return is_file($file);
+        return is_file($filename);
     }
 
     /**
      * Is Directory
-     *
      * @param string $directory
      * @return bool
      */
-    public function isDirectory($directory)
+    public function isDirectory(string $dirname): bool
     {
-        return is_dir($directory);
+        return is_dir($dirname);
     }
 
     /**
      * Is Readable
-     *
-     * @param string $file
+     * @param string $filename
      * @return bool
      */
-    public function isReadable($file)
+    public function isReadable(string $filename): bool
     {
-        return is_readable($file);
+        return is_readable($filename);
     }
 
     /**
      * Is Writable
-     *
-     * @param string $file
+     * @param string $filename
      * @return bool
      */
-    public function isWritable($file)
+    public function isWritable(string $filename): bool
     {
-        return is_writable($file);
+        return is_writable($filename);
     }
 
     /**
-     * Exists
-     *
-     * @param string $file
+     * File Exists
+     * @param string $filename
      * @return bool
      */
-    public function exists($file)
+    public function exists(string $filename): bool
     {
-        return file_exists($file) && is_file($file);
+        return file_exists($filename) && is_file($filename);
     }
 
     /**
-     * Get
-     *
-     * @param string $file
+     * Gets the file content
+     * @param string $filename
      * @return false|string
      */
-    public function get($file)
+    public function get(string $filename)
     {
-        return file_get_contents($file);
+        return file_get_contents($filename);
     }
 
-    public function getLines($filename, $offset, $length, $flags = null)
+    /**
+     * Gets the content between given lines
+     * @param string $filename
+     * @param int $offset
+     * @param int|null $length
+     * @param bool|null $flags
+     * @return array
+     */
+    public function getLines(string $filename, int $offset, ?int $length, bool $flags = true): array
     {
         return array_slice(file($filename, $flags), $offset, $length, true);
     }
 
     /**
-     * Size
-     *
-     * @param string $file
-     * @return false|int
+     * Gets the file size
+     * @param string $filename
+     * @return int|false
      */
-    public function size($file)
+    public function size(string $filename)
     {
-        return filesize($file);
+        return filesize($filename);
     }
 
     /**
-     * Base name
-     *
-     * @param string $file
+     * Gets the base name
+     * @param string $path
      * @return string
      */
-    public function baseName($file)
+    public function baseName(string $path): string
     {
-        return (string)pathinfo($file, PATHINFO_BASENAME);
+        return (string)pathinfo($path, PATHINFO_BASENAME);
     }
 
     /**
-     * File name
-     *
-     * @param string $file
+     * Gets the file name
+     * @param string $path
      * @return string
      */
-    public function fileName($file)
+    public function fileName(string $path): string
     {
-        return (string)pathinfo($file, PATHINFO_FILENAME);
+        return (string)pathinfo($path, PATHINFO_FILENAME);
     }
 
     /**
-     * Extension
-     *
-     * @param string $file
+     * Gets the file extension
+     * @param string $path
      * @return string
      */
-    public function extension($file)
+    public function extension(string $path): string
     {
-        return (string)pathinfo($file, PATHINFO_EXTENSION);
+        return (string)pathinfo($path, PATHINFO_EXTENSION);
     }
 
     /**
-     * Put
-     * @param string $file
-     * @param string $data
-     * @param int $flag
-     * @return false|int
-     */
-    public function put($file, $data, $flag = 0)
-    {
-        return file_put_contents($file, $data, $flag);
-    }
-
-    /**
-     * Append
-     *
-     * @param string $file
+     * Puts the data into the file
+     * @param string $filename
      * @param string $data
      * @param bool $lock
      * @return false|int
      */
-    public function append($file, $data, $lock = false)
+    public function put(string $filename, string $data, bool $lock = false)
     {
-        return file_put_contents($file, $data, $lock ? FILE_APPEND | LOCK_EX : FILE_APPEND);
+        return file_put_contents($filename, $data, $lock ? LOCK_EX : 0);
     }
 
     /**
-     * Rename
-     *
+     * Appends rge data at the end of the file
+     * @param string $filename
+     * @param string $data
+     * @param bool $lock
+     * @return int|false
+     */
+    public function append(string $filename, string $data, bool $lock = false)
+    {
+        return file_put_contents($filename, $data, $lock ? FILE_APPEND | LOCK_EX : FILE_APPEND);
+    }
+
+    /**
+     * Renames the file
      * @param string $oldName
      * @param string $newName
      * @return bool
      */
-    public function rename($oldName, $newName)
+    public function rename(string $oldName, string $newName): bool
     {
         return rename($oldName, $newName);
     }
 
     /**
-     * Copy
-     *
+     * Copy the file to destination
      * @param string $source
      * @param string $dest
      * @return bool
      */
-    public function copy($source, $dest)
+    public function copy(string $source, string $dest): bool
     {
         return copy($source, $dest);
     }
 
     /**
-     * Make Directory
-     *
+     * Created new empty file
+     * @param string $filename
+     * @return bool
+     */
+    public function create(string $filename): bool
+    {
+        return touch($filename);
+    }
+
+    /**
+     * Makes a new directory
      * @param string $path
      * @param int $mode
      * @param bool $recursive
      * @return bool
      */
-    public function makeDirectory($path, $mode = 0777, $recursive = false)
+    public function makeDirectory(string $path, int $mode = 0777, bool $recursive = false): bool
     {
         return mkdir($path, $mode, $recursive);
     }
 
     /**
-     * Glob
-     *
+     * Find pathnames matching a pattern
      * @param string $pattern
      * @param int $flags
      * @return array|false
      */
-    public function glob($pattern, $flags = 0)
+    public function glob(string $pattern, int $flags = 0)
     {
         return glob($pattern, $flags);
     }
 
     /**
-     * Remove
-     *
-     * @param string $file
+     * Removes the file
+     * @param string $filename
      * @return bool
      */
-    public function remove($file)
+    public function remove(string $filename): bool
     {
-        return unlink($file);
+        return unlink($filename);
     }
 
 }
