@@ -41,7 +41,7 @@ class MessageLogger implements ReportableInterface
     /**
      * @inheritDoc
      */
-    public function report($level, $message, array $context = [])
+    public function report(string $level, $message, array $context = [])
     {
         if (filter_var(config()->get('debug'), FILTER_VALIDATE_BOOLEAN)) {
             Debugger::addToStore(Debugger::MESSAGES, $level, $message);

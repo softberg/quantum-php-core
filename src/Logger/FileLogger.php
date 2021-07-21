@@ -51,7 +51,7 @@ class FileLogger implements ReportableInterface
     /**
      * @inheritDoc
      */
-    public function report($level, $message, array $context = [])
+    public function report(string $level, $message, array $context = [])
     {
         $this->fs->append($this->logFile, $message);
     }

@@ -86,10 +86,10 @@ class FileSystem
      * @param string $filename
      * @param int $offset
      * @param int|null $length
-     * @param bool|null $flags
+     * @param int $flags
      * @return array
      */
-    public function getLines(string $filename, int $offset, ?int $length, bool $flags = true): array
+    public function getLines(string $filename, int $offset, ?int $length, int $flags = 0): array
     {
         return array_slice(file($filename, $flags), $offset, $length, true);
     }
