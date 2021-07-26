@@ -238,10 +238,10 @@ class Mailer
 
     /**
      * Sets the subject
-     * @param string $subject
+     * @param string|null $subject
      * @return $this
      */
-    public function setSubject(string $subject): Mailer
+    public function setSubject(?string $subject): Mailer
     {
         $this->subject = $subject;
         return $this;
