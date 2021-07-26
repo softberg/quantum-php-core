@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.0.0
+ * @since 2.5.0
  */
 
 namespace Quantum\Factory;
@@ -27,28 +27,33 @@ class ServiceFactory
 {
 
     /**
-     * Instantiated services 
-     * @var array 
+     * Instantiated services
+     * @var array
      */
     private $instantiated = [];
 
     /**
-     * Creates and initialize the service once
+     * Creates and initiates the service once
      * @param string $serviceClass
-     * @return QtService
-     * @throws ServiceException
+     * @return \Quantum\Mvc\QtService
+     * @throws \Quantum\Exceptions\DiException
+     * @throws \Quantum\Exceptions\ServiceException
+     * @throws \ReflectionException
      */
-    public function get($serviceClass): QtService
+    public function get(string $serviceClass): QtService
     {
         return $this->locate($serviceClass);
     }
 
     /**
-     * Creates and initialize the service
+     * Creates and initiates the service
      * @param string $serviceClass
-     * @return QtService
+     * @return \Quantum\Mvc\QtService
+     * @throws \Quantum\Exceptions\DiException
+     * @throws \Quantum\Exceptions\ServiceException
+     * @throws \ReflectionException
      */
-    public function create($serviceClass): QtService
+    public function create(string $serviceClass): QtService
     {
         return $this->instantiate($serviceClass);
     }
@@ -56,9 +61,12 @@ class ServiceFactory
     /**
      * Locates the service
      * @param string $serviceClass
-     * @return QtService
+     * @return \Quantum\Mvc\QtService
+     * @throws \Quantum\Exceptions\DiException
+     * @throws \Quantum\Exceptions\ServiceException
+     * @throws \ReflectionException
      */
-    private function locate($serviceClass): QtService
+    private function locate(string $serviceClass): QtService
     {
         if (isset($this->instantiated[$serviceClass])) {
             return $this->instantiated[$serviceClass];
@@ -70,25 +78,27 @@ class ServiceFactory
     /**
      * Instantiates the service
      * @param string $serviceClass
-     * @return QtService
-     * @throws ServiceException
+     * @return \Quantum\Mvc\QtService
+     * @throws \Quantum\Exceptions\DiException
+     * @throws \Quantum\Exceptions\ServiceException
+     * @throws \ReflectionException
      */
-    private function instantiate($serviceClass): QtService
+    private function instantiate(string $serviceClass): QtService
     {
         if (!class_exists($serviceClass)) {
-            throw new ServiceException(_message(ServiceException::SERVICE_NOT_FOUND, $serviceClass));
+            throw ServiceException::serviceNotFound($serviceClass);
         }
-        
+
         $service = new $serviceClass();
 
         if (!$service instanceof QtService) {
-            throw new ServiceException(_message(ServiceException::NOT_INSTANCE_OF_SERVICE, [$serviceClass, QtService::class]));
+            throw ServiceException::notServiceInstance([$serviceClass, QtService::class]);
         }
 
         $this->instantiated[$serviceClass] = $service;
 
         if (method_exists($service, '__init')) {
-            $service->__init(...$this->getArgs($service, '__init'));
+            $service->__init(...$this->getArgs($service));
         }
 
         return $service;
@@ -96,16 +106,18 @@ class ServiceFactory
 
     /**
      * Gets arguments
-     * @param string $methodName
-     * @param array $arguments
+     * @param \Quantum\Mvc\QtService $service
      * @return array
+     * @throws \Quantum\Exceptions\DiException
+     * @throws \ReflectionException
      */
-    private function getArgs(QtService $service, $methodName, $arguments = [])
+    private function getArgs(QtService $service): array
     {
+        $arguments = [];
         $args = [];
 
-        $reflaction = new \ReflectionMethod($service, $methodName);
-        $params = $reflaction->getParameters();
+        $reflection = new \ReflectionMethod($service, '__init');
+        $params = $reflection->getParameters();
 
         foreach ($params as $param) {
             $paramType = $param->getType();
@@ -127,5 +139,4 @@ class ServiceFactory
 
         return $args;
     }
-
 }

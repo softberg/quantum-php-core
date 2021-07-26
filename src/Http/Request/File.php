@@ -44,12 +44,12 @@ trait File
      * Gets the file or array of file objects
      * @param string $key
      * @return mixed
-     * @throws \InvalidArgumentException
+     * @throws \Quantum\Exceptions\FileUploadException
      */
     public static function getFile(string $key)
     {
         if (!self::hasFile($key)) {
-            throw new \InvalidArgumentException(_message(FileUploadException::UPLOADED_FILE_NOT_FOUND, $key));
+            throw FileUploadException::fileNotFound($key);
         }
 
         return self::$__files[$key];

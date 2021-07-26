@@ -9,12 +9,11 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.4.0
+ * @since 2.5.0
  */
 
 namespace Quantum\Libraries\Auth;
 
-use Quantum\Exceptions\AuthException;
 use Quantum\Libraries\JWToken\JWToken;
 use Quantum\Libraries\Mailer\Mailer;
 use Quantum\Libraries\Hasher\Hasher;
@@ -63,7 +62,7 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
      * @return \Quantum\Libraries\Auth\ApiAuth
      * @throws \Quantum\Exceptions\AuthException
      */
-    public static function getInstance(AuthServiceInterface $authService, Mailer $mailer, Hasher $hasher, JWToken $jwt = null)
+    public static function getInstance(AuthServiceInterface $authService, Mailer $mailer, Hasher $hasher, JWToken $jwt = null): ApiAuth
     {
         if (self::$instance === null) {
             self::$instance = new self($authService, $mailer, $hasher, $jwt);
@@ -77,23 +76,14 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
      * @param string $username
      * @param string $password
      * @return array|string
+     * @throws \PHPMailer\PHPMailer\Exception
      * @throws \Quantum\Exceptions\AuthException
+     * @throws \Quantum\Exceptions\DiException
+     * @throws \ReflectionException
      */
     public function signin(string $username, string $password)
     {
-        $user = $this->authService->get($this->keyFields[self::USERNAME_KEY], $username);
-
-        if (!$user) {
-            throw new AuthException(AuthException::INCORRECT_AUTH_CREDENTIALS);
-        }
-
-        if (!$this->hasher->check($password, $user->getFieldValue($this->keyFields[self::PASSWORD_KEY]))) {
-            throw new AuthException(AuthException::INCORRECT_AUTH_CREDENTIALS);
-        }
-
-        if (!$this->isActivated($user)) {
-            throw new AuthException(AuthException::INACTIVE_ACCOUNT);
-        }
+        $user = $this->getUser($username, $password);
 
         if (filter_var(config()->get('2SV'), FILTER_VALIDATE_BOOLEAN)) {
             return $this->twoStepVerification($user);
@@ -134,8 +124,7 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
 
     /**
      * User
-     * @return mixed|\Quantum\Libraries\Auth\User|null
-     * @throws \Exception
+     * @return \Quantum\Libraries\Auth\User|null
      */
     public function user(): ?User
     {

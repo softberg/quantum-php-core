@@ -9,16 +9,14 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.3.0
+ * @since 2.5.0
  */
 
 namespace Quantum\Exceptions;
 
 /**
- * FileUploadException class
- *
- * @package Quantum
- * @category Exceptions
+ * Class FileUploadException
+ * @package Quantum\Exceptions
  */
 class FileUploadException extends \Exception
 {
@@ -51,4 +49,47 @@ class FileUploadException extends \Exception
      * Directory can not be created message
      */
     const DIRECTORY_CANT_BE_CREATED = 'Directory `{%1}` could not be created';
+
+    /**
+     * @return \Quantum\Exceptions\FileUploadException
+     */
+    public static function fileAlreadyExists(): FileUploadException
+    {
+        return new static(self::FILE_ALREADY_EXISTS, E_WARNING);
+    }
+
+    /**
+     * @return \Quantum\Exceptions\FileUploadException
+     */
+    public static function fileNotUploaded(): FileUploadException
+    {
+        return new static(self::FILE_NOT_UPLOADED, E_WARNING);
+    }
+
+    /**
+     * @param string $name
+     * @return \Quantum\Exceptions\FileUploadException
+     */
+    public static function directoryNotExists(string $name): FileUploadException
+    {
+        return new static(_message(self::DIRECTORY_NOT_EXIST, $name), E_WARNING);
+    }
+
+    /**
+     * @param string $name
+     * @return \Quantum\Exceptions\FileUploadException
+     */
+    public static function directoryNotWritable(string $name): FileUploadException
+    {
+        return new static(_message(self::DIRECTORY_NOT_WRITABLE, $name), E_WARNING);
+    }
+
+    /**
+     * @param string $name
+     * @return \Quantum\Exceptions\FileUploadException
+     */
+    public static function fileNotFound(string $name): FileUploadException
+    {
+        return new static(_message(self::UPLOADED_FILE_NOT_FOUND, $name), E_WARNING);
+    }
 }

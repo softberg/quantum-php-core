@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.0.0
+ * @since 2.5.0
  */
 
 namespace Quantum\Libraries\Encryption;
@@ -26,19 +26,19 @@ class Cryptor
 
     /**
      * Asymmetric factor
-     * @var boolean 
+     * @var boolean
      */
     private $asymmetric = false;
 
     /**
      * Application key
-     * @var string 
+     * @var string
      */
     private $appKey;
 
     /**
      * Public and private keys
-     * @var array 
+     * @var array
      */
     private $keys = [];
 
@@ -50,39 +50,39 @@ class Cryptor
 
     /**
      * Key type
-     * @var integer 
+     * @var integer
      */
     private $privateKeyType = OPENSSL_KEYTYPE_RSA;
 
     /**
      * Cipher method
-     * @var string 
+     * @var string
      */
     private $cipherMethod = 'aes-256-cbc';
 
     /**
      * Key bites
-     * @var integer 
+     * @var integer
      */
     private $privateKeyBits = 1024;
 
     /**
-     * The Initialization Vector 
-     * @var string 
+     * The Initialization Vector
+     * @var string
      */
     private $iv = null;
 
     /**
-     * Cryptor constructor
-     * @param boolean $asymmetric
-     * @return $this
-     * @throws AppException
+     * Cryptor constructor.
+     * @param bool $asymmetric
+     * @throws \Quantum\Exceptions\AppException
+     * @throws \Quantum\Exceptions\CryptorException
      */
-    public function __construct($asymmetric = false)
+    public function __construct(bool $asymmetric = false)
     {
         if (!$asymmetric) {
             if (!env('APP_KEY')) {
-                throw new AppException(AppException::APP_KEY_MISSING);
+                throw AppException::missingAppKey();
             }
             $this->appKey = env('APP_KEY');
         } else {
@@ -97,7 +97,7 @@ class Cryptor
      * Checks if the encryption mode is asymmetric
      * @return bool
      */
-    public function isAsymmetric()
+    public function isAsymmetric(): bool
     {
         return $this->asymmetric;
     }
@@ -105,12 +105,12 @@ class Cryptor
     /**
      * Gets the Public Key
      * @return string
-     * @throws CryptorException
+     * @throws \Quantum\Exceptions\CryptorException
      */
-    public function getPublicKey()
+    public function getPublicKey(): string
     {
         if (!isset($this->keys['public'])) {
-            throw new CryptorException(CryptorException::OPENSSL_PUBLIC_KEY_NOT_CREATED);
+            throw CryptorException::noPublicKeyCreated();
         }
 
         return $this->keys['public'];
@@ -119,12 +119,12 @@ class Cryptor
     /**
      * Gets the Private Key
      * @return string
-     * @throws CryptorException
+     * @throws \Quantum\Exceptions\CryptorException
      */
-    public function getPrivateKey()
+    public function getPrivateKey(): string
     {
         if (!isset($this->keys['private'])) {
-            throw new CryptorException(CryptorException::OPENSSL_PRIVATE_KEY_NOT_CREATED);
+            throw CryptorException::noPrivateKeyCreated();
         }
 
         return $this->keys['private'];
@@ -135,19 +135,19 @@ class Cryptor
      * @param string $plain
      * @param string|null $publicKey
      * @return string
-     * @throws CryptorException
+     * @throws \Quantum\Exceptions\CryptorException
      */
-    public function encrypt($plain, $publicKey = null)
+    public function encrypt(string $plain, string $publicKey = null): string
     {
         if (!$this->isAsymmetric()) {
             $this->iv = $this->iv();
-            
+
             $encrypted = openssl_encrypt($plain, $this->cipherMethod, $this->appKey, $options = 0, $this->iv);
 
             return base64_encode(base64_encode($encrypted) . '::' . base64_encode($this->iv));
         } else {
             if (!$publicKey) {
-                throw new CryptorException(CryptorException::OPENSSL_PUBLIC_KEY_NOT_PROVIDED);
+                throw CryptorException::publicKeyNotProvided();
             }
 
             openssl_public_encrypt($plain, $encrypted, $publicKey);
@@ -160,9 +160,9 @@ class Cryptor
      * @param string $encrypted
      * @param string|null $privateKey
      * @return string
-     * @throws CryptorException
+     * @throws \Quantum\Exceptions\CryptorException
      */
-    public function decrypt($encrypted, $privateKey = null)
+    public function decrypt(string $encrypted, string $privateKey = null): string
     {
         if (!$this->isAsymmetric()) {
             if (!valid_base64($encrypted)) {
@@ -172,7 +172,7 @@ class Cryptor
             $data = explode('::', base64_decode($encrypted), 2);
 
             if (empty($data) || count($data) < 2) {
-                throw new CryptorException(CryptorException::OPENSSEL_INVALID_CIPHER);
+                throw CryptorException::invalidCipher();
             }
 
             $encrypted = base64_decode($data[0]);
@@ -181,7 +181,7 @@ class Cryptor
             return openssl_decrypt($encrypted, $this->cipherMethod, $this->appKey, $options = 0, $iv);
         } else {
             if (!$privateKey) {
-                throw new CryptorException(CryptorException::OPENSSL_PRIVATE_KEY_NOT_PROVIDED);
+                throw CryptorException::privateKeyNotProvided();
             }
 
             openssl_private_decrypt(base64_decode($encrypted), $decrypted, $privateKey);
@@ -191,18 +191,18 @@ class Cryptor
 
     /**
      * Gets the Initialization Vector used
-     * @return string
+     * @return string|null
      */
-    public function getIV()
+    public function getIV(): ?string
     {
         return $this->iv;
     }
 
     /**
-     * Generates the Initialization Vector 
+     * Generates the Initialization Vector
      * @return string
      */
-    private function iv()
+    private function iv(): string
     {
         $length = openssl_cipher_iv_length($this->cipherMethod);
         return openssl_random_pseudo_bytes($length);
@@ -211,7 +211,7 @@ class Cryptor
     /**
      * Generates Key Pair
      * @return void
-     * @throws CryptorException
+     * @throws \Quantum\Exceptions\CryptorException
      */
     private function generateKeyPair()
     {
@@ -222,7 +222,7 @@ class Cryptor
         ]);
 
         if (!$resource) {
-            throw new CryptorException(CryptorException::OPENSSEL_CONFIG_NOT_FOUND);
+            throw CryptorException::configNotFound();
         }
 
         openssl_pkey_export($resource, $this->keys['private']);

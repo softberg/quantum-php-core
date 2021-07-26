@@ -9,13 +9,12 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.0.0
+ * @since 2.5.0
  */
 
 namespace Quantum\Hooks;
 
 use Quantum\Libraries\Database\Database;
-use Quantum\Exceptions\ModelException;
 use Quantum\Exceptions\RouteException;
 use Quantum\Routes\RouteController;
 use Twig\Loader\FilesystemLoader;
@@ -24,11 +23,8 @@ use Quantum\Http\Response;
 use Twig\TwigFunction;
 
 /**
- * HookDefaults Class
- * Default implementations
- * 
- * @package Quantum
- * @category Hooks
+ * Class HookDefaults
+ * @package Quantum\Hooks
  */
 class HookDefaults implements HookInterface
 {
@@ -46,11 +42,11 @@ class HookDefaults implements HookInterface
 
     /**
      * Page not found
-     * @throws RouteException
+     * @throws \Quantum\Exceptions\RouteException
      */
     public static function pageNotFound()
     {
-        throw new RouteException(RouteException::ROUTE_NOT_FOUND);
+        throw RouteException::notFound();
     }
 
     /**
@@ -61,7 +57,7 @@ class HookDefaults implements HookInterface
      * @throws \Twig\Error\RuntimeError
      * @throws \Twig\Error\SyntaxError
      */
-    public static function templateRenderer($data)
+    public static function templateRenderer(array $data): string
     {
         $loader = new FilesystemLoader(modules_dir() . DS . current_module() . DS . 'Views');
         $twig = new \Twig\Environment($loader, $data['configs']);
@@ -83,7 +79,7 @@ class HookDefaults implements HookInterface
      * Updates debugger store
      * @param array $data
      */
-    public static function updateDebuggerStore($data)
+    public static function updateDebuggerStore(array $data)
     {
         $currentRoute = RouteController::getCurrentRoute();
 

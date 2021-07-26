@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.0.0
+ * @since 2.5.0
  */
 
 namespace Quantum\Routes;
@@ -20,25 +20,21 @@ use Quantum\Http\Response;
 use Quantum\Http\Request;
 
 /**
- * Router Class
- *
- * Router class parses URIS and determine routing
- *
- * @package Quantum
- * @category Routes
+ * Class Router
+ * @package Quantum\Routes
  */
 class Router extends RouteController
 {
 
     /**
      * Request instance
-     * @var Request;
+     * @var \Quantum\Http\Request;
      */
     private $request;
 
     /**
      * Response instance
-     * @var Response;
+     * @var \Quantum\Http\Response;
      */
     private $response;
 
@@ -62,7 +58,8 @@ class Router extends RouteController
 
     /**
      * Router constructor.
-     * @param Request $request
+     * @param \Quantum\Http\Request $request
+     * @param \Quantum\Http\Response $response
      */
     public function __construct(Request $request, Response $response)
     {
@@ -71,9 +68,9 @@ class Router extends RouteController
     }
 
     /**
-     * Finds the route defined in config/routes.php file of specific module
-     * against the URI to determine current route and current module
-     * @throws RouteException
+     * Finds the current route
+     * @throws \Quantum\Exceptions\HookException
+     * @throws \Quantum\Exceptions\RouteException
      */
     public function findRoute()
     {
@@ -110,7 +107,7 @@ class Router extends RouteController
      * Set Routes
      * @param array $routes
      */
-    public function setRoutes($routes)
+    public function setRoutes(array $routes)
     {
         $this->routes = $routes;
     }
@@ -119,11 +116,14 @@ class Router extends RouteController
      * Get Routes
      * @return array
      */
-    public function getRoutes()
+    public function getRoutes(): array
     {
         return $this->routes;
     }
 
+    /**
+     * Resets the routes
+     */
     private function resetRoutes()
     {
         parent::$currentRoute = null;
@@ -133,9 +133,9 @@ class Router extends RouteController
 
     /**
      * Finds straight matches
-     * @return void
+     * @param string $uri
      */
-    private function findStraightMatches($uri)
+    private function findStraightMatches(string $uri)
     {
         $requestUri = trim(urldecode(preg_replace('/[?]/', '', $uri)), '/');
 
@@ -150,9 +150,9 @@ class Router extends RouteController
 
     /**
      * Finds matches by pattern
-     * @return void
+     * @param string $uri
      */
-    private function findPatternMatches($uri)
+    private function findPatternMatches(string $uri)
     {
         $requestUri = urldecode(parse_url($uri)['path']);
 
@@ -179,7 +179,7 @@ class Router extends RouteController
 
     /**
      * Checks the route collisions
-     * @throws RouteException
+     * @throws \Quantum\Exceptions\RouteException
      */
     private function checkCollision()
     {
@@ -188,10 +188,11 @@ class Router extends RouteController
         for ($i = 0; $i < $length - 1; $i++) {
             for ($j = $i + 1; $j < $length; $j++) {
                 if ($this->matchedRoutes[$i]['method'] == $this->matchedRoutes[$j]['method']) {
-                    throw new RouteException(_message(RouteException::REPETITIVE_ROUTE_SAME_METHOD, $this->matchedRoutes[$j]['method']));
+                    throw RouteException::repetitiveRouteSameMethod($this->matchedRoutes[$j]['method']);
+
                 }
                 if ($this->matchedRoutes[$i]['module'] != $this->matchedRoutes[$j]['module']) {
-                    throw new RouteException(RouteException::REPETITIVE_ROUTE_DIFFERENT_MODULES);
+                    throw RouteException::repetitiveRouteDifferentModules();
                 }
             }
         }
@@ -200,25 +201,25 @@ class Router extends RouteController
     /**
      * Checks the request method against defined route method
      * @param array $matchedRoute
-     * @throws RouteException
+     * @throws \Quantum\Exceptions\RouteException
      */
-    private function checkMethod($matchedRoute)
+    private function checkMethod(array $matchedRoute)
     {
         if (strpos($matchedRoute['method'], '|') !== false) {
             if (!in_array($this->request->getMethod(), explode('|', $matchedRoute['method']))) {
-                throw new RouteException(_message(RouteException::INCORRECT_METHOD, $this->request->getMethod()));
+                throw RouteException::incorrectMethod($this->request->getMethod());
             }
         } else if ($this->request->getMethod() != $matchedRoute['method']) {
-            throw new RouteException(_message(RouteException::INCORRECT_METHOD, $this->request->getMethod()));
+            throw RouteException::incorrectMethod($this->request->getMethod());
         }
     }
 
     /**
      * Finds URL pattern
-     * @param string $matches
+     * @param array $matches
      * @return string
      */
-    private function getPattern($matches)
+    private function getPattern(array $matches): string
     {
         $replacement = '';
 

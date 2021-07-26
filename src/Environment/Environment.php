@@ -86,7 +86,7 @@ class Environment
         $this->fs = Di::get(FileSystem::class);
 
         if (!$this->fs->exists(BASE_DIR . DS . $this->envFile)) {
-            throw new EnvException(EnvException::ENV_FILE_NOT_FOUND);
+            throw EnvException::fileNotFound();
         }
 
         $this->envContent = (new Dotenv(base_dir(), $this->envFile))->load();

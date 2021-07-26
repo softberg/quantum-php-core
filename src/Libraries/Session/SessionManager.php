@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.0.0
+ * @since 2.5.0
  */
 
 namespace Quantum\Libraries\Session;
@@ -27,34 +27,36 @@ class SessionManager
 {
 
     /**
-     * @var string
+     * Session Db driver
      */
-    private static $databaseDriver = 'database';
+    const DRIVER = 'database';
 
     /**
-     * GetHandler
+     * Gets the handler
      * @param \Quantum\Loader\Loader $loader
      * @return \Quantum\Libraries\Session\Session
+     * @throws \Quantum\Exceptions\DatabaseException
+     * @throws \Quantum\Exceptions\LoaderException
      * @throws \Quantum\Exceptions\ModelException
-     * @throws \RuntimeException
+     * @throws \Quantum\Exceptions\SessionException
      */
     public static function getHandler(Loader $loader): Session
     {
         if (!session_id()) {
 
-            if (self::$databaseDriver == config()->get('session_driver')) {
+            if (self::DRIVER == config()->get('session_driver')) {
                 $orm = (new Database($loader))->getORM(config()->get('session_table', 'sessions'));
                 session_set_save_handler(new DbSessionHandler($orm, $loader), true);
             }
 
             if (@session_start() === false) {
-                throw new \RuntimeException(SessionException::RUNTIME_SESSION_START);
+                throw SessionException::sessionNotStarted();
             }
         }
 
         if (isset($_SESSION['LAST_ACTIVITY']) && time() - $_SESSION['LAST_ACTIVITY'] > config()->get('session_timeout', 1800)) {
             if (@session_destroy() === false) {
-                throw new \RuntimeException(SessionException::RUNTIME_SESSION_DESTROY);
+                throw SessionException::sessionNotDestroyed();
             }
         }
 

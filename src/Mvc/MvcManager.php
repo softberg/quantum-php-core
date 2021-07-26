@@ -88,7 +88,7 @@ class MvcManager
         $controllerPath = modules_dir() . DS . current_module() . DS . 'Controllers' . DS . current_controller() . '.php';
 
         if (!$fs->exists($controllerPath)) {
-            throw new ControllerException(_message(ControllerException::CONTROLLER_NOT_FOUND, current_controller()), E_ERROR);
+            throw ControllerException::controllerNotFound(current_controller());
         }
 
         require_once $controllerPath;
@@ -96,7 +96,7 @@ class MvcManager
         $controllerClass = '\\Modules\\' . current_module() . '\\Controllers\\' . current_controller();
 
         if (!class_exists($controllerClass, false)) {
-            throw new ControllerException(_message(ControllerException::CONTROLLER_NOT_DEFINED, current_controller()), E_ERROR);
+            throw ControllerException::controllerNotDefined(current_controller());
         }
 
         return new $controllerClass();
@@ -113,7 +113,7 @@ class MvcManager
         $action = current_action();
 
         if ($action && !method_exists($controller, $action)) {
-            throw new ControllerException(_message(ControllerException::ACTION_NOT_DEFINED, $action), E_ERROR);
+            throw ControllerException::actionNotDefined($action);
         }
 
         return $action;

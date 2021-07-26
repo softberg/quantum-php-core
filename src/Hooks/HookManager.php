@@ -2,14 +2,14 @@
 
 /**
  * Quantum PHP Framework
- * 
+ *
  * An open source software development framework for PHP
- * 
+ *
  * @package Quantum
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.0.0
+ * @since 2.5.0
  */
 
 namespace Quantum\Hooks;
@@ -17,26 +17,22 @@ namespace Quantum\Hooks;
 use Quantum\Exceptions\HookException;
 
 /**
- * HookManager Class
- * 
- * Provides a mechanism to extend the core.
- * 
- * @package Quantum
- * @subpackage Hooks
- * @category Hooks
+ * Class HookManager
+ * @package Quantum\Hooks
  */
-class HookManager {
+class HookManager
+{
 
     /**
-     * Call method
-     * 
+     * Finds and calls the defined class method
      * @param string $hookName
-     * @param mixed $args
-     * @param string $alternativePath
+     * @param array $args
+     * @param string|null $alternativePath
      * @return mixed
-     * @throws HookException When Hook not found
+     * @throws \Quantum\Exceptions\HookException
      */
-    public static function call($hookName, $args = [], $alternativePath = null) {
+    public static function call(string $hookName, array $args = [], string $alternativePath = null)
+    {
         $hookImplementer = self::hasImplementer($hookName);
 
         if (!empty($hookImplementer)) {
@@ -45,23 +41,24 @@ class HookManager {
             $implementer->$hookName($args);
         } else {
             $defaultImplementer = self::hasDefaultImplementer($hookName, $alternativePath);
-           
+
             if ($defaultImplementer) {
                 return $defaultImplementer::$hookName($args);
             } else {
-                throw new HookException(_message(HookException::UNDECLARED_HOOK_NAME, $hookName));
+                throw HookException::undeclaredHookName($hookName);
             }
         }
     }
 
     /**
-     * hasImplementer
-     * 
+     * Finds the implementer
      * @param string $hookName
-     * @return string Implementer class name
-     * @throws HookException When duplicate hook name detected
+     * @return string|null
+     * @throws \Quantum\Exceptions\HookException
+     * @throws \ReflectionException
      */
-    private static function hasImplementer($hookName) {
+    private static function hasImplementer(string $hookName): ?string
+    {
         $classNames = get_directory_classes(BASE_DIR . DS . 'hooks');
 
         $duplicates = 0;
@@ -82,21 +79,22 @@ class HookManager {
         }
 
         if ($duplicates > 1) {
-            throw new HookException(HookException::DUPLICATE_HOOK_IMPLEMENTER);
+            throw HookException::duplicateHookImplementer();
         }
 
         return $hookImplementer;
     }
 
     /**
-     * hasDefaultImplementer 
-     * 
+     * Finds default implementer
      * @param string $hookName
-     * @param string $alternativePath
+     * @param string|null $alternativePath
      * @return bool|string
+     * @throws \ReflectionException
      */
-    private static function hasDefaultImplementer($hookName, $alternativePath = null) {
-        $classPath = $alternativePath ? $alternativePath : '\\Quantum\\Hooks\\HookDefaults';
+    private static function hasDefaultImplementer(string $hookName, string $alternativePath = null)
+    {
+        $classPath = $alternativePath ?: '\\Quantum\\Hooks\\HookDefaults';
         $class = new \ReflectionClass($classPath);
 
         if ($class->hasMethod($hookName)) {

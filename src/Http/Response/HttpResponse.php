@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.4.0
+ * @since 2.5.0
  */
 
 namespace Quantum\Http\Response;
@@ -67,10 +67,10 @@ abstract class HttpResponse
      * @param bool $test
      * @throws \Quantum\Exceptions\HttpException
      */
-    public static function init($test = false)
+    public static function init(bool $test = false)
     {
         if (!$test && get_caller_class(3) !== Bootstrap::class) {
-            throw new HttpException(HttpException::UNEXPECTED_RESPONSE_INITIALIZATION);
+            throw HttpException::unexpectedResponseInitialization();
         }
 
         self::$statusTexts = self::$statusTexts ?: require_once 'statuses.php';
@@ -88,6 +88,7 @@ abstract class HttpResponse
 
     /**
      * Sends all response data to the client and finishes the request.
+     * @throws \Exception
      */
     public static function send()
     {

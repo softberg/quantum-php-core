@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.0.0
+ * @since 2.5.0
  */
 
 namespace Quantum\Libraries\Csrf;
@@ -19,11 +19,8 @@ use Quantum\Exceptions\CsrfException;
 use Quantum\Http\Request;
 
 /**
- * Cross-Site Request Forgery class
- *
- * @package Quantum
- * @subpackage Libraries.Csrf
- * @category Libraries
+ * Class Csrf
+ * @package Quantum\Libraries\Csrf
  */
 class Csrf
 {
@@ -42,9 +39,11 @@ class Csrf
 
     /**
      * Generates the CSRF token or returns previously generated one
-     * @return string
+     * @param \Quantum\Libraries\Session\SessionStorageInterface $storage
+     * @param string $key
+     * @return string|null
      */
-    public static function generateToken(SessionStorageInterface $storage, $key)
+    public static function generateToken(SessionStorageInterface $storage, string $key): ?string
     {
         if (self::$token == null) {
             self::deleteToken($storage);
@@ -57,21 +56,23 @@ class Csrf
 
     /**
      * Checks the token
-     * @param Request $request
-     * @param SessionStorageInterface $storage
+     * @param \Quantum\Http\Request $request
+     * @param \Quantum\Libraries\Session\SessionStorageInterface $storage
      * @return bool
-     * @throws CsrfException
+     * @throws \Quantum\Exceptions\CsrfException
      */
-    public static function checkToken(Request $request, SessionStorageInterface $storage)
+    public static function checkToken(Request $request, SessionStorageInterface $storage): bool
     {
         if (in_array($request->getMethod(), self::$methods)) {
+
             $token = $request->getCSRFToken();
+
             if (!$token) {
-                throw new CsrfException(CsrfException::CSRF_TOKEN_NOT_FOUND);
+                throw CsrfException::tokenNotFound();
             }
 
             if (self::getToken($storage) !== $token) {
-                throw new CsrfException(CsrfException::CSRF_TOKEN_NOT_MATCHED);
+                throw CsrfException::tokenNotMatched();
             }
         }
 
@@ -80,7 +81,7 @@ class Csrf
 
     /**
      * Deletes the token from storage
-     * @param SessionStorageInterface $storage
+     * @param \Quantum\Libraries\Session\SessionStorageInterface $storage
      */
     public static function deleteToken(SessionStorageInterface $storage)
     {
@@ -93,19 +94,18 @@ class Csrf
      * @param SessionStorageInterface $storage
      * @return string|null
      */
-    public static function getToken(SessionStorageInterface $storage)
+    public static function getToken(SessionStorageInterface $storage): ?string
     {
-        return $storage->has('token') ? $storage->get('token') : null;
+        return $storage->get('token');
     }
 
     /**
      * Sets the token into the storage
-     * @param SessionStorageInterface $storage
+     * @param \Quantum\Libraries\Session\SessionStorageInterface $storage
      * @param string $token
      */
-    private static function setToken(SessionStorageInterface $storage, $token)
+    private static function setToken(SessionStorageInterface $storage, string $token)
     {
         $storage->set('token', $token);
     }
-
 }

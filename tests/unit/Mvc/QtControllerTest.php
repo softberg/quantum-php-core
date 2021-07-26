@@ -15,6 +15,7 @@ namespace Quantum\Test\Unit {
 
     use Mockery;
     use PHPUnit\Framework\TestCase;
+    use Quantum\Exceptions\ControllerException;
     use Quantum\Mvc\QtController;
     use Quantum\Controllers\TestController;
     use Quantum\Libraries\Storage\FileSystem;
@@ -43,7 +44,7 @@ namespace Quantum\Test\Unit {
 
         public function testMissingeMethods()
         {
-            $this->expectException(\BadMethodCallException::class);
+            $this->expectException(ControllerException::class);
 
             $this->expectExceptionMessage('The method `undefinedMethod` is not defined');
 

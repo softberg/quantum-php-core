@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.4.0
+ * @since 2.5.0
  */
 
 namespace Quantum\Mvc;
@@ -85,6 +85,7 @@ abstract class QtModel
         foreach ($arguments as $key => $value) {
             if (!in_array($key, $this->fillable)) {
                 throw new ModelException(_message(ModelException::INAPPROPRIATE_PROPERTY, $key));
+                throw ModelException::inappropriateProperty($key);
             }
 
             $this->$key = $value;
@@ -136,7 +137,7 @@ abstract class QtModel
                 return $this;
             }
         } else {
-            throw new ModelException(_message(ModelException::UNDEFINED_MODEL_METHOD, $method));
+            throw ModelException::undefinedMethod($method);
         }
     }
 

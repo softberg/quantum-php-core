@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.4.0
+ * @since 2.5.0
  */
 
 namespace Quantum\Di;
@@ -91,7 +91,7 @@ class Di
     public static function get(string $dependency)
     {
         if (!in_array($dependency, self::$dependencies)) {
-            throw new DiException(_message(DiException::NOT_FOUND, $dependency));
+            throw DiException::dependencyNotDefined($dependency);
         }
 
         if (!isset(self::$container[$dependency])) {

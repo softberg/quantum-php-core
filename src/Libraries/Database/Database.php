@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.4.0
+ * @since 2.5.0
  */
 
 namespace Quantum\Libraries\Database;
@@ -105,7 +105,7 @@ class Database
         }
 
         if (empty($table)) {
-            throw new ModelException(_message(ModelException::MODEL_WITHOUT_TABLE_DEFINED, $modelName));
+            throw ModelException::noTableDefined($modelName);
         }
 
         return new $dbalClass($table, $idColumn);
@@ -135,13 +135,13 @@ class Database
         $configs = $this->loader->setup(new Setup('config', 'database'))->load();
 
         if (!key_exists('current', $configs)) {
-            throw new DatabaseException(DatabaseException::INCORRECT_CONFIG);
+            throw DatabaseException::incorrectConfig();
         }
 
         $currentKey = $configs['current'];
 
         if (!key_exists($currentKey, $configs)) {
-            throw new DatabaseException(DatabaseException::INCORRECT_CONFIG);
+            throw DatabaseException::incorrectConfig();
         }
 
         self::$configs = $configs[$currentKey];

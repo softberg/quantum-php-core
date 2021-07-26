@@ -48,12 +48,12 @@ class QtView
 
     /**
      * QtView constructor.
-     * @throws ViewException
+     * @throws \Quantum\Exceptions\ViewException
      */
     public function __construct()
     {
         if (get_caller_class() != ViewFactory::class) {
-            throw new ViewException(_message(ViewException::DIRECT_VIEW_INCTANCE, [ViewFactory::class]), E_WARNING);
+            throw ViewException::directInstantiation(ViewFactory::class);
         }
     }
 
@@ -127,7 +127,7 @@ class QtView
     public function render(string $view, array $params = []): ?string
     {
         if (!$this->layout) {
-            throw new ViewException(ViewException::LAYOUT_NOT_SET, E_ERROR);
+            throw ViewException::noLayoutSet();
         }
 
         if (!empty($params)) {
@@ -188,7 +188,7 @@ class QtView
         if (!$fs->exists($filePath)) {
             $filePath = base_dir() . DS . 'base' . DS . 'views' . DS . $file . '.php';
             if (!$fs->exists($filePath)) {
-                throw new ViewException(_message(ViewException::VIEW_FILE_NOT_FOUND, $file), E_ERROR);
+                throw ViewException::fileNotFound($file);
             }
         }
 

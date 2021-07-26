@@ -9,19 +9,18 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.3.0
+ * @since 2.5.0
  */
 
 namespace Quantum\Exceptions;
 
 /**
- * AuthException class
- *
- * @package Quantum
- * @category Exceptions
+ * Class CryptorException
+ * @package Quantum\Exceptions
  */
 class CryptorException extends \Exception
 {
+
     /**
      * Open SSL Public key not created yet
      */
@@ -51,4 +50,52 @@ class CryptorException extends \Exception
      * Open SSL config not found
      */
     const OPENSSEL_CONFIG_NOT_FOUND = 'Could not load openssl.cnf properly.';
+
+    /**
+     * @return \Quantum\Exceptions\CryptorException
+     */
+    public static function configNotFound(): CryptorException
+    {
+        return new static(self::OPENSSEL_CONFIG_NOT_FOUND, E_WARNING);
+    }
+
+    /**
+     * @return \Quantum\Exceptions\CryptorException
+     */
+    public static function noPublicKeyCreated(): CryptorException
+    {
+        return new static(self::OPENSSL_PUBLIC_KEY_NOT_CREATED, E_WARNING);
+    }
+
+    /**
+     * @return \Quantum\Exceptions\CryptorException
+     */
+    public static function noPrivateKeyCreated(): CryptorException
+    {
+        return new static(self::OPENSSL_PRIVATE_KEY_NOT_CREATED, E_WARNING);
+    }
+
+    /**
+     * @return \Quantum\Exceptions\CryptorException
+     */
+    public static function publicKeyNotProvided(): CryptorException
+    {
+        return new static(self::OPENSSL_PUBLIC_KEY_NOT_PROVIDED, E_WARNING);
+    }
+
+    /**
+     * @return \Quantum\Exceptions\CryptorException
+     */
+    public static function privateKeyNotProvided(): CryptorException
+    {
+        return new static(self::OPENSSL_PRIVATE_KEY_NOT_PROVIDED, E_WARNING);
+    }
+
+    /**
+     * @return \Quantum\Exceptions\CryptorException
+     */
+    public static function invalidCipher(): CryptorException
+    {
+        return new static(self::OPENSSEL_INVALID_CIPHER, E_WARNING);
+    }
 }

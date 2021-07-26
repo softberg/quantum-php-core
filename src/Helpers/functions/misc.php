@@ -189,7 +189,7 @@ function get_caller_function(int $index = 2): ?string
  */
 function stop()
 {
-    throw new StopExecutionException(StopExecutionException::EXECUTION_TERMINATED);
+    throw StopExecutionException::executionTerminated();
 }
 
 

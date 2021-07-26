@@ -9,16 +9,14 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 1.0.0
+ * @since 2.5.0
  */
 
 namespace Quantum\Exceptions;
 
 /**
- * RouteException class
- *
- * @package Quantum
- * @category Exceptions
+ * Class RouteException
+ * @package Quantum\Exceptions
  */
 class RouteException extends \Exception
 {
@@ -46,4 +44,46 @@ class RouteException extends \Exception
      * Incorrect method message
      */
     const INCORRECT_METHOD = 'Incorrect Method `{%1}`';
+
+    /**
+     * @return \Quantum\Exceptions\RouteException
+     */
+    public static function notFound(): RouteException
+    {
+        return new static(self::MODULE_NOT_FOUND, E_ERROR);
+    }
+
+    /**
+     * @return \Quantum\Exceptions\RouteException
+     */
+    public static function notClosure(): RouteException
+    {
+        return new static(self::ROUTES_NOT_CLOSURE, E_WARNING);
+    }
+
+    /**
+     * @param string $name
+     * @return \Quantum\Exceptions\RouteException
+     */
+    public static function repetitiveRouteSameMethod(string $name): RouteException
+    {
+        return new static(_message(self::REPETITIVE_ROUTE_SAME_METHOD, $name), E_WARNING);
+    }
+
+    /**
+     * @return \Quantum\Exceptions\RouteException
+     */
+    public static function repetitiveRouteDifferentModules(): RouteException
+    {
+        return new static(self::REPETITIVE_ROUTE_DIFFERENT_MODULES, E_WARNING);
+    }
+
+    /**
+     * @param string $name
+     * @return \Quantum\Exceptions\RouteException
+     */
+    public static function incorrectMethod(string $name): RouteException
+    {
+        return new static(_message(self::INCORRECT_METHOD, $name), E_WARNING);
+    }
 }
