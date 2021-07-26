@@ -84,7 +84,6 @@ abstract class QtModel
     {
         foreach ($arguments as $key => $value) {
             if (!in_array($key, $this->fillable)) {
-                throw new ModelException(_message(ModelException::INAPPROPRIATE_PROPERTY, $key));
                 throw ModelException::inappropriateProperty($key);
             }
 

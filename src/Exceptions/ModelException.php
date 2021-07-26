@@ -64,10 +64,10 @@ class ModelException extends \Exception
     }
 
     /**
-     * @param string $name
+     * @param string|null $name
      * @return \Quantum\Exceptions\ModelException
      */
-    public static function noTableDefined(string $name): ModelException
+    public static function noTableDefined(?string $name): ModelException
     {
         return new static(_message(self::MODEL_WITHOUT_TABLE_DEFINED, $name), E_WARNING);
     }

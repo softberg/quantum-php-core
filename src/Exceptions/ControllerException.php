@@ -43,19 +43,19 @@ class ControllerException extends \Exception
     const UNDEFINED_METHOD = 'The method `{%1}` is not defined';
 
     /**
-     * @param string $name
+     * @param string|null $name
      * @return \Quantum\Exceptions\ControllerException
      */
-    public static function controllerNotFound(string $name): ControllerException
+    public static function controllerNotFound(?string $name): ControllerException
     {
         return new static(_message(self::CONTROLLER_NOT_FOUND, $name), E_ERROR);
     }
 
     /**
-     * @param string $name
+     * @param string|null $name
      * @return \Quantum\Exceptions\ControllerException
      */
-    public static function controllerNotDefined(string $name): ControllerException
+    public static function controllerNotDefined(?string $name): ControllerException
     {
         return new static(_message(self::CONTROLLER_NOT_DEFINED, $name), E_ERROR);
     }

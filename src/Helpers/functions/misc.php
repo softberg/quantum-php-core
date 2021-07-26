@@ -19,6 +19,7 @@ use Quantum\Libraries\Auth\AuthManager;
 use Quantum\Libraries\Session\Session;
 use Quantum\Libraries\Mailer\Mailer;
 use Quantum\Libraries\Cookie\Cookie;
+use Quantum\Exceptions\AppException;
 use Quantum\Libraries\Csrf\Csrf;
 use Quantum\Loader\Loader;
 use Quantum\Di\Di;
@@ -78,11 +79,18 @@ function mailer(): Mailer
  * Outputs generated CSRF token
  * @throws \Quantum\Exceptions\DiException
  * @throws \Quantum\Exceptions\ModelException
+ * @throws \Quantum\Exceptions\AppException
  * @throws \ReflectionException
  */
 function csrf_token()
 {
-    echo Csrf::generateToken(session(), env('APP_KEY'));
+    $appKey = env('APP_KEY');
+
+    if(!$appKey) {
+        throw AppException::missingAppKey();
+    }
+
+    echo Csrf::generateToken(session(), $appKey);
 }
 
 

@@ -139,10 +139,10 @@ class Lang
     /**
      * Gets the translation by given key
      * @param string $key
-     * @param mixed $params
-     * @return string
+     * @param string|array $params
+     * @return string|null
      */
-    public function getTranslation(string $key, $params = null): string
+    public function getTranslation(string $key, $params = null): ?string
     {
         $data = new Data(self::$translations);
 

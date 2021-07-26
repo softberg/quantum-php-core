@@ -50,7 +50,7 @@ class RouteException extends \Exception
      */
     public static function notFound(): RouteException
     {
-        return new static(self::MODULE_NOT_FOUND, E_ERROR);
+        return new static(self::ROUTE_NOT_FOUND, E_ERROR);
     }
 
     /**
@@ -79,10 +79,10 @@ class RouteException extends \Exception
     }
 
     /**
-     * @param string $name
+     * @param string|null $name
      * @return \Quantum\Exceptions\RouteException
      */
-    public static function incorrectMethod(string $name): RouteException
+    public static function incorrectMethod(?string $name): RouteException
     {
         return new static(_message(self::INCORRECT_METHOD, $name), E_WARNING);
     }

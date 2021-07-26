@@ -78,6 +78,10 @@ class Router extends RouteController
 
         $uri = $this->request->getUri();
 
+        if(!$uri) {
+            throw RouteException::notFound();
+        }
+
         $this->findStraightMatches($uri);
 
         if (!count($this->matchedRoutes)) {
@@ -85,7 +89,7 @@ class Router extends RouteController
         }
 
         if (!count($this->matchedRoutes)) {
-            HookManager::call('pageNotFound', $this->response);
+            HookManager::call('pageNotFound', [$this->response]);
         }
 
         if (count($this->matchedRoutes) > 1) {

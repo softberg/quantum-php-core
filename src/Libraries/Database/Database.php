@@ -96,7 +96,7 @@ class Database
      * @throws \Quantum\Exceptions\LoaderException
      * @throws \Quantum\Exceptions\ModelException
      */
-    public function getORM(string $table, string $modelName = null, string $idColumn = 'id'): IdiormDbal
+    public function getORM(string $table, ?string $modelName = null, string $idColumn = 'id'): IdiormDbal
     {
         $dbalClass = $this->getDbalClass();
 

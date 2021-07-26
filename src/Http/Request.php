@@ -22,7 +22,7 @@ use Quantum\Http\Request\HttpRequest;
  * @method static void init(Server $server)
  * @method static void create(string $method, string $url, array $data = null, array $file = null)
  * @method static void flush()
- * @method static null|string getMethod()
+ * @method static string|null getMethod()
  * @method static void setMethod(string $method)
  * @method static bool isMethod()
  * @method static string getProtocol()
