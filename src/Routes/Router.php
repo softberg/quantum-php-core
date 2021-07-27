@@ -89,7 +89,7 @@ class Router extends RouteController
         }
 
         if (!count($this->matchedRoutes)) {
-            HookManager::call('pageNotFound', [$this->response]);
+            HookManager::call('pageNotFound', ['response' => $this->response]);
         }
 
         if (count($this->matchedRoutes) > 1) {

@@ -39,12 +39,12 @@ class HookManager
         if (!empty($hookImplementer)) {
             $implementerClass = '\\Hooks\\' . $hookImplementer;
             $implementer = new $implementerClass();
-            $implementer->$hookName(...$args);
+            $implementer->$hookName($args);
         } else {
             $defaultImplementer = self::hasDefaultImplementer($hookName, $alternativePath);
 
             if ($defaultImplementer) {
-                return $defaultImplementer::$hookName(...$args);
+                return $defaultImplementer::$hookName($args);
             } else {
                 throw HookException::undeclaredHookName($hookName);
             }
