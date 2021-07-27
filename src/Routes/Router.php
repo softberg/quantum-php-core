@@ -71,6 +71,7 @@ class Router extends RouteController
      * Finds the current route
      * @throws \Quantum\Exceptions\HookException
      * @throws \Quantum\Exceptions\RouteException
+     * @throws \ReflectionException
      */
     public function findRoute()
     {
@@ -89,7 +90,7 @@ class Router extends RouteController
         }
 
         if (!count($this->matchedRoutes)) {
-            HookManager::call('pageNotFound', ['response' => $this->response]);
+            HookManager::call('pageNotFound');
         }
 
         if (count($this->matchedRoutes) > 1) {
