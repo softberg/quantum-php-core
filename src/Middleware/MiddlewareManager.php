@@ -72,7 +72,7 @@ class MiddlewareManager
             throw MiddlewareException::notDefined(current($this->middlewares));
         }
 
-        $currentMiddleware = new $middlewareClass();
+        $currentMiddleware = new $middlewareClass($request, $response);
 
         if ($currentMiddleware instanceof QtMiddleware) {
             list($modifiedRequest, $modifiedResponse) = $currentMiddleware->apply($request, $response, function ($request, $response) {
