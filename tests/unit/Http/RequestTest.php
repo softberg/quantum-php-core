@@ -4,6 +4,7 @@ namespace Quantum\Test\Unit;
 
 use Mockery;
 use Quantum\Di\Di;
+use Quantum\Exceptions\FileUploadException;
 use Quantum\Libraries\Session\Session;
 use PHPUnit\Framework\TestCase;
 use Quantum\Libraries\Csrf\Csrf;
@@ -222,7 +223,7 @@ class RequestTest extends TestCase
                 'name' => 'foo.jpg',
                 'tmp_name' => '/tmp/php8fe2.tmp',
                 'type' => 'image/jpg',
-                'error' => 4,
+                'error' => 0,
             ],
         ];
 
@@ -230,15 +231,28 @@ class RequestTest extends TestCase
 
         $this->assertTrue($request->hasFile('image'));
 
-        $image = $request->getFile('image');
+        $this->assertInstanceOf(File::class, $request->getFile('image'));
 
-        $this->assertInstanceOf(File::class, $image);
+        $fileWithError = [
+            'image' => [
+                'size' => 500,
+                'name' => 'foo.jpg',
+                'tmp_name' => '/tmp/php8fe2.tmp',
+                'type' => 'image/jpg',
+                'error' => 4,
+            ],
+        ];
 
-        $this->assertEquals('foo.jpg', $image->getNameWithExtension());
+        $request->create('POST', '/upload', null, $fileWithError);
 
-        $this->assertEquals(4, $image->getErrorCode());
+        $this->assertFalse($request->hasFile('image'));
 
-        $this->assertEquals('No file was uploaded', $image->getErrorMessage());
+        $this->expectException(FileUploadException::class);
+
+        $this->expectExceptionMessage('Cannot find uploaded file identified by key `image`');
+
+        $request->getFile('image');
+
     }
 
     public function testGetMultipleFiles()

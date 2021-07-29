@@ -37,7 +37,24 @@ trait File
      */
     public static function hasFile(string $key): bool
     {
-        return isset(self::$__files[$key]);
+        if (!isset(self::$__files[$key])) {
+            return false;
+        }
+
+        if (!is_array(self::$__files[$key]) && self::$__files[$key]->getErrorCode() != UPLOAD_ERR_OK) {
+            return false;
+        }
+
+        if (is_array(self::$__files[$key])) {
+            foreach (self::$__files[$key] as $file) {
+                if ($file->getErrorCode() != UPLOAD_ERR_OK) {
+                    return false;
+                }
+            }
+
+        }
+
+        return true;
     }
 
     /**
