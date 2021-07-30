@@ -1,16 +1,5 @@
 <?php
 
-namespace {
-
-    use Quantum\Factory\ViewFactory;
-
-    function view()
-    {
-        return ViewFactory::getInstance()->getView();
-    }
-
-}
-
 namespace Quantum\Mvc {
 
     function get_caller_class()
