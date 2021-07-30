@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.0.0
+ * @since 2.5.0
  */
 
 use Quantum\Exceptions\StopExecutionException;
@@ -28,15 +28,17 @@ use Quantum\Di\Di;
 /**
  * Gets the session handler
  * @return \Quantum\Libraries\Session\Session
+ * @throws \Quantum\Exceptions\DatabaseException
  * @throws \Quantum\Exceptions\DiException
+ * @throws \Quantum\Exceptions\LoaderException
  * @throws \Quantum\Exceptions\ModelException
+ * @throws \Quantum\Exceptions\SessionException
  * @throws \ReflectionException
  */
 function session(): Session
 {
     return SessionManager::getHandler(Di::get(Loader::class));
 }
-
 
 /**
  * Gets cookie handler
@@ -46,7 +48,6 @@ function cookie(): Cookie
 {
     return new Cookie($_COOKIE, new Cryptor);
 }
-
 
 /**
  * Gets the Auth handler
@@ -62,7 +63,6 @@ function auth()
     return AuthManager::getHandler(Di::get(Loader::class));
 }
 
-
 /**
  * Gets the Mail instance
  * @return \Quantum\Libraries\Mailer\Mailer
@@ -74,12 +74,14 @@ function mailer(): Mailer
     return Di::get(Mailer::class);
 }
 
-
 /**
  * Outputs generated CSRF token
- * @throws \Quantum\Exceptions\DiException
- * @throws \Quantum\Exceptions\ModelException
  * @throws \Quantum\Exceptions\AppException
+ * @throws \Quantum\Exceptions\DatabaseException
+ * @throws \Quantum\Exceptions\DiException
+ * @throws \Quantum\Exceptions\LoaderException
+ * @throws \Quantum\Exceptions\ModelException
+ * @throws \Quantum\Exceptions\SessionException
  * @throws \ReflectionException
  */
 function csrf_token()
@@ -92,7 +94,6 @@ function csrf_token()
 
     echo Csrf::generateToken(session(), $appKey);
 }
-
 
 /**
  * _message
@@ -110,7 +111,6 @@ function _message(string $subject, $params): string
         return preg_replace('/{%\d+}/', $params, $subject);
     }
 }
-
 
 /**
  * Validates base64 string
@@ -139,7 +139,6 @@ function valid_base64(string $string): bool
     return true;
 }
 
-
 /**
  * Gets directory classes
  * @param string $path
@@ -162,7 +161,6 @@ function get_directory_classes(string $path): array
     return $class_names;
 }
 
-
 /**
  * Gets the caller class
  * @param integer $index
@@ -175,7 +173,6 @@ function get_caller_class(int $index = 2): ?string
 
     return $caller['class'] ?? null;
 }
-
 
 /**
  * Gets the caller function
@@ -190,7 +187,6 @@ function get_caller_function(int $index = 2): ?string
     return $caller['function'] ?? null;
 }
 
-
 /**
  * Throws Stop Execution Exception
  * @throws \Quantum\Exceptions\StopExecutionException
@@ -199,7 +195,6 @@ function stop()
 {
     throw StopExecutionException::executionTerminated();
 }
-
 
 /**
  * Generates random number sequence
@@ -214,7 +209,6 @@ function random_number(int $length = 10): int
     }
     return (int)$randomString;
 }
-
 
 /**
  * Checks if the entity is closure
