@@ -27,6 +27,6 @@ interface ReportableInterface
      * @param mixed $message
      * @param array $context
      */
-    public function report($level, $message, array $context = []);
+    public function report(string $level, $message, array $context = []);
 
 }

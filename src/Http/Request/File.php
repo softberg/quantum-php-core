@@ -14,6 +14,7 @@
 
 namespace Quantum\Http\Request;
 
+use Quantum\Libraries\Upload\File as FileUpload;
 use Quantum\Exceptions\FileUploadException;
 
 /**
@@ -36,50 +37,69 @@ trait File
      */
     public static function hasFile(string $key): bool
     {
-        return isset(self::$__files[$key]);
+        if (!isset(self::$__files[$key])) {
+            return false;
+        }
+
+        if (!is_array(self::$__files[$key]) && self::$__files[$key]->getErrorCode() != UPLOAD_ERR_OK) {
+            return false;
+        }
+
+        if (is_array(self::$__files[$key])) {
+            foreach (self::$__files[$key] as $file) {
+                if ($file->getErrorCode() != UPLOAD_ERR_OK) {
+                    return false;
+                }
+            }
+
+        }
+
+        return true;
     }
 
     /**
-     * Gets the file info by given key
+     * Gets the file or array of file objects
      * @param string $key
-     * @return array|object
-     * @throws \InvalidArgumentException
+     * @return mixed
+     * @throws \Quantum\Exceptions\FileUploadException
      */
     public static function getFile(string $key)
     {
         if (!self::hasFile($key)) {
-            throw new \InvalidArgumentException(_message(FileUploadException::UPLOADED_FILE_NOT_FOUND, $key));
+            throw FileUploadException::fileNotFound($key);
         }
 
         return self::$__files[$key];
     }
 
     /**
-     * @param array $_files
-     * @return array|object[]|null
+     * @param array $files
+     * @return array|\Quantum\Libraries\Upload\File[]|null
+     * @throws \Quantum\Exceptions\DiException
+     * @throws \ReflectionException
      */
-    private static function handleFiles(array $_files): ?array
+    private static function handleFiles(array $files): ?array
     {
-        if (!count($_files)) {
+        if (!count($files)) {
             return [];
         }
 
-        $key = key($_files);
+        $key = key($files);
 
         if ($key) {
-            if (!is_array($_files[$key]['name'])) {
-                return [$key => (object)$_files[$key]];
+            if (!is_array($files[$key]['name'])) {
+                return [$key => new FileUpload($files[$key])];
             } else {
                 $formattedFiles = [];
 
-                foreach ($_files[$key]['name'] as $index => $name) {
-                    $formattedFiles[$key][$index] = (object)[
+                foreach ($files[$key]['name'] as $index => $name) {
+                    $formattedFiles[$key][$index] = new FileUpload([
                         'name' => $name,
-                        'type' => $_files[$key]['type'][$index],
-                        'tmp_name' => $_files[$key]['tmp_name'][$index],
-                        'error' => $_files[$key]['error'][$index],
-                        'size' => $_files[$key]['size'][$index],
-                    ];
+                        'type' => $files[$key]['type'][$index],
+                        'tmp_name' => $files[$key]['tmp_name'][$index],
+                        'error' => $files[$key]['error'][$index],
+                        'size' => $files[$key]['size'][$index],
+                    ]);
                 }
 
                 return $formattedFiles;

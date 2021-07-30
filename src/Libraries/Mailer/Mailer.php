@@ -15,6 +15,7 @@
 namespace Quantum\Libraries\Mailer;
 
 use PHPMailer\PHPMailer\PHPMailer;
+use Quantum\Debugger\Debugger;
 use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Di\Di;
 
@@ -94,12 +95,6 @@ class Mailer
      * @var string
      */
     private $templatePath;
-
-    /**
-     * PHP Mailer Log
-     * @var string
-     */
-    private $log;
 
     /**
      * Mailer constructor.
@@ -243,10 +238,10 @@ class Mailer
 
     /**
      * Sets the subject
-     * @param string $subject
+     * @param string|null $subject
      * @return $this
      */
-    public function setSubject(string $subject): Mailer
+    public function setSubject(?string $subject): Mailer
     {
         $this->subject = $subject;
         return $this;
@@ -508,10 +503,11 @@ class Mailer
     {
         if (config()->has('debug')) {
             $this->mailer->SMTPDebug = 1;
-            $this->mailer->Debugoutput = function ($str, $level) {
-                $this->log .= $str . '&';
-                session()->set('_qt_mailer_log', $this->log);
+
+            $this->mailer->Debugoutput = function ($data, $level) {
+                Debugger::addToStore(Debugger::MAILS, $level, $data);
             };
+
         } else {
             $this->mailer->SMTPDebug = 0;
         }

@@ -51,7 +51,7 @@ class QtConsole
     public function init()
     {
 
-        App::loadCoreFuncations();
+        App::loadCoreFunctions();
 
         Di::loadDefinitions();
 

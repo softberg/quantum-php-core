@@ -59,7 +59,7 @@ namespace Quantum\Test\Unit {
 
         public function testAutowire()
         {
-            $params = Di::autowire(TestDiController::class . ':' . 'index');
+            $params = Di::autowire([new TestDiController, 'index']);
 
             $this->assertInstanceOf(Request::class, $params[0]);
 

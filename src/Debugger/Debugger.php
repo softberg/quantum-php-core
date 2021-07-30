@@ -9,31 +9,58 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.0.0
+ * @since 2.5.0
  */
 
 namespace Quantum\Debugger;
 
-use DebugBar\DebugBar;
-use DebugBar\DataCollector\MemoryCollector;
+use DebugBar\DataCollector\RequestDataCollector;
+use DebugBar\DataCollector\TimeDataCollector;
 use DebugBar\DataCollector\MessagesCollector;
 use DebugBar\DataCollector\PhpInfoCollector;
-use DebugBar\DataCollector\RequestDataCollector;
-use Quantum\Libraries\Database\Database;
+use DebugBar\DataCollector\MemoryCollector;
+use DebugBar\JavascriptRenderer;
+use DebugBar\DebugBar;
 
 /**
- * Debugger class
+ * Class Debugger
  * @package Quantum\Debugger
- * @uses DebugBar
+ * @uses \DebugBar\DebugBar
  */
-class Debugger extends DebugBar
+class Debugger
 {
 
     /**
+     * Messages tab
+     */
+    const MESSAGES = 'messages';
+
+    /**
+     * Quaeries tab
+     */
+    const QUERIES = 'queries';
+
+    /**
+     * Routes tab
+     */
+    const ROUTES = 'routes';
+
+    /**
+     * Mails tab
+     */
+    const MAILS = 'mails';
+
+    /**
      * Debugbar instance
-     * @var object
+     * @var \DebugBar\DebugBar
      */
     private $debugbar;
+
+    /**
+     * Store
+     * @var array
+     */
+    private static $store;
 
     /**
      * Assets url
@@ -43,118 +70,94 @@ class Debugger extends DebugBar
 
     /**
      * Custom CSS
-     * 
+     * @var string
      */
     private $customCss = 'custom_debugbar.css';
 
     /**
-     * Class constructor
-     * @return void
+     * Debugger constructor.
+     * @throws \DebugBar\DebugBarException
      */
     public function __construct()
     {
-        $this->addCollector(new PhpInfoCollector());
-        $this->addCollector(new MessagesCollector());
-        $this->addCollector(new RequestDataCollector());
-        $this->addCollector(new MemoryCollector());
+        $this->debugbar = new DebugBar();
+
+        $this->debugbar->addCollector(new PhpInfoCollector());
+        $this->debugbar->addCollector(new MessagesCollector());
+        $this->debugbar->addCollector(new RequestDataCollector());
+        $this->debugbar->addCollector(new TimeDataCollector());
+        $this->debugbar->addCollector(new MemoryCollector());
     }
 
     /**
-     * Runs the debug bar
-     * @param string $view
-     * @return object
+     * Initiates the store
      */
-    public function run($view = null)
+    public static function initStore()
     {
-        $this->debugbar = new Debugger();
+        self::$store[self::MESSAGES] = [];
+        self::$store[self::QUERIES] = [];
+        self::$store[self::ROUTES] = [];
+        self::$store[self::MAILS] = [];
+    }
 
-        $this->tabMessages();
-        $this->tabQueries();
-        $this->tabRoutes($view);
-        $this->tabMailLog();
+    /**
+     * Adds data to store
+     * @param string $cell
+     * @param string $level
+     * @param mixed $data
+     */
+    public static function addToStore(string $cell, string $level, $data)
+    {
+        if(!empty($data)) {
+            array_push(self::$store[$cell], [$level => $data]);
+        }
+    }
 
+    /**
+     * Renders the debug bar
+     * @return string
+     */
+    public function render(): string
+    {
+        $this->createTab(self::MESSAGES);
+        $this->createTab(self::QUERIES);
+        $this->createTab(self::ROUTES);
+        $this->createTab(self::MAILS);
+
+        $renderer = $this->getRenderer();
+
+        return $renderer->renderHead() . $renderer->render();
+    }
+
+    /**
+     * Creates a tab
+     * @param string $type
+     * @throws \DebugBar\DebugBarException
+     */
+    protected function createTab(string $type)
+    {
+        if(!$this->debugbar->hasCollector($type)) {
+            $this->debugbar->addCollector(new MessagesCollector($type));
+        }
+
+        if (count(self::$store[$type])) {
+            foreach (self::$store[$type] as $message) {
+                $fn = key($message);
+                $this->debugbar[$type]->$fn($message[$fn]);
+            }
+        }
+    }
+
+    /**
+     * Gets the renderer
+     * @return \DebugBar\JavascriptRenderer
+     */
+    protected function getRenderer(): JavascriptRenderer
+    {
         return $this->debugbar
-                        ->getJavascriptRenderer()
-                        ->setBaseUrl(base_url() . $this->assetsUrl)
-                        ->addAssets([$this->customCss], []);
-    }
-
-    /**
-     * Tab Messages
-     * Output debug messages in Messages tab
-     */
-    private function tabMessages()
-    {
-        $outputData = (array) session()->get('_qt_debug_output');
-
-        if (count($outputData)) {
-            foreach ($outputData as $data) {
-                $this->debugbar['messages']->debug($data);
-            }
-            session()->delete('_qt_debug_output');
-        }
-    }
-
-    /**
-     * Tab Queries
-     * Outputs the query log in Queries tab
-     */
-    private function tabQueries()
-    {
-        $this->debugbar->addCollector(new MessagesCollector('queries'));
-
-        $queryLog = Database::queryLog();
-
-        if (!empty($queryLog)) {
-            foreach ($queryLog as $query) {
-                $this->debugbar['queries']->info($query);
-            }
-        }
-    }
-
-    /**
-     * Tab Routes
-     * Collects the routes
-     */
-    private function tabRoutes($view)
-    {
-        $this->debugbar->addCollector(new MessagesCollector('routes'));
-
-        $route = [
-            'Route' => current_route(),
-            'Pattern' => current_route_pattern(),
-            'Uri' => current_route_uri(),
-            'Method' => current_route_method(),
-            'Module' => current_module(),
-            'Middlewares' => current_middlewares(),
-            'Controller' => current_module() . DS . current_controller(),
-            'Action' => current_action(),
-            'Args' => current_route_args(),
-        ];
-
-        if ($view) {
-            $route['View'] = current_module() . DS . 'Views' . DS . $view;
-        }
-
-        $this->debugbar['routes']->info($route);
-    }
-
-    /**
-     * Tab Mail
-     * Outputs the mail log in Mail tab
-     */
-    private function tabMailLog()
-    {
-        $this->debugbar->addCollector(new MessagesCollector('mail'));
-
-        $mailLog = session()->get('_qt_mailer_log');
-        if ($mailLog) {
-            $logs = explode('&', $mailLog);
-            foreach ($logs as $log) {
-                $this->debugbar['mail']->info($log);
-            }
-            session()->delete('_qt_mailer_log');
-        }
+            ->getJavascriptRenderer()
+            ->setBaseUrl(base_url() . $this->assetsUrl)
+            ->addAssets([$this->customCss], []);
     }
 
 }

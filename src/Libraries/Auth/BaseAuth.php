@@ -132,11 +132,11 @@ abstract class BaseAuth
 
         foreach ($constants as $constant) {
             if (!in_array($constant, array_keys($schema))) {
-                throw new AuthException(AuthException::INCORRECT_USER_SCHEMA);
+                throw AuthException::incorrectUserSchema();
             }
 
             if (!isset($schema[$constant]['name'])) {
-                throw new AuthException(AuthException::INCORRECT_USER_SCHEMA);
+                throw AuthException::incorrectUserSchema();
             }
 
             $this->keyFields[$constant] = $schema[$constant]['name'];
@@ -278,7 +278,7 @@ abstract class BaseAuth
         $user = $this->authService->get($this->keyFields[self::OTP_TOKEN_KEY], $otpToken);
 
         if (!$user) {
-            throw new AuthException(AuthException::INCORRECT_AUTH_CREDENTIALS);
+            throw AuthException::incorrectCredentials();
         }
 
         return $this->twoStepVerification($user);
@@ -286,10 +286,38 @@ abstract class BaseAuth
     }
 
     /**
+     * Gets the user by username and password
+     * @param string $username
+     * @param string $password
+     * @return \Quantum\Libraries\Auth\User
+     * @throws \Quantum\Exceptions\AuthException
+     */
+    protected function getUser(string $username, string $password): User
+    {
+        $user = $this->authService->get($this->keyFields[self::USERNAME_KEY], $username);
+
+        if (!$user) {
+            throw AuthException::incorrectCredentials();
+        }
+
+        if (!$this->hasher->check($password, $user->getFieldValue($this->keyFields[self::PASSWORD_KEY]))) {
+            throw AuthException::incorrectCredentials();
+        }
+
+        if (!$this->isActivated($user)) {
+            throw AuthException::inactiveAccount();
+        }
+
+        return $user;
+    }
+
+    /**
      * Two Step Verification
      * @param \Quantum\Libraries\Auth\User $user
      * @return string
-     * @throws \Exception
+     * @throws \PHPMailer\PHPMailer\Exception
+     * @throws \Quantum\Exceptions\DiException
+     * @throws \ReflectionException
      */
     protected function twoStepVerification(User $user): string
     {
@@ -336,11 +364,11 @@ abstract class BaseAuth
         $user = $this->authService->get($this->keyFields[self::OTP_TOKEN_KEY], $otpToken);
 
         if (!$user || $otp != $user->getFieldValue($this->keyFields[self::OTP_KEY])) {
-            throw new AuthException(AuthException::INCORRECT_VERIFICATION_CODE);
+            throw AuthException::incorrectVerificationCode();
         }
 
         if (new \DateTime() >= new \DateTime($user->getFieldValue($this->keyFields[self::OTP_EXPIRY_KEY]))) {
-            throw new AuthException(AuthException::VERIFICATION_CODE_EXPIRED);
+            throw AuthException::verificationCodeExpired();
         }
 
         $this->authService->update(

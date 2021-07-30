@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.0.0
+ * @since 2.5.0
  */
 
 namespace Quantum\Environment;
@@ -57,7 +57,7 @@ class Environment
      * GetInstance
      * @return \Quantum\Environment\Environment
      */
-    public static function getInstance()
+    public static function getInstance(): ?Environment
     {
         if (self::$envInstance === null) {
             self::$envInstance = new self();
@@ -73,8 +73,9 @@ class Environment
      * @throws \Quantum\Exceptions\DiException
      * @throws \Quantum\Exceptions\EnvException
      * @throws \Quantum\Exceptions\LoaderException
+     * @throws \ReflectionException
      */
-    public function load(Loader $loader)
+    public function load(Loader $loader): Environment
     {
         $env = $loader->setup(new Setup('config', 'env', true))->load();
 
@@ -85,10 +86,11 @@ class Environment
         $this->fs = Di::get(FileSystem::class);
 
         if (!$this->fs->exists(BASE_DIR . DS . $this->envFile)) {
-            throw new EnvException(EnvException::ENV_FILE_NOT_FOUND);
+            throw EnvException::fileNotFound();
         }
 
         $this->envContent = (new Dotenv(base_dir(), $this->envFile))->load();
+
         return $this;
     }
 
@@ -108,9 +110,9 @@ class Environment
             }
 
             return null;
-        } else {
-            return $val;
         }
+
+        return $val;
     }
 
     /**
@@ -118,20 +120,20 @@ class Environment
      * @param string $key
      * @param string $value
      */
-    public function updateRow($key, $value)
+    public function updateRow(string $key, string $value)
     {
-        $oldRow = $this->getRow($key);
+        $row = $this->getRow($key);
 
         $envFilePath = base_dir() . DS . $this->envFile;
 
-        if ($oldRow) {
+        if ($row) {
             $this->fs->put($envFilePath, preg_replace(
-                '/^' . $oldRow . '/m',
+                '/^' . $row . '/m',
                 $key . "=" . $value . PHP_EOL,
                 $this->fs->get($envFilePath)
             ));
         } else {
-            $this->fs->put($envFilePath, $key . "=" . $value . PHP_EOL, FILE_APPEND);
+            $this->fs->append($envFilePath, $key . "=" . $value . PHP_EOL);
         }
 
         $this->envContent = (new Dotenv(base_dir(), $this->envFile))->overload();
@@ -139,10 +141,10 @@ class Environment
 
     /**
      * Gets the row of .env file by given key
-     * @param $key
+     * @param string $key
      * @return string|null
      */
-    private function getRow($key)
+    private function getRow(string $key): ?string
     {
         foreach ($this->envContent as $row) {
             if (preg_match('/^' . $key . '=/', $row)) {

@@ -4,6 +4,7 @@ namespace Quantum\Test\Unit;
 
 use Mockery;
 use PHPUnit\Framework\TestCase;
+use Quantum\Exceptions\ServiceException;
 use Quantum\Mvc\QtService;
 use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Loader\Loader;
@@ -32,7 +33,7 @@ class QtServiceTest extends TestCase
      */
     public function testMissingeMethods()
     {
-        $this->expectException(\BadMethodCallException::class);
+        $this->expectException(ServiceException::class);
 
         $this->expectExceptionMessage('The method `undefinedMethod` is not defined');
 

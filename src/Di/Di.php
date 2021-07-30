@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.4.0
+ * @since 2.5.0
  */
 
 namespace Quantum\Di;
@@ -47,25 +47,24 @@ class Di
     }
 
     /**
-     * Create and inject dependencies.
-     * @param string|callable $entry
+     * Creates and injects dependencies.
+     * @param callable $entry
      * @param array $additional
      * @return array
-     * @throws \ReflectionException|\Quantum\Exceptions\DiException
+     * @throws \Quantum\Exceptions\DiException
+     * @throws \ReflectionException
      */
-    public static function autowire($entry, array $additional = []): array
+    public static function autowire(callable $entry, array $additional = []): array
     {
-        if (is_callable($entry)) {
-            $reflaction = new ReflectionFunction($entry);
+        if (is_closure($entry)) {
+            $reflection = new ReflectionFunction($entry);
         } else {
-            list($controller, $action) = explode(':', $entry);
-
-            $reflaction = new ReflectionMethod($controller, $action);
+            $reflection = new ReflectionMethod(...$entry);
         }
 
         $params = [];
 
-        foreach ($reflaction->getParameters() as $param) {
+        foreach ($reflection->getParameters() as $param) {
             $type = $param->getType();
 
             if (!$type || !self::instantiable($type)) {
@@ -86,12 +85,13 @@ class Di
      * Gets the dependency from the container
      * @param string $dependency
      * @return mixed
-     * @throws DiException|\ReflectionException
+     * @throws \Quantum\Exceptions\DiException
+     * @throws \ReflectionException
      */
     public static function get(string $dependency)
     {
         if (!in_array($dependency, self::$dependencies)) {
-            throw new DiException(_message(DiException::NOT_FOUND, $dependency));
+            throw DiException::dependencyNotDefined($dependency);
         }
 
         if (!isset(self::$container[$dependency])) {

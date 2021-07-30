@@ -43,6 +43,7 @@ class AuthManager
      * @throws \Quantum\Exceptions\ConfigException
      * @throws \Quantum\Exceptions\DiException
      * @throws \Quantum\Exceptions\LoaderException
+     * @throws \ReflectionException
      */
     public static function getHandler(Loader $loader)
     {
@@ -57,7 +58,7 @@ class AuthManager
                     return ApiAuth::getInstance($authService, new Mailer, new Hasher, $jwt);
             }
         } else {
-            throw new AuthException(AuthException::MISCONFIGURED_AUTH_CONFIG);
+            throw AuthException::misconfiguredAuthConfig();
         }
     }
 
@@ -68,6 +69,7 @@ class AuthManager
      * @throws \Quantum\Exceptions\ConfigException
      * @throws \Quantum\Exceptions\DiException
      * @throws \Quantum\Exceptions\LoaderException
+     * @throws \ReflectionException
      */
     public static function authService(Loader $loader): AuthServiceInterface
     {

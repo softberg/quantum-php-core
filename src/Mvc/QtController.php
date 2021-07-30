@@ -9,23 +9,17 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.0.0
+ * @since 2.5.0
  */
 
 namespace Quantum\Mvc;
 
 use Quantum\Exceptions\ControllerException;
 use Quantum\Routes\RouteController;
-use BadMethodCallException;
-
 
 /**
- * Base Controller Class
- *
- * QtController class is a base class that every controller should extend
- *
- * @package Quantum
- * @category MVC
+ * Class QtController
+ * @package Quantum\Mvc
  */
 class QtController extends RouteController
 {
@@ -40,7 +34,7 @@ class QtController extends RouteController
      * Gets the QtController singleton instance
      * @return QtController
      */
-    public static function getInstance()
+    public static function getInstance(): QtController
     {
         if (self::$instance === null) {
             self::$instance = new self();
@@ -51,14 +45,13 @@ class QtController extends RouteController
 
     /**
      * Handles the missing methods of the controller
-     *
      * @param string $method
      * @param array $arguments
-     * @return mixed
+     * @throws \Quantum\Exceptions\ControllerException
      */
-    public function __call($method, $arguments)
+    public function __call(string $method, array $arguments)
     {
-        throw new BadMethodCallException(_message(ControllerException::UNDEFINED_METHOD, $method));
+        throw ControllerException::undefinedMethod($method);
     }
 
 }

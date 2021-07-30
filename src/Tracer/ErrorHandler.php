@@ -63,6 +63,10 @@ class ErrorHandler
     /**
      * Setups the handlers
      * @throws \ErrorException
+     * @throws \Quantum\Exceptions\DiException
+     * @throws \Quantum\Exceptions\HookException
+     * @throws \Quantum\Exceptions\ViewException
+     * @throws \ReflectionException
      */
     public static function setup()
     {
@@ -81,9 +85,9 @@ class ErrorHandler
     }
 
     /**
-     * Handles errors and exceptions
      * @param \Throwable $e
      * @throws \Quantum\Exceptions\DiException
+     * @throws \Quantum\Exceptions\HookException
      * @throws \Quantum\Exceptions\ViewException
      * @throws \ReflectionException
      */
@@ -126,6 +130,8 @@ class ErrorHandler
     /**
      * Composes the stack trace
      * @param \Throwable $e
+     * @throws \Quantum\Exceptions\DiException
+     * @throws \ReflectionException
      */
     protected static function composeStackTrace(Throwable $e)
     {
@@ -157,7 +163,7 @@ class ErrorHandler
      * @throws \Quantum\Exceptions\DiException
      * @throws \ReflectionException
      */
-    protected static function getSourceCode(string $filename, int $lineNumber, string $className)
+    protected static function getSourceCode(string $filename, int $lineNumber, string $className): string
     {
         $fs = Di::get(FileSystem::class);
 
@@ -179,7 +185,7 @@ class ErrorHandler
      * @param \Throwable $e
      * @return string[]|null
      */
-    private static function getErrorType(Throwable $e)
+    private static function getErrorType(Throwable $e): ?array
     {
         if ($e instanceof ErrorException) {
             $severity = $e->getSeverity();

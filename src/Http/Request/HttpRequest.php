@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.4.0
+ * @since 2.5.0
  */
 
 namespace Quantum\Http\Request;
@@ -51,15 +51,17 @@ abstract class HttpRequest
     private static $server;
 
     /**
-     * Initialize the Request
+     * Initiates the Request
      * @param \Quantum\Environment\Server $server
+     * @throws \Quantum\Exceptions\DiException
      * @throws \Quantum\Exceptions\HttpException
+     * @throws \ReflectionException
      */
     public static function init(Server $server)
     {
 
         if (get_caller_class(3) !== Bootstrap::class) {
-            throw new HttpException(HttpException::UNEXPECTED_REQUEST_INITIALIZATION);
+            throw HttpException::unexpectedRequestInitialization();
         }
 
         self::$server = $server;
@@ -93,10 +95,12 @@ abstract class HttpRequest
      * @param string $method
      * @param string $url
      * @param array|null $data
-     * @param array|null $file
+     * @param array|null $files
+     * @throws \Quantum\Exceptions\DiException
      * @throws \Quantum\Exceptions\HttpException
+     * @throws \ReflectionException
      */
-    public static function create(string $method, string $url, array $data = null, array $file = null)
+    public static function create(string $method, string $url, array $data = null, array $files = null)
     {
         $parsed = parse_url($url);
 
@@ -124,8 +128,8 @@ abstract class HttpRequest
             self::$__request = $data;
         }
 
-        if ($file) {
-            self::$__files = self::handleFiles($file);
+        if ($files) {
+            self::$__files = self::handleFiles($files);
         }
     }
 
@@ -161,7 +165,7 @@ abstract class HttpRequest
     public static function setMethod(string $method)
     {
         if (!in_array($method, self::$availableMethods)) {
-            throw new HttpException(HttpException::METHOD_NOT_AVAILABLE);
+            throw HttpException::methodNotAvailable($method);
         }
 
         self::$__method = $method;

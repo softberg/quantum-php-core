@@ -9,12 +9,11 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.4.0
+ * @since 2.5.0
  */
 
 namespace Quantum\Libraries\Auth;
 
-use Quantum\Exceptions\AuthException;
 use Quantum\Libraries\Hasher\Hasher;
 use Quantum\Libraries\Mailer\Mailer;
 
@@ -24,6 +23,7 @@ use Quantum\Libraries\Mailer\Mailer;
  */
 class WebAuth extends BaseAuth implements AuthenticableInterface
 {
+
     /**
      * Instance of WebAuth
      * @var WebAuth
@@ -56,7 +56,7 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
      * @return \Quantum\Libraries\Auth\WebAuth
      * @throws \Quantum\Exceptions\AuthException
      */
-    public static function getInstance(AuthServiceInterface $authService, Mailer $mailer, Hasher $hasher)
+    public static function getInstance(AuthServiceInterface $authService, Mailer $mailer, Hasher $hasher): WebAuth
     {
         if (self::$instance === null) {
             self::$instance = new self($authService, $mailer, $hasher);
@@ -71,23 +71,15 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
      * @param string $password
      * @param bool $remember
      * @return bool|string
+     * @throws \PHPMailer\PHPMailer\Exception
      * @throws \Quantum\Exceptions\AuthException
+     * @throws \Quantum\Exceptions\CryptorException
+     * @throws \Quantum\Exceptions\DiException
+     * @throws \ReflectionException
      */
     public function signin(string $username, string $password, bool $remember = false)
     {
-        $user = $this->authService->get($this->keyFields[self::USERNAME_KEY], $username);
-
-        if (!$user) {
-            throw new AuthException(AuthException::INCORRECT_AUTH_CREDENTIALS);
-        }
-
-        if (!$this->hasher->check($password, $user->getFieldValue($this->keyFields[self::PASSWORD_KEY]))) {
-            throw new AuthException(AuthException::INCORRECT_AUTH_CREDENTIALS);
-        }
-
-        if (!$this->isActivated($user)) {
-            throw new AuthException(AuthException::INACTIVE_ACCOUNT);
-        }
+        $user = $this->getUser($username, $password);
 
         if ($remember) {
             $this->setRememberToken($user);
@@ -120,7 +112,7 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
     /**
      * User
      * @return \Quantum\Libraries\Auth\User|null
-     * @throws \Exception
+     * @throws \Quantum\Exceptions\CryptorException
      */
     public function user(): ?User
     {
@@ -144,6 +136,7 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
      * @param string $otpToken
      * @return bool
      * @throws \Quantum\Exceptions\AuthException
+     * @throws \Quantum\Exceptions\CryptorException
      */
     public function verifyOtp(int $otp, string $otpToken): bool
     {
@@ -156,7 +149,8 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
 
     /**
      * Check Remember Token
-     * @return bool|User
+     * @return \Quantum\Libraries\Auth\User|false
+     * @throws \Quantum\Exceptions\CryptorException
      */
     private function checkRememberToken()
     {
@@ -174,8 +168,9 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
     }
 
     /**
-     * et Remember Token
+     * Set Remember Token
      * @param \Quantum\Libraries\Auth\User $user
+     * @throws \Quantum\Exceptions\CryptorException
      */
     private function setRememberToken(User $user)
     {
@@ -191,7 +186,7 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
     }
 
     /**
-     * Remove Remebmber token
+     * Remove Remember token
      */
     private function removeRememberToken()
     {

@@ -2,14 +2,14 @@
 
 /**
  * Quantum PHP Framework
- * 
+ *
  * An open source software development framework for PHP
- * 
+ *
  * @package Quantum
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.0.0
+ * @since 2.5.0
  */
 
 namespace Quantum\Routes;
@@ -20,19 +20,18 @@ use Quantum\Libraries\Storage\FileSystem;
 use Closure;
 
 /**
- * ModuleLoader Class
- * @package Quantum
- * @category Routes
+ * Class ModuleLoader
+ * @package Quantum\Routes
  */
 class ModuleLoader
 {
 
     /**
      * Load Modules
-     * @param Router $router
-     * @param FileSystem $fs
-     * @throws ModuleLoaderException
-     * @throws RouteException
+     * @param \Quantum\Routes\Router $router
+     * @param \Quantum\Libraries\Storage\FileSystem $fs
+     * @throws \Quantum\Exceptions\ModuleLoaderException
+     * @throws \Quantum\Exceptions\RouteException
      */
     public static function loadModulesRoutes(Router $router, FileSystem $fs)
     {
@@ -42,13 +41,13 @@ class ModuleLoader
             $moduleRoutes = modules_dir() . DS . $module . DS . 'Config' . DS . 'routes.php';
 
             if (!$fs->exists($moduleRoutes)) {
-                throw new ModuleLoaderException(_message(ModuleLoaderException::MODULE_NOT_FOUND, $module));
+                throw ModuleLoaderException::notFound($module);
             }
 
             $routesClosure = require_once $moduleRoutes;
 
             if (!$routesClosure instanceof Closure) {
-                throw new RouteException(RouteException::ROUTES_NOT_CLOSURE);
+                throw RouteException::notClosure();
             }
 
             $route = new Route($module);

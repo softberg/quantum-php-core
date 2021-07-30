@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.0.0
+ * @since 2.5.0
  */
 
 namespace Quantum\Libraries\Upload;
@@ -71,12 +71,6 @@ class File extends SplFileInfo
     protected $params = [];
 
     /**
-     * Alternative name of image
-     * @var string 
-     */
-    protected $altName;
-
-    /**
      * Upload error code messages
      * @var array
      */
@@ -97,24 +91,26 @@ class File extends SplFileInfo
     protected $errorCode;
 
     /**
-     * Class constructor
-     * @param object $file
+     * File constructor.
+     * @param array $file
+     * @throws \Quantum\Exceptions\DiException
+     * @throws \ReflectionException
      */
-    public function __construct(object $file)
+    public function __construct(array $file)
     {
         $this->fs = Di::get(FileSystem::class);
 
-        $this->originalName = $file->name;
-        $this->errorCode = $file->error;
+        $this->originalName = $file['name'];
+        $this->errorCode = $file['error'];
 
-        parent::__construct($file->tmp_name);
+        parent::__construct($file['tmp_name']);
     }
 
     /**
      * Get name
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         if (!$this->name) {
             $this->name = $this->fs->fileName($this->originalName);
@@ -126,9 +122,9 @@ class File extends SplFileInfo
     /**
      * Set name (without extension)
      * @param string $name
-     * @return self
+     * @return $this
      */
-    public function setName($name)
+    public function setName(string $name): File
     {
         $this->name = $name;
         return $this;
@@ -138,7 +134,7 @@ class File extends SplFileInfo
      * Get file extension (without leading dot)
      * @return string
      */
-    public function getExtension()
+    public function getExtension(): string
     {
         if (!$this->extension) {
             $this->extension = strtolower($this->fs->extension($this->originalName));
@@ -151,7 +147,7 @@ class File extends SplFileInfo
      * Get file name with extension
      * @return string
      */
-    public function getNameWithExtension()
+    public function getNameWithExtension(): string
     {
         return $this->getName() . '.' . $this->getExtension();
     }
@@ -160,7 +156,7 @@ class File extends SplFileInfo
      * Get mime type
      * @return string
      */
-    public function getMimeType()
+    public function getMimeType(): string
     {
         if (!$this->mimetype) {
             $finfo = new finfo(FILEINFO_MIME);
@@ -177,7 +173,7 @@ class File extends SplFileInfo
      * Get md5
      * @return string
      */
-    public function getMd5()
+    public function getMd5(): string
     {
         return md5_file($this->getPathname());
     }
@@ -186,7 +182,7 @@ class File extends SplFileInfo
      * Get image dimensions
      * @return array
      */
-    public function getDimensions()
+    public function getDimensions(): array
     {
         list($width, $height) = getimagesize($this->getPathname());
 
@@ -203,32 +199,35 @@ class File extends SplFileInfo
      * @return boolean
      * @throws FileUploadException
      * @throws \InvalidArgumentException
+     * @throws \Gumlet\ImageResizeException
      */
-    public function save($dest, $overwrite = false)
+    public function save(string $dest, bool $overwrite = false): bool
     {
         if ($this->errorCode !== UPLOAD_ERR_OK) {
             throw new FileUploadException($this->getErrorMessage());
         }
 
         if ($this->isUploaded() === false) {
-            throw new FileUploadException(FileUploadException::FILE_NOT_UPLOADED);
+            throw FileUploadException::fileNotUploaded();
         }
 
         if (!$this->fs->isDirectory($dest)) {
-            throw new \InvalidArgumentException(_message(FileUploadException::DIRECTORY_NOT_EXIST, $dest));
+            throw FileUploadException::directoryNotExists($dest);
         }
 
         if (!$this->fs->isWritable($dest)) {
-            throw new \InvalidArgumentException(_message(FileUploadException::DIRECTORY_NOT_WRITABLE, $dest));
+            throw FileUploadException::directoryNotWritable($dest);
         }
 
         $filePath = $dest . DS . $this->getNameWithExtension();
 
         if ($overwrite === false && $this->fs->exists($filePath)) {
-            throw new FileUploadException(FileUploadException::FILE_ALREADY_EXISTS);
+            throw FileUploadException::fileAlreadyExists();
         }
 
-        $this->moveUploadedFile($filePath);
+        if(!$this->moveUploadedFile($filePath)) {
+            return false;
+        }
 
         if ($this->funcName) {
             $image = new ImageResize($filePath);
@@ -246,7 +245,7 @@ class File extends SplFileInfo
      * @param array $params
      * @return self
      */
-    public function modify($funcName, $params)
+    public function modify(string $funcName, array $params): File
     {
         $this->funcName = $funcName;
         $this->params = $params;
@@ -258,7 +257,7 @@ class File extends SplFileInfo
      * Gets the error code
      * @return int
      */
-    public function getErrorCode()
+    public function getErrorCode(): int
     {
         return $this->errorCode;
     }
@@ -267,7 +266,7 @@ class File extends SplFileInfo
      * Gets the error message from code
      * @return string
      */
-    public function getErrorMessage()
+    public function getErrorMessage(): string
     {
         return $this->errorMessages[$this->errorCode];
     }
@@ -276,7 +275,7 @@ class File extends SplFileInfo
      * Tells whether the file was uploaded
      * @return bool
      */
-    public function isUploaded()
+    public function isUploaded(): bool
     {
         return is_uploaded_file($this->getPathname());
     }
@@ -286,9 +285,9 @@ class File extends SplFileInfo
      * @param string $filePath
      * @return bool
      */
-    protected function moveUploadedFile($filePath)
+    protected function moveUploadedFile(string $filePath): bool
     {
-        move_uploaded_file($this->getPathname(), $filePath);
+        return move_uploaded_file($this->getPathname(), $filePath);
     }
 
 }

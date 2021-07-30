@@ -2,23 +2,21 @@
 
 /**
  * Quantum PHP Framework
- * 
+ *
  * An open source software development framework for PHP
- * 
+ *
  * @package Quantum
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.0.0
+ * @since 2.5.0
  */
 
 namespace Quantum\Exceptions;
 
 /**
- * ViewException class
- * 
- * @package Quantum
- * @category Exceptions
+ * Class HttpException
+ * @package Quantum\Exceptions
  */
 class HttpException extends \Exception
 {
@@ -35,5 +33,32 @@ class HttpException extends \Exception
     /**
      * Unavailable request method
      */
-    const METHOD_NOT_AVAILABLE = 'Provided request method is not available';
+    const METHOD_NOT_AVAILABLE = 'Provided request method `{%1}` is not available';
+
+    /**
+     * @return \Quantum\Exceptions\HttpException
+     */
+    public static function unexpectedRequestInitialization(): HttpException
+    {
+        return new static(self::UNEXPECTED_REQUEST_INITIALIZATION, E_WARNING);
+    }
+
+    /**
+     * @return \Quantum\Exceptions\HttpException
+     */
+    public static function unexpectedResponseInitialization(): HttpException
+    {
+        return new static(self::UNEXPECTED_RESPONSE_INITIALIZATION, E_WARNING);
+    }
+
+    /**
+     * @param string $name
+     * @return \Quantum\Exceptions\HttpException
+     */
+    public static function methodNotAvailable(string $name): HttpException
+    {
+        return new static(_message(self::METHOD_NOT_AVAILABLE, $name), E_WARNING);
+    }
+
+
 }

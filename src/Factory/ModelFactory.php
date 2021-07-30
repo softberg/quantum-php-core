@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.0.0
+ * @since 2.5.0
  */
 
 namespace Quantum\Factory;
@@ -20,31 +20,30 @@ use Quantum\Mvc\QtModel;
 use Quantum\Di\Di;
 
 /**
- * ModelFactory Class
- *
- * @package Quantum
- * @category Factory
+ * Class ModelFactory
+ * @package Quantum\Factory
  */
-Class ModelFactory
+class ModelFactory
 {
 
     /**
      * Get Model
-     *
      * @param string $modelClass
-     * @return object
-     * @throws \Exception
+     * @return \Quantum\Mvc\QtModel
+     * @throws \Quantum\Exceptions\DiException
+     * @throws \Quantum\Exceptions\ModelException
+     * @throws \ReflectionException
      */
-    public function get($modelClass): QtModel
+    public function get(string $modelClass): QtModel
     {
         if (!class_exists($modelClass)) {
-            throw new ModelException(_message(ModelException::MODEL_NOT_FOUND, $modelClass));
+            throw ModelException::notFound($modelClass);
         }
 
         $model = new $modelClass(Di::get(Loader::class));
 
         if (!$model instanceof QtModel) {
-            throw new ModelException(_message(ModelException::NOT_INSTANCE_OF_MODEL, [$modelClass, QtModel::class]));
+            throw ModelException::notModelInstance([$modelClass, QtModel::class]);
         }
 
         return $model;

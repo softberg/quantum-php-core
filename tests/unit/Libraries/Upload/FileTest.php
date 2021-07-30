@@ -2,7 +2,6 @@
 
 namespace Quantum\Test\Unit {
 
-    use Mockery;
     use PHPUnit\Framework\TestCase;
     use Quantum\Di\Di;
     use Quantum\Libraries\Storage\FileSystem;
@@ -14,12 +13,12 @@ namespace Quantum\Test\Unit {
     class FileDouble extends File
     {
 
-        public function isUploaded()
+        public function isUploaded(): bool
         {
             return file_exists($this->getPathname());
         }
 
-        protected function moveUploadedFile($filePath)
+        protected function moveUploadedFile(string $filePath): bool
         {
             return copy($this->getPathname(), $filePath);
         }
@@ -28,10 +27,6 @@ namespace Quantum\Test\Unit {
 
     class FileTest extends TestCase
     {
-
-        private $request;
-        private $file;
-
         public function setUp(): void
         {
             $this->request = new Request();
@@ -64,20 +59,28 @@ namespace Quantum\Test\Unit {
 
         public function testFileConstructor()
         {
-            $this->request->create('POST', '/upload', null, $this->file);
-
-            $image = $this->request->getFile('image');
+            $image = [
+                'size' => 500,
+                'name' => 'foo.jpg',
+                'tmp_name' => dirname(__FILE__) . DS . 'php8fe1.tmp',
+                'type' => 'image/jpg',
+                'error' => 0,
+            ];
 
             $file = new File($image);
 
-            $this->assertInstanceOf('Quantum\Libraries\Upload\File', $file);
+            $this->assertInstanceOf(File::class, $file);
         }
 
         public function testGetSetName()
         {
-            $this->request->create('POST', '/upload', null, $this->file);
-
-            $image = $this->request->getFile('image');
+            $image = [
+                'size' => 500,
+                'name' => 'foo.jpg',
+                'tmp_name' => dirname(__FILE__) . DS . 'php8fe1.tmp',
+                'type' => 'image/jpg',
+                'error' => 0,
+            ];
 
             $file = new File($image);
 
@@ -90,9 +93,13 @@ namespace Quantum\Test\Unit {
 
         public function testGetExtension()
         {
-            $this->request->create('POST', '/upload', null, $this->file);
-
-            $image = $this->request->getFile('image');
+            $image = [
+                'size' => 500,
+                'name' => 'foo.jpg',
+                'tmp_name' => dirname(__FILE__) . DS . 'php8fe1.tmp',
+                'type' => 'image/jpg',
+                'error' => 0,
+            ];
 
             $file = new File($image);
 
@@ -101,9 +108,13 @@ namespace Quantum\Test\Unit {
 
         public function testGetNameWithExtension()
         {
-            $this->request->create('POST', '/upload', null, $this->file);
-
-            $image = $this->request->getFile('image');
+            $image = [
+                'size' => 500,
+                'name' => 'foo.jpg',
+                'tmp_name' => dirname(__FILE__) . DS . 'php8fe1.tmp',
+                'type' => 'image/jpg',
+                'error' => 0,
+            ];
 
             $file = new File($image);
 
@@ -112,9 +123,13 @@ namespace Quantum\Test\Unit {
 
         public function testGetMimeType()
         {
-            $this->request->create('POST', '/upload', null, $this->file);
-
-            $image = $this->request->getFile('image');
+            $image = [
+                'size' => 500,
+                'name' => 'foo.jpg',
+                'tmp_name' => dirname(__FILE__) . DS . 'php8fe1.tmp',
+                'type' => 'image/jpg',
+                'error' => 0,
+            ];
 
             $file = new File($image);
 
@@ -123,9 +138,13 @@ namespace Quantum\Test\Unit {
 
         public function testGetMd5()
         {
-            $this->request->create('POST', '/upload', null, $this->file);
-
-            $image = $this->request->getFile('image');
+            $image = [
+                'size' => 500,
+                'name' => 'foo.jpg',
+                'tmp_name' => dirname(__FILE__) . DS . 'php8fe1.tmp',
+                'type' => 'image/jpg',
+                'error' => 0,
+            ];
 
             $file = new File($image);
 
@@ -134,9 +153,13 @@ namespace Quantum\Test\Unit {
 
         public function testGetDimensions()
         {
-            $this->request->create('POST', '/upload', null, $this->file);
-
-            $image = $this->request->getFile('image');
+            $image = [
+                'size' => 500,
+                'name' => 'foo.jpg',
+                'tmp_name' => dirname(__FILE__) . DS . 'php8fe1.tmp',
+                'type' => 'image/jpg',
+                'error' => 0,
+            ];
 
             $file = new File($image);
 
@@ -145,46 +168,15 @@ namespace Quantum\Test\Unit {
             $this->assertEquals(300, $file->getDimensions()['height']);
         }
 
-        public function testUplaodWithError()
-        {
-            $file = [
-                'image' => [
-                    'size' => 500,
-                    'name' => 'foo.jpg',
-                    'tmp_name' => dirname(__FILE__) . '/php8fe1.tmp',
-                    'type' => 'image/jpg',
-                    'error' => 4,
-                ],
-            ];
-
-            $this->request->create('POST', '/upload', null, $file);
-
-            $image = $this->request->getFile('image');
-
-            $this->expectException(FileUploadException::class);
-
-            $this->expectExceptionMessage('No file was uploaded');
-
-            $file = new File($image);
-
-            $file->save(dirname(__FILE__));
-        }
-
         public function testUplaodWithoutFileSent()
         {
-            $file = [
-                'image' => [
-                    'size' => 500,
-                    'name' => 'foo.jpg',
-                    'tmp_name' => dirname(__FILE__),
-                    'type' => 'image/jpg',
-                    'error' => 0,
-                ],
+            $image = [
+                'size' => 500,
+                'name' => 'foo.jpg',
+                'tmp_name' => '/tmp',
+                'type' => 'image/jpg',
+                'error' => 0,
             ];
-
-            $this->request->create('POST', '/upload', null, $file);
-
-            $image = $this->request->getFile('image');
 
             $this->expectException(FileUploadException::class);
 
@@ -195,13 +187,19 @@ namespace Quantum\Test\Unit {
             $file->save(dirname(__FILE__));
         }
 
-        public function testUplaodAndSave()
+        public function testUploadAndSave()
         {
-            $this->request->create('POST', '/upload', null, $this->file);
-
-            $image = $this->request->getFile('image');
+            $image = [
+                'size' => 500,
+                'name' => 'foo.jpg',
+                'tmp_name' => dirname(__FILE__) . DS . 'php8fe1.tmp',
+                'type' => 'image/jpg',
+                'error' => 0,
+            ];
 
             $file = new FileDouble($image);
+
+            $this->assertInstanceOf(File::class, $file);
 
             $file->save(dirname(__FILE__));
 
@@ -210,9 +208,13 @@ namespace Quantum\Test\Unit {
 
         public function testSaveAndTryOWerwrite()
         {
-            $this->request->create('POST', '/upload', null, $this->file);
-
-            $image = $this->request->getFile('image');
+            $image = [
+                'size' => 500,
+                'name' => 'foo.jpg',
+                'tmp_name' => dirname(__FILE__) . DS . 'php8fe1.tmp',
+                'type' => 'image/jpg',
+                'error' => 0,
+            ];
 
             $file = new FileDouble($image);
 
@@ -229,9 +231,13 @@ namespace Quantum\Test\Unit {
 
         public function testSaveAndOWerwrite()
         {
-            $this->request->create('POST', '/upload', null, $this->file);
-
-            $image = $this->request->getFile('image');
+            $image = [
+                'size' => 500,
+                'name' => 'foo.jpg',
+                'tmp_name' => dirname(__FILE__) . DS . 'php8fe1.tmp',
+                'type' => 'image/jpg',
+                'error' => 0,
+            ];
 
             $file = new FileDouble($image);
 
@@ -244,9 +250,13 @@ namespace Quantum\Test\Unit {
 
         public function testModifyAndSave()
         {
-            $this->request->create('POST', '/upload', null, $this->file);
-
-            $image = $this->request->getFile('image');
+            $image = [
+                'size' => 500,
+                'name' => 'foo.jpg',
+                'tmp_name' => dirname(__FILE__) . DS . 'php8fe1.tmp',
+                'type' => 'image/jpg',
+                'error' => 0,
+            ];
 
             $file = new FileDouble($image);
 
@@ -263,19 +273,13 @@ namespace Quantum\Test\Unit {
 
         public function testGetErrorCodeAndMessage()
         {
-            $file = [
-                'image' => [
-                    'size' => 500,
-                    'name' => 'foo.jpg',
-                    'tmp_name' => dirname(__FILE__),
-                    'type' => 'image/jpg',
-                    'error' => 1,
-                ],
+            $image = [
+                'size' => 500,
+                'name' => 'foo.jpg',
+                'tmp_name' => dirname(__FILE__),
+                'type' => 'image/jpg',
+                'error' => 1,
             ];
-
-            $this->request->create('POST', '/upload', null, $file);
-
-            $image = $this->request->getFile('image');
 
             $file = new File($image);
 

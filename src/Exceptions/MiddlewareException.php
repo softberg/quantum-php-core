@@ -9,16 +9,14 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.0.0
+ * @since 2.5.0
  */
 
 namespace Quantum\Exceptions;
 
 /**
- * RouteException class
- *
- * @package Quantum
- * @category Exceptions
+ * Class MiddlewareException
+ * @package Quantum\Exceptions
  */
 class MiddlewareException extends \Exception
 {
@@ -36,4 +34,23 @@ class MiddlewareException extends \Exception
      * Middleware not found message
      */
     const MIDDLEWARE_NOT_FOUND = 'Middleware `{%1}` not found';
+
+    /**
+     * @param string $name
+     * @return \Quantum\Exceptions\MiddlewareException
+     */
+    public static function notDefined(string $name): MiddlewareException
+    {
+        return new static(_message(self::MIDDLEWARE_NOT_DEFINED, $name), E_WARNING);
+    }
+
+    /**
+     * @param string $name
+     * @return \Quantum\Exceptions\MiddlewareException
+     */
+    public static function middlewareNotFound(string $name): MiddlewareException
+    {
+        return new static(_message(self::MIDDLEWARE_NOT_FOUND, $name), E_WARNING);
+    }
+
 }

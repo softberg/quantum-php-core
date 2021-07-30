@@ -2,23 +2,21 @@
 
 /**
  * Quantum PHP Framework
- * 
+ *
  * An open source software development framework for PHP
- * 
+ *
  * @package Quantum
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 1.9.5
+ * @since 2.5.0
  */
 
 namespace Quantum\Exceptions;
 
 /**
- * ServiceException class
- * 
- * @package Quantum
- * @category Exceptions
+ * Class ServiceException
+ * @package Quantum\Exceptions
  */
 class ServiceException extends \Exception
 {
@@ -36,4 +34,31 @@ class ServiceException extends \Exception
      * Undefined method
      */
     const UNDEFINED_METHOD = 'The method `{%1}` is not defined';
+
+    /**
+     * @param string $name
+     * @return \Quantum\Exceptions\ServiceException
+     */
+    public static function serviceNotFound(string $name): ServiceException
+    {
+        return new static(_message(self::SERVICE_NOT_FOUND, $name), E_ERROR);
+    }
+
+    /**
+     * @param array $names
+     * @return \Quantum\Exceptions\ServiceException
+     */
+    public static function notServiceInstance(array $names): ServiceException
+    {
+        return new static(_message(self::NOT_INSTANCE_OF_SERVICE, $names), E_ERROR);
+    }
+
+    /**
+     * @param string $name
+     * @return \Quantum\Exceptions\ServiceException
+     */
+    public static function undefinedMethod(string $name): ServiceException
+    {
+        return new static(_message(self::UNDEFINED_METHOD, $name), E_ERROR);
+    }
 }
