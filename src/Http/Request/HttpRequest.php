@@ -172,9 +172,8 @@ abstract class HttpRequest
     }
 
     /**
-     * Check the request method
      * @param string $method
-     * @return boolean
+     * @return bool
      */
     public static function isMethod(string $method): bool
     {
