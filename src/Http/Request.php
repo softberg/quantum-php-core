@@ -8,7 +8,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.4.0
+ * @since 2.5.0
  */
 
 namespace Quantum\Http;
@@ -40,12 +40,12 @@ use Quantum\Http\Request\HttpRequest;
  * @method static bool has(string $key)
  * @method static mixed get(string $key, string $default = null, bool $raw = false)
  * @method static void set(string $key, $value)
- * @method static void all()
- * @method static array delete(string $key)
+ * @method static array all()
+ * @method static void delete(string $key)
  * @method static bool hasFile(string $key)
- * @method static \Quantum\Libraries\Upload\File getFile(string $key)
+ * @method static mixed getFile(string $key)
  * @method static bool hasHeader(string $key)
- * @method static mixed|null getHeader(string $key)
+ * @method static string|null getHeader(string $key)
  * @method static void setHeader(string $key, $value)
  * @method static array allHeaders()
  * @method static void deleteHeader(string $key)
@@ -54,7 +54,7 @@ use Quantum\Http\Request\HttpRequest;
  * @method static string|null getCSRFToken()
  * @method static string|null getAuthorizationBearer()
  * @method static bool isAjax()
- * @method static string getReferrer()
+ * @method static string|null getReferrer()
  * @method static array|null getParams()
  * @method static array|null postParams()
  * @method static array getRawInputs()

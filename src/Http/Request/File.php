@@ -73,6 +73,7 @@ trait File
     }
 
     /**
+     * Handle files
      * @param array $files
      * @return array|\Quantum\Libraries\Upload\File[]|null
      * @throws \Quantum\Exceptions\DiException
