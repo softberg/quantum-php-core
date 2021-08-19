@@ -178,13 +178,9 @@ namespace Quantum\Test\Unit {
                 'error' => 0,
             ];
 
-            $this->expectException(FileUploadException::class);
-
-            $this->expectExceptionMessage(FileUploadException::FILE_NOT_UPLOADED);
-
             $file = new File($image);
 
-            $file->save(dirname(__FILE__));
+            $this->assertFalse($file->save(dirname(__FILE__)));
         }
 
         public function testUploadAndSave()

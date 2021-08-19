@@ -33,7 +33,7 @@ class FileSystem
 
     /**
      * Is Directory
-     * @param string $directory
+     * @param string $dirname
      * @return bool
      */
     public function isDirectory(string $dirname): bool

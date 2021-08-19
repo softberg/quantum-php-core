@@ -60,7 +60,9 @@ trait Params
     /**
      * Parses the raw input parameters sent via PUT, PATCH or DELETE methods
      * @return array[]
+     * @throws \Quantum\Exceptions\DiException
      * @throws \Quantum\Exceptions\HttpException
+     * @throws \ReflectionException
      */
     private static function parsedParams(): array
     {
