@@ -75,7 +75,8 @@ function mailer(): Mailer
 }
 
 /**
- * Outputs generated CSRF token
+ * Generates the CSRF token
+ * @return string|null
  * @throws \Quantum\Exceptions\AppException
  * @throws \Quantum\Exceptions\DatabaseException
  * @throws \Quantum\Exceptions\DiException
@@ -84,7 +85,7 @@ function mailer(): Mailer
  * @throws \Quantum\Exceptions\SessionException
  * @throws \ReflectionException
  */
-function csrf_token()
+function csrf_token(): ?string
 {
     $appKey = env('APP_KEY');
 
@@ -92,7 +93,7 @@ function csrf_token()
         throw AppException::missingAppKey();
     }
 
-    echo Csrf::generateToken(session(), $appKey);
+    return Csrf::generateToken(session(), $appKey);
 }
 
 /**
