@@ -82,11 +82,10 @@ class HookDefaults implements HookInterface
     public static function updateDebuggerStore(array $data)
     {
         $currentRoute = RouteController::getCurrentRoute();
-
         $routeInfo  = [];
 
         array_walk($currentRoute, function ($value, $key) use (&$routeInfo) {
-            $routeInfo[ucfirst($key)] = $value;
+            $routeInfo[ucfirst($key)] = !is_array($value) ?: implode(',', $value);
         });
 
         $routeInfo['View'] = current_module() . DS . 'Views' . DS . $data['view'];

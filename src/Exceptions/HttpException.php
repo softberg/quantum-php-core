@@ -36,6 +36,11 @@ class HttpException extends \Exception
     const METHOD_NOT_AVAILABLE = 'Provided request method `{%1}` is not available';
 
     /**
+     * Content type not supported
+     */
+    const NOT_SUPPORTED_CONTENT_TYPE = 'The content type is not supported';
+
+    /**
      * @return \Quantum\Exceptions\HttpException
      */
     public static function unexpectedRequestInitialization(): HttpException
@@ -60,5 +65,11 @@ class HttpException extends \Exception
         return new static(_message(self::METHOD_NOT_AVAILABLE, $name), E_WARNING);
     }
 
+    /**
+     * @return static
+     */
+    public static function contentTypeNotSupported() {
+        return new static(self::NOT_SUPPORTED_CONTENT_TYPE, E_WARNING);
+    }
 
 }

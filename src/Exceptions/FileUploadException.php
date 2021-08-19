@@ -51,6 +51,11 @@ class FileUploadException extends \Exception
     const DIRECTORY_CANT_BE_CREATED = 'Directory `{%1}` could not be created';
 
     /**
+     * File type not allwed message
+     */
+    const FILE_TYPE_NOT_ALLOWED = 'The file type `{%1}` is not allowed';
+
+    /**
      * @return \Quantum\Exceptions\FileUploadException
      */
     public static function fileAlreadyExists(): FileUploadException
@@ -91,5 +96,13 @@ class FileUploadException extends \Exception
     public static function fileNotFound(string $name): FileUploadException
     {
         return new static(_message(self::UPLOADED_FILE_NOT_FOUND, $name), E_WARNING);
+    }
+
+    /**
+     * @return \Quantum\Exceptions\FileUploadException
+     */
+    public static function fileTypeNotAllowed(string $name): FileUploadException
+    {
+        return new static(_message(self::FILE_TYPE_NOT_ALLOWED, $name), E_WARNING);
     }
 }
