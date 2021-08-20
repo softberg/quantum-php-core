@@ -451,9 +451,9 @@ class HelperTest extends TestCase
     {
         putenv('APP_KEY=appkey');
 
-        csrf_token();
+        $csrfToken = csrf_token();
 
-        $this->expectOutputString(Csrf::getToken(session()));
+        $this->assertEquals(Csrf::getToken(session()), $csrfToken);
 
         Csrf::deleteToken(session());
     }

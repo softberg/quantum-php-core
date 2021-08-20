@@ -60,13 +60,13 @@ class File extends SplFileInfo
 
     /**
      * ImageResize function name
-     * @var string 
+     * @var string
      */
     protected $funcName = null;
 
     /**
      * ImageResize function arguments
-     * @var array 
+     * @var array
      */
     protected $params = [];
 
@@ -82,6 +82,18 @@ class File extends SplFileInfo
         6 => 'Missing a temporary folder',
         7 => 'Failed to write file to disk',
         8 => 'A PHP extension stopped the file upload'
+    ];
+
+    /**
+     * Blacklisted extensions
+     * @var array
+     */
+    protected $blackistedExtensions = [
+        'php([0-9])?', 'pht', 'phar', 'phpt', 'pgif', 'phtml', 'phtm', 'phps',
+        'cgi', 'inc', 'env', 'htaccess', 'htpasswd', 'config', 'conf',
+        'bat', 'exe', 'msi', 'cmd', 'dll', 'sh', 'com', 'app', 'sys', 'drv',
+        'pl', 'jar', 'jsp', 'js', 'vb', 'vbscript', 'wsf', 'asp', 'py',
+        'cer', 'csr', 'crt',
     ];
 
     /**
@@ -207,8 +219,8 @@ class File extends SplFileInfo
             throw new FileUploadException($this->getErrorMessage());
         }
 
-        if ($this->isUploaded() === false) {
-            throw FileUploadException::fileNotUploaded();
+        if (!$this->whitelisted($this->getExtension())) {
+            throw FileUploadException::fileTypeNotAllowed($this->getExtension());
         }
 
         if (!$this->fs->isDirectory($dest)) {
@@ -225,7 +237,7 @@ class File extends SplFileInfo
             throw FileUploadException::fileAlreadyExists();
         }
 
-        if(!$this->moveUploadedFile($filePath)) {
+        if (!$this->moveUploadedFile($filePath)) {
             return false;
         }
 
@@ -287,7 +299,24 @@ class File extends SplFileInfo
      */
     protected function moveUploadedFile(string $filePath): bool
     {
-        return move_uploaded_file($this->getPathname(), $filePath);
+        if ($this->isUploaded()) {
+            return move_uploaded_file($this->getPathname(), $filePath);
+        } else {
+            return $this->fs->isFile($this->getPathname()) && $this->fs->copy($this->getPathname(), $filePath);
+        }
     }
 
+    /**
+     * Whitelist the file extension
+     * @param string $extension
+     * @return bool
+     */
+    protected function whitelisted(string $extension): bool
+    {
+        if (!preg_match('/(' . implode('|', $this->blackistedExtensions) . ')$/i', $extension)) {
+            return true;
+        }
+
+        return false;
+    }
 }

@@ -34,47 +34,6 @@ function get_user_ip(): ?string
     return $user_ip;
 }
 
-/**
- * Parses raw http request
- * @param mixed $input
- * @return array
- */
-function parse_raw_http_request($input): array
-{
-    $contentType = (string)(new Server)->contentType();
-
-    $encoded_data = [];
-
-    preg_match('/boundary=(.*)$/', $contentType, $matches);
-
-    if (count($matches) > 0) {
-        $boundary = $matches[1];
-        $blocks = preg_split("/-+$boundary/", $input);
-
-        if (is_array($blocks)) {
-            array_pop($blocks);
-
-            foreach ($blocks as $id => $block) {
-                if (empty($block))
-                    continue;
-                if (strpos($block, 'application/octet-stream') !== false) {
-                    preg_match("/name=\"([^\"]*)\".*stream[\n|\r]+([^\n\r].*)?$/s", $block, $matches);
-                    if (count($matches) > 0) {
-                        $encoded_data['files'][$matches[1]] = isset($matches[2]) ? $matches[2] : '';
-                    }
-                } else {
-                    preg_match('/name=\"([^\"]*)\"[\n|\r]+([^\n\r].*)?\r$/s', $block, $matches);
-                    if (count($matches) > 0) {
-                        $encoded_data[$matches[1]] = $matches[2] ?? '';
-                    }
-                }
-            }
-        }
-    }
-
-    return $encoded_data;
-}
-
 if (!function_exists('getallheaders')) {
 
     /**

@@ -32,6 +32,12 @@ abstract class HttpRequest
     use Params;
     use File;
 
+    const CONTENT_FORM_DATA = 'multipart/form-data';
+
+    const CONTENT_JSON_PAYLOAD = 'application/json';
+
+    const CONTENT_URL_ENCODED = 'application/x-www-form-urlencoded';
+
     /**
      * Request method
      * @var string
@@ -80,14 +86,19 @@ abstract class HttpRequest
 
         self::$__headers = array_change_key_case((array)getallheaders(), CASE_LOWER);
 
+        list('params' => $params, 'files' => $files) = self::parsedParams();
+
         self::$__request = array_merge(
             self::$__request,
             self::getParams(),
             self::postParams(),
-            self::getRawInputs()
+            $params
         );
 
-        self::$__files = self::handleFiles($_FILES);
+        self::$__files = array_merge(
+            self::handleFiles($_FILES),
+            $files
+        );
     }
 
     /**

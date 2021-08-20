@@ -75,11 +75,11 @@ trait File
     /**
      * Handle files
      * @param array $files
-     * @return array|\Quantum\Libraries\Upload\File[]|null
+     * @return array|\Quantum\Libraries\Upload\File[]
      * @throws \Quantum\Exceptions\DiException
      * @throws \ReflectionException
      */
-    private static function handleFiles(array $files): ?array
+    private static function handleFiles(array $files): array
     {
         if (!count($files)) {
             return [];
@@ -87,24 +87,26 @@ trait File
 
         $key = key($files);
 
-        if ($key) {
-            if (!is_array($files[$key]['name'])) {
-                return [$key => new FileUpload($files[$key])];
-            } else {
-                $formattedFiles = [];
+        if (!$key) {
+            return [];
+        }
 
-                foreach ($files[$key]['name'] as $index => $name) {
-                    $formattedFiles[$key][$index] = new FileUpload([
-                        'name' => $name,
-                        'type' => $files[$key]['type'][$index],
-                        'tmp_name' => $files[$key]['tmp_name'][$index],
-                        'error' => $files[$key]['error'][$index],
-                        'size' => $files[$key]['size'][$index],
-                    ]);
-                }
+        if (!is_array($files[$key]['name'])) {
+            return [$key => new FileUpload($files[$key])];
+        } else {
+            $formatted = [];
 
-                return $formattedFiles;
+            foreach ($files[$key]['name'] as $index => $name) {
+                $formatted[$key][$index] = new FileUpload([
+                    'name' => $name,
+                    'type' => $files[$key]['type'][$index],
+                    'tmp_name' => $files[$key]['tmp_name'][$index],
+                    'error' => $files[$key]['error'][$index],
+                    'size' => $files[$key]['size'][$index],
+                ]);
             }
+
+            return $formatted;
         }
 
     }
