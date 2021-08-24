@@ -172,6 +172,10 @@ trait Params
             if (strpos($block, 'filename') !== false) {
                 list($nameParam, $file) = self::getParsedFile($block);
 
+                if(!$file) {
+                    continue;
+                }
+
                 $arrayParam = self::arrayParam($nameParam);
 
                 if (is_array($arrayParam)) {
@@ -216,9 +220,13 @@ trait Params
      * @throws \Quantum\Exceptions\DiException
      * @throws \ReflectionException
      */
-    private static function getParsedFile(string $block): array
+    private static function getParsedFile(string $block): ?array
     {
         list($name, $filename, $type, $content) = self::parseFileData($block);
+
+        if(!$content) {
+            return null;
+        }
 
         $fs = Di::get(FileSystem::class);
 
@@ -265,7 +273,7 @@ trait Params
     }
 
     /**
-     * Parses and returns the parmeter
+     * Parses and returns the parameter
      * @param string $block
      * @return array
      */
@@ -332,4 +340,5 @@ trait Params
 
         return $parameter;
     }
+
 }

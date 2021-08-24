@@ -9,8 +9,9 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.4.0
+ * @since 2.5.0
  */
+
 namespace Quantum\Libraries\Database\Statements;
 
 /**
@@ -20,7 +21,6 @@ namespace Quantum\Libraries\Database\Statements;
 trait Query
 {
     /**
-     * Raw execute
      * @inheritDoc
      */
     public static function execute(string $query, array $parameters = []): bool
@@ -29,7 +29,6 @@ trait Query
     }
 
     /**
-     * Raw query
      * @inheritDoc
      */
     public static function query(string $query, array $parameters = []): array
@@ -38,7 +37,6 @@ trait Query
     }
 
     /**
-     * Gets the last query executed
      * @inheritDoc
      */
     public static function lastQuery(): string
@@ -47,7 +45,6 @@ trait Query
     }
 
     /**
-     * Returns the PDOStatement instance last used
      * @inheritDoc
      */
     public static function lastStatement(): object
@@ -56,14 +53,10 @@ trait Query
     }
 
     /**
-     * Get an array containing all the queries
-     * run on a specified connection up to now.
-     *
-     * @return array
+     * @inheritDoc
      */
     public static function queryLog(): array
     {
-
         return (self::$ormClass)::get_query_log();
     }
 

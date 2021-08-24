@@ -99,6 +99,7 @@ class FileUploadException extends \Exception
     }
 
     /**
+     * @param string $name
      * @return \Quantum\Exceptions\FileUploadException
      */
     public static function fileTypeNotAllowed(string $name): FileUploadException

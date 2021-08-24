@@ -18,47 +18,7 @@ use Quantum\Http\Request\HttpRequest;
 /**
  * Class Request
  * @package Quantum\Http
- *
- * @method static void init(Server $server)
- * @method static void create(string $method, string $url, array $data = null, array $file = null)
- * @method static void flush()
- * @method static string|null getMethod()
- * @method static void setMethod(string $method)
- * @method static bool isMethod()
- * @method static string getProtocol()
- * @method static void setProtocol($protocol)
- * @method static string getHost()
- * @method static void setHost($host)
- * @method static string getPort()
- * @method static void setPort($port)
- * @method static string|null getUri()
- * @method static void setUri($uri)
- * @method static string getQuery()
- * @method static string|null getQueryParam(string $key)
- * @method static void setQueryParam(string $key, string $value)
- * @method static void setQuery($query)
- * @method static bool has(string $key)
- * @method static mixed get(string $key, string $default = null, bool $raw = false)
- * @method static void set(string $key, $value)
- * @method static array all()
- * @method static void delete(string $key)
- * @method static bool hasFile(string $key)
- * @method static mixed getFile(string $key)
- * @method static bool hasHeader(string $key)
- * @method static string|null getHeader(string $key)
- * @method static void setHeader(string $key, $value)
- * @method static array allHeaders()
- * @method static void deleteHeader(string $key)
- * @method static string|null getSegment(int $number)
- * @method static array getAllSegments()
- * @method static string|null getCSRFToken()
- * @method static string|null getAuthorizationBearer()
- * @method static bool isAjax()
- * @method static string|null getReferrer()
- * @method static array|null getParams()
- * @method static array|null postParams()
- * @method static array getRawInputs()
- * @method static array handleFiles(array $_files)
+ * @mixin HttpRequest
  */
 class Request
 {

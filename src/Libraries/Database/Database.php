@@ -22,7 +22,7 @@ use Quantum\Loader\Setup;
 /**
  * Class Database
  * @package Quantum\Libraries\Database
- * @method
+ * @mixin \Quantum\Libraries\Database\IdiormDbal
  */
 class Database
 {

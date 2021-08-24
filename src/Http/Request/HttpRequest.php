@@ -32,10 +32,19 @@ abstract class HttpRequest
     use Params;
     use File;
 
+    /**
+     * Multipart form data
+     */
     const CONTENT_FORM_DATA = 'multipart/form-data';
 
+    /**
+     * JSON payload
+     */
     const CONTENT_JSON_PAYLOAD = 'application/json';
 
+    /**
+     * URL encoded
+     */
     const CONTENT_URL_ENCODED = 'application/x-www-form-urlencoded';
 
     /**
