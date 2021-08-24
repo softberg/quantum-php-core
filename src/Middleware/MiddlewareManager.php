@@ -83,7 +83,7 @@ class MiddlewareManager
             if (current($this->middlewares)) {
                 try {
                     list($modifiedRequest, $modifiedResponse) = $this->applyMiddlewares($modifiedRequest, $modifiedResponse);
-                } catch (\TypeError $ex) {
+                } catch (MiddlewareException $e) {
                     throw MiddlewareException::middlewareNotFound(current($this->middlewares));
                 }
             }
