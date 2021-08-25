@@ -22,7 +22,12 @@ use Quantum\Loader\Setup;
 /**
  * Class Database
  * @package Quantum\Libraries\Database
- * @method
+ * @method static bool execute(string $query, array $parameters = [])
+ * @method static array query(string $query, array $parameters = [])
+ * @method static string lastQuery()
+ * @method static object lastStatement()
+ * @method static array queryLog()
+ * @mixin \Quantum\Libraries\Database\IdiormDbal
  */
 class Database
 {

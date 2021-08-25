@@ -46,6 +46,21 @@ class RouteException extends \Exception
     const INCORRECT_METHOD = 'Incorrect Method `{%1}`';
 
     /**
+     * Name can not be set before route definition messgae
+     */
+    const NAME_BEFORE_ROUTE_DEFINITION = 'Names can not be set before route definition';
+
+    /**
+     * Nam can not be set on groups message
+     */
+    const NAME_ON_GROUP = 'Name can not be set on groups message';
+
+    /**
+     * Route names should be unique message
+     */
+    const NAME_IS_NOT_UNIQUE = 'Route names should be unique';
+
+    /**
      * @return \Quantum\Exceptions\RouteException
      */
     public static function notFound(): RouteException
@@ -85,5 +100,29 @@ class RouteException extends \Exception
     public static function incorrectMethod(?string $name): RouteException
     {
         return new static(_message(self::INCORRECT_METHOD, $name), E_WARNING);
+    }
+
+    /**
+     * @return \Quantum\Exceptions\RouteException
+     */
+    public static function nameBeforeDefinition(): RouteException
+    {
+        return new static(self::NAME_BEFORE_ROUTE_DEFINITION);
+    }
+
+    /**
+     * @return \Quantum\Exceptions\RouteException
+     */
+    public static function nameOnGroup(): RouteException
+    {
+        return new static(self::NAME_ON_GROUP);
+    }
+
+    /**
+     * @return \Quantum\Exceptions\RouteException
+     */
+    public static function nonUniqueName(): RouteException
+    {
+        return new static(self::NAME_IS_NOT_UNIQUE);
     }
 }

@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.0.0
+ * @since 2.5.0
  */
 
 namespace Quantum\Factory;
@@ -19,20 +19,21 @@ use Quantum\Mvc\QtView;
 /**
  * Class ViewFactory
  * @package Quantum\Factory
+ * @mixin QtView
  */
-Class ViewFactory
+class ViewFactory
 {
 
     /**
      * Instance of QtView
-     * @var QtView 
+     * @var QtView|null
      */
     private static $viewInstance = null;
 
+
     /**
-     * GetInstance
-     *
-     * @return QtView
+     * QtView Instance
+     * @return \Quantum\Mvc\QtView|null
      */
     public static function getInstance()
     {
@@ -44,12 +45,12 @@ Class ViewFactory
     }
 
     /**
-     * __call magic 
-     * 
+     * __call magic
      * @param string $method
-     * @param array $args
+     * @param array|null $args
+     * @return mixed
      */
-    public function __call($method, $args = null)
+    public function __call(string $method, ?array $args = null)
     {
         return self::getInstance()->{$method}(...$args);
     }

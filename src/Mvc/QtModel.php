@@ -94,7 +94,7 @@ abstract class QtModel
     }
 
     /**
-     * Allows to access to models property
+     * Allows to access to model property
      * @param string $property
      * @return mixed
      */

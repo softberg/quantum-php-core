@@ -18,7 +18,6 @@ use Quantum\Http\Request\HttpRequest;
 /**
  * Class Request
  * @package Quantum\Http
- *
  * @method static void init(Server $server)
  * @method static void create(string $method, string $url, array $data = null, array $file = null)
  * @method static void flush()
@@ -59,6 +58,7 @@ use Quantum\Http\Request\HttpRequest;
  * @method static array|null postParams()
  * @method static array getRawInputs()
  * @method static array handleFiles(array $_files)
+ * @mixin HttpRequest
  */
 class Request
 {

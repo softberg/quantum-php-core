@@ -73,7 +73,7 @@ function current_route(): ?string
  * Gets current route args
  * @return array
  */
-function current_route_args(): array
+function route_args(): array
 {
     return array_values(RouteController::getCurrentRoute()['args']) ?? [];
 }
@@ -82,7 +82,7 @@ function current_route_args(): array
  * Gets current route pattern
  * @return string
  */
-function current_route_pattern(): string
+function route_pattern(): string
 {
     return RouteController::getCurrentRoute()['pattern'] ?? '';
 }
@@ -91,7 +91,7 @@ function current_route_pattern(): string
  * Gets current route method
  * @return string
  */
-function current_route_method(): string
+function route_method(): string
 {
     return RouteController::getCurrentRoute()['method'] ?? '';
 }
@@ -100,8 +100,17 @@ function current_route_method(): string
  * Gets the current route uri
  * @return string
  */
-function current_route_uri(): string
+function route_uri(): string
 {
     return RouteController::getCurrentRoute()['uri'] ?? '';
+}
+
+/**
+ * Gets the current route name
+ * @return string|null
+ */
+function route_name(): ?string
+{
+    return RouteController::getCurrentRoute()['name'] ?? null;
 }
 

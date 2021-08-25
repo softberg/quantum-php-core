@@ -64,9 +64,9 @@ class HookDefaults implements HookInterface
 
         $definedFunctions = get_defined_functions();
 
-        $allDefinedFuncitons = array_merge($definedFunctions['internal'], $definedFunctions['user']);
+        $allDefinedFunctions = array_merge($definedFunctions['internal'], $definedFunctions['user']);
 
-        foreach ($allDefinedFuncitons as $function) {
+        foreach ($allDefinedFunctions as $function) {
             if (function_exists($function)) {
                 $twig->addFunction(new TwigFunction($function, $function));
             }

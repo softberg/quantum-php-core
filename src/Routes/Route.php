@@ -9,11 +9,12 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.0.0
+ * @since 2.5.0
  */
 
 namespace Quantum\Routes;
 
+use Quantum\Exceptions\RouteException;
 use Closure;
 
 /**
@@ -24,6 +25,7 @@ use Closure;
  * @package Quantum
  * @category Routes
  */
+
 class Route
 {
 
@@ -34,9 +36,8 @@ class Route
     private $module;
 
     /**
-     * Identifies the group middleware 
-     *
-     * @var boolean
+     * Identifies the group middleware
+     * @var bool
      */
     private $isGroupeMiddlewares;
 
@@ -68,7 +69,7 @@ class Route
      * Class constructor
      * @param string $module
      */
-    public function __construct($module)
+    public function __construct(string $module)
     {
         $this->virtualRoutes['*'] = [];
         $this->module = $module;
@@ -81,7 +82,7 @@ class Route
      * @param array $params
      * @return $this
      */
-    public function add($route, $method, ...$params)
+    public function add(string $route, string $method, ...$params): self
     {
         $this->currentRoute = [
             'route' => $route,
@@ -89,7 +90,7 @@ class Route
             'module' => $this->module
         ];
 
-        if(is_callable($params[0])) {
+        if (is_callable($params[0])) {
             $this->currentRoute['callback'] = $params[0];
         } else {
             $this->currentRoute['controller'] = $params[0];
@@ -101,6 +102,7 @@ class Route
         } else {
             $this->virtualRoutes['*'][] = $this->currentRoute;
         }
+
         return $this;
     }
 
@@ -110,9 +112,9 @@ class Route
      * @param array $params
      * @return $this
      */
-    public function get($route, ...$params)
+    public function get(string $route, ...$params): self
     {
-        return $this->add($route,'GET', ...$params);
+        return $this->add($route, 'GET', ...$params);
     }
 
     /**
@@ -121,9 +123,9 @@ class Route
      * @param array $params
      * @return $this
      */
-    public function post($route, ...$params)
+    public function post(string $route, ...$params): self
     {
-        return $this->add($route,'POST', ...$params);
+        return $this->add($route, 'POST', ...$params);
     }
 
     /**
@@ -132,7 +134,7 @@ class Route
      * @param Closure $callback
      * @return $this
      */
-    public function group(string $groupName, Closure $callback)
+    public function group(string $groupName, Closure $callback): self
     {
         $this->currentGroupName = $groupName;
 
@@ -148,8 +150,9 @@ class Route
     /**
      * Adds middlewares to routes and route groups
      * @param array $middlewares
+     * @return $this
      */
-    public function middlewares(array $middlewares = [])
+    public function middlewares(array $middlewares = []): self
     {
         if (!$this->isGroupe) {
             end($this->virtualRoutes['*']);
@@ -178,16 +181,48 @@ class Route
                 }
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * Sets a unique name for a route
+     * @param string $name
+     * @return $this
+     * @throws \Quantum\Exceptions\RouteException
+     */
+    public function name(string $name): self
+    {
+        if (empty($this->currentRoute)) {
+            throw RouteException::nameBeforeDefinition();
+        }
+
+        if ($this->isGroupeMiddlewares) {
+            throw RouteException::nameOnGroup();
+        }
+
+        foreach ($this->virtualRoutes as &$virtualRoute) {
+            foreach ($virtualRoute as &$route) {
+                if (isset($route['name']) && $route['name'] == $name) {
+                    throw RouteException::nonUniqueName();
+                }
+
+                if ($route['route'] == $this->currentRoute['route']) {
+                    $route['name'] = $name;
+                }
+            }
+        }
+
+        return $this;
     }
 
     /**
      * Gets the run-time routes
      * @return array
      */
-    public function getRuntimeRoutes()
+    public function getRuntimeRoutes(): array
     {
         $runtimeRoutes = [];
-
         foreach ($this->virtualRoutes as $virtualRoute) {
             foreach ($virtualRoute as $route) {
                 $runtimeRoutes[] = $route;
@@ -200,7 +235,7 @@ class Route
      * Gets the virtual routes
      * @return array
      */
-    public function getVirtualRoutes()
+    public function getVirtualRoutes(): array
     {
         return $this->virtualRoutes;
     }

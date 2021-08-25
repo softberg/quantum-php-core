@@ -48,7 +48,7 @@ class MvcManager
                 list($request, $response) = (new MiddlewareManager())->applyMiddlewares($request, $response);
             }
 
-            $routeArgs = current_route_args();
+            $routeArgs = route_args();
             $callback = route_callback();
 
             if ($callback) {

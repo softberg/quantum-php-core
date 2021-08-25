@@ -214,19 +214,19 @@ class HelperTest extends TestCase
 
         $this->assertEquals('api-signin', current_route());
 
-        $this->assertEmpty(current_route_args());
+        $this->assertEmpty(route_args());
 
         $this->request->create('GET', 'http://testdomain.com/api-user/12');
 
         $this->router->findRoute();
 
-        $this->assertEquals([12], current_route_args());
+        $this->assertEquals([12], route_args());
 
-        $this->assertEquals('(\/)?api-user(\/)([0-9]+)', current_route_pattern());
+        $this->assertEquals('(\/)?api-user(\/)([0-9]+)', route_pattern());
 
-        $this->assertEquals('GET', current_route_method());
+        $this->assertEquals('GET', route_method());
 
-        $this->assertEquals('api-user/12', current_route_uri());
+        $this->assertEquals('api-user/12', route_uri());
     }
 
     public function testView()

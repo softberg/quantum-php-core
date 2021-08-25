@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.0.0
+ * @since 2.5.0
  */
 
 namespace Quantum\Http;
@@ -19,7 +19,6 @@ use Quantum\Http\Response\HttpResponse;
 /**
  * Class Response
  * @package Quantum\Http
- *
  * @method static void init()
  * @method static void flush()
  * @method static void send()
@@ -43,6 +42,7 @@ use Quantum\Http\Response\HttpResponse;
  * @method static void deleteHeader(string $key)
  * @method static void setContentType(string $contentType)
  * @method static string|null getContentType()
+ * @mixin HttpResponse
  */
 class Response
 {
