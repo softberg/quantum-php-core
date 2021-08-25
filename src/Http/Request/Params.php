@@ -71,7 +71,7 @@ trait Params
             'files' => []
         ];
 
-        if (in_array(self::$__method, ['PUT', 'PATCH', 'DELETE'])) {
+        if (in_array(self::$__method, ['PUT', 'PATCH'])) {
 
             $rawInput = file_get_contents('php://input');
 
