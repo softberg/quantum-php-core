@@ -1,45 +1,53 @@
 <?php
 
-namespace Quantum\Test\Unit;
+namespace Quantum\Services {
 
-use Mockery;
-use PHPUnit\Framework\TestCase;
-use Quantum\Exceptions\ServiceException;
-use Quantum\Mvc\QtService;
-use Quantum\Libraries\Storage\FileSystem;
-use Quantum\Loader\Loader;
 
-/**
- * @runTestsInSeparateProcesses
- * @preserveGlobalState disabled
- */
-class QtServiceTest extends TestCase
-{
+    use Quantum\Mvc\QtService;
 
-    public function setUp(): void
+    class TestingService extends QtService
     {
-        $loader = new Loader(new FileSystem);
 
-        $loader->loadDir(dirname(__DIR__, 3) . DS . 'src' . DS . 'Helpers' . DS . 'functions');
     }
 
-    public function testGetInstance()
-    {
-        $this->assertInstanceOf('Quantum\Mvc\QtService', QtService::getInstance());
-    }
+}
+
+namespace Quantum\Test\Unit {
+
+    use PHPUnit\Framework\TestCase;
+    use Quantum\Exceptions\ServiceException;
+    use Quantum\Factory\ServiceFactory;
+    use Quantum\Libraries\Storage\FileSystem;
+    use Quantum\Loader\Loader;
+    use Quantum\Services\TestingService;
 
     /**
-     * @runInSeparateProcess
+     * @runTestsInSeparateProcesses
+     * @preserveGlobalState disabled
      */
-    public function testMissingeMethods()
+    class QtServiceTest extends TestCase
     {
-        $this->expectException(ServiceException::class);
 
-        $this->expectExceptionMessage('The method `undefinedMethod` is not defined');
+        public function setUp(): void
+        {
+            $loader = new Loader(new FileSystem);
 
-        $service = QtService::getInstance();
+            $loader->loadDir(dirname(__DIR__, 3) . DS . 'src' . DS . 'Helpers' . DS . 'functions');
+        }
 
-        $service->undefinedMethod();
+        /**
+         * @runInSeparateProcess
+         */
+        public function testMissingeMethods()
+        {
+            $this->expectException(ServiceException::class);
+
+            $this->expectExceptionMessage('The method `undefinedMethod` is not defined');
+
+            $service = (new ServiceFactory)->get(TestingService::class);
+
+            $service->undefinedMethod();
+        }
+
     }
-
 }

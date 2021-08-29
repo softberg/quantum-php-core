@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.0.0
+ * @since 2.5.0
  */
 
 namespace Quantum\Loader;
@@ -18,9 +18,8 @@ use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Exceptions\LoaderException;
 
 /**
- * Loader Class
- * @package Quantum
- * @category Loader
+ * Class Loader
+ * @package Quantum\Loader
  */
 class Loader
 {
@@ -56,13 +55,13 @@ class Loader
 
     /**
      * File System
-     * @var FileSystem
+     * @var \Quantum\Libraries\Storage\FileSystem
      */
     private $fs;
-    
+
     /**
      * Class constructor
-     * @param FileSystem $fs
+     * @param \Quantum\Libraries\Storage\FileSystem|null $fs
      */
     public function __construct(FileSystem $fs = null)
     {
@@ -74,7 +73,7 @@ class Loader
      * @param Setup $setup
      * @return $this
      */
-    public function setup(Setup $setup)
+    public function setup(Setup $setup): Loader
     {
         $this->hierarchical = $setup->getHierarchy();
         $this->module = $setup->getModule();
@@ -91,10 +90,9 @@ class Loader
      * @param mixed $value
      * @return $this
      */
-    public function set($property, $value)
+    public function set(string $property, $value): Loader
     {
         $this->$property = $value;
-        
         return $this;
     }
 
@@ -103,7 +101,7 @@ class Loader
      * @param string $dir
      * @throws LoaderException
      */
-    public function loadDir($dir)
+    public function loadDir(string $dir)
     {
         foreach ($this->fs->glob($dir . DS . "*.php") as $filename) {
             $this->loadFile($filename);
@@ -115,7 +113,7 @@ class Loader
      * @param string $path
      * @throws LoaderException
      */
-    public function loadFile($path)
+    public function loadFile(string $path)
     {
         if (!$this->fs->exists($path)) {
             throw new LoaderException(_message($this->exceptionMessage, $path));
@@ -139,13 +137,14 @@ class Loader
      * @return string
      * @throws LoaderException
      */
-    private function getFilePath()
+    public function getFilePath(): string
     {
         $filePath = modules_dir() . DS . $this->module . DS . ucfirst($this->env) . DS . $this->fileName . '.php';
 
-        if (!file_exists($filePath)) {
+        if (!$this->fs->exists($filePath)) {
             if ($this->hierarchical) {
                 $filePath = base_dir() . DS . $this->env . DS . $this->fileName . '.php';
+
                 if (!$this->fs->exists($filePath)) {
                     throw new LoaderException(_message($this->exceptionMessage, $this->fileName));
                 }

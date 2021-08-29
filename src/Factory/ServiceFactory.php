@@ -35,55 +35,59 @@ class ServiceFactory
     /**
      * Creates and initiates the service once
      * @param string $serviceClass
+     * @param array $args
      * @return \Quantum\Mvc\QtService
      * @throws \Quantum\Exceptions\DiException
      * @throws \Quantum\Exceptions\ServiceException
      * @throws \ReflectionException
      */
-    public function get(string $serviceClass): QtService
+    public function get(string $serviceClass, array $args = []): QtService
     {
-        return $this->locate($serviceClass);
+        return $this->locate($serviceClass, $args);
     }
 
     /**
      * Creates and initiates the service
      * @param string $serviceClass
+     * @param array $args
      * @return \Quantum\Mvc\QtService
      * @throws \Quantum\Exceptions\DiException
      * @throws \Quantum\Exceptions\ServiceException
      * @throws \ReflectionException
      */
-    public function create(string $serviceClass): QtService
+    public function create(string $serviceClass, array $args = []): QtService
     {
-        return $this->instantiate($serviceClass);
+        return $this->instantiate($serviceClass, $args);
     }
 
     /**
      * Locates the service
      * @param string $serviceClass
+     * @param array $args
      * @return \Quantum\Mvc\QtService
      * @throws \Quantum\Exceptions\DiException
      * @throws \Quantum\Exceptions\ServiceException
      * @throws \ReflectionException
      */
-    private function locate(string $serviceClass): QtService
+    private function locate(string $serviceClass, array $args = []): QtService
     {
         if (isset($this->instantiated[$serviceClass])) {
             return $this->instantiated[$serviceClass];
         }
 
-        return $this->instantiate($serviceClass);
+        return $this->instantiate($serviceClass, $args);
     }
 
     /**
      * Instantiates the service
      * @param string $serviceClass
+     * @param array $args
      * @return \Quantum\Mvc\QtService
      * @throws \Quantum\Exceptions\DiException
      * @throws \Quantum\Exceptions\ServiceException
      * @throws \ReflectionException
      */
-    private function instantiate(string $serviceClass): QtService
+    private function instantiate(string $serviceClass, array $args = []): QtService
     {
         if (!class_exists($serviceClass)) {
             throw ServiceException::serviceNotFound($serviceClass);
@@ -98,45 +102,23 @@ class ServiceFactory
         $this->instantiated[$serviceClass] = $service;
 
         if (method_exists($service, '__init')) {
-            $service->__init(...$this->getArgs($service));
+            call_user_func_array([$service, '__init'], $this->getArgs([$service, '__init'], $args));
         }
 
         return $service;
+
     }
 
     /**
      * Gets arguments
-     * @param \Quantum\Mvc\QtService $service
+     * @param callable $callable
+     * @param array $args
      * @return array
      * @throws \Quantum\Exceptions\DiException
      * @throws \ReflectionException
      */
-    private function getArgs(QtService $service): array
+    private function getArgs(callable $callable, array $args): array
     {
-        $arguments = [];
-        $args = [];
-
-        $reflection = new \ReflectionMethod($service, '__init');
-        $params = $reflection->getParameters();
-
-        foreach ($params as $param) {
-            $paramType = $param->getType();
-
-            if ($paramType) {
-                switch ($paramType) {
-                    case ModelFactory::class:
-                        array_push($args, Di::get(ModelFactory::class));
-                        break;
-                    case Loader::class:
-                        array_push($args, Di::get(Loader::class));
-                        break;
-                    default :
-                        array_push($args, current($arguments));
-                        next($arguments);
-                }
-            }
-        }
-
-        return $args;
+        return Di::autowire($callable, $args);
     }
 }
