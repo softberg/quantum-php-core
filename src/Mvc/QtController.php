@@ -25,25 +25,6 @@ class QtController extends RouteController
 {
 
     /**
-     * Instance of QtController
-     * @var QtController
-     */
-    private static $instance;
-
-    /**
-     * Gets the QtController singleton instance
-     * @return QtController
-     */
-    public static function getInstance(): QtController
-    {
-        if (self::$instance === null) {
-            self::$instance = new self();
-        }
-
-        return self::$instance;
-    }
-
-    /**
      * Handles the missing methods of the controller
      * @param string $method
      * @param array $arguments

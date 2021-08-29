@@ -35,9 +35,12 @@ class MvcManager
      * @param \Quantum\Http\Response $response
      * @throws \Quantum\Exceptions\ControllerException
      * @throws \Quantum\Exceptions\CsrfException
+     * @throws \Quantum\Exceptions\DatabaseException
      * @throws \Quantum\Exceptions\DiException
+     * @throws \Quantum\Exceptions\LoaderException
      * @throws \Quantum\Exceptions\MiddlewareException
      * @throws \Quantum\Exceptions\ModelException
+     * @throws \Quantum\Exceptions\SessionException
      * @throws \ReflectionException
      */
     public static function handle(Request $request, Response $response)
@@ -120,7 +123,7 @@ class MvcManager
     }
 
     /**
-     * Get Args
+     * Get arguments
      * @param callable $callable
      * @param array $routeArgs
      * @return array

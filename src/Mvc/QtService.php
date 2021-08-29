@@ -19,29 +19,10 @@ use Quantum\Exceptions\ServiceException;
 /**
  * Class QtService
  * @package Quantum\Mvc
- * @method void __init(...$args)
+ * @method void __init()
  */
 class QtService
 {
-
-    /**
-     * Instance of QtService
-     * @var \Quantum\Mvc\QtService
-     */
-    private static $instance;
-
-    /**
-     * Gets the QtService singleton instance
-     * @return \Quantum\Mvc\QtService
-     */
-    public static function getInstance(): QtService
-    {
-        if (self::$instance === null) {
-            self::$instance = new static();
-        }
-
-        return self::$instance;
-    }
 
     /**
      * Handles the missing methods of the service
