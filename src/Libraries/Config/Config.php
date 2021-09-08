@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.4.0
+ * @since 2.6.0
  */
 
 namespace Quantum\Libraries\Config;
@@ -19,6 +19,7 @@ use Quantum\Contracts\StorageInterface;
 use Dflydev\DotAccessData\Data;
 use Quantum\Loader\Loader;
 use Quantum\Loader\Setup;
+use Quantum\Di\Di;
 
 /**
  * Class Config
@@ -54,30 +55,32 @@ class Config implements StorageInterface
 
     /**
      * Loads configuration
-     * @param \Quantum\Loader\Loader $loader
-     * @throws \Quantum\Exceptions\LoaderException
+     * @param \Quantum\Loader\Setup $setup
+     * @throws \Quantum\Exceptions\DiException
+     * @throws \ReflectionException
      */
-    public function load(Loader $loader)
+    public function load(Setup $setup)
     {
         if (empty(self::$configs)) {
-            self::$configs = $loader->setup(new Setup('config', 'config', true))->load();
+            self::$configs = Di::get(Loader::class)->setup($setup)->load();
         }
     }
 
     /**
      * Imports new config file
-     * @param \Quantum\Loader\Loader $loader
+     * @param \Quantum\Loader\Setup $setup
      * @param string $fileName
      * @throws \Quantum\Exceptions\ConfigException
-     * @throws \Quantum\Exceptions\LoaderException
+     * @throws \Quantum\Exceptions\DiException
+     * @throws \ReflectionException
      */
-    public function import(Loader $loader, string $fileName)
+    public function import(Setup $setup, string $fileName)
     {
         if ($this->has($fileName)) {
             throw new ConfigException(_message(ConfigException::CONFIG_COLLISION, $fileName));
         }
 
-        self::$configs[$fileName] = $loader->load();
+        self::$configs[$fileName] = Di::get(Loader::class)->setup($setup)->load();
     }
 
     /**

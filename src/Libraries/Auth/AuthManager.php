@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.4.0
+ * @since 2.6.0
  */
 
 namespace Quantum\Libraries\Auth;
@@ -38,11 +38,10 @@ class AuthManager
     /**
      * Get Handler
      * @param \Quantum\Loader\Loader $loader
-     * @return \Quantum\Libraries\Auth\ApiAuth|\Quantum\Libraries\Auth\WebAuth
+     * @return \Quantum\Libraries\Auth\ApiAuth|\Quantum\Libraries\Auth\WebAuth|void
      * @throws \Quantum\Exceptions\AuthException
      * @throws \Quantum\Exceptions\ConfigException
      * @throws \Quantum\Exceptions\DiException
-     * @throws \Quantum\Exceptions\LoaderException
      * @throws \ReflectionException
      */
     public static function getHandler(Loader $loader)
@@ -63,21 +62,17 @@ class AuthManager
     }
 
     /**
-     * Auth Service
+     * Gets the auth service
      * @param \Quantum\Loader\Loader $loader
      * @return \Quantum\Libraries\Auth\AuthServiceInterface
      * @throws \Quantum\Exceptions\ConfigException
      * @throws \Quantum\Exceptions\DiException
-     * @throws \Quantum\Exceptions\LoaderException
      * @throws \ReflectionException
      */
     public static function authService(Loader $loader): AuthServiceInterface
     {
         if (!config()->has('auth')) {
-
-            $loader->setup(new Setup('config', 'auth'));
-
-            config()->import($loader, 'auth');
+            config()->import(new Setup('config', 'auth'), 'auth');
         }
 
         self::$authType = config()->get('auth.type');
