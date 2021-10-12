@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.5.0
+ * @since 2.6.0
  */
 
 namespace Quantum\Debugger;
@@ -101,21 +101,46 @@ class Debugger
     }
 
     /**
-     * Adds data to store
+     * Adds data to the store cell
      * @param string $cell
      * @param string $level
      * @param mixed $data
      */
     public static function addToStore(string $cell, string $level, $data)
     {
-        if(!empty($data)) {
-            array_push(self::$store[$cell], [$level => $data]);
+        if (!empty($data)) {
+            self::$store[$cell][] = [$level => $data];
         }
+    }
+
+    /**
+     * Updates the data into the store cell
+     * @param string $cell
+     * @param string $level
+     * @param mixed $data
+     */
+    public static function updateStoreCell(string $cell, string $level, $data)
+    {
+        if (current(self::$store[$cell])) {
+            $cellData = array_merge(current(self::$store[$cell])[$level], $data);
+            self::clearStoreCell($cell);
+            self::addToStore($cell, $level, $cellData);
+        }
+    }
+
+    /**
+     * Clears the store cell
+     * @param string $cell
+     */
+    public static function clearStoreCell(string $cell)
+    {
+        self::$store[$cell] = [];
     }
 
     /**
      * Renders the debug bar
      * @return string
+     * @throws \DebugBar\DebugBarException
      */
     public function render(): string
     {
@@ -136,7 +161,7 @@ class Debugger
      */
     protected function createTab(string $type)
     {
-        if(!$this->debugbar->hasCollector($type)) {
+        if (!$this->debugbar->hasCollector($type)) {
             $this->debugbar->addCollector(new MessagesCollector($type));
         }
 
