@@ -9,125 +9,149 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 1.9.9
+ * @since 2.6.0
  */
 
 namespace Quantum\Libraries\Asset;
 
+use Quantum\Exceptions\AssetException;
+
 /**
  * Class AssetManager
- *
  * @package Quantum\Libraries\Asset
  */
 class AssetManager
 {
 
     /**
-     * CSS Assets
+     * CSS assets store
+     */
+    const CSS_STORE = 1;
+
+    /**
+     * JS assets store
+     */
+    const JS_STORE = 2;
+
+    /**
+     * Asset storage
+     * @var array[][]
+     */
+    private $storage = [];
+
+    /**
+     * Published assets
      * @var array
      */
-    private static $cssAssetStore = [
-        'ordered' => [],
-        'unordered' => [],
+    private $published = [];
+
+    /**
+     * Asset templates
+     * @var string[]
+     */
+    private $templates = [
+        self::CSS_STORE => '<link rel="stylesheet" type="text/css" href="{%1}">',
+        self::JS_STORE => '<script src="{%1}"></script>',
     ];
 
     /**
-     * JS Assets
-     * @var array 
+     * Asset instance
+     * @var \Quantum\Libraries\Asset\AssetManager|null
      */
-    private static $jsAssetStore = [
-        'ordered' => [],
-        'unordered' => [],
-    ];
+    private static $instance = null;
 
     /**
-     * Register CSS
-     * 
-     * @param array $cssAssets
+     * AssetManager instance
+     * @return \Quantum\Libraries\Asset\AssetManager|null
      */
-    public static function registerCSS($cssAssets = [])
+    public static function getInstance(): ?AssetManager
     {
-        self::register($cssAssets, self::$cssAssetStore);
+        if (self::$instance == null) {
+            self::$instance = new self();
+        }
+
+        return self::$instance;
     }
 
     /**
-     * Register JS
-     * 
-     * @param array $jsAssets
+     * Registers assets
+     * @param \Quantum\Libraries\Asset\Asset[] $assets
      */
-    public static function registerJS($jsAssets = [])
-    {
-        self::register($jsAssets, self::$jsAssetStore);
-    }
-
-    /**
-     * Publish CSS
-     * 
-     * @return array
-     */
-    public static function publishCSS()
-    {
-        return self::publish(self::$cssAssetStore);
-    }
-
-    /**
-     * Publish JS
-     * @return array
-     */
-    public static function publishJS()
-    {
-        return self::publish(self::$jsAssetStore);
-    }
-
-    /**
-     * Register 
-     * 
-     * @param array $assets
-     * @param array $assetStore
-     */
-    private static function register($assets, &$assetStore)
+    public function register(array $assets)
     {
         foreach ($assets as $asset) {
-            if (is_array($asset)) {
-                $assetStore['ordered'][$asset[1]] = $asset[0];
-            } else {
-                $assetStore['unordered'][] = $asset;
+            $this->storage[] = $asset;
+        }
+    }
+
+    /**
+     * Dumps the assets
+     * @param int $type
+     * @throws \Quantum\Exceptions\AssetException
+     */
+    public function dump(int $type)
+    {
+        if (empty($this->published)) {
+            $this->publish();
+        }
+
+        if (count($this->published[$type])) {
+            foreach ($this->published[$type] as $path) {
+                echo _message($this->templates[$type], $this->url($path)) . PHP_EOL;
             }
         }
     }
 
     /**
-     * Publish 
-     * @param array $assets
-     * @return array
+     * Asset url
+     * @param string $path
+     * @return string
      */
-    private static function publish($assets)
+    public function url(string $path): string
     {
-        foreach ($assets['unordered'] as $key => $value) {
-            if (isset($assets['ordered'][$key])) {
-                self::setPosition($assets['ordered'], $key + 1, $value);
-            } else {
-                $assets['ordered'][$key] = $value;
-            }
-        }
-        ksort($assets['ordered']);
-
-        return $assets['ordered'];
+        return base_url() . '/assets/' . $path;
     }
 
     /**
-     * Set Position
-     * 
-     * @param array $arr
-     * @param int $key
-     * @param mixed $value
+     * Publishes assets
+     * @throws \Quantum\Exceptions\AssetException
      */
-    private static function setPosition(&$arr, $key, $value)
+    private function publish()
     {
-        if (isset($arr[$key])) {
-            self::setPosition($arr, $key + 1, $value);
+        if ($this->storage) {
+            foreach ($this->storage as $asset) {
+                if ($asset->getPosition() != -1) {
+                    if (isset($this->published[$asset->getType()][$asset->getPosition()])) {
+                        throw AssetException::positionInUse($asset->getPosition(), $asset->getPath());
+                    }
+
+                    $this->published[$asset->getType()][$asset->getPosition()] = $asset->getPath();
+                }
+            }
+
+            foreach ($this->storage as $asset) {
+                if ($asset->getPosition() == -1) {
+                    $this->setPosition($asset->getType(), 0, $asset->getPath());
+                }
+            }
+
+            ksort($this->published[self::CSS_STORE]);
+            ksort($this->published[self::JS_STORE]);
+        }
+    }
+
+    /**
+     * Sets the Position
+     * @param int $type
+     * @param int $index
+     * @param string $value
+     */
+    private function setPosition(int $type, int $index, string $value)
+    {
+        if (isset($this->published[$type][$index])) {
+            $this->setPosition($type, $index + 1, $value);
         } else {
-            $arr[$key] = $value;
+            $this->published[$type][$index] = $value;
         }
     }
 
