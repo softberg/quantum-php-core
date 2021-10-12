@@ -9,12 +9,13 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.5.0
+ * @since 2.6.0
  */
 
 namespace Quantum\Hooks;
 
-use Quantum\Exceptions\HookException;
+use Quantum\Libraries\Storage\FileSystem;
+use Quantum\Di\Di;
 
 /**
  * Class HookManager
@@ -24,85 +25,46 @@ class HookManager
 {
 
     /**
-     * Finds and calls the defined class method
+     * @var \Quantum\Hooks\HookManager|null
+     */
+    private static $instance = null;
+
+    /**
+     * @return \Quantum\Hooks\HookManager|null
+     */
+    public static function getInstance(): ?HookManager
+    {
+        if (self::$instance == null) {
+            self::$instance = new self();
+        }
+
+        return self::$instance;
+    }
+
+    /**
      * @param string $hookName
-     * @param array $args
-     * @param string|null $alternativePath
-     * @return mixed
-     * @throws \Quantum\Exceptions\HookException
+     * @throws \Quantum\Exceptions\DiException
      * @throws \ReflectionException
      */
-    public static function call(string $hookName, array $args = [], string $alternativePath = null)
+    public function __invoke(string $hookName)
     {
-        $hookImplementer = self::hasImplementer($hookName);
+        $fs = Di::get(FileSystem::class);
 
-        if (!empty($hookImplementer)) {
-            $implementerClass = '\\Hooks\\' . $hookImplementer;
-            $implementer = new $implementerClass();
-            $implementer->$hookName($args);
-        } else {
-            $defaultImplementer = self::hasDefaultImplementer($hookName, $alternativePath);
+        if ($fs->exists(hooks_dir() . DS . $hookName . '.php')) {
+            $className = '\\Hooks\\' . ucfirst($hookName);
 
-            if ($defaultImplementer) {
-                return $defaultImplementer::$hookName($args);
-            } else {
-                throw HookException::undeclaredHookName($hookName);
+            if (class_exists($className, true)) {
+                $this->handleHook(new $className);
             }
         }
     }
 
     /**
-     * Finds the implementer
-     * @param string $hookName
-     * @return string|null
-     * @throws \Quantum\Exceptions\HookException
-     * @throws \ReflectionException
+     * @param \Quantum\Hooks\HookInterface $hook
      */
-    private static function hasImplementer(string $hookName): ?string
+    private function handleHook(HookInterface $hook)
     {
-        $classNames = get_directory_classes(BASE_DIR . DS . 'hooks');
-
-        $duplicates = 0;
-
-        $hookImplementer = null;
-
-        foreach ($classNames as $className) {
-            $implementerClass = '\\Hooks\\' . $className;
-            if (class_exists($implementerClass, true)) {
-                $class = new \ReflectionClass('\\Hooks\\' . $className);
-                if ($class->implementsInterface('Quantum\\Hooks\\HookInterface')) {
-                    if ($class->hasMethod($hookName)) {
-                        $hookImplementer = $className;
-                        $duplicates++;
-                    }
-                }
-            }
-        }
-
-        if ($duplicates > 1) {
-            throw HookException::duplicateHookImplementer();
-        }
-
-        return $hookImplementer;
-    }
-
-    /**
-     * Finds default implementer
-     * @param string $hookName
-     * @param string|null $alternativePath
-     * @return bool|string
-     * @throws \ReflectionException
-     */
-    private static function hasDefaultImplementer(string $hookName, string $alternativePath = null)
-    {
-        $classPath = $alternativePath ?: '\\Quantum\\Hooks\\HookDefaults';
-        $class = new \ReflectionClass($classPath);
-
-        if ($class->hasMethod($hookName)) {
-            return $class->getName();
-        }
-
-        return false;
+        $hook->apply();
     }
 
 }

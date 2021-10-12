@@ -9,87 +9,27 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.5.0
+ * @since 2.6.0
  */
 
 use Quantum\Exceptions\StopExecutionException;
-use Quantum\Libraries\Session\SessionManager;
-use Quantum\Libraries\Encryption\Cryptor;
-use Quantum\Libraries\Auth\AuthManager;
-use Quantum\Libraries\Session\Session;
-use Quantum\Libraries\Mailer\Mailer;
-use Quantum\Libraries\Cookie\Cookie;
+use Quantum\Libraries\Asset\AssetManager;
 use Quantum\Exceptions\AppException;
 use Quantum\Libraries\Csrf\Csrf;
-use Quantum\Loader\Loader;
-use Quantum\Di\Di;
-
-
-/**
- * Gets the session handler
- * @return \Quantum\Libraries\Session\Session
- * @throws \Quantum\Exceptions\DatabaseException
- * @throws \Quantum\Exceptions\DiException
- * @throws \Quantum\Exceptions\LoaderException
- * @throws \Quantum\Exceptions\ModelException
- * @throws \Quantum\Exceptions\SessionException
- * @throws \ReflectionException
- */
-function session(): Session
-{
-    return SessionManager::getHandler(Di::get(Loader::class));
-}
-
-/**
- * Gets cookie handler
- * @return Quantum\Libraries\Cookie\Cookie
- */
-function cookie(): Cookie
-{
-    return new Cookie($_COOKIE, new Cryptor);
-}
-
-/**
- * Gets the Auth handler
- * @return \Quantum\Libraries\Auth\ApiAuth|\Quantum\Libraries\Auth\WebAuth
- * @throws \Quantum\Exceptions\AuthException
- * @throws \Quantum\Exceptions\ConfigException
- * @throws \Quantum\Exceptions\DiException
- * @throws \Quantum\Exceptions\LoaderException
- * @throws \ReflectionException
- */
-function auth()
-{
-    return AuthManager::getHandler(Di::get(Loader::class));
-}
-
-/**
- * Gets the Mail instance
- * @return \Quantum\Libraries\Mailer\Mailer
- * @throws \Quantum\Exceptions\DiException
- * @throws \ReflectionException
- */
-function mailer(): Mailer
-{
-    return Di::get(Mailer::class);
-}
+use Quantum\Hooks\HookManager;
 
 /**
  * Generates the CSRF token
  * @return string|null
  * @throws \Quantum\Exceptions\AppException
  * @throws \Quantum\Exceptions\DatabaseException
- * @throws \Quantum\Exceptions\DiException
- * @throws \Quantum\Exceptions\LoaderException
- * @throws \Quantum\Exceptions\ModelException
  * @throws \Quantum\Exceptions\SessionException
- * @throws \ReflectionException
  */
 function csrf_token(): ?string
 {
     $appKey = env('APP_KEY');
 
-    if(!$appKey) {
+    if (!$appKey) {
         throw AppException::missingAppKey();
     }
 
@@ -189,11 +129,21 @@ function get_caller_function(int $index = 2): ?string
 }
 
 /**
- * Throws Stop Execution Exception
+ *
  * @throws \Quantum\Exceptions\StopExecutionException
  */
-function stop()
+
+/**
+ * Stops the execution
+ * @param \Closure|null $closure
+ * @throws \Quantum\Exceptions\StopExecutionException
+ */
+function stop(Closure $closure = null)
 {
+    if($closure) {
+        $closure();
+    }
+
     throw StopExecutionException::executionTerminated();
 }
 
@@ -212,6 +162,40 @@ function random_number(int $length = 10): int
 }
 
 /**
+ * Slugify the string
+ * @param string $text
+ * @return string
+ */
+function slugify(string $text): string
+{
+    $text = trim($text, ' ');
+    $text = preg_replace('/[^\p{L}\p{N}]/u', ' ', $text);
+    $text = preg_replace('/\s+/', '-', $text);
+    $text = trim($text, '-');
+    $text = mb_strtolower($text);
+
+    if (empty($text)) {
+        return 'n-a';
+    }
+    return $text;
+}
+
+/**
+ * Dumps the assets
+ * @param string $type
+ * @throws \Quantum\Exceptions\AssetException
+ */
+function assets(string $type)
+{
+    $assetTypes = [
+        'css' => 1,
+        'js' => 2
+    ];
+
+    AssetManager::getInstance()->dump($assetTypes[$type]);
+}
+
+/**
  * Checks if the entity is closure
  * @param mixed $entity
  * @return bool
@@ -219,4 +203,16 @@ function random_number(int $length = 10): int
 function is_closure($entity): bool
 {
     return $entity instanceof \Closure;
+}
+
+/**
+ * Triggers the hook
+ * @param $hookName
+ * @throws \Quantum\Exceptions\DiException
+ * @throws \ReflectionException
+ */
+function hook($hookName)
+{
+    $hook = HookManager::getInstance();
+    $hook($hookName);
 }
