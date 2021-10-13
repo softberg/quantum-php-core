@@ -9,83 +9,50 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.5.0
+ * @since 2.6.0
  */
 
 namespace Quantum\Libraries\Database;
 
 use Quantum\Exceptions\DatabaseException;
-use Quantum\Exceptions\ModelException;
-use Quantum\Loader\Loader;
 use Quantum\Loader\Setup;
 
 /**
  * Class Database
  * @package Quantum\Libraries\Database
- * @method static bool execute(string $query, array $parameters = [])
- * @method static array query(string $query, array $parameters = [])
- * @method static string lastQuery()
- * @method static object lastStatement()
- * @method static array queryLog()
- * @mixin \Quantum\Libraries\Database\IdiormDbal
  */
 class Database
 {
 
     /**
-     * Loader object
-     * @var \Quantum\Loader\Loader
-     */
-    private $loader;
-
-    /**
      * Database configurations
      * @var array
      */
-    private static $configs = [];
+    private $configs = [];
 
     /**
-     * Default Database Abstract Layer class
-     * @var string
+     * Database instance
+     * @var \Quantum\Libraries\Database\Database|null
      */
-    private static $defaultDbalClass = IdiormDbal::class;
-
-    /**
-     * Database common methods
-     * @var array
-     */
-    private static $commonMethods = ['execute', 'query', 'lastQuery', 'lastStatement', 'queryLog'];
-
-    /**
-     * Active Connection
-     * @var mixed
-     */
-    private $activeConnection = null;
-
-    /**
-     * Instance of Database
-     * @var \Quantum\Libraries\Database\Database
-     */
-    private static $instance;
+    private static $instance = null;
 
     /**
      * Database constructor.
-     * @param \Quantum\Loader\Loader $loader
+     * @throws \Quantum\Exceptions\DatabaseException
      */
-    public function __construct(Loader $loader)
+    private function __construct()
     {
-        $this->loader = $loader;
+        $this->configs = $this->getConfigs();
     }
 
     /**
      * Get Instance
-     * @param \Quantum\Loader\Loader $loader
-     * @return \Quantum\Libraries\Database\Database
+     * @return \Quantum\Libraries\Database\Database|null
      */
-    public static function getInstance(Loader $loader): Database
+    public static function getInstance(): ?Database
     {
         if (self::$instance === null) {
-            self::$instance = new self($loader);
+            self::$instance = new self();
         }
 
         return self::$instance;
@@ -94,91 +61,124 @@ class Database
     /**
      * Gets the ORM
      * @param string $table
-     * @param string|null $modelName
      * @param string $idColumn
-     * @return \Quantum\Libraries\Database\IdiormDbal
+     * @return \Quantum\Libraries\Database\DbalInterface
      * @throws \Quantum\Exceptions\DatabaseException
-     * @throws \Quantum\Exceptions\LoaderException
-     * @throws \Quantum\Exceptions\ModelException
      */
-    public function getORM(string $table, ?string $modelName = null, string $idColumn = 'id'): IdiormDbal
+    public function getOrm(string $table, string $idColumn = 'id'): DbalInterface
     {
-        $dbalClass = $this->getDbalClass();
+        $ormClass = $this->getOrmClass();
 
-        if (!$this->connected()) {
-            $this->connect($dbalClass);
-        }
-
-        if (empty($table)) {
-            throw ModelException::noTableDefined($modelName);
-        }
-
-        return new $dbalClass($table, $idColumn);
+        return new $ormClass($table, $idColumn);
     }
 
     /**
-     * Checks the active connection
+     * Raw execute
+     * @param string $query
+     * @param array $parameters
      * @return bool
-     */
-    public function connected(): bool
-    {
-        if ($this->activeConnection) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Connects to database
-     * @param string $dbalClass
      * @throws \Quantum\Exceptions\DatabaseException
-     * @throws \Quantum\Exceptions\LoaderException
      */
-    public function connect(string $dbalClass)
+    public static function execute(string $query, array $parameters = []): bool
     {
-        $configs = $this->loader->setup(new Setup('config', 'database'))->load();
-
-        if (!key_exists('current', $configs)) {
-            throw DatabaseException::incorrectConfig();
-        }
-
-        $currentKey = $configs['current'];
-
-        if (!key_exists($currentKey, $configs)) {
-            throw DatabaseException::incorrectConfig();
-        }
-
-        self::$configs = $configs[$currentKey];
-
-        $this->activeConnection = $dbalClass::dbConnect(self::$configs);
+        return self::resolveQuery(__FUNCTION__, $query, $parameters);
     }
 
     /**
-     * Gets the ORM class defined in config, otherwise default ORM will be used
+     * Raw query
+     * @param string $query
+     * @param array $parameters
+     * @return array
+     * @throws \Quantum\Exceptions\DatabaseException
+     */
+    public static function query(string $query, array $parameters = []): array
+    {
+        return self::resolveQuery(__FUNCTION__, $query, $parameters);
+    }
+
+    /**
+     * Gets the last query executed
+     * @return string|null
+     * @throws \Quantum\Exceptions\DatabaseException
+     */
+    public static function lastQuery(): ?string
+    {
+        return self::resolveQuery(__FUNCTION__);
+    }
+
+    /**
+     * Get an array containing all the queries
+     * run on a specified connection up to now.
+     * @return array
+     * @throws \Quantum\Exceptions\DatabaseException
+     */
+    public static function queryLog(): array
+    {
+        return self::resolveQuery(__FUNCTION__);
+    }
+
+    /**
+     * Gets the DB configurations
+     * @return array
+     * @throws \Quantum\Exceptions\ConfigException
+     * @throws \Quantum\Exceptions\DatabaseException
+     * @throws \Quantum\Exceptions\DiException
+     * @throws \ReflectionException
+     */
+    protected function getConfigs(): array
+    {
+        if (!config()->has('database') || !config()->has('database.current')) {
+            config()->import(new Setup('config', 'database'));
+        }
+
+        $currentKey = config()->get('database.current');
+
+        if (!config()->has('database.' . $currentKey)) {
+            throw DatabaseException::incorrectConfig();
+        }
+
+        if (!config()->has('database.' . $currentKey . '.orm')) {
+            throw DatabaseException::incorrectConfig();
+        }
+
+        return config()->get('database.' . $currentKey);
+    }
+
+    /**
+     * Gets the ORM class
      * @return string
+     * @throws \Quantum\Exceptions\DatabaseException
      */
-    public static function getDbalClass(): string
+    protected function getOrmClass(): string
     {
-        $dbalClass = (isset(self::$configs['DBAL']) && !empty(self::$configs['DBAL']) ? self::$configs['DBAL'] : self::$defaultDbalClass);
+        $ormClass = $this->configs['orm'];
 
-        if (class_exists($dbalClass)) {
-            return $dbalClass;
+        if (!class_exists($ormClass)) {
+            throw DatabaseException::ormClassNotFound($ormClass);
         }
+
+        if (!$ormClass::getConnection()) {
+            $ormClass::connect($this->configs);
+        }
+
+        return $ormClass;
     }
 
     /**
-     * Gives access to some common methods
+     * Resolves the requested query
      * @param string $method
-     * @param array|null $arguments
+     * @param string $query
+     * @param array $parameters
      * @return mixed
+     * @throws \Quantum\Exceptions\DatabaseException
      */
-    public static function __callStatic(string $method, array $arguments = null)
+    protected static function resolveQuery(string $method, string $query = '', array $parameters = [])
     {
-        if (in_array($method, self::$commonMethods)) {
-            $dbalClass = self::getDbalClass();
-            return $dbalClass::$method(...$arguments);
-        }
+        $self = self::getInstance();
+
+        $ormClass = $self->getOrmClass();
+
+        return $ormClass::$method($query, $parameters);
     }
 
 }

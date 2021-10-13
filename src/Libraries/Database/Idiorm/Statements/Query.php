@@ -9,17 +9,18 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.5.0
+ * @since 2.6.0
  */
 
-namespace Quantum\Libraries\Database\Statements;
+namespace Quantum\Libraries\Database\Idiorm\Statements;
 
 /**
  * Trait Query
- * @package Quantum\Libraries\Database\Statements
+ * @package Quantum\Libraries\Database\Idiorm\Statements
  */
 trait Query
 {
+
     /**
      * @inheritDoc
      */
@@ -39,7 +40,7 @@ trait Query
     /**
      * @inheritDoc
      */
-    public static function lastQuery(): string
+    public static function lastQuery(): ?string
     {
         return (self::$ormClass)::get_last_query();
     }

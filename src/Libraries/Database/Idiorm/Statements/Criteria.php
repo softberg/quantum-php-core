@@ -9,13 +9,14 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.4.0
+ * @since 2.6.0
  */
-namespace Quantum\Libraries\Database\Statements;
+
+namespace Quantum\Libraries\Database\Idiorm\Statements;
 
 /**
  * Trait Criteria
- * @package Quantum\Libraries\Database\Statements
+ * @package Quantum\Libraries\Database\Idiorm\Statements
  */
 trait Criteria
 {
@@ -24,7 +25,7 @@ trait Criteria
      * Operators map
      * @var string[]
      */
-    private $map = [
+    private $operators = [
         '=' => 'where_equal',
         '!=' => 'where_not_equal',
         '>' => 'where_gt',
@@ -40,13 +41,11 @@ trait Criteria
     ];
 
     /**
-     * Adds a criteria to query
      * @inheritDoc
      */
     public function criteria(string $column, string $operator, $value = null): object
     {
-
-        foreach ($this->map as $key => $method) {
+        foreach ($this->operators as $key => $method) {
             if ($operator == $key) {
                 $this->addCriteria($column, $operator, $value, $method);
                 break;
@@ -57,13 +56,11 @@ trait Criteria
             $this->whereColumnsEqual($column, $value);
         }
 
-        return $this->ormObject;
+        return $this->getOrmModel();
     }
 
     /**
-     * Adds many where criteria
-     * @param array ...$criterias
-     * @return object
+     * @inheritDoc
      */
     public function criterias(...$criterias): object
     {
@@ -79,7 +76,7 @@ trait Criteria
             $this->criteria($criteria[0], $criteria[1], $value);
         }
 
-        return $this->ormObject;
+        return $this->getOrmModel();
     }
 
     /**
@@ -89,7 +86,7 @@ trait Criteria
      */
     protected function whereColumnsEqual(string $columnOne, string $columnTwo)
     {
-        $this->ormObject->where_raw($columnOne . ' = ' . $columnTwo);
+        $this->getOrmModel()->where_raw($columnOne . ' = ' . $columnTwo);
     }
 
     /**
@@ -117,7 +114,7 @@ trait Criteria
             array_push($params, $orCriteria[2]);
         }
 
-        $this->ormObject->where_raw($clause, $params);
+        $this->getOrmModel()->where_raw($clause, $params);
     }
 
     /**
@@ -130,9 +127,9 @@ trait Criteria
     protected function addCriteria(string $column, string $operator, $value, string $func)
     {
         if (is_array($value) && count($value) == 1 && key($value) == 'fn') {
-            $this->ormObject->where_raw($column . ' ' . $operator . ' ' . $value['fn']);
+            $this->getOrmModel()->where_raw($column . ' ' . $operator . ' ' . $value['fn']);
         } else {
-            $this->ormObject->$func($column, $value);
+            $this->getOrmModel()->$func($column, $value);
         }
     }
 
