@@ -154,6 +154,7 @@ class Di
             \Quantum\Factory\ServiceFactory::class,
             \Quantum\Libraries\Mailer\Mailer::class,
             \Quantum\Libraries\Storage\FileSystem::class,
+            \Quantum\Libraries\Storage\StorageManager::class,
         ];
     }
 
