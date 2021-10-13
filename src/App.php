@@ -15,8 +15,9 @@
 namespace Quantum;
 
 use Quantum\Tracer\ErrorHandler;
-use Quantum\Debugger\Debugger;
 use Quantum\Di\Di;
+
+if (!defined('DS')) define('DS', DIRECTORY_SEPARATOR);
 
 /**
  * Class App
@@ -26,8 +27,15 @@ class App
 {
 
     /**
+     * @var string|null
+     */
+    public static $baseDir = null;
+
+    /**
      * Starts the app
+     * @param string $baseDir
      * @throws \ErrorException
+     * @throws \Quantum\Exceptions\ConfigException
      * @throws \Quantum\Exceptions\ControllerException
      * @throws \Quantum\Exceptions\CsrfException
      * @throws \Quantum\Exceptions\DatabaseException
@@ -35,18 +43,18 @@ class App
      * @throws \Quantum\Exceptions\EnvException
      * @throws \Quantum\Exceptions\HookException
      * @throws \Quantum\Exceptions\LangException
-     * @throws \Quantum\Exceptions\LoaderException
      * @throws \Quantum\Exceptions\MiddlewareException
-     * @throws \Quantum\Exceptions\ModelException
      * @throws \Quantum\Exceptions\ModuleLoaderException
      * @throws \Quantum\Exceptions\RouteException
      * @throws \Quantum\Exceptions\SessionException
      * @throws \Quantum\Exceptions\ViewException
      * @throws \ReflectionException
      */
-    public static function start()
+    public static function start(string $baseDir)
     {
-        self::loadCoreFunctions();
+        self::loadCoreFunctions($baseDir . DS . 'vendor' . DS . 'quantum' . DS . 'framework' . DS . 'src' . DS . 'Helpers');
+
+        self::setBaseDir($baseDir);
 
         Di::loadDefinitions();
 
@@ -57,12 +65,32 @@ class App
 
     /**
      * Loads the core functions
+     * @param string $path
      */
-    public static function loadCoreFunctions()
+    public static function loadCoreFunctions(string $path)
     {
-        foreach (glob(HELPERS_DIR . DS . 'functions' . DS . '*.php') as $filename) {
+        foreach (glob($path . DS . '*.php') as $filename) {
             require_once $filename;
         }
     }
 
+    /**
+     * Sets the app base directory
+     * @param string $baseDir
+     */
+    public static function setBaseDir(string $baseDir)
+    {
+        self::$baseDir = $baseDir;
+    }
+
+    /**
+     * Gets the app base directory
+     * @return string
+     */
+    public static function getBaseDir(): ?string
+    {
+        return self::$baseDir;
+    }
+
 }
+
