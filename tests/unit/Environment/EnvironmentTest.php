@@ -3,62 +3,56 @@
 namespace Quantum\Test\Unit;
 
 use PHPUnit\Framework\TestCase;
-use Quantum\Environment\Environment;
 use Quantum\Libraries\Storage\FileSystem;
-use Quantum\Loader\Loader;
-use Mockery;
+use Quantum\Environment\Environment;
+use Quantum\Loader\Setup;
+use Quantum\Di\Di;
+use Quantum\App;
 
 class EnvironmentTest extends TestCase
 {
 
     private $env;
-    private $loaderMock;
 
     public function setUp(): void
     {
-        $this->loaderMock = Mockery::mock('Quantum\Loader\Loader');
+        App::loadCoreFunctions(dirname(__DIR__, 3) . DS . 'src' . DS . 'Helpers');
 
-        $this->loaderMock->shouldReceive('setup')->andReturn($this->loaderMock);
+        App::setBaseDir(dirname(__DIR__) . DS . '_root');
 
-        $this->loaderMock->shouldReceive('load')->andReturn([
-            'app_env' => 'staging'
-        ]);
+        Di::loadDefinitions();
 
-        $fs = new FileSystem();
+        $fs = Di::get(FileSystem::class);
 
-        $loader = new Loader($fs);
+        $fs->put(base_dir() . DS . '.env.staging', "DEBUG=TRUE\nAPP_KEY=AB1234567890\n");
 
-        $loader->loadDir(dirname(__DIR__, 3) . DS . 'src' . DS . 'Helpers' . DS . 'functions');
-
-        $loader->loadFile(dirname(__DIR__, 3) . DS . 'src' . DS . 'constants.php');
-
-        $fs->put(base_dir() . DS . '.env.staging', "DEBUG=TRUE\nAPP_KEY=stg_123456\n");
-
-        $this->env = Environment::getInstance();
+        $this->env = Environment::getInstance()->load(new Setup('config', 'env'));
     }
 
     public function testEnvLoadAndGetValue()
     {
-        $this->assertNull($this->env->getValue('APP_KEY'));
-
-        $this->env->load($this->loaderMock);
+        $this->assertNull($this->env->getValue('NON_EXISTING_KEY'));
 
         $this->assertNotNull($this->env->getValue('APP_KEY'));
 
-        $this->assertEquals('stg_123456', $this->env->getValue('APP_KEY'));
+        $this->assertEquals('AB1234567890', $this->env->getValue('APP_KEY'));
 
         $this->assertEquals('TRUE', $this->env->getValue('DEBUG'));
     }
 
     public function testEnvUpdateRow()
     {
-        $this->env->load($this->loaderMock);
+        $this->assertEquals('AB1234567890', $this->env->getValue('APP_KEY'));
 
-        $this->assertEquals('stg_123456', $this->env->getValue('APP_KEY'));
+        $this->env->updateRow('APP_KEY', 'ZX1234567890');
 
-        $this->env->updateRow('APP_KEY', 'stg_456789');
+        $this->assertEquals('ZX1234567890', $this->env->getValue('APP_KEY'));
 
-        $this->assertEquals('stg_456789', $this->env->getValue('APP_KEY'));
+        $this->assertNull($this->env->getValue('NON_YET_EXISTING_KEY'));
+
+        $this->env->updateRow('NON_YET_EXISTING_KEY', 'Something');
+
+        $this->assertEquals('Something', $this->env->getValue('NON_YET_EXISTING_KEY'));
     }
 
 }

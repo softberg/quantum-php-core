@@ -1,48 +1,34 @@
 <?php
 
-namespace Quantum\Routes {
-
-    function _message($subject, $params)
-    {
-        if (is_array($params)) {
-            return preg_replace_callback('/{%\d+}/', function () use (&$params) {
-                return array_shift($params);
-            }, $subject);
-        } else {
-            return preg_replace('/{%\d+}/', $params, $subject);
-        }
-    }
-
-}
-
 namespace Quantum\Test\Unit {
 
+    use Quantum\Di\Di;
     use Quantum\Exceptions\RouteException;
     use PHPUnit\Framework\TestCase;
+    use Quantum\Exceptions\StopExecutionException;
+    use Quantum\Http\Response;
     use Quantum\Routes\Router;
     use Quantum\Http\Request;
+    use Quantum\App;
     use Mockery;
 
     class RouterTest extends TestCase
     {
 
         private $request;
-        private $response;
         private $router;
 
         public function setUp(): void
         {
+            App::loadCoreFunctions(dirname(__DIR__, 3) . DS . 'src' . DS . 'Helpers');
+
+            App::setBaseDir(dirname(__DIR__) . DS . '_root');
+
+            Di::loadDefinitions();
+
             $this->request = new Request();
 
-            $this->response = Mockery::mock('Quantum\Http\Response');
-
-            $this->router = new Router($this->request, $this->response);
-
-            $hookManager = Mockery::mock('overload:Quantum\Hooks\HookManager');
-
-            $hookManager->shouldReceive('call')->andReturnUsing(function() {
-                throw new RouteException(RouteException::ROUTE_NOT_FOUND);
-            });
+            $this->router = new Router($this->request, new Response());
 
             $reflectionClass = new \ReflectionClass(Router::class);
 
@@ -133,7 +119,7 @@ namespace Quantum\Test\Unit {
             $this->router->findRoute();
         }
 
-        public function testRepetetiveRoutesWithSameMethod()
+        public function testRepetitiveRoutesWithSameMethod()
         {
             $this->router->setRoutes([
                 [
@@ -161,7 +147,7 @@ namespace Quantum\Test\Unit {
             $this->router->findRoute();
         }
 
-        public function testRepetetiveRoutesInDifferentMoodules()
+        public function testRepetitiveRoutesInDifferentModules()
         {
             $this->router->setRoutes([
                 [
@@ -193,9 +179,9 @@ namespace Quantum\Test\Unit {
         {
             $this->request->create('GET', 'http://testdomain.com/something');
 
-            $this->expectException(RouteException::class);
+            $this->expectException(StopExecutionException::class);
 
-            $this->expectExceptionMessage(RouteException::ROUTE_NOT_FOUND);
+            $this->expectExceptionMessage(StopExecutionException::EXECUTION_TERMINATED);
 
             $this->router->findRoute();
         }

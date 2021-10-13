@@ -19,15 +19,14 @@ namespace Quantum\Models {
 
 namespace Quantum\Test\Unit {
 
-    use Mockery;
     use PHPUnit\Framework\TestCase;
-    use Quantum\Libraries\Database\Database;
-    use Quantum\Libraries\Database\IdiormDbal;
-    use Quantum\Models\ProfileModel;
+    use Quantum\Libraries\Database\Idiorm\IdiormDbal;
     use Quantum\Exceptions\ModelException;
-    use Quantum\Libraries\Storage\FileSystem;
-    use Quantum\Loader\Loader;
+    use Quantum\Factory\ModelFactory;
+    use Quantum\Models\ProfileModel;
+    use Quantum\Mvc\QtModel;
     use Quantum\Di\Di;
+    use Quantum\App;
 
     /**
      * @runTestsInSeparateProcesses
@@ -43,51 +42,28 @@ namespace Quantum\Test\Unit {
             'lastname' => 'Doe'
         ];
 
-        private $dbConfigs = [
-            'current' => 'sqlite',
-            'sqlite' => array(
-                'driver' => 'sqlite',
-                'database' => ':memory:'
-            ),
-        ];
-
         public function setUp(): void
         {
 
-            (new idiormDbal('profiles'))->execute("CREATE TABLE profiles (
+            App::loadCoreFunctions(dirname(__DIR__, 3) . DS . 'src' . DS . 'Helpers');
+
+            App::setBaseDir(dirname(__DIR__) . DS . '_root');
+
+            Di::loadDefinitions();
+
+            IdiormDbal::execute("CREATE TABLE profiles (
                         id INTEGER PRIMARY KEY,
                         firstname VARCHAR(255),
                         lastname VARCHAR(255),
                         created_at DATETIME
                     )");
 
-            $loader = new Loader(new FileSystem);
-
-            $loader->loadDir(dirname(__DIR__, 3) . DS . 'src' . DS . 'Helpers' . DS . 'functions');
-
-            $loaderMock = Mockery::mock('Quantum\Loader\Loader');
-
-            $loaderMock->shouldReceive('setup')->andReturn($loaderMock);
-
-            $loaderMock->shouldReceive('load')->andReturn($this->dbConfigs);
-
-            $db = Database::getInstance($loaderMock);
-
-            $db->getORM('users');
-
-            Di::loadDefinitions();
-
-            $this->model = (new \Quantum\Factory\ModelFactory)->get(ProfileModel::class);
-        }
-
-        public function tearDown(): void
-        {
-            Mockery::close();
+            $this->model = (new ModelFactory)->get(ProfileModel::class);
         }
 
         public function testModelInstance()
         {
-            $this->assertInstanceOf('Quantum\Mvc\QtModel', $this->model);
+            $this->assertInstanceOf(QtModel::class, $this->model);
         }
 
         public function testFillObjectProps()
@@ -115,6 +91,38 @@ namespace Quantum\Test\Unit {
             $this->model->undefinedProperty = 'Something';
 
             $this->assertEquals('Something', $this->model->undefinedProperty);
+        }
+
+        public function testCallingUndefinedModelMethod()
+        {
+            $this->expectException(ModelException::class);
+
+            $this->expectExceptionMessage('Model method `undefinedMethod` is not defined');
+
+            $this->model->undefinedMethod();
+        }
+
+        public function testCallingModelMethod()
+        {
+            $userProfile = $this->model->findOne(1)->asArray();
+
+            $this->assertIsArray($userProfile);
+
+            $this->assertEmpty($userProfile);
+
+            $userProfile = $this->model->create();
+
+            $userProfile->fillObjectProps($this->testObject);
+
+            $userProfile->save();
+
+            $userProfile = $this->model->findOne(1)->asArray();
+
+            $this->assertIsArray($userProfile);
+
+            $this->assertNotEmpty($userProfile);
+
+            $this->assertEquals('John', $userProfile['firstname']);
         }
 
     }

@@ -11,15 +11,14 @@ namespace Quantum\Libraries\JWToken {
 
 namespace Quantum\Test\Unit {
 
-    use Quantum\Libraries\Storage\FileSystem;
+    use PHPUnit\Framework\TestCase;
     use Quantum\Libraries\JWToken\JWToken;
     use Quantum\Exceptions\AuthException;
     use Quantum\Libraries\Hasher\Hasher;
     use Quantum\Libraries\Auth\ApiAuth;
-    use Quantum\Libraries\Config\Config;
     use Quantum\Libraries\Auth\User;
-    use PHPUnit\Framework\TestCase;
-    use Quantum\Loader\Loader;
+    use Quantum\Di\Di;
+    use Quantum\App;
     use Mockery;
 
 
@@ -37,7 +36,9 @@ namespace Quantum\Test\Unit {
     {
 
         private $apiAuth;
+
         private $authService;
+
         private static $users = [];
 
         private $adminUser = [
@@ -55,6 +56,7 @@ namespace Quantum\Test\Unit {
             'otp_expiry_in' => '',
             'otp_token' => ''
         ];
+
         private $guestUser = [
             'email' => 'guest@qt.com',
             'password' => '123456',
@@ -81,12 +83,11 @@ namespace Quantum\Test\Unit {
 
         public function setUp(): void
         {
+            App::loadCoreFunctions(dirname(__DIR__, 4) . DS . 'src' . DS . 'Helpers');
 
-            $loader = new Loader(new FileSystem);
+            App::setBaseDir(dirname(__DIR__, 2) . DS . '_root');
 
-            $loader->loadDir(dirname(__DIR__, 4) . DS . 'src' . DS . 'Helpers' . DS . 'functions');
-
-            $loader->loadFile(dirname(__DIR__, 4) . DS . 'src' . DS . 'constants.php');
+            Di::loadDefinitions();
 
             config()->flush();
 
@@ -196,7 +197,7 @@ namespace Quantum\Test\Unit {
 
         public function testApiAuthConstructor()
         {
-            $this->assertInstanceOf('Quantum\Libraries\Auth\ApiAuth', $this->apiAuth);
+            $this->assertInstanceOf(ApiAuth::class, $this->apiAuth);
         }
 
         public function testApiSigninIncorrectCredetials()
@@ -210,17 +211,7 @@ namespace Quantum\Test\Unit {
 
         public function testApiSigninCorrectCredentials()
         {
-            $configData = [
-                '2SV' => false
-            ];
-
-            $loader = Mockery::mock('Quantum\Loader\Loader');
-
-            $loader->shouldReceive('setup')->andReturn($loader);
-
-            $loader->shouldReceive('load')->andReturn($configData);
-
-            Config::getInstance()->load($loader);
+            config()->set('2SV', false);
 
             $this->assertIsArray($this->apiAuth->signin('admin@qt.com', 'qwerty'));
 
@@ -231,7 +222,7 @@ namespace Quantum\Test\Unit {
 
         public function testApiSignOut()
         {
-            $tokens = $this->apiAuth->signin('admin@qt.com', 'qwerty');
+            $this->apiAuth->signin('admin@qt.com', 'qwerty');
 
             $this->assertTrue($this->apiAuth->check());
 
@@ -242,7 +233,7 @@ namespace Quantum\Test\Unit {
 
         public function testApiUser()
         {
-            $tokens = $this->apiAuth->signin('admin@qt.com', 'qwerty');
+            $this->apiAuth->signin('admin@qt.com', 'qwerty');
 
             $this->assertEquals('admin@qt.com', $this->apiAuth->user()->getFieldValue('email'));
 
@@ -268,7 +259,6 @@ namespace Quantum\Test\Unit {
 
         public function testApiSignupAndSigninWithoutActivation()
         {
-
             $this->expectException(AuthException::class);
 
             $this->expectExceptionMessage(AuthException::INACTIVE_ACCOUNT);

@@ -4,18 +4,22 @@ namespace Quantum\Test\Unit;
 
 use PHPUnit\Framework\TestCase;
 use Quantum\Exceptions\StopExecutionException;
+use Quantum\Libraries\Asset\Asset;
+use Quantum\Libraries\Cookie\Cookie;
+use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Libraries\Asset\AssetManager;
 use Quantum\Libraries\Session\Session;
 use Quantum\Libraries\Config\Config;
+use Quantum\Routes\RouteController;
 use Quantum\Libraries\Lang\Lang;
 use Quantum\Libraries\Csrf\Csrf;
 use Quantum\Factory\ViewFactory;
-use Quantum\Libraries\Storage\FileSystem;
-use Quantum\Loader\Loader;
+use Quantum\Loader\Setup;
 use Quantum\Routes\Router;
 use Quantum\Http\Request;
 use Quantum\Http\Response;
 use Quantum\Di\Di;
+use Quantum\App;
 use Mockery;
 
 class HelperTest extends TestCase
@@ -30,12 +34,10 @@ class HelperTest extends TestCase
     public function setUp(): void
     {
 
-        $loader = new Loader(new FileSystem);
+        App::loadCoreFunctions(dirname(__DIR__, 3) . DS . 'src' . DS . 'Helpers');
 
-        $loader->loadDir(dirname(__DIR__, 3) . DS . 'src' . DS . 'Helpers' . DS . 'functions');
+        App::setBaseDir(dirname(__DIR__) . DS . '_root');
 
-        $loader->loadFile(dirname(__DIR__, 3) . DS . 'src' . DS . 'constants.php');
-        
         Di::loadDefinitions();
 
         $this->request = new Request();
@@ -89,11 +91,12 @@ class HelperTest extends TestCase
     public function testRedirecting()
     {
         $this->assertFalse($this->response->hasHeader('Location'));
-        
+
         try {
             redirect('/home');
-        } catch (StopExecutionException $e) {}
-       
+        } catch (StopExecutionException $e) {
+        }
+
         $this->assertTrue($this->response->hasHeader('Location'));
 
         $this->assertEquals('/home', $this->response->getHeader('Location'));
@@ -103,10 +106,11 @@ class HelperTest extends TestCase
     public function testRedirectWithOldData()
     {
         $this->request->create('POST', '/', ['firstname' => 'Josh', 'lastname' => 'Doe']);
-        
+
         try {
             redirectWith('/signup', $this->request->all());
-        } catch (StopExecutionException $e) {}
+        } catch (StopExecutionException $e) {
+        }
 
         $this->assertTrue($this->response->hasHeader('Location'));
 
@@ -124,53 +128,42 @@ class HelperTest extends TestCase
         $this->assertEquals('ebay-com-itm-dual-arm-tv-trkparms-aid-3d111001-26brand-3dunbranded-trksid-p2380057', slugify('ebay.com/itm/DUAL-ARM-TV/?_trkparms=aid%3D111001%26brand%3DUnbranded&_trksid=p2380057'));
     }
 
-    public function testDirHelpers()
+    public function testAssetUrl()
     {
-        $this->assertSame(base_dir(), BASE_DIR);
+        config()->set('base_url', 'http://mydomain.com');
 
-        $this->assertSame(modules_dir(), MODULES_DIR);
+        $this->assertEquals('http://mydomain.com/assets/css/style.css', asset()->url('css/style.css'));
 
-        $this->assertSame(public_dir(), PUBLIC_DIR);
-
-        $this->assertSame(uploads_dir(), UPLOADS_DIR);
-
-        $this->assertSame(assets_dir(), ASSETS_DIR);
-    }
-
-    public function testAsset()
-    {
-        $this->assertSame(asset('style.css'), asset_url() . '/style.css');
-
-        $this->assertSame(asset('js/script.js'), asset_url() . '/js/script.js');
+        $this->assertSame('http://mydomain.com/assets/js/script.js', asset()->url('js/script.js'));
     }
 
     public function testPublishedAssets()
     {
-        $assetManager = new AssetManager();
+        config()->set('base_url', 'http://mydomain.com');
 
-        $assetManager->registerCSS([
-            'fakepath/style.css',
-            'fakepath/responsive.css'
+        asset()->register([
+            new Asset(Asset::CSS, 'css/style.css'),
+            new Asset(Asset::CSS, 'css/responsive.css')
         ]);
 
-        $assetManager->registerJS([
-            'fakepath/bootstrap.js',
-            'fakepath/bootstrap-datepicker.min.js'
+        asset()->register([
+            new Asset(Asset::JS, 'js/bootstrap.js'),
+            new Asset(Asset::JS, 'js/bootstrap-datepicker.min.js')
         ]);
 
-        $assetManager->publishCSS();
-        $assetManager->publishJS();
+        $expectedOutput = '<link rel="stylesheet" type="text/css" href="' . asset()->url('css/style.css') . '">' . PHP_EOL .
+            '<link rel="stylesheet" type="text/css" href="' . asset()->url('css/responsive.css') . '">' . PHP_EOL .
+            '<script src="' . asset()->url('js/bootstrap.js') . '"></script>' . PHP_EOL .
+            '<script src="' . asset()->url('js/bootstrap-datepicker.min.js') . '"></script>' . PHP_EOL;
 
-        $expectedOutput = '<link rel="stylesheet" type="text/css" href="' . asset_url() . '/fakepath/style.css">' . PHP_EOL .
-                '<link rel="stylesheet" type="text/css" href="' . asset_url() . '/fakepath/responsive.css">' . PHP_EOL .
-                '<script src="' . asset_url() . '/fakepath/bootstrap.js"></script>' . PHP_EOL .
-                '<script src="' . asset_url() . '/fakepath/bootstrap-datepicker.min.js"></script>' . PHP_EOL;
-
-
-        $this->expectOutputString($expectedOutput);
+        ob_start();
 
         assets('css');
         assets('js');
+
+        $this->assertStringContainsString($expectedOutput, ob_get_contents());
+
+        ob_get_clean();
     }
 
     public function testMvcHelpers()
@@ -179,17 +172,17 @@ class HelperTest extends TestCase
             [
                 "route" => "api-signin",
                 "method" => "POST",
-                "controller" => "AuthController",
+                "controller" => "SomeController",
                 "action" => "signin",
-                "module" => "Api",
+                "module" => "test",
                 "middlewares" => ["guest", "anonymous"]
             ],
             [
                 "route" => "api-user/[:num]",
                 "method" => "GET",
-                "controller" => "AuthController",
+                "controller" => "SomeController",
                 "action" => "signout",
-                "module" => "Api",
+                "module" => "test",
                 "middlewares" => ["user"]
             ]
         ]);
@@ -206,9 +199,9 @@ class HelperTest extends TestCase
 
         $this->assertEquals('anonymous', $middlewares[1]);
 
-        $this->assertEquals('Api', current_module());
+        $this->assertEquals('test', current_module());
 
-        $this->assertEquals('AuthController', current_controller());
+        $this->assertEquals('SomeController', current_controller());
 
         $this->assertEquals('signin', current_action());
 
@@ -226,89 +219,32 @@ class HelperTest extends TestCase
 
         $this->assertEquals('GET', route_method());
 
-        $this->assertEquals('api-user/12', route_uri());
+        $this->assertEquals('api-user/12', route_uri());;
     }
 
     public function testView()
     {
-        $viewsDir = \Quantum\Mvc\modules_dir() . DS . \Quantum\Mvc\current_module() . DS . 'Views';
-
-        $layoutContent = '<html><head></head><body></body></html>';
-
-        $viewContent = '<p>Hello world, this is rendered view</p>';
-
-        if (!is_dir($viewsDir))
-            mkdir($viewsDir, 0777, true);
-
-        file_put_contents($viewsDir . DS . 'layout.php', $layoutContent);
-
-        file_put_contents($viewsDir . DS . 'index.php', $viewContent);
-
-        $viewFactory = new ViewFactory();
+        $viewFactory = Di::get(ViewFactory::class);
 
         $viewFactory->setLayout('layout');
 
         $viewFactory->render('index');
 
-        $this->assertEquals($viewContent, view());
-
-        unlink($viewsDir . DS . 'layout.php');
-
-        unlink($viewsDir . DS . 'index.php');
-
-        sleep(1);
-        rmdir($viewsDir);
-
-        sleep(1);
-        rmdir(\Quantum\Mvc\modules_dir() . DS . \Quantum\Mvc\current_module());
-
-        sleep(1);
-        rmdir(\Quantum\Mvc\modules_dir());
+        $this->assertEquals('<p>Hello World, this is rendered view</p>', view());
     }
 
     public function testPartial()
     {
-        $viewsDir = \Quantum\Mvc\modules_dir() . DS . \Quantum\Mvc\current_module() . DS . 'Views';
-
-        $partialContent = '<p>Hello <?php echo ($name ?? "World") ?>, this is rendered partial view</p>';
-
-        if (!is_dir($viewsDir))
-            mkdir($viewsDir, 0777, true);
-
-        file_put_contents($viewsDir . DS . 'partial.php', $partialContent);
-
         $this->assertEquals('<p>Hello World, this is rendered partial view</p>', partial('partial'));
 
         $this->assertEquals('<p>Hello John, this is rendered partial view</p>', partial('partial', ['name' => 'John']));
-
-        unlink($viewsDir . DS . 'partial.php');
-
-        sleep(1);
-        rmdir($viewsDir);
-
-        sleep(1);
-        rmdir(\Quantum\Mvc\modules_dir() . DS . \Quantum\Mvc\current_module());
-
-        sleep(1);
-        rmdir(\Quantum\Mvc\modules_dir());
     }
 
     public function testConfigHelper()
     {
-        $configData = [
-            'langs' => ['en', 'es'],
-            'lang_default' => 'en',
-            'debug' => 'DEBUG',
-            'test' => 'Testing'
-        ];
+        config()->flush();
 
-        $loader = Mockery::mock('Quantum\Loader\Loader');
-
-        $loader->shouldReceive('setup')->andReturn($loader);
-
-        $loader->shouldReceive('load')->andReturn($configData);
-
-        Config::getInstance(new FileSystem)->load($loader);
+        config()->load(new Setup('config', 'config', true));
 
         $this->assertFalse(config()->has('not-exists'));
 
@@ -340,7 +276,7 @@ class HelperTest extends TestCase
 
     public function testSessionHelper()
     {
-        $this->assertInstanceOf('Quantum\Libraries\Session\Session', session());
+        $this->assertInstanceOf(Session::class, session());
 
         $this->assertFalse(session()->has('test'));
 
@@ -353,7 +289,7 @@ class HelperTest extends TestCase
 
     public function testCookieHelper()
     {
-        $this->assertInstanceOf('Quantum\Libraries\Cookie\Cookie', cookie());
+        $this->assertInstanceOf(Cookie::class, cookie());
 
         $this->assertFalse(cookie()->has('test'));
 
@@ -392,59 +328,31 @@ class HelperTest extends TestCase
         $this->assertEquals('en', current_lang());
     }
 
-    public function testGetTranslations()
+    public function testGetTheTranslation()
     {
-
         config()->set('langs', ['en', 'ru', 'am']);
 
         config()->set('lang_default', 'en');
 
         config()->set('lang_segment', 1);
 
-        $langDir = \Quantum\Libraries\Lang\modules_dir() . DS . \Quantum\Libraries\Lang\current_module() . DS . 'Resources' . DS . 'lang' . DS . 'en';
-
-        if (!is_dir($langDir)) {
-            mkdir($langDir, 0777, true);
-        }
-
-        file_put_contents($langDir . DS . 'custom.php', null);
-
-        $loaderMock = Mockery::mock('Quantum\Loader\Loader');
-
-        $loaderMock->shouldReceive('setup')->andReturn($loaderMock);
-
-        $loaderMock->shouldReceive('load')->andReturn([
-            'learn_more' => 'Learn more',
-            'info' => 'Information about {%1} feature',
-            'test' => 'Testing'
+        RouteController::setCurrentRoute([
+            "route" => "api-signin",
+            "method" => "POST",
+            "controller" => "SomeController",
+            "action" => "signin",
+            "module" => "test",
         ]);
 
-        Lang::getInstance()->setLang('en')->load($loaderMock, new FileSystem);
+        Lang::getInstance()->setLang('en')->load();
 
         $this->assertEquals('Learn more', t('custom.learn_more'));
 
-        $this->assertEquals('Information about new feature', t('custom.info', 'new'));
+        $this->assertEquals('Information about the new feature', t('custom.info', 'new'));
 
         _t('custom.learn_more');
 
         $this->expectOutputString('Learn more');
-
-        unlink($langDir . DS . 'custom.php');
-
-        sleep(1);
-        rmdir($langDir);
-
-        sleep(1);
-        rmdir(\Quantum\Libraries\Lang\modules_dir() . DS . \Quantum\Libraries\Lang\current_module() . DS . 'Resources' . DS . 'lang');
-
-        sleep(1);
-        rmdir(\Quantum\Libraries\Lang\modules_dir() . DS . \Quantum\Libraries\Lang\current_module() . DS . 'Resources');
-
-        sleep(1);
-        rmdir(\Quantum\Libraries\Lang\modules_dir() . DS . \Quantum\Libraries\Lang\current_module());
-
-        sleep(1);
-        rmdir(\Quantum\Libraries\Lang\modules_dir());
     }
 
     public function testCsrfToken()
@@ -464,7 +372,5 @@ class HelperTest extends TestCase
 
         $this->assertEquals('Hello John, greetings from Jenny', _message('Hello {%1}, greetings from {%2}', ['John', 'Jenny']));
     }
-
-
 
 }

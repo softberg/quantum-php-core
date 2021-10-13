@@ -26,10 +26,10 @@ namespace Quantum\Libraries\Auth {
         return 'somerandomstring';
     }
 
-    function get_config($key)
-    {
-        return $key;
-    }
+//    function get_config($key)
+//    {
+//        return $key;
+//    }
 
     function random_number()
     {
@@ -40,6 +40,8 @@ namespace Quantum\Libraries\Auth {
 
 namespace Quantum\Test\Unit {
 
+    use Quantum\App;
+    use Quantum\Di\Di;
     use Quantum\Libraries\Storage\FileSystem;
     use Quantum\Exceptions\AuthException;
     use Quantum\Libraries\Hasher\Hasher;
@@ -56,6 +58,7 @@ namespace Quantum\Test\Unit {
         private $mailer;
         private $webAuth;
         private static $users = [];
+
         private $adminUser = [
             'email' => 'admin@qt.com',
             'firstname' => 'Admin',
@@ -94,11 +97,11 @@ namespace Quantum\Test\Unit {
 
         public function setUp(): void
         {
-            $loader = new Loader(new FileSystem);
+            App::loadCoreFunctions(dirname(__DIR__, 4) . DS . 'src' . DS . 'Helpers');
 
-            $loader->loadDir(dirname(__DIR__, 4) . DS . 'src' . DS . 'Helpers' . DS . 'functions');
+            App::setBaseDir(dirname(__DIR__, 2) . DS . '_root');
 
-            $loader->loadFile(dirname(__DIR__, 4) . DS . 'src' . DS . 'constants.php');
+            Di::loadDefinitions();
 
             config()->flush();
 
@@ -195,7 +198,7 @@ namespace Quantum\Test\Unit {
 
         public function testWebAuthConstructor()
         {
-            $this->assertInstanceOf('Quantum\Libraries\Auth\WebAuth', $this->webAuth);
+            $this->assertInstanceOf(WebAuth::class, $this->webAuth);
         }
 
         public function testWebSigninIncorrectCredetials()

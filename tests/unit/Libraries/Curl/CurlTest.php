@@ -14,7 +14,7 @@ class CurlTest extends TestCase
     public function setUp(): void
     {
         $this->curl = new Curl();
-        $this->multiCurl = new Curl('multi');
+        $this->multiCurl = new Curl(Curl::MULTI_CURL);
     }
 
     public function testCurlConstructor()
@@ -106,7 +106,7 @@ class CurlTest extends TestCase
 
     public function testMultiCurl()
     {
-        $curl = (new Curl('multi'))
+        $curl = (new Curl(Curl::MULTI_CURL))
                 ->addGet('https://httpbin.org/anything')
                 ->addGet('https://httpbin.org/get')
                 ->addPost('https://httpbin.org/delay/2')

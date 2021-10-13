@@ -1,11 +1,12 @@
 <?php
 
-
 namespace Quantum\Test\Unit;
 
 use PHPUnit\Framework\TestCase;
 use Quantum\Exceptions\ConfigException;
 use Quantum\Loader\Setup;
+use Quantum\Di\Di;
+use Quantum\App;
 
 class SetupTest extends TestCase
 {
@@ -14,6 +15,12 @@ class SetupTest extends TestCase
 
     public function setUp(): void
     {
+        App::loadCoreFunctions(dirname(__DIR__, 3) . DS . 'src' . DS . 'Helpers');
+
+        App::setBaseDir(dirname(__DIR__) . DS . '_root');
+
+        Di::loadDefinitions();
+
         $this->setup = new Setup();
     }
 
@@ -26,21 +33,21 @@ class SetupTest extends TestCase
     {
         $setup = new Setup('config', 'database');
 
-        $this->assertEquals('config', $setup->getEnv());
+        $this->assertEquals('config', $setup->getPathPrefix());
 
         $this->assertEquals('database', $setup->getFilename());
 
-        $this->assertEquals(false, $setup->getHierarchy());
+        $this->assertEquals(true, $setup->getHierarchy());
 
         $this->assertEquals(ConfigException::CONFIG_FILE_NOT_FOUND, $setup->getExceptionMessage());
 
     }
 
-    public function testSetGetEnv()
+    public function testSetGetPathPrefix()
     {
-        $this->setup->setEnv('config');
+        $this->setup->setPathPrefix('config');
 
-        $this->assertEquals('config', $this->setup->getEnv());
+        $this->assertEquals('config', $this->setup->getPathPrefix());
     }
 
     public function testSetGetFilename()

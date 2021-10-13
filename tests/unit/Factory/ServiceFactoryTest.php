@@ -29,8 +29,9 @@ namespace Quantum\Test\Unit {
     use Quantum\Exceptions\ServiceException;
     use Quantum\Factory\ServiceFactory;
     use Quantum\Services\TestService;
-    use Quantum\Libraries\Storage\FileSystem;
-    use Quantum\Loader\Loader;
+    use Quantum\Mvc\QtService;
+    use Quantum\Di\Di;
+    use Quantum\App;
 
     class ServiceFactoryTest extends TestCase
     {
@@ -39,9 +40,11 @@ namespace Quantum\Test\Unit {
 
         public function setUp(): void
         {
-            $loader = new Loader(new FileSystem);
+            App::loadCoreFunctions(dirname(__DIR__, 3) . DS . 'src' . DS . 'Helpers');
 
-            $loader->loadDir(dirname(__DIR__, 3) . DS . 'src' . DS . 'Helpers' . DS . 'functions');
+            App::setBaseDir(dirname(__DIR__) . DS . '_root');
+
+            Di::loadDefinitions();
 
             $this->serviceFactory = new ServiceFactory();
         }
@@ -55,9 +58,9 @@ namespace Quantum\Test\Unit {
         {
             $service = $this->serviceFactory->get(TestService::class);
 
-            $this->assertInstanceOf('Quantum\Mvc\QtService', $service);
+            $this->assertInstanceOf(QtService::class, $service);
 
-            $this->assertInstanceOf('Quantum\Services\TestService', $service);
+            $this->assertInstanceOf(TestService::class, $service);
         }
 
         public function testServiceGetAndInit()
@@ -81,9 +84,9 @@ namespace Quantum\Test\Unit {
         {
             $service = $this->serviceFactory->create(TestService::class);
 
-            $this->assertInstanceOf('Quantum\Mvc\QtService', $service);
+            $this->assertInstanceOf(QtService::class, $service);
 
-            $this->assertInstanceOf('Quantum\Services\TestService', $service);
+            $this->assertInstanceOf(TestService::class, $service);
         }
 
         public function testServiceCreateAndInit()

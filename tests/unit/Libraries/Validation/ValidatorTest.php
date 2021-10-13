@@ -25,33 +25,18 @@ namespace Quantum\Models {
 
 }
 
-namespace Quantum\Loader {
-
-
-    function modules_dir()
-    {
-        return __DIR__ . DS . 'modules';
-    }
-
-    function current_module()
-    {
-        return 'test';
-    }
-
-}
-
 namespace Quantum\Test\Unit {
 
-    use Quantum\Di\Di;
+    use PHPUnit\Framework\TestCase;
     use Quantum\Libraries\Validation\Validator;
-    use Quantum\Libraries\Database\IdiormDbal;
+    use Quantum\Libraries\Database\Idiorm\IdiormDbal;
     use Quantum\Libraries\Validation\Rule;
     use Quantum\Factory\ModelFactory;
-    use PHPUnit\Framework\TestCase;
-    use Quantum\Libraries\Storage\FileSystem;
-    use Quantum\Loader\Loader;
+    use Quantum\Models\VUserModel;
+    use Quantum\Loader\Setup;
     use Quantum\Http\Request;
-    use Mockery;
+    use Quantum\Di\Di;
+    use Quantum\App;
 
     class ValidatorTest extends TestCase
     {
@@ -61,17 +46,15 @@ namespace Quantum\Test\Unit {
 
         public function setUp(): void
         {
+            App::loadCoreFunctions(dirname(__DIR__, 4) . DS . 'src' . DS . 'Helpers');
+
+            App::setBaseDir(dirname(__DIR__, 2) . DS . '_root');
+
+            Di::loadDefinitions();
+
             $this->request = new Request();
 
             $this->validator = new Validator();
-
-            $loader = new Loader(new FileSystem);
-
-            $loader->loadDir(dirname(__DIR__, 4) . DS . 'src' . DS . 'Helpers' . DS . 'functions');
-
-            $loader->loadFile(dirname(__DIR__, 4) . DS . 'src' . DS . 'constants.php');
-
-            Di::loadDefinitions();
 
             $data = 'iVBORw0KGgoAAAANSUhEUgAAABwAAAASCAMAAAB/2U7WAAAABl'
                 . 'BMVEUAAAD///+l2Z/dAAAASUlEQVR4XqWQUQoAIAxC2/0vXZDr'
@@ -80,19 +63,19 @@ namespace Quantum\Test\Unit {
 
             $img = imagecreatefromstring(base64_decode($data));
 
-            imagepng($img, __DIR__ . DS . 'php8fe1.tmp');
+            imagepng($img, base_dir() . DS . 'php8fe2.tmp');
 
             imagedestroy($img);
         }
 
         public function tearDown(): void
         {
-            unlink(__DIR__ . DS . 'php8fe1.tmp');
+            unlink(base_dir() . DS . 'php8fe2.tmp');
         }
 
         public function testValidatorConstructor()
         {
-            $this->assertInstanceOf('Quantum\Libraries\Validation\Validator', $this->validator);
+            $this->assertInstanceOf(Validator::class, $this->validator);
         }
 
         public function testAddUpdateDeleteRule()
@@ -916,49 +899,24 @@ namespace Quantum\Test\Unit {
 
         public function testUnique()
         {
-            $dbConfigs = [
-                'current' => 'sqlite',
-                'mysql' => array(
-                    'driver' => 'mysql',
-                    'host' => 'localhost',
-                    'dbname' => 'database',
-                    'username' => 'username',
-                    'password' => 'password',
-                    'charset' => 'charset',
-                ),
-                'sqlite' => array(
-                    'driver' => 'sqlite',
-                    'database' => ':memory:'
-                ),
-            ];
+            config()->import(new Setup('config', 'database', true));
 
-            (new IdiormDbal('users'))->execute("CREATE TABLE users (
+            config()->set('database.current', 'sqlite');
+
+            IdiormDbal::execute("CREATE TABLE users (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                         username VARCHAR(255),
                         password VARCHAR(255),
                         created_at DATETIME
                     )");
 
-            $helperMock = Mockery::mock('overload:Quantum\Helpers\Helper');
-
-            $helperMock->shouldReceive('current_module')->andReturn('test');
-
-            $configPath = \Quantum\Loader\modules_dir() . DS . \Quantum\Loader\current_module() . DS . 'Config';
-
-            if (!is_dir($configPath))
-                mkdir($configPath, 0777, true);
-
-            $content = '<?php' . PHP_EOL . PHP_EOL . 'return ' . var_export($dbConfigs, true) . ';';
-
-            file_put_contents($configPath . DS . 'database.php', $content);
-
             $this->validator->addRule('username', [
-                Rule::set('unique', \Quantum\Models\VUserModel::class)
+                Rule::set('unique', VUserModel::class)
             ]);
 
             $this->assertTrue($this->validator->isValid(['username' => 'john@doe']));
 
-            $model = (new ModelFactory())->get(\Quantum\Models\VUserModel::class);
+            $model = (new ModelFactory())->get(VUserModel::class);
 
             $model->create();
             $model->username = 'john@doe';
@@ -973,25 +931,15 @@ namespace Quantum\Test\Unit {
 
             $this->assertEquals('validation.unique', $errors['username'][0]);
 
-            unlink($configPath . DS . 'database.php');
-
-            sleep(1);
-            rmdir($configPath);
-
-            sleep(1);
-            rmdir(\Quantum\Loader\modules_dir() . DS . \Quantum\Loader\current_module());
-
-            sleep(1);
-            rmdir(\Quantum\Loader\modules_dir());
         }
 
-        public function testFileSize()
+        public function testValidateFileSize()
         {
             $file = [
                 'image' => [
                     'size' => 500,
                     'name' => 'foo.jpg',
-                    'tmp_name' => dirname(__FILE__) . DS . 'php8fe1.tmp',
+                    'tmp_name' => base_dir() . DS . 'php8fe2.tmp',
                     'type' => 'image/jpg',
                     'error' => 0,
                 ],
@@ -1024,7 +972,7 @@ namespace Quantum\Test\Unit {
                 'image' => [
                     'size' => 500,
                     'name' => 'foo.jpg',
-                    'tmp_name' => dirname(__FILE__) . DS . 'php8fe1.tmp',
+                    'tmp_name' => base_dir() . DS . 'php8fe2.tmp',
                     'type' => 'image/jpg',
                     'error' => 0,
                 ],
@@ -1063,7 +1011,7 @@ namespace Quantum\Test\Unit {
                 'image' => [
                     'size' => 500,
                     'name' => 'foo.jpg',
-                    'tmp_name' => dirname(__FILE__) . DS . 'php8fe1.tmp',
+                    'tmp_name' => base_dir() . DS . 'php8fe2.tmp',
                     'type' => 'image/jpg',
                     'error' => 0,
                 ],
@@ -1102,7 +1050,7 @@ namespace Quantum\Test\Unit {
                 'image' => [
                     'size' => 500,
                     'name' => 'foo.jpg',
-                    'tmp_name' => dirname(__FILE__) . DS . 'php8fe1.tmp',
+                    'tmp_name' => base_dir() . DS . 'php8fe2.tmp',
                     'type' => 'image/jpg',
                     'error' => 0,
                 ],
