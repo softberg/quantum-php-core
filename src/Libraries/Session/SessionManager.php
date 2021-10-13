@@ -40,7 +40,13 @@ class SessionManager
     {
         if (!session_id()) {
             if (self::DRIVER == config()->get('session_driver')) {
-                $orm = Database::getInstance()->getOrm(config()->get('session_table', 'sessions'));
+                $sessionTable = config()->get('session_table', 'sessions');
+
+                if (!$sessionTable) {
+                    throw SessionException::sessionTableNotProvided();
+                }
+
+                $orm = Database::getInstance()->getOrm($sessionTable);
                 session_set_save_handler(new DbSessionHandler($orm), true);
             }
 
