@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.5.0
+ * @since 2.6.0
  */
 
 namespace Quantum\Environment;
@@ -57,7 +57,7 @@ class Environment
      * GetInstance
      * @return \Quantum\Environment\Environment
      */
-    public static function getInstance(): ?Environment
+    public static function getInstance(): Environment
     {
         if (self::$envInstance === null) {
             self::$envInstance = new self();
@@ -67,25 +67,24 @@ class Environment
     }
 
     /**
-     * Loads environment variables from .env file
-     * @param \Quantum\Loader\Loader $loader
+     * Loads environment variables from file
+     * @param \Quantum\Loader\Setup $setup
      * @return $this
      * @throws \Quantum\Exceptions\DiException
-     * @throws \Quantum\Exceptions\EnvException
-     * @throws \Quantum\Exceptions\LoaderException
      * @throws \ReflectionException
+     * @throws \Quantum\Exceptions\EnvException
      */
-    public function load(Loader $loader): Environment
+    public function load(Setup $setup): Environment
     {
-        $env = $loader->setup(new Setup('config', 'env', true))->load();
+        $env = Di::get(Loader::class)->setup($setup)->load();
 
-        if ($env['app_env'] != 'production') {
+        if (isset($env['app_env']) && $env['app_env'] != 'production') {
             $this->envFile = '.env.' . $env['app_env'];
         }
 
         $this->fs = Di::get(FileSystem::class);
 
-        if (!$this->fs->exists(BASE_DIR . DS . $this->envFile)) {
+        if (!$this->fs->exists(base_dir() . DS . $this->envFile)) {
             throw EnvException::fileNotFound();
         }
 
@@ -118,9 +117,9 @@ class Environment
     /**
      * Creates or updates the row in .env
      * @param string $key
-     * @param string $value
+     * @param string|null $value
      */
-    public function updateRow(string $key, string $value)
+    public function updateRow(string $key, ?string $value)
     {
         $row = $this->getRow($key);
 
