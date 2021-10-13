@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.5.0
+ * @since 2.6.0
  */
 
 namespace Quantum\Libraries\Lang;
@@ -19,6 +19,7 @@ use Quantum\Exceptions\LangException;
 use Dflydev\DotAccessData\Data;
 use Quantum\Loader\Loader;
 use Quantum\Loader\Setup;
+use Quantum\Di\Di;
 
 /**
  * Language class
@@ -35,26 +36,15 @@ class Lang
 
     /**
      * Translations
-     * @var array
+     * @var \Dflydev\DotAccessData\Data
      */
-    private static $translations = [];
+    private static $translations = null;
 
     /**
      * Instance of Lang
-     * @var Lang 
+     * @var \Quantum\Libraries\Lang\Lang
      */
     private static $langInstance = null;
-
-    /**
-     * Lang constructor.
-     * @throws \Quantum\Exceptions\LangException
-     */
-    private function __construct()
-    {
-        if (!config()->has('langs')) {
-            throw LangException::misconfiguredConfig();
-        }
-    }
 
     /**
      * GetInstance
@@ -71,30 +61,34 @@ class Lang
 
     /**
      * Loads translations
-     * @param Loader $loader
-     * @param FileSystem $fs
-     * @throws LangException
-     * @throws \Quantum\Exceptions\LoaderException
+     * @throws \Quantum\Exceptions\DiException
+     * @throws \Quantum\Exceptions\LangException
+     * @throws \ReflectionException
      */
-    public function load(Loader $loader, FileSystem $fs)
+    public function load()
     {
+        $fs = Di::get(FileSystem::class);
+
         $langDir = modules_dir() . DS . current_module() . DS . 'Resources' . DS . 'lang' . DS . $this->getLang();
 
-        $files = $fs->glob($langDir . "/*.php");
+        $files = $fs->glob($langDir . DS . "*.php");
 
         if (is_array($files) && !count($files)) {
             throw LangException::translationsNotFound($this->getLang());
         }
 
+        self::$translations = new Data();
+
         foreach ($files as $file) {
             $fileName = $fs->fileName($file);
 
             $setup = new Setup();
-            $setup->setEnv('Resources' . DS . 'lang' . DS . $this->getLang());
+            $setup->setPathPrefix('Resources' . DS . 'lang' . DS . $this->getLang());
             $setup->setFilename($fileName);
-            $setup->setExceptionMessage(LangException::TRANSLATION_FILES_NOT_FOUND);
+            $setup->setHierarchy(false);
+            $setup->setExceptionMessage(_message(LangException::TRANSLATION_FILES_NOT_FOUND, $this->getLang()));
 
-            self::$translations[$fileName] = $loader->setup($setup)->load();
+            self::$translations->import([$fileName => Di::get(Loader::class)->setup($setup)->load()]);
         }
     }
 
@@ -110,7 +104,7 @@ class Lang
             throw LangException::misconfiguredDefaultConfig();
         }
 
-        if (empty($lang) || !in_array($lang, (array) config()->get('langs'))) {
+        if (empty($lang) || !in_array($lang, (array)config()->get('langs'))) {
             $lang = config()->get('lang_default');
         }
 
@@ -129,9 +123,9 @@ class Lang
 
     /**
      * Gets the whole translations of current language
-     * @return array
+     * @return \Dflydev\DotAccessData\Data
      */
-    public function getTranslations(): array
+    public function getTranslations(): ?Data
     {
         return self::$translations;
     }
@@ -144,13 +138,11 @@ class Lang
      */
     public function getTranslation(string $key, $params = null): ?string
     {
-        $data = new Data(self::$translations);
-
-        if ($data->has($key)) {
+        if (self::$translations && self::$translations->has($key)) {
             if (!is_null($params)) {
-                return _message($data->get($key), $params);
+                return _message(self::$translations->get($key), $params);
             } else {
-                return $data->get($key);
+                return self::$translations->get($key);
             }
         } else {
             return $key;
