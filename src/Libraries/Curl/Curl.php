@@ -56,7 +56,7 @@ class Curl
 
     /**
      * Class constructor
-     * @param string|null $type
+     * @param int $type
      */
     public function __construct(int $type = 1)
     {
@@ -102,10 +102,15 @@ class Curl
     /**
      * Gets single request header or all headers after curl exec
      * @param string|null $header
-     * @return mixed
+     * @return mixed|null
+     * @throws \Exception
      */
     public function getRequestHeaders(string $header = null)
     {
+        if ($this->curl instanceof MultiCurl) {
+            throw new \Exception('Method is not available for MultiCurl');
+        }
+
         $requestHeaders = $this->curl->getRequestHeaders();
 
         if ($header) {
@@ -172,9 +177,14 @@ class Curl
      * Gets the curl info
      * @param int|null $option
      * @return mixed
+     * @throws \Exception
      */
     public function info(int $option = null)
     {
+        if ($this->curl instanceof MultiCurl) {
+            throw new \Exception('Method is not available for MultiCurl');
+        }
+
         if ($option) {
             return $this->curl->getInfo($option);
         }
