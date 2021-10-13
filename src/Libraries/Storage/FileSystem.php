@@ -19,12 +19,25 @@ use Quantum\Exceptions\FileSystemException;
 /**
  * Class FileSystem
  * @package Quantum\Libraries\Storage
+ * @method void makeDirectory(string $dirname)
+ * @method void removeDirectory(string $dirname)
+ * @method string get(string $filename)
+ * @method void put(string $filename, string $content)
+ * @method void append(string $filename, string $content)
+ * @method void rename(string $oldName, string $newName)
+ * @method void copy(string $source, string $dest)
+ * @method bool exists(string $filename)
+ * @method int|false size(string $filename)
+ * @method int|false lastModified(string $filename)
+ * @method void remove(string $filename)
+ * @method bool isFile(string $filename)
+ * @method bool isDirectory(string $dirname)
  */
 class FileSystem
 {
 
     /**
-     * @var \Quantum\Libraries\Storage\FilesystemAdapterInterface|null
+     * @var \Quantum\Libraries\Storage\FilesystemAdapterInterface
      */
     private $adapter;
 
@@ -32,7 +45,7 @@ class FileSystem
      * FileSystem constructor
      * @param \Quantum\Libraries\Storage\FilesystemAdapterInterface|null $filesystemAdapter
      */
-    public function __construct(?FilesystemAdapterInterface $filesystemAdapter = null)
+    public function __construct(FilesystemAdapterInterface $filesystemAdapter = null)
     {
         if ($filesystemAdapter) {
             $this->adapter = $filesystemAdapter;
@@ -43,9 +56,9 @@ class FileSystem
 
     /**
      * Gets the current adapter
-     * @return \Quantum\Libraries\Storage\FilesystemAdapterInterface|null
+     * @return \Quantum\Libraries\Storage\FilesystemAdapterInterface
      */
-    public function getAdapter(): ?FilesystemAdapterInterface
+    public function getAdapter(): FilesystemAdapterInterface
     {
         return $this->adapter;
     }
