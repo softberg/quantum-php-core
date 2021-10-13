@@ -204,7 +204,7 @@ class QtView
         if ($templateEngine) {
             $configs = config()->get('template_engine.' . key($templateEngine));
 
-            if ($configs) {
+            if (!$configs) {
                 throw ViewException::missingTemplateEngineConfigs();
             }
 
