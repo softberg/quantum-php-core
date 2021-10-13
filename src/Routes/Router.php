@@ -9,15 +9,16 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.5.0
+ * @since 2.6.0
  */
 
 namespace Quantum\Routes;
 
 use Quantum\Exceptions\RouteException;
-use Quantum\Hooks\HookManager;
+use Quantum\Debugger\Debugger;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
+use Psr\Log\LogLevel;
 
 /**
  * Class Router
@@ -69,8 +70,9 @@ class Router extends RouteController
 
     /**
      * Finds the current route
-     * @throws \Quantum\Exceptions\HookException
+     * @throws \Quantum\Exceptions\DiException
      * @throws \Quantum\Exceptions\RouteException
+     * @throws \Quantum\Exceptions\StopExecutionException
      * @throws \ReflectionException
      */
     public function findRoute()
@@ -79,7 +81,7 @@ class Router extends RouteController
 
         $uri = $this->request->getUri();
 
-        if(!$uri) {
+        if (!$uri) {
             throw RouteException::notFound();
         }
 
@@ -90,7 +92,8 @@ class Router extends RouteController
         }
 
         if (!count($this->matchedRoutes)) {
-            HookManager::call('pageNotFound');
+            hook('errorPage');
+            stop();
         }
 
         if (count($this->matchedRoutes) > 1) {
@@ -99,13 +102,24 @@ class Router extends RouteController
 
         $matchedRoute = current($this->matchedRoutes);
 
+        hook('headers');
+
         if ($this->request->getMethod() != 'OPTIONS') {
             $this->checkMethod($matchedRoute);
         }
 
         $matchedRoute['uri'] = $this->request->getUri();
 
-        parent::$currentRoute = $matchedRoute;
+        self::setCurrentRoute($matchedRoute);
+
+        if (filter_var(config()->get('debug'), FILTER_VALIDATE_BOOLEAN)) {
+            $routeInfo = [];
+            array_walk($matchedRoute, function ($value, $key) use (&$routeInfo) {
+                $routeInfo[ucfirst($key)] = is_array($value) ? implode(', ', $value) : $value;
+            });
+            Debugger::addToStore(Debugger::ROUTES, LogLevel::INFO, $routeInfo);
+        }
+
     }
 
     /**
