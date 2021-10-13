@@ -80,7 +80,7 @@ class Config implements StorageInterface
     {
         $fileName = $setup->getFilename();
 
-        if ($this->has($fileName)) {
+        if ($fileName && $this->has($fileName)) {
             throw ConfigException::configCollision($fileName);
         }
 
