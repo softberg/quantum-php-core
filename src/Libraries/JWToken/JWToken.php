@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.5.0
+ * @since 2.6.0
  */
 
 namespace Quantum\Libraries\JWToken;
@@ -44,10 +44,9 @@ class JWToken extends JWT
     private $payload = [];
 
     /**
-     * Fetched payload
-     * @var object
+     * @var object|null
      */
-    private $fetchedPayload = [];
+    private $fetchedPayload = null;
 
     /**
      * JWToken constructor.
@@ -146,9 +145,9 @@ class JWToken extends JWT
 
     /**
      * Fetches the payload
-     * @return array|object
+     * @return object
      */
-    public function fetchPayload()
+    public function fetchPayload(): ?object
     {
         return $this->fetchedPayload;
     }

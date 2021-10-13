@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.5.0
+ * @since 2.6.0
  */
 
 namespace Quantum\Mvc;
@@ -37,9 +37,7 @@ class MvcManager
      * @throws \Quantum\Exceptions\CsrfException
      * @throws \Quantum\Exceptions\DatabaseException
      * @throws \Quantum\Exceptions\DiException
-     * @throws \Quantum\Exceptions\LoaderException
      * @throws \Quantum\Exceptions\MiddlewareException
-     * @throws \Quantum\Exceptions\ModelException
      * @throws \Quantum\Exceptions\SessionException
      * @throws \ReflectionException
      */

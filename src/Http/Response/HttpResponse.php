@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.5.0
+ * @since 2.6.0
  */
 
 namespace Quantum\Http\Response;
@@ -64,12 +64,11 @@ abstract class HttpResponse
 
     /**
      * Initialize the Response
-     * @param bool $test
      * @throws \Quantum\Exceptions\HttpException
      */
-    public static function init(bool $test = false)
+    public static function init()
     {
-        if (!$test && get_caller_class(3) !== Bootstrap::class) {
+        if (get_caller_class(3) !== Bootstrap::class) {
             throw HttpException::unexpectedResponseInitialization();
         }
 

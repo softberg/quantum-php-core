@@ -9,14 +9,13 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.4.0
+ * @since 2.6.0
  */
 
 namespace Quantum\Tracer;
 
 use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Factory\ViewFactory;
-use Quantum\Http\Request\File;
 use Quantum\Logger\FileLogger;
 use Quantum\Http\Response;
 use Quantum\Logger\Logger;
@@ -108,9 +107,8 @@ class ErrorHandler
 
         if (filter_var(config()->get('debug'), FILTER_VALIDATE_BOOLEAN)) {
             Response::html($view->renderPartial('errors/trace', ['stackTrace' => self::$trace, 'errorMessage' => $e->getMessage(), 'severity' => $severity]));
-            Response::send();
         } else {
-            $logFile = LOGS_DIR . DS . date('Y-m-d') . '.log';
+            $logFile = logs_dir() . DS . date('Y-m-d') . '.log';
 
             $fileLogger = new FileLogger($logFile);
 
@@ -121,9 +119,9 @@ class ErrorHandler
             $logger->$fn($logMessage);
 
             Response::html($view->renderPartial('errors/500'));
-            Response::send();
         }
 
+        Response::send();
         exit;
     }
 

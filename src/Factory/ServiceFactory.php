@@ -9,14 +9,13 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.5.0
+ * @since 2.6.0
  */
 
 namespace Quantum\Factory;
 
 use Quantum\Exceptions\ServiceException;
 use Quantum\Mvc\QtService;
-use Quantum\Loader\Loader;
 use Quantum\Di\Di;
 
 /**
