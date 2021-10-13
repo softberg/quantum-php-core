@@ -35,7 +35,7 @@ class Setup
     /**
      * @var string|null
      */
-    protected $env;
+    protected $pathPrefix;
 
     /**
      * @var string|null
@@ -49,15 +49,15 @@ class Setup
 
     /**
      * Setup constructor.
-     * @param string|null $env
+     * @param string|null $pathPrefix
      * @param string|null $fileName
      * @param bool $hierarchical
      * @param string|null $module
      * @param string $exceptionMessage
      */
-    public function __construct(string $env = null, string $fileName = null, bool $hierarchical = false, string $module = null, string $exceptionMessage = ConfigException::CONFIG_FILE_NOT_FOUND)
+    public function __construct(string $pathPrefix = null, string $fileName = null, bool $hierarchical = true, string $module = null, string $exceptionMessage = ConfigException::CONFIG_FILE_NOT_FOUND)
     {
-        $this->env = $env;
+        $this->pathPrefix = $pathPrefix;
         $this->fileName = $fileName;
         $this->hierarchical = $hierarchical;
         $this->module = $module ?: current_module();
@@ -65,23 +65,23 @@ class Setup
     }
 
     /**
-     * Sets the env
-     * @param string $env
+     * Sets the path prefix
+     * @param string $pathPrefix
      * @return $this
      */
-    public function setEnv(string $env): Setup
+    public function setPathPrefix(string $pathPrefix): Setup
     {
-        $this->env = $env;
+        $this->pathPrefix = $pathPrefix;
         return $this;
     }
 
     /**
-     * Gets the env
+     * Gets the path prefix
      * @return string|null
      */
-    public function getEnv(): ?string
+    public function getPathPrefix(): ?string
     {
-        return $this->env;
+        return $this->pathPrefix;
     }
 
     /**
