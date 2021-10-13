@@ -9,16 +9,16 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.0.0
+ * @since 2.6.0
  */
 
 namespace Quantum\Console;
 
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Command\Command;
 
 /**
  * Class QtCommand
@@ -55,7 +55,7 @@ abstract class QtCommand extends Command implements CommandInterface
     /**
      * Console command options
      * @var array
-     * @example ['name', 'sortcut', 'type', 'description', 'default']
+     * @example ['name', 'shortcut', 'type', 'description', 'default']
      */
     protected $options = [];
 
@@ -71,7 +71,6 @@ abstract class QtCommand extends Command implements CommandInterface
 
     /**
      * QtCommand constructor.
-     * @return void
      */
     public function __construct()
     {
@@ -84,7 +83,6 @@ abstract class QtCommand extends Command implements CommandInterface
 
     /**
      * Configures the current command.
-     * @return void
      */
     protected function configure()
     {
@@ -96,7 +94,6 @@ abstract class QtCommand extends Command implements CommandInterface
      * Executes the current command.
      * @param InputInterface $input
      * @param OutputInterface $output
-     * @return int|null|void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -108,19 +105,19 @@ abstract class QtCommand extends Command implements CommandInterface
     /**
      * Returns the argument value for a given argument name.
      * @param string|null $key
-     * @return null|string|string[]
+     * @return mixed|string
      */
-    protected function getArgument($key = null)
+    protected function getArgument(string $key = null)
     {
         return $this->input->getArgument($key) ?? '';
     }
 
     /**
      * Returns the option value for a given option name.
-     * @param string $key
-     * @return bool|null|string|string[]
+     * @param string|null $key
+     * @return mixed|string
      */
-    protected function getOption($key = null)
+    protected function getOption(string $key = null)
     {
         return $this->input->getOption($key) ?? '';
     }
@@ -155,7 +152,6 @@ abstract class QtCommand extends Command implements CommandInterface
     /**
      * Outputs the string to console as question
      * @param string $string
-     * @return void
      */
     protected function question(string $string)
     {
@@ -165,7 +161,6 @@ abstract class QtCommand extends Command implements CommandInterface
     /**
      * Outputs the string to console as error
      * @param string $string
-     * @return void
      */
     protected function error(string $string)
     {
