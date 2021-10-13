@@ -80,7 +80,7 @@ class AssetManager
     public function register(array $assets)
     {
         foreach ($assets as $asset) {
-            $this->storage[] = $asset;
+            $this->registerAsset($asset);
         }
     }
 
@@ -138,6 +138,15 @@ class AssetManager
             ksort($this->published[self::CSS_STORE]);
             ksort($this->published[self::JS_STORE]);
         }
+    }
+
+    /**
+     * Registers an asset
+     * @param \Quantum\Libraries\Asset\Asset $asset
+     */
+    private function registerAsset(Asset $asset)
+    {
+        $this->storage[] = $asset;
     }
 
     /**
