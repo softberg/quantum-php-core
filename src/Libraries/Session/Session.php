@@ -144,7 +144,7 @@ class Session implements SessionStorageInterface
     public function flush()
     {
         $this->storage = [];
-        @session_destroy();
+        session_destroy();
     }
 
     /**
