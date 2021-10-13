@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.5.0
+ * @since 2.6.0
  */
 
 namespace Quantum\Factory;
@@ -30,12 +30,11 @@ class ViewFactory
      */
     private static $viewInstance = null;
 
-
     /**
-     * QtView Instance
+     * QtView instance
      * @return \Quantum\Mvc\QtView|null
      */
-    public static function getInstance()
+    public static function getInstance(): ?QtView
     {
         if (self::$viewInstance === null) {
             self::$viewInstance = new QtView();
@@ -45,7 +44,7 @@ class ViewFactory
     }
 
     /**
-     * __call magic
+     * Allows calling QtView methods
      * @param string $method
      * @param array|null $args
      * @return mixed

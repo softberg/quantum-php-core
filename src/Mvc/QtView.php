@@ -9,17 +9,17 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.5.0
+ * @since 2.6.0
  */
 
 namespace Quantum\Mvc;
 
-use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Exceptions\ViewException;
+use Quantum\Renderer\DefaultRenderer;
+use Quantum\Renderer\TwigRenderer;
 use Quantum\Factory\ViewFactory;
-use Quantum\Hooks\HookManager;
-use Quantum\Di\Di;
-use Error;
+use Quantum\Debugger\Debugger;
+use Psr\Log\LogLevel;
 
 /**
  * Class QtView
@@ -41,10 +41,10 @@ class QtView
     private $view = null;
 
     /**
-     * View data
+     * View params
      * @var array
      */
-    private $data = [];
+    private $params = [];
 
     /**
      * QtView constructor.
@@ -59,9 +59,9 @@ class QtView
 
     /**
      * Sets a layout
-     * @param string $layout
+     * @param string|null $layout
      */
-    public function setLayout(string $layout)
+    public function setLayout(?string $layout)
     {
         $this->layout = $layout;
     }
@@ -82,7 +82,7 @@ class QtView
      */
     public function setParam(string $key, $value)
     {
-        $this->data[$key] = $value;
+        $this->params[$key] = $value;
     }
 
     /**
@@ -92,7 +92,7 @@ class QtView
      */
     public function getParam(string $key)
     {
-        return $this->data[$key] ?? null;
+        return $this->params[$key] ?? null;
     }
 
     /**
@@ -112,17 +112,28 @@ class QtView
      */
     public function getParams(): array
     {
-        return $this->data;
+        return $this->params;
     }
 
     /**
+     * Flushes the view params
+     */
+    public function flushParams()
+    {
+        $this->params = [];
+    }
+
+    /**
+     * Renders the view
      * @param string $view
      * @param array $params
      * @return string|null
      * @throws \Quantum\Exceptions\DiException
-     * @throws \Quantum\Exceptions\HookException
      * @throws \Quantum\Exceptions\ViewException
      * @throws \ReflectionException
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
      */
     public function render(string $view, array $params = []): ?string
     {
@@ -131,13 +142,13 @@ class QtView
         }
 
         if (!empty($params)) {
-            $this->data = array_merge($this->data, $params);
+            $this->params = array_merge($this->params, $params);
         }
 
         $this->view = $this->renderFile($view);
 
         if (filter_var(config()->get('debug'), FILTER_VALIDATE_BOOLEAN)) {
-            HookManager::call('updateDebuggerStore', ['view' => $view]);
+            Debugger::updateStoreCell(Debugger::ROUTES, LogLevel::INFO, ['View' => current_module() . '/Views/' . $view]);
         }
 
         return $this->renderFile($this->layout);
@@ -149,14 +160,16 @@ class QtView
      * @param array $params
      * @return string|null
      * @throws \Quantum\Exceptions\DiException
-     * @throws \Quantum\Exceptions\HookException
      * @throws \Quantum\Exceptions\ViewException
      * @throws \ReflectionException
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
      */
     public function renderPartial(string $view, array $params = []): ?string
     {
         if (!empty($params)) {
-            $this->data = array_merge($this->data, $params);
+            $this->params = array_merge($this->params, $params);
         }
 
         return $this->renderFile($view);
@@ -164,109 +177,52 @@ class QtView
 
     /**
      * Gets the rendered view
-     * @return string
+     * @return string|null
      */
-    public function getView(): string
+    public function getView(): ?string
     {
         return $this->view;
     }
 
     /**
-     * Finds a given file
-     * @param string $file
+     * Renders the view
+     * @param string $view
      * @return string
      * @throws \Quantum\Exceptions\DiException
      * @throws \Quantum\Exceptions\ViewException
      * @throws \ReflectionException
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
      */
-    private function findFile(string $file): string
+    private function renderFile(string $view): string
     {
-        $fs = Di::get(FileSystem::class);
-
-        $filePath = modules_dir() . DS . current_module() . DS . 'Views' . DS . $file . '.php';
-
-        if (!$fs->exists($filePath)) {
-            $filePath = base_dir() . DS . 'base' . DS . 'views' . DS . $file . '.php';
-            if (!$fs->exists($filePath)) {
-                throw ViewException::fileNotFound($file);
-            }
-        }
-
-        return $filePath;
-    }
-
-    /**
-     * Renders the view
-     * @param string $view
-     * @return mixed|string
-     * @throws \Quantum\Exceptions\DiException
-     * @throws \Quantum\Exceptions\HookException
-     * @throws \Quantum\Exceptions\ViewException
-     * @throws \ReflectionException
-     */
-    private function renderFile(string $view)
-    {
-        $params = $this->xssFilter($this->data);
+        $params = $this->xssFilter($this->params);
 
         $templateEngine = config()->get('template_engine');
 
         if ($templateEngine) {
-            $engineName = key($templateEngine);
-            $engineConfigs = $templateEngine[$engineName];
-
-            return HookManager::call('templateRenderer', [
-                'configs' => $engineConfigs,
-                'view' => $view,
-                'params' => $params
-            ]);
+            return (new TwigRenderer())->render($view, $params, config()->get('template_engine.' . key($templateEngine)));
         } else {
-            return $this->defaultRenderer($view, $params);
-        }
-    }
-
-    /**
-     * Default Renderer
-     * @param string $view
-     * @param array $params
-     * @return string|null
-     * @throws \Quantum\Exceptions\DiException
-     * @throws \Quantum\Exceptions\ViewException
-     * @throws \ReflectionException
-     */
-    private function defaultRenderer(string $view, array $params = []): ?string
-    {
-        try {
-            ob_start();
-            ob_implicit_flush(0);
-
-            if (!empty($params)) {
-                extract($params, EXTR_OVERWRITE);
-            }
-
-            require $this->findFile($view);
-
-            return ob_get_clean();
-        } catch (Error $e) {
-            ob_clean();
-            exit($e->getMessage());
+            return (new DefaultRenderer())->render($view, $params);
         }
     }
 
     /**
      * XSS Filter
-     * @param mixed $data
+     * @param mixed $params
      * @return mixed
      */
-    private function xssFilter($data)
+    private function xssFilter($params)
     {
-        if (is_string($data)) {
-            $this->cleaner($data);
-            $data = [$data];
+        if (is_string($params)) {
+            $this->cleaner($params);
+            $params = [$params];
         } else {
-            array_walk_recursive($data, [$this, 'cleaner']);
+            array_walk_recursive($params, [$this, 'cleaner']);
         }
 
-        return $data;
+        return $params;
     }
 
     /**
