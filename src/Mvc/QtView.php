@@ -202,13 +202,13 @@ class QtView
         $templateEngine = config()->get('template_engine');
 
         if ($templateEngine) {
-            $configs = config()->get('template_engine.' . key($templateEngine);
+            $configs = config()->get('template_engine.' . key($templateEngine));
 
             if ($configs) {
                 throw ViewException::missingTemplateEngineConfigs();
             }
 
-            return (new TwigRenderer())->render($view, $params, $configs));
+            return (new TwigRenderer())->render($view, $params, $configs);
         } else {
             return (new DefaultRenderer())->render($view, $params);
         }
