@@ -125,7 +125,7 @@ class Database
      * @throws \Quantum\Exceptions\DiException
      * @throws \ReflectionException
      */
-    protected function getConfigs(): array
+    protected function getConfigs(): ?array
     {
         if (!config()->has('database') || !config()->has('database.current')) {
             config()->import(new Setup('config', 'database'));

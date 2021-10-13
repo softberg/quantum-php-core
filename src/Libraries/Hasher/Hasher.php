@@ -107,9 +107,9 @@ class Hasher
     /**
      * Gets an info of given hash
      * @param string $hash
-     * @return array
+     * @return array|null
      */
-    public function info(string $hash): array
+    public function info(string $hash): ?array
     {
         return password_get_info($hash);
     }

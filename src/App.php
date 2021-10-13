@@ -27,9 +27,9 @@ class App
 {
 
     /**
-     * @var string|null
+     * @var string
      */
-    public static $baseDir = null;
+    public static $baseDir = __DIR__;
 
     /**
      * Starts the app
@@ -87,7 +87,7 @@ class App
      * Gets the app base directory
      * @return string
      */
-    public static function getBaseDir(): ?string
+    public static function getBaseDir(): string
     {
         return self::$baseDir;
     }

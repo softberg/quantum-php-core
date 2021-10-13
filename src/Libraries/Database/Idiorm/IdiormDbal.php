@@ -69,7 +69,7 @@ class IdiormDbal implements DbalInterface
 
     /**
      * Idiorm Patch object
-     * @var \Quantum\Libraries\Database\IdiormPatch
+     * @var \Quantum\Libraries\Database\Idiorm\IdiormPatch
      */
     private $ormPatch = null;
 
