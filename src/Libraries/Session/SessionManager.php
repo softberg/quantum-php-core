@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.5.0
+ * @since 2.6.0
  */
 
 namespace Quantum\Libraries\Session;
@@ -17,7 +17,6 @@ namespace Quantum\Libraries\Session;
 use Quantum\Exceptions\SessionException;
 use Quantum\Libraries\Encryption\Cryptor;
 use Quantum\Libraries\Database\Database;
-use Quantum\Loader\Loader;
 
 /**
  * Class SessionManager
@@ -33,20 +32,16 @@ class SessionManager
 
     /**
      * Gets the handler
-     * @param \Quantum\Loader\Loader $loader
      * @return \Quantum\Libraries\Session\Session
      * @throws \Quantum\Exceptions\DatabaseException
-     * @throws \Quantum\Exceptions\LoaderException
-     * @throws \Quantum\Exceptions\ModelException
      * @throws \Quantum\Exceptions\SessionException
      */
-    public static function getHandler(Loader $loader): Session
+    public static function getHandler(): Session
     {
         if (!session_id()) {
-
             if (self::DRIVER == config()->get('session_driver')) {
-                $orm = (new Database($loader))->getORM(config()->get('session_table', 'sessions'));
-                session_set_save_handler(new DbSessionHandler($orm, $loader), true);
+                $orm = Database::getInstance()->getOrm(config()->get('session_table', 'sessions'));
+                session_set_save_handler(new DbSessionHandler($orm), true);
             }
 
             if (@session_start() === false) {

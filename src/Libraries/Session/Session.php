@@ -144,12 +144,12 @@ class Session implements SessionStorageInterface
     public function flush()
     {
         $this->storage = [];
-        session_destroy();
+        @session_destroy();
     }
 
     /**
      * Gets the session Id
-     * @return null|string
+     * @return string|null
      */
     public function getSessionId(): ?string
     {

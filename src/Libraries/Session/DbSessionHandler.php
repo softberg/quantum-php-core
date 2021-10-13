@@ -9,14 +9,12 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.0.0
+ * @since 2.6.0
  */
 
 namespace Quantum\Libraries\Session;
 
 use Quantum\Libraries\Database\DbalInterface;
-use Quantum\Libraries\Database\Database;
-use Quantum\Loader\Loader;
 use \SessionHandlerInterface;
 
 /**
@@ -33,93 +31,71 @@ class DbSessionHandler implements SessionHandlerInterface
     private $orm;
 
     /**
-     * Loader instance
-     * @var \Quantum\Loader\Loader
-     */
-    private $loader;
-
-    /**
      * DbSessionHandler constructor.
      * @param DbalInterface $orm
-     * @param Loader $loader
      */
 
     /**
      * DbSessionHandler constructor.
      * @param \Quantum\Libraries\Database\DbalInterface $orm
-     * @param \Quantum\Loader\Loader $loader
      */
-    public function __construct(DbalInterface $orm, Loader $loader)
+    public function __construct(DbalInterface $orm)
     {
         $this->orm = $orm;
-        $this->loader = $loader;
     }
 
     /**
-     * Initialize session
-     * @param string $path
-     * @param string $name
-     * @return bool
+     * @inheritDoc
      */
-    public function open($path, $name)
+    public function open($path, $name): bool
     {
-        if ((new Database($this->loader))->connected()) {
+        if ($this->orm::getConnection()) {
             return true;
         }
         return false;
     }
 
     /**
-     * Close the session
-     * @return bool
+     * @inheritDoc
      */
-    public function close()
+    public function close(): bool
     {
-        if (!(new Database($this->loader))->connected()) {
+        if (!$this->orm::getConnection()) {
             return true;
         }
         return false;
     }
 
     /**
-     * Read session data
-     * @param string $id The session id
-     * @return string
+     * @inheritDoc
      */
-    public function read($id)
+    public function read($id): string
     {
         $result = $this->orm->query('SELECT * FROM ' . $this->orm->getTable() . " WHERE id = :id", ['id' => $id]);
         return $result ? $result->data : '';
     }
 
     /**
-     * Write session data
-     * @param string $id The session id
-     * @param mixed $data
-     * @return bool
+     * @inheritDoc
      */
-    public function write($id, $data)
+    public function write($id, $data): bool
     {
         $access = time();
         return $this->orm->execute("REPLACE INTO " . $this->orm->getTable() . " VALUES (:id, :access, :data)", ['id' => $id, 'access' => $access, 'data' => $data]);
     }
 
     /**
-     * Destroy a session
-     * @param int $id The session ID
-     * @return bool
+     * @inheritDoc
      */
-    public function destroy($id)
+    public function destroy($id): bool
     {
         return $this->orm->execute("DELETE FROM " . $this->orm->getTable() . " WHERE id = :id", ['id' => $id]);
     }
 
     /**
-     * Cleanup old sessions
-     * @param int $max_lifetime Max lifetime
-     * @return bool
+     * @inheritDoc
      */
-    public function gc($max_lifetime)
+    public function gc($max_lifetime): bool
     {
         $old = time() - $max_lifetime;
         return $this->orm->execute("DELETE * FROM " . $this->orm->getTable() . " WHERE access < :old", ['old' => $old]);
