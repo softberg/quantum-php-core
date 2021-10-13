@@ -9,51 +9,50 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.0.0
+ * @since 2.6.0
  */
 
 namespace Quantum\Console\Commands;
 
 use Quantum\Environment\Environment;
 use Quantum\Console\QtCommand;
-use Quantum\Loader\Loader;
+use Quantum\Loader\Setup;
 use Figlet\Figlet;
-use Quantum\Di\Di;
 
 /**
- * Class WelcomeCommand
+ * Class VersionCommand
  * @package Quantum\Console\Commands
  */
-class WelcomeCommand extends QtCommand
+class VersionCommand extends QtCommand
 {
 
     /**
      * Command name
      * @var string
      */
-    protected $name = 'core:welcome';
+    protected $name = 'core:version';
 
     /**
      * Command description
      * @var string
      */
-    protected $description = 'Installation greetings';
+    protected $description = 'Core version';
 
     /**
      * Command help text
      * @var string
      */
-    protected $help = 'Printing greetings into the terminal';
+    protected $help = 'Printing the current version of the framework into the terminal';
 
     /**
      * Executes the command and prints greetings into the terminal
-     * @return void
+     * @throws \Quantum\Exceptions\DiException
+     * @throws \Quantum\Exceptions\EnvException
+     * @throws \ReflectionException
      */
     public function exec()
     {
-        $loader = Di::get(Loader::class);
-
-        Environment::getInstance()->load($loader);
+        Environment::getInstance()->load(new Setup('config', 'env'));
 
         $figlet = new Figlet();
 
