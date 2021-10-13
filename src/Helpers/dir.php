@@ -9,8 +9,10 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.5.0
+ * @since 2.6.0
  */
+
+use Quantum\App;
 
 /**
  * Gets base directory
@@ -18,7 +20,25 @@
  */
 function base_dir(): string
 {
-    return BASE_DIR;
+    return App::getBaseDir();
+}
+
+/**
+ * Gets the log directory
+ * @return string
+ */
+function logs_dir(): string
+{
+    return base_dir() . DS . 'logs';
+}
+
+/**
+ * Gets the framework directory
+ * @return string
+ */
+function framework_dir(): string
+{
+    return base_dir() . DS . 'vendor' . DS . 'quantum' . DS . 'framework' . DS . 'src';
 }
 
 /**
@@ -28,7 +48,7 @@ function base_dir(): string
  */
 function modules_dir(string $moduleDir = null): string
 {
-    return $moduleDir ?? MODULES_DIR;
+    return $moduleDir ?? base_dir() . DS . 'modules';
 }
 
 /**
@@ -37,7 +57,7 @@ function modules_dir(string $moduleDir = null): string
  */
 function public_dir(): string
 {
-    return PUBLIC_DIR;
+    return base_dir() . DS . 'public';
 }
 
 /**
@@ -46,7 +66,7 @@ function public_dir(): string
  */
 function uploads_dir(): string
 {
-    return UPLOADS_DIR;
+    return public_dir() . DS . 'uploads';
 }
 
 /**
@@ -55,7 +75,17 @@ function uploads_dir(): string
  */
 function assets_dir(): string
 {
-    return ASSETS_DIR;
+    return public_dir() . DS . 'assets';
 }
+
+/**
+ * Gets hooks directory
+ * @return string
+ */
+function hooks_dir(): string
+{
+    return base_dir() . DS . 'hooks';
+}
+
 
 

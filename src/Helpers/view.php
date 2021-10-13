@@ -18,9 +18,9 @@ use Quantum\Factory\ViewFactory;
 
 /**
  * Rendered view
- * @return string
+ * @return string|null
  */
-function view(): string
+function view(): ?string
 {
     return ViewFactory::getInstance()->getView();
 }
