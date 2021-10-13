@@ -14,12 +14,9 @@
 
 namespace Quantum\Logger;
 
-
 use Quantum\Contracts\ReportableInterface;
-use Quantum\Libraries\Storage\FileSystem;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
-use Quantum\Di\Di;
 
 /**
  * Class Logger
