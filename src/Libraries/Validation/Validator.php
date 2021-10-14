@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.4.0
+ * @since 2.6.0
  */
 
 namespace Quantum\Libraries\Validation;
@@ -66,7 +66,7 @@ class Validator
      */
     public function addRule(string $field, array $rules)
     {
-        if (!empty($field) && is_array($rules)) {
+        if (!empty($field)) {
             foreach ($rules as $rule) {
                 if (!isset($this->rules[$field])) {
                     $this->rules[$field] = [];
@@ -95,7 +95,7 @@ class Validator
      */
     public function updateRule(string $field, array $rule)
     {
-        if (!empty($field) && is_array($rule)) {
+        if (!empty($field)) {
             if (isset($this->rules[$field]) && isset($this->rules[$field][array_keys($rule)[0]])) {
                 $this->rules[$field][array_keys($rule)[0]] = array_values($rule)[0];
             }
@@ -196,17 +196,17 @@ class Validator
             foreach ($this->errors as $field => $errors) {
                 if (count($errors)) {
                     foreach ($errors as $rule => $param) {
-                        $translatoinParams = [ucfirst($field)];
+                        $translationParams = [ucfirst($field)];
 
                         if ($param) {
-                            $translatoinParams[] = $param;
+                            $translationParams[] = $param;
                         }
 
                         if (!isset($messages[$field])) {
                             $messages[$field] = [];
                         }
 
-                        $messages[$field][] = t("validation.$rule", $translatoinParams);
+                        $messages[$field][] = t("validation.$rule", $translationParams);
                     }
                 }
             }
@@ -242,7 +242,7 @@ class Validator
 
     /**
      * Calls custom function defined by developer
-     * @param \Closure $function : boolean
+     * @param \Closure $function
      * @param array $data
      */
     protected function callCustomFunction(\Closure $function, array $data)

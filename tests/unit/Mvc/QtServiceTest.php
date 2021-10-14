@@ -16,10 +16,10 @@ namespace Quantum\Test\Unit {
 
     use PHPUnit\Framework\TestCase;
     use Quantum\Exceptions\ServiceException;
-    use Quantum\Factory\ServiceFactory;
-    use Quantum\Libraries\Storage\FileSystem;
-    use Quantum\Loader\Loader;
     use Quantum\Services\TestingService;
+    use Quantum\Factory\ServiceFactory;
+    use Quantum\Di\Di;
+    use Quantum\App;
 
     /**
      * @runTestsInSeparateProcesses
@@ -30,15 +30,17 @@ namespace Quantum\Test\Unit {
 
         public function setUp(): void
         {
-            $loader = new Loader(new FileSystem);
+            App::loadCoreFunctions(dirname(__DIR__, 3) . DS . 'src' . DS . 'Helpers');
 
-            $loader->loadDir(dirname(__DIR__, 3) . DS . 'src' . DS . 'Helpers' . DS . 'functions');
+            App::setBaseDir(dirname(__DIR__) . DS . '_root');
+
+            Di::loadDefinitions();
         }
 
         /**
          * @runInSeparateProcess
          */
-        public function testMissingeMethods()
+        public function testMissingMethods()
         {
             $this->expectException(ServiceException::class);
 

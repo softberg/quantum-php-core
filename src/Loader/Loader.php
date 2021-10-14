@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.5.0
+ * @since 2.6.0
  */
 
 namespace Quantum\Loader;
@@ -34,7 +34,7 @@ class Loader
      * Environment
      * @var string
      */
-    private $env;
+    private $pathPrefix;
 
     /**
      * File name
@@ -50,6 +50,7 @@ class Loader
 
     /**
      * Exception message
+     * @var string
      */
     private $exceptionMessage;
 
@@ -60,7 +61,7 @@ class Loader
     private $fs;
 
     /**
-     * Class constructor
+     * Loader constructor
      * @param \Quantum\Libraries\Storage\FileSystem|null $fs
      */
     public function __construct(FileSystem $fs = null)
@@ -77,7 +78,7 @@ class Loader
     {
         $this->hierarchical = $setup->getHierarchy();
         $this->module = $setup->getModule();
-        $this->env = $setup->getEnv();
+        $this->pathPrefix = $setup->getPathPrefix();
         $this->fileName = $setup->getFilename();
         $this->exceptionMessage = $setup->getExceptionMessage();
 
@@ -111,7 +112,7 @@ class Loader
     /**
      * Loads .php file
      * @param string $path
-     * @throws LoaderException
+     * @throws \Quantum\Exceptions\LoaderException
      */
     public function loadFile(string $path)
     {
@@ -125,7 +126,7 @@ class Loader
     /**
      * Loads the content
      * @return mixed
-     * @throws LoaderException
+     * @throws \Quantum\Exceptions\LoaderException
      */
     public function load()
     {
@@ -135,15 +136,25 @@ class Loader
     /**
      * Gets the file path
      * @return string
-     * @throws LoaderException
+     * @throws \Quantum\Exceptions\LoaderException
      */
     public function getFilePath(): string
     {
-        $filePath = modules_dir() . DS . $this->module . DS . ucfirst($this->env) . DS . $this->fileName . '.php';
+        $filePath = '';
+
+        if ($this->module) {
+            $filePath = modules_dir() . DS . $this->module . DS;
+        }
+
+        if ($this->pathPrefix) {
+            $filePath .= $this->pathPrefix . DS;
+        }
+
+        $filePath .= $this->fileName . '.php';
 
         if (!$this->fs->exists($filePath)) {
             if ($this->hierarchical) {
-                $filePath = base_dir() . DS . $this->env . DS . $this->fileName . '.php';
+                $filePath = base_dir() . DS . $this->pathPrefix . DS . $this->fileName . '.php';
 
                 if (!$this->fs->exists($filePath)) {
                     throw new LoaderException(_message($this->exceptionMessage, $this->fileName));

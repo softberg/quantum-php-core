@@ -2,23 +2,20 @@
 
 /**
  * Quantum PHP Framework
- * 
+ *
  * An open source software development framework for PHP
- * 
+ *
  * @package Quantum
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.0.0
+ * @since 2.6.0
  */
 
 namespace Quantum\Routes;
 
 /**
  * RouterController Class
- * 
- * Base abstract class
- * 
  * @package Quantum
  * @category Routes
  */
@@ -27,7 +24,7 @@ abstract class RouteController
 
     /**
      * Contains current route information
-     * @var array 
+     * @var array
      */
     protected static $currentRoute = null;
 
@@ -38,6 +35,14 @@ abstract class RouteController
     public static function getCurrentRoute()
     {
         return self::$currentRoute;
+    }
+
+    /**
+     * @param array $route
+     */
+    public static function setCurrentRoute(array $route)
+    {
+        self::$currentRoute = $route;
     }
 
 }

@@ -46,17 +46,16 @@ namespace Quantum\Models {
 
 namespace Quantum\Test\Unit {
 
-    use Mockery;
     use PHPUnit\Framework\TestCase;
-    use Quantum\Libraries\Database\Database;
-    use Quantum\Loader\Loader;
-    use Quantum\Models\CUserModel;
-    use Quantum\Models\CEventModel;
-    use Quantum\Models\CUserEventModel;
+    use Quantum\Libraries\Database\Idiorm\IdiormDbal;
     use Quantum\Models\CUserProfessionModel;
-    use Quantum\Libraries\Database\IdiormDbal;
-    use Quantum\Libraries\Storage\FileSystem;
+    use Quantum\Models\CUserEventModel;
+    use Quantum\Factory\ModelFactory;
+    use Quantum\Models\CEventModel;
+    use Quantum\Models\CUserModel;
+    use Quantum\Loader\Setup;
     use Quantum\Di\Di;
+    use Quantum\App;
 
     /**
      * @runTestsInSeparateProcesses
@@ -65,17 +64,21 @@ namespace Quantum\Test\Unit {
     class IdiormDbalTest extends TestCase
     {
 
-        private $dbConfigs = [
-            'current' => 'sqlite',
-            'sqlite' => array(
-                'driver' => 'sqlite',
-                'database' => ':memory:'
-            ),
-        ];
-
         public function setUp(): void
         {
-            (new idiormDbal('users'))->execute("CREATE TABLE users (
+            App::loadCoreFunctions(dirname(__DIR__, 4) . DS . 'src' . DS . 'Helpers');
+
+            App::setBaseDir(dirname(__DIR__, 2) . DS . '_root');
+
+            Di::loadDefinitions();
+
+            config()->import(new Setup('config', 'database'));
+
+            config()->set('database.current', 'sqlite');
+
+            config()->set('debug', true);
+
+            IdiormDbal::execute("CREATE TABLE users (
                         id INTEGER PRIMARY KEY,
                         firstname VARCHAR(255),
                         lastname VARCHAR(255),
@@ -84,13 +87,13 @@ namespace Quantum\Test\Unit {
                         created_at DATETIME
                     )");
 
-            (new idiormDbal('user_professions'))->execute("CREATE TABLE user_professions (
+            IdiormDbal::execute("CREATE TABLE user_professions (
                         id INTEGER PRIMARY KEY,
                         user_id INTEGER(11),
                         title VARCHAR(255)
                     )");
 
-            (new idiormDbal('user_professions'))->execute("INSERT INTO 
+            IdiormDbal::execute("INSERT INTO 
                     user_professions
                         (user_id, title) 
                     VALUES
@@ -98,7 +101,7 @@ namespace Quantum\Test\Unit {
                         (2, 'Singer')
                     ");
 
-            (new idiormDbal('users'))->execute("INSERT INTO 
+            IdiormDbal::execute("INSERT INTO 
                     users
                         (firstname, lastname, age, country, created_at) 
                     VALUES
@@ -106,14 +109,14 @@ namespace Quantum\Test\Unit {
                         ('Jane', 'Du', 35, 'England', '2020-02-14 10:15:12')
                     ");
 
-            (new idiormDbal('events'))->execute("CREATE TABLE events (
+            IdiormDbal::execute("CREATE TABLE events (
                         id INTEGER PRIMARY KEY,
                         title VARCHAR(255),
                         country VARCHAR(255),
                         started_at DATETIME
                     )");
 
-            (new idiormDbal('events'))->execute("INSERT INTO 
+            IdiormDbal::execute("INSERT INTO 
                     events
                         (title, country, started_at) 
                     VALUES
@@ -126,14 +129,14 @@ namespace Quantum\Test\Unit {
                         ('Music', 'Island', '2030-02-14 10:15:12')
                     ");
 
-            (new idiormDbal('user_events'))->execute("CREATE TABLE user_events (
+            IdiormDbal::execute("CREATE TABLE user_events (
                         id INTEGER PRIMARY KEY,
                         user_id INTEGER(11),
                         event_id INTEGER(11),
                         created_at DATETIME
                     )");
 
-            (new idiormDbal('user_events'))->execute("INSERT INTO 
+            IdiormDbal::execute("INSERT INTO 
                     user_events
                         (user_id, event_id, created_at) 
                     VALUES
@@ -147,16 +150,11 @@ namespace Quantum\Test\Unit {
                         (110, 220, '2020-04-15 11:10:12')
                     ");
 
-            $loader = new Loader(new FileSystem);
-
-            $loader->loadDir(dirname(__DIR__, 4) . DS . 'src' . DS . 'Helpers' . DS . 'functions');
-            
-            Di::loadDefinitions();
         }
 
         public function tearDown(): void
         {
-            Mockery::close();
+            IdiormDbal::disconnect();
         }
 
         public function testIdiormDbalConstructor()
@@ -166,95 +164,29 @@ namespace Quantum\Test\Unit {
             $this->assertInstanceOf(IdiormDbal::class, $userModel);
         }
 
-        public function testGetTable()
+        public function testOrmConnection()
+        {
+            $this->assertNull(IdiormDbal::getConnection());
+
+            IdiormDbal::connect(['driver' => 'sqlite', 'database' => ':memory:']);
+
+            $this->assertNotNull(IdiormDbal::getConnection());
+
+            $this->assertIsArray(IdiormDbal::getConnection());
+
+            IdiormDbal::disconnect();
+
+            $this->assertNull(IdiormDbal::getConnection());
+        }
+
+        public function testOrmGetTable()
         {
             $userModel = new IdiormDbal('users');
 
             $this->assertEquals('users', $userModel->getTable());
         }
 
-        public function testDbConnect()
-        {
-            $this->assertIsArray(IdiormDbal::dbConnect($this->dbConfigs['sqlite']));
-        }
-
-        public function testFindOne()
-        {
-            $userModel = new IdiormDbal('users');
-
-            $user = $userModel->findOne(1);
-
-            $this->assertEquals('John', $user->firstname);
-
-            $this->assertEquals('Doe', $user->lastname);
-        }
-
-        public function testFindOneBy()
-        {
-            $userModel = new IdiormDbal('users');
-
-            $user = $userModel->findOneBy('firstname', 'John');
-
-            $this->assertEquals('Doe', $user->lastname);
-
-            $this->assertEquals('45', $user->age);
-        }
-
-        public function testFirst()
-        {
-            $userModel = new IdiormDbal('users');
-
-            $user = $userModel->first();
-
-            $this->assertEquals('Doe', $user->lastname);
-
-            $this->assertEquals('45', $user->age);
-
-            $this->assertNotEquals('Dane', $user->lastname);
-        }
-
-        public function testAsArray()
-        {
-            $userModel = new IdiormDbal('users');
-
-            $user = $userModel->first();
-
-            $this->assertIsObject($user);
-
-            $this->assertIsArray($user->asArray());
-        }
-
-        public function testCount()
-        {
-            $userModel = new IdiormDbal('users');
-
-            $userCount = $userModel->count();
-
-            $this->assertIsInt($userCount);
-
-            $this->assertEquals(2, $userCount);
-        }
-
-        public function testGet()
-        {
-            $userModel = new IdiormDbal('users');
-
-            $users = $userModel->get();
-
-            $this->assertIsArray($users);
-
-            $this->assertEquals('John', $users[0]['firstname']);
-
-            $this->assertEquals('Jane', $users[1]['firstname']);
-
-            $users = $userModel->get(2);
-
-            $this->assertEquals('John', $users[0]->firstname);
-
-            $this->assertEquals('Jane', $users[1]->firstname);
-        }
-
-        public function testSelect()
+        public function testOrmSelect()
         {
             $userModel = new IdiormDbal('users');
 
@@ -275,8 +207,84 @@ namespace Quantum\Test\Unit {
             $this->assertEquals('Doe', $user->surname);
         }
 
+        public function testOrmFindOne()
+        {
+            $userModel = new IdiormDbal('users');
+
+            $user = $userModel->findOne(1);
+
+            $this->assertEquals('John', $user->firstname);
+
+            $this->assertEquals('Doe', $user->lastname);
+        }
+
+        public function testOrmFindOneBy()
+        {
+            $userModel = new IdiormDbal('users');
+
+            $user = $userModel->findOneBy('firstname', 'John');
+
+            $this->assertEquals('Doe', $user->lastname);
+
+            $this->assertEquals('45', $user->age);
+        }
+
+        public function testOrmFirst()
+        {
+            $userModel = new IdiormDbal('users');
+
+            $user = $userModel->first();
+
+            $this->assertEquals('Doe', $user->lastname);
+
+            $this->assertEquals('45', $user->age);
+
+            $this->assertNotEquals('Dane', $user->lastname);
+        }
+
+        public function testOrmAsArray()
+        {
+            $userModel = new IdiormDbal('users');
+
+            $user = $userModel->first();
+
+            $this->assertIsObject($user);
+
+            $this->assertIsArray($user->asArray());
+        }
+
+        public function testOrmCount()
+        {
+            $userModel = new IdiormDbal('users');
+
+            $userCount = $userModel->count();
+
+            $this->assertIsInt($userCount);
+
+            $this->assertEquals(2, $userCount);
+        }
+
+        public function testOrmGet()
+        {
+            $userModel = new IdiormDbal('users');
+
+            $users = $userModel->get();
+
+            $this->assertIsArray($users);
+
+            $this->assertEquals('John', $users[0]['firstname']);
+
+            $this->assertEquals('Jane', $users[1]['firstname']);
+
+            $users = $userModel->get(2);
+
+            $this->assertEquals('John', $users[0]->firstname);
+
+            $this->assertEquals('Jane', $users[1]->firstname);
+        }
+
         /** Method chaining is not working here * */
-        public function testCriteriaEquals()
+        public function testOrmCriteriaEquals()
         {
             $userModel = new IdiormDbal('users');
 
@@ -288,7 +296,7 @@ namespace Quantum\Test\Unit {
         }
 
         /** Method chaining is not working here * */
-        public function testCriteriaNotEquals()
+        public function testOrmCriteriaNotEquals()
         {
             $userModel = new IdiormDbal('users');
 
@@ -300,7 +308,7 @@ namespace Quantum\Test\Unit {
         }
 
         /** Method chaining is not working here * */
-        public function testCriteriaGreaterAndGreaterOrEqual()
+        public function testOrmCriteriaGreaterAndGreaterOrEqual()
         {
             $userModel = new IdiormDbal('users');
 
@@ -320,7 +328,7 @@ namespace Quantum\Test\Unit {
         }
 
         /** Method chaining is not working here * */
-        public function testCriteriaSmalerAndSmallerOrEqual()
+        public function testOrmCriteriaSmallerAndSmallerOrEqual()
         {
             $userModel = new IdiormDbal('users');
 
@@ -340,7 +348,7 @@ namespace Quantum\Test\Unit {
         }
 
         /** Method chaining is not working here * */
-        public function testCriteriaInAndNotIn()
+        public function testOrmCriteriaInAndNotIn()
         {
             $userModel = new IdiormDbal('users');
 
@@ -366,7 +374,7 @@ namespace Quantum\Test\Unit {
         }
 
         /** Method chaining is not working here * */
-        public function testCriteriaLikeAndNotLike()
+        public function testOrmCriteriaLikeAndNotLike()
         {
             $userModel = new IdiormDbal('users');
 
@@ -400,7 +408,7 @@ namespace Quantum\Test\Unit {
         }
 
         /** Method chaining is not working here * */
-        public function testCriteriaNullAndNotNull()
+        public function testOrmCriteriaNullAndNotNull()
         {
             $userModel = new IdiormDbal('users');
 
@@ -424,7 +432,7 @@ namespace Quantum\Test\Unit {
         }
 
         /** Method chaining is not working here * */
-        public function testCriteriaWithFunction()
+        public function testOrmCriteriaWithFunction()
         {
             $eventModel = new IdiormDbal('events');
 
@@ -441,7 +449,7 @@ namespace Quantum\Test\Unit {
         }
 
         /** Method chaining is not working here * */
-        public function testCriteriaColumnsEqual()
+        public function testOrmCriteriaColumnsEqual()
         {
             $userModel = new IdiormDbal('users');
 
@@ -469,7 +477,7 @@ namespace Quantum\Test\Unit {
         }
 
         /** Method chaining is not working here  */
-        public function testMultipleAndCriterias()
+        public function testOrmMultipleAndCriterias()
         {
             $eventsModel = new IdiormDbal('events');
 
@@ -483,7 +491,7 @@ namespace Quantum\Test\Unit {
         }
 
         /** Method chaining is not working here  */
-        public function testMultipleOrCriterias()
+        public function testOrmMultipleOrCriterias()
         {
             $eventsModel = new IdiormDbal('events');
 
@@ -501,7 +509,7 @@ namespace Quantum\Test\Unit {
         }
 
         /** Method chaining is not working here  */
-        public function testOrderBy()
+        public function testOrmOrderBy()
         {
             $eventsModel = new IdiormDbal('events');
 
@@ -515,7 +523,7 @@ namespace Quantum\Test\Unit {
         }
 
         /** Method chaining is not working here  */
-        public function testGroupBy()
+        public function testOrmGroupBy()
         {
             $eventsModel = new IdiormDbal('events');
 
@@ -535,7 +543,7 @@ namespace Quantum\Test\Unit {
         }
 
         /** Method chaining is not working here  */
-        public function testLimitAndOffset()
+        public function testOrmLimitAndOffset()
         {
             $eventsModel = new IdiormDbal('events');
 
@@ -561,7 +569,7 @@ namespace Quantum\Test\Unit {
         }
 
         /** Method chaining is not working here  */
-        public function testCreateNewRecord()
+        public function testOrmCreateNewRecord()
         {
             $eventsModel = new IdiormDbal('events');
 
@@ -591,7 +599,7 @@ namespace Quantum\Test\Unit {
         }
 
         /** Method chaining is not working here  */
-        public function testUpdateExistingRecord()
+        public function testOrmUpdateExistingRecord()
         {
             $eventsModel = new IdiormDbal('events');
 
@@ -609,7 +617,7 @@ namespace Quantum\Test\Unit {
         }
 
         /** Method chaining is not working here  */
-        public function testDeleteRecord()
+        public function testOrmDeleteRecord()
         {
             $eventsModel = new IdiormDbal('events');
 
@@ -629,7 +637,7 @@ namespace Quantum\Test\Unit {
         }
 
         /** Method chaining is not working here  */
-        public function testDeleteAll()
+        public function testOrmDeleteAll()
         {
             $eventsModel = new IdiormDbal('events');
 
@@ -649,7 +657,7 @@ namespace Quantum\Test\Unit {
         }
 
         /** Method chaining is not working here  */
-        public function testJoinAndInnerJoin()
+        public function testOrmJoinAndInnerJoin()
         {
             $userModel = new IdiormDbal('users');
 
@@ -673,9 +681,8 @@ namespace Quantum\Test\Unit {
         }
 
         /** Method chaining is not working here  */
-
-        /** Right join can not be tested this time because the sqlite does not support */
-        public function testLeftJoinAndRightJoin()
+        /** Right join can not be tested this time because the sqlite does not support it */
+        public function testOrmLeftJoinAndRightJoin()
         {
             $userModel = new IdiormDbal('user_events');
 
@@ -697,30 +704,15 @@ namespace Quantum\Test\Unit {
         }
 
         /** Method chaining is not working here  */
-        public function testJoinToAndJoinThrough()
+        public function testOrmJoinToAndJoinThrough()
         {
+            $userModel = (new ModelFactory)->get(CUserModel::class);
 
-            $loader = new Loader(new FileSystem);
+            $userProfessionModel = (new ModelFactory)->get(CUserProfessionModel::class);
 
-            $loader->loadDir(dirname(__DIR__, 4) . DS . 'src' . DS . 'Helpers' . DS . 'functions');
+            $userEventModel = (new ModelFactory)->get(CUserEventModel::class);
 
-            $loaderMock = Mockery::mock('Quantum\Loader\Loader');
-
-            $loaderMock->shouldReceive('setup')->andReturn($loaderMock);
-
-            $loaderMock->shouldReceive('load')->andReturn($this->dbConfigs);
-
-            $db = Database::getInstance($loaderMock);
-
-            $db->getORM('users');
-
-            $userModel = (new \Quantum\Factory\ModelFactory)->get(CUserModel::class);
-
-            $userProfessionModel = (new \Quantum\Factory\ModelFactory)->get(CUserProfessionModel::class);
-
-            $userEventModel = (new \Quantum\Factory\ModelFactory)->get(CUserEventModel::class);
-
-            $eventModel = (new \Quantum\Factory\ModelFactory)->get(CEventModel::class);
+            $eventModel = (new ModelFactory)->get(CEventModel::class);
 
             $userModel->select(['users.id' => 'usr_id'], 'firstname', ['user_professions.title' => 'profession_title'], ['events.title' => 'event_title']);
 
@@ -740,7 +732,7 @@ namespace Quantum\Test\Unit {
         }
 
         /** Method chaining is not working here  */
-        public function testExecute()
+        public function testOrmExecute()
         {
             $eventModel = new IdiormDbal('events');
 
@@ -756,11 +748,9 @@ namespace Quantum\Test\Unit {
         }
 
         /** Method chaining is not working here  */
-        public function testQuery()
+        public function testOrmQuery()
         {
-            $eventModel = new IdiormDbal('events');
-
-            $events = $eventModel->query('SELECT * FROM events WHERE started_at BETWEEN :date_from AND :date_to', ['date_from' => '2035-02-14 10:15:12', 'date_to' => '2045-02-14 10:15:12']);
+            $events = IdiormDbal::query('SELECT * FROM events WHERE started_at BETWEEN :date_from AND :date_to', ['date_from' => '2035-02-14 10:15:12', 'date_to' => '2045-02-14 10:15:12']);
 
             $this->assertEquals('Film', $events[0]['title']);
 
@@ -770,13 +760,10 @@ namespace Quantum\Test\Unit {
         }
 
         /** Method chaining is not working here  */
-
         /** Works only if debug set to true */
-        public function testLastQuery()
+        public function testOrmLastQuery()
         {
-            config()->set('debug', true);
-
-            IdiormDbal::dbConnect($this->dbConfigs['sqlite']);
+            IdiormDbal::connect(['driver' => 'sqlite', 'database' => ':memory:']);
 
             $eventModel = new IdiormDbal('events');
 
@@ -784,13 +771,13 @@ namespace Quantum\Test\Unit {
 
             $eventModel->get();
 
-            $this->assertEquals("SELECT * FROM `events` WHERE `country` = 'Ireland'", $eventModel::lastQuery());
+            $this->assertEquals("SELECT * FROM `events` WHERE `country` = 'Ireland'", IdiormDbal::lastQuery());
         }
 
         /** Method chaining is not working here  */
-        public function testLastStatement()
+        public function testOrmLastStatement()
         {
-            IdiormDbal::dbConnect($this->dbConfigs['sqlite']);
+            IdiormDbal::connect(['driver' => 'sqlite', 'database' => ':memory:']);
 
             $eventModel = new IdiormDbal('events');
 
@@ -802,11 +789,9 @@ namespace Quantum\Test\Unit {
         }
 
         /** Method chaining is not working here  */
-        public function testQueryLog()
+        public function testOrmQueryLog()
         {
-            config()->set('debug', true);
-
-            IdiormDbal::dbConnect($this->dbConfigs['sqlite']);
+            IdiormDbal::connect(['driver' => 'sqlite', 'database' => ':memory:']);
 
             $eventModel = new IdiormDbal('events');
 

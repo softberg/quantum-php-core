@@ -4,9 +4,8 @@ namespace Quantum\Test\Unit;
 
 use PHPUnit\Framework\TestCase;
 use Quantum\Libraries\Mailer\Mailer;
-use Quantum\Libraries\Storage\FileSystem;
-use Quantum\Loader\Loader;
 use Quantum\Di\Di;
+use Quantum\App;
 
 class MailerTest extends TestCase
 {
@@ -15,11 +14,9 @@ class MailerTest extends TestCase
 
     public function setUp(): void
     {
-        $loader = new Loader(new FileSystem);
+        App::loadCoreFunctions(dirname(__DIR__, 4) . DS . 'src' . DS . 'Helpers');
 
-        $loader->loadDir(dirname(__DIR__, 4) . DS . 'src' . DS . 'Helpers' . DS . 'functions');
-
-        $loader->loadFile(dirname(__DIR__, 4) . DS . 'src' . DS . 'constants.php');
+        App::setBaseDir(dirname(__DIR__, 2) . DS . '_root');
 
         Di::loadDefinitions();
 
@@ -28,7 +25,7 @@ class MailerTest extends TestCase
 
     public function testMailerConstructor()
     {
-        $this->assertInstanceOf('Quantum\Libraries\Mailer\Mailer', $this->mailer);
+        $this->assertInstanceOf(Mailer::class, $this->mailer);
     }
 
     public function testSetGetFrom()
@@ -63,21 +60,21 @@ class MailerTest extends TestCase
         $this->assertNull($addresses[1]['name']);
     }
 
-    public function testSetGetReplyes()
+    public function testSetGetReplays()
     {
         $this->mailer->setReplay('jonny@hotmail.com', 'Jonny')->setReplay('jane@gmail.com');
 
-        $replayes = $this->mailer->getReplayes();
+        $replays = $this->mailer->getReplays();
 
-        $this->assertIsArray($replayes);
+        $this->assertIsArray($replays);
 
-        $this->assertEquals('jonny@hotmail.com', $replayes[0]['email']);
+        $this->assertEquals('jonny@hotmail.com', $replays[0]['email']);
 
-        $this->assertEquals('Jonny', $replayes[0]['name']);
+        $this->assertEquals('Jonny', $replays[0]['name']);
 
-        $this->assertEquals('jane@gmail.com', $replayes[1]['email']);
+        $this->assertEquals('jane@gmail.com', $replays[1]['email']);
 
-        $this->assertNull($replayes[1]['name']);
+        $this->assertNull($replays[1]['name']);
     }
 
     public function testSetGetCCs()
@@ -183,7 +180,7 @@ class MailerTest extends TestCase
 
         $this->mailer->setBody('Lorem ipsum dolor sit amet');
 
-        $this->mailer->setAttachment(dirname(__FILE__) . DS . 'journal.log');
+        $this->mailer->setAttachment(base_dir() . DS . 'journal.log');
 
         $this->mailer->setStringAttachment('content of the document', 'document.txt');
 
@@ -206,7 +203,7 @@ class MailerTest extends TestCase
 
         $options['cc'] = ['katty@mail.com', 'Ketty'];
 
-        $options['attachment'] = [dirname(__FILE__) . DS . 'journal.log'];
+        $options['attachment'] = [base_dir() . DS . 'journal.log'];
 
         $options['stringAttachment'] = ['content of the document', 'document.txt'];
 

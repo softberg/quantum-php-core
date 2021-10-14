@@ -4,7 +4,13 @@ namespace Quantum\Test\Unit;
 
 use PHPUnit\Framework\TestCase;
 use Quantum\Libraries\Asset\AssetManager;
+use Quantum\Libraries\Asset\Asset;
+use Quantum\Di\Di;
+use Quantum\App;
 
+/**
+ * @runTestsInSeparateProcesses
+ */
 class AssetManagerTest extends TestCase
 {
 
@@ -12,97 +18,69 @@ class AssetManagerTest extends TestCase
 
     public function setUp(): void
     {
-        $this->assetManager = new AssetManager();
+        App::loadCoreFunctions(dirname(__DIR__, 4) . DS . 'src' . DS . 'Helpers');
 
-        $reflectionClass = new \ReflectionClass(AssetManager::class);
+        App::setBaseDir(dirname(__DIR__, 2) . DS . '_root');
 
-        $reflectionPropertyCssAssetStore = $reflectionClass->getProperty('cssAssetStore');
+        Di::loadDefinitions();
 
-        $reflectionPropertyCssAssetStore->setAccessible(true);
+        config()->set('base_url', 'http://mydomain.com');
 
-        $reflectionPropertyCssAssetStore->setValue([
-            'ordered' => [],
-            'unordered' => [],
-        ]);
-        
-        $reflectionPropertyJsAssetStore = $reflectionClass->getProperty('jsAssetStore');
-
-        $reflectionPropertyJsAssetStore->setAccessible(true);
-
-        $reflectionPropertyJsAssetStore->setValue([
-            'ordered' => [],
-            'unordered' => [],
-        ]);
+        $this->assetManager = AssetManager::getInstance();
     }
 
-    public function testRegisterAndPublishCSS()
+    public function testRegisterPublishDump()
     {
-        $this->assetManager->registerCSS([
-            'fakepath/style.css',
-            'fakepath/responsive.css'
+        $this->assetManager->register([
+            new Asset(Asset::CSS, 'css/style.css'),
+            new Asset(Asset::CSS, 'css/responsive.css')
         ]);
 
-        $published = $this->assetManager->publishCSS();
-
-        $this->assertNotEmpty($published);
-
-        $this->assertEquals(2, count($published));
-
-        $this->assertEquals('fakepath/style.css', $published[0]);
-
-        $this->assertEquals('fakepath/responsive.css', $published[1]);
-
-        $this->assetManager->registerCSS([
-            ['fakepath/reset.css', 0],
-            ['fakepath/media.css', 2]
+        $this->assetManager->register([
+            new Asset(Asset::JS, 'js/bootstrap.js', 1),
+            new Asset(Asset::JS, 'js/bootstrap-datepicker.min.js', 2)
         ]);
 
-        $published = $this->assetManager->publishCSS();
+        $this->assetManager->register([
+            new Asset(Asset::CSS, 'css/reset.css', 0),
+            new Asset(Asset::CSS, 'css/media.css', 2)
+        ]);
 
-        $this->assertEquals(4, count($published));
+        $this->assetManager->register([
+            new Asset(Asset::JS, 'js/jquery.js'),
+            new Asset(Asset::JS, 'js/custom.js')
+        ]);
 
-        $this->assertEquals('fakepath/reset.css', $published[0]);
+        $expectedOutput = '<link rel="stylesheet" type="text/css" href="http://mydomain.com/assets/css/reset.css">' . PHP_EOL .
+            '<link rel="stylesheet" type="text/css" href="http://mydomain.com/assets/css/style.css">' . PHP_EOL .
+            '<link rel="stylesheet" type="text/css" href="http://mydomain.com/assets/css/media.css">' . PHP_EOL .
+            '<link rel="stylesheet" type="text/css" href="http://mydomain.com/assets/css/responsive.css">' . PHP_EOL;
 
-        $this->assertEquals('fakepath/style.css', $published[1]);
+        ob_start();
 
-        $this->assertEquals('fakepath/media.css', $published[2]);
+        $this->assetManager->dump(AssetManager::CSS_STORE);
 
-        $this->assertEquals('fakepath/responsive.css', $published[3]);
+        $this->assertStringContainsString($expectedOutput, ob_get_contents());
+
+        ob_clean();
+
+        $expectedOutput = '<script src="http://mydomain.com/assets/js/jquery.js"></script>' . PHP_EOL .
+            '<script src="http://mydomain.com/assets/js/bootstrap.js"></script>' . PHP_EOL .
+            '<script src="http://mydomain.com/assets/js/bootstrap-datepicker.min.js"></script>' . PHP_EOL .
+            '<script src="http://mydomain.com/assets/js/custom.js"></script>' . PHP_EOL;
+
+        $this->assetManager->dump(AssetManager::JS_STORE);
+
+        $this->assertStringContainsString($expectedOutput, ob_get_contents());
+
+        ob_get_clean();
     }
 
-    public function testRegisterAndPublishJS()
+    public function testAssetUrl()
     {
-        $this->assetManager->registerJS([
-            'fakepath/bootstrap.js',
-            'fakepath/bootstrap-datepicker.min.js'
-        ]);
+        $this->assertEquals('http://mydomain.com/assets/icons/person.png', $this->assetManager->url('icons/person.png'));
 
-        $published = $this->assetManager->publishJS();
-
-        $this->assertNotEmpty($published);
-
-        $this->assertEquals(2, count($published));
-
-        $this->assertEquals('fakepath/bootstrap.js', $published[0]);
-
-        $this->assertEquals('fakepath/bootstrap-datepicker.min.js', $published[1]);
-
-        $this->assetManager->registerJS([
-            ['fakepath/modernizr.js', 0],
-            ['fakepath/jquery.js', 1]
-        ]);
-
-        $published = $this->assetManager->publishJS();
-
-        $this->assertEquals(4, count($published));
-
-        $this->assertEquals('fakepath/modernizr.js', $published[0]);
-
-        $this->assertEquals('fakepath/jquery.js', $published[1]);
-
-        $this->assertEquals('fakepath/bootstrap.js', $published[2]);
-
-        $this->assertEquals('fakepath/bootstrap-datepicker.min.js', $published[3]);
+        $this->assertEquals('http://mydomain.com/assets/fonts/arial.ttf', $this->assetManager->url('fonts/arial.ttf'));
     }
 
 }

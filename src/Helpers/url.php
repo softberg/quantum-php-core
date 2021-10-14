@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.5.0
+ * @since 2.6.0
  */
 
 use Quantum\Http\Request;
@@ -50,11 +50,7 @@ function redirect(string $url, int $code = null)
  * @param int|null $code
  * @throws \Quantum\Exceptions\CryptorException
  * @throws \Quantum\Exceptions\DatabaseException
- * @throws \Quantum\Exceptions\DiException
- * @throws \Quantum\Exceptions\LoaderException
- * @throws \Quantum\Exceptions\ModelException
  * @throws \Quantum\Exceptions\SessionException
- * @throws \ReflectionException
  */
 function redirectWith(string $url, array $data, int $code = null)
 {
@@ -68,11 +64,7 @@ function redirectWith(string $url, array $data, int $code = null)
  * @return mixed|null
  * @throws \Quantum\Exceptions\CryptorException
  * @throws \Quantum\Exceptions\DatabaseException
- * @throws \Quantum\Exceptions\DiException
- * @throws \Quantum\Exceptions\LoaderException
- * @throws \Quantum\Exceptions\ModelException
  * @throws \Quantum\Exceptions\SessionException
- * @throws \ReflectionException
  */
 function old(string $key)
 {
@@ -97,33 +89,6 @@ function old(string $key)
 function get_referrer(): ?string
 {
     return Request::getReferrer();
-}
-
-/**
- * Slugify the string
- * @param string $text
- * @return string
- */
-function slugify(string $text): string
-{
-    $text = trim($text, ' ');
-    $text = preg_replace('/[^\p{L}\p{N}]/u', ' ', $text);
-    $text = preg_replace('/\s+/', '-', $text);
-    $text = trim($text, '-');
-    $text = mb_strtolower($text);
-    if (empty($text)) {
-        return 'n-a';
-    }
-    return $text;
-}
-
-/**
- * Gets the assets url
- * @return string
- */
-function asset_url(): string
-{
-    return base_url() . '/assets';
 }
 
 

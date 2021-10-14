@@ -2,40 +2,43 @@
 
 /**
  * Quantum PHP Framework
- * 
+ *
  * An open source software development framework for PHP
- * 
+ *
  * @package Quantum
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.0.0
+ * @since 2.6.0
  */
 
 namespace Quantum\Libraries\Curl;
 
 use Curl\Curl as PhpCurl;
 use Curl\MultiCurl;
-use ArrayAccess;
 
 /**
  * Curl Class
- * @package Quantum
- * @category Libraries 
+ * @package Quantum\Libraries\Curl
  * @uses php-curl-class/php-curl-class
  */
 class Curl
 {
 
     /**
+     * Multi curl mode
+     */
+    const MULTI_CURL = 2;
+
+    /**
      * Curl instance
-     * @var object
+     * @var \Curl\Curl|\Curl\MultiCurl
      */
     private $curl;
 
     /**
      * Response body
-     * @var mixed 
+     * @var mixed
      */
     private $responseBody = null;
 
@@ -47,17 +50,17 @@ class Curl
 
     /**
      * Response error
-     * @var array 
+     * @var array
      */
     private $errors = [];
 
     /**
      * Class constructor
-     * @param string $type
+     * @param int $type
      */
-    public function __construct($type = null)
+    public function __construct(int $type = 1)
     {
-        if ($type && $type == 'multi') {
+        if ($type == self::MULTI_CURL) {
             $this->curl = new MultiCurl();
         } else {
             $this->curl = new PhpCurl();
@@ -67,21 +70,20 @@ class Curl
     /**
      * Sets the options
      * @param array $options
-     * @return $this
+     * @return \Quantum\Libraries\Curl\Curl
      */
-    public function setOptions(array $options)
+    public function setOptions(array $options): Curl
     {
         $this->curl->setOpts($options);
-
         return $this;
     }
 
     /**
      * Gets the option
      * @param int $option
-     * @return mixed
+     * @return mixed|null
      */
-    public function getOption($option)
+    public function getOption(int $option)
     {
         return $this->curl->getOpt($option);
     }
@@ -89,22 +91,26 @@ class Curl
     /**
      * Sets the request headers
      * @param array $headers
-     * @return $this
+     * @return \Quantum\Libraries\Curl\Curl
      */
-    public function setRequestHeaders(array $headers)
+    public function setRequestHeaders(array $headers): Curl
     {
         $this->curl->setHeaders($headers);
-
         return $this;
     }
 
     /**
      * Gets single request header or all headers after curl exec
-     * @param string $header
-     * @return mixed
+     * @param string|null $header
+     * @return mixed|null
+     * @throws \Exception
      */
-    public function getRequestHeaders($header = null)
+    public function getRequestHeaders(string $header = null)
     {
+        if ($this->curl instanceof MultiCurl) {
+            throw new \Exception('Method is not available for MultiCurl');
+        }
+
         $requestHeaders = $this->curl->getRequestHeaders();
 
         if ($header) {
@@ -116,10 +122,11 @@ class Curl
 
     /**
      * Executes or starts the cURL request
-     * @param string $url
-     * @return object
+     * @param string|null $url
+     * @return \Quantum\Libraries\Curl\Curl
+     * @throws \ErrorException
      */
-    public function run($url = null)
+    public function run(string $url = null): Curl
     {
         if ($url) {
             $this->curl->setUrl($url);
@@ -136,7 +143,7 @@ class Curl
 
     /**
      * Gets the response body
-     * @return mixed
+     * @return mixed|null
      */
     public function getResponseBody()
     {
@@ -145,14 +152,15 @@ class Curl
 
     /**
      * Gets the response headers
-     * @return array
+     * @param string|null $header
+     * @return mixed
      */
-    public function getResponseHeaders($header = null)
+    public function getResponseHeaders(string $header = null)
     {
         $responseHeaders = [];
 
         while ($this->responseHeaders->valid()) {
-            $responseHeaders[strtolower((string) $this->responseHeaders->key())] = $this->responseHeaders->current();
+            $responseHeaders[strtolower((string)$this->responseHeaders->key())] = $this->responseHeaders->current();
             $this->responseHeaders->next();
         }
 
@@ -167,11 +175,16 @@ class Curl
 
     /**
      * Gets the curl info
-     * @param $option
+     * @param int|null $option
      * @return mixed
+     * @throws \Exception
      */
-    public function info($option = null)
+    public function info(int $option = null)
     {
+        if ($this->curl instanceof MultiCurl) {
+            throw new \Exception('Method is not available for MultiCurl');
+        }
+
         if ($option) {
             return $this->curl->getInfo($option);
         }
@@ -183,30 +196,28 @@ class Curl
      * Returns the errors
      * @return array
      */
-    public function getErrors()
+    public function getErrors(): array
     {
         return $this->errors;
     }
 
     /**
-     *  __call magic
+     * __call magic
      * @param string $function
-     * @param mixed $arguments
-     * @return object
+     * @param array $arguments
+     * @return \Quantum\Libraries\Curl\Curl
      */
-    public function __call($function, $arguments)
+    public function __call(string $function, array $arguments): Curl
     {
-
         $this->curl->{$function}(...$arguments);
-
         return $this->fetch();
     }
 
     /**
      * Fetches the data from response
-     * @return $this
+     * @return \Quantum\Libraries\Curl\Curl
      */
-    private function fetch()
+    private function fetch(): Curl
     {
         if ($this->curl instanceof MultiCurl) {
             $this->curl->complete(function ($instance) {

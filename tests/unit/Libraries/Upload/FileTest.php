@@ -3,12 +3,10 @@
 namespace Quantum\Test\Unit {
 
     use PHPUnit\Framework\TestCase;
-    use Quantum\Di\Di;
-    use Quantum\Libraries\Storage\FileSystem;
-    use Quantum\Libraries\Upload\File;
     use Quantum\Exceptions\FileUploadException;
-    use Quantum\Http\Request;
-    use Quantum\Loader\Loader;
+    use Quantum\Libraries\Upload\File;
+    use Quantum\Di\Di;
+    use Quantum\App;
 
     class FileDouble extends File
     {
@@ -29,13 +27,9 @@ namespace Quantum\Test\Unit {
     {
         public function setUp(): void
         {
-            $this->request = new Request();
+            App::loadCoreFunctions(dirname(__DIR__, 4) . DS . 'src' . DS . 'Helpers');
 
-            $loader = new Loader(new FileSystem);
-
-            $loader->loadDir(dirname(__DIR__, 4) . DS . 'src' . DS . 'Helpers' . DS . 'functions');
-
-            $loader->loadFile(dirname(__DIR__, 4) . DS . 'src' . DS . 'constants.php');
+            App::setBaseDir(dirname(__DIR__, 2) . DS . '_root');
 
             Di::loadDefinitions();
 
@@ -43,7 +37,7 @@ namespace Quantum\Test\Unit {
                 'image' => [
                     'size' => 500,
                     'name' => 'foo.jpg',
-                    'tmp_name' => dirname(__FILE__) . DS . 'php8fe1.tmp',
+                    'tmp_name' => base_dir() . DS . 'php8fe1.tmp',
                     'type' => 'image/jpg',
                     'error' => 0,
                 ],
@@ -52,8 +46,8 @@ namespace Quantum\Test\Unit {
 
         public function tearDown(): void
         {
-            if (file_exists(dirname(__FILE__) . DS . 'foo.jpg')) {
-                unlink(dirname(__FILE__) . DS . 'foo.jpg');
+            if (file_exists(base_dir() . DS . 'foo.jpg')) {
+                unlink(base_dir() . DS . 'foo.jpg');
             }
         }
 
@@ -62,7 +56,7 @@ namespace Quantum\Test\Unit {
             $image = [
                 'size' => 500,
                 'name' => 'foo.jpg',
-                'tmp_name' => dirname(__FILE__) . DS . 'php8fe1.tmp',
+                'tmp_name' => base_dir() . DS . 'php8fe1.tmp',
                 'type' => 'image/jpg',
                 'error' => 0,
             ];
@@ -77,7 +71,7 @@ namespace Quantum\Test\Unit {
             $image = [
                 'size' => 500,
                 'name' => 'foo.jpg',
-                'tmp_name' => dirname(__FILE__) . DS . 'php8fe1.tmp',
+                'tmp_name' => base_dir() . DS . 'php8fe1.tmp',
                 'type' => 'image/jpg',
                 'error' => 0,
             ];
@@ -96,7 +90,7 @@ namespace Quantum\Test\Unit {
             $image = [
                 'size' => 500,
                 'name' => 'foo.jpg',
-                'tmp_name' => dirname(__FILE__) . DS . 'php8fe1.tmp',
+                'tmp_name' => base_dir() . DS . 'php8fe1.tmp',
                 'type' => 'image/jpg',
                 'error' => 0,
             ];
@@ -111,7 +105,7 @@ namespace Quantum\Test\Unit {
             $image = [
                 'size' => 500,
                 'name' => 'foo.jpg',
-                'tmp_name' => dirname(__FILE__) . DS . 'php8fe1.tmp',
+                'tmp_name' => base_dir() . DS . 'php8fe1.tmp',
                 'type' => 'image/jpg',
                 'error' => 0,
             ];
@@ -126,7 +120,7 @@ namespace Quantum\Test\Unit {
             $image = [
                 'size' => 500,
                 'name' => 'foo.jpg',
-                'tmp_name' => dirname(__FILE__) . DS . 'php8fe1.tmp',
+                'tmp_name' => base_dir() . DS . 'php8fe1.tmp',
                 'type' => 'image/jpg',
                 'error' => 0,
             ];
@@ -141,7 +135,7 @@ namespace Quantum\Test\Unit {
             $image = [
                 'size' => 500,
                 'name' => 'foo.jpg',
-                'tmp_name' => dirname(__FILE__) . DS . 'php8fe1.tmp',
+                'tmp_name' => base_dir() . DS . 'php8fe1.tmp',
                 'type' => 'image/jpg',
                 'error' => 0,
             ];
@@ -156,7 +150,7 @@ namespace Quantum\Test\Unit {
             $image = [
                 'size' => 500,
                 'name' => 'foo.jpg',
-                'tmp_name' => dirname(__FILE__) . DS . 'php8fe1.tmp',
+                'tmp_name' => base_dir() . DS . 'php8fe1.tmp',
                 'type' => 'image/jpg',
                 'error' => 0,
             ];
@@ -168,7 +162,7 @@ namespace Quantum\Test\Unit {
             $this->assertEquals(300, $file->getDimensions()['height']);
         }
 
-        public function testUplaodWithoutFileSent()
+        public function testUploadWithoutFileSent()
         {
             $image = [
                 'size' => 500,
@@ -180,7 +174,7 @@ namespace Quantum\Test\Unit {
 
             $file = new File($image);
 
-            $this->assertFalse($file->save(dirname(__FILE__)));
+            $this->assertFalse($file->save(base_dir()));
         }
 
         public function testUploadAndSave()
@@ -188,7 +182,7 @@ namespace Quantum\Test\Unit {
             $image = [
                 'size' => 500,
                 'name' => 'foo.jpg',
-                'tmp_name' => dirname(__FILE__) . DS . 'php8fe1.tmp',
+                'tmp_name' => base_dir() . DS . 'php8fe1.tmp',
                 'type' => 'image/jpg',
                 'error' => 0,
             ];
@@ -197,32 +191,32 @@ namespace Quantum\Test\Unit {
 
             $this->assertInstanceOf(File::class, $file);
 
-            $file->save(dirname(__FILE__));
+            $file->save(base_dir());
 
-            $this->assertTrue(file_exists(dirname(__FILE__) . DS . $file->getNameWithExtension()));
+            $this->assertTrue(file_exists(base_dir() . DS . $file->getNameWithExtension()));
         }
 
-        public function testSaveAndTryOWerwrite()
+        public function testSaveAndTryOverwrite()
         {
             $image = [
                 'size' => 500,
                 'name' => 'foo.jpg',
-                'tmp_name' => dirname(__FILE__) . DS . 'php8fe1.tmp',
+                'tmp_name' => base_dir() . DS . 'php8fe1.tmp',
                 'type' => 'image/jpg',
                 'error' => 0,
             ];
 
             $file = new FileDouble($image);
 
-            $file->save(dirname(__FILE__));
+            $file->save(base_dir());
 
-            $this->assertTrue(file_exists(dirname(__FILE__) . DS . $file->getNameWithExtension()));
+            $this->assertTrue(file_exists(base_dir() . DS . $file->getNameWithExtension()));
 
             $this->expectException(FileUploadException::class);
 
             $this->expectExceptionMessage(FileUploadException::FILE_ALREADY_EXISTS);
 
-            $file->save(dirname(__FILE__));
+            $file->save(base_dir());
         }
 
         public function testSaveAndOWerwrite()
@@ -230,18 +224,18 @@ namespace Quantum\Test\Unit {
             $image = [
                 'size' => 500,
                 'name' => 'foo.jpg',
-                'tmp_name' => dirname(__FILE__) . DS . 'php8fe1.tmp',
+                'tmp_name' => base_dir() . DS . 'php8fe1.tmp',
                 'type' => 'image/jpg',
                 'error' => 0,
             ];
 
             $file = new FileDouble($image);
 
-            $file->save(dirname(__FILE__));
+            $file->save(base_dir());
 
-            $this->assertTrue(file_exists(dirname(__FILE__) . DS . $file->getNameWithExtension()));
+            $this->assertTrue(file_exists(base_dir() . DS . $file->getNameWithExtension()));
 
-            $this->assertTrue($file->save(dirname(__FILE__), true));
+            $this->assertTrue($file->save(base_dir(), true));
         }
 
         public function testModifyAndSave()
@@ -249,7 +243,7 @@ namespace Quantum\Test\Unit {
             $image = [
                 'size' => 500,
                 'name' => 'foo.jpg',
-                'tmp_name' => dirname(__FILE__) . DS . 'php8fe1.tmp',
+                'tmp_name' => base_dir() . DS . 'php8fe1.tmp',
                 'type' => 'image/jpg',
                 'error' => 0,
             ];
@@ -258,9 +252,9 @@ namespace Quantum\Test\Unit {
 
             $file->modify('crop', [100, 100]);
 
-            $file->save(dirname(__FILE__));
+            $file->save(base_dir());
 
-            $img = getimagesize(dirname(__FILE__) . DS . $file->getNameWithExtension());
+            $img = getimagesize(base_dir() . DS . $file->getNameWithExtension());
 
             $this->assertEquals(100, $img[0]);
 
@@ -272,7 +266,7 @@ namespace Quantum\Test\Unit {
             $image = [
                 'size' => 500,
                 'name' => 'foo.jpg',
-                'tmp_name' => dirname(__FILE__),
+                'tmp_name' => base_dir(),
                 'type' => 'image/jpg',
                 'error' => 1,
             ];

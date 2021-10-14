@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.0.0
+ * @since 2.6.0
  */
 
 namespace Quantum\Libraries\Database;
@@ -18,27 +18,33 @@ use Quantum\Mvc\QtModel;
 
 /**
  * Database Abstract Layer interface
- *
- * The common interface for DBAL, which should implemented by all DBAL classes
- *
- * @package Quantum
- * @category Libraries
+ * @package Quantum\Libraries\Database
  */
 interface DbalInterface
 {
 
     /**
-     * Get table
+     * Connects to database
+     * @param array $config
+     */
+    public static function connect(array $config);
+
+    /**
+     * Gets the active connection
+     * @return array|null
+     */
+    public static function getConnection(): ?array;
+
+    /**
+     * Close the database connection
+     */
+    public static function disconnect();
+
+    /**
+     * Gets the table
      * @return string
      */
     public function getTable(): string;
-
-    /**
-     * Connects to database
-     * @param array $connectionDetails
-     * @return array
-     */
-    public static function dbConnect(array $connectionDetails): array;
 
     /**
      * Selects the values from provided table columns
@@ -46,6 +52,18 @@ interface DbalInterface
      * @return object
      */
     public function select(...$columns): object;
+
+    /**
+     * Gets the ORM model
+     * @return object
+     */
+    public function getOrmModel(): object;
+
+    /**
+     * Updates the ORM model
+     * @param object $ormModel
+     */
+    public function updateOrmModel(object $ormModel);
 
     /**
      * Finds the record by primary key
@@ -121,7 +139,7 @@ interface DbalInterface
     public function get(?int $returnType);
 
     /**
-     * Count
+     * Returns the count
      * @return int
      */
     public function count(): int;
@@ -226,9 +244,9 @@ interface DbalInterface
 
     /**
      * Gets the last query executed
-     * @return string
+     * @return string|null
      */
-    public static function lastQuery(): string;
+    public static function lastQuery(): ?string;
 
     /**
      * Returns the PDOStatement instance last used
@@ -237,7 +255,7 @@ interface DbalInterface
     public static function lastStatement(): object;
 
     /**
-     * Get an array containing all the queries 
+     * Get an array containing all the queries
      * run on a specified connection up to now.
      * @return array
      */

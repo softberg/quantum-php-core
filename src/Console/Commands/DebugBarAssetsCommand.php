@@ -56,7 +56,6 @@ class DebugBarAssetsCommand extends QtCommand
 
     /**
      * Executes the command and publishes the debug bar assets
-     * @return mixed|void
      */
     public function exec()
     {
@@ -71,7 +70,7 @@ class DebugBarAssetsCommand extends QtCommand
      * @param string $dst
      * @throws \RuntimeException
      */
-    private function recursive_copy($src, $dst)
+    private function recursive_copy(string $src, string $dst)
     {
         $dir = opendir($src);
 

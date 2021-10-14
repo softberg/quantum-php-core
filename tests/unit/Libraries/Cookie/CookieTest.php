@@ -5,7 +5,6 @@ namespace Quantum\Test\Unit;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 use Quantum\Libraries\Cookie\Cookie;
-use Quantum\Libraries\Encryption\Cryptor;
 
 class CookieTest extends TestCase
 {

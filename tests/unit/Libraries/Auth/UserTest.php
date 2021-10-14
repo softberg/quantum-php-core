@@ -31,7 +31,7 @@ class UserTest extends TestCase
 
     public function testSetGetData()
     {
-        $userData = ['username' => 'johny@mail.com', 'firstanme' => 'Johnny', 'lastname' => 'B'];
+        $userData = ['username' => 'johny@mail.com', 'firstname' => 'Johnny', 'lastname' => 'B'];
 
         $this->user->setData($userData);
 
@@ -47,7 +47,7 @@ class UserTest extends TestCase
 
     public function testGetFieldsFromSetData()
     {
-        $userData = ['username' => 'johny@mail.com', 'firstanme' => 'Johnny', 'lastname' => 'B'];
+        $userData = ['username' => 'johny@mail.com', 'firstname' => 'Johnny', 'lastname' => 'B'];
 
         $this->user->setData($userData);
 
@@ -62,7 +62,7 @@ class UserTest extends TestCase
 
         $this->assertTrue($this->user->hasField('id'));
 
-        $userData = ['username' => 'johny@mail.com', 'firstanme' => 'Johnny', 'lastname' => 'B'];
+        $userData = ['username' => 'johny@mail.com', 'firstname' => 'Johnny', 'lastname' => 'B'];
 
         $this->user->setData($userData);
 

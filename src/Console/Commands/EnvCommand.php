@@ -43,7 +43,6 @@ class EnvCommand extends QtCommand
 
     /**
      * Executes the command and creates new .env file
-     * @return mixed|void
      */
     public function exec()
     {

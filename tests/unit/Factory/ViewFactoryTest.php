@@ -4,6 +4,7 @@ namespace Quantum\Test\Unit;
 
 use PHPUnit\Framework\TestCase;
 use Quantum\Factory\ViewFactory;
+use Quantum\Mvc\QtView;
 
 class ViewFactoryTest extends TestCase
 {
@@ -16,7 +17,7 @@ class ViewFactoryTest extends TestCase
 
     public function testGetInstance()
     {
-        $this->assertInstanceOf('Quantum\Mvc\QtView', $this->viewFactory->getInstance());
+        $this->assertInstanceOf(QtView::class, $this->viewFactory->getInstance());
     }
     
     public function testProxyCalls()

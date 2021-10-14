@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.4.0
+ * @since 2.6.0
  */
 
 namespace Quantum\Libraries\Auth;
@@ -19,7 +19,6 @@ use Quantum\Exceptions\AuthException;
 use Quantum\Libraries\Mailer\Mailer;
 use Quantum\Libraries\Hasher\Hasher;
 use Quantum\Factory\ServiceFactory;
-use Quantum\Loader\Loader;
 use Quantum\Loader\Setup;
 use Quantum\Di\Di;
 
@@ -31,26 +30,19 @@ class AuthManager
 {
 
     /**
-     * @var string|null
-     */
-    private static $authType = null;
-
-    /**
      * Get Handler
-     * @param \Quantum\Loader\Loader $loader
-     * @return \Quantum\Libraries\Auth\ApiAuth|\Quantum\Libraries\Auth\WebAuth
+     * @return \Quantum\Libraries\Auth\ApiAuth|\Quantum\Libraries\Auth\WebAuth|void
      * @throws \Quantum\Exceptions\AuthException
      * @throws \Quantum\Exceptions\ConfigException
      * @throws \Quantum\Exceptions\DiException
-     * @throws \Quantum\Exceptions\LoaderException
      * @throws \ReflectionException
      */
-    public static function getHandler(Loader $loader)
+    public static function getHandler()
     {
-        $authService = self::authService($loader);
+        list($authType, $authService) = self::getAuthService();
 
-        if (self::$authType && $authService) {
-            switch (self::$authType) {
+        if ($authType && $authService) {
+            switch ($authType) {
                 case 'web':
                     return WebAuth::getInstance($authService, new Mailer, new Hasher);
                 case 'api':
@@ -63,26 +55,22 @@ class AuthManager
     }
 
     /**
-     * Auth Service
-     * @param \Quantum\Loader\Loader $loader
-     * @return \Quantum\Libraries\Auth\AuthServiceInterface
+     * Gets the auth service
+     * @return array
      * @throws \Quantum\Exceptions\ConfigException
      * @throws \Quantum\Exceptions\DiException
-     * @throws \Quantum\Exceptions\LoaderException
      * @throws \ReflectionException
      */
-    public static function authService(Loader $loader): AuthServiceInterface
+    public static function getAuthService(): array
     {
         if (!config()->has('auth')) {
-
-            $loader->setup(new Setup('config', 'auth'));
-
-            config()->import($loader, 'auth');
+            config()->import(new Setup('config', 'auth'));
         }
 
-        self::$authType = config()->get('auth.type');
-
-        return Di::get(ServiceFactory::class)->create(config()->get('auth.service'));
+        return [
+            config()->get('auth.type'),
+            Di::get(ServiceFactory::class)->create(config()->get('auth.service'))
+        ];
     }
 
 }

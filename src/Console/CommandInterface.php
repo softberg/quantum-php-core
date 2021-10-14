@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 1.7.0
+ * @since 2.6.0
  */
 
 namespace Quantum\Console;
@@ -22,7 +22,6 @@ interface CommandInterface
 {
     /**
      * Executes the current command.
-     * @return mixed
      */
     public function exec();
 

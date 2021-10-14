@@ -9,14 +9,13 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.5.0
+ * @since 2.6.0
  */
 
 namespace Quantum\Mvc;
 
-use Quantum\Libraries\Database\Database;
+use Quantum\Libraries\Database\DbalInterface;
 use Quantum\Exceptions\ModelException;
-use Quantum\Loader\Loader;
 
 /**
  * Class QtModel
@@ -51,27 +50,17 @@ abstract class QtModel
 
     /**
      * ORM database abstract layer object
-     * @var object
+     * @var \Quantum\Libraries\Database\DbalInterface
      */
     private $orm;
 
     /**
-     * The model
-     * @var string|null
+     * Sets the ORM
+     * @param \Quantum\Libraries\Database\DbalInterface $orm
      */
-    private $model;
-
-    /**
-     * QtModel constructor.
-     * @param \Quantum\Loader\Loader $loader
-     * @throws \Quantum\Exceptions\DatabaseException
-     * @throws \Quantum\Exceptions\LoaderException
-     * @throws \Quantum\Exceptions\ModelException
-     */
-    public final function __construct(Loader $loader)
+    public function setOrm(DbalInterface $orm)
     {
-        $this->model = get_called_class();
-        $this->orm = Database::getInstance($loader)->getORM($this->table, $this->model, $this->idColumn);
+        $this->orm = $orm;
     }
 
     /**
@@ -94,13 +83,13 @@ abstract class QtModel
     }
 
     /**
-     * Allows to access to model property
+     * Allows accessing to model property
      * @param string $property
      * @return mixed
      */
     public function __get(string $property)
     {
-        return $this->orm->ormObject->$property ?? null;
+        return $this->orm->getOrmModel()->$property ?? null;
     }
 
     /**
@@ -110,11 +99,11 @@ abstract class QtModel
      */
     public function __set(string $property, $value)
     {
-        $this->orm->ormObject->$property = $value;
+        $this->orm->getOrmModel()->$property = $value;
     }
 
     /**
-     * Allows to call models methods
+     * Allows calling the model methods
      * @param string $method
      * @param mixed|null $args
      * @return $this|array|int|string
@@ -126,15 +115,12 @@ abstract class QtModel
 
             $result = $this->orm->{$method}(...$args);
 
-            if (is_array($result) || is_int($result) || is_string($result)) {
+            if (!is_object($result)) {
                 return $result;
-            } else {
-                if (is_object($result)) {
-                    $this->orm->ormObject = $result;
-                }
-
-                return $this;
             }
+
+            $this->orm->updateOrmModel($result);
+            return $this;
         } else {
             throw ModelException::undefinedMethod($method);
         }

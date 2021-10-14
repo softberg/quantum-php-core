@@ -37,6 +37,11 @@ class ViewException extends \Exception
     const VIEW_FILE_NOT_FOUND = 'File `{%1}.php` does not exists';
 
     /**
+     * Template engine configurations missing message
+     */
+    const TEMPLATE_ENGINE_CONFIG_MISSING = 'Missing Template engine configurations';
+
+    /**
      * @param string $name
      * @return \Quantum\Exceptions\ViewException
      */
@@ -60,6 +65,14 @@ class ViewException extends \Exception
     public static function fileNotFound(string $name): ViewException
     {
         return new static(_message(self::VIEW_FILE_NOT_FOUND, $name), E_ERROR);
+    }
+
+    /**
+     * @return \Quantum\Exceptions\ViewException
+     */
+    public static function missingTemplateEngineConfigs(): ViewException
+    {
+        return new static(self::TEMPLATE_ENGINE_CONFIG_MISSING, E_WARNING);
     }
 
 

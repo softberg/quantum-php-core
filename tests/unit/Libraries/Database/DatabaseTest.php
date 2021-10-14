@@ -1,148 +1,75 @@
 <?php
 
-namespace Quantum\Models {
+namespace Quantum\Test\Unit;
 
-    use Quantum\Mvc\QtModel;
+use PHPUnit\Framework\TestCase;
+use Quantum\Libraries\Database\DbalInterface;
+use Quantum\Libraries\Database\Database;
+use Quantum\Loader\Setup;
+use Quantum\Di\Di;
+use Quantum\App;
 
-    class UserModel extends QtModel
+/**
+ * @runTestsInSeparateProcesses
+ * @preserveGlobalState disabled
+ */
+class DatabaseTest extends TestCase
+{
+
+    public function setUp(): void
     {
+        App::loadCoreFunctions(dirname(__DIR__, 4) . DS . 'src' . DS . 'Helpers');
 
-        public $table = 'user';
-        protected $fillable = [
-            'firstname',
-            'lastname'
-        ];
+        App::setBaseDir(dirname(__DIR__, 2) . DS . '_root');
 
+        Di::loadDefinitions();
+
+        config()->import(new Setup('config', 'database', true));
+
+        config()->set('database.current', 'sqlite');
+
+        config()->set('debug', true);
+
+        Database::execute("CREATE TABLE users (
+                        id INTEGER PRIMARY KEY,
+                        firstname VARCHAR(255),
+                        lastname VARCHAR(255),
+                        age INTEGER(11),
+                        country VARCHAR(255),
+                        created_at DATETIME
+                    )");
     }
 
-}
-
-
-namespace Quantum\Test\Unit {
-
-    use Mockery;
-    use PHPUnit\Framework\TestCase;
-    use Quantum\Exceptions\ModelException;
-    use Quantum\Models\UserModel;
-    use Quantum\Libraries\Database\Database;
-    use Quantum\Exceptions\DatabaseException;
-    use Quantum\Libraries\Storage\FileSystem;
-    use Quantum\Loader\Loader;
-
-    /**
-     * @runTestsInSeparateProcesses
-     * @preserveGlobalState disabled
-     */
-    class DatabaseTest extends TestCase
+    public function testGetOrm()
     {
+        $db = Database::getInstance();
 
-        private $dbConfigs = [
-            'current' => 'mysql',
-            'mysql' => array(
-                'driver' => 'mysql',
-                'host' => 'localhost',
-                'dbname' => 'database',
-                'username' => 'username',
-                'password' => 'password',
-                'charset' => 'charset',
-            ),
-            'sqlite' => array(
-                'driver' => 'sqlite',
-                'database' => 'database.sqlite',
-                'prefix' => '',
-            ),
-        ];
+        $this->assertInstanceOf(DbalInterface::class, $db->getOrm('user'));
+    }
 
-        private $queries = [
-            'UPDATE users WHERE id=:id',
-            'SELECT * FROM users WHERE id=:id'
-        ];
+    public function testRawQueries()
+    {
+        $result = Database::query('SELECT * FROM users WHERE id=:id', ['id' => 1]);
 
-        private $resultUser = [
-            'id' => 1,
-            'firstname' => 'John',
-            'lastname' => 'Doe'
-        ];
+        $this->assertIsArray($result);
 
-        private $db;
-        private $idiormDbalMock;
+        $this->assertEmpty($result);
 
-        public function setUp(): void
-        {
+        Database::execute('INSERT INTO users (firstname, lastname, age, country)
+                                     VALUES (:firstname, :lastname, :age, :country)',
+            ['firstname' => 'John', 'lastname' => 'Doe', 'age' => '56', 'country' => 'Spain']);
 
-            $loader = new Loader(new FileSystem);
+        $result = Database::query('SELECT * FROM users WHERE id=:id', ['id' => 1]);
 
-            $loader->loadDir(dirname(__DIR__, 4) . DS . 'src' . DS . 'Helpers' . DS . 'functions');
-            
-            $loaderMock = Mockery::mock('Quantum\Loader\Loader');
+        $this->assertNotEmpty($result);
 
-            $this->idiormDbalMock = Mockery::mock('overload:Quantum\Libraries\Database\IdiormDbal');
+        $this->assertEquals('John', $result[0]['firstname']);
 
-            $loaderMock->shouldReceive('setup')->andReturn($loaderMock);
+        $this->assertEquals('Doe', $result[0]['lastname']);
 
-            $loaderMock->shouldReceive('load')->andReturn($this->dbConfigs);
+        $this->assertEquals("SELECT * FROM users WHERE '1'=:'1'", Database::lastQuery());
 
-            $this->db = Database::getInstance($loaderMock);
-
-            $this->idiormDbalMock->shouldReceive('dbConnect')->andReturn(['connection_string']);
-
-            $this->idiormDbalMock->shouldReceive('execute')->withSomeOfArgs($this->queries[0], ['id' => 1])->andReturn(true);
-
-            $this->idiormDbalMock->shouldReceive('query')->withSomeOfArgs($this->queries[1], ['id' => 1])->andReturn($this->resultUser);
-
-            $this->idiormDbalMock->shouldReceive('lastQuery')->andReturn('SELECT * FROM users WHERE id=1');
-
-            $this->idiormDbalMock->shouldReceive('lastStatement')->andReturn($this->queries[1]);
-
-            $this->idiormDbalMock->shouldReceive('queryLog')->andReturn($this->queries);
-        }
-
-        public function tearDown(): void
-        {
-            Mockery::close();
-        }
-
-        public function testGetORM()
-        {
-            $this->assertInstanceOf(\Quantum\Libraries\Database\IdiormDbal::class, $this->db->getORM(UserModel::class, 'test'));
-        }
-
-        public function testGetORMWithoutTableDefined()
-        {
-            $this->expectException(ModelException::class);
-
-            $this->expectExceptionMessage('Model `' . UserModel::class . '` does not have $table property defined');
-
-            $this->db->getORM('', UserModel::class);
-        }
-
-        public function testConnectAndConnected()
-        {
-            $this->assertFalse($this->db->connected());
-
-            $this->db->connect('Quantum\Libraries\Database\IdiormDbal');
-
-            $this->assertTrue($this->db->connected());
-        }
-
-        public function testGetDbalClass()
-        {
-            $this->assertEquals(\Quantum\Libraries\Database\IdiormDbal::class, $this->db->getDbalClass());
-        }
-
-        public function testCommonMethods()
-        {
-            $this->assertTrue($this->db::execute('UPDATE users WHERE id=:id', ['id' => 1]));
-
-            $this->assertIsArray($this->db::query('SELECT * FROM users WHERE id=:id', ['id' => 1]));
-
-            $this->assertIsString($this->db::lastQuery());
-
-            $this->assertIsString($this->db::lastStatement());
-
-            $this->assertIsArray($this->db::queryLog());
-        }
-
+        $this->assertIsArray(Database::queryLog());
     }
 
 }

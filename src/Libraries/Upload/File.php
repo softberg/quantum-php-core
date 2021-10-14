@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.5.0
+ * @since 2.6.0
  */
 
 namespace Quantum\Libraries\Upload;
@@ -88,7 +88,7 @@ class File extends SplFileInfo
      * Blacklisted extensions
      * @var array
      */
-    protected $blackistedExtensions = [
+    protected $blacklistedExtensions = [
         'php([0-9])?', 'pht', 'phar', 'phpt', 'pgif', 'phtml', 'phtm', 'phps',
         'cgi', 'inc', 'env', 'htaccess', 'htpasswd', 'config', 'conf',
         'bat', 'exe', 'msi', 'cmd', 'dll', 'sh', 'com', 'app', 'sys', 'drv',
@@ -207,11 +207,10 @@ class File extends SplFileInfo
     /**
      * Save the uploaded file
      * @param string $dest
-     * @param boolean $overwrite
-     * @return boolean
-     * @throws FileUploadException
-     * @throws \InvalidArgumentException
+     * @param bool $overwrite
+     * @return bool
      * @throws \Gumlet\ImageResizeException
+     * @throws \Quantum\Exceptions\FileUploadException
      */
     public function save(string $dest, bool $overwrite = false): bool
     {
@@ -313,7 +312,7 @@ class File extends SplFileInfo
      */
     protected function whitelisted(string $extension): bool
     {
-        if (!preg_match('/(' . implode('|', $this->blackistedExtensions) . ')$/i', $extension)) {
+        if (!preg_match('/(' . implode('|', $this->blacklistedExtensions) . ')$/i', $extension)) {
             return true;
         }
 

@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.5.0
+ * @since 2.6.0
  */
 
 namespace Quantum\Exceptions;
@@ -32,6 +32,6 @@ class DiException extends \Exception
      */
     public static function dependencyNotDefined(string $name): DiException
     {
-        return new self(_message(self::NOT_FOUND, $name));
+        return new self(_message(self::NOT_FOUND, $name), E_ERROR);
     }
 }

@@ -2,7 +2,6 @@
 
 namespace Quantum\Test\Unit;
 
-use Mockery;
 use PHPUnit\Framework\TestCase;
 use Quantum\Libraries\JWToken\JWToken;
 

@@ -3,16 +3,15 @@
 namespace Quantum\Test\Unit;
 
 use Mockery;
-use Quantum\Di\Di;
+use PHPUnit\Framework\TestCase;
 use Quantum\Exceptions\FileUploadException;
 use Quantum\Libraries\Session\Session;
-use PHPUnit\Framework\TestCase;
-use Quantum\Libraries\Csrf\Csrf;
 use Quantum\Http\Request\HttpRequest;
-use Quantum\Http\Request;
-use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Libraries\Upload\File;
-use Quantum\Loader\Loader;
+use Quantum\Libraries\Csrf\Csrf;
+use Quantum\Http\Request;
+use Quantum\Di\Di;
+use Quantum\App;
 
 class RequestTest extends TestCase
 {
@@ -22,6 +21,12 @@ class RequestTest extends TestCase
 
     public function setUp(): void
     {
+        App::loadCoreFunctions(dirname(__DIR__, 3) . DS . 'src' . DS . 'Helpers');
+
+        App::setBaseDir(dirname(__DIR__) . DS . '_root');
+
+        Di::loadDefinitions();
+
         $cryptor = Mockery::mock('Quantum\Libraries\Encryption\Cryptor');
 
         $cryptor->shouldReceive('encrypt')->andReturnUsing(function ($arg) {
@@ -31,14 +36,6 @@ class RequestTest extends TestCase
         $cryptor->shouldReceive('decrypt')->andReturnUsing(function ($arg) {
             return base64_decode($arg);
         });
-
-        Di::loadDefinitions();
-
-        $loader = new Loader(new FileSystem);
-
-        $loader->loadDir(dirname(__DIR__, 3) . DS . 'src' . DS . 'Helpers' . DS . 'functions');
-
-        $loader->loadFile(dirname(__DIR__, 3) . DS . 'src' . DS . 'constants.php');
 
         $this->session = new Session($this->sessionData, $cryptor);
 

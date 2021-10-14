@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.0.0
+ * @since 2.6.0
  */
 
 namespace Quantum\Console;
@@ -46,12 +46,17 @@ class QtConsole
 
     /**
      * Initialize the console application
-     * @return mixed
+     * @param string $baseDir
+     * @return int
+     * @throws \Quantum\Exceptions\DiException
+     * @throws \ReflectionException
+     * @throws \Exception
      */
-    public function init()
+    public function init(string $baseDir): int
     {
+        App::loadCoreFunctions($baseDir.  DS . 'vendor' . DS .'quantum' . DS . 'framework' . DS . 'src' . DS . 'Helpers');
 
-        App::loadCoreFunctions();
+        App::setBaseDir($baseDir);
 
         Di::loadDefinitions();
 
@@ -69,11 +74,10 @@ class QtConsole
 
     /**
      * Registers commands
-     * @return void
      */
     private function register()
     {
-        $coreClassNames = get_directory_classes(CORE_DIR . DS . 'Console' . DS . 'Commands');
+        $coreClassNames = get_directory_classes(framework_dir() . DS . 'Console' . DS . 'Commands');
 
         foreach ($coreClassNames as $coreClassName) {
             $coreCommandClass = '\\Quantum\\Console\\Commands\\' . $coreClassName;
@@ -85,7 +89,7 @@ class QtConsole
             }
         }
 
-        $classNames = get_directory_classes(BASE_DIR . DS . 'base' . DS . 'Commands');
+        $classNames = get_directory_classes(base_dir() . DS . 'base' . DS . 'Commands');
         foreach ($classNames as $className) {
             $commandClass = '\\Base\\Commands\\' . $className;
 

@@ -9,11 +9,10 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.3.0
+ * @since 2.6.0
  */
 
 namespace Quantum\Loader;
-
 
 use Quantum\Exceptions\ConfigException;
 
@@ -36,7 +35,7 @@ class Setup
     /**
      * @var string|null
      */
-    protected $env;
+    protected $pathPrefix;
 
     /**
      * @var string|null
@@ -44,21 +43,21 @@ class Setup
     protected $fileName;
 
     /**
-     * @var string|string
+     * @var string
      */
     protected $exceptionMessage;
 
     /**
      * Setup constructor.
-     * @param string|null $env
+     * @param string|null $pathPrefix
      * @param string|null $fileName
      * @param bool $hierarchical
      * @param string|null $module
      * @param string $exceptionMessage
      */
-    public function __construct($env = null, $fileName = null, $hierarchical = false, $module = null, $exceptionMessage = ConfigException::CONFIG_FILE_NOT_FOUND)
+    public function __construct(string $pathPrefix = null, string $fileName = null, bool $hierarchical = true, string $module = null, string $exceptionMessage = ConfigException::CONFIG_FILE_NOT_FOUND)
     {
-        $this->env = $env;
+        $this->pathPrefix = $pathPrefix;
         $this->fileName = $fileName;
         $this->hierarchical = $hierarchical;
         $this->module = $module ?: current_module();
@@ -66,21 +65,23 @@ class Setup
     }
 
     /**
-     * Sets the env
-     * @param string $env
+     * Sets the path prefix
+     * @param string $pathPrefix
      * @return $this
      */
-    public function setEnv($env) {
-        $this->env = $env;
+    public function setPathPrefix(string $pathPrefix): Setup
+    {
+        $this->pathPrefix = $pathPrefix;
         return $this;
     }
 
     /**
-     * Gets the env
+     * Gets the path prefix
      * @return string|null
      */
-    public function getEnv() {
-        return $this->env;
+    public function getPathPrefix(): ?string
+    {
+        return $this->pathPrefix;
     }
 
     /**
@@ -88,7 +89,8 @@ class Setup
      * @param string $fileName
      * @return $this
      */
-    public function setFilename($fileName) {
+    public function setFilename(string $fileName): Setup
+    {
         $this->fileName = $fileName;
         return $this;
     }
@@ -97,7 +99,8 @@ class Setup
      * Gets the filename
      * @return string|null
      */
-    public function getFilename() {
+    public function getFilename(): ?string
+    {
         return $this->fileName;
     }
 
@@ -106,7 +109,8 @@ class Setup
      * @param string $module
      * @return $this
      */
-    public function setModule($module) {
+    public function setModule(string $module): Setup
+    {
         $this->module = $module;
         return $this;
     }
@@ -115,7 +119,8 @@ class Setup
      * Gets the module
      * @return string|null
      */
-    public function getModule() {
+    public function getModule(): ?string
+    {
         return $this->module;
     }
 
@@ -124,7 +129,8 @@ class Setup
      * @param string $exceptionMessage
      * @return $this
      */
-    public function setExceptionMessage($exceptionMessage) {
+    public function setExceptionMessage(string $exceptionMessage): Setup
+    {
         $this->exceptionMessage = $exceptionMessage;
         return $this;
     }
@@ -133,7 +139,8 @@ class Setup
      * Gets the exception message
      * @return string
      */
-    public function getExceptionMessage() {
+    public function getExceptionMessage(): string
+    {
         return $this->exceptionMessage;
     }
 
@@ -142,7 +149,8 @@ class Setup
      * @param bool $hierarchy
      * @return $this
      */
-    public function setHierarchy($hierarchy) {
+    public function setHierarchy(bool $hierarchy): Setup
+    {
         $this->hierarchical = $hierarchy;
         return $this;
     }
@@ -151,7 +159,8 @@ class Setup
      * Gets the hierarchy
      * @return bool
      */
-    public function getHierarchy() {
+    public function getHierarchy(): bool
+    {
         return $this->hierarchical;
     }
 }

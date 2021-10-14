@@ -9,22 +9,19 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.4.0
+ * @since 2.6.0
  */
 
 namespace Quantum\Libraries\Mailer;
 
 use PHPMailer\PHPMailer\PHPMailer;
-use Quantum\Debugger\Debugger;
 use Quantum\Libraries\Storage\FileSystem;
+use Quantum\Debugger\Debugger;
 use Quantum\Di\Di;
 
 /**
  * Mailer class
- *
- * @package Quantum
- * @subpackage Libraries.Mailer
- * @category Libraries
+ * @package Quantum\Libraries\Mailer
  * @uses \PHPMailer\PHPMailer\PHPMailer
  */
 class Mailer
@@ -181,7 +178,7 @@ class Mailer
      * Gets "Reply-To" addresses
      * @return array
      */
-    public function getReplayes(): array
+    public function getReplays(): array
     {
         return $this->replyToAddresses;
     }

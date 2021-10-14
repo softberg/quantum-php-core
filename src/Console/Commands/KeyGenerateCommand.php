@@ -9,15 +9,14 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.0.0
+ * @since 2.6.0
  */
 
 namespace Quantum\Console\Commands;
 
 use Quantum\Environment\Environment;
 use Quantum\Console\QtCommand;
-use Quantum\Loader\Loader;
-use Quantum\Di\Di;
+use Quantum\Loader\Setup;
 
 /**
  * Class KeyGenerateCommand
@@ -54,17 +53,17 @@ class KeyGenerateCommand extends QtCommand
 
     /**
      * Executes the command and stores the generated key to .env file
-     * @return mixed|void
+     * @throws \Quantum\Exceptions\DiException
+     * @throws \Quantum\Exceptions\EnvException
+     * @throws \ReflectionException
      * @throws \Exception
      */
     public function exec()
     {
         $key = $this->generateRandomKey();
 
-        $loader = Di::get(Loader::class);
-
         if ($key) {
-            Environment::getInstance()->load($loader)->updateRow('APP_KEY', $key);
+            Environment::getInstance()->load(new Setup('config', 'env'))->updateRow('APP_KEY', $key);
         }
 
         $this->info('Application key successfully generated and stored.');
@@ -75,7 +74,7 @@ class KeyGenerateCommand extends QtCommand
      * @return string
      * @throws \Exception
      */
-    private function generateRandomKey()
+    private function generateRandomKey(): string
     {
         return base64_encode(random_bytes((int) $this->getOption('length')));
     }

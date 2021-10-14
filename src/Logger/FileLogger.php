@@ -14,7 +14,6 @@
 
 namespace Quantum\Logger;
 
-
 use Quantum\Contracts\ReportableInterface;
 use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Di\Di;

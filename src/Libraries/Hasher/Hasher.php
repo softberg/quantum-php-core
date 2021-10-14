@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.0.0
+ * @since 2.6.0
  */
 
 namespace Quantum\Libraries\Hasher;
@@ -38,7 +38,7 @@ class Hasher
      * @param int $algorithm
      * @return $this
      */
-    public function setAlgorithm($algorithm)
+    public function setAlgorithm(int $algorithm): Hasher
     {
         $this->algorithm = $algorithm;
         return $this;
@@ -48,7 +48,7 @@ class Hasher
      * Gets the current algorithm 
      * @return int
      */
-    public function getAlgorithm()
+    public function getAlgorithm(): int
     {
         return $this->algorithm;
     }
@@ -58,7 +58,7 @@ class Hasher
      * @param int $cost
      * @return $this
      */
-    public function setCost($cost)
+    public function setCost(int $cost): Hasher
     {
         $this->cost = $cost;
         return $this;
@@ -68,7 +68,7 @@ class Hasher
      * Gets the current cost
      * @return int
      */
-    public function getCost()
+    public function getCost(): int
     {
         return $this->cost;
     }
@@ -76,9 +76,9 @@ class Hasher
     /**
      * Hashes the given string
      * @param string $password
-     * @return string
+     * @return string|null
      */
-    public function hash($password)
+    public function hash(string $password): ?string
     {
         return password_hash($password, $this->algorithm, ['cost' => $this->cost]);
     }
@@ -88,7 +88,7 @@ class Hasher
      * @param string $hash
      * @return bool
      */
-    public function needsRehash($hash)
+    public function needsRehash(string $hash): bool
     {
         return password_needs_rehash($hash, $this->algorithm);
     }
@@ -99,7 +99,7 @@ class Hasher
      * @param string $hash
      * @return bool
      */
-    public function check($password, $hash)
+    public function check(string $password, string $hash): bool
     {
         return password_verify($password, $hash);
     }
@@ -107,9 +107,9 @@ class Hasher
     /**
      * Gets an info of given hash
      * @param string $hash
-     * @return array
+     * @return array|null
      */
-    public function info($hash)
+    public function info(string $hash): ?array
     {
         return password_get_info($hash);
     }

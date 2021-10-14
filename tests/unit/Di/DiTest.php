@@ -22,6 +22,7 @@ namespace Quantum\Controllers {
 namespace Quantum\Test\Unit {
 
     use PHPUnit\Framework\TestCase;
+    use Quantum\App;
     use Quantum\Libraries\Storage\FileSystem;
     use Quantum\Controllers\TestDiController;
     use Quantum\Exceptions\DiException;
@@ -37,9 +38,9 @@ namespace Quantum\Test\Unit {
 
         public function setUp(): void
         {
-            $loader = new Loader(new FileSystem);
+            App::loadCoreFunctions(dirname(__DIR__, 3) . DS . 'src' . DS . 'Helpers');
 
-            $loader->loadDir(dirname(__DIR__, 3) . DS . 'src' . DS . 'Helpers' . DS . 'functions');
+            App::setBaseDir(__DIR__);
 
             Di::loadDefinitions();
         }

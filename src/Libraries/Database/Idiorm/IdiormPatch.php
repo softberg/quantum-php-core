@@ -9,10 +9,10 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.4.0
+ * @since 2.6.0
  */
 
-namespace Quantum\Libraries\Database;
+namespace Quantum\Libraries\Database\Idiorm;
 
 use ORM;
 
@@ -26,25 +26,21 @@ class IdiormPatch extends ORM
     /**
      * @var object
      */
-    private $ormObject;
+    private $ormModel;
 
     /**
      * @var object
      */
     private static $instance = null;
 
-    private function __construct()
-    {
-    }
-
     /**
      * Get Instance
-     * @return IdiormPatch
+     * @return object|\Quantum\Libraries\Database\Idiorm\IdiormPatch|null
      */
     public static function getInstance()
     {
         if (self::$instance == null) {
-            self::$instance = new self();
+            self::$instance = new self('dummy');
         }
 
         return self::$instance;
@@ -52,12 +48,12 @@ class IdiormPatch extends ORM
 
     /**
      * Set ORM Object
-     * @param $ormObject
+     * @param object $ormModel
      * @return $this
      */
-    public function setOrmObject($ormObject): IdiormPatch
+    public function use(object $ormModel): IdiormPatch
     {
-        $this->ormObject = $ormObject;
+        $this->ormModel = $ormModel;
         return $this;
     }
 
@@ -68,7 +64,7 @@ class IdiormPatch extends ORM
      * @param string|null $table_alias
      * @return object
      */
-    public function left_join(string $table, array $constraint, string $table_alias = null): object
+    public function leftJoin(string $table, array $constraint, string $table_alias = null): object
     {
         return $this->addJoin("LEFT", $table, $constraint, $table_alias);
     }
@@ -80,7 +76,7 @@ class IdiormPatch extends ORM
      * @param string|null $table_alias
      * @return object
      */
-    public function right_join(string $table, array $constraint, string $table_alias = null): object
+    public function rightJoin(string $table, array $constraint, string $table_alias = null): object
     {
         return $this->addJoin("RIGHT", $table, $constraint, $table_alias);
     }
@@ -95,7 +91,7 @@ class IdiormPatch extends ORM
      */
     public function addJoin(string $operator, string $table, array $constraint, string $table_alias = null): object
     {
-        return $this->ormObject->_add_join_source($operator, $table, $constraint, $table_alias);
+        return $this->ormModel->_add_join_source($operator, $table, $constraint, $table_alias);
     }
 
 }

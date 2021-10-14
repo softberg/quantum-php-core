@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.5.0
+ * @since 2.6.0
  */
 
 namespace Quantum\Libraries\Csrf;
@@ -45,7 +45,7 @@ class Csrf
      */
     public static function generateToken(SessionStorageInterface $storage, string $key): ?string
     {
-        if (self::$token == null) {
+        if (!self::$token ) {
             self::deleteToken($storage);
             self::$token = base64_encode($key);
             self::setToken($storage, self::$token);

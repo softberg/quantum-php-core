@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.4.0
+ * @since 2.6.0
  */
 
 namespace Quantum\Libraries\Config;
@@ -19,6 +19,7 @@ use Quantum\Contracts\StorageInterface;
 use Dflydev\DotAccessData\Data;
 use Quantum\Loader\Loader;
 use Quantum\Loader\Setup;
+use Quantum\Di\Di;
 
 /**
  * Class Config
@@ -29,9 +30,9 @@ class Config implements StorageInterface
 
     /**
      * Configs
-     * @var array
+     * @var \Dflydev\DotAccessData\Data|null
      */
-    private static $configs = [];
+    private static $configs = null;
 
     /**
      * Instance of Config
@@ -54,30 +55,40 @@ class Config implements StorageInterface
 
     /**
      * Loads configuration
-     * @param \Quantum\Loader\Loader $loader
-     * @throws \Quantum\Exceptions\LoaderException
+     * @param \Quantum\Loader\Setup $setup
+     * @throws \Quantum\Exceptions\ConfigException
+     * @throws \Quantum\Exceptions\DiException
+     * @throws \ReflectionException
      */
-    public function load(Loader $loader)
+    public function load(Setup $setup)
     {
-        if (empty(self::$configs)) {
-            self::$configs = $loader->setup(new Setup('config', 'config', true))->load();
+        if (self::$configs) {
+            throw ConfigException::configAlreadyLoaded();
         }
+
+        self::$configs = new Data(Di::get(Loader::class)->setup($setup)->load());
     }
 
     /**
      * Imports new config file
-     * @param \Quantum\Loader\Loader $loader
-     * @param string $fileName
+     * @param \Quantum\Loader\Setup $setup
      * @throws \Quantum\Exceptions\ConfigException
-     * @throws \Quantum\Exceptions\LoaderException
+     * @throws \Quantum\Exceptions\DiException
+     * @throws \ReflectionException
      */
-    public function import(Loader $loader, string $fileName)
+    public function import(Setup $setup)
     {
-        if ($this->has($fileName)) {
-            throw new ConfigException(_message(ConfigException::CONFIG_COLLISION, $fileName));
+        $fileName = $setup->getFilename();
+
+        if ($fileName && $this->has($fileName)) {
+            throw ConfigException::configCollision($fileName);
         }
 
-        self::$configs[$fileName] = $loader->load();
+        if (!self::$configs) {
+            self::$configs = new Data([$fileName => Di::get(Loader::class)->setup($setup)->load()]);
+        } else {
+            self::$configs->import([$fileName => Di::get(Loader::class)->setup($setup)->load()]);
+        }
     }
 
     /**
@@ -88,10 +99,8 @@ class Config implements StorageInterface
      */
     public function get(string $key, $default = null)
     {
-        $data = new Data(self::$configs);
-
-        if ($this->has($key)) {
-            return $data->get($key);
+        if (self::$configs && self::$configs->has($key)) {
+            return self::$configs->get($key);
         }
 
         return $default;
@@ -99,9 +108,9 @@ class Config implements StorageInterface
 
     /**
      * Get all configs
-     * @return array
+     * @return \Dflydev\DotAccessData\Data
      */
-    public function all(): array
+    public function all(): ?Data
     {
         return self::$configs;
     }
@@ -113,9 +122,7 @@ class Config implements StorageInterface
      */
     public function has(string $key): bool
     {
-        $data = new Data(self::$configs);
-
-        return !empty($data->get($key));
+        return self::$configs && !empty(self::$configs->get($key));
     }
 
     /**
@@ -126,10 +133,11 @@ class Config implements StorageInterface
      */
     public function set(string $key, $value)
     {
-        $data = new Data(self::$configs);
-
-        $data->set($key, $value);
-        self::$configs = $data->export();
+        if (!self::$configs) {
+            self::$configs = new Data([$key => $value]);
+        } else {
+            self::$configs->set($key, $value);
+        }
     }
 
     /**
@@ -138,10 +146,7 @@ class Config implements StorageInterface
      */
     public function delete(string $key)
     {
-        $data = new Data(self::$configs);
-
-        $data->remove($key);
-        self::$configs = $data->export();
+        self::$configs && self::$configs->remove($key);
     }
 
     /**
@@ -149,7 +154,7 @@ class Config implements StorageInterface
      */
     public function flush()
     {
-        self::$configs = [];
+        self::$configs = null;
     }
 
 }

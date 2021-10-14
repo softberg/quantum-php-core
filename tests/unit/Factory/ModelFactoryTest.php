@@ -13,16 +13,13 @@ namespace Quantum\Models {
 
 namespace Quantum\Test\Unit {
 
-    use Mockery;
     use PHPUnit\Framework\TestCase;
-    use Quantum\Factory\ModelFactory;
     use Quantum\Exceptions\ModelException;
-    use Quantum\Libraries\Database\Database;
-    use Quantum\Libraries\Database\IdiormDbal;
-    use Quantum\Libraries\Storage\FileSystem;
-    use Quantum\Loader\Loader;
+    use Quantum\Factory\ModelFactory;
     use Quantum\Models\TestModel;
+    use Quantum\Mvc\QtModel;
     use Quantum\Di\Di;
+    use Quantum\App;
 
     /**
      * @runTestsInSeparateProcesses
@@ -31,50 +28,22 @@ namespace Quantum\Test\Unit {
     class ModelFactoryTest extends TestCase
     {
 
-        private $modelFactory;
-
-        private $dbConfigs = [
-            'current' => 'sqlite',
-            'sqlite' => array(
-                'driver' => 'sqlite',
-                'database' => ':memory:'
-            ),
-        ];
-
         public function setUp(): void
         {
-            (new idiormDbal('test'))->execute("CREATE TABLE profiles (
-                        id INTEGER PRIMARY KEY
-                    )");
+            App::loadCoreFunctions(dirname(__DIR__, 3) . DS . 'src' . DS . 'Helpers');
 
-            $loader = new Loader(new FileSystem);
-
-            $loader->loadFile(dirname(__DIR__, 3) . DS . 'src' . DS . 'constants.php');
-
-            $loader->loadDir(dirname(__DIR__, 3) . DS . 'src' . DS . 'Helpers' . DS . 'functions');
-
-            $loaderMock = Mockery::mock('Quantum\Loader\Loader');
-
-            $loaderMock->shouldReceive('setup')->andReturn($loaderMock);
-
-            $loaderMock->shouldReceive('load')->andReturn($this->dbConfigs);
-
-            $db = Database::getInstance($loaderMock);
-
-            $db->getORM('test');
+            App::setBaseDir(dirname(__DIR__) . DS . '_root');
 
             Di::loadDefinitions();
-
-            $this->modelFactory = new ModelFactory();
         }
 
         public function testModelGet()
         {
-            $model = $this->modelFactory->get(TestModel::class);
+            $model = (new ModelFactory)->get(TestModel::class);
 
-            $this->assertInstanceOf('Quantum\Mvc\QtModel', $model);
+            $this->assertInstanceOf(QtModel::class, $model);
 
-            $this->assertInstanceOf('Quantum\Models\TestModel', $model);
+            $this->assertInstanceOf(TestModel::class, $model);
         }
 
         public function testModelNotFound()
@@ -83,7 +52,7 @@ namespace Quantum\Test\Unit {
 
             $this->expectExceptionMessage('Model `NonExistentClass` not found');
 
-            $this->modelFactory->get(\NonExistentClass::class);
+            (new ModelFactory)->get(\NonExistentClass::class);
         }
 
         public function testModelNotInstanceOfQtModel()
@@ -92,7 +61,7 @@ namespace Quantum\Test\Unit {
 
             $this->expectExceptionMessage('Model `Mockery\Undefined` is not instance of `Quantum\Mvc\QtModel`');
 
-            $this->modelFactory->get(\Mockery\Undefined::class);
+            (new ModelFactory)->get(\Mockery\Undefined::class);
         }
 
     }

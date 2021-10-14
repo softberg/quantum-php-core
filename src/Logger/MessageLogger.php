@@ -40,6 +40,7 @@ class MessageLogger implements ReportableInterface
 
     /**
      * @inheritDoc
+     * @throws \ErrorException
      */
     public function report(string $level, $message, array $context = [])
     {

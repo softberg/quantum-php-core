@@ -1,16 +1,6 @@
 <?php
 
-namespace Quantum\Mvc {
-
-    function get_caller_class()
-    {
-        return 'Quantum\Factory\ViewFactory';
-    }
-
-    function modules_dir()
-    {
-        return __DIR__ . DS . 'modules';
-    }
+namespace Quantum\Renderer {
 
     function current_module()
     {
@@ -23,60 +13,41 @@ namespace Quantum\Test\Unit {
 
     use PHPUnit\Framework\TestCase;
     use Quantum\Exceptions\ViewException;
-    use Quantum\Libraries\Storage\FileSystem;
-    use Quantum\Loader\Loader;
-    use Quantum\Mvc\QtView;
+    use Quantum\Factory\ViewFactory;
+    use Quantum\Di\Di;
+    use Quantum\App;
 
+    /**
+     * @runTestsInSeparateProcesses
+     */
     class QtViewTest extends TestCase
     {
 
         private $view;
-        private $viewsDir;
-        private $layoutContent = '<html><head></head><body></body></html>';
-        private $viewOneContent = '<h1>Hello</h1>';
-        private $viewTwoContent = '<h1><?php echo $text ?></h1>';
 
         public function setUp(): void
         {
-            $loader = new Loader(new FileSystem);
-            
-            $loader->loadDir(dirname(__DIR__, 3) . DS . 'src' . DS . 'Helpers' . DS . 'functions');
+            App::loadCoreFunctions(dirname(__DIR__, 3) . DS . 'src' . DS . 'Helpers');
 
-            $this->view = new QtView();
-            
-            $this->viewsDir = \Quantum\Mvc\modules_dir() . DS . \Quantum\Mvc\current_module() . DS . 'Views';
+            App::setBaseDir(dirname(__DIR__) . DS . '_root');
 
-            if (!is_dir($this->viewsDir))
-                mkdir($this->viewsDir, 0777, true);
+            Di::loadDefinitions();
 
-            file_put_contents($this->viewsDir . DS . 'layout.php', $this->layoutContent);
-
-            file_put_contents($this->viewsDir . DS . 'index.php', $this->viewOneContent);
-
-            file_put_contents($this->viewsDir . DS . 'content.php', $this->viewTwoContent);
+            $this->view = ViewFactory::getInstance();
         }
 
         public function tearDown(): void
         {
-            unlink($this->viewsDir . DS . 'layout.php');
-            unlink($this->viewsDir . DS . 'index.php');
-            unlink($this->viewsDir . DS . 'content.php');
-            
-            sleep(1);
-            rmdir($this->viewsDir);
-            
-            sleep(1);
-            rmdir(\Quantum\Mvc\modules_dir() . DS . \Quantum\Mvc\current_module());
-            
-            sleep(1);
-            rmdir(\Quantum\Mvc\modules_dir());
+            $this->view->setLayout(null);
+
+            $this->view->flushParams();
         }
 
         public function testSetGetLayout()
         {
             $this->assertNull($this->view->getLayout());
 
-            $this->view->setLayout('/someLayout');
+            $this->view->setLayout('layout');
 
             $this->assertNotNull($this->view->getLayout());
 
@@ -102,7 +73,7 @@ namespace Quantum\Test\Unit {
             $this->assertNotEmpty($this->view->getParams());
         }
 
-        public function testRenderWithouthLayout()
+        public function testRenderWithoutLayout()
         {
             $this->expectException(ViewException::class);
 
@@ -115,33 +86,35 @@ namespace Quantum\Test\Unit {
         {
             $this->view->setLayout('layout');
 
-            $this->assertIsString($this->view->render('index'));
+            $renderedView = $this->view->render('index');
 
-            $this->assertEquals($this->layoutContent, $this->view->render('index'));
+            $this->assertIsString($renderedView);
+
+            $this->assertEquals('<html>'.PHP_EOL.'<head></head>'.PHP_EOL.'<body>'.PHP_EOL.'<p>Hello World, this is rendered view</p></body>'.PHP_EOL.'</html>'.PHP_EOL, $renderedView);
         }
 
         public function testRenderWithData()
         {
             $this->view->setLayout('layout');
 
-            $this->view->render('content', ['text' => 'Lorem Ipsum']);
+            $this->view->render('index', ['name' => 'Lorem Ipsum']);
 
-            $this->assertEquals('<h1>Lorem Ipsum</h1>', $this->view->getView());
+            $this->assertEquals('<p>Hello Lorem Ipsum, this is rendered view</p>', $this->view->getView());
 
-            $this->view->setParam('text', 'dolor sit amet');
+            $this->view->setParam('name', 'dolor sit amet');
 
-            $this->view->render('content');
+            $this->view->render('index');
 
-            $this->assertEquals('<h1>dolor sit amet</h1>', $this->view->getView());
+            $this->assertEquals('<p>Hello dolor sit amet, this is rendered view</p>', $this->view->getView());
         }
 
         public function testRenderPartial()
         {
-            $this->assertIsString($this->view->renderPartial('index'));
+            $this->assertIsString($this->view->renderPartial('partial'));
 
-            $this->assertEquals('<h1>Hello from partial</h1>', $this->view->renderPartial('content', ['text' => 'Hello from partial']));
+            $this->assertEquals('<p>Hello World, this is rendered partial view</p>', $this->view->renderPartial('partial'));
 
-            $this->assertEquals('<h1>Hello &lt;div&gt;from&lt;/div&gt; partial</h1>', $this->view->renderPartial('content', ['text' => 'Hello <div>from</div> partial']));
+            $this->assertEquals('<p>Hello Tester, this is rendered partial view</p>', $this->view->renderPartial('partial', ['name' => 'Tester']));
         }
 
     }
