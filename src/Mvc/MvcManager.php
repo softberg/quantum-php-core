@@ -58,7 +58,7 @@ class MvcManager
                 $controller = self::getController();
                 $action = self::getAction($controller);
 
-                if ($controller->csrfVerification ?? true) {
+                if ($controller->csrfVerification) {
                     Csrf::checkToken($request, session());
                 }
 

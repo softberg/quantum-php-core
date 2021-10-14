@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.5.0
+ * @since 2.6.0
  */
 
 namespace Quantum\Mvc;
@@ -23,6 +23,11 @@ use Quantum\Routes\RouteController;
  */
 class QtController extends RouteController
 {
+
+    /**
+     * @var bool
+     */
+    public $csrfVerification = true;
 
     /**
      * Handles the missing methods of the controller
