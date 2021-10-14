@@ -76,9 +76,9 @@ class Hasher
     /**
      * Hashes the given string
      * @param string $password
-     * @return string
+     * @return string|null
      */
-    public function hash(string $password): string
+    public function hash(string $password): ?string
     {
         return password_hash($password, $this->algorithm, ['cost' => $this->cost]);
     }
