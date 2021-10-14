@@ -90,7 +90,7 @@ namespace Quantum\Test\Unit {
 
             $this->assertIsString($renderedView);
 
-            $this->assertEquals("<html>\r\n<head></head>\r\n<body>\r\n<p>Hello World, this is rendered view</p></body>\r\n</html>\r\n", $renderedView);
+            $this->assertEquals('<html>'.PHP_EOL.'<head></head>'.PHP_EOL.'<body>'.PHP_EOL.'<p>Hello World, this is rendered view</p></body>'.PHP_EOL.'</html>'.PHP_EOL, $renderedView);
         }
 
         public function testRenderWithData()
