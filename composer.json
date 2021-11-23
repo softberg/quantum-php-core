@@ -25,7 +25,7 @@
         "symfony/var-exporter": "^5.2",
         "symfony/console": "^4.3",
         "vlucas/phpdotenv": "^2.4",
-        "dflydev/dot-access-data": "^2.0",
+        "dflydev/dot-access-data": "^3.0",
         "maximebf/debugbar": "^1.15",
         "phpmailer/phpmailer": "^6.0",
         "twig/twig": "^2.7",
