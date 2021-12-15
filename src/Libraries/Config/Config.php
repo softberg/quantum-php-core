@@ -122,7 +122,7 @@ class Config implements StorageInterface
      */
     public function has(string $key): bool
     {
-        return self::$configs && !empty(self::$configs->get($key));
+        return self::$configs && !empty(self::$configs->has($key));
     }
 
     /**
