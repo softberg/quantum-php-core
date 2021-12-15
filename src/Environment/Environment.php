@@ -88,7 +88,7 @@ class Environment
             throw EnvException::fileNotFound();
         }
 
-        $this->envContent = (new Dotenv(base_dir(), $this->envFile))->load();
+        $this->envContent = Dotenv::createMutable(base_dir(), $this->envFile)->load();
 
         return $this;
     }
@@ -135,7 +135,7 @@ class Environment
             $this->fs->append($envFilePath, $key . "=" . $value . PHP_EOL);
         }
 
-        $this->envContent = (new Dotenv(base_dir(), $this->envFile))->overload();
+        $this->envContent = Dotenv::createMutable(base_dir(), $this->envFile)->load();
     }
 
     /**
