@@ -15,6 +15,7 @@
 namespace Quantum\Libraries\Database\Idiorm\Statements;
 
 use Quantum\Libraries\Database\Idiorm\IdiormPatch;
+use Quantum\Libraries\Database\DbalInterface;
 use Quantum\Mvc\QtModel;
 
 /**
@@ -26,42 +27,51 @@ trait Join
 
     /**
      * @inheritDoc
+     * @throws \Quantum\Exceptions\DatabaseException
      */
-    public function join(string $table, array $constraint, string $tableAlias = null): object
+    public function join(string $table, array $constraint, string $tableAlias = null): DbalInterface
     {
-        return $this->getOrmModel()->join($table, $constraint, $tableAlias);
+         $this->getOrmModel()->join($table, $constraint, $tableAlias);
+         return $this;
     }
 
     /**
      * @inheritDoc
+     * @throws \Quantum\Exceptions\DatabaseException
      */
-    public function innerJoin(string $table, array $constraint, ?string $tableAlias = null): object
+    public function innerJoin(string $table, array $constraint, ?string $tableAlias = null): DbalInterface
     {
-        return $this->getOrmModel()->inner_join($table, $constraint, $tableAlias);
+        $this->getOrmModel()->inner_join($table, $constraint, $tableAlias);
+        return $this;
     }
 
     /**
      * @inheritDoc
+     * @throws \Quantum\Exceptions\DatabaseException
      */
-    public function leftJoin(string $table, array $constraint, ?string $tableAlias = null): object
+    public function leftJoin(string $table, array $constraint, ?string $tableAlias = null): DbalInterface
     {
-        return IdiormPatch::getInstance()->use($this->getOrmModel())->leftJoin($table, $constraint, $tableAlias);
+        IdiormPatch::getInstance()->use($this->getOrmModel())->leftJoin($table, $constraint, $tableAlias);
+        return $this;
     }
 
     /**
      * @inheritDoc
+     * @throws \Quantum\Exceptions\DatabaseException
      */
-    public function rightJoin(string $table, array $constraint, ?string $tableAlias = null): object
+    public function rightJoin(string $table, array $constraint, ?string $tableAlias = null): DbalInterface
     {
-        return IdiormPatch::getInstance()->use($this->getOrmModel())->rightJoin($table, $constraint, $tableAlias);
+        IdiormPatch::getInstance()->use($this->getOrmModel())->rightJoin($table, $constraint, $tableAlias);
+        return $this;
     }
 
     /**
      * @inheritDoc
+     * @throws \Quantum\Exceptions\DatabaseException
      */
-    public function joinTo(QtModel $model, bool $switch = true): object
+    public function joinTo(QtModel $model, bool $switch = true): DbalInterface
     {
-        $resultObject = $this->getOrmModel()->join($model->table,
+        $this->getOrmModel()->join($model->table,
             [
                 $model->table . '.' . $model->foreignKeys[$this->table],
                 '=',
@@ -75,15 +85,16 @@ trait Join
             $this->foreignKeys = $model->foreignKeys;
         }
 
-        return $resultObject;
+        return $this;
     }
 
     /**
      * @inheritDoc
+     * @throws \Quantum\Exceptions\DatabaseException
      */
-    public function joinThrough(QtModel $model, bool $switch = true): object
+    public function joinThrough(QtModel $model, bool $switch = true): DbalInterface
     {
-        $resultObject = $this->getOrmModel()->join($model->table,
+        $this->getOrmModel()->join($model->table,
             [
                 $model->table . '.' . $model->idColumn,
                 '=',
@@ -97,7 +108,7 @@ trait Join
             $this->foreignKeys = $model->foreignKeys;
         }
 
-        return $resultObject;
+        return $this;
     }
 
 }

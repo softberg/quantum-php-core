@@ -14,6 +14,8 @@
 
 namespace Quantum\Libraries\Database\Idiorm\Statements;
 
+use Quantum\Libraries\Database\DbalInterface;
+
 /**
  * Trait Result
  * @package Quantum\Libraries\Database\Idiorm\Statements
@@ -23,33 +25,62 @@ trait Result
 
     /**
      * @inheritDoc
+     * @throws \Quantum\Exceptions\DatabaseException
      */
-    public function findOne(int $id): object
+    public function get(?int $returnType = self::TYPE_ARRAY)
     {
-        $result = $this->getOrmModel()->find_one($id);
-        return $result ?: $this->getOrmModel();
+        return ($returnType == self::TYPE_OBJECT) ?
+            $this->getOrmModel()->find_many()
+            :
+            $this->getOrmModel()->find_array();
     }
 
     /**
      * @inheritDoc
+     * @throws \Quantum\Exceptions\DatabaseException
      */
-    public function findOneBy(string $column, $value): object
+    public function findOne(int $id): DbalInterface
     {
-        $result = $this->getOrmModel()->where($column, $value)->find_one();
-        return $result ?: $this->getOrmModel();
+        $ormObject = $this->getOrmModel()->find_one($id);
+
+        if ($ormObject) {
+            $this->updateOrmModel($ormObject);
+        }
+
+        return $this;
     }
 
     /**
      * @inheritDoc
+     * @throws \Quantum\Exceptions\DatabaseException
      */
-    public function first(): object
+    public function findOneBy(string $column, $value): DbalInterface
     {
-        $result = $this->getOrmModel()->find_one();
-        return $result ?: $this->getOrmModel();
+        $ormObject = $this->getOrmModel()->where($column, $value)->find_one();
+        if ($ormObject) {
+            $this->updateOrmModel($ormObject);
+        }
+
+        return $this;
     }
 
     /**
      * @inheritDoc
+     * @throws \Quantum\Exceptions\DatabaseException
+     */
+    public function first(): DbalInterface
+    {
+        $ormObject = $this->getOrmModel()->find_one();
+        if ($ormObject) {
+            $this->updateOrmModel($ormObject);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     * @throws \Quantum\Exceptions\DatabaseException
      */
     public function count(): int
     {
@@ -58,6 +89,7 @@ trait Result
 
     /**
      * @inheritDoc
+     * @throws \Quantum\Exceptions\DatabaseException
      */
     public function asArray(): array
     {

@@ -14,6 +14,9 @@
 
 namespace Quantum\Libraries\Database\Idiorm\Statements;
 
+use Quantum\Libraries\Database\DbalInterface;
+use Quantum\Exceptions\DatabaseException;
+
 /**
  * Trait Criteria
  * @package Quantum\Libraries\Database\Idiorm\Statements
@@ -22,99 +25,51 @@ trait Criteria
 {
 
     /**
-     * Operators map
-     * @var string[]
-     */
-    private $operators = [
-        '=' => 'where_equal',
-        '!=' => 'where_not_equal',
-        '>' => 'where_gt',
-        '>=' => 'where_gte',
-        '<' => 'where_lt',
-        '<=' => 'where_lte',
-        'IN' => 'where_in',
-        'NOT IN' => 'where_not_in',
-        'LIKE' => 'where_like',
-        'NOT LIKE' => 'where_not_like',
-        'NULL' => 'where_null',
-        'NOT NULL' => 'where_not_null',
-    ];
-
-    /**
      * @inheritDoc
+     * @throws \Quantum\Exceptions\DatabaseException
      */
-    public function criteria(string $column, string $operator, $value = null): object
+    public function criteria(string $column, string $operator, $value = null): DbalInterface
     {
-        foreach ($this->operators as $key => $method) {
-            if ($operator == $key) {
-                $this->addCriteria($column, $operator, $value, $method);
-                break;
-            }
+        if (!key_exists($operator, $this->operators)) {
+            throw DatabaseException::operatorNotSupported($operator);
         }
 
-        if ($operator == '#=#') {
-            $this->whereColumnsEqual($column, $value);
-        }
-
-        return $this->getOrmModel();
+        $this->addCriteria($column, $operator, $value, $this->operators[$operator]);
+        return $this;
     }
 
     /**
      * @inheritDoc
+     * @throws \Quantum\Exceptions\DatabaseException
      */
-    public function criterias(...$criterias): object
+    public function criterias(...$criterias): DbalInterface
     {
         foreach ($criterias as $criteria) {
 
             if (is_array($criteria[0])) {
-                $this->scopedORCriteria($criteria);
+                $this->orCriteria($criteria);
                 continue;
             }
 
-            $value = $criteria[2] ?? null;
-
-            $this->criteria($criteria[0], $criteria[1], $value);
+            $this->criteria(...$criteria);
         }
 
-        return $this->getOrmModel();
+        return $this;
     }
 
     /**
-     * Compares values from two columns
-     * @param string $columnOne
-     * @param string $columnTwo
+     * @inheritDoc
+     * @throws \Quantum\Exceptions\DatabaseException
      */
-    protected function whereColumnsEqual(string $columnOne, string $columnTwo)
+    public function having(string $column, string $operator, string $value = null): DbalInterface
     {
-        $this->getOrmModel()->where_raw($columnOne . ' = ' . $columnTwo);
-    }
-
-    /**
-     * Adds one or more OR criteria in brackets
-     * @param array $criteria
-     */
-    protected function scopedORCriteria(array $criteria)
-    {
-        $clause = '';
-        $params = [];
-
-        foreach ($criteria as $index => $orCriteria) {
-            if ($index == 0) {
-                $clause .= '(';
-            }
-
-            $clause .= '`' . $orCriteria[0] . '` ' . $orCriteria[1] . ' ?';
-
-            if ($index == count($criteria) - 1) {
-                $clause .= ')';
-            } else {
-                $clause .= ' OR ';
-            }
-
-            array_push($params, $orCriteria[2]);
+        if (!key_exists($operator, $this->operators)) {
+            throw DatabaseException::operatorNotSupported($operator);
         }
 
-        $this->getOrmModel()->where_raw($clause, $params);
+        $func = $this->operators[$operator];
+        $this->getOrmModel()->$func($column, $value);
+        return $this;
     }
 
     /**
@@ -122,15 +77,47 @@ trait Criteria
      * @param string $column
      * @param string $operator
      * @param mixed $value
-     * @param string $func
+     * @param string|null $func
+     * @throws \Quantum\Exceptions\DatabaseException
      */
-    protected function addCriteria(string $column, string $operator, $value, string $func)
+    protected function addCriteria(string $column, string $operator, $value, string $func = null)
     {
-        if (is_array($value) && count($value) == 1 && key($value) == 'fn') {
+        if ($operator == '#=#') {
+            $this->getOrmModel()->where_raw($column . ' = ' . $value);
+        } else if (is_array($value) && count($value) == 1 && key($value) == 'fn') {
             $this->getOrmModel()->where_raw($column . ' ' . $operator . ' ' . $value['fn']);
         } else {
             $this->getOrmModel()->$func($column, $value);
         }
+    }
+
+    /**
+     * Adds one or more OR criteria in brackets
+     * @param array $orCriterias
+     * @throws \Quantum\Exceptions\DatabaseException
+     */
+    protected function orCriteria(array $orCriterias)
+    {
+        $clause = '';
+        $params = [];
+
+        foreach ($orCriterias as $index => $criteria) {
+            if ($index == 0) {
+                $clause .= '(';
+            }
+
+            $clause .= '`' . $criteria[0] . '` ' . $criteria[1] . ' ?';
+
+            if ($index == array_key_last($orCriterias)) {
+                $clause .= ')';
+            } else {
+                $clause .= ' OR ';
+            }
+
+            array_push($params, $criteria[2]);
+        }
+
+        $this->getOrmModel()->where_raw($clause, $params);
     }
 
 }
