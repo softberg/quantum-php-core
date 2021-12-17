@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.5.0
+ * @since 2.6.0
  */
 
 namespace Quantum\Libraries\Auth;
@@ -74,7 +74,9 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
      * @throws \PHPMailer\PHPMailer\Exception
      * @throws \Quantum\Exceptions\AuthException
      * @throws \Quantum\Exceptions\CryptorException
+     * @throws \Quantum\Exceptions\DatabaseException
      * @throws \Quantum\Exceptions\DiException
+     * @throws \Quantum\Exceptions\SessionException
      * @throws \ReflectionException
      */
     public function signin(string $username, string $password, bool $remember = false)
@@ -96,6 +98,8 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
     /**
      * Sign Out
      * @return bool
+     * @throws \Quantum\Exceptions\DatabaseException
+     * @throws \Quantum\Exceptions\SessionException
      */
     public function signout(): bool
     {
@@ -113,6 +117,8 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
      * User
      * @return \Quantum\Libraries\Auth\User|null
      * @throws \Quantum\Exceptions\CryptorException
+     * @throws \Quantum\Exceptions\DatabaseException
+     * @throws \Quantum\Exceptions\SessionException
      */
     public function user(): ?User
     {
@@ -137,6 +143,8 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
      * @return bool
      * @throws \Quantum\Exceptions\AuthException
      * @throws \Quantum\Exceptions\CryptorException
+     * @throws \Quantum\Exceptions\DatabaseException
+     * @throws \Quantum\Exceptions\SessionException
      */
     public function verifyOtp(int $otp, string $otpToken): bool
     {
