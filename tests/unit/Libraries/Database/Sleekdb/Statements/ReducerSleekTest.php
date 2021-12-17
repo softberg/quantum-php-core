@@ -19,13 +19,13 @@ class ReducerSleekTest extends SleekDbalTestCase
         $userModel = new SleekDbal('users');
 
         $user = $userModel
-            ->select('id', ['firstname' => 'name'], ['lastname' => 'surname'])
-            ->orderBy('age', 'desc')
-            ->first();
+            ->select('id', ['firstname' => 'name'], ['lastname' => 'surname'], 'age')
+            ->orderBy('id', 'asc')
+            ->get();
 
-        $this->assertEquals('John', $user->prop('name'));
+        $this->assertEquals('John', $user[0]['name']);
 
-        $this->assertEquals('Doe', $user->prop('surname'));
+        $this->assertEquals('Doe', $user[0]['surname']);
     }
 
     public function testSleekGroupBy()
@@ -58,7 +58,7 @@ class ReducerSleekTest extends SleekDbalTestCase
     {
         $eventsModel = new SleekDbal('events');
 
-        $events = $eventsModel->limit(3)->get();
+        $events = $eventsModel->limit(3)->orderBy('id', 'asc')->get();
 
         $this->assertCount(3, $events);
 

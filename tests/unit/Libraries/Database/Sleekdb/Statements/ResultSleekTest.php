@@ -48,7 +48,7 @@ class ResultSleekTest extends SleekDbalTestCase
     {
         $this->userModel = new SleekDbal('users');
 
-        $user = $this->userModel->orderBy('age', 'desc')->first();
+        $user = $this->userModel->criteria('age', '>', 40)->first();
 
         $this->assertEquals('Doe', $user->prop('lastname'));
 
