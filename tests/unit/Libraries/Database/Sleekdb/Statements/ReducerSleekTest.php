@@ -66,7 +66,7 @@ class ReducerSleekTest extends SleekDbalTestCase
 
         $eventsModel = new SleekDbal('events');
 
-        $events = $eventsModel->offset(1)->limit(3)->get();
+        $events = $eventsModel->orderBy('id', 'asc')->offset(1)->limit(3)->get();
 
         $this->assertCount(3, $events);
 

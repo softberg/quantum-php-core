@@ -56,13 +56,13 @@ class ResultSleekTest extends SleekDbalTestCase
 
         $userModel = new SleekDbal('users');
 
-        $user = $userModel->criteria('age', '<', 50)->orderBy('age', 'desc')->first();
+        $user = $userModel->criteria('age', '<', 40)->first();
 
-        $this->assertEquals('John', $user->prop('firstname'));
+        $this->assertEquals('Jane', $user->prop('firstname'));
 
-        $this->assertEquals('Doe', $user->prop('lastname'));
+        $this->assertEquals('Du', $user->prop('lastname'));
 
-        $this->assertEquals('45', $user->prop('age'));
+        $this->assertEquals('35', $user->prop('age'));
     }
 
     public function testSleekCount()
