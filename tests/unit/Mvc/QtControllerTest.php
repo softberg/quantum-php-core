@@ -11,7 +11,7 @@ namespace Quantum\Controllers {
 
 }
 
-namespace Quantum\Test\Unit {
+namespace Quantum\Tests\Mvc {
 
     use PHPUnit\Framework\TestCase;
     use Quantum\Exceptions\ControllerException;

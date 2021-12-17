@@ -12,7 +12,7 @@ namespace Aws\FilesystemAdapter {
 
 }
 
-namespace Quantum\Test\Unit {
+namespace Quantum\Tests\Libraries\Storage {
 
     use Quantum\Libraries\Storage\FilesystemAdapterInterface;
     use Quantum\Libraries\Storage\LocalFileSystemAdapter;

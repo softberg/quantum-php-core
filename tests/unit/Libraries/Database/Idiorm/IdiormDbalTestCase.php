@@ -1,6 +1,6 @@
 <?php
 
-namespace Quantum\Test\Unit;
+namespace Quantum\Tests\Libraries\Database\Idiorm;
 
 use PHPUnit\Framework\TestCase;
 use Quantum\Libraries\Database\Idiorm\IdiormDbal;

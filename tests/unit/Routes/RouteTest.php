@@ -1,6 +1,6 @@
 <?php
 
-namespace Quantum\Test\Unit;
+namespace Quantum\Tests\Routes;
 
 use PHPUnit\Framework\TestCase;
 use Quantum\Routes\Route;

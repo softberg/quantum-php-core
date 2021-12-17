@@ -23,7 +23,7 @@ namespace Quantum\Services {
 
 }
 
-namespace Quantum\Test\Unit {
+namespace Quantum\Tests\Factory {
 
     use PHPUnit\Framework\TestCase;
     use Quantum\Exceptions\ServiceException;

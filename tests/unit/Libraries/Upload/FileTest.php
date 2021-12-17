@@ -1,6 +1,6 @@
 <?php
 
-namespace Quantum\Test\Unit {
+namespace Quantum\Tests\Libraries\Upload {
 
     use PHPUnit\Framework\TestCase;
     use Quantum\Exceptions\FileUploadException;

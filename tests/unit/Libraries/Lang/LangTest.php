@@ -9,7 +9,7 @@ namespace Quantum\Libraries\Lang {
 
 }
 
-namespace Quantum\Test\Unit {
+namespace Quantum\Tests\Libraries\Lang {
 
     use PHPUnit\Framework\TestCase;
     use Quantum\Routes\RouteController;

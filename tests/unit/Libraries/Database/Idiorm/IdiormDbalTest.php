@@ -1,27 +1,24 @@
 <?php
 
-namespace Quantum\Test\Unit {
+namespace Quantum\Tests\Libraries\Database\Idiorm;
 
-    require_once __DIR__ . DS . 'IdiormDbalTestCase.php';
-
-    use Quantum\Libraries\Database\Idiorm\IdiormDbal;
+use Quantum\Libraries\Database\Idiorm\IdiormDbal;
 
 
-    class IdiormDbalTest extends IdiormDbalTestCase
+class IdiormDbalTest extends IdiormDbalTestCase
+{
+    public function testIdiormConstructor()
     {
-        public function testIdiormConstructor()
-        {
-            $userModel = new IdiormDbal('users');
+        $userModel = new IdiormDbal('users');
 
-            $this->assertInstanceOf(IdiormDbal::class, $userModel);
-        }
-
-        public function testIdiormGetTable()
-        {
-            $userModel = new IdiormDbal('users');
-
-            $this->assertEquals('users', $userModel->getTable());
-        }
+        $this->assertInstanceOf(IdiormDbal::class, $userModel);
     }
 
+    public function testIdiormGetTable()
+    {
+        $userModel = new IdiormDbal('users');
+
+        $this->assertEquals('users', $userModel->getTable());
+    }
 }
+

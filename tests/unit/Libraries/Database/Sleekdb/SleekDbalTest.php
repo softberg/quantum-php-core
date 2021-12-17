@@ -1,10 +1,9 @@
 <?php
 
-namespace Quantum\Test\Unit;
+namespace Quantum\Tests\Libraries\Database\Sleekdb;
 
 use Quantum\Libraries\Database\Sleekdb\SleekDbal;
 
-require_once __DIR__ . DS . 'SleekDbalTestCase.php';
 
 class SleekDbalTest extends SleekDbalTestCase
 {

@@ -41,7 +41,8 @@
     },
     "autoload": {
         "psr-4": {
-            "Quantum\\": "src/"
+            "Quantum\\": "src/",
+            "Quantum\\Tests\\": "tests/unit/"
         }
     },
     "minimum-stability": "dev",

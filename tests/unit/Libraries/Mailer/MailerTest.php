@@ -1,6 +1,6 @@
 <?php
 
-namespace Quantum\Test\Unit;
+namespace Quantum\Tests\Libraries\Mailer;
 
 use PHPUnit\Framework\TestCase;
 use Quantum\Libraries\Mailer\Mailer;

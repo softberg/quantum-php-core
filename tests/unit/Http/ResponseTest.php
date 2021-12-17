@@ -11,7 +11,7 @@ namespace Quantum\Http\Response {
 
 }
 
-namespace Quantum\Test\Unit {
+namespace Quantum\Tests\Http {
 
     use PHPUnit\Framework\TestCase;
     use Quantum\Exceptions\StopExecutionException;

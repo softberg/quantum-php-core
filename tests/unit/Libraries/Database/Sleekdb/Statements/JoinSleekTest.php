@@ -60,10 +60,9 @@ namespace Quantum\Models {
 
 }
 
-namespace Quantum\Test\Unit {
+namespace Quantum\Tests\Libraries\Database\Sleekdb\Statements {
 
-    require_once dirname(__DIR__) . DS . 'SleekDbalTestCase.php';
-
+    use Quantum\Tests\Libraries\Database\Sleekdb\SleekDbalTestCase;
     use Quantum\Models\SleekUserProfessionModel;
     use Quantum\Models\SleekUserEventModel;
     use Quantum\Models\SleekMeetingModel;

@@ -10,14 +10,15 @@ namespace Quantum\Models {
         public $table = 'profiles';
         protected $fillable = [
             'firstname',
-            'lastname'
+            'lastname',
+            'age'
         ];
 
     }
 
 }
 
-namespace Quantum\Test\Unit {
+namespace Quantum\Tests\Mvc {
 
     use PHPUnit\Framework\TestCase;
     use Quantum\Libraries\Database\Idiorm\IdiormDbal;
@@ -37,11 +38,6 @@ namespace Quantum\Test\Unit {
 
         private $model;
 
-        private $testObject = [
-            'firstname' => 'John',
-            'lastname' => 'Doe'
-        ];
-
         public function setUp(): void
         {
 
@@ -51,14 +47,30 @@ namespace Quantum\Test\Unit {
 
             Di::loadDefinitions();
 
+            config()->set('debug', true);
+
+            IdiormDbal::connect(['driver' => 'sqlite', 'database' => ':memory:']);
+
             IdiormDbal::execute("CREATE TABLE profiles (
                         id INTEGER PRIMARY KEY,
                         firstname VARCHAR(255),
                         lastname VARCHAR(255),
-                        created_at DATETIME
+                        age int(11)
                     )");
 
+            IdiormDbal::execute("INSERT INTO 
+                    profiles
+                        (firstname, lastname, age) 
+                    VALUES
+                        ('John', 'Doe', 45)
+                    ");
+
             $this->model = (new ModelFactory)->get(ProfileModel::class);
+        }
+
+        public function tearDown(): void
+        {
+            IdiormDbal::execute("DELETE FROM profiles");
         }
 
         public function testModelInstance()
@@ -68,20 +80,26 @@ namespace Quantum\Test\Unit {
 
         public function testFillObjectProps()
         {
-            $this->model->fillObjectProps($this->testObject);
+            $this->model->fillObjectProps([
+                'firstname' => 'Jane',
+                'lastname' => 'Due',
+                'age' => 35
+            ]);
 
-            $this->assertEquals('John', $this->model->firstname);
+            $this->assertEquals('Jane', $this->model->firstname);
 
-            $this->assertEquals('Doe', $this->model->lastname);
+            $this->assertEquals('Due', $this->model->lastname);
+
+            $this->assertEquals(35, $this->model->age);
         }
 
         public function testFillObjectPropsWithUndefinedFillable()
         {
             $this->expectException(ModelException::class);
 
-            $this->expectExceptionMessage('Inappropriate property `age` for fillable object');
+            $this->expectExceptionMessage('Inappropriate property `country` for fillable object');
 
-            $this->model->fillObjectProps(['age' => 30]);
+            $this->model->fillObjectProps(['country' => 'Ireland']);
         }
 
         public function testSetterAndGetter()
@@ -102,27 +120,93 @@ namespace Quantum\Test\Unit {
             $this->model->undefinedMethod();
         }
 
-        public function testCallingModelMethod()
+        public function testCreateNewRecordByCallingOrmMethod()
         {
-            $userProfile = $this->model->findOne(1)->asArray();
+            $userModel = $this->model->create();
 
-            $this->assertIsArray($userProfile);
+            $userModel->firstname = 'Jane';
 
-            $this->assertEmpty($userProfile);
+            $userModel->lastname = 'Due';
 
+            $userModel->age = 35;
+
+            $userModel->save();
+
+            $userModel = $this->model->findOne(1);
+
+            $this->assertEquals('John', $userModel->firstname);
+
+            $this->assertEquals('John', $userModel->prop('firstname'));
+
+            $userData = $userModel->asArray();
+
+            $this->assertEquals('John', $userData['firstname']);
+        }
+
+        public function testUpdatingExistingRecordByCallingOrmMethod()
+        {
+            $userModel = $this->model->findOne(1);
+
+            $this->assertEquals('John', $userModel->firstname);
+
+            $this->assertEquals('Doe', $userModel->lastname);
+
+            $this->assertEquals(45, $userModel->age);
+
+            $userModel->firstname = 'Jane';
+
+            $userModel->lastname = 'Due';
+
+            $userModel->age = 35;
+
+            $userModel->save();
+
+            $userModel = $this->model->findOne(1);
+
+            $this->assertEquals('Jane', $userModel->firstname);
+
+            $this->assertEquals('Jane', $userModel->prop('firstname'));
+
+            $userData = $userModel->asArray();
+
+            $this->assertEquals('Jane', $userData['firstname']);
+        }
+
+        public function testCallingModelWithCriterias()
+        {
             $userProfile = $this->model->create();
 
-            $userProfile->fillObjectProps($this->testObject);
+            $userProfile->fillObjectProps([
+                'firstname' => 'Jane',
+                'lastname' => 'Du',
+                'age' => 35
+            ]);
 
             $userProfile->save();
 
-            $userProfile = $this->model->findOne(1)->asArray();
+            $profileModel = (new ModelFactory)->get(ProfileModel::class);
 
-            $this->assertIsArray($userProfile);
+            $users = $profileModel->criteria('age', '>', 30)->get();
 
-            $this->assertNotEmpty($userProfile);
+            $this->assertIsArray($users);
 
-            $this->assertEquals('John', $userProfile['firstname']);
+            $this->assertCount(2, $users);
+
+            $profileModel = (new ModelFactory)->get(ProfileModel::class);
+
+            $user = $profileModel->criteria('age', '<', '50')->orderBy('age', 'asc')->first();
+
+            $this->assertIsObject($user);
+
+            $this->assertEquals('Jane', $user->firstname);
+
+            $this->assertEquals('Jane', $user->prop('firstname'));
+
+            $userData = $user->asArray();
+
+            $this->assertIsArray($userData);
+
+            $this->assertEquals('Jane', $userData['firstname']);
         }
 
     }

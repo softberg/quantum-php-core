@@ -1,6 +1,6 @@
 <?php
 
-namespace Quantum\Test\Unit;
+namespace Quantum\Tests\Libraries\Config;
 
 use Quantum\Exceptions\ConfigException;
 use Quantum\Exceptions\LoaderException;

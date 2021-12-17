@@ -1,6 +1,6 @@
 <?php
 
-namespace Quantum\Test\Unit;
+namespace Quantum\Tests\Libraries\Session;
 
 use Mockery;
 use PHPUnit\Framework\TestCase;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Quantum\Test\Unit;
+namespace Quantum\Tests\Libraries\Csrf;
 
 use Mockery;
 use PHPUnit\Framework\TestCase;

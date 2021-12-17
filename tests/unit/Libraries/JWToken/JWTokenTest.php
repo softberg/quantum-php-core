@@ -1,6 +1,6 @@
 <?php
 
-namespace Quantum\Test\Unit;
+namespace Quantum\Tests\Libraries\JWToken;
 
 use PHPUnit\Framework\TestCase;
 use Quantum\Libraries\JWToken\JWToken;

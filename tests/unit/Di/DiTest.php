@@ -19,7 +19,7 @@ namespace Quantum\Controllers {
 
 }
 
-namespace Quantum\Test\Unit {
+namespace Quantum\Tests\Di {
 
     use PHPUnit\Framework\TestCase;
     use Quantum\App;

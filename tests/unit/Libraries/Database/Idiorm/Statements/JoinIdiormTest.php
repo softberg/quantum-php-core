@@ -51,10 +51,9 @@ namespace Quantum\Models {
     }
 }
 
-namespace Quantum\Test\Unit {
+namespace Quantum\Tests\Libraries\Database\Idiorm\Statements {
 
-    require_once dirname(__DIR__) . DS . 'IdiormDbalTestCase.php';
-
+    use Quantum\Tests\Libraries\Database\Idiorm\IdiormDbalTestCase;
     use Quantum\Libraries\Database\Idiorm\IdiormDbal;
     use Quantum\Models\CUserProfessionModel;
     use Quantum\Models\CUserEventModel;

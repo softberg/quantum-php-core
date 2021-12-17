@@ -1,345 +1,188 @@
 <?php
 
-namespace Quantum\Libraries\JWToken {
+namespace Quantum\Tests\Libraries\Auth;
 
-    function env($key)
+use Quantum\Libraries\JWToken\JWToken;
+use Quantum\Exceptions\AuthException;
+use Quantum\Libraries\Hasher\Hasher;
+use Quantum\Libraries\Auth\ApiAuth;
+
+
+class ApiAuthTest extends AuthTestCase
+{
+    public function setUp(): void
     {
-        return 'somerandomstring';
+
+        parent::setUp();
+
+        $jwt = (new JWToken())
+            ->setLeeway(1)
+            ->setClaims([
+                'jti' => uniqid(),
+                'iss' => 'issuer',
+                'aud' => 'audience',
+                'iat' => time(),
+                'nbf' => time() + 1,
+                'exp' => time() + 60
+            ]);
+
+        $this->apiAuth = ApiAuth::getInstance($this->authService, $this->mailer, new Hasher, $jwt);
+
+        $admin = $this->apiAuth->signup($this->adminUser);
+
+        $this->apiAuth->activate($admin->getFieldValue('activation_token'));
     }
 
-}
-
-namespace Quantum\Test\Unit {
-
-    use PHPUnit\Framework\TestCase;
-    use Quantum\Libraries\JWToken\JWToken;
-    use Quantum\Exceptions\AuthException;
-    use Quantum\Libraries\Hasher\Hasher;
-    use Quantum\Libraries\Auth\ApiAuth;
-    use Quantum\Libraries\Auth\User;
-    use Quantum\Di\Di;
-    use Quantum\App;
-    use Mockery;
-
-
-    function auto_increment(array $collection, string $field)
+    public function tearDown(): void
     {
-        $max = 0;
-        foreach ($collection as $item) {
-            $max = max($max, $item[$field]);
-        }
-        return ++$max;
+        self::$users = [];
+
+        $this->apiAuth->signout();
     }
 
-
-    class ApiAuthTest extends TestCase
+    public function testApiAuthConstructor()
     {
+        $this->assertInstanceOf(ApiAuth::class, $this->apiAuth);
+    }
 
-        private $apiAuth;
-
-        private $authService;
-
-        private static $users = [];
-
-        private $adminUser = [
-            'email' => 'admin@qt.com',
-            'firstname' => 'Admin',
-            'lastname' => 'User',
-            'role' => 'admin',
-            'password' => 'qwerty',
-            'activation_token' => '',
-            'remember_token' => '',
-            'reset_token' => '',
-            'access_token' => '',
-            'refresh_token' => '',
-            'otp' => '',
-            'otp_expiry_in' => '',
-            'otp_token' => ''
-        ];
-
-        private $guestUser = [
-            'email' => 'guest@qt.com',
-            'password' => '123456',
-            'firstname' => 'Guest',
-            'lastname' => 'User',
-        ];
+    public function testApiSigninIncorrectCredentials()
+    {
+        $this->expectException(AuthException::class);
 
-        protected $userSchema = [
-            'id' => ['name' => 'id', 'visible' => false],
-            'firstname' => ['name' => 'firstname', 'visible' => true],
-            'lastname' => ['name' => 'lastname', 'visible' => true],
-            'role' => ['name' => 'role', 'visible' => true],
-            'username' => ['name' => 'email', 'visible' => true],
-            'password' => ['name' => 'password', 'visible' => false],
-            'activationToken' => ['name' => 'activation_token', 'visible' => false],
-            'rememberToken' => ['name' => 'remember_token', 'visible' => false],
-            'resetToken' => ['name' => 'reset_token', 'visible' => false],
-            'accessToken' => ['name' => 'access_token', 'visible' => false],
-            'refreshToken' => ['name' => 'refresh_token', 'visible' => false],
-            'otp' => ['name' => 'otp', 'visible' => false],
-            'otpExpiry' => ['name' => 'otp_expires', 'visible' => false],
-            'otpToken' => ['name' => 'otp_token', 'visible' => false],
-        ];
+        $this->expectExceptionMessage(AuthException::INCORRECT_AUTH_CREDENTIALS);
 
-        public function setUp(): void
-        {
-            App::loadCoreFunctions(dirname(__DIR__, 4) . DS . 'src' . DS . 'Helpers');
+        $this->apiAuth->signin('admin@qt.com', '111111');
+    }
 
-            App::setBaseDir(dirname(__DIR__, 2) . DS . '_root');
+    public function testApiSigninCorrectCredentials()
+    {
+        config()->set('2SV', false);
 
-            Di::loadDefinitions();
+        $this->assertIsArray($this->apiAuth->signin('admin@qt.com', 'qwerty'));
 
-            config()->flush();
+        $this->assertArrayHasKey('access_token', $this->apiAuth->signin('admin@qt.com', 'qwerty'));
 
-            $this->authService = Mockery::mock('Quantum\Libraries\Auth\AuthServiceInterface');
+        $this->assertArrayHasKey('refresh_token', $this->apiAuth->signin('admin@qt.com', 'qwerty'));
+    }
 
-            $this->authService->shouldReceive('userSchema')->andReturn($this->userSchema);
+    public function testApiSignOut()
+    {
+        $this->apiAuth->signin('admin@qt.com', 'qwerty');
 
-            $this->authService->shouldReceive('get')->andReturnUsing(function ($field, $value) {
-                foreach (self::$users as $userData) {
-                    if (in_array($value, $userData)) {
-                        return (new User())->setData($userData);
-                    }
-                }
+        $this->assertTrue($this->apiAuth->check());
 
-                return null;
-            });
+        $this->apiAuth->signout();
 
-            $this->authService->shouldReceive('update')->andReturnUsing(function ($field, $value, $data) {
+        $this->assertFalse($this->apiAuth->check());
+    }
 
-                $user = $this->authService->get($field, $value);
+    public function testApiUser()
+    {
+        $this->apiAuth->signin('admin@qt.com', 'qwerty');
 
-                if (!$user) {
-                    return null;
-                }
+        $this->assertEquals('admin@qt.com', $this->apiAuth->user()->getFieldValue('email'));
 
-                foreach ($data as $key => $val) {
-                    if ($user->hasField($key)) {
-                        $user->setFieldValue($key, $val ?? '');
-                    }
-                }
+        $this->assertEquals('admin', $this->apiAuth->user()->getFieldValue('role'));
 
-                foreach (self::$users as &$userData) {
-                    if (in_array($user->getFieldValue('id'), $userData)) {
-                        $userData = $user->getData();
-                    }
-                }
+        $this->apiAuth->signout();
 
-                return $user;
+        $this->assertNull($this->apiAuth->user());
+    }
 
-            });
+    public function testApiCheck()
+    {
+        $this->assertFalse($this->apiAuth->check());
 
-            $this->authService->shouldReceive('add')->andReturnUsing(function ($data) {
+        $this->apiAuth->signin('admin@qt.com', 'qwerty');
 
-                $user = new User();
+        $this->assertTrue($this->apiAuth->check());
 
-                $user->setFields($this->authService->userSchema());
+        $this->apiAuth->signout();
 
-                foreach ($data as $key => $val) {
-                    foreach ($this->authService->userSchema() as $field) {
-                        if (isset($field['name'])) {
-                            if ($field['name'] == 'id') {
-                                $user->setFieldValue('id', auto_increment(self::$users, 'id'));
-                            }
+        $this->assertFalse($this->apiAuth->check());
+    }
 
-                            if ($field['name'] == $key) {
-                                $user->setFieldValue($key, $val ?? '');
-                            }
-                        }
-                    }
-                }
+    public function testApiSignupAndSigninWithoutActivation()
+    {
+        $this->expectException(AuthException::class);
 
-                self::$users[] = $user->getData();
+        $this->expectExceptionMessage(AuthException::INACTIVE_ACCOUNT);
 
-                return $user;
-            });
+        $this->apiAuth->signup($this->guestUser);
 
-            $mailer = Mockery::mock('Quantum\Libraries\Mailer\Mailer');
+        $this->assertTrue($this->apiAuth->signin('guest@qt.com', '123456'));
+    }
 
-            $mailer->shouldReceive('setFrom')->andReturn($mailer);
+    public function testApiSignupAndActivteAccount()
+    {
+        $user = $this->apiAuth->signup($this->guestUser);
 
-            $mailer->shouldReceive('setAddress')->andReturn($mailer);
+        $this->apiAuth->activate($user->getFieldValue('activation_token'));
 
-            $mailer->shouldReceive('setSubject')->andReturn($mailer);
+        $this->assertIsArray($this->apiAuth->signin('guest@qt.com', '123456'));
 
-            $mailer->shouldReceive('setBody')->andReturn($mailer);
+        $this->assertArrayHasKey('access_token', $this->apiAuth->signin('guest@qt.com', '123456'));
 
-            $mailer->shouldReceive('setTemplate')->andReturn($mailer);
+        $this->assertArrayHasKey('refresh_token', $this->apiAuth->signin('guest@qt.com', '123456'));
+    }
 
-            $mailer->shouldReceive('send')->andReturn(true);
+    public function testApiForgetReset()
+    {
+        $resetToken = $this->apiAuth->forget('admin@qt.com', 'tpl');
 
-            $jwt = (new JWToken())
-                ->setLeeway(1)
-                ->setClaims([
-                    'jti' => uniqid(),
-                    'iss' => 'issuer',
-                    'aud' => 'audience',
-                    'iat' => time(),
-                    'nbf' => time() + 1,
-                    'exp' => time() + 60
-                ]);
+        $this->apiAuth->reset($resetToken, '123456789');
 
-            config()->set('langs', true);
+        $this->assertIsArray($this->apiAuth->signin('admin@qt.com', '123456789'));
 
-            $this->apiAuth = ApiAuth::getInstance($this->authService, $mailer, new Hasher, $jwt);
+        $this->assertArrayHasKey('access_token', $this->apiAuth->signin('admin@qt.com', '123456789'));
 
-            $admin = $this->apiAuth->signup($this->adminUser);
+        $this->assertArrayHasKey('refresh_token', $this->apiAuth->signin('admin@qt.com', '123456789'));
+    }
 
-            $this->apiAuth->activate($admin->getFieldValue('activation_token'));
-        }
+    public function testApiVerify()
+    {
+        config()->set('2SV', true);
 
-        public function tearDown(): void
-        {
-            self::$users = [];
+        config()->set('otp_expires', 2);
 
-            $this->apiAuth->signout();
-        }
+        $otp_token = $this->apiAuth->signin('admin@qt.com', 'qwerty');
 
-        public function testApiAuthConstructor()
-        {
-            $this->assertInstanceOf(ApiAuth::class, $this->apiAuth);
-        }
+        $tokens = $this->apiAuth->verifyOtp(123456789, $otp_token);
 
-        public function testApiSigninIncorrectCredetials()
-        {
-            $this->expectException(AuthException::class);
+        $this->assertArrayHasKey('access_token', $tokens);
 
-            $this->expectExceptionMessage(AuthException::INCORRECT_AUTH_CREDENTIALS);
+        $this->assertArrayHasKey('refresh_token', $tokens);
+    }
 
-            $this->apiAuth->signin('admin@qt.com', '111111');
-        }
+    public function testApiSigninWithoutVerification()
+    {
+        config()->set('2SV', false);
 
-        public function testApiSigninCorrectCredentials()
-        {
-            config()->set('2SV', false);
+        config()->set('otp_expires', 2);
 
-            $this->assertIsArray($this->apiAuth->signin('admin@qt.com', 'qwerty'));
+        $this->assertArrayHasKey('access_token', $this->apiAuth->signin('admin@qt.com', 'qwerty'));
 
-            $this->assertArrayHasKey('access_token', $this->apiAuth->signin('admin@qt.com', 'qwerty'));
+        $this->assertArrayHasKey('refresh_token', $this->apiAuth->signin('admin@qt.com', 'qwerty'));
+    }
 
-            $this->assertArrayHasKey('refresh_token', $this->apiAuth->signin('admin@qt.com', 'qwerty'));
-        }
+    public function testApiSigninWithVerification()
+    {
+        config()->set('2SV', true);
 
-        public function testApiSignOut()
-        {
-            $this->apiAuth->signin('admin@qt.com', 'qwerty');
+        config()->set('otp_expires', 2);
 
-            $this->assertTrue($this->apiAuth->check());
+        $this->assertIsString($this->apiAuth->signin('admin@qt.com', 'qwerty'));
+    }
 
-            $this->apiAuth->signout();
+    public function testApiResendOtp()
+    {
+        config()->set('2SV', true);
 
-            $this->assertFalse($this->apiAuth->check());
-        }
+        config()->set('otp_expires', 2);
 
-        public function testApiUser()
-        {
-            $this->apiAuth->signin('admin@qt.com', 'qwerty');
+        $otp_token = $this->apiAuth->signin('admin@qt.com', 'qwerty');
 
-            $this->assertEquals('admin@qt.com', $this->apiAuth->user()->getFieldValue('email'));
-
-            $this->assertEquals('admin', $this->apiAuth->user()->getFieldValue('role'));
-
-            $this->apiAuth->signout();
-
-            $this->assertNull($this->apiAuth->user());
-        }
-
-        public function testApiCheck()
-        {
-            $this->assertFalse($this->apiAuth->check());
-
-            $this->apiAuth->signin('admin@qt.com', 'qwerty');
-
-            $this->assertTrue($this->apiAuth->check());
-
-            $this->apiAuth->signout();
-
-            $this->assertFalse($this->apiAuth->check());
-        }
-
-        public function testApiSignupAndSigninWithoutActivation()
-        {
-            $this->expectException(AuthException::class);
-
-            $this->expectExceptionMessage(AuthException::INACTIVE_ACCOUNT);
-
-            $this->apiAuth->signup($this->guestUser);
-
-            $this->assertTrue($this->apiAuth->signin('guest@qt.com', '123456'));
-        }
-
-        public function testApiSignupAndActivteAccount()
-        {
-            $user = $this->apiAuth->signup($this->guestUser);
-
-            $this->apiAuth->activate($user->getFieldValue('activation_token'));
-
-            $this->assertIsArray($this->apiAuth->signin('guest@qt.com', '123456'));
-
-            $this->assertArrayHasKey('access_token', $this->apiAuth->signin('guest@qt.com', '123456'));
-
-            $this->assertArrayHasKey('refresh_token', $this->apiAuth->signin('guest@qt.com', '123456'));
-        }
-
-        public function testApiForgetReset()
-        {
-            $resetToken = $this->apiAuth->forget('admin@qt.com', 'tpl');
-
-            $this->apiAuth->reset($resetToken, '123456789');
-
-            $this->assertIsArray($this->apiAuth->signin('admin@qt.com', '123456789'));
-
-            $this->assertArrayHasKey('access_token', $this->apiAuth->signin('admin@qt.com', '123456789'));
-
-            $this->assertArrayHasKey('refresh_token', $this->apiAuth->signin('admin@qt.com', '123456789'));
-        }
-
-        public function testApiVerify()
-        {
-            config()->set('2SV', true);
-
-            config()->set('otp_expires', 2);
-
-            $otp_token = $this->apiAuth->signin('admin@qt.com', 'qwerty');
-
-            $tokens = $this->apiAuth->verifyOtp(111111, $otp_token);
-
-            $this->assertArrayHasKey('access_token', $tokens);
-
-            $this->assertArrayHasKey('refresh_token', $tokens);
-        }
-
-        public function testApiSigninWithoutVerification()
-        {
-            config()->set('2SV', false);
-
-            config()->set('otp_expires', 2);
-
-            $this->assertArrayHasKey('access_token', $this->apiAuth->signin('admin@qt.com', 'qwerty'));
-
-            $this->assertArrayHasKey('refresh_token', $this->apiAuth->signin('admin@qt.com', 'qwerty'));
-        }
-
-        public function testApiSigninWithVerification()
-        {
-            config()->set('2SV', true);
-
-            config()->set('otp_expires', 2);
-
-            $this->assertIsString($this->apiAuth->signin('admin@qt.com', 'qwerty'));
-        }
-
-        public function testApiResendOtp()
-        {
-            config()->set('2SV', true);
-
-            config()->set('otp_expires', 2);
-
-            $otp_token = $this->apiAuth->signin('admin@qt.com', 'qwerty');
-
-            $this->assertIsString($this->apiAuth->resendOtp($otp_token));
-        }
-
+        $this->assertIsString($this->apiAuth->resendOtp($otp_token));
     }
 
 }

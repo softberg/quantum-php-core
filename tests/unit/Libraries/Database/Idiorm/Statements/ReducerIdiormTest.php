@@ -1,10 +1,9 @@
 <?php
 
-namespace Quantum\Test\Unit;
+namespace Quantum\Tests\Libraries\Database\Idiorm\Statements;
 
+use Quantum\Tests\Libraries\Database\Idiorm\IdiormDbalTestCase;
 use Quantum\Libraries\Database\Idiorm\IdiormDbal;
-
-require_once dirname(__DIR__) . DS . 'IdiormDbalTestCase.php';
 
 class ReducerIdiormTest extends IdiormDbalTestCase
 {

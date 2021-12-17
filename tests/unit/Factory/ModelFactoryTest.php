@@ -11,7 +11,7 @@ namespace Quantum\Models {
 
 }
 
-namespace Quantum\Test\Unit {
+namespace Quantum\Tests\Factory {
 
     use PHPUnit\Framework\TestCase;
     use Quantum\Exceptions\ModelException;
