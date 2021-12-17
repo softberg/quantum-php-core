@@ -16,9 +16,9 @@ class ResultSleekTest extends SleekDbalTestCase
 
         $this->assertIsArray($users);
 
-        $this->assertEquals('John', $users[0]['firstname']);
+        $this->assertArrayHasKey('firstname', $users[0]);
 
-        $this->assertEquals('Jane', $users[1]['firstname']);
+        $this->assertArrayHasKey('firstname', $users[1]);
 
     }
 
@@ -48,7 +48,7 @@ class ResultSleekTest extends SleekDbalTestCase
     {
         $this->userModel = new SleekDbal('users');
 
-        $user = $this->userModel->first();
+        $user = $this->userModel->orderBy('age', 'desc')->first();
 
         $this->assertEquals('Doe', $user->prop('lastname'));
 
@@ -56,7 +56,7 @@ class ResultSleekTest extends SleekDbalTestCase
 
         $userModel = new SleekDbal('users');
 
-        $user = $userModel->criteria('age', '<', 50)->first();
+        $user = $userModel->criteria('age', '<', 50)->orderBy('age', 'desc')->first();
 
         $this->assertEquals('John', $user->prop('firstname'));
 

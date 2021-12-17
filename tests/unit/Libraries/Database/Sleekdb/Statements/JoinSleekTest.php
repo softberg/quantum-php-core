@@ -178,6 +178,7 @@ namespace Quantum\Tests\Libraries\Database\Sleekdb\Statements {
             $users = $userModel
                 ->joinTo($userEventModel)
                 ->joinThrough($eventModel)
+                ->orderBy('title', 'asc')
                 ->get();
 
             $this->assertIsArray($users);
@@ -196,7 +197,7 @@ namespace Quantum\Tests\Libraries\Database\Sleekdb\Statements {
 
             $this->assertArrayHasKey('title', $users[0]['user_events'][0]['events'][0]);
 
-            $this->assertEquals('Dance', $users[0]['user_events'][0]['events'][0]['title']);
+            $this->assertEquals('Music', $users[0]['user_events'][0]['events'][0]['title']);
         }
 
         public function testSleekJoinToAndJoinThroughUsingSwitch()
@@ -213,6 +214,7 @@ namespace Quantum\Tests\Libraries\Database\Sleekdb\Statements {
                 ->joinTo($userProfessionModel, false)
                 ->joinTo($userEventModel)
                 ->joinThrough($eventModel)
+                ->orderBy('title', 'asc')
                 ->get();
 
             $this->assertIsArray($users);
@@ -223,7 +225,7 @@ namespace Quantum\Tests\Libraries\Database\Sleekdb\Statements {
 
             $this->assertArrayHasKey('title', $users[0]['professions'][0]);
 
-            $this->assertEquals('Writer', $users[0]['professions'][0]['title']);
+            $this->assertEquals('Singer', $users[0]['professions'][0]['title']);
         }
     }
 }

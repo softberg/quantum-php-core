@@ -66,7 +66,7 @@ class CriteriaSleekTest extends SleekDbalTestCase
     {
         $this->userModel = new SleekDbal('users');
 
-        $users = $this->userModel->criteria('age', 'IN', [35, 40, 45])->get();
+        $users = $this->userModel->criteria('age', 'IN', [35, 40, 45])->orderBy('age', 'desc')->get();
 
         $this->assertCount(2, $users);
 
@@ -95,7 +95,7 @@ class CriteriaSleekTest extends SleekDbalTestCase
 
         $this->userModel = new SleekDbal('users');
 
-        $users = $this->userModel->criteria('firstname', 'LIKE', '%J%')->get();
+        $users = $this->userModel->criteria('firstname', 'LIKE', '%J%')->orderBy('firstname', 'desc')->get();
 
         $this->assertCount(2, $users);
 

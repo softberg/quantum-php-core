@@ -18,7 +18,10 @@ class ReducerSleekTest extends SleekDbalTestCase
 
         $userModel = new SleekDbal('users');
 
-        $user = $userModel->select('id', ['firstname' => 'name'], ['lastname' => 'surname'])->first();
+        $user = $userModel
+            ->select('id', ['firstname' => 'name'], ['lastname' => 'surname'])
+            ->orderBy('age', 'desc')
+            ->first();
 
         $this->assertEquals('John', $user->prop('name'));
 
