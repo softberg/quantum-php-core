@@ -116,7 +116,7 @@ class Di
 
         if ($constructor) {
             foreach ($constructor->getParameters() as $param) {
-                $type = (string) $param->getType();
+                $type = $param->getType()->getName();
 
                 if (!$type || !self::instantiable($type)) {
                     continue;
