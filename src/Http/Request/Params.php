@@ -29,9 +29,9 @@ trait Params
 
     /**
      * Gets the GET params
-     * @return array|null
+     * @return array
      */
-    private static function getParams(): ?array
+    private static function getParams(): array
     {
         $getParams = [];
 
@@ -44,9 +44,9 @@ trait Params
 
     /**
      * Gets the POST params
-     * @return array|null
+     * @return array
      */
-    private static function postParams(): ?array
+    private static function postParams(): array
     {
         $postParams = [];
 

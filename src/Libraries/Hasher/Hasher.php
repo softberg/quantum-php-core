@@ -23,7 +23,7 @@ class Hasher
 
     /**
      * The algorithm
-     * @var int 
+     * @var string
      */
     private $algorithm = PASSWORD_BCRYPT;
 
@@ -45,8 +45,8 @@ class Hasher
     }
 
     /**
-     * Gets the current algorithm 
-     * @return int
+     * Gets the current algorithm
+     * @return string
      */
     public function getAlgorithm(): string
     {

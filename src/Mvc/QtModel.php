@@ -103,7 +103,7 @@ abstract class QtModel
     /**
      * Sets or gets the model property
      * @param string $property
-     * @param null $value
+     * @param mixed|null $value
      * @return mixed
      */
     public function prop(string $property, $value = null)
