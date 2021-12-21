@@ -14,7 +14,7 @@
 
 namespace Quantum\Libraries\Session;
 
-use Quantum\Libraries\Database\DbalInterface;
+use Quantum\Libraries\Database\Idiorm\IdiormDbal;
 use \SessionHandlerInterface;
 
 /**
@@ -26,20 +26,20 @@ class DbSessionHandler implements SessionHandlerInterface
 
     /**
      * The ORM instance
-     * @var \Quantum\Libraries\Database\DbalInterface
+     * @var \Quantum\Libraries\Database\Idiorm\IdiormDbal
      */
     private $orm;
 
     /**
      * DbSessionHandler constructor.
-     * @param DbalInterface $orm
+     * @param \Quantum\Libraries\Database\Idiorm\IdiormDbal $orm
      */
 
     /**
      * DbSessionHandler constructor.
-     * @param \Quantum\Libraries\Database\DbalInterface $orm
+     * @param \Quantum\Libraries\Database\Idiorm\IdiormDbal $orm
      */
-    public function __construct(DbalInterface $orm)
+    public function __construct(IdiormDbal $orm)
     {
         $this->orm = $orm;
     }
@@ -68,6 +68,7 @@ class DbSessionHandler implements SessionHandlerInterface
 
     /**
      * @inheritDoc
+     * @throws \Quantum\Exceptions\DatabaseException
      */
     public function read($id): string
     {
@@ -77,6 +78,7 @@ class DbSessionHandler implements SessionHandlerInterface
 
     /**
      * @inheritDoc
+     * @throws \Quantum\Exceptions\DatabaseException
      */
     public function write($id, $data): bool
     {
@@ -86,6 +88,7 @@ class DbSessionHandler implements SessionHandlerInterface
 
     /**
      * @inheritDoc
+     * @throws \Quantum\Exceptions\DatabaseException
      */
     public function destroy($id): bool
     {
@@ -94,6 +97,7 @@ class DbSessionHandler implements SessionHandlerInterface
 
     /**
      * @inheritDoc
+     * @throws \Quantum\Exceptions\DatabaseException
      */
     public function gc($max_lifetime): bool
     {

@@ -2,7 +2,7 @@
 
 namespace Quantum\Libraries\Auth {
 
-    function random_number()
+    function random_number(int $length = 10)
     {
         return 123456789;
     }
