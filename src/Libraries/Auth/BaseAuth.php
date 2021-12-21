@@ -102,7 +102,7 @@ abstract class BaseAuth
     /**
      * @var int
      */
-    protected $otpLenght = 6;
+    protected $otpLength = 6;
 
     /**
      * @var array
@@ -322,7 +322,7 @@ abstract class BaseAuth
      */
     protected function twoStepVerification(User $user): string
     {
-        $otp = random_number($this->otpLenght);
+        $otp = random_number($this->otpLength);
 
         $otpToken = $this->generateToken($user->getFieldValue($this->keyFields[self::USERNAME_KEY]));
 
