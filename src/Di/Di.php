@@ -73,9 +73,7 @@ class Di
                 continue;
             }
 
-            $dependency = $param->getType();
-
-            array_push($params, self::get($dependency));
+            array_push($params, self::get($type));
         }
 
         return $params;
