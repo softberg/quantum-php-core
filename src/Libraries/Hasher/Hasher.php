@@ -35,10 +35,10 @@ class Hasher
 
     /**
      * Sets the algorithm
-     * @param int $algorithm
+     * @param string $algorithm
      * @return $this
      */
-    public function setAlgorithm(int $algorithm): Hasher
+    public function setAlgorithm(string $algorithm): Hasher
     {
         $this->algorithm = $algorithm;
         return $this;
@@ -48,7 +48,7 @@ class Hasher
      * Gets the current algorithm 
      * @return int
      */
-    public function getAlgorithm(): int
+    public function getAlgorithm(): string
     {
         return $this->algorithm;
     }
