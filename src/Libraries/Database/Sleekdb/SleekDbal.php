@@ -249,27 +249,27 @@ class SleekDbal implements DbalInterface
             $this->queryBuilder = $this->getOrmModel()->createQueryBuilder();
         }
 
-        if ($this->selected) {
+        if (!empty($this->selected)) {
             $this->queryBuilder->select($this->selected);
         }
 
-        if ($this->joins) {
+        if (!empty($this->joins)) {
             $this->applyJoins();
         }
 
-        if ($this->criterias) {
+        if (!empty($this->criterias)) {
             $this->queryBuilder->where($this->criterias);
         }
 
-        if ($this->havings) {
+        if (!empty($this->havings)) {
             $this->queryBuilder->having($this->havings);
         }
 
-        if ($this->grouped) {
+        if (!empty($this->grouped)) {
             $this->queryBuilder->groupBy($this->grouped);
         }
 
-        if ($this->ordered) {
+        if (!empty($this->ordered)) {
             $this->queryBuilder->orderBy($this->ordered);
         }
 
