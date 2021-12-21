@@ -36,7 +36,7 @@ trait Params
         $getParams = [];
 
         if (!empty($_GET)) {
-            $getParams = filter_input_array(INPUT_GET, FILTER_DEFAULT);
+            $getParams = filter_input_array(INPUT_GET, FILTER_DEFAULT) ?: [] ;
         }
 
         return $getParams;
@@ -51,7 +51,7 @@ trait Params
         $postParams = [];
 
         if (!empty($_POST)) {
-            $postParams = filter_input_array(INPUT_POST, FILTER_DEFAULT);
+            $postParams = filter_input_array(INPUT_POST, FILTER_DEFAULT) ?: [];
         }
 
         return $postParams;
