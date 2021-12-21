@@ -65,7 +65,7 @@ class Di
         $params = [];
 
         foreach ($reflection->getParameters() as $param) {
-            $type = $param->getType();
+            $type = $param->getType()->getName();
 
             if (!$type || !self::instantiable($type)) {
                 array_push($params, current($additional));
