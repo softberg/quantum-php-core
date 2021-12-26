@@ -21,7 +21,7 @@ use ReflectionMethod;
 
 /**
  * Di Class
- * 
+ *
  * @package Quantum
  * @category Di
  */
@@ -68,8 +68,7 @@ class Di
             $type = $param->getType()->getName();
 
             if (!$type || !self::instantiable($type)) {
-                array_push($params, current($additional));
-                next($additional);
+                array_push($params, $additional);
                 continue;
             }
 
@@ -83,8 +82,9 @@ class Di
      * Adds new dependecy
      * @param string $dependency
      */
-    public static function add(string $dependency) {
-        if(!in_array($dependency, self::$dependencies) && class_exists($dependency)) {
+    public static function add(string $dependency)
+    {
+        if (!in_array($dependency, self::$dependencies) && class_exists($dependency)) {
             array_push(self::$dependencies, $dependency);
         }
     }
@@ -148,7 +148,7 @@ class Di
     }
 
     /**
-     * Gets the core dependencies 
+     * Gets the core dependencies
      * @return array
      */
     private static function coreDependencies(): array
