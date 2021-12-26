@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.5.0
+ * @since 2.6.0
  */
 
 namespace Quantum\Di;
@@ -77,6 +77,16 @@ class Di
         }
 
         return $params;
+    }
+
+    /**
+     * Adds new dependecy
+     * @param string $dependency
+     */
+    public static function add(string $dependency) {
+        if(!in_array($dependency, self::$dependencies) && class_exists($dependency)) {
+            array_push(self::$dependencies, $dependency);
+        }
     }
 
     /**

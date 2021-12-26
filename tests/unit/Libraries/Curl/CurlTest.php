@@ -19,9 +19,9 @@ class CurlTest extends TestCase
 
     public function testCurlConstructor()
     {
-        $this->assertInstanceOf('Quantum\Libraries\Curl\Curl', $this->curl);
+        $this->assertInstanceOf(Curl::class, $this->curl);
 
-        $this->assertInstanceOf('Quantum\Libraries\Curl\Curl', $this->multiCurl);
+        $this->assertInstanceOf(Curl::class, $this->multiCurl);
     }
 
     public function testSetGetOptions()

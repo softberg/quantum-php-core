@@ -22,7 +22,6 @@ namespace Quantum\Controllers {
 namespace Quantum\Tests\Di {
 
     use PHPUnit\Framework\TestCase;
-    use Quantum\App;
     use Quantum\Libraries\Storage\FileSystem;
     use Quantum\Controllers\TestDiController;
     use Quantum\Exceptions\DiException;
@@ -31,7 +30,9 @@ namespace Quantum\Tests\Di {
     use Quantum\Http\Response;
     use Quantum\Http\Request;
     use Quantum\Loader\Loader;
+    use Quantum\Loader\Setup;
     use Quantum\Di\Di;
+    use Quantum\App;
 
     class DiTest extends TestCase
     {
@@ -43,6 +44,13 @@ namespace Quantum\Tests\Di {
             App::setBaseDir(__DIR__);
 
             Di::loadDefinitions();
+        }
+
+        public function testAddDependency()
+        {
+            Di::add(Setup::class);
+
+            $this->assertInstanceOf(Setup::class, Di::get(Setup::class));
         }
 
         public function testGetDependency()
