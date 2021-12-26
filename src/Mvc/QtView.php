@@ -240,7 +240,7 @@ class QtView
         if (is_object($value)) {
             $this->xssFilter($value);
         } else {
-            $value = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+            $value = htmlspecialchars($value, ENT_NOQUOTES, 'UTF-8');
         }
     }
 
