@@ -44,6 +44,12 @@ class Di
     public static function loadDefinitions()
     {
         self::$dependencies = self::coreDependencies();
+
+        $userDependencies = self::userDependencies();
+
+        foreach ($userDependencies as $dependency) {
+            self::add($dependency);
+        }
     }
 
     /**
@@ -65,21 +71,26 @@ class Di
         $params = [];
 
         foreach ($reflection->getParameters() as $param) {
-            $type = $param->getType()->getName();
+            $type = $param->getType();
 
-            if (!$type || !self::instantiable($type)) {
-                array_push($params, $additional);
+            if(!self::instantiable($type)) {
+                if($type && $type->getName() == 'array') {
+                    array_push($params, $additional);
+                } else {
+                    array_push($params, current($additional));
+                    next($additional);
+                }
                 continue;
             }
 
-            array_push($params, self::get($type));
+            array_push($params, self::get($type->getName()));
         }
 
         return $params;
     }
 
     /**
-     * Adds new dependecy
+     * Adds new dependency
      * @param string $dependency
      */
     public static function add(string $dependency)
