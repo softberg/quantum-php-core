@@ -14,6 +14,7 @@
 
 namespace Quantum\Di;
 
+use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Exceptions\DiException;
 use ReflectionFunction;
 use ReflectionClass;
@@ -156,6 +157,23 @@ class Di
     protected static function instantiable($type): bool
     {
         return $type != 'Closure' && !is_callable($type) && class_exists($type);
+    }
+
+    /**
+     * Loads user defined dependencies
+     * @return array
+     */
+    private static function userDependencies(): array
+    {
+        $fs = new FileSystem();
+
+        $dependencies = base_dir() . DS . 'config' . DS . 'dependencies.php';
+
+        if (!$fs->exists($dependencies)) {
+            return [];
+        }
+
+        return require_once $dependencies;
     }
 
     /**
