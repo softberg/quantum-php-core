@@ -29,14 +29,14 @@ trait Params
 
     /**
      * Gets the GET params
-     * @return array|null
+     * @return array
      */
-    private static function getParams(): ?array
+    private static function getParams(): array
     {
         $getParams = [];
 
         if (!empty($_GET)) {
-            $getParams = filter_input_array(INPUT_GET, FILTER_DEFAULT);
+            $getParams = filter_input_array(INPUT_GET, FILTER_DEFAULT) ?: [] ;
         }
 
         return $getParams;
@@ -44,14 +44,14 @@ trait Params
 
     /**
      * Gets the POST params
-     * @return array|null
+     * @return array
      */
-    private static function postParams(): ?array
+    private static function postParams(): array
     {
         $postParams = [];
 
         if (!empty($_POST)) {
-            $postParams = filter_input_array(INPUT_POST, FILTER_DEFAULT);
+            $postParams = filter_input_array(INPUT_POST, FILTER_DEFAULT) ?: [];
         }
 
         return $postParams;

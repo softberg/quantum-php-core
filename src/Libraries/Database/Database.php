@@ -38,7 +38,10 @@ class Database
 
     /**
      * Database constructor.
+     * @throws \Quantum\Exceptions\ConfigException
      * @throws \Quantum\Exceptions\DatabaseException
+     * @throws \Quantum\Exceptions\DiException
+     * @throws \ReflectionException
      */
     private function __construct()
     {
@@ -62,14 +65,15 @@ class Database
      * Gets the ORM
      * @param string $table
      * @param string $idColumn
+     * @param array $foreignKeys
      * @return \Quantum\Libraries\Database\DbalInterface
      * @throws \Quantum\Exceptions\DatabaseException
      */
-    public function getOrm(string $table, string $idColumn = 'id'): DbalInterface
+    public function getOrm(string $table, string $idColumn = 'id', array $foreignKeys = []): DbalInterface
     {
         $ormClass = $this->getOrmClass();
 
-        return new $ormClass($table, $idColumn);
+        return new $ormClass($table, $idColumn, $foreignKeys);
     }
 
     /**

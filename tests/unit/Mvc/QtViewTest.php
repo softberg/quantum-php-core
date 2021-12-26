@@ -9,7 +9,7 @@ namespace Quantum\Renderer {
 
 }
 
-namespace Quantum\Test\Unit {
+namespace Quantum\Tests\Mvc {
 
     use PHPUnit\Framework\TestCase;
     use Quantum\Exceptions\ViewException;

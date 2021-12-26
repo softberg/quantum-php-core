@@ -1,6 +1,6 @@
 <?php
 
-namespace Quantum\Test\Unit;
+namespace Quantum\Tests\Libraries\Curl;
 
 use PHPUnit\Framework\TestCase;
 use Quantum\Libraries\Curl\Curl;
@@ -19,9 +19,9 @@ class CurlTest extends TestCase
 
     public function testCurlConstructor()
     {
-        $this->assertInstanceOf('Quantum\Libraries\Curl\Curl', $this->curl);
+        $this->assertInstanceOf(Curl::class, $this->curl);
 
-        $this->assertInstanceOf('Quantum\Libraries\Curl\Curl', $this->multiCurl);
+        $this->assertInstanceOf(Curl::class, $this->multiCurl);
     }
 
     public function testSetGetOptions()

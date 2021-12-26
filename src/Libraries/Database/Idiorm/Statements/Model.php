@@ -14,6 +14,8 @@
 
 namespace Quantum\Libraries\Database\Idiorm\Statements;
 
+use Quantum\Libraries\Database\DbalInterface;
+
 /**
  * Trait Model
  * @package Quantum\Libraries\Database\Idiorm\Statements
@@ -23,22 +25,30 @@ trait Model
 
     /**
      * @inheritDoc
+     * @throws \Quantum\Exceptions\DatabaseException
      */
-    public function get(?int $returnType = self::TYPE_ARRAY)
+    public function create(): DbalInterface
     {
-        return ($returnType == self::TYPE_OBJECT) ? $this->getOrmModel()->find_many() : $this->getOrmModel()->find_array();
+        $this->getOrmModel()->create();
+        return $this;
     }
 
     /**
      * @inheritDoc
+     * @throws \Quantum\Exceptions\DatabaseException
      */
-    public function create(): object
+    public function prop(string $key, $value = null)
     {
-        return $this->getOrmModel()->create();
+        if ($value) {
+            $this->getOrmModel()->$key = $value;
+        } else {
+            return $this->getOrmModel()->$key ?? null;
+        }
     }
 
     /**
      * @inheritDoc
+     * @throws \Quantum\Exceptions\DatabaseException
      */
     public function save(): bool
     {
@@ -47,10 +57,20 @@ trait Model
 
     /**
      * @inheritDoc
+     * @throws \Quantum\Exceptions\DatabaseException
      */
     public function delete(): bool
     {
         return $this->getOrmModel()->delete();
+    }
+
+    /**
+     * @inheritDoc
+     * @throws \Quantum\Exceptions\DatabaseException
+     */
+    public function deleteMany(): bool
+    {
+        return $this->getOrmModel()->delete_many();
     }
 
 }

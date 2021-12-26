@@ -25,7 +25,7 @@ namespace Quantum\Models {
 
 }
 
-namespace Quantum\Test\Unit {
+namespace Quantum\Tests\Libraries\Validation {
 
     use PHPUnit\Framework\TestCase;
     use Quantum\Libraries\Validation\Validator;
@@ -899,9 +899,7 @@ namespace Quantum\Test\Unit {
 
         public function testUnique()
         {
-            config()->import(new Setup('config', 'database', true));
-
-            config()->set('database.current', 'sqlite');
+            IdiormDbal::connect(['driver' => 'sqlite', 'database' => ':memory:']);
 
             IdiormDbal::execute("CREATE TABLE users (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,

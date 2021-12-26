@@ -18,7 +18,7 @@ use Quantum\Http\Request\HttpRequest;
 /**
  * Class Request
  * @package Quantum\Http
- * @method static void init(Server $server)
+
  * @method static void create(string $method, string $url, array $data = null, array $file = null)
  * @method static void flush()
  * @method static string|null getMethod()

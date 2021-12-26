@@ -28,17 +28,36 @@ class DatabaseException extends \Exception
     /**
      * Config file not found message
      */
-    const CONFIG_FILE_NOT_FOUND = 'Config file `{%1}` does not exists';
+    const CONFIG_NOT_PROVIDED = 'Configuration does not provided';
 
     /**
      * ORM class not defined message
      */
-    const ORM_CLASS_NOT_DEFINED = 'Missing ORM defination in config file';
+    const ORM_CLASS_NOT_DEFINED = 'Missing ORM definition in config file';
 
     /**
      * Orm class not found message
      */
     const ORM_CLASS_NOT_FOUND = 'ORM `{%1}` class not found';
+
+    /**
+     * Method not supported message
+     */
+    const NOT_SUPPORTED_METHOD = 'The method `{%1}` is not supported for ORM `{%2}`';
+
+    /**
+     * Method not supported message
+     */
+    const NOT_SUPPORTED_OPERATOR = 'The operator `{%1}` is not supported';
+
+
+    /**
+     * @return \Quantum\Exceptions\DatabaseException
+     */
+    public static function missingConfig(): DatabaseException
+    {
+        return new static(self::CONFIG_NOT_PROVIDED, E_ERROR);
+    }
 
     /**
      * @return \Quantum\Exceptions\DatabaseException
@@ -63,5 +82,24 @@ class DatabaseException extends \Exception
     public static function ormClassNotFound(string $name): DatabaseException
     {
         return new static(_message(self::ORM_CLASS_NOT_FOUND, $name), E_ERROR);
+    }
+
+    /**
+     * @param string $methodName
+     * @param string $ormName
+     * @return \Quantum\Exceptions\DatabaseException
+     */
+    public static function methodNotSupported(string $methodName, string $ormName): DatabaseException
+    {
+        return new static(_message(self::NOT_SUPPORTED_METHOD, [$methodName, $ormName]), E_WARNING);
+    }
+
+    /**
+     * @param string $operator
+     * @return \Quantum\Exceptions\DatabaseException
+     */
+    public static function operatorNotSupported(string $operator): DatabaseException
+    {
+        return new static(_message(self::NOT_SUPPORTED_OPERATOR, [$operator]), E_WARNING);
     }
 }

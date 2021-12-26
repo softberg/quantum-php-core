@@ -32,6 +32,11 @@ use Quantum\Exceptions\FileSystemException;
  * @method void remove(string $filename)
  * @method bool isFile(string $filename)
  * @method bool isDirectory(string $dirname)
+ * @method string fileName(string $path)
+ * @method string extension(string $path)
+ * @method bool isReadable(string $filename)
+ * @method bool isWritable(string $filename)
+ * @method glob(string $pattern, int $flags = 0)
  */
 class FileSystem
 {

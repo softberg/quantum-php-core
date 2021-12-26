@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.4.0
+ * @since 2.6.0
  */
 
 namespace Quantum\Libraries\Auth;
@@ -102,7 +102,7 @@ abstract class BaseAuth
     /**
      * @var int
      */
-    protected $otpLenght = 6;
+    protected $otpLength = 6;
 
     /**
      * @var array
@@ -318,10 +318,11 @@ abstract class BaseAuth
      * @throws \PHPMailer\PHPMailer\Exception
      * @throws \Quantum\Exceptions\DiException
      * @throws \ReflectionException
+     * @throws \Exception
      */
     protected function twoStepVerification(User $user): string
     {
-        $otp = random_number($this->otpLenght);
+        $otp = random_number($this->otpLength);
 
         $otpToken = $this->generateToken($user->getFieldValue($this->keyFields[self::USERNAME_KEY]));
 
@@ -358,6 +359,7 @@ abstract class BaseAuth
      * @param string $otpToken
      * @return \Quantum\Libraries\Auth\User
      * @throws \Quantum\Exceptions\AuthException
+     * @throws \Exception
      */
     protected function verifyAndUpdateOtp(int $otp, string $otpToken): User
     {

@@ -2,7 +2,7 @@
 
 return [
     'current' => 'mysql',
-    'mysql' => array(
+    'mysql' => [
         'driver' => 'mysql',
         'host' => 'localhost',
         'dbname' => 'database',
@@ -10,10 +10,25 @@ return [
         'password' => 'password',
         'charset' => 'charset',
         'orm' => \Quantum\Libraries\Database\Idiorm\IdiormDbal::class
-    ),
-    'sqlite' => array(
+    ],
+    'sqlite' => [
         'driver' => 'sqlite',
         'database' => ':memory:',
         'orm' => \Quantum\Libraries\Database\Idiorm\IdiormDbal::class
-    ),
+    ],
+    'sleekdb' => [
+        'config' => [
+            'auto_cache' => true,
+            'cache_lifetime' => null,
+            'timeout' => false,
+            'search' => [
+                'min_length' => 2,
+                'mode' => 'or',
+                'score_key' => 'scoreKey',
+                'algorithm' => 1
+            ],
+        ],
+        'database_dir' => base_dir() . DS . 'base' . DS . 'store',
+        'orm' => \Quantum\Libraries\Database\Sleekdb\SleekDbal::class
+    ]
 ];

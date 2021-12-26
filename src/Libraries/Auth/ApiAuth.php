@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.5.0
+ * @since 2.6.0
  */
 
 namespace Quantum\Libraries\Auth;
@@ -79,6 +79,7 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
      * @throws \PHPMailer\PHPMailer\Exception
      * @throws \Quantum\Exceptions\AuthException
      * @throws \Quantum\Exceptions\DiException
+     * @throws \Quantum\Exceptions\JwtException
      * @throws \ReflectionException
      */
     public function signin(string $username, string $password)
@@ -125,6 +126,7 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
     /**
      * User
      * @return \Quantum\Libraries\Auth\User|null
+     * @throws \Quantum\Exceptions\JwtException
      */
     public function user(): ?User
     {
@@ -149,6 +151,7 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
      * Get Updated Tokens
      * @param \Quantum\Libraries\Auth\User $user
      * @return array
+     * @throws \Quantum\Exceptions\JwtException
      */
     public function getUpdatedTokens(User $user): array
     {
@@ -183,7 +186,8 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
     /**
      * Set Updated Tokens
      * @param \Quantum\Libraries\Auth\User $user
-     * @return array Tokens
+     * @return array
+     * @throws \Quantum\Exceptions\JwtException
      */
     protected function setUpdatedTokens(User $user): array
     {

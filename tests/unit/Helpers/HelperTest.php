@@ -1,6 +1,6 @@
 <?php
 
-namespace Quantum\Test\Unit;
+namespace Quantum\Tests\Helpers;
 
 use PHPUnit\Framework\TestCase;
 use Quantum\Exceptions\StopExecutionException;
@@ -28,7 +28,6 @@ class HelperTest extends TestCase
     private $router;
     private $request;
     private $response;
-    private $session;
     private $sessionData = [];
 
     public function setUp(): void

@@ -15,13 +15,13 @@
 namespace Quantum\Libraries\Database\Idiorm;
 
 use Quantum\Libraries\Database\Idiorm\Statements\Criteria;
+use Quantum\Libraries\Database\Idiorm\Statements\Reducer;
 use Quantum\Libraries\Database\Idiorm\Statements\Result;
 use Quantum\Libraries\Database\Idiorm\Statements\Model;
 use Quantum\Libraries\Database\Idiorm\Statements\Query;
 use Quantum\Libraries\Database\Idiorm\Statements\Join;
 use Quantum\Libraries\Database\DbalInterface;
-use RecursiveIteratorIterator;
-use RecursiveArrayIterator;
+use Quantum\Exceptions\DatabaseException;
 use PDO;
 use ORM;
 
@@ -30,12 +30,13 @@ use ORM;
  * Class IdiormDbal
  * @package Quantum\Libraries\Database
  */
-class IdiormDbal implements DbalInterface
+class IdiormDbal implements DbalInterface, RelationalInterface
 {
 
     use Model;
     use Result;
     use Criteria;
+    use Reducer;
     use Join;
     use Query;
 
@@ -48,6 +49,11 @@ class IdiormDbal implements DbalInterface
      * Type object
      */
     const TYPE_OBJECT = 2;
+
+    /**
+     * Default charset
+     */
+    const DEFAULT_CHARSET = 'utf8';
 
     /**
      * The database table associated with model
@@ -86,6 +92,26 @@ class IdiormDbal implements DbalInterface
     private static $connection = null;
 
     /**
+     * Operators map
+     * @var string[]
+     */
+    private $operators = [
+        '=' => 'where_equal',
+        '!=' => 'where_not_equal',
+        '>' => 'where_gt',
+        '>=' => 'where_gte',
+        '<' => 'where_lt',
+        '<=' => 'where_lte',
+        'IN' => 'where_in',
+        'NOT IN' => 'where_not_in',
+        'LIKE' => 'where_like',
+        'NOT LIKE' => 'where_not_like',
+        'NULL' => 'where_null',
+        'NOT NULL' => 'where_not_null',
+        '#=#' => null,
+    ];
+
+    /**
      * ORM Class
      * @var string
      */
@@ -95,11 +121,13 @@ class IdiormDbal implements DbalInterface
      * Class constructor
      * @param string $table
      * @param string $idColumn
+     * @param array $foreignKeys
      */
-    public function __construct(string $table, string $idColumn = 'id')
+    public function __construct(string $table, string $idColumn = 'id', array $foreignKeys = [])
     {
         $this->table = $table;
         $this->idColumn = $idColumn;
+        $this->foreignKeys = $foreignKeys;
     }
 
     /**
@@ -118,7 +146,7 @@ class IdiormDbal implements DbalInterface
                 'username' => $config['username'] ?? null,
                 'password' => $config['password'] ?? null,
                 'driver_options' => [
-                    PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES ' . ($config['charset'] ?? 'utf8')
+                    PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES ' . ($config['charset'] ?? self::DEFAULT_CHARSET)
                 ]
             ]);
 
@@ -155,77 +183,17 @@ class IdiormDbal implements DbalInterface
     }
 
     /**
-     * @inheritDoc
+     * Gets the ORM model
+     * @return \ORM
+     * @throws \Quantum\Exceptions\DatabaseException
      */
-    public function select(...$columns): object
-    {
-        array_walk($columns, function (&$column) {
-            if (is_array($column)) {
-                $column = array_flip($column);
-            }
-        });
-
-        $iterator = new RecursiveIteratorIterator(new RecursiveArrayIterator($columns));
-        $columns = iterator_to_array($iterator, true);
-
-        return $this->getOrmModel()->select_many($columns);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function orderBy(string $column, string $direction): object
-    {
-        switch (strtolower($direction)) {
-            case 'asc':
-                $this->getOrmModel()->order_by_asc($column);
-                break;
-            case 'desc':
-                $this->getOrmModel()->order_by_desc($column);
-                break;
-        }
-
-        return $this->getOrmModel();
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function groupBy(string $column): object
-    {
-        return $this->getOrmModel()->group_by($column);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function limit(int $limit): object
-    {
-        return $this->getOrmModel()->limit($limit);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function offset(int $offset): object
-    {
-        return $this->getOrmModel()->offset($offset);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function deleteAll(): bool
-    {
-        return $this->getOrmModel()->delete_many();
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getOrmModel(): object
+    public function getOrmModel(): ORM
     {
         if (!$this->ormModel) {
+            if (!self::getConnection()) {
+                throw DatabaseException::missingConfig();
+            }
+
             $this->ormModel = (self::$ormClass)::for_table($this->table)->use_id_column($this->idColumn);
         }
 
@@ -233,9 +201,9 @@ class IdiormDbal implements DbalInterface
     }
 
     /**
-     * @inheritDoc
+     * @param \ORM $ormModel
      */
-    public function updateOrmModel(object $ormModel)
+    protected function updateOrmModel(ORM $ormModel)
     {
         $this->ormModel = $ormModel;
     }
@@ -245,7 +213,7 @@ class IdiormDbal implements DbalInterface
      * @param array $connectionDetails
      * @return string
      */
-    private static function buildConnectionString(array $connectionDetails): string
+    protected static function buildConnectionString(array $connectionDetails): string
     {
         $connectionString = $connectionDetails['driver'] . ':';
 

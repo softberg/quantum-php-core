@@ -53,7 +53,7 @@ class ModelFactory
             config()->import(new Setup('config', 'database', true));
         }
 
-        $model->setOrm(Database::getInstance()->getOrm($model->table, $model->idColumn));
+        $model->setOrm(Database::getInstance()->getOrm($model->table, $model->idColumn, $model->foreignKeys ?? []));
 
         return $model;
     }

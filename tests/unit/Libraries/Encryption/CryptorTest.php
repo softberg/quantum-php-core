@@ -14,7 +14,7 @@ namespace Quantum\Libraries\Encryption {
 
 }
 
-namespace Quantum\Test\Unit {
+namespace Quantum\Tests\Libraries\Encryption {
 
     use PHPUnit\Framework\TestCase;
     use Quantum\Libraries\Encryption\Cryptor;

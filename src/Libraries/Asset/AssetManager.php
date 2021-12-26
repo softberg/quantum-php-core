@@ -118,7 +118,7 @@ class AssetManager
      */
     private function publish()
     {
-        if ($this->storage) {
+        if (!empty($this->storage)) {
             foreach ($this->storage as $asset) {
                 if ($asset->getPosition() != -1) {
                     if (isset($this->published[$asset->getType()][$asset->getPosition()])) {

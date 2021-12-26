@@ -1,6 +1,6 @@
 <?php
 
-namespace Quantum\Test\Unit {
+namespace Quantum\Tests\Routes {
 
     use Quantum\Di\Di;
     use Quantum\Exceptions\RouteException;

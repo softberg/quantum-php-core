@@ -49,94 +49,90 @@ interface DbalInterface
     /**
      * Selects the values from provided table columns
      * @param mixed $columns
-     * @return object
+     * @return \Quantum\Libraries\Database\DbalInterface
      */
-    public function select(...$columns): object;
-
-    /**
-     * Gets the ORM model
-     * @return object
-     */
-    public function getOrmModel(): object;
-
-    /**
-     * Updates the ORM model
-     * @param object $ormModel
-     */
-    public function updateOrmModel(object $ormModel);
+    public function select(...$columns): DbalInterface;
 
     /**
      * Finds the record by primary key
      * @param int $id
-     * @return object
+     * @return \Quantum\Libraries\Database\DbalInterface
      */
-    public function findOne(int $id): object;
+    public function findOne(int $id): DbalInterface;
 
     /**
      * Finds the record by given column and value
      * @param string $column
      * @param mixed $value
-     * @return object
+     * @return \Quantum\Libraries\Database\DbalInterface
      */
-    public function findOneBy(string $column, $value): object;
+    public function findOneBy(string $column, $value): DbalInterface;
 
     /**
      * Gets the first item
-     * @return object
+     * @return \Quantum\Libraries\Database\DbalInterface
      */
-    public function first(): object;
+    public function first(): DbalInterface;
 
     /**
      * Adds a criteria to query
      * @param string $column
      * @param string $operator
      * @param mixed|null $value
-     * @return object
+     * @return \Quantum\Libraries\Database\DbalInterface
      */
-    public function criteria(string $column, string $operator, $value = null): object;
+    public function criteria(string $column, string $operator, $value = null): DbalInterface;
 
     /**
      * Adds criteria to query
      * @param array ...$criterias
-     * @return object
+     * @return \Quantum\Libraries\Database\DbalInterface
      */
-    public function criterias(...$criterias): object;
+    public function criterias(...$criterias): DbalInterface;
+
+    /**
+     * Adds having criteria to query
+     * @param string $column
+     * @param string $operator
+     * @param string|null $value
+     * @return \Quantum\Libraries\Database\DbalInterface
+     */
+    public function having(string $column, string $operator, string $value = null): DbalInterface;
+
+    /**
+     * Groups the result by given column
+     * @param string $column
+     * @return \Quantum\Libraries\Database\DbalInterface
+     */
+    public function groupBy(string $column): DbalInterface;
 
     /**
      * Orders the result by ascending or descending
      * @param string $column
      * @param string $direction
-     * @return object
+     * @return \Quantum\Libraries\Database\DbalInterface
      */
-    public function orderBy(string $column, string $direction): object;
-
-    /**
-     * Groups the result by given column
-     * @param string $column
-     * @return object
-     */
-    public function groupBy(string $column): object;
-
-    /**
-     * Returns the limited result set
-     * @param int $limit
-     * @return object
-     */
-    public function limit(int $limit): object;
+    public function orderBy(string $column, string $direction): DbalInterface;
 
     /**
      * Returns the result by given offset (works when limit also applied)
      * @param integer $offset
-     * @return object
+     * @return \Quantum\Libraries\Database\DbalInterface
      */
-    public function offset(int $offset): object;
+    public function offset(int $offset): DbalInterface;
+
+    /**
+     * Returns the limited result set
+     * @param int $limit
+     * @return \Quantum\Libraries\Database\DbalInterface
+     */
+    public function limit(int $limit): DbalInterface;
 
     /**
      * Gets the result set
-     * @param int|null $returnType
      * @return mixed
      */
-    public function get(?int $returnType);
+    public function get();
 
     /**
      * Returns the count
@@ -145,16 +141,24 @@ interface DbalInterface
     public function count(): int;
 
     /**
-     * Returns the result as array
+     * Returns the data as array
      * @return array
      */
     public function asArray(): array;
 
     /**
-     * Creates new db record
-     * @return object
+     * Sets or gets the model property
+     * @param string $key
+     * @param mixed|null $value
+     * @return void|mixed|null
      */
-    public function create(): object;
+    public function prop(string $key, $value = null);
+
+    /**
+     * Creates new db record
+     * @return \Quantum\Libraries\Database\DbalInterface
+     */
+    public function create(): DbalInterface;
 
     /**
      * Saves the data into the database
@@ -169,97 +173,25 @@ interface DbalInterface
     public function delete(): bool;
 
     /**
-     * Deletes all records by previously applied criteria
+     * Deletes many records by previously applied criteria
      * @return bool
      */
-    public function deleteAll(): bool;
-
-    /**
-     * Adds a simple JOIN source to the query
-     * @param string $table
-     * @param array $constraint
-     * @param string|null $tableAlias
-     * @return object
-     */
-    public function join(string $table, array $constraint, ?string $tableAlias = null): object;
-
-    /**
-     * Adds an INNER JOIN source to the query
-     * @param string $table
-     * @param array $constraint
-     * @param string|null $tableAlias
-     * @return object
-     */
-    public function innerJoin(string $table, array $constraint, ?string $tableAlias = null): object;
-
-    /**
-     * Adds an LEFT JOIN source to the query
-     * @param string $table
-     * @param array $constraint
-     * @param string|null $tableAlias
-     * @return object
-     */
-    public function leftJoin(string $table, array $constraint, ?string $tableAlias = null): object;
-
-    /**
-     * Adds an RIGHT JOIN source to the query
-     * @param string $table
-     * @param array $constraint
-     * @param string|null $tableAlias
-     * @return object
-     */
-    public function rightJoin(string $table, array $constraint, ?string $tableAlias = null): object;
+    public function deleteMany(): bool;
 
     /**
      * Joins two models
      * @param QtModel $model
      * @param bool $switch
-     * @return object
+     * @return \Quantum\Libraries\Database\DbalInterface
      */
-    public function joinTo(QtModel $model, bool $switch = true): object;
+    public function joinTo(QtModel $model, bool $switch = true): DbalInterface;
 
     /**
      * Joins through connector model
      * @param QtModel $model
      * @param bool $switch
-     * @return object
+     * @return \Quantum\Libraries\Database\DbalInterface
      */
-    public function joinThrough(QtModel $model, bool $switch = true): object;
-
-    /**
-     * Raw execute
-     * @param string $query
-     * @param array $parameters
-     * @return bool
-     */
-    public static function execute(string $query, array $parameters = []): bool;
-
-    /**
-     * Raw query
-     * @param string $query
-     * @param array $parameters
-     * @return array
-     */
-    public static function query(string $query, array $parameters = []): array;
-
-    /**
-     * Gets the last query executed
-     * @return string|null
-     */
-    public static function lastQuery(): ?string;
-
-    /**
-     * Returns the PDOStatement instance last used
-     * @return object
-     */
-    public static function lastStatement(): object;
-
-    /**
-     * Get an array containing all the queries
-     * run on a specified connection up to now.
-     * @return array
-     */
-    public static function queryLog(): array;
-
+    public function joinThrough(QtModel $model, bool $switch = true): DbalInterface;
 
 }

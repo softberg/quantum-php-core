@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.5.0
+ * @since 2.6.0
  */
 
 namespace Quantum\Di;
@@ -65,7 +65,7 @@ class Di
         $params = [];
 
         foreach ($reflection->getParameters() as $param) {
-            $type = $param->getType();
+            $type = $param->getType()->getName();
 
             if (!$type || !self::instantiable($type)) {
                 array_push($params, current($additional));
@@ -73,12 +73,20 @@ class Di
                 continue;
             }
 
-            $dependency = $param->getType();
-
-            array_push($params, self::get($dependency));
+            array_push($params, self::get($type));
         }
 
         return $params;
+    }
+
+    /**
+     * Adds new dependecy
+     * @param string $dependency
+     */
+    public static function add(string $dependency) {
+        if(!in_array($dependency, self::$dependencies) && class_exists($dependency)) {
+            array_push(self::$dependencies, $dependency);
+        }
     }
 
     /**
@@ -116,7 +124,7 @@ class Di
 
         if ($constructor) {
             foreach ($constructor->getParameters() as $param) {
-                $type = (string) $param->getType();
+                $type = $param->getType()->getName();
 
                 if (!$type || !self::instantiable($type)) {
                     continue;
