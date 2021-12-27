@@ -150,7 +150,7 @@ class Di
 
     /**
      * Checks if the class is instantiable
-     * @param mixed $type
+     * @param string $type
      * @return bool
      */
     protected static function instantiable(string $type): bool
@@ -162,8 +162,6 @@ class Di
         }
 
         return false;
-
-//        return $type != 'Closure' && !is_callable($type) && class_exists($type);
     }
 
     /**
