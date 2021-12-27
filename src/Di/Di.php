@@ -79,6 +79,9 @@ class Di
                     array_push($params, self::get($type->getName()));
                 } else if ($type->getName() == 'array') {
                     array_push($params, $additional);
+                } else {
+                    array_push($params, current($additional));
+                    next($additional);
                 }
             } else {
                 array_push($params, current($additional));
