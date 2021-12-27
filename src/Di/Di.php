@@ -74,17 +74,16 @@ class Di
         foreach ($reflection->getParameters() as $param) {
             $type = $param->getType();
 
-            if(!self::instantiable($type)) {
-                if($type && $type->getName() == 'array') {
+            if ($type) {
+                if (self::instantiable($type->getName())) {
+                    array_push($params, self::get($type->getName()));
+                } else if ($type->getName() == 'array') {
                     array_push($params, $additional);
-                } else {
-                    array_push($params, current($additional));
-                    next($additional);
                 }
-                continue;
+            } else {
+                array_push($params, current($additional));
+                next($additional);
             }
-
-            array_push($params, self::get($type->getName()));
         }
 
         return $params;
@@ -154,9 +153,17 @@ class Di
      * @param mixed $type
      * @return bool
      */
-    protected static function instantiable($type): bool
+    protected static function instantiable(string $type): bool
     {
-        return $type != 'Closure' && !is_callable($type) && class_exists($type);
+        if (class_exists($type)) {
+            $reflectionClass = new ReflectionClass($type);
+
+            return $reflectionClass->isInstantiable();
+        }
+
+        return false;
+
+//        return $type != 'Closure' && !is_callable($type) && class_exists($type);
     }
 
     /**
