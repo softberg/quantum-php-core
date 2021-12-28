@@ -37,7 +37,7 @@ trait Model
      */
     public function prop(string $key, $value = null)
     {
-        if ($value) {
+        if (!is_null($value)) {
             $this->modifiedFields[$key] = $value;
         } else {
             return $this->modifiedFields[$key] ?? null;
@@ -46,10 +46,12 @@ trait Model
 
     /**
      * @inheritDoc
-     * @throws \SleekDB\Exceptions\IOException
-     * @throws \SleekDB\Exceptions\InvalidConfigurationException
      * @throws \Quantum\Exceptions\DatabaseException
+     * @throws \SleekDB\Exceptions\IOException
+     * @throws \SleekDB\Exceptions\IdNotAllowedException
      * @throws \SleekDB\Exceptions\InvalidArgumentException
+     * @throws \SleekDB\Exceptions\InvalidConfigurationException
+     * @throws \SleekDB\Exceptions\JsonException
      */
     public function save(): bool
     {
