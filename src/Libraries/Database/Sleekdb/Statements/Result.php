@@ -103,7 +103,7 @@ trait Result
      */
     public function asArray(): array
     {
-        return $this->data;
+        return $this->data ?: [];
     }
 
 }
