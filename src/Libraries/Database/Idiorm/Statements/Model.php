@@ -39,7 +39,7 @@ trait Model
      */
     public function prop(string $key, $value = null)
     {
-        if ($value) {
+        if (!is_null($value)) {
             $this->getOrmModel()->$key = $value;
         } else {
             return $this->getOrmModel()->$key ?? null;
