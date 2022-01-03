@@ -35,17 +35,17 @@ class Route
      */
     private $module;
 
-    /**
+    /**`
      * Identifies the group middleware
      * @var bool
      */
-    private $isGroupeMiddlewares;
+    private $isGroupMiddlewares;
 
     /**
      * Identifies the group
      * @var boolean
      */
-    private $isGroupe = false;
+    private $isGroup = false;
 
     /**
      * Current group name
@@ -138,10 +138,10 @@ class Route
     {
         $this->currentGroupName = $groupName;
 
-        $this->isGroupe = true;
-        $this->isGroupeMiddlewares = false;
+        $this->isGroup = true;
+        $this->isGroupMiddlewares = false;
         $callback($this);
-        $this->isGroupeMiddlewares = true;
+        $this->isGroupMiddlewares = true;
         $this->currentGroupName = null;
 
         return $this;
@@ -154,7 +154,7 @@ class Route
      */
     public function middlewares(array $middlewares = []): self
     {
-        if (!$this->isGroupe) {
+        if (!$this->isGroup) {
             end($this->virtualRoutes['*']);
             $lastKey = key($this->virtualRoutes['*']);
             $this->virtualRoutes['*'][$lastKey]['middlewares'] = $middlewares;
@@ -162,15 +162,14 @@ class Route
             end($this->virtualRoutes);
             $lastKeyOfFirstRound = key($this->virtualRoutes);
 
-            if (!$this->isGroupeMiddlewares) {
+            if (!$this->isGroupMiddlewares) {
                 end($this->virtualRoutes[$lastKeyOfFirstRound]);
                 $lastKeyOfSecondRound = key($this->virtualRoutes[$lastKeyOfFirstRound]);
                 $this->virtualRoutes[$lastKeyOfFirstRound][$lastKeyOfSecondRound]['middlewares'] = $middlewares;
             } else {
-                $this->isGroupe = false;
+                $this->isGroup = false;
                 foreach ($this->virtualRoutes[$lastKeyOfFirstRound] as &$route) {
-                    $hasMiddleware = end($route);
-                    if (!is_array($hasMiddleware)) {
+                    if(!key_exists('middlewares', $route)) {
                         $route['middlewares'] = $middlewares;
                     } else {
                         $reversedMiddlewares = array_reverse($middlewares);
@@ -197,7 +196,7 @@ class Route
             throw RouteException::nameBeforeDefinition();
         }
 
-        if ($this->isGroupeMiddlewares) {
+        if ($this->isGroupMiddlewares) {
             throw RouteException::nameOnGroup();
         }
 
