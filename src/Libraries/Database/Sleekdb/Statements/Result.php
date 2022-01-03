@@ -25,10 +25,8 @@ trait Result
 
     /**
      * @inheritDoc
-     * @throws \Quantum\Exceptions\DatabaseException
      * @throws \SleekDB\Exceptions\IOException
      * @throws \SleekDB\Exceptions\InvalidArgumentException
-     * @throws \SleekDB\Exceptions\InvalidConfigurationException
      */
     public function get()
     {
@@ -37,10 +35,8 @@ trait Result
 
     /**
      * @inheritDoc
-     * @throws \Quantum\Exceptions\DatabaseException
-     * @throws \SleekDB\Exceptions\IOException
+     * @return \Quantum\Libraries\Database\DbalInterface
      * @throws \SleekDB\Exceptions\InvalidArgumentException
-     * @throws \SleekDB\Exceptions\InvalidConfigurationException
      */
     public function findOne(int $id): DbalInterface
     {
@@ -48,16 +44,15 @@ trait Result
 
         $this->data = $result;
         $this->modifiedFields = $result;
+        $this->isNew = false;
 
         return $this;
     }
 
     /**
      * @inheritDoc
-     * @throws \Quantum\Exceptions\DatabaseException
      * @throws \SleekDB\Exceptions\IOException
      * @throws \SleekDB\Exceptions\InvalidArgumentException
-     * @throws \SleekDB\Exceptions\InvalidConfigurationException
      */
     public function findOneBy(string $column, $value): DbalInterface
     {
@@ -65,16 +60,16 @@ trait Result
 
         $this->data = $result;
         $this->modifiedFields = $result;
+        $this->isNew = false;
 
         return $this;
     }
 
     /**
      * @inheritDoc
-     * @throws \Quantum\Exceptions\DatabaseException
+     * @return \Quantum\Libraries\Database\DbalInterface
      * @throws \SleekDB\Exceptions\IOException
      * @throws \SleekDB\Exceptions\InvalidArgumentException
-     * @throws \SleekDB\Exceptions\InvalidConfigurationException
      */
     public function first(): DbalInterface
     {
@@ -82,16 +77,15 @@ trait Result
 
         $this->data = $result;
         $this->modifiedFields = $result;
+        $this->isNew = false;
 
         return $this;
     }
 
     /**
      * @inheritDoc
-     * @throws \Quantum\Exceptions\DatabaseException
      * @throws \SleekDB\Exceptions\IOException
      * @throws \SleekDB\Exceptions\InvalidArgumentException
-     * @throws \SleekDB\Exceptions\InvalidConfigurationException
      */
     public function count(): int
     {
