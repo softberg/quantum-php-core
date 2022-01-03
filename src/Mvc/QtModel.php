@@ -83,13 +83,17 @@ abstract class QtModel
 
     /**
      * Fills the object properties
-     * @param array $arguments
+     * @param array $props
      * @return \Quantum\Mvc\QtModel
      * @throws \Quantum\Exceptions\ModelException
      */
-    public function fillObjectProps(array $arguments): QtModel
+    public function fillObjectProps(array $props): QtModel
     {
-        foreach ($arguments as $key => $value) {
+        foreach ($props as $key => $value) {
+            if ($key == $this->idColumn) {
+                continue;
+            }
+
             if (!in_array($key, $this->fillable)) {
                 throw ModelException::inappropriateProperty($key);
             }
