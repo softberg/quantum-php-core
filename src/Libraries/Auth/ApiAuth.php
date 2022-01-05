@@ -107,10 +107,7 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
             $this->authService->update(
                 $this->keyFields[self::REFRESH_TOKEN_KEY],
                 $refreshToken,
-                [
-                    $this->authUserKey => $this->getVisibleFields($user),
-                    $this->keyFields[self::REFRESH_TOKEN_KEY] => ''
-                ]
+                array_merge($this->getVisibleFields($user), [$this->keyFields[self::REFRESH_TOKEN_KEY] => ''])
             );
 
             Request::deleteHeader($this->keyFields[self::REFRESH_TOKEN_KEY]);
@@ -196,10 +193,7 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
         $this->authService->update(
             $this->keyFields[self::USERNAME_KEY],
             $user->getFieldValue($this->keyFields[self::USERNAME_KEY]),
-            [
-                $this->authUserKey => $this->getVisibleFields($user),
-                $this->keyFields[self::REFRESH_TOKEN_KEY] => $tokens[$this->keyFields[self::REFRESH_TOKEN_KEY]]
-            ]
+            array_merge($this->getVisibleFields($user), [$this->keyFields[self::REFRESH_TOKEN_KEY] => $tokens[$this->keyFields[self::REFRESH_TOKEN_KEY]]])
         );
 
         Request::setHeader($this->keyFields[self::REFRESH_TOKEN_KEY], $tokens[$this->keyFields[self::REFRESH_TOKEN_KEY]]);
