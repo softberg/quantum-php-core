@@ -64,7 +64,7 @@ class AuthManager
     public static function getAuthService(): array
     {
         if (!config()->has('auth')) {
-            config()->import(new Setup('config', 'auth'));
+            config()->import(new Setup('Config', 'auth'));
         }
 
         return [
