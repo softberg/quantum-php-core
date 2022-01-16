@@ -129,7 +129,7 @@ class ServeCommand extends QtCommand
     {
         $connection = @fsockopen($this->host(), $this->port(), $errno, $err, 30);
 
-        if (!$connection) {
+        if (!is_resource($connection)) {
             return true;
         } else {
             fclose($connection);
