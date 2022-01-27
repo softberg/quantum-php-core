@@ -243,7 +243,7 @@ class HelperTest extends TestCase
     {
         config()->flush();
 
-        config()->load(new Setup('config', 'config', true));
+        config()->load(new Setup('shared' . DS . 'config', 'config', true));
 
         $this->assertFalse(config()->has('not-exists'));
 

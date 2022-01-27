@@ -63,9 +63,9 @@ class Bootstrap
 
             Debugger::initStore();
 
-            Environment::getInstance()->load(new Setup('config', 'env'));
+            Environment::getInstance()->load(new Setup('shared' . DS . 'config', 'env'));
 
-            Config::getInstance()->load(new Setup('config', 'config'));
+            Config::getInstance()->load(new Setup('shared' . DS . 'config', 'config'));
 
             $request = Di::get(Request::class);
             $response = Di::get(Response::class);

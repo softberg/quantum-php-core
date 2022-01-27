@@ -36,7 +36,7 @@ abstract class SleekDbalTestCase extends TestCase
 
         config()->flush();
 
-        config()->import(new Setup('config', 'database'));
+        config()->import(new Setup('shared' . DS . 'config', 'database'));
 
         config()->set('database.current', 'sleekdb');
 

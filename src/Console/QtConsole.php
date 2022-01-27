@@ -89,9 +89,9 @@ class QtConsole
             }
         }
 
-        $classNames = get_directory_classes(base_dir() . DS . 'base' . DS . 'Commands');
+        $classNames = get_directory_classes(base_dir() . DS . 'shared' . DS . 'Commands');
         foreach ($classNames as $className) {
-            $commandClass = '\\Base\\Commands\\' . $className;
+            $commandClass = '\\Shared\\Commands\\' . $className;
 
             $command = new $commandClass();
 

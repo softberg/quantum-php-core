@@ -50,7 +50,7 @@ class ModelFactory
         }
 
         if (!config()->has('database')) {
-            config()->import(new Setup('config', 'database', true));
+            config()->import(new Setup('shared' . DS . 'config', 'database', true));
         }
 
         $model->setOrm(Database::getInstance()->getOrm($model->table, $model->idColumn, $model->foreignKeys ?? []));

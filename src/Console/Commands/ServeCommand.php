@@ -18,7 +18,7 @@ use Quantum\Console\QtCommand;
 
 /**
  * Class ServeCommand
- * @package Base\Commands
+ * @package Shared\Commands
  */
 class ServeCommand extends QtCommand
 {
