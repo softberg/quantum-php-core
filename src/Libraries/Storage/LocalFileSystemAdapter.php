@@ -206,4 +206,32 @@ class LocalFileSystemAdapter implements FilesystemAdapterInterface
         return glob($pattern, $flags);
     }
 
+    /**
+     * Includes the required file
+     * @param string $file
+     * @param bool $once
+     */
+    public function require(string $file, bool $once = false)
+    {
+        if ($once) {
+            require_once $file;
+        } else {
+            require $file;
+        }
+    }
+
+    /**
+     * Includes a file
+     * @param string $file
+     * @param bool $once
+     */
+    public function include(string $file, bool $once = false)
+    {
+        if ($once) {
+            include_once $file;
+        } else {
+            include $file;
+        }
+    }
+
 }

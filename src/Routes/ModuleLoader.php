@@ -9,11 +9,12 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.5.0
+ * @since 2.7.0
  */
 
 namespace Quantum\Routes;
 
+use Quantum\Di\Di;
 use Quantum\Exceptions\ModuleLoaderException;
 use Quantum\Exceptions\RouteException;
 use Quantum\Libraries\Storage\FileSystem;
@@ -29,12 +30,13 @@ class ModuleLoader
     /**
      * Load Modules
      * @param \Quantum\Routes\Router $router
-     * @param \Quantum\Libraries\Storage\FileSystem $fs
      * @throws \Quantum\Exceptions\ModuleLoaderException
      * @throws \Quantum\Exceptions\RouteException
      */
-    public static function loadModulesRoutes(Router $router, FileSystem $fs)
+    public static function loadModulesRoutes(Router $router)
     {
+        $fs = Di::get(FileSystem::class);
+
         $modules = require_once base_dir() . DS . 'config' . DS . 'modules.php';
 
         foreach ($modules['modules'] as $module) {
