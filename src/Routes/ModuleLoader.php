@@ -35,7 +35,7 @@ class ModuleLoader
      */
     public static function loadModulesRoutes(Router $router, FileSystem $fs)
     {
-        $modules = require_once base_dir() . DS . 'config' . DS . 'modules.php';
+        $modules = require_once base_dir() . DS .'shared' . DS .  'config' . DS . 'modules.php';
 
         foreach ($modules['modules'] as $module) {
             $moduleRoutes = modules_dir() . DS . $module . DS . 'Config' . DS . 'routes.php';

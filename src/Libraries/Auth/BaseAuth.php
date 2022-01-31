@@ -186,7 +186,7 @@ abstract class BaseAuth
         }
 
         $this->mailer->setSubject(t('common.activate_account'));
-        $this->mailer->setTemplate(base_dir() . DS . 'base' . DS . 'views' . DS . 'email' . DS . 'activate');
+        $this->mailer->setTemplate(base_dir() . DS . 'shared' . DS . 'views' . DS . 'email' . DS . 'activate');
 
         $this->sendMail($user, $body);
 
@@ -233,7 +233,7 @@ abstract class BaseAuth
             ];
 
             $this->mailer->setSubject(t('common.reset_password'));
-            $this->mailer->setTemplate(base_dir() . DS . 'base' . DS . 'views' . DS . 'email' . DS . 'reset');
+            $this->mailer->setTemplate(base_dir() . DS . 'shared' . DS . 'views' . DS . 'email' . DS . 'reset');
 
             $this->sendMail($user, $body);
 
@@ -346,7 +346,7 @@ abstract class BaseAuth
         ];
 
         $this->mailer->setSubject(t('common.otp'));
-        $this->mailer->setTemplate(base_dir() . DS . 'base' . DS . 'views' . DS . 'email' . DS . 'verification');
+        $this->mailer->setTemplate(base_dir() . DS . 'shared' . DS . 'views' . DS . 'email' . DS . 'verification');
 
         $this->sendMail($user, $body);
 

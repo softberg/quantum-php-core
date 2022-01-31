@@ -42,8 +42,8 @@ class TwigRenderer implements TemplateRenderer
 
         if ($fs->exists(modules_dir() . DS . current_module() . DS . 'Views' . DS . $view . '.php')) {
             $loader = new FilesystemLoader(modules_dir() . DS . current_module() . DS . 'Views');
-        } else if ($fs->exists(base_dir() . DS . 'base' . DS . 'views' . DS . $view . '.php')) {
-            $loader = new FilesystemLoader(base_dir() . DS . 'base' . DS . 'views');
+        } else if ($fs->exists(base_dir() . DS . 'shared' . DS . 'views' . DS . $view . '.php')) {
+            $loader = new FilesystemLoader(base_dir() . DS . 'shared' . DS . 'views');
         } else {
             throw ViewException::fileNotFound($view);
         }

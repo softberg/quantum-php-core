@@ -27,9 +27,9 @@ class LoaderTest extends TestCase
 
     public function testSetupAndLoad()
     {
-        $this->loader->setup(new Setup('config', 'config'));
+        $this->loader->setup(new Setup('shared' . DS . 'config', 'config'));
 
-        $this->assertEquals(base_dir() . DS . 'config' . DS . 'config.php', $this->loader->getFilePath());
+        $this->assertEquals(base_dir() . DS . 'shared' . DS . 'config' . DS . 'config.php', $this->loader->getFilePath());
 
         $content = $this->loader->load();
 

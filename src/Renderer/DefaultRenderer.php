@@ -38,7 +38,7 @@ class DefaultRenderer implements TemplateRenderer
         $filePath = modules_dir() . DS . current_module() . DS . 'Views' . DS . $view . '.php';
 
         if (!$fs->exists($filePath)) {
-            $filePath = base_dir() . DS . 'base' . DS . 'views' . DS . $view . '.php';
+            $filePath = base_dir() . DS . 'shared' . DS . 'views' . DS . $view . '.php';
             if (!$fs->exists($filePath)) {
                 throw ViewException::fileNotFound($view);
             }

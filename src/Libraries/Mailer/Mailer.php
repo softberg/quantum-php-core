@@ -387,7 +387,7 @@ class Mailer
     {
         $fs = Di::get(FileSystem::class);
 
-        $emailsDirectory = base_dir() . DS . 'base' . DS . 'emails';
+        $emailsDirectory = base_dir() . DS . 'shared' . DS . 'emails';
 
         if ($fs->isDirectory($emailsDirectory)) {
             $fs->put($emailsDirectory . DS . $this->getFilename($id), $content);
