@@ -88,7 +88,7 @@ namespace Quantum\Tests\Libraries\Auth {
 
             config()->flush();
 
-            Environment::getInstance()->load(new Setup('config', 'env'));
+            Environment::getInstance()->load(new Setup('shared' . DS . 'config', 'env'));
 
             $this->authService = Mockery::mock('Quantum\Libraries\Auth\AuthServiceInterface');
 

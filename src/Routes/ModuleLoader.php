@@ -30,14 +30,16 @@ class ModuleLoader
     /**
      * Load Modules
      * @param \Quantum\Routes\Router $router
+     * @throws \Quantum\Exceptions\DiException
      * @throws \Quantum\Exceptions\ModuleLoaderException
      * @throws \Quantum\Exceptions\RouteException
+     * @throws \ReflectionException
      */
     public static function loadModulesRoutes(Router $router)
     {
         $fs = Di::get(FileSystem::class);
 
-        $modules = require_once base_dir() . DS . 'config' . DS . 'modules.php';
+        $modules = require_once base_dir() . DS . 'shared' . DS . 'config' . DS . 'modules.php';
 
         foreach ($modules['modules'] as $module) {
             $moduleRoutes = modules_dir() . DS . $module . DS . 'Config' . DS . 'routes.php';
