@@ -45,6 +45,12 @@ abstract class HttpResponse
     const CONTENT_JSON = 'application/json';
 
     /**
+     * JSONP content type
+     */
+
+    const CONTENT_JSONP = 'application/javascript';
+
+    /**
      * Status code
      * @var int
      */
@@ -61,6 +67,12 @@ abstract class HttpResponse
      * @var array
      */
     public static $statusTexts = [];
+
+    /**
+     * Callback function
+     * @var string
+     */
+    private static $callbackFunction = '';
 
     /**
      * Initialize the Response
@@ -116,6 +128,9 @@ abstract class HttpResponse
                 break;
             case self::CONTENT_HTML:
                 $content = self::get('_qt_rendered_view');
+                break;
+            case self::CONTENT_JSONP:
+                $content = self::getJsonPData(self::all());
                 break;
             default :
                 break;
@@ -190,6 +205,39 @@ abstract class HttpResponse
                 self::$__response[$key] = $value;
             }
         }
+    }
+
+    /**
+     * Prepares the JSONP response
+     * @param array|null $data
+     * @param string|null $callback
+     * @param int|null $code
+     */
+    public static function jsonp($data = null, string $callback, int $code = null)
+    { 
+        self::setContentType(self::CONTENT_JSONP);
+
+        self::$callbackFunction = $callback;
+
+        if (!is_null($code)) {
+            self::setStatusCode($code);
+        }
+
+        if ($data) {
+            foreach ($data as $key => $value) {
+                self::$__response[$key] = $value;
+            }
+        }
+
+    }
+
+    /**
+     * Returnes response with function
+     * @param array $data
+     * @return string
+     */
+    public static function getJsonPData($data){
+        return  self::$callbackFunction.'('.json_encode($data).")";
     }
 
     /**
