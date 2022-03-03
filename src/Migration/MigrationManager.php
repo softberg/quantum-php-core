@@ -55,8 +55,7 @@ class MigrationManager
 
     public function applyMigrations(string $direction)
     {
-
-        $databaseDriver = config()->get('database.current');
+        $databaseDriver = $this->db->getConfigs()['driver'];
 
         if (!in_array($databaseDriver, ['mysql', 'pgsql', 'sqlite'])) {
             throw MigrationException::unsupportedDriver($databaseDriver);
@@ -90,8 +89,7 @@ class MigrationManager
 
                 $migration = new $migrationClassName();
 
-                $migration->up(new TableFactory());
-
+                $migration->up(new TableFactory);
             }
         }
 

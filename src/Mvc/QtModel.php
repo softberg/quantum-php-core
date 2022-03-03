@@ -144,18 +144,17 @@ abstract class QtModel
      */
     public function __call(string $method, $args = null)
     {
-        if (method_exists($this->orm, $method)) {
-
-            $result = $this->orm->{$method}(...$args);
-
-            if (!is_object($result)) {
-                return $result;
-            }
-
-            return $this;
-        } else {
+        if (!method_exists($this->orm, $method)) {
             throw ModelException::undefinedMethod($method);
         }
+
+        $result = $this->orm->{$method}(...$args);
+
+        if (!is_object($result)) {
+            return $result;
+        }
+
+        return $this;
     }
 
     /**

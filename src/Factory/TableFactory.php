@@ -14,8 +14,10 @@
 
 namespace Quantum\Factory;
 
+use Quantum\Exceptions\DatabaseException;
+use Quantum\Exceptions\MigrationException;
 use Quantum\Libraries\Database\Database;
-use Quantum\Migration\Table;
+use Quantum\Libraries\Database\Table;
 
 /**
  * Class TableFactory
@@ -27,27 +29,37 @@ class TableFactory
     public function create(string $name): Table
     {
         if ($this->checkTableExists($name)) {
-            dd('Table already exists');
+            throw MigrationException::tableAlreadyExists($name);
+        }
+
+        return new Table($name, true);
+    }
+
+    public function get(string $name): Table
+    {
+        if (!$this->checkTableExists($name)) {
+            throw MigrationException::tableDoesnotExists($name);
         }
 
         return new Table($name);
     }
 
-//    public function get(string $name): ?Table
-//    {
-//
-//    }
-//
 //    public function drop(string $name): bool
 //    {
 //
 //    }
 
-    protected function checkTableExists(string $name)
+    /**
+     * Checks if the DB table exists
+     * @param string $name
+     * @return bool
+     * @throws \Quantum\Exceptions\DatabaseException
+     */
+    protected function checkTableExists(string $name): bool
     {
         try {
             Database::query('SELECT 1 FROM ' . $name);
-        } catch (DatabaseException $e) {
+        } catch (\PDOException $e) {
             return false;
         }
 
