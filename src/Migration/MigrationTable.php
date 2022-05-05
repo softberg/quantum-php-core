@@ -9,10 +9,13 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.1.0
+ * @since 2.7.0
  */
 
 namespace Quantum\Migration;
+
+use Quantum\Libraries\Database\Type;
+use Quantum\Factory\TableFactory;
 
 /**
  * Class MigrationTable
@@ -21,27 +24,25 @@ namespace Quantum\Migration;
 class MigrationTable extends QtMigration
 {
 
-    private $migrationTable = 'migrations';
-
+    const TABLE = 'migrations';
 
     /**
      * 
      */
-    public function up(Schema $schema)
+    public function up(?TableFactory $tableFactory)
     {
-        $schema->createTable($this->migrationTable, [
-           'id' => ['type' => 'int', 'length' => 11, 'autoincrement' => true], 
-           'migration' => ['type' => 'varchar', 'length' => 255],
-           'applied_at' => ['type' => 'date', 'default' => time()]
-        ]);
+        $table = $tableFactory->create(self::TABLE);
+        $table->addColumn('id', Type::INT, 11)->autoIncrement();
+        $table->addColumn('migration', Type::VARCHAR, 255);
+        $table->addColumn('applied_at', Type::TIMESTAMP)->default('CURRENT_TIMESTAMP', false);
     }
 
     /**
      * 
      */
-    public function down(Schema $schema)
+    public function down(?TableFactory $tableFactory)
     {
-        $schema->dropTable($this->migrationTable);
+        $tableFactory->dropTable(self::TABLE);
     }
 
 }

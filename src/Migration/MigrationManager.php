@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Quantum PHP Framework
  *
@@ -21,24 +22,19 @@ use Quantum\Factory\TableFactory;
 class MigrationManager
 {
 
-    const ALTER_MIGRATION = 'alter';
-
-    const CREATE_MIGRATION = 'create';
-
-    const UPGRADE_MIGRATION = 'up';
-
-    const DOWNGRADE_MIGRATION = 'down';
+    const UPGRADE = 'up';
+    const DOWNGRADE = 'down';
 
     /**
      * Migrations queue
      * @var array
      */
+    private $actions = ['create', 'alter', 'rename', 'drop'];
+    private $drivers = ['mysql', 'pgsql', 'sqlite'];
     private $migrations = [];
-
+    private $tableFactory;
     private $migrationFolder;
-
     private $fs;
-
     private $db;
 
     /**
@@ -50,82 +46,185 @@ class MigrationManager
 
         $this->db = Database::getInstance();
 
+        $this->tableFactory = new TableFactory();
+
         $this->migrationFolder = base_dir() . DS . 'migrations';
     }
 
-    public function applyMigrations(string $direction)
+    public function generateMigration(string $table, string $action)
     {
-        $databaseDriver = $this->db->getConfigs()['driver'];
-
-        if (!in_array($databaseDriver, ['mysql', 'pgsql', 'sqlite'])) {
-            throw MigrationException::unsupportedDriver($databaseDriver);
+        if (!in_array($action, $this->actions)) {
+            throw MigrationException::unsupportedAction($action);
         }
 
-        switch ($direction) {
-            case self::UPGRADE_MIGRATION:
-                $this->upgrade();
-                break;
-            case self::DOWNGRADE_MIGRATION:
-                $this->downgrade();
-                break;
-            default:
-                throw MigrationException::wrongDirection();
-                break;
-        }
-    }
+        $migrationName = $action . '_table_' . strtolower($table) . '_' . time();
 
-    /**
-     *
-     */
-    public function upgrade()
-    {
-        $migrationFiles = $this->getMigrationFiles();
-
-        if (!empty($migrationFiles)) {
-            foreach ($migrationFiles as $migrationFile) {
-                $this->fs->require($migrationFile);
-
-                $migrationClassName = pathinfo($migrationFile, PATHINFO_FILENAME);
-
-                $migration = new $migrationClassName();
-
-                $migration->up(new TableFactory);
-            }
-        }
-
-//        dd($migrations);
-    }
-
-    public function downgrade()
-    {
-
-    }
-
-    public function getMigrationFiles()
-    {
-        return $this->fs->glob($this->migrationFolder . DS . '*.php');
-    }
-
-    public function createMigration(string $table, string $type)
-    {
-        $migrationName = ucfirst($type) . 'Table' . ucfirst(strtolower($table)) . time();
-
-        $migrationTemplate = MigrationTemplate::{$type}($migrationName, strtolower($table));
+        $migrationTemplate = MigrationTemplate::{$action}($migrationName, strtolower($table));
 
         $this->fs->put($this->migrationFolder . DS . $migrationName . '.php', $migrationTemplate);
 
         return $migrationName;
     }
 
-
-    public function checkTable(string $table)
+    public function applyMigrations(string $direction, ?int $step = null): ?int
     {
+        $databaseDriver = $this->db->getConfigs()['driver'];
 
+        if (!in_array($databaseDriver, $this->drivers)) {
+            throw MigrationException::unsupportedDriver($databaseDriver);
+        }
+
+        switch ($direction) {
+            case self::UPGRADE:
+                $migrated = $this->upgrade($step);
+                break;
+            case self::DOWNGRADE:
+                $migrated = $this->downgrade($step);
+                break;
+            default:
+                throw MigrationException::wrongDirection();
+        }
+
+        return $migrated;
     }
 
-    private function getMigarationsTable()
+    /**
+     *
+     */
+    private function upgrade(?int $step = null): int
     {
+        if (!$this->tableFactory->checkTableExists(MigrationTable::TABLE)) {
+            $migrationTable = new MigrationTable();
+            $migrationTable->up($this->tableFactory);
+        }
 
+        $this->prepareUpMigrations($step);
+
+        if (empty($this->migrations)) {
+            throw MigrationException::nothingToMigrate();
+        }
+
+        $migratedEntries = [];
+
+        foreach ($this->migrations as $migrationFile) {
+            $this->fs->require($migrationFile);
+
+            $migrationClassName = pathinfo($migrationFile, PATHINFO_FILENAME);
+
+            $migration = new $migrationClassName();
+
+            $migration->up($this->tableFactory);
+
+            array_push($migratedEntries, $migrationClassName);
+        }
+
+        $this->addMigratedEntreis($migratedEntries);
+
+        return count($migratedEntries);
+    }
+
+    private function downgrade(?int $step): int
+    {
+        $this->prepareDownMigrations($step);
+
+        if (empty($this->migrations)) {
+            throw MigrationException::nothingToMigrate();
+        }
+
+        $migratedEntries = [];
+
+        foreach ($this->migrations as $migrationFile) {
+            $this->fs->require($migrationFile);
+
+            $migrationClassName = pathinfo($migrationFile, PATHINFO_FILENAME);
+
+            $migration = new $migrationClassName();
+
+            $migration->down($this->tableFactory);
+
+            array_push($migratedEntries, $migrationClassName);
+        }
+
+        $this->removeMigratedEntries($migratedEntries);
+
+        return count($migratedEntries);
+    }
+
+    private function prepareUpMigrations(?int $step = null)
+    {
+        $migratedEntries = $this->getMigaratedEntries();
+        $migrationFiles = $this->getMigrationFiles();
+
+        if (empty($migratedEntries) && empty($migrationFiles)) {
+            throw MigrationException::nothingToMigrate();
+        }
+
+        foreach ($migrationFiles as $timestamp => $migrationFile) {
+            foreach ($migratedEntries as $migratedEntry) {
+                if (pathinfo($migrationFile, PATHINFO_FILENAME) == $migratedEntry['migration']) {
+                    continue 2;
+                }
+            }
+
+            $this->migrations[$timestamp] = $migrationFile;
+        }
+
+        ksort($this->migrations);
+    }
+
+    private function prepareDownMigrations(?int $step = null)
+    {
+        $migratedEntries = $this->getMigaratedEntries();
+
+        if (empty($migratedEntries)) {
+            throw MigrationException::nothingToMigrate();
+        }
+
+        foreach ($migratedEntries as $migratedEntry) {
+            $exploded = explode('_', $migratedEntry['migration']);
+            $this->migrations[array_pop($exploded)] = $this->migrationFolder . DS . $migratedEntry['migration'] . '.php';
+        }
+
+        if ($step) {
+            $this->migrations = array_slice($this->migrations, count($this->migrations) - $step, $step, true);
+        }
+
+        krsort($this->migrations);
+    }
+
+    private function getMigrationFiles(): array
+    {
+        $migrationsFiles = $this->fs->glob($this->migrationFolder . DS . '*.php');
+
+        $migrations = [];
+
+        if (!empty($migrationsFiles)) {
+            foreach ($migrationsFiles as $migration) {
+                $exploded = explode('_', pathinfo($migration, PATHINFO_FILENAME));
+                $migrations[array_pop($exploded)] = $migration;
+            }
+        }
+
+        return $migrations;
+    }
+
+    private function getMigaratedEntries(): array
+    {
+        return Database::query("SELECT * FROM " . MigrationTable::TABLE);
+    }
+
+    private function addMigratedEntreis(array $entries)
+    {
+        foreach ($entries as $entry) {
+            Database::execute('INSERT INTO ' . MigrationTable::TABLE . '(migration) VALUES(:migration)', ['migration' => $entry]);
+        }
+    }
+
+    private function removeMigratedEntries(array $entries)
+    {
+        foreach ($entries as $entry) {
+            Database::execute('DELETE FROM ' . MigrationTable::TABLE . ' WHERE migration=:migration', ['migration' => $entry]);
+        }
     }
 
 }

@@ -24,16 +24,13 @@ class MigrationException extends \Exception
 {
 
     const WRONG_MIGRATION_DIRECTION = 'Migration direction can only be [up] or [down]';
-
     const NON_SUPPORTED_DRIVERER = 'The driver `{%1}`, does not support migrations';
-
+    const NON_SUPPORTED_ACTION = 'The action `{%1}`, is not supported';
     const TABLE_ALREADY_EXISTS = 'The table `{%1}` is already exists';
-
     const TABLE_DOES_NOT_EXISTS = 'The table `{%1}` does not exists';
-
     const COLUMN_NOT_AVAILABLE = 'The column `{%1}` is not available';
-
     const METHOD_NOT_DEFINED = 'The method `{%1}` is not defined';
+    const NOTHING_TO_MIGRATE = 'Nothing to migrate';
 
     /**
      * @return \Quantum\Exceptions\MigrationException
@@ -50,6 +47,11 @@ class MigrationException extends \Exception
     public static function unsupportedDriver(string $databaseDriver): MigrationException
     {
         return new static(_message(self::NON_SUPPORTED_DRIVERER, $databaseDriver), E_ERROR);
+    }
+    
+    public static function unsupportedAction(string $action): MigrationException
+    {
+        return new static(_message(self::NON_SUPPORTED_ACTION, $action), E_ERROR);
     }
 
     /**
@@ -86,6 +88,14 @@ class MigrationException extends \Exception
     public static function methodNotDefined(string $name): MigrationException
     {
         return new static(_message(self::METHOD_NOT_DEFINED, $name), E_ERROR);
+    }
+
+    /**
+     * @return \Quantum\Exceptions\MigrationException
+     */
+    public static function nothingToMigrate(): MigrationException
+    {
+        return new static(self::NOTHING_TO_MIGRATE, E_NOTICE);
     }
 
 }

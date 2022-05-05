@@ -16,33 +16,59 @@ use Quantum\Exceptions\MigrationException;
  * @method self default($value)
  * @method self attribute(string $value)
  * @method self comment(string $value)
+ * @method self type(string $type, $constraint)
  */
 class Table
 {
 
-    const ALTER_ADD = 'ADD';
+    const CREATE = 1;
+    const ALTER = 2;
+    const DROP = 3;
+    const RENAME = 4;
 
     /**
      * @var string
      */
     private $name;
+    private $newName;
 
     /**
-     * @var bool
+     * @var int 
      */
-    private $isNew = false;
+    private $action = null;
 
     /**
      * @var array
      */
     private $columns = [];
-
     private $indexKeys = [];
 
-    public function __construct(string $name, $isNew = false)
+    public function __construct(string $name)
     {
         $this->name = $name;
-        $this->isNew = $isNew;
+    }
+
+    public function __destruct()
+    {
+        $this->save();
+    }
+
+    public function renameTo(string $newName)
+    {
+        $this->newName = $newName;
+        return $this;
+    }
+
+    public function setAction(int $action, ?array $data = null)
+    {
+        $this->action = $action;
+
+        if ($data) {
+            $key = key($data);
+            $this->$key = $data[$key];
+        }
+
+        return $this;
     }
 
     /**
@@ -54,10 +80,38 @@ class Table
     {
         array_push($this->columns, [
             'column' => new Column($name, $type, $constraint),
-            'action' => !$this->isNew ? self::ALTER_ADD : null
+            'action' => $this->action == self::ALTER ? Column::ADD : null
         ]);
 
         return $this;
+    }
+
+    public function modifyColumn(string $name, string $type = null, $constraint = null)
+    {
+        array_push($this->columns, [
+            'column' => new Column($name, $type, $constraint),
+            'action' => Column::MODIFY
+        ]);
+
+        return $this;
+    }
+
+    public function renameColumn(string $oldName, string $newName)
+    {
+        array_push($this->columns, [
+            'column' => (new Column($oldName))->renameTo($newName),
+            'action' => Column::RENAME
+        ]);
+
+        return $this;
+    }
+
+    public function dropColumn(string $name)
+    {
+        array_push($this->columns, [
+            'column' => new Column($name),
+            'action' => Column::DROP
+        ]);
     }
 
     public function after(string $columnName)
@@ -77,28 +131,29 @@ class Table
         return $this;
     }
 
-    public function save()
+    protected function save()
     {
-        $this->runSql($this->getSql());
+        Database::execute($this->getSql());
     }
 
-    public function runSql(string $sql)
+    protected function getSql()
     {
-//        Database::execute($sql);
-    }
-
-    public function getSql()
-    {
-        if ($this->isNew) {
-            $sql = $this->createTableSql();
-        } else {
-            $sql = $this->alterTableSql();
+        switch ($this->action) {
+            case self::CREATE:
+                $sql = $this->createTableSql();
+                break;
+            case self::ALTER:
+                $sql = $this->alterTableSql();
+                break;
+            case self::RENAME:
+                $sql = $this->renameTableSql();
+                break;
+            case self::DROP:
+                $sql = $this->dropTableSql();
+                break;
         }
 
-        dump($sql);
-
         return $sql;
-
     }
 
     protected function createTableSql()
@@ -121,7 +176,48 @@ class Table
         return $sql;
     }
 
-    private function columnSql(?string $definition, string $before = '', string $after = ''): string
+    protected function renameTableSql(): string
+    {
+        return 'RENAME TABLE `' . $this->name . '` TO `' . $this->newName . '`;';
+    }
+
+    protected function dropTableSql(): string
+    {
+        return 'DROP TABLE `' . $this->name . '`';
+    }
+
+    protected function columnsSql(): string
+    {
+        $columns = [];
+
+        foreach ($this->columns as $entry) {
+            $columnString = ($entry['action'] ? $entry['action'] . ' COLUMN ' : '');
+            $columnString .= $this->composeColumn($entry['column'], $entry['action']);
+
+            if ($entry['column']->get('indexKey')) {
+                $this->indexKeys[$entry['column']->get('indexKey')][] = $entry['column']->get('name');
+            }
+
+            array_push($columns, $columnString);
+        }
+
+        return implode(', ', $columns);
+    }
+
+    protected function composeColumn(Column $column, string $action = null): string
+    {
+        return
+                $this->columnAttrSql($column->get(Column::NAME), '`', '`') .
+                $this->columnAttrSql($column->get(Column::TYPE), ' ') .
+                $this->columnAttrSql($column->get(Column::CONSTRAINT), '(', ')') .
+                $this->columnAttrSql($column->get(Column::ATTRIBUTE), ' ') .
+                $this->columnAttrSql($column->get(Column::NULLABLE, $action), ' ',) .
+                $this->columnAttrSql($column->get(Column::DEFAULT), ' DEFAULT ' . ($column->defaultQuoted() ? '\'' : ''), ($column->defaultQuoted() ? '\'' : '')) .
+                $this->columnAttrSql($column->get(Column::AFTER), ' AFTER `', '`') .
+                $this->columnAttrSql($column->get(Column::AUTO_INCREMENT), ' ');
+    }
+
+    protected function columnAttrSql(?string $definition, string $before = '', string $after = ''): string
     {
         $sql = '';
 
@@ -130,28 +226,6 @@ class Table
         }
 
         return $sql;
-    }
-
-    protected function columnsSql()
-    {
-        $columns = [];
-
-        foreach ($this->columns as $entry) {
-            $columns[] = ($entry['action'] . ' ') .
-                $this->columnSql($entry['column']->get(Column::NAME), '`', '`') .
-                $this->columnSql($entry['column']->get(Column::TYPE), ' ') .
-                $this->columnSql($entry['column']->get(Column::CONSTRAINT), '(', ')') .
-                $this->columnSql($entry['column']->get(Column::ATTRIBUTE), ' ') .
-                $this->columnSql($entry['column']->get(Column::NULLABLE), ' ') .
-                $this->columnSql($entry['column']->get(Column::DEFAULT), ' DEFAULT \'', '\'') .
-                $this->columnSql($entry['column']->get(Column::AFTER), ' AFTER `', '`');
-
-            if ($entry['column']->get('indexKey')) {
-                $this->indexKeys[$entry['column']->get('indexKey')][] = $entry['column']->get('name');
-            }
-        }
-
-        return implode(', ', $columns);
     }
 
     protected function primaryKeysSql(): string
@@ -173,7 +247,7 @@ class Table
             $sql .= ', ';
             $lastKey = array_key_last($this->indexKeys[$type]);
             foreach ($this->indexKeys[$type] as $key => $index) {
-                $sql .= (!$this->isNew ? 'ADD ' : '') . strtoupper($type) . ' (`' . $index . '`)' . ($lastKey != $key ? ', ' : '');
+                $sql .= ($this->action == self::ALTER ? 'ADD ' : '') . strtoupper($type) . ' (`' . $index . '`)' . ($lastKey != $key ? ', ' : '');
             }
         }
 
@@ -183,10 +257,10 @@ class Table
     protected function indexesSql(): string
     {
         return $this->primaryKeysSql() .
-            $this->indexKeysSql(Column::KEY_INDEX) .
-            $this->indexKeysSql(Column::KEY_UNIQUE) .
-            $this->indexKeysSql(Column::KEY_FULLTEXT) .
-            $this->indexKeysSql(Column::KEY_SPATIAL);
+                $this->indexKeysSql(Column::KEY_INDEX) .
+                $this->indexKeysSql(Column::KEY_UNIQUE) .
+                $this->indexKeysSql(Column::KEY_FULLTEXT) .
+                $this->indexKeysSql(Column::KEY_SPATIAL);
     }
 
     private function checkColumnExists(string $columnName): bool

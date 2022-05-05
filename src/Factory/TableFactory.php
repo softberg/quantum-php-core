@@ -14,7 +14,6 @@
 
 namespace Quantum\Factory;
 
-use Quantum\Exceptions\DatabaseException;
 use Quantum\Exceptions\MigrationException;
 use Quantum\Libraries\Database\Database;
 use Quantum\Libraries\Database\Table;
@@ -32,22 +31,29 @@ class TableFactory
             throw MigrationException::tableAlreadyExists($name);
         }
 
-        return new Table($name, true);
+        return (new Table($name))->setAction(Table::CREATE);
     }
 
-    public function get(string $name): Table
+    public function get(string $name, int $action = Table::ALTER): Table
     {
         if (!$this->checkTableExists($name)) {
             throw MigrationException::tableDoesnotExists($name);
         }
 
-        return new Table($name);
+        return (new Table($name))->setAction($action);
     }
 
-//    public function drop(string $name): bool
-//    {
-//
-//    }
+    public function rename(string $oldName, string $newName): bool
+    {
+        $this->get($oldName)->setAction(Table::RENAME, ['newName' => $newName]);
+        return true;
+    }
+
+    public function drop(string $name): bool
+    {
+        $this->get($name)->setAction(Table::DROP);
+        return true;
+    }
 
     /**
      * Checks if the DB table exists
@@ -55,7 +61,7 @@ class TableFactory
      * @return bool
      * @throws \Quantum\Exceptions\DatabaseException
      */
-    protected function checkTableExists(string $name): bool
+    public function checkTableExists(string $name): bool
     {
         try {
             Database::query('SELECT 1 FROM ' . $name);
