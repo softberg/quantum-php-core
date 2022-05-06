@@ -3,10 +3,10 @@
 namespace Quantum\Tests\Factory;
 
 use PHPUnit\Framework\TestCase;
-use Quantum\Factory\TableFactory;
-use Quantum\Libraries\Database\Table;
-use Quantum\Libraries\Database\Database;
 use Quantum\Exceptions\MigrationException;
+use Quantum\Libraries\Database\Database;
+use Quantum\Libraries\Database\Table;
+use Quantum\Factory\TableFactory;
 use Quantum\Loader\Setup;
 use Quantum\Di\Di;
 use Quantum\App;
@@ -108,7 +108,7 @@ class TableFactoryTest extends TestCase
         $this->assertInstanceOf(Table::class, $table);
     }
 
-    public function testAttemptToGetNonExistedTable()
+    public function testAttemptToGetNonExistingTable()
     {
         $this->expectException(MigrationException::class);
 
@@ -131,7 +131,7 @@ class TableFactoryTest extends TestCase
         $this->assertTrue($this->tableFactory->rename('users', 'system_users'));
     }
 
-    public function testAttemptToRenameNonExistedTable()
+    public function testAttemptToRenameNonExistingTable()
     {
         $this->expectException(MigrationException::class);
 
@@ -154,7 +154,7 @@ class TableFactoryTest extends TestCase
         $this->assertTrue($this->tableFactory->drop('users'));
     }
 
-    public function testAttemptToDropNonExistedTable()
+    public function testAttemptToDropNonExistingTable()
     {
         $this->expectException(MigrationException::class);
 

@@ -48,7 +48,11 @@ class MigrationException extends \Exception
     {
         return new static(_message(self::NON_SUPPORTED_DRIVERER, $databaseDriver), E_ERROR);
     }
-    
+
+    /**
+     * @param string $action
+     * @return MigrationException
+     */
     public static function unsupportedAction(string $action): MigrationException
     {
         return new static(_message(self::NON_SUPPORTED_ACTION, $action), E_ERROR);

@@ -25,6 +25,12 @@ use Quantum\Libraries\Database\Table;
 class TableFactory
 {
 
+    /**
+     * Creates new table
+     * @param string $name
+     * @return Table
+     * @throws Quantum\Exceptions\MigrationException
+     */
     public function create(string $name): Table
     {
         if ($this->checkTableExists($name)) {
@@ -34,6 +40,13 @@ class TableFactory
         return (new Table($name))->setAction(Table::CREATE);
     }
 
+    /**
+     * Get the table
+     * @param string $name
+     * @param int $action
+     * @return Table
+     * @throws Quantum\Exceptions\MigrationException
+     */
     public function get(string $name, int $action = Table::ALTER): Table
     {
         if (!$this->checkTableExists($name)) {
@@ -43,18 +56,29 @@ class TableFactory
         return (new Table($name))->setAction($action);
     }
 
+    /**
+     * Renames the table
+     * @param string $oldName
+     * @param string $newName
+     * @return bool
+     */
     public function rename(string $oldName, string $newName): bool
     {
         $this->get($oldName)->setAction(Table::RENAME, ['newName' => $newName]);
         return true;
     }
 
+    /**
+     * Drops the table
+     * @param string $name
+     * @return bool
+     */
     public function drop(string $name): bool
     {
         $this->get($name)->setAction(Table::DROP);
         return true;
     }
-
+   
     /**
      * Checks if the DB table exists
      * @param string $name
