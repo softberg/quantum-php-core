@@ -279,7 +279,7 @@ class Table
         return !is_null($columnIndex);
     }
 
-    private function columnKey(): int
+    private function columnKey(): ?int
     {
         return array_key_last($this->columns);
     }

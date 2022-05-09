@@ -54,7 +54,7 @@ class MigrationMigrateCommand extends QtCommand
     public function exec()
     {
         $direction = $this->getArgument('direction') ?: MigrationManager::UPGRADE;
-        $step = $this->getOption('step') ?: null;
+        $step = (int) $this->getOption('step') ?: null;
 
         $migrationManager = new MigrationManager();
 
