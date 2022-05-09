@@ -213,6 +213,7 @@ class Table
                 $this->columnAttrSql($column->get(Column::ATTRIBUTE), ' ') .
                 $this->columnAttrSql($column->get(Column::NULLABLE, $action), ' ',) .
                 $this->columnAttrSql($column->get(Column::DEFAULT), ' DEFAULT ' . ($column->defaultQuoted() ? '\'' : ''), ($column->defaultQuoted() ? '\'' : '')) .
+                $this->columnAttrSql($column->get(Column::COMMENT), ' COMMENT ', '\'', '\'') .
                 $this->columnAttrSql($column->get(Column::AFTER), ' AFTER `', '`') .
                 $this->columnAttrSql($column->get(Column::AUTO_INCREMENT), ' ');
     }
@@ -257,10 +258,10 @@ class Table
     protected function indexesSql(): string
     {
         return $this->primaryKeysSql() .
-                $this->indexKeysSql(Column::KEY_INDEX) .
-                $this->indexKeysSql(Column::KEY_UNIQUE) .
-                $this->indexKeysSql(Column::KEY_FULLTEXT) .
-                $this->indexKeysSql(Column::KEY_SPATIAL);
+                $this->indexKeysSql(Key::INDEX) .
+                $this->indexKeysSql(Key::UNIQUE) .
+                $this->indexKeysSql(Key::FULLTEXT) .
+                $this->indexKeysSql(Key::SPATIAL);
     }
 
     private function checkColumnExists(string $columnName): bool
@@ -279,9 +280,9 @@ class Table
         return !is_null($columnIndex);
     }
 
-    private function columnKey(): ?int
+    private function columnKey(): int
     {
-        return array_key_last($this->columns);
+        return (int) array_key_last($this->columns);
     }
 
 }
