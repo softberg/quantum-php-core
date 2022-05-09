@@ -213,7 +213,7 @@ class Table
                 $this->columnAttrSql($column->get(Column::ATTRIBUTE), ' ') .
                 $this->columnAttrSql($column->get(Column::NULLABLE, $action), ' ',) .
                 $this->columnAttrSql($column->get(Column::DEFAULT), ' DEFAULT ' . ($column->defaultQuoted() ? '\'' : ''), ($column->defaultQuoted() ? '\'' : '')) .
-                $this->columnAttrSql($column->get(Column::COMMENT), ' COMMENT ', '\'', '\'') .
+                $this->columnAttrSql($column->get(Column::COMMENT), ' COMMENT \'', '\'') .
                 $this->columnAttrSql($column->get(Column::AFTER), ' AFTER `', '`') .
                 $this->columnAttrSql($column->get(Column::AUTO_INCREMENT), ' ');
     }

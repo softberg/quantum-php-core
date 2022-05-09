@@ -132,7 +132,7 @@ class Column
     private $nullable = 'NOT NULL';
 
     /**
-     * @var string
+     * @var mixed
      */
     private $default;
 
@@ -270,7 +270,7 @@ class Column
 
     /**
      * Adds default value to the column
-     * @param type $value
+     * @param mixed $value
      * @param bool $quoted
      */
     public function default($value, bool $quoted = true)
