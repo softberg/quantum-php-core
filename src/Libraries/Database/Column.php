@@ -47,6 +47,11 @@ class Column
     const NAME = 'name';
 
     /**
+     * New Name property
+     */
+    const NEW_NAME = 'newName';
+
+    /**
      * Type property
      */
     const TYPE = 'type';

@@ -5,7 +5,6 @@ namespace Quantum\Tests\Libraries\Database;
 use PHPUnit\Framework\TestCase;
 use Quantum\Libraries\Database\Column;
 use Quantum\Libraries\Database\Type;
-use Quantum\Libraries\Database\Key;
 
 class ColumnTest extends TestCase
 {
