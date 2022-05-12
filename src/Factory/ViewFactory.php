@@ -44,7 +44,7 @@ class ViewFactory
     }
 
     /**
-     * Allows calling QtView methods
+     * Allows to call methods of QtView class 
      * @param string $method
      * @param array|null $args
      * @return mixed
