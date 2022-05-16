@@ -3,9 +3,9 @@
 namespace Quantum\Tests\Libraries\Database;
 
 use PHPUnit\Framework\TestCase;
-use Quantum\Libraries\Database\Table;
-use Quantum\Libraries\Database\Type;
-use Quantum\Libraries\Database\Key;
+use Quantum\Libraries\Database\Schema\Table;
+use Quantum\Libraries\Database\Schema\Type;
+use Quantum\Libraries\Database\Schema\Key;
 use Mockery;
 
 /**
@@ -110,9 +110,9 @@ class TableTest extends TestCase
         $table = new Table('test');
         $table->setAction(Table::ALTER);
         $table->dropIndex('idx_name');
-        
+
         $expectedSql = 'ALTER TABLE `test` DROP INDEX `idx_name`;';
-        
+
         $this->assertEquals($expectedSql, $table->getSql());
     }
 

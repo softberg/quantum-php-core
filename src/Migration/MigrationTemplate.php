@@ -1,17 +1,40 @@
 <?php
 
+/**
+ * Quantum PHP Framework
+ *
+ * An open source software development framework for PHP
+ *
+ * @package Quantum
+ * @author Arman Ag. <arman.ag@softberg.org>
+ * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
+ * @link http://quantum.softberg.org/
+ * @since 2.7.0
+ */
+
 namespace Quantum\Migration;
 
+/**
+ * Class MigrationTable
+ * @package Quantum\Migration
+ */
 class MigrationTemplate
 {
 
+    /**
+     * Create migration template
+     * @param string $className
+     * @param string $tableName
+     * @return string
+     */
     public static function create($className, $tableName)
     {
         return '<?php
 
 use Quantum\Migration\QtMigration;
 use Quantum\Factory\TableFactory;
-use Quantum\Libraries\Database\Type;
+use Quantum\Libraries\Database\Schema\Type;
+use Quantum\Libraries\Database\Schema\Key;
 
 
 class ' . ucfirst($className) . ' extends QtMigration
@@ -31,6 +54,12 @@ class ' . ucfirst($className) . ' extends QtMigration
         ';
     }
 
+    /**
+     * Alter migration template
+     * @param string $className
+     * @param string $tableName
+     * @return string
+     */
     public static function alter($className, $tableName)
     {
         return '<?php
@@ -38,6 +67,7 @@ class ' . ucfirst($className) . ' extends QtMigration
 use Quantum\Migration\QtMigration;
 use Quantum\Factory\TableFactory;
 use Quantum\Libraries\Database\Type;
+use Quantum\Libraries\Database\Schema\Key;
 
 class ' . ucfirst($className) . ' extends QtMigration
 {
@@ -48,7 +78,7 @@ class ' . ucfirst($className) . ' extends QtMigration
     
     public function down(?TableFactory $tableFactory)
     {
-        //
+        $table = $tableFactory->get(\'' . $tableName . '\');
     }
 
 }
@@ -56,6 +86,12 @@ class ' . ucfirst($className) . ' extends QtMigration
         ';
     }
 
+    /**
+     * Rename migration template
+     * @param string $className
+     * @param string $tableName
+     * @return string
+     */
     public static function rename($className, $tableName)
     {
         return '<?php
@@ -80,6 +116,12 @@ class ' . ucfirst($className) . ' extends QtMigration
         ';
     }
 
+    /**
+     * Drop migration template
+     * @param string $className
+     * @param string $tableName
+     * @return string
+     */
     public static function drop($className, $tableName)
     {
         return '<?php

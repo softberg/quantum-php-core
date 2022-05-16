@@ -15,8 +15,8 @@
 namespace Quantum\Factory;
 
 use Quantum\Exceptions\MigrationException;
+use Quantum\Libraries\Database\Schema\Table;
 use Quantum\Libraries\Database\Database;
-use Quantum\Libraries\Database\Table;
 
 /**
  * Class TableFactory

@@ -3,9 +3,9 @@
 namespace Quantum\Tests\Factory;
 
 use PHPUnit\Framework\TestCase;
+use Quantum\Libraries\Database\Schema\Table;
 use Quantum\Exceptions\MigrationException;
 use Quantum\Libraries\Database\Database;
-use Quantum\Libraries\Database\Table;
 use Quantum\Factory\TableFactory;
 use Quantum\Loader\Setup;
 use Quantum\Di\Di;
@@ -41,7 +41,7 @@ class TableFactoryTest extends TestCase
         $this->tableFactory = new TableFactory();
 
         Mockery::getConfiguration()->setConstantsMap([
-            'Quantum\Libraries\Database\Table' => [
+            'Quantum\Libraries\Database\Schema\Table' => [
                 'CREATE' => 1,
                 'ALTER' => 2,
                 'DROP' => 3,
@@ -49,7 +49,7 @@ class TableFactoryTest extends TestCase
             ]
         ]);
 
-        $this->table = Mockery::mock('overload:Quantum\Libraries\Database\Table');
+        $this->table = Mockery::mock('overload:Quantum\Libraries\Database\Schema\Table');
 
         $this->table->shouldReceive('setAction')->andReturnUsing(function ($action) {
             return $this->table;

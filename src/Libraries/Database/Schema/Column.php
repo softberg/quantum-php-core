@@ -12,7 +12,7 @@
  * @since 2.7.0
  */
 
-namespace Quantum\Libraries\Database;
+namespace Quantum\Libraries\Database\Schema;
 
 /**
  * Class Column

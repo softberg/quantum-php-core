@@ -3,8 +3,8 @@
 namespace Quantum\Tests\Libraries\Database;
 
 use PHPUnit\Framework\TestCase;
-use Quantum\Libraries\Database\Column;
-use Quantum\Libraries\Database\Type;
+use Quantum\Libraries\Database\Schema\Column;
+use Quantum\Libraries\Database\Schema\Type;
 
 class ColumnTest extends TestCase
 {
@@ -61,7 +61,7 @@ class ColumnTest extends TestCase
         $column->index('idx_name');
 
         $this->assertEquals('index', $column->get('indexKey'));
-        
+
         $this->assertEquals('idx_name', $column->get('indexName'));
     }
 
@@ -72,7 +72,7 @@ class ColumnTest extends TestCase
         $column->unique('idx_unique_name');
 
         $this->assertEquals('unique', $column->get('indexKey'));
-        
+
         $this->assertEquals('idx_unique_name', $column->get('indexName'));
     }
 
@@ -83,7 +83,7 @@ class ColumnTest extends TestCase
         $column->fulltext('idx_fulltext_name');
 
         $this->assertEquals('fulltext', $column->get('indexKey'));
-        
+
         $this->assertEquals('idx_fulltext_name', $column->get('indexName'));
     }
 
@@ -94,7 +94,7 @@ class ColumnTest extends TestCase
         $column->spatial('idx_spatial_name');
 
         $this->assertEquals('spatial', $column->get('indexKey'));
-        
+
         $this->assertEquals('idx_spatial_name', $column->get('indexName'));
     }
 

@@ -19,22 +19,56 @@ use Quantum\Libraries\Database\Database;
 use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Factory\TableFactory;
 
+/**
+ * Class MigrationManager
+ * @package Quantum\Migration
+ */
 class MigrationManager
 {
 
+    /**
+     * Migration direction for upgrade
+     */
     const UPGRADE = 'up';
+
+    /**
+     * Migration direction for downgrade
+     */
     const DOWNGRADE = 'down';
 
     /**
-     * Migrations queue
      * @var array
      */
     private $actions = ['create', 'alter', 'rename', 'drop'];
+
+    /**
+     * @var array
+     */
     private $drivers = ['mysql', 'pgsql', 'sqlite'];
+
+    /**
+     * @var array
+     */
     private $migrations = [];
+
+    /**
+     * @var TableFactory
+     */
     private $tableFactory;
+
+    /**
+     * @var string
+     */
     private $migrationFolder;
+
+    /**
+     * @var FileSystem
+     */
     private $fs;
+
+    /**
+     * @var Database
+     */
     private $db;
 
     /**
@@ -51,6 +85,13 @@ class MigrationManager
         $this->migrationFolder = base_dir() . DS . 'migrations';
     }
 
+    /**
+     * Generates new migration file
+     * @param string $table
+     * @param string $action
+     * @return string
+     * @throws Quantum\Exceptions\MigrationException
+     */
     public function generateMigration(string $table, string $action)
     {
         if (!in_array($action, $this->actions)) {
@@ -66,6 +107,13 @@ class MigrationManager
         return $migrationName;
     }
 
+    /**
+     * Applies migrations
+     * @param string $direction
+     * @param int|null $step
+     * @return int|null
+     * @throws Quantum\Exceptions\MigrationException
+     */
     public function applyMigrations(string $direction, ?int $step = null): ?int
     {
         $databaseDriver = $this->db->getConfigs()['driver'];
@@ -89,7 +137,10 @@ class MigrationManager
     }
 
     /**
-     *
+     * Runs up migrations
+     * @param int|null $step
+     * @return int
+     * @throws Quantum\Exceptions\MigrationException
      */
     private function upgrade(?int $step = null): int
     {
@@ -123,6 +174,12 @@ class MigrationManager
         return count($migratedEntries);
     }
 
+    /**
+     * Runs down migrations
+     * @param int|null $step
+     * @return int
+     * @throws Quantum\Exceptions\MigrationException
+     */
     private function downgrade(?int $step): int
     {
         $this->prepareDownMigrations($step);
@@ -150,6 +207,11 @@ class MigrationManager
         return count($migratedEntries);
     }
 
+    /**
+     * Prepares up migrations
+     * @param int|null $step
+     * @throws Quantum\Exceptions\MigrationException
+     */
     private function prepareUpMigrations(?int $step = null)
     {
         $migratedEntries = $this->getMigaratedEntries();
@@ -172,6 +234,11 @@ class MigrationManager
         ksort($this->migrations);
     }
 
+    /**
+     * Prepares down migrations
+     * @param int|null $step
+     * @throws Quantum\Exceptions\MigrationException
+     */
     private function prepareDownMigrations(?int $step = null)
     {
         $migratedEntries = $this->getMigaratedEntries();
@@ -192,6 +259,10 @@ class MigrationManager
         krsort($this->migrations);
     }
 
+    /**
+     * Gets migration files
+     * @return array
+     */
     private function getMigrationFiles(): array
     {
         $migrationsFiles = $this->fs->glob($this->migrationFolder . DS . '*.php');
@@ -208,11 +279,19 @@ class MigrationManager
         return $migrations;
     }
 
+    /**
+     * Gets migrated entries from migrations table
+     * @return array
+     */
     private function getMigaratedEntries(): array
     {
         return Database::query("SELECT * FROM " . MigrationTable::TABLE);
     }
 
+    /**
+     * Adds migrated entries to migrations table
+     * @param array $entries
+     */
     private function addMigratedEntreis(array $entries)
     {
         foreach ($entries as $entry) {
@@ -220,6 +299,10 @@ class MigrationManager
         }
     }
 
+    /**
+     * Removes migrated entries from migrations table
+     * @param array $entries
+     */
     private function removeMigratedEntries(array $entries)
     {
         foreach ($entries as $entry) {
