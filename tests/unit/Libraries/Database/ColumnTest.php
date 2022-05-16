@@ -58,36 +58,44 @@ class ColumnTest extends TestCase
     {
         $column = new Column('test', Type::INT, 11);
 
-        $column->index();
+        $column->index('idx_name');
 
         $this->assertEquals('index', $column->get('indexKey'));
+        
+        $this->assertEquals('idx_name', $column->get('indexName'));
     }
 
     public function testColumnUniqueKey()
     {
         $column = new Column('test', Type::INT, 11);
 
-        $column->unique();
+        $column->unique('idx_unique_name');
 
         $this->assertEquals('unique', $column->get('indexKey'));
+        
+        $this->assertEquals('idx_unique_name', $column->get('indexName'));
     }
 
     public function testColumnFulltextKey()
     {
         $column = new Column('test', Type::INT, 11);
 
-        $column->fulltext();
+        $column->fulltext('idx_fulltext_name');
 
         $this->assertEquals('fulltext', $column->get('indexKey'));
+        
+        $this->assertEquals('idx_fulltext_name', $column->get('indexName'));
     }
 
     public function testColumnSpatialKey()
     {
         $column = new Column('test', Type::INT, 11);
 
-        $column->spatial();
+        $column->spatial('idx_spatial_name');
 
         $this->assertEquals('spatial', $column->get('indexKey'));
+        
+        $this->assertEquals('idx_spatial_name', $column->get('indexName'));
     }
 
     public function testAddTypeToColumn()

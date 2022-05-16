@@ -5,6 +5,7 @@ namespace Quantum\Tests\Libraries\Database;
 use PHPUnit\Framework\TestCase;
 use Quantum\Libraries\Database\Table;
 use Quantum\Libraries\Database\Type;
+use Quantum\Libraries\Database\Key;
 use Mockery;
 
 /**
@@ -79,6 +80,39 @@ class TableTest extends TestCase
 
         $expectedSql = 'ALTER TABLE `test` DROP COLUMN `courses`;';
 
+        $this->assertEquals($expectedSql, $table->getSql());
+    }
+
+    public function testAddIndex()
+    {
+        $table = new Table('test');
+        $table->setAction(Table::ALTER);
+        $table->addIndex('name', Key::INDEX);
+
+        $expectedSql = 'ALTER TABLE `test` ADD INDEX (`name`);';
+
+        $this->assertEquals($expectedSql, $table->getSql());
+    }
+
+    public function testAddIndexWithName()
+    {
+        $table = new Table('test');
+        $table->setAction(Table::ALTER);
+        $table->addIndex('name', Key::UNIQUE, 'idx_name');
+
+        $expectedSql = 'ALTER TABLE `test` ADD UNIQUE `idx_name` (`name`);';
+
+        $this->assertEquals($expectedSql, $table->getSql());
+    }
+
+    public function testDropIndex()
+    {
+        $table = new Table('test');
+        $table->setAction(Table::ALTER);
+        $table->dropIndex('idx_name');
+        
+        $expectedSql = 'ALTER TABLE `test` DROP INDEX `idx_name`;';
+        
         $this->assertEquals($expectedSql, $table->getSql());
     }
 
