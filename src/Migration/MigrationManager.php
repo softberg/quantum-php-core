@@ -185,7 +185,7 @@ class MigrationManager
             $this->migrations[array_pop($exploded)] = $this->migrationFolder . DS . $migratedEntry['migration'] . '.php';
         }
 
-        if ($step) {
+        if (!is_null($step)) {
             $this->migrations = array_slice($this->migrations, count($this->migrations) - $step, $step, true);
         }
 

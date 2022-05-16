@@ -24,10 +24,14 @@ use Quantum\Factory\TableFactory;
 class MigrationTable extends QtMigration
 {
 
+    /**
+     * Migrations table name
+     */
     const TABLE = 'migrations';
 
     /**
-     * 
+     * Creates the migrations table
+     * @param TableFactory|null $tableFactory
      */
     public function up(?TableFactory $tableFactory)
     {
@@ -38,11 +42,12 @@ class MigrationTable extends QtMigration
     }
 
     /**
-     * 
+     * Drops the migrations table
+     * @param TableFactory|null $tableFactory
      */
     public function down(?TableFactory $tableFactory)
     {
-        $tableFactory->dropTable(self::TABLE);
+        $tableFactory->drop(self::TABLE);
     }
 
 }
