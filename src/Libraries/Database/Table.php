@@ -22,15 +22,15 @@ use Quantum\Exceptions\MigrationException;
  * 
  * @method self autoIncrement()
  * @method self primary()
- * @method self index()
- * @method self unique()
- * @method self fulltext()
- * @method self spatial()
- * @method self nullable(bool $indeed)
- * @method self default($value, bool $quoted)
- * @method self defaultQuoted(type $paramName) Description
- * @method self attribute(string $value)
- * @method self comment(string $value)
+ * @method self index(string $name = null)
+ * @method self unique(string $name = null)
+ * @method self fulltext(string $name = null)
+ * @method self spatial(string $name = null)
+ * @method self nullable(bool $indeed = true)
+ * @method self default($value, bool $quoted = true)
+ * @method self defaultQuoted()
+ * @method self attribute(?string $value)
+ * @method self comment(?string $value)
  * @method self type(string $type, $constraint)
  */
 class Table
@@ -81,6 +81,11 @@ class Table
      * @var array
      */
     private $indexKeys = [];
+
+    /**
+     * @var array
+     */
+    private $droppedIndexKeys = [];
 
     /**
      * Table constructor.
@@ -164,9 +169,8 @@ class Table
      * Renames the column name
      * @param string $oldName
      * @param string $newName
-     * @return Table
      */
-    public function renameColumn(string $oldName, string $newName): Table
+    public function renameColumn(string $oldName, string $newName)
     {
         if ($this->action == self::ALTER) {
             array_push($this->columns, [
@@ -174,16 +178,13 @@ class Table
                 'action' => Column::RENAME
             ]);
         }
-
-        return $this;
     }
 
     /**
      * Drops the column
      * @param string $name
-     * @return Table
      */
-    public function dropColumn(string $name): Table
+    public function dropColumn(string $name)
     {
         if ($this->action == self::ALTER) {
             array_push($this->columns, [
@@ -191,14 +192,43 @@ class Table
                 'action' => Column::DROP
             ]);
         }
-        
-        return $this;
+    }
+
+    /**
+     * Adds new index to column
+     * @param string $columnName
+     * @param string $indexType
+     * @param string $indexName
+     */
+    public function addIndex(string $columnName, string $indexType, string $indexName = null)
+    {
+        if ($this->action == self::ALTER) {
+            array_push($this->columns, [
+                'column' => new Column($columnName),
+                'action' => Column::ADD_INDEX
+            ]);
+
+            $this->$indexType($indexName);
+        }
+    }
+
+    /**
+     * Drops the column index
+     * @param string $indexName
+     */
+    public function dropIndex(string $indexName)
+    {
+        if ($this->action == self::ALTER) {
+            array_push($this->columns, [
+                'column' => (new Column('dummy'))->indexDrop($indexName),
+                'action' => Column::DROP_INDEX
+            ]);
+        }
     }
 
     public function after(string $columnName)
     {
         $this->columns[$this->columnKey()]['column']->after($columnName);
-
         return $this;
     }
 
@@ -267,10 +297,10 @@ class Table
         $indexesSql = $this->indexesSql();
         $sql = '';
 
-        if (!empty($columnsSql)) {
+        if ($columnsSql) {
             $sql = 'CREATE TABLE `' . $this->name . '` (';
             $sql .= $columnsSql;
-            $sql .= $indexesSql;
+            $sql .= ($indexesSql ? ', ' . $indexesSql : '');
             $sql .= ');';
         }
 
@@ -285,12 +315,14 @@ class Table
     {
         $columnsSql = $this->columnsSql();
         $indexesSql = $this->indexesSql();
+        $dropIndexesSql = $this->dropIndexesSql();
         $sql = '';
 
-        if (!empty($columnsSql) || !empty($indexesSql)) {
+        if ($columnsSql || $indexesSql || $dropIndexesSql) {
             $sql = 'ALTER TABLE `' . $this->name . '` ';
             $sql .= $columnsSql;
-            $sql .= $indexesSql;
+            $sql .= (($columnsSql && $indexesSql) ? ', ' . $indexesSql : $indexesSql);
+            $sql .= ((($columnsSql || $indexesSql) && $dropIndexesSql) ? ', ' . $dropIndexesSql : $dropIndexesSql);
             $sql .= ';';
         }
 
@@ -324,18 +356,30 @@ class Table
         $sql = '';
 
         if ($this->columns) {
-
             $columns = [];
 
             foreach ($this->columns as $entry) {
-                $columnString = ($entry['action'] ? $entry['action'] . ' COLUMN ' : '');
-                $columnString .= $this->composeColumn($entry['column'], $entry['action']);
+                $columnString = '';
 
-                if ($entry['column']->get('indexKey')) {
-                    $this->indexKeys[$entry['column']->get('indexKey')][] = $entry['column']->get('name');
+                if ($entry['action'] != Column::ADD_INDEX && $entry['action'] != Column::DROP_INDEX) {
+                    $columnString .= ($entry['action'] ? $entry['action'] . ' COLUMN ' : '');
+                    $columnString .= $this->composeColumn($entry['column'], $entry['action']);
                 }
 
-                array_push($columns, $columnString);
+                if ($entry['column']->get('indexKey')) {
+                    $this->indexKeys[$entry['column']->get('indexKey')][] = [
+                        'columnName' => $entry['column']->get('name'),
+                        'indexName' => $entry['column']->get('indexName'),
+                    ];
+                }
+
+                if ($entry['column']->get('indexDrop')) {
+                    $this->droppedIndexKeys[] = $entry['column']->get('indexDrop');
+                }
+
+                if ($columnString) {
+                    array_push($columns, $columnString);
+                }
             }
 
             $sql = implode(', ', $columns);
@@ -392,7 +436,16 @@ class Table
         $sql = '';
 
         if (isset($this->indexKeys['primary'])) {
-            $sql .= ', PRIMARY KEY (`' . implode('`, `', $this->indexKeys['primary']) . '`)';
+            $sql .= ($this->action == self::ALTER ? 'ADD ' : '');
+
+            $sql .= 'PRIMARY KEY (';
+
+            foreach ($this->indexKeys['primary'] as $key => $primaryKey) {
+                $sql .= '`' . $primaryKey['columnName'] . '`';
+                $sql .= (array_key_last($this->indexKeys['primary']) != $key ? ', ' : '');
+            }
+
+            $sql .= ')';
         }
 
         return $sql;
@@ -408,11 +461,20 @@ class Table
         $sql = '';
 
         if (isset($this->indexKeys[$type])) {
-            $sql .= ', ';
-            $lastKey = array_key_last($this->indexKeys[$type]);
-            foreach ($this->indexKeys[$type] as $key => $index) {
-                $sql .= ($this->action == self::ALTER ? 'ADD ' : '') . strtoupper($type) . ' (`' . $index . '`)' . ($lastKey != $key ? ', ' : '');
+            $indexes = [];
+
+            foreach ($this->indexKeys[$type] as $key => $indexKey) {
+                $indexString = '';
+
+                $indexString .= ($this->action == self::ALTER ? 'ADD ' : '');
+                $indexString .= strtoupper($type);
+                $indexString .= ($indexKey['indexName'] ? ' `' . $indexKey['indexName'] . '`' : '');
+                $indexString .= ' (`' . $indexKey['columnName'] . '`)';
+
+                array_push($indexes, $indexString);
             }
+
+            $sql = implode(', ', $indexes);
         }
 
         return $sql;
@@ -429,6 +491,23 @@ class Table
                 $this->indexKeysSql(Key::UNIQUE) .
                 $this->indexKeysSql(Key::FULLTEXT) .
                 $this->indexKeysSql(Key::SPATIAL);
+    }
+
+    protected function dropIndexesSql()
+    {
+        $sql = '';
+
+        if (!empty($this->droppedIndexKeys)) {
+            $indexes = [];
+
+            foreach ($this->droppedIndexKeys as $index) {
+                $indexes[] = 'DROP INDEX `' . $index . '`';
+            }
+
+            $sql .= implode(', ', $indexes);
+        }
+
+        return $sql;
     }
 
     /**

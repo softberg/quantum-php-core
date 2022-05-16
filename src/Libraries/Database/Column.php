@@ -40,6 +40,16 @@ class Column
      * Action drop
      */
     const DROP = 'DROP';
+    
+    /**
+     * Action add index
+     */
+    const ADD_INDEX = 'ADD_INDEX';
+    
+    /**
+     * Action drop index
+     */
+    const DROP_INDEX = 'DROP_INDEX';
 
     /**
      * Name property
@@ -159,6 +169,16 @@ class Column
     /**
      * @var string
      */
+    private $indexName = null;
+
+    /**
+     * @var string
+     */
+    private $indexDrop = null;
+
+    /**
+     * @var string
+     */
     private $comment;
 
     /**
@@ -193,6 +213,12 @@ class Column
         return $this;
     }
 
+    public function indexDrop(string $indexName)
+    {
+        $this->indexDrop = $indexName;
+        return $this;
+    }
+
     /**
      * Gets the column property
      * @param string $property
@@ -222,35 +248,55 @@ class Column
     }
 
     /**
-     * Adds a index key to the column
+     * Adds an index key to the column
+     * @param string $name
      */
-    public function index()
+    public function index(string $name = null)
     {
         $this->indexKey = Key::INDEX;
+
+        if ($name) {
+            $this->indexName = $name;
+        }
     }
 
     /**
      * Adds unique key to the column
+     * @param string $name
      */
-    public function unique()
+    public function unique(string $name = null)
     {
         $this->indexKey = Key::UNIQUE;
+
+        if ($name) {
+            $this->indexName = $name;
+        }
     }
 
     /**
      * Adds a fulltext key the column
+     * @param string $name
      */
-    public function fulltext()
+    public function fulltext(string $name = null)
     {
         $this->indexKey = Key::FULLTEXT;
+
+        if ($name) {
+            $this->indexName = $name;
+        }
     }
 
     /**
      * Adds a spatial key the column
+     * @param string $name
      */
-    public function spatial()
+    public function spatial(string $name = null)
     {
         $this->indexKey = Key::SPATIAL;
+
+        if ($name) {
+            $this->indexName = $name;
+        }
     }
 
     /**
