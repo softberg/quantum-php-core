@@ -14,7 +14,7 @@
 
 namespace Quantum\Migration;
 
-use Quantum\Libraries\Database\Type;
+use Quantum\Libraries\Database\Schema\Type;
 use Quantum\Factory\TableFactory;
 
 /**
