@@ -14,10 +14,10 @@
 
 namespace Quantum\Console;
 
+use Symfony\Component\Console\Application;
 use Quantum\Environment\Environment;
 use Quantum\Libraries\Config\Config;
 use Quantum\Loader\Setup;
-use Symfony\Component\Console\Application;
 use Quantum\Loader\Loader;
 use Quantum\Di\Di;
 use Quantum\App;

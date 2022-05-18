@@ -23,13 +23,44 @@ namespace Quantum\Exceptions;
 class MigrationException extends \Exception
 {
 
+    /**
+     * Wrong migration direction message
+     */
     const WRONG_MIGRATION_DIRECTION = 'Migration direction can only be [up] or [down]';
+    
+    /**
+     * Database Driver is not supported message
+     */
     const NON_SUPPORTED_DRIVERER = 'The driver `{%1}`, does not support migrations';
+    
+    /**
+     * Migration action is not supported, possible variants are 'create', 'alter', 'rename', 'drop'
+     */
     const NON_SUPPORTED_ACTION = 'The action `{%1}`, is not supported';
+    
+    /**
+     * Table already exists message
+     */
     const TABLE_ALREADY_EXISTS = 'The table `{%1}` is already exists';
+    
+    /**
+     * Table does not exists message
+     */
     const TABLE_DOES_NOT_EXISTS = 'The table `{%1}` does not exists';
+    
+    /**
+     * Column not available message
+     */
     const COLUMN_NOT_AVAILABLE = 'The column `{%1}` is not available';
+    
+    /**
+     * Method is no defined message
+     */
     const METHOD_NOT_DEFINED = 'The method `{%1}` is not defined';
+    
+    /**
+     * No migrations to migrate
+     */
     const NOTHING_TO_MIGRATE = 'Nothing to migrate';
 
     /**

@@ -14,8 +14,8 @@
 
 namespace Quantum\Factory;
 
-use Quantum\Exceptions\MigrationException;
 use Quantum\Libraries\Database\Schema\Table;
+use Quantum\Exceptions\MigrationException;
 use Quantum\Libraries\Database\Database;
 
 /**
@@ -37,23 +37,22 @@ class TableFactory
             throw MigrationException::tableAlreadyExists($name);
         }
 
-        return (new Table($name))->setAction(Table::CREATE);
+        return $this->createInstance($name)->setAction(Table::CREATE);
     }
 
     /**
      * Get the table
      * @param string $name
-     * @param int $action
      * @return Table
      * @throws Quantum\Exceptions\MigrationException
      */
-    public function get(string $name, int $action = Table::ALTER): Table
+    public function get(string $name): Table
     {
         if (!$this->checkTableExists($name)) {
             throw MigrationException::tableDoesnotExists($name);
         }
 
-        return (new Table($name))->setAction($action);
+        return $this->createInstance($name)->setAction(Table::ALTER);
     }
 
     /**
@@ -64,7 +63,11 @@ class TableFactory
      */
     public function rename(string $oldName, string $newName): bool
     {
-        $this->get($oldName)->setAction(Table::RENAME, ['newName' => $newName]);
+        if (!$this->checkTableExists($oldName)) {
+            throw MigrationException::tableDoesnotExists($oldName);
+        }
+
+        $this->createInstance($oldName)->setAction(Table::RENAME, ['newName' => $newName]);
         return true;
     }
 
@@ -75,10 +78,14 @@ class TableFactory
      */
     public function drop(string $name): bool
     {
-        $this->get($name)->setAction(Table::DROP);
+        if (!$this->checkTableExists($name)) {
+            throw MigrationException::tableDoesnotExists($name);
+        }
+
+        $this->createInstance($name)->setAction(Table::DROP);
         return true;
     }
-   
+
     /**
      * Checks if the DB table exists
      * @param string $name
@@ -94,6 +101,16 @@ class TableFactory
         }
 
         return true;
+    }
+
+    /**
+     * Creates new Table instance
+     * @param string $name
+     * @return Table
+     */
+    private function createInstance(string $name)
+    {
+        return new Table($name);
     }
 
 }

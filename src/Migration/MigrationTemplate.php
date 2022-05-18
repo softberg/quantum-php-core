@@ -66,7 +66,7 @@ class ' . ucfirst($className) . ' extends QtMigration
 
 use Quantum\Migration\QtMigration;
 use Quantum\Factory\TableFactory;
-use Quantum\Libraries\Database\Type;
+use Quantum\Libraries\Database\Schema\Type;
 use Quantum\Libraries\Database\Schema\Key;
 
 class ' . ucfirst($className) . ' extends QtMigration
