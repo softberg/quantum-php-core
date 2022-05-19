@@ -9,11 +9,15 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.6.0
+ * @since 2.7.0
  */
 
 namespace Quantum;
 
+use Quantum\Environment\Environment;
+use Quantum\Libraries\Config\Config;
+use Quantum\Loader\Loader;
+use Quantum\Loader\Setup;
 use Quantum\Tracer\ErrorHandler;
 use Quantum\Di\Di;
 
@@ -57,6 +61,15 @@ class App
         self::setBaseDir($baseDir);
 
         Di::loadDefinitions();
+
+        $loader = Di::get(Loader::class);
+
+        $loader->loadDir(base_dir() . DS . 'helpers');
+        $loader->loadDir(base_dir() . DS . 'libraries');
+
+        Environment::getInstance()->load(new Setup('shared' . DS . 'config', 'env'));
+
+        Config::getInstance()->load(new Setup('shared' . DS . 'config', 'config'));
 
         ErrorHandler::setup();
 

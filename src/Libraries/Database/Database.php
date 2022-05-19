@@ -77,6 +77,33 @@ class Database
     }
 
     /**
+     * Gets the DB configurations
+     * @return array
+     * @throws \Quantum\Exceptions\ConfigException
+     * @throws \Quantum\Exceptions\DatabaseException
+     * @throws \Quantum\Exceptions\DiException
+     * @throws \ReflectionException
+     */
+    public function getConfigs(): ?array
+    {
+        if (!config()->has('database') || !config()->has('database.current')) {
+            config()->import(new Setup('shared' . DS . 'config', 'database'));
+        }
+
+        $currentKey = config()->get('database.current');
+
+        if (!config()->has('database.' . $currentKey)) {
+            throw DatabaseException::incorrectConfig();
+        }
+
+        if (!config()->has('database.' . $currentKey . '.orm')) {
+            throw DatabaseException::incorrectConfig();
+        }
+
+        return config()->get('database.' . $currentKey);
+    }
+
+    /**
      * Raw execute
      * @param string $query
      * @param array $parameters
@@ -101,6 +128,18 @@ class Database
     }
 
     /**
+     * Fetches table columns
+     * @param string $query
+     * @param array $parameters
+     * @return array
+     * @throws \Quantum\Exceptions\DatabaseException
+     */
+    public static function fetchColumns(string $query, array $parameters = []): array
+    {
+        return self::resolveQuery(__FUNCTION__, $query, $parameters);
+    }
+
+    /**
      * Gets the last query executed
      * @return string|null
      * @throws \Quantum\Exceptions\DatabaseException
@@ -119,33 +158,6 @@ class Database
     public static function queryLog(): array
     {
         return self::resolveQuery(__FUNCTION__);
-    }
-
-    /**
-     * Gets the DB configurations
-     * @return array
-     * @throws \Quantum\Exceptions\ConfigException
-     * @throws \Quantum\Exceptions\DatabaseException
-     * @throws \Quantum\Exceptions\DiException
-     * @throws \ReflectionException
-     */
-    protected function getConfigs(): ?array
-    {
-        if (!config()->has('database') || !config()->has('database.current')) {
-            config()->import(new Setup('config', 'database'));
-        }
-
-        $currentKey = config()->get('database.current');
-
-        if (!config()->has('database.' . $currentKey)) {
-            throw DatabaseException::incorrectConfig();
-        }
-
-        if (!config()->has('database.' . $currentKey . '.orm')) {
-            throw DatabaseException::incorrectConfig();
-        }
-
-        return config()->get('database.' . $currentKey);
     }
 
     /**

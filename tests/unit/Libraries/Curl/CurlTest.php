@@ -71,7 +71,7 @@ class CurlTest extends TestCase
         $this->assertNull($this->curl->getResponseHeaders('custom-header'));
     }
 
-    public function testGetRresponseBody()
+    public function testGetResponseBody()
     {
         $this->curl->run('https://httpbin.org');
 

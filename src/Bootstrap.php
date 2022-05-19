@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.6.0
+ * @since 2.7.0
  */
 
 namespace Quantum;
@@ -56,17 +56,6 @@ class Bootstrap
     public static function run()
     {
         try {
-
-            $loader = Di::get(Loader::class);
-
-            $fs = Di::get(FileSystem::class);
-
-            Debugger::initStore();
-
-            Environment::getInstance()->load(new Setup('shared' . DS . 'config', 'env'));
-
-            Config::getInstance()->load(new Setup('shared' . DS . 'config', 'config'));
-
             $request = Di::get(Request::class);
             $response = Di::get(Response::class);
 
@@ -75,18 +64,17 @@ class Bootstrap
 
             $router = new Router($request, $response);
 
-            ModuleLoader::loadModulesRoutes($router, $fs);
+            ModuleLoader::loadModulesRoutes($router);
 
             $router->findRoute();
-
-            $loader->loadDir(base_dir() . DS . 'helpers');
-            $loader->loadDir(base_dir() . DS . 'libraries');
 
             if (config()->has('langs')) {
                 Lang::getInstance()
                     ->setLang($request->getSegment(config()->get('lang_segment')))
                     ->load();
             }
+
+            Debugger::initStore();
 
             MvcManager::handle($request, $response);
 

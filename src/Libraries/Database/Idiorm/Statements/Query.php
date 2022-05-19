@@ -49,6 +49,21 @@ trait Query
         return (self::$ormClass)::for_table('dummy')->raw_query($query, $parameters)->find_array();
     }
 
+
+    public static function fetchColumns(string $table): array
+    {
+        $columns = [];
+
+        self::query('SELECT * FROM ' . $table);
+        $statement = self::lastStatement();
+
+        for ($i = 0; $i < $statement->columnCount(); $i++) {
+            $columns[] = $statement->getColumnMeta($i)['name'];
+        }
+
+        return $columns;
+    }
+
     /**
      * @inheritDoc
      * @throws \Quantum\Exceptions\DatabaseException

@@ -37,6 +37,8 @@ use Quantum\Exceptions\FileSystemException;
  * @method bool isReadable(string $filename)
  * @method bool isWritable(string $filename)
  * @method glob(string $pattern, int $flags = 0)
+ * @method void require(string $file, bool $once = false)
+ * @method void include(string $file, bool $once = false)
  */
 class FileSystem
 {
