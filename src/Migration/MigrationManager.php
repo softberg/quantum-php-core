@@ -14,6 +14,7 @@
 
 namespace Quantum\Migration;
 
+use Quantum\Exceptions\FileSystemException;
 use Quantum\Exceptions\MigrationException;
 use Quantum\Libraries\Database\Database;
 use Quantum\Libraries\Storage\FileSystem;
@@ -83,6 +84,10 @@ class MigrationManager
         $this->tableFactory = new TableFactory();
 
         $this->migrationFolder = base_dir() . DS . 'migrations';
+        
+        if(!$this->fs->isDirectory($this->migrationFolder)) {
+            throw FileSystemException::directoryNotExists($this->migrationFolder);
+        }
     }
 
     /**
