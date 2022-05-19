@@ -227,7 +227,7 @@ class Column
      */
     public function get(string $property, string $action = null)
     {
-        return isset($this->$property) && ($action != self::RENAME && $action != self::DROP) ? $this->$property : null;
+        return (isset($this->$property) && $action != self::RENAME && $action != self::DROP) ? $this->$property : null;
     }
 
     /**

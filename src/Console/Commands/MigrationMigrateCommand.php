@@ -60,7 +60,7 @@ class MigrationMigrateCommand extends QtCommand
 
         try {
             $migrated = $migrationManager->applyMigrations($direction, $step);
-            $this->info($migrated . ' migration' . ($migrated > 1 ? 's' : '') . ' ' . ($migrated > 1 ? 'were' : 'was') . ' applied');
+            $this->info($migrated . ' migration' . ($migrated > 1 ? 's were' : ' was') . ' applied');
         } catch (MigrationException $e) {
             $this->info($e->getMessage());
         }
