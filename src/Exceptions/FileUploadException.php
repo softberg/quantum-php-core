@@ -20,10 +20,6 @@ namespace Quantum\Exceptions;
  */
 class FileUploadException extends \Exception
 {
-    /**
-     * File already exists message
-     */
-    const FILE_ALREADY_EXISTS = 'File already exists';
 
     /**
      * File was not sent with a POST request message
@@ -31,37 +27,14 @@ class FileUploadException extends \Exception
     const FILE_NOT_UPLOADED = 'The uploaded file was not sent with a POST request';
 
     /**
-     * Directory does not exists message
-     */
-    const DIRECTORY_NOT_EXIST = 'Directory `{%1}` does not exists';
-
-    /**
-     * Directory is not writable message
-     */
-    const DIRECTORY_NOT_WRITABLE = 'Directory `{%1}` not writable';
-
-    /**
      * Upload file not found message
      */
     const UPLOADED_FILE_NOT_FOUND = 'Cannot find uploaded file identified by key `{%1}`';
 
     /**
-     * Directory can not be created message
-     */
-    const DIRECTORY_CANT_BE_CREATED = 'Directory `{%1}` could not be created';
-
-    /**
-     * File type not allwed message
+     * File type not allowed message
      */
     const FILE_TYPE_NOT_ALLOWED = 'The file type `{%1}` is not allowed';
-
-    /**
-     * @return \Quantum\Exceptions\FileUploadException
-     */
-    public static function fileAlreadyExists(): FileUploadException
-    {
-        return new static(self::FILE_ALREADY_EXISTS, E_WARNING);
-    }
 
     /**
      * @return \Quantum\Exceptions\FileUploadException
@@ -69,24 +42,6 @@ class FileUploadException extends \Exception
     public static function fileNotUploaded(): FileUploadException
     {
         return new static(self::FILE_NOT_UPLOADED, E_WARNING);
-    }
-
-    /**
-     * @param string $name
-     * @return \Quantum\Exceptions\FileUploadException
-     */
-    public static function directoryNotExists(string $name): FileUploadException
-    {
-        return new static(_message(self::DIRECTORY_NOT_EXIST, $name), E_WARNING);
-    }
-
-    /**
-     * @param string $name
-     * @return \Quantum\Exceptions\FileUploadException
-     */
-    public static function directoryNotWritable(string $name): FileUploadException
-    {
-        return new static(_message(self::DIRECTORY_NOT_WRITABLE, $name), E_WARNING);
     }
 
     /**
@@ -106,4 +61,5 @@ class FileUploadException extends \Exception
     {
         return new static(_message(self::FILE_TYPE_NOT_ALLOWED, $name), E_WARNING);
     }
+
 }

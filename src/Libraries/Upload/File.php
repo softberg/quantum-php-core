@@ -15,6 +15,7 @@
 namespace Quantum\Libraries\Upload;
 
 use Quantum\Exceptions\FileUploadException;
+use Quantum\Exceptions\FileSystemException;
 use Quantum\Libraries\Storage\FileSystem;
 use Gumlet\ImageResize;
 use Quantum\Di\Di;
@@ -223,17 +224,17 @@ class File extends SplFileInfo
         }
 
         if (!$this->fs->isDirectory($dest)) {
-            throw FileUploadException::directoryNotExists($dest);
+            throw FileSystemException::directoryNotExists($dest);
         }
 
         if (!$this->fs->isWritable($dest)) {
-            throw FileUploadException::directoryNotWritable($dest);
+            throw FileSystemException::directoryNotWritable($dest);
         }
 
         $filePath = $dest . DS . $this->getNameWithExtension();
 
         if ($overwrite === false && $this->fs->exists($filePath)) {
-            throw FileUploadException::fileAlreadyExists();
+            throw FileSystemException::fileAlreadyExists();
         }
 
         if (!$this->moveUploadedFile($filePath)) {

@@ -3,7 +3,7 @@
 namespace Quantum\Tests\Libraries\Upload {
 
     use PHPUnit\Framework\TestCase;
-    use Quantum\Exceptions\FileUploadException;
+    use Quantum\Exceptions\FileSystemException;
     use Quantum\Libraries\Upload\File;
     use Quantum\Di\Di;
     use Quantum\App;
@@ -212,9 +212,9 @@ namespace Quantum\Tests\Libraries\Upload {
 
             $this->assertTrue(file_exists(base_dir() . DS . $file->getNameWithExtension()));
 
-            $this->expectException(FileUploadException::class);
+            $this->expectException(FileSystemException::class);
 
-            $this->expectExceptionMessage(FileUploadException::FILE_ALREADY_EXISTS);
+            $this->expectExceptionMessage(FileSystemException::FILE_ALREADY_EXISTS);
 
             $file->save(base_dir());
         }

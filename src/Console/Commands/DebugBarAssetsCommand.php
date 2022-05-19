@@ -14,7 +14,7 @@
 
 namespace Quantum\Console\Commands;
 
-use Quantum\Exceptions\FileUploadException;
+use Quantum\Exceptions\FileSystemException;
 use Quantum\Console\QtCommand;
 
 /**
@@ -76,7 +76,7 @@ class DebugBarAssetsCommand extends QtCommand
 
         if ($dst != $this->publicDebugbarFolderPath) {
             if (mkdir($dst, 777, true) === false) {
-                throw new \RuntimeException(_message(FileUploadException::DIRECTORY_CANT_BE_CREATED, $dst));
+                throw new \RuntimeException(_message(FileSystemException::DIRECTORY_CANT_BE_CREATED, $dst));
             }
         }
 
