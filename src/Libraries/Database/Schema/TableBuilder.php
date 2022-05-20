@@ -198,7 +198,7 @@ trait TableBuilder
         if (isset($this->indexKeys[$type])) {
             $indexes = [];
 
-            foreach ($this->indexKeys[$type] as $key => $indexKey) {
+            foreach ($this->indexKeys[$type] as $indexKey) {
                 $indexString = '';
 
                 $indexString .= ($this->action == self::ALTER ? 'ADD ' : '');
@@ -209,7 +209,7 @@ trait TableBuilder
                 array_push($indexes, $indexString);
             }
 
-            $sql = ', ' . implode(', ', $indexes);
+            $sql = implode(', ', $indexes);
         }
 
         return $sql;
@@ -221,11 +221,17 @@ trait TableBuilder
      */
     protected function indexesSql(): string
     {
-        return $this->primaryKeysSql() .
-                $this->indexKeysSql(Key::INDEX) .
-                $this->indexKeysSql(Key::UNIQUE) .
-                $this->indexKeysSql(Key::FULLTEXT) .
-                $this->indexKeysSql(Key::SPATIAL);
+        $primaryKeysSql = $this->primaryKeysSql();
+        $indexKeysSql = $this->indexKeysSql(Key::INDEX);
+        $uniqueKeysSql = $this->indexKeysSql(Key::UNIQUE);
+        $fulltextKeysSql = $this->indexKeysSql(Key::FULLTEXT);
+        $spatialKeysSql = $this->indexKeysSql(Key::SPATIAL);
+
+        return $primaryKeysSql .
+                (($primaryKeysSql && $indexKeysSql) ? ', ' . $indexKeysSql : $indexKeysSql) .
+                ((($primaryKeysSql || $indexKeysSql) && $uniqueKeysSql) ? ', ' . $uniqueKeysSql : $uniqueKeysSql) .
+                ((($primaryKeysSql || $indexKeysSql || $uniqueKeysSql) && $fulltextKeysSql) ? ', ' . $fulltextKeysSql : $fulltextKeysSql) .
+                ((($primaryKeysSql || $indexKeysSql || $uniqueKeysSql || $fulltextKeysSql) && $spatialKeysSql) ? ', ' . $spatialKeysSql : $spatialKeysSql);
     }
 
     /**

@@ -1,8 +1,9 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Database;
+namespace Quantum\Tests\Libraries\Database\Schema;
 
 use PHPUnit\Framework\TestCase;
+use Quantum\Libraries\Database\Schema\Column;
 use Quantum\Libraries\Database\Schema\Table;
 use Quantum\Libraries\Database\Schema\Type;
 use Quantum\Libraries\Database\Schema\Key;
@@ -50,6 +51,30 @@ class TableTest extends TestCase
         $this->assertEquals($expectedSql, $table->getSql());
     }
 
+    public function testAddColumnWithAttributes()
+    {
+        $table = new Table('test');
+        $table->setAction(Table::CREATE);
+        $table->addColumn('id', Type::INT, 11)->autoIncrement()->attribute(Column::ATTR_UNSIGNED);
+
+        $expectedSql = 'CREATE TABLE `test` (`id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT, PRIMARY KEY (`id`));';
+
+        $this->assertEquals($expectedSql, $table->getSql());
+    }
+
+    public function testAddColumnWithIndexs()
+    {
+        $table = new Table('test');
+        $table->setAction(Table::CREATE);
+        $table->addColumn('profile_id', Type::INT, 11)->index();
+        $table->addColumn('username', Type::INT, 11)->unique();
+        $table->addColumn('email', Type::INT, 11)->unique();
+
+        $expectedSql = 'CREATE TABLE `test` (`profile_id` INT(11) NOT NULL, `username` INT(11) NOT NULL, `email` INT(11) NOT NULL, INDEX (`profile_id`), UNIQUE (`username`), UNIQUE (`email`));';
+
+        $this->assertEquals($expectedSql, $table->getSql());
+    }
+
     public function testModifyColumn()
     {
         $table = new Table('test');
@@ -57,6 +82,29 @@ class TableTest extends TestCase
         $table->modifyColumn('name', Type::VARCHAR, 50);
 
         $expectedSql = 'ALTER TABLE `test` MODIFY COLUMN `name` VARCHAR(50) NOT NULL;';
+
+        $this->assertEquals($expectedSql, $table->getSql());
+    }
+
+    public function testModifyColumnWithAttributes()
+    {
+        $table = new Table('test');
+        $table->setAction(Table::ALTER);
+        $table->modifyColumn('name', Type::VARCHAR, 100)->default('New user')->comment('User nikname');
+
+        $expectedSql = 'ALTER TABLE `test` MODIFY COLUMN `name` VARCHAR(100) NOT NULL DEFAULT \'New user\' COMMENT \'User nikname\';';
+
+        $this->assertEquals($expectedSql, $table->getSql());
+    }
+
+    public function testAddColumnAndModifyColumn()
+    {
+        $table = new Table('test');
+        $table->setAction(Table::ALTER);
+        $table->addColumn('surename', Type::VARCHAR, 50);
+        $table->modifyColumn('profession', Type::ENUM, ['plumber', 'driver', 'security'])->default('driver');
+
+        $expectedSql = 'ALTER TABLE `test` ADD COLUMN `surename` VARCHAR(50) NOT NULL, MODIFY COLUMN `profession` ENUM(\'plumber\', \'driver\', \'security\') NOT NULL DEFAULT \'driver\';';
 
         $this->assertEquals($expectedSql, $table->getSql());
     }
@@ -72,7 +120,7 @@ class TableTest extends TestCase
         $this->assertEquals($expectedSql, $table->getSql());
     }
 
-    public function testDropeColumn()
+    public function testDropColumn()
     {
         $table = new Table('test');
         $table->setAction(Table::ALTER);
@@ -101,6 +149,18 @@ class TableTest extends TestCase
         $table->addIndex('name', Key::UNIQUE, 'idx_name');
 
         $expectedSql = 'ALTER TABLE `test` ADD UNIQUE `idx_name` (`name`);';
+
+        $this->assertEquals($expectedSql, $table->getSql());
+    }
+
+    public function testAddingMultipleIndexes()
+    {
+        $table = new Table('test');
+        $table->setAction(Table::ALTER);
+        $table->addIndex('email', Key::UNIQUE, 'idx_email');
+        $table->addIndex('username', Key::INDEX, 'idx_username');
+
+        $expectedSql = 'ALTER TABLE `test` ADD INDEX `idx_username` (`username`), ADD UNIQUE `idx_email` (`email`);';
 
         $this->assertEquals($expectedSql, $table->getSql());
     }
