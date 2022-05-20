@@ -145,17 +145,18 @@ trait TableBuilder
 
     /**
      * Prepares column attributes
-     * @param string|null $definition
+     * @param mixed $definition
      * @param string $before
      * @param string $after
      * @return string
      */
-    protected function columnAttrSql(?string $definition, string $before = '', string $after = ''): string
+    protected function columnAttrSql($definition, string $before = '', string $after = ''): string
     {
         $sql = '';
 
         if (!is_null($definition)) {
-            $sql .= $before . $definition . $after;
+
+            $sql .= $before . (is_array($definition) ? ("'" . implode("', '", $definition) . "'") : $definition) . $after;
         }
 
         return $sql;
@@ -208,7 +209,7 @@ trait TableBuilder
                 array_push($indexes, $indexString);
             }
 
-            $sql = implode(', ', $indexes);
+            $sql = ', ' . implode(', ', $indexes);
         }
 
         return $sql;
