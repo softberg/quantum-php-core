@@ -27,14 +27,12 @@ trait TableBuilder
      */
     protected function createTableSql()
     {
-        $columnsSql = $this->columnsSql();
-        $indexesSql = $this->indexesSql();
+        $tableSchema = array_filter([$this->columnsSql(), $this->indexesSql()]);
         $sql = '';
 
-        if ($columnsSql) {
+        if ($tableSchema) {
             $sql = 'CREATE TABLE `' . $this->name . '` (';
-            $sql .= $columnsSql;
-            $sql .= ($indexesSql ? ', ' . $indexesSql : '');
+            $sql .= implode(', ', $tableSchema);
             $sql .= ');';
         }
 
@@ -47,16 +45,12 @@ trait TableBuilder
      */
     protected function alterTableSql(): string
     {
-        $columnsSql = $this->columnsSql();
-        $indexesSql = $this->indexesSql();
-        $dropIndexesSql = $this->dropIndexesSql();
+        $tableSchema = array_filter([$this->columnsSql(), $this->indexesSql(), $this->dropIndexesSql()]);
         $sql = '';
 
-        if ($columnsSql || $indexesSql || $dropIndexesSql) {
+        if ($tableSchema) {
             $sql = 'ALTER TABLE `' . $this->name . '` ';
-            $sql .= $columnsSql;
-            $sql .= (($columnsSql && $indexesSql) ? ', ' . $indexesSql : $indexesSql);
-            $sql .= ((($columnsSql || $indexesSql) && $dropIndexesSql) ? ', ' . $dropIndexesSql : $dropIndexesSql);
+            $sql .= implode(', ', $tableSchema);
             $sql .= ';';
         }
 
@@ -221,17 +215,15 @@ trait TableBuilder
      */
     protected function indexesSql(): string
     {
-        $primaryKeysSql = $this->primaryKeysSql();
-        $indexKeysSql = $this->indexKeysSql(Key::INDEX);
-        $uniqueKeysSql = $this->indexKeysSql(Key::UNIQUE);
-        $fulltextKeysSql = $this->indexKeysSql(Key::FULLTEXT);
-        $spatialKeysSql = $this->indexKeysSql(Key::SPATIAL);
+        $indexes = [
+            $this->primaryKeysSql(),
+            $this->indexKeysSql(Key::INDEX),
+            $this->indexKeysSql(Key::UNIQUE),
+            $this->indexKeysSql(Key::FULLTEXT),
+            $this->indexKeysSql(Key::SPATIAL)
+        ];
 
-        return $primaryKeysSql .
-                (($primaryKeysSql && $indexKeysSql) ? ', ' . $indexKeysSql : $indexKeysSql) .
-                ((($primaryKeysSql || $indexKeysSql) && $uniqueKeysSql) ? ', ' . $uniqueKeysSql : $uniqueKeysSql) .
-                ((($primaryKeysSql || $indexKeysSql || $uniqueKeysSql) && $fulltextKeysSql) ? ', ' . $fulltextKeysSql : $fulltextKeysSql) .
-                ((($primaryKeysSql || $indexKeysSql || $uniqueKeysSql || $fulltextKeysSql) && $spatialKeysSql) ? ', ' . $spatialKeysSql : $spatialKeysSql);
+        return implode(', ', array_filter($indexes));
     }
 
     /**
