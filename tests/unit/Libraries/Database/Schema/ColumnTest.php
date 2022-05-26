@@ -1,6 +1,6 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Database;
+namespace Quantum\Tests\Libraries\Database\Schema;
 
 use PHPUnit\Framework\TestCase;
 use Quantum\Libraries\Database\Schema\Column;
@@ -96,21 +96,6 @@ class ColumnTest extends TestCase
         $this->assertEquals('spatial', $column->get('indexKey'));
 
         $this->assertEquals('idx_spatial_name', $column->get('indexName'));
-    }
-
-    public function testAddTypeToColumn()
-    {
-        $column = new Column('test');
-
-        $column->type(Type::VARCHAR, 255);
-
-        $this->assertEquals('VARCHAR', $column->get(Column::TYPE));
-
-        $this->assertEquals(255, $column->get(Column::CONSTRAINT));
-
-        $column->type(Type::BOOL);
-
-        $this->assertEquals('BOOL', $column->get(Column::TYPE));
     }
 
     public function testAddOrRemoveColumnNullableProperty()

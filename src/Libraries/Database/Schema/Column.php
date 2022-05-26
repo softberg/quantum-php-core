@@ -299,16 +299,6 @@ class Column
         }
     }
 
-    /**
-     * Adds a type to the column
-     * @param string $type
-     * @param type $constraint
-     */
-    public function type(string $type, $constraint = null)
-    {
-        $this->type = strtoupper($type);
-        $this->constraint = $constraint;
-    }
 
     /**
      * Adds or removes nullable property

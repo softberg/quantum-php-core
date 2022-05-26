@@ -33,7 +33,6 @@ use Quantum\Libraries\Database\Database;
  * @method self defaultQuoted()
  * @method self attribute(?string $value)
  * @method self comment(?string $value)
- * @method self type(string $type, $constraint)
  */
 class Table
 {
@@ -162,7 +161,7 @@ class Table
      * @param mixed $constraint
      * @return Table
      */
-    public function modifyColumn(string $name, string $type = null, $constraint = null): Table
+    public function modifyColumn(string $name, string $type, $constraint = null): Table
     {
         if ($this->action == self::ALTER) {
             array_push($this->columns, [

@@ -100,5 +100,10 @@ class Type
      * Type json
      */
     const JSON = 'json';
+    
+    /**
+     * Type geometry
+     */
+    const GEOMETRY = 'geometry';
 
 }

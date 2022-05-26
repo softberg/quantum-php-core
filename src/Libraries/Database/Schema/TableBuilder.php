@@ -27,14 +27,12 @@ trait TableBuilder
      */
     protected function createTableSql()
     {
-        $columnsSql = $this->columnsSql();
-        $indexesSql = $this->indexesSql();
+        $tableSchema = array_filter([$this->columnsSql(), $this->indexesSql()]);
         $sql = '';
 
-        if ($columnsSql) {
+        if ($tableSchema) {
             $sql = 'CREATE TABLE `' . $this->name . '` (';
-            $sql .= $columnsSql;
-            $sql .= ($indexesSql ? ', ' . $indexesSql : '');
+            $sql .= implode(', ', $tableSchema);
             $sql .= ');';
         }
 
@@ -47,16 +45,12 @@ trait TableBuilder
      */
     protected function alterTableSql(): string
     {
-        $columnsSql = $this->columnsSql();
-        $indexesSql = $this->indexesSql();
-        $dropIndexesSql = $this->dropIndexesSql();
+        $tableSchema = array_filter([$this->columnsSql(), $this->indexesSql(), $this->dropIndexesSql()]);
         $sql = '';
 
-        if ($columnsSql || $indexesSql || $dropIndexesSql) {
+        if ($tableSchema) {
             $sql = 'ALTER TABLE `' . $this->name . '` ';
-            $sql .= $columnsSql;
-            $sql .= (($columnsSql && $indexesSql) ? ', ' . $indexesSql : $indexesSql);
-            $sql .= ((($columnsSql || $indexesSql) && $dropIndexesSql) ? ', ' . $dropIndexesSql : $dropIndexesSql);
+            $sql .= implode(', ', $tableSchema);
             $sql .= ';';
         }
 
@@ -145,17 +139,18 @@ trait TableBuilder
 
     /**
      * Prepares column attributes
-     * @param string|null $definition
+     * @param mixed $definition
      * @param string $before
      * @param string $after
      * @return string
      */
-    protected function columnAttrSql(?string $definition, string $before = '', string $after = ''): string
+    protected function columnAttrSql($definition, string $before = '', string $after = ''): string
     {
         $sql = '';
 
         if (!is_null($definition)) {
-            $sql .= $before . $definition . $after;
+
+            $sql .= $before . (is_array($definition) ? ("'" . implode("', '", $definition) . "'") : $definition) . $after;
         }
 
         return $sql;
@@ -197,7 +192,7 @@ trait TableBuilder
         if (isset($this->indexKeys[$type])) {
             $indexes = [];
 
-            foreach ($this->indexKeys[$type] as $key => $indexKey) {
+            foreach ($this->indexKeys[$type] as $indexKey) {
                 $indexString = '';
 
                 $indexString .= ($this->action == self::ALTER ? 'ADD ' : '');
@@ -220,11 +215,15 @@ trait TableBuilder
      */
     protected function indexesSql(): string
     {
-        return $this->primaryKeysSql() .
-                $this->indexKeysSql(Key::INDEX) .
-                $this->indexKeysSql(Key::UNIQUE) .
-                $this->indexKeysSql(Key::FULLTEXT) .
-                $this->indexKeysSql(Key::SPATIAL);
+        $indexes = [
+            $this->primaryKeysSql(),
+            $this->indexKeysSql(Key::INDEX),
+            $this->indexKeysSql(Key::UNIQUE),
+            $this->indexKeysSql(Key::FULLTEXT),
+            $this->indexKeysSql(Key::SPATIAL)
+        ];
+
+        return implode(', ', array_filter($indexes));
     }
 
     /**
