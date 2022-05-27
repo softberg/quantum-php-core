@@ -192,7 +192,7 @@ abstract class HttpResponse
      * @param array|null $data
      * @param int|null $code
      */
-    public static function json(array $data = null, int $code = null)
+    public static function json(?array $data = null, int $code = null)
     {
         self::setContentType(self::CONTENT_JSON);
 
@@ -213,7 +213,7 @@ abstract class HttpResponse
      * @param string|null $callback
      * @param int|null $code
      */
-    public static function jsonp($data = null, string $callback, int $code = null)
+    public static function jsonp(string $callback, ?array $data = null, int $code = null)
     { 
         self::setContentType(self::CONTENT_JSONP);
 

@@ -19,7 +19,6 @@ namespace Quantum\Tests\Http {
     use Quantum\Di\Di;
     use Quantum\App;
 
-
     class ResponseTest extends TestCase
     {
 
@@ -120,6 +119,7 @@ namespace Quantum\Tests\Http {
             try {
                 $response->redirect('/');
             } catch (StopExecutionException $e) {
+                
             }
 
             $this->assertTrue($response->hasHeader('Location'));
@@ -131,6 +131,7 @@ namespace Quantum\Tests\Http {
             try {
                 $response->redirect('/home', 301);
             } catch (StopExecutionException $e) {
+                
             }
 
             $this->assertEquals('/home', $response->getHeader('Location'));
@@ -154,14 +155,28 @@ namespace Quantum\Tests\Http {
 
             $this->assertEquals('{"firstname":"John","lastname":"Doe","age":25}', $response->getContent());
 
-            $response->json([
-                'gender' => 'male',
-                'role' => 'user'
-            ], 200);
+            $response->json(
+                    [
+                        'gender' => 'male',
+                        'role' => 'user'
+                    ], 200);
 
             $this->assertEquals('{"firstname":"John","lastname":"Doe","age":25,"gender":"male","role":"user"}', $response->getContent());
 
             $this->assertEquals(200, $response->getStatusCode());
+        }
+
+        public function testResponseJsonP()
+        {
+            $response = new Response();
+
+            $response->set('firstname', 'John');
+
+            $response->set('lastname', 'Doe');
+
+            $response->jsonp('myfunc');
+
+            $this->assertEquals('myfunc({"firstname":"John","lastname":"Doe"})', $response->getContent());
         }
 
         public function testReponseXmlContent()
@@ -175,21 +190,21 @@ namespace Quantum\Tests\Http {
             $response->xml();
 
             $xml = "<?xml version=\"1.0\"?>\n" .
-                "<data>\n" .
-                "  <firstname>John</firstname>\n" .
-                "  <lastname>Doe</lastname>\n" .
-                "</data>\n";
+                    "<data>\n" .
+                    "  <firstname>John</firstname>\n" .
+                    "  <lastname>Doe</lastname>\n" .
+                    "</data>\n";
 
             $this->assertEquals($xml, $response->getContent());
 
             $response->set('age', 25);
 
             $xml = "<?xml version=\"1.0\"?>\n" .
-                "<data>\n" .
-                "  <firstname>John</firstname>\n" .
-                "  <lastname>Doe</lastname>\n" .
-                "  <age>25</age>\n" .
-                "</data>\n";
+                    "<data>\n" .
+                    "  <firstname>John</firstname>\n" .
+                    "  <lastname>Doe</lastname>\n" .
+                    "  <age>25</age>\n" .
+                    "</data>\n";
 
             $this->assertEquals($xml, $response->getContent());
 
@@ -199,13 +214,13 @@ namespace Quantum\Tests\Http {
             ]);
 
             $xml = "<?xml version=\"1.0\"?>\n" .
-                "<data>\n" .
-                "  <firstname>John</firstname>\n" .
-                "  <lastname>Doe</lastname>\n" .
-                "  <age>25</age>\n" .
-                "  <gender>male</gender>\n" .
-                "  <role>user</role>\n" .
-                "</data>\n";
+                    "<data>\n" .
+                    "  <firstname>John</firstname>\n" .
+                    "  <lastname>Doe</lastname>\n" .
+                    "  <age>25</age>\n" .
+                    "  <gender>male</gender>\n" .
+                    "  <role>user</role>\n" .
+                    "</data>\n";
 
             $this->assertEquals($xml, $response->getContent());
         }
@@ -222,12 +237,12 @@ namespace Quantum\Tests\Http {
             ]);
 
             $xml = "<?xml version=\"1.0\"?>\n" .
-                "<data>\n" .
-                "  <article>\n" .
-                "    <title>Todays news</title>\n" .
-                "    <description>News content</description>\n" .
-                "  </article>\n" .
-                "</data>\n";
+                    "<data>\n" .
+                    "  <article>\n" .
+                    "    <title>Todays news</title>\n" .
+                    "    <description>News content</description>\n" .
+                    "  </article>\n" .
+                    "</data>\n";
 
             $this->assertEquals($xml, $response->getContent());
         }
@@ -244,12 +259,12 @@ namespace Quantum\Tests\Http {
             ]);
 
             $xml = "<?xml version=\"1.0\"?>\n" .
-                "<data>\n" .
-                "  <article type=\"post\">\n" .
-                "    <title>Todays news</title>\n" .
-                "    <description content=\"html\">News content</description>\n" .
-                "  </article>\n" .
-                "</data>\n";
+                    "<data>\n" .
+                    "  <article type=\"post\">\n" .
+                    "    <title>Todays news</title>\n" .
+                    "    <description content=\"html\">News content</description>\n" .
+                    "  </article>\n" .
+                    "</data>\n";
 
             $this->assertEquals($xml, $response->getContent());
         }
@@ -263,15 +278,15 @@ namespace Quantum\Tests\Http {
                     'title' => 'Todays news',
                     'description@{"content":"html"}' => 'News content'
                 ]
-            ], '<custom></custom>', 200);
+                    ], '<custom></custom>', 200);
 
             $xml = "<?xml version=\"1.0\"?>\n" .
-                "<custom>\n" .
-                "  <article type=\"post\">\n" .
-                "    <title>Todays news</title>\n" .
-                "    <description content=\"html\">News content</description>\n" .
-                "  </article>\n" .
-                "</custom>\n";
+                    "<custom>\n" .
+                    "  <article type=\"post\">\n" .
+                    "    <title>Todays news</title>\n" .
+                    "    <description content=\"html\">News content</description>\n" .
+                    "  </article>\n" .
+                    "</custom>\n";
 
             $this->assertEquals($xml, $response->getContent());
         }
