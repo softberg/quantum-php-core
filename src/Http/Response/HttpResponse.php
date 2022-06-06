@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.6.0
+ * @since 2.7.0
  */
 
 namespace Quantum\Http\Response;
@@ -47,7 +47,6 @@ abstract class HttpResponse
     /**
      * JSONP content type
      */
-
     const CONTENT_JSONP = 'application/javascript';
 
     /**
@@ -106,6 +105,8 @@ abstract class HttpResponse
         foreach (self::$__headers as $key => $value) {
             header($key . ': ' . $value);
         }
+
+        http_response_code(self::getStatusCode());
 
         echo self::getContent();
     }
@@ -176,7 +177,7 @@ abstract class HttpResponse
      * @param int|null $code
      * @throws \Quantum\Exceptions\StopExecutionException
      */
-    public static function redirect(string $url, int $code = null)
+    public static function redirect(string $url, int $code = 302)
     {
         if (!is_null($code)) {
             self::setStatusCode($code);
@@ -192,7 +193,7 @@ abstract class HttpResponse
      * @param array|null $data
      * @param int|null $code
      */
-    public static function json(?array $data = null, int $code = null)
+    public static function json(array $data = null, int $code = null)
     {
         self::setContentType(self::CONTENT_JSON);
 
@@ -209,12 +210,12 @@ abstract class HttpResponse
 
     /**
      * Prepares the JSONP response
-     * @param array|null $data
      * @param string|null $callback
+     * @param array|null $data
      * @param int|null $code
      */
     public static function jsonp(string $callback, ?array $data = null, int $code = null)
-    { 
+    {
         self::setContentType(self::CONTENT_JSONP);
 
         self::$callbackFunction = $callback;
@@ -228,16 +229,16 @@ abstract class HttpResponse
                 self::$__response[$key] = $value;
             }
         }
-
     }
 
     /**
-     * Returnes response with function
+     * Returns response with function
      * @param array $data
      * @return string
      */
-    public static function getJsonPData($data){
-        return  self::$callbackFunction.'('.json_encode($data).")";
+    public static function getJsonPData($data)
+    {
+        return self::$callbackFunction . '(' . json_encode($data) . ")";
     }
 
     /**
@@ -249,11 +250,11 @@ abstract class HttpResponse
     {
         self::setContentType(self::CONTENT_XML);
 
-        self::$xmlRoot = $root;
-
         if (!is_null($code)) {
             self::setStatusCode($code);
         }
+
+        self::$xmlRoot = $root;
 
         if ($data) {
             foreach ($data as $key => $value) {
