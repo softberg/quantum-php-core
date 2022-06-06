@@ -38,6 +38,8 @@ class HelperTest extends TestCase
         App::setBaseDir(dirname(__DIR__) . DS . '_root');
 
         Di::loadDefinitions();
+        
+        Response::init();
 
         $this->request = new Request();
 
@@ -243,7 +245,7 @@ class HelperTest extends TestCase
     {
         config()->flush();
 
-        config()->load(new Setup('shared' . DS . 'config', 'config', true));
+        config()->load(new Setup('config', 'config', true));
 
         $this->assertFalse(config()->has('not-exists'));
 

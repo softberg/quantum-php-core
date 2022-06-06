@@ -126,7 +126,7 @@ namespace Quantum\Tests\Http {
 
             $this->assertEquals('/', $response->getHeader('Location'));
 
-            $this->assertEquals(200, $response->getStatusCode());
+            $this->assertEquals(302, $response->getStatusCode());
 
             try {
                 $response->redirect('/home', 301);
@@ -159,7 +159,7 @@ namespace Quantum\Tests\Http {
                     [
                         'gender' => 'male',
                         'role' => 'user'
-                    ], 200);
+                    ],);
 
             $this->assertEquals('{"firstname":"John","lastname":"Doe","age":25,"gender":"male","role":"user"}', $response->getContent());
 
