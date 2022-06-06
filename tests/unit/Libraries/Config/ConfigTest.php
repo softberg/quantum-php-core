@@ -31,7 +31,7 @@ class ConfigTest extends TestCase
 
         $this->assertEmpty($config->all());
 
-        $config->load(new Setup('shared' . DS . 'config', 'config'));
+        $config->load(new Setup('config', 'config'));
 
         $this->assertNotEmpty($config->all());
 
@@ -41,7 +41,7 @@ class ConfigTest extends TestCase
 
         $this->expectExceptionMessage(ConfigException::CONFIG_ALREADY_LOADED);
 
-        $config->load(new Setup('shared' . DS . 'config', 'config'));
+        $config->load(new Setup('config', 'config'));
     }
 
     public function testLoadingNonExistingConfigFile()
@@ -50,18 +50,18 @@ class ConfigTest extends TestCase
 
         $this->expectExceptionMessage('Config file `somefile` does not exists');
 
-        Config::getInstance()->load(new Setup('shared' . DS . 'config', 'somefile'));
+        Config::getInstance()->load(new Setup('config', 'somefile'));
     }
 
     public function testConfigImport()
     {
         $config = Config::getInstance();
 
-        $config->load(new Setup('shared' . DS . 'config', 'config'));
+        $config->load(new Setup('config', 'config'));
 
         $this->assertNull($config->get('database.current'));
 
-        $config->import(new Setup('shared' . DS . 'config', 'database'));
+        $config->import(new Setup('config', 'database'));
 
         $this->assertNotNull($config->get('database.current'));
 
@@ -74,27 +74,27 @@ class ConfigTest extends TestCase
 
         $this->expectExceptionMessage('Config file `somefile` does not exists');
 
-        Config::getInstance()->import(new Setup('shared' . DS . 'config', 'somefile'));
+        Config::getInstance()->import(new Setup('config', 'somefile'));
     }
 
     public function testCollisionAtImporting()
     {
         $config = Config::getInstance();
 
-        $config->import(new Setup('shared' . DS . 'config', 'config'));
+        $config->import(new Setup('config', 'config'));
 
         $this->expectException(ConfigException::class);
 
         $this->expectExceptionMessage('Config key `config` is already in use');
 
-        $config->import(new Setup('shared' . DS . 'config', 'config'));
+        $config->import(new Setup('config', 'config'));
     }
 
     public function testConfigHas()
     {
         $config = Config::getInstance();
 
-        $config->load(new Setup('shared' . DS . 'config', 'config'));
+        $config->load(new Setup('config', 'config'));
 
         $this->assertTrue($config->has('debug'));
 
@@ -107,7 +107,7 @@ class ConfigTest extends TestCase
     {
         $config = Config::getInstance();
 
-        $config->load(new Setup('shared' . DS . 'config', 'config'));
+        $config->load(new Setup('config', 'config'));
 
         $this->assertIsArray($config->get('langs'));
 
@@ -141,7 +141,7 @@ class ConfigTest extends TestCase
     {
         $config = Config::getInstance();
 
-        $config->load(new Setup('shared' . DS . 'config', 'config'));
+        $config->load(new Setup('config', 'config'));
 
         $this->assertNotNull($config->get('test'));
 
@@ -156,7 +156,7 @@ class ConfigTest extends TestCase
     {
         $config = Config::getInstance();
 
-        $config->load(new Setup('shared' . DS . 'config', 'config'));
+        $config->load(new Setup('config', 'config'));
 
         $this->assertNotEmpty($config->all());
 

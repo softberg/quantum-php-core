@@ -22,6 +22,8 @@ abstract class IdiormDbalTestCase extends TestCase
         Di::loadDefinitions();
 
         config()->set('debug', true);
+        
+//        dd(config()->all());
 
         IdiormDbal::connect(['driver' => 'sqlite', 'database' => ':memory:']);
 

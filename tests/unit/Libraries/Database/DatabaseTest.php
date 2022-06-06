@@ -24,7 +24,7 @@ class DatabaseTest extends TestCase
 
         Di::loadDefinitions();
 
-        config()->import(new Setup('shared' . DS . 'config', 'database', true));
+        config()->import(new Setup('config', 'database', true));
 
         config()->set('database.current', 'sqlite');
 

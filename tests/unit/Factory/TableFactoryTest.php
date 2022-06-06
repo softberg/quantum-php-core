@@ -31,7 +31,7 @@ class TableFactoryTest extends TestCase
         Di::loadDefinitions();
 
         if (!config()->has('database')) {
-            config()->import(new Setup('shared' . DS . 'config', 'database', true));
+            config()->import(new Setup('config', 'database', true));
         }
 
         config()->set('database.current', 'sqlite');
