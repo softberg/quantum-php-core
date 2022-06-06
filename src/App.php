@@ -16,9 +16,9 @@ namespace Quantum;
 
 use Quantum\Environment\Environment;
 use Quantum\Libraries\Config\Config;
+use Quantum\Tracer\ErrorHandler;
 use Quantum\Loader\Loader;
 use Quantum\Loader\Setup;
-use Quantum\Tracer\ErrorHandler;
 use Quantum\Di\Di;
 
 if (!defined('DS')) define('DS', DIRECTORY_SEPARATOR);
@@ -73,7 +73,7 @@ class App
 
         ErrorHandler::setup();
 
-        Bootstrap::run();
+        Bootstrap::run($loader);
     }
 
     /**

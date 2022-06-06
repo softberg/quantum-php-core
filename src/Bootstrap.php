@@ -15,20 +15,17 @@
 namespace Quantum;
 
 use Quantum\Exceptions\StopExecutionException;
-use Quantum\Libraries\Database\Database;
-use Quantum\Libraries\Storage\FileSystem;
-use Quantum\Environment\Environment;
-use Quantum\Libraries\Config\Config;
 use Quantum\Routes\ModuleLoader;
 use Quantum\Libraries\Lang\Lang;
 use Quantum\Environment\Server;
 use Quantum\Debugger\Debugger;
+use Quantum\Hooks\HookManager;
 use Quantum\Mvc\MvcManager;
 use Quantum\Routes\Router;
 use Quantum\Loader\Loader;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
-use Quantum\Loader\Setup;
+use Psr\Log\LogLevel;
 use Quantum\Di\Di;
 
 /**
@@ -40,6 +37,7 @@ class Bootstrap
 
     /**
      * Boots the app
+     * @param Loader $loader
      * @throws \Quantum\Exceptions\ConfigException
      * @throws \Quantum\Exceptions\ControllerException
      * @throws \Quantum\Exceptions\CsrfException
@@ -53,7 +51,7 @@ class Bootstrap
      * @throws \Quantum\Exceptions\SessionException
      * @throws \ReflectionException
      */
-    public static function run()
+    public static function run(Loader $loader)
     {
         try {
             $request = Di::get(Request::class);
@@ -66,24 +64,26 @@ class Bootstrap
 
             ModuleLoader::loadModulesRoutes($router);
 
-            $router->findRoute();
+            Debugger::initStore();
+
+            $loader->loadDir(base_dir() . DS . 'hooks');
+
+            Debugger::addToStore(Debugger::HOOKS, LogLevel::INFO, HookManager::getRegistered());
+
+            $router->findRoute();            
 
             if (config()->has('langs')) {
                 Lang::getInstance()
-                    ->setLang($request->getSegment(config()->get('lang_segment')))
-                    ->load();
+                        ->setLang($request->getSegment(config()->get('lang_segment')))
+                        ->load();
             }
 
-            Debugger::initStore();
-
             MvcManager::handle($request, $response);
-
+            
             stop();
         } catch (StopExecutionException $e) {
             $response->send();
         }
-
     }
-
 
 }

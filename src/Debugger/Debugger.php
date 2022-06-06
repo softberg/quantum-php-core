@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.6.0
+ * @since 2.7.0
  */
 
 namespace Quantum\Debugger;
@@ -44,6 +44,11 @@ class Debugger
      * Routes tab
      */
     const ROUTES = 'routes';
+    
+    /**
+     * Hooks tab
+     */
+    const HOOKS = 'hooks';
 
     /**
      * Mails tab
@@ -97,6 +102,7 @@ class Debugger
         self::$store[self::MESSAGES] = [];
         self::$store[self::QUERIES] = [];
         self::$store[self::ROUTES] = [];
+        self::$store[self::HOOKS] = [];
         self::$store[self::MAILS] = [];
     }
 
@@ -147,6 +153,7 @@ class Debugger
         $this->createTab(self::MESSAGES);
         $this->createTab(self::QUERIES);
         $this->createTab(self::ROUTES);
+        $this->createTab(self::HOOKS);
         $this->createTab(self::MAILS);
 
         $renderer = $this->getRenderer();
