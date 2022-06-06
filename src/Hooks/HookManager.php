@@ -49,7 +49,7 @@ class HookManager
             config()->import(new Setup('shared' . DS . 'config', 'hooks'));
         }
 
-        $registeredHooks = array_merge(self::CORE_HOOKS, config()->get('hooks'));
+        $registeredHooks = array_merge(self::CORE_HOOKS, config()->get('hooks') ?: []);
 
         foreach ($registeredHooks as $hookName) {
             $this->register($hookName);
