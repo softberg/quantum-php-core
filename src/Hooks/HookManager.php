@@ -46,7 +46,7 @@ class HookManager
     private function __construct()
     {
         if (!config()->has('hooks')) {
-            config()->import(new Setup('shared' . DS . 'config', 'hooks'));
+            config()->import(new Setup('config', 'hooks'));
         }
 
         $registeredHooks = array_merge(self::CORE_HOOKS, config()->get('hooks') ?: []);
