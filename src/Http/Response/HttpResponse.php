@@ -179,12 +179,8 @@ abstract class HttpResponse
      */
     public static function redirect(string $url, int $code = 302)
     {
-        if (!is_null($code)) {
-            self::setStatusCode($code);
-        }
-
+        self::setStatusCode($code);
         self::setHeader('Location', $url);
-
         stop();
     }
 
