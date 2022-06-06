@@ -9,13 +9,13 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.6.0
+ * @since 2.7.0
  */
 
 namespace Quantum\Hooks;
 
-use Quantum\Libraries\Storage\FileSystem;
-use Quantum\Di\Di;
+use Quantum\Exceptions\HookException;
+use Quantum\Loader\Setup;
 
 /**
  * Class HookManager
@@ -25,11 +25,39 @@ class HookManager
 {
 
     /**
+     * Core hooks 
+     */
+    const CORE_HOOKS = [];
+
+    /**
+     * Registered hooks store
+     * @var array
+     */
+    private static $store = [];
+
+    /**
      * @var \Quantum\Hooks\HookManager|null
      */
     private static $instance = null;
 
     /**
+     * HookManager constructor
+     */
+    private function __construct()
+    {
+        if (!config()->has('hooks')) {
+            config()->import(new Setup('shared' . DS . 'config', 'hooks'));
+        }
+
+        $registeredHooks = array_merge(self::CORE_HOOKS, config()->get('hooks'));
+
+        foreach ($registeredHooks as $hookName) {
+            $this->register($hookName);
+        }
+    }
+
+    /**
+     * HookManager instance
      * @return \Quantum\Hooks\HookManager|null
      */
     public static function getInstance(): ?HookManager
@@ -42,29 +70,69 @@ class HookManager
     }
 
     /**
-     * @param string $hookName
-     * @throws \Quantum\Exceptions\DiException
-     * @throws \ReflectionException
+     * Adds new listener for given hook
+     * @param string $name
+     * @param callable $function
+     * @throws \Quantum\Exceptions\HookException
      */
-    public function __invoke(string $hookName)
+    public function on(string $name, callable $function)
     {
-        $fs = Di::get(FileSystem::class);
+        if (!$this->exists($name)) {
+            throw HookException::unregisteredHookName($name);
+        }
 
-        if ($fs->exists(hooks_dir() . DS . $hookName . '.php')) {
-            $className = '\\Hooks\\' . ucfirst($hookName);
+        self::$store[$name][] = $function;
+    }
 
-            if (class_exists($className, true)) {
-                $this->handleHook(new $className);
-            }
+    /**
+     * Fires the hook
+     * @param string $name
+     * @param array $args
+     * @throws \Quantum\Exceptions\HookException
+     */
+    public function fire(string $name, array $args = null)
+    {
+        if (!$this->exists($name)) {
+            throw HookException::unregisteredHookName($name);
+        }
+
+        foreach (self::$store[$name] as $index => $funcion) {
+            unset(self::$store[$name][$index]);
+            $funcion($args);
         }
     }
 
     /**
-     * @param \Quantum\Hooks\HookInterface $hook
+     * Gets all registered hooks
+     * @return array
      */
-    private function handleHook(HookInterface $hook)
+    public static function getRegistered(): array
     {
-        $hook->apply();
+        return self::$store;
+    }
+
+    /**
+     * Registers new hook 
+     * @param string $name
+     * @throws \Quantum\Exceptions\HookException
+     */
+    protected function register(string $name)
+    {
+        if ($this->exists($name)) {
+            throw HookException::hookDuplicateName($name);
+        }
+
+        self::$store[$name] = [];
+    }
+
+    /**
+     * Checks if hooks registered
+     * @param string $name
+     * @return bool
+     */
+    protected function exists(string $name): bool
+    {
+        return key_exists($name, self::$store);
     }
 
 }

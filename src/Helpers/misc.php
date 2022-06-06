@@ -11,7 +11,6 @@
  * @link http://quantum.softberg.org/
  * @since 2.6.0
  */
-
 use Quantum\Exceptions\StopExecutionException;
 use Quantum\Libraries\Asset\AssetManager;
 use Quantum\Exceptions\AppException;
@@ -140,7 +139,7 @@ function get_caller_function(int $index = 2): ?string
  */
 function stop(Closure $closure = null)
 {
-    if($closure) {
+    if ($closure) {
         $closure();
     }
 
@@ -158,7 +157,7 @@ function random_number(int $length = 10): int
     for ($i = 0; $i < $length; $i++) {
         $randomString .= rand(0, 9);
     }
-    return (int)$randomString;
+    return (int) $randomString;
 }
 
 /**
@@ -205,14 +204,3 @@ function is_closure($entity): bool
     return $entity instanceof \Closure;
 }
 
-/**
- * Triggers the hook
- * @param $hookName
- * @throws \Quantum\Exceptions\DiException
- * @throws \ReflectionException
- */
-function hook($hookName)
-{
-    $hook = HookManager::getInstance();
-    $hook($hookName);
-}
