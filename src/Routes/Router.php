@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.6.0
+ * @since 2.7.0
  */
 
 namespace Quantum\Routes;
@@ -92,8 +92,9 @@ class Router extends RouteController
         }
 
         if (!count($this->matchedRoutes)) {
-            hook('errorPage');
-            stop();
+            stop(function () {
+                $this->response->html(partial('errors/404'), 404);
+            });
         }
 
         if (count($this->matchedRoutes) > 1) {
@@ -101,8 +102,6 @@ class Router extends RouteController
         }
 
         $matchedRoute = current($this->matchedRoutes);
-
-        hook('headers');
 
         if ($this->request->getMethod() != 'OPTIONS') {
             $this->checkMethod($matchedRoute);
@@ -114,12 +113,13 @@ class Router extends RouteController
 
         if (filter_var(config()->get('debug'), FILTER_VALIDATE_BOOLEAN)) {
             $routeInfo = [];
+
             array_walk($matchedRoute, function ($value, $key) use (&$routeInfo) {
                 $routeInfo[ucfirst($key)] = is_array($value) ? implode(', ', $value) : $value;
             });
+
             Debugger::addToStore(Debugger::ROUTES, LogLevel::INFO, $routeInfo);
         }
-
     }
 
     /**
@@ -208,7 +208,6 @@ class Router extends RouteController
             for ($j = $i + 1; $j < $length; $j++) {
                 if ($this->matchedRoutes[$i]['method'] == $this->matchedRoutes[$j]['method']) {
                     throw RouteException::repetitiveRouteSameMethod($this->matchedRoutes[$j]['method']);
-
                 }
                 if ($this->matchedRoutes[$i]['module'] != $this->matchedRoutes[$j]['module']) {
                     throw RouteException::repetitiveRouteDifferentModules();
