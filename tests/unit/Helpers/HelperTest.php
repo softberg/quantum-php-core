@@ -221,7 +221,7 @@ class HelperTest extends TestCase
         $this->assertEquals('GET', route_method());
 
         $this->assertEquals('api-user/12', route_uri());
-        ;
+       
     }
 
     public function testView()

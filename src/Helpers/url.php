@@ -36,7 +36,7 @@ function current_url(): string
 /**
  * Redirect
  * @param string $url
- * @param integer $code
+ * @param int $code
  */
 function redirect(string $url, int $code = 302)
 {

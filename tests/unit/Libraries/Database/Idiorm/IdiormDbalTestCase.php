@@ -23,8 +23,6 @@ abstract class IdiormDbalTestCase extends TestCase
 
         config()->set('debug', true);
         
-//        dd(config()->all());
-
         IdiormDbal::connect(['driver' => 'sqlite', 'database' => ':memory:']);
 
         $this->_createUserTableWithData();

@@ -174,7 +174,7 @@ abstract class HttpResponse
     /**
      * Redirect
      * @param string $url
-     * @param int|null $code
+     * @param int $code
      * @throws \Quantum\Exceptions\StopExecutionException
      */
     public static function redirect(string $url, int $code = 302)
@@ -206,7 +206,7 @@ abstract class HttpResponse
 
     /**
      * Prepares the JSONP response
-     * @param string|null $callback
+     * @param string $callback
      * @param array|null $data
      * @param int|null $code
      */

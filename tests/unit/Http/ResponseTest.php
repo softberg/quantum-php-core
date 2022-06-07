@@ -155,11 +155,10 @@ namespace Quantum\Tests\Http {
 
             $this->assertEquals('{"firstname":"John","lastname":"Doe","age":25}', $response->getContent());
 
-            $response->json(
-                    [
-                        'gender' => 'male',
-                        'role' => 'user'
-                    ],);
+            $response->json([
+                'gender' => 'male',
+                'role' => 'user'
+            ]);
 
             $this->assertEquals('{"firstname":"John","lastname":"Doe","age":25,"gender":"male","role":"user"}', $response->getContent());
 
