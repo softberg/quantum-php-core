@@ -26,7 +26,7 @@ class EnvironmentTest extends TestCase
 
         $fs->put(base_dir() . DS . '.env.staging', "DEBUG=TRUE\nAPP_KEY=AB1234567890\n");
 
-        $this->env = Environment::getInstance()->load(new Setup('shared' . DS . 'config', 'env'));
+        $this->env = Environment::getInstance()->load(new Setup('config', 'env'));
     }
 
     public function testEnvLoadAndGetValue()

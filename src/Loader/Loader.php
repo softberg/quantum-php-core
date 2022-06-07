@@ -154,7 +154,7 @@ class Loader
 
         if (!$this->fs->exists($filePath)) {
             if ($this->hierarchical) {
-                $filePath = base_dir() . DS . $this->pathPrefix . DS . $this->fileName . '.php';
+                $filePath = base_dir() . DS . 'shared' . DS . $this->pathPrefix . DS . $this->fileName . '.php';
 
                 if (!$this->fs->exists($filePath)) {
                     throw new LoaderException(_message($this->exceptionMessage, $this->fileName));

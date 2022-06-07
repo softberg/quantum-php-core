@@ -4,20 +4,19 @@ namespace Quantum\Tests\Helpers;
 
 use PHPUnit\Framework\TestCase;
 use Quantum\Exceptions\StopExecutionException;
-use Quantum\Libraries\Asset\Asset;
-use Quantum\Libraries\Cookie\Cookie;
 use Quantum\Libraries\Storage\FileSystem;
-use Quantum\Libraries\Asset\AssetManager;
 use Quantum\Libraries\Session\Session;
-use Quantum\Libraries\Config\Config;
+use Quantum\Exceptions\HookException;
+use Quantum\Libraries\Cookie\Cookie;
 use Quantum\Routes\RouteController;
+use Quantum\Libraries\Asset\Asset;
 use Quantum\Libraries\Lang\Lang;
 use Quantum\Libraries\Csrf\Csrf;
 use Quantum\Factory\ViewFactory;
 use Quantum\Loader\Setup;
 use Quantum\Routes\Router;
-use Quantum\Http\Request;
 use Quantum\Http\Response;
+use Quantum\Http\Request;
 use Quantum\Di\Di;
 use Quantum\App;
 use Mockery;
@@ -38,6 +37,8 @@ class HelperTest extends TestCase
         App::setBaseDir(dirname(__DIR__) . DS . '_root');
 
         Di::loadDefinitions();
+
+        Response::init();
 
         $this->request = new Request();
 
@@ -94,12 +95,12 @@ class HelperTest extends TestCase
         try {
             redirect('/home');
         } catch (StopExecutionException $e) {
+            
         }
 
         $this->assertTrue($this->response->hasHeader('Location'));
 
         $this->assertEquals('/home', $this->response->getHeader('Location'));
-
     }
 
     public function testRedirectWithOldData()
@@ -109,6 +110,7 @@ class HelperTest extends TestCase
         try {
             redirectWith('/signup', $this->request->all());
         } catch (StopExecutionException $e) {
+            
         }
 
         $this->assertTrue($this->response->hasHeader('Location'));
@@ -151,9 +153,9 @@ class HelperTest extends TestCase
         ]);
 
         $expectedOutput = '<link rel="stylesheet" type="text/css" href="' . asset()->url('css/style.css') . '">' . PHP_EOL .
-            '<link rel="stylesheet" type="text/css" href="' . asset()->url('css/responsive.css') . '">' . PHP_EOL .
-            '<script src="' . asset()->url('js/bootstrap.js') . '"></script>' . PHP_EOL .
-            '<script src="' . asset()->url('js/bootstrap-datepicker.min.js') . '"></script>' . PHP_EOL;
+                '<link rel="stylesheet" type="text/css" href="' . asset()->url('css/responsive.css') . '">' . PHP_EOL .
+                '<script src="' . asset()->url('js/bootstrap.js') . '"></script>' . PHP_EOL .
+                '<script src="' . asset()->url('js/bootstrap-datepicker.min.js') . '"></script>' . PHP_EOL;
 
         ob_start();
 
@@ -218,7 +220,8 @@ class HelperTest extends TestCase
 
         $this->assertEquals('GET', route_method());
 
-        $this->assertEquals('api-user/12', route_uri());;
+        $this->assertEquals('api-user/12', route_uri());
+       
     }
 
     public function testView()
@@ -243,7 +246,7 @@ class HelperTest extends TestCase
     {
         config()->flush();
 
-        config()->load(new Setup('shared' . DS . 'config', 'config', true));
+        config()->load(new Setup('config', 'config', true));
 
         $this->assertFalse(config()->has('not-exists'));
 
@@ -370,6 +373,63 @@ class HelperTest extends TestCase
         $this->assertEquals('Hello John', _message('Hello {%1}', 'John'));
 
         $this->assertEquals('Hello John, greetings from Jenny', _message('Hello {%1}, greetings from {%2}', ['John', 'Jenny']));
+    }
+
+    public function testHookOnAndFire()
+    {
+        hook()->on('SAVE', function () {
+            echo 'Data successfully saved';
+        });
+
+        hook()->fire('SAVE');
+
+        $this->expectOutputString('Data successfully saved');
+    }
+
+    public function testHookFireWithArgument()
+    {
+        hook()->on('SAVE', function ($data) {
+            echo 'The file ' . $data['filename'] . ' was successfully saved';
+        });
+
+        hook()->fire('SAVE', ['filename' => 'doc.pdf']);
+
+        $this->expectOutputString('The file doc.pdf was successfully saved');
+    }
+
+    public function testHookMultipleListeners()
+    {
+        hook()->on('SAVE', function ($data) {
+            echo 'The file ' . $data['filename'] . ' was successfully saved' . PHP_EOL;
+        });
+
+        hook()->on('SAVE', function () {
+            echo 'The email was successfully sent';
+        });
+
+        hook()->fire('SAVE', ['filename' => 'doc.pdf']);
+        
+        $this->expectOutputString('The file doc.pdf was successfully saved' . PHP_EOL . 'The email was successfully sent');
+    }
+
+    public function testUnregisteredHookAtOn()
+    {
+        $this->expectException(HookException::class);
+
+        $this->expectExceptionMessage('The Hook `SOME_EVENT` was not registered');
+
+        hook()->on('SOME_EVENT', function () {
+            echo 'Do someting';
+        });
+    }
+
+    public function testUnregisteredHookAtFire()
+    {
+        $this->expectException(HookException::class);
+
+        $this->expectExceptionMessage('The Hook `SOME_EVENT` was not registered');
+
+        hook()->fire('SOME_EVENT');
     }
 
 }

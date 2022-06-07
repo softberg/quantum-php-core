@@ -27,11 +27,11 @@ class LoaderTest extends TestCase
 
     public function testSetupAndLoad()
     {
-        $this->loader->setup(new Setup('shared' . DS . 'config', 'config'));
-
-        $this->assertEquals(base_dir() . DS . 'shared' . DS . 'config' . DS . 'config.php', $this->loader->getFilePath());
+        $this->loader->setup(new Setup('config', 'config'));
 
         $content = $this->loader->load();
+        
+        $this->assertEquals(base_dir() . DS . 'shared' . DS . 'config' . DS . 'config.php', $this->loader->getFilePath());
 
         $this->assertIsArray($content);
     }

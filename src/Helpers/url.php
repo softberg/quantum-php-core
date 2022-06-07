@@ -36,9 +36,9 @@ function current_url(): string
 /**
  * Redirect
  * @param string $url
- * @param integer|null $code
+ * @param int $code
  */
-function redirect(string $url, int $code = null)
+function redirect(string $url, int $code = 302)
 {
     Response::redirect($url, $code);
 }
@@ -47,12 +47,12 @@ function redirect(string $url, int $code = null)
  * Redirect with data
  * @param string $url
  * @param array $data
- * @param int|null $code
+ * @param int $code
  * @throws \Quantum\Exceptions\CryptorException
  * @throws \Quantum\Exceptions\DatabaseException
  * @throws \Quantum\Exceptions\SessionException
  */
-function redirectWith(string $url, array $data, int $code = null)
+function redirectWith(string $url, array $data, int $code = 302)
 {
     session()->set('__prev_request', $data);
     Response::redirect($url, $code);

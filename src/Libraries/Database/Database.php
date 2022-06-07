@@ -87,7 +87,7 @@ class Database
     public function getConfigs(): ?array
     {
         if (!config()->has('database') || !config()->has('database.current')) {
-            config()->import(new Setup('shared' . DS . 'config', 'database'));
+            config()->import(new Setup('config', 'database'));
         }
 
         $currentKey = config()->get('database.current');

@@ -11,7 +11,6 @@
  * @link http://quantum.softberg.org/
  * @since 2.6.0
  */
-
 use Quantum\Libraries\Session\SessionManager;
 use Quantum\Libraries\Encryption\Cryptor;
 use Quantum\Libraries\Asset\AssetManager;
@@ -19,6 +18,7 @@ use Quantum\Libraries\Auth\AuthManager;
 use Quantum\Libraries\Session\Session;
 use Quantum\Libraries\Cookie\Cookie;
 use Quantum\Libraries\Mailer\Mailer;
+use Quantum\Hooks\HookManager;
 use Quantum\Di\Di;
 
 /**
@@ -72,4 +72,13 @@ function mailer(): Mailer
 function asset(): ?AssetManager
 {
     return AssetManager::getInstance();
+}
+
+/**
+ * Gets the HookManager instance
+ * @return Quantum\Hooks\HookManager
+ */
+function hook(): HookManager
+{
+    return HookManager::getInstance();
 }
