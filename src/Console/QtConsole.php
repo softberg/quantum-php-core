@@ -68,9 +68,9 @@ class QtConsole
         $loader->loadDir(base_dir() . DS . 'helpers');
         $loader->loadDir(base_dir() . DS . 'libraries');
 
-        Environment::getInstance()->load(new Setup('shared' . DS . 'config', 'env'));
+        Environment::getInstance()->load(new Setup('config', 'env'));
 
-        Config::getInstance()->load(new Setup('shared' . DS . 'config', 'config'));
+        Config::getInstance()->load(new Setup('config', 'config'));
 
         $this->application = new Application($this->name, $this->version);
 
