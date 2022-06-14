@@ -15,10 +15,9 @@
 namespace Quantum\Console;
 
 use Symfony\Component\Console\Application;
-use Quantum\Environment\Environment;
 use Quantum\Libraries\Config\Config;
-use Quantum\Loader\Setup;
 use Quantum\Loader\Loader;
+use Quantum\Loader\Setup;
 use Quantum\Di\Di;
 use Quantum\App;
 
@@ -57,7 +56,7 @@ class QtConsole
      */
     public function init(string $baseDir): int
     {
-        App::loadCoreFunctions($baseDir.  DS . 'vendor' . DS .'quantum' . DS . 'framework' . DS . 'src' . DS . 'Helpers');
+        App::loadCoreFunctions($baseDir . DS . 'vendor' . DS . 'quantum' . DS . 'framework' . DS . 'src' . DS . 'Helpers');
 
         App::setBaseDir($baseDir);
 
@@ -68,13 +67,11 @@ class QtConsole
         $loader->loadDir(base_dir() . DS . 'helpers');
         $loader->loadDir(base_dir() . DS . 'libraries');
 
-        Environment::getInstance()->load(new Setup('config', 'env'));
-
-        Config::getInstance()->load(new Setup('config', 'config'));
-
         $this->application = new Application($this->name, $this->version);
 
         $this->register();
+
+        Config::getInstance()->load(new Setup('config', 'config'));
 
         return $this->application->run();
     }

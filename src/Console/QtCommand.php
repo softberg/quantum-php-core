@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.6.0
+ * @since 2.7.0
  */
 
 namespace Quantum\Console;
@@ -19,6 +19,8 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Command\Command;
+use Quantum\Environment\Environment;
+use Quantum\Loader\Setup;
 
 /**
  * Class QtCommand
@@ -97,6 +99,10 @@ abstract class QtCommand extends Command implements CommandInterface
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        if ($this->getName() != 'core:env') {
+            Environment::getInstance()->load(new Setup('config', 'env'));
+        }
+
         $this->input = $input;
         $this->output = $output;
         $this->exec();
