@@ -127,8 +127,8 @@ class Environment
 
         if ($row) {
             $this->fs->put($envFilePath, preg_replace(
-                '/^' . $row . '/m',
-                $key . "=" . $value . PHP_EOL,
+                '/^'. $key . "=" . $row . '/m',
+                $key . "=" . $value,
                 $this->fs->get($envFilePath)
             ));
         } else {
@@ -145,8 +145,8 @@ class Environment
      */
     private function getRow(string $key): ?string
     {
-        foreach ($this->envContent as $row) {
-            if (preg_match('/^' . $key . '=/', $row)) {
+        foreach ($this->envContent as $k=>$row) {
+            if (preg_match('/^' . $key . '/', $k)) {
                 return preg_quote($row, '/');
             }
         }
