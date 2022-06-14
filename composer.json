@@ -3,7 +3,7 @@
     "description": "The Quantum PHP Framework",
     "keywords": ["framework", "php", "quantum"],
     "license": "MIT",
-    "version": "2.6.0",
+    "version": "2.7.0",
     "homepage": "https://quantumphp.io",
     "support": {
         "issues": "https://github.com/softberg/quantum-core/issues",
