@@ -145,8 +145,8 @@ class Environment
      */
     private function getRow(string $key): ?string
     {
-        foreach ($this->envContent as $k=>$row) {
-            if (preg_match('/^' . $key . '/', $k)) {
+        foreach ($this->envContent as $index => $row) {
+            if (preg_match('/^' . $key . '/', $index)) {
                 return preg_quote($row, '/');
             }
         }
