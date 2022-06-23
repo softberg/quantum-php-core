@@ -69,7 +69,7 @@ namespace Quantum\Tests\Libraries\Storage {
         {
             $dirName = base_dir() . DS . 'testing';
 
-            $this->assertDirectoryNotExists($dirName);
+            $this->assertDirectoryDoesNotExist($dirName);
 
             $this->fs->makeDirectory($dirName);
 
@@ -77,7 +77,7 @@ namespace Quantum\Tests\Libraries\Storage {
 
             $this->fs->removeDirectory($dirName);
 
-            $this->assertDirectoryNotExists($dirName);
+            $this->assertDirectoryDoesNotExist($dirName);
         }
 
         public function testFileGetPut()
@@ -108,7 +108,7 @@ namespace Quantum\Tests\Libraries\Storage {
 
             $newFilename = base_dir() . DS . 'new_name.txt';
 
-            $this->assertFileNotExists($newFilename);
+            $this->assertFileDoesNotExist($newFilename);
 
             $this->fs->rename($this->filename, $newFilename);
 
@@ -123,7 +123,7 @@ namespace Quantum\Tests\Libraries\Storage {
 
             $this->fs->put($this->filename, '');
 
-            $this->assertFileNotExists($dirName . DS . $this->filename);
+            $this->assertFileDoesNotExist($dirName . DS . $this->filename);
 
             $this->fs->makeDirectory($dirName);
 
@@ -171,7 +171,7 @@ namespace Quantum\Tests\Libraries\Storage {
 
             $this->fs->remove($this->filename);
 
-            $this->assertFileNotExists($this->filename);
+            $this->assertFileDoesNotExist($this->filename);
         }
 
         public function testIsFile()
