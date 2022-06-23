@@ -43,7 +43,7 @@ $ php qt serve
 <br/>
 
 <h2>Quick Demo</h2>
-<img src="https://assets.softberg.org/qt-install-short.gif"/>
+<img src="https://assets.softberg.org/qt-short.gif"/>
 
 > **Note:** This repository contains the core code of the Quantum framework. If you want to start a new project visit the main [Quantum PHP Project repository](https://github.com/softberg/quantum-framework-php).
 
