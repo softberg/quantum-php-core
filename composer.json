@@ -31,7 +31,8 @@
         "twig/twig": "^2.7",
         "php-curl-class/php-curl-class": "^8.6",
         "psr/log": "^1.1",
-        "rakibtg/sleekdb": "^2.13"
+        "rakibtg/sleekdb": "^2.13",
+        "laminas/laminas-text": "^2.9"
     },
     "require-dev": {
         "phpunit/phpunit": "^8.2",

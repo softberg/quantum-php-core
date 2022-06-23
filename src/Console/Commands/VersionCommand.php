@@ -9,15 +9,15 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.6.0
+ * @since 2.8.0
  */
 
 namespace Quantum\Console\Commands;
 
 use Quantum\Environment\Environment;
+use Laminas\Text\Figlet\Figlet;
 use Quantum\Console\QtCommand;
 use Quantum\Loader\Setup;
-use Figlet\Figlet;
 
 /**
  * Class VersionCommand
@@ -56,7 +56,7 @@ class VersionCommand extends QtCommand
 
         $figlet = new Figlet();
 
-        $figlet->setFont('slant.flf')->setSmushMode(Figlet::SM_SMUSH);
+        $figlet->setFont(assets_dir() . DS . 'fonts' . DS . 'figlet' . DS . 'slant.flf')->setSmushMode(Figlet::SM_SMUSH);
 
         $this->info($figlet->render('QUANTUM PHP ' . env('APP_VERSION')));
 
