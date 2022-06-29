@@ -9,13 +9,13 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.6.0
+ * @since 2.8.0
  */
+use Quantum\Libraries\Transformer\TransformerInterface;
 use Quantum\Exceptions\StopExecutionException;
 use Quantum\Libraries\Asset\AssetManager;
 use Quantum\Exceptions\AppException;
 use Quantum\Libraries\Csrf\Csrf;
-use Quantum\Hooks\HookManager;
 
 /**
  * Generates the CSRF token

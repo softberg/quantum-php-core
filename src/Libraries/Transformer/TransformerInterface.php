@@ -23,7 +23,7 @@ interface TransformerInterface
 
     /**
      * Defines the transformer signature
-     * @param type $item
+     * @param mixed $item
      */
     public function transform($item);
 }
