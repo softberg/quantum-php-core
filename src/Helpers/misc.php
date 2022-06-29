@@ -204,3 +204,13 @@ function is_closure($entity): bool
     return $entity instanceof \Closure;
 }
 
+/**
+ * Transforms the data by given transformer signature
+ * @param array $data
+ * @param TransformerInterface $transformer
+ * @return array
+ */
+function transform(array $data, TransformerInterface $transformer): array
+{
+    return TransformerManager::transform($data, $transformer);
+}
