@@ -1,5 +1,5 @@
 <p align="center">
-    <a href="https://github.com/nastyox/Rando.js#nastyox">
+    <a href="https://quantumphp.io">
         <img src="http://quantumphp.io/files/quantum-og-image.png" alt="Quantum" height="150"/>
     </a>
 </p>
