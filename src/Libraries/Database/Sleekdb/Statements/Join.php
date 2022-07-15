@@ -9,13 +9,14 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.6.0
+ * @since 2.8.0
  */
 
 namespace Quantum\Libraries\Database\Sleekdb\Statements;
 
 use Quantum\Libraries\Database\Sleekdb\SleekDbal;
 use Quantum\Libraries\Database\DbalInterface;
+use Quantum\Exceptions\ModelException;
 use SleekDB\QueryBuilder;
 use Quantum\Mvc\QtModel;
 
@@ -76,6 +77,7 @@ trait Join
      * @param array $nextItem
      * @param int $level
      * @return \SleekDB\QueryBuilder
+     * @throws \Quantum\Exceptions\ModelException
      */
     private function applyJoin(QueryBuilder $queryBuilder, SleekDbal $currentItem, array $nextItem, int $level = 1): QueryBuilder
     {
@@ -88,12 +90,20 @@ trait Join
             $newQueryBuilder = (new self($modelToJoin->table))->getOrmModel()->createQueryBuilder();
 
             if ($joinType == self::JOINTO) {
+                if (!isset($modelToJoin->foreignKeys[$currentItem->table])) {
+                    throw ModelException::wrongRelation(get_class($modelToJoin), $currentItem->table);
+                }
+
                 $newQueryBuilder->where([
                     $modelToJoin->foreignKeys[$currentItem->table],
                     '=',
                     $item[$currentItem->idColumn]
                 ]);
             } else if ($joinType == self::JOINTHROUGH) {
+                if (!isset($currentItem->foreignKeys[$modelToJoin->table])) {
+                    throw ModelException::wrongRelation(get_class($modelToJoin), $currentItem->table);
+                }
+
                 $newQueryBuilder->where([
                     $modelToJoin->idColumn,
                     '=',
@@ -107,7 +117,7 @@ trait Join
             }
 
             return $newQueryBuilder;
-
+            
         }, $modelToJoin->table);
 
         if (!$switch && isset($this->joins[$level])) {
@@ -116,4 +126,5 @@ trait Join
 
         return $queryBuilder;
     }
+
 }

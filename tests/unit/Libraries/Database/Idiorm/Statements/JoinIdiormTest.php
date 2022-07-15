@@ -6,49 +6,62 @@ namespace Quantum\Models {
 
     class CUserModel extends QtModel
     {
+
         public $table = 'users';
+
     }
 
     class CUserProfessionModel extends QtModel
     {
+
         public $table = 'user_professions';
         public $foreignKeys = [
             'users' => 'user_id'
         ];
+
     }
 
     class CUserEventModel extends QtModel
     {
+
         public $table = 'user_events';
         public $foreignKeys = [
             'users' => 'user_id',
             'events' => 'event_id'
         ];
+
     }
 
     class CEventModel extends QtModel
     {
+
         public $table = 'events';
         public $foreignKeys = [
             'user_events' => 'event_id'
         ];
+
     }
 
     class CMeetingModel extends QtModel
     {
+
         public $table = 'meetings';
         public $foreignKeys = [
             'users' => 'user_id'
         ];
+
     }
 
     class CTicketModel extends QtModel
     {
+
         public $table = 'tickets';
         public $foreignKeys = [
             'meetings' => 'meeting_id'
         ];
+
     }
+
 }
 
 namespace Quantum\Tests\Libraries\Database\Idiorm\Statements {
@@ -56,6 +69,7 @@ namespace Quantum\Tests\Libraries\Database\Idiorm\Statements {
     use Quantum\Tests\Libraries\Database\Idiorm\IdiormDbalTestCase;
     use Quantum\Libraries\Database\Idiorm\IdiormDbal;
     use Quantum\Models\CUserProfessionModel;
+    use Quantum\Exceptions\ModelException;
     use Quantum\Models\CUserEventModel;
     use Quantum\Factory\ModelFactory;
     use Quantum\Models\CMeetingModel;
@@ -65,6 +79,7 @@ namespace Quantum\Tests\Libraries\Database\Idiorm\Statements {
 
     class JoinIdiormTest extends IdiormDbalTestCase
     {
+
         public function testIdiormJoinAndInnerJoin()
         {
             $userModel = new IdiormDbal('users');
@@ -89,9 +104,9 @@ namespace Quantum\Tests\Libraries\Database\Idiorm\Statements {
             $userModel = new IdiormDbal('users');
 
             $result = $userModel->select('users.*', 'events.*')
-                ->join('user_events', ['user_events.user_id', '=', 'users.id'])
-                ->join('events', ['user_events.event_id', '=', 'events.id'])
-                ->get();
+                    ->join('user_events', ['user_events.user_id', '=', 'users.id'])
+                    ->join('events', ['user_events.event_id', '=', 'events.id'])
+                    ->get();
 
             $this->assertCount(6, $result);
 
@@ -103,10 +118,10 @@ namespace Quantum\Tests\Libraries\Database\Idiorm\Statements {
             $userModel = new IdiormDbal('users');
 
             $result = $userModel->select('users.*', 'events.*')
-                ->join('user_events', ['user_events.user_id', '=', 'users.id'])
-                ->join('events', ['user_events.event_id', '=', 'events.id'])
-                ->criteria('events.started_at', '>=', '2020-01-01')
-                ->get();
+                    ->join('user_events', ['user_events.user_id', '=', 'users.id'])
+                    ->join('events', ['user_events.event_id', '=', 'events.id'])
+                    ->criteria('events.started_at', '>=', '2020-01-01')
+                    ->get();
 
             $this->assertCount(3, $result);
         }
@@ -136,9 +151,9 @@ namespace Quantum\Tests\Libraries\Database\Idiorm\Statements {
             $userProfessionModel = ModelFactory::get(CUserProfessionModel::class);
 
             $users = $userModel->select(['users.id' => 'user_id'],
-                'firstname', 'user_professions.title')
-                ->joinTo($userProfessionModel)
-                ->get();
+                            'firstname', 'user_professions.title')
+                    ->joinTo($userProfessionModel)
+                    ->get();
 
             $this->assertIsArray($users);
 
@@ -164,9 +179,9 @@ namespace Quantum\Tests\Libraries\Database\Idiorm\Statements {
             $userEventModel = ModelFactory::get(CUserEventModel::class);
 
             $users = $userModel->select('users.*', 'user_professions.title', 'user_events.event_id')
-                ->joinTo($userProfessionModel, false)
-                ->joinTo($userEventModel, false)
-                ->get();
+                    ->joinTo($userProfessionModel, false)
+                    ->joinTo($userEventModel, false)
+                    ->get();
 
             $this->assertIsArray($users);
 
@@ -193,9 +208,9 @@ namespace Quantum\Tests\Libraries\Database\Idiorm\Statements {
             $ticketModel = ModelFactory::get(CTicketModel::class);
 
             $users = $userModel
-                ->joinTo($meetingModel)
-                ->joinTo($ticketModel)
-                ->get();
+                    ->joinTo($meetingModel)
+                    ->joinTo($ticketModel)
+                    ->get();
 
             $this->assertIsArray($users);
 
@@ -221,16 +236,16 @@ namespace Quantum\Tests\Libraries\Database\Idiorm\Statements {
             $eventModel = ModelFactory::get(CEventModel::class);
 
             $users = $userModel->select(
-                ['users.id' => 'user_id'],
-                ['events.id' => 'event_id'],
-                'firstname',
-                'confirmed',
-                ['events.title' => 'event_title'])
-                ->joinTo($userEventModel)
-                ->joinThrough($eventModel)
-                ->criteria('user_events.confirmed', '=', 'Yes')
-                ->orderBy('user_events.created_at', 'desc')
-                ->get();
+                            ['users.id' => 'user_id'],
+                            ['events.id' => 'event_id'],
+                            'firstname',
+                            'confirmed',
+                            ['events.title' => 'event_title'])
+                    ->joinTo($userEventModel)
+                    ->joinThrough($eventModel)
+                    ->criteria('user_events.confirmed', '=', 'Yes')
+                    ->orderBy('user_events.created_at', 'desc')
+                    ->get();
 
             $this->assertIsArray($users);
 
@@ -252,7 +267,23 @@ namespace Quantum\Tests\Libraries\Database\Idiorm\Statements {
             $query = preg_replace('/[\s\t]+/', ' ', preg_replace('/' . PHP_EOL . '+/', '', $query));
 
             $this->assertEquals($query, IdiormDbal::lastQuery());
+        }
 
+        public function testIdiormJoinThroughInverse()
+        {
+            $meetingModel = ModelFactory::get(CMeetingModel::class);
+
+            $ticketModel = ModelFactory::get(CTicketModel::class);
+
+            $tickets = $ticketModel->joinThrough($meetingModel)->get();
+
+            $this->assertIsArray($tickets);
+
+            $query = "SELECT * FROM `tickets` JOIN `meetings` ON `meetings`.`id` = `tickets`.`meeting_id`";
+
+            $query = preg_replace('/[\s\t]+/', ' ', preg_replace('/' . PHP_EOL . '+/', '', $query));
+
+            $this->assertEquals($query, IdiormDbal::lastQuery());
         }
 
         public function testIdiormJoinToAndJoinThrough()
@@ -266,14 +297,14 @@ namespace Quantum\Tests\Libraries\Database\Idiorm\Statements {
             $eventModel = ModelFactory::get(CEventModel::class);
 
             $user = $userModel->select(
-                ['users.id' => 'user_id'],
-                'firstname',
-                ['user_professions.title' => 'profession_title'],
-                ['events.title' => 'event_title'])
-                ->joinTo($userProfessionModel, false)
-                ->joinTo($userEventModel)
-                ->joinThrough($eventModel)
-                ->first();
+                            ['users.id' => 'user_id'],
+                            'firstname',
+                            ['user_professions.title' => 'profession_title'],
+                            ['events.title' => 'event_title'])
+                    ->joinTo($userProfessionModel, false)
+                    ->joinTo($userEventModel)
+                    ->joinThrough($eventModel)
+                    ->first();
 
             $this->assertEquals('John', $user->firstname);
 
@@ -294,5 +325,19 @@ namespace Quantum\Tests\Libraries\Database\Idiorm\Statements {
 
             $this->assertEquals($query, IdiormDbal::lastQuery());
         }
+
+        public function testIdiormWrongRelation()
+        {
+            $this->expectException(ModelException::class);
+
+            $this->expectExceptionMessage('The model `Quantum\Models\CTicketModel` does not define relation wtih `events`');
+
+            $eventModel = ModelFactory::get(CEventModel::class);
+
+            $ticketModel = ModelFactory::get(CTicketModel::class);
+
+            $eventModel->joinTo($ticketModel)->get();
+        }
     }
+
 }

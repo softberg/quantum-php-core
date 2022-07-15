@@ -9,13 +9,14 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.6.0
+ * @since 2.8.0
  */
 
 namespace Quantum\Libraries\Database\Idiorm\Statements;
 
 use Quantum\Libraries\Database\Idiorm\IdiormPatch;
 use Quantum\Libraries\Database\DbalInterface;
+use Quantum\Exceptions\ModelException;
 use Quantum\Mvc\QtModel;
 
 /**
@@ -31,8 +32,8 @@ trait Join
      */
     public function join(string $table, array $constraint, string $tableAlias = null): DbalInterface
     {
-         $this->getOrmModel()->join($table, $constraint, $tableAlias);
-         return $this;
+        $this->getOrmModel()->join($table, $constraint, $tableAlias);
+        return $this;
     }
 
     /**
@@ -68,15 +69,20 @@ trait Join
     /**
      * @inheritDoc
      * @throws \Quantum\Exceptions\DatabaseException
+     * @throws \Quantum\Exceptions\ModelException
      */
     public function joinTo(QtModel $model, bool $switch = true): DbalInterface
     {
+        if (!isset($model->foreignKeys[$this->table])) {
+            throw ModelException::wrongRelation(get_class($model), $this->table);
+        }
+
         $this->getOrmModel()->join($model->table,
-            [
-                $model->table . '.' . $model->foreignKeys[$this->table],
-                '=',
-                $this->table . '.' . $this->idColumn
-            ]
+                [
+                    $model->table . '.' . $model->foreignKeys[$this->table],
+                    '=',
+                    $this->table . '.' . $this->idColumn
+                ]
         );
 
         if ($switch) {
@@ -91,15 +97,20 @@ trait Join
     /**
      * @inheritDoc
      * @throws \Quantum\Exceptions\DatabaseException
+     * @throws \Quantum\Exceptions\ModelException
      */
     public function joinThrough(QtModel $model, bool $switch = true): DbalInterface
     {
+        if (!isset($this->foreignKeys[$model->table])) {
+            throw ModelException::wrongRelation(get_class($model), $this->table);
+        }
+
         $this->getOrmModel()->join($model->table,
-            [
-                $model->table . '.' . $model->idColumn,
-                '=',
-                $this->table . '.' . $this->foreignKeys[$model->table]
-            ]
+                [
+                    $model->table . '.' . $model->idColumn,
+                    '=',
+                    $this->table . '.' . $this->foreignKeys[$model->table]
+                ]
         );
 
         if ($switch) {
