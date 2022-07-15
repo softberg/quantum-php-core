@@ -29,6 +29,16 @@ class Lang
 {
 
     /**
+     * Config key for defined languages
+     */
+    const LANGS_DEFINED = 'langs';
+
+    /**
+     * Config key for lang segment
+     */
+    const LANG_SEGMENT = 'lang_segment';
+
+    /**
      * Current language
      * @var string
      */
