@@ -9,23 +9,19 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.5.0
+ * @since 2.8.0
  */
 
-namespace Quantum\Routes;
+namespace Quantum\Router;
 
 use Quantum\Exceptions\RouteException;
 use Closure;
 
 /**
  * Route Class
- *
  * Route class allows to add new route entries
- *
- * @package Quantum
- * @category Routes
+ * @package Quantum\Router
  */
-
 class Route
 {
 
@@ -35,7 +31,7 @@ class Route
      */
     private $module;
 
-    /**`
+    /*     * `
      * Identifies the group middleware
      * @var bool
      */
@@ -169,7 +165,7 @@ class Route
             } else {
                 $this->isGroup = false;
                 foreach ($this->virtualRoutes[$lastKeyOfFirstRound] as &$route) {
-                    if(!key_exists('middlewares', $route)) {
+                    if (!key_exists('middlewares', $route)) {
                         $route['middlewares'] = $middlewares;
                     } else {
                         $reversedMiddlewares = array_reverse($middlewares);
