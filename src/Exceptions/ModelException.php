@@ -102,7 +102,7 @@ class ModelException extends \Exception
      */
     public static function wrongRelation(string $modelName, string $tableName): ModelException
     {
-        return new static(_message(self::WRON_RELATION, [$modelName, $tableName]), E_ERROR);
+        return new static(_message(self::WRONG_RELATION, [$modelName, $tableName]), E_ERROR);
     }
 
 }
