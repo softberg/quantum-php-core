@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.6.0
+ * @since 2.8.0
  */
 
 namespace Quantum\Libraries\Auth;
@@ -19,8 +19,8 @@ use Quantum\Exceptions\AuthException;
 use Quantum\Libraries\Mailer\Mailer;
 use Quantum\Libraries\Hasher\Hasher;
 use Quantum\Factory\ServiceFactory;
+use Quantum\Mvc\QtService;
 use Quantum\Loader\Setup;
-use Quantum\Di\Di;
 
 /**
  * Class AuthManager
@@ -31,7 +31,7 @@ class AuthManager
 
     /**
      * Get Handler
-     * @return \Quantum\Libraries\Auth\ApiAuth|\Quantum\Libraries\Auth\WebAuth|void
+     * @return \Quantum\Libraries\Auth\ApiAuth|\Quantum\Libraries\Auth\WebAuth
      * @throws \Quantum\Exceptions\AuthException
      * @throws \Quantum\Exceptions\ConfigException
      * @throws \Quantum\Exceptions\DiException
@@ -39,38 +39,38 @@ class AuthManager
      */
     public static function getHandler()
     {
-        list($authType, $authService) = self::getAuthService();
+        self::loadConfigs();
 
-        if ($authType && $authService) {
-            switch ($authType) {
-                case 'web':
-                    return WebAuth::getInstance($authService, new Mailer, new Hasher);
-                case 'api':
-                    $jwt = (new JWToken())->setLeeway(1)->setClaims((array)config()->get('auth.claims'));
-                    return ApiAuth::getInstance($authService, new Mailer, new Hasher, $jwt);
-            }
-        } else {
-            throw AuthException::misconfiguredAuthConfig();
+        switch (config()->has('auth.type')) {
+            case 'web':
+                return WebAuth::getInstance(self::getAuthService(), new Mailer, new Hasher);
+            case 'api':
+                $jwt = (new JWToken())->setLeeway(1)->setClaims((array) config()->get('auth.claims'));
+                return ApiAuth::getInstance(self::getAuthService(), new Mailer, new Hasher, $jwt);
+            default :
+                AuthException::undefinedAuthType();
         }
     }
 
     /**
      * Gets the auth service
-     * @return array
+     * @return Quantum\Mvc\QtService
      * @throws \Quantum\Exceptions\ConfigException
-     * @throws \Quantum\Exceptions\DiException
-     * @throws \ReflectionException
      */
-    public static function getAuthService(): array
+    public static function getAuthService(): QtService
+    {
+        return ServiceFactory::create(config()->get('auth.service'));
+    }
+
+    private static function loadConfigs()
     {
         if (!config()->has('auth')) {
             config()->import(new Setup('Config', 'auth'));
         }
 
-        return [
-            config()->get('auth.type'),
-            Di::get(ServiceFactory::class)->create(config()->get('auth.service'))
-        ];
+        if (!config()->has('auth.type') && !config()->has('auth.type')) {
+            throw AuthException::misconfiguredAuthConfig();
+        }
     }
 
 }
