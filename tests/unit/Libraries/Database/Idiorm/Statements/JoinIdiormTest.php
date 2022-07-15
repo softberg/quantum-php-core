@@ -131,9 +131,9 @@ namespace Quantum\Tests\Libraries\Database\Idiorm\Statements {
 
         public function testIdiormJoinTo()
         {
-            $userModel = (new ModelFactory)->get(CUserModel::class);
+            $userModel = ModelFactory::get(CUserModel::class);
 
-            $userProfessionModel = (new ModelFactory)->get(CUserProfessionModel::class);
+            $userProfessionModel = ModelFactory::get(CUserProfessionModel::class);
 
             $users = $userModel->select(['users.id' => 'user_id'],
                 'firstname', 'user_professions.title')
@@ -157,11 +157,11 @@ namespace Quantum\Tests\Libraries\Database\Idiorm\Statements {
 
         public function testIdiormJoinToFromSameTable()
         {
-            $userModel = (new ModelFactory)->get(CUserModel::class);
+            $userModel = ModelFactory::get(CUserModel::class);
 
-            $userProfessionModel = (new ModelFactory)->get(CUserProfessionModel::class);
+            $userProfessionModel = ModelFactory::get(CUserProfessionModel::class);
 
-            $userEventModel = (new ModelFactory)->get(CUserEventModel::class);
+            $userEventModel = ModelFactory::get(CUserEventModel::class);
 
             $users = $userModel->select('users.*', 'user_professions.title', 'user_events.event_id')
                 ->joinTo($userProfessionModel, false)
@@ -186,11 +186,11 @@ namespace Quantum\Tests\Libraries\Database\Idiorm\Statements {
 
         public function testIdiormJoinToWithTableSwitch()
         {
-            $userModel = (new ModelFactory)->get(CUserModel::class);
+            $userModel = ModelFactory::get(CUserModel::class);
 
-            $meetingModel = (new ModelFactory)->get(CMeetingModel::class);
+            $meetingModel = ModelFactory::get(CMeetingModel::class);
 
-            $ticketModel = (new ModelFactory)->get(CTicketModel::class);
+            $ticketModel = ModelFactory::get(CTicketModel::class);
 
             $users = $userModel
                 ->joinTo($meetingModel)
@@ -214,11 +214,11 @@ namespace Quantum\Tests\Libraries\Database\Idiorm\Statements {
 
         public function testIdiormJoinThrough()
         {
-            $userModel = (new ModelFactory)->get(CUserModel::class);
+            $userModel = ModelFactory::get(CUserModel::class);
 
-            $userEventModel = (new ModelFactory)->get(CUserEventModel::class);
+            $userEventModel = ModelFactory::get(CUserEventModel::class);
 
-            $eventModel = (new ModelFactory)->get(CEventModel::class);
+            $eventModel = ModelFactory::get(CEventModel::class);
 
             $users = $userModel->select(
                 ['users.id' => 'user_id'],
@@ -257,13 +257,13 @@ namespace Quantum\Tests\Libraries\Database\Idiorm\Statements {
 
         public function testIdiormJoinToAndJoinThrough()
         {
-            $userModel = (new ModelFactory)->get(CUserModel::class);
+            $userModel = ModelFactory::get(CUserModel::class);
 
-            $userProfessionModel = (new ModelFactory)->get(CUserProfessionModel::class);
+            $userProfessionModel = ModelFactory::get(CUserProfessionModel::class);
 
-            $userEventModel = (new ModelFactory)->get(CUserEventModel::class);
+            $userEventModel = ModelFactory::get(CUserEventModel::class);
 
-            $eventModel = (new ModelFactory)->get(CEventModel::class);
+            $eventModel = ModelFactory::get(CEventModel::class);
 
             $user = $userModel->select(
                 ['users.id' => 'user_id'],

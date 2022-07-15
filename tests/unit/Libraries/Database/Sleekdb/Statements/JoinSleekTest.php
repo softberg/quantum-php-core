@@ -80,11 +80,11 @@ namespace Quantum\Tests\Libraries\Database\Sleekdb\Statements {
 
         public function testSleekSameLevelJoinTo()
         {
-            $userModel = (new ModelFactory)->get(SleekUserModel::class);
+            $userModel = ModelFactory::get(SleekUserModel::class);
 
-            $userProfessionModel = (new ModelFactory)->get(SleekUserProfessionModel::class);
+            $userProfessionModel = ModelFactory::get(SleekUserProfessionModel::class);
 
-            $userMeetings = (new ModelFactory())->get(SleekMeetingModel::class);
+            $userMeetings = ModelFactory::get(SleekMeetingModel::class);
 
             $users = $userModel
                 ->joinTo($userProfessionModel, false)
@@ -104,13 +104,13 @@ namespace Quantum\Tests\Libraries\Database\Sleekdb\Statements {
 
         public function testSleekNestedLevelJoinTo()
         {
-            $userModel = (new ModelFactory)->get(SleekUserModel::class);
+            $userModel = ModelFactory::get(SleekUserModel::class);
 
-            $meetingModel = (new ModelFactory)->get(SleekMeetingModel::class);
+            $meetingModel = ModelFactory::get(SleekMeetingModel::class);
 
-            $ticketModel = (new ModelFactory)->get(SleekTicketModel::class);
+            $ticketModel = ModelFactory::get(SleekTicketModel::class);
 
-            $noteModel = (new ModelFactory)->get(SleekNotesModel::class);
+            $noteModel = ModelFactory::get(SleekNotesModel::class);
 
             $users = $userModel
                 ->joinTo($meetingModel)
@@ -131,13 +131,13 @@ namespace Quantum\Tests\Libraries\Database\Sleekdb\Statements {
 
         public function testSleekMixedLevelJoinToWithCriteria()
         {
-            $userModel = (new ModelFactory)->get(SleekUserModel::class);
+            $userModel = ModelFactory::get(SleekUserModel::class);
 
-            $userProfessionModel = (new ModelFactory)->get(SleekUserProfessionModel::class);
+            $userProfessionModel = ModelFactory::get(SleekUserProfessionModel::class);
 
-            $meetingModel = (new ModelFactory())->get(SleekMeetingModel::class);
+            $meetingModel = ModelFactory::get(SleekMeetingModel::class);
 
-            $ticketModel = (new ModelFactory)->get(SleekTicketModel::class);
+            $ticketModel = ModelFactory::get(SleekTicketModel::class);
 
             $users = $userModel
                 ->joinTo($userProfessionModel, false)
@@ -169,11 +169,11 @@ namespace Quantum\Tests\Libraries\Database\Sleekdb\Statements {
 
         public function testSleekJoinThrough()
         {
-            $userModel = (new ModelFactory)->get(SleekUserModel::class);
+            $userModel = ModelFactory::get(SleekUserModel::class);
 
-            $userEventModel = (new ModelFactory)->get(SleekUserEventModel::class);
+            $userEventModel = ModelFactory::get(SleekUserEventModel::class);
 
-            $eventModel = (new ModelFactory)->get(SleekEventModel::class);
+            $eventModel = ModelFactory::get(SleekEventModel::class);
 
             $users = $userModel
                 ->joinTo($userEventModel)
@@ -202,13 +202,13 @@ namespace Quantum\Tests\Libraries\Database\Sleekdb\Statements {
 
         public function testSleekJoinToAndJoinThroughUsingSwitch()
         {
-            $userModel = (new ModelFactory)->get(SleekUserModel::class);
+            $userModel = ModelFactory::get(SleekUserModel::class);
 
-            $userProfessionModel = (new ModelFactory)->get(SleekUserProfessionModel::class);
+            $userProfessionModel = ModelFactory::get(SleekUserProfessionModel::class);
 
-            $userEventModel = (new ModelFactory)->get(SleekUserEventModel::class);
+            $userEventModel = ModelFactory::get(SleekUserEventModel::class);
 
-            $eventModel = (new ModelFactory)->get(SleekEventModel::class);
+            $eventModel = ModelFactory::get(SleekEventModel::class);
 
             $users = $userModel
                 ->joinTo($userProfessionModel, false)

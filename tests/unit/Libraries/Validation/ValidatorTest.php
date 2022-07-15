@@ -31,9 +31,8 @@ namespace Quantum\Tests\Libraries\Validation {
     use Quantum\Libraries\Validation\Validator;
     use Quantum\Libraries\Database\Idiorm\IdiormDbal;
     use Quantum\Libraries\Validation\Rule;
-    use Quantum\Factory\ModelFactory;
+    use Quantum\Factory\ModelFactory; 
     use Quantum\Models\VUserModel;
-    use Quantum\Loader\Setup;
     use Quantum\Http\Request;
     use Quantum\Di\Di;
     use Quantum\App;
@@ -57,15 +56,17 @@ namespace Quantum\Tests\Libraries\Validation {
             $this->validator = new Validator();
 
             $data = 'iVBORw0KGgoAAAANSUhEUgAAABwAAAASCAMAAAB/2U7WAAAABl'
-                . 'BMVEUAAAD///+l2Z/dAAAASUlEQVR4XqWQUQoAIAxC2/0vXZDr'
-                . 'EX4IJTRkb7lobNUStXsB0jIXIAMSsQnWlsV+wULF4Avk9fLq2r'
-                . '8a5HSE35Q3eO2XP1A1wQkZSgETvDtKdQAAAABJRU5ErkJggg==';
+                    . 'BMVEUAAAD///+l2Z/dAAAASUlEQVR4XqWQUQoAIAxC2/0vXZDr'
+                    . 'EX4IJTRkb7lobNUStXsB0jIXIAMSsQnWlsV+wULF4Avk9fLq2r'
+                    . '8a5HSE35Q3eO2XP1A1wQkZSgETvDtKdQAAAABJRU5ErkJggg==';
 
             $img = imagecreatefromstring(base64_decode($data));
 
             imagepng($img, base_dir() . DS . 'php8fe2.tmp');
 
             imagedestroy($img);
+            
+            
         }
 
         public function tearDown(): void
@@ -188,7 +189,6 @@ namespace Quantum\Tests\Libraries\Validation {
             ];
 
             $this->assertFalse($this->validator->isValid($data));
-
         }
 
         public function testDifferentMultipleFields()
@@ -221,7 +221,6 @@ namespace Quantum\Tests\Libraries\Validation {
             ];
 
             $this->assertTrue($this->validator->isValid($data));
-
         }
 
         public function testCustomValidator()
@@ -488,7 +487,6 @@ namespace Quantum\Tests\Libraries\Validation {
             $this->assertTrue($this->validator->isValid(['text' => false]));
 
             $this->assertFalse($this->validator->isValid(['text' => 'something']));
-
 
             $errors = $this->validator->getErrors();
 
@@ -914,7 +912,7 @@ namespace Quantum\Tests\Libraries\Validation {
 
             $this->assertTrue($this->validator->isValid(['username' => 'john@doe']));
 
-            $model = (new ModelFactory())->get(VUserModel::class);
+            $model = ModelFactory::get(VUserModel::class);
 
             $model->create();
             $model->username = 'john@doe';
@@ -928,7 +926,6 @@ namespace Quantum\Tests\Libraries\Validation {
             $this->assertNotEmpty($errors);
 
             $this->assertEquals('validation.unique', $errors['username'][0]);
-
         }
 
         public function testValidateFileSize()

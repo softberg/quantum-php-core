@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.6.0
+ * @since 2.8.0
  */
 
 namespace Quantum\Di;
@@ -195,8 +195,6 @@ class Di
             \Quantum\Http\Response::class,
             \Quantum\Loader\Loader::class,
             \Quantum\Factory\ViewFactory::class,
-            \Quantum\Factory\ModelFactory::class,
-            \Quantum\Factory\ServiceFactory::class,
             \Quantum\Libraries\Mailer\Mailer::class,
             \Quantum\Libraries\Storage\FileSystem::class,
         ];

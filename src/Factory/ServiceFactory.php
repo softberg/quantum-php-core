@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.6.0
+ * @since 2.8.0
  */
 
 namespace Quantum\Factory;
@@ -29,7 +29,7 @@ class ServiceFactory
      * Instantiated services
      * @var array
      */
-    private $instantiated = [];
+    private static $instantiated = [];
 
     /**
      * Creates and initiates the service once
@@ -40,9 +40,9 @@ class ServiceFactory
      * @throws \Quantum\Exceptions\ServiceException
      * @throws \ReflectionException
      */
-    public function get(string $serviceClass, array $args = []): QtService
+    public static function get(string $serviceClass, array $args = []): QtService
     {
-        return $this->locate($serviceClass, $args);
+        return self::locate($serviceClass, $args);
     }
 
     /**
@@ -54,9 +54,14 @@ class ServiceFactory
      * @throws \Quantum\Exceptions\ServiceException
      * @throws \ReflectionException
      */
-    public function create(string $serviceClass, array $args = []): QtService
+    public static function create(string $serviceClass, array $args = []): QtService
     {
-        return $this->instantiate($serviceClass, $args);
+        return self::instantiate($serviceClass, $args);
+    }
+
+    public static function reset()
+    {
+        self::$instantiated = [];
     }
 
     /**
@@ -68,13 +73,13 @@ class ServiceFactory
      * @throws \Quantum\Exceptions\ServiceException
      * @throws \ReflectionException
      */
-    private function locate(string $serviceClass, array $args = []): QtService
+    private static function locate(string $serviceClass, array $args = []): QtService
     {
-        if (isset($this->instantiated[$serviceClass])) {
-            return $this->instantiated[$serviceClass];
+        if (isset(self::$instantiated[$serviceClass])) {
+            return self::$instantiated[$serviceClass];
         }
 
-        return $this->instantiate($serviceClass, $args);
+        return self::instantiate($serviceClass, $args);
     }
 
     /**
@@ -86,7 +91,7 @@ class ServiceFactory
      * @throws \Quantum\Exceptions\ServiceException
      * @throws \ReflectionException
      */
-    private function instantiate(string $serviceClass, array $args = []): QtService
+    private static function instantiate(string $serviceClass, array $args = []): QtService
     {
         if (!class_exists($serviceClass)) {
             throw ServiceException::serviceNotFound($serviceClass);
@@ -98,14 +103,15 @@ class ServiceFactory
             throw ServiceException::notServiceInstance([$serviceClass, QtService::class]);
         }
 
-        $this->instantiated[$serviceClass] = $service;
+        if (!in_array($serviceClass, self::$instantiated)) {
+            self::$instantiated[$serviceClass] = $service;
+        }
 
         if (method_exists($service, '__init')) {
-            call_user_func_array([$service, '__init'], $this->getArgs([$service, '__init'], $args));
+            call_user_func_array([$service, '__init'], self::getArgs([$service, '__init'], $args));
         }
 
         return $service;
-
     }
 
     /**
@@ -116,8 +122,9 @@ class ServiceFactory
      * @throws \Quantum\Exceptions\DiException
      * @throws \ReflectionException
      */
-    private function getArgs(callable $callable, array $args): array
+    private static function getArgs(callable $callable, array $args): array
     {
         return Di::autowire($callable, $args);
     }
+
 }

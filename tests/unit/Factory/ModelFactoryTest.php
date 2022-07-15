@@ -39,7 +39,7 @@ namespace Quantum\Tests\Factory {
 
         public function testModelGet()
         {
-            $model = (new ModelFactory)->get(TestModel::class);
+            $model = ModelFactory::get(TestModel::class);
 
             $this->assertInstanceOf(QtModel::class, $model);
 
@@ -52,7 +52,7 @@ namespace Quantum\Tests\Factory {
 
             $this->expectExceptionMessage('Model `NonExistentClass` not found');
 
-            (new ModelFactory)->get(\NonExistentClass::class);
+            ModelFactory::get(\NonExistentClass::class);
         }
 
         public function testModelNotInstanceOfQtModel()
@@ -61,7 +61,7 @@ namespace Quantum\Tests\Factory {
 
             $this->expectExceptionMessage('Model `Mockery\Undefined` is not instance of `Quantum\Mvc\QtModel`');
 
-            (new ModelFactory)->get(\Mockery\Undefined::class);
+            ModelFactory::get(\Mockery\Undefined::class);
         }
 
     }
