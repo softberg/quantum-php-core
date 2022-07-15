@@ -31,9 +31,9 @@ class Router extends RouteController
      * Parameter types
      */
     const PARAM_TYPES = [
-        'alpha',
-        'num',
-        'any'
+        ':alpha' => '[a-zA-Z]',
+        ':num' => '[0-9]',
+        ':any' => '[^\/]'
     ];
 
     /**
@@ -120,7 +120,7 @@ class Router extends RouteController
             $routeInfo = [];
 
             array_walk($matchedRoute, function ($value, $key) use (&$routeInfo) {
-                $routeInfo[ucfirst($key)] = json_encode($value); //is_array($value) ? implode(', ', $value) : $value;
+                $routeInfo[ucfirst($key)] = json_encode($value);
             });
 
             Debugger::addToStore(Debugger::ROUTES, LogLevel::INFO, $routeInfo);
@@ -191,10 +191,8 @@ class Router extends RouteController
         foreach ($routeSegments as $index => $segment) {
             $segmentParam = $this->checkSegment($segment, $index, $lastIndex);
 
-            if ($segmentParam) {
-                if ($segmentParam['name']) {
-                    $this->checkParamName($routeParams, $segmentParam['name']);
-                }
+            if (!empty($segmentParam)) {
+                $this->checkParamName($routeParams, $segmentParam['name']);
 
                 $routeParams[] = [
                     'route_pattern' => $segment,
@@ -266,9 +264,9 @@ class Router extends RouteController
      */
     private function checkSegment(string $segment, int $index, int $lastIndex): array
     {
-        foreach (self::PARAM_TYPES as $type) {
-            if (preg_match('/\[(.*=)*(:' . $type . ')(:([0-9]+))*\](\?)?/', $segment, $match)) {
-                return $this->getParamPattern($match, $index, $lastIndex);
+        foreach (self::PARAM_TYPES as $type => $expr) {
+            if (preg_match('/\[(.*=)*(' . $type . ')(:([0-9]+))*\](\?)?/', $segment, $match)) {
+                return $this->getParamPattern($match, $expr, $index, $lastIndex);
             }
         }
 
@@ -293,25 +291,18 @@ class Router extends RouteController
     /**
      * Finds pattern for parameter 
      * @param array $match
+     * @param string $expr
+     * @param int $index
+     * @param int $lastIndex
      * @return array
      */
-    private function getParamPattern(array $match, int $index, int $lastIndex): array
+    private function getParamPattern(array $match, string $expr, int $index, int $lastIndex): array
     {
         $pattern = '';
 
         $name = $this->getParamName($match, $index);
 
-        switch ($match[2]) {
-            case ':num':
-                $pattern .= '(?<' . $name . '>[0-9]';
-                break;
-            case ':alpha':
-                $pattern .= '(?<' . $name . '>[a-zA-Z]';
-                break;
-            case ':any':
-                $pattern .= '(?<' . $name . '>[^\/]';
-                break;
-        }
+        $pattern .= '(?<' . $name . '>' . $expr;
 
         if (isset($match[4]) && is_numeric($match[4])) {
             if (isset($match[5]) && $match[5] == '?') {
