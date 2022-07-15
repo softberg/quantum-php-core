@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.6.0
+ * @since 2.8.0
  */
 
 namespace Quantum\Libraries\Auth;
@@ -87,7 +87,7 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
             $this->setRememberToken($user);
         }
 
-        if (filter_var(config()->get('2SV'), FILTER_VALIDATE_BOOLEAN)) {
+        if (filter_var(config()->get('2FA'), FILTER_VALIDATE_BOOLEAN)) {
             return $this->twoStepVerification($user);
         } else {
             session()->set($this->authUserKey, $this->getVisibleFields($user));
@@ -168,7 +168,7 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
             return false;
         }
 
-        if (filter_var(config()->get('2SV'), FILTER_VALIDATE_BOOLEAN) && !empty($user->getFieldValue($this->keyFields[self::OTP_TOKEN_KEY]))) {
+        if (filter_var(config()->get('2FA'), FILTER_VALIDATE_BOOLEAN) && !empty($user->getFieldValue($this->keyFields[self::OTP_TOKEN_KEY]))) {
             return false;
         }
 

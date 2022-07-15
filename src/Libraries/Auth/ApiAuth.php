@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.6.0
+ * @since 2.8.0
  */
 
 namespace Quantum\Libraries\Auth;
@@ -86,7 +86,7 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
     {
         $user = $this->getUser($username, $password);
 
-        if (filter_var(config()->get('2SV'), FILTER_VALIDATE_BOOLEAN)) {
+        if (filter_var(config()->get('2FA'), FILTER_VALIDATE_BOOLEAN)) {
             return $this->twoStepVerification($user);
         } else {
             return $this->setUpdatedTokens($user);
