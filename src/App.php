@@ -74,7 +74,7 @@ class App
 
         ErrorHandler::setup();
 
-        Bootstrap::run($loader);
+        Bootstrap::run();
     }
 
     /**

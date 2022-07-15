@@ -186,7 +186,7 @@ class Router extends RouteController
         $routePattern = '(\/)?';
         $routeParams = [];
 
-        $lastIndex = array_key_last($routeSegments);
+        $lastIndex = (int) array_key_last($routeSegments);
 
         foreach ($routeSegments as $index => $segment) {
             $segmentParam = $this->checkSegment($segment, $index, $lastIndex);
@@ -262,9 +262,9 @@ class Router extends RouteController
     /**
      * Checks the segment for parameter
      * @param string $segment
-     * @return array|boolean
+     * @return array
      */
-    private function checkSegment(string $segment, int $index, int $lastIndex)
+    private function checkSegment(string $segment, int $index, int $lastIndex): array
     {
         foreach (self::PARAM_TYPES as $type) {
             if (preg_match('/\[(.*=)*(:' . $type . ')(:([0-9]+))*\](\?)?/', $segment, $match)) {
@@ -272,7 +272,7 @@ class Router extends RouteController
             }
         }
 
-        return false;
+        return [];
     }
 
     /**
@@ -297,17 +297,9 @@ class Router extends RouteController
      */
     private function getParamPattern(array $match, int $index, int $lastIndex): array
     {
-        $name = $match[1] ? rtrim($match[1], '=') : null;
-
-        if ($name) {
-            if (!preg_match('/^[a-zA-Z]+$/', $name)) {
-                throw RouteException::paramNameNotValid($name);
-            }
-        } else {
-            $name = '_segment' . $index;
-        }
-
         $pattern = '';
+
+        $name = $this->getParamName($match, $index);
 
         switch ($match[2]) {
             case ':num':
@@ -346,6 +338,27 @@ class Router extends RouteController
             'name' => $name,
             'pattern' => $pattern
         ];
+    }
+
+    /**
+     * Gets the parameter name
+     * @param array $match
+     * @return string
+     * @throws  \Quantum\Exceptions\RouteException
+     */
+    private function getParamName(array $match, int $index): string
+    {
+        $name = $match[1] ? rtrim($match[1], '=') : null;
+
+        if ($name) {
+            if (!preg_match('/^[a-zA-Z]+$/', $name)) {
+                throw RouteException::paramNameNotValid();
+            }
+        } else {
+            $name = '_segment' . $index;
+        }
+
+        return $name;
     }
 
     /**

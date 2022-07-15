@@ -37,7 +37,6 @@ class Bootstrap
 
     /**
      * Boots the app
-     * @param Loader $loader
      * @throws \Quantum\Exceptions\ConfigException
      * @throws \Quantum\Exceptions\ControllerException
      * @throws \Quantum\Exceptions\CsrfException
@@ -51,7 +50,7 @@ class Bootstrap
      * @throws \Quantum\Exceptions\SessionException
      * @throws \ReflectionException
      */
-    public static function run(Loader $loader)
+    public static function run()
     {
         try {
             $request = Di::get(Request::class);

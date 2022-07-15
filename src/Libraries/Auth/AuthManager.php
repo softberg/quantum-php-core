@@ -40,7 +40,7 @@ class AuthManager
     public static function getHandler()
     {
         self::loadConfigs();
-
+            
         switch (config()->has('auth.type')) {
             case 'web':
                 return WebAuth::getInstance(self::getAuthService(), new Mailer, new Hasher);
@@ -54,7 +54,7 @@ class AuthManager
 
     /**
      * Gets the auth service
-     * @return Quantum\Mvc\QtService
+     * @return \Quantum\Mvc\QtService
      * @throws \Quantum\Exceptions\ConfigException
      */
     public static function getAuthService(): QtService
