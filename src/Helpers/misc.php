@@ -12,6 +12,7 @@
  * @since 2.8.0
  */
 use Quantum\Libraries\Transformer\TransformerInterface;
+use Quantum\Libraries\Transformer\TransformerManager;
 use Quantum\Exceptions\StopExecutionException;
 use Quantum\Libraries\Asset\AssetManager;
 use Quantum\Exceptions\AppException;
@@ -214,3 +215,4 @@ function transform(array $data, TransformerInterface $transformer): array
 {
     return TransformerManager::transform($data, $transformer);
 }
+

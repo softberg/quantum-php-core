@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.7.0
+ * @since 2.8.0
  */
 
 namespace Quantum;
@@ -66,6 +66,7 @@ class App
 
         $loader->loadDir(base_dir() . DS . 'helpers');
         $loader->loadDir(base_dir() . DS . 'libraries');
+        $loader->loadDir(base_dir() . DS . 'hooks');
 
         Environment::getInstance()->load(new Setup('config', 'env'));
 

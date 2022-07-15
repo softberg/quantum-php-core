@@ -8,13 +8,13 @@ use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Libraries\Session\Session;
 use Quantum\Exceptions\HookException;
 use Quantum\Libraries\Cookie\Cookie;
-use Quantum\Routes\RouteController;
+use Quantum\Router\RouteController;
 use Quantum\Libraries\Asset\Asset;
 use Quantum\Libraries\Lang\Lang;
 use Quantum\Libraries\Csrf\Csrf;
 use Quantum\Factory\ViewFactory;
 use Quantum\Loader\Setup;
-use Quantum\Routes\Router;
+use Quantum\Router\Router;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 use Quantum\Di\Di;
@@ -179,7 +179,7 @@ class HelperTest extends TestCase
                 "middlewares" => ["guest", "anonymous"]
             ],
             [
-                "route" => "api-user/[:num]",
+                "route" => "api-user/[id=:num]",
                 "method" => "GET",
                 "controller" => "SomeController",
                 "action" => "signout",
@@ -208,15 +208,17 @@ class HelperTest extends TestCase
 
         $this->assertEquals('api-signin', current_route());
 
-        $this->assertEmpty(route_args());
+        $this->assertEmpty(route_params());
 
         $this->request->create('GET', 'http://testdomain.com/api-user/12');
 
         $this->router->findRoute();
 
-        $this->assertEquals([12], route_args());
+        $this->assertNotEmpty(route_params());
+        
+        $this->assertEquals(12, route_param('id'));
 
-        $this->assertEquals('(\/)?api-user(\/)([0-9]+)', route_pattern());
+        $this->assertEquals('(\/)?api-user(\/)(?<id>[0-9]+)', route_pattern());
 
         $this->assertEquals('GET', route_method());
 

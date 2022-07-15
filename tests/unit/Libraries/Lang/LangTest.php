@@ -12,7 +12,7 @@ namespace Quantum\Libraries\Lang {
 namespace Quantum\Tests\Libraries\Lang {
 
     use PHPUnit\Framework\TestCase;
-    use Quantum\Routes\RouteController;
+    use Quantum\Router\RouteController;
     use Quantum\Libraries\Lang\Lang;
     use Quantum\Di\Di;
     use Quantum\App;
