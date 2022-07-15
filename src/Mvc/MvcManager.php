@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.6.0
+ * @since 2.8.0
  */
 
 namespace Quantum\Mvc;
@@ -33,6 +33,7 @@ class MvcManager
      * Handles the request
      * @param \Quantum\Http\Request $request
      * @param \Quantum\Http\Response $response
+     * @return boolean
      * @throws \Quantum\Exceptions\ControllerException
      * @throws \Quantum\Exceptions\CsrfException
      * @throws \Quantum\Exceptions\DatabaseException
@@ -43,34 +44,37 @@ class MvcManager
      */
     public static function handle(Request $request, Response $response)
     {
-        if ($request->getMethod() != 'OPTIONS') {
+        if ($request->getMethod() == 'OPTIONS') {
+            return false;
+        }
 
-            if (current_middlewares()) {
-                list($request, $response) = (new MiddlewareManager())->applyMiddlewares($request, $response);
+        if (current_middlewares()) {
+            list($request, $response) = (new MiddlewareManager())->applyMiddlewares($request, $response);
+        }
+
+        $callback = route_callback();
+        $routeParams = array_map(function ($param) {
+            return $param['value'];
+        }, route_params());
+
+        if ($callback) {
+            call_user_func_array($callback, self::getArgs($callback, $routeParams));
+        } else {
+            $controller = self::getController();
+            $action = self::getAction($controller);
+
+            if ($controller->csrfVerification) {
+                Csrf::checkToken($request, session());
             }
 
-            $routeArgs = route_args();
-            $callback = route_callback();
+            if (method_exists($controller, '__before')) {
+                call_user_func_array([$controller, '__before'], self::getArgs([$controller, '__before'], $routeParams));
+            }
 
-            if ($callback) {
-                call_user_func_array($callback, self::getArgs($callback, $routeArgs));
-            } else {
-                $controller = self::getController();
-                $action = self::getAction($controller);
+            call_user_func_array([$controller, $action], self::getArgs([$controller, $action], $routeParams));
 
-                if ($controller->csrfVerification) {
-                    Csrf::checkToken($request, session());
-                }
-
-                if (method_exists($controller, '__before')) {
-                    call_user_func_array([$controller, '__before'], self::getArgs([$controller, '__before'], $routeArgs));
-                }
-
-                call_user_func_array([$controller, $action], self::getArgs([$controller, $action], $routeArgs));
-
-                if (method_exists($controller, '__after')) {
-                    call_user_func_array([$controller, '__after'], self::getArgs([$controller, '__after'], $routeArgs));
-                }
+            if (method_exists($controller, '__after')) {
+                call_user_func_array([$controller, '__after'], self::getArgs([$controller, '__after'], $routeParams));
             }
         }
     }
@@ -128,9 +132,9 @@ class MvcManager
      * @throws \Quantum\Exceptions\DiException
      * @throws \ReflectionException
      */
-    private static function getArgs(callable $callable, array $routeArgs): array
+    private static function getArgs(callable $callable, array $routeParams): array
     {
-        return Di::autowire($callable, $routeArgs);
+        return Di::autowire($callable, $routeParams);
     }
 
 }
