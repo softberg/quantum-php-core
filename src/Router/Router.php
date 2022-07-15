@@ -324,7 +324,6 @@ class Router extends RouteController
             $pattern = ($index == $lastIndex ? '(\/)' . $pattern : $pattern . '(\/)');
         }
 
-
         return [
             'name' => $name,
             'pattern' => $pattern

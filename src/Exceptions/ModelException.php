@@ -49,7 +49,7 @@ class ModelException extends \Exception
     /**
      * Wrong relation message
      */
-    const WRON_RELATION = 'The model `{%1}` does not define relation wtih `{%2}`';
+    const WRONG_RELATION = 'The model `{%1}` does not define relation wtih `{%2}`';
 
     /**
      * @param string $name

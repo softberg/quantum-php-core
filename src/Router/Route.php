@@ -31,7 +31,7 @@ class Route
      */
     private $module;
 
-    /*     * `
+    /** 
      * Identifies the group middleware
      * @var bool
      */
