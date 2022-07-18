@@ -3,7 +3,7 @@
 namespace Quantum\Tests\Routes;
 
 use PHPUnit\Framework\TestCase;
-use Quantum\Routes\Route;
+use Quantum\Router\Route;
 
 class RouteTest extends TestCase
 {

@@ -9,11 +9,9 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.5.0
+ * @since 2.8.0
  */
-
-use Quantum\Routes\RouteController;
-
+use Quantum\Router\RouteController;
 
 /**
  * Gets current middlewares
@@ -70,12 +68,32 @@ function current_route(): ?string
 }
 
 /**
- * Gets current route args
+ * Gets current route parameters
  * @return array
  */
-function route_args(): array
+function route_params(): array
 {
-    return array_values(RouteController::getCurrentRoute()['args']) ?? [];
+    return RouteController::getCurrentRoute()['params'] ?? [];
+}
+
+/**
+ * Gets route parameter by name
+ * @param string $name
+ * @return mixed
+ */
+function route_param(string $name)
+{
+    $params = RouteController::getCurrentRoute()['params'];
+
+    if ($params) {
+        foreach ($params as $param) {
+            if ($param['name'] == $name) {
+                return $param['value'];
+            }
+        }
+    }
+
+    return null;
 }
 
 /**
@@ -113,4 +131,3 @@ function route_name(): ?string
 {
     return RouteController::getCurrentRoute()['name'] ?? null;
 }
-

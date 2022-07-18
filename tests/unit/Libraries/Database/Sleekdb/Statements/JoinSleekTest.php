@@ -6,56 +6,70 @@ namespace Quantum\Models {
 
     class SleekUserModel extends QtModel
     {
+
         public $table = 'users';
+
     }
 
     class SleekUserProfessionModel extends QtModel
     {
+
         public $table = 'professions';
         public $foreignKeys = [
             'users' => 'user_id'
         ];
+
     }
 
     class SleekUserEventModel extends QtModel
     {
+
         public $table = 'user_events';
         public $foreignKeys = [
             'users' => 'user_id',
             'events' => 'event_id'
         ];
+
     }
 
     class SleekEventModel extends QtModel
     {
+
         public $table = 'events';
         public $foreignKeys = [
             'user_events' => 'event_id'
         ];
+
     }
 
     class SleekMeetingModel extends QtModel
     {
+
         public $table = 'meetings';
         public $foreignKeys = [
             'users' => 'user_id'
         ];
+
     }
 
     class SleekTicketModel extends QtModel
     {
+
         public $table = 'tickets';
         public $foreignKeys = [
             'meetings' => 'meeting_id'
         ];
+
     }
 
     class SleekNotesModel extends QtModel
     {
+
         public $table = 'notes';
         public $foreignKeys = [
             'tickets' => 'ticket_id'
         ];
+
     }
 
 }
@@ -65,6 +79,7 @@ namespace Quantum\Tests\Libraries\Database\Sleekdb\Statements {
     use Quantum\Tests\Libraries\Database\Sleekdb\SleekDbalTestCase;
     use Quantum\Models\SleekUserProfessionModel;
     use Quantum\Models\SleekUserEventModel;
+    use Quantum\Exceptions\ModelException;
     use Quantum\Models\SleekMeetingModel;
     use Quantum\Models\SleekTicketModel;
     use Quantum\Models\SleekNotesModel;
@@ -80,16 +95,16 @@ namespace Quantum\Tests\Libraries\Database\Sleekdb\Statements {
 
         public function testSleekSameLevelJoinTo()
         {
-            $userModel = (new ModelFactory)->get(SleekUserModel::class);
+            $userModel = ModelFactory::get(SleekUserModel::class);
 
-            $userProfessionModel = (new ModelFactory)->get(SleekUserProfessionModel::class);
+            $userProfessionModel = ModelFactory::get(SleekUserProfessionModel::class);
 
-            $userMeetings = (new ModelFactory())->get(SleekMeetingModel::class);
+            $userMeetings = ModelFactory::get(SleekMeetingModel::class);
 
             $users = $userModel
-                ->joinTo($userProfessionModel, false)
-                ->joinTo($userMeetings)
-                ->get();
+                    ->joinTo($userProfessionModel, false)
+                    ->joinTo($userMeetings)
+                    ->get();
 
             $this->assertIsArray($users);
 
@@ -104,19 +119,19 @@ namespace Quantum\Tests\Libraries\Database\Sleekdb\Statements {
 
         public function testSleekNestedLevelJoinTo()
         {
-            $userModel = (new ModelFactory)->get(SleekUserModel::class);
+            $userModel = ModelFactory::get(SleekUserModel::class);
 
-            $meetingModel = (new ModelFactory)->get(SleekMeetingModel::class);
+            $meetingModel = ModelFactory::get(SleekMeetingModel::class);
 
-            $ticketModel = (new ModelFactory)->get(SleekTicketModel::class);
+            $ticketModel = ModelFactory::get(SleekTicketModel::class);
 
-            $noteModel = (new ModelFactory)->get(SleekNotesModel::class);
+            $noteModel = ModelFactory::get(SleekNotesModel::class);
 
             $users = $userModel
-                ->joinTo($meetingModel)
-                ->joinTo($ticketModel)
-                ->joinTo($noteModel)
-                ->get();
+                    ->joinTo($meetingModel)
+                    ->joinTo($ticketModel)
+                    ->joinTo($noteModel)
+                    ->get();
 
             $this->assertIsArray($users);
 
@@ -131,20 +146,20 @@ namespace Quantum\Tests\Libraries\Database\Sleekdb\Statements {
 
         public function testSleekMixedLevelJoinToWithCriteria()
         {
-            $userModel = (new ModelFactory)->get(SleekUserModel::class);
+            $userModel = ModelFactory::get(SleekUserModel::class);
 
-            $userProfessionModel = (new ModelFactory)->get(SleekUserProfessionModel::class);
+            $userProfessionModel = ModelFactory::get(SleekUserProfessionModel::class);
 
-            $meetingModel = (new ModelFactory())->get(SleekMeetingModel::class);
+            $meetingModel = ModelFactory::get(SleekMeetingModel::class);
 
-            $ticketModel = (new ModelFactory)->get(SleekTicketModel::class);
+            $ticketModel = ModelFactory::get(SleekTicketModel::class);
 
             $users = $userModel
-                ->joinTo($userProfessionModel, false)
-                ->joinTo($meetingModel)
-                ->joinTo($ticketModel)
-                ->criteria('age', '=', 35)
-                ->get();
+                    ->joinTo($userProfessionModel, false)
+                    ->joinTo($meetingModel)
+                    ->joinTo($ticketModel)
+                    ->criteria('age', '=', 35)
+                    ->get();
 
             $this->assertIsArray($users);
 
@@ -169,17 +184,17 @@ namespace Quantum\Tests\Libraries\Database\Sleekdb\Statements {
 
         public function testSleekJoinThrough()
         {
-            $userModel = (new ModelFactory)->get(SleekUserModel::class);
+            $userModel = ModelFactory::get(SleekUserModel::class);
 
-            $userEventModel = (new ModelFactory)->get(SleekUserEventModel::class);
+            $userEventModel = ModelFactory::get(SleekUserEventModel::class);
 
-            $eventModel = (new ModelFactory)->get(SleekEventModel::class);
+            $eventModel = ModelFactory::get(SleekEventModel::class);
 
             $users = $userModel
-                ->joinTo($userEventModel)
-                ->joinThrough($eventModel)
-                ->orderBy('title', 'asc')
-                ->get();
+                    ->joinTo($userEventModel)
+                    ->joinThrough($eventModel)
+                    ->orderBy('title', 'asc')
+                    ->get();
 
             $this->assertIsArray($users);
 
@@ -200,22 +215,43 @@ namespace Quantum\Tests\Libraries\Database\Sleekdb\Statements {
             $this->assertEquals('Music', $users[0]['user_events'][0]['events'][0]['title']);
         }
 
+        public function testSleekJoinThroughInverse()
+        {
+            $ticketModel = ModelFactory::get(SleekTicketModel::class);
+
+            $noteModel = ModelFactory::get(SleekNotesModel::class);
+
+            $notes = $noteModel->joinThrough($ticketModel)->criteria('id', '=', 3)->first()->asArray();
+
+            $this->assertArrayHasKey('note', $notes);
+
+            $this->assertEquals('note three', $notes['note']);
+
+            $this->assertArrayHasKey('tickets', $notes);
+
+            $this->assertIsArray($notes['tickets']);
+
+            $this->assertArrayHasKey('number', $notes['tickets'][0]);
+
+            $this->assertEquals('R4563', $notes['tickets'][0]['number']);
+        }
+
         public function testSleekJoinToAndJoinThroughUsingSwitch()
         {
-            $userModel = (new ModelFactory)->get(SleekUserModel::class);
+            $userModel = ModelFactory::get(SleekUserModel::class);
 
-            $userProfessionModel = (new ModelFactory)->get(SleekUserProfessionModel::class);
+            $userProfessionModel = ModelFactory::get(SleekUserProfessionModel::class);
 
-            $userEventModel = (new ModelFactory)->get(SleekUserEventModel::class);
+            $userEventModel = ModelFactory::get(SleekUserEventModel::class);
 
-            $eventModel = (new ModelFactory)->get(SleekEventModel::class);
+            $eventModel = ModelFactory::get(SleekEventModel::class);
 
             $users = $userModel
-                ->joinTo($userProfessionModel, false)
-                ->joinTo($userEventModel)
-                ->joinThrough($eventModel)
-                ->orderBy('title', 'asc')
-                ->get();
+                    ->joinTo($userProfessionModel, false)
+                    ->joinTo($userEventModel)
+                    ->joinThrough($eventModel)
+                    ->orderBy('title', 'asc')
+                    ->get();
 
             $this->assertIsArray($users);
 
@@ -227,5 +263,20 @@ namespace Quantum\Tests\Libraries\Database\Sleekdb\Statements {
 
             $this->assertEquals('Singer', $users[0]['professions'][0]['title']);
         }
+
+        public function testSleekWrongRelation()
+        {
+            $this->expectException(ModelException::class);
+
+            $this->expectExceptionMessage('The model `Quantum\Models\SleekNotesModel` does not define relation wtih `events`');
+
+            $eventModel = ModelFactory::get(SleekEventModel::class);
+
+            $noteModel = ModelFactory::get(SleekNotesModel::class);
+
+            $eventModel->joinTo($noteModel)->get();
+        }
+
     }
+
 }

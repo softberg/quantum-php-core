@@ -47,11 +47,11 @@ class ReducerSleekTest extends SleekDbalTestCase
     {
         $eventsModel = new SleekDbal('events');
 
-        $events = $eventsModel->orderBy('title', 'asc')->get();
+        $events = $eventsModel->orderBy('title', 'desc')->get();
 
-        $this->assertEquals('Art', $events[0]['title']);
+        $this->assertEquals('Music', $events[0]['title']);
 
-        $this->assertEquals('Music', $events[count($events) - 1]['title']);
+        $this->assertEquals('Art', $events[count($events) - 1]['title']);
     }
 
     public function testSleekLimitAndOffset()

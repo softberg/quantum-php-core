@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.5.0
+ * @since 2.8.0
  */
 
 namespace Quantum\Exceptions;
@@ -20,6 +20,7 @@ namespace Quantum\Exceptions;
  */
 class RouteException extends \Exception
 {
+
     /**
      * Route not found message
      */
@@ -46,7 +47,7 @@ class RouteException extends \Exception
     const INCORRECT_METHOD = 'Incorrect Method `{%1}`';
 
     /**
-     * Name can not be set before route definition messgae
+     * Name can not be set before route definition message
      */
     const NAME_BEFORE_ROUTE_DEFINITION = 'Names can not be set before route definition';
 
@@ -59,6 +60,16 @@ class RouteException extends \Exception
      * Route names should be unique message
      */
     const NAME_IS_NOT_UNIQUE = 'Route names should be unique';
+
+    /**
+     * Parameter name is not available message
+     */
+    const PARAM_NAME_NOT_AVAILABLE = 'Route param name `{%1}` already in use';
+    
+    /**
+     * Parameter name is not valid message
+     */
+    const PARAM_NAME_NOT_VALID = 'Route param names can only contain letters';
 
     /**
      * @return \Quantum\Exceptions\RouteException
@@ -125,4 +136,23 @@ class RouteException extends \Exception
     {
         return new static(self::NAME_IS_NOT_UNIQUE);
     }
+
+    /**
+     * @param string $param
+     * @return RouteException
+     */
+    public static function paramNameNotAvailable(string $name): RouteException
+    {
+        return new static(_message(self::PARAM_NAME_NOT_AVAILABLE, $name), E_WARNING);
+    }
+    
+    /**
+     * @param string $param
+     * @return RouteException
+     */
+    public static function paramNameNotValid(): RouteException
+    {
+        return new static(self::PARAM_NAME_NOT_VALID, E_WARNING);
+    }
+
 }

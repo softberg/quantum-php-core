@@ -15,7 +15,7 @@
 namespace Quantum\Mvc;
 
 use Quantum\Exceptions\ControllerException;
-use Quantum\Routes\RouteController;
+use Quantum\Router\RouteController;
 
 /**
  * Class QtController

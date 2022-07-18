@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.5.0
+ * @since 2.8.0
  */
 
 namespace Quantum\Exceptions;
@@ -20,6 +20,7 @@ namespace Quantum\Exceptions;
  */
 class ModelException extends \Exception
 {
+
     /**
      * Model not found message
      */
@@ -44,6 +45,11 @@ class ModelException extends \Exception
      * Inappropriate property message
      */
     const INAPPROPRIATE_PROPERTY = 'Inappropriate property `{%1}` for fillable object';
+    
+    /**
+     * Wrong relation message
+     */
+    const WRONG_RELATION = 'The model `{%1}` does not define relation wtih `{%2}`';
 
     /**
      * @param string $name
@@ -89,4 +95,14 @@ class ModelException extends \Exception
     {
         return new static(_message(self::INAPPROPRIATE_PROPERTY, $name), E_WARNING);
     }
+
+    /**
+     * @param string $name
+     * @return \Quantum\Exceptions\ModelException
+     */
+    public static function wrongRelation(string $modelName, string $tableName): ModelException
+    {
+        return new static(_message(self::WRONG_RELATION, [$modelName, $tableName]), E_ERROR);
+    }
+
 }

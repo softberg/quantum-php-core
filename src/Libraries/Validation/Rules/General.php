@@ -289,7 +289,7 @@ trait General
     protected function unique(string $field, $value, string $param)
     {
         if (!empty($value)) {
-            $model = Di::get(ModelFactory::class)->get(ucfirst($param));
+            $model = ModelFactory::get(ucfirst($param));
 
             $row = $model->findOneBy($field, $value);
 

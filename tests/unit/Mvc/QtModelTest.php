@@ -65,7 +65,7 @@ namespace Quantum\Tests\Mvc {
                         ('John', 'Doe', 45)
                     ");
 
-            $this->model = (new ModelFactory)->get(ProfileModel::class);
+            $this->model = ModelFactory::get(ProfileModel::class);
         }
 
         public function tearDown(): void
@@ -184,7 +184,7 @@ namespace Quantum\Tests\Mvc {
 
             $userProfile->save();
 
-            $profileModel = (new ModelFactory)->get(ProfileModel::class);
+            $profileModel = ModelFactory::get(ProfileModel::class);
 
             $users = $profileModel->criteria('age', '>', 30)->get();
 
@@ -192,7 +192,7 @@ namespace Quantum\Tests\Mvc {
 
             $this->assertCount(2, $users);
 
-            $profileModel = (new ModelFactory)->get(ProfileModel::class);
+            $profileModel = ModelFactory::get(ProfileModel::class);
 
             $user = $profileModel->criteria('age', '<', '50')->orderBy('age', 'asc')->first();
 

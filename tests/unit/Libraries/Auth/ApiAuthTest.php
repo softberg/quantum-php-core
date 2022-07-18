@@ -56,7 +56,7 @@ class ApiAuthTest extends AuthTestCase
 
     public function testApiSigninCorrectCredentials()
     {
-        config()->set('2SV', false);
+        config()->set('2FA', false);
 
         $this->assertIsArray($this->apiAuth->signin('admin@qt.com', 'qwerty'));
 
@@ -141,7 +141,7 @@ class ApiAuthTest extends AuthTestCase
 
     public function testApiVerify()
     {
-        config()->set('2SV', true);
+        config()->set('2FA', true);
 
         config()->set('otp_expires', 2);
 
@@ -156,7 +156,7 @@ class ApiAuthTest extends AuthTestCase
 
     public function testApiSigninWithoutVerification()
     {
-        config()->set('2SV', false);
+        config()->set('2FA', false);
 
         config()->set('otp_expires', 2);
 
@@ -167,7 +167,7 @@ class ApiAuthTest extends AuthTestCase
 
     public function testApiSigninWithVerification()
     {
-        config()->set('2SV', true);
+        config()->set('2FA', true);
 
         config()->set('otp_expires', 2);
 
@@ -176,7 +176,7 @@ class ApiAuthTest extends AuthTestCase
 
     public function testApiResendOtp()
     {
-        config()->set('2SV', true);
+        config()->set('2FA', true);
 
         config()->set('otp_expires', 2);
 

@@ -75,20 +75,16 @@ namespace Quantum\Tests\Di {
             $this->assertInstanceOf(Response::class, $params[1]);
 
             $this->assertInstanceOf(ViewFactory::class, $params[2]);
-            
-            $callback = function(Request $request, Response $response, ServiceFactory $service){
+
+            $callback = function (Request $request, Response $response) {
                 // function body
             };
-            
+
             $params = Di::autowire($callback);
-            
+
             $this->assertInstanceOf(Request::class, $params[0]);
 
             $this->assertInstanceOf(Response::class, $params[1]);
-
-            $this->assertInstanceOf(ServiceFactory::class, $params[2]);
-            
-            
         }
 
     }

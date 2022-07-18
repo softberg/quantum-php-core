@@ -9,19 +9,19 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.7.0
+ * @since 2.8.0
  */
 
 namespace Quantum;
 
 use Quantum\Exceptions\StopExecutionException;
-use Quantum\Routes\ModuleLoader;
+use Quantum\Router\ModuleLoader;
 use Quantum\Libraries\Lang\Lang;
 use Quantum\Environment\Server;
 use Quantum\Debugger\Debugger;
 use Quantum\Hooks\HookManager;
 use Quantum\Mvc\MvcManager;
-use Quantum\Routes\Router;
+use Quantum\Router\Router;
 use Quantum\Loader\Loader;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
@@ -37,7 +37,6 @@ class Bootstrap
 
     /**
      * Boots the app
-     * @param Loader $loader
      * @throws \Quantum\Exceptions\ConfigException
      * @throws \Quantum\Exceptions\ControllerException
      * @throws \Quantum\Exceptions\CsrfException
@@ -51,7 +50,7 @@ class Bootstrap
      * @throws \Quantum\Exceptions\SessionException
      * @throws \ReflectionException
      */
-    public static function run(Loader $loader)
+    public static function run()
     {
         try {
             $request = Di::get(Request::class);
@@ -60,26 +59,24 @@ class Bootstrap
             $request->init(new Server);
             $response->init();
 
+            Debugger::initStore();
+
             $router = new Router($request, $response);
 
             ModuleLoader::loadModulesRoutes($router);
 
-            Debugger::initStore();
-
-            $loader->loadDir(base_dir() . DS . 'hooks');
+            $router->findRoute();
 
             Debugger::addToStore(Debugger::HOOKS, LogLevel::INFO, HookManager::getRegistered());
 
-            $router->findRoute();            
-
-            if (config()->has('langs')) {
+            if (config()->has(Lang::LANGS_DEFINED)) {
                 Lang::getInstance()
-                        ->setLang($request->getSegment(config()->get('lang_segment')))
+                        ->setLang($request->getSegment(config()->get(Lang::LANG_SEGMENT)))
                         ->load();
             }
 
             MvcManager::handle($request, $response);
-            
+
             stop();
         } catch (StopExecutionException $e) {
             $response->send();

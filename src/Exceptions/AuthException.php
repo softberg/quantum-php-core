@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.5.0
+ * @since 2.8.0
  */
 
 namespace Quantum\Exceptions;
@@ -41,9 +41,14 @@ class AuthException extends \Exception
     const VERIFICATION_CODE_EXPIRED = 'Verification code expired';
 
     /**
-     * Misconfigured session handler  message
+     * Miss-configured auth config  message
      */
     const MISCONFIGURED_AUTH_CONFIG = 'Auth config is not properly configured';
+    
+    /**
+     * Undefined auth type message
+     */
+    const UNDEFINED_AUTH_TYPE = 'The auth type can be only [web] or [api]';
 
     /**
      * Incorrect user schema
@@ -88,6 +93,14 @@ class AuthException extends \Exception
     public static function misconfiguredAuthConfig(): AuthException
     {
         return new static(self::MISCONFIGURED_AUTH_CONFIG);
+    }
+    
+    /**
+     * @return \Quantum\Exceptions\AuthException
+     */
+    public static function undefinedAuthType(): AuthException
+    {
+        return new static(self::UNDEFINED_AUTH_TYPE);
     }
 
     /**

@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.6.0
+ * @since 2.8.0
  */
 
 namespace Quantum\Factory;
@@ -36,7 +36,7 @@ class ModelFactory
      * @throws \Quantum\Exceptions\ModelException
      * @throws \ReflectionException
      */
-    public function get(string $modelClass): QtModel
+    public static function get(string $modelClass): QtModel
     {
 
         if (!class_exists($modelClass)) {
@@ -52,7 +52,7 @@ class ModelFactory
         if (!config()->has('database')) {
             config()->import(new Setup('config', 'database'));
         }
-        
+
         $model->setOrm(Database::getInstance()->getOrm($model->table, $model->idColumn, $model->foreignKeys ?? []));
 
         return $model;

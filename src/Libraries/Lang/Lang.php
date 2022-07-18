@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.6.0
+ * @since 2.8.0
  */
 
 namespace Quantum\Libraries\Lang;
@@ -27,6 +27,16 @@ use Quantum\Di\Di;
  */
 class Lang
 {
+
+    /**
+     * Config key for defined languages
+     */
+    const LANGS_DEFINED = 'langs';
+
+    /**
+     * Config key for lang segment
+     */
+    const LANG_SEGMENT = 'lang_segment';
 
     /**
      * Current language
@@ -74,7 +84,13 @@ class Lang
         $files = $fs->glob($langDir . DS . "*.php");
 
         if (is_array($files) && !count($files)) {
-            throw LangException::translationsNotFound($this->getLang());
+            $langDir = base_dir() . DS . 'shared' . DS . 'Resources' . DS . 'lang' . DS . $this->getLang();
+
+            $files = $fs->glob($langDir . DS . "*.php");
+
+            if (is_array($files) && !count($files)) {
+                throw LangException::translationsNotFound($this->getLang());
+            }
         }
 
         self::$translations = new Data();
@@ -85,7 +101,7 @@ class Lang
             $setup = new Setup();
             $setup->setPathPrefix('Resources' . DS . 'lang' . DS . $this->getLang());
             $setup->setFilename($fileName);
-            $setup->setHierarchy(false);
+            $setup->setHierarchy(true);
             $setup->setExceptionMessage(_message(LangException::TRANSLATION_FILES_NOT_FOUND, $this->getLang()));
 
             self::$translations->import([$fileName => Di::get(Loader::class)->setup($setup)->load()]);
@@ -104,7 +120,7 @@ class Lang
             throw LangException::misconfiguredDefaultConfig();
         }
 
-        if (empty($lang) || !in_array($lang, (array)config()->get('langs'))) {
+        if (empty($lang) || !in_array($lang, (array) config()->get('langs'))) {
             $lang = config()->get('lang_default');
         }
 
