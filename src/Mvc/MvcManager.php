@@ -33,7 +33,7 @@ class MvcManager
      * Handles the request
      * @param \Quantum\Http\Request $request
      * @param \Quantum\Http\Response $response
-     * @return boolean
+     * @return boolean|null
      * @throws \Quantum\Exceptions\ControllerException
      * @throws \Quantum\Exceptions\CsrfException
      * @throws \Quantum\Exceptions\DatabaseException
@@ -53,12 +53,9 @@ class MvcManager
         }
 
         $callback = route_callback();
-        $routeParams = array_map(function ($param) {
-            return $param['value'];
-        }, route_params());
 
         if ($callback) {
-            call_user_func_array($callback, self::getArgs($callback, $routeParams));
+            call_user_func_array($callback, self::getArgs($callback));
         } else {
             $controller = self::getController();
             $action = self::getAction($controller);
@@ -68,13 +65,13 @@ class MvcManager
             }
 
             if (method_exists($controller, '__before')) {
-                call_user_func_array([$controller, '__before'], self::getArgs([$controller, '__before'], $routeParams));
+                call_user_func_array([$controller, '__before'], self::getArgs([$controller, '__before']));
             }
 
-            call_user_func_array([$controller, $action], self::getArgs([$controller, $action], $routeParams));
+            call_user_func_array([$controller, $action], self::getArgs([$controller, $action]));
 
             if (method_exists($controller, '__after')) {
-                call_user_func_array([$controller, '__after'], self::getArgs([$controller, '__after'], $routeParams));
+                call_user_func_array([$controller, '__after'], self::getArgs([$controller, '__after']));
             }
         }
     }
@@ -127,14 +124,24 @@ class MvcManager
     /**
      * Get arguments
      * @param callable $callable
-     * @param array $routeArgs
      * @return array
      * @throws \Quantum\Exceptions\DiException
      * @throws \ReflectionException
      */
-    private static function getArgs(callable $callable, array $routeParams): array
+    private static function getArgs(callable $callable): array
     {
-        return Di::autowire($callable, $routeParams);
+        return Di::autowire($callable, self::routeParams());
+    }
+
+    /**
+     * Gets the route parameters
+     * @return array
+     */
+    private static function routeParams(): array
+    {
+        return array_map(function ($param) {
+            return $param['value'];
+        }, route_params());
     }
 
 }
