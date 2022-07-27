@@ -41,7 +41,7 @@ class AuthManager
     {
         self::loadConfigs();
             
-        switch (config()->has('auth.type')) {
+        switch (config()->get('auth.type')) {
             case 'web':
                 return WebAuth::getInstance(self::getAuthService(), new Mailer, new Hasher);
             case 'api':

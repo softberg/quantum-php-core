@@ -44,12 +44,12 @@ class Di
      */
     public static function loadDefinitions()
     {
-        self::$dependencies = self::coreDependencies();
+        if (empty(self::$dependencies)) {
+            self::$dependencies = self::coreDependencies();
 
-        $userDependencies = self::userDependencies();
-
-        foreach ($userDependencies as $dependency) {
-            self::add($dependency);
+            foreach (self::userDependencies() as $dependency) {
+                self::add($dependency);
+            }
         }
     }
 
@@ -175,13 +175,13 @@ class Di
     {
         $fs = new FileSystem();
 
-        $dependencies = base_dir() . DS . 'config' . DS . 'dependencies.php';
+        $userDependencies = base_dir() . DS . 'shared' . DS . 'config' . DS . 'dependencies.php';
 
-        if (!$fs->exists($dependencies)) {
+        if (!$fs->exists($userDependencies)) {
             return [];
         }
 
-        return require_once $dependencies;
+        return (array) require_once $userDependencies;
     }
 
     /**
