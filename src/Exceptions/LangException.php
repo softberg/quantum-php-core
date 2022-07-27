@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.5.0
+ * @since 2.8.0
  */
 
 namespace Quantum\Exceptions;
@@ -21,26 +21,11 @@ namespace Quantum\Exceptions;
 class LangException extends \Exception
 {
     /**
-     * Misconfigured lang config
-     */
-    const MISCONFIGURED_LANG_CONFIG = 'Misconfigured lang config';
-
-    /**
-     * Translations not found
-     */
-    const TRANSLATION_FILES_NOT_FOUND = 'Translations for language `{%1}` not found';
-
-    /**
-     * Misconfigured default lang config
-     */
-    const MISCONFIGURED_LANG_DEFAULT_CONFIG = 'Misconfigured default lang config';
-
-    /**
      * @return \Quantum\Exceptions\LangException
      */
     public static function misconfiguredConfig(): LangException
     {
-        return new static(self::MISCONFIGURED_LANG_CONFIG, E_WARNING);
+        return new static(t('misconfigured_lang_config'), E_WARNING);
     }
 
     /**
@@ -49,7 +34,7 @@ class LangException extends \Exception
      */
     public static function translationsNotFound(string $name): LangException
     {
-        return new static(_message(self::TRANSLATION_FILES_NOT_FOUND, $name), E_WARNING);
+        return new static(t('translation_files_not_found', $name), E_WARNING);
     }
 
     /**
@@ -57,6 +42,6 @@ class LangException extends \Exception
      */
     public static function misconfiguredDefaultConfig(): LangException
     {
-        return new static(self::MISCONFIGURED_LANG_DEFAULT_CONFIG, E_WARNING);
+        return new static(t('misconfigured_lang_default_config'), E_WARNING);
     }
 }

@@ -44,7 +44,7 @@ namespace Quantum\Tests\Mvc {
         {
             $this->expectException(ServiceException::class);
 
-            $this->expectExceptionMessage('The method `undefinedMethod` is not defined');
+            $this->expectExceptionMessage('undefined_method');
 
             $service = (new ServiceFactory)->get(TestingService::class);
 

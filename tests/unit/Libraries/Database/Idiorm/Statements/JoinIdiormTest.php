@@ -330,7 +330,7 @@ namespace Quantum\Tests\Libraries\Database\Idiorm\Statements {
         {
             $this->expectException(ModelException::class);
 
-            $this->expectExceptionMessage('The model `Quantum\Models\CTicketModel` does not define relation wtih `events`');
+            $this->expectExceptionMessage('wrong_relation');
 
             $eventModel = ModelFactory::get(CEventModel::class);
 

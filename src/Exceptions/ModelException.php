@@ -20,44 +20,13 @@ namespace Quantum\Exceptions;
  */
 class ModelException extends \Exception
 {
-
-    /**
-     * Model not found message
-     */
-    const MODEL_NOT_FOUND = 'Model `{%1}` not found';
-
-    /**
-     * Model not instance of QtModel
-     */
-    const NOT_INSTANCE_OF_MODEL = 'Model `{%1}` is not instance of `{%2}`';
-
-    /**
-     * Model does not have table property defined
-     */
-    const MODEL_WITHOUT_TABLE_DEFINED = 'Model `{%1}` does not have $table property defined';
-
-    /**
-     * Undefined model method
-     */
-    const UNDEFINED_MODEL_METHOD = 'Model method `{%1}` is not defined';
-
-    /**
-     * Inappropriate property message
-     */
-    const INAPPROPRIATE_PROPERTY = 'Inappropriate property `{%1}` for fillable object';
-    
-    /**
-     * Wrong relation message
-     */
-    const WRONG_RELATION = 'The model `{%1}` does not define relation wtih `{%2}`';
-
     /**
      * @param string $name
      * @return \Quantum\Exceptions\ModelException
      */
     public static function notFound(string $name): ModelException
     {
-        return new static(_message(self::MODEL_NOT_FOUND, $name), E_ERROR);
+        return new static(t('model_not_found', $name), E_ERROR);
     }
 
     /**
@@ -66,7 +35,7 @@ class ModelException extends \Exception
      */
     public static function notModelInstance(array $names): ModelException
     {
-        return new static(_message(self::NOT_INSTANCE_OF_MODEL, $names), E_WARNING);
+        return new static(t('not_instance_of_model', $names), E_WARNING);
     }
 
     /**
@@ -75,7 +44,7 @@ class ModelException extends \Exception
      */
     public static function noTableDefined(?string $name): ModelException
     {
-        return new static(_message(self::MODEL_WITHOUT_TABLE_DEFINED, $name), E_WARNING);
+        return new static(t('model_without_table_defined', $name), E_WARNING);
     }
 
     /**
@@ -84,7 +53,7 @@ class ModelException extends \Exception
      */
     public static function undefinedMethod(string $name): ModelException
     {
-        return new static(_message(self::UNDEFINED_MODEL_METHOD, $name), E_WARNING);
+        return new static(t('undefined_model_method', $name), E_WARNING);
     }
 
     /**
@@ -93,7 +62,7 @@ class ModelException extends \Exception
      */
     public static function inappropriateProperty(string $name): ModelException
     {
-        return new static(_message(self::INAPPROPRIATE_PROPERTY, $name), E_WARNING);
+        return new static(t('inappropriate_property', $name), E_WARNING);
     }
 
     /**
@@ -102,7 +71,7 @@ class ModelException extends \Exception
      */
     public static function wrongRelation(string $modelName, string $tableName): ModelException
     {
-        return new static(_message(self::WRONG_RELATION, [$modelName, $tableName]), E_ERROR);
+        return new static(t('wrong_relation', [$modelName, $tableName]), E_ERROR);
     }
 
 }

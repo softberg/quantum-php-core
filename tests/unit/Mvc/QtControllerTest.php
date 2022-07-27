@@ -39,7 +39,7 @@ namespace Quantum\Tests\Mvc {
         {
             $this->expectException(ControllerException::class);
 
-            $this->expectExceptionMessage('The method `undefinedMethod` is not defined');
+            $this->expectExceptionMessage('undefined_method');
 
             $controller = new TestController();
 

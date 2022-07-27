@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.5.0
+ * @since 2.8.0
  */
 
 namespace Quantum\Exceptions;
@@ -21,21 +21,11 @@ namespace Quantum\Exceptions;
 class CsrfException extends \Exception
 {
     /**
-     * CSRF token not found message
-     */
-    const CSRF_TOKEN_NOT_FOUND = 'CSRF Token is missing';
-
-    /**
-     * CSRF token not matched message
-     */
-    const CSRF_TOKEN_NOT_MATCHED = 'CSRF Token does not matched';
-
-    /**
      * @return \Quantum\Exceptions\CsrfException
      */
     public static function tokenNotFound(): CsrfException
     {
-        return new static(self::CSRF_TOKEN_NOT_FOUND, E_WARNING);
+        return new static(t('csrf_token_not_found'), E_WARNING);
     }
 
     /**
@@ -43,6 +33,6 @@ class CsrfException extends \Exception
      */
     public static function tokenNotMatched(): CsrfException
     {
-        return new static(self::CSRF_TOKEN_NOT_MATCHED, E_WARNING);
+        return new static(t('csrf_token_not_matched'), E_WARNING);
     }
 }

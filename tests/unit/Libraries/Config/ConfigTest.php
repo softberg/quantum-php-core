@@ -39,7 +39,7 @@ class ConfigTest extends TestCase
 
         $this->expectException(ConfigException::class);
 
-        $this->expectExceptionMessage(ConfigException::CONFIG_ALREADY_LOADED);
+        $this->expectExceptionMessage('config_already_loaded');
 
         $config->load(new Setup('config', 'config'));
     }
@@ -48,7 +48,7 @@ class ConfigTest extends TestCase
     {
         $this->expectException(LoaderException::class);
 
-        $this->expectExceptionMessage('Config file `somefile` does not exists');
+        $this->expectExceptionMessage('config_file_not_found');
 
         Config::getInstance()->load(new Setup('config', 'somefile'));
     }
@@ -72,7 +72,7 @@ class ConfigTest extends TestCase
     {
         $this->expectException(LoaderException::class);
 
-        $this->expectExceptionMessage('Config file `somefile` does not exists');
+        $this->expectExceptionMessage('config_file_not_found');
 
         Config::getInstance()->import(new Setup('config', 'somefile'));
     }
@@ -85,7 +85,7 @@ class ConfigTest extends TestCase
 
         $this->expectException(ConfigException::class);
 
-        $this->expectExceptionMessage('Config key `config` is already in use');
+        $this->expectExceptionMessage('config_collision');
 
         $config->import(new Setup('config', 'config'));
     }

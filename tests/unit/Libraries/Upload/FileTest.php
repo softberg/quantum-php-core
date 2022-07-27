@@ -214,7 +214,7 @@ namespace Quantum\Tests\Libraries\Upload {
 
             $this->expectException(FileSystemException::class);
 
-            $this->expectExceptionMessage(FileSystemException::FILE_ALREADY_EXISTS);
+            $this->expectExceptionMessage(t('file_already_exists'));
 
             $file->save(base_dir());
         }

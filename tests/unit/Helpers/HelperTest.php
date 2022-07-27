@@ -418,7 +418,7 @@ class HelperTest extends TestCase
     {
         $this->expectException(HookException::class);
 
-        $this->expectExceptionMessage('The Hook `SOME_EVENT` was not registered');
+        $this->expectExceptionMessage('unregistered_hook_name');
 
         hook()->on('SOME_EVENT', function () {
             echo 'Do someting';
@@ -429,7 +429,7 @@ class HelperTest extends TestCase
     {
         $this->expectException(HookException::class);
 
-        $this->expectExceptionMessage('The Hook `SOME_EVENT` was not registered');
+        $this->expectExceptionMessage('unregistered_hook_name');
 
         hook()->fire('SOME_EVENT');
     }

@@ -114,7 +114,7 @@ namespace Quantum\Tests\Factory {
         {
             $this->expectException(ServiceException::class);
 
-            $this->expectExceptionMessage('Service `NonExistentClass` not found');
+            $this->expectExceptionMessage('service_not_found');
 
             ServiceFactory::get(\NonExistentClass::class);
         }

@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.5.0
+ * @since 2.8.0
  */
 
 namespace Quantum\Exceptions;
@@ -20,17 +20,11 @@ namespace Quantum\Exceptions;
  */
 class StopExecutionException extends \Exception
 {
-
-    /**
-     * Script execution terminated message
-     */
-    const EXECUTION_TERMINATED = 'Execution was terminated';
-
     /**
      * @return \Quantum\Exceptions\StopExecutionException
      */
     public static function executionTerminated(): StopExecutionException
     {
-        return new static(self::EXECUTION_TERMINATED);
+        return new static(t('execution_terminated'));
     }
 }

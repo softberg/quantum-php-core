@@ -40,7 +40,7 @@ class WebAuthTest extends AuthTestCase
     {
         $this->expectException(AuthException::class);
 
-        $this->expectExceptionMessage(AuthException::INCORRECT_AUTH_CREDENTIALS);
+        $this->expectExceptionMessage('incorrect_auth_credentials');
 
         $this->webAuth->signin('admin@qt.com', '111111');
     }
@@ -94,7 +94,7 @@ class WebAuthTest extends AuthTestCase
 
         $this->expectException(AuthException::class);
 
-        $this->expectExceptionMessage(AuthException::INACTIVE_ACCOUNT);
+        $this->expectExceptionMessage('inactive_account');
 
         $this->webAuth->signup($this->guestUser);
 

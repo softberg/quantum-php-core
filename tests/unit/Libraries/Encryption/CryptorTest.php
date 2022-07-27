@@ -17,6 +17,7 @@ namespace Quantum\Libraries\Encryption {
 namespace Quantum\Tests\Libraries\Encryption {
 
     use PHPUnit\Framework\TestCase;
+    use Quantum\App;
     use Quantum\Libraries\Encryption\Cryptor;
     use Quantum\Exceptions\CryptorException;
 
@@ -29,6 +30,8 @@ namespace Quantum\Tests\Libraries\Encryption {
 
         public function setUp(): void
         {
+            App::loadCoreFunctions(dirname(__DIR__, 4) . DS . 'src' . DS . 'Helpers');
+
             $this->cryptor = new Cryptor();
         }
 
@@ -100,7 +103,7 @@ namespace Quantum\Tests\Libraries\Encryption {
 
             $this->expectException(CryptorException::class);
 
-            $this->expectExceptionMessage(CryptorException::OPENSSL_PUBLIC_KEY_NOT_PROVIDED);
+            $this->expectExceptionMessage(t('openssl_public_key_not_provided'));
 
             $this->cryptor->encrypt($this->phraseOne);
         }
@@ -115,7 +118,7 @@ namespace Quantum\Tests\Libraries\Encryption {
 
             $this->expectException(CryptorException::class);
 
-            $this->expectExceptionMessage(CryptorException::OPENSSL_PRIVATE_KEY_NOT_PROVIDED);
+            $this->expectExceptionMessage(t('openssl_private_key_not_provided'));
 
             $this->cryptor->decrypt($encrypted);
         }
