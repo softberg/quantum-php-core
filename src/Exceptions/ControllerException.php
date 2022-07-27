@@ -28,7 +28,7 @@ class ControllerException extends \Exception
      */
     public static function controllerNotFound(?string $name): ControllerException
     {
-        return new static(t('controller_not_found'), E_ERROR);
+        return new static(t('controller_not_found', $name), E_ERROR);
     }
 
     /**
