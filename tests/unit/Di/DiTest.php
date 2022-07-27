@@ -61,7 +61,7 @@ namespace Quantum\Tests\Di {
 
             $this->expectException(DiException::class);
 
-            $this->expectExceptionMessage('Dependency `' . DiException::class . '` not defined');
+            $this->expectExceptionMessage('dependency_not_found');
 
             Di::get(DiException::class);
         }

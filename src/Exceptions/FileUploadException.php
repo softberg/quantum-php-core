@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.5.0
+ * @since 2.8.0
  */
 
 namespace Quantum\Exceptions;
@@ -20,28 +20,12 @@ namespace Quantum\Exceptions;
  */
 class FileUploadException extends \Exception
 {
-
-    /**
-     * File was not sent with a POST request message
-     */
-    const FILE_NOT_UPLOADED = 'The uploaded file was not sent with a POST request';
-
-    /**
-     * Upload file not found message
-     */
-    const UPLOADED_FILE_NOT_FOUND = 'Cannot find uploaded file identified by key `{%1}`';
-
-    /**
-     * File type not allowed message
-     */
-    const FILE_TYPE_NOT_ALLOWED = 'The file type `{%1}` is not allowed';
-
     /**
      * @return \Quantum\Exceptions\FileUploadException
      */
     public static function fileNotUploaded(): FileUploadException
     {
-        return new static(self::FILE_NOT_UPLOADED, E_WARNING);
+        return new static(t('file_not_uploaded'), E_WARNING);
     }
 
     /**
@@ -50,7 +34,7 @@ class FileUploadException extends \Exception
      */
     public static function fileNotFound(string $name): FileUploadException
     {
-        return new static(_message(self::UPLOADED_FILE_NOT_FOUND, $name), E_WARNING);
+        return new static(t('uploaded_file_not_found', $name), E_WARNING);
     }
 
     /**
@@ -59,7 +43,7 @@ class FileUploadException extends \Exception
      */
     public static function fileTypeNotAllowed(string $name): FileUploadException
     {
-        return new static(_message(self::FILE_TYPE_NOT_ALLOWED, $name), E_WARNING);
+        return new static(t('file_type_not_allowed', $name), E_WARNING);
     }
 
 }

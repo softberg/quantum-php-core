@@ -246,7 +246,7 @@ class RequestTest extends TestCase
 
         $this->expectException(FileUploadException::class);
 
-        $this->expectExceptionMessage('Cannot find uploaded file identified by key `image`');
+        $this->expectExceptionMessage('uploaded_file_not_found');
 
         $request->getFile('image');
 

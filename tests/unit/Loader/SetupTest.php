@@ -39,7 +39,7 @@ class SetupTest extends TestCase
 
         $this->assertEquals(true, $setup->getHierarchy());
 
-        $this->assertEquals(ConfigException::CONFIG_FILE_NOT_FOUND, $setup->getExceptionMessage());
+        $this->assertEquals(t('config_file_not_found'), $setup->getExceptionMessage());
 
     }
 

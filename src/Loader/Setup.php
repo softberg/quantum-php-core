@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.6.0
+ * @since 2.8.0
  */
 
 namespace Quantum\Loader;
@@ -55,13 +55,13 @@ class Setup
      * @param string|null $module
      * @param string $exceptionMessage
      */
-    public function __construct(string $pathPrefix = null, string $fileName = null, bool $hierarchical = true, string $module = null, string $exceptionMessage = ConfigException::CONFIG_FILE_NOT_FOUND)
+    public function __construct(string $pathPrefix = null, string $fileName = null, bool $hierarchical = true, string $module = null, string $exceptionMessage = null)
     {
         $this->pathPrefix = $pathPrefix;
         $this->fileName = $fileName;
         $this->hierarchical = $hierarchical;
         $this->module = $module ?: current_module();
-        $this->exceptionMessage = $exceptionMessage;
+        $this->exceptionMessage = $exceptionMessage ?: t('config_file_not_found', $fileName);
     }
 
     /**

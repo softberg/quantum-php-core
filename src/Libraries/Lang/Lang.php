@@ -102,7 +102,7 @@ class Lang
             $setup->setPathPrefix('Resources' . DS . 'lang' . DS . $this->getLang());
             $setup->setFilename($fileName);
             $setup->setHierarchy(true);
-            $setup->setExceptionMessage(_message(LangException::TRANSLATION_FILES_NOT_FOUND, $this->getLang()));
+            $setup->setExceptionMessage(t('translation_files_not_found', $this->getLang()));
 
             self::$translations->import([$fileName => Di::get(Loader::class)->setup($setup)->load()]);
         }

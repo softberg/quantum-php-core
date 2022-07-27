@@ -20,63 +20,12 @@ namespace Quantum\Exceptions;
  */
 class RouteException extends \Exception
 {
-
-    /**
-     * Route not found message
-     */
-    const ROUTE_NOT_FOUND = 'Route Not Found';
-
-    /**
-     * Route is not a closure message
-     */
-    const ROUTES_NOT_CLOSURE = 'Route is not a closure';
-
-    /**
-     * Repetitive route message with same method
-     */
-    const REPETITIVE_ROUTE_SAME_METHOD = 'Repetitive Routes with same method `{%1}`';
-
-    /**
-     * Repetitive route message with in different modules message
-     */
-    const REPETITIVE_ROUTE_DIFFERENT_MODULES = 'Repetitive Routes in different modules';
-
-    /**
-     * Incorrect method message
-     */
-    const INCORRECT_METHOD = 'Incorrect Method `{%1}`';
-
-    /**
-     * Name can not be set before route definition message
-     */
-    const NAME_BEFORE_ROUTE_DEFINITION = 'Names can not be set before route definition';
-
-    /**
-     * Nam can not be set on groups message
-     */
-    const NAME_ON_GROUP = 'Name can not be set on groups message';
-
-    /**
-     * Route names should be unique message
-     */
-    const NAME_IS_NOT_UNIQUE = 'Route names should be unique';
-
-    /**
-     * Parameter name is not available message
-     */
-    const PARAM_NAME_NOT_AVAILABLE = 'Route param name `{%1}` already in use';
-    
-    /**
-     * Parameter name is not valid message
-     */
-    const PARAM_NAME_NOT_VALID = 'Route param names can only contain letters';
-
     /**
      * @return \Quantum\Exceptions\RouteException
      */
     public static function notFound(): RouteException
     {
-        return new static(self::ROUTE_NOT_FOUND, E_ERROR);
+        return new static(t('route_not_found'), E_ERROR);
     }
 
     /**
@@ -84,7 +33,7 @@ class RouteException extends \Exception
      */
     public static function notClosure(): RouteException
     {
-        return new static(self::ROUTES_NOT_CLOSURE, E_WARNING);
+        return new static(t('routes_not_closure'), E_WARNING);
     }
 
     /**
@@ -93,7 +42,7 @@ class RouteException extends \Exception
      */
     public static function repetitiveRouteSameMethod(string $name): RouteException
     {
-        return new static(_message(self::REPETITIVE_ROUTE_SAME_METHOD, $name), E_WARNING);
+        return new static(t('repetitive_route_same_method', $name), E_WARNING);
     }
 
     /**
@@ -101,7 +50,7 @@ class RouteException extends \Exception
      */
     public static function repetitiveRouteDifferentModules(): RouteException
     {
-        return new static(self::REPETITIVE_ROUTE_DIFFERENT_MODULES, E_WARNING);
+        return new static(t('repetitive_route_different_modules'), E_WARNING);
     }
 
     /**
@@ -110,7 +59,7 @@ class RouteException extends \Exception
      */
     public static function incorrectMethod(?string $name): RouteException
     {
-        return new static(_message(self::INCORRECT_METHOD, $name), E_WARNING);
+        return new static(t('incorrect_method', $name), E_WARNING);
     }
 
     /**
@@ -118,7 +67,7 @@ class RouteException extends \Exception
      */
     public static function nameBeforeDefinition(): RouteException
     {
-        return new static(self::NAME_BEFORE_ROUTE_DEFINITION);
+        return new static(t('name_before_route_definition'));
     }
 
     /**
@@ -126,7 +75,7 @@ class RouteException extends \Exception
      */
     public static function nameOnGroup(): RouteException
     {
-        return new static(self::NAME_ON_GROUP);
+        return new static(t('name_on_group'));
     }
 
     /**
@@ -134,7 +83,7 @@ class RouteException extends \Exception
      */
     public static function nonUniqueName(): RouteException
     {
-        return new static(self::NAME_IS_NOT_UNIQUE);
+        return new static(t('name_is_not_unique'));
     }
 
     /**
@@ -143,7 +92,7 @@ class RouteException extends \Exception
      */
     public static function paramNameNotAvailable(string $name): RouteException
     {
-        return new static(_message(self::PARAM_NAME_NOT_AVAILABLE, $name), E_WARNING);
+        return new static(t('param_name_not_available', $name), E_WARNING);
     }
     
     /**
@@ -152,7 +101,7 @@ class RouteException extends \Exception
      */
     public static function paramNameNotValid(): RouteException
     {
-        return new static(self::PARAM_NAME_NOT_VALID, E_WARNING);
+        return new static(t('param_name_not_valid'), E_WARNING);
     }
 
 }

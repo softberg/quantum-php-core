@@ -97,7 +97,7 @@ namespace Quantum\Tests\Mvc {
         {
             $this->expectException(ModelException::class);
 
-            $this->expectExceptionMessage('Inappropriate property `country` for fillable object');
+            $this->expectExceptionMessage('inappropriate_property');
 
             $this->model->fillObjectProps(['country' => 'Ireland']);
         }
@@ -115,7 +115,7 @@ namespace Quantum\Tests\Mvc {
         {
             $this->expectException(ModelException::class);
 
-            $this->expectExceptionMessage('Model method `undefinedMethod` is not defined');
+            $this->expectExceptionMessage('undefined_model_method');
 
             $this->model->undefinedMethod();
         }

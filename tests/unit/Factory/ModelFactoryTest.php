@@ -50,7 +50,7 @@ namespace Quantum\Tests\Factory {
         {
             $this->expectException(ModelException::class);
 
-            $this->expectExceptionMessage('Model `NonExistentClass` not found');
+            $this->expectExceptionMessage('model_not_found');
 
             ModelFactory::get(\NonExistentClass::class);
         }
@@ -59,7 +59,7 @@ namespace Quantum\Tests\Factory {
         {
             $this->expectException(ModelException::class);
 
-            $this->expectExceptionMessage('Model `Mockery\Undefined` is not instance of `Quantum\Mvc\QtModel`');
+            $this->expectExceptionMessage('not_instance_of_model');
 
             ModelFactory::get(\Mockery\Undefined::class);
         }

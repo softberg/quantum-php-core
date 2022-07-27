@@ -268,7 +268,7 @@ namespace Quantum\Tests\Libraries\Database\Sleekdb\Statements {
         {
             $this->expectException(ModelException::class);
 
-            $this->expectExceptionMessage('The model `Quantum\Models\SleekNotesModel` does not define relation wtih `events`');
+            $this->expectExceptionMessage('wrong_relation');
 
             $eventModel = ModelFactory::get(SleekEventModel::class);
 

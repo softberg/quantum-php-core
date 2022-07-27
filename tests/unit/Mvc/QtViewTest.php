@@ -77,7 +77,7 @@ namespace Quantum\Tests\Mvc {
         {
             $this->expectException(ViewException::class);
 
-            $this->expectExceptionMessage('Layout is not set');
+            $this->expectExceptionMessage('layout_not_set');
 
             $this->view->render('index');
         }

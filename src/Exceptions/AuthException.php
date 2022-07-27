@@ -21,46 +21,11 @@ namespace Quantum\Exceptions;
 class AuthException extends \Exception
 {
     /**
-     * Incorrect auth credentials  message
-     */
-    const INCORRECT_AUTH_CREDENTIALS = 'Incorrect credentials';
-
-    /**
-     * Incorrect auth credentials  message
-     */
-    const INACTIVE_ACCOUNT = 'The account is not activated';
-
-    /**
-     * Incorrect verification code
-     */
-    const INCORRECT_VERIFICATION_CODE = 'Incorrect verification code.';
-
-    /**
-     * Verification code expiry in
-     */
-    const VERIFICATION_CODE_EXPIRED = 'Verification code expired';
-
-    /**
-     * Miss-configured auth config  message
-     */
-    const MISCONFIGURED_AUTH_CONFIG = 'Auth config is not properly configured';
-    
-    /**
-     * Undefined auth type message
-     */
-    const UNDEFINED_AUTH_TYPE = 'The auth type can be only [web] or [api]';
-
-    /**
-     * Incorrect user schema
-     */
-    const INCORRECT_USER_SCHEMA = 'User schema does not contains all key fields';
-
-    /**
      * @return \Quantum\Exceptions\AuthException
      */
     public static function incorrectCredentials(): AuthException
     {
-        return new static(self::INCORRECT_AUTH_CREDENTIALS);
+        return new static(t('incorrect_auth_credentials'));
     }
 
     /**
@@ -68,7 +33,7 @@ class AuthException extends \Exception
      */
     public static function inactiveAccount(): AuthException
     {
-        return new static(self::INACTIVE_ACCOUNT);
+        return new static(t('inactive_account'));
     }
 
     /**
@@ -76,7 +41,7 @@ class AuthException extends \Exception
      */
     public static function incorrectVerificationCode(): AuthException
     {
-        return new static(self::INCORRECT_VERIFICATION_CODE);
+        return new static(t('incorrect_verification_code'));
     }
 
     /**
@@ -84,7 +49,7 @@ class AuthException extends \Exception
      */
     public static function verificationCodeExpired(): AuthException
     {
-        return new static(self::VERIFICATION_CODE_EXPIRED);
+        return new static(t('verification_code_expired'));
     }
 
     /**
@@ -92,7 +57,7 @@ class AuthException extends \Exception
      */
     public static function misconfiguredAuthConfig(): AuthException
     {
-        return new static(self::MISCONFIGURED_AUTH_CONFIG);
+        return new static(t('misconfigured_auth_config'));
     }
     
     /**
@@ -100,7 +65,7 @@ class AuthException extends \Exception
      */
     public static function undefinedAuthType(): AuthException
     {
-        return new static(self::UNDEFINED_AUTH_TYPE);
+        return new static(t('undefined_auth_type'));
     }
 
     /**
@@ -108,6 +73,6 @@ class AuthException extends \Exception
      */
     public static function incorrectUserSchema(): AuthException
     {
-        return new static(self::INCORRECT_USER_SCHEMA);
+        return new static(t('incorrect_user_schema'));
     }
 }

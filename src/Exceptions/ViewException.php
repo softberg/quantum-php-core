@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.5.0
+ * @since 2.8.0
  */
 
 namespace Quantum\Exceptions;
@@ -20,34 +20,13 @@ namespace Quantum\Exceptions;
  */
 class ViewException extends \Exception
 {
-
-    /**
-     * Direct view call message
-     */
-    const DIRECT_VIEW_INSTANCE = 'Views can not be instantiated directly, use `{%1}` class instead';
-
-    /**
-     * View file not found message
-     */
-    const LAYOUT_NOT_SET = 'Layout is not set';
-
-    /**
-     * View file not found message
-     */
-    const VIEW_FILE_NOT_FOUND = 'File `{%1}.php` does not exists';
-
-    /**
-     * Template engine configurations missing message
-     */
-    const TEMPLATE_ENGINE_CONFIG_MISSING = 'Missing Template engine configurations';
-
     /**
      * @param string $name
      * @return \Quantum\Exceptions\ViewException
      */
     public static function directInstantiation(string $name): ViewException
     {
-        return new static(_message(self::DIRECT_VIEW_INSTANCE, $name), E_WARNING);
+        return new static(t('direct_view_instance', $name), E_WARNING);
     }
 
     /**
@@ -55,7 +34,7 @@ class ViewException extends \Exception
      */
     public static function noLayoutSet(): ViewException
     {
-        return new static(self::LAYOUT_NOT_SET, E_ERROR);
+        return new static(t('layout_not_set'), E_ERROR);
     }
 
     /**
@@ -64,7 +43,7 @@ class ViewException extends \Exception
      */
     public static function fileNotFound(string $name): ViewException
     {
-        return new static(_message(self::VIEW_FILE_NOT_FOUND, $name), E_ERROR);
+        return new static(t('view_file_not_found', $name), E_ERROR);
     }
 
     /**
@@ -72,8 +51,7 @@ class ViewException extends \Exception
      */
     public static function missingTemplateEngineConfigs(): ViewException
     {
-        return new static(self::TEMPLATE_ENGINE_CONFIG_MISSING, E_WARNING);
+        return new static(t('template_engine_config_missing'), E_WARNING);
     }
-
 
 }

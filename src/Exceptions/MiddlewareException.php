@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.5.0
+ * @since 2.8.0
  */
 
 namespace Quantum\Exceptions;
@@ -21,27 +21,12 @@ namespace Quantum\Exceptions;
 class MiddlewareException extends \Exception
 {
     /**
-     * Middleware not handled correctly
-     */
-    const MIDDLEWARE_NOT_HANDLED = 'Middleware `{%1}` not handled correctly';
-
-    /**
-     * Middleware not defined message
-     */
-    const MIDDLEWARE_NOT_DEFINED = 'Middleware `{%1}` not defined';
-
-    /**
-     * Middleware not found message
-     */
-    const MIDDLEWARE_NOT_FOUND = 'Middleware `{%1}` not found';
-
-    /**
      * @param string $name
      * @return \Quantum\Exceptions\MiddlewareException
      */
     public static function notDefined(string $name): MiddlewareException
     {
-        return new static(_message(self::MIDDLEWARE_NOT_DEFINED, $name), E_WARNING);
+        return new static(t('middleware_not_defined', $name), E_WARNING);
     }
 
     /**
@@ -50,7 +35,7 @@ class MiddlewareException extends \Exception
      */
     public static function middlewareNotFound(string $name): MiddlewareException
     {
-        return new static(_message(self::MIDDLEWARE_NOT_FOUND, $name), E_WARNING);
+        return new static(t('middleware_not_found', $name), E_WARNING);
     }
 
 }
