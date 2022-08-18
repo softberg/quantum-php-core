@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.5.0
+ * @since 2.8.0
  */
 
 namespace Quantum\Http\Request;
@@ -71,7 +71,7 @@ trait Params
             'files' => []
         ];
 
-        if (in_array(self::$__method, ['PUT', 'PATCH'])) {
+        if (in_array(self::$__method, ['PUT', 'PATCH', 'POST'])) {
 
             $rawInput = file_get_contents('php://input');
 
