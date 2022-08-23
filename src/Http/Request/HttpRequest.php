@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.5.0
+ * @since 2.8.0
  */
 
 namespace Quantum\Http\Request;
@@ -48,16 +48,15 @@ abstract class HttpRequest
     const CONTENT_URL_ENCODED = 'application/x-www-form-urlencoded';
 
     /**
+     * Available methods
+     */
+    const METHODS = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
+
+    /**
      * Request method
      * @var string
      */
     private static $__method = null;
-
-    /**
-     * Available methods
-     * @var array
-     */
-    private static $availableMethods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
 
     /**
      * Server
@@ -93,20 +92,20 @@ abstract class HttpRequest
 
         self::$__query = self::$server->query();
 
-        self::$__headers = array_change_key_case((array)getallheaders(), CASE_LOWER);
+        self::$__headers = array_change_key_case((array) getallheaders(), CASE_LOWER);
 
         list('params' => $params, 'files' => $files) = self::parsedParams();
 
         self::$__request = array_merge(
-            self::$__request,
-            self::getParams(),
-            self::postParams(),
-            $params
+                self::$__request,
+                self::getParams(),
+                self::postParams(),
+                $params
         );
 
         self::$__files = array_merge(
-            self::handleFiles($_FILES),
-            $files
+                self::handleFiles($_FILES),
+                $files
         );
     }
 
@@ -184,7 +183,7 @@ abstract class HttpRequest
      */
     public static function setMethod(string $method)
     {
-        if (!in_array($method, self::$availableMethods)) {
+        if (!in_array($method, self::METHODS)) {
             throw HttpException::methodNotAvailable($method);
         }
 
@@ -236,7 +235,7 @@ abstract class HttpRequest
         $csrfToken = null;
 
         if (self::has('token')) {
-            $csrfToken = (string)self::get('token');
+            $csrfToken = (string) self::get('token');
         } elseif (self::hasHeader('X-csrf-token')) {
             $csrfToken = self::getHeader('X-csrf-token');
         }
@@ -252,7 +251,7 @@ abstract class HttpRequest
     {
         $bearerToken = null;
 
-        $authorization = (string)self::getHeader('Authorization');
+        $authorization = (string) self::getHeader('Authorization');
 
         if (self::hasHeader('Authorization')) {
             if (preg_match('/Bearer\s(\S+)/', $authorization, $matches)) {

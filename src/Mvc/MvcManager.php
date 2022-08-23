@@ -20,6 +20,7 @@ use Quantum\Middleware\MiddlewareManager;
 use Quantum\Libraries\Csrf\Csrf;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
+use Quantum\Loader\Setup;
 use Quantum\Di\Di;
 
 /**
@@ -33,19 +34,21 @@ class MvcManager
      * Handles the request
      * @param \Quantum\Http\Request $request
      * @param \Quantum\Http\Response $response
-     * @return boolean|null
+     * @throws \Quantum\Exceptions\StopExecutionException
      * @throws \Quantum\Exceptions\ControllerException
-     * @throws \Quantum\Exceptions\CsrfException
-     * @throws \Quantum\Exceptions\DatabaseException
-     * @throws \Quantum\Exceptions\DiException
      * @throws \Quantum\Exceptions\MiddlewareException
+     * @throws \Quantum\Exceptions\DatabaseException
      * @throws \Quantum\Exceptions\SessionException
+     * @throws \Quantum\Exceptions\CsrfException
+     * @throws \Quantum\Exceptions\DiException
      * @throws \ReflectionException
      */
     public static function handle(Request $request, Response $response)
     {
+        self::handleCors($response);
+
         if ($request->getMethod() == 'OPTIONS') {
-            return false;
+            stop();
         }
 
         if (current_middlewares()) {
@@ -142,6 +145,21 @@ class MvcManager
         return array_map(function ($param) {
             return $param['value'];
         }, route_params());
+    }
+
+    /**
+     * Handles CORS
+     * @param Response $response
+     */
+    private static function handleCors(Response $response)
+    {
+        if (!config()->has('cors')) {
+            config()->import(new Setup('config', 'cors'));
+        }
+
+        foreach (config()->get('cors') as $key => $value) {
+            $response->setHeader($key, $value);
+        }
     }
 
 }
