@@ -47,7 +47,8 @@ $ php qt serve
 
 > **Note:** This repository contains the core code of the Quantum framework. If you want to start a new project visit the main [Quantum PHP Project repository](https://github.com/softberg/quantum-framework-php).
 
-
+<h3>Give it a star if you like the project</h3>
+<img width="100" src="https://i.imgur.com/YaY5arh.gif">
 
 <h3>Learn More</h3>
 
