@@ -196,7 +196,7 @@ class Validator
             foreach ($this->errors as $field => $errors) {
                 if (count($errors)) {
                     foreach ($errors as $rule => $param) {
-                        $translationParams = [ucfirst($field)];
+                        $translationParams = [t('common.'.$field)];
 
                         if ($param) {
                             $translationParams[] = $param;
