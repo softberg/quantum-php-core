@@ -27,7 +27,7 @@ class MigrationException extends \Exception
      */
     public static function wrongDirection(): MigrationException
     {
-        return new static(t('wrong_migration_direction'), E_ERROR);
+        return new static(t('exception.wrong_migration_direction'), E_ERROR);
     }
 
     /**
@@ -36,7 +36,7 @@ class MigrationException extends \Exception
      */
     public static function unsupportedDriver(string $databaseDriver): MigrationException
     {
-        return new static(t('not_supported_driver', $databaseDriver), E_ERROR);
+        return new static(t('exception.not_supported_driver', $databaseDriver), E_ERROR);
     }
 
     /**
@@ -45,7 +45,7 @@ class MigrationException extends \Exception
      */
     public static function unsupportedAction(string $action): MigrationException
     {
-        return new static(t('non_supported_action', $action), E_ERROR);
+        return new static(t('exception.non_supported_action', $action), E_ERROR);
     }
 
     /**
@@ -54,7 +54,7 @@ class MigrationException extends \Exception
      */
     public static function tableAlreadyExists(string $name): MigrationException
     {
-        return new static(t('table_already_exists', $name), E_ERROR);
+        return new static(t('exception.table_already_exists', $name), E_ERROR);
     }
 
     /**
@@ -63,7 +63,7 @@ class MigrationException extends \Exception
      */
     public static function tableDoesnotExists(string $name): MigrationException
     {
-        return new static(t('table_does_not_exists', $name), E_ERROR);
+        return new static(t('exception.table_does_not_exists', $name), E_ERROR);
     }
 
     /**
@@ -72,7 +72,7 @@ class MigrationException extends \Exception
      */
     public static function columnNotAvailable(string $name): MigrationException
     {
-        return new static(t('column_not_available', $name), E_ERROR);
+        return new static(t('exception.column_not_available', $name), E_ERROR);
     }
 
     /**
@@ -81,7 +81,7 @@ class MigrationException extends \Exception
      */
     public static function methodNotDefined(string $name): MigrationException
     {
-        return new static(t('method_not_defined', $name), E_ERROR);
+        return new static(t('exception.method_not_defined', $name), E_ERROR);
     }
 
     /**
@@ -89,7 +89,7 @@ class MigrationException extends \Exception
      */
     public static function nothingToMigrate(): MigrationException
     {
-        return new static(t('nothing_to_migrate'), E_NOTICE);
+        return new static(t('exception.nothing_to_migrate'), E_NOTICE);
     }
 
 }

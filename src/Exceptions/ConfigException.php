@@ -27,7 +27,7 @@ class ConfigException extends \Exception
      */
     public static function configAlreadyLoaded(): ConfigException
     {
-        return new static(t('config_already_loaded'), E_WARNING);
+        return new static(t('exception.config_already_loaded'), E_WARNING);
     }
 
     /**
@@ -36,7 +36,7 @@ class ConfigException extends \Exception
      */
     public static function configCollision(string $name): ConfigException
     {
-        return new static(t('config_collision', $name), E_WARNING);
+        return new static(t('exception.config_collision', $name), E_WARNING);
     }
 
 }

@@ -25,7 +25,7 @@ class LangException extends \Exception
      */
     public static function misconfiguredConfig(): LangException
     {
-        return new static(t('misconfigured_lang_config'), E_WARNING);
+        return new static(t('exception.misconfigured_lang_config'), E_WARNING);
     }
 
     /**
@@ -34,7 +34,7 @@ class LangException extends \Exception
      */
     public static function translationsNotFound(string $name): LangException
     {
-        return new static(t('translation_files_not_found', $name), E_WARNING);
+        return new static(t('exception.translation_files_not_found', $name), E_WARNING);
     }
 
     /**
@@ -42,6 +42,6 @@ class LangException extends \Exception
      */
     public static function misconfiguredDefaultConfig(): LangException
     {
-        return new static(t('misconfigured_lang_default_config'), E_WARNING);
+        return new static(t('exception.misconfigured_lang_default_config'), E_WARNING);
     }
 }

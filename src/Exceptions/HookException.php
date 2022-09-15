@@ -26,7 +26,7 @@ class HookException extends \Exception
      */
     public static function hookDuplicateName(string $name): HookException
     {
-        return new static(t('duplicate_hook_name', $name), E_ERROR);
+        return new static(t('exception.duplicate_hook_name', $name), E_ERROR);
     }
 
     /**
@@ -35,6 +35,6 @@ class HookException extends \Exception
      */
     public static function unregisteredHookName(string $name): HookException
     {
-        return new static(t('unregistered_hook_name', $name), E_WARNING);
+        return new static(t('exception.unregistered_hook_name', $name), E_WARNING);
     }
 }

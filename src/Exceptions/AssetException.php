@@ -27,6 +27,6 @@ class AssetException extends \Exception
      */
     public static function positionInUse(string $position, string $name): AssetException
     {
-        return new self(t('position_in_use', [$position, $name]), E_WARNING);
+        return new self(t('exception.position_in_use', [$position, $name]), E_WARNING);
     }
 }

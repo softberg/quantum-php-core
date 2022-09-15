@@ -26,6 +26,6 @@ class ModuleLoaderException extends \Exception
      */
     public static function notFound(string $name): ModuleLoaderException
     {
-        return new static(t('module_not_found', $name), E_ERROR);
+        return new static(t('exception.module_not_found', $name), E_ERROR);
     }
 }

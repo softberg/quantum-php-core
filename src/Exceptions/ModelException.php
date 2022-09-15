@@ -26,7 +26,7 @@ class ModelException extends \Exception
      */
     public static function notFound(string $name): ModelException
     {
-        return new static(t('model_not_found', $name), E_ERROR);
+        return new static(t('exception.model_not_found', $name), E_ERROR);
     }
 
     /**
@@ -35,7 +35,7 @@ class ModelException extends \Exception
      */
     public static function notModelInstance(array $names): ModelException
     {
-        return new static(t('not_instance_of_model', $names), E_WARNING);
+        return new static(t('exception.not_instance_of_model', $names), E_WARNING);
     }
 
     /**
@@ -44,7 +44,7 @@ class ModelException extends \Exception
      */
     public static function noTableDefined(?string $name): ModelException
     {
-        return new static(t('model_without_table_defined', $name), E_WARNING);
+        return new static(t('exception.model_without_table_defined', $name), E_WARNING);
     }
 
     /**
@@ -53,7 +53,7 @@ class ModelException extends \Exception
      */
     public static function undefinedMethod(string $name): ModelException
     {
-        return new static(t('undefined_model_method', $name), E_WARNING);
+        return new static(t('exception.undefined_model_method', $name), E_WARNING);
     }
 
     /**
@@ -62,7 +62,7 @@ class ModelException extends \Exception
      */
     public static function inappropriateProperty(string $name): ModelException
     {
-        return new static(t('inappropriate_property', $name), E_WARNING);
+        return new static(t('exception.inappropriate_property', $name), E_WARNING);
     }
 
     /**
@@ -71,7 +71,7 @@ class ModelException extends \Exception
      */
     public static function wrongRelation(string $modelName, string $tableName): ModelException
     {
-        return new static(t('wrong_relation', [$modelName, $tableName]), E_ERROR);
+        return new static(t('exception.wrong_relation', [$modelName, $tableName]), E_ERROR);
     }
 
 }

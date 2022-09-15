@@ -25,6 +25,6 @@ class JwtException extends \Exception
      */
     public static function payloadNotFound(): JwtException
     {
-        return new static(t('jwt_payload_not_found'), E_WARNING);
+        return new static(t('exception.jwt_payload_not_found'), E_WARNING);
     }
 }

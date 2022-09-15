@@ -25,7 +25,7 @@ class CryptorException extends \Exception
      */
     public static function configNotFound(): CryptorException
     {
-        return new static(t('openssl_config_not_found'), E_WARNING);
+        return new static(t('exception.openssl_config_not_found'), E_WARNING);
     }
 
     /**
@@ -33,7 +33,7 @@ class CryptorException extends \Exception
      */
     public static function noPublicKeyCreated(): CryptorException
     {
-        return new static(t('openssl_public_key_not_created'), E_WARNING);
+        return new static(t('exception.openssl_public_key_not_created'), E_WARNING);
     }
 
     /**
@@ -41,7 +41,7 @@ class CryptorException extends \Exception
      */
     public static function noPrivateKeyCreated(): CryptorException
     {
-        return new static(t('openssl_private_key_not_created'), E_WARNING);
+        return new static(t('exception.openssl_private_key_not_created'), E_WARNING);
     }
 
     /**
@@ -49,7 +49,7 @@ class CryptorException extends \Exception
      */
     public static function publicKeyNotProvided(): CryptorException
     {
-        return new static(t('openssl_public_key_not_provided'), E_WARNING);
+        return new static(t('exception.openssl_public_key_not_provided'), E_WARNING);
     }
 
     /**
@@ -57,7 +57,7 @@ class CryptorException extends \Exception
      */
     public static function privateKeyNotProvided(): CryptorException
     {
-        return new static(t('openssl_private_key_not_provided'), E_WARNING);
+        return new static(t('exception.openssl_private_key_not_provided'), E_WARNING);
     }
 
     /**
@@ -65,6 +65,6 @@ class CryptorException extends \Exception
      */
     public static function invalidCipher(): CryptorException
     {
-        return new static(t('openssl_invalid_cipher'), E_WARNING);
+        return new static(t('exception.openssl_invalid_cipher'), E_WARNING);
     }
 }

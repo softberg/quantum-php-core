@@ -27,7 +27,7 @@ class FileSystemException extends \Exception
      */
     public static function methodNotSupported(string $methodName, string $adapterName): FileSystemException
     {
-        return new static(t('not_supported_method', [$methodName, $adapterName]), E_WARNING);
+        return new static(t('exception.not_supported_method', [$methodName, $adapterName]), E_WARNING);
     }
 
     /**
@@ -36,7 +36,7 @@ class FileSystemException extends \Exception
      */
     public static function directoryNotExists(string $name): FileSystemException
     {
-        return new static(t('directory_not_exist', $name), E_WARNING);
+        return new static(t('exception.directory_not_exist', $name), E_WARNING);
     }
 
     /**
@@ -45,7 +45,7 @@ class FileSystemException extends \Exception
      */
     public static function directoryNotWritable(string $name): FileSystemException
     {
-        return new static(t('directory_not_writable', $name), E_WARNING);
+        return new static(t('exception.directory_not_writable', $name), E_WARNING);
     }
 
     /**
@@ -53,7 +53,7 @@ class FileSystemException extends \Exception
      */
     public static function fileAlreadyExists(): FileSystemException
     {
-        return new static(t('file_already_exists'), E_WARNING);
+        return new static(t('exception.file_already_exists'), E_WARNING);
     }
 
 }

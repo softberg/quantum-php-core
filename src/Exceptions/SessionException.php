@@ -25,7 +25,7 @@ class SessionException extends \Exception
      */
     public static function sessionNotStarted(): SessionException
     {
-        return new static(t('session_not_started'), E_WARNING);
+        return new static(t('exception.session_not_started'), E_WARNING);
     }
 
     /**
@@ -33,7 +33,7 @@ class SessionException extends \Exception
      */
     public static function sessionNotDestroyed(): SessionException
     {
-        return new static(t('session_not_destroyed'), E_WARNING);
+        return new static(t('exception.session_not_destroyed'), E_WARNING);
     }
 
     /**
@@ -41,6 +41,6 @@ class SessionException extends \Exception
      */
     public static function sessionTableNotProvided(): SessionException
     {
-        return new static(t('session_table_not_provided'));
+        return new static(t('exception.session_table_not_provided'));
     }
 }

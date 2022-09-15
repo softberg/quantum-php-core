@@ -25,7 +25,7 @@ class AuthException extends \Exception
      */
     public static function incorrectCredentials(): AuthException
     {
-        return new static(t('incorrect_auth_credentials'));
+        return new static(t('exception.incorrect_auth_credentials'));
     }
 
     /**
@@ -33,7 +33,7 @@ class AuthException extends \Exception
      */
     public static function inactiveAccount(): AuthException
     {
-        return new static(t('inactive_account'));
+        return new static(t('exception.inactive_account'));
     }
 
     /**
@@ -41,7 +41,7 @@ class AuthException extends \Exception
      */
     public static function incorrectVerificationCode(): AuthException
     {
-        return new static(t('incorrect_verification_code'));
+        return new static(t('exception.incorrect_verification_code'));
     }
 
     /**
@@ -49,7 +49,7 @@ class AuthException extends \Exception
      */
     public static function verificationCodeExpired(): AuthException
     {
-        return new static(t('verification_code_expired'));
+        return new static(t('exception.verification_code_expired'));
     }
 
     /**
@@ -57,7 +57,7 @@ class AuthException extends \Exception
      */
     public static function misconfiguredAuthConfig(): AuthException
     {
-        return new static(t('misconfigured_auth_config'));
+        return new static(t('exception.misconfigured_auth_config'));
     }
     
     /**
@@ -65,7 +65,7 @@ class AuthException extends \Exception
      */
     public static function undefinedAuthType(): AuthException
     {
-        return new static(t('undefined_auth_type'));
+        return new static(t('exception.undefined_auth_type'));
     }
 
     /**
@@ -73,6 +73,6 @@ class AuthException extends \Exception
      */
     public static function incorrectUserSchema(): AuthException
     {
-        return new static(t('incorrect_user_schema'));
+        return new static(t('exception.incorrect_user_schema'));
     }
 }

@@ -25,7 +25,7 @@ class HttpException extends \Exception
      */
     public static function unexpectedRequestInitialization(): HttpException
     {
-        return new static(t('unexpected_request_initialization'), E_WARNING);
+        return new static(t('exception.unexpected_request_initialization'), E_WARNING);
     }
 
     /**
@@ -33,7 +33,7 @@ class HttpException extends \Exception
      */
     public static function unexpectedResponseInitialization(): HttpException
     {
-        return new static(t('unexpected_response_initialization'), E_WARNING);
+        return new static(t('exception.unexpected_response_initialization'), E_WARNING);
     }
 
     /**
@@ -42,14 +42,14 @@ class HttpException extends \Exception
      */
     public static function methodNotAvailable(string $name): HttpException
     {
-        return new static(t('method_not_available', $name), E_WARNING);
+        return new static(t('exception.method_not_available', $name), E_WARNING);
     }
 
     /**
      * @return static
      */
     public static function contentTypeNotSupported() {
-        return new static(t('not_supported_content_type'), E_WARNING);
+        return new static(t('exception.not_supported_content_type'), E_WARNING);
     }
 
 }

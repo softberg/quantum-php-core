@@ -25,7 +25,7 @@ class DatabaseException extends \Exception
      */
     public static function missingConfig(): DatabaseException
     {
-        return new static(t('config_not_provided'), E_ERROR);
+        return new static(t('exception.config_not_provided'), E_ERROR);
     }
 
     /**
@@ -33,7 +33,7 @@ class DatabaseException extends \Exception
      */
     public static function incorrectConfig(): DatabaseException
     {
-        return new static(t('incorrect_config'), E_ERROR);
+        return new static(t('exception.incorrect_config'), E_ERROR);
     }
 
     /**
@@ -41,7 +41,7 @@ class DatabaseException extends \Exception
      */
     public static function ormClassNotDefined(): DatabaseException
     {
-        return new static(t('orm_class_not_defined'), E_ERROR);
+        return new static(t('exception.orm_class_not_defined'), E_ERROR);
     }
 
     /**
@@ -50,7 +50,7 @@ class DatabaseException extends \Exception
      */
     public static function ormClassNotFound(string $name): DatabaseException
     {
-        return new static(t('orm_class_not_found', $name), E_ERROR);
+        return new static(t('exception.orm_class_not_found', $name), E_ERROR);
     }
 
     /**

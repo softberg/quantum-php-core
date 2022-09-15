@@ -25,6 +25,6 @@ class StopExecutionException extends \Exception
      */
     public static function executionTerminated(): StopExecutionException
     {
-        return new static(t('execution_terminated'));
+        return new static(t('exception.execution_terminated'));
     }
 }

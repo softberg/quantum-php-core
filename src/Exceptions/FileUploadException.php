@@ -25,7 +25,7 @@ class FileUploadException extends \Exception
      */
     public static function fileNotUploaded(): FileUploadException
     {
-        return new static(t('file_not_uploaded'), E_WARNING);
+        return new static(t('exception.file_not_uploaded'), E_WARNING);
     }
 
     /**
@@ -34,7 +34,7 @@ class FileUploadException extends \Exception
      */
     public static function fileNotFound(string $name): FileUploadException
     {
-        return new static(t('uploaded_file_not_found', $name), E_WARNING);
+        return new static(t('exception.uploaded_file_not_found', $name), E_WARNING);
     }
 
     /**
@@ -43,7 +43,7 @@ class FileUploadException extends \Exception
      */
     public static function fileTypeNotAllowed(string $name): FileUploadException
     {
-        return new static(t('file_type_not_allowed', $name), E_WARNING);
+        return new static(t('exception.file_type_not_allowed', $name), E_WARNING);
     }
 
 }

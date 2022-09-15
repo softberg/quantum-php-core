@@ -26,7 +26,7 @@ class ViewException extends \Exception
      */
     public static function directInstantiation(string $name): ViewException
     {
-        return new static(t('direct_view_instance', $name), E_WARNING);
+        return new static(t('exception.direct_view_instance', $name), E_WARNING);
     }
 
     /**
@@ -34,7 +34,7 @@ class ViewException extends \Exception
      */
     public static function noLayoutSet(): ViewException
     {
-        return new static(t('layout_not_set'), E_ERROR);
+        return new static(t('exception.layout_not_set'), E_ERROR);
     }
 
     /**
@@ -43,7 +43,7 @@ class ViewException extends \Exception
      */
     public static function fileNotFound(string $name): ViewException
     {
-        return new static(t('view_file_not_found', $name), E_ERROR);
+        return new static(t('exception.view_file_not_found', $name), E_ERROR);
     }
 
     /**
@@ -51,7 +51,7 @@ class ViewException extends \Exception
      */
     public static function missingTemplateEngineConfigs(): ViewException
     {
-        return new static(t('template_engine_config_missing'), E_WARNING);
+        return new static(t('exception.template_engine_config_missing'), E_WARNING);
     }
 
 }
