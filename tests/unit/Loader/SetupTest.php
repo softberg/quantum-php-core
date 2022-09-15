@@ -29,7 +29,7 @@ class SetupTest extends TestCase
         unset($this->setup);
     }
 
-    public function testConstructor()
+    public function testSetupConstructor()
     {
         $setup = new Setup('config', 'database');
 
@@ -39,7 +39,7 @@ class SetupTest extends TestCase
 
         $this->assertEquals(true, $setup->getHierarchy());
 
-        $this->assertEquals('config_file_not_found', $setup->getExceptionMessage());
+        $this->assertEquals('exception.config_file_not_found', $setup->getExceptionMessage());
 
     }
 
