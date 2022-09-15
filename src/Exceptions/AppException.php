@@ -25,6 +25,6 @@ class AppException extends \Exception
      */
     public static function missingAppKey(): AppException
     {
-        return new static(t('app_key_missing'), E_ERROR);
+        return new static(t('exception.app_key_missing'), E_ERROR);
     }
 }

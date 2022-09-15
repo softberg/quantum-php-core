@@ -44,6 +44,6 @@ class ServiceException extends \Exception
      */
     public static function undefinedMethod(string $name): ServiceException
     {
-        return new static(t('undefined_method', $name), E_ERROR);
+        return new static(t('exception.undefined_method', $name), E_ERROR);
     }
 }

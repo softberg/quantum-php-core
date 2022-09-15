@@ -25,6 +25,6 @@ class EnvException extends \Exception
      */
     public static function fileNotFound(): EnvException
     {
-        return new static(t('env_file_not_found'), E_ERROR);
+        return new static(t('exception.env_file_not_found'), E_ERROR);
     }
 }

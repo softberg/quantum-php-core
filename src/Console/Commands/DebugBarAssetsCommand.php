@@ -76,7 +76,7 @@ class DebugBarAssetsCommand extends QtCommand
 
         if ($dst != $this->publicDebugbarFolderPath) {
             if (mkdir($dst, 777, true) === false) {
-                throw new \RuntimeException(t('directory_cant_be_created', $dst));
+                throw new \RuntimeException(t('exception.directory_cant_be_created', $dst));
             }
         }
 

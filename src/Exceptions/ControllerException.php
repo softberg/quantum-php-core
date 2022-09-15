@@ -28,7 +28,7 @@ class ControllerException extends \Exception
      */
     public static function controllerNotFound(?string $name): ControllerException
     {
-        return new static(t('controller_not_found', $name), E_ERROR);
+        return new static(t('exception.controller_not_found', $name), E_ERROR);
     }
 
     /**
@@ -37,7 +37,7 @@ class ControllerException extends \Exception
      */
     public static function controllerNotDefined(?string $name): ControllerException
     {
-        return new static(t('controller_not_defined', $name), E_ERROR);
+        return new static(t('exception.controller_not_defined', $name), E_ERROR);
     }
 
     /**
@@ -46,7 +46,7 @@ class ControllerException extends \Exception
      */
     public static function actionNotDefined(string $name): ControllerException
     {
-        return new static(t('action_not_defined', $name), E_ERROR);
+        return new static(t('exception.action_not_defined', $name), E_ERROR);
     }
 
     /**
@@ -55,6 +55,6 @@ class ControllerException extends \Exception
      */
     public static function undefinedMethod(string $name): ControllerException
     {
-        return new static(t('undefined_method', $name), E_ERROR);
+        return new static(t('exception.undefined_method', $name), E_ERROR);
     }
 }

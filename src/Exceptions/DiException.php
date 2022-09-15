@@ -26,6 +26,6 @@ class DiException extends \Exception
      */
     public static function dependencyNotDefined(string $name): DiException
     {
-        return new self(t('dependency_not_found', $name), E_ERROR);
+        return new self(t('exception.dependency_not_found', $name), E_ERROR);
     }
 }

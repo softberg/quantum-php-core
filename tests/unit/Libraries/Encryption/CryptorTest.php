@@ -103,7 +103,7 @@ namespace Quantum\Tests\Libraries\Encryption {
 
             $this->expectException(CryptorException::class);
 
-            $this->expectExceptionMessage(t('openssl_public_key_not_provided'));
+            $this->expectExceptionMessage(t('exception.openssl_public_key_not_provided'));
 
             $this->cryptor->encrypt($this->phraseOne);
         }
@@ -118,7 +118,7 @@ namespace Quantum\Tests\Libraries\Encryption {
 
             $this->expectException(CryptorException::class);
 
-            $this->expectExceptionMessage(t('openssl_private_key_not_provided'));
+            $this->expectExceptionMessage(t('exception.openssl_private_key_not_provided'));
 
             $this->cryptor->decrypt($encrypted);
         }

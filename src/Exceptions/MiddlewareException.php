@@ -26,7 +26,7 @@ class MiddlewareException extends \Exception
      */
     public static function notDefined(string $name): MiddlewareException
     {
-        return new static(t('middleware_not_defined', $name), E_WARNING);
+        return new static(t('exception.middleware_not_defined', $name), E_WARNING);
     }
 
     /**
@@ -35,7 +35,7 @@ class MiddlewareException extends \Exception
      */
     public static function middlewareNotFound(string $name): MiddlewareException
     {
-        return new static(t('middleware_not_found', $name), E_WARNING);
+        return new static(t('exception.middleware_not_found', $name), E_WARNING);
     }
 
 }

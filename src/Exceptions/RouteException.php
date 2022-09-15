@@ -25,7 +25,7 @@ class RouteException extends \Exception
      */
     public static function notFound(): RouteException
     {
-        return new static(t('route_not_found'), E_ERROR);
+        return new static(t('exception.route_not_found'), E_ERROR);
     }
 
     /**
@@ -33,7 +33,7 @@ class RouteException extends \Exception
      */
     public static function notClosure(): RouteException
     {
-        return new static(t('routes_not_closure'), E_WARNING);
+        return new static(t('exception.routes_not_closure'), E_WARNING);
     }
 
     /**
@@ -42,7 +42,7 @@ class RouteException extends \Exception
      */
     public static function repetitiveRouteSameMethod(string $name): RouteException
     {
-        return new static(t('repetitive_route_same_method', $name), E_WARNING);
+        return new static(t('exception.repetitive_route_same_method', $name), E_WARNING);
     }
 
     /**
@@ -50,7 +50,7 @@ class RouteException extends \Exception
      */
     public static function repetitiveRouteDifferentModules(): RouteException
     {
-        return new static(t('repetitive_route_different_modules'), E_WARNING);
+        return new static(t('exception.repetitive_route_different_modules'), E_WARNING);
     }
 
     /**
@@ -59,7 +59,7 @@ class RouteException extends \Exception
      */
     public static function incorrectMethod(?string $name): RouteException
     {
-        return new static(t('incorrect_method', $name), E_WARNING);
+        return new static(t('exception.incorrect_method', $name), E_WARNING);
     }
 
     /**
@@ -67,7 +67,7 @@ class RouteException extends \Exception
      */
     public static function nameBeforeDefinition(): RouteException
     {
-        return new static(t('name_before_route_definition'));
+        return new static(t('exception.name_before_route_definition'));
     }
 
     /**
@@ -75,7 +75,7 @@ class RouteException extends \Exception
      */
     public static function nameOnGroup(): RouteException
     {
-        return new static(t('name_on_group'));
+        return new static(t('exception.name_on_group'));
     }
 
     /**
@@ -83,7 +83,7 @@ class RouteException extends \Exception
      */
     public static function nonUniqueName(): RouteException
     {
-        return new static(t('name_is_not_unique'));
+        return new static(t('exception.name_is_not_unique'));
     }
 
     /**
@@ -92,7 +92,7 @@ class RouteException extends \Exception
      */
     public static function paramNameNotAvailable(string $name): RouteException
     {
-        return new static(t('param_name_not_available', $name), E_WARNING);
+        return new static(t('exception.param_name_not_available', $name), E_WARNING);
     }
     
     /**
@@ -101,7 +101,7 @@ class RouteException extends \Exception
      */
     public static function paramNameNotValid(): RouteException
     {
-        return new static(t('param_name_not_valid'), E_WARNING);
+        return new static(t('exception.param_name_not_valid'), E_WARNING);
     }
 
 }

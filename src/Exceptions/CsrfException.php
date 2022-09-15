@@ -25,7 +25,7 @@ class CsrfException extends \Exception
      */
     public static function tokenNotFound(): CsrfException
     {
-        return new static(t('csrf_token_not_found'), E_WARNING);
+        return new static(t('exception.csrf_token_not_found'), E_WARNING);
     }
 
     /**
@@ -33,6 +33,6 @@ class CsrfException extends \Exception
      */
     public static function tokenNotMatched(): CsrfException
     {
-        return new static(t('csrf_token_not_matched'), E_WARNING);
+        return new static(t('exception.csrf_token_not_matched'), E_WARNING);
     }
 }

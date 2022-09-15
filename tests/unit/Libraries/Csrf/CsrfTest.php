@@ -95,7 +95,7 @@ class CsrfTest extends TestCase
 
         $this->expectException(CsrfException::class);
 
-        $this->expectExceptionMessage(t('csrf_token_not_found'));
+        $this->expectExceptionMessage(t('exception.csrf_token_not_found'));
 
         $this->assertTrue(Csrf::checkToken($this->request, $this->session));
     }
@@ -108,7 +108,7 @@ class CsrfTest extends TestCase
 
         $this->expectException(CsrfException::class);
 
-        $this->expectExceptionMessage(t('csrf_token_not_matched'));
+        $this->expectExceptionMessage(t('exception.csrf_token_not_matched'));
 
         $this->assertTrue(Csrf::checkToken($this->request, $this->session));
     }
