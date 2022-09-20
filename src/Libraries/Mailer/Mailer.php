@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.6.0
+ * @since 2.8.0
  */
 
 namespace Quantum\Libraries\Mailer;
@@ -17,6 +17,9 @@ namespace Quantum\Libraries\Mailer;
 use PHPMailer\PHPMailer\PHPMailer;
 use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Debugger\Debugger;
+use Quantum\Logger\FileLogger;
+use PHPMailer\PHPMailer\SMTP;
+use Psr\Log\LogLevel;
 use Quantum\Di\Di;
 
 /**
@@ -100,7 +103,7 @@ class Mailer
     {
         $this->mailer = new PHPMailer();
 
-        if (config()->has('MAIL_HOST')) {
+        if (config()->has('mail_host')) {
             $this->setupSmtp();
             $this->setupDebugging();
         } else {
@@ -367,7 +370,7 @@ class Mailer
 
         $this->prepare();
 
-        if (config()->has('mail_trap')) {
+        if (config()->get('mail_trap')) {
             $sent = $this->mailer->preSend();
             $this->saveMessage($this->mailer->getLastMessageID(), $this->mailer->getSentMIMEMessage());
             return $sent;
@@ -498,15 +501,19 @@ class Mailer
      */
     private function setupDebugging()
     {
-        if (config()->has('debug')) {
-            $this->mailer->SMTPDebug = 1;
+        if (config()->get('debug')) {
+            $this->mailer->SMTPDebug = SMTP::DEBUG_SERVER;
 
-            $this->mailer->Debugoutput = function ($data, $level) {
-                Debugger::addToStore(Debugger::MAILS, $level, $data);
+            $this->mailer->Debugoutput = function ($message) {
+                Debugger::addToStore(Debugger::MAILS, LogLevel::WARNING, $message);
+
+                $logFile = logs_dir() . DS . date('Y-m-d') . '.log';
+                $logMessage = '[' . date('Y-m-d H:i:s') . '] ' . LogLevel::WARNING . ': ' . $message . PHP_EOL;
+
+                warning($logMessage, new FileLogger($logFile));
             };
-
         } else {
-            $this->mailer->SMTPDebug = 0;
+            $this->mailer->SMTPDebug = SMTP::DEBUG_OFF;
         }
     }
 
