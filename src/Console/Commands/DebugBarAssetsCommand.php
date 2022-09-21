@@ -9,12 +9,12 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.0.0
+ * @since 2.8.0
  */
 
 namespace Quantum\Console\Commands;
 
-use Quantum\Exceptions\FileSystemException;
+use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Console\QtCommand;
 
 /**
@@ -28,7 +28,7 @@ class DebugBarAssetsCommand extends QtCommand
      * Command name
      * @var string
      */
-    protected $name = 'core:debugbar';
+    protected $name = 'install:debugbar';
 
     /**
      * Command description
@@ -59,6 +59,11 @@ class DebugBarAssetsCommand extends QtCommand
      */
     public function exec()
     {
+        if ($this->installed()) {
+            $this->error('The debuger already installed');
+            return;
+        }
+
         $this->recursive_copy($this->vendorDebugbarFolderPath, $this->publicDebugbarFolderPath);
 
         $this->info('Debugbar assets successfully published');
@@ -97,4 +102,18 @@ class DebugBarAssetsCommand extends QtCommand
         }
     }
 
+    /**
+     * Checks if already installed
+     * @return bool
+     */
+    private function installed(): bool
+    {
+        $fs = new FileSystem();
+
+        if ($fs->exists(assets_dir() . DS . 'DebugBar' . DS . 'Resources' . DS . 'debugbar.css')) {
+            return true;
+        }
+
+        return false;
+    }
 }

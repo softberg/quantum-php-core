@@ -101,7 +101,8 @@ class Mailer
      */
     public function __construct()
     {
-        $this->mailer = new PHPMailer();
+        $this->mailer = new PHPMailer(true);
+        $this->mailer->CharSet = 'UTF-8';
 
         if (config()->has('mail_host')) {
             $this->setupSmtp();
