@@ -9,60 +9,65 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.5.0
+ * @since 2.8.0
  */
-
 use Symfony\Component\VarExporter\VarExporter;
+use Quantum\Contracts\ReportableInterface;
 use Quantum\Logger\MessageLogger;
 use Quantum\Logger\Logger;
 
 /**
  * Reports error
  * @param mixed $var
+ * @param ReportableInterface|null $loggerAdapter
  */
-function error($var)
+function error($var, ?ReportableInterface $loggerAdapter = null)
 {
-    $logger = new Logger(new MessageLogger);
+    $logger = new Logger($loggerAdapter ?: new MessageLogger);
     $logger->error($var);
 }
 
 /**
  * Reports warning
  * @param mixed $var
+ * @param ReportableInterface|null $loggerAdapter
  */
-function warning($var)
+function warning($var, ?ReportableInterface $loggerAdapter = null)
 {
-    $logger = new Logger(new MessageLogger);
+    $logger = new Logger($loggerAdapter ?: new MessageLogger);
     $logger->warning($var);
 }
 
 /**
  * Reports notice
  * @param mixed $var
+ * @param ReportableInterface|null $loggerAdapter
  */
-function notice($var)
+function notice($var, ?ReportableInterface $loggerAdapter = null)
 {
-    $logger = new Logger(new MessageLogger);
+    $logger = new Logger($loggerAdapter ?: new MessageLogger);
     $logger->notice($var);
 }
 
 /**
  * Reports info
  * @param mixed $var
+ * @param ReportableInterface|null $loggerAdapter
  */
-function info($var)
+function info($var, ?ReportableInterface $loggerAdapter = null)
 {
-    $logger = new Logger(new MessageLogger);
+    $logger = new Logger($loggerAdapter ?: new MessageLogger);
     $logger->info($var);
 }
 
 /**
  * Reports debug
  * @param mixed $var
+ * @param ReportableInterface|null $loggerAdapter
  */
-function debug($var)
+function debug($var, ?ReportableInterface $loggerAdapter = null)
 {
-    $logger = new Logger(new MessageLogger);
+    $logger = new Logger($loggerAdapter ?: new MessageLogger);
     $logger->debug($var);
 }
 
@@ -76,4 +81,3 @@ function export($var): string
 {
     return VarExporter::export($var);
 }
-

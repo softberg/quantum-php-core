@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.6.0
+ * @since 2.8.0
  */
 
 namespace Quantum\Tracer;
@@ -18,7 +18,6 @@ use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Factory\ViewFactory;
 use Quantum\Logger\FileLogger;
 use Quantum\Http\Response;
-use Quantum\Logger\Logger;
 use Quantum\Di\Di;
 use ErrorException;
 use Throwable;
@@ -98,7 +97,7 @@ class ErrorHandler
         $severity = null;
 
         $errorType = self::getErrorType($e);
-
+ 
         if ($errorType) {
             extract($errorType);
         }
@@ -109,14 +108,9 @@ class ErrorHandler
             Response::html($view->renderPartial('errors/trace', ['stackTrace' => self::$trace, 'errorMessage' => $e->getMessage(), 'severity' => $severity]));
         } else {
             $logFile = logs_dir() . DS . date('Y-m-d') . '.log';
-
-            $fileLogger = new FileLogger($logFile);
-
-            $logger = new Logger($fileLogger);
-
             $logMessage = '[' . date('Y-m-d H:i:s') . '] ' . $severity . ': ' . $e->getMessage() . PHP_EOL . $e->getTraceAsString() . PHP_EOL;
 
-            $logger->$fn($logMessage);
+            $fn($logMessage, new FileLogger($logFile));
 
             Response::html($view->renderPartial('errors/500'));
         }
@@ -187,7 +181,6 @@ class ErrorHandler
     {
         if ($e instanceof ErrorException) {
             $severity = $e->getSeverity();
-
             return self::$errorTypes[$severity] ?? null;
         } else if ($e->getCode()) {
             return self::$errorTypes[$e->getCode()] ?? null;
