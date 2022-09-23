@@ -29,16 +29,15 @@ class ModuleLoader
 
     /**
      * Load Modules
-     * @param \Quantum\Router\Router $router
      * @throws \Quantum\Exceptions\DiException
      * @throws \Quantum\Exceptions\ModuleLoaderException
      * @throws \Quantum\Exceptions\RouteException
      * @throws \ReflectionException
      */
-    public static function loadModulesRoutes(Router $router)
+    public static function loadModulesRoutes()
     {
         $fs = Di::get(FileSystem::class);
-
+        
         $modules = require_once base_dir() . DS . 'shared' . DS . 'config' . DS . 'modules.php';
 
         foreach ($modules['modules'] as $module) {
@@ -58,7 +57,7 @@ class ModuleLoader
 
             $routesClosure($route);
 
-            $router->setRoutes(array_merge($router->getRoutes(), $route->getRuntimeRoutes()));
+            Router::setRoutes(array_merge(Router::getRoutes(), $route->getRuntimeRoutes()));
         }
     }
 

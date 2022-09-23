@@ -30,7 +30,7 @@ class RouterTest extends TestCase
         $this->request = new Request();
 
         $this->router = new Router($this->request, new Response());
-
+        
         $reflectionClass = new \ReflectionClass(Router::class);
 
         $reflectionProperty = $reflectionClass->getProperty('currentRoute');
@@ -42,9 +42,7 @@ class RouterTest extends TestCase
 
     public function testSetGetRoutes()
     {
-        $this->assertEmpty($this->router->getRoutes());
-
-        $this->router->setRoutes([
+        Router::setRoutes([
             [
                 "route" => "[:alpha:2]?",
                 "method" => "GET",
@@ -61,16 +59,16 @@ class RouterTest extends TestCase
             ]
         ]);
 
-        $this->assertNotEmpty($this->router->getRoutes());
+        $this->assertNotEmpty(Router::getRoutes());
 
-        $this->assertIsArray($this->router->getRoutes());
+        $this->assertIsArray(Router::getRoutes());
     }
 
     public function testFindRoute()
     {
         $this->assertNull($this->router->getCurrentRoute());
 
-        $this->router->setRoutes([
+        Router::setRoutes([
             [
                 "route" => "auth/api-signin",
                 "method" => "POST",
@@ -105,7 +103,7 @@ class RouterTest extends TestCase
 
     public function testFindRouteWithParams()
     {
-        $this->router->setRoutes([
+        Router::setRoutes([
             [
                 "route" => "[:alpha:2]/my-posts/amend/[:any]",
                 "method" => "POST",
@@ -130,7 +128,7 @@ class RouterTest extends TestCase
 
     public function testFindRouteWithOptionalParams()
     {
-        $this->router->setRoutes([
+        Router::setRoutes([
             [
                 "route" => "[:any]?/my-posts/amend/[:any]/[:num]?",
                 "method" => "POST",
@@ -155,7 +153,7 @@ class RouterTest extends TestCase
 
     public function testFindRouteWithNamedParams()
     {
-        $this->router->setRoutes([
+        Router::setRoutes([
             [
                 "route" => "[lang=:alpha:2]?/my-posts/amend/[postId=:any]/[ref=:num]?",
                 "method" => "POST",
@@ -178,7 +176,7 @@ class RouterTest extends TestCase
 
     public function testRouteIncorrectMethod()
     {
-        $this->router->setRoutes([
+        Router::setRoutes([
             [
                 "route" => "api-signin",
                 "method" => "POST",
@@ -199,7 +197,7 @@ class RouterTest extends TestCase
 
     public function testRepetitiveRoutesWithSameMethod()
     {
-        $this->router->setRoutes([
+        Router::setRoutes([
             [
                 "route" => "api-signin",
                 "method" => "POST",
@@ -227,7 +225,7 @@ class RouterTest extends TestCase
 
     public function testRepetitiveRoutesInDifferentModules()
     {
-        $this->router->setRoutes([
+        Router::setRoutes([
             [
                 "route" => "api-signin",
                 "method" => "POST",

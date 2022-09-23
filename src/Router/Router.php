@@ -52,7 +52,7 @@ class Router extends RouteController
      * List of routes
      * @var array
      */
-    private $routes = [];
+    private static $routes = [];
 
     /**
      * matched routes
@@ -86,8 +86,6 @@ class Router extends RouteController
      */
     public function findRoute()
     {
-        $this->resetRoutes();
-
         $uri = $this->request->getUri();
 
         if (!$uri) {
@@ -131,24 +129,24 @@ class Router extends RouteController
      * Set Routes
      * @param array $routes
      */
-    public function setRoutes(array $routes)
+    public static function setRoutes(array $routes)
     {
-        $this->routes = $routes;
+        self::$routes = $routes;
     }
 
     /**
      * Get Routes
      * @return array
      */
-    public function getRoutes(): array
+    public static function getRoutes(): array
     {
-        return $this->routes;
+        return self::$routes;
     }
 
     /**
      * Resets the routes
      */
-    private function resetRoutes()
+    public function resetRoutes()
     {
         parent::$currentRoute = null;
         $this->matchedUri = null;
@@ -163,7 +161,7 @@ class Router extends RouteController
     {
         $requestUri = urldecode(parse_url($uri)['path']);
 
-        foreach ($this->routes as $route) {
+        foreach (self::$routes as $route) {
 
             list($pattern, $params) = $this->handleRoutePattern($route);
 
