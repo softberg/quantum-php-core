@@ -12,6 +12,7 @@
  * @since 2.8.0
  */
 use Quantum\Router\RouteController;
+use Quantum\Router\Router;
 
 /**
  * Gets current middlewares
@@ -130,4 +131,20 @@ function route_uri(): string
 function route_name(): ?string
 {
     return RouteController::getCurrentRoute()['name'] ?? null;
+}
+
+/**
+ * Finds the route with given name
+ * @param string $name
+ * @return array|null
+ */
+function find_route_by_name(string $name): ?array
+{
+    foreach (Router::getRoutes() as $route) {
+        if (isset($route['name']) && $route['name'] == $name) {
+            return $route;
+        }
+    }
+
+    return null;
 }
