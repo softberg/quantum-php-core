@@ -22,7 +22,6 @@ use Quantum\Debugger\Debugger;
 use Quantum\Hooks\HookManager;
 use Quantum\Mvc\MvcManager;
 use Quantum\Router\Router;
-use Quantum\Loader\Loader;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 use Psr\Log\LogLevel;
@@ -61,10 +60,9 @@ class Bootstrap
 
             Debugger::initStore();
 
+            ModuleLoader::loadModulesRoutes();
+
             $router = new Router($request, $response);
-
-            ModuleLoader::loadModulesRoutes($router);
-
             $router->findRoute();
 
             Debugger::addToStore(Debugger::HOOKS, LogLevel::INFO, HookManager::getRegistered());

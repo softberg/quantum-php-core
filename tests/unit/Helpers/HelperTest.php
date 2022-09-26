@@ -45,7 +45,7 @@ class HelperTest extends TestCase
         $this->response = new Response();
 
         $this->router = new Router($this->request, $this->response);
-
+        
         $cryptor = Mockery::mock('Quantum\Libraries\Encryption\Cryptor');
 
         $cryptor->shouldReceive('encrypt')->andReturnUsing(function ($arg) {
@@ -169,7 +169,7 @@ class HelperTest extends TestCase
 
     public function testMvcHelpers()
     {
-        $this->router->setRoutes([
+        Router::setRoutes([
             [
                 "route" => "api-signin",
                 "method" => "POST",
@@ -212,6 +212,8 @@ class HelperTest extends TestCase
 
         $this->request->create('GET', 'http://testdomain.com/api-user/12');
 
+        $this->router->resetRoutes();
+        
         $this->router->findRoute();
 
         $this->assertNotEmpty(route_params());
@@ -223,7 +225,27 @@ class HelperTest extends TestCase
         $this->assertEquals('GET', route_method());
 
         $this->assertEquals('api-user/12', route_uri());
-       
+    }
+    
+    public function testFindRouteByName()
+    {
+        $this->assertNull(find_route_by_name('user'));
+        
+        Router::setRoutes([
+            [
+                "route" => "api-user/[id=:num]",
+                "method" => "GET",
+                "controller" => "SomeController",
+                "action" => "signout",
+                "module" => "test",
+                "middlewares" => ["user"],
+                "name" => "user"
+            ]
+        ]);
+        
+        $this->assertNotNull(find_route_by_name('user'));
+        
+        $this->assertIsArray(find_route_by_name('user'));
     }
 
     public function testView()
