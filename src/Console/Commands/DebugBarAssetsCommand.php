@@ -59,7 +59,7 @@ class DebugBarAssetsCommand extends QtCommand
      */
     public function exec()
     {
-        if ($this->installed()) {
+        if (installed(assets_dir() . DS . 'DebugBar' . DS . 'Resources' . DS . 'debugbar.css')) {
             $this->error('The debuger already installed');
             return;
         }
@@ -100,20 +100,5 @@ class DebugBarAssetsCommand extends QtCommand
 
             closedir($dir);
         }
-    }
-
-    /**
-     * Checks if already installed
-     * @return bool
-     */
-    private function installed(): bool
-    {
-        $fs = new FileSystem();
-
-        if ($fs->exists(assets_dir() . DS . 'DebugBar' . DS . 'Resources' . DS . 'debugbar.css')) {
-            return true;
-        }
-
-        return false;
     }
 }

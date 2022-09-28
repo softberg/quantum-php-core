@@ -11,12 +11,14 @@
  * @link http://quantum.softberg.org/
  * @since 2.8.0
  */
+
 use Quantum\Libraries\Transformer\TransformerInterface;
 use Quantum\Libraries\Transformer\TransformerManager;
 use Quantum\Exceptions\StopExecutionException;
 use Quantum\Libraries\Asset\AssetManager;
 use Quantum\Exceptions\AppException;
 use Quantum\Libraries\Csrf\Csrf;
+use Quantum\Libraries\Storage\FileSystem;
 
 /**
  * Generates the CSRF token
@@ -216,3 +218,17 @@ function transform(array $data, TransformerInterface $transformer): array
     return TransformerManager::transform($data, $transformer);
 }
 
+/**
+ * Checks if already installed
+ * @return bool
+ */
+function installed(string $path): bool
+{
+    $fs = new FileSystem();
+
+    if ($fs->exists($path)) {
+        return true;
+    }
+
+    return false;
+}
