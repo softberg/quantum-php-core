@@ -14,6 +14,7 @@
 
 namespace Quantum\Console\Commands;
 
+use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Console\QtCommand;
 
 /**
@@ -22,7 +23,6 @@ use Quantum\Console\QtCommand;
  */
 class GenerateSwaggerUiDocsCommand extends QtCommand
 {
-
     /**
      * Command name
      * @var string
@@ -34,6 +34,14 @@ class GenerateSwaggerUiDocsCommand extends QtCommand
      * @var string
      */
     protected $description = 'Generates files for swagger ui';
+
+    /**
+     * Command arguments
+     * @var \string[][]
+     */
+    protected $args = [
+        ['module', 'required', 'The module name'],
+    ];
 
     /**
      * Command help text
@@ -64,10 +72,47 @@ class GenerateSwaggerUiDocsCommand extends QtCommand
      */
     public function exec()
     {
+        $fs = new FileSystem();
+        $module = $this->getArgument('module');
+        $modulePath = modules_dir() . DS . $module;
+        $file = $modulePath . DS . 'Config' . DS . 'routes.php';
+        $openApiRoutes = "
+use Quantum\Libraries\Storage\FileSystem;
+use Quantum\Http\Response;
+use Quantum\Di\Di;
+
+return function (\$route) {
+    //\$route->group('openapi', function (\$route) {
+        \$route->get('" . strtolower($module) . "/documentation', function (Response \$response) {
+            \$response->html(partial('swagger/swagger'));
+        });
+
+        \$route->get('" . strtolower($module) . "/docs', function (Response \$response) {
+            \$fs = Di::get(FileSystem::class);
+            \$response->json((array) json_decode(\$fs->get(modules_dir() . DS . '" . $module . "' . DS . 'Resources' . DS . 'swagger' . DS . 'docs.json', true)));
+        //});
+    });";
+        if (strpos($fs->get($file), "\$route->group('openapi', function (\$route) {") === false) {
+            $fs->put($file, str_replace('return function ($route) {', $openApiRoutes, $fs->get($file)));
+        }
+        if (!is_dir($modulePath)) {
+            $this->error('The module ' . $module . ' not found');
+            return;
+        }
+
+        if (!installed($modulePath . DS . 'swagger' . DS . 'docs.json')) {
+            $fp = fopen($modulePath . DS . 'Resources' . DS . "swagger" . DS . "docs.json", "wb");
+            fclose($fp);
+        }
+
+        exec(base_dir() . DS . 'vendor/bin/openapi modules/' . $module . '/Controllers/ -o modules/' . $module . '/Resources/swagger/docs.json');
+
+
         if (installed(assets_dir() . DS . 'SwaggerUi' . DS . 'index.css')) {
             $this->error('The swagger ui already installed');
             return;
         }
+
         $dir = opendir($this->vendorSwaggerFolderPath);
 
         if (is_resource($dir)) {
@@ -82,5 +127,4 @@ class GenerateSwaggerUiDocsCommand extends QtCommand
 
         $this->info('Swagger assets successfully published');
     }
-
 }
