@@ -18,22 +18,22 @@ use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Console\QtCommand;
 
 /**
- * Class GenerateSwaggerUiDocsCommand
+ * Class OpenApiUiAssetsCommand
  * @package Quantum\Console\Commands
  */
-class GenerateSwaggerUiDocsCommand extends QtCommand
+class OpenApiUiAssetsCommand extends QtCommand
 {
     /**
      * Command name
      * @var string
      */
-    protected $name = 'install:swagger';
+    protected $name = 'install:openApi';
 
     /**
      * Command description
      * @var string
      */
-    protected $description = 'Generates files for swagger ui';
+    protected $description = 'Generates files for openApi ui';
 
     /**
      * Command arguments
@@ -47,19 +47,19 @@ class GenerateSwaggerUiDocsCommand extends QtCommand
      * Command help text
      * @var string
      */
-    protected $help = 'The command will publish swagger ui resources';
+    protected $help = 'The command will publish openApi ui resources';
 
     /**
      * Path to public debug bar resources
      * @var string 
      */
-    private $publicSwaggerFolderPath = 'public/assets/SwaggerUi';
+    private $publicOpenApiFolderPath = 'public/assets/OpenApiUi';
 
     /**
      * Path to vendor debug bar resources
      * @var string 
      */
-    private $vendorSwaggerFolderPath = 'vendor/swagger-api/swagger-ui/dist';
+    private $vendorOpenApiFolderPath = 'vendor/swagger-api/swagger-ui/dist';
 
     /**
      * Exclude File Names
@@ -84,12 +84,12 @@ use Quantum\Di\Di;
 return function (\$route) {
     //\$route->group('openapi', function (\$route) {
         \$route->get('" . strtolower($module) . "/documentation', function (Response \$response) {
-            \$response->html(partial('swagger/swagger'));
+            \$response->html(partial('openApi/openApi'));
         });
 
         \$route->get('" . strtolower($module) . "/docs', function (Response \$response) {
             \$fs = Di::get(FileSystem::class);
-            \$response->json((array) json_decode(\$fs->get(modules_dir() . DS . '" . $module . "' . DS . 'Resources' . DS . 'swagger' . DS . 'docs.json', true)));
+            \$response->json((array) json_decode(\$fs->get(modules_dir() . DS . '" . $module . "' . DS . 'Resources' . DS . 'openApi' . DS . 'docs.json', true)));
         //});
     });";
         if (strpos($fs->get($file), "\$route->group('openapi', function (\$route) {") === false) {
@@ -100,31 +100,31 @@ return function (\$route) {
             return;
         }
 
-        if (!installed($modulePath . DS . 'swagger' . DS . 'docs.json')) {
-            $fp = fopen($modulePath . DS . 'Resources' . DS . "swagger" . DS . "docs.json", "wb");
+        if (!installed($modulePath . DS . 'opanApi' . DS . 'docs.json')) {
+            $fp = fopen($modulePath . DS . 'Resources' . DS . "opanApi" . DS . "docs.json", "wb");
             fclose($fp);
         }
 
-        exec(base_dir() . DS . 'vendor/bin/openapi modules/' . $module . '/Controllers/ -o modules/' . $module . '/Resources/swagger/docs.json');
+        exec(base_dir() . DS . 'vendor/bin/openapi modules/' . $module . '/Controllers/ -o modules/' . $module . '/Resources/opanApi/docs.json');
 
 
-        if (installed(assets_dir() . DS . 'SwaggerUi' . DS . 'index.css')) {
-            $this->error('The swagger ui already installed');
+        if (installed(assets_dir() . DS . 'OpenApiUi' . DS . 'index.css')) {
+            $this->error('The opanApi ui already installed');
             return;
         }
 
-        $dir = opendir($this->vendorSwaggerFolderPath);
+        $dir = opendir($this->vendorOpenApiFolderPath);
 
         if (is_resource($dir)) {
             while (($file = readdir($dir))) {
                 if ($file && ($file != '.') && ($file != '..') && !in_array($file, $this->excludeFileNames)) {
-                    copy($this->vendorSwaggerFolderPath . '/' . $file, $this->publicSwaggerFolderPath . '/' . $file);
+                    copy($this->vendorOpenApiFolderPath . '/' . $file, $this->publicOpenApiFolderPath . '/' . $file);
                 }
             }
 
             closedir($dir);
         }
 
-        $this->info('Swagger assets successfully published');
+        $this->info('OpenApi assets successfully published');
     }
 }

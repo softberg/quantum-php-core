@@ -77,10 +77,12 @@ class DebugBarAssetsCommand extends QtCommand
      */
     private function recursive_copy(string $src, string $dst)
     {
+        $fs = new FileSystem();
+
         $dir = opendir($src);
 
         if ($dst != $this->publicDebugbarFolderPath) {
-            if (mkdir($dst, 777, true) === false) {
+            if ($fs->makeDirectory($dst, 777, true) === false) {
                 throw new \RuntimeException(t('exception.directory_cant_be_created', $dst));
             }
         }
@@ -88,7 +90,7 @@ class DebugBarAssetsCommand extends QtCommand
         if (is_resource($dir)) {
             while (($file = readdir($dir))) {
                 if (($file != '.') && ($file != '..')) {
-                    if (is_dir($src . '/' . $file)) {
+                    if ($fs->isDirectory($src . '/' . $file)) {
                         $this->recursive_copy($src . '/' . $file, $dst . '/' . $file);
                     } else {
                         if ($file) {
