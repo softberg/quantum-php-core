@@ -217,18 +217,3 @@ function transform(array $data, TransformerInterface $transformer): array
 {
     return TransformerManager::transform($data, $transformer);
 }
-
-/**
- * Checks if already installed
- * @return bool
- */
-function installed(string $path): bool
-{
-    $fs = new FileSystem();
-
-    if ($fs->exists($path)) {
-        return true;
-    }
-
-    return false;
-}

@@ -16,6 +16,7 @@ namespace Quantum\Console\Commands;
 
 use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Console\QtCommand;
+use Quantum\Di\Di;
 
 /**
  * Class DebugBarAssetsCommand
@@ -23,6 +24,8 @@ use Quantum\Console\QtCommand;
  */
 class DebugBarAssetsCommand extends QtCommand
 {
+
+    protected $fs;
 
     /**
      * Command name
@@ -59,7 +62,8 @@ class DebugBarAssetsCommand extends QtCommand
      */
     public function exec()
     {
-        if (installed(assets_dir() . DS . 'DebugBar' . DS . 'Resources' . DS . 'debugbar.css')) {
+        $this->fs = Di::get(FileSystem::class);
+        if ($this->fs->exists(assets_dir() . DS . 'DebugBar' . DS . 'Resources' . DS . 'debugbar.css')) {
             $this->error('The debuger already installed');
             return;
         }
@@ -77,12 +81,12 @@ class DebugBarAssetsCommand extends QtCommand
      */
     private function recursive_copy(string $src, string $dst)
     {
-        $fs = new FileSystem();
+        
 
         $dir = opendir($src);
 
         if ($dst != $this->publicDebugbarFolderPath) {
-            if ($fs->makeDirectory($dst, 777, true) === false) {
+            if ($this->fs->makeDirectory($dst, 777, true) === false) {
                 throw new \RuntimeException(t('exception.directory_cant_be_created', $dst));
             }
         }
@@ -90,7 +94,7 @@ class DebugBarAssetsCommand extends QtCommand
         if (is_resource($dir)) {
             while (($file = readdir($dir))) {
                 if (($file != '.') && ($file != '..')) {
-                    if ($fs->isDirectory($src . '/' . $file)) {
+                    if ($this->fs->isDirectory($src . '/' . $file)) {
                         $this->recursive_copy($src . '/' . $file, $dst . '/' . $file);
                     } else {
                         if ($file) {

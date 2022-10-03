@@ -16,6 +16,7 @@ namespace Quantum\Console\Commands;
 
 use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Console\QtCommand;
+use Quantum\Di\Di;
 
 /**
  * Class OpenApiUiAssetsCommand
@@ -23,17 +24,18 @@ use Quantum\Console\QtCommand;
  */
 class OpenApiUiAssetsCommand extends QtCommand
 {
+    protected $fs;
     /**
      * Command name
      * @var string
      */
-    protected $name = 'install:openApi';
+    protected $name = 'install:openapi';
 
     /**
      * Command description
      * @var string
      */
-    protected $description = 'Generates files for openApi ui';
+    protected $description = 'Generates files for OpenApi UI';
 
     /**
      * Command arguments
@@ -47,7 +49,7 @@ class OpenApiUiAssetsCommand extends QtCommand
      * Command help text
      * @var string
      */
-    protected $help = 'The command will publish openApi ui resources';
+    protected $help = 'The command will publish OpenApi UI resources';
 
     /**
      * Path to public debug bar resources
@@ -72,11 +74,11 @@ class OpenApiUiAssetsCommand extends QtCommand
      */
     public function exec()
     {
-        $fs = new FileSystem();
+        $this->fs = Di::get(FileSystem::class);
         $module = $this->getArgument('module');
         $modulePath = modules_dir() . DS . $module;
         $file = $modulePath . DS . 'Config' . DS . 'routes.php';
-        $openApiRoutes = "
+        $openapiRoutes = "
 use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Http\Response;
 use Quantum\Di\Di;
@@ -84,46 +86,45 @@ use Quantum\Di\Di;
 return function (\$route) {
     //\$route->group('openapi', function (\$route) {
         \$route->get('" . strtolower($module) . "/documentation', function (Response \$response) {
-            \$response->html(partial('openApi/openApi'));
+            \$response->html(partial('openapi/openapi'));
         });
 
         \$route->get('" . strtolower($module) . "/docs', function (Response \$response) {
             \$fs = Di::get(FileSystem::class);
-            \$response->json((array) json_decode(\$fs->get(modules_dir() . DS . '" . $module . "' . DS . 'Resources' . DS . 'openApi' . DS . 'docs.json', true)));
+            \$response->json((array) json_decode(\$fs->get(modules_dir() . DS . '" . $module . "' . DS . 'Resources' . DS . 'openapi' . DS . 'docs.json', true)));
         //});
     });";
-        if (strpos($fs->get($file), "\$route->group('openapi', function (\$route) {") === false) {
-            $fs->put($file, str_replace('return function ($route) {', $openApiRoutes, $fs->get($file)));
-        }
-        if (!is_dir($modulePath)) {
+
+        if (!$this->fs->isDirectory($modulePath)) {
             $this->error('The module ' . $module . ' not found');
             return;
         }
 
-        if (!installed($modulePath . DS . 'opanApi' . DS . 'docs.json')) {
-            $fp = fopen($modulePath . DS . 'Resources' . DS . "opanApi" . DS . "docs.json", "wb");
+        if (!$this->fs->exists(assets_dir() . DS . 'OpenApiUi' . DS . 'index.css')) {
+            $dir = opendir($this->vendorOpenApiFolderPath);
+
+            if (is_resource($dir)) {
+                while (($fileUi = readdir($dir))) {
+                    if ($fileUi && ($fileUi != '.') && ($fileUi != '..') && !in_array($fileUi, $this->excludeFileNames)) {
+                        copy($this->vendorOpenApiFolderPath . '/' . $fileUi, $this->publicOpenApiFolderPath . '/' . $fileUi);
+                    }
+                }
+
+                closedir($dir);
+            }
+        }
+
+        if (strpos($this->fs->get($file), "\$route->group('openapi', function (\$route) {") === false) {
+            $this->fs->put($file, str_replace('return function ($route) {', $openapiRoutes, $this->fs->get($file)));
+        }
+
+        if ($this->fs->exists($modulePath . DS . 'openApi' . DS . 'docs.json')) {
+            $fp = fopen($modulePath . DS . 'Resources' . DS . "openApi" . DS . "docs.json", "w");
             fclose($fp);
         }
 
-        exec(base_dir() . DS . 'vendor/bin/openapi modules/' . $module . '/Controllers/ -o modules/' . $module . '/Resources/opanApi/docs.json');
+        exec(base_dir() . DS . 'vendor/bin/openapi modules/' . $module . '/Controllers/ -o modules/' . $module . '/Resources/openApi/docs.json');
 
-
-        if (installed(assets_dir() . DS . 'OpenApiUi' . DS . 'index.css')) {
-            $this->error('The opanApi ui already installed');
-            return;
-        }
-
-        $dir = opendir($this->vendorOpenApiFolderPath);
-
-        if (is_resource($dir)) {
-            while (($file = readdir($dir))) {
-                if ($file && ($file != '.') && ($file != '..') && !in_array($file, $this->excludeFileNames)) {
-                    copy($this->vendorOpenApiFolderPath . '/' . $file, $this->publicOpenApiFolderPath . '/' . $file);
-                }
-            }
-
-            closedir($dir);
-        }
 
         $this->info('OpenApi assets successfully published');
     }
