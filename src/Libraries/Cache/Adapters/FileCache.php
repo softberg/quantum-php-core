@@ -117,7 +117,7 @@ class FileCache implements CacheInterface
      */
     public function set($key, $value, $ttl = null)
     {
-        $this->fs->put($this->getPath($key), serialize($value));
+        return $this->fs->put($this->getPath($key), serialize($value));
     }
 
     /**

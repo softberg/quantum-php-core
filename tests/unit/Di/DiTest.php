@@ -25,7 +25,6 @@ namespace Quantum\Tests\Di {
     use Quantum\Libraries\Storage\FileSystem;
     use Quantum\Controllers\TestDiController;
     use Quantum\Exceptions\DiException;
-    use Quantum\Factory\ServiceFactory;
     use Quantum\Factory\ViewFactory;
     use Quantum\Http\Response;
     use Quantum\Http\Request;
