@@ -32,7 +32,9 @@
         "php-curl-class/php-curl-class": "^8.6",
         "psr/log": "^1.1",
         "rakibtg/sleekdb": "^2.13",
-        "laminas/laminas-text": "^2.9"
+        "laminas/laminas-text": "^2.9",
+        "swagger-api/swagger-ui": "^4.14",
+        "zircote/swagger-php": "^4.4"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.0",
