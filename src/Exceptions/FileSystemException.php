@@ -18,17 +18,8 @@ namespace Quantum\Exceptions;
  * Class FileSystemException
  * @package Quantum\Exceptions
  */
-class FileSystemException extends \Exception
+class FileSystemException extends AppException
 {
-    /**
-     * @param string $methodName
-     * @param string $adapterName
-     * @return \Quantum\Exceptions\FileSystemException
-     */
-    public static function methodNotSupported(string $methodName, string $adapterName): FileSystemException
-    {
-        return new static(t('exception.not_supported_method', [$methodName, $adapterName]), E_WARNING);
-    }
 
     /**
      * @param string $name
