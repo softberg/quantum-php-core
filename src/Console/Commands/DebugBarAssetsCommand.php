@@ -24,7 +24,10 @@ use Quantum\Di\Di;
  */
 class DebugBarAssetsCommand extends QtCommand
 {
-
+    /**
+     * File System
+     * @var \Quantum\Libraries\Storage\FileSystem
+     */
     protected $fs;
 
     /**
@@ -94,11 +97,11 @@ class DebugBarAssetsCommand extends QtCommand
         if (is_resource($dir)) {
             while (($file = readdir($dir))) {
                 if (($file != '.') && ($file != '..')) {
-                    if ($this->fs->isDirectory($src . '/' . $file)) {
-                        $this->recursive_copy($src . '/' . $file, $dst . '/' . $file);
+                    if ($this->fs->isDirectory($src . DS . $file)) {
+                        $this->recursive_copy($src . DS . $file, $dst . DS . $file);
                     } else {
                         if ($file) {
-                            copy($src . '/' . $file, $dst . '/' . $file);
+                            copy($src . DS . $file, $dst . DS . $file);
                         }
                     }
                 }

@@ -24,7 +24,12 @@ use Quantum\Di\Di;
  */
 class OpenApiUiAssetsCommand extends QtCommand
 {
+    /**
+     * File System
+     * @var \Quantum\Libraries\Storage\FileSystem
+     */
     protected $fs;
+
     /**
      * Command name
      * @var string
@@ -78,22 +83,17 @@ class OpenApiUiAssetsCommand extends QtCommand
         $module = $this->getArgument('module');
         $modulePath = modules_dir() . DS . $module;
         $file = $modulePath . DS . 'Config' . DS . 'routes.php';
-        $openapiRoutes = "
-use Quantum\Libraries\Storage\FileSystem;
-use Quantum\Http\Response;
-use Quantum\Di\Di;
-
-return function (\$route) {
-    //\$route->group('openapi', function (\$route) {
-        \$route->get('" . strtolower($module) . "/documentation', function (Response \$response) {
-            \$response->html(partial('openapi/openapi'));
+        $openapiRoutes = 'return function ($route) {
+    //$route->group("openapi", function ($route) {
+        $route->get("' . strtolower($module) . '/documentation", function (Quantum\Http\Response $response) {
+            $response->html(partial("openapi/openapi"));
         });
 
-        \$route->get('" . strtolower($module) . "/docs', function (Response \$response) {
-            \$fs = Di::get(FileSystem::class);
-            \$response->json((array) json_decode(\$fs->get(modules_dir() . DS . '" . $module . "' . DS . 'Resources' . DS . 'openapi' . DS . 'docs.json', true)));
+        $route->get("' . strtolower($module) . '/docs", function (Quantum\Http\Response $response) {
+            $fs = Quantum\Di\Di::get(Quantum\Libraries\Storage\FileSystem::class);
+            $response->json((array) json_decode($fs->get(modules_dir()' . DS . $module . DS . 'Resources' . DS . 'openapi' . DS . 'docs.json", true)));
         //});
-    });";
+    });';
 
         if (!$this->fs->isDirectory($modulePath)) {
             $this->error('The module ' . $module . ' not found');
@@ -106,7 +106,7 @@ return function (\$route) {
             if (is_resource($dir)) {
                 while (($fileUi = readdir($dir))) {
                     if ($fileUi && ($fileUi != '.') && ($fileUi != '..') && !in_array($fileUi, $this->excludeFileNames)) {
-                        copy($this->vendorOpenApiFolderPath . '/' . $fileUi, $this->publicOpenApiFolderPath . '/' . $fileUi);
+                        copy($this->vendorOpenApiFolderPath . DS . $fileUi, $this->publicOpenApiFolderPath . DS . $fileUi);
                     }
                 }
 
@@ -114,16 +114,15 @@ return function (\$route) {
             }
         }
 
-        if (strpos($this->fs->get($file), "\$route->group('openapi', function (\$route) {") === false) {
+        if (strpos($this->fs->get($file), '$route->group("openapi", function ($route) {') === false) {
             $this->fs->put($file, str_replace('return function ($route) {', $openapiRoutes, $this->fs->get($file)));
         }
 
-        if ($this->fs->exists($modulePath . DS . 'openApi' . DS . 'docs.json')) {
-            $fp = fopen($modulePath . DS . 'Resources' . DS . "openApi" . DS . "docs.json", "w");
-            fclose($fp);
+        if (!$this->fs->exists($modulePath . DS . 'Resources' . DS . 'openApi' . DS . 'docs.json')) {
+            $this->fs->put($modulePath . DS . 'Resources' . DS . 'openApi' . DS . 'docs.json');
         }
 
-        exec(base_dir() . DS . 'vendor/bin/openapi modules/' . $module . '/Controllers/ -o modules/' . $module . '/Resources/openApi/docs.json');
+        exec(base_dir() . DS . 'vendor' . DS . 'bin' . DS . 'openapi modules' . DS . $module . DS . 'Controllers' . DS . ' -o modules' . DS . $module .  DS . 'Resources' . DS . 'openApi' . DS . 'docs.json');
 
 
         $this->info('OpenApi assets successfully published');
