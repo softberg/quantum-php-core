@@ -63,6 +63,10 @@ class FileCache implements CacheInterface
             $path = $this->getPath($key);
 
             $content = $this->fs->get($path);
+            
+            if(!$content) {
+                return $default;
+            }
 
             try {
                 return unserialize($content);
