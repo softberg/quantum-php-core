@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.6.0
+ * @since 2.8.0
  */
 
 namespace Quantum\Libraries\Storage;
@@ -19,17 +19,17 @@ use Quantum\Exceptions\FileSystemException;
 /**
  * Class FileSystem
  * @package Quantum\Libraries\Storage
- * @method void makeDirectory(string $dirname)
- * @method void removeDirectory(string $dirname)
- * @method string get(string $filename)
- * @method void put(string $filename, string $content)
- * @method void append(string $filename, string $content)
- * @method void rename(string $oldName, string $newName)
- * @method void copy(string $source, string $dest)
+ * @method bool makeDirectory(string $dirname)
+ * @method bool removeDirectory(string $dirname)
+ * @method string|false get(string $filename)
+ * @method int|false put(string $filename, string $content)
+ * @method int|false append(string $filename, string $content)
+ * @method bool rename(string $oldName, string $newName)
+ * @method bool copy(string $source, string $dest)
  * @method bool exists(string $filename)
  * @method int|false size(string $filename)
  * @method int|false lastModified(string $filename)
- * @method void remove(string $filename)
+ * @method bool remove(string $filename)
  * @method bool isFile(string $filename)
  * @method bool isDirectory(string $dirname)
  * @method string fileName(string $path)

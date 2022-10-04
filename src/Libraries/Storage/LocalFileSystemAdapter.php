@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Quantum PHP Framework
  *
@@ -8,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.6.0
+ * @since 2.8.0
  */
 
 namespace Quantum\Libraries\Storage;
@@ -57,7 +58,7 @@ class LocalFileSystemAdapter implements FilesystemAdapterInterface
     /**
      * @inheritDoc
      */
-    public function get(string $filename): string
+    public function get(string $filename)
     {
         return file_get_contents($filename);
     }
@@ -65,7 +66,7 @@ class LocalFileSystemAdapter implements FilesystemAdapterInterface
     /**
      * @inheritDoc
      */
-    public function put(string $filename, string $content): string
+    public function put(string $filename, string $content)
     {
         return file_put_contents($filename, $content, LOCK_EX);
     }
@@ -73,7 +74,7 @@ class LocalFileSystemAdapter implements FilesystemAdapterInterface
     /**
      * @inheritDoc
      */
-    public function append(string $filename, string $content): string
+    public function append(string $filename, string $content)
     {
         return file_put_contents($filename, $content, FILE_APPEND | LOCK_EX);
     }
@@ -182,7 +183,7 @@ class LocalFileSystemAdapter implements FilesystemAdapterInterface
      */
     public function fileName(string $path): string
     {
-        return (string)pathinfo($path, PATHINFO_FILENAME);
+        return (string) pathinfo($path, PATHINFO_FILENAME);
     }
 
     /**
@@ -192,7 +193,7 @@ class LocalFileSystemAdapter implements FilesystemAdapterInterface
      */
     public function extension(string $path): string
     {
-        return (string)pathinfo($path, PATHINFO_EXTENSION);
+        return (string) pathinfo($path, PATHINFO_EXTENSION);
     }
 
     /**
