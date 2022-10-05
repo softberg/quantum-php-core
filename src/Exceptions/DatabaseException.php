@@ -18,7 +18,7 @@ namespace Quantum\Exceptions;
  * Class DatabaseException
  * @package Quantum\Exceptions
  */
-class DatabaseException extends \Exception
+class DatabaseException extends AppException
 {
     /**
      * @return \Quantum\Exceptions\DatabaseException
@@ -51,16 +51,6 @@ class DatabaseException extends \Exception
     public static function ormClassNotFound(string $name): DatabaseException
     {
         return new static(t('exception.orm_class_not_found', $name), E_ERROR);
-    }
-
-    /**
-     * @param string $methodName
-     * @param string $ormName
-     * @return \Quantum\Exceptions\DatabaseException
-     */
-    public static function methodNotSupported(string $methodName, string $ormName): DatabaseException
-    {
-        return new static(t('not_supported_method', [$methodName, $ormName]), E_WARNING);
     }
 
     /**

@@ -20,6 +20,7 @@ namespace Quantum\Exceptions;
  */
 class AppException extends \Exception
 {
+
     /**
      * @return \Quantum\Exceptions\AppException
      */
@@ -27,4 +28,25 @@ class AppException extends \Exception
     {
         return new static(t('exception.app_key_missing'), E_ERROR);
     }
+
+    /**
+     * 
+     * @param string $methodName
+     * @param string $className
+     * @return self
+     */
+    public static function methodNotSupported(string $methodName, string $className): self
+    {
+        return new static(t('exception.not_supported_method', [$methodName, $className]), E_WARNING);
+    }
+
+    /**
+     * @param string $driver
+     * @return self
+     */
+    public static function unsupportedDriver(string $driver): self
+    {
+        return new static(t('exception.not_supported_driver', $driver), E_ERROR);
+    }
+
 }

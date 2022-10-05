@@ -20,7 +20,7 @@ namespace Quantum\Exceptions;
  * @package Quantum
  * @category Exceptions
  */
-class MigrationException extends \Exception
+class MigrationException extends AppException
 {
     /**
      * @return \Quantum\Exceptions\MigrationException
@@ -28,15 +28,6 @@ class MigrationException extends \Exception
     public static function wrongDirection(): MigrationException
     {
         return new static(t('exception.wrong_migration_direction'), E_ERROR);
-    }
-
-    /**
-     * @param string $databaseDriver
-     * @return \Quantum\Exceptions\MigrationException
-     */
-    public static function unsupportedDriver(string $databaseDriver): MigrationException
-    {
-        return new static(t('exception.not_supported_driver', $databaseDriver), E_ERROR);
     }
 
     /**
