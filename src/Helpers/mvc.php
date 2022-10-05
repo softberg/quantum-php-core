@@ -148,3 +148,19 @@ function find_route_by_name(string $name): ?array
 
     return null;
 }
+
+/**
+ * Checks the route group with given name
+ * @param string $name
+ * @return bool
+ */
+function route_group_exists(string $name): bool
+{
+    foreach (Router::getRoutes() as $route) {
+        if (isset($route['group']) && $route['group'] == $name) {
+            return true;
+        }
+    }
+
+    return false;
+}
