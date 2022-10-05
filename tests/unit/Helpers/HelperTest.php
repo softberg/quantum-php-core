@@ -45,7 +45,7 @@ class HelperTest extends TestCase
         $this->response = new Response();
 
         $this->router = new Router($this->request, $this->response);
-        
+
         $cryptor = Mockery::mock('Quantum\Libraries\Encryption\Cryptor');
 
         $cryptor->shouldReceive('encrypt')->andReturnUsing(function ($arg) {
@@ -213,11 +213,11 @@ class HelperTest extends TestCase
         $this->request->create('GET', 'http://testdomain.com/api-user/12');
 
         $this->router->resetRoutes();
-        
+
         $this->router->findRoute();
 
         $this->assertNotEmpty(route_params());
-        
+
         $this->assertEquals(12, route_param('id'));
 
         $this->assertEquals('(\/)?api-user(\/)(?<id>[0-9]+)', route_pattern());
@@ -226,11 +226,11 @@ class HelperTest extends TestCase
 
         $this->assertEquals('api-user/12', route_uri());
     }
-    
+
     public function testFindRouteByName()
     {
         $this->assertNull(find_route_by_name('user'));
-        
+
         Router::setRoutes([
             [
                 "route" => "api-user/[id=:num]",
@@ -242,10 +242,30 @@ class HelperTest extends TestCase
                 "name" => "user"
             ]
         ]);
-        
+
         $this->assertNotNull(find_route_by_name('user'));
-        
+
         $this->assertIsArray(find_route_by_name('user'));
+    }
+
+    public function testCheckRouteGroupExists()
+    {
+        $this->assertFalse(route_group_exists('guest'));
+
+        Router::setRoutes([
+            [
+                "route" => "api-user/[id=:num]",
+                "method" => "GET",
+                "controller" => "SomeController",
+                "action" => "signout",
+                "module" => "test",
+                "middlewares" => ["user"],
+                'group' => 'guest',
+                "name" => "user"
+            ]
+        ]);
+
+        $this->assertTrue(route_group_exists('guest'));
     }
 
     public function testView()
@@ -432,7 +452,7 @@ class HelperTest extends TestCase
         });
 
         hook()->fire('SAVE', ['filename' => 'doc.pdf']);
-        
+
         $this->expectOutputString('The file doc.pdf was successfully saved' . PHP_EOL . 'The email was successfully sent');
     }
 
