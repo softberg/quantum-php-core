@@ -85,11 +85,11 @@ class OpenApiUiAssetsCommand extends QtCommand
         $file = $modulePath . DS . 'Config' . DS . 'routes.php';
         $openapiRoutes = 'return function ($route) {
     $route->group("openapi", function ($route) {
-        $route->get("' . strtolower($module) . '/documentation", function (Quantum\Http\Response $response) {
+        $route->get("' . strtolower($module) . DS . 'documentation", function (Quantum\Http\Response $response) {
             $response->html(partial("openapi/openapi"));
         });
 
-        $route->get("' . strtolower($module) . '/docs", function (Quantum\Http\Response $response) {
+        $route->get("' . strtolower($module) . DS . 'docs", function (Quantum\Http\Response $response) {
             $fs = Quantum\Di\Di::get(Quantum\Libraries\Storage\FileSystem::class);
             $response->json((array) json_decode($fs->get(modules_dir()' . DS . $module . DS . 'Resources' . DS . 'openapi' . DS . 'docs.json", true)));
         });
