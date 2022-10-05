@@ -14,11 +14,20 @@
 
 namespace Quantum\Libraries\Cache;
 
-use Quantum\Exceptions\AppException;
+use Quantum\Exceptions\CacheException;
 use Psr\SimpleCache\CacheInterface;
 
 /**
- *
+ * Class Cache
+ * @package Quantum\Libraries\Cache
+ * @method mixed get($key, $default = null)
+ * @method array getMultiple($keys, $default = null)
+ * @method has($key): bool
+ * @method bool set($key, $value, $ttl = null)
+ * @method bool setMultiple($values, $ttl = null)
+ * @method bool delete($key)
+ * @method bool deleteMultiple($keys)
+ * @method bool clear()
  */
 class Cache
 {
@@ -55,7 +64,7 @@ class Cache
     public function __call(string $method, ?array $arguments)
     {
         if (!method_exists($this->adapter, $method)) {
-            throw AppException::methodNotSupported($method, get_class($this->adapter));
+            throw CacheException::methodNotSupported($method, get_class($this->adapter));
         }
 
         return $this->adapter->$method(...$arguments);

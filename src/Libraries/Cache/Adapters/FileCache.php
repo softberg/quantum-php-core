@@ -63,8 +63,8 @@ class FileCache implements CacheInterface
             $path = $this->getPath($key);
 
             $content = $this->fs->get($path);
-            
-            if(!$content) {
+
+            if (!$content) {
                 return $default;
             }
 
@@ -194,6 +194,8 @@ class FileCache implements CacheInterface
         foreach ($files as $file) {
             $this->fs->remove($file);
         }
+
+        return true;
     }
 
     /**

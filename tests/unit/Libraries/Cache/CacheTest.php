@@ -48,7 +48,7 @@ class CacheTest extends TestCase
 
         $this->assertNull($cache->get('test'));
 
-        $this->expectException(\Quantum\Exceptions\AppException::class);
+        $this->expectException(\Quantum\Exceptions\CacheException::class);
 
         $this->expectExceptionMessage('exception.not_supported_method');
 
