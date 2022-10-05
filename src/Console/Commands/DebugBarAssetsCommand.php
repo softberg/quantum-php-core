@@ -84,8 +84,6 @@ class DebugBarAssetsCommand extends QtCommand
      */
     private function recursive_copy(string $src, string $dst)
     {
-        
-
         $dir = opendir($src);
 
         if ($dst != $this->publicDebugbarFolderPath) {
