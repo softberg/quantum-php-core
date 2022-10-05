@@ -31,7 +31,7 @@ class Route
      */
     private $module;
 
-    /** 
+    /**
      * Identifies the group middleware
      * @var bool
      */
@@ -94,8 +94,10 @@ class Route
         }
 
         if ($this->currentGroupName) {
+            $this->currentRoute['group'] = $this->currentGroupName;
             $this->virtualRoutes[$this->currentGroupName][] = $this->currentRoute;
         } else {
+            $this->isGroup = false;
             $this->virtualRoutes['*'][] = $this->currentRoute;
         }
 
@@ -163,7 +165,6 @@ class Route
                 $lastKeyOfSecondRound = key($this->virtualRoutes[$lastKeyOfFirstRound]);
                 $this->virtualRoutes[$lastKeyOfFirstRound][$lastKeyOfSecondRound]['middlewares'] = $middlewares;
             } else {
-                $this->isGroup = false;
                 foreach ($this->virtualRoutes[$lastKeyOfFirstRound] as &$route) {
                     if (!key_exists('middlewares', $route)) {
                         $route['middlewares'] = $middlewares;
