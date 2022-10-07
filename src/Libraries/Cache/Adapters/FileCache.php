@@ -48,9 +48,7 @@ class FileCache implements CacheInterface
     public function __construct(array $params)
     {
         $this->fs = Di::get(FileSystem::class);
-
         $this->ttl = $params['ttl'];
-
         $this->cacheDir = $params['path'];
     }
 
@@ -60,18 +58,16 @@ class FileCache implements CacheInterface
     public function get($key, $default = null)
     {
         if ($this->has($key)) {
-            $path = $this->getPath($key);
+            $cacheItem = $this->fs->get($this->getPath($key));
 
-            $content = $this->fs->get($path);
-            
-            if(!$content) {
+            if (!$cacheItem) {
                 return $default;
             }
 
             try {
-                return unserialize($content);
+                return unserialize($cacheItem);
             } catch (\Exception $e) {
-                $this->fs->remove($path);
+                $this->delete($key);
                 return $default;
             }
         }
@@ -194,6 +190,8 @@ class FileCache implements CacheInterface
         foreach ($files as $file) {
             $this->fs->remove($file);
         }
+
+        return true;
     }
 
     /**
