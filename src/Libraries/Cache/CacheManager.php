@@ -14,26 +14,31 @@
 
 namespace Quantum\Libraries\Cache;
 
+use Quantum\Exceptions\CacheException;
 use Psr\SimpleCache\CacheInterface;
 use Quantum\Loader\Setup;
 
 /**
- * Class AuthManager
+ * Class CacheManager
  * @package Quantum\Libraries\Cache
  */
 class CacheManager
 {
 
+    /**
+     * Available cache drivers
+     */
     const DRIVERS = [
         'file',
+        'database',
         'memcache',
         'redis'
     ];
 
     /**
-     *  Get Handler
+     * Get Handler
      * @return CacheInterface
-     * @throws Exception
+     * @throws \Quantum\Exceptions\CacheException
      */
     public static function getHandler()
     {
@@ -44,13 +49,13 @@ class CacheManager
         $cacheDriver = config()->get('cache.current');
 
         if (!in_array($cacheDriver, self::DRIVERS)) {
-            throw new \Exception();
+            throw CacheException::unsupportedDriver($cacheDriver);
         }
 
         $cacheAdapterClass = __NAMESPACE__ . '\\Adapters\\' . ucfirst($cacheDriver) . 'Cache';
 
         $cacheAdapter = new $cacheAdapterClass(config()->get('cache.' . $cacheDriver . '.params'));
-        
+
         return new Cache($cacheAdapter);
     }
 
