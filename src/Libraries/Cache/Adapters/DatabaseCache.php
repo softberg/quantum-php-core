@@ -32,7 +32,7 @@ class DatabaseCache implements CacheInterface
     private $ttl = 30;
 
     /**
-     * @var Psr\SimpleCache\CacheInterface
+     * @var \Quantum\Libraries\Database\DbalInterface
      */
     private $cacheModel;
 
