@@ -30,6 +30,7 @@ class CacheManager
      */
     const DRIVERS = [
         'file',
+        'database',
         'memcache',
         'redis'
     ];
