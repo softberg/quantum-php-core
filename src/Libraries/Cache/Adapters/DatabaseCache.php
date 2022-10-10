@@ -52,10 +52,10 @@ class DatabaseCache implements CacheInterface
     public function get($key, $default = null)
     {
         if ($this->has($key)) {
-            $cacehItem = $this->cacheModel->findOneBy('key', sha1($key));
+            $cacheItem = $this->cacheModel->findOneBy('key', sha1($key));
 
             try {
-                return unserialize($cacehItem->prop('value'));
+                return unserialize($cacheItem->prop('value'));
             } catch (Exception $e) {
                 $this->delete($key);
                 return $default;
