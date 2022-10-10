@@ -52,7 +52,7 @@ class FileCacheTest extends TestCase
         $this->assertNull($this->fileCache->get('test'));
     }
 
-    public function testFileCahceHas()
+    public function testFileCacheHas()
     {
         $this->assertFalse($this->fileCache->has('test'));
 
@@ -61,7 +61,7 @@ class FileCacheTest extends TestCase
         $this->assertTrue($this->fileCache->has('test'));
     }
 
-    public function testFileCahceGetMultiple()
+    public function testFileCacheGetMultiple()
     {
         $cacheItems = $this->fileCache->getMultiple(['test1', 'test2']);
 
