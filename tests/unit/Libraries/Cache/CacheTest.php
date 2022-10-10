@@ -3,6 +3,7 @@
 namespace Quantum\Tests\Libraries\Cache;
 
 use Quantum\Libraries\Cache\Adapters\FileCache;
+use Quantum\Exceptions\CacheException;
 use Psr\SimpleCache\CacheInterface;
 use Quantum\Libraries\Cache\Cache;
 use PHPUnit\Framework\TestCase;
@@ -48,7 +49,7 @@ class CacheTest extends TestCase
 
         $this->assertNull($cache->get('test'));
 
-        $this->expectException(\Quantum\Exceptions\CacheException::class);
+        $this->expectException(CacheException::class);
 
         $this->expectExceptionMessage('exception.not_supported_method');
 
