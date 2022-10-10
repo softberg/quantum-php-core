@@ -45,7 +45,7 @@ class OpenApiUiAssetsCommand extends QtCommand
 
     /**
      * Command arguments
-     * @var \string[][]
+     * @var string[][]
      */
     protected $args = [
         ['module', 'required', 'The module name'],
