@@ -2,7 +2,7 @@
 
 namespace Quantum\Tests\Libraries\Cache;
 
-use Quantum\Libraries\Cache\Adapters\FileCache;
+use Quantum\Libraries\Cache\Adapters\FileAdapter;
 use Quantum\Exceptions\CacheException;
 use Psr\SimpleCache\CacheInterface;
 use Quantum\Libraries\Cache\Cache;
@@ -29,9 +29,9 @@ class CacheTest extends TestCase
             'ttl' => 60
         ];
 
-        $cache = new Cache(new FileCache($params));
+        $cache = new Cache(new FileAdapter($params));
 
-        $this->assertInstanceOf(FileCache::class, $cache->getAdapter());
+        $this->assertInstanceOf(FileAdapter::class, $cache->getAdapter());
 
         $this->assertInstanceOf(CacheInterface::class, $cache->getAdapter());
     }
@@ -43,7 +43,7 @@ class CacheTest extends TestCase
             'ttl' => 60
         ];
 
-        $cache = new Cache(new FileCache($params));
+        $cache = new Cache(new FileAdapter($params));
 
         $this->assertFalse($cache->has('test'));
 

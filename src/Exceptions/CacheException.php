@@ -20,5 +20,11 @@ namespace Quantum\Exceptions;
  */
 class CacheException extends AppException
 {
-    
+    /**
+     * @return \Quantum\Exceptions\CacheException
+     */
+    public static function cantConnect($name): CacheException
+    {
+        return new static(t('exception.cant_connect', $name));
+    }
 }

@@ -2,6 +2,9 @@ language: php
 php:
     - 7.3
     - 7.4
+    
+services:
+  - memcached
 
 before_install:
     - sudo apt-get update -qq
@@ -12,6 +15,8 @@ before_script:
     - smtp-sink -d "%d.%H.%M.%S" localhost:2500 1000 &
     - echo -e '#!/usr/bin/env bash\nexit 0' | sudo tee /usr/sbin/sendmail
     - echo 'sendmail_path = "/usr/sbin/sendmail -t -i "' | sudo tee "/home/travis/.phpenv/versions/`php -i | grep "PHP Version" | head -n 1 | grep -o -P '\d+\.\d+\.\d+.*'`/etc/conf.d/sendmail.ini"
+    
+    - echo "extension = memcached.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
     
     - composer self-update
     - composer install --prefer-dist --no-progress --no-suggest
