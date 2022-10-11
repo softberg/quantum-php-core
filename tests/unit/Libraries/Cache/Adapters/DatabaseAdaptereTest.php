@@ -2,7 +2,7 @@
 
 namespace Libraries\Cache\Adapters;
 
-use Quantum\Libraries\Cache\Adapters\DatabaseCache;
+use Quantum\Libraries\Cache\Adapters\DatabaseAdapter;
 use Quantum\Libraries\Database\Sleekdb\SleekDbal;
 use PHPUnit\Framework\TestCase;
 use Quantum\Loader\Setup;
@@ -12,7 +12,7 @@ use Quantum\App;
 /**
  *  @runTestsInSeparateProcesses
  */
-class DatabaseCacheTest extends TestCase
+class DatabaseAdaptereTest extends TestCase
 {
 
     private $databaseCache;
@@ -38,7 +38,7 @@ class DatabaseCacheTest extends TestCase
             'ttl' => 60
         ];
 
-        $this->databaseCache = new DatabaseCache($params);
+        $this->databaseCache = new DatabaseAdapter($params);
     }
 
     public function tearDown(): void
@@ -50,7 +50,7 @@ class DatabaseCacheTest extends TestCase
         SleekDbal::disconnect();
     }
 
-    public function testDatabaseCacheSetGetDelete()
+    public function testDatabaseAdapterSetGetDelete()
     {
         
         $this->assertNull($this->databaseCache->get('test'));
@@ -70,7 +70,7 @@ class DatabaseCacheTest extends TestCase
         $this->assertNull($this->databaseCache->get('test'));
     }
 
-    public function testFileCacheHas()
+    public function testDatabaseAdaptereHas()
     {
         $this->assertFalse($this->databaseCache->has('test'));
 
@@ -79,7 +79,7 @@ class DatabaseCacheTest extends TestCase
         $this->assertTrue($this->databaseCache->has('test'));
     }
 
-    public function testFileCacheGetMultiple()
+    public function testDatabaseAdapterGetMultiple()
     {
         $cacheItems = $this->databaseCache->getMultiple(['test1', 'test2']);
 
@@ -98,9 +98,19 @@ class DatabaseCacheTest extends TestCase
         $this->assertNotNull($cacheItems['test1']);
 
         $this->assertEquals('Default value for all', $cacheItems['test1']);
+        
+        $this->databaseCache->set('test1', 'Test one');
+
+        $this->databaseCache->set('test2', 'Test two');
+
+        $cacheItems = $this->databaseCache->getMultiple(['test1', 'test2']);
+
+        $this->assertIsArray($cacheItems);
+
+        $this->assertEquals('Test one', $cacheItems['test1']);
     }
 
-    public function testDatabaseCacheSetMultiple()
+    public function testDatabaseAdapterSetMultiple()
     {
         $this->assertFalse($this->databaseCache->has('test1'));
 
@@ -117,7 +127,7 @@ class DatabaseCacheTest extends TestCase
         $this->assertEquals('Test value two', $this->databaseCache->get('test2'));
     }
 
-    public function testDatabaseCacheDeleteMultiple()
+    public function testDatabaseAdapterDeleteMultiple()
     {
         $this->databaseCache->setMultiple(['test1' => 'Test value one', 'test2' => 'Test value two']);
 
@@ -132,7 +142,7 @@ class DatabaseCacheTest extends TestCase
         $this->assertFalse($this->databaseCache->has('test2'));
     }
 
-    public function testDatabaseCacheClear()
+    public function testDatabaseAdapterClear()
     {
         $this->databaseCache->setMultiple(['test1' => 'Test value one', 'test2' => 'Test value two']);
 
@@ -147,14 +157,14 @@ class DatabaseCacheTest extends TestCase
         $this->assertFalse($this->databaseCache->has('test2'));
     }
 
-    public function testDatabaseCacheExpired()
+    public function testDatabaseAdapterExpired()
     {
         $params = [
             'table' => 'cache',
             'ttl' => -1
         ];
 
-        $databaseCache = new DatabaseCache($params);
+        $databaseCache = new DatabaseAdapter($params);
 
         $databaseCache->set('test', 'Test value');
 

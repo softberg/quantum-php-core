@@ -20,10 +20,10 @@ use InvalidArgumentException;
 use Exception;
 
 /**
- * Class DatabaseCache
+ * Class DatabaseAdapter
  * @package Quantum\Libraries\Cache\Adapters
  */
-class DatabaseCache implements CacheInterface
+class DatabaseAdapter implements CacheInterface
 {
 
     /**
@@ -37,7 +37,7 @@ class DatabaseCache implements CacheInterface
     private $cacheModel;
 
     /**
-     * DatabaseCache constructor
+     * DatabaseAdapter constructor
      * @param array $params
      */
     public function __construct(array $params)
@@ -163,7 +163,7 @@ class DatabaseCache implements CacheInterface
     public function deleteMultiple($keys)
     {
         if (!is_array($keys)) {
-            throw new InvalidArgumentException(t(_message('exception.non_iterable_value', '$values')), E_WARNING);
+            throw new InvalidArgumentException(t(_message('exception.non_iterable_value', '$keys')), E_WARNING);
         }
 
         $results = [];

@@ -20,10 +20,10 @@ use InvalidArgumentException;
 use Quantum\Di\Di;
 
 /**
- * Class FileCache
+ * Class FileAdapter
  * @package Quantum\Libraries\Cache\Adapters
  */
-class FileCache implements CacheInterface
+class FileAdapter implements CacheInterface
 {
 
     /**
@@ -42,7 +42,7 @@ class FileCache implements CacheInterface
     private $cacheDir;
 
     /**
-     * FileCache constructor
+     * FileAdapter constructor
      * @param array $params
      */
     public function __construct(array $params)
@@ -160,7 +160,7 @@ class FileCache implements CacheInterface
     public function deleteMultiple($keys)
     {
         if (!is_array($keys)) {
-            throw new InvalidArgumentException(t(_message('exception.non_iterable_value', '$values')), E_WARNING);
+            throw new InvalidArgumentException(t(_message('exception.non_iterable_value', '$keys')), E_WARNING);
         }
 
         $results = [];
