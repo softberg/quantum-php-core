@@ -2,7 +2,7 @@
 
 namespace Libraries\Cache\Adapters;
 
-use Quantum\Libraries\Cache\Adapters\FileCache;
+use Quantum\Libraries\Cache\Adapters\FileAdapter;
 use PHPUnit\Framework\TestCase;
 use Quantum\Di\Di;
 use Quantum\App;
@@ -25,7 +25,7 @@ class FileCacheTest extends TestCase
             'ttl' => 60
         ];
 
-        $this->fileCache = new FileCache($params);
+        $this->fileCache = new FileAdapter($params);
     }
 
     public function tearDown(): void
@@ -33,7 +33,7 @@ class FileCacheTest extends TestCase
         $this->fileCache->clear();
     }
 
-    public function testFileCacheSetGetDelete()
+    public function testFileAdapterSetGetDelete()
     {
         $this->assertNull($this->fileCache->get('test'));
 
@@ -52,7 +52,7 @@ class FileCacheTest extends TestCase
         $this->assertNull($this->fileCache->get('test'));
     }
 
-    public function testFileCacheHas()
+    public function testFileAdapterHas()
     {
         $this->assertFalse($this->fileCache->has('test'));
 
@@ -61,7 +61,7 @@ class FileCacheTest extends TestCase
         $this->assertTrue($this->fileCache->has('test'));
     }
 
-    public function testFileCacheGetMultiple()
+    public function testFileAdapterGetMultiple()
     {
         $cacheItems = $this->fileCache->getMultiple(['test1', 'test2']);
 
@@ -82,7 +82,7 @@ class FileCacheTest extends TestCase
         $this->assertEquals('Default value for all', $cacheItems['test1']);
     }
 
-    public function testFileCacheSetMultiple()
+    public function testFileAdapterSetMultiple()
     {
         $this->assertFalse($this->fileCache->has('test1'));
 
@@ -99,7 +99,7 @@ class FileCacheTest extends TestCase
         $this->assertEquals('Test value two', $this->fileCache->get('test2'));
     }
 
-    public function testFileCacheDeleteMultiple()
+    public function testFileAdapterDeleteMultiple()
     {
         $this->fileCache->setMultiple(['test1' => 'Test value one', 'test2' => 'Test value two']);
 
@@ -114,7 +114,7 @@ class FileCacheTest extends TestCase
         $this->assertFalse($this->fileCache->has('test2'));
     }
 
-    public function testFileCacheClear()
+    public function testFileAdapterClear()
     {
         $this->fileCache->setMultiple(['test1' => 'Test value one', 'test2' => 'Test value two']);
 
@@ -129,14 +129,14 @@ class FileCacheTest extends TestCase
         $this->assertFalse($this->fileCache->has('test2'));
     }
 
-    public function testFileCacheExpired()
+    public function testFileAdapterExpired()
     {
         $params = [
             'path' => base_dir() . DS . 'cache' . DS . 'data',
             'ttl' => -1
         ];
 
-        $fileCache = new FileCache($params);
+        $fileCache = new FileAdapter($params);
 
         $fileCache->set('test', 'Test value');
 

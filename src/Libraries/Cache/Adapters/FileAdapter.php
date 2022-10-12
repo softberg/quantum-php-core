@@ -14,17 +14,22 @@
 
 namespace Quantum\Libraries\Cache\Adapters;
 
-use Quantum\Libraries\Database\Database;
+use Quantum\Libraries\Storage\FileSystem;
 use Psr\SimpleCache\CacheInterface;
 use InvalidArgumentException;
-use Exception;
+use Quantum\Di\Di;
 
 /**
- * Class DatabaseCache
+ * Class FileAdapter
  * @package Quantum\Libraries\Cache\Adapters
  */
-class DatabaseCache implements CacheInterface
+class FileAdapter implements CacheInterface
 {
+
+    /**
+     * @var FileSystem
+     */
+    private $fs;
 
     /**
      * @var int
@@ -32,18 +37,19 @@ class DatabaseCache implements CacheInterface
     private $ttl = 30;
 
     /**
-     * @var \Quantum\Libraries\Database\DbalInterface
+     * @var string
      */
-    private $cacheModel;
+    private $cacheDir;
 
     /**
-     * DatabaseCache constructor
+     * FileAdapter constructor
      * @param array $params
      */
     public function __construct(array $params)
     {
+        $this->fs = Di::get(FileSystem::class);
         $this->ttl = $params['ttl'];
-        $this->cacheModel = Database::getInstance()->getOrm($params['table']);
+        $this->cacheDir = $params['path'];
     }
 
     /**
@@ -52,11 +58,15 @@ class DatabaseCache implements CacheInterface
     public function get($key, $default = null)
     {
         if ($this->has($key)) {
-            $cacheItem = $this->cacheModel->findOneBy('key', sha1($key));
+            $cacheItem = $this->fs->get($this->getPath($key));
+
+            if (!$cacheItem) {
+                return $default;
+            }
 
             try {
-                return unserialize($cacheItem->prop('value'));
-            } catch (Exception $e) {
+                return unserialize($cacheItem);
+            } catch (\Exception $e) {
                 $this->delete($key);
                 return $default;
             }
@@ -88,13 +98,13 @@ class DatabaseCache implements CacheInterface
      */
     public function has($key): bool
     {
-        $cacheItem = $this->cacheModel->findOneBy('key', sha1($key));
+        $path = $this->getPath($key);
 
-        if (empty($cacheItem->asArray())) {
+        if (!$this->fs->exists($path)) {
             return false;
         }
 
-        if (time() - $cacheItem->prop('ttl') > $this->ttl) {
+        if (time() - $this->fs->lastModified($path) > $this->ttl) {
             $this->delete($key);
             return false;
         }
@@ -107,20 +117,7 @@ class DatabaseCache implements CacheInterface
      */
     public function set($key, $value, $ttl = null)
     {
-        $cacheItem = $this->cacheModel->findOneBy('key', sha1($key));
-
-        if (empty($cacheItem->asArray())) {
-            $cacheItem = $this->cacheModel->create();
-            $cacheItem->prop('key', sha1($key));
-            $cacheItem->prop('value', serialize($value));
-            $cacheItem->prop('ttl', time());
-        } else {
-            $cacheItem->prop('key', sha1($key));
-            $cacheItem->prop('value', serialize($value));
-            $cacheItem->prop('ttl', time());
-        }
-
-        return $cacheItem->save();
+        return $this->fs->put($this->getPath($key), serialize($value));
     }
 
     /**
@@ -147,10 +144,10 @@ class DatabaseCache implements CacheInterface
      */
     public function delete($key)
     {
-        $cacheItem = $this->cacheModel->findOneBy('key', sha1($key));
+        $path = $this->getPath($key);
 
-        if (!empty($cacheItem->asArray())) {
-            return $this->cacheModel->delete();
+        if ($this->fs->exists($path)) {
+            return $this->fs->remove($path);
         }
 
         return false;
@@ -163,7 +160,7 @@ class DatabaseCache implements CacheInterface
     public function deleteMultiple($keys)
     {
         if (!is_array($keys)) {
-            throw new InvalidArgumentException(t(_message('exception.non_iterable_value', '$values')), E_WARNING);
+            throw new InvalidArgumentException(t(_message('exception.non_iterable_value', '$keys')), E_WARNING);
         }
 
         $results = [];
@@ -180,7 +177,31 @@ class DatabaseCache implements CacheInterface
      */
     public function clear()
     {
-        return $this->cacheModel->deleteMany();
+        if (!$this->fs->isDirectory($this->cacheDir)) {
+            return false;
+        }
+
+        $files = $this->fs->glob($this->cacheDir . DS . '*');
+
+        if (!$files) {
+            return false;
+        }
+
+        foreach ($files as $file) {
+            $this->fs->remove($file);
+        }
+
+        return true;
+    }
+
+    /**
+     * Gets the path for Get for the given cache key
+     * @param string $key
+     * @return string
+     */
+    private function getPath(string $key): string
+    {
+        return $this->cacheDir . DS . sha1($key);
     }
 
 }
