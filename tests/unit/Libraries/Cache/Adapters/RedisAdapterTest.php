@@ -146,12 +146,14 @@ class RedisAdapterTest extends TestCase
         $params = [
             'host' => '127.0.0.1',
             'port' => 6379,
-            'ttl' => -1
+            'ttl' => 1
         ];
 
         $redis = new RedisAdapter($params);
 
         $redis->set('test', 'Test value');
+        
+        sleep(2);
 
         $this->assertNull($redis->get('test'));
     }
