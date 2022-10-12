@@ -131,7 +131,7 @@ class RedisAdapter implements CacheInterface
      */
     public function delete($key)
     {
-        return $this->redis->del(sha1($key));
+        return (bool) $this->redis->del(sha1($key));
     }
 
     /**
