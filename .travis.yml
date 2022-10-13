@@ -4,6 +4,7 @@ php:
     - 7.4
     
 services:
+  - redis-server
   - memcached
 
 before_install:
@@ -16,6 +17,7 @@ before_script:
     - echo -e '#!/usr/bin/env bash\nexit 0' | sudo tee /usr/sbin/sendmail
     - echo 'sendmail_path = "/usr/sbin/sendmail -t -i "' | sudo tee "/home/travis/.phpenv/versions/`php -i | grep "PHP Version" | head -n 1 | grep -o -P '\d+\.\d+\.\d+.*'`/etc/conf.d/sendmail.ini"
     
+    - echo "extension = redis.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
     - echo "extension = memcached.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
     
     - composer self-update
