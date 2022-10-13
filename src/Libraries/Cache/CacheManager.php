@@ -52,7 +52,7 @@ class CacheManager
             throw CacheException::unsupportedDriver($cacheDriver);
         }
 
-        $cacheAdapterClass = __NAMESPACE__ . '\\Adapters\\' . ucfirst($cacheDriver) . 'Cache';
+        $cacheAdapterClass = __NAMESPACE__ . '\\Adapters\\' . ucfirst($cacheDriver) . 'Adapter';
 
         $cacheAdapter = new $cacheAdapterClass(config()->get('cache.' . $cacheDriver . '.params'));
 

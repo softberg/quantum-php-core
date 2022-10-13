@@ -2,7 +2,7 @@
 
 namespace Libraries\Cache\Adapters;
 
-use Quantum\Libraries\Cache\Adapters\MemecachedAdapter;
+use Quantum\Libraries\Cache\Adapters\MemcachedAdapter;
 use PHPUnit\Framework\TestCase;
 use Quantum\Di\Di;
 use Quantum\App;
@@ -26,7 +26,7 @@ class MemcachedAdapterTest extends TestCase
             'ttl' => 60
         ];
 
-        $this->memCached = new MemecachedAdapter($params);
+        $this->memCached = new MemcachedAdapter($params);
     }
 
     public function tearDown(): void
@@ -150,7 +150,7 @@ class MemcachedAdapterTest extends TestCase
             'ttl' => 1
         ];
 
-        $memCached = new MemecachedAdapter($params);
+        $memCached = new MemcachedAdapter($params);
 
         $memCached->set('test', 'Test value');
         
