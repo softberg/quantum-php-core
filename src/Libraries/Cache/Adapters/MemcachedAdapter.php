@@ -21,10 +21,10 @@ use Memcached;
 use Exception;
 
 /**
- * Class MemecachedAdapter
+ * Class MemcachedAdapter
  * @package Quantum\Libraries\Cache\Adapters
  */
-class MemecachedAdapter implements CacheInterface
+class MemcachedAdapter implements CacheInterface
 {
 
     /**
@@ -38,7 +38,7 @@ class MemecachedAdapter implements CacheInterface
     private $memcached;
 
     /**
-     * MemecachedAdapter constructor
+     * MemcachedAdapter constructor
      * @param array $params
      */
     public function __construct(array $params)
