@@ -16,6 +16,7 @@ namespace Quantum\Console\Commands;
 
 use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Console\QtCommand;
+use Quantum\Di\Di;
 
 /**
  * Class DebugBarAssetsCommand
@@ -23,6 +24,11 @@ use Quantum\Console\QtCommand;
  */
 class DebugBarAssetsCommand extends QtCommand
 {
+    /**
+     * File System
+     * @var \Quantum\Libraries\Storage\FileSystem
+     */
+    protected $fs;
 
     /**
      * Command name
@@ -59,7 +65,8 @@ class DebugBarAssetsCommand extends QtCommand
      */
     public function exec()
     {
-        if ($this->installed()) {
+        $this->fs = Di::get(FileSystem::class);
+        if ($this->fs->exists(assets_dir() . DS . 'DebugBar' . DS . 'Resources' . DS . 'debugbar.css')) {
             $this->error('The debuger already installed');
             return;
         }
@@ -80,7 +87,7 @@ class DebugBarAssetsCommand extends QtCommand
         $dir = opendir($src);
 
         if ($dst != $this->publicDebugbarFolderPath) {
-            if (mkdir($dst, 777, true) === false) {
+            if ($this->fs->makeDirectory($dst, 777, true) === false) {
                 throw new \RuntimeException(t('exception.directory_cant_be_created', $dst));
             }
         }
@@ -88,11 +95,11 @@ class DebugBarAssetsCommand extends QtCommand
         if (is_resource($dir)) {
             while (($file = readdir($dir))) {
                 if (($file != '.') && ($file != '..')) {
-                    if (is_dir($src . '/' . $file)) {
-                        $this->recursive_copy($src . '/' . $file, $dst . '/' . $file);
+                    if ($this->fs->isDirectory($src . DS . $file)) {
+                        $this->recursive_copy($src . DS . $file, $dst . DS . $file);
                     } else {
                         if ($file) {
-                            copy($src . '/' . $file, $dst . '/' . $file);
+                            copy($src . DS . $file, $dst . DS . $file);
                         }
                     }
                 }
@@ -100,20 +107,5 @@ class DebugBarAssetsCommand extends QtCommand
 
             closedir($dir);
         }
-    }
-
-    /**
-     * Checks if already installed
-     * @return bool
-     */
-    private function installed(): bool
-    {
-        $fs = new FileSystem();
-
-        if ($fs->exists(assets_dir() . DS . 'DebugBar' . DS . 'Resources' . DS . 'debugbar.css')) {
-            return true;
-        }
-
-        return false;
     }
 }
