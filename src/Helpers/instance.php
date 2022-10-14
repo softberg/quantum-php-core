@@ -14,10 +14,12 @@
 use Quantum\Libraries\Session\SessionManager;
 use Quantum\Libraries\Encryption\Cryptor;
 use Quantum\Libraries\Asset\AssetManager;
+use Quantum\Libraries\Cache\CacheManager;
 use Quantum\Libraries\Auth\AuthManager;
 use Quantum\Libraries\Session\Session;
 use Quantum\Libraries\Cookie\Cookie;
 use Quantum\Libraries\Mailer\Mailer;
+use Quantum\Libraries\Cache\Cache;
 use Quantum\Hooks\HookManager;
 use Quantum\Di\Di;
 
@@ -34,7 +36,7 @@ function session(): Session
 
 /**
  * Gets cookie handler
- * @return Quantum\Libraries\Cookie\Cookie
+ * @return \Quantum\Libraries\Cookie\Cookie
  */
 function cookie(): Cookie
 {
@@ -76,9 +78,18 @@ function asset(): ?AssetManager
 
 /**
  * Gets the HookManager instance
- * @return Quantum\Hooks\HookManager
+ * @return \Quantum\Hooks\HookManager
  */
 function hook(): HookManager
 {
     return HookManager::getInstance();
+}
+
+/**
+ * Gets the Cache handler
+ * @return \Quantum\Libraries\Cache\Cache
+ */
+function cache(): Cache
+{
+    return CacheManager::getHandler();
 }
