@@ -34,6 +34,7 @@ class DatabaseAdaptereTest extends TestCase
         SleekDbal::connect(config()->get('database.sleekdb'));
         
         $params = [
+            'prefix' => 'test',
             'table' => 'cache',
             'ttl' => 60
         ];
@@ -160,6 +161,7 @@ class DatabaseAdaptereTest extends TestCase
     public function testDatabaseAdapterExpired()
     {
         $params = [
+            'prefix' => 'test',
             'table' => 'cache',
             'ttl' => -1
         ];

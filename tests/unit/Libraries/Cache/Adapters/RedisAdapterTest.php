@@ -21,6 +21,7 @@ class RedisAdapterTest extends TestCase
         Di::loadDefinitions();
 
         $params = [
+            'prefix' => 'test',
             'host' => '127.0.0.1',
             'port' => 6379,
             'ttl' => 60
@@ -144,6 +145,7 @@ class RedisAdapterTest extends TestCase
     public function testRedisAdapterExpired()
     {
         $params = [
+            'prefix' => 'test',
             'host' => '127.0.0.1',
             'port' => 6379,
             'ttl' => 1

@@ -21,6 +21,7 @@ class MemcachedAdapterTest extends TestCase
         Di::loadDefinitions();
 
         $params = [
+            'prefix' => 'test',
             'host' => '127.0.0.1',
             'port' => 11211,
             'ttl' => 60
@@ -145,6 +146,7 @@ class MemcachedAdapterTest extends TestCase
     public function testMemcachedAdapterExpired()
     {
         $params = [
+            'prefix' => 'test',
             'host' => '127.0.0.1',
             'port' => 11211,
             'ttl' => 1
