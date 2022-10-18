@@ -37,7 +37,7 @@ class FileAdapter implements CacheInterface
     private $ttl = 30;
     
     /**
-     * @var prefix
+     * @var string
      */
     private $prefix;
 
