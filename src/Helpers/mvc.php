@@ -134,14 +134,18 @@ function route_name(): ?string
 }
 
 /**
- * Finds the route with given name
+ * Finds the route by name in given module scope
  * @param string $name
+ * @param string $module
  * @return array|null
  */
-function find_route_by_name(string $name): ?array
+function find_route_by_name(string $name, string $module): ?array
 {
     foreach (Router::getRoutes() as $route) {
-        if (isset($route['name']) && $route['name'] == $name) {
+        if (isset($route['name']) &&
+                strtolower($route['name'] == strtolower($name)) &&
+                strtolower($route['module']) == strtolower($module)) {
+            
             return $route;
         }
     }
@@ -150,14 +154,18 @@ function find_route_by_name(string $name): ?array
 }
 
 /**
- * Checks the route group with given name
+ * Checks the existence of the route group by name in given module scope
  * @param string $name
+ * @param string $module
  * @return bool
  */
-function route_group_exists(string $name): bool
+function route_group_exists(string $name, string $module): bool
 {
     foreach (Router::getRoutes() as $route) {
-        if (isset($route['group']) && $route['group'] == $name) {
+        if (isset($route['group']) &&
+                strtolower($route['group']) == strtolower($name) &&
+                strtolower($route['module']) == strtolower($module)) {
+
             return true;
         }
     }
