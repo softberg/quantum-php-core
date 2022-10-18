@@ -96,8 +96,8 @@ class DebugBarAssetsCommand extends QtCommand
         if (is_resource($dir)) {
             while (($file = readdir($dir))) {
                 if (($file != '.') && ($file != '..')) {
-                    if ($this->fs->copyResources($src . DS . $file)) {
-                        $this->recursive_copy($src . DS . $file, $dst . DS . $file);
+                    if ($this->fs->isDirectory($src . DS . $file)) {
+                        $this->copyResources($src . DS . $file, $dst . DS . $file);
                     } else {
                         if ($file) {
                             copy($src . DS . $file, $dst . DS . $file);
