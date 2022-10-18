@@ -229,7 +229,7 @@ class HelperTest extends TestCase
 
     public function testFindRouteByName()
     {
-        $this->assertNull(find_route_by_name('user'));
+        $this->assertNull(find_route_by_name('user', 'test'));
 
         Router::setRoutes([
             [
@@ -243,14 +243,14 @@ class HelperTest extends TestCase
             ]
         ]);
 
-        $this->assertNotNull(find_route_by_name('user'));
+        $this->assertNotNull(find_route_by_name('user', 'test'));
 
-        $this->assertIsArray(find_route_by_name('user'));
+        $this->assertIsArray(find_route_by_name('user', 'test'));
     }
 
     public function testCheckRouteGroupExists()
     {
-        $this->assertFalse(route_group_exists('guest'));
+        $this->assertFalse(route_group_exists('guest', 'test'));
 
         Router::setRoutes([
             [
@@ -265,7 +265,7 @@ class HelperTest extends TestCase
             ]
         ]);
 
-        $this->assertTrue(route_group_exists('guest'));
+        $this->assertTrue(route_group_exists('guest', 'test'));
     }
 
     public function testView()
