@@ -143,7 +143,7 @@ function find_route_by_name(string $name, string $module): ?array
 {
     foreach (Router::getRoutes() as $route) {
         if (isset($route['name']) &&
-                strtolower($route['name'] == strtolower($name)) &&
+                strtolower($route['name']) == strtolower($name) &&
                 strtolower($route['module']) == strtolower($module)) {
             
             return $route;
