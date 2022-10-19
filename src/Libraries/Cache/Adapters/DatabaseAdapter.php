@@ -32,6 +32,11 @@ class DatabaseAdapter implements CacheInterface
     private $ttl = 30;
 
     /**
+     * @var string
+     */
+    private $prefix;
+
+    /**
      * @var \Quantum\Libraries\Database\DbalInterface
      */
     private $cacheModel;
@@ -43,6 +48,7 @@ class DatabaseAdapter implements CacheInterface
     public function __construct(array $params)
     {
         $this->ttl = $params['ttl'];
+        $this->prefix = $params['prefix'];
         $this->cacheModel = Database::getInstance()->getOrm($params['table']);
     }
 
@@ -52,7 +58,7 @@ class DatabaseAdapter implements CacheInterface
     public function get($key, $default = null)
     {
         if ($this->has($key)) {
-            $cacheItem = $this->cacheModel->findOneBy('key', sha1($key));
+            $cacheItem = $this->cacheModel->findOneBy('key', $this->keyHash($key));
 
             try {
                 return unserialize($cacheItem->prop('value'));
@@ -88,7 +94,7 @@ class DatabaseAdapter implements CacheInterface
      */
     public function has($key): bool
     {
-        $cacheItem = $this->cacheModel->findOneBy('key', sha1($key));
+        $cacheItem = $this->cacheModel->findOneBy('key', $this->keyHash($key));
 
         if (empty($cacheItem->asArray())) {
             return false;
@@ -107,18 +113,15 @@ class DatabaseAdapter implements CacheInterface
      */
     public function set($key, $value, $ttl = null)
     {
-        $cacheItem = $this->cacheModel->findOneBy('key', sha1($key));
+        $cacheItem = $this->cacheModel->findOneBy('key', $this->keyHash($key));
 
         if (empty($cacheItem->asArray())) {
             $cacheItem = $this->cacheModel->create();
-            $cacheItem->prop('key', sha1($key));
-            $cacheItem->prop('value', serialize($value));
-            $cacheItem->prop('ttl', time());
-        } else {
-            $cacheItem->prop('key', sha1($key));
-            $cacheItem->prop('value', serialize($value));
-            $cacheItem->prop('ttl', time());
         }
+
+        $cacheItem->prop('key', $this->keyHash($key));
+        $cacheItem->prop('value', serialize($value));
+        $cacheItem->prop('ttl', time());
 
         return $cacheItem->save();
     }
@@ -147,7 +150,7 @@ class DatabaseAdapter implements CacheInterface
      */
     public function delete($key)
     {
-        $cacheItem = $this->cacheModel->findOneBy('key', sha1($key));
+        $cacheItem = $this->cacheModel->findOneBy('key', $this->keyHash($key));
 
         if (!empty($cacheItem->asArray())) {
             return $this->cacheModel->delete();
@@ -181,6 +184,16 @@ class DatabaseAdapter implements CacheInterface
     public function clear()
     {
         return $this->cacheModel->deleteMany();
+    }
+
+    /**
+     * Gets the hashed key
+     * @param string $key
+     * @return string
+     */
+    private function keyHash(string $key): string
+    {
+        return sha1($this->prefix . $key);
     }
 
 }

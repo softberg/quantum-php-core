@@ -66,14 +66,15 @@ class DebugBarAssetsCommand extends QtCommand
     public function exec()
     {
         $this->fs = Di::get(FileSystem::class);
+        
         if ($this->fs->exists(assets_dir() . DS . 'DebugBar' . DS . 'Resources' . DS . 'debugbar.css')) {
             $this->error('The debuger already installed');
             return;
         }
 
-        $this->recursive_copy($this->vendorDebugbarFolderPath, $this->publicDebugbarFolderPath);
+        $this->copyResources($this->vendorDebugbarFolderPath, $this->publicDebugbarFolderPath);
 
-        $this->info('Debugbar assets successfully published');
+        $this->info('Debugbar resources successfully published');
     }
 
     /**
@@ -82,7 +83,7 @@ class DebugBarAssetsCommand extends QtCommand
      * @param string $dst
      * @throws \RuntimeException
      */
-    private function recursive_copy(string $src, string $dst)
+    private function copyResources(string $src, string $dst)
     {
         $dir = opendir($src);
 
@@ -96,7 +97,7 @@ class DebugBarAssetsCommand extends QtCommand
             while (($file = readdir($dir))) {
                 if (($file != '.') && ($file != '..')) {
                     if ($this->fs->isDirectory($src . DS . $file)) {
-                        $this->recursive_copy($src . DS . $file, $dst . DS . $file);
+                        $this->copyResources($src . DS . $file, $dst . DS . $file);
                     } else {
                         if ($file) {
                             copy($src . DS . $file, $dst . DS . $file);

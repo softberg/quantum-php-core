@@ -15,7 +15,6 @@
 namespace Quantum\Libraries\Cache;
 
 use Quantum\Exceptions\CacheException;
-use Psr\SimpleCache\CacheInterface;
 use Quantum\Loader\Setup;
 
 /**
@@ -37,7 +36,7 @@ class CacheManager
 
     /**
      * Get Handler
-     * @return CacheInterface
+     * @return Cache
      * @throws \Quantum\Exceptions\CacheException
      */
     public static function getHandler()

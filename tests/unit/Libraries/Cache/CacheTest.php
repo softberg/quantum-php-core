@@ -25,6 +25,7 @@ class CacheTest extends TestCase
     public function testCacheAdapter()
     {
         $params = [
+            'prefix' => 'test',
             'path' => base_dir() . DS . 'cache' . DS . 'data',
             'ttl' => 60
         ];
@@ -39,6 +40,7 @@ class CacheTest extends TestCase
     public function testAdapterMethodCall()
     {
         $params = [
+            'prefix' => 'test',
             'path' => base_dir() . DS . 'cache' . DS . 'data',
             'ttl' => 60
         ];

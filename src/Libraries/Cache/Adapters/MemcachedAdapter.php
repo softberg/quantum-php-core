@@ -33,6 +33,11 @@ class MemcachedAdapter implements CacheInterface
     private $ttl = 30;
 
     /**
+     * @var string
+     */
+    private $prefix;
+
+    /**
      * @var \Memcached
      */
     private $memcached;
@@ -44,6 +49,7 @@ class MemcachedAdapter implements CacheInterface
     public function __construct(array $params)
     {
         $this->ttl = $params['ttl'];
+        $this->prefix = $params['prefix'];
 
         $this->memcached = new Memcached();
         $this->memcached->addServer($params['host'], $params['port']);
@@ -59,7 +65,7 @@ class MemcachedAdapter implements CacheInterface
     public function get($key, $default = null)
     {
         if ($this->has($key)) {
-            $cacheItem = $this->memcached->get(sha1($key));
+            $cacheItem = $this->memcached->get($this->keyHash($key));
 
             try {
                 return unserialize($cacheItem);
@@ -95,7 +101,7 @@ class MemcachedAdapter implements CacheInterface
      */
     public function has($key): bool
     {
-        $cacheItem = $this->memcached->get(sha1($key));
+        $cacheItem = $this->memcached->get($this->keyHash($key));
 
         if (!$cacheItem) {
             return false;
@@ -109,7 +115,7 @@ class MemcachedAdapter implements CacheInterface
      */
     public function set($key, $value, $ttl = null)
     {
-        return $this->memcached->set(sha1($key), serialize($value), $this->ttl);
+        return $this->memcached->set($this->keyHash($key), serialize($value), $this->ttl);
     }
 
     /**
@@ -136,7 +142,7 @@ class MemcachedAdapter implements CacheInterface
      */
     public function delete($key)
     {
-        return $this->memcached->delete(sha1($key));
+        return $this->memcached->delete($this->keyHash($key));
     }
 
     /**
@@ -164,6 +170,16 @@ class MemcachedAdapter implements CacheInterface
     public function clear()
     {
         return $this->memcached->flush();
+    }
+
+    /**
+     * Gets the hashed key
+     * @param string $key
+     * @return string
+     */
+    private function keyHash(string $key): string
+    {
+        return sha1($this->prefix . $key);
     }
 
 }

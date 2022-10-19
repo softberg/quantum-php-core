@@ -21,6 +21,7 @@ class FileCacheTest extends TestCase
         Di::loadDefinitions();
 
         $params = [
+            'prefix' => 'test',
             'path' => base_dir() . DS . 'cache' . DS . 'data',
             'ttl' => 60
         ];
@@ -132,6 +133,7 @@ class FileCacheTest extends TestCase
     public function testFileAdapterExpired()
     {
         $params = [
+            'prefix' => 'test',
             'path' => base_dir() . DS . 'cache' . DS . 'data',
             'ttl' => -1
         ];

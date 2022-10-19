@@ -35,6 +35,11 @@ class FileAdapter implements CacheInterface
      * @var int
      */
     private $ttl = 30;
+    
+    /**
+     * @var string
+     */
+    private $prefix;
 
     /**
      * @var string
@@ -49,6 +54,7 @@ class FileAdapter implements CacheInterface
     {
         $this->fs = Di::get(FileSystem::class);
         $this->ttl = $params['ttl'];
+        $this->prefix = $params['prefix'];
         $this->cacheDir = $params['path'];
     }
 
@@ -195,13 +201,13 @@ class FileAdapter implements CacheInterface
     }
 
     /**
-     * Gets the path for Get for the given cache key
+     * Gets the path for given cache key
      * @param string $key
      * @return string
      */
     private function getPath(string $key): string
     {
-        return $this->cacheDir . DS . sha1($key);
+        return $this->cacheDir . DS . sha1($this->prefix . $key);
     }
 
 }

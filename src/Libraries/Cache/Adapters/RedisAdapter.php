@@ -32,6 +32,11 @@ class RedisAdapter implements CacheInterface
     private $ttl = 30;
 
     /**
+     * @var string
+     */
+    private $prefix;
+
+    /**
      * @var \Redis
      */
     private $redis;
@@ -43,6 +48,7 @@ class RedisAdapter implements CacheInterface
     public function __construct(array $params)
     {
         $this->ttl = $params['ttl'];
+        $this->prefix = $params['prefix'];
 
         $this->redis = new Redis();
         $this->redis->connect($params['host'], $params['port']);
@@ -54,7 +60,7 @@ class RedisAdapter implements CacheInterface
     public function get($key, $default = null)
     {
         if ($this->has($key)) {
-            $cacheItem = $this->redis->get(sha1($key));
+            $cacheItem = $this->redis->get($this->keyHash($key));
 
             try {
                 return unserialize($cacheItem);
@@ -90,7 +96,7 @@ class RedisAdapter implements CacheInterface
      */
     public function has($key): bool
     {
-        $cacheItem = $this->redis->get(sha1($key));
+        $cacheItem = $this->redis->get($this->keyHash($key));
 
         if (!$cacheItem) {
             return false;
@@ -104,7 +110,7 @@ class RedisAdapter implements CacheInterface
      */
     public function set($key, $value, $ttl = null)
     {
-        return $this->redis->set(sha1($key), serialize($value), $this->ttl);
+        return $this->redis->set($this->keyHash($key), serialize($value), $this->ttl);
     }
 
     /**
@@ -131,7 +137,7 @@ class RedisAdapter implements CacheInterface
      */
     public function delete($key)
     {
-        return (bool) $this->redis->del(sha1($key));
+        return (bool) $this->redis->del($this->keyHash($key));
     }
 
     /**
@@ -159,6 +165,16 @@ class RedisAdapter implements CacheInterface
     public function clear()
     {
         return $this->redis->flushdb();
+    }
+
+    /**
+     * Gets the hashed key
+     * @param string $key
+     * @return string
+     */
+    private function keyHash(string $key): string
+    {
+        return sha1($this->prefix . $key);
     }
 
 }
