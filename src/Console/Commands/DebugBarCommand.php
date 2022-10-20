@@ -22,7 +22,7 @@ use Quantum\Di\Di;
  * Class DebugBarAssetsCommand
  * @package Quantum\Console\Commands
  */
-class DebugBarAssetsCommand extends QtCommand
+class DebugBarCommand extends QtCommand
 {
     /**
      * File System
