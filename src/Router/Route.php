@@ -98,6 +98,7 @@ class Route
             $this->virtualRoutes[$this->currentGroupName][] = $this->currentRoute;
         } else {
             $this->isGroup = false;
+            $this->isGroupMiddlewares = false;
             $this->virtualRoutes['*'][] = $this->currentRoute;
         }
 
@@ -155,27 +156,22 @@ class Route
         if (!$this->isGroup) {
             end($this->virtualRoutes['*']);
             $lastKey = key($this->virtualRoutes['*']);
-            $this->virtualRoutes['*'][$lastKey]['middlewares'] = $middlewares;
-        } else {
-            end($this->virtualRoutes);
-            $lastKeyOfFirstRound = key($this->virtualRoutes);
+            $this->assignMiddlewaresToRoute($this->virtualRoutes['*'][$lastKey], $middlewares);
+            return $this;
+        }
 
-            if (!$this->isGroupMiddlewares) {
-                end($this->virtualRoutes[$lastKeyOfFirstRound]);
-                $lastKeyOfSecondRound = key($this->virtualRoutes[$lastKeyOfFirstRound]);
-                $this->virtualRoutes[$lastKeyOfFirstRound][$lastKeyOfSecondRound]['middlewares'] = $middlewares;
-            } else {
-                foreach ($this->virtualRoutes[$lastKeyOfFirstRound] as &$route) {
-                    if (!key_exists('middlewares', $route)) {
-                        $route['middlewares'] = $middlewares;
-                    } else {
-                        $reversedMiddlewares = array_reverse($middlewares);
-                        foreach ($reversedMiddlewares as $middleware) {
-                            array_unshift($route['middlewares'], $middleware);
-                        }
-                    }
-                }
-            }
+        end($this->virtualRoutes);
+        $lastKeyOfFirstRound = key($this->virtualRoutes);
+
+        if (!$this->isGroupMiddlewares) {
+            end($this->virtualRoutes[$lastKeyOfFirstRound]);
+            $lastKeyOfSecondRound = key($this->virtualRoutes[$lastKeyOfFirstRound]);
+            $this->assignMiddlewaresToRoute($this->virtualRoutes[$lastKeyOfFirstRound][$lastKeyOfSecondRound], $middlewares);
+            return $this;
+        }
+
+        foreach ($this->virtualRoutes[$lastKeyOfFirstRound] as &$route) {
+            $this->assignMiddlewaresToRoute($route, $middlewares);
         }
 
         return $this;
@@ -234,6 +230,24 @@ class Route
     public function getVirtualRoutes(): array
     {
         return $this->virtualRoutes;
+    }
+
+    /**
+     * Assigns middlewares to the route
+     * @param array $route
+     * @param array $middlewares
+     */
+    private function assignMiddlewaresToRoute(array &$route, array $middlewares)
+    {
+        if (!key_exists('middlewares', $route)) {
+            $route['middlewares'] = $middlewares;
+        } else {
+            $middlewares = array_reverse($middlewares);
+
+            foreach ($middlewares as $middleware) {
+                array_unshift($route['middlewares'], $middleware);
+            }
+        }
     }
 
 }
