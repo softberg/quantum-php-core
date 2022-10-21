@@ -115,7 +115,7 @@ class OpenApiCommand extends QtCommand
 
         $this->generateOpenapiSpecification($module);
 
-        $this->info('Open Api recources successfully published');
+        $this->info('OpenApi recources successfully published');
     }
 
     /**
@@ -160,7 +160,7 @@ class OpenApiCommand extends QtCommand
 
         $route->get("' . strtolower($module) . '/spec", function (Quantum\Http\Response $response) {
             $fs = Quantum\Di\Di::get(Quantum\Libraries\Storage\FileSystem::class);
-            $response->json((array) json_decode($fs->get(modules_dir() . "' . DS . $module . DS . 'Resources' . DS . 'openapi' . DS . 'spec.json", true)));
+            $response->json((array) json_decode($fs->get(modules_dir() . "' . DS . $module . DS . 'Resources' . DS . 'openapi' . DS . 'spec.json")));
         });
     });' . PHP_EOL;
     }
