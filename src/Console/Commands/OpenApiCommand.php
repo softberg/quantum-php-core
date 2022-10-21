@@ -23,7 +23,7 @@ use Quantum\Di\Di;
  * Class OpenApiUiAssetsCommand
  * @package Quantum\Console\Commands
  */
-class OpenApiUiAssetsCommand extends QtCommand
+class OpenApiCommand extends QtCommand
 {
 
     /**
@@ -115,7 +115,7 @@ class OpenApiUiAssetsCommand extends QtCommand
 
         $this->generateOpenapiSpecification($module);
 
-        $this->info('Open Api recources successfully published');
+        $this->info('OpenApi recources successfully published');
     }
 
     /**
@@ -154,13 +154,13 @@ class OpenApiUiAssetsCommand extends QtCommand
     {
         return 'return function ($route) {
     $route->group("openapi", function ($route) {
-        $route->get("' . strtolower($module) . '/documentation", function (Quantum\Http\Response $response) {
+        $route->get("' . strtolower($module) . '/docs", function (Quantum\Http\Response $response) {
             $response->html(partial("openapi/openapi"));
         });
 
-        $route->get("' . strtolower($module) . '/docs", function (Quantum\Http\Response $response) {
+        $route->get("' . strtolower($module) . '/spec", function (Quantum\Http\Response $response) {
             $fs = Quantum\Di\Di::get(Quantum\Libraries\Storage\FileSystem::class);
-            $response->json((array) json_decode($fs->get(modules_dir() . "' . DS . $module . DS . 'Resources' . DS . 'openapi' . DS . 'docs.json", true)));
+            $response->json((array) json_decode($fs->get(modules_dir() . "' . DS . $module . DS . 'Resources' . DS . 'openapi' . DS . 'spec.json")));
         });
     });' . PHP_EOL;
     }

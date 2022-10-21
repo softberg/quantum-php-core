@@ -105,22 +105,8 @@ class Loader
     public function loadDir(string $dir)
     {
         foreach ($this->fs->glob($dir . DS . "*.php") as $filename) {
-            $this->loadFile($filename);
+            $this->fs->require($filename, true);
         }
-    }
-
-    /**
-     * Loads .php file
-     * @param string $path
-     * @throws \Quantum\Exceptions\LoaderException
-     */
-    public function loadFile(string $path)
-    {
-        if (!$this->fs->exists($path)) {
-            throw new LoaderException(_message($this->exceptionMessage, $path));
-        }
-
-        require_once $path;
     }
 
     /**
