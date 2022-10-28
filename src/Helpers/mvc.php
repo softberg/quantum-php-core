@@ -134,6 +134,15 @@ function route_name(): ?string
 }
 
 /**
+ * Gets the current route name
+ * @return string|null
+ */
+function route_prefix(): ?string
+{
+    return RouteController::getCurrentRoute()['prefix'] ?? null;
+}
+
+/**
  * Finds the route by name in given module scope
  * @param string $name
  * @param string $module
