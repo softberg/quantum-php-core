@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.6.0
+ * @since 2.8.0
  */
 
 namespace Quantum\Factory;
@@ -28,7 +28,7 @@ class ViewFactory
      * Instance of QtView
      * @var QtView|null
      */
-    private static $viewInstance = null;
+    private static $instance = null;
 
     /**
      * QtView instance
@@ -36,11 +36,11 @@ class ViewFactory
      */
     public static function getInstance(): ?QtView
     {
-        if (self::$viewInstance === null) {
-            self::$viewInstance = new QtView();
+        if (self::$instance === null) {
+            self::$instance = new QtView();
         }
 
-        return self::$viewInstance;
+        return self::$instance;
     }
 
     /**

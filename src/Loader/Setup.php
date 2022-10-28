@@ -22,6 +22,7 @@ use Quantum\Exceptions\ConfigException;
  */
 class Setup
 {
+
     /**
      * @var bool
      */
@@ -61,7 +62,7 @@ class Setup
         $this->fileName = $fileName;
         $this->hierarchical = $hierarchical;
         $this->module = $module ?: current_module();
-        $this->exceptionMessage = $exceptionMessage ?: t('exception.config_file_not_found', $fileName);
+        $this->exceptionMessage = $exceptionMessage ?: 'File `' . $pathPrefix . DS . $fileName . '` not found!';
     }
 
     /**
@@ -163,4 +164,5 @@ class Setup
     {
         return $this->hierarchical;
     }
+
 }

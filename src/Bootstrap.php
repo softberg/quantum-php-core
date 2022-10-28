@@ -65,13 +65,11 @@ class Bootstrap
             $router = new Router($request, $response);
             $router->findRoute();
 
-            Debugger::addToStore(Debugger::HOOKS, LogLevel::INFO, HookManager::getRegistered());
-
-            if (config()->has(Lang::LANGS_DEFINED)) {
-                Lang::getInstance()
-                        ->setLang($request->getSegment(config()->get(Lang::LANG_SEGMENT)))
-                        ->load();
+            if (config()->get('multilang')) {
+                Lang::getInstance(config()->get(Lang::LANG_SEGMENT))->load();
             }
+
+            Debugger::addToStore(Debugger::HOOKS, LogLevel::INFO, HookManager::getRegistered());
 
             MvcManager::handle($request, $response);
 

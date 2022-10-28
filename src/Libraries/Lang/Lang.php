@@ -18,6 +18,7 @@ use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Exceptions\LangException;
 use Dflydev\DotAccessData\Data;
 use Quantum\Loader\Loader;
+use Quantum\Http\Request;
 use Quantum\Loader\Setup;
 use Quantum\Di\Di;
 
@@ -54,19 +55,35 @@ class Lang
      * Instance of Lang
      * @var \Quantum\Libraries\Lang\Lang
      */
-    private static $langInstance = null;
+    private static $instance = null;
 
     /**
      * GetInstance
-     * @return \Quantum\Libraries\Lang\Lang|null
+     * @return \Quantum\Libraries\Lang\Lang
      */
-    public static function getInstance(): ?Lang
+    public static function getInstance(int $langSegmentIndex = 1): ?Lang
     {
-        if (self::$langInstance === null) {
-            self::$langInstance = new self();
+        if (self::$instance === null) {
+            self::$instance = new self();
+
+            if (!empty(route_prefix()) && $langSegmentIndex == 1) {
+                $langSegmentIndex += 1;
+            }
+
+            $lang = Request::getSegment($langSegmentIndex);
+
+            if (empty($lang) && !config()->get('lang_default')) {
+                throw LangException::misconfiguredDefaultConfig();
+            }
+
+            if (empty($lang) || !in_array($lang, (array) config()->get('langs'))) {
+                $lang = config()->get('lang_default');
+            }
+
+            self::$instance->setLang($lang);
         }
 
-        return self::$langInstance;
+        return self::$instance;
     }
 
     /**
@@ -102,7 +119,6 @@ class Lang
             $setup->setPathPrefix('Resources' . DS . 'lang' . DS . $this->getLang());
             $setup->setFilename($fileName);
             $setup->setHierarchy(true);
-            $setup->setExceptionMessage(t('exception.translation_files_not_found', $this->getLang()));
 
             self::$translations->import([$fileName => Di::get(Loader::class)->setup($setup)->load()]);
         }
@@ -112,18 +128,9 @@ class Lang
      * Sets current language
      * @param string $lang
      * @return $this
-     * @throws \Quantum\Exceptions\LangException
      */
     public function setLang(string $lang): Lang
     {
-        if (empty($lang) && !config()->get('lang_default')) {
-            throw LangException::misconfiguredDefaultConfig();
-        }
-
-        if (empty($lang) || !in_array($lang, (array) config()->get('langs'))) {
-            $lang = config()->get('lang_default');
-        }
-
         self::$currentLang = $lang;
         return $this;
     }
@@ -163,6 +170,14 @@ class Lang
         } else {
             return $key;
         }
+    }
+
+    /**
+     * Flushes loaded translations
+     */
+    public function flush()
+    {
+        self::$translations = null;
     }
 
 }

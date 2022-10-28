@@ -26,10 +26,16 @@ class Route
 {
 
     /**
-     * Current module
+     * Current module name
      * @var string
      */
-    private $module;
+    private $moduleName;
+
+    /**
+     * Module options
+     * @var array
+     */
+    private $moduleOptions = [];
 
     /**
      * Identifies the group middleware
@@ -65,10 +71,11 @@ class Route
      * Class constructor
      * @param string $module
      */
-    public function __construct(string $module)
+    public function __construct(array $module)
     {
         $this->virtualRoutes['*'] = [];
-        $this->module = $module;
+        $this->moduleName = key($module);
+        $this->moduleOptions = $module[key($module)];
     }
 
     /**
@@ -81,9 +88,10 @@ class Route
     public function add(string $route, string $method, ...$params): self
     {
         $this->currentRoute = [
-            'route' => $route,
+            'route' => !empty($this->moduleOptions['prefix']) ? $this->moduleOptions['prefix'] . '/' . $route : $route,
+            'prefix' => $this->moduleOptions['prefix'],
             'method' => $method,
-            'module' => $this->module
+            'module' => $this->moduleName
         ];
 
         if (is_callable($params[0])) {
