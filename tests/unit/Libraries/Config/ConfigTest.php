@@ -42,7 +42,7 @@ class ConfigTest extends AppTestCase
     {
         $this->expectException(LoaderException::class);
 
-        $this->expectExceptionMessage('File `config\somefile` not found!');
+        $this->expectExceptionMessage('File `config' . DS . 'somefile` not found!');
 
         Config::getInstance()->load(new Setup('config', 'somefile'));
     }
@@ -66,7 +66,7 @@ class ConfigTest extends AppTestCase
     {
         $this->expectException(LoaderException::class);
 
-        $this->expectExceptionMessage('File `config\somefile` not found!');
+        $this->expectExceptionMessage('File `config' . DS . 'somefile` not found!');
 
         Config::getInstance()->import(new Setup('config', 'somefile'));
     }
