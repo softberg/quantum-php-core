@@ -2,24 +2,17 @@
 
 namespace Quantum\Tests\Loader;
 
-use PHPUnit\Framework\TestCase;
-use Quantum\Exceptions\ConfigException;
+use Quantum\Tests\AppTestCase;
 use Quantum\Loader\Setup;
-use Quantum\Di\Di;
-use Quantum\App;
 
-class SetupTest extends TestCase
+class SetupTest extends AppTestCase
 {
 
     private $setup;
 
     public function setUp(): void
     {
-        App::loadCoreFunctions(dirname(__DIR__, 3) . DS . 'src' . DS . 'Helpers');
-
-        App::setBaseDir(dirname(__DIR__) . DS . '_root');
-
-        Di::loadDefinitions();
+        parent::setUp();
 
         $this->setup = new Setup();
     }
@@ -39,8 +32,7 @@ class SetupTest extends TestCase
 
         $this->assertEquals(true, $setup->getHierarchy());
 
-        $this->assertEquals('exception.config_file_not_found', $setup->getExceptionMessage());
-
+        $this->assertEquals('File `' . $setup->getPathPrefix() . DS . $setup->getFilename() . '` not found!', $setup->getExceptionMessage());
     }
 
     public function testSetGetPathPrefix()
@@ -78,6 +70,4 @@ class SetupTest extends TestCase
         $this->assertEquals('Action not allowed', $this->setup->getExceptionMessage());
     }
 
-
 }
-

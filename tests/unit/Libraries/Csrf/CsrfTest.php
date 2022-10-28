@@ -2,11 +2,11 @@
 
 namespace Quantum\Tests\Libraries\Csrf;
 
-use Mockery;
-use PHPUnit\Framework\TestCase;
+use Quantum\Libraries\Session\Session;
 use Quantum\Exceptions\CsrfException;
 use Quantum\Libraries\Csrf\Csrf;
-use Quantum\Libraries\Session\Session;
+use PHPUnit\Framework\TestCase;
+use Mockery;
 
 class CsrfTest extends TestCase
 {

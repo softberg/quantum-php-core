@@ -2,18 +2,16 @@
 
 namespace Quantum\Tests\Http;
 
-use Mockery;
-use PHPUnit\Framework\TestCase;
 use Quantum\Exceptions\FileUploadException;
 use Quantum\Libraries\Session\Session;
 use Quantum\Http\Request\HttpRequest;
 use Quantum\Libraries\Upload\File;
 use Quantum\Libraries\Csrf\Csrf;
+use Quantum\Tests\AppTestCase;
 use Quantum\Http\Request;
-use Quantum\Di\Di;
-use Quantum\App;
+use Mockery;
 
-class RequestTest extends TestCase
+class RequestTest extends AppTestCase
 {
 
     private $session;
@@ -21,11 +19,7 @@ class RequestTest extends TestCase
 
     public function setUp(): void
     {
-        App::loadCoreFunctions(dirname(__DIR__, 3) . DS . 'src' . DS . 'Helpers');
-
-        App::setBaseDir(dirname(__DIR__) . DS . '_root');
-
-        Di::loadDefinitions();
+        parent::setUp();
 
         $cryptor = Mockery::mock('Quantum\Libraries\Encryption\Cryptor');
 
@@ -249,7 +243,6 @@ class RequestTest extends TestCase
         $this->expectExceptionMessage('uploaded_file_not_found');
 
         $request->getFile('image');
-
     }
 
     public function testGetMultipleFiles()
@@ -386,7 +379,6 @@ class RequestTest extends TestCase
         $request->setQuery('phone=055090607&email=test@test.com');
 
         $this->assertEquals('test@test.com', $request->getQueryParam('email'));
-
     }
 
 }

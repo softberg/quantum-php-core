@@ -2,9 +2,7 @@
 
 namespace Quantum\Tests\Helpers;
 
-use PHPUnit\Framework\TestCase;
 use Quantum\Exceptions\StopExecutionException;
-use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Libraries\Session\Session;
 use Quantum\Exceptions\HookException;
 use Quantum\Libraries\Cookie\Cookie;
@@ -13,15 +11,14 @@ use Quantum\Libraries\Asset\Asset;
 use Quantum\Libraries\Lang\Lang;
 use Quantum\Libraries\Csrf\Csrf;
 use Quantum\Factory\ViewFactory;
-use Quantum\Loader\Setup;
+use Quantum\Tests\AppTestCase;
 use Quantum\Router\Router;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 use Quantum\Di\Di;
-use Quantum\App;
 use Mockery;
 
-class HelperTest extends TestCase
+class HelperTest extends AppTestCase
 {
 
     private $router;
@@ -31,12 +28,7 @@ class HelperTest extends TestCase
 
     public function setUp(): void
     {
-
-        App::loadCoreFunctions(dirname(__DIR__, 3) . DS . 'src' . DS . 'Helpers');
-
-        App::setBaseDir(dirname(__DIR__) . DS . '_root');
-
-        Di::loadDefinitions();
+        parent::setUp();
 
         Response::init();
 
@@ -288,10 +280,6 @@ class HelperTest extends TestCase
 
     public function testConfigHelper()
     {
-        config()->flush();
-
-        config()->load(new Setup('config', 'config', true));
-
         $this->assertFalse(config()->has('not-exists'));
 
         $this->assertEquals('Not found', config()->get('not-exists', 'Not found'));
@@ -359,29 +347,15 @@ class HelperTest extends TestCase
 
     public function testCurrentLang()
     {
-        config()->set('langs', ['en', 'ru', 'am']);
-
-        config()->set('lang_default', 'en');
-
-        config()->set('lang_segment', 1);
-
-        $this->assertNull(current_lang());
-
-        Lang::getInstance(new FileSystem)->setLang('en');
-
-        $this->assertNotNull(current_lang());
-
         $this->assertEquals('en', current_lang());
+
+        Lang::getInstance()->setLang('am');
+
+        $this->assertEquals('am', current_lang());
     }
 
     public function testGetTheTranslation()
     {
-        config()->set('langs', ['en', 'ru', 'am']);
-
-        config()->set('lang_default', 'en');
-
-        config()->set('lang_segment', 1);
-
         RouteController::setCurrentRoute([
             "route" => "api-signin",
             "method" => "POST",
@@ -389,8 +363,6 @@ class HelperTest extends TestCase
             "action" => "signin",
             "module" => "test",
         ]);
-
-        Lang::getInstance()->setLang('en')->load();
 
         $this->assertEquals('Learn more', t('custom.learn_more'));
 

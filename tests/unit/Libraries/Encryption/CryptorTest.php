@@ -16,12 +16,11 @@ namespace Quantum\Libraries\Encryption {
 
 namespace Quantum\Tests\Libraries\Encryption {
 
-    use PHPUnit\Framework\TestCase;
-    use Quantum\App;
     use Quantum\Libraries\Encryption\Cryptor;
     use Quantum\Exceptions\CryptorException;
+    use Quantum\Tests\AppTestCase;
 
-    class CryptorTest extends TestCase
+    class CryptorTest extends AppTestCase
     {
 
         private $cryptor;
@@ -30,7 +29,7 @@ namespace Quantum\Tests\Libraries\Encryption {
 
         public function setUp(): void
         {
-            App::loadCoreFunctions(dirname(__DIR__, 4) . DS . 'src' . DS . 'Helpers');
+            parent::setUp();
 
             $this->cryptor = new Cryptor();
         }

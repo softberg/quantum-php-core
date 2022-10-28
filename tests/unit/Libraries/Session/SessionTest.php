@@ -2,9 +2,9 @@
 
 namespace Quantum\Tests\Libraries\Session;
 
-use Mockery;
-use PHPUnit\Framework\TestCase;
 use Quantum\Libraries\Session\Session;
+use PHPUnit\Framework\TestCase;
+use Mockery;
 
 class SessionTest extends TestCase
 {

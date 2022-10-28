@@ -3,22 +3,16 @@
 namespace Libraries\Cache\Adapters;
 
 use Quantum\Libraries\Cache\Adapters\FileAdapter;
-use PHPUnit\Framework\TestCase;
-use Quantum\Di\Di;
-use Quantum\App;
+use Quantum\Tests\AppTestCase;
 
-class FileCacheTest extends TestCase
+class FileCacheTest extends AppTestCase
 {
 
     private $fileCache;
 
     public function setUp(): void
     {
-        App::loadCoreFunctions(dirname(__DIR__, 5) . DS . 'src' . DS . 'Helpers');
-
-        App::setBaseDir(dirname(__DIR__, 3) . DS . '_root');
-
-        Di::loadDefinitions();
+        parent::setUp();
 
         $params = [
             'prefix' => 'test',

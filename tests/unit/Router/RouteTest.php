@@ -1,22 +1,28 @@
 <?php
 
-namespace Quantum\Tests\Routes;
+namespace Quantum\Tests\Router;
 
 use Quantum\Exceptions\RouteException;
-use PHPUnit\Framework\TestCase;
+use Quantum\Tests\AppTestCase;
 use Quantum\Router\Route;
-use Quantum\App;
 
-class RouteTest extends TestCase
+class RouteTest extends AppTestCase
 {
 
     private $route;
 
     public function setUp(): void
     {
-        App::loadCoreFunctions(dirname(__DIR__, 3) . DS . 'src' . DS . 'Helpers');
+        parent::setUp();
 
-        $this->route = new Route('Test');
+        $module = [
+            'Test' => [
+                'prefix' => '',
+                'endabled' => true
+            ]
+        ];
+
+        $this->route = new Route($module);
     }
 
     public function testCallbackRoute()

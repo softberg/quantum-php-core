@@ -2,17 +2,15 @@
 
 namespace Quantum\Tests\Libraries\Cookie;
 
-use Mockery;
-use PHPUnit\Framework\TestCase;
 use Quantum\Libraries\Cookie\Cookie;
+use PHPUnit\Framework\TestCase;
+use Mockery;
 
 class CookieTest extends TestCase
 {
 
     private $cookie;
-    
     private $cryptor;
-    
     private $cookieData = [
         'auth' => 'b2s=', // ok
         'test' => 'Z29vZA==', // good

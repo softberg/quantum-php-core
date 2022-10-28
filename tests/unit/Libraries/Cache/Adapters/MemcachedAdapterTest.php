@@ -3,22 +3,16 @@
 namespace Libraries\Cache\Adapters;
 
 use Quantum\Libraries\Cache\Adapters\MemcachedAdapter;
-use PHPUnit\Framework\TestCase;
-use Quantum\Di\Di;
-use Quantum\App;
+use Quantum\Tests\AppTestCase;
 
-class MemcachedAdapterTest extends TestCase
+class MemcachedAdapterTest extends AppTestCase
 {
 
     private $memCached;
 
     public function setUp(): void
     {
-        App::loadCoreFunctions(dirname(__DIR__, 5) . DS . 'src' . DS . 'Helpers');
-
-        App::setBaseDir(dirname(__DIR__, 3) . DS . '_root');
-
-        Di::loadDefinitions();
+        parent::setUp();
 
         $params = [
             'prefix' => 'test',
@@ -95,7 +89,6 @@ class MemcachedAdapterTest extends TestCase
         $this->assertEquals('Test one', $cacheItems['test1']);
     }
 
-
     public function testMemcachedAdapterSetMultiple()
     {
         $this->assertFalse($this->memCached->has('test1'));
@@ -155,9 +148,10 @@ class MemcachedAdapterTest extends TestCase
         $memCached = new MemcachedAdapter($params);
 
         $memCached->set('test', 'Test value');
-        
+
         sleep(2);
 
         $this->assertNull($memCached->get('test'));
     }
+
 }

@@ -25,24 +25,18 @@ namespace Quantum\Services {
 
 namespace Quantum\Tests\Factory {
 
-    use PHPUnit\Framework\TestCase;
     use Quantum\Exceptions\ServiceException;
     use Quantum\Factory\ServiceFactory;
     use Quantum\Services\TestService;
+    use Quantum\Tests\AppTestCase;
     use Quantum\Mvc\QtService;
-    use Quantum\Di\Di;
-    use Quantum\App;
 
-    class ServiceFactoryTest extends TestCase
+    class ServiceFactoryTest extends AppTestCase
     {
 
         public function setUp(): void
         {
-            App::loadCoreFunctions(dirname(__DIR__, 3) . DS . 'src' . DS . 'Helpers');
-
-            App::setBaseDir(dirname(__DIR__) . DS . '_root');
-
-            Di::loadDefinitions();
+            parent::setUp();
         }
 
         public function tearDown(): void

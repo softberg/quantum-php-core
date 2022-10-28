@@ -2,23 +2,17 @@
 
 namespace Quantum\Tests\Libraries\Mailer;
 
-use PHPUnit\Framework\TestCase;
 use Quantum\Libraries\Mailer\Mailer;
-use Quantum\Di\Di;
-use Quantum\App;
+use Quantum\Tests\AppTestCase;
 
-class MailerTest extends TestCase
+class MailerTest extends AppTestCase
 {
 
     private $mailer;
 
     public function setUp(): void
     {
-        App::loadCoreFunctions(dirname(__DIR__, 4) . DS . 'src' . DS . 'Helpers');
-
-        App::setBaseDir(dirname(__DIR__, 2) . DS . '_root');
-
-        Di::loadDefinitions();
+        parent::setUp();
 
         $this->mailer = new Mailer();
     }
@@ -211,4 +205,3 @@ class MailerTest extends TestCase
     }
 
 }
-

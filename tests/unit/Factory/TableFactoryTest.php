@@ -2,21 +2,19 @@
 
 namespace Quantum\Tests\Factory;
 
-use PHPUnit\Framework\TestCase;
 use Quantum\Libraries\Database\Schema\Table;
 use Quantum\Exceptions\MigrationException;
 use Quantum\Libraries\Database\Database;
 use Quantum\Factory\TableFactory;
+use Quantum\Tests\AppTestCase;
 use Quantum\Loader\Setup;
-use Quantum\Di\Di;
-use Quantum\App;
 use Mockery;
 
 /**
  * @runTestsInSeparateProcesses
  * @preserveGlobalState disabled
  */
-class TableFactoryTest extends TestCase
+class TableFactoryTest extends AppTestCase
 {
 
     private $tableFactory;
@@ -24,11 +22,7 @@ class TableFactoryTest extends TestCase
 
     public function setUp(): void
     {
-        App::loadCoreFunctions(dirname(__DIR__, 3) . DS . 'src' . DS . 'Helpers');
-
-        App::setBaseDir(dirname(__DIR__) . DS . '_root');
-
-        Di::loadDefinitions();
+        parent::setUp();
 
         if (!config()->has('database')) {
             config()->import(new Setup('config', 'database', true));

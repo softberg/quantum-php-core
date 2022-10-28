@@ -13,22 +13,16 @@ namespace Quantum\Http\Response {
 
 namespace Quantum\Tests\Http {
 
-    use PHPUnit\Framework\TestCase;
     use Quantum\Exceptions\StopExecutionException;
+    use Quantum\Tests\AppTestCase;
     use Quantum\Http\Response;
-    use Quantum\Di\Di;
-    use Quantum\App;
 
-    class ResponseTest extends TestCase
+    class ResponseTest extends AppTestCase
     {
 
         public function setUp(): void
         {
-            App::loadCoreFunctions(dirname(__DIR__, 3) . DS . 'src' . DS . 'Helpers');
-
-            App::setBaseDir(dirname(__DIR__) . DS . '_root');
-
-            Di::loadDefinitions();
+            parent::setUp();
 
             Response::init();
         }

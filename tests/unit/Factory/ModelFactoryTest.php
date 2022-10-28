@@ -6,35 +6,31 @@ namespace Quantum\Models {
 
     class TestModel extends QtModel
     {
+
         public $table = 'test';
+
     }
 
 }
 
 namespace Quantum\Tests\Factory {
 
-    use PHPUnit\Framework\TestCase;
     use Quantum\Exceptions\ModelException;
     use Quantum\Factory\ModelFactory;
+    use Quantum\Tests\AppTestCase;
     use Quantum\Models\TestModel;
     use Quantum\Mvc\QtModel;
-    use Quantum\Di\Di;
-    use Quantum\App;
 
     /**
      * @runTestsInSeparateProcesses
      * @preserveGlobalState disabled
      */
-    class ModelFactoryTest extends TestCase
+    class ModelFactoryTest extends AppTestCase
     {
 
         public function setUp(): void
         {
-            App::loadCoreFunctions(dirname(__DIR__, 3) . DS . 'src' . DS . 'Helpers');
-
-            App::setBaseDir(dirname(__DIR__) . DS . '_root');
-
-            Di::loadDefinitions();
+            parent::setUp();
         }
 
         public function testModelGet()

@@ -27,17 +27,15 @@ namespace Quantum\Models {
 
 namespace Quantum\Tests\Libraries\Validation {
 
-    use PHPUnit\Framework\TestCase;
-    use Quantum\Libraries\Validation\Validator;
     use Quantum\Libraries\Database\Idiorm\IdiormDbal;
+    use Quantum\Libraries\Validation\Validator;
     use Quantum\Libraries\Validation\Rule;
-    use Quantum\Factory\ModelFactory; 
+    use Quantum\Factory\ModelFactory;
+    use Quantum\Tests\AppTestCase;
     use Quantum\Models\VUserModel;
     use Quantum\Http\Request;
-    use Quantum\Di\Di;
-    use Quantum\App;
 
-    class ValidatorTest extends TestCase
+    class ValidatorTest extends AppTestCase
     {
 
         private $request;
@@ -45,11 +43,7 @@ namespace Quantum\Tests\Libraries\Validation {
 
         public function setUp(): void
         {
-            App::loadCoreFunctions(dirname(__DIR__, 4) . DS . 'src' . DS . 'Helpers');
-
-            App::setBaseDir(dirname(__DIR__, 2) . DS . '_root');
-
-            Di::loadDefinitions();
+            parent::setUp();
 
             $this->request = new Request();
 
@@ -65,8 +59,6 @@ namespace Quantum\Tests\Libraries\Validation {
             imagepng($img, base_dir() . DS . 'php8fe2.tmp');
 
             imagedestroy($img);
-            
-            
         }
 
         public function tearDown(): void

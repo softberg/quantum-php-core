@@ -3,22 +3,16 @@
 namespace Libraries\Cache\Adapters;
 
 use Quantum\Libraries\Cache\Adapters\RedisAdapter;
-use PHPUnit\Framework\TestCase;
-use Quantum\Di\Di;
-use Quantum\App;
+use Quantum\Tests\AppTestCase;
 
-class RedisAdapterTest extends TestCase
+class RedisAdapterTest extends AppTestCase
 {
 
     private $redis;
 
     public function setUp(): void
     {
-        App::loadCoreFunctions(dirname(__DIR__, 5) . DS . 'src' . DS . 'Helpers');
-
-        App::setBaseDir(dirname(__DIR__, 3) . DS . '_root');
-
-        Di::loadDefinitions();
+        parent::setUp();
 
         $params = [
             'prefix' => 'test',
@@ -154,7 +148,7 @@ class RedisAdapterTest extends TestCase
         $redis = new RedisAdapter($params);
 
         $redis->set('test', 'Test value');
-        
+
         sleep(2);
 
         $this->assertNull($redis->get('test'));

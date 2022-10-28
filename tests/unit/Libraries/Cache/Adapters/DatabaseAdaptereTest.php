@@ -4,35 +4,27 @@ namespace Libraries\Cache\Adapters;
 
 use Quantum\Libraries\Cache\Adapters\DatabaseAdapter;
 use Quantum\Libraries\Database\Sleekdb\SleekDbal;
-use PHPUnit\Framework\TestCase;
+use Quantum\Tests\AppTestCase;
 use Quantum\Loader\Setup;
-use Quantum\Di\Di;
-use Quantum\App;
 
 /**
  *  @runTestsInSeparateProcesses
  */
-class DatabaseAdaptereTest extends TestCase
+class DatabaseAdaptereTest extends AppTestCase
 {
 
     private $databaseCache;
 
     public function setUp(): void
     {
-        App::loadCoreFunctions(dirname(__DIR__, 5) . DS . 'src' . DS . 'Helpers');
-
-        App::setBaseDir(dirname(__DIR__, 3) . DS . '_root');
-
-        Di::loadDefinitions();
-
-        config()->flush();
+        parent::setUp();
 
         config()->import(new Setup('config', 'database'));
 
         config()->set('database.current', 'sleekdb');
 
         SleekDbal::connect(config()->get('database.sleekdb'));
-        
+
         $params = [
             'prefix' => 'test',
             'table' => 'cache',
@@ -44,8 +36,6 @@ class DatabaseAdaptereTest extends TestCase
 
     public function tearDown(): void
     {
-        config()->flush();
-
         $this->databaseCache->clear();
 
         SleekDbal::disconnect();
@@ -53,7 +43,7 @@ class DatabaseAdaptereTest extends TestCase
 
     public function testDatabaseAdapterSetGetDelete()
     {
-        
+
         $this->assertNull($this->databaseCache->get('test'));
 
         $this->assertNotNull($this->databaseCache->get('test', 'Some default value'));
@@ -99,7 +89,7 @@ class DatabaseAdaptereTest extends TestCase
         $this->assertNotNull($cacheItems['test1']);
 
         $this->assertEquals('Default value for all', $cacheItems['test1']);
-        
+
         $this->databaseCache->set('test1', 'Test one');
 
         $this->databaseCache->set('test2', 'Test two');

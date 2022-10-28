@@ -2,8 +2,8 @@
 
 namespace Quantum\Tests\Libraries\JWToken;
 
-use PHPUnit\Framework\TestCase;
 use Quantum\Libraries\JWToken\JWToken;
+use PHPUnit\Framework\TestCase;
 
 class JWTokenTest extends TestCase
 {

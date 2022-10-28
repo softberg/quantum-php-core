@@ -2,27 +2,21 @@
 
 namespace Quantum\Tests\Libraries\Database;
 
-use PHPUnit\Framework\TestCase;
 use Quantum\Libraries\Database\DbalInterface;
 use Quantum\Libraries\Database\Database;
+use Quantum\Tests\AppTestCase;
 use Quantum\Loader\Setup;
-use Quantum\Di\Di;
-use Quantum\App;
 
 /**
  * @runTestsInSeparateProcesses
  * @preserveGlobalState disabled
  */
-class DatabaseTest extends TestCase
+class DatabaseTest extends AppTestCase
 {
 
     public function setUp(): void
     {
-        App::loadCoreFunctions(dirname(__DIR__, 4) . DS . 'src' . DS . 'Helpers');
-
-        App::setBaseDir(dirname(__DIR__, 2) . DS . '_root');
-
-        Di::loadDefinitions();
+        parent::setUp();
 
         config()->import(new Setup('config', 'database', true));
 
@@ -57,7 +51,7 @@ class DatabaseTest extends TestCase
 
         Database::execute('INSERT INTO users (firstname, lastname, age, country)
                                      VALUES (:firstname, :lastname, :age, :country)',
-            ['firstname' => 'John', 'lastname' => 'Doe', 'age' => '56', 'country' => 'Spain']);
+                ['firstname' => 'John', 'lastname' => 'Doe', 'age' => '56', 'country' => 'Spain']);
 
         $result = Database::query('SELECT * FROM users WHERE id=:id', ['id' => 1]);
 

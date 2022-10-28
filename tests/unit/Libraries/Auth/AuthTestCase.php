@@ -6,13 +6,14 @@ namespace Quantum\Libraries\Auth {
     {
         return 123456789;
     }
+
 }
 
 namespace Quantum\Tests\Libraries\Auth {
 
-    use PHPUnit\Framework\TestCase;
     use Quantum\Environment\Environment;
     use Quantum\Libraries\Auth\User;
+    use Quantum\Tests\AppTestCase;
     use Quantum\Loader\Setup;
     use Quantum\Di\Di;
     use Quantum\App;
@@ -27,15 +28,13 @@ namespace Quantum\Tests\Libraries\Auth {
         return ++$max;
     }
 
-
-    abstract class AuthTestCase extends TestCase
+    abstract class AuthTestCase extends AppTestCase
     {
+
+        protected static $users = [];
         protected $apiAuth;
-
         protected $authService;
-
         protected $mailer;
-
         protected $userSchema = [
             'id' => ['name' => 'id', 'visible' => false],
             'firstname' => ['name' => 'firstname', 'visible' => true],
@@ -52,9 +51,6 @@ namespace Quantum\Tests\Libraries\Auth {
             'otpExpiry' => ['name' => 'otp_expires', 'visible' => false],
             'otpToken' => ['name' => 'otp_token', 'visible' => false],
         ];
-
-        protected static $users = [];
-
         protected $adminUser = [
             'email' => 'admin@qt.com',
             'firstname' => 'Admin',
@@ -70,7 +66,6 @@ namespace Quantum\Tests\Libraries\Auth {
             'otp_expiry_in' => '',
             'otp_token' => ''
         ];
-
         protected $guestUser = [
             'email' => 'guest@qt.com',
             'password' => '123456',
@@ -80,13 +75,7 @@ namespace Quantum\Tests\Libraries\Auth {
 
         public function setUp(): void
         {
-            App::loadCoreFunctions(dirname(__DIR__, 4) . DS . 'src' . DS . 'Helpers');
-
-            App::setBaseDir(dirname(__DIR__, 2) . DS . '_root');
-
-            Di::loadDefinitions();
-
-            config()->flush();
+            parent::setUp();
 
             Environment::getInstance()->load(new Setup('config', 'env'));
 
@@ -125,7 +114,6 @@ namespace Quantum\Tests\Libraries\Auth {
                 }
 
                 return $user;
-
             });
 
             $this->authService->shouldReceive('add')->andReturnUsing(function ($data) {
@@ -166,9 +154,8 @@ namespace Quantum\Tests\Libraries\Auth {
             $this->mailer->shouldReceive('setTemplate')->andReturn($this->mailer);
 
             $this->mailer->shouldReceive('send')->andReturn(true);
-
-            config()->set('langs', true);
         }
 
     }
+
 }

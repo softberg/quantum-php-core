@@ -6,33 +6,27 @@ namespace Quantum\Controllers {
 
     class TestController extends QtController
     {
-        
+        // Controller body
     }
 
 }
 
 namespace Quantum\Tests\Mvc {
 
-    use PHPUnit\Framework\TestCase;
     use Quantum\Exceptions\ControllerException;
     use Quantum\Controllers\TestController;
-    use Quantum\Di\Di;
-    use Quantum\App;
+    use Quantum\Tests\AppTestCase;
 
     /**
      * @runTestsInSeparateProcesses
      * @preserveGlobalState disabled
      */
-    class QtControllerTest extends TestCase
+    class QtControllerTest extends AppTestCase
     {
 
         public function setUp(): void
         {
-            App::loadCoreFunctions(dirname(__DIR__, 3) . DS . 'src' . DS . 'Helpers');
-
-            App::setBaseDir(dirname(__DIR__) . DS . '_root');
-
-            Di::loadDefinitions();
+            parent::setUp();
         }
 
         public function testMissingMethods()

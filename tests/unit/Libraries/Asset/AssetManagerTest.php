@@ -1,28 +1,22 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Asset;
+namespace Libraries\Asset;
 
-use PHPUnit\Framework\TestCase;
 use Quantum\Libraries\Asset\AssetManager;
 use Quantum\Libraries\Asset\Asset;
-use Quantum\Di\Di;
-use Quantum\App;
+use Quantum\Tests\AppTestCase;
 
 /**
  * @runTestsInSeparateProcesses
  */
-class AssetManagerTest extends TestCase
+class AssetManagerTest extends AppTestCase
 {
 
     private $assetManager;
 
     public function setUp(): void
     {
-        App::loadCoreFunctions(dirname(__DIR__, 4) . DS . 'src' . DS . 'Helpers');
-
-        App::setBaseDir(dirname(__DIR__, 2) . DS . '_root');
-
-        Di::loadDefinitions();
+        parent::setUp();
 
         config()->set('base_url', 'http://mydomain.com');
 
@@ -52,9 +46,9 @@ class AssetManagerTest extends TestCase
         ]);
 
         $expectedOutput = '<link rel="stylesheet" type="text/css" href="http://mydomain.com/assets/css/reset.css">' . PHP_EOL .
-            '<link rel="stylesheet" type="text/css" href="http://mydomain.com/assets/css/style.css">' . PHP_EOL .
-            '<link rel="stylesheet" type="text/css" href="http://mydomain.com/assets/css/media.css">' . PHP_EOL .
-            '<link rel="stylesheet" type="text/css" href="http://mydomain.com/assets/css/responsive.css">' . PHP_EOL;
+                '<link rel="stylesheet" type="text/css" href="http://mydomain.com/assets/css/style.css">' . PHP_EOL .
+                '<link rel="stylesheet" type="text/css" href="http://mydomain.com/assets/css/media.css">' . PHP_EOL .
+                '<link rel="stylesheet" type="text/css" href="http://mydomain.com/assets/css/responsive.css">' . PHP_EOL;
 
         ob_start();
 
@@ -65,9 +59,9 @@ class AssetManagerTest extends TestCase
         ob_clean();
 
         $expectedOutput = '<script src="http://mydomain.com/assets/js/jquery.js"></script>' . PHP_EOL .
-            '<script src="http://mydomain.com/assets/js/bootstrap.js"></script>' . PHP_EOL .
-            '<script src="http://mydomain.com/assets/js/bootstrap-datepicker.min.js"></script>' . PHP_EOL .
-            '<script src="http://mydomain.com/assets/js/custom.js"></script>' . PHP_EOL;
+                '<script src="http://mydomain.com/assets/js/bootstrap.js"></script>' . PHP_EOL .
+                '<script src="http://mydomain.com/assets/js/bootstrap-datepicker.min.js"></script>' . PHP_EOL .
+                '<script src="http://mydomain.com/assets/js/custom.js"></script>' . PHP_EOL;
 
         $this->assetManager->dump(AssetManager::JS_STORE);
 
