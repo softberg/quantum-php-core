@@ -36,17 +36,17 @@ class Bootstrap
 
     /**
      * Boots the app
-     * @throws \Quantum\Exceptions\ConfigException
-     * @throws \Quantum\Exceptions\ControllerException
-     * @throws \Quantum\Exceptions\CsrfException
-     * @throws \Quantum\Exceptions\DatabaseException
-     * @throws \Quantum\Exceptions\DiException
-     * @throws \Quantum\Exceptions\EnvException
-     * @throws \Quantum\Exceptions\LangException
-     * @throws \Quantum\Exceptions\MiddlewareException
      * @throws \Quantum\Exceptions\ModuleLoaderException
-     * @throws \Quantum\Exceptions\RouteException
+     * @throws \Quantum\Exceptions\ControllerException
+     * @throws \Quantum\Exceptions\MiddlewareException
+     * @throws \Quantum\Exceptions\DatabaseException
      * @throws \Quantum\Exceptions\SessionException
+     * @throws \Quantum\Exceptions\ConfigException
+     * @throws \Quantum\Exceptions\RouteException
+     * @throws \Quantum\Exceptions\LangException
+     * @throws \Quantum\Exceptions\CsrfException
+     * @throws \Quantum\Exceptions\EnvException
+     * @throws \Quantum\Exceptions\DiException
      * @throws \ReflectionException
      */
     public static function run()
@@ -66,7 +66,7 @@ class Bootstrap
             $router->findRoute();
 
             if (config()->get('multilang')) {
-                Lang::getInstance(config()->get(Lang::LANG_SEGMENT))->load();
+                Lang::getInstance((int) config()->get(Lang::LANG_SEGMENT))->load();
             }
 
             Debugger::addToStore(Debugger::HOOKS, LogLevel::INFO, HookManager::getRegistered());

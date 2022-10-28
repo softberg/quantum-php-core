@@ -88,8 +88,8 @@ class Lang
 
     /**
      * Loads translations
-     * @throws \Quantum\Exceptions\DiException
      * @throws \Quantum\Exceptions\LangException
+     * @throws \Quantum\Exceptions\DiException
      * @throws \ReflectionException
      */
     public function load()
