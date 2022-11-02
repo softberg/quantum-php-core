@@ -11,28 +11,22 @@ namespace Quantum\Renderer {
 
 namespace Quantum\Tests\Mvc {
 
-    use PHPUnit\Framework\TestCase;
     use Quantum\Exceptions\ViewException;
     use Quantum\Factory\ViewFactory;
-    use Quantum\Di\Di;
-    use Quantum\App;
+    use Quantum\Tests\AppTestCase;
 
     /**
      * @runTestsInSeparateProcesses
      */
-    class QtViewTest extends TestCase
+    class QtViewTest extends AppTestCase
     {
 
         private $view;
 
         public function setUp(): void
         {
-            App::loadCoreFunctions(dirname(__DIR__, 3) . DS . 'src' . DS . 'Helpers');
-
-            App::setBaseDir(dirname(__DIR__) . DS . '_root');
-
-            Di::loadDefinitions();
-
+            parent::setUp();
+            
             $this->view = ViewFactory::getInstance();
         }
 
@@ -90,7 +84,7 @@ namespace Quantum\Tests\Mvc {
 
             $this->assertIsString($renderedView);
 
-            $this->assertEquals('<html>'.PHP_EOL.'<head></head>'.PHP_EOL.'<body>'.PHP_EOL.'<p>Hello World, this is rendered view</p></body>'.PHP_EOL.'</html>'.PHP_EOL, $renderedView);
+            $this->assertEquals('<html>' . PHP_EOL . '<head></head>' . PHP_EOL . '<body>' . PHP_EOL . '<p>Hello World, this is rendered view</p></body>' . PHP_EOL . '</html>' . PHP_EOL, $renderedView);
         }
 
         public function testRenderWithData()

@@ -6,23 +6,17 @@ use Quantum\Exceptions\ConfigException;
 use Quantum\Exceptions\LoaderException;
 use Quantum\Libraries\Config\Config;
 use Dflydev\DotAccessData\Data;
-use PHPUnit\Framework\TestCase;
+use Quantum\Tests\AppTestCase;
 use Quantum\Loader\Setup;
-use Quantum\Di\Di;
-use Quantum\App;
 
-class ConfigTest extends TestCase
+class ConfigTest extends AppTestCase
 {
 
     public function setUp(): void
     {
-        App::loadCoreFunctions(dirname(__DIR__, 4) . DS . 'src' . DS . 'Helpers');
-
-        App::setBaseDir(dirname(__DIR__, 2) . DS . '_root');
-
-        Di::loadDefinitions();
-
-        Config::getInstance()->flush();
+        parent::setUp();
+        
+        config()->flush();
     }
 
     public function testConfigLoad()
@@ -48,7 +42,7 @@ class ConfigTest extends TestCase
     {
         $this->expectException(LoaderException::class);
 
-        $this->expectExceptionMessage('config_file_not_found');
+        $this->expectExceptionMessage('File `config' . DS . 'somefile` not found!');
 
         Config::getInstance()->load(new Setup('config', 'somefile'));
     }
@@ -72,7 +66,7 @@ class ConfigTest extends TestCase
     {
         $this->expectException(LoaderException::class);
 
-        $this->expectExceptionMessage('config_file_not_found');
+        $this->expectExceptionMessage('File `config' . DS . 'somefile` not found!');
 
         Config::getInstance()->import(new Setup('config', 'somefile'));
     }

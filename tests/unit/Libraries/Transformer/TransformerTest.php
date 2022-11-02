@@ -22,11 +22,11 @@ namespace Quantum\Transformer {
 
 }
 
-namespace Quantum\Tests\Transformer {
+namespace Transformer {
 
-    use PHPUnit\Framework\TestCase;
-    use Quantum\Transformer\PostTransformer;
     use Quantum\Libraries\Transformer\TransformerManager;
+    use Quantum\Transformer\PostTransformer;
+    use PHPUnit\Framework\TestCase;
 
     class TransformerTest extends TestCase
     {

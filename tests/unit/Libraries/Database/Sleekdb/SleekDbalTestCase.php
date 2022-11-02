@@ -2,39 +2,24 @@
 
 namespace Quantum\Tests\Libraries\Database\Sleekdb;
 
-use PHPUnit\Framework\TestCase;
 use Quantum\Libraries\Database\Sleekdb\SleekDbal;
+use Quantum\Tests\AppTestCase;
 use Quantum\Loader\Setup;
-use Quantum\Di\Di;
-use Quantum\App;
 
-
-abstract class SleekDbalTestCase extends TestCase
+abstract class SleekDbalTestCase extends AppTestCase
 {
 
     private $userModel;
-
     private $eventModel;
-
     private $userEventModel;
-
     private $professionModel;
-
     private $meetingModel;
-
     private $ticketModel;
-
     private $noteModel;
 
     public function setUp(): void
     {
-        App::loadCoreFunctions(dirname(__DIR__, 5) . DS . 'src' . DS . 'Helpers');
-
-        App::setBaseDir(dirname(__DIR__, 3) . DS . '_root');
-
-        Di::loadDefinitions();
-
-        config()->flush();
+        parent::setUp();
 
         config()->import(new Setup('config', 'database'));
 
@@ -206,7 +191,6 @@ abstract class SleekDbalTestCase extends TestCase
         $this->userEventModel->prop('confirmed', 'No');
         $this->userEventModel->prop('created_at', '2020-04-15 11:10:12');
         $this->userEventModel->save();
-
     }
 
     private function _createProfessionTableWithData()

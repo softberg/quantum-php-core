@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.6.0
+ * @since 2.8.0
  */
 
 namespace Quantum\Libraries\Config;
@@ -38,7 +38,7 @@ class Config implements StorageInterface
      * Instance of Config
      * @var \Quantum\Libraries\Config\Config
      */
-    private static $configInstance = null;
+    private static $instance = null;
 
     /**
      * GetInstance
@@ -46,11 +46,11 @@ class Config implements StorageInterface
      */
     public static function getInstance(): ?Config
     {
-        if (self::$configInstance === null) {
-            self::$configInstance = new self();
+        if (self::$instance === null) {
+            self::$instance = new self();
         }
 
-        return self::$configInstance;
+        return self::$instance;
     }
 
     /**

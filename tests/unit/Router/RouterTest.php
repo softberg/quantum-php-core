@@ -4,14 +4,12 @@ namespace Quantum\Tests\Router;
 
 use Quantum\Exceptions\StopExecutionException;
 use Quantum\Exceptions\RouteException;
-use PHPUnit\Framework\TestCase;
+use Quantum\Tests\AppTestCase;
 use Quantum\Http\Response;
 use Quantum\Router\Router;
 use Quantum\Http\Request;
-use Quantum\Di\Di;
-use Quantum\App;
 
-class RouterTest extends TestCase
+class RouterTest extends AppTestCase
 {
 
     private $request;
@@ -19,18 +17,14 @@ class RouterTest extends TestCase
 
     public function setUp(): void
     {
-        App::loadCoreFunctions(dirname(__DIR__, 3) . DS . 'src' . DS . 'Helpers');
-
-        App::setBaseDir(dirname(__DIR__) . DS . '_root');
-
-        Di::loadDefinitions();
+        parent::setUp();
 
         Response::init();
 
         $this->request = new Request();
 
         $this->router = new Router($this->request, new Response());
-        
+
         $reflectionClass = new \ReflectionClass(Router::class);
 
         $reflectionProperty = $reflectionClass->getProperty('currentRoute');

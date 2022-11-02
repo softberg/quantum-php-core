@@ -7,34 +7,28 @@ namespace Quantum\Services {
 
     class TestingService extends QtService
     {
-
+        
     }
 
 }
 
 namespace Quantum\Tests\Mvc {
 
-    use PHPUnit\Framework\TestCase;
     use Quantum\Exceptions\ServiceException;
     use Quantum\Services\TestingService;
     use Quantum\Factory\ServiceFactory;
-    use Quantum\Di\Di;
-    use Quantum\App;
+    use Quantum\Tests\AppTestCase;
 
     /**
      * @runTestsInSeparateProcesses
      * @preserveGlobalState disabled
      */
-    class QtServiceTest extends TestCase
+    class QtServiceTest extends AppTestCase
     {
 
         public function setUp(): void
         {
-            App::loadCoreFunctions(dirname(__DIR__, 3) . DS . 'src' . DS . 'Helpers');
-
-            App::setBaseDir(dirname(__DIR__) . DS . '_root');
-
-            Di::loadDefinitions();
+            parent::setUp();
         }
 
         /**
@@ -52,4 +46,5 @@ namespace Quantum\Tests\Mvc {
         }
 
     }
+
 }

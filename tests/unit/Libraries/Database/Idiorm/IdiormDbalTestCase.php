@@ -2,27 +2,21 @@
 
 namespace Quantum\Tests\Libraries\Database\Idiorm;
 
-use PHPUnit\Framework\TestCase;
 use Quantum\Libraries\Database\Idiorm\IdiormDbal;
-use Quantum\Di\Di;
-use Quantum\App;
+use Quantum\Tests\AppTestCase;
 
 /**
  * @runTestsInSeparateProcesses
  */
-abstract class IdiormDbalTestCase extends TestCase
+abstract class IdiormDbalTestCase extends AppTestCase
 {
 
     public function setUp(): void
     {
-        App::loadCoreFunctions(dirname(__DIR__, 5) . DS . 'src' . DS . 'Helpers');
-
-        App::setBaseDir(dirname(__DIR__, 3) . DS . '_root');
-
-        Di::loadDefinitions();
+        parent::setUp();
 
         config()->set('debug', true);
-        
+
         IdiormDbal::connect(['driver' => 'sqlite', 'database' => ':memory:']);
 
         $this->_createUserTableWithData();
@@ -36,7 +30,6 @@ abstract class IdiormDbalTestCase extends TestCase
         $this->_createMeetingsTableWithData();
 
         $this->_createTicketsTableWithData();
-
     }
 
     public function tearDown(): void

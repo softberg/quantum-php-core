@@ -2,12 +2,12 @@
 
 namespace Aws\FilesystemAdapter {
 
-    use Quantum\Libraries\Storage\LocalFileSystemAdapter;
     use Quantum\Libraries\Storage\FilesystemAdapterInterface;
+    use Quantum\Libraries\Storage\LocalFileSystemAdapter;
 
     class AwsS3V3Adapter extends LocalFileSystemAdapter implements FilesystemAdapterInterface
     {
-
+        // Class body
     }
 
 }
@@ -18,29 +18,20 @@ namespace Quantum\Tests\Libraries\Storage {
     use Quantum\Libraries\Storage\LocalFileSystemAdapter;
     use Quantum\Libraries\Storage\FileSystem;
     use Aws\FilesystemAdapter\AwsS3V3Adapter;
-    use PHPUnit\Framework\TestCase;
-    use Quantum\Di\Di;
-    use Quantum\App;
+    use Quantum\Tests\AppTestCase;
 
-
-    class FileSystemTest extends TestCase
+    class FileSystemTest extends AppTestCase
     {
 
         private $fs;
-
         private $filename;
-
         private $content = 'Hello world';
 
         public function setUp(): void
         {
-            App::loadCoreFunctions(dirname(__DIR__, 4) . DS . 'src' . DS . 'Helpers');
+            parent::setUp();
 
-            App::setBaseDir(__DIR__);
-
-            Di::loadDefinitions();
-
-            $this->fs = Di::get(FileSystem::class);
+            $this->fs = new FileSystem();
 
             $this->filename = base_dir() . DS . 'test.txt';
         }
@@ -54,11 +45,9 @@ namespace Quantum\Tests\Libraries\Storage {
 
         public function testFileSystemAdapter()
         {
-            $localFs = Di::get(FileSystem::class);
+            $this->assertInstanceOf(FilesystemAdapterInterface::class, $this->fs->getAdapter());
 
-            $this->assertInstanceOf(FilesystemAdapterInterface::class, $localFs->getAdapter());
-
-            $this->assertInstanceOf(LocalFileSystemAdapter::class, $localFs->getAdapter());
+            $this->assertInstanceOf(LocalFileSystemAdapter::class, $this->fs->getAdapter());
 
             $awsFs = new FileSystem(new AwsS3V3Adapter);
 
@@ -236,4 +225,5 @@ namespace Quantum\Tests\Libraries\Storage {
         }
 
     }
+
 }

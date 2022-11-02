@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.6.0
+ * @since 2.8.0
  */
 
 use Quantum\Http\Request;
@@ -17,11 +17,12 @@ use Quantum\Http\Response;
 
 /**
  * Gets the base url
+ * @param bool $withModulePrefix
  * @return string
  */
-function base_url(): string
+function base_url(bool $withModulePrefix = false): string
 {
-    return config()->get('base_url') ?? Request::getProtocol() . '://' . Request::getHost() . (Request::getPort() ? ':' . Request::getPort() : '');
+    return config()->get('base_url') ?? Request::getProtocol() . '://' . Request::getHost() . (Request::getPort() ? ':' . Request::getPort() : '') . ($withModulePrefix && !empty(route_prefix()) ? '/' . route_prefix() : '');
 }
 
 /**

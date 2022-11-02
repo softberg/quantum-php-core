@@ -65,7 +65,7 @@ class CurlTest extends TestCase
         $this->curl->run('https://httpbin.org/get');
 
         $this->assertIsArray($this->curl->getResponseHeaders());
-        
+
         $this->assertEquals('application/json', $this->curl->getResponseHeaders('content-type'));
 
         $this->assertNull($this->curl->getResponseHeaders('custom-header'));

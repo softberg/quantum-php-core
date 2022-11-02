@@ -44,7 +44,11 @@
     },
     "autoload": {
         "psr-4": {
-            "Quantum\\": "src/",
+            "Quantum\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
             "Quantum\\Tests\\": "tests/unit/"
         }
     },

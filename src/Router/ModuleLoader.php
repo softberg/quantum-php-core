@@ -37,10 +37,15 @@ class ModuleLoader
     public static function loadModulesRoutes()
     {
         $fs = Di::get(FileSystem::class);
-        
+
         $modules = require_once base_dir() . DS . 'shared' . DS . 'config' . DS . 'modules.php';
 
-        foreach ($modules['modules'] as $module) {
+        foreach ($modules['modules'] as $module => $options) {
+
+            if (!$options['enabled']) {
+                continue;
+            }
+
             $moduleRoutes = modules_dir() . DS . $module . DS . 'Config' . DS . 'routes.php';
 
             if (!$fs->exists($moduleRoutes)) {
@@ -53,7 +58,7 @@ class ModuleLoader
                 throw RouteException::notClosure();
             }
 
-            $route = new Route($module);
+            $route = new Route([$module => $options]);
 
             $routesClosure($route);
 

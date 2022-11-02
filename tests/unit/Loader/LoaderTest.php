@@ -2,25 +2,19 @@
 
 namespace Quantum\Tests\Loader;
 
-use PHPUnit\Framework\TestCase;
 use Quantum\Libraries\Storage\FileSystem;
+use Quantum\Tests\AppTestCase;
 use Quantum\Loader\Loader;
 use Quantum\Loader\Setup;
-use Quantum\Di\Di;
-use Quantum\App;
 
-class LoaderTest extends TestCase
+class LoaderTest extends AppTestCase
 {
 
     private $loader;
 
     public function setUp(): void
     {
-        App::loadCoreFunctions(dirname(__DIR__, 3) . DS . 'src' . DS . 'Helpers');
-
-        App::setBaseDir(dirname(__DIR__) . DS . '_root');
-
-        Di::loadDefinitions();
+        parent::setUp();
 
         $this->loader = new Loader(new FileSystem());
     }
@@ -30,7 +24,7 @@ class LoaderTest extends TestCase
         $this->loader->setup(new Setup('config', 'config'));
 
         $content = $this->loader->load();
-        
+
         $this->assertEquals(base_dir() . DS . 'shared' . DS . 'config' . DS . 'config.php', $this->loader->getFilePath());
 
         $this->assertIsArray($content);

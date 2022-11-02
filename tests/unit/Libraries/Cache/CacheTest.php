@@ -6,20 +6,14 @@ use Quantum\Libraries\Cache\Adapters\FileAdapter;
 use Quantum\Exceptions\CacheException;
 use Psr\SimpleCache\CacheInterface;
 use Quantum\Libraries\Cache\Cache;
-use PHPUnit\Framework\TestCase;
-use Quantum\Di\Di;
-use Quantum\App;
+use Quantum\Tests\AppTestCase;
 
-class CacheTest extends TestCase
+class CacheTest extends AppTestCase
 {
 
     public function setUp(): void
     {
-        App::loadCoreFunctions(dirname(__DIR__, 4) . DS . 'src' . DS . 'Helpers');
-
-        App::setBaseDir(dirname(__DIR__, 2) . DS . '_root');
-
-        Di::loadDefinitions();
+        parent::setUp();
     }
 
     public function testCacheAdapter()

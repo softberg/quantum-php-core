@@ -2,10 +2,10 @@
 
 namespace Quantum\Controllers {
 
-    use Quantum\Mvc\QtController;
     use Quantum\Factory\ViewFactory;
-    use Quantum\Http\Request;
+    use Quantum\Mvc\QtController;
     use Quantum\Http\Response;
+    use Quantum\Http\Request;
 
     class TestDiController extends QtController
     {
@@ -21,28 +21,23 @@ namespace Quantum\Controllers {
 
 namespace Quantum\Tests\Di {
 
-    use PHPUnit\Framework\TestCase;
     use Quantum\Libraries\Storage\FileSystem;
     use Quantum\Controllers\TestDiController;
     use Quantum\Exceptions\DiException;
     use Quantum\Factory\ViewFactory;
+    use Quantum\Tests\AppTestCase;
+    use Quantum\Loader\Loader;
     use Quantum\Http\Response;
     use Quantum\Http\Request;
-    use Quantum\Loader\Loader;
     use Quantum\Loader\Setup;
     use Quantum\Di\Di;
-    use Quantum\App;
 
-    class DiTest extends TestCase
+    class DiTest extends AppTestCase
     {
 
         public function setUp(): void
         {
-            App::loadCoreFunctions(dirname(__DIR__, 3) . DS . 'src' . DS . 'Helpers');
-
-            App::setBaseDir(__DIR__);
-
-            Di::loadDefinitions();
+            parent::setUp();
         }
 
         public function testAddDependency()

@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.7.0
+ * @since 2.8.0
  */
 
 namespace Quantum\Environment;
@@ -51,7 +51,7 @@ class Environment
      * Instance of Environment
      * @var \Quantum\Environment\Environment
      */
-    private static $envInstance = null;
+    private static $instance = null;
 
     /**
      * GetInstance
@@ -59,11 +59,11 @@ class Environment
      */
     public static function getInstance(): Environment
     {
-        if (self::$envInstance === null) {
-            self::$envInstance = new self();
+        if (self::$instance === null) {
+            self::$instance = new self();
         }
 
-        return self::$envInstance;
+        return self::$instance;
     }
 
     /**

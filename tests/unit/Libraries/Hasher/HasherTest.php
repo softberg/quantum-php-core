@@ -2,8 +2,8 @@
 
 namespace Quantum\Tests\Libraries\Hasher;
 
-use PHPUnit\Framework\TestCase;
 use Quantum\Libraries\Hasher\Hasher;
+use PHPUnit\Framework\TestCase;
 
 class HasherTest extends TestCase
 {
