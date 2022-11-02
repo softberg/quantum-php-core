@@ -1,6 +1,6 @@
 <?php
 
-namespace Libraries\Cache\Adapters;
+namespace Quantum\Tests\Libraries\Cache\Adapters;
 
 use Quantum\Libraries\Cache\Adapters\MemcachedAdapter;
 use Quantum\Tests\AppTestCase;

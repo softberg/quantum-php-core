@@ -1,11 +1,11 @@
 <?php
 
-namespace Libraries\Cache\Adapters;
+namespace Quantum\Tests\Libraries\Cache\Adapters;
 
 use Quantum\Libraries\Cache\Adapters\FileAdapter;
 use Quantum\Tests\AppTestCase;
 
-class FileCacheTest extends AppTestCase
+class FileAdapterTest extends AppTestCase
 {
 
     private $fileCache;
