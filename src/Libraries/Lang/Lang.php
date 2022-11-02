@@ -61,7 +61,7 @@ class Lang
      * GetInstance
      * @return \Quantum\Libraries\Lang\Lang
      */
-    public static function getInstance(int $langSegmentIndex = 1): ?Lang
+    public static function getInstance(int $langSegmentIndex = 1): Lang
     {
         if (self::$instance === null) {
             self::$instance = new self();
