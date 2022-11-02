@@ -13,6 +13,9 @@
     <a href="https://app.travis-ci.com/github/softberg/quantum-php-core">
         <img src="https://app.travis-ci.com/softberg/quantum-php-core.svg?branch=master"/>
     </a>
+    <a href="https://codecov.io/gh/softberg/quantum-php-core" >
+        <img src="https://codecov.io/gh/softberg/quantum-php-core/branch/master/graph/badge.svg?token=SP8SDH2YAK"/>
+    </a>
     <a href="https://scrutinizer-ci.com/g/softberg/quantum-php-core">
         <img src="https://shields.cdn.bka.li/scrutinizer/quality/g/softberg/quantum-php-core"/>
     </a>
