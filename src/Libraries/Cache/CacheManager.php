@@ -14,8 +14,12 @@
 
 namespace Quantum\Libraries\Cache;
 
+use Quantum\Exceptions\ConfigException;
 use Quantum\Exceptions\CacheException;
+use Quantum\Exceptions\AppException;
+use Quantum\Exceptions\DiException;
 use Quantum\Loader\Setup;
+use ReflectionException;
 
 /**
  * Class CacheManager
@@ -37,9 +41,12 @@ class CacheManager
     /**
      * Get Handler
      * @return Cache
-     * @throws \Quantum\Exceptions\CacheException
+     * @throws AppException
+     * @throws ConfigException
+     * @throws DiException
+     * @throws ReflectionException
      */
-    public static function getHandler()
+    public static function getHandler(): Cache
     {
         if (!config()->has('cache')) {
             config()->import(new Setup('Config', 'cache'));
