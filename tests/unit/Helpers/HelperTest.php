@@ -38,17 +38,7 @@ class HelperTest extends AppTestCase
 
         $this->router = new Router($this->request, $this->response);
 
-        $cryptor = Mockery::mock('Quantum\Libraries\Encryption\Cryptor');
-
-        $cryptor->shouldReceive('encrypt')->andReturnUsing(function ($arg) {
-            return base64_encode($arg);
-        });
-
-        $cryptor->shouldReceive('decrypt')->andReturnUsing(function ($arg) {
-            return base64_decode($arg);
-        });
-
-        $this->session = new Session($this->sessionData, $cryptor);
+        $this->session = Session::getInstance($this->sessionData);
     }
 
     public function testRandomNumber()
@@ -87,7 +77,7 @@ class HelperTest extends AppTestCase
         try {
             redirect('/home');
         } catch (StopExecutionException $e) {
-            
+
         }
 
         $this->assertTrue($this->response->hasHeader('Location'));
@@ -102,7 +92,7 @@ class HelperTest extends AppTestCase
         try {
             redirectWith('/signup', $this->request->all());
         } catch (StopExecutionException $e) {
-            
+
         }
 
         $this->assertTrue($this->response->hasHeader('Location'));
@@ -145,9 +135,9 @@ class HelperTest extends AppTestCase
         ]);
 
         $expectedOutput = '<link rel="stylesheet" type="text/css" href="' . asset()->url('css/style.css') . '">' . PHP_EOL .
-                '<link rel="stylesheet" type="text/css" href="' . asset()->url('css/responsive.css') . '">' . PHP_EOL .
-                '<script src="' . asset()->url('js/bootstrap.js') . '"></script>' . PHP_EOL .
-                '<script src="' . asset()->url('js/bootstrap-datepicker.min.js') . '"></script>' . PHP_EOL;
+            '<link rel="stylesheet" type="text/css" href="' . asset()->url('css/responsive.css') . '">' . PHP_EOL .
+            '<script src="' . asset()->url('js/bootstrap.js') . '"></script>' . PHP_EOL .
+            '<script src="' . asset()->url('js/bootstrap-datepicker.min.js') . '"></script>' . PHP_EOL;
 
         ob_start();
 
@@ -269,6 +259,8 @@ class HelperTest extends AppTestCase
         $viewFactory->render('index');
 
         $this->assertEquals('<p>Hello World, this is rendered view</p>', view());
+
+        $viewFactory->setLayout(null);
     }
 
     public function testPartial()
