@@ -9,12 +9,12 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.0.0
+ * @since 2.8.0
  */
 
 namespace Quantum\Libraries\Session;
 
-use Quantum\Libraries\Encryption\Cryptor;
+use Quantum\Exceptions\CryptorException;
 
 /**
  * Class Session
@@ -27,80 +27,82 @@ class Session implements SessionStorageInterface
      * Session storage
      * @var array $storage
      */
-    private $storage = [];
+    private static $storage = [];
 
     /**
-     * Cryptor instance
-     * @var \Quantum\Libraries\Encryption\Cryptor
+     * Session instance
+     * @var Session|null
      */
-    private $cryptor;
+    private static $instance = null;
 
     /**
      * Session constructor.
-     * @param array $storage
-     * @param \Quantum\Libraries\Encryption\Cryptor $cryptor
      */
-    public function __construct(array &$storage, Cryptor $cryptor)
+    private function __construct()
     {
-        $this->storage = &$storage;
-        $this->cryptor = $cryptor;
+        // Preventing to create new object through constructor
     }
 
     /**
-     * Gets all data
-     * @return array
-     * @throws \Quantum\Exceptions\CryptorException
+     * Gets the session instance
+     * @param array $storage
+     * @return Session|null
+     */
+    public static function getInstance(array &$storage): ?Session
+    {
+        self::$storage = &$storage;
+
+        if (self::$instance === null) {
+            self::$instance = new self();
+        }
+
+        return self::$instance;
+    }
+
+    /**
+     * @inheritDoc
+     * @throws CryptorException
      */
     public function all(): array
     {
         $allSessions = [];
 
-        foreach ($this->storage as $key => $value) {
-            $allSessions[$key] = $this->decode($value);
+        foreach (self::$storage as $key => $value) {
+            $allSessions[$key] = crypto_decode($value);
         }
 
         return $allSessions;
     }
 
     /**
-     * Check if storage contains a data by given key
-     * @param string $key
-     * @return bool
+     * @inheritDoc
      */
     public function has(string $key): bool
     {
-        return isset($this->storage[$key]) && !empty($this->storage[$key]);
+        return isset(self::$storage[$key]) && !empty(self::$storage[$key]);
     }
 
     /**
-     * Gets value by given key
-     * @param string $key
-     * @return mixed|null
-     * @throws \Quantum\Exceptions\CryptorException
+     * @inheritDoc
+     * @throws CryptorException
      */
     public function get(string $key)
     {
-        return $this->has($key) ? $this->decode($this->storage[$key]) : null;
+        return $this->has($key) ? crypto_decode(self::$storage[$key]) : null;
     }
 
     /**
-     * Sets value by given key
-     * @param string $key
-     * @param mixed $value
-     * @return $this
-     * @throws \Quantum\Exceptions\CryptorException
+     * @inheritDoc
+     * @throws CryptorException
      */
-    public function set(string $key, $value): self
+    public function set(string $key, $value)
     {
-        $this->storage[$key] = $this->encode($value);
-        return $this;
+        self::$storage[$key] = crypto_encode($value);
     }
 
     /**
-     * Gets flash value by given key
-     * @param string $key
-     * @return mixed|string|null
-     * @throws \Quantum\Exceptions\CryptorException
+     * @inheritDoc
+     * @throws CryptorException
      */
     public function getFlash(string $key)
     {
@@ -115,78 +117,47 @@ class Session implements SessionStorageInterface
     }
 
     /**
-     * Sets flash value by given key
-     * @param string $key
-     * @param mixed $value
-     * @return $this
-     * @throws \Quantum\Exceptions\CryptorException
+     * @inheritDoc
+     * @throws CryptorException
      */
-    public function setFlash(string $key, $value): self
+    public function setFlash(string $key, $value)
     {
         $this->set($key, $value);
         return $this;
     }
 
     /**
-     * Deletes data from storage by given key
-     * @param string $key
+     * @inheritDoc
      */
     public function delete(string $key)
     {
         if ($this->has($key)) {
-            unset($this->storage[$key]);
+            unset(self::$storage[$key]);
         }
     }
 
     /**
-     * Destroys whole storage data
+     * @inheritDoc
      */
     public function flush()
     {
-        $this->storage = [];
+        self::$storage = [];
         session_destroy();
     }
 
     /**
-     * Gets the session Id
-     * @return string|null
+     * @inheritDoc
      */
-    public function getSessionId(): ?string
+    public function getId(): ?string
     {
         return session_id() ?? null;
     }
 
     /**
-     * Encodes the session data
-     * @param mixed $value
-     * @return string
-     * @throws \Quantum\Exceptions\CryptorException
+     * @inheritDoc
      */
-    private function encode($value): string
+    public function regenerateId(): bool
     {
-        $value = (is_array($value) || is_object($value)) ? serialize($value) : $value;
-        return $this->cryptor->encrypt($value);
+        return session_regenerate_id(true);
     }
-
-    /**
-     * Decodes the session data
-     * @param string $value
-     * @return mixed|string
-     * @throws \Quantum\Exceptions\CryptorException
-     */
-    private function decode(string $value)
-    {
-        if (empty($value)) {
-            return $value;
-        }
-
-        $decrypted = $this->cryptor->decrypt($value);
-
-        if ($data = @unserialize($decrypted)) {
-            $decrypted = $data;
-        }
-
-        return $decrypted;
-    }
-
 }

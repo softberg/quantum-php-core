@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.0.0
+ * @since 2.8.0
  */
 
 namespace Quantum\Libraries\Session;
@@ -26,6 +26,7 @@ interface SessionStorageInterface extends StorageInterface
     /**
      * Gets flash value by given key
      * @param string $key
+     * @return mixed|string|null
      */
     public function getFlash(string $key);
 
@@ -37,8 +38,14 @@ interface SessionStorageInterface extends StorageInterface
     public function setFlash(string $key, $value);
 
     /**
-     * Gets the session Id
+     * Gets the session ID
      * @return string|null
      */
-    public function getSessionId(): ?string;
+    public function getId(): ?string;
+
+    /**
+     * Update the current session id with a newly generated one
+     * @return bool
+     */
+    public function regenerateId(): bool;
 }

@@ -21,7 +21,8 @@ namespace Quantum\Exceptions;
 class SessionException extends \Exception
 {
     /**
-     * @return \Quantum\Exceptions\SessionException
+     * @return SessionException
+     * @throws LangException
      */
     public static function sessionNotStarted(): SessionException
     {
@@ -29,7 +30,8 @@ class SessionException extends \Exception
     }
 
     /**
-     * @return \Quantum\Exceptions\SessionException
+     * @return SessionException
+     * @throws LangException
      */
     public static function sessionNotDestroyed(): SessionException
     {
@@ -37,7 +39,8 @@ class SessionException extends \Exception
     }
 
     /**
-     * @return \Quantum\Exceptions\SessionException
+     * @return SessionException
+     * @throws LangException
      */
     public static function sessionTableNotProvided(): SessionException
     {
