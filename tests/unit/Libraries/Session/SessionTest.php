@@ -3,95 +3,109 @@
 namespace Quantum\Tests\Libraries\Session;
 
 use Quantum\Libraries\Session\Session;
-use PHPUnit\Framework\TestCase;
-use Mockery;
+use Quantum\Loader\Setup;
+use Quantum\Tests\AppTestCase;
 
-class SessionTest extends TestCase
+class SessionTest extends AppTestCase
 {
 
     private $session;
-    
-    private $cryptor;
 
-    private $sessionData = [
-        'auth' => 'b2s=', // ok
-        'test' => 'Z29vZA==', // good
-        'store' => 'cGVyc2lzdA==' // persist
-    ];
+    private $srotage = [];
 
     public function setUp(): void
     {
-        $this->cryptor = Mockery::mock('Quantum\Libraries\Encryption\Cryptor');
+        parent::setUp();
 
-        $this->cryptor->shouldReceive('encrypt')->andReturnUsing(function ($arg) {
-            return base64_encode($arg);
-        });
+        putenv('APP_KEY=' . uniqid());
 
-        $this->cryptor->shouldReceive('decrypt')->andReturnUsing(function ($arg) {
-            return base64_decode($arg);
-        });
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_start();
+        }
 
-        $this->session = new Session($this->sessionData, $this->cryptor);
+        $this->session = Session::getInstance($this->srotage);
+    }
+
+    public function tearDown(): void
+    {
+        $this->session->flush();
     }
 
     public function testSessionConstructor()
     {
-        $this->assertInstanceOf('Quantum\Libraries\Session\Session', $this->session);
-    }
-
-    public function testSessionGet()
-    {
-        $this->assertEquals('ok', $this->session->get('auth'));
-
-        $this->assertNull($this->session->get('not-exists'));
+        $this->assertInstanceOf(Session::class, $this->session);
     }
 
     public function testSessionAll()
     {
-        $this->assertEquals(array_map('base64_decode', $this->sessionData), $this->session->all());
+        $this->assertEmpty($this->session->all());
+
+        $this->session->set('test', 'Test data');
+
+        $this->session->set('user', ['username' => 'test@unit.com']);
+
+        $this->assertNotEmpty($this->session->all());
+
+        $this->assertIsArray($this->session->all());
+
+        $this->assertArrayHasKey('test', $this->session->all());
     }
 
-    public function testSessionHas()
+    public function testSessionGetSetHasDelete()
     {
-        $this->assertFalse($this->session->has('not-exists'));
+        $this->assertNull($this->session->get('auth'));
 
-        $this->assertTrue($this->session->has('test'));
+        $this->assertFalse($this->session->has('auth'));
+
+        $this->session->set('auth', 'Authenticated');
+
+        $this->assertTrue($this->session->has('auth'));
+
+        $this->assertEquals('Authenticated', $this->session->get('auth'));
+
+        $this->session->delete('auth');
+
+        $this->assertFalse($this->session->has('auth'));
+
+        $this->assertNull($this->session->get('auth'));
     }
 
-    public function testSessionSet()
+    public function testGetSetFlash()
     {
-        $this->session->set('new', 'New Value');
+        $this->session->setFlash('message', 'Flash message');
 
-        $this->assertTrue($this->session->has('new'));
+        $this->assertEquals('Flash message', $this->session->getFlash('message'));
 
-        $this->assertEquals('New Value', $this->session->get('new'));
-    }
-
-    public function testFlash()
-    {
-        $this->session->setFlash('new', 'New Value');
-
-        $this->assertEquals('New Value', $this->session->getFlash('new'));
-
-        $this->assertNull($this->session->getFlash('new'));
-    }
-
-    public function testSessionDelete()
-    {
-        $this->assertTrue($this->session->has('test'));
-
-        $this->session->delete('test');
-
-        $this->assertFalse($this->session->has('test'));
+        $this->assertNull($this->session->getFlash('message'));
     }
 
     public function testSessionFlush()
     {
-        $this->assertEquals(array_map('base64_decode', $this->sessionData), $this->session->all());
+        $this->session->set('test', 'Test data');
+
+        $this->assertNotEmpty($this->session->all());
 
         $this->session->flush();
 
         $this->assertEmpty($this->session->all());
+
+        session_start();
+    }
+
+    public function testGetSessionId()
+    {
+        $this->assertEquals(session_id(), $this->session->getId());
+    }
+
+    public function testRegenerateSessionId()
+    {
+        $sessionId = $this->session->getId();
+
+        $this->assertEquals(session_id(), $sessionId);
+
+        $this->session->regenerateId();
+
+        $this->assertNotEquals(session_id(), $sessionId);
     }
 
 }
