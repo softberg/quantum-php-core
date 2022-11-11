@@ -5,36 +5,26 @@ namespace Quantum\Tests\Libraries\Csrf;
 use Quantum\Libraries\Session\Session;
 use Quantum\Exceptions\CsrfException;
 use Quantum\Libraries\Csrf\Csrf;
-use PHPUnit\Framework\TestCase;
+use Quantum\Tests\AppTestCase;
 use Mockery;
 
-class CsrfTest extends TestCase
+class CsrfTest extends AppTestCase
 {
 
     private $session;
     private $request;
-    private $cryptor;
     private $storage = [];
     private $key = 'appkey';
 
     public function setUp(): void
     {
+        parent::setUp();
 
         $this->request = Mockery::mock('Quantum\Http\Request');
 
         $this->request->shouldReceive('getMethod')->andReturn('POST');
 
-        $this->cryptor = Mockery::mock('Quantum\Libraries\Encryption\Cryptor');
-
-        $this->cryptor->shouldReceive('encrypt')->andReturnUsing(function ($arg) {
-            return base64_encode($arg);
-        });
-
-        $this->cryptor->shouldReceive('decrypt')->andReturnUsing(function ($arg) {
-            return base64_decode($arg);
-        });
-
-        $this->session = new Session($this->storage, $this->cryptor);
+        $this->session = Session::getInstance($this->storage);
 
         Csrf::deleteToken($this->session);
     }

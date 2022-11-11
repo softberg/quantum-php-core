@@ -21,17 +21,7 @@ class RequestTest extends AppTestCase
     {
         parent::setUp();
 
-        $cryptor = Mockery::mock('Quantum\Libraries\Encryption\Cryptor');
-
-        $cryptor->shouldReceive('encrypt')->andReturnUsing(function ($arg) {
-            return base64_encode($arg);
-        });
-
-        $cryptor->shouldReceive('decrypt')->andReturnUsing(function ($arg) {
-            return base64_decode($arg);
-        });
-
-        $this->session = new Session($this->sessionData, $cryptor);
+        $this->session = Session::getInstance($this->sessionData);
 
         $server = Mockery::mock('Quantum\Environment\Server');
 
