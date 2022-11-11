@@ -9,12 +9,12 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.0.0
+ * @since 2.8.0
  */
 
 namespace Quantum\Libraries\Cookie;
 
-use Quantum\Libraries\Encryption\Cryptor;
+use Quantum\Exceptions\CryptorException;
 
 /**
  * Class Cookie
@@ -27,137 +27,100 @@ class Cookie implements CookieStorageInterface
      * Cookie storage
      * @var array $storage
      */
-    private $storage = [];
+    private static $storage = [];
 
     /**
-     * Cryptor instance
-     * @var \Quantum\Libraries\Encryption\Cryptor
+     * Cookie instance
+     * @var Cookie|null
      */
-    private $cryptor;
+    private static $instance = null;
 
     /**
      * Cookie constructor.
-     * @param array $storage
-     * @param \Quantum\Libraries\Encryption\Cryptor $cryptor
      */
-    public function __construct(array &$storage, Cryptor $cryptor)
+    private function __construct()
     {
-        $this->storage = &$storage;
-        $this->cryptor = $cryptor;
+        // Preventing to create new object through constructor
     }
 
     /**
-     * Gets all data
-     * @return array
-     * @throws \Quantum\Exceptions\CryptorException
+     *  Gets the cookie instance
+     * @param array $storage
+     * @return Cookie
      */
-    public function all()
+    public static function getInstance(array &$storage): Cookie
+    {
+        self::$storage = &$storage;
+
+        if (self::$instance === null) {
+            self::$instance = new self();
+        }
+
+        return self::$instance;
+    }
+
+    /**
+     * @inheritDoc
+     * @throws CryptorException
+     */
+    public function all(): array
     {
         $allCookies = [];
 
-        foreach ($this->storage as $key => $value) {
-            $allCookies[$key] = $this->decode($value);
+        foreach (self::$storage as $key => $value) {
+            $allCookies[$key] = crypto_decode($value);
         }
 
         return $allCookies;
     }
 
     /**
-     * Check if storage contains a data by given key
-     * @param string $key
-     * @return bool
+     * @inheritDoc
      */
     public function has(string $key): bool
     {
-        return isset($this->storage[$key]) && !empty($this->storage[$key]);
+        return isset(self::$storage[$key]) && !empty(self::$storage[$key]);
     }
 
     /**
-     * Gets data by given key
-     * @param string $key
-     * @return string|null
-     * @throws \Quantum\Exceptions\CryptorException
+     * @inheritDoc
+     * @throws CryptorException
      */
-    public function get(string $key): ?string
+    public function get(string $key)
     {
-        return $this->has($key) ? $this->decode($this->storage[$key]) : null;
+        return $this->has($key) ? crypto_decode(self::$storage[$key]) : null;
     }
 
     /**
-     * Sets data by given key
-     * @param string $key
-     * @param string $value
-     * @param int $time
-     * @param string $path
-     * @param string $domain
-     * @param bool $secure
-     * @param bool $httponly
-     * @return \Quantum\Contracts\StorageInterface|\Quantum\Libraries\Cookie\CookieStorageInterface|void
-     * @throws \Quantum\Exceptions\CryptorException
+     * @inheritDoc
+     * @throws CryptorException
      */
     public function set(string $key, $value = '', int $time = 0, string $path = '/', string $domain = '', bool $secure = false, bool $httponly = false)
     {
-        $this->storage[$key] = $this->encode($value);
-        setcookie($key, $this->encode($value), $time ? time() + $time : $time, $path, $domain, $secure, $httponly);
+        self::$storage[$key] = crypto_encode($value);
+        setcookie($key, crypto_encode($value), $time ? time() + $time : $time, $path, $domain, $secure, $httponly);
     }
 
     /**
-     * Deletes data by given key
-     * @param string $key
-     * @param string $path
-     * @return void
+     * @inheritDoc
      */
     public function delete(string $key, string $path = '/')
     {
         if ($this->has($key)) {
-            unset($this->storage[$key]);
+            unset(self::$storage[$key]);
             setcookie($key, '', time() - 3600, $path);
         }
     }
 
     /**
-     * Deletes whole cookie data
+     * @inheritDoc
      */
     public function flush()
     {
-        if (count($this->storage)) {
-            foreach ($this->storage as $key => $value) {
+        if (count(self::$storage)) {
+            foreach (self::$storage as $key => $value) {
                 $this->delete($key, '/');
             }
         }
     }
-
-    /**
-     * Encodes the cookie data
-     * @param mixed $value
-     * @return string
-     * @throws \Quantum\Exceptions\CryptorException
-     */
-    private function encode($value): string
-    {
-        $value = (is_array($value) || is_object($value)) ? serialize($value) : $value;
-        return $this->cryptor->encrypt($value);
-    }
-
-    /**
-     * Decodes the cookie data
-     * @param string $value
-     * @return mixed
-     * @throws \Quantum\Exceptions\CryptorException
-     */
-    private function decode(string $value)
-    {
-        if (empty($value)) {
-            return $value;
-        }
-
-        $decrypted = $this->cryptor->decrypt($value);
-
-        if ($data = @unserialize($decrypted)) {
-            $decrypted = $data;
-        }
-
-        return $decrypted;
-    }
-
 }
