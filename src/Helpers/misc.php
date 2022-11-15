@@ -223,7 +223,7 @@ function transform(array $data, TransformerInterface $transformer): array
 function crypto_encode($data): string
 {
     $data = (is_array($data) || is_object($data)) ? serialize($data) : $data;
-    return (new Cryptor)->encrypt($data);
+    return Cryptor::getInstance()->encrypt($data);
 }
 
 /**
@@ -238,7 +238,7 @@ function crypto_decode(string $value)
         return $value;
     }
 
-    $decrypted = (new Cryptor)->decrypt($value);
+    $decrypted = Cryptor::getInstance()->decrypt($value);
 
     if ($data = @unserialize($decrypted)) {
         $decrypted = $data;
