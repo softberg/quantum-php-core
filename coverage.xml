@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1667399297">
-  <project timestamp="1667399297">
+<coverage generated="1668529256">
+  <project timestamp="1668529256">
     <file name="D:\projects\forks\quantum-php-core\src\App.php">
       <class name="Quantum\App" namespace="global">
         <metrics complexity="5" methods="4" coveredmethods="3" conditionals="0" coveredconditionals="0" statements="15" coveredstatements="4" elements="19" coveredelements="7"/>
@@ -18,13 +18,13 @@
       <line num="73" type="stmt" count="0"/>
       <line num="75" type="stmt" count="0"/>
       <line num="77" type="stmt" count="0"/>
-      <line num="84" type="method" name="loadCoreFunctions" visibility="public" complexity="2" crap="2" count="373"/>
-      <line num="86" type="stmt" count="373"/>
-      <line num="87" type="stmt" count="373"/>
-      <line num="95" type="method" name="setBaseDir" visibility="public" complexity="1" crap="1" count="373"/>
-      <line num="97" type="stmt" count="373"/>
-      <line num="104" type="method" name="getBaseDir" visibility="public" complexity="1" crap="1" count="373"/>
-      <line num="106" type="stmt" count="373"/>
+      <line num="84" type="method" name="loadCoreFunctions" visibility="public" complexity="2" crap="2" count="397"/>
+      <line num="86" type="stmt" count="397"/>
+      <line num="87" type="stmt" count="397"/>
+      <line num="95" type="method" name="setBaseDir" visibility="public" complexity="1" crap="1" count="397"/>
+      <line num="97" type="stmt" count="397"/>
+      <line num="104" type="method" name="getBaseDir" visibility="public" complexity="1" crap="1" count="397"/>
+      <line num="106" type="stmt" count="397"/>
       <metrics loc="111" ncloc="62" classes="1" methods="4" coveredmethods="3" conditionals="0" coveredconditionals="0" statements="16" coveredstatements="5" elements="20" coveredelements="8"/>
     </file>
     <file name="D:\projects\forks\quantum-php-core\src\Bootstrap.php">
@@ -312,7 +312,7 @@
       <metrics loc="32" ncloc="11" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
     </file>
     <file name="D:\projects\forks\quantum-php-core\src\Contracts\StorageInterface.php">
-      <metrics loc="59" ncloc="21" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
+      <metrics loc="61" ncloc="21" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
     </file>
     <file name="D:\projects\forks\quantum-php-core\src\Debugger\Debugger.php">
       <class name="Quantum\Debugger\Debugger" namespace="global">
@@ -367,10 +367,10 @@
       <class name="Quantum\Di\Di" namespace="global">
         <metrics complexity="25" methods="8" coveredmethods="5" conditionals="0" coveredconditionals="0" statements="47" coveredstatements="40" elements="55" coveredelements="45"/>
       </class>
-      <line num="45" type="method" name="loadDefinitions" visibility="public" complexity="3" crap="3.14" count="373"/>
-      <line num="47" type="stmt" count="373"/>
-      <line num="48" type="stmt" count="54"/>
-      <line num="50" type="stmt" count="54"/>
+      <line num="45" type="method" name="loadDefinitions" visibility="public" complexity="3" crap="3.14" count="397"/>
+      <line num="47" type="stmt" count="397"/>
+      <line num="48" type="stmt" count="48"/>
+      <line num="50" type="stmt" count="48"/>
       <line num="51" type="stmt" count="0"/>
       <line num="64" type="method" name="autowire" visibility="public" complexity="6" crap="7.10" count="6"/>
       <line num="66" type="stmt" count="6"/>
@@ -392,36 +392,36 @@
       <line num="99" type="method" name="add" visibility="public" complexity="3" crap="3" count="1"/>
       <line num="101" type="stmt" count="1"/>
       <line num="102" type="stmt" count="1"/>
-      <line num="113" type="method" name="get" visibility="public" complexity="3" crap="3" count="373"/>
-      <line num="115" type="stmt" count="373"/>
+      <line num="113" type="method" name="get" visibility="public" complexity="3" crap="3" count="397"/>
+      <line num="115" type="stmt" count="397"/>
       <line num="116" type="stmt" count="1"/>
-      <line num="119" type="stmt" count="373"/>
-      <line num="120" type="stmt" count="55"/>
-      <line num="123" type="stmt" count="373"/>
-      <line num="131" type="method" name="instantiate" visibility="protected" complexity="5" crap="5" count="55"/>
-      <line num="133" type="stmt" count="55"/>
-      <line num="135" type="stmt" count="55"/>
-      <line num="137" type="stmt" count="55"/>
-      <line num="139" type="stmt" count="55"/>
-      <line num="140" type="stmt" count="54"/>
-      <line num="141" type="stmt" count="54"/>
-      <line num="143" type="stmt" count="54"/>
-      <line num="144" type="stmt" count="54"/>
-      <line num="147" type="stmt" count="54"/>
-      <line num="151" type="stmt" count="55"/>
-      <line num="159" type="method" name="instantiable" visibility="protected" complexity="2" crap="2" count="55"/>
-      <line num="161" type="stmt" count="55"/>
-      <line num="162" type="stmt" count="55"/>
-      <line num="164" type="stmt" count="55"/>
-      <line num="167" type="stmt" count="54"/>
-      <line num="174" type="method" name="userDependencies" visibility="private" complexity="2" crap="2.03" count="54"/>
-      <line num="176" type="stmt" count="54"/>
-      <line num="178" type="stmt" count="54"/>
-      <line num="180" type="stmt" count="54"/>
-      <line num="181" type="stmt" count="54"/>
+      <line num="119" type="stmt" count="397"/>
+      <line num="120" type="stmt" count="49"/>
+      <line num="123" type="stmt" count="397"/>
+      <line num="131" type="method" name="instantiate" visibility="protected" complexity="5" crap="5" count="49"/>
+      <line num="133" type="stmt" count="49"/>
+      <line num="135" type="stmt" count="49"/>
+      <line num="137" type="stmt" count="49"/>
+      <line num="139" type="stmt" count="49"/>
+      <line num="140" type="stmt" count="48"/>
+      <line num="141" type="stmt" count="48"/>
+      <line num="143" type="stmt" count="48"/>
+      <line num="144" type="stmt" count="48"/>
+      <line num="147" type="stmt" count="48"/>
+      <line num="151" type="stmt" count="49"/>
+      <line num="159" type="method" name="instantiable" visibility="protected" complexity="2" crap="2" count="49"/>
+      <line num="161" type="stmt" count="49"/>
+      <line num="162" type="stmt" count="49"/>
+      <line num="164" type="stmt" count="49"/>
+      <line num="167" type="stmt" count="48"/>
+      <line num="174" type="method" name="userDependencies" visibility="private" complexity="2" crap="2.03" count="48"/>
+      <line num="176" type="stmt" count="48"/>
+      <line num="178" type="stmt" count="48"/>
+      <line num="180" type="stmt" count="48"/>
+      <line num="181" type="stmt" count="48"/>
       <line num="184" type="stmt" count="0"/>
-      <line num="191" type="method" name="coreDependencies" visibility="private" complexity="1" crap="1" count="54"/>
-      <line num="194" type="stmt" count="54"/>
+      <line num="191" type="method" name="coreDependencies" visibility="private" complexity="1" crap="1" count="48"/>
+      <line num="194" type="stmt" count="48"/>
       <metrics loc="204" ncloc="141" classes="1" methods="8" coveredmethods="5" conditionals="0" coveredconditionals="0" statements="47" coveredstatements="40" elements="55" coveredelements="45"/>
     </file>
     <file name="D:\projects\forks\quantum-php-core\src\Environment\Environment.php">
@@ -545,9 +545,9 @@
       <class name="Quantum\Exceptions\CacheException" namespace="global">
         <metrics complexity="1" methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="1" coveredstatements="0" elements="2" coveredelements="0"/>
       </class>
-      <line num="26" type="method" name="cantConnect" visibility="public" complexity="1" crap="2" count="0"/>
-      <line num="28" type="stmt" count="0"/>
-      <metrics loc="31" ncloc="13" classes="1" methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="1" coveredstatements="0" elements="2" coveredelements="0"/>
+      <line num="27" type="method" name="cantConnect" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="29" type="stmt" count="0"/>
+      <metrics loc="32" ncloc="13" classes="1" methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="1" coveredstatements="0" elements="2" coveredelements="0"/>
     </file>
     <file name="D:\projects\forks\quantum-php-core\src\Exceptions\ConfigException.php">
       <class name="Quantum\Exceptions\ConfigException" namespace="global">
@@ -805,13 +805,13 @@
       <class name="Quantum\Exceptions\SessionException" namespace="global">
         <metrics complexity="3" methods="3" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="3" coveredstatements="0" elements="6" coveredelements="0"/>
       </class>
-      <line num="26" type="method" name="sessionNotStarted" visibility="public" complexity="1" crap="2" count="0"/>
-      <line num="28" type="stmt" count="0"/>
-      <line num="34" type="method" name="sessionNotDestroyed" visibility="public" complexity="1" crap="2" count="0"/>
-      <line num="36" type="stmt" count="0"/>
-      <line num="42" type="method" name="sessionTableNotProvided" visibility="public" complexity="1" crap="2" count="0"/>
-      <line num="44" type="stmt" count="0"/>
-      <metrics loc="47" ncloc="23" classes="1" methods="3" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="3" coveredstatements="0" elements="6" coveredelements="0"/>
+      <line num="27" type="method" name="sessionNotStarted" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="29" type="stmt" count="0"/>
+      <line num="36" type="method" name="sessionNotDestroyed" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="38" type="stmt" count="0"/>
+      <line num="45" type="method" name="sessionTableNotProvided" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="47" type="stmt" count="0"/>
+      <metrics loc="50" ncloc="23" classes="1" methods="3" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="3" coveredstatements="0" elements="6" coveredelements="0"/>
     </file>
     <file name="D:\projects\forks\quantum-php-core\src\Exceptions\StopExecutionException.php">
       <class name="Quantum\Exceptions\StopExecutionException" namespace="global">
@@ -924,15 +924,15 @@
       <metrics loc="58" ncloc="28" classes="1" methods="2" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="4" coveredstatements="4" elements="6" coveredelements="6"/>
     </file>
     <file name="D:\projects\forks\quantum-php-core\src\Helpers\config.php">
-      <line num="25" type="stmt" count="373"/>
+      <line num="25" type="stmt" count="397"/>
       <line num="37" type="stmt" count="28"/>
       <metrics loc="40" ncloc="19" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="2" coveredstatements="2" elements="2" coveredelements="2"/>
     </file>
     <file name="D:\projects\forks\quantum-php-core\src\Helpers\dir.php">
-      <line num="23" type="stmt" count="373"/>
+      <line num="23" type="stmt" count="397"/>
       <line num="32" type="stmt" count="0"/>
       <line num="41" type="stmt" count="0"/>
-      <line num="51" type="stmt" count="373"/>
+      <line num="51" type="stmt" count="397"/>
       <line num="60" type="stmt" count="0"/>
       <line num="69" type="stmt" count="0"/>
       <line num="78" type="stmt" count="0"/>
@@ -940,75 +940,83 @@
       <metrics loc="92" ncloc="48" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="8" coveredstatements="2" elements="8" coveredelements="2"/>
     </file>
     <file name="D:\projects\forks\quantum-php-core\src\Helpers\instance.php">
-      <line num="34" type="stmt" count="16"/>
-      <line num="43" type="stmt" count="9"/>
-      <line num="56" type="stmt" count="0"/>
-      <line num="67" type="stmt" count="0"/>
-      <line num="76" type="stmt" count="2"/>
-      <line num="85" type="stmt" count="5"/>
-      <line num="94" type="stmt" count="0"/>
-      <metrics loc="96" ncloc="49" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="7" coveredstatements="4" elements="7" coveredelements="4"/>
+      <line num="39" type="stmt" count="16"/>
+      <line num="48" type="stmt" count="9"/>
+      <line num="61" type="stmt" count="0"/>
+      <line num="72" type="stmt" count="0"/>
+      <line num="81" type="stmt" count="2"/>
+      <line num="90" type="stmt" count="5"/>
+      <line num="103" type="stmt" count="0"/>
+      <metrics loc="105" ncloc="51" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="7" coveredstatements="4" elements="7" coveredelements="4"/>
     </file>
     <file name="D:\projects\forks\quantum-php-core\src\Helpers\lang.php">
-      <line num="24" type="stmt" count="1"/>
-      <line num="36" type="stmt" count="63"/>
-      <line num="47" type="stmt" count="1"/>
-      <metrics loc="52" ncloc="26" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="3" coveredstatements="3" elements="3" coveredelements="3"/>
+      <line num="25" type="stmt" count="1"/>
+      <line num="37" type="stmt" count="63"/>
+      <line num="49" type="stmt" count="1"/>
+      <metrics loc="54" ncloc="25" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="3" coveredstatements="3" elements="3" coveredelements="3"/>
     </file>
     <file name="D:\projects\forks\quantum-php-core\src\Helpers\misc.php">
-      <line num="32" type="stmt" count="1"/>
-      <line num="34" type="stmt" count="1"/>
-      <line num="35" type="stmt" count="0"/>
-      <line num="38" type="stmt" count="1"/>
-      <line num="49" type="stmt" count="7"/>
-      <line num="50" type="stmt" count="1"/>
+      <line num="33" type="stmt" count="1"/>
+      <line num="35" type="stmt" count="1"/>
+      <line num="36" type="stmt" count="0"/>
+      <line num="39" type="stmt" count="1"/>
+      <line num="50" type="stmt" count="7"/>
       <line num="51" type="stmt" count="1"/>
-      <line num="54" type="stmt" count="7"/>
-      <line num="65" type="stmt" count="1"/>
-      <line num="68" type="stmt" count="1"/>
-      <line num="69" type="stmt" count="0"/>
-      <line num="73" type="stmt" count="1"/>
-      <line num="74" type="stmt" count="0"/>
-      <line num="78" type="stmt" count="1"/>
+      <line num="52" type="stmt" count="1"/>
+      <line num="55" type="stmt" count="7"/>
+      <line num="66" type="stmt" count="1"/>
+      <line num="69" type="stmt" count="1"/>
+      <line num="70" type="stmt" count="0"/>
+      <line num="74" type="stmt" count="1"/>
+      <line num="75" type="stmt" count="0"/>
       <line num="79" type="stmt" count="1"/>
-      <line num="82" type="stmt" count="1"/>
-      <line num="92" type="stmt" count="0"/>
-      <line num="94" type="stmt" count="0"/>
+      <line num="80" type="stmt" count="1"/>
+      <line num="83" type="stmt" count="1"/>
+      <line num="93" type="stmt" count="0"/>
       <line num="95" type="stmt" count="0"/>
       <line num="96" type="stmt" count="0"/>
-      <line num="98" type="stmt" count="0"/>
+      <line num="97" type="stmt" count="0"/>
       <line num="99" type="stmt" count="0"/>
       <line num="100" type="stmt" count="0"/>
-      <line num="104" type="stmt" count="0"/>
-      <line num="114" type="stmt" count="1"/>
+      <line num="101" type="stmt" count="0"/>
+      <line num="105" type="stmt" count="0"/>
       <line num="115" type="stmt" count="1"/>
-      <line num="117" type="stmt" count="1"/>
-      <line num="127" type="stmt" count="0"/>
+      <line num="116" type="stmt" count="1"/>
+      <line num="118" type="stmt" count="1"/>
       <line num="128" type="stmt" count="0"/>
-      <line num="130" type="stmt" count="0"/>
+      <line num="129" type="stmt" count="0"/>
+      <line num="131" type="stmt" count="0"/>
+      <line num="141" type="stmt" count="4"/>
+      <line num="142" type="stmt" count="1"/>
       <line num="145" type="stmt" count="4"/>
-      <line num="146" type="stmt" count="1"/>
-      <line num="149" type="stmt" count="4"/>
+      <line num="155" type="stmt" count="1"/>
+      <line num="156" type="stmt" count="1"/>
+      <line num="157" type="stmt" count="1"/>
       <line num="159" type="stmt" count="1"/>
-      <line num="160" type="stmt" count="1"/>
-      <line num="161" type="stmt" count="1"/>
-      <line num="163" type="stmt" count="1"/>
+      <line num="169" type="stmt" count="1"/>
+      <line num="170" type="stmt" count="1"/>
+      <line num="171" type="stmt" count="1"/>
+      <line num="172" type="stmt" count="1"/>
       <line num="173" type="stmt" count="1"/>
-      <line num="174" type="stmt" count="1"/>
       <line num="175" type="stmt" count="1"/>
-      <line num="176" type="stmt" count="1"/>
-      <line num="177" type="stmt" count="1"/>
-      <line num="179" type="stmt" count="1"/>
-      <line num="180" type="stmt" count="0"/>
-      <line num="182" type="stmt" count="1"/>
-      <line num="197" type="stmt" count="1"/>
-      <line num="207" type="stmt" count="6"/>
-      <line num="218" type="stmt" count="0"/>
-      <metrics loc="220" ncloc="138" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="48" coveredstatements="32" elements="48" coveredelements="32"/>
+      <line num="176" type="stmt" count="0"/>
+      <line num="178" type="stmt" count="1"/>
+      <line num="193" type="stmt" count="1"/>
+      <line num="203" type="stmt" count="6"/>
+      <line num="214" type="stmt" count="0"/>
+      <line num="225" type="stmt" count="29"/>
+      <line num="226" type="stmt" count="29"/>
+      <line num="237" type="stmt" count="23"/>
+      <line num="238" type="stmt" count="0"/>
+      <line num="241" type="stmt" count="23"/>
+      <line num="243" type="stmt" count="23"/>
+      <line num="244" type="stmt" count="6"/>
+      <line num="247" type="stmt" count="23"/>
+      <metrics loc="249" ncloc="159" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="56" coveredstatements="39" elements="56" coveredelements="39"/>
     </file>
     <file name="D:\projects\forks\quantum-php-core\src\Helpers\mvc.php">
       <line num="23" type="stmt" count="1"/>
-      <line num="32" type="stmt" count="373"/>
+      <line num="32" type="stmt" count="397"/>
       <line num="41" type="stmt" count="2"/>
       <line num="50" type="stmt" count="2"/>
       <line num="59" type="stmt" count="0"/>
@@ -1024,7 +1032,7 @@
       <line num="115" type="stmt" count="1"/>
       <line num="124" type="stmt" count="1"/>
       <line num="133" type="stmt" count="0"/>
-      <line num="142" type="stmt" count="54"/>
+      <line num="142" type="stmt" count="48"/>
       <line num="153" type="stmt" count="1"/>
       <line num="154" type="stmt" count="1"/>
       <line num="155" type="stmt" count="1"/>
@@ -1063,18 +1071,18 @@
       <line num="25" type="stmt" count="5"/>
       <line num="34" type="stmt" count="1"/>
       <line num="44" type="stmt" count="1"/>
-      <line num="58" type="stmt" count="1"/>
-      <line num="59" type="stmt" count="1"/>
-      <line num="72" type="stmt" count="1"/>
-      <line num="73" type="stmt" count="1"/>
-      <line num="75" type="stmt" count="1"/>
-      <line num="76" type="stmt" count="1"/>
-      <line num="77" type="stmt" count="1"/>
+      <line num="61" type="stmt" count="1"/>
+      <line num="62" type="stmt" count="1"/>
       <line num="78" type="stmt" count="1"/>
       <line num="79" type="stmt" count="1"/>
-      <line num="83" type="stmt" count="0"/>
-      <line num="92" type="stmt" count="0"/>
-      <metrics loc="96" ncloc="50" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="14" coveredstatements="12" elements="14" coveredelements="12"/>
+      <line num="81" type="stmt" count="1"/>
+      <line num="82" type="stmt" count="1"/>
+      <line num="83" type="stmt" count="1"/>
+      <line num="84" type="stmt" count="1"/>
+      <line num="85" type="stmt" count="1"/>
+      <line num="89" type="stmt" count="0"/>
+      <line num="98" type="stmt" count="0"/>
+      <metrics loc="102" ncloc="50" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="14" coveredstatements="12" elements="14" coveredelements="12"/>
     </file>
     <file name="D:\projects\forks\quantum-php-core\src\Helpers\var.php">
       <line num="26" type="stmt" count="0"/>
@@ -1091,13 +1099,13 @@
       <metrics loc="84" ncloc="42" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="11" coveredstatements="0" elements="11" coveredelements="0"/>
     </file>
     <file name="D:\projects\forks\quantum-php-core\src\Helpers\view.php">
-      <line num="25" type="stmt" count="3"/>
-      <line num="40" type="stmt" count="2"/>
-      <line num="50" type="stmt" count="0"/>
-      <line num="59" type="stmt" count="0"/>
-      <line num="60" type="stmt" count="0"/>
-      <line num="63" type="stmt" count="0"/>
-      <metrics loc="65" ncloc="31" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="6" coveredstatements="2" elements="6" coveredelements="2"/>
+      <line num="24" type="stmt" count="3"/>
+      <line num="41" type="stmt" count="2"/>
+      <line num="51" type="stmt" count="0"/>
+      <line num="61" type="stmt" count="0"/>
+      <line num="62" type="stmt" count="0"/>
+      <line num="65" type="stmt" count="0"/>
+      <metrics loc="67" ncloc="30" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="6" coveredstatements="2" elements="6" coveredelements="2"/>
     </file>
     <file name="D:\projects\forks\quantum-php-core\src\Hooks\HookManager.php">
       <class name="Quantum\Hooks\HookManager" namespace="global">
@@ -1139,8 +1147,8 @@
       </class>
       <line num="72" type="method" name="__call" visibility="public" complexity="1" crap="1" count="34"/>
       <line num="74" type="stmt" count="34"/>
-      <line num="83" type="method" name="__callStatic" visibility="public" complexity="1" crap="1" count="69"/>
-      <line num="85" type="stmt" count="69"/>
+      <line num="83" type="method" name="__callStatic" visibility="public" complexity="1" crap="1" count="63"/>
+      <line num="85" type="stmt" count="63"/>
       <metrics loc="89" ncloc="21" classes="1" methods="2" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="2" coveredstatements="2" elements="4" coveredelements="4"/>
     </file>
     <file name="D:\projects\forks\quantum-php-core\src\Http\Request\Body.php">
@@ -1276,15 +1284,15 @@
       <line num="190" type="stmt" count="29"/>
       <line num="197" type="method" name="isMethod" visibility="public" complexity="1" crap="1" count="1"/>
       <line num="199" type="stmt" count="1"/>
-      <line num="207" type="method" name="getSegment" visibility="public" complexity="2" crap="2" count="55"/>
-      <line num="209" type="stmt" count="55"/>
-      <line num="211" type="stmt" count="55"/>
-      <line num="212" type="stmt" count="55"/>
+      <line num="207" type="method" name="getSegment" visibility="public" complexity="2" crap="2" count="49"/>
+      <line num="209" type="stmt" count="49"/>
+      <line num="211" type="stmt" count="49"/>
+      <line num="212" type="stmt" count="49"/>
       <line num="215" type="stmt" count="1"/>
-      <line num="222" type="method" name="getAllSegments" visibility="public" complexity="1" crap="1" count="55"/>
-      <line num="224" type="stmt" count="55"/>
-      <line num="225" type="stmt" count="55"/>
-      <line num="226" type="stmt" count="55"/>
+      <line num="222" type="method" name="getAllSegments" visibility="public" complexity="1" crap="1" count="49"/>
+      <line num="224" type="stmt" count="49"/>
+      <line num="225" type="stmt" count="49"/>
+      <line num="226" type="stmt" count="49"/>
       <line num="233" type="method" name="getCSRFToken" visibility="public" complexity="3" crap="3.04" count="1"/>
       <line num="235" type="stmt" count="1"/>
       <line num="237" type="stmt" count="1"/>
@@ -1772,117 +1780,117 @@
       <class name="Quantum\Libraries\Auth\BaseAuth" namespace="global">
         <metrics complexity="38" methods="14" coveredmethods="8" conditionals="0" coveredconditionals="0" statements="96" coveredstatements="88" elements="110" coveredelements="96"/>
       </class>
-      <line num="128" type="method" name="verifySchema" visibility="protected" complexity="6" crap="6.22" count="2"/>
-      <line num="130" type="stmt" count="2"/>
-      <line num="131" type="stmt" count="2"/>
-      <line num="133" type="stmt" count="2"/>
-      <line num="134" type="stmt" count="2"/>
-      <line num="135" type="stmt" count="0"/>
-      <line num="138" type="stmt" count="2"/>
-      <line num="139" type="stmt" count="0"/>
-      <line num="142" type="stmt" count="2"/>
-      <line num="145" type="stmt" count="2"/>
-      <line num="146" type="stmt" count="2"/>
-      <line num="147" type="stmt" count="2"/>
-      <line num="156" type="method" name="check" visibility="public" complexity="1" crap="1" count="3"/>
-      <line num="158" type="stmt" count="3"/>
-      <line num="170" type="method" name="signup" visibility="public" complexity="2" crap="2.00" count="26"/>
-      <line num="172" type="stmt" count="26"/>
-      <line num="174" type="stmt" count="26"/>
-      <line num="175" type="stmt" count="26"/>
-      <line num="177" type="stmt" count="26"/>
-      <line num="184" type="stmt" count="26"/>
-      <line num="185" type="stmt" count="0"/>
-      <line num="188" type="stmt" count="26"/>
-      <line num="189" type="stmt" count="26"/>
-      <line num="191" type="stmt" count="26"/>
-      <line num="193" type="stmt" count="26"/>
-      <line num="200" type="method" name="activate" visibility="public" complexity="1" crap="1" count="26"/>
-      <line num="202" type="stmt" count="26"/>
-      <line num="203" type="stmt" count="26"/>
-      <line num="205" type="stmt" count="26"/>
-      <line num="217" type="method" name="forget" visibility="public" complexity="2" crap="2" count="2"/>
-      <line num="219" type="stmt" count="2"/>
-      <line num="221" type="stmt" count="2"/>
-      <line num="222" type="stmt" count="2"/>
-      <line num="224" type="stmt" count="2"/>
+      <line num="134" type="method" name="verifySchema" visibility="protected" complexity="6" crap="6.22" count="2"/>
+      <line num="136" type="stmt" count="2"/>
+      <line num="137" type="stmt" count="2"/>
+      <line num="139" type="stmt" count="2"/>
+      <line num="140" type="stmt" count="2"/>
+      <line num="141" type="stmt" count="0"/>
+      <line num="144" type="stmt" count="2"/>
+      <line num="145" type="stmt" count="0"/>
+      <line num="148" type="stmt" count="2"/>
+      <line num="151" type="stmt" count="2"/>
+      <line num="152" type="stmt" count="2"/>
+      <line num="153" type="stmt" count="2"/>
+      <line num="162" type="method" name="check" visibility="public" complexity="1" crap="1" count="3"/>
+      <line num="164" type="stmt" count="3"/>
+      <line num="176" type="method" name="signup" visibility="public" complexity="2" crap="2.00" count="26"/>
+      <line num="178" type="stmt" count="26"/>
+      <line num="180" type="stmt" count="26"/>
+      <line num="181" type="stmt" count="26"/>
+      <line num="183" type="stmt" count="26"/>
+      <line num="190" type="stmt" count="26"/>
+      <line num="191" type="stmt" count="0"/>
+      <line num="194" type="stmt" count="26"/>
+      <line num="195" type="stmt" count="26"/>
+      <line num="197" type="stmt" count="26"/>
+      <line num="199" type="stmt" count="26"/>
+      <line num="206" type="method" name="activate" visibility="public" complexity="1" crap="1" count="26"/>
+      <line num="208" type="stmt" count="26"/>
+      <line num="209" type="stmt" count="26"/>
+      <line num="211" type="stmt" count="26"/>
+      <line num="223" type="method" name="forget" visibility="public" complexity="2" crap="2" count="2"/>
       <line num="225" type="stmt" count="2"/>
       <line num="227" type="stmt" count="2"/>
-      <line num="235" type="stmt" count="2"/>
-      <line num="236" type="stmt" count="2"/>
-      <line num="238" type="stmt" count="2"/>
-      <line num="240" type="stmt" count="2"/>
-      <line num="249" type="method" name="reset" visibility="public" complexity="3" crap="3.02" count="2"/>
-      <line num="251" type="stmt" count="2"/>
-      <line num="253" type="stmt" count="2"/>
-      <line num="254" type="stmt" count="2"/>
-      <line num="255" type="stmt" count="0"/>
-      <line num="258" type="stmt" count="2"/>
+      <line num="228" type="stmt" count="2"/>
+      <line num="230" type="stmt" count="2"/>
+      <line num="231" type="stmt" count="2"/>
+      <line num="233" type="stmt" count="2"/>
+      <line num="241" type="stmt" count="2"/>
+      <line num="242" type="stmt" count="2"/>
+      <line num="244" type="stmt" count="2"/>
+      <line num="246" type="stmt" count="2"/>
+      <line num="255" type="method" name="reset" visibility="public" complexity="3" crap="3.02" count="2"/>
+      <line num="257" type="stmt" count="2"/>
       <line num="259" type="stmt" count="2"/>
-      <line num="262" type="stmt" count="2"/>
-      <line num="263" type="stmt" count="2"/>
-      <line num="276" type="method" name="resendOtp" visibility="public" complexity="2" crap="2.06" count="2"/>
-      <line num="278" type="stmt" count="2"/>
-      <line num="280" type="stmt" count="2"/>
-      <line num="281" type="stmt" count="0"/>
+      <line num="260" type="stmt" count="2"/>
+      <line num="261" type="stmt" count="0"/>
+      <line num="264" type="stmt" count="2"/>
+      <line num="265" type="stmt" count="2"/>
+      <line num="268" type="stmt" count="2"/>
+      <line num="269" type="stmt" count="2"/>
+      <line num="282" type="method" name="resendOtp" visibility="public" complexity="2" crap="2.06" count="2"/>
       <line num="284" type="stmt" count="2"/>
-      <line num="295" type="method" name="getUser" visibility="protected" complexity="4" crap="4.03" count="24"/>
-      <line num="297" type="stmt" count="24"/>
-      <line num="299" type="stmt" count="24"/>
-      <line num="300" type="stmt" count="0"/>
+      <line num="286" type="stmt" count="2"/>
+      <line num="287" type="stmt" count="0"/>
+      <line num="290" type="stmt" count="2"/>
+      <line num="301" type="method" name="getUser" visibility="protected" complexity="4" crap="4.03" count="24"/>
       <line num="303" type="stmt" count="24"/>
-      <line num="304" type="stmt" count="2"/>
-      <line num="307" type="stmt" count="22"/>
-      <line num="308" type="stmt" count="2"/>
-      <line num="311" type="stmt" count="20"/>
-      <line num="323" type="method" name="twoStepVerification" visibility="protected" complexity="1" crap="1" count="6"/>
-      <line num="325" type="stmt" count="6"/>
-      <line num="327" type="stmt" count="6"/>
-      <line num="329" type="stmt" count="6"/>
+      <line num="305" type="stmt" count="24"/>
+      <line num="306" type="stmt" count="0"/>
+      <line num="309" type="stmt" count="24"/>
+      <line num="310" type="stmt" count="2"/>
+      <line num="313" type="stmt" count="22"/>
+      <line num="314" type="stmt" count="2"/>
+      <line num="317" type="stmt" count="20"/>
+      <line num="329" type="method" name="twoStepVerification" visibility="protected" complexity="1" crap="1" count="6"/>
       <line num="331" type="stmt" count="6"/>
       <line num="333" type="stmt" count="6"/>
-      <line num="334" type="stmt" count="6"/>
       <line num="335" type="stmt" count="6"/>
       <line num="337" type="stmt" count="6"/>
-      <line num="338" type="stmt" count="6"/>
       <line num="339" type="stmt" count="6"/>
-      <line num="348" type="stmt" count="6"/>
-      <line num="349" type="stmt" count="6"/>
-      <line num="351" type="stmt" count="6"/>
-      <line num="353" type="stmt" count="6"/>
-      <line num="364" type="method" name="verifyAndUpdateOtp" visibility="protected" complexity="4" crap="4.07" count="2"/>
-      <line num="366" type="stmt" count="2"/>
-      <line num="368" type="stmt" count="2"/>
-      <line num="369" type="stmt" count="0"/>
+      <line num="340" type="stmt" count="6"/>
+      <line num="341" type="stmt" count="6"/>
+      <line num="343" type="stmt" count="6"/>
+      <line num="344" type="stmt" count="6"/>
+      <line num="345" type="stmt" count="6"/>
+      <line num="354" type="stmt" count="6"/>
+      <line num="355" type="stmt" count="6"/>
+      <line num="357" type="stmt" count="6"/>
+      <line num="359" type="stmt" count="6"/>
+      <line num="370" type="method" name="verifyAndUpdateOtp" visibility="protected" complexity="4" crap="4.07" count="2"/>
       <line num="372" type="stmt" count="2"/>
-      <line num="373" type="stmt" count="0"/>
-      <line num="376" type="stmt" count="2"/>
-      <line num="377" type="stmt" count="2"/>
+      <line num="374" type="stmt" count="2"/>
+      <line num="375" type="stmt" count="0"/>
       <line num="378" type="stmt" count="2"/>
-      <line num="380" type="stmt" count="2"/>
-      <line num="381" type="stmt" count="2"/>
+      <line num="379" type="stmt" count="0"/>
       <line num="382" type="stmt" count="2"/>
+      <line num="383" type="stmt" count="2"/>
+      <line num="384" type="stmt" count="2"/>
       <line num="386" type="stmt" count="2"/>
-      <line num="394" type="method" name="getVisibleFields" visibility="protected" complexity="4" crap="4" count="16"/>
-      <line num="396" type="stmt" count="16"/>
-      <line num="398" type="stmt" count="16"/>
-      <line num="399" type="stmt" count="16"/>
-      <line num="400" type="stmt" count="16"/>
-      <line num="401" type="stmt" count="16"/>
+      <line num="387" type="stmt" count="2"/>
+      <line num="388" type="stmt" count="2"/>
+      <line num="392" type="stmt" count="2"/>
+      <line num="400" type="method" name="getVisibleFields" visibility="protected" complexity="4" crap="4" count="16"/>
+      <line num="402" type="stmt" count="16"/>
+      <line num="404" type="stmt" count="16"/>
+      <line num="405" type="stmt" count="16"/>
       <line num="406" type="stmt" count="16"/>
-      <line num="414" type="method" name="isActivated" visibility="protected" complexity="1" crap="1" count="22"/>
-      <line num="416" type="stmt" count="22"/>
-      <line num="424" type="method" name="generateToken" visibility="protected" complexity="2" crap="2" count="26"/>
-      <line num="426" type="stmt" count="26"/>
-      <line num="437" type="method" name="sendMail" visibility="protected" complexity="5" crap="5" count="26"/>
-      <line num="439" type="stmt" count="26"/>
-      <line num="441" type="stmt" count="26"/>
-      <line num="442" type="stmt" count="26"/>
-      <line num="444" type="stmt" count="26"/>
+      <line num="407" type="stmt" count="16"/>
+      <line num="412" type="stmt" count="16"/>
+      <line num="420" type="method" name="isActivated" visibility="protected" complexity="1" crap="1" count="22"/>
+      <line num="422" type="stmt" count="22"/>
+      <line num="430" type="method" name="generateToken" visibility="protected" complexity="2" crap="2" count="26"/>
+      <line num="432" type="stmt" count="26"/>
+      <line num="443" type="method" name="sendMail" visibility="protected" complexity="5" crap="5" count="26"/>
       <line num="445" type="stmt" count="26"/>
-      <line num="446" type="stmt" count="26"/>
       <line num="447" type="stmt" count="26"/>
-      <metrics loc="451" ncloc="289" classes="1" methods="14" coveredmethods="8" conditionals="0" coveredconditionals="0" statements="96" coveredstatements="88" elements="110" coveredelements="96"/>
+      <line num="448" type="stmt" count="26"/>
+      <line num="450" type="stmt" count="26"/>
+      <line num="451" type="stmt" count="26"/>
+      <line num="452" type="stmt" count="26"/>
+      <line num="453" type="stmt" count="26"/>
+      <metrics loc="457" ncloc="295" classes="1" methods="14" coveredmethods="8" conditionals="0" coveredconditionals="0" statements="96" coveredstatements="88" elements="110" coveredelements="96"/>
     </file>
     <file name="D:\projects\forks\quantum-php-core\src\Libraries\Auth\User.php">
       <class name="Quantum\Libraries\Auth\User" namespace="global">
@@ -1915,67 +1923,67 @@
       <class name="Quantum\Libraries\Auth\WebAuth" namespace="global">
         <metrics complexity="22" methods="9" coveredmethods="7" conditionals="0" coveredconditionals="0" statements="51" coveredstatements="45" elements="60" coveredelements="52"/>
       </class>
-      <line num="40" type="method" name="__construct" visibility="private" complexity="1" crap="1" count="1"/>
-      <line num="42" type="stmt" count="1"/>
+      <line num="41" type="method" name="__construct" visibility="private" complexity="1" crap="1" count="1"/>
       <line num="43" type="stmt" count="1"/>
       <line num="44" type="stmt" count="1"/>
-      <line num="46" type="stmt" count="1"/>
-      <line num="48" type="stmt" count="1"/>
-      <line num="59" type="method" name="getInstance" visibility="public" complexity="2" crap="2" count="13"/>
-      <line num="61" type="stmt" count="13"/>
-      <line num="62" type="stmt" count="1"/>
-      <line num="65" type="stmt" count="13"/>
-      <line num="82" type="method" name="signin" visibility="public" complexity="3" crap="3" count="12"/>
-      <line num="84" type="stmt" count="12"/>
-      <line num="86" type="stmt" count="10"/>
-      <line num="87" type="stmt" count="2"/>
-      <line num="90" type="stmt" count="10"/>
-      <line num="91" type="stmt" count="3"/>
-      <line num="93" type="stmt" count="7"/>
-      <line num="94" type="stmt" count="7"/>
-      <line num="104" type="method" name="signout" visibility="public" complexity="2" crap="2" count="13"/>
-      <line num="106" type="stmt" count="13"/>
-      <line num="107" type="stmt" count="8"/>
-      <line num="108" type="stmt" count="8"/>
-      <line num="110" type="stmt" count="8"/>
-      <line num="113" type="stmt" count="6"/>
-      <line num="123" type="method" name="user" visibility="public" complexity="5" crap="5" count="2"/>
-      <line num="125" type="stmt" count="2"/>
-      <line num="126" type="stmt" count="2"/>
-      <line num="127" type="stmt" count="2"/>
-      <line num="128" type="stmt" count="1"/>
-      <line num="130" type="stmt" count="1"/>
-      <line num="131" type="stmt" count="1"/>
-      <line num="132" type="stmt" count="1"/>
-      <line num="136" type="stmt" count="1"/>
-      <line num="149" type="method" name="verifyOtp" visibility="public" complexity="1" crap="1" count="1"/>
-      <line num="151" type="stmt" count="1"/>
-      <line num="153" type="stmt" count="1"/>
-      <line num="155" type="stmt" count="1"/>
-      <line num="163" type="method" name="checkRememberToken" visibility="private" complexity="4" crap="4.59" count="1"/>
-      <line num="165" type="stmt" count="1"/>
-      <line num="167" type="stmt" count="1"/>
-      <line num="168" type="stmt" count="0"/>
-      <line num="171" type="stmt" count="1"/>
-      <line num="172" type="stmt" count="0"/>
-      <line num="175" type="stmt" count="1"/>
-      <line num="183" type="method" name="setRememberToken" visibility="private" complexity="1" crap="1" count="2"/>
-      <line num="185" type="stmt" count="2"/>
-      <line num="187" type="stmt" count="2"/>
-      <line num="188" type="stmt" count="2"/>
-      <line num="189" type="stmt" count="2"/>
-      <line num="190" type="stmt" count="2"/>
-      <line num="193" type="stmt" count="2"/>
-      <line num="199" type="method" name="removeRememberToken" visibility="private" complexity="3" crap="4.12" count="8"/>
-      <line num="201" type="stmt" count="8"/>
+      <line num="45" type="stmt" count="1"/>
+      <line num="47" type="stmt" count="1"/>
+      <line num="49" type="stmt" count="1"/>
+      <line num="60" type="method" name="getInstance" visibility="public" complexity="2" crap="2" count="13"/>
+      <line num="62" type="stmt" count="13"/>
+      <line num="63" type="stmt" count="1"/>
+      <line num="66" type="stmt" count="13"/>
+      <line num="83" type="method" name="signin" visibility="public" complexity="3" crap="3" count="12"/>
+      <line num="85" type="stmt" count="12"/>
+      <line num="87" type="stmt" count="10"/>
+      <line num="88" type="stmt" count="2"/>
+      <line num="91" type="stmt" count="10"/>
+      <line num="92" type="stmt" count="3"/>
+      <line num="95" type="stmt" count="7"/>
+      <line num="96" type="stmt" count="7"/>
+      <line num="110" type="method" name="signout" visibility="public" complexity="2" crap="2" count="13"/>
+      <line num="112" type="stmt" count="13"/>
+      <line num="113" type="stmt" count="8"/>
+      <line num="114" type="stmt" count="8"/>
+      <line num="116" type="stmt" count="8"/>
+      <line num="119" type="stmt" count="6"/>
+      <line num="132" type="method" name="user" visibility="public" complexity="5" crap="5" count="2"/>
+      <line num="134" type="stmt" count="2"/>
+      <line num="135" type="stmt" count="2"/>
+      <line num="136" type="stmt" count="2"/>
+      <line num="137" type="stmt" count="1"/>
+      <line num="139" type="stmt" count="1"/>
+      <line num="141" type="stmt" count="1"/>
+      <line num="142" type="stmt" count="1"/>
+      <line num="146" type="stmt" count="1"/>
+      <line num="162" type="method" name="verifyOtp" visibility="public" complexity="1" crap="1" count="1"/>
+      <line num="164" type="stmt" count="1"/>
+      <line num="168" type="stmt" count="1"/>
+      <line num="170" type="stmt" count="1"/>
+      <line num="178" type="method" name="checkRememberToken" visibility="private" complexity="4" crap="4.59" count="1"/>
+      <line num="180" type="stmt" count="1"/>
+      <line num="182" type="stmt" count="1"/>
+      <line num="183" type="stmt" count="0"/>
+      <line num="186" type="stmt" count="1"/>
+      <line num="187" type="stmt" count="0"/>
+      <line num="190" type="stmt" count="1"/>
+      <line num="198" type="method" name="setRememberToken" visibility="private" complexity="1" crap="1" count="2"/>
+      <line num="200" type="stmt" count="2"/>
       <line num="202" type="stmt" count="2"/>
+      <line num="203" type="stmt" count="2"/>
       <line num="204" type="stmt" count="2"/>
-      <line num="205" type="stmt" count="0"/>
-      <line num="206" type="stmt" count="0"/>
-      <line num="207" type="stmt" count="0"/>
-      <line num="208" type="stmt" count="0"/>
-      <line num="212" type="stmt" count="2"/>
-      <metrics loc="216" ncloc="132" classes="1" methods="9" coveredmethods="7" conditionals="0" coveredconditionals="0" statements="51" coveredstatements="45" elements="60" coveredelements="52"/>
+      <line num="205" type="stmt" count="2"/>
+      <line num="208" type="stmt" count="2"/>
+      <line num="214" type="method" name="removeRememberToken" visibility="private" complexity="3" crap="4.12" count="8"/>
+      <line num="216" type="stmt" count="8"/>
+      <line num="217" type="stmt" count="2"/>
+      <line num="219" type="stmt" count="2"/>
+      <line num="220" type="stmt" count="0"/>
+      <line num="221" type="stmt" count="0"/>
+      <line num="222" type="stmt" count="0"/>
+      <line num="223" type="stmt" count="0"/>
+      <line num="227" type="stmt" count="2"/>
+      <metrics loc="231" ncloc="134" classes="1" methods="9" coveredmethods="7" conditionals="0" coveredconditionals="0" statements="51" coveredstatements="45" elements="60" coveredelements="52"/>
     </file>
     <file name="D:\projects\forks\quantum-php-core\src\Libraries\Cache\Adapters\DatabaseAdapter.php">
       <class name="Quantum\Libraries\Cache\Adapters\DatabaseAdapter" namespace="global">
@@ -2221,106 +2229,98 @@
       <class name="Quantum\Libraries\Cache\Cache" namespace="global">
         <metrics complexity="4" methods="3" coveredmethods="3" conditionals="0" coveredconditionals="0" statements="5" coveredstatements="5" elements="8" coveredelements="8"/>
       </class>
-      <line num="44" type="method" name="__construct" visibility="public" complexity="1" crap="1" count="2"/>
-      <line num="46" type="stmt" count="2"/>
-      <line num="53" type="method" name="getAdapter" visibility="public" complexity="1" crap="1" count="1"/>
-      <line num="55" type="stmt" count="1"/>
-      <line num="64" type="method" name="__call" visibility="public" complexity="2" crap="2" count="1"/>
-      <line num="66" type="stmt" count="1"/>
+      <line num="45" type="method" name="__construct" visibility="public" complexity="1" crap="1" count="2"/>
+      <line num="47" type="stmt" count="2"/>
+      <line num="54" type="method" name="getAdapter" visibility="public" complexity="1" crap="1" count="1"/>
+      <line num="56" type="stmt" count="1"/>
+      <line num="65" type="method" name="__call" visibility="public" complexity="2" crap="2" count="1"/>
       <line num="67" type="stmt" count="1"/>
-      <line num="70" type="stmt" count="1"/>
-      <metrics loc="74" ncloc="34" classes="1" methods="3" coveredmethods="3" conditionals="0" coveredconditionals="0" statements="5" coveredstatements="5" elements="8" coveredelements="8"/>
+      <line num="68" type="stmt" count="1"/>
+      <line num="71" type="stmt" count="1"/>
+      <metrics loc="75" ncloc="35" classes="1" methods="3" coveredmethods="3" conditionals="0" coveredconditionals="0" statements="5" coveredstatements="5" elements="8" coveredelements="8"/>
     </file>
     <file name="D:\projects\forks\quantum-php-core\src\Libraries\Cache\CacheManager.php">
       <class name="Quantum\Libraries\Cache\CacheManager" namespace="global">
         <metrics complexity="3" methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="8" coveredstatements="0" elements="9" coveredelements="0"/>
       </class>
-      <line num="42" type="method" name="getHandler" visibility="public" complexity="3" crap="12" count="0"/>
-      <line num="44" type="stmt" count="0"/>
-      <line num="45" type="stmt" count="0"/>
-      <line num="48" type="stmt" count="0"/>
-      <line num="50" type="stmt" count="0"/>
+      <line num="49" type="method" name="getHandler" visibility="public" complexity="3" crap="12" count="0"/>
       <line num="51" type="stmt" count="0"/>
-      <line num="54" type="stmt" count="0"/>
-      <line num="56" type="stmt" count="0"/>
+      <line num="52" type="stmt" count="0"/>
+      <line num="55" type="stmt" count="0"/>
+      <line num="57" type="stmt" count="0"/>
       <line num="58" type="stmt" count="0"/>
-      <metrics loc="62" ncloc="39" classes="1" methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="8" coveredstatements="0" elements="9" coveredelements="0"/>
+      <line num="61" type="stmt" count="0"/>
+      <line num="63" type="stmt" count="0"/>
+      <line num="65" type="stmt" count="0"/>
+      <metrics loc="69" ncloc="43" classes="1" methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="8" coveredstatements="0" elements="9" coveredelements="0"/>
     </file>
     <file name="D:\projects\forks\quantum-php-core\src\Libraries\Config\Config.php">
       <class name="Quantum\Libraries\Config\Config" namespace="global">
         <metrics complexity="19" methods="9" coveredmethods="9" conditionals="0" coveredconditionals="0" statements="22" coveredstatements="22" elements="31" coveredelements="31"/>
       </class>
-      <line num="47" type="method" name="getInstance" visibility="public" complexity="2" crap="2" count="373"/>
-      <line num="49" type="stmt" count="373"/>
-      <line num="50" type="stmt" count="54"/>
-      <line num="53" type="stmt" count="373"/>
-      <line num="63" type="method" name="load" visibility="public" complexity="2" crap="2" count="373"/>
-      <line num="65" type="stmt" count="373"/>
+      <line num="47" type="method" name="getInstance" visibility="public" complexity="2" crap="2" count="397"/>
+      <line num="49" type="stmt" count="397"/>
+      <line num="50" type="stmt" count="48"/>
+      <line num="53" type="stmt" count="397"/>
+      <line num="63" type="method" name="load" visibility="public" complexity="2" crap="2" count="397"/>
+      <line num="65" type="stmt" count="397"/>
       <line num="66" type="stmt" count="1"/>
-      <line num="69" type="stmt" count="373"/>
-      <line num="79" type="method" name="import" visibility="public" complexity="4" crap="4" count="72"/>
-      <line num="81" type="stmt" count="72"/>
-      <line num="83" type="stmt" count="72"/>
+      <line num="69" type="stmt" count="397"/>
+      <line num="79" type="method" name="import" visibility="public" complexity="4" crap="4" count="101"/>
+      <line num="81" type="stmt" count="101"/>
+      <line num="83" type="stmt" count="101"/>
       <line num="84" type="stmt" count="1"/>
-      <line num="87" type="stmt" count="72"/>
+      <line num="87" type="stmt" count="101"/>
       <line num="88" type="stmt" count="2"/>
-      <line num="90" type="stmt" count="70"/>
-      <line num="100" type="method" name="get" visibility="public" complexity="3" crap="3" count="170"/>
-      <line num="102" type="stmt" count="170"/>
-      <line num="103" type="stmt" count="147"/>
-      <line num="106" type="stmt" count="40"/>
+      <line num="90" type="stmt" count="99"/>
+      <line num="100" type="method" name="get" visibility="public" complexity="3" crap="3" count="174"/>
+      <line num="102" type="stmt" count="174"/>
+      <line num="103" type="stmt" count="170"/>
+      <line num="106" type="stmt" count="37"/>
       <line num="113" type="method" name="all" visibility="public" complexity="1" crap="1" count="2"/>
       <line num="115" type="stmt" count="2"/>
-      <line num="123" type="method" name="has" visibility="public" complexity="2" crap="2" count="89"/>
-      <line num="125" type="stmt" count="89"/>
-      <line num="134" type="method" name="set" visibility="public" complexity="2" crap="2" count="121"/>
-      <line num="136" type="stmt" count="121"/>
+      <line num="123" type="method" name="has" visibility="public" complexity="2" crap="2" count="118"/>
+      <line num="125" type="stmt" count="118"/>
+      <line num="134" type="method" name="set" visibility="public" complexity="2" crap="2" count="138"/>
+      <line num="136" type="stmt" count="138"/>
       <line num="137" type="stmt" count="1"/>
-      <line num="139" type="stmt" count="121"/>
+      <line num="139" type="stmt" count="138"/>
       <line num="147" type="method" name="delete" visibility="public" complexity="2" crap="2" count="2"/>
       <line num="149" type="stmt" count="2"/>
-      <line num="155" type="method" name="flush" visibility="public" complexity="1" crap="1" count="373"/>
-      <line num="157" type="stmt" count="373"/>
+      <line num="155" type="method" name="flush" visibility="public" complexity="1" crap="1" count="397"/>
+      <line num="157" type="stmt" count="397"/>
       <metrics loc="161" ncloc="92" classes="1" methods="9" coveredmethods="9" conditionals="0" coveredconditionals="0" statements="22" coveredstatements="22" elements="31" coveredelements="31"/>
     </file>
     <file name="D:\projects\forks\quantum-php-core\src\Libraries\Cookie\Cookie.php">
       <class name="Quantum\Libraries\Cookie\Cookie" namespace="global">
-        <metrics complexity="20" methods="9" coveredmethods="8" conditionals="0" coveredconditionals="0" statements="24" coveredstatements="22" elements="33" coveredelements="30"/>
+        <metrics complexity="16" methods="7" coveredmethods="7" conditionals="0" coveredconditionals="0" statements="18" coveredstatements="18" elements="25" coveredelements="25"/>
       </class>
-      <line num="43" type="method" name="__construct" visibility="public" complexity="1" crap="1" count="16"/>
-      <line num="45" type="stmt" count="16"/>
-      <line num="46" type="stmt" count="16"/>
-      <line num="54" type="method" name="all" visibility="public" complexity="2" crap="2" count="2"/>
-      <line num="56" type="stmt" count="2"/>
-      <line num="58" type="stmt" count="2"/>
-      <line num="59" type="stmt" count="2"/>
-      <line num="62" type="stmt" count="2"/>
-      <line num="70" type="method" name="has" visibility="public" complexity="2" crap="2" count="14"/>
-      <line num="72" type="stmt" count="14"/>
-      <line num="81" type="method" name="get" visibility="public" complexity="2" crap="2" count="5"/>
-      <line num="83" type="stmt" count="5"/>
-      <line num="98" type="method" name="set" visibility="public" complexity="2" crap="2" count="4"/>
-      <line num="100" type="stmt" count="4"/>
-      <line num="101" type="stmt" count="4"/>
-      <line num="110" type="method" name="delete" visibility="public" complexity="2" crap="2" count="4"/>
-      <line num="112" type="stmt" count="4"/>
-      <line num="113" type="stmt" count="4"/>
-      <line num="114" type="stmt" count="4"/>
-      <line num="121" type="method" name="flush" visibility="public" complexity="3" crap="3" count="1"/>
-      <line num="123" type="stmt" count="1"/>
-      <line num="124" type="stmt" count="1"/>
-      <line num="125" type="stmt" count="1"/>
-      <line num="136" type="method" name="encode" visibility="private" complexity="3" crap="3" count="4"/>
-      <line num="138" type="stmt" count="4"/>
-      <line num="139" type="stmt" count="4"/>
-      <line num="148" type="method" name="decode" visibility="private" complexity="3" crap="3.33" count="7"/>
-      <line num="150" type="stmt" count="7"/>
-      <line num="151" type="stmt" count="0"/>
-      <line num="154" type="stmt" count="7"/>
-      <line num="156" type="stmt" count="7"/>
-      <line num="157" type="stmt" count="0"/>
-      <line num="160" type="stmt" count="7"/>
-      <metrics loc="164" ncloc="87" classes="1" methods="9" coveredmethods="8" conditionals="0" coveredconditionals="0" statements="24" coveredstatements="22" elements="33" coveredelements="30"/>
+      <line num="51" type="method" name="getInstance" visibility="public" complexity="2" crap="2" count="13"/>
+      <line num="53" type="stmt" count="13"/>
+      <line num="55" type="stmt" count="13"/>
+      <line num="56" type="stmt" count="1"/>
+      <line num="59" type="stmt" count="13"/>
+      <line num="66" type="method" name="all" visibility="public" complexity="2" crap="2" count="2"/>
+      <line num="68" type="stmt" count="2"/>
+      <line num="70" type="stmt" count="2"/>
+      <line num="71" type="stmt" count="2"/>
+      <line num="74" type="stmt" count="2"/>
+      <line num="80" type="method" name="has" visibility="public" complexity="2" crap="2" count="12"/>
+      <line num="82" type="stmt" count="12"/>
+      <line num="89" type="method" name="get" visibility="public" complexity="2" crap="2" count="4"/>
+      <line num="91" type="stmt" count="4"/>
+      <line num="98" type="method" name="set" visibility="public" complexity="2" crap="2" count="6"/>
+      <line num="100" type="stmt" count="6"/>
+      <line num="101" type="stmt" count="6"/>
+      <line num="107" type="method" name="delete" visibility="public" complexity="2" crap="2" count="5"/>
+      <line num="109" type="stmt" count="5"/>
+      <line num="110" type="stmt" count="5"/>
+      <line num="111" type="stmt" count="5"/>
+      <line num="118" type="method" name="flush" visibility="public" complexity="3" crap="3" count="4"/>
+      <line num="120" type="stmt" count="4"/>
+      <line num="121" type="stmt" count="2"/>
+      <line num="122" type="stmt" count="2"/>
+      <metrics loc="127" ncloc="74" classes="1" methods="7" coveredmethods="7" conditionals="0" coveredconditionals="0" statements="18" coveredstatements="18" elements="25" coveredelements="25"/>
     </file>
     <file name="D:\projects\forks\quantum-php-core\src\Libraries\Cookie\CookieStorageInterface.php">
       <metrics loc="45" ncloc="15" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
@@ -2428,13 +2428,13 @@
       </class>
       <line num="46" type="method" name="__construct" visibility="private" complexity="1" crap="1" count="34"/>
       <line num="48" type="stmt" count="34"/>
-      <line num="55" type="method" name="getInstance" visibility="public" complexity="2" crap="2" count="41"/>
-      <line num="57" type="stmt" count="41"/>
+      <line num="55" type="method" name="getInstance" visibility="public" complexity="2" crap="2" count="48"/>
+      <line num="57" type="stmt" count="48"/>
       <line num="58" type="stmt" count="34"/>
-      <line num="61" type="stmt" count="41"/>
-      <line num="72" type="method" name="getOrm" visibility="public" complexity="1" crap="1" count="32"/>
-      <line num="74" type="stmt" count="32"/>
-      <line num="76" type="stmt" count="32"/>
+      <line num="61" type="stmt" count="48"/>
+      <line num="72" type="method" name="getOrm" visibility="public" complexity="1" crap="1" count="39"/>
+      <line num="74" type="stmt" count="39"/>
+      <line num="76" type="stmt" count="39"/>
       <line num="87" type="method" name="getConfigs" visibility="public" complexity="5" crap="6.32" count="34"/>
       <line num="89" type="stmt" count="34"/>
       <line num="90" type="stmt" count="0"/>
@@ -2454,13 +2454,13 @@
       <line num="149" type="stmt" count="1"/>
       <line num="158" type="method" name="queryLog" visibility="public" complexity="1" crap="1" count="1"/>
       <line num="160" type="stmt" count="1"/>
-      <line num="168" type="method" name="getOrmClass" visibility="protected" complexity="3" crap="3.04" count="41"/>
-      <line num="170" type="stmt" count="41"/>
-      <line num="172" type="stmt" count="41"/>
+      <line num="168" type="method" name="getOrmClass" visibility="protected" complexity="3" crap="3.04" count="48"/>
+      <line num="170" type="stmt" count="48"/>
+      <line num="172" type="stmt" count="48"/>
       <line num="173" type="stmt" count="0"/>
-      <line num="176" type="stmt" count="41"/>
+      <line num="176" type="stmt" count="48"/>
       <line num="177" type="stmt" count="11"/>
-      <line num="180" type="stmt" count="41"/>
+      <line num="180" type="stmt" count="48"/>
       <line num="191" type="method" name="resolveQuery" visibility="protected" complexity="1" crap="1" count="10"/>
       <line num="193" type="stmt" count="10"/>
       <line num="195" type="stmt" count="10"/>
@@ -2474,41 +2474,41 @@
       <class name="Quantum\Libraries\Database\Idiorm\IdiormDbal" namespace="global">
         <metrics complexity="17" methods="8" coveredmethods="6" conditionals="0" coveredconditionals="0" statements="37" coveredstatements="34" elements="45" coveredelements="40"/>
       </class>
-      <line num="126" type="method" name="__construct" visibility="public" complexity="1" crap="1" count="55"/>
-      <line num="128" type="stmt" count="55"/>
-      <line num="129" type="stmt" count="55"/>
-      <line num="130" type="stmt" count="55"/>
-      <line num="136" type="method" name="connect" visibility="public" complexity="3" crap="3" count="65"/>
-      <line num="139" type="stmt" count="65"/>
-      <line num="140" type="stmt" count="65"/>
-      <line num="144" type="stmt" count="65"/>
+      <line num="126" type="method" name="__construct" visibility="public" complexity="1" crap="1" count="62"/>
+      <line num="128" type="stmt" count="62"/>
+      <line num="129" type="stmt" count="62"/>
+      <line num="130" type="stmt" count="62"/>
+      <line num="136" type="method" name="connect" visibility="public" complexity="3" crap="3" count="72"/>
+      <line num="139" type="stmt" count="72"/>
+      <line num="140" type="stmt" count="72"/>
+      <line num="144" type="stmt" count="72"/>
       <line num="145" type="stmt" count="1"/>
       <line num="146" type="stmt" count="1"/>
       <line num="147" type="stmt" count="1"/>
       <line num="149" type="stmt" count="1"/>
-      <line num="155" type="stmt" count="65"/>
-      <line num="157" type="stmt" count="65"/>
-      <line num="163" type="method" name="getConnection" visibility="public" complexity="1" crap="1" count="65"/>
-      <line num="165" type="stmt" count="65"/>
+      <line num="155" type="stmt" count="72"/>
+      <line num="157" type="stmt" count="72"/>
+      <line num="163" type="method" name="getConnection" visibility="public" complexity="1" crap="1" count="79"/>
+      <line num="165" type="stmt" count="79"/>
       <line num="171" type="method" name="disconnect" visibility="public" complexity="1" crap="1" count="45"/>
       <line num="173" type="stmt" count="45"/>
       <line num="174" type="stmt" count="45"/>
       <line num="180" type="method" name="getTable" visibility="public" complexity="1" crap="1" count="1"/>
       <line num="182" type="stmt" count="1"/>
-      <line num="190" type="method" name="getOrmModel" visibility="public" complexity="3" crap="3.07" count="47"/>
-      <line num="192" type="stmt" count="47"/>
-      <line num="193" type="stmt" count="47"/>
+      <line num="190" type="method" name="getOrmModel" visibility="public" complexity="3" crap="3.07" count="61"/>
+      <line num="192" type="stmt" count="61"/>
+      <line num="193" type="stmt" count="54"/>
       <line num="194" type="stmt" count="0"/>
-      <line num="197" type="stmt" count="47"/>
-      <line num="200" type="stmt" count="47"/>
-      <line num="206" type="method" name="updateOrmModel" visibility="protected" complexity="1" crap="1" count="16"/>
-      <line num="208" type="stmt" count="16"/>
-      <line num="216" type="method" name="buildConnectionString" visibility="protected" complexity="6" crap="6.09" count="65"/>
-      <line num="218" type="stmt" count="65"/>
-      <line num="220" type="stmt" count="65"/>
-      <line num="221" type="stmt" count="65"/>
-      <line num="222" type="stmt" count="64"/>
-      <line num="223" type="stmt" count="64"/>
+      <line num="197" type="stmt" count="54"/>
+      <line num="200" type="stmt" count="61"/>
+      <line num="206" type="method" name="updateOrmModel" visibility="protected" complexity="1" crap="1" count="17"/>
+      <line num="208" type="stmt" count="17"/>
+      <line num="216" type="method" name="buildConnectionString" visibility="protected" complexity="6" crap="6.09" count="72"/>
+      <line num="218" type="stmt" count="72"/>
+      <line num="220" type="stmt" count="72"/>
+      <line num="221" type="stmt" count="72"/>
+      <line num="222" type="stmt" count="71"/>
+      <line num="223" type="stmt" count="71"/>
       <line num="224" type="stmt" count="1"/>
       <line num="225" type="stmt" count="0"/>
       <line num="226" type="stmt" count="1"/>
@@ -2518,7 +2518,7 @@
       <line num="234" type="stmt" count="1"/>
       <line num="235" type="stmt" count="1"/>
       <line num="237" type="stmt" count="1"/>
-      <line num="240" type="stmt" count="65"/>
+      <line num="240" type="stmt" count="72"/>
       <metrics loc="244" ncloc="157" classes="1" methods="8" coveredmethods="6" conditionals="0" coveredconditionals="0" statements="37" coveredstatements="34" elements="45" coveredelements="40"/>
     </file>
     <file name="D:\projects\forks\quantum-php-core\src\Libraries\Database\Idiorm\IdiormPatch.php">
@@ -2629,29 +2629,29 @@
       <class name="Quantum\Libraries\Database\Idiorm\Statements\Model" namespace="global">
         <metrics complexity="6" methods="5" coveredmethods="5" conditionals="0" coveredconditionals="0" statements="8" coveredstatements="8" elements="13" coveredelements="13"/>
       </class>
-      <line num="30" type="method" name="create" visibility="public" complexity="1" crap="1" count="4"/>
-      <line num="32" type="stmt" count="4"/>
-      <line num="33" type="stmt" count="4"/>
-      <line num="40" type="method" name="prop" visibility="public" complexity="2" crap="2" count="17"/>
-      <line num="42" type="stmt" count="17"/>
-      <line num="43" type="stmt" count="8"/>
-      <line num="45" type="stmt" count="16"/>
-      <line num="53" type="method" name="save" visibility="public" complexity="1" crap="1" count="6"/>
-      <line num="55" type="stmt" count="6"/>
-      <line num="62" type="method" name="delete" visibility="public" complexity="1" crap="1" count="1"/>
-      <line num="64" type="stmt" count="1"/>
-      <line num="71" type="method" name="deleteMany" visibility="public" complexity="1" crap="1" count="1"/>
-      <line num="73" type="stmt" count="1"/>
+      <line num="30" type="method" name="create" visibility="public" complexity="1" crap="1" count="9"/>
+      <line num="32" type="stmt" count="9"/>
+      <line num="33" type="stmt" count="9"/>
+      <line num="40" type="method" name="prop" visibility="public" complexity="2" crap="2" count="30"/>
+      <line num="42" type="stmt" count="30"/>
+      <line num="43" type="stmt" count="13"/>
+      <line num="45" type="stmt" count="29"/>
+      <line num="53" type="method" name="save" visibility="public" complexity="1" crap="1" count="11"/>
+      <line num="55" type="stmt" count="11"/>
+      <line num="62" type="method" name="delete" visibility="public" complexity="1" crap="1" count="8"/>
+      <line num="64" type="stmt" count="8"/>
+      <line num="71" type="method" name="deleteMany" visibility="public" complexity="1" crap="1" count="8"/>
+      <line num="73" type="stmt" count="8"/>
       <metrics loc="76" ncloc="41" classes="1" methods="5" coveredmethods="5" conditionals="0" coveredconditionals="0" statements="8" coveredstatements="8" elements="13" coveredelements="13"/>
     </file>
     <file name="D:\projects\forks\quantum-php-core\src\Libraries\Database\Idiorm\Statements\Query.php">
       <class name="Quantum\Libraries\Database\Idiorm\Statements\Query" namespace="global">
         <metrics complexity="12" methods="6" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="21" coveredstatements="10" elements="27" coveredelements="10"/>
       </class>
-      <line num="30" type="method" name="execute" visibility="public" complexity="2" crap="2.15" count="64"/>
-      <line num="32" type="stmt" count="64"/>
+      <line num="30" type="method" name="execute" visibility="public" complexity="2" crap="2.15" count="71"/>
+      <line num="32" type="stmt" count="71"/>
       <line num="33" type="stmt" count="0"/>
-      <line num="36" type="stmt" count="64"/>
+      <line num="36" type="stmt" count="71"/>
       <line num="43" type="method" name="query" visibility="public" complexity="2" crap="2.15" count="10"/>
       <line num="45" type="stmt" count="10"/>
       <line num="46" type="stmt" count="0"/>
@@ -2722,11 +2722,11 @@
       <line num="46" type="stmt" count="6"/>
       <line num="47" type="stmt" count="6"/>
       <line num="50" type="stmt" count="6"/>
-      <line num="57" type="method" name="findOneBy" visibility="public" complexity="2" crap="2" count="2"/>
-      <line num="59" type="stmt" count="2"/>
-      <line num="60" type="stmt" count="2"/>
-      <line num="61" type="stmt" count="2"/>
-      <line num="64" type="stmt" count="2"/>
+      <line num="57" type="method" name="findOneBy" visibility="public" complexity="2" crap="2" count="15"/>
+      <line num="59" type="stmt" count="15"/>
+      <line num="60" type="stmt" count="15"/>
+      <line num="61" type="stmt" count="3"/>
+      <line num="64" type="stmt" count="15"/>
       <line num="71" type="method" name="first" visibility="public" complexity="2" crap="2" count="8"/>
       <line num="73" type="stmt" count="8"/>
       <line num="74" type="stmt" count="8"/>
@@ -2734,8 +2734,8 @@
       <line num="78" type="stmt" count="8"/>
       <line num="85" type="method" name="count" visibility="public" complexity="1" crap="1" count="5"/>
       <line num="87" type="stmt" count="5"/>
-      <line num="94" type="method" name="asArray" visibility="public" complexity="1" crap="1" count="5"/>
-      <line num="96" type="stmt" count="5"/>
+      <line num="94" type="method" name="asArray" visibility="public" complexity="1" crap="1" count="18"/>
+      <line num="96" type="stmt" count="18"/>
       <metrics loc="99" ncloc="60" classes="1" methods="6" coveredmethods="6" conditionals="0" coveredconditionals="0" statements="17" coveredstatements="17" elements="23" coveredelements="23"/>
     </file>
     <file name="D:\projects\forks\quantum-php-core\src\Libraries\Database\Schema\Column.php">
@@ -2994,8 +2994,8 @@
       <line num="160" type="stmt" count="41"/>
       <line num="161" type="stmt" count="41"/>
       <line num="162" type="stmt" count="41"/>
-      <line num="168" type="method" name="connect" visibility="public" complexity="1" crap="1" count="41"/>
-      <line num="170" type="stmt" count="41"/>
+      <line num="168" type="method" name="connect" visibility="public" complexity="1" crap="1" count="67"/>
+      <line num="170" type="stmt" count="67"/>
       <line num="176" type="method" name="getConnection" visibility="public" complexity="1" crap="1" count="41"/>
       <line num="178" type="stmt" count="41"/>
       <line num="184" type="method" name="disconnect" visibility="public" complexity="1" crap="1" count="41"/>
@@ -3190,64 +3190,75 @@
     </file>
     <file name="D:\projects\forks\quantum-php-core\src\Libraries\Encryption\Cryptor.php">
       <class name="Quantum\Libraries\Encryption\Cryptor" namespace="global">
-        <metrics complexity="21" methods="9" coveredmethods="4" conditionals="0" coveredconditionals="0" statements="46" coveredstatements="40" elements="55" coveredelements="44"/>
+        <metrics complexity="27" methods="12" coveredmethods="7" conditionals="0" coveredconditionals="0" statements="54" coveredstatements="48" elements="66" coveredelements="55"/>
       </class>
-      <line num="81" type="method" name="__construct" visibility="public" complexity="3" crap="3.03" count="26"/>
-      <line num="83" type="stmt" count="26"/>
-      <line num="84" type="stmt" count="26"/>
-      <line num="85" type="stmt" count="0"/>
-      <line num="87" type="stmt" count="26"/>
-      <line num="89" type="stmt" count="6"/>
-      <line num="92" type="stmt" count="26"/>
-      <line num="93" type="stmt" count="26"/>
-      <line num="100" type="method" name="isAsymmetric" visibility="public" complexity="1" crap="1" count="18"/>
-      <line num="102" type="stmt" count="18"/>
-      <line num="110" type="method" name="getPublicKey" visibility="public" complexity="2" crap="2.15" count="3"/>
-      <line num="112" type="stmt" count="3"/>
-      <line num="113" type="stmt" count="0"/>
-      <line num="116" type="stmt" count="3"/>
-      <line num="124" type="method" name="getPrivateKey" visibility="public" complexity="2" crap="2.15" count="2"/>
-      <line num="126" type="stmt" count="2"/>
-      <line num="127" type="stmt" count="0"/>
-      <line num="130" type="stmt" count="2"/>
-      <line num="140" type="method" name="encrypt" visibility="public" complexity="3" crap="3" count="17"/>
-      <line num="142" type="stmt" count="17"/>
-      <line num="143" type="stmt" count="14"/>
-      <line num="145" type="stmt" count="14"/>
-      <line num="147" type="stmt" count="14"/>
-      <line num="149" type="stmt" count="3"/>
-      <line num="150" type="stmt" count="1"/>
-      <line num="153" type="stmt" count="2"/>
-      <line num="154" type="stmt" count="2"/>
-      <line num="165" type="method" name="decrypt" visibility="public" complexity="6" crap="6.13" count="10"/>
-      <line num="167" type="stmt" count="10"/>
-      <line num="168" type="stmt" count="8"/>
-      <line num="169" type="stmt" count="0"/>
-      <line num="172" type="stmt" count="8"/>
-      <line num="174" type="stmt" count="8"/>
-      <line num="175" type="stmt" count="0"/>
-      <line num="178" type="stmt" count="8"/>
-      <line num="179" type="stmt" count="8"/>
-      <line num="181" type="stmt" count="8"/>
-      <line num="183" type="stmt" count="2"/>
-      <line num="184" type="stmt" count="1"/>
-      <line num="187" type="stmt" count="1"/>
-      <line num="188" type="stmt" count="1"/>
-      <line num="196" type="method" name="getIV" visibility="public" complexity="1" crap="1" count="1"/>
-      <line num="198" type="stmt" count="1"/>
-      <line num="205" type="method" name="iv" visibility="private" complexity="1" crap="1" count="14"/>
-      <line num="207" type="stmt" count="14"/>
-      <line num="208" type="stmt" count="14"/>
-      <line num="215" type="method" name="generateKeyPair" visibility="private" complexity="2" crap="2.01" count="6"/>
-      <line num="217" type="stmt" count="6"/>
-      <line num="218" type="stmt" count="6"/>
-      <line num="219" type="stmt" count="6"/>
-      <line num="220" type="stmt" count="6"/>
-      <line num="223" type="stmt" count="6"/>
-      <line num="224" type="stmt" count="0"/>
-      <line num="227" type="stmt" count="6"/>
-      <line num="228" type="stmt" count="6"/>
-      <metrics loc="232" ncloc="139" classes="1" methods="9" coveredmethods="4" conditionals="0" coveredconditionals="0" statements="46" coveredstatements="40" elements="55" coveredelements="44"/>
+      <line num="93" type="method" name="__construct" visibility="private" complexity="3" crap="3.04" count="11"/>
+      <line num="95" type="stmt" count="11"/>
+      <line num="96" type="stmt" count="10"/>
+      <line num="97" type="stmt" count="0"/>
+      <line num="99" type="stmt" count="10"/>
+      <line num="101" type="stmt" count="1"/>
+      <line num="104" type="stmt" count="11"/>
+      <line num="113" type="method" name="getInstance" visibility="public" complexity="2" crap="2" count="38"/>
+      <line num="115" type="stmt" count="38"/>
+      <line num="116" type="stmt" count="7"/>
+      <line num="118" type="stmt" count="38"/>
+      <line num="126" type="method" name="isAsymmetric" visibility="public" complexity="1" crap="1" count="35"/>
+      <line num="128" type="stmt" count="35"/>
+      <line num="136" type="method" name="getPublicKey" visibility="public" complexity="2" crap="2.15" count="3"/>
+      <line num="138" type="stmt" count="3"/>
+      <line num="139" type="stmt" count="0"/>
+      <line num="142" type="stmt" count="3"/>
+      <line num="150" type="method" name="getPrivateKey" visibility="public" complexity="2" crap="2.15" count="2"/>
+      <line num="152" type="stmt" count="2"/>
+      <line num="153" type="stmt" count="0"/>
+      <line num="156" type="stmt" count="2"/>
+      <line num="166" type="method" name="encrypt" visibility="public" complexity="3" crap="3" count="34"/>
+      <line num="168" type="stmt" count="34"/>
+      <line num="169" type="stmt" count="31"/>
+      <line num="171" type="stmt" count="31"/>
+      <line num="173" type="stmt" count="31"/>
+      <line num="175" type="stmt" count="3"/>
+      <line num="176" type="stmt" count="1"/>
+      <line num="179" type="stmt" count="2"/>
+      <line num="180" type="stmt" count="2"/>
+      <line num="191" type="method" name="decrypt" visibility="public" complexity="6" crap="6.13" count="26"/>
+      <line num="193" type="stmt" count="26"/>
+      <line num="194" type="stmt" count="24"/>
+      <line num="195" type="stmt" count="0"/>
+      <line num="198" type="stmt" count="24"/>
+      <line num="200" type="stmt" count="24"/>
+      <line num="201" type="stmt" count="0"/>
+      <line num="204" type="stmt" count="24"/>
+      <line num="205" type="stmt" count="24"/>
+      <line num="207" type="stmt" count="24"/>
+      <line num="209" type="stmt" count="2"/>
+      <line num="210" type="stmt" count="1"/>
+      <line num="213" type="stmt" count="1"/>
+      <line num="214" type="stmt" count="1"/>
+      <line num="222" type="method" name="getIV" visibility="public" complexity="1" crap="1" count="1"/>
+      <line num="224" type="stmt" count="1"/>
+      <line num="231" type="method" name="iv" visibility="private" complexity="1" crap="1" count="31"/>
+      <line num="233" type="stmt" count="31"/>
+      <line num="234" type="stmt" count="31"/>
+      <line num="241" type="method" name="generateKeyPair" visibility="private" complexity="2" crap="2.01" count="1"/>
+      <line num="243" type="stmt" count="1"/>
+      <line num="244" type="stmt" count="1"/>
+      <line num="245" type="stmt" count="1"/>
+      <line num="246" type="stmt" count="1"/>
+      <line num="249" type="stmt" count="1"/>
+      <line num="250" type="stmt" count="0"/>
+      <line num="253" type="stmt" count="1"/>
+      <line num="254" type="stmt" count="1"/>
+      <line num="261" type="method" name="getSymmetricInstance" visibility="private" complexity="2" crap="2" count="38"/>
+      <line num="263" type="stmt" count="38"/>
+      <line num="264" type="stmt" count="10"/>
+      <line num="267" type="stmt" count="38"/>
+      <line num="274" type="method" name="getAsymmetricInstance" visibility="private" complexity="2" crap="2" count="7"/>
+      <line num="276" type="stmt" count="7"/>
+      <line num="277" type="stmt" count="1"/>
+      <line num="280" type="stmt" count="7"/>
+      <metrics loc="284" ncloc="170" classes="1" methods="12" coveredmethods="7" conditionals="0" coveredconditionals="0" statements="54" coveredstatements="48" elements="66" coveredelements="55"/>
     </file>
     <file name="D:\projects\forks\quantum-php-core\src\Libraries\Hasher\Hasher.php">
       <class name="Quantum\Libraries\Hasher\Hasher" namespace="global">
@@ -3314,40 +3325,40 @@
       <class name="Quantum\Libraries\Lang\Lang" namespace="global">
         <metrics complexity="22" methods="7" coveredmethods="5" conditionals="0" coveredconditionals="0" statements="37" coveredstatements="34" elements="44" coveredelements="39"/>
       </class>
-      <line num="64" type="method" name="getInstance" visibility="public" complexity="8" crap="8.38" count="375"/>
-      <line num="66" type="stmt" count="375"/>
-      <line num="67" type="stmt" count="54"/>
-      <line num="69" type="stmt" count="54"/>
+      <line num="64" type="method" name="getInstance" visibility="public" complexity="8" crap="8.38" count="397"/>
+      <line num="66" type="stmt" count="397"/>
+      <line num="67" type="stmt" count="48"/>
+      <line num="69" type="stmt" count="48"/>
       <line num="70" type="stmt" count="0"/>
-      <line num="73" type="stmt" count="54"/>
-      <line num="75" type="stmt" count="54"/>
+      <line num="73" type="stmt" count="48"/>
+      <line num="75" type="stmt" count="48"/>
       <line num="76" type="stmt" count="0"/>
-      <line num="79" type="stmt" count="54"/>
-      <line num="80" type="stmt" count="54"/>
-      <line num="83" type="stmt" count="54"/>
-      <line num="86" type="stmt" count="375"/>
-      <line num="95" type="method" name="load" visibility="public" complexity="6" crap="6.01" count="373"/>
-      <line num="97" type="stmt" count="373"/>
-      <line num="99" type="stmt" count="373"/>
-      <line num="101" type="stmt" count="373"/>
-      <line num="103" type="stmt" count="373"/>
+      <line num="79" type="stmt" count="48"/>
+      <line num="80" type="stmt" count="48"/>
+      <line num="83" type="stmt" count="48"/>
+      <line num="86" type="stmt" count="397"/>
+      <line num="95" type="method" name="load" visibility="public" complexity="6" crap="6.01" count="397"/>
+      <line num="97" type="stmt" count="397"/>
+      <line num="99" type="stmt" count="397"/>
+      <line num="101" type="stmt" count="397"/>
+      <line num="103" type="stmt" count="397"/>
       <line num="104" type="stmt" count="28"/>
       <line num="106" type="stmt" count="28"/>
       <line num="108" type="stmt" count="28"/>
       <line num="109" type="stmt" count="0"/>
-      <line num="113" type="stmt" count="373"/>
-      <line num="115" type="stmt" count="373"/>
-      <line num="116" type="stmt" count="373"/>
-      <line num="118" type="stmt" count="373"/>
-      <line num="119" type="stmt" count="373"/>
-      <line num="120" type="stmt" count="373"/>
-      <line num="121" type="stmt" count="373"/>
-      <line num="123" type="stmt" count="373"/>
-      <line num="132" type="method" name="setLang" visibility="public" complexity="1" crap="1" count="373"/>
-      <line num="134" type="stmt" count="373"/>
-      <line num="135" type="stmt" count="373"/>
-      <line num="142" type="method" name="getLang" visibility="public" complexity="1" crap="1" count="373"/>
-      <line num="144" type="stmt" count="373"/>
+      <line num="113" type="stmt" count="397"/>
+      <line num="115" type="stmt" count="397"/>
+      <line num="116" type="stmt" count="397"/>
+      <line num="118" type="stmt" count="397"/>
+      <line num="119" type="stmt" count="397"/>
+      <line num="120" type="stmt" count="397"/>
+      <line num="121" type="stmt" count="397"/>
+      <line num="123" type="stmt" count="397"/>
+      <line num="132" type="method" name="setLang" visibility="public" complexity="1" crap="1" count="397"/>
+      <line num="134" type="stmt" count="397"/>
+      <line num="135" type="stmt" count="397"/>
+      <line num="142" type="method" name="getLang" visibility="public" complexity="1" crap="1" count="397"/>
+      <line num="144" type="stmt" count="397"/>
       <line num="151" type="method" name="getTranslations" visibility="public" complexity="1" crap="1" count="1"/>
       <line num="153" type="stmt" count="1"/>
       <line num="162" type="method" name="getTranslation" visibility="public" complexity="4" crap="4" count="64"/>
@@ -3503,119 +3514,120 @@
       <line num="536" type="stmt" count="0"/>
       <metrics loc="540" ncloc="335" classes="1" methods="30" coveredmethods="22" conditionals="0" coveredconditionals="0" statements="107" coveredstatements="79" elements="137" coveredelements="101"/>
     </file>
-    <file name="D:\projects\forks\quantum-php-core\src\Libraries\Session\DbSessionHandler.php">
-      <class name="Quantum\Libraries\Session\DbSessionHandler" namespace="global">
-        <metrics complexity="10" methods="7" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="14" coveredstatements="0" elements="21" coveredelements="0"/>
+    <file name="D:\projects\forks\quantum-php-core\src\Libraries\Session\Handlers\DatabaseHandler.php">
+      <class name="Quantum\Libraries\Session\Handlers\DatabaseHandler" namespace="global">
+        <metrics complexity="12" methods="7" coveredmethods="4" conditionals="0" coveredconditionals="0" statements="21" coveredstatements="17" elements="28" coveredelements="21"/>
       </class>
-      <line num="42" type="method" name="__construct" visibility="public" complexity="1" crap="2" count="0"/>
-      <line num="44" type="stmt" count="0"/>
-      <line num="50" type="method" name="open" visibility="public" complexity="2" crap="6" count="0"/>
-      <line num="52" type="stmt" count="0"/>
-      <line num="53" type="stmt" count="0"/>
-      <line num="55" type="stmt" count="0"/>
-      <line num="61" type="method" name="close" visibility="public" complexity="2" crap="6" count="0"/>
-      <line num="63" type="stmt" count="0"/>
-      <line num="64" type="stmt" count="0"/>
-      <line num="66" type="stmt" count="0"/>
-      <line num="73" type="method" name="read" visibility="public" complexity="2" crap="6" count="0"/>
-      <line num="75" type="stmt" count="0"/>
-      <line num="76" type="stmt" count="0"/>
-      <line num="83" type="method" name="write" visibility="public" complexity="1" crap="2" count="0"/>
-      <line num="85" type="stmt" count="0"/>
-      <line num="86" type="stmt" count="0"/>
-      <line num="93" type="method" name="destroy" visibility="public" complexity="1" crap="2" count="0"/>
-      <line num="95" type="stmt" count="0"/>
-      <line num="102" type="method" name="gc" visibility="public" complexity="1" crap="2" count="0"/>
-      <line num="104" type="stmt" count="0"/>
-      <line num="105" type="stmt" count="0"/>
-      <metrics loc="109" ncloc="60" classes="1" methods="7" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="14" coveredstatements="0" elements="21" coveredelements="0"/>
+      <line num="36" type="method" name="__construct" visibility="public" complexity="1" crap="1" count="6"/>
+      <line num="38" type="stmt" count="6"/>
+      <line num="44" type="method" name="open" visibility="public" complexity="2" crap="2.15" count="13"/>
+      <line num="46" type="stmt" count="13"/>
+      <line num="47" type="stmt" count="13"/>
+      <line num="50" type="stmt" count="0"/>
+      <line num="56" type="method" name="close" visibility="public" complexity="2" crap="2.15" count="13"/>
+      <line num="58" type="stmt" count="13"/>
+      <line num="59" type="stmt" count="0"/>
+      <line num="62" type="stmt" count="13"/>
+      <line num="68" type="method" name="read" visibility="public" complexity="2" crap="2" count="13"/>
+      <line num="70" type="stmt" count="13"/>
+      <line num="71" type="stmt" count="13"/>
+      <line num="77" type="method" name="write" visibility="public" complexity="2" crap="2" count="5"/>
+      <line num="79" type="stmt" count="5"/>
+      <line num="81" type="stmt" count="5"/>
+      <line num="82" type="stmt" count="5"/>
+      <line num="85" type="stmt" count="5"/>
+      <line num="86" type="stmt" count="5"/>
+      <line num="87" type="stmt" count="5"/>
+      <line num="89" type="stmt" count="5"/>
+      <line num="95" type="method" name="destroy" visibility="public" complexity="2" crap="2" count="9"/>
+      <line num="97" type="stmt" count="9"/>
+      <line num="98" type="stmt" count="7"/>
+      <line num="101" type="stmt" count="2"/>
+      <line num="107" type="method" name="gc" visibility="public" complexity="1" crap="2" count="0"/>
+      <line num="109" type="stmt" count="0"/>
+      <line num="110" type="stmt" count="0"/>
+      <metrics loc="114" ncloc="74" classes="1" methods="7" coveredmethods="4" conditionals="0" coveredconditionals="0" statements="21" coveredstatements="17" elements="28" coveredelements="21"/>
     </file>
     <file name="D:\projects\forks\quantum-php-core\src\Libraries\Session\Session.php">
       <class name="Quantum\Libraries\Session\Session" namespace="global">
-        <metrics complexity="21" methods="12" coveredmethods="10" conditionals="0" coveredconditionals="0" statements="30" coveredstatements="28" elements="42" coveredelements="38"/>
+        <metrics complexity="18" methods="11" coveredmethods="11" conditionals="0" coveredconditionals="0" statements="24" coveredstatements="24" elements="35" coveredelements="35"/>
       </class>
-      <line num="43" type="method" name="__construct" visibility="public" complexity="1" crap="1" count="72"/>
-      <line num="45" type="stmt" count="72"/>
-      <line num="46" type="stmt" count="72"/>
-      <line num="54" type="method" name="all" visibility="public" complexity="2" crap="2" count="2"/>
-      <line num="56" type="stmt" count="2"/>
-      <line num="58" type="stmt" count="2"/>
-      <line num="59" type="stmt" count="2"/>
-      <line num="62" type="stmt" count="2"/>
-      <line num="70" type="method" name="has" visibility="public" complexity="2" crap="2" count="28"/>
-      <line num="72" type="stmt" count="28"/>
-      <line num="81" type="method" name="get" visibility="public" complexity="2" crap="2" count="13"/>
-      <line num="83" type="stmt" count="13"/>
-      <line num="93" type="method" name="set" visibility="public" complexity="1" crap="1" count="18"/>
-      <line num="95" type="stmt" count="18"/>
-      <line num="96" type="stmt" count="18"/>
-      <line num="105" type="method" name="getFlash" visibility="public" complexity="2" crap="2" count="1"/>
-      <line num="107" type="stmt" count="1"/>
-      <line num="109" type="stmt" count="1"/>
-      <line num="110" type="stmt" count="1"/>
-      <line num="111" type="stmt" count="1"/>
-      <line num="114" type="stmt" count="1"/>
-      <line num="124" type="method" name="setFlash" visibility="public" complexity="1" crap="1" count="1"/>
-      <line num="126" type="stmt" count="1"/>
-      <line num="127" type="stmt" count="1"/>
-      <line num="134" type="method" name="delete" visibility="public" complexity="2" crap="2" count="18"/>
-      <line num="136" type="stmt" count="18"/>
-      <line num="137" type="stmt" count="12"/>
-      <line num="144" type="method" name="flush" visibility="public" complexity="1" crap="1" count="1"/>
-      <line num="146" type="stmt" count="1"/>
-      <line num="147" type="stmt" count="1"/>
-      <line num="154" type="method" name="getSessionId" visibility="public" complexity="1" crap="2" count="0"/>
-      <line num="156" type="stmt" count="0"/>
-      <line num="165" type="method" name="encode" visibility="private" complexity="3" crap="3" count="18"/>
-      <line num="167" type="stmt" count="18"/>
-      <line num="168" type="stmt" count="18"/>
-      <line num="177" type="method" name="decode" visibility="private" complexity="3" crap="3.04" count="14"/>
-      <line num="179" type="stmt" count="14"/>
-      <line num="180" type="stmt" count="0"/>
-      <line num="183" type="stmt" count="14"/>
-      <line num="185" type="stmt" count="14"/>
-      <line num="186" type="stmt" count="3"/>
-      <line num="189" type="stmt" count="14"/>
-      <metrics loc="193" ncloc="106" classes="1" methods="12" coveredmethods="10" conditionals="0" coveredconditionals="0" statements="30" coveredstatements="28" elements="42" coveredelements="38"/>
+      <line num="51" type="method" name="getInstance" visibility="public" complexity="2" crap="2" count="78"/>
+      <line num="53" type="stmt" count="78"/>
+      <line num="55" type="stmt" count="78"/>
+      <line num="56" type="stmt" count="1"/>
+      <line num="59" type="stmt" count="78"/>
+      <line num="66" type="method" name="all" visibility="public" complexity="2" crap="2" count="5"/>
+      <line num="68" type="stmt" count="5"/>
+      <line num="70" type="stmt" count="5"/>
+      <line num="71" type="stmt" count="5"/>
+      <line num="74" type="stmt" count="5"/>
+      <line num="80" type="method" name="has" visibility="public" complexity="2" crap="2" count="28"/>
+      <line num="82" type="stmt" count="28"/>
+      <line num="89" type="method" name="get" visibility="public" complexity="2" crap="2" count="15"/>
+      <line num="91" type="stmt" count="15"/>
+      <line num="98" type="method" name="set" visibility="public" complexity="1" crap="1" count="25"/>
+      <line num="100" type="stmt" count="25"/>
+      <line num="107" type="method" name="getFlash" visibility="public" complexity="2" crap="2" count="2"/>
+      <line num="109" type="stmt" count="2"/>
+      <line num="111" type="stmt" count="2"/>
+      <line num="112" type="stmt" count="2"/>
+      <line num="113" type="stmt" count="2"/>
+      <line num="116" type="stmt" count="2"/>
+      <line num="123" type="method" name="setFlash" visibility="public" complexity="1" crap="1" count="2"/>
+      <line num="125" type="stmt" count="2"/>
+      <line num="126" type="stmt" count="2"/>
+      <line num="132" type="method" name="delete" visibility="public" complexity="2" crap="2" count="20"/>
+      <line num="134" type="stmt" count="20"/>
+      <line num="135" type="stmt" count="14"/>
+      <line num="142" type="method" name="flush" visibility="public" complexity="1" crap="1" count="8"/>
+      <line num="144" type="stmt" count="8"/>
+      <line num="145" type="stmt" count="8"/>
+      <line num="151" type="method" name="getId" visibility="public" complexity="1" crap="1" count="4"/>
+      <line num="153" type="stmt" count="4"/>
+      <line num="159" type="method" name="regenerateId" visibility="public" complexity="1" crap="1" count="2"/>
+      <line num="161" type="stmt" count="2"/>
+      <metrics loc="164" ncloc="97" classes="1" methods="11" coveredmethods="11" conditionals="0" coveredconditionals="0" statements="24" coveredstatements="24" elements="35" coveredelements="35"/>
     </file>
     <file name="D:\projects\forks\quantum-php-core\src\Libraries\Session\SessionManager.php">
       <class name="Quantum\Libraries\Session\SessionManager" namespace="global">
-        <metrics complexity="8" methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="14" coveredstatements="6" elements="15" coveredelements="6"/>
+        <metrics complexity="8" methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="15" coveredstatements="9" elements="16" coveredelements="9"/>
       </class>
-      <line num="39" type="method" name="getHandler" visibility="public" complexity="8" crap="19.94" count="16"/>
-      <line num="41" type="stmt" count="16"/>
-      <line num="42" type="stmt" count="1"/>
-      <line num="43" type="stmt" count="0"/>
-      <line num="45" type="stmt" count="0"/>
-      <line num="46" type="stmt" count="0"/>
-      <line num="49" type="stmt" count="0"/>
-      <line num="50" type="stmt" count="0"/>
-      <line num="53" type="stmt" count="1"/>
-      <line num="54" type="stmt" count="0"/>
-      <line num="58" type="stmt" count="16"/>
-      <line num="59" type="stmt" count="0"/>
-      <line num="60" type="stmt" count="0"/>
-      <line num="64" type="stmt" count="16"/>
+      <line num="60" type="method" name="getHandler" visibility="public" complexity="8" crap="12.10" count="16"/>
+      <line num="62" type="stmt" count="16"/>
+      <line num="63" type="stmt" count="16"/>
       <line num="66" type="stmt" count="16"/>
-      <metrics loc="70" ncloc="46" classes="1" methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="14" coveredstatements="6" elements="15" coveredelements="6"/>
+      <line num="67" type="stmt" count="1"/>
+      <line num="68" type="stmt" count="0"/>
+      <line num="70" type="stmt" count="0"/>
+      <line num="71" type="stmt" count="0"/>
+      <line num="74" type="stmt" count="1"/>
+      <line num="75" type="stmt" count="0"/>
+      <line num="78" type="stmt" count="1"/>
+      <line num="81" type="stmt" count="16"/>
+      <line num="82" type="stmt" count="0"/>
+      <line num="83" type="stmt" count="0"/>
+      <line num="87" type="stmt" count="16"/>
+      <line num="89" type="stmt" count="16"/>
+      <metrics loc="93" ncloc="59" classes="1" methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="15" coveredstatements="9" elements="16" coveredelements="9"/>
     </file>
     <file name="D:\projects\forks\quantum-php-core\src\Libraries\Session\SessionStorageInterface.php">
-      <metrics loc="45" ncloc="17" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
+      <metrics loc="52" ncloc="19" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
     </file>
     <file name="D:\projects\forks\quantum-php-core\src\Libraries\Storage\FileSystem.php">
       <class name="Quantum\Libraries\Storage\FileSystem" namespace="global">
         <metrics complexity="5" methods="3" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="7" coveredstatements="6" elements="10" coveredelements="8"/>
       </class>
-      <line num="55" type="method" name="__construct" visibility="public" complexity="2" crap="2" count="73"/>
-      <line num="57" type="stmt" count="73"/>
+      <line num="55" type="method" name="__construct" visibility="public" complexity="2" crap="2" count="67"/>
+      <line num="57" type="stmt" count="67"/>
       <line num="58" type="stmt" count="1"/>
-      <line num="60" type="stmt" count="73"/>
+      <line num="60" type="stmt" count="67"/>
       <line num="68" type="method" name="getAdapter" visibility="public" complexity="1" crap="1" count="1"/>
       <line num="70" type="stmt" count="1"/>
-      <line num="79" type="method" name="__call" visibility="public" complexity="2" crap="2.15" count="373"/>
-      <line num="81" type="stmt" count="373"/>
+      <line num="79" type="method" name="__call" visibility="public" complexity="2" crap="2.15" count="397"/>
+      <line num="81" type="stmt" count="397"/>
       <line num="82" type="stmt" count="0"/>
-      <line num="85" type="stmt" count="373"/>
+      <line num="85" type="stmt" count="397"/>
       <metrics loc="89" ncloc="37" classes="1" methods="3" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="7" coveredstatements="6" elements="10" coveredelements="8"/>
     </file>
     <file name="D:\projects\forks\quantum-php-core\src\Libraries\Storage\FilesystemAdapterInterface.php">
@@ -3625,10 +3637,10 @@
       <class name="Quantum\Libraries\Storage\LocalFileSystemAdapter" namespace="global">
         <metrics complexity="26" methods="22" coveredmethods="20" conditionals="0" coveredconditionals="0" statements="28" coveredstatements="22" elements="50" coveredelements="42"/>
       </class>
-      <line num="33" type="method" name="getInstance" visibility="public" complexity="2" crap="2" count="73"/>
-      <line num="35" type="stmt" count="73"/>
-      <line num="36" type="stmt" count="54"/>
-      <line num="39" type="stmt" count="73"/>
+      <line num="33" type="method" name="getInstance" visibility="public" complexity="2" crap="2" count="67"/>
+      <line num="35" type="stmt" count="67"/>
+      <line num="36" type="stmt" count="48"/>
+      <line num="39" type="stmt" count="67"/>
       <line num="45" type="method" name="makeDirectory" visibility="public" complexity="1" crap="1" count="2"/>
       <line num="47" type="stmt" count="2"/>
       <line num="53" type="method" name="removeDirectory" visibility="public" complexity="1" crap="1" count="2"/>
@@ -3643,8 +3655,8 @@
       <line num="87" type="stmt" count="1"/>
       <line num="93" type="method" name="copy" visibility="public" complexity="1" crap="1" count="1"/>
       <line num="95" type="stmt" count="1"/>
-      <line num="101" type="method" name="exists" visibility="public" complexity="2" crap="2" count="373"/>
-      <line num="103" type="stmt" count="373"/>
+      <line num="101" type="method" name="exists" visibility="public" complexity="2" crap="2" count="397"/>
+      <line num="103" type="stmt" count="397"/>
       <line num="109" type="method" name="size" visibility="public" complexity="1" crap="1" count="1"/>
       <line num="111" type="stmt" count="1"/>
       <line num="117" type="method" name="lastModified" visibility="public" complexity="1" crap="1" count="7"/>
@@ -3661,12 +3673,12 @@
       <line num="163" type="stmt" count="6"/>
       <line num="174" type="method" name="getLines" visibility="public" complexity="1" crap="1" count="1"/>
       <line num="176" type="stmt" count="1"/>
-      <line num="184" type="method" name="fileName" visibility="public" complexity="1" crap="1" count="373"/>
-      <line num="186" type="stmt" count="373"/>
+      <line num="184" type="method" name="fileName" visibility="public" complexity="1" crap="1" count="397"/>
+      <line num="186" type="stmt" count="397"/>
       <line num="194" type="method" name="extension" visibility="public" complexity="1" crap="1" count="10"/>
       <line num="196" type="stmt" count="10"/>
-      <line num="205" type="method" name="glob" visibility="public" complexity="1" crap="1" count="373"/>
-      <line num="207" type="stmt" count="373"/>
+      <line num="205" type="method" name="glob" visibility="public" complexity="1" crap="1" count="397"/>
+      <line num="207" type="stmt" count="397"/>
       <line num="215" type="method" name="require" visibility="public" complexity="2" crap="6" count="0"/>
       <line num="217" type="stmt" count="0"/>
       <line num="218" type="stmt" count="0"/>
@@ -4112,74 +4124,74 @@
       <class name="Quantum\Loader\Loader" namespace="global">
         <metrics complexity="12" methods="6" coveredmethods="3" conditionals="0" coveredconditionals="0" statements="25" coveredstatements="20" elements="31" coveredelements="23"/>
       </class>
-      <line num="67" type="method" name="__construct" visibility="public" complexity="1" crap="1" count="55"/>
-      <line num="69" type="stmt" count="55"/>
-      <line num="77" type="method" name="setup" visibility="public" complexity="1" crap="1" count="373"/>
-      <line num="79" type="stmt" count="373"/>
-      <line num="80" type="stmt" count="373"/>
-      <line num="81" type="stmt" count="373"/>
-      <line num="82" type="stmt" count="373"/>
-      <line num="83" type="stmt" count="373"/>
-      <line num="85" type="stmt" count="373"/>
+      <line num="67" type="method" name="__construct" visibility="public" complexity="1" crap="1" count="49"/>
+      <line num="69" type="stmt" count="49"/>
+      <line num="77" type="method" name="setup" visibility="public" complexity="1" crap="1" count="397"/>
+      <line num="79" type="stmt" count="397"/>
+      <line num="80" type="stmt" count="397"/>
+      <line num="81" type="stmt" count="397"/>
+      <line num="82" type="stmt" count="397"/>
+      <line num="83" type="stmt" count="397"/>
+      <line num="85" type="stmt" count="397"/>
       <line num="94" type="method" name="set" visibility="public" complexity="1" crap="2" count="0"/>
       <line num="96" type="stmt" count="0"/>
       <line num="97" type="stmt" count="0"/>
       <line num="105" type="method" name="loadDir" visibility="public" complexity="2" crap="6" count="0"/>
       <line num="107" type="stmt" count="0"/>
       <line num="108" type="stmt" count="0"/>
-      <line num="117" type="method" name="load" visibility="public" complexity="1" crap="1" count="373"/>
-      <line num="119" type="stmt" count="373"/>
-      <line num="127" type="method" name="getFilePath" visibility="public" complexity="6" crap="6.02" count="373"/>
-      <line num="129" type="stmt" count="373"/>
-      <line num="131" type="stmt" count="373"/>
-      <line num="132" type="stmt" count="295"/>
-      <line num="135" type="stmt" count="373"/>
-      <line num="136" type="stmt" count="373"/>
-      <line num="139" type="stmt" count="373"/>
-      <line num="141" type="stmt" count="373"/>
-      <line num="142" type="stmt" count="373"/>
-      <line num="143" type="stmt" count="373"/>
-      <line num="145" type="stmt" count="373"/>
-      <line num="146" type="stmt" count="373"/>
+      <line num="117" type="method" name="load" visibility="public" complexity="1" crap="1" count="397"/>
+      <line num="119" type="stmt" count="397"/>
+      <line num="127" type="method" name="getFilePath" visibility="public" complexity="6" crap="6.02" count="397"/>
+      <line num="129" type="stmt" count="397"/>
+      <line num="131" type="stmt" count="397"/>
+      <line num="132" type="stmt" count="325"/>
+      <line num="135" type="stmt" count="397"/>
+      <line num="136" type="stmt" count="397"/>
+      <line num="139" type="stmt" count="397"/>
+      <line num="141" type="stmt" count="397"/>
+      <line num="142" type="stmt" count="397"/>
+      <line num="143" type="stmt" count="397"/>
+      <line num="145" type="stmt" count="397"/>
+      <line num="146" type="stmt" count="397"/>
       <line num="149" type="stmt" count="0"/>
-      <line num="153" type="stmt" count="373"/>
+      <line num="153" type="stmt" count="397"/>
       <metrics loc="157" ncloc="88" classes="1" methods="6" coveredmethods="3" conditionals="0" coveredconditionals="0" statements="25" coveredstatements="20" elements="31" coveredelements="23"/>
     </file>
     <file name="D:\projects\forks\quantum-php-core\src\Loader\Setup.php">
       <class name="Quantum\Loader\Setup" namespace="global">
         <metrics complexity="13" methods="11" coveredmethods="11" conditionals="0" coveredconditionals="0" statements="20" coveredstatements="20" elements="31" coveredelements="31"/>
       </class>
-      <line num="59" type="method" name="__construct" visibility="public" complexity="3" crap="3" count="373"/>
-      <line num="61" type="stmt" count="373"/>
-      <line num="62" type="stmt" count="373"/>
-      <line num="63" type="stmt" count="373"/>
-      <line num="64" type="stmt" count="373"/>
-      <line num="65" type="stmt" count="373"/>
-      <line num="73" type="method" name="setPathPrefix" visibility="public" complexity="1" crap="1" count="373"/>
-      <line num="75" type="stmt" count="373"/>
-      <line num="76" type="stmt" count="373"/>
-      <line num="83" type="method" name="getPathPrefix" visibility="public" complexity="1" crap="1" count="373"/>
-      <line num="85" type="stmt" count="373"/>
-      <line num="93" type="method" name="setFilename" visibility="public" complexity="1" crap="1" count="373"/>
-      <line num="95" type="stmt" count="373"/>
-      <line num="96" type="stmt" count="373"/>
-      <line num="103" type="method" name="getFilename" visibility="public" complexity="1" crap="1" count="373"/>
-      <line num="105" type="stmt" count="373"/>
+      <line num="59" type="method" name="__construct" visibility="public" complexity="3" crap="3" count="397"/>
+      <line num="61" type="stmt" count="397"/>
+      <line num="62" type="stmt" count="397"/>
+      <line num="63" type="stmt" count="397"/>
+      <line num="64" type="stmt" count="397"/>
+      <line num="65" type="stmt" count="397"/>
+      <line num="73" type="method" name="setPathPrefix" visibility="public" complexity="1" crap="1" count="397"/>
+      <line num="75" type="stmt" count="397"/>
+      <line num="76" type="stmt" count="397"/>
+      <line num="83" type="method" name="getPathPrefix" visibility="public" complexity="1" crap="1" count="397"/>
+      <line num="85" type="stmt" count="397"/>
+      <line num="93" type="method" name="setFilename" visibility="public" complexity="1" crap="1" count="397"/>
+      <line num="95" type="stmt" count="397"/>
+      <line num="96" type="stmt" count="397"/>
+      <line num="103" type="method" name="getFilename" visibility="public" complexity="1" crap="1" count="397"/>
+      <line num="105" type="stmt" count="397"/>
       <line num="113" type="method" name="setModule" visibility="public" complexity="1" crap="1" count="1"/>
       <line num="115" type="stmt" count="1"/>
       <line num="116" type="stmt" count="1"/>
-      <line num="123" type="method" name="getModule" visibility="public" complexity="1" crap="1" count="373"/>
-      <line num="125" type="stmt" count="373"/>
+      <line num="123" type="method" name="getModule" visibility="public" complexity="1" crap="1" count="397"/>
+      <line num="125" type="stmt" count="397"/>
       <line num="133" type="method" name="setExceptionMessage" visibility="public" complexity="1" crap="1" count="1"/>
       <line num="135" type="stmt" count="1"/>
       <line num="136" type="stmt" count="1"/>
-      <line num="143" type="method" name="getExceptionMessage" visibility="public" complexity="1" crap="1" count="373"/>
-      <line num="145" type="stmt" count="373"/>
-      <line num="153" type="method" name="setHierarchy" visibility="public" complexity="1" crap="1" count="373"/>
-      <line num="155" type="stmt" count="373"/>
-      <line num="156" type="stmt" count="373"/>
-      <line num="163" type="method" name="getHierarchy" visibility="public" complexity="1" crap="1" count="373"/>
-      <line num="165" type="stmt" count="373"/>
+      <line num="143" type="method" name="getExceptionMessage" visibility="public" complexity="1" crap="1" count="397"/>
+      <line num="145" type="stmt" count="397"/>
+      <line num="153" type="method" name="setHierarchy" visibility="public" complexity="1" crap="1" count="397"/>
+      <line num="155" type="stmt" count="397"/>
+      <line num="156" type="stmt" count="397"/>
+      <line num="163" type="method" name="getHierarchy" visibility="public" complexity="1" crap="1" count="397"/>
+      <line num="165" type="stmt" count="397"/>
       <metrics loc="169" ncloc="86" classes="1" methods="11" coveredmethods="11" conditionals="0" coveredconditionals="0" statements="20" coveredstatements="20" elements="31" coveredelements="31"/>
     </file>
     <file name="D:\projects\forks\quantum-php-core\src\Logger\FileLogger.php">
@@ -4547,10 +4559,10 @@
       <line num="226" type="stmt" count="0"/>
       <line num="228" type="stmt" count="6"/>
       <line num="231" type="stmt" count="6"/>
-      <line num="238" type="method" name="cleaner" visibility="private" complexity="2" crap="2.15" count="5"/>
-      <line num="240" type="stmt" count="5"/>
+      <line num="238" type="method" name="cleaner" visibility="private" complexity="2" crap="2.15" count="4"/>
+      <line num="240" type="stmt" count="4"/>
       <line num="241" type="stmt" count="0"/>
-      <line num="243" type="stmt" count="5"/>
+      <line num="243" type="stmt" count="4"/>
       <metrics loc="248" ncloc="140" classes="1" methods="14" coveredmethods="9" conditionals="0" coveredconditionals="0" statements="38" coveredstatements="29" elements="52" coveredelements="38"/>
     </file>
     <file name="D:\projects\forks\quantum-php-core\src\Renderer\DefaultRenderer.php">
@@ -4567,7 +4579,7 @@
       <line num="47" type="stmt" count="6"/>
       <line num="48" type="stmt" count="6"/>
       <line num="50" type="stmt" count="6"/>
-      <line num="51" type="stmt" count="5"/>
+      <line num="51" type="stmt" count="4"/>
       <line num="54" type="stmt" count="6"/>
       <line num="56" type="stmt" count="6"/>
       <metrics loc="59" ncloc="38" classes="1" methods="1" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="12" coveredstatements="11" elements="13" coveredelements="11"/>
@@ -4700,8 +4712,8 @@
       <class name="Quantum\Router\RouteController" namespace="global">
         <metrics complexity="2" methods="2" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="2" coveredstatements="2" elements="4" coveredelements="4"/>
       </class>
-      <line num="34" type="method" name="getCurrentRoute" visibility="public" complexity="1" crap="1" count="373"/>
-      <line num="36" type="stmt" count="373"/>
+      <line num="34" type="method" name="getCurrentRoute" visibility="public" complexity="1" crap="1" count="397"/>
+      <line num="36" type="stmt" count="397"/>
       <line num="42" type="method" name="setCurrentRoute" visibility="public" complexity="1" crap="1" count="9"/>
       <line num="44" type="stmt" count="9"/>
       <metrics loc="48" ncloc="22" classes="1" methods="2" coveredmethods="2" conditionals="0" coveredconditionals="0" statements="2" coveredstatements="2" elements="4" coveredelements="4"/>
@@ -4887,6 +4899,6 @@
       <line num="189" type="stmt" count="0"/>
       <metrics loc="191" ncloc="132" classes="1" methods="5" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="45" coveredstatements="0" elements="50" coveredelements="0"/>
     </file>
-    <metrics files="162" loc="20043" ncloc="11662" classes="135" methods="816" coveredmethods="508" conditionals="0" coveredconditionals="0" statements="3164" coveredstatements="2183" elements="3980" coveredelements="2691"/>
+    <metrics files="162" loc="20147" ncloc="11734" classes="135" methods="816" coveredmethods="515" conditionals="0" coveredconditionals="0" statements="3176" coveredstatements="2210" elements="3992" coveredelements="2725"/>
   </project>
 </coverage>

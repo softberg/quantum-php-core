@@ -2,6 +2,6 @@
 
 return [
     'table' => 'sessions',
-    'driver' => 'native',
+    'driver' => 'file',
     'timeout' => 300,
 ];

@@ -14,8 +14,6 @@
 
 namespace Quantum\Loader;
 
-use Quantum\Exceptions\ConfigException;
-
 /**
  * Class Setup
  * @package Quantum\Loader
@@ -54,9 +52,9 @@ class Setup
      * @param string|null $fileName
      * @param bool $hierarchical
      * @param string|null $module
-     * @param string $exceptionMessage
+     * @param string|null $exceptionMessage
      */
-    public function __construct(string $pathPrefix = null, string $fileName = null, bool $hierarchical = true, string $module = null, string $exceptionMessage = null)
+    public function __construct(?string $pathPrefix = null, ?string $fileName = null, bool $hierarchical = true, ?string $module = null, ?string $exceptionMessage = null)
     {
         $this->pathPrefix = $pathPrefix;
         $this->fileName = $fileName;

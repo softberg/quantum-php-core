@@ -16,6 +16,7 @@ namespace Quantum\Libraries\Auth;
 
 use Quantum\Libraries\Hasher\Hasher;
 use Quantum\Libraries\Mailer\Mailer;
+use ReflectionException;
 
 /**
  * Class WebAuth
@@ -32,9 +33,9 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
 
     /**
      * WebAuth constructor.
-     * @param \Quantum\Libraries\Auth\AuthServiceInterface $authService
-     * @param \Quantum\Libraries\Mailer\Mailer $mailer
-     * @param \Quantum\Libraries\Hasher\Hasher $hasher
+     * @param AuthServiceInterface $authService
+     * @param Mailer $mailer
+     * @param Hasher $hasher
      * @throws \Quantum\Exceptions\AuthException
      */
     private function __construct(AuthServiceInterface $authService, Mailer $mailer, Hasher $hasher)
@@ -50,10 +51,10 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
 
     /**
      * Get Instance
-     * @param \Quantum\Libraries\Auth\AuthServiceInterface $authService
-     * @param \Quantum\Libraries\Mailer\Mailer $mailer
-     * @param \Quantum\Libraries\Hasher\Hasher $hasher
-     * @return \Quantum\Libraries\Auth\WebAuth
+     * @param AuthServiceInterface $authService
+     * @param Mailer $mailer
+     * @param Hasher $hasher
+     * @return WebAuth
      * @throws \Quantum\Exceptions\AuthException
      */
     public static function getInstance(AuthServiceInterface $authService, Mailer $mailer, Hasher $hasher): WebAuth
@@ -77,7 +78,7 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
      * @throws \Quantum\Exceptions\DatabaseException
      * @throws \Quantum\Exceptions\DiException
      * @throws \Quantum\Exceptions\SessionException
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function signin(string $username, string $password, bool $remember = false)
     {
@@ -98,8 +99,12 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
     /**
      * Sign Out
      * @return bool
+     * @throws \Quantum\Exceptions\ConfigException
+     * @throws \Quantum\Exceptions\CryptorException
      * @throws \Quantum\Exceptions\DatabaseException
+     * @throws \Quantum\Exceptions\DiException
      * @throws \Quantum\Exceptions\SessionException
+     * @throws ReflectionException
      */
     public function signout(): bool
     {
@@ -114,10 +119,13 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
     }
 
     /**
-     * User
-     * @return \Quantum\Libraries\Auth\User|null
+     * Gets the user object
+     * @return User|null
+     * @throws ReflectionException
+     * @throws \Quantum\Exceptions\ConfigException
      * @throws \Quantum\Exceptions\CryptorException
      * @throws \Quantum\Exceptions\DatabaseException
+     * @throws \Quantum\Exceptions\DiException
      * @throws \Quantum\Exceptions\SessionException
      */
     public function user(): ?User
@@ -141,9 +149,12 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
      * @param int $otp
      * @param string $otpToken
      * @return bool
+     * @throws ReflectionException
      * @throws \Quantum\Exceptions\AuthException
+     * @throws \Quantum\Exceptions\ConfigException
      * @throws \Quantum\Exceptions\CryptorException
      * @throws \Quantum\Exceptions\DatabaseException
+     * @throws \Quantum\Exceptions\DiException
      * @throws \Quantum\Exceptions\SessionException
      */
     public function verifyOtp(int $otp, string $otpToken): bool
@@ -157,7 +168,7 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
 
     /**
      * Check Remember Token
-     * @return \Quantum\Libraries\Auth\User|false
+     * @return User|false
      * @throws \Quantum\Exceptions\CryptorException
      */
     private function checkRememberToken()
@@ -177,7 +188,7 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
 
     /**
      * Set Remember Token
-     * @param \Quantum\Libraries\Auth\User $user
+     * @param User $user
      * @throws \Quantum\Exceptions\CryptorException
      */
     private function setRememberToken(User $user)
