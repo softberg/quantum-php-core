@@ -15,6 +15,7 @@
 namespace Quantum\Libraries\Cache;
 
 use Quantum\Exceptions\CacheException;
+use Quantum\Exceptions\AppException;
 use Psr\SimpleCache\CacheInterface;
 
 /**
@@ -33,13 +34,13 @@ class Cache
 {
 
     /**
-     * @var Psr\SimpleCache\CacheInterface
+     * @var CacheInterface
      */
     private $adapter;
 
     /**
      * Cache constructor
-     * @param Psr\SimpleCache\CacheInterface $cacheAdapter
+     * @param CacheInterface $cacheAdapter
      */
     public function __construct(CacheInterface $cacheAdapter)
     {
@@ -48,7 +49,7 @@ class Cache
 
     /**
      * Gets the current adapter
-     * @return Psr\SimpleCache\CacheInterface
+     * @return CacheInterface
      */
     public function getAdapter(): CacheInterface
     {
@@ -59,7 +60,7 @@ class Cache
      * @param string $method
      * @param array|null $arguments
      * @return mixed
-     * @throws \Quantum\Exceptions\AppException
+     * @throws AppException
      */
     public function __call(string $method, ?array $arguments)
     {

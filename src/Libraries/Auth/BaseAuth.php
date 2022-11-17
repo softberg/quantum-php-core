@@ -9,12 +9,18 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.6.0
+ * @since 2.8.0
  */
 
 namespace Quantum\Libraries\Auth;
 
 use Quantum\Exceptions\AuthException;
+use Quantum\Libraries\JWToken\JWToken;
+use Quantum\Libraries\Hasher\Hasher;
+use Quantum\Libraries\Mailer\Mailer;
+use Quantum\Exceptions\DiException;
+use PHPMailer\PHPMailer\Exception;
+use ReflectionException;
 use ReflectionClass;
 
 /**
@@ -75,22 +81,22 @@ abstract class BaseAuth
     const REMEMBER_TOKEN_KEY = 'rememberToken';
 
     /**
-     * @var \Quantum\Libraries\Mailer\Mailer
+     * @var Mailer
      */
     protected $mailer;
 
     /**
-     * @var \Quantum\Libraries\Hasher\Hasher
+     * @var Hasher
      */
     protected $hasher;
 
     /**
-     * @var \Quantum\Libraries\JWToken\JWToken
+     * @var JWToken
      */
     protected $jwt;
 
     /**
-     * @var \Quantum\Libraries\Auth\AuthServiceInterface
+     * @var AuthServiceInterface
      */
     protected $authService;
 
@@ -116,14 +122,14 @@ abstract class BaseAuth
 
     /**
      * User
-     * @return \Quantum\Libraries\Auth\User|null
+     * @return User|null
      */
     protected abstract function user(): ?User;
 
     /**
      * Verify user schema
      * @param array $schema
-     * @throws \Quantum\Exceptions\AuthException
+     * @throws AuthException
      */
     protected function verifySchema(array $schema)
     {
@@ -162,10 +168,10 @@ abstract class BaseAuth
      * Sign Up
      * @param array $userData
      * @param array|null $customData
-     * @return \Quantum\Libraries\Auth\User
-     * @throws \PHPMailer\PHPMailer\Exception
-     * @throws \Quantum\Exceptions\DiException
-     * @throws \ReflectionException
+     * @return User
+     * @throws Exception
+     * @throws DiException
+     * @throws ReflectionException
      */
     public function signup(array $userData, array $customData = null): User
     {
@@ -210,9 +216,9 @@ abstract class BaseAuth
      * Forget
      * @param string $username
      * @return string|null
-     * @throws \PHPMailer\PHPMailer\Exception
-     * @throws \Quantum\Exceptions\DiException
-     * @throws \ReflectionException
+     * @throws Exception
+     * @throws DiException
+     * @throws ReflectionException
      */
     public function forget(string $username): ?string
     {
@@ -270,7 +276,7 @@ abstract class BaseAuth
      * Resend OTP
      * @param string $otpToken
      * @return string
-     * @throws \Quantum\Exceptions\AuthException
+     * @throws AuthException
      * @throws \Exception
      */
     public function resendOtp(string $otpToken): string
@@ -289,8 +295,8 @@ abstract class BaseAuth
      * Gets the user by username and password
      * @param string $username
      * @param string $password
-     * @return \Quantum\Libraries\Auth\User
-     * @throws \Quantum\Exceptions\AuthException
+     * @return User
+     * @throws AuthException
      */
     protected function getUser(string $username, string $password): User
     {
@@ -312,12 +318,12 @@ abstract class BaseAuth
     }
 
     /**
-     * Two Step Verification
-     * @param \Quantum\Libraries\Auth\User $user
+     * Two-Step Verification
+     * @param User $user
      * @return string
-     * @throws \PHPMailer\PHPMailer\Exception
-     * @throws \Quantum\Exceptions\DiException
-     * @throws \ReflectionException
+     * @throws Exception
+     * @throws DiException
+     * @throws ReflectionException
      * @throws \Exception
      */
     protected function twoStepVerification(User $user): string
@@ -357,8 +363,8 @@ abstract class BaseAuth
      * Verify and update OTP
      * @param int $otp
      * @param string $otpToken
-     * @return \Quantum\Libraries\Auth\User
-     * @throws \Quantum\Exceptions\AuthException
+     * @return User
+     * @throws AuthException
      * @throws \Exception
      */
     protected function verifyAndUpdateOtp(int $otp, string $otpToken): User
@@ -388,7 +394,7 @@ abstract class BaseAuth
 
     /**
      * Filters and gets the visible fields
-     * @param \Quantum\Libraries\Auth\User $user
+     * @param User $user
      * @return array
      */
     protected function getVisibleFields(User $user): array
@@ -408,7 +414,7 @@ abstract class BaseAuth
 
     /**
      * Is user account activated
-     * @param \Quantum\Libraries\Auth\User $user
+     * @param User $user
      * @return bool
      */
     protected function isActivated(User $user): bool
@@ -428,11 +434,11 @@ abstract class BaseAuth
 
     /**
      * Send email
-     * @param \Quantum\Libraries\Auth\User $user
+     * @param User $user
      * @param array $body
-     * @throws \PHPMailer\PHPMailer\Exception
-     * @throws \Quantum\Exceptions\DiException
-     * @throws \ReflectionException
+     * @throws Exception
+     * @throws DiException
+     * @throws ReflectionException
      */
     protected function sendMail(User $user, array $body)
     {

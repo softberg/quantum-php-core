@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.6.0
+ * @since 2.8.0
  */
 
 namespace Quantum\Libraries\Encryption;
@@ -23,6 +23,18 @@ use Quantum\Exceptions\AppException;
  */
 class Cryptor
 {
+
+    /**
+     * Asymmetric instance
+     * @var Cryptor|null
+     */
+    private static $asymmetricInstance = null;
+
+    /**
+     * Symmetric instance
+     * @var Cryptor|null
+     */
+    private static $symmetricInstance = null;
 
     /**
      * Asymmetric factor
@@ -75,10 +87,10 @@ class Cryptor
     /**
      * Cryptor constructor.
      * @param bool $asymmetric
-     * @throws \Quantum\Exceptions\AppException
-     * @throws \Quantum\Exceptions\CryptorException
+     * @throws AppException
+     * @throws CryptorException
      */
-    public function __construct(bool $asymmetric = false)
+    private function __construct(bool $asymmetric = false)
     {
         if (!$asymmetric) {
             if (!env('APP_KEY')) {
@@ -90,7 +102,21 @@ class Cryptor
         }
 
         $this->asymmetric = $asymmetric;
-        return $this;
+
+    }
+
+    /**
+     * Gets the cryptor instance
+     * @param bool $asymmetric
+     * @return Cryptor|null
+     */
+    public static function getInstance(bool $asymmetric = false): ?Cryptor
+    {
+        if ($asymmetric) {
+            return self::getAsymmetricInstance();
+        } else {
+            return self::getSymmetricInstance();
+        }
     }
 
     /**
@@ -105,7 +131,7 @@ class Cryptor
     /**
      * Gets the Public Key
      * @return string
-     * @throws \Quantum\Exceptions\CryptorException
+     * @throws CryptorException
      */
     public function getPublicKey(): string
     {
@@ -119,7 +145,7 @@ class Cryptor
     /**
      * Gets the Private Key
      * @return string
-     * @throws \Quantum\Exceptions\CryptorException
+     * @throws CryptorException
      */
     public function getPrivateKey(): string
     {
@@ -135,7 +161,7 @@ class Cryptor
      * @param string $plain
      * @param string|null $publicKey
      * @return string
-     * @throws \Quantum\Exceptions\CryptorException
+     * @throws CryptorException
      */
     public function encrypt(string $plain, string $publicKey = null): string
     {
@@ -160,7 +186,7 @@ class Cryptor
      * @param string $encrypted
      * @param string|null $privateKey
      * @return string
-     * @throws \Quantum\Exceptions\CryptorException
+     * @throws CryptorException
      */
     public function decrypt(string $encrypted, string $privateKey = null): string
     {
@@ -210,7 +236,7 @@ class Cryptor
 
     /**
      * Generates Key Pair
-     * @throws \Quantum\Exceptions\CryptorException
+     * @throws CryptorException
      */
     private function generateKeyPair()
     {
@@ -226,6 +252,32 @@ class Cryptor
 
         openssl_pkey_export($resource, $this->keys['private']);
         $this->keys['public'] = openssl_pkey_get_details($resource)['key'];
+    }
+
+    /**
+     * Gets the symmetric cryptor insatnce
+     * @return Cryptor|null
+     */
+    private static function getSymmetricInstance(): ?Cryptor
+    {
+        if (self::$symmetricInstance === null) {
+            self::$symmetricInstance = new self(false);
+        }
+
+        return self::$symmetricInstance;
+    }
+
+    /**
+     * Gets the asymmetric cryptor insatnce
+     * @return Cryptor|null
+     */
+    private static function getAsymmetricInstance(): ?Cryptor
+    {
+        if (self::$asymmetricInstance === null) {
+            self::$asymmetricInstance = new self(true);
+        }
+
+        return self::$asymmetricInstance;
     }
 
 }

@@ -3,79 +3,70 @@
 namespace Quantum\Tests\Libraries\Cookie;
 
 use Quantum\Libraries\Cookie\Cookie;
-use PHPUnit\Framework\TestCase;
-use Mockery;
+use Quantum\Tests\AppTestCase;
 
-class CookieTest extends TestCase
+class CookieTest extends AppTestCase
 {
 
     private $cookie;
-    private $cryptor;
-    private $cookieData = [
-        'auth' => 'b2s=', // ok
-        'test' => 'Z29vZA==', // good
-        'store' => 'cGVyc2lzdA==' // persist
-    ];
+
+    private $storage = [];
 
     public function setUp(): void
     {
-        $this->cryptor = Mockery::mock('Quantum\Libraries\Encryption\Cryptor');
+        parent::setUp();
 
-        $this->cryptor->shouldReceive('encrypt')->andReturnUsing(function ($arg) {
-            return base64_encode($arg);
-        });
+        $this->cookie = Cookie::getInstance($this->storage);
+    }
 
-        $this->cryptor->shouldReceive('decrypt')->andReturnUsing(function ($arg) {
-            return base64_decode($arg);
-        });
-
-        $this->cookie = new Cookie($this->cookieData, $this->cryptor);
+    public function tearDown(): void
+    {
+        $this->cookie->flush();
     }
 
     public function testCookieConstructor()
     {
-        $this->assertInstanceOf('Quantum\Libraries\Cookie\Cookie', $this->cookie);
-    }
-
-    public function testCookieGet()
-    {
-        $this->assertEquals('ok', $this->cookie->get('auth'));
-
-        $this->assertNull($this->cookie->get('not-exists'));
+        $this->assertInstanceOf(Cookie::class, $this->cookie);
     }
 
     public function testCookieAll()
     {
-        $this->assertEquals(array_map('base64_decode', $this->cookieData), $this->cookie->all());
+        $this->assertEmpty($this->cookie->all());
+
+        $this->cookie->set('test', 'Test data');
+
+        $this->cookie->set('user', ['username' => 'test@unit.com']);
+
+        $this->assertNotEmpty($this->cookie->all());
+
+        $this->assertIsArray($this->cookie->all());
+
+        $this->assertArrayHasKey('test', $this->cookie->all());
     }
 
-    public function testCookieHas()
+    public function testCookieGetSetHasDelete()
     {
-        $this->assertFalse($this->cookie->has('not-exists'));
+        $this->assertNull($this->cookie->get('auth'));
 
-        $this->assertTrue($this->cookie->has('test'));
-    }
+        $this->assertFalse($this->cookie->has('auth'));
 
-    public function testCookieSet()
-    {
-        $this->cookie->set('new', 'New Value');
+        $this->cookie->set('auth', 'Authenticated');
 
-        $this->assertTrue($this->cookie->has('new'));
+        $this->assertTrue($this->cookie->has('auth'));
 
-        $this->assertEquals('New Value', $this->cookie->get('new'));
-    }
+        $this->assertEquals('Authenticated', $this->cookie->get('auth'));
 
-    public function testCookieDelete()
-    {
-        $this->assertTrue($this->cookie->has('test'));
+        $this->cookie->delete('auth');
 
-        $this->cookie->delete('test');
+        $this->assertFalse($this->cookie->has('auth'));
 
-        $this->assertFalse($this->cookie->has('test'));
+        $this->assertNull($this->cookie->get('auth'));
     }
 
     public function testCookieFlush()
     {
+        $this->cookie->set('test', 'Test data');
+
         $this->assertNotEmpty($this->cookie->all());
 
         $this->cookie->flush();

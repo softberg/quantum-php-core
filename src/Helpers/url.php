@@ -49,8 +49,11 @@ function redirect(string $url, int $code = 302)
  * @param string $url
  * @param array $data
  * @param int $code
+ * @throws ReflectionException
+ * @throws \Quantum\Exceptions\ConfigException
  * @throws \Quantum\Exceptions\CryptorException
  * @throws \Quantum\Exceptions\DatabaseException
+ * @throws \Quantum\Exceptions\DiException
  * @throws \Quantum\Exceptions\SessionException
  */
 function redirectWith(string $url, array $data, int $code = 302)
@@ -60,11 +63,14 @@ function redirectWith(string $url, array $data, int $code = 302)
 }
 
 /**
- * Keeps old input values after redirect
+ * Gets old input values after redirect
  * @param string $key
  * @return mixed|null
+ * @throws ReflectionException
+ * @throws \Quantum\Exceptions\ConfigException
  * @throws \Quantum\Exceptions\CryptorException
  * @throws \Quantum\Exceptions\DatabaseException
+ * @throws \Quantum\Exceptions\DiException
  * @throws \Quantum\Exceptions\SessionException
  */
 function old(string $key)

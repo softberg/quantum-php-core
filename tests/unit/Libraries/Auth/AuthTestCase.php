@@ -13,6 +13,7 @@ namespace Quantum\Tests\Libraries\Auth {
 
     use Quantum\Environment\Environment;
     use Quantum\Libraries\Auth\User;
+    use Quantum\Libraries\Database\Sleekdb\SleekDbal;
     use Quantum\Tests\AppTestCase;
     use Quantum\Loader\Setup;
     use Quantum\Di\Di;
@@ -76,6 +77,12 @@ namespace Quantum\Tests\Libraries\Auth {
         public function setUp(): void
         {
             parent::setUp();
+
+            config()->import(new Setup('config', 'database'));
+
+            config()->set('database.current', 'sleekdb');
+
+            SleekDbal::connect(config()->get('database.sleekdb'));
 
             Environment::getInstance()->load(new Setup('config', 'env'));
 

@@ -15,9 +15,7 @@ namespace Quantum\Tests\Mvc {
     use Quantum\Factory\ViewFactory;
     use Quantum\Tests\AppTestCase;
 
-    /**
-     * @runTestsInSeparateProcesses
-     */
+
     class QtViewTest extends AppTestCase
     {
 

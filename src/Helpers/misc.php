@@ -15,10 +15,11 @@
 use Quantum\Libraries\Transformer\TransformerInterface;
 use Quantum\Libraries\Transformer\TransformerManager;
 use Quantum\Exceptions\StopExecutionException;
+use Quantum\Libraries\Encryption\Cryptor;
 use Quantum\Libraries\Asset\AssetManager;
+use Quantum\Exceptions\CryptorException;
 use Quantum\Exceptions\AppException;
 use Quantum\Libraries\Csrf\Csrf;
-use Quantum\Libraries\Storage\FileSystem;
 
 /**
  * Generates the CSRF token
@@ -97,7 +98,7 @@ function get_directory_classes(string $path): array
 
         foreach ($phpFiles as $file) {
             $class = pathinfo($file->getFilename());
-            array_push($class_names, $class['filename']);
+            $class_names[] = $class['filename'];
         }
     }
 
@@ -131,14 +132,9 @@ function get_caller_function(int $index = 2): ?string
 }
 
 /**
- *
- * @throws \Quantum\Exceptions\StopExecutionException
- */
-
-/**
  * Stops the execution
- * @param \Closure|null $closure
- * @throws \Quantum\Exceptions\StopExecutionException
+ * @param Closure|null $closure
+ * @throws StopExecutionException
  */
 function stop(Closure $closure = null)
 {
@@ -160,7 +156,7 @@ function random_number(int $length = 10): int
     for ($i = 0; $i < $length; $i++) {
         $randomString .= rand(0, 9);
     }
-    return (int) $randomString;
+    return (int)$randomString;
 }
 
 /**
@@ -204,7 +200,7 @@ function assets(string $type)
  */
 function is_closure($entity): bool
 {
-    return $entity instanceof \Closure;
+    return $entity instanceof Closure;
 }
 
 /**
@@ -216,4 +212,37 @@ function is_closure($entity): bool
 function transform(array $data, TransformerInterface $transformer): array
 {
     return TransformerManager::transform($data, $transformer);
+}
+
+/**
+ * Encodes the data cryptographically
+ * @param mixed $data
+ * @return string
+ * @throws CryptorException
+ */
+function crypto_encode($data): string
+{
+    $data = (is_array($data) || is_object($data)) ? serialize($data) : $data;
+    return Cryptor::getInstance()->encrypt($data);
+}
+
+/**
+ * Decodes the data cryptographically
+ * @param string $value
+ * @return mixed|string
+ * @throws CryptorException
+ */
+function crypto_decode(string $value)
+{
+    if (empty($value)) {
+        return $value;
+    }
+
+    $decrypted = Cryptor::getInstance()->decrypt($value);
+
+    if ($data = @unserialize($decrypted)) {
+        $decrypted = $data;
+    }
+
+    return $decrypted;
 }
