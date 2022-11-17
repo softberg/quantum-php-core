@@ -154,11 +154,11 @@ class OpenApiCommand extends QtCommand
     {
         return 'return function ($route) {
     $route->group("openapi", function ($route) {
-        $route->get("' . strtolower($module) . '/docs", function (Quantum\Http\Response $response) {
+        $route->get("docs", function (Quantum\Http\Response $response) {
             $response->html(partial("openapi/openapi"));
         });
 
-        $route->get("' . strtolower($module) . '/spec", function (Quantum\Http\Response $response) {
+        $route->get("spec", function (Quantum\Http\Response $response) {
             $fs = Quantum\Di\Di::get(Quantum\Libraries\Storage\FileSystem::class);
             $response->json((array) json_decode($fs->get(modules_dir() . "' . DS . $module . DS . 'Resources' . DS . 'openapi' . DS . 'spec.json")));
         });
