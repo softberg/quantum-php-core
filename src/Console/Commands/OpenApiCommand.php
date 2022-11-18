@@ -28,7 +28,7 @@ class OpenApiCommand extends QtCommand
 
     /**
      * File System
-     * @var \Quantum\Libraries\Storage\FileSystem
+     * @var FileSystem
      */
     protected $fs;
 
@@ -60,13 +60,13 @@ class OpenApiCommand extends QtCommand
 
     /**
      * Path to public debug bar resources
-     * @var string 
+     * @var string
      */
     private $publicOpenApiFolderPath = 'public/assets/OpenApiUi';
 
     /**
      * Path to vendor debug bar resources
-     * @var string 
+     * @var string
      */
     private $vendorOpenApiFolderPath = 'vendor/swagger-api/swagger-ui/dist';
 
@@ -77,7 +77,11 @@ class OpenApiCommand extends QtCommand
     private $excludeFileNames = ['index.html', 'swagger-initializer.js', 'favicon-16x16.png', 'favicon-32x32.png'];
 
     /**
-     * Executes the command and publishes the debug bar assets
+     * Executes the command and generate Open API specifications
+     * @throws \Quantum\Exceptions\DiException
+     * @throws \Quantum\Exceptions\ModuleLoaderException
+     * @throws \Quantum\Exceptions\RouteException
+     * @throws \ReflectionException
      */
     public function exec()
     {
@@ -101,7 +105,7 @@ class OpenApiCommand extends QtCommand
         }
 
         if (route_group_exists('openapi', $module) && $this->fs->exists($modulePath . DS . 'Resources' . DS . 'openApi' . DS . 'spec.json')) {
-            $this->error('The Open API sepcifications already installed for `' . ucfirst($module) . '` module');
+            $this->error('The Open API specifications already installed for `' . ucfirst($module) . '` module');
             return;
         }
 
@@ -115,7 +119,7 @@ class OpenApiCommand extends QtCommand
 
         $this->generateOpenapiSpecification($module);
 
-        $this->info('OpenApi recources successfully published');
+        $this->info('OpenApi resources successfully published');
     }
 
     /**
