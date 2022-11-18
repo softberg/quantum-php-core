@@ -75,7 +75,7 @@ class SessionManager
                 throw SessionException::sessionNotStarted();
             }
 
-            session_gc();
+            @session_gc();
         }
 
         if (isset($_SESSION['LAST_ACTIVITY']) && time() - $_SESSION['LAST_ACTIVITY'] > config()->get('session.timeout', self::SESSION_TIMEOUT)) {
