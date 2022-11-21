@@ -30,11 +30,6 @@ class Lang
 {
 
     /**
-     * Config key for defined languages
-     */
-    const LANGS_DEFINED = 'langs';
-
-    /**
      * Config key for lang segment
      */
     const LANG_SEGMENT = 'lang_segment';
@@ -47,19 +42,21 @@ class Lang
 
     /**
      * Translations
-     * @var \Dflydev\DotAccessData\Data
+     * @var Data
      */
     private static $translations = null;
 
     /**
      * Instance of Lang
-     * @var \Quantum\Libraries\Lang\Lang
+     * @var Lang
      */
     private static $instance = null;
 
     /**
      * GetInstance
-     * @return \Quantum\Libraries\Lang\Lang
+     * @param int $langSegmentIndex
+     * @return Lang
+     * @throws LangException
      */
     public static function getInstance(int $langSegmentIndex = 1): Lang
     {
@@ -76,7 +73,7 @@ class Lang
                 throw LangException::misconfiguredDefaultConfig();
             }
 
-            if (empty($lang) || !in_array($lang, (array) config()->get('langs'))) {
+            if (empty($lang) || !in_array($lang, (array)config()->get('langs'))) {
                 $lang = config()->get('lang_default');
             }
 
@@ -88,7 +85,7 @@ class Lang
 
     /**
      * Loads translations
-     * @throws \Quantum\Exceptions\LangException
+     * @throws LangException
      * @throws \Quantum\Exceptions\DiException
      * @throws \ReflectionException
      */
@@ -101,7 +98,7 @@ class Lang
         $files = $fs->glob($langDir . DS . "*.php");
 
         if (is_array($files) && !count($files)) {
-            $langDir = base_dir() . DS . 'shared' . DS . 'Resources' . DS . 'lang' . DS . $this->getLang();
+            $langDir = base_dir() . DS . 'shared' . DS . 'resources' . DS . 'lang' . DS . $this->getLang();
 
             $files = $fs->glob($langDir . DS . "*.php");
 
@@ -146,7 +143,7 @@ class Lang
 
     /**
      * Gets the whole translations of current language
-     * @return \Dflydev\DotAccessData\Data
+     * @return Data
      */
     public function getTranslations(): ?Data
     {

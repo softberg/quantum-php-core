@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.6.0
+ * @since 2.8.0
  */
 
 namespace Quantum\Loader;
@@ -56,13 +56,13 @@ class Loader
 
     /**
      * File System
-     * @var \Quantum\Libraries\Storage\FileSystem
+     * @var FileSystem
      */
     private $fs;
 
     /**
      * Loader constructor
-     * @param \Quantum\Libraries\Storage\FileSystem|null $fs
+     * @param FileSystem|null $fs
      */
     public function __construct(FileSystem $fs = null)
     {
@@ -100,7 +100,6 @@ class Loader
     /**
      * Loads .php files from given directory
      * @param string $dir
-     * @throws LoaderException
      */
     public function loadDir(string $dir)
     {
@@ -112,7 +111,7 @@ class Loader
     /**
      * Loads the content
      * @return mixed
-     * @throws \Quantum\Exceptions\LoaderException
+     * @throws LoaderException
      */
     public function load()
     {
@@ -122,7 +121,7 @@ class Loader
     /**
      * Gets the file path
      * @return string
-     * @throws \Quantum\Exceptions\LoaderException
+     * @throws LoaderException
      */
     public function getFilePath(): string
     {
@@ -140,7 +139,7 @@ class Loader
 
         if (!$this->fs->exists($filePath)) {
             if ($this->hierarchical) {
-                $filePath = base_dir() . DS . 'shared' . DS . $this->pathPrefix . DS . $this->fileName . '.php';
+                $filePath = base_dir() . DS . 'shared' . DS . strtolower($this->pathPrefix) . DS . $this->fileName . '.php';
 
                 if (!$this->fs->exists($filePath)) {
                     throw new LoaderException(_message($this->exceptionMessage, $this->fileName));
