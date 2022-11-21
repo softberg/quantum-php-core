@@ -53,3 +53,5 @@ jobs:
 
       - name: Run tests
         run: composer test
+        env:
+          REDIS_PORT: ${{ job.services.redis.ports['6379'] }}
