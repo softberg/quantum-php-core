@@ -52,7 +52,7 @@
         }
     },
     "scripts": {
-        "test": "vendor/bin/phpunit --stderr"
+        "test": "vendor/bin/phpunit --stderr --coverage-clover coverage.xml"
     },
     "minimum-stability": "dev",
     "prefer-stable": true
