@@ -9,15 +9,16 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.7.0
+ * @since 2.8.0
  */
 
 namespace Quantum\Migration;
 
 use Quantum\Exceptions\FileSystemException;
 use Quantum\Exceptions\MigrationException;
-use Quantum\Libraries\Database\Database;
 use Quantum\Libraries\Storage\FileSystem;
+use Quantum\Exceptions\DatabaseException;
+use Quantum\Libraries\Database\Database;
 use Quantum\Factory\TableFactory;
 
 /**
@@ -74,6 +75,7 @@ class MigrationManager
 
     /**
      * MigrationManager constructor.
+     * @throws FileSystemException
      */
     public function __construct()
     {
@@ -84,8 +86,8 @@ class MigrationManager
         $this->tableFactory = new TableFactory();
 
         $this->migrationFolder = base_dir() . DS . 'migrations';
-        
-        if(!$this->fs->isDirectory($this->migrationFolder)) {
+
+        if (!$this->fs->isDirectory($this->migrationFolder)) {
             throw FileSystemException::directoryNotExists($this->migrationFolder);
         }
     }
@@ -95,9 +97,9 @@ class MigrationManager
      * @param string $table
      * @param string $action
      * @return string
-     * @throws Quantum\Exceptions\MigrationException
+     * @throws MigrationException
      */
-    public function generateMigration(string $table, string $action)
+    public function generateMigration(string $table, string $action): string
     {
         if (!in_array($action, $this->actions)) {
             throw MigrationException::unsupportedAction($action);
@@ -117,7 +119,12 @@ class MigrationManager
      * @param string $direction
      * @param int|null $step
      * @return int|null
-     * @throws Quantum\Exceptions\MigrationException
+     * @throws DatabaseException
+     * @throws MigrationException
+     * @throws \Quantum\Exceptions\AppException
+     * @throws \Quantum\Exceptions\ConfigException
+     * @throws \Quantum\Exceptions\DiException
+     * @throws \ReflectionException
      */
     public function applyMigrations(string $direction, ?int $step = null): ?int
     {
@@ -145,7 +152,8 @@ class MigrationManager
      * Runs up migrations
      * @param int|null $step
      * @return int
-     * @throws Quantum\Exceptions\MigrationException
+     * @throws MigrationException
+     * @throws DatabaseException
      */
     private function upgrade(?int $step = null): int
     {
@@ -163,7 +171,7 @@ class MigrationManager
         $migratedEntries = [];
 
         foreach ($this->migrations as $migrationFile) {
-            $this->fs->require($migrationFile);
+            $this->fs->require($migrationFile, true);
 
             $migrationClassName = pathinfo($migrationFile, PATHINFO_FILENAME);
 
@@ -171,10 +179,10 @@ class MigrationManager
 
             $migration->up($this->tableFactory);
 
-            array_push($migratedEntries, $migrationClassName);
+            $migratedEntries[] = $migrationClassName;
         }
 
-        $this->addMigratedEntreis($migratedEntries);
+        $this->addMigratedEntries($migratedEntries);
 
         return count($migratedEntries);
     }
@@ -183,7 +191,8 @@ class MigrationManager
      * Runs down migrations
      * @param int|null $step
      * @return int
-     * @throws Quantum\Exceptions\MigrationException
+     * @throws MigrationException
+     * @throws DatabaseException
      */
     private function downgrade(?int $step): int
     {
@@ -196,7 +205,7 @@ class MigrationManager
         $migratedEntries = [];
 
         foreach ($this->migrations as $migrationFile) {
-            $this->fs->require($migrationFile);
+            $this->fs->require($migrationFile, true);
 
             $migrationClassName = pathinfo($migrationFile, PATHINFO_FILENAME);
 
@@ -204,7 +213,7 @@ class MigrationManager
 
             $migration->down($this->tableFactory);
 
-            array_push($migratedEntries, $migrationClassName);
+            $migratedEntries[] = $migrationClassName;
         }
 
         $this->removeMigratedEntries($migratedEntries);
@@ -215,11 +224,13 @@ class MigrationManager
     /**
      * Prepares up migrations
      * @param int|null $step
-     * @throws Quantum\Exceptions\MigrationException
+     * @return void
+     * @throws MigrationException
+     * @throws DatabaseException
      */
     private function prepareUpMigrations(?int $step = null)
     {
-        $migratedEntries = $this->getMigaratedEntries();
+        $migratedEntries = $this->getMigratedEntries();
         $migrationFiles = $this->getMigrationFiles();
 
         if (empty($migratedEntries) && empty($migrationFiles)) {
@@ -242,11 +253,13 @@ class MigrationManager
     /**
      * Prepares down migrations
      * @param int|null $step
-     * @throws Quantum\Exceptions\MigrationException
+     * @return void
+     * @throws MigrationException
+     * @throws DatabaseException
      */
     private function prepareDownMigrations(?int $step = null)
     {
-        $migratedEntries = $this->getMigaratedEntries();
+        $migratedEntries = $this->getMigratedEntries();
 
         if (empty($migratedEntries)) {
             throw MigrationException::nothingToMigrate();
@@ -287,8 +300,9 @@ class MigrationManager
     /**
      * Gets migrated entries from migrations table
      * @return array
+     * @throws DatabaseException
      */
-    private function getMigaratedEntries(): array
+    private function getMigratedEntries(): array
     {
         return Database::query("SELECT * FROM " . MigrationTable::TABLE);
     }
@@ -296,8 +310,9 @@ class MigrationManager
     /**
      * Adds migrated entries to migrations table
      * @param array $entries
+     * @throws DatabaseException
      */
-    private function addMigratedEntreis(array $entries)
+    private function addMigratedEntries(array $entries)
     {
         foreach ($entries as $entry) {
             Database::execute('INSERT INTO ' . MigrationTable::TABLE . '(migration) VALUES(:migration)', ['migration' => $entry]);
@@ -307,6 +322,7 @@ class MigrationManager
     /**
      * Removes migrated entries from migrations table
      * @param array $entries
+     * @throws DatabaseException
      */
     private function removeMigratedEntries(array $entries)
     {
