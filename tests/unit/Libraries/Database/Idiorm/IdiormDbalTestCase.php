@@ -5,9 +5,6 @@ namespace Quantum\Tests\Libraries\Database\Idiorm;
 use Quantum\Libraries\Database\Idiorm\IdiormDbal;
 use Quantum\Tests\AppTestCase;
 
-/**
- * @runTestsInSeparateProcesses
- */
 abstract class IdiormDbalTestCase extends AppTestCase
 {
 

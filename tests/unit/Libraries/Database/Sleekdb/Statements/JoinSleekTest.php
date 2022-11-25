@@ -193,7 +193,6 @@ namespace Quantum\Tests\Libraries\Database\Sleekdb\Statements {
             $users = $userModel
                     ->joinTo($userEventModel)
                     ->joinThrough($eventModel)
-                    ->orderBy('title', 'asc')
                     ->get();
 
             $this->assertIsArray($users);
@@ -212,7 +211,7 @@ namespace Quantum\Tests\Libraries\Database\Sleekdb\Statements {
 
             $this->assertArrayHasKey('title', $users[0]['user_events'][0]['events'][0]);
 
-            $this->assertEquals('Music', $users[0]['user_events'][0]['events'][0]['title']);
+            $this->assertEquals('Dance', $users[0]['user_events'][0]['events'][0]['title']);
         }
 
         public function testSleekJoinThroughInverse()
@@ -276,7 +275,6 @@ namespace Quantum\Tests\Libraries\Database\Sleekdb\Statements {
 
             $eventModel->joinTo($noteModel)->get();
         }
-
     }
 
 }
