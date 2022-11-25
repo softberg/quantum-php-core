@@ -193,6 +193,7 @@ namespace Quantum\Tests\Libraries\Database\Sleekdb\Statements {
             $users = $userModel
                     ->joinTo($userEventModel)
                     ->joinThrough($eventModel)
+                    ->orderBy('id', 'asc')
                     ->get();
 
             $this->assertIsArray($users);
