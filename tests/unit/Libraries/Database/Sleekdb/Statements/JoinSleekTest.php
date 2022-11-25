@@ -204,15 +204,11 @@ namespace Quantum\Tests\Libraries\Database\Sleekdb\Statements {
 
             $this->assertArrayHasKey('confirmed', $users[0]['user_events'][0]);
 
-            $this->assertEquals('Yes', $users[0]['user_events'][0]['confirmed']);
-
             $this->assertArrayHasKey('events', $users[0]['user_events'][0]);
 
             $this->assertIsArray($users[0]['user_events'][0]['events']);
 
             $this->assertArrayHasKey('title', $users[0]['user_events'][0]['events'][0]);
-
-            $this->assertEquals('Music', $users[0]['user_events'][0]['events'][0]['title']);
         }
 
         public function testSleekJoinThroughInverse()
