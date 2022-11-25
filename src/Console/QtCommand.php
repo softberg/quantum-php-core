@@ -9,11 +9,12 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.7.0
+ * @since 2.8.0
  */
 
 namespace Quantum\Console;
 
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
@@ -62,12 +63,12 @@ abstract class QtCommand extends Command implements CommandInterface
     protected $options = [];
 
     /**
-     * @var \Symfony\Component\Console\Input\InputInterface
+     * @var InputInterface
      */
     protected $input;
 
     /**
-     * @var \Symfony\Component\Console\Output\OutputInterface;
+     * @var OutputInterface;
      */
     protected $output;
 
@@ -91,11 +92,14 @@ abstract class QtCommand extends Command implements CommandInterface
         $this->setArguments();
         $this->setOptions();
     }
-
+    
     /**
      * Executes the current command.
      * @param InputInterface $input
      * @param OutputInterface $output
+     * @throws \Quantum\Exceptions\DiException
+     * @throws \Quantum\Exceptions\EnvException
+     * @throws \ReflectionException
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -130,47 +134,64 @@ abstract class QtCommand extends Command implements CommandInterface
 
     /**
      * Outputs the string to console
-     * @param string $string
+     * @param string $message
      */
-    public function output(string $string)
+    public function output(string $message)
     {
-        $this->output->writeln($string);
+        $this->output->writeln($message);
     }
 
     /**
      * Outputs the string to console as info
-     * @param string $string
+     * @param string $message
      */
-    protected function info(string $string)
+    protected function info(string $message)
     {
-        $this->output->writeln("<info>$string</info>");
+        $this->output->writeln("<info>$message</info>");
     }
 
     /**
      * Outputs the string to console as comment
-     * @param string $string
+     * @param string $message
      */
-    protected function comment(string $string)
+    protected function comment(string $message)
     {
-        $this->output->writeln("<comment>$string</comment>");
+        $this->output->writeln("<comment>$message</comment>");
     }
 
     /**
      * Outputs the string to console as question
-     * @param string $string
+     * @param string $message
      */
-    protected function question(string $string)
+    protected function question(string $message)
     {
-        $this->output->writeln("<question>$string</question>");
+        $this->output->writeln("<question>$message</question>");
+    }
+
+    /**
+     * Asks confirmation
+     * @param string $message
+     * @return bool
+     */
+    public function confirm(string $message): bool
+    {
+        $helper = $this->getHelper('question');
+        $question = new ConfirmationQuestion($message . ' ', false);
+
+        if ($helper->ask($this->input, $this->output, $question)) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
      * Outputs the string to console as error
-     * @param string $string
+     * @param string $message
      */
-    protected function error(string $string)
+    protected function error(string $message)
     {
-        $this->output->writeln("<error>$string</error>");
+        $this->output->writeln("<error>$message</error>");
     }
 
     /**
