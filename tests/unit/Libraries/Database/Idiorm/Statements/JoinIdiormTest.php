@@ -345,15 +345,15 @@ namespace Quantum\Tests\Libraries\Database\Idiorm\Statements {
 
             $userProfessionModel = ModelFactory::get(CUserProfessionModel::class);
 
-            $user = $userModel
+            $users = $userModel
                 ->joinTo($userProfessionModel, false)
                 ->select('firstname', 'lastname', 'age', 'country', ['user_professions.title' => 'profession'])
-                ->first()
-                ->asArray();
+                ->orderBy('age', 'desc')
+                ->get();
 
-            $this->assertArrayHasKey('profession', $user);
+            $this->assertArrayHasKey('profession', $users[0]);
 
-            $this->assertEquals('Writer', $user['profession']);
+            $this->assertEquals('Writer', $users[0]['profession']);
         }
     }
 

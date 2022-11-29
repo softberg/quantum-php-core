@@ -279,14 +279,14 @@ namespace Quantum\Tests\Libraries\Database\Sleekdb\Statements {
 
             $userProfessionModel = ModelFactory::get(SleekUserProfessionModel::class);
 
-            $user = $userModel->joinTo($userProfessionModel)
+            $users = $userModel->joinTo($userProfessionModel)
                 ->select('firstname', 'lastname', 'age', 'country', ['professions.0.title' => 'profession'])
-                ->first()
-                ->asArray();
+                ->orderBy('age', 'desc')
+                ->get();
 
-            $this->assertArrayHasKey('profession', $user);
+            $this->assertArrayHasKey('profession', $users[0]);
 
-            $this->assertEquals('Writer', $user['profession']);
+            $this->assertEquals('Writer', $users[0]['profession']);
         }
     }
 
