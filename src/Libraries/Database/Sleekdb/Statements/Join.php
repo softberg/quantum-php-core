@@ -22,7 +22,7 @@ use Quantum\Mvc\QtModel;
 
 /**
  * Trait Join
- * @package Quantum\Libraries\Database\Idiorm\Statements
+ * @package Quantum\Libraries\Database\SleekDB\Statements
  */
 trait Join
 {
@@ -48,7 +48,7 @@ trait Join
     /**
      * Adds join
      * @param string $type
-     * @param \Quantum\Mvc\QtModel $model
+     * @param QtModel $model
      * @param bool $switch
      */
     private function addJoin(string $type, QtModel $model, bool $switch = true)
@@ -62,6 +62,7 @@ trait Join
 
     /**
      * Starts to apply joins
+     * @throws ModelException
      */
     private function applyJoins()
     {
@@ -72,12 +73,12 @@ trait Join
 
     /**
      * Apply the join to query builder
-     * @param \SleekDB\QueryBuilder $queryBuilder
-     * @param \Quantum\Libraries\Database\Sleekdb\SleekDbal $currentItem
+     * @param QueryBuilder $queryBuilder
+     * @param SleekDbal $currentItem
      * @param array $nextItem
      * @param int $level
-     * @return \SleekDB\QueryBuilder
-     * @throws \Quantum\Exceptions\ModelException
+     * @return QueryBuilder
+     * @throws ModelException
      */
     private function applyJoin(QueryBuilder $queryBuilder, SleekDbal $currentItem, array $nextItem, int $level = 1): QueryBuilder
     {

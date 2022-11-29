@@ -9,12 +9,13 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.6.0
+ * @since 2.8.0
  */
 
 namespace Quantum\Libraries\Database\Idiorm\Statements;
 
 use Quantum\Libraries\Database\DbalInterface;
+use Quantum\Exceptions\DatabaseException;
 
 /**
  * Trait Result
@@ -25,7 +26,7 @@ trait Result
 
     /**
      * @inheritDoc
-     * @throws \Quantum\Exceptions\DatabaseException
+     * @throws DatabaseException
      */
     public function get(?int $returnType = self::TYPE_ARRAY)
     {
@@ -37,7 +38,7 @@ trait Result
 
     /**
      * @inheritDoc
-     * @throws \Quantum\Exceptions\DatabaseException
+     * @throws DatabaseException
      */
     public function findOne(int $id): DbalInterface
     {
@@ -52,7 +53,7 @@ trait Result
 
     /**
      * @inheritDoc
-     * @throws \Quantum\Exceptions\DatabaseException
+     * @throws DatabaseException
      */
     public function findOneBy(string $column, $value): DbalInterface
     {
@@ -66,7 +67,7 @@ trait Result
 
     /**
      * @inheritDoc
-     * @throws \Quantum\Exceptions\DatabaseException
+     * @throws DatabaseException
      */
     public function first(): DbalInterface
     {
@@ -80,7 +81,7 @@ trait Result
 
     /**
      * @inheritDoc
-     * @throws \Quantum\Exceptions\DatabaseException
+     * @throws DatabaseException
      */
     public function count(): int
     {
@@ -89,7 +90,7 @@ trait Result
 
     /**
      * @inheritDoc
-     * @throws \Quantum\Exceptions\DatabaseException
+     * @throws DatabaseException
      */
     public function asArray(): array
     {

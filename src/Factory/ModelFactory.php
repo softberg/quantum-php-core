@@ -29,7 +29,7 @@ class ModelFactory
     /**
      * Gets the Model
      * @param string $modelClass
-     * @return \Quantum\Mvc\QtModel
+     * @return QtModel
      * @throws \Quantum\Exceptions\ConfigException
      * @throws \Quantum\Exceptions\DatabaseException
      * @throws \Quantum\Exceptions\DiException

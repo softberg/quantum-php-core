@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.6.0
+ * @since 2.8.0
  */
 
 namespace Quantum\Libraries\Database\Idiorm\Statements;
@@ -26,7 +26,7 @@ trait Criteria
 
     /**
      * @inheritDoc
-     * @throws \Quantum\Exceptions\DatabaseException
+     * @throws DatabaseException
      */
     public function criteria(string $column, string $operator, $value = null): DbalInterface
     {
@@ -40,7 +40,7 @@ trait Criteria
 
     /**
      * @inheritDoc
-     * @throws \Quantum\Exceptions\DatabaseException
+     * @throws DatabaseException
      */
     public function criterias(...$criterias): DbalInterface
     {
@@ -59,7 +59,7 @@ trait Criteria
 
     /**
      * @inheritDoc
-     * @throws \Quantum\Exceptions\DatabaseException
+     * @throws DatabaseException
      */
     public function having(string $column, string $operator, string $value = null): DbalInterface
     {
@@ -78,7 +78,7 @@ trait Criteria
      * @param string $operator
      * @param mixed $value
      * @param string|null $func
-     * @throws \Quantum\Exceptions\DatabaseException
+     * @throws DatabaseException
      */
     protected function addCriteria(string $column, string $operator, $value, string $func = null)
     {
@@ -94,7 +94,7 @@ trait Criteria
     /**
      * Adds one or more OR criteria in brackets
      * @param array $orCriterias
-     * @throws \Quantum\Exceptions\DatabaseException
+     * @throws DatabaseException
      */
     protected function orCriteria(array $orCriterias)
     {
@@ -114,7 +114,7 @@ trait Criteria
                 $clause .= ' OR ';
             }
 
-            array_push($params, $criteria[2]);
+            $params[] = $criteria[2];
         }
 
         $this->getOrmModel()->where_raw($clause, $params);

@@ -104,9 +104,9 @@ namespace Quantum\Tests\Libraries\Database\Idiorm\Statements {
             $userModel = new IdiormDbal('users');
 
             $result = $userModel->select('users.*', 'events.*')
-                    ->join('user_events', ['user_events.user_id', '=', 'users.id'])
-                    ->join('events', ['user_events.event_id', '=', 'events.id'])
-                    ->get();
+                ->join('user_events', ['user_events.user_id', '=', 'users.id'])
+                ->join('events', ['user_events.event_id', '=', 'events.id'])
+                ->get();
 
             $this->assertCount(6, $result);
 
@@ -118,10 +118,10 @@ namespace Quantum\Tests\Libraries\Database\Idiorm\Statements {
             $userModel = new IdiormDbal('users');
 
             $result = $userModel->select('users.*', 'events.*')
-                    ->join('user_events', ['user_events.user_id', '=', 'users.id'])
-                    ->join('events', ['user_events.event_id', '=', 'events.id'])
-                    ->criteria('events.started_at', '>=', '2020-01-01')
-                    ->get();
+                ->join('user_events', ['user_events.user_id', '=', 'users.id'])
+                ->join('events', ['user_events.event_id', '=', 'events.id'])
+                ->criteria('events.started_at', '>=', '2020-01-01')
+                ->get();
 
             $this->assertCount(3, $result);
         }
@@ -151,9 +151,9 @@ namespace Quantum\Tests\Libraries\Database\Idiorm\Statements {
             $userProfessionModel = ModelFactory::get(CUserProfessionModel::class);
 
             $users = $userModel->select(['users.id' => 'user_id'],
-                            'firstname', 'user_professions.title')
-                    ->joinTo($userProfessionModel)
-                    ->get();
+                'firstname', 'user_professions.title')
+                ->joinTo($userProfessionModel)
+                ->get();
 
             $this->assertIsArray($users);
 
@@ -179,9 +179,9 @@ namespace Quantum\Tests\Libraries\Database\Idiorm\Statements {
             $userEventModel = ModelFactory::get(CUserEventModel::class);
 
             $users = $userModel->select('users.*', 'user_professions.title', 'user_events.event_id')
-                    ->joinTo($userProfessionModel, false)
-                    ->joinTo($userEventModel, false)
-                    ->get();
+                ->joinTo($userProfessionModel, false)
+                ->joinTo($userEventModel, false)
+                ->get();
 
             $this->assertIsArray($users);
 
@@ -208,9 +208,9 @@ namespace Quantum\Tests\Libraries\Database\Idiorm\Statements {
             $ticketModel = ModelFactory::get(CTicketModel::class);
 
             $users = $userModel
-                    ->joinTo($meetingModel)
-                    ->joinTo($ticketModel)
-                    ->get();
+                ->joinTo($meetingModel)
+                ->joinTo($ticketModel)
+                ->get();
 
             $this->assertIsArray($users);
 
@@ -227,7 +227,7 @@ namespace Quantum\Tests\Libraries\Database\Idiorm\Statements {
             $this->assertEquals($query, IdiormDbal::lastQuery());
         }
 
-        public function testIdiormJoinThrough()
+        public function testIdiormJoinToAndThrough()
         {
             $userModel = ModelFactory::get(CUserModel::class);
 
@@ -236,16 +236,16 @@ namespace Quantum\Tests\Libraries\Database\Idiorm\Statements {
             $eventModel = ModelFactory::get(CEventModel::class);
 
             $users = $userModel->select(
-                            ['users.id' => 'user_id'],
-                            ['events.id' => 'event_id'],
-                            'firstname',
-                            'confirmed',
-                            ['events.title' => 'event_title'])
-                    ->joinTo($userEventModel)
-                    ->joinThrough($eventModel)
-                    ->criteria('user_events.confirmed', '=', 'Yes')
-                    ->orderBy('user_events.created_at', 'desc')
-                    ->get();
+                ['users.id' => 'user_id'],
+                ['events.id' => 'event_id'],
+                'firstname',
+                'confirmed',
+                ['events.title' => 'event_title'])
+                ->joinTo($userEventModel)
+                ->joinThrough($eventModel)
+                ->criteria('user_events.confirmed', '=', 'Yes')
+                ->orderBy('user_events.created_at', 'desc')
+                ->get();
 
             $this->assertIsArray($users);
 
@@ -297,14 +297,14 @@ namespace Quantum\Tests\Libraries\Database\Idiorm\Statements {
             $eventModel = ModelFactory::get(CEventModel::class);
 
             $user = $userModel->select(
-                            ['users.id' => 'user_id'],
-                            'firstname',
-                            ['user_professions.title' => 'profession_title'],
-                            ['events.title' => 'event_title'])
-                    ->joinTo($userProfessionModel, false)
-                    ->joinTo($userEventModel)
-                    ->joinThrough($eventModel)
-                    ->first();
+                ['users.id' => 'user_id'],
+                'firstname',
+                ['user_professions.title' => 'profession_title'],
+                ['events.title' => 'event_title'])
+                ->joinTo($userProfessionModel, false)
+                ->joinTo($userEventModel)
+                ->joinThrough($eventModel)
+                ->first();
 
             $this->assertEquals('John', $user->firstname);
 
@@ -337,6 +337,23 @@ namespace Quantum\Tests\Libraries\Database\Idiorm\Statements {
             $ticketModel = ModelFactory::get(CTicketModel::class);
 
             $eventModel->joinTo($ticketModel)->get();
+        }
+
+        public function testIdiormSelectFieldsAtJoin()
+        {
+            $userModel = ModelFactory::get(CUserModel::class);
+
+            $userProfessionModel = ModelFactory::get(CUserProfessionModel::class);
+
+            $user = $userModel
+                ->joinTo($userProfessionModel, false)
+                ->select('firstname', 'lastname', 'age', 'country', ['user_professions.title' => 'profession'])
+                ->first()
+                ->asArray();
+
+            $this->assertArrayHasKey('profession', $user);
+
+            $this->assertEquals('Writer', $user['profession']);
         }
     }
 

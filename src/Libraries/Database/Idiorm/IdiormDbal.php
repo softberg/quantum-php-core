@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.6.0
+ * @since 2.8.0
  */
 
 namespace Quantum\Libraries\Database\Idiorm;
@@ -75,7 +75,7 @@ class IdiormDbal implements DbalInterface, RelationalInterface
 
     /**
      * Idiorm Patch object
-     * @var \Quantum\Libraries\Database\Idiorm\IdiormPatch
+     * @var IdiormPatch
      */
     private $ormPatch = null;
 
@@ -184,8 +184,8 @@ class IdiormDbal implements DbalInterface, RelationalInterface
 
     /**
      * Gets the ORM model
-     * @return \ORM
-     * @throws \Quantum\Exceptions\DatabaseException
+     * @return ORM
+     * @throws DatabaseException
      */
     public function getOrmModel(): ORM
     {
@@ -201,7 +201,7 @@ class IdiormDbal implements DbalInterface, RelationalInterface
     }
 
     /**
-     * @param \ORM $ormModel
+     * @param ORM $ormModel
      */
     protected function updateOrmModel(ORM $ormModel)
     {

@@ -14,6 +14,7 @@
 
 namespace Quantum\Libraries\Database\Sleekdb\Statements;
 
+use Quantum\Exceptions\ModelException;
 use Quantum\Libraries\Database\DbalInterface;
 
 /**
@@ -85,6 +86,7 @@ trait Model
      * @throws \SleekDB\Exceptions\IOException
      * @throws \SleekDB\Exceptions\InvalidArgumentException
      * @throws \SleekDB\Exceptions\InvalidConfigurationException
+     * @throws ModelException
      */
     public function deleteMany(): bool
     {

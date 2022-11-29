@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.6.0
+ * @since 2.8.0
  */
 
 namespace Quantum\Libraries\Database\Sleekdb\Statements;
@@ -26,7 +26,7 @@ trait Criteria
 
     /**
      * @inheritDoc
-     * @throws \Quantum\Exceptions\DatabaseException
+     * @throws DatabaseException
      */
     public function criteria(string $column, string $operator, $value = null): DbalInterface
     {
@@ -34,14 +34,14 @@ trait Criteria
             throw DatabaseException::operatorNotSupported($operator);
         }
 
-        array_push($this->criterias, [$column, $operator, $value]);
+        $this->criterias[] = [$column, $operator, $value];
 
         return $this;
     }
 
     /**
      * @inheritDoc
-     * @throws \Quantum\Exceptions\DatabaseException
+     * @throws DatabaseException
      */
     public function criterias(...$criterias): DbalInterface
     {
@@ -59,7 +59,7 @@ trait Criteria
 
     /**
      * @inheritDoc
-     * @throws \Quantum\Exceptions\DatabaseException
+     * @throws DatabaseException
      */
     public function having(string $column, string $operator, string $value = null): DbalInterface
     {
@@ -67,7 +67,7 @@ trait Criteria
             throw DatabaseException::operatorNotSupported($operator);
         }
 
-        array_push($this->havings, [$column, $operator, $value]);
+        $this->havings[] = [$column, $operator, $value];
 
         return $this;
     }
@@ -79,9 +79,9 @@ trait Criteria
     protected function orCriteria(array $orCriterias)
     {
         foreach ($orCriterias as $index => $criteria) {
-            array_push($this->criterias, $criteria);
+            $this->criterias[] = $criteria;
             if ($index != array_key_last($orCriterias)) {
-                array_push($this->criterias, 'OR');
+                $this->criterias[] = 'OR';
             }
         }
     }

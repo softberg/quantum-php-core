@@ -9,19 +9,18 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.7.0
+ * @since 2.8.0
  */
 
 namespace Quantum\Libraries\Database\Schema;
 
-use Quantum\Libraries\Database\Schema\TableBuilder;
 use Quantum\Exceptions\MigrationException;
 use Quantum\Libraries\Database\Database;
 
 /**
  * Class Table
  * @package Quantum\Libraries\Database
- * 
+ *
  * @method self autoIncrement()
  * @method self primary()
  * @method self index(string $name = null)
@@ -65,13 +64,12 @@ class Table
     private $name;
 
     /**
-     * 
      * @var string
      */
     private $newName;
 
     /**
-     * @var int 
+     * @var int
      */
     private $action = null;
 
@@ -120,7 +118,7 @@ class Table
     }
 
     /**
-     * Sets an action on a table to be performed 
+     * Sets an action on a table to be performed
      * @param int $action
      * @param array|null $data
      * @return Table
@@ -146,10 +144,10 @@ class Table
      */
     public function addColumn(string $name, string $type, $constraint = null): Table
     {
-        array_push($this->columns, [
+        $this->columns[] = [
             'column' => new Column($name, $type, $constraint),
             'action' => $this->action == self::ALTER ? Column::ADD : null
-        ]);
+        ];
 
         return $this;
     }
@@ -164,10 +162,10 @@ class Table
     public function modifyColumn(string $name, string $type, $constraint = null): Table
     {
         if ($this->action == self::ALTER) {
-            array_push($this->columns, [
+            $this->columns[] = [
                 'column' => new Column($name, $type, $constraint),
                 'action' => Column::MODIFY
-            ]);
+            ];
         }
 
         return $this;
@@ -181,10 +179,10 @@ class Table
     public function renameColumn(string $oldName, string $newName)
     {
         if ($this->action == self::ALTER) {
-            array_push($this->columns, [
+            $this->columns[] = [
                 'column' => (new Column($oldName))->renameTo($newName),
                 'action' => Column::RENAME
-            ]);
+            ];
         }
     }
 
@@ -195,10 +193,10 @@ class Table
     public function dropColumn(string $name)
     {
         if ($this->action == self::ALTER) {
-            array_push($this->columns, [
+            $this->columns[] = [
                 'column' => new Column($name),
                 'action' => Column::DROP
-            ]);
+            ];
         }
     }
 
@@ -206,15 +204,15 @@ class Table
      * Adds new index to column
      * @param string $columnName
      * @param string $indexType
-     * @param string $indexName
+     * @param string|null $indexName
      */
     public function addIndex(string $columnName, string $indexType, string $indexName = null)
     {
         if ($this->action == self::ALTER) {
-            array_push($this->columns, [
+            $this->columns[] = [
                 'column' => new Column($columnName),
                 'action' => Column::ADD_INDEX
-            ]);
+            ];
 
             $this->$indexType($indexName);
         }
@@ -227,14 +225,19 @@ class Table
     public function dropIndex(string $indexName)
     {
         if ($this->action == self::ALTER) {
-            array_push($this->columns, [
+            $this->columns[] = [
                 'column' => (new Column('dummy'))->indexDrop($indexName),
                 'action' => Column::DROP_INDEX
-            ]);
+            ];
         }
     }
 
-    public function after(string $columnName)
+    /**
+     * Adds columns after specified one
+     * @param string $columnName
+     * @return $this
+     */
+    public function after(string $columnName): Table
     {
         $this->columns[$this->columnKey()]['column']->after($columnName);
         return $this;
@@ -267,11 +270,12 @@ class Table
     }
 
     /**
-     * Allows to call methods of Column class 
+     * Allows to call methods of Column class
      * @param string $method
      * @param array|null $arguments
      * @return $this
-     * @throws Quantum\Exceptions\MigrationException
+     * @throws MigrationException
+     * @throws \Quantum\Exceptions\LangException
      */
     public function __call(string $method, ?array $arguments)
     {
@@ -296,9 +300,10 @@ class Table
     }
 
     /**
-     * Checks if column exists on a table 
+     * Checks if column exists on a table
      * @param string $columnName
      * @return bool
+     * @throws \Quantum\Exceptions\DatabaseException
      */
     private function checkColumnExists(string $columnName): bool
     {
@@ -322,7 +327,7 @@ class Table
      */
     private function columnKey(): int
     {
-        return (int) array_key_last($this->columns);
+        return (int)array_key_last($this->columns);
     }
 
 }

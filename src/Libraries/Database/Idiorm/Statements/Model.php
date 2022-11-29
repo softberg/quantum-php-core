@@ -9,12 +9,13 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.6.0
+ * @since 2.8.0
  */
 
 namespace Quantum\Libraries\Database\Idiorm\Statements;
 
 use Quantum\Libraries\Database\DbalInterface;
+use Quantum\Exceptions\DatabaseException;
 
 /**
  * Trait Model
@@ -25,7 +26,7 @@ trait Model
 
     /**
      * @inheritDoc
-     * @throws \Quantum\Exceptions\DatabaseException
+     * @throws DatabaseException
      */
     public function create(): DbalInterface
     {
@@ -35,7 +36,7 @@ trait Model
 
     /**
      * @inheritDoc
-     * @throws \Quantum\Exceptions\DatabaseException
+     * @throws DatabaseException
      */
     public function prop(string $key, $value = null)
     {
@@ -48,7 +49,7 @@ trait Model
 
     /**
      * @inheritDoc
-     * @throws \Quantum\Exceptions\DatabaseException
+     * @throws DatabaseException
      */
     public function save(): bool
     {
@@ -57,7 +58,7 @@ trait Model
 
     /**
      * @inheritDoc
-     * @throws \Quantum\Exceptions\DatabaseException
+     * @throws DatabaseException
      */
     public function delete(): bool
     {
@@ -66,7 +67,7 @@ trait Model
 
     /**
      * @inheritDoc
-     * @throws \Quantum\Exceptions\DatabaseException
+     * @throws DatabaseException
      */
     public function deleteMany(): bool
     {

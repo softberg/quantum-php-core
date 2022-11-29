@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.7.0
+ * @since 2.8.0
  */
 
 namespace Quantum\Libraries\Database\Schema;
@@ -189,7 +189,7 @@ class Column
     /**
      * Column constructor.
      * @param string $name
-     * @param string $type
+     * @param string|null $type
      * @param mixed $constraint
      */
     public function __construct(string $name, string $type = null, $constraint = null)
@@ -213,7 +213,7 @@ class Column
         return $this;
     }
 
-    public function indexDrop(string $indexName)
+    public function indexDrop(string $indexName): Column
     {
         $this->indexDrop = $indexName;
         return $this;
@@ -222,7 +222,7 @@ class Column
     /**
      * Gets the column property
      * @param string $property
-     * @param string $action
+     * @param string|null $action
      * @return mixed
      */
     public function get(string $property, string $action = null)
@@ -249,7 +249,7 @@ class Column
 
     /**
      * Adds an index key to the column
-     * @param string $name
+     * @param string|null $name
      */
     public function index(string $name = null)
     {
@@ -262,7 +262,7 @@ class Column
 
     /**
      * Adds unique key to the column
-     * @param string $name
+     * @param string|null $name
      */
     public function unique(string $name = null)
     {
@@ -275,7 +275,7 @@ class Column
 
     /**
      * Adds a fulltext key the column
-     * @param string $name
+     * @param string|null $name
      */
     public function fulltext(string $name = null)
     {
@@ -288,7 +288,7 @@ class Column
 
     /**
      * Adds a spatial key the column
-     * @param string $name
+     * @param string|null $name
      */
     public function spatial(string $name = null)
     {
@@ -322,7 +322,7 @@ class Column
 
     /**
      * Adds or removes attribute to the column
-     * @param string $value
+     * @param string|null $value
      */
     public function attribute(?string $value)
     {
@@ -331,7 +331,7 @@ class Column
 
     /**
      * Adds or removes comment to the column
-     * @param string $comment
+     * @param string|null $comment
      */
     public function comment(?string $comment)
     {
