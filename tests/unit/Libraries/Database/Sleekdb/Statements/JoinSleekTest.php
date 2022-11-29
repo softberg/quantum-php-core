@@ -280,7 +280,7 @@ namespace Quantum\Tests\Libraries\Database\Sleekdb\Statements {
             $userProfessionModel = ModelFactory::get(SleekUserProfessionModel::class);
 
             $users = $userModel->joinTo($userProfessionModel)
-                ->select('firstname', 'lastname', 'age', 'country', ['professions.0.title' => 'profession'])
+                ->select('firstname', 'lastname', 'age', 'country', ['professions.title' => 'profession'])
                 ->orderBy('age', 'desc')
                 ->get();
 
