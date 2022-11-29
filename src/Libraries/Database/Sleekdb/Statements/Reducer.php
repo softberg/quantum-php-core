@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.6.0
+ * @since 2.8.0
  */
 
 namespace Quantum\Libraries\Database\Sleekdb\Statements;
@@ -49,7 +49,7 @@ trait Reducer
      */
     public function groupBy(string $column): DbalInterface
     {
-        array_push($this->grouped, $column);
+        $this->grouped[] = $column;
         return $this;
     }
 

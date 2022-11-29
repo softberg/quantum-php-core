@@ -9,12 +9,13 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.6.0
+ * @since 2.8.0
  */
 
 namespace Quantum\Libraries\Database\Idiorm\Statements;
 
 use Quantum\Libraries\Database\DbalInterface;
+use Quantum\Exceptions\DatabaseException;
 use RecursiveIteratorIterator;
 use RecursiveArrayIterator;
 
@@ -27,7 +28,7 @@ trait Reducer
 
     /**
      * @inheritDoc
-     * @throws \Quantum\Exceptions\DatabaseException
+     * @throws DatabaseException
      */
     public function select(...$columns): DbalInterface
     {
@@ -46,7 +47,7 @@ trait Reducer
 
     /**
      * @inheritDoc
-     * @throws \Quantum\Exceptions\DatabaseException
+     * @throws DatabaseException
      */
     public function groupBy(string $column): DbalInterface
     {
@@ -56,7 +57,7 @@ trait Reducer
 
     /**
      * @inheritDoc
-     * @throws \Quantum\Exceptions\DatabaseException
+     * @throws DatabaseException
      */
     public function orderBy(string $column, string $direction): DbalInterface
     {
@@ -74,7 +75,7 @@ trait Reducer
 
     /**
      * @inheritDoc
-     * @throws \Quantum\Exceptions\DatabaseException
+     * @throws DatabaseException
      */
     public function offset(int $offset): DbalInterface
     {
@@ -84,7 +85,7 @@ trait Reducer
 
     /**
      * @inheritDoc
-     * @throws \Quantum\Exceptions\DatabaseException
+     * @throws DatabaseException
      */
     public function limit(int $limit): DbalInterface
     {

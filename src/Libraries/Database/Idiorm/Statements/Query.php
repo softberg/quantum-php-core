@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.6.0
+ * @since 2.8.0
  */
 
 namespace Quantum\Libraries\Database\Idiorm\Statements;
@@ -25,7 +25,7 @@ trait Query
 
     /**
      * @inheritDoc
-     * @throws \Quantum\Exceptions\DatabaseException
+     * @throws DatabaseException
      */
     public static function execute(string $query, array $parameters = []): bool
     {
@@ -38,7 +38,7 @@ trait Query
 
     /**
      * @inheritDoc
-     * @throws \Quantum\Exceptions\DatabaseException
+     * @throws DatabaseException
      */
     public static function query(string $query, array $parameters = []): array
     {
@@ -49,24 +49,9 @@ trait Query
         return (self::$ormClass)::for_table('dummy')->raw_query($query, $parameters)->find_array();
     }
 
-
-    public static function fetchColumns(string $table): array
-    {
-        $columns = [];
-
-        self::query('SELECT * FROM ' . $table);
-        $statement = self::lastStatement();
-
-        for ($i = 0; $i < $statement->columnCount(); $i++) {
-            $columns[] = $statement->getColumnMeta($i)['name'];
-        }
-
-        return $columns;
-    }
-
     /**
      * @inheritDoc
-     * @throws \Quantum\Exceptions\DatabaseException
+     * @throws DatabaseException
      */
     public static function lastQuery(): ?string
     {
@@ -79,7 +64,7 @@ trait Query
 
     /**
      * @inheritDoc
-     * @throws \Quantum\Exceptions\DatabaseException
+     * @throws DatabaseException
      */
     public static function lastStatement(): object
     {
@@ -92,7 +77,7 @@ trait Query
 
     /**
      * @inheritDoc
-     * @throws \Quantum\Exceptions\DatabaseException
+     * @throws DatabaseException
      */
     public static function queryLog(): array
     {
@@ -101,6 +86,26 @@ trait Query
         }
 
         return (self::$ormClass)::get_query_log();
+    }
+
+    /**
+     * Fetches columns of the table
+     * @param string $table
+     * @return array
+     * @throws DatabaseException
+     */
+    public static function fetchColumns(string $table): array
+    {
+        $columns = [];
+
+        self::query('SELECT * FROM ' . $table);
+        $statement = self::lastStatement();
+
+        for ($i = 0; $i < $statement->columnCount(); $i++) {
+            $columns[] = $statement->getColumnMeta($i)['name'];
+        }
+
+        return $columns;
     }
 
 }

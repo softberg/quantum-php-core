@@ -16,6 +16,7 @@ namespace Quantum\Libraries\Database\Idiorm\Statements;
 
 use Quantum\Libraries\Database\Idiorm\IdiormPatch;
 use Quantum\Libraries\Database\DbalInterface;
+use Quantum\Exceptions\DatabaseException;
 use Quantum\Exceptions\ModelException;
 use Quantum\Mvc\QtModel;
 
@@ -28,7 +29,7 @@ trait Join
 
     /**
      * @inheritDoc
-     * @throws \Quantum\Exceptions\DatabaseException
+     * @throws DatabaseException
      */
     public function join(string $table, array $constraint, string $tableAlias = null): DbalInterface
     {
@@ -38,7 +39,7 @@ trait Join
 
     /**
      * @inheritDoc
-     * @throws \Quantum\Exceptions\DatabaseException
+     * @throws DatabaseException
      */
     public function innerJoin(string $table, array $constraint, ?string $tableAlias = null): DbalInterface
     {
@@ -48,7 +49,7 @@ trait Join
 
     /**
      * @inheritDoc
-     * @throws \Quantum\Exceptions\DatabaseException
+     * @throws DatabaseException
      */
     public function leftJoin(string $table, array $constraint, ?string $tableAlias = null): DbalInterface
     {
@@ -58,7 +59,7 @@ trait Join
 
     /**
      * @inheritDoc
-     * @throws \Quantum\Exceptions\DatabaseException
+     * @throws DatabaseException
      */
     public function rightJoin(string $table, array $constraint, ?string $tableAlias = null): DbalInterface
     {
@@ -68,8 +69,8 @@ trait Join
 
     /**
      * @inheritDoc
-     * @throws \Quantum\Exceptions\DatabaseException
-     * @throws \Quantum\Exceptions\ModelException
+     * @throws DatabaseException
+     * @throws ModelException
      */
     public function joinTo(QtModel $model, bool $switch = true): DbalInterface
     {
@@ -96,8 +97,8 @@ trait Join
 
     /**
      * @inheritDoc
-     * @throws \Quantum\Exceptions\DatabaseException
-     * @throws \Quantum\Exceptions\ModelException
+     * @throws DatabaseException
+     * @throws ModelException
      */
     public function joinThrough(QtModel $model, bool $switch = true): DbalInterface
     {

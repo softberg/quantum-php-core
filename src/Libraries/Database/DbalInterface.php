@@ -49,14 +49,14 @@ interface DbalInterface
     /**
      * Selects the values from provided table columns
      * @param mixed $columns
-     * @return \Quantum\Libraries\Database\DbalInterface
+     * @return DbalInterface
      */
     public function select(...$columns): DbalInterface;
 
     /**
      * Finds the record by primary key
      * @param int $id
-     * @return \Quantum\Libraries\Database\DbalInterface
+     * @return DbalInterface
      */
     public function findOne(int $id): DbalInterface;
 
@@ -64,13 +64,13 @@ interface DbalInterface
      * Finds the record by given column and value
      * @param string $column
      * @param mixed $value
-     * @return \Quantum\Libraries\Database\DbalInterface
+     * @return DbalInterface
      */
     public function findOneBy(string $column, $value): DbalInterface;
 
     /**
      * Gets the first item
-     * @return \Quantum\Libraries\Database\DbalInterface
+     * @return DbalInterface
      */
     public function first(): DbalInterface;
 
@@ -79,14 +79,14 @@ interface DbalInterface
      * @param string $column
      * @param string $operator
      * @param mixed|null $value
-     * @return \Quantum\Libraries\Database\DbalInterface
+     * @return DbalInterface
      */
     public function criteria(string $column, string $operator, $value = null): DbalInterface;
 
     /**
      * Adds criteria to query
      * @param array ...$criterias
-     * @return \Quantum\Libraries\Database\DbalInterface
+     * @return DbalInterface
      */
     public function criterias(...$criterias): DbalInterface;
 
@@ -95,14 +95,14 @@ interface DbalInterface
      * @param string $column
      * @param string $operator
      * @param string|null $value
-     * @return \Quantum\Libraries\Database\DbalInterface
+     * @return DbalInterface
      */
     public function having(string $column, string $operator, string $value = null): DbalInterface;
 
     /**
      * Groups the result by given column
      * @param string $column
-     * @return \Quantum\Libraries\Database\DbalInterface
+     * @return DbalInterface
      */
     public function groupBy(string $column): DbalInterface;
 
@@ -110,21 +110,21 @@ interface DbalInterface
      * Orders the result by ascending or descending
      * @param string $column
      * @param string $direction
-     * @return \Quantum\Libraries\Database\DbalInterface
+     * @return DbalInterface
      */
     public function orderBy(string $column, string $direction): DbalInterface;
 
     /**
      * Returns the result by given offset (works when limit also applied)
      * @param integer $offset
-     * @return \Quantum\Libraries\Database\DbalInterface
+     * @return DbalInterface
      */
     public function offset(int $offset): DbalInterface;
 
     /**
      * Returns the limited result set
      * @param int $limit
-     * @return \Quantum\Libraries\Database\DbalInterface
+     * @return DbalInterface
      */
     public function limit(int $limit): DbalInterface;
 
@@ -156,7 +156,7 @@ interface DbalInterface
 
     /**
      * Creates new db record
-     * @return \Quantum\Libraries\Database\DbalInterface
+     * @return DbalInterface
      */
     public function create(): DbalInterface;
 
@@ -182,7 +182,7 @@ interface DbalInterface
      * Joins two models
      * @param QtModel $model
      * @param bool $switch
-     * @return \Quantum\Libraries\Database\DbalInterface
+     * @return DbalInterface
      */
     public function joinTo(QtModel $model, bool $switch = true): DbalInterface;
 
@@ -190,7 +190,7 @@ interface DbalInterface
      * Joins through connector model
      * @param QtModel $model
      * @param bool $switch
-     * @return \Quantum\Libraries\Database\DbalInterface
+     * @return DbalInterface
      */
     public function joinThrough(QtModel $model, bool $switch = true): DbalInterface;
 

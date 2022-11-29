@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.6.0
+ * @since 2.8.0
  */
 
 namespace Quantum\Libraries\Database;
@@ -32,15 +32,15 @@ class Database
 
     /**
      * Database instance
-     * @var \Quantum\Libraries\Database\Database|null
+     * @var Database|null
      */
     private static $instance = null;
 
     /**
      * Database constructor.
      * @throws \Quantum\Exceptions\ConfigException
-     * @throws \Quantum\Exceptions\DatabaseException
      * @throws \Quantum\Exceptions\DiException
+     * @throws DatabaseException
      * @throws \ReflectionException
      */
     private function __construct()
@@ -50,7 +50,7 @@ class Database
 
     /**
      * Get Instance
-     * @return \Quantum\Libraries\Database\Database|null
+     * @return Database|null
      */
     public static function getInstance(): ?Database
     {
@@ -66,8 +66,8 @@ class Database
      * @param string $table
      * @param string $idColumn
      * @param array $foreignKeys
-     * @return \Quantum\Libraries\Database\DbalInterface
-     * @throws \Quantum\Exceptions\DatabaseException
+     * @return DbalInterface
+     * @throws DatabaseException
      */
     public function getOrm(string $table, string $idColumn = 'id', array $foreignKeys = []): DbalInterface
     {
@@ -80,8 +80,8 @@ class Database
      * Gets the DB configurations
      * @return array
      * @throws \Quantum\Exceptions\ConfigException
-     * @throws \Quantum\Exceptions\DatabaseException
      * @throws \Quantum\Exceptions\DiException
+     * @throws DatabaseException
      * @throws \ReflectionException
      */
     public function getConfigs(): ?array
@@ -108,7 +108,7 @@ class Database
      * @param string $query
      * @param array $parameters
      * @return bool
-     * @throws \Quantum\Exceptions\DatabaseException
+     * @throws DatabaseException
      */
     public static function execute(string $query, array $parameters = []): bool
     {
@@ -120,7 +120,7 @@ class Database
      * @param string $query
      * @param array $parameters
      * @return array
-     * @throws \Quantum\Exceptions\DatabaseException
+     * @throws DatabaseException
      */
     public static function query(string $query, array $parameters = []): array
     {
@@ -132,7 +132,7 @@ class Database
      * @param string $query
      * @param array $parameters
      * @return array
-     * @throws \Quantum\Exceptions\DatabaseException
+     * @throws DatabaseException
      */
     public static function fetchColumns(string $query, array $parameters = []): array
     {
@@ -142,7 +142,7 @@ class Database
     /**
      * Gets the last query executed
      * @return string|null
-     * @throws \Quantum\Exceptions\DatabaseException
+     * @throws DatabaseException
      */
     public static function lastQuery(): ?string
     {
@@ -153,7 +153,7 @@ class Database
      * Get an array containing all the queries
      * run on a specified connection up to now.
      * @return array
-     * @throws \Quantum\Exceptions\DatabaseException
+     * @throws DatabaseException
      */
     public static function queryLog(): array
     {
@@ -163,7 +163,7 @@ class Database
     /**
      * Gets the ORM class
      * @return string
-     * @throws \Quantum\Exceptions\DatabaseException
+     * @throws DatabaseException
      */
     protected function getOrmClass(): string
     {
@@ -186,7 +186,7 @@ class Database
      * @param string $query
      * @param array $parameters
      * @return mixed
-     * @throws \Quantum\Exceptions\DatabaseException
+     * @throws DatabaseException
      */
     protected static function resolveQuery(string $method, string $query = '', array $parameters = [])
     {

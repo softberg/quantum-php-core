@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.6.0
+ * @since 2.8.0
  */
 
 namespace Quantum\Libraries\Database\Idiorm;
@@ -35,7 +35,7 @@ class IdiormPatch extends ORM
 
     /**
      * Get Instance
-     * @return object|\Quantum\Libraries\Database\Idiorm\IdiormPatch|null
+     * @return IdiormPatch|object|null
      */
     public static function getInstance()
     {

@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.6.0
+ * @since 2.8.0
  */
 
 namespace Quantum\Libraries\Database\Idiorm;
@@ -63,7 +63,7 @@ interface RelationalInterface
      * @param string $table
      * @param array $constraint
      * @param string|null $tableAlias
-     * @return \Quantum\Libraries\Database\DbalInterface
+     * @return DbalInterface
      */
     public function join(string $table, array $constraint, ?string $tableAlias = null): DbalInterface;
 
@@ -72,7 +72,7 @@ interface RelationalInterface
      * @param string $table
      * @param array $constraint
      * @param string|null $tableAlias
-     * @return \Quantum\Libraries\Database\DbalInterface
+     * @return DbalInterface
      */
     public function innerJoin(string $table, array $constraint, ?string $tableAlias = null): DbalInterface;
 
@@ -81,7 +81,7 @@ interface RelationalInterface
      * @param string $table
      * @param array $constraint
      * @param string|null $tableAlias
-     * @return \Quantum\Libraries\Database\DbalInterface
+     * @return DbalInterface
      */
     public function leftJoin(string $table, array $constraint, ?string $tableAlias = null): DbalInterface;
 
@@ -90,7 +90,7 @@ interface RelationalInterface
      * @param string $table
      * @param array $constraint
      * @param string|null $tableAlias
-     * @return \Quantum\Libraries\Database\DbalInterface
+     * @return DbalInterface
      */
     public function rightJoin(string $table, array $constraint, ?string $tableAlias = null): DbalInterface;
 

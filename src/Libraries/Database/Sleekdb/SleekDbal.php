@@ -8,7 +8,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.6.0
+ * @since 2.8.0
  */
 
 namespace Quantum\Libraries\Database\Sleekdb;
@@ -196,8 +196,8 @@ class SleekDbal implements DbalInterface
 
     /**
      * Gets the ORM model
-     * @return \SleekDB\Store
-     * @throws \Quantum\Exceptions\DatabaseException
+     * @return Store
+     * @throws DatabaseException
      * @throws \SleekDB\Exceptions\IOException
      * @throws \SleekDB\Exceptions\InvalidArgumentException
      * @throws \SleekDB\Exceptions\InvalidConfigurationException
@@ -211,7 +211,7 @@ class SleekDbal implements DbalInterface
 
             $connection = self::getConnection();
 
-            if (!isset($connection['database_dir']) || empty($connection['database_dir'])) {
+            if (empty($connection['database_dir'])) {
                 throw DatabaseException::incorrectConfig();
             }
 
@@ -225,7 +225,7 @@ class SleekDbal implements DbalInterface
 
     /**
      * Deletes the table and the data
-     * @throws \Quantum\Exceptions\DatabaseException
+     * @throws DatabaseException
      * @throws \SleekDB\Exceptions\IOException
      * @throws \SleekDB\Exceptions\InvalidArgumentException
      * @throws \SleekDB\Exceptions\InvalidConfigurationException
@@ -237,8 +237,9 @@ class SleekDbal implements DbalInterface
 
     /**
      * Gets the query builder object
-     * @return mixed
-     * @throws \Quantum\Exceptions\DatabaseException
+     * @return QueryBuilder
+     * @throws DatabaseException
+     * @throws \Quantum\Exceptions\ModelException
      * @throws \SleekDB\Exceptions\IOException
      * @throws \SleekDB\Exceptions\InvalidArgumentException
      * @throws \SleekDB\Exceptions\InvalidConfigurationException

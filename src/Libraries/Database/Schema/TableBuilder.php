@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.7.0
+ * @since 2.8.0
  */
 
 namespace Quantum\Libraries\Database\Schema;
@@ -25,7 +25,7 @@ trait TableBuilder
      * Generates create table statement
      * @return string
      */
-    protected function createTableSql()
+    protected function createTableSql(): string
     {
         $tableSchema = array_filter([$this->columnsSql(), $this->indexesSql()]);
         $sql = '';
@@ -106,7 +106,7 @@ trait TableBuilder
                 }
 
                 if ($columnString) {
-                    array_push($columns, $columnString);
+                    $columns[] = $columnString;
                 }
             }
 
@@ -117,9 +117,9 @@ trait TableBuilder
     }
 
     /**
-     * Composes the column 
+     * Composes the column
      * @param Column $column
-     * @param string $action
+     * @param string|null $action
      * @return string
      */
     protected function composeColumn(Column $column, string $action = null): string
@@ -193,14 +193,12 @@ trait TableBuilder
             $indexes = [];
 
             foreach ($this->indexKeys[$type] as $indexKey) {
-                $indexString = '';
-
-                $indexString .= ($this->action == self::ALTER ? 'ADD ' : '');
+                $indexString = ($this->action == self::ALTER ? 'ADD ' : '');
                 $indexString .= strtoupper($type);
                 $indexString .= ($indexKey['indexName'] ? ' `' . $indexKey['indexName'] . '`' : '');
                 $indexString .= ' (`' . $indexKey['columnName'] . '`)';
 
-                array_push($indexes, $indexString);
+                $indexes[] = $indexString;
             }
 
             $sql = implode(', ', $indexes);
@@ -230,7 +228,7 @@ trait TableBuilder
      * Builds a statement for drop indexes
      * @return string
      */
-    protected function dropIndexesSql()
+    protected function dropIndexesSql(): string
     {
         $sql = '';
 
