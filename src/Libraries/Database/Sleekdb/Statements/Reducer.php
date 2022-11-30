@@ -39,7 +39,7 @@ trait Reducer
         $iterator = new RecursiveIteratorIterator(new RecursiveArrayIterator($columns));
         $columns = iterator_to_array($iterator, true);
 
-        $this->selected = $columns;
+        $this->selected = $this->selectPatch($columns);
 
         return $this;
     }
@@ -78,6 +78,29 @@ trait Reducer
     {
         $this->limit = $limit;
         return $this;
+    }
+
+    /**
+     * @param array $columns
+     * @return array
+     */
+    private function selectPatch(array $columns): array
+    {
+        foreach ($columns as &$column) {
+            $exploded = explode('.', $column);
+
+            if (count($exploded) == 1) {
+                $column = $exploded[0];
+            } else {
+                if ($exploded[0] == $this->getTable()) {
+                    $column = $exploded[1];
+                } else {
+                    $column = $exploded[0] . '.0.' . $exploded[1];
+                }
+            }
+        }
+
+        return $columns;
     }
 
 
