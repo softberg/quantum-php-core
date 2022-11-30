@@ -47,11 +47,21 @@ class EnvCommand extends QtCommand
     public function exec()
     {
         if (file_exists('.env.example')) {
+            if (!$this->getOption('yes')) {
+                if (file_exists('.env')) {
+                    $message = "The operation will overwrite values of the existing .env create new one from .env.example. Continue? [y/N]";
+
+                    if (!$this->confirm($message)) {
+                        $this->info('Operation was canceled!');
+                        return;
+                    }
+                }
+            }
+
             copy('.env.example', '.env');
             $this->info('.env is successfully generated');
         } else {
             $this->error('.env.example file not found');
         }
     }
-
 }
