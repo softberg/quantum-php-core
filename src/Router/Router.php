@@ -38,13 +38,13 @@ class Router extends RouteController
 
     /**
      * Request instance
-     * @var \Quantum\Http\Request;
+     * @var Request;
      */
     private $request;
 
     /**
      * Response instance
-     * @var \Quantum\Http\Response;
+     * @var Response;
      */
     private $response;
 
@@ -68,8 +68,8 @@ class Router extends RouteController
 
     /**
      * Router constructor.
-     * @param \Quantum\Http\Request $request
-     * @param \Quantum\Http\Response $response
+     * @param Request $request
+     * @param Response $response
      */
     public function __construct(Request $request, Response $response)
     {
@@ -79,10 +79,14 @@ class Router extends RouteController
 
     /**
      * Finds the current route
-     * @throws \Quantum\Exceptions\DiException
-     * @throws \Quantum\Exceptions\RouteException
      * @throws \Quantum\Exceptions\StopExecutionException
+     * @throws \Quantum\Exceptions\ViewException
+     * @throws \Quantum\Exceptions\DiException
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
      * @throws \ReflectionException
+     * @throws RouteException
      */
     public function findRoute()
     {
@@ -106,9 +110,7 @@ class Router extends RouteController
 
         $matchedRoute = current($this->matchedRoutes);
 
-        if ($this->request->getMethod() != 'OPTIONS') {
-            $this->checkMethod($matchedRoute);
-        }
+        $this->checkMethod($matchedRoute);
 
         $matchedRoute['uri'] = $uri;
 
@@ -156,6 +158,7 @@ class Router extends RouteController
     /**
      * Finds matches by pattern
      * @param string $uri
+     * @throws RouteException
      */
     private function findPatternMatches(string $uri)
     {
@@ -177,6 +180,12 @@ class Router extends RouteController
         }
     }
 
+    /**
+     * Handles the route pattern
+     * @param array $route
+     * @return array
+     * @throws RouteException
+     */
     private function handleRoutePattern(array $route): array
     {
         $routeSegments = explode('/', trim($route['route'], '/'));
@@ -184,7 +193,7 @@ class Router extends RouteController
         $routePattern = '(\/)?';
         $routeParams = [];
 
-        $lastIndex = (int) array_key_last($routeSegments);
+        $lastIndex = (int)array_key_last($routeSegments);
 
         foreach ($routeSegments as $index => $segment) {
             $segmentParam = $this->checkSegment($segment, $index, $lastIndex);
@@ -198,7 +207,7 @@ class Router extends RouteController
                     'name' => $segmentParam['name']
                 ];
 
-                $routePattern = $this->normilizePattern($routePattern, $segmentParam, $index, $lastIndex);
+                $routePattern = $this->normalizePattern($routePattern, $segmentParam, $index, $lastIndex);
             } else {
                 $routePattern .= $segment;
 
@@ -215,14 +224,14 @@ class Router extends RouteController
     }
 
     /**
-     * Normalize the pattern 
+     * Normalize the pattern
      * @param string $routePattern
      * @param array $segmentParam
      * @param int $index
      * @param int $lastIndex
      * @return string
      */
-    private function normilizePattern(string $routePattern, array $segmentParam, int $index, int $lastIndex): string
+    private function normalizePattern(string $routePattern, array $segmentParam, int $index, int $lastIndex): string
     {
         if ($index == $lastIndex) {
             if (mb_substr($routePattern, -5) == '(\/)?') {
@@ -236,7 +245,7 @@ class Router extends RouteController
     }
 
     /**
-     * Gets the route parameters 
+     * Gets the route parameters
      * @param array $params
      * @param array $arguments
      * @return array
@@ -258,7 +267,10 @@ class Router extends RouteController
     /**
      * Checks the segment for parameter
      * @param string $segment
+     * @param int $index
+     * @param int $lastIndex
      * @return array
+     * @throws RouteException
      */
     private function checkSegment(string $segment, int $index, int $lastIndex): array
     {
@@ -275,7 +287,7 @@ class Router extends RouteController
      * Checks the parameter name availability
      * @param array $routeParams
      * @param string $name
-     * @throws \Quantum\Exceptions\RouteException
+     * @throws RouteException
      */
     private function checkParamName(array $routeParams, string $name)
     {
@@ -287,12 +299,13 @@ class Router extends RouteController
     }
 
     /**
-     * Finds pattern for parameter 
+     * Finds pattern for parameter
      * @param array $match
      * @param string $expr
      * @param int $index
      * @param int $lastIndex
      * @return array
+     * @throws RouteException
      */
     private function getParamPattern(array $match, string $expr, int $index, int $lastIndex): array
     {
@@ -331,8 +344,9 @@ class Router extends RouteController
     /**
      * Gets the parameter name
      * @param array $match
+     * @param int $index
      * @return string
-     * @throws  \Quantum\Exceptions\RouteException
+     * @throws RouteException
      */
     private function getParamName(array $match, int $index): string
     {
@@ -351,7 +365,7 @@ class Router extends RouteController
 
     /**
      * Checks the route collisions
-     * @throws \Quantum\Exceptions\RouteException
+     * @throws RouteException
      */
     private function checkCollision()
     {
@@ -372,7 +386,7 @@ class Router extends RouteController
     /**
      * Checks the request method against defined route method
      * @param array $matchedRoute
-     * @throws \Quantum\Exceptions\RouteException
+     * @throws RouteException
      */
     private function checkMethod(array $matchedRoute)
     {
@@ -390,7 +404,7 @@ class Router extends RouteController
      * @param string $str
      * @return string
      */
-    private function escape($str)
+    private function escape(string $str): string
     {
         return str_replace('/', '\/', stripslashes($str));
     }

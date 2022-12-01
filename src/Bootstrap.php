@@ -24,6 +24,7 @@ use Quantum\Mvc\MvcManager;
 use Quantum\Router\Router;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
+use Quantum\Loader\Setup;
 use Psr\Log\LogLevel;
 use Quantum\Di\Di;
 
@@ -36,17 +37,20 @@ class Bootstrap
 
     /**
      * Boots the app
-     * @throws \Quantum\Exceptions\ModuleLoaderException
-     * @throws \Quantum\Exceptions\ControllerException
-     * @throws \Quantum\Exceptions\MiddlewareException
-     * @throws \Quantum\Exceptions\DatabaseException
-     * @throws \Quantum\Exceptions\SessionException
-     * @throws \Quantum\Exceptions\ConfigException
-     * @throws \Quantum\Exceptions\RouteException
-     * @throws \Quantum\Exceptions\LangException
-     * @throws \Quantum\Exceptions\CsrfException
-     * @throws \Quantum\Exceptions\EnvException
-     * @throws \Quantum\Exceptions\DiException
+     * @throws Exceptions\ModuleLoaderException
+     * @throws Exceptions\ControllerException
+     * @throws Exceptions\MiddlewareException
+     * @throws Exceptions\DatabaseException
+     * @throws Exceptions\SessionException
+     * @throws Exceptions\ConfigException
+     * @throws Exceptions\RouteException
+     * @throws Exceptions\CsrfException
+     * @throws Exceptions\LangException
+     * @throws Exceptions\ViewException
+     * @throws Exceptions\DiException
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\SyntaxError
      * @throws \ReflectionException
      */
     public static function run()
@@ -58,6 +62,10 @@ class Bootstrap
             $request->init(new Server);
             $response->init();
 
+            if ($request->getMethod() == 'OPTIONS') {
+                stop();
+            }
+
             Debugger::initStore();
 
             ModuleLoader::loadModulesRoutes();
@@ -66,7 +74,7 @@ class Bootstrap
             $router->findRoute();
 
             if (config()->get('multilang')) {
-                Lang::getInstance((int) config()->get(Lang::LANG_SEGMENT))->load();
+                Lang::getInstance((int)config()->get(Lang::LANG_SEGMENT))->load();
             }
 
             Debugger::addToStore(Debugger::HOOKS, LogLevel::INFO, HookManager::getRegistered());
@@ -75,7 +83,26 @@ class Bootstrap
 
             stop();
         } catch (StopExecutionException $e) {
+            self::handleCors($response);
             $response->send();
+        }
+    }
+
+    /**
+     * Handles CORS
+     * @param Response $response
+     * @throws Exceptions\ConfigException
+     * @throws Exceptions\DiException
+     * @throws \ReflectionException
+     */
+    private static function handleCors(Response $response)
+    {
+        if (!config()->has('cors')) {
+            config()->import(new Setup('config', 'cors'));
+        }
+
+        foreach (config()->get('cors') as $key => $value) {
+            $response->setHeader($key, $value);
         }
     }
 
