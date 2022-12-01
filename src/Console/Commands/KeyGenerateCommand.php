@@ -60,6 +60,17 @@ class KeyGenerateCommand extends QtCommand
      */
     public function exec()
     {
+        if (Environment::getInstance()->hasKey('APP_KEY') && env('APP_KEY') !== "") {
+            if (!$this->getOption('yes')) {
+                $message = "The operation will remove the existing key and will create new one. Continue?";
+
+                if (!$this->confirm($message)) {
+                    $this->info('Operation was canceled!');
+                    return;
+                }
+            }
+        }
+        
         $key = $this->generateRandomKey();
 
         if ($key) {

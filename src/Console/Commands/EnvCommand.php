@@ -49,7 +49,7 @@ class EnvCommand extends QtCommand
         if (file_exists('.env.example')) {
             if (!$this->getOption('yes')) {
                 if (file_exists('.env')) {
-                    $message = "The operation will overwrite values of the existing .env create new one from .env.example. Continue? [y/N]";
+                    $message = "The operation will overwrite values of the existing .env create new one from .env.example. Continue?";
 
                     if (!$this->confirm($message)) {
                         $this->info('Operation was canceled!');

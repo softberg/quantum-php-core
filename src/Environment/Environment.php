@@ -153,4 +153,19 @@ class Environment
 
         return null;
     }
+    
+    /**
+     * Checks if there is a such key
+     * @param string $key
+     */
+    public function hasKey(string $key): bool
+    {
+        foreach ($this->envContent as $index => $row) {
+            if (preg_match('/^' . $key . '/', $index)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
