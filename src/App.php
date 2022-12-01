@@ -38,21 +38,24 @@ class App
     /**
      * Starts the app
      * @param string $baseDir
+     * @throws Exceptions\ConfigException
+     * @throws Exceptions\ControllerException
+     * @throws Exceptions\CsrfException
+     * @throws Exceptions\DatabaseException
+     * @throws Exceptions\DiException
+     * @throws Exceptions\EnvException
+     * @throws Exceptions\HookException
+     * @throws Exceptions\LangException
+     * @throws Exceptions\MiddlewareException
+     * @throws Exceptions\ModuleLoaderException
+     * @throws Exceptions\RouteException
+     * @throws Exceptions\SessionException
+     * @throws Exceptions\ViewException
      * @throws \ErrorException
-     * @throws \Quantum\Exceptions\ConfigException
-     * @throws \Quantum\Exceptions\ControllerException
-     * @throws \Quantum\Exceptions\CsrfException
-     * @throws \Quantum\Exceptions\DatabaseException
-     * @throws \Quantum\Exceptions\DiException
-     * @throws \Quantum\Exceptions\EnvException
-     * @throws \Quantum\Exceptions\HookException
-     * @throws \Quantum\Exceptions\LangException
-     * @throws \Quantum\Exceptions\MiddlewareException
-     * @throws \Quantum\Exceptions\ModuleLoaderException
-     * @throws \Quantum\Exceptions\RouteException
-     * @throws \Quantum\Exceptions\SessionException
-     * @throws \Quantum\Exceptions\ViewException
      * @throws \ReflectionException
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
      */
     public static function start(string $baseDir)
     {

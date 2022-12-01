@@ -58,7 +58,7 @@ class Di
      * @param callable $entry
      * @param array $additional
      * @return array
-     * @throws \Quantum\Exceptions\DiException
+     * @throws DiException
      * @throws \ReflectionException
      */
     public static function autowire(callable $entry, array $additional = []): array
@@ -76,15 +76,15 @@ class Di
 
             if ($type) {
                 if (self::instantiable($type->getName())) {
-                    array_push($params, self::get($type->getName()));
+                    $params[] = self::get($type->getName());
                 } else if ($type->getName() == 'array') {
-                    array_push($params, $additional);
+                    $params[] = $additional;
                 } else {
-                    array_push($params, current($additional));
+                    $params[] = current($additional);
                     next($additional);
                 }
             } else {
-                array_push($params, current($additional));
+                $params[] = current($additional);
                 next($additional);
             }
         }
@@ -99,7 +99,7 @@ class Di
     public static function add(string $dependency)
     {
         if (!in_array($dependency, self::$dependencies) && class_exists($dependency)) {
-            array_push(self::$dependencies, $dependency);
+            self::$dependencies[] = $dependency;
         }
     }
 
@@ -107,7 +107,7 @@ class Di
      * Gets the dependency from the container
      * @param string $dependency
      * @return mixed
-     * @throws \Quantum\Exceptions\DiException
+     * @throws DiException
      * @throws \ReflectionException
      */
     public static function get(string $dependency)
@@ -126,7 +126,7 @@ class Di
     /**
      * Instantiates the dependency
      * @param string $dependency
-     * @throws \Quantum\Exceptions\DiException|\ReflectionException
+     * @throws DiException|\ReflectionException
      */
     protected static function instantiate(string $dependency)
     {
