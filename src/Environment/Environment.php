@@ -127,7 +127,7 @@ class Environment
 
         if ($row) {
             $this->fs->put($envFilePath, preg_replace(
-                '/^' . $key . "=" . $row . '/m',
+                '/^' . $row . '/m',
                 $key . "=" . $value,
                 $this->fs->get($envFilePath)
             ));
