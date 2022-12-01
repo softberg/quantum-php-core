@@ -14,7 +14,9 @@
 
 namespace Quantum\Console\Commands;
 
+use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Console\QtCommand;
+use Quantum\Di\Di;
 
 /**
  * Class EnvCommand
@@ -46,12 +48,24 @@ class EnvCommand extends QtCommand
      */
     public function exec()
     {
-        if (file_exists('.env.example')) {
+        $fs = Di::get(FileSystem::class);
+
+        if ($fs->exists('.env.example')) {
+            if (!$this->getOption('yes')) {
+                if ($fs->exists('.env')) {
+                    $message = "The operation will overwrite values of the existing .env and will create new one from .env.example. Continue?";
+
+                    if (!$this->confirm($message)) {
+                        $this->info('Operation was canceled!');
+                        return;
+                    }
+                }
+            }
+
             copy('.env.example', '.env');
             $this->info('.env is successfully generated');
         } else {
             $this->error('.env.example file not found');
         }
     }
-
 }

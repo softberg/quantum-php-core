@@ -127,7 +127,7 @@ class Environment
 
         if ($row) {
             $this->fs->put($envFilePath, preg_replace(
-                '/^'. $key . "=" . $row . '/m',
+                '/^' . $row . '/m',
                 $key . "=" . $value,
                 $this->fs->get($envFilePath)
             ));
@@ -147,11 +147,25 @@ class Environment
     {
         foreach ($this->envContent as $index => $row) {
             if (preg_match('/^' . $key . '/', $index)) {
-                return preg_quote($row, '/');
+                return $key . '=' . preg_quote($row, '/');
             }
         }
 
         return null;
     }
+    
+    /**
+     * Checks if there is a such key
+     * @param string $key
+     */
+    public function hasKey(string $key): bool
+    {
+        foreach ($this->envContent as $index => $row) {
+            if (preg_match('/^' . $key . '/', $index)) {
+                return true;
+            }
+        }
 
+        return false;
+    }
 }

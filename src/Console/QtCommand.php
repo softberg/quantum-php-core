@@ -176,7 +176,7 @@ abstract class QtCommand extends Command implements CommandInterface
     public function confirm(string $message): bool
     {
         $helper = $this->getHelper('question');
-        $question = new ConfirmationQuestion($message . ' ', false);
+        $question = new ConfirmationQuestion($message . ' [y/N] ', false);
 
         if ($helper->ask($this->input, $this->output, $question)) {
             return true;
