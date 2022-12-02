@@ -20,7 +20,6 @@ use Quantum\Middleware\MiddlewareManager;
 use Quantum\Libraries\Csrf\Csrf;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
-use Quantum\Loader\Setup;
 use Quantum\Di\Di;
 
 /**
@@ -32,25 +31,19 @@ class MvcManager
 
     /**
      * Handles the request
-     * @param \Quantum\Http\Request $request
-     * @param \Quantum\Http\Response $response
-     * @throws \Quantum\Exceptions\StopExecutionException
-     * @throws \Quantum\Exceptions\ControllerException
+     * @param Request $request
+     * @param Response $response
+     * @throws ControllerException
      * @throws \Quantum\Exceptions\MiddlewareException
      * @throws \Quantum\Exceptions\DatabaseException
      * @throws \Quantum\Exceptions\SessionException
+     * @throws \Quantum\Exceptions\ConfigException
      * @throws \Quantum\Exceptions\CsrfException
      * @throws \Quantum\Exceptions\DiException
      * @throws \ReflectionException
      */
     public static function handle(Request $request, Response $response)
     {
-        self::handleCors($response);
-
-        if ($request->getMethod() == 'OPTIONS') {
-            stop();
-        }
-
         if (current_middlewares()) {
             list($request, $response) = (new MiddlewareManager())->applyMiddlewares($request, $response);
         }
@@ -81,8 +74,8 @@ class MvcManager
 
     /**
      * Get Controller
-     * @return \Quantum\Mvc\QtController
-     * @throws \Quantum\Exceptions\ControllerException
+     * @return QtController
+     * @throws ControllerException
      * @throws \Quantum\Exceptions\DiException
      * @throws \ReflectionException
      */
@@ -109,9 +102,9 @@ class MvcManager
 
     /**
      * Get Action
-     * @param \Quantum\Mvc\QtController $controller
+     * @param QtController $controller
      * @return string|null
-     * @throws \Quantum\Exceptions\ControllerException
+     * @throws ControllerException
      */
     private static function getAction(QtController $controller): ?string
     {
@@ -145,21 +138,6 @@ class MvcManager
         return array_map(function ($param) {
             return $param['value'];
         }, route_params());
-    }
-
-    /**
-     * Handles CORS
-     * @param Response $response
-     */
-    private static function handleCors(Response $response)
-    {
-        if (!config()->has('cors')) {
-            config()->import(new Setup('config', 'cors'));
-        }
-
-        foreach (config()->get('cors') as $key => $value) {
-            $response->setHeader($key, $value);
-        }
     }
 
 }
