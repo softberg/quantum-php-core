@@ -88,7 +88,7 @@ class DebugBarCommand extends QtCommand
         $dir = opendir($src);
 
         if ($dst != $this->publicDebugbarFolderPath) {
-            if ($this->fs->makeDirectory($dst, 777, true) === false) {
+            if ($this->fs->makeDirectory($dst) === false) {
                 throw new \RuntimeException(t('exception.directory_cant_be_created', $dst));
             }
         }
