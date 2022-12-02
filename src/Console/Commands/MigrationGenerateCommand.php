@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.7.0
+ * @since 2.8.0
  */
 
 namespace Quantum\Console\Commands;
@@ -38,7 +38,7 @@ class MigrationGenerateCommand extends QtCommand
 
     /**
      * Command arguments
-     * @var \string[][]
+     * @var string[][]
      */
     protected $args = [
         ['action', 'required', 'The action to perform. [create] for creating table, [alter] for altering table, [rename] for renaming table, [drop] for dropping table'],
@@ -47,6 +47,7 @@ class MigrationGenerateCommand extends QtCommand
 
     /**
      * Executes the command
+     * @throws \Quantum\Exceptions\MigrationException
      */
     public function exec()
     {

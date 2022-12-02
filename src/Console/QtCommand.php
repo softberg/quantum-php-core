@@ -20,8 +20,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Command\Command;
-use Quantum\Environment\Environment;
-use Quantum\Loader\Setup;
 
 /**
  * Class QtCommand
@@ -92,21 +90,14 @@ abstract class QtCommand extends Command implements CommandInterface
         $this->setArguments();
         $this->setOptions();
     }
-    
+
     /**
      * Executes the current command.
      * @param InputInterface $input
      * @param OutputInterface $output
-     * @throws \Quantum\Exceptions\DiException
-     * @throws \Quantum\Exceptions\EnvException
-     * @throws \ReflectionException
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if ($this->getName() != 'core:env') {
-            Environment::getInstance()->load(new Setup('config', 'env'));
-        }
-
         $this->input = $input;
         $this->output = $output;
         $this->exec();

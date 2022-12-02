@@ -78,9 +78,9 @@ class OpenApiCommand extends QtCommand
 
     /**
      * Executes the command and generate Open API specifications
-     * @throws \Quantum\Exceptions\DiException
      * @throws \Quantum\Exceptions\ModuleLoaderException
      * @throws \Quantum\Exceptions\RouteException
+     * @throws \Quantum\Exceptions\DiException
      * @throws \ReflectionException
      */
     public function exec()

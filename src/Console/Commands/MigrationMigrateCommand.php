@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.7.0
+ * @since 2.8.0
  */
 
 namespace Quantum\Console\Commands;
@@ -39,22 +39,32 @@ class MigrationMigrateCommand extends QtCommand
 
     /**
      * Command arguments
-     * @var \string[][]
+     * @var string[][]
      */
     protected $args = [
         ['direction', 'optional', '[up] for upgrade, [down] for downgrade'],
     ];
+
+    /**
+     * Command options
+     * @var string[][]
+     */
     protected $options = [
         ['step', 's', 'optional', 'Number of migrations to apply'],
     ];
 
     /**
      * Executes the command
+     * @throws \Quantum\Exceptions\DatabaseException
+     * @throws \Quantum\Exceptions\ConfigException
+     * @throws \Quantum\Exceptions\AppException
+     * @throws \Quantum\Exceptions\DiException
+     * @throws \ReflectionException
      */
     public function exec()
     {
         $direction = $this->getArgument('direction') ?: MigrationManager::UPGRADE;
-        $step = (int) $this->getOption('step') ?: null;
+        $step = (int)$this->getOption('step') ?: null;
 
         $migrationManager = new MigrationManager();
 
