@@ -132,7 +132,7 @@ class Environment
                 $this->fs->get($envFilePath)
             ));
         } else {
-            $this->fs->append($envFilePath, $key . "=" . $value . PHP_EOL);
+            $this->fs->append($envFilePath, PHP_EOL . $key . "=" . $value . PHP_EOL);
         }
 
         $this->envContent = Dotenv::createMutable(base_dir(), $this->envFile)->load();
