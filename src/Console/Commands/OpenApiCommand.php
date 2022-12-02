@@ -62,7 +62,7 @@ class OpenApiCommand extends QtCommand
      * Path to public debug bar resources
      * @var string
      */
-    private $publicOpenApiFolderPath = 'public/assets/OpenApiUi';
+    private $publicOpenApiFolderPath = 'public/assets/OpenApiUI';
 
     /**
      * Path to vendor debug bar resources
@@ -95,7 +95,7 @@ class OpenApiCommand extends QtCommand
 
         $routes = $modulePath . DS . 'Config' . DS . 'routes.php';
 
-        if (!$this->fs->exists(assets_dir() . DS . 'OpenApiUi' . DS . 'index.css')) {
+        if (!$this->fs->exists(assets_dir() . DS . 'OpenApiUI' . DS . 'index.css')) {
             $this->copyResources();
         }
 
@@ -159,7 +159,7 @@ class OpenApiCommand extends QtCommand
         return 'return function ($route) {
     $route->group("openapi", function ($route) {
         $route->get("docs", function (Quantum\Http\Response $response) {
-            $response->html(partial("openapi/openapi"));
+            $response->html(partial("openApi/openApi"));
         });
 
         $route->get("spec", function (Quantum\Http\Response $response) {
