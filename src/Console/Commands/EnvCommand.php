@@ -42,6 +42,14 @@ class EnvCommand extends QtCommand
      * @var string
      */
     protected $help = 'The command will generate new .env file from .env.example';
+    
+    /**
+     * The default action for all confirmations
+     * @var array
+     */
+    protected $options = [
+        ['yes', 'y', 'none', 'Answer of overwrite .env file']
+    ];
 
     /**
      * Executes the command and creates new .env file
