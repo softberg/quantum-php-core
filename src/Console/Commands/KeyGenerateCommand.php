@@ -48,7 +48,8 @@ class KeyGenerateCommand extends QtCommand
      * @var array
      */
     protected $options = [
-        ['length', 'l', 'required', 'Length of key', 32]
+        ['length', 'l', 'required', 'Length of key', 32],
+        ['yes', 'y', 'none', 'Answer of key generate']
     ];
 
     /**
