@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.6.0
+ * @since 2.8.0
  */
 
 namespace Quantum\Console\Commands;
@@ -44,12 +44,12 @@ class KeyGenerateCommand extends QtCommand
     protected $help = 'The command will generate APP_KEY and store in .env file';
 
     /**
-     * The length of the key that will be generated (default 32)
+     * Command options
      * @var array
      */
     protected $options = [
-        ['length', 'l', 'required', 'Length of key', 32],
-        ['yes', 'y', 'none', 'Answer of key generate']
+        ['length', 'l', 'required', 'Length of the key', 32],
+        ['yes', 'y', 'none', 'Acceptance of the confirmation']
     ];
 
     /**
@@ -63,15 +63,13 @@ class KeyGenerateCommand extends QtCommand
     {
         if (Environment::getInstance()->hasKey('APP_KEY') && env('APP_KEY') !== "") {
             if (!$this->getOption('yes')) {
-                $message = "The operation will remove the existing key and will create new one. Continue?";
-
-                if (!$this->confirm($message)) {
+                if (!$this->confirm("The operation will remove the existing key and will create new one. Continue?")) {
                     $this->info('Operation was canceled!');
                     return;
                 }
             }
         }
-        
+
         $key = $this->generateRandomKey();
 
         if ($key) {
@@ -88,7 +86,7 @@ class KeyGenerateCommand extends QtCommand
      */
     private function generateRandomKey(): string
     {
-        return base64_encode(random_bytes((int) $this->getOption('length')));
+        return base64_encode(random_bytes((int)$this->getOption('length')));
     }
 
 }

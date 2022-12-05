@@ -26,7 +26,7 @@ class DebugBarCommand extends QtCommand
 {
     /**
      * File System
-     * @var \Quantum\Libraries\Storage\FileSystem
+     * @var FileSystem
      */
     protected $fs;
 
@@ -50,13 +50,13 @@ class DebugBarCommand extends QtCommand
 
     /**
      * Path to public debug bar resources
-     * @var string 
+     * @var string
      */
     private $publicDebugbarFolderPath = 'public/assets/DebugBar/Resources';
 
     /**
      * Path to vendor debug bar resources
-     * @var string 
+     * @var string
      */
     private $vendorDebugbarFolderPath = 'vendor/maximebf/debugbar/src/DebugBar/Resources';
 
@@ -66,7 +66,7 @@ class DebugBarCommand extends QtCommand
     public function exec()
     {
         $this->fs = Di::get(FileSystem::class);
-        
+
         if ($this->fs->exists(assets_dir() . DS . 'DebugBar' . DS . 'Resources' . DS . 'debugbar.css')) {
             $this->error('The debuger already installed');
             return;
@@ -81,7 +81,7 @@ class DebugBarCommand extends QtCommand
      * Recursively copies the debug bar assets
      * @param string $src
      * @param string $dst
-     * @throws \RuntimeException
+     * @throws \Quantum\Exceptions\LangException
      */
     private function copyResources(string $src, string $dst)
     {
@@ -99,9 +99,7 @@ class DebugBarCommand extends QtCommand
                     if ($this->fs->isDirectory($src . DS . $file)) {
                         $this->copyResources($src . DS . $file, $dst . DS . $file);
                     } else {
-                        if ($file) {
-                            copy($src . DS . $file, $dst . DS . $file);
-                        }
+                        copy($src . DS . $file, $dst . DS . $file);
                     }
                 }
             }

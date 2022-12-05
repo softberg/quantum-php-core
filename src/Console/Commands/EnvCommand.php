@@ -9,13 +9,16 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.0.0
+ * @since 2.8.0
  */
 
 namespace Quantum\Console\Commands;
 
 use Quantum\Libraries\Storage\FileSystem;
+use Quantum\Environment\Environment;
+use Quantum\Exceptions\EnvException;
 use Quantum\Console\QtCommand;
+use Quantum\Loader\Setup;
 use Quantum\Di\Di;
 
 /**
@@ -42,28 +45,31 @@ class EnvCommand extends QtCommand
      * @var string
      */
     protected $help = 'The command will generate new .env file from .env.example';
-    
+
     /**
-     * The default action for all confirmations
+     * Command options
      * @var array
      */
     protected $options = [
-        ['yes', 'y', 'none', 'Answer of overwrite .env file']
+        ['yes', 'y', 'none', 'Acceptance of the confirmation']
     ];
 
     /**
      * Executes the command and creates new .env file
+     * @throws \Quantum\Exceptions\DiException
+     * @throws \ReflectionException
+     * @throws EnvException
      */
     public function exec()
     {
+        Environment::getInstance()->load(new Setup('config', 'env'));
+
         $fs = Di::get(FileSystem::class);
 
         if ($fs->exists('.env.example')) {
             if (!$this->getOption('yes')) {
                 if ($fs->exists('.env')) {
-                    $message = "The operation will overwrite values of the existing .env and will create new one from .env.example. Continue?";
-
-                    if (!$this->confirm($message)) {
+                    if (!$this->confirm("The operation will overwrite values of the existing .env and will create new one from .env.example. Continue?")) {
                         $this->info('Operation was canceled!');
                         return;
                     }
@@ -71,6 +77,7 @@ class EnvCommand extends QtCommand
             }
 
             copy('.env.example', '.env');
+
             $this->info('.env is successfully generated');
         } else {
             $this->error('.env.example file not found');
