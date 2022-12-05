@@ -9,12 +9,13 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.7.0
+ * @since 2.8.0
  */
 
 namespace Quantum\Migration;
 
 use Quantum\Libraries\Database\Schema\Type;
+use Quantum\Exceptions\MigrationException;
 use Quantum\Factory\TableFactory;
 
 /**
@@ -44,6 +45,7 @@ class MigrationTable extends QtMigration
     /**
      * Drops the migrations table
      * @param TableFactory|null $tableFactory
+     * @throws MigrationException
      */
     public function down(?TableFactory $tableFactory)
     {

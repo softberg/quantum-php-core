@@ -19,6 +19,7 @@ use Quantum\Exceptions\MigrationException;
 use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Exceptions\DatabaseException;
 use Quantum\Libraries\Database\Database;
+use Quantum\Exceptions\LangException;
 use Quantum\Factory\TableFactory;
 
 /**
@@ -98,6 +99,7 @@ class MigrationManager
      * @param string $action
      * @return string
      * @throws MigrationException
+     * @throws LangException
      */
     public function generateMigration(string $table, string $action): string
     {
@@ -120,6 +122,7 @@ class MigrationManager
      * @param int|null $step
      * @return int|null
      * @throws DatabaseException
+     * @throws LangException
      * @throws MigrationException
      * @throws \Quantum\Exceptions\AppException
      * @throws \Quantum\Exceptions\ConfigException
@@ -152,8 +155,9 @@ class MigrationManager
      * Runs up migrations
      * @param int|null $step
      * @return int
-     * @throws MigrationException
      * @throws DatabaseException
+     * @throws LangException
+     * @throws MigrationException
      */
     private function upgrade(?int $step = null): int
     {
@@ -191,11 +195,16 @@ class MigrationManager
      * Runs down migrations
      * @param int|null $step
      * @return int
-     * @throws MigrationException
      * @throws DatabaseException
+     * @throws LangException
+     * @throws MigrationException
      */
     private function downgrade(?int $step): int
     {
+        if (!$this->tableFactory->checkTableExists(MigrationTable::TABLE)) {
+            throw MigrationException::tableDoesnotExists(MigrationTable::TABLE);
+        }
+
         $this->prepareDownMigrations($step);
 
         if (empty($this->migrations)) {
@@ -227,6 +236,8 @@ class MigrationManager
      * @return void
      * @throws MigrationException
      * @throws DatabaseException
+     * @throws LangException
+     *
      */
     private function prepareUpMigrations(?int $step = null)
     {
@@ -253,9 +264,9 @@ class MigrationManager
     /**
      * Prepares down migrations
      * @param int|null $step
-     * @return void
-     * @throws MigrationException
      * @throws DatabaseException
+     * @throws LangException
+     * @throws MigrationException
      */
     private function prepareDownMigrations(?int $step = null)
     {
