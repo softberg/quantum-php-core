@@ -62,7 +62,7 @@ class OpenApiCommand extends QtCommand
      * Path to public debug bar resources
      * @var string
      */
-    private $publicOpenApiFolderPath = 'public/assets/OpenApiUI';
+    private $publicOpenApiFolderPath = 'public/assets/OpenApiUi';
 
     /**
      * Path to vendor debug bar resources
@@ -95,7 +95,7 @@ class OpenApiCommand extends QtCommand
 
         $routes = $modulePath . DS . 'Config' . DS . 'routes.php';
 
-        if (!$this->fs->exists(assets_dir() . DS . 'OpenApiUI' . DS . 'index.css')) {
+        if (!$this->fs->exists(assets_dir() . DS . 'OpenApiUi' . DS . 'index.css')) {
             $this->copyResources();
         }
 
