@@ -55,10 +55,11 @@ class MigrationMigrateCommand extends QtCommand
 
     /**
      * Executes the command
-     * @throws \Quantum\Exceptions\DatabaseException
-     * @throws \Quantum\Exceptions\ConfigException
      * @throws \Quantum\Exceptions\AppException
+     * @throws \Quantum\Exceptions\ConfigException
+     * @throws \Quantum\Exceptions\DatabaseException
      * @throws \Quantum\Exceptions\DiException
+     * @throws \Quantum\Exceptions\LangException
      * @throws \ReflectionException
      */
     public function exec()

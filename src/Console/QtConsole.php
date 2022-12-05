@@ -9,13 +9,15 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.7.0
+ * @since 2.8.0
  */
 
 namespace Quantum\Console;
 
 use Symfony\Component\Console\Application;
+use Quantum\Environment\Environment;
 use Quantum\Libraries\Config\Config;
+use Quantum\Libraries\Lang\Lang;
 use Quantum\Loader\Loader;
 use Quantum\Loader\Setup;
 use Quantum\Di\Di;
@@ -38,7 +40,7 @@ class QtConsole
      * Console application version
      * @var string
      */
-    private $version = '2.0.0';
+    private $version = '2.x';
 
     /**
      * Console application instance
@@ -50,7 +52,10 @@ class QtConsole
      * Initialize the console application
      * @param string $baseDir
      * @return int
+     * @throws \Quantum\Exceptions\ConfigException
      * @throws \Quantum\Exceptions\DiException
+     * @throws \Quantum\Exceptions\EnvException
+     * @throws \Quantum\Exceptions\LangException
      * @throws \ReflectionException
      * @throws \Exception
      */
@@ -71,7 +76,13 @@ class QtConsole
 
         $this->register();
 
+        Environment::getInstance()->load(new Setup('config', 'env'));
+
         Config::getInstance()->load(new Setup('config', 'config'));
+
+        if (config()->get('multilang')) {
+            Lang::getInstance((int)config()->get(Lang::LANG_SEGMENT))->load();
+        }
 
         return $this->application->run();
     }

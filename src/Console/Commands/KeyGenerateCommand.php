@@ -70,11 +70,7 @@ class KeyGenerateCommand extends QtCommand
             }
         }
 
-        $key = $this->generateRandomKey();
-
-        if ($key) {
-            Environment::getInstance()->load(new Setup('config', 'env'))->updateRow('APP_KEY', $key);
-        }
+        Environment::getInstance()->updateRow('APP_KEY', $this->generateRandomKey());
 
         $this->info('Application key successfully generated and stored.');
     }
