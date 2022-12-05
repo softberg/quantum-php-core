@@ -62,8 +62,6 @@ class EnvCommand extends QtCommand
      */
     public function exec()
     {
-        Environment::getInstance()->load(new Setup('config', 'env'));
-
         $fs = Di::get(FileSystem::class);
 
         if ($fs->exists('.env.example')) {
