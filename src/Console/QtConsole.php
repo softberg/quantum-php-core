@@ -96,7 +96,7 @@ class QtConsole
             return $this->application->run($input, $output);
         } catch (\Throwable $throwable) {
             $output->writeln("<error>" . $throwable->getMessage() . "</error>");
-            exit(1);
+            return (int)$throwable->getCode();
         }
     }
 
