@@ -21,10 +21,10 @@ namespace Quantum\Exceptions;
 class EnvException extends \Exception
 {
     /**
-     * @return \Quantum\Exceptions\EnvException
+     * @return EnvException
      */
     public static function fileNotFound(): EnvException
     {
-        return new static(t('exception.env_file_not_found'), E_ERROR);
+        return new static('`.env` file not found', E_ERROR);
     }
 }
