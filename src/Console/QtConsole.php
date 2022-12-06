@@ -14,12 +14,15 @@
 
 namespace Quantum\Console;
 
+use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Application;
 use Quantum\Environment\Environment;
 use Quantum\Libraries\Config\Config;
 use Quantum\Libraries\Lang\Lang;
 use Quantum\Loader\Loader;
 use Quantum\Loader\Setup;
+use Mockery\Exception;
 use Quantum\Di\Di;
 use Quantum\App;
 
@@ -52,39 +55,49 @@ class QtConsole
      * Initialize the console application
      * @param string $baseDir
      * @return int
-     * @throws \Quantum\Exceptions\ConfigException
-     * @throws \Quantum\Exceptions\DiException
-     * @throws \Quantum\Exceptions\EnvException
-     * @throws \Quantum\Exceptions\LangException
-     * @throws \ReflectionException
-     * @throws \Exception
      */
     public function init(string $baseDir): int
     {
-        App::loadCoreFunctions($baseDir . DS . 'vendor' . DS . 'quantum' . DS . 'framework' . DS . 'src' . DS . 'Helpers');
+        try {
+            App::loadCoreFunctions($baseDir . DS . 'vendor' . DS . 'quantum' . DS . 'framework' . DS . 'src' . DS . 'Helpers');
 
-        App::setBaseDir($baseDir);
+            App::setBaseDir($baseDir);
 
-        Di::loadDefinitions();
+            Di::loadDefinitions();
 
-        $loader = Di::get(Loader::class);
+            $loader = Di::get(Loader::class);
 
-        $loader->loadDir(base_dir() . DS . 'helpers');
-        $loader->loadDir(base_dir() . DS . 'libraries');
+            $loader->loadDir(base_dir() . DS . 'helpers');
+            $loader->loadDir(base_dir() . DS . 'libraries');
 
-        $this->application = new Application($this->name, $this->version);
+            $this->application = new Application($this->name, $this->version);
 
-        $this->register();
+            $this->register();
 
-        Environment::getInstance()->load(new Setup('config', 'env'));
+            $input = new ArgvInput();
+            $output = new ConsoleOutput();
 
-        Config::getInstance()->load(new Setup('config', 'config'));
+            $currentCommandName = $input->getFirstArgument();
 
-        if (config()->get('multilang')) {
-            Lang::getInstance((int)config()->get(Lang::LANG_SEGMENT))->load();
+            if (!$this->application->has($currentCommandName)) {
+                throw new Exception('Command `' . $currentCommandName . '` is not defined');
+            }
+
+            if ($currentCommandName !== 'core:env') {
+                Environment::getInstance()->load(new Setup('config', 'env'));
+            }
+
+            Config::getInstance()->load(new Setup('config', 'config'));
+
+            if (config()->get('multilang')) {
+                Lang::getInstance((int)config()->get(Lang::LANG_SEGMENT))->load();
+            }
+
+            return $this->application->run($input, $output);
+        } catch (\Throwable $throwable) {
+            $output->writeln("<error>" . $throwable->getMessage() . "</error>");
+            exit(1);
         }
-
-        return $this->application->run();
     }
 
     /**
