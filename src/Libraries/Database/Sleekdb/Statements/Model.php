@@ -38,7 +38,7 @@ trait Model
      */
     public function prop(string $key, $value = null)
     {
-        if (!is_null($value)) {
+        if (func_num_args() == 2) {
             $this->modifiedFields[$key] = $value;
         } else {
             return $this->modifiedFields[$key] ?? null;
