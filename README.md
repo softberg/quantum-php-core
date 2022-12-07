@@ -10,11 +10,11 @@
 </p>
 
 <p align="center">
-    <a href="https://app.travis-ci.com/github/softberg/quantum-php-core">
-        <img src="https://app.travis-ci.com/softberg/quantum-php-core.svg?branch=master"/>
+    <a href="https://github.com/softberg/quantum-php-core/actions/workflows/php.yml" >   
+        <img alt="GitHub Workflow Status" src="https://img.shields.io/github/workflow/status/softberg/quantum-php-core/Quantum%20PHP%20Framework">
     </a>
     <a href="https://codecov.io/gh/softberg/quantum-php-core" >
-        <img src="https://codecov.io/gh/softberg/quantum-php-core/branch/master/graph/badge.svg?token=SP8SDH2YAK"/>
+        <img src="https://codecov.io/gh/softberg/quantum-php-core/branch/master/graph/badge.svg"/>
     </a>
     <a href="https://scrutinizer-ci.com/g/softberg/quantum-php-core">
         <img src="https://shields.cdn.bka.li/scrutinizer/quality/g/softberg/quantum-php-core"/>
@@ -35,13 +35,13 @@
 <h3> 1. Create new project </h3>
 
 ```bash
-composer create-project quantum/project {your-project-name}
+composer create-project quantum/project [your-project-name]
 ```
 
 <h3>2. Run the server from your project directory</h3>
 
 ```bash
-$ php qt serve
+php qt serve
 ```
 <br/>
 
