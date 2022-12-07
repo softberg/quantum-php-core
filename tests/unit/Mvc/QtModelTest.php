@@ -27,10 +27,6 @@ namespace Quantum\Tests\Mvc {
     use Quantum\Tests\AppTestCase;
     use Quantum\Mvc\QtModel;
 
-    /**
-     * @runTestsInSeparateProcesses
-     * @preserveGlobalState disabled
-     */
     class QtModelTest extends AppTestCase
     {
 
@@ -63,7 +59,7 @@ namespace Quantum\Tests\Mvc {
 
         public function tearDown(): void
         {
-            IdiormDbal::execute("DELETE FROM profiles");
+            IdiormDbal::execute("DROP TABLE profiles");
         }
 
         public function testModelInstance()
