@@ -22,6 +22,8 @@ use Quantum\Exceptions\DiException;
 use PHPMailer\PHPMailer\Exception;
 use ReflectionException;
 use ReflectionClass;
+use DateInterval;
+use DateTime;
 
 /**
  * Class BaseAuth
@@ -169,9 +171,10 @@ abstract class BaseAuth
      * @param array $userData
      * @param array|null $customData
      * @return User
-     * @throws Exception
      * @throws DiException
+     * @throws Exception
      * @throws ReflectionException
+     * @throws \Quantum\Exceptions\LangException
      */
     public function signup(array $userData, array $customData = null): User
     {
@@ -216,9 +219,10 @@ abstract class BaseAuth
      * Forget
      * @param string $username
      * @return string|null
-     * @throws Exception
      * @throws DiException
+     * @throws Exception
      * @throws ReflectionException
+     * @throws \Quantum\Exceptions\LangException
      */
     public function forget(string $username): ?string
     {
@@ -332,9 +336,9 @@ abstract class BaseAuth
 
         $otpToken = $this->generateToken($user->getFieldValue($this->keyFields[self::USERNAME_KEY]));
 
-        $time = new \DateTime();
+        $time = new DateTime();
 
-        $time->add(new \DateInterval('PT' . config()->get('otp_expires') . 'M'));
+        $time->add(new DateInterval('PT' . config()->get('otp_expires') . 'M'));
 
         $this->authService->update(
             $this->keyFields[self::USERNAME_KEY],
@@ -375,7 +379,7 @@ abstract class BaseAuth
             throw AuthException::incorrectVerificationCode();
         }
 
-        if (new \DateTime() >= new \DateTime($user->getFieldValue($this->keyFields[self::OTP_EXPIRY_KEY]))) {
+        if (new DateTime() >= new DateTime($user->getFieldValue($this->keyFields[self::OTP_EXPIRY_KEY]))) {
             throw AuthException::verificationCodeExpired();
         }
 

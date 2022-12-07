@@ -112,7 +112,7 @@ abstract class QtModel
      */
     public function prop(string $property, $value = null)
     {
-        return $this->orm->prop($property, $value);
+        return $this->orm->prop(...func_get_args());
     }
 
     /**

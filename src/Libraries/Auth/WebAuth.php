@@ -72,13 +72,14 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
      * @param string $password
      * @param bool $remember
      * @return bool|string
+     * @throws ReflectionException
      * @throws \PHPMailer\PHPMailer\Exception
      * @throws \Quantum\Exceptions\AuthException
+     * @throws \Quantum\Exceptions\ConfigException
      * @throws \Quantum\Exceptions\CryptorException
      * @throws \Quantum\Exceptions\DatabaseException
      * @throws \Quantum\Exceptions\DiException
      * @throws \Quantum\Exceptions\SessionException
-     * @throws ReflectionException
      */
     public function signin(string $username, string $password, bool $remember = false)
     {
@@ -99,12 +100,11 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
     /**
      * Sign Out
      * @return bool
+     * @throws ReflectionException
      * @throws \Quantum\Exceptions\ConfigException
-     * @throws \Quantum\Exceptions\CryptorException
      * @throws \Quantum\Exceptions\DatabaseException
      * @throws \Quantum\Exceptions\DiException
      * @throws \Quantum\Exceptions\SessionException
-     * @throws ReflectionException
      */
     public function signout(): bool
     {
