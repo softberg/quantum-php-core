@@ -64,14 +64,16 @@ class MigrationMigrateCommand extends QtCommand
      */
     public function exec()
     {
-        if ($this->getArgument('direction') == 'down') {
+
+        $direction = $this->getArgument('direction') ?: MigrationManager::UPGRADE;
+
+        if ($direction == 'down') {
             if (!$this->confirm("This operation will revert all the database changes, including the data. Continue?")) {
                 $this->info('Operation was canceled!');
                 return;
             }
         }
 
-        $direction = $this->getArgument('direction') ?: MigrationManager::UPGRADE;
         $step = (int)$this->getOption('step') ?: null;
 
         $migrationManager = new MigrationManager();
