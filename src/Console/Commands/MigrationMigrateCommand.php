@@ -64,7 +64,16 @@ class MigrationMigrateCommand extends QtCommand
      */
     public function exec()
     {
+
         $direction = $this->getArgument('direction') ?: MigrationManager::UPGRADE;
+
+        if ($direction == 'down') {
+            if (!$this->confirm("This operation will revert all the database changes, including the data. Continue?")) {
+                $this->info('Operation was canceled!');
+                return;
+            }
+        }
+
         $step = (int)$this->getOption('step') ?: null;
 
         $migrationManager = new MigrationManager();
@@ -76,5 +85,4 @@ class MigrationMigrateCommand extends QtCommand
             $this->info($e->getMessage());
         }
     }
-
 }
