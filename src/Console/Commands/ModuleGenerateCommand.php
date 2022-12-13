@@ -58,6 +58,28 @@ class ModuleGenerateCommand extends QtCommand
     protected $help = 'The command will create files for new module';
 
     /**
+     * Command options
+     * @var array
+     */
+    protected $options = [
+        ['yes', 'y', 'none', 'Acceptance of the confirmation']
+    ];
+
+    /**
+     * Folder names
+     * @var string[][]
+     */
+    protected $folders = [
+        '',
+        'Controllers',
+        'Models',
+        'Config',
+        'Views',
+        'Views' . DS . 'layouts',
+        'Views' . DS . 'partials',
+    ];
+
+    /**
      * Executes the command
      * @throws \Quantum\Exceptions\FileSystemException
      * @throws \Quantum\Exceptions\DiException
@@ -76,7 +98,7 @@ class ModuleGenerateCommand extends QtCommand
                 return;
             }
         }
-
+        
         $this->fs->put(
             $modulesConfigPath,
             str_replace(
@@ -86,16 +108,21 @@ class ModuleGenerateCommand extends QtCommand
             )
         );
 
-        $this->fs->makeDirectory('modules/' . $newModuleName);
-        $this->fs->makeDirectory('modules/' . $newModuleName . '/Controllers');
-        $this->fs->makeDirectory('modules/' . $newModuleName . '/Models');
-        $this->fs->makeDirectory('modules/' . $newModuleName . '/Config');
-        $this->fs->makeDirectory('modules/' . $newModuleName . '/Views');
-        $this->fs->makeDirectory('modules/' . $newModuleName . '/Views/layouts');
-        $this->fs->put('modules/' . $newModuleName . '/Controllers/MainController.php', $this->controllerTemplate($newModuleName));
-        $this->fs->put('modules/' . $newModuleName . '/Views/index.php', $this->viewTemplate($newModuleName));
-        $this->fs->put('modules/' . $newModuleName . '/Views/layouts/main.php', $this->viewLayoutsTemplate());
-        $this->fs->put('modules/' . $newModuleName . '/Config/routes.php', $this->routesTemplate());
+        foreach ($this->folders as $folder) {
+            $this->fs->makeDirectory(modules_dir() . DS . $newModuleName . DS . $folder);
+        }
+
+        $files = [
+            'Controllers' . DS . 'MainController.php'       => $this->controllerTemplate($newModuleName),
+            'Views' . DS . 'index.php'                      => $this->viewTemplate($newModuleName),
+            'Views' . DS . 'layouts' . DS . 'main.php'      => $this->viewLayoutsTemplate(),
+            'Views' . DS . 'partials' . DS . 'bubbles.php'  => $this->viewBubblesTemplate(),
+            'Config' . DS . 'routes.php'                    => $this->routesTemplate(),
+        ];
+
+        foreach ($files as $file => $value) {
+            $this->fs->put(modules_dir() . DS . $newModuleName . DS . $file, $value);
+        }
 
         $this->info($newModuleName . ' module resources successfully published');
     }
@@ -107,10 +134,12 @@ class ModuleGenerateCommand extends QtCommand
      */
     private function addModuleConfig(string $module): string
     {
+        $enabled = $this->getOption('yes') ? "true" : "false";
+        
         return "'modules' => [
         '" . $module . "' => [
             'prefix' => '" . strtolower($module) . "',
-            'enabled' => false,
+            'enabled' => " . $enabled . ",
         ],";
     }
 
@@ -153,13 +182,23 @@ class MainController extends QtController
     <div class="container wrapper">
         <div class="center-align white-text">
             <div class="logo-block">
-                <img src="<?php echo base_url() ?>/assets/images/quantum-logo-white.png" alt="<?php echo env(\'APP_NAME\') ?>" />
+                <img src="<?php echo base_url() ?>/assets/images/quantum-logo-white.png" alt="<?php echo config()->get(\'app_name\') ?>" />
             </div>
             <h1>' . strtoupper($moduleName) . ' HOME PAGE</h1>
         </div>
     </div>
 </div>
-<ul class="bg-bubbles">
+<?php echo partial(\'partials/bubbles\') ?>';
+    }
+
+    /**
+     * View bubbles template
+     * @param string $moduleName
+     * @return string
+     */
+    private function viewBubblesTemplate()
+    {
+        return '<ul class="bg-bubbles">
     <li></li>
     <li></li>
     <li></li>
@@ -215,7 +254,7 @@ use Quantum\Factory\ViewFactory;
 use Quantum\Http\Response;
 
 return function ($route) {
-    $route->get(\'[:alpha:2]?\', \'MainController\', \'index\');
+    $route->get(\'' . DS . '\', \'MainController\', \'index\');
 };';
     }
 }
