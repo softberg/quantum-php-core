@@ -62,7 +62,7 @@ class ModuleGenerateCommand extends QtCommand
      * @var array
      */
     protected $options = [
-        ['yes', 'y', 'none', 'Acceptance of the confirmation']
+        ['yes', 'y', 'none', 'Module enabled status']
     ];
 
     /**
@@ -70,13 +70,13 @@ class ModuleGenerateCommand extends QtCommand
      * @var string[][]
      */
     protected $folders = [
-        '',
-        'Controllers',
-        'Models',
-        'Config',
-        'Views',
-        'Views' . DS . 'layouts',
-        'Views' . DS . 'partials',
+        DS,
+        DS . 'Controllers',
+        DS . 'Models',
+        DS . 'Config',
+        DS . 'Views',
+        DS . 'Views' . DS . 'layouts',
+        DS . 'Views' . DS . 'partials',
     ];
 
     /**
@@ -109,7 +109,7 @@ class ModuleGenerateCommand extends QtCommand
         );
 
         foreach ($this->folders as $folder) {
-            $this->fs->makeDirectory(modules_dir() . DS . $newModuleName . DS . $folder);
+            $this->fs->makeDirectory(modules_dir() . DS . $newModuleName . $folder);
         }
 
         $files = [
@@ -162,7 +162,7 @@ class MainController extends QtController
 {
     public function index(Response $response, ViewFactory $view)
     {
-        $view->setLayout(\'layouts/main\');
+        $view->setLayout(\'layouts' . DS . 'main\');
         $view->setParams([
             \'title\' => config()->get(\'app_name\'),
         ]);
@@ -188,7 +188,7 @@ class MainController extends QtController
         </div>
     </div>
 </div>
-<?php echo partial(\'partials/bubbles\') ?>';
+<?php echo partial(\'partials' . DS . 'bubbles\') ?>';
     }
 
     /**
@@ -254,7 +254,7 @@ use Quantum\Factory\ViewFactory;
 use Quantum\Http\Response;
 
 return function ($route) {
-    $route->get(\'' . DS . '\', \'MainController\', \'index\');
+    $route->get(\'/\', \'MainController\', \'index\');
 };';
     }
 }
