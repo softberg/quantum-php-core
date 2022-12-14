@@ -22,7 +22,7 @@ use Quantum\Http\Response;
  */
 function base_url(bool $withModulePrefix = false): string
 {
-    return config()->get('base_url') ?? Request::getProtocol() . '://' . Request::getHost() . (Request::getPort() ? ':' . Request::getPort() : '') . ($withModulePrefix && !empty(route_prefix()) ? '/' . route_prefix() : '');
+    return config()->get('base_url') ?? Request::getProtocol() . '://' . Request::getHost() . ((Request::getPort() && Request::getPort() != 80) ? ':' . Request::getPort() : '') . ($withModulePrefix && !empty(route_prefix()) ? '/' . route_prefix() : '');
 }
 
 /**
@@ -31,7 +31,7 @@ function base_url(bool $withModulePrefix = false): string
  */
 function current_url(): string
 {
-    return Request::getProtocol() . '://' . Request::getHost() . (Request::getPort() ? ':' . Request::getPort() : '') . '/' . Request::getUri() . (Request::getQuery() ? '?' . Request::getQuery() : '');
+    return Request::getProtocol() . '://' . Request::getHost() . ((Request::getPort() && Request::getPort() != 80) ? ':' . Request::getPort() : '') . '/' . Request::getUri() . (Request::getQuery() ? '?' . Request::getQuery() : '');
 }
 
 /**
