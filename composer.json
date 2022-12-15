@@ -16,6 +16,7 @@
     ],
     "require": {
         "php": ">=7.3",
+        "ext-curl": "*",
         "ext-simplexml": "*",
         "j4mie/paris": "^1.5",
         "firebase/php-jwt": "^5.0",
