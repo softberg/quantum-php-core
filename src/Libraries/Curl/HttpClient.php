@@ -103,7 +103,7 @@ class HttpClient
     }
 
     /**
-     * Creates async multi
+     * Creates async multi request
      * @param callable $success
      * @param callable $error
      * @return HttpClient
@@ -156,7 +156,7 @@ class HttpClient
     }
 
     /**
-     * Gets the post
+     * Gets the data
      * @return mixed|null
      */
     public function getData()
@@ -199,7 +199,6 @@ class HttpClient
         $this->client->exec();
 
         $this->handleResponse($this->client);
-
     }
 
     /**

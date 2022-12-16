@@ -230,11 +230,30 @@ class HttpClientTest extends AppTestCase
 
         $errors = $this->httpClient->getErrors();
 
-        $this->assertIsArray($this->httpClient->getErrors());
+        $this->assertIsArray($errors);
 
         $this->assertEquals(6, $errors['code']);
 
         $this->assertEquals('Couldn\'t resolve host name: Could not resolve host: test.comx', $errors['message']);
+    }
+
+    public function testHttpClientMultiRequestGetError()
+    {
+        $this->httpClient
+            ->createMultiRequest()
+            ->addPut('https://test.comx/put')
+            ->addPatch('https://test.comx/patch')
+            ->start();
+
+        $errors = $this->httpClient->getErrors();
+
+        $this->assertIsArray($errors);
+
+        $this->assertCount(2, $errors);
+
+        $this->assertEquals(6, $errors[0]['code']);
+
+        $this->assertEquals('Couldn\'t resolve host name: Could not resolve host: test.comx', $errors[0]['message']);
     }
 
     public function testHttpClientCurlInfo()
