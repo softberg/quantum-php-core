@@ -235,11 +235,7 @@ class HttpClient
             throw AppException::methodNotSupported(__METHOD__, MultiCurl::class);
         }
 
-        if (!isset($this->response[$this->client->getId()][self::RESPONSE_HEADERS])) {
-            return null;
-        }
-
-        $responseHeaders = $this->response[$this->client->getId()][self::RESPONSE_HEADERS];
+        $responseHeaders = $this->getResponse()[self::RESPONSE_HEADERS];
 
         if ($header) {
             return $responseHeaders[$header] ?? null;
@@ -252,14 +248,15 @@ class HttpClient
      * Gets the response cookies
      * @param string|null $cookie
      * @return mixed|null
+     * @throws AppException
      */
     public function getResponseCookies(string $cookie = null)
     {
-        if (!isset($this->response[$this->client->getId()][self::RESPONSE_COOKIES])) {
-            return null;
+        if ($this->isMultiRequest()) {
+            throw AppException::methodNotSupported(__METHOD__, MultiCurl::class);
         }
 
-        $responseCookies = $this->response[$this->client->getId()][self::RESPONSE_COOKIES];
+        $responseCookies = $this->getResponse()[self::RESPONSE_COOKIES];
 
         if ($cookie) {
             return $responseCookies[$cookie] ?? null;
@@ -271,9 +268,14 @@ class HttpClient
     /**
      * Gets the response body
      * @return mixed|null
+     * @throws AppException
      */
     public function getResponseBody()
     {
+        if ($this->isMultiRequest()) {
+            throw AppException::methodNotSupported(__METHOD__, MultiCurl::class);
+        }
+
         return $this->response[$this->client->getId()][self::RESPONSE_BODY] ?? null;
     }
 
@@ -283,6 +285,10 @@ class HttpClient
      */
     public function getResponse(): array
     {
+        if (!$this->isMultiRequest()) {
+            return $this->response[$this->client->getId()];
+        }
+
         return $this->response;
     }
 
@@ -292,7 +298,11 @@ class HttpClient
      */
     public function getErrors(): array
     {
-        return $this->errors[$this->client->getId()] ?? [];
+        if (!$this->isMultiRequest()) {
+            return $this->errors[$this->client->getId()];
+        }
+
+        return $this->errors;
     }
 
     /**
