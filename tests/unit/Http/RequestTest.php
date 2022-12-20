@@ -311,17 +311,16 @@ class RequestTest extends AppTestCase
         $this->assertNull($request->getSegment(10));
     }
 
-    public function testGetCSRFToken()
+    public function testGetCsrfToken()
     {
         $request = new Request();
 
-        $this->assertNull($request->getCSRFToken());
+        $this->assertNull($request->getCsrfToken());
 
-        $token = Csrf::generateToken($this->session, 'token');
+        $request->create('PATCH', '/', ['csrf-token' => csrf_token()]);
 
-        $request->set('token', $token);
+        $this->assertNotNull($request->getCsrfToken());
 
-        $this->assertNotNull($request->getCSRFToken());
     }
 
     public function testGetAuthorizationBearer()

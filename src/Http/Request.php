@@ -1,14 +1,14 @@
 <?php
 /**
  * Quantum PHP Framework
- * 
+ *
  * An open source software development framework for PHP
- * 
+ *
  * @package Quantum
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.5.0
+ * @since 2.9.0
  */
 
 namespace Quantum\Http;
@@ -18,7 +18,6 @@ use Quantum\Http\Request\HttpRequest;
 /**
  * Class Request
  * @package Quantum\Http
-
  * @method static void create(string $method, string $url, array $data = null, array $file = null)
  * @method static void flush()
  * @method static string|null getMethod()
@@ -50,7 +49,7 @@ use Quantum\Http\Request\HttpRequest;
  * @method static void deleteHeader(string $key)
  * @method static string|null getSegment(int $number)
  * @method static array getAllSegments()
- * @method static string|null getCSRFToken()
+ * @method static string|null getCsrfToken()
  * @method static string|null getAuthorizationBearer()
  * @method static bool isAjax()
  * @method static string|null getReferrer()
@@ -64,9 +63,8 @@ class Request
 {
 
     /**
-     * __call magic
      * @param string $function The function name
-     * @param array $arguments 
+     * @param array $arguments
      * @return mixed
      */
     public function __call(string $function, array $arguments)
@@ -75,9 +73,8 @@ class Request
     }
 
     /**
-     * __callStatic magic
      * @param string $function The function name
-     * @param array $arguments 
+     * @param array $arguments
      * @return mixed
      */
     public static function __callStatic(string $function, array $arguments)

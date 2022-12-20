@@ -9,13 +9,17 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.0
  */
 
 namespace Quantum\Http\Request;
 
+use Quantum\Exceptions\LangException;
 use Quantum\Exceptions\HttpException;
+use Quantum\Exceptions\DiException;
+use Quantum\Libraries\Csrf\Csrf;
 use Quantum\Environment\Server;
+use ReflectionException;
 use Quantum\Bootstrap;
 
 /**
@@ -60,20 +64,20 @@ abstract class HttpRequest
 
     /**
      * Server
-     * @var \Quantum\Environment\Server
+     * @var Server
      */
     private static $server;
 
     /**
      * Initiates the Request
-     * @param \Quantum\Environment\Server $server
-     * @throws \Quantum\Exceptions\DiException
-     * @throws \Quantum\Exceptions\HttpException
-     * @throws \ReflectionException
+     * @param Server $server
+     * @throws HttpException
+     * @throws LangException
+     * @throws DiException
+     * @throws ReflectionException
      */
     public static function init(Server $server)
     {
-
         if (get_caller_class(3) !== Bootstrap::class) {
             throw HttpException::unexpectedRequestInitialization();
         }
@@ -92,20 +96,20 @@ abstract class HttpRequest
 
         self::$__query = self::$server->query();
 
-        self::$__headers = array_change_key_case((array) getallheaders(), CASE_LOWER);
+        self::$__headers = array_change_key_case((array)getallheaders(), CASE_LOWER);
 
         list('params' => $params, 'files' => $files) = self::parsedParams();
 
         self::$__request = array_merge(
-                self::$__request,
-                self::getParams(),
-                self::postParams(),
-                $params
+            self::$__request,
+            self::getParams(),
+            self::postParams(),
+            $params
         );
 
         self::$__files = array_merge(
-                self::handleFiles($_FILES),
-                $files
+            self::handleFiles($_FILES),
+            $files
         );
     }
 
@@ -115,9 +119,10 @@ abstract class HttpRequest
      * @param string $url
      * @param array|null $data
      * @param array|null $files
-     * @throws \Quantum\Exceptions\DiException
-     * @throws \Quantum\Exceptions\HttpException
-     * @throws \ReflectionException
+     * @throws HttpException
+     * @throws LangException
+     * @throws DiException
+     * @throws ReflectionException
      */
     public static function create(string $method, string $url, array $data = null, array $files = null)
     {
@@ -179,7 +184,8 @@ abstract class HttpRequest
     /**
      * Sets the request method
      * @param string $method
-     * @throws \Quantum\Exceptions\HttpException
+     * @throws HttpException
+     * @throws LangException
      */
     public static function setMethod(string $method)
     {
@@ -227,17 +233,17 @@ abstract class HttpRequest
     }
 
     /**
-     * Gets Сross Site Request Forgery Token
+     * Gets Cross Site Request Forgery Token
      * @return string|null
      */
-    public static function getCSRFToken(): ?string
+    public static function getCsrfToken(): ?string
     {
         $csrfToken = null;
 
-        if (self::has('token')) {
-            $csrfToken = (string) self::get('token');
-        } elseif (self::hasHeader('X-csrf-token')) {
-            $csrfToken = self::getHeader('X-csrf-token');
+        if (self::has(Csrf::TOKEN_KEY)) {
+            $csrfToken = self::get(Csrf::TOKEN_KEY);
+        } elseif (self::hasHeader('X-' . Csrf::TOKEN_KEY)) {
+            $csrfToken = self::getHeader('X-' . Csrf::TOKEN_KEY);
         }
 
         return $csrfToken;
@@ -251,7 +257,7 @@ abstract class HttpRequest
     {
         $bearerToken = null;
 
-        $authorization = (string) self::getHeader('Authorization');
+        $authorization = (string)self::getHeader('Authorization');
 
         if (self::hasHeader('Authorization')) {
             if (preg_match('/Bearer\s(\S+)/', $authorization, $matches)) {

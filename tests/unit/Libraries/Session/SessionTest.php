@@ -17,8 +17,6 @@ class SessionTest extends AppTestCase
     {
         parent::setUp();
 
-        putenv('APP_KEY=' . uniqid());
-
         if (session_status() !== PHP_SESSION_ACTIVE) {
             session_start();
         }

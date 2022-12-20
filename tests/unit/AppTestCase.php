@@ -21,6 +21,8 @@ abstract class AppTestCase extends TestCase
 
         config()->flush();
 
+        putenv('APP_KEY=' . uniqid());
+
         config()->load(new Setup('config', 'config', true));
 
         Lang::getInstance()->setLang('en')->load();
