@@ -31,6 +31,10 @@ use ReflectionException;
  */
 class Csrf
 {
+    /**
+     * Request methods to validate against
+     */
+    const METHODS = ['POST', 'PUT', 'PATCH', 'DELETE'];
 
     /**
      * Csrf token key
@@ -51,11 +55,6 @@ class Csrf
      * @var Hasher
      */
     private $hasher;
-
-    /**
-     * Request methods to validate against
-     */
-    const METHODS = ['POST', 'PUT', 'PATCH', 'DELETE'];
 
     /**
      * @throws ConfigException
