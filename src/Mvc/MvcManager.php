@@ -14,6 +14,7 @@
 
 namespace Quantum\Mvc;
 
+use Quantum\Exceptions\ControllerException;
 use Quantum\Exceptions\MiddlewareException;
 use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Middleware\MiddlewareManager;
@@ -38,6 +39,7 @@ class MvcManager
      * @param Request $request
      * @param Response $response
      * @throws MiddlewareException
+     * @throws ControllerException
      * @throws CryptorException
      * @throws CsrfException
      * @throws DiException
@@ -78,6 +80,7 @@ class MvcManager
      * @return QtController
      * @throws DiException
      * @throws ReflectionException
+     * @throws ControllerException
      */
     private static function getController(): QtController
     {
@@ -104,6 +107,7 @@ class MvcManager
      * Get Action
      * @param QtController $controller
      * @return string|null
+     * @throws ControllerException
      */
     private static function getAction(QtController $controller): ?string
     {

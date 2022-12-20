@@ -241,7 +241,7 @@ abstract class HttpRequest
         $csrfToken = null;
 
         if (self::has(Csrf::TOKEN_KEY)) {
-            $csrfToken = self::get(Csrf::TOKEN_KEY);
+            $csrfToken = (string)self::get(Csrf::TOKEN_KEY);
         } elseif (self::hasHeader('X-' . Csrf::TOKEN_KEY)) {
             $csrfToken = self::getHeader('X-' . Csrf::TOKEN_KEY);
         }
