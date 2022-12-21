@@ -28,9 +28,9 @@ trait Result
      * @inheritDoc
      * @throws DatabaseException
      */
-    public function get(?int $returnType = self::TYPE_ARRAY)
+    public function get(?int $returnType = DbalInterface::TYPE_ARRAY)
     {
-        return ($returnType == self::TYPE_OBJECT) ?
+        return ($returnType == DbalInterface::TYPE_OBJECT) ?
             $this->getOrmModel()->find_many()
             :
             $this->getOrmModel()->find_array();

@@ -41,16 +41,6 @@ class IdiormDbal implements DbalInterface, RelationalInterface
     use Query;
 
     /**
-     * Type array
-     */
-    const TYPE_ARRAY = 1;
-
-    /**
-     * Type object
-     */
-    const TYPE_OBJECT = 2;
-
-    /**
      * Default charset
      */
     const DEFAULT_CHARSET = 'utf8';

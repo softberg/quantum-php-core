@@ -24,6 +24,16 @@ interface DbalInterface
 {
 
     /**
+     * Type array
+     */
+    const TYPE_ARRAY = 1;
+
+    /**
+     * Type object
+     */
+    const TYPE_OBJECT = 2;
+
+    /**
      * Connects to database
      * @param array $config
      */
@@ -132,7 +142,7 @@ interface DbalInterface
      * Gets the result set
      * @return mixed
      */
-    public function get();
+    public function get(?int $returnType = null);
 
     /**
      * Returns the count
@@ -193,5 +203,4 @@ interface DbalInterface
      * @return DbalInterface
      */
     public function joinThrough(QtModel $model, bool $switch = true): DbalInterface;
-
 }

@@ -43,11 +43,6 @@ abstract class QtModel
 {
 
     /**
-     * Type array
-     */
-    const TYPE_ARRAY = 1;
-
-    /**
      * The database table associated with model
      * @var string
      */
@@ -119,12 +114,14 @@ abstract class QtModel
      * @inheritDoc
      * @throws DatabaseException
      */
-    public function get(?int $returnType = self::TYPE_ARRAY)
+    public function get(?int $returnType = DbalInterface::TYPE_ARRAY)
     {
         $result = $this->orm->get($returnType);
 
+        $resultCount = count($result);
+
         if (count($this->hidden) > 0) {
-            for ($i = 0; $i < count($result); $i++) {
+            for ($i = 0; $i < $resultCount; $i++) {
                 $result[$i] = array_diff_key($result[$i], array_flip($this->hidden));
             }
         }
