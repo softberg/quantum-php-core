@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.5.0
+ * @since 2.9.0
  */
 
 namespace Quantum\Http;
@@ -48,7 +48,6 @@ class Response
 {
 
     /**
-     * __call magic
      * @param string $function The function name
      * @param array $arguments
      * @return mixed
@@ -59,7 +58,6 @@ class Response
     }
 
     /**
-     * __callStatic magic
      * @param string $function The function name
      * @param array $arguments
      * @return mixed

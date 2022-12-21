@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.0
  */
 
 use Quantum\Libraries\Transformer\TransformerInterface;
@@ -17,16 +17,14 @@ use Quantum\Libraries\Transformer\TransformerManager;
 use Quantum\Exceptions\StopExecutionException;
 use Quantum\Libraries\Encryption\Cryptor;
 use Quantum\Libraries\Asset\AssetManager;
-use Quantum\Exceptions\CryptorException;
 use Quantum\Exceptions\AppException;
-use Quantum\Libraries\Csrf\Csrf;
 
 /**
  * Generates the CSRF token
  * @return string|null
- * @throws \Quantum\Exceptions\AppException
+ * @throws AppException
  * @throws \Quantum\Exceptions\DatabaseException
- * @throws \Quantum\Exceptions\SessionException
+ * @throws \Quantum\Exceptions\CryptorException
  */
 function csrf_token(): ?string
 {
@@ -36,11 +34,11 @@ function csrf_token(): ?string
         throw AppException::missingAppKey();
     }
 
-    return Csrf::generateToken(session(), $appKey);
+    return csrf()->generateToken($appKey);
 }
 
 /**
- * _message
+ * Compose a message
  * @param string $subject
  * @param string|array $params
  * @return string
@@ -65,17 +63,14 @@ function valid_base64(string $string): bool
 {
     $decoded = base64_decode($string, true);
 
-    // Check if there is no invalid character in string
     if (!preg_match('/^[a-zA-Z0-9\/\r\n+]*={0,2}$/', $string)) {
         return false;
     }
 
-    // Decode the string in strict mode and send the response
     if (!base64_decode($string, true)) {
         return false;
     }
 
-    // Encode and compare it to original one
     if (base64_encode($decoded) != $string) {
         return false;
     }
@@ -175,6 +170,7 @@ function slugify(string $text): string
     if (empty($text)) {
         return 'n-a';
     }
+
     return $text;
 }
 
@@ -218,7 +214,7 @@ function transform(array $data, TransformerInterface $transformer): array
  * Encodes the data cryptographically
  * @param mixed $data
  * @return string
- * @throws CryptorException
+ * @throws \Quantum\Exceptions\CryptorException
  */
 function crypto_encode($data): string
 {
@@ -230,7 +226,7 @@ function crypto_encode($data): string
  * Decodes the data cryptographically
  * @param string $value
  * @return mixed|string
- * @throws CryptorException
+ * @throws \Quantum\Exceptions\CryptorException
  */
 function crypto_decode(string $value)
 {

@@ -2,105 +2,81 @@
 
 namespace Quantum\Tests\Libraries\Csrf;
 
-use Quantum\Libraries\Session\Session;
 use Quantum\Exceptions\CsrfException;
 use Quantum\Libraries\Csrf\Csrf;
 use Quantum\Tests\AppTestCase;
-use Mockery;
+use Quantum\Http\Request;
 
 class CsrfTest extends AppTestCase
 {
 
-    private $session;
+    private $csrf;
     private $request;
-    private $storage = [];
-    private $key = 'appkey';
+    private $key = '#321dMd3QS15%';
 
     public function setUp(): void
     {
         parent::setUp();
 
-        $this->request = Mockery::mock('Quantum\Http\Request');
+        $this->request = new Request();
 
-        $this->request->shouldReceive('getMethod')->andReturn('POST');
-
-        $this->session = Session::getInstance($this->storage);
-
-        Csrf::deleteToken($this->session);
-    }
-
-    public function tearDown(): void
-    {
-        Mockery::close();
+        $this->csrf = Csrf::getInstance();
     }
 
     public function testGenerateToken()
     {
-        $token = Csrf::generateToken($this->session, $this->key);
+        $token = $this->csrf->generateToken($this->key);
 
         $this->assertNotEmpty($token);
 
         $this->assertIsString($token);
 
-        $this->assertEquals(Csrf::getToken($this->session), $token);
+        $this->assertTrue(session()->has(Csrf::TOKEN_KEY));
+
+        $this->assertEquals($token, session()->has(Csrf::TOKEN_KEY));
     }
 
-    public function testGetToken()
+    public function testCheckTokenSuccess()
     {
-        $this->assertNull(Csrf::getToken($this->session, $this->key));
+        $token = $this->csrf->generateToken($this->key);
 
-        $token = Csrf::generateToken($this->session, $this->key);
+        $this->request->create('POST', '/submit', [
+            'firstname' => 'Josn',
+            'lastname' => 'Doe',
+            'csrf-token' => $token
+        ]);
 
-        $this->assertNotNull(Csrf::getToken($this->session, $this->key));
-
-        $this->assertEquals($token, Csrf::getToken($this->session, $this->key));
-    }
-
-    public function testDeleteToken()
-    {
-        Csrf::generateToken($this->session, $this->key);
-
-        $this->assertNotNull(Csrf::getToken($this->session, $this->key));
-
-        Csrf::deleteToken($this->session);
-
-        $this->assertNull(Csrf::getToken($this->session, $this->key));
-    }
-
-    public function testCheckTokenSuccss()
-    {
-        $this->request->shouldReceive('getCSRFToken')->andReturnUsing(function () {
-            return Csrf::generateToken($this->session, $this->key);
-        });
-
-        $this->assertTrue(Csrf::checkToken($this->request, $this->session));
+        $this->assertTrue($this->csrf->checkToken($this->request->getCsrfToken()));
     }
 
     public function testCheckTokenMissing()
     {
+        $this->csrf->generateToken($this->key);
 
-        $this->request->shouldReceive('getCSRFToken')->andReturnUsing(function () {
-            return null;
-        });
+        $this->request->create('POST', '/submit', ['firstname' => 'Josn', 'lastname' => 'Doe']);
 
         $this->expectException(CsrfException::class);
 
         $this->expectExceptionMessage('csrf_token_not_found');
 
-        $this->assertTrue(Csrf::checkToken($this->request, $this->session));
+        $this->assertTrue($this->csrf->checkToken($this->request->getCsrfToken()));
     }
 
     public function testCheckTokenMismatch()
     {
-        $this->request->shouldReceive('getCSRFToken')->andReturnUsing(function () {
-            return 'wrong-csrf-token';
-        });
+        $this->csrf->generateToken($this->key);
+
+        $this->request->create('POST', '/submit', [
+            'firstname' => 'Josn',
+            'lastname' => 'Doe',
+            'csrf-token' => 'wrong-csrf-token'
+        ]);
 
         $this->expectException(CsrfException::class);
 
         $this->expectExceptionMessage('csrf_token_not_matched');
 
-        $this->assertTrue(Csrf::checkToken($this->request, $this->session));
+        $this->assertTrue($this->csrf->checkToken($this->request->getCsrfToken()));
     }
 
 }
