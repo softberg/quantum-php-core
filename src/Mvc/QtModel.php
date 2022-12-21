@@ -43,6 +43,11 @@ abstract class QtModel
 {
 
     /**
+     * Type array
+     */
+    const TYPE_ARRAY = 1;
+
+    /**
      * The database table associated with model
      * @var string
      */
