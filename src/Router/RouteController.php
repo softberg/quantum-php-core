@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.0
  */
 
 namespace Quantum\Router;
@@ -31,7 +31,7 @@ abstract class RouteController
      * Gets the current route
      * @return array
      */
-    public static function getCurrentRoute()
+    public static function getCurrentRoute(): ?array
     {
         return self::$currentRoute;
     }

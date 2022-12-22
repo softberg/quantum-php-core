@@ -9,15 +9,18 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.7.0
+ * @since 2.9.0
  */
 
 namespace Quantum\Http\Response;
 
+use Quantum\Exceptions\StopExecutionException;
 use Quantum\Exceptions\HttpException;
+use Quantum\Exceptions\LangException;
 use Quantum\Bootstrap;
 use SimpleXMLElement;
 use DOMDocument;
+use Exception;
 
 /**
  * Class HttpResponse
@@ -75,7 +78,8 @@ abstract class HttpResponse
 
     /**
      * Initialize the Response
-     * @throws \Quantum\Exceptions\HttpException
+     * @throws HttpException
+     * @throws LangException
      */
     public static function init()
     {
@@ -98,7 +102,7 @@ abstract class HttpResponse
 
     /**
      * Sends all response data to the client and finishes the request.
-     * @throws \Exception
+     * @throws Exception
      */
     public static function send()
     {
@@ -114,7 +118,7 @@ abstract class HttpResponse
     /**
      * Gets the response content
      * @return string
-     * @throws \Exception
+     * @throws Exception
      */
     public static function getContent(): string
     {
@@ -175,7 +179,7 @@ abstract class HttpResponse
      * Redirect
      * @param string $url
      * @param int $code
-     * @throws \Quantum\Exceptions\StopExecutionException
+     * @throws StopExecutionException
      */
     public static function redirect(string $url, int $code = 302)
     {
@@ -279,7 +283,7 @@ abstract class HttpResponse
      * Transforms array to XML
      * @param array $arr
      * @return string
-     * @throws \Exception
+     * @throws Exception
      */
     private static function arrayToXML(array $arr): string
     {
@@ -295,7 +299,7 @@ abstract class HttpResponse
     /**
      * Compose XML
      * @param array $arr
-     * @param \SimpleXMLElement $simpleXML
+     * @param SimpleXMLElement $simpleXML
      */
     private static function composeXML(array $arr, SimpleXMLElement &$simpleXML)
     {
