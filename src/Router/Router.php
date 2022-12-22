@@ -9,15 +9,22 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.0
  */
 
 namespace Quantum\Router;
 
+use Quantum\Exceptions\StopExecutionException;
 use Quantum\Exceptions\RouteException;
+use Quantum\Exceptions\ViewException;
+use Quantum\Exceptions\DiException;
 use Quantum\Debugger\Debugger;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
+use Twig\Error\LoaderError;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
+use ReflectionException;
 use Psr\Log\LogLevel;
 
 /**
@@ -61,12 +68,6 @@ class Router extends RouteController
     private $matchedRoutes = [];
 
     /**
-     * Matched URI
-     * @var string
-     */
-    private $matchedUri = null;
-
-    /**
      * Router constructor.
      * @param Request $request
      * @param Response $response
@@ -79,14 +80,14 @@ class Router extends RouteController
 
     /**
      * Finds the current route
-     * @throws \Quantum\Exceptions\StopExecutionException
-     * @throws \Quantum\Exceptions\ViewException
-     * @throws \Quantum\Exceptions\DiException
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
-     * @throws \ReflectionException
+     * @throws StopExecutionException
+     * @throws ViewException
+     * @throws DiException
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      * @throws RouteException
+     * @throws ReflectionException
      */
     public function findRoute()
     {
@@ -100,7 +101,7 @@ class Router extends RouteController
 
         if (!count($this->matchedRoutes)) {
             stop(function () {
-                $this->response->html(partial('errors/404'), 404);
+                $this->handleNotFound();
             });
         }
 
@@ -151,7 +152,6 @@ class Router extends RouteController
     public function resetRoutes()
     {
         parent::$currentRoute = null;
-        $this->matchedUri = null;
         $this->matchedRoutes = [];
     }
 
@@ -171,8 +171,6 @@ class Router extends RouteController
             preg_match("/^" . $this->escape($pattern) . "$/u", $requestUri, $matches);
 
             if (count($matches)) {
-                $this->matchedUri = array_shift($matches) ?: '/';
-
                 $route['params'] = $this->routeParams($params, $matches);
                 $route['pattern'] = $pattern;
                 $this->matchedRoutes[] = $route;
@@ -407,6 +405,24 @@ class Router extends RouteController
     private function escape(string $str): string
     {
         return str_replace('/', '\/', stripslashes($str));
+    }
+
+    /**
+     * Handles page not found
+     * @throws DiException
+     * @throws ViewException
+     * @throws ReflectionException
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     */
+    private function handleNotFound()
+    {
+        if ($this->request->getHeader('Accept') == 'application/json') {
+            $this->response->json(['status' => 'error', 'message' => 'Page not found'], 404);
+        } else {
+            $this->response->html(partial('errors/404'), 404);
+        }
     }
 
 }

@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.0
  */
 
 namespace Quantum\Router;
@@ -19,7 +19,6 @@ use Closure;
 
 /**
  * Route Class
- * Route class allows to add new route entries
  * @package Quantum\Router
  */
 class Route
@@ -69,7 +68,7 @@ class Route
 
     /**
      * Class constructor
-     * @param string $module
+     * @param array $module
      */
     public function __construct(array $module)
     {
@@ -83,9 +82,9 @@ class Route
      * @param string $route
      * @param string $method
      * @param array $params
-     * @return $this
+     * @return Route
      */
-    public function add(string $route, string $method, ...$params): self
+    public function add(string $route, string $method, ...$params): Route
     {
         $this->currentRoute = [
             'route' => !empty($this->moduleOptions['prefix']) ? $this->moduleOptions['prefix'] . '/' . $route : $route,
@@ -117,9 +116,9 @@ class Route
      * Adds new get route entry to routes
      * @param string $route
      * @param array $params
-     * @return $this
+     * @return Route
      */
-    public function get(string $route, ...$params): self
+    public function get(string $route, ...$params): Route
     {
         return $this->add($route, 'GET', ...$params);
     }
@@ -128,9 +127,9 @@ class Route
      * Adds new post route entry to routes
      * @param string $route
      * @param array $params
-     * @return $this
+     * @return Route
      */
-    public function post(string $route, ...$params): self
+    public function post(string $route, ...$params): Route
     {
         return $this->add($route, 'POST', ...$params);
     }
@@ -139,9 +138,9 @@ class Route
      * Starts a named group of routes
      * @param string $groupName
      * @param Closure $callback
-     * @return $this
+     * @return Route
      */
-    public function group(string $groupName, Closure $callback): self
+    public function group(string $groupName, Closure $callback): Route
     {
         $this->currentGroupName = $groupName;
 
@@ -157,9 +156,9 @@ class Route
     /**
      * Adds middlewares to routes and route groups
      * @param array $middlewares
-     * @return $this
+     * @return Route
      */
-    public function middlewares(array $middlewares = []): self
+    public function middlewares(array $middlewares = []): Route
     {
         if (!$this->isGroup) {
             end($this->virtualRoutes['*']);
@@ -188,10 +187,10 @@ class Route
     /**
      * Sets a unique name for a route
      * @param string $name
-     * @return $this
-     * @throws \Quantum\Exceptions\RouteException
+     * @return Route
+     * @throws RouteException
      */
-    public function name(string $name): self
+    public function name(string $name): Route
     {
         if (empty($this->currentRoute)) {
             throw RouteException::nameBeforeDefinition();
