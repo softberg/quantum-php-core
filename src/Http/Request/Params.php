@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.0
  */
 
 namespace Quantum\Http\Request;
@@ -17,7 +17,10 @@ namespace Quantum\Http\Request;
 use Quantum\Libraries\Upload\File as FileUpload;
 use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Exceptions\HttpException;
+use Quantum\Exceptions\LangException;
+use Quantum\Exceptions\DiException;
 use Quantum\Environment\Server;
+use ReflectionException;
 use Quantum\Di\Di;
 
 /**
@@ -36,7 +39,7 @@ trait Params
         $getParams = [];
 
         if (!empty($_GET)) {
-            $getParams = filter_input_array(INPUT_GET, FILTER_DEFAULT) ?: [] ;
+            $getParams = filter_input_array(INPUT_GET) ?: [];
         }
 
         return $getParams;
@@ -51,18 +54,19 @@ trait Params
         $postParams = [];
 
         if (!empty($_POST)) {
-            $postParams = filter_input_array(INPUT_POST, FILTER_DEFAULT) ?: [];
+            $postParams = filter_input_array(INPUT_POST) ?: [];
         }
 
         return $postParams;
     }
-    
+
     /**
      * Parses the raw input parameters sent via PUT, PATCH or DELETE methods
      * @return array[]
-     * @throws \Quantum\Exceptions\DiException
-     * @throws \Quantum\Exceptions\HttpException
-     * @throws \ReflectionException
+     * @throws DiException
+     * @throws HttpException
+     * @throws LangException
+     * @throws ReflectionException
      */
     private static function parsedParams(): array
     {
@@ -98,8 +102,8 @@ trait Params
      * Parses the raw input
      * @param string $rawInput
      * @return array[]
-     * @throws \Quantum\Exceptions\DiException
-     * @throws \ReflectionException
+     * @throws DiException
+     * @throws ReflectionException
      */
     private static function parseRawInput(string $rawInput): array
     {
@@ -156,8 +160,8 @@ trait Params
      * Process blocks
      * @param array $blocks
      * @return array
-     * @throws \Quantum\Exceptions\DiException
-     * @throws \ReflectionException
+     * @throws DiException
+     * @throws ReflectionException
      */
     private static function processBlocks(array $blocks): array
     {
@@ -172,7 +176,7 @@ trait Params
             if (strpos($block, 'filename') !== false) {
                 list($nameParam, $file) = self::getParsedFile($block);
 
-                if(!$file) {
+                if (!$file) {
                     continue;
                 }
 
@@ -210,21 +214,21 @@ trait Params
     {
         preg_match('/name=\"([^\"]*)\".*stream[\n|\r]+([^\n\r].*)?$/s', $block, $match);
 
-        return [$match[1] => $match[2] ?: ''];
+        return [$match[1] => $match[2] ?? ''];
     }
 
     /**
      * Gets the parsed file
      * @param string $block
-     * @return array|\Quantum\Libraries\Upload\File[]
-     * @throws \Quantum\Exceptions\DiException
-     * @throws \ReflectionException
+     * @return array|null
+     * @throws DiException
+     * @throws ReflectionException
      */
     private static function getParsedFile(string $block): ?array
     {
         list($name, $filename, $type, $content) = self::parseFileData($block);
 
-        if(!$content) {
+        if (!$content) {
             return null;
         }
 
@@ -283,9 +287,9 @@ trait Params
 
         if (preg_match('/name=\"([^\"]*)\"[\n|\r]+([^\n\r].*)?\r$/s', $block, $match)) {
             if (preg_match('/^(.*)\[\]$/i', $match[1], $tmp)) {
-                $data[$tmp[1]][] = $match[2] ?: '';
+                $data[$tmp[1]][] = $match[2] ?? '';
             } else {
-                $data[$match[1]] = $match[2] ?: '';
+                $data[$match[1]] = $match[2] ?? '';
             }
         }
 
