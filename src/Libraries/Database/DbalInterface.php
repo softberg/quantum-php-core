@@ -142,7 +142,7 @@ interface DbalInterface
      * Gets the result set
      * @return mixed
      */
-    public function get(?int $returnType = null);
+    public function get();
 
     /**
      * Returns the count
