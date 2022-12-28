@@ -9,18 +9,23 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.0
  */
 
 namespace Quantum\Mvc;
 
 use Quantum\Exceptions\ControllerException;
+use Quantum\Exceptions\MiddlewareException;
 use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Middleware\MiddlewareManager;
+use Quantum\Exceptions\CryptorException;
+use Quantum\Exceptions\CsrfException;
+use Quantum\Exceptions\DiException;
 use Quantum\Libraries\Csrf\Csrf;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 use Quantum\Di\Di;
+use ReflectionException;
 
 /**
  * Class MvcManager
@@ -33,14 +38,12 @@ class MvcManager
      * Handles the request
      * @param Request $request
      * @param Response $response
+     * @throws MiddlewareException
      * @throws ControllerException
-     * @throws \Quantum\Exceptions\MiddlewareException
-     * @throws \Quantum\Exceptions\DatabaseException
-     * @throws \Quantum\Exceptions\SessionException
-     * @throws \Quantum\Exceptions\ConfigException
-     * @throws \Quantum\Exceptions\CsrfException
-     * @throws \Quantum\Exceptions\DiException
-     * @throws \ReflectionException
+     * @throws CryptorException
+     * @throws CsrfException
+     * @throws DiException
+     * @throws ReflectionException
      */
     public static function handle(Request $request, Response $response)
     {
@@ -56,8 +59,8 @@ class MvcManager
             $controller = self::getController();
             $action = self::getAction($controller);
 
-            if ($controller->csrfVerification) {
-                Csrf::checkToken($request, session());
+            if ($controller->csrfVerification && in_array($request->getMethod(), Csrf::METHODS)) {
+                csrf()->checkToken($request->getCsrfToken());
             }
 
             if (method_exists($controller, '__before')) {
@@ -75,9 +78,9 @@ class MvcManager
     /**
      * Get Controller
      * @return QtController
+     * @throws DiException
+     * @throws ReflectionException
      * @throws ControllerException
-     * @throws \Quantum\Exceptions\DiException
-     * @throws \ReflectionException
      */
     private static function getController(): QtController
     {
@@ -121,8 +124,8 @@ class MvcManager
      * Get arguments
      * @param callable $callable
      * @return array
-     * @throws \Quantum\Exceptions\DiException
-     * @throws \ReflectionException
+     * @throws DiException
+     * @throws ReflectionException
      */
     private static function getArgs(callable $callable): array
     {

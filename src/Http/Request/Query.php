@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.4.0
+ * @since 2.9.0
  */
 
 namespace Quantum\Http\Request;
@@ -72,7 +72,7 @@ trait Query
     public static function setQueryParam(string $key, string $value)
     {
         $queryParams = self::$__query ? explode('&', self::$__query) : [];
-        array_push($queryParams, $key . '=' . $value);
+        $queryParams[] = $key . '=' . $value;
         self::$__query = implode('&', $queryParams);
     }
 

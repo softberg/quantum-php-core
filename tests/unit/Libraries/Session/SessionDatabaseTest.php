@@ -18,8 +18,6 @@ class SessionDatabaseTest extends AppTestCase
     {
         parent::setUp();
 
-        putenv('APP_KEY=' . uniqid());
-
         IdiormDbal::connect(['driver' => 'sqlite', 'database' => ':memory:']);
 
         $this->_createSessionsTable();

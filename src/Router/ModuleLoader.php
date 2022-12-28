@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.0
  */
 
 namespace Quantum\Router;
@@ -17,6 +17,8 @@ namespace Quantum\Router;
 use Quantum\Exceptions\ModuleLoaderException;
 use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Exceptions\RouteException;
+use Quantum\Exceptions\DiException;
+use ReflectionException;
 use Quantum\Di\Di;
 use Closure;
 
@@ -29,10 +31,10 @@ class ModuleLoader
 
     /**
      * Load Modules
-     * @throws \Quantum\Exceptions\DiException
-     * @throws \Quantum\Exceptions\ModuleLoaderException
-     * @throws \Quantum\Exceptions\RouteException
-     * @throws \ReflectionException
+     * @throws ModuleLoaderException
+     * @throws RouteException
+     * @throws DiException
+     * @throws ReflectionException
      */
     public static function loadModulesRoutes()
     {

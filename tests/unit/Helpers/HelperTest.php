@@ -16,7 +16,6 @@ use Quantum\Router\Router;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 use Quantum\Di\Di;
-use Mockery;
 
 class HelperTest extends AppTestCase
 {
@@ -367,13 +366,9 @@ class HelperTest extends AppTestCase
 
     public function testCsrfToken()
     {
-        putenv('APP_KEY=appkey');
+        $this->request->create('PUT', '/update', ['title' => 'Task Title', 'csrf-token' => csrf_token()]);
 
-        $csrfToken = csrf_token();
-
-        $this->assertEquals(Csrf::getToken(session()), $csrfToken);
-
-        Csrf::deleteToken(session());
+        $this->assertTrue(csrf()->checkToken(csrf_token()));
     }
 
     public function testMessageHelper()

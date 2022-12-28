@@ -9,14 +9,21 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.6.0
+ * @since 2.9.0
  */
 
 namespace Quantum\Libraries\Csrf;
 
-use Quantum\Libraries\Session\SessionStorageInterface;
+use Quantum\Exceptions\DatabaseException;
+use Quantum\Exceptions\CryptorException;
+use Quantum\Exceptions\SessionException;
+use Quantum\Exceptions\ConfigException;
 use Quantum\Exceptions\CsrfException;
-use Quantum\Http\Request;
+use Quantum\Exceptions\LangException;
+use Quantum\Exceptions\DiException;
+use Quantum\Libraries\Session\Session;
+use Quantum\Libraries\Hasher\Hasher;
+use ReflectionException;
 
 /**
  * Class Csrf
@@ -24,88 +31,92 @@ use Quantum\Http\Request;
  */
 class Csrf
 {
+    /**
+     * Request methods to validate against
+     */
+    const METHODS = ['POST', 'PUT', 'PATCH', 'DELETE'];
 
     /**
-     * The token
-     * @var string
+     * Csrf token key
      */
-    private static $token = null;
+    const TOKEN_KEY = 'csrf-token';
 
     /**
-     * Request methods
-     * @var array
+     * @var Csrf
      */
-    private static $methods = ['POST', 'PUT', 'PATCH', 'DELETE'];
+    private static $instance;
 
     /**
-     * Generates the CSRF token or returns previously generated one
-     * @param \Quantum\Libraries\Session\SessionStorageInterface $storage
-     * @param string $key
-     * @return string|null
+     * @var Session
      */
-    public static function generateToken(SessionStorageInterface $storage, string $key): ?string
+    private $storage;
+
+    /**
+     * @var Hasher
+     */
+    private $hasher;
+
+    /**
+     * @throws ConfigException
+     * @throws SessionException
+     * @throws LangException
+     * @throws ReflectionException
+     * @throws DiException
+     * @throws DatabaseException
+     */
+    private function __construct()
     {
-        if (!self::$token ) {
-            self::deleteToken($storage);
-            self::$token = base64_encode($key);
-            self::setToken($storage, self::$token);
+        $this->storage = session();
+        $this->hasher = new Hasher();
+    }
+
+    /**
+     * Csrf instance
+     * @return Csrf
+     */
+    public static function getInstance(): Csrf
+    {
+        if (self::$instance === null) {
+            self::$instance = new self();
         }
 
-        return self::$token;
+        return self::$instance;
+    }
+
+    /**
+     * Generates the CSRF token or returns the previously generated one
+     * @param string $key
+     * @return string|null
+     * @throws CryptorException
+     */
+    public function generateToken(string $key): ?string
+    {
+        if (!$this->storage->has(self::TOKEN_KEY)) {
+            $this->storage->set(self::TOKEN_KEY, $this->hasher->hash($key));
+        }
+
+        return $this->storage->get(self::TOKEN_KEY);
     }
 
     /**
      * Checks the token
-     * @param \Quantum\Http\Request $request
-     * @param \Quantum\Libraries\Session\SessionStorageInterface $storage
+     * @param string|null $token
      * @return bool
-     * @throws \Quantum\Exceptions\CsrfException
+     * @throws CryptorException
+     * @throws CsrfException
      */
-    public static function checkToken(Request $request, SessionStorageInterface $storage): bool
+    public function checkToken(?string $token): bool
     {
-        if (in_array($request->getMethod(), self::$methods)) {
-
-            $token = $request->getCSRFToken();
-
-            if (!$token) {
-                throw CsrfException::tokenNotFound();
-            }
-
-            if (self::getToken($storage) !== $token) {
-                throw CsrfException::tokenNotMatched();
-            }
+        if (!$token) {
+            throw CsrfException::tokenNotFound();
         }
 
+        if ($this->storage->get(self::TOKEN_KEY) !== $token) {
+            throw CsrfException::tokenNotMatched();
+        }
+
+        $this->storage->delete(self::TOKEN_KEY);
+
         return true;
-    }
-
-    /**
-     * Deletes the token from storage
-     * @param \Quantum\Libraries\Session\SessionStorageInterface $storage
-     */
-    public static function deleteToken(SessionStorageInterface $storage)
-    {
-        $storage->delete('token');
-        self::$token = null;
-    }
-
-    /**
-     * Gets the token from storage
-     * @param SessionStorageInterface $storage
-     * @return string|null
-     */
-    public static function getToken(SessionStorageInterface $storage): ?string
-    {
-        return $storage->get('token');
-    }
-
-    /**
-     * Sets the token into the storage
-     * @param \Quantum\Libraries\Session\SessionStorageInterface $storage
-     * @param string $token
-     */
-    private static function setToken(SessionStorageInterface $storage, string $token)
-    {
-        $storage->set('token', $token);
     }
 }

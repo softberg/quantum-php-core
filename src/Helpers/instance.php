@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.0
  */
 
 use Quantum\Libraries\Session\SessionManager;
@@ -22,6 +22,7 @@ use Quantum\Libraries\Mailer\Mailer;
 use Quantum\Libraries\Auth\ApiAuth;
 use Quantum\Libraries\Auth\WebAuth;
 use Quantum\Libraries\Cache\Cache;
+use Quantum\Libraries\Csrf\Csrf;
 use Quantum\Hooks\HookManager;
 use Quantum\Di\Di;
 
@@ -33,6 +34,7 @@ use Quantum\Di\Di;
  * @throws \Quantum\Exceptions\DatabaseException
  * @throws \Quantum\Exceptions\DiException
  * @throws \Quantum\Exceptions\SessionException
+ * @throws \Quantum\Exceptions\LangException
  */
 function session(): Session
 {
@@ -101,4 +103,13 @@ function hook(): HookManager
 function cache(): Cache
 {
     return CacheManager::getHandler();
+}
+
+/**
+ * Gets the Csrf instance
+ * @return Csrf
+ */
+function csrf(): Csrf
+{
+    return Csrf::getInstance();
 }
