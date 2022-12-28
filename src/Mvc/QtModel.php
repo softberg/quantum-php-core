@@ -70,7 +70,7 @@ abstract class QtModel
      * Models hidden properties
      * @var array
      */
-    protected $hidden = [];
+    public $hidden = [];
 
     /**
      * ORM database abstract layer object
@@ -108,25 +108,6 @@ abstract class QtModel
         }
 
         return $this;
-    }
-
-    /**
-     * @inheritDoc
-     * @throws DatabaseException
-     */
-    public function get(?int $returnType = DbalInterface::TYPE_ARRAY)
-    {
-        $result = $this->orm->get($returnType);
-
-        $resultCount = count($result);
-
-        if (count($this->hidden) > 0) {
-            for ($i = 0; $i < $resultCount; $i++) {
-                $result[$i] = array_diff_key($result[$i], array_flip($this->hidden));
-            }
-        }
-
-        return $result;
     }
 
     /**
@@ -191,7 +172,8 @@ abstract class QtModel
         return [
             'table',
             'idColumn',
-            'foreignKeys'
+            'foreignKeys',
+            'hidden'
         ];
     }
 }

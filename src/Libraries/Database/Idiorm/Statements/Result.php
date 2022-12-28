@@ -94,7 +94,20 @@ trait Result
      */
     public function asArray(): array
     {
-        return $this->getOrmModel()->as_array();
+        $result = $this->getOrmModel()->as_array();
+
+        if (count($this->hidden) > 0) {
+            $result = $this->setHidden($result);
+        }
+
+        return $result;
     }
 
+    /**
+     * @inheritDoc
+     */
+    public function setHidden($result)
+    {
+        return array_diff_key($result, array_flip($this->hidden));
+    }
 }

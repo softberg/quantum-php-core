@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.0
  */
 
 namespace Quantum\Libraries\Database\Idiorm;
@@ -64,6 +64,12 @@ class IdiormDbal implements DbalInterface, RelationalInterface
     private $foreignKeys = [];
 
     /**
+     * Hidden fields
+     * @var array
+     */
+    private $hidden = [];
+
+    /**
      * Idiorm Patch object
      * @var IdiormPatch
      */
@@ -112,12 +118,14 @@ class IdiormDbal implements DbalInterface, RelationalInterface
      * @param string $table
      * @param string $idColumn
      * @param array $foreignKeys
+     * @param array $hidden
      */
-    public function __construct(string $table, string $idColumn = 'id', array $foreignKeys = [])
+    public function __construct(string $table, string $idColumn = 'id', array $foreignKeys = [], array $hidden = [])
     {
         $this->table = $table;
         $this->idColumn = $idColumn;
         $this->foreignKeys = $foreignKeys;
+        $this->hidden = $hidden;
     }
 
     /**

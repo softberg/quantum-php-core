@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.0
  */
 
 namespace Quantum\Libraries\Database;
@@ -66,14 +66,15 @@ class Database
      * @param string $table
      * @param string $idColumn
      * @param array $foreignKeys
+     * @param array $hidden
      * @return DbalInterface
      * @throws DatabaseException
      */
-    public function getOrm(string $table, string $idColumn = 'id', array $foreignKeys = []): DbalInterface
+    public function getOrm(string $table, string $idColumn = 'id', array $foreignKeys = [], array $hidden = []): DbalInterface
     {
         $ormClass = $this->getOrmClass();
 
-        return new $ormClass($table, $idColumn, $foreignKeys);
+        return new $ormClass($table, $idColumn, $foreignKeys, $hidden);
     }
 
     /**

@@ -110,7 +110,20 @@ trait Result
      */
     public function asArray(): array
     {
-        return $this->data ?: [];
+        $result = $this->data ?: [];
+
+        if (count($this->hidden) > 0 && count($result)) {
+            $result = $this->setHidden($result);
+        }
+
+        return $result;
     }
 
+    /**
+     * @inheritDoc
+     */
+    public function setHidden($result)
+    {
+        return array_diff_key($result, array_flip($this->hidden));
+    }
 }
