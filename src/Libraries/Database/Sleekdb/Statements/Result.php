@@ -31,7 +31,7 @@ trait Result
      * @throws \SleekDB\Exceptions\InvalidArgumentException
      * @throws \SleekDB\Exceptions\InvalidConfigurationException
      */
-    public function get(?int $returnType = DbalInterface::TYPE_ARRAY): array
+    public function get(): array
     {
         return $this->getBuilder()->getQuery()->fetch();
     }
