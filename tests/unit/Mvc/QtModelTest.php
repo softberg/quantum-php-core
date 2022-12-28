@@ -8,12 +8,17 @@ namespace Quantum\Models {
     {
 
         public $table = 'profiles';
+
         protected $fillable = [
+            'password',
             'firstname',
             'lastname',
             'age'
         ];
 
+        public $hidden = [
+            'password'
+        ];
     }
 
 }
@@ -42,6 +47,7 @@ namespace Quantum\Tests\Mvc {
 
             IdiormDbal::execute("CREATE TABLE profiles (
                         id INTEGER PRIMARY KEY,
+                        password VAARCHAR(255),
                         firstname VARCHAR(255),
                         lastname VARCHAR(255),
                         age int(11)
@@ -49,10 +55,27 @@ namespace Quantum\Tests\Mvc {
 
             IdiormDbal::execute("INSERT INTO 
                     profiles
-                        (firstname, lastname, age) 
+                        (
+                            password,
+                            firstname,
+                            lastname,
+                            age
+                            ) 
                     VALUES
-                        ('John', 'Doe', 45)
+                        (
+                            '@R45sdfFD7dsf&',
+                            'John',
+                            'Doe',
+                            45
+                            ),
+                        (
+                            '@RaTRdfF9dsa*',
+                            'Jane',
+                            'Dous',
+                            35
+                            )
                     ");
+
 
             $this->model = ModelFactory::get(ProfileModel::class);
         }
@@ -179,7 +202,7 @@ namespace Quantum\Tests\Mvc {
 
             $this->assertIsArray($users);
 
-            $this->assertCount(2, $users);
+            $this->assertCount(3, $users);
 
             $profileModel = ModelFactory::get(ProfileModel::class);
 
@@ -198,6 +221,23 @@ namespace Quantum\Tests\Mvc {
             $this->assertEquals('Jane', $userData['firstname']);
         }
 
+        public function testGetModelProperties()
+        {
+            $expected = [
+                "id" => "1",
+                "firstname" => "John",
+                "lastname" => "Doe",
+                "age" => "45"
+            ];
+
+            $actual = $this->model->orderBy('id', 'asc')->first()->asArray();
+
+            $this->assertIsArray($actual);
+
+            $this->assertArrayNotHasKey('password', $actual);
+
+            $this->assertEquals($expected, $actual);
+        }
     }
 
 }
