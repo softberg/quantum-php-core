@@ -33,7 +33,15 @@ trait Result
      */
     public function get(): array
     {
-        return $this->getBuilder()->getQuery()->fetch();
+        $result = array_map(function ($element) {
+            $item = clone $this;
+            $item->data = $element;
+            $item->modifiedFields = $element;
+            $item->isNew = false;
+            return $item;
+        }, $this->getBuilder()->getQuery()->fetch());
+
+        return $result;
     }
 
     /**

@@ -23,9 +23,9 @@ class ReducerSleekTest extends SleekDbalTestCase
             ->orderBy('id', 'asc')
             ->get();
 
-        $this->assertEquals('John', $user[0]['name']);
+        $this->assertEquals('John', $user[0]->name);
 
-        $this->assertEquals('Doe', $user[0]['surname']);
+        $this->assertEquals('Doe', $user[0]->surname);
     }
 
     public function testSleekGroupBy()
@@ -49,9 +49,9 @@ class ReducerSleekTest extends SleekDbalTestCase
 
         $events = $eventsModel->orderBy('title', 'desc')->get();
 
-        $this->assertEquals('Music', $events[0]['title']);
+        $this->assertEquals('Music', $events[0]->title);
 
-        $this->assertEquals('Art', $events[count($events) - 1]['title']);
+        $this->assertEquals('Art', $events[count($events) - 1]->title);
     }
 
     public function testSleekLimitAndOffset()
@@ -62,7 +62,7 @@ class ReducerSleekTest extends SleekDbalTestCase
 
         $this->assertCount(3, $events);
 
-        $this->assertEquals(1, $events[0]['id']);
+        $this->assertEquals(1, $events[0]->id);
 
         $eventsModel = new SleekDbal('events');
 
@@ -70,7 +70,7 @@ class ReducerSleekTest extends SleekDbalTestCase
 
         $this->assertCount(3, $events);
 
-        $this->assertEquals(2, $events[0]['id']);
+        $this->assertEquals(2, $events[0]->id);
     }
 
 }

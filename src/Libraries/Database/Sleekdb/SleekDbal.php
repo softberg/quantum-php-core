@@ -170,6 +170,10 @@ class SleekDbal implements DbalInterface
         $this->hidden = $hidden;
     }
 
+    public function __get($key) {
+        return isset($this->data[$key]) ? $this->data[$key] : null;
+    }
+
     /**
      * @inheritDoc
      */
