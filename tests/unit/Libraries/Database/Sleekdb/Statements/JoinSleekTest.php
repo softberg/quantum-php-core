@@ -107,12 +107,8 @@ namespace Quantum\Tests\Libraries\Database\Sleekdb\Statements {
                 ->get();
 
             $this->assertIsArray($users);
-            dd($users[0]);
-            // $this->assertObjectHasAttribute('professions', $users[0]);
-
+            
             $this->assertIsArray($users[0]->professions);
-
-            // $this->assertArrayHasKey('meetings', $users[0]);
 
             $this->assertIsArray($users[0]->meetings);
         }
@@ -136,8 +132,6 @@ namespace Quantum\Tests\Libraries\Database\Sleekdb\Statements {
             $this->assertIsArray($users);
 
             $this->assertCount(2, $users);
-
-            // $this->assertArrayHasKey('meetings', $users[0]);
 
             $this->assertArrayHasKey('tickets', $users[0]->meetings[0]);
 
@@ -167,11 +161,7 @@ namespace Quantum\Tests\Libraries\Database\Sleekdb\Statements {
 
             $this->assertEquals('Jane', $users[0]->firstname);
 
-            // $this->assertArrayHasKey('professions', $users[0]);
-
             $this->assertIsArray($users[0]->professions);
-
-            // $this->assertArrayHasKey('meetings', $users[0]);
 
             $this->assertIsArray($users[0]->meetings[0]);
 
@@ -197,8 +187,6 @@ namespace Quantum\Tests\Libraries\Database\Sleekdb\Statements {
                 ->get();
 
             $this->assertIsArray($users);
-
-            // $this->assertArrayHasKey('user_events', $users[0]);
 
             $this->assertIsArray($users[0]->user_events);
 
@@ -251,8 +239,6 @@ namespace Quantum\Tests\Libraries\Database\Sleekdb\Statements {
 
             $this->assertIsArray($users);
 
-            // $this->assertArrayHasKey('professions', $users[0]);
-
             $this->assertIsArray($users[0]->professions);
 
             $this->assertArrayHasKey('title', $users[0]->professions[0]);
@@ -283,8 +269,6 @@ namespace Quantum\Tests\Libraries\Database\Sleekdb\Statements {
                 ->select('firstname', 'lastname', 'age', 'country', ['professions.title' => 'profession'])
                 ->orderBy('age', 'desc')
                 ->get();
-
-            // $this->assertArrayHasKey('profession', $users[0]);
 
             $this->assertEquals('Writer', $users[0]->profession);
         }
