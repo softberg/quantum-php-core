@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.0
  */
 
 namespace Quantum\Libraries\Database\Sleekdb\Statements;
@@ -33,7 +33,15 @@ trait Result
      */
     public function get(): array
     {
-        return $this->getBuilder()->getQuery()->fetch();
+        $result = array_map(function ($element) {
+            $item = clone $this;
+            $item->data = $element;
+            $item->modifiedFields = $element;
+            $item->isNew = false;
+            return $item;
+        }, $this->getBuilder()->getQuery()->fetch());
+
+        return $result;
     }
 
     /**
@@ -110,7 +118,20 @@ trait Result
      */
     public function asArray(): array
     {
-        return $this->data ?: [];
+        $result = $this->data ?: [];
+
+        if (count($this->hidden) > 0 && count($result)) {
+            $result = $this->setHidden($result);
+        }
+
+        return $result;
     }
 
+    /**
+     * @inheritDoc
+     */
+    public function setHidden($result)
+    {
+        return array_diff_key($result, array_flip($this->hidden));
+    }
 }

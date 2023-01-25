@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.6.0
+ * @since 2.9.0
  */
 
 namespace Quantum\Libraries\Database;
@@ -22,6 +22,16 @@ use Quantum\Mvc\QtModel;
  */
 interface DbalInterface
 {
+
+    /**
+     * Type array
+     */
+    const TYPE_ARRAY = 1;
+
+    /**
+     * Type object
+     */
+    const TYPE_OBJECT = 2;
 
     /**
      * Connects to database
@@ -193,5 +203,4 @@ interface DbalInterface
      * @return DbalInterface
      */
     public function joinThrough(QtModel $model, bool $switch = true): DbalInterface;
-
 }

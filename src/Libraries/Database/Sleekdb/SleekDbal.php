@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Quantum PHP Framework
  *
@@ -8,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.0
  */
 
 namespace Quantum\Libraries\Database\Sleekdb;
@@ -120,6 +121,12 @@ class SleekDbal implements DbalInterface
     private $foreignKeys = [];
 
     /**
+     * Hidden fields
+     * @var array
+     */
+    public $hidden = [];
+
+    /**
      * ORM Model
      * @var object|null
      */
@@ -155,11 +162,16 @@ class SleekDbal implements DbalInterface
      * @param string $idColumn
      * @param array $foreignKeys
      */
-    public function __construct(string $table, string $idColumn = 'id', array $foreignKeys = [])
+    public function __construct(string $table, string $idColumn = 'id', array $foreignKeys = [], array $hidden = [])
     {
         $this->table = $table;
         $this->idColumn = $idColumn;
         $this->foreignKeys = $foreignKeys;
+        $this->hidden = $hidden;
+    }
+
+    public function __get($key) {
+        return isset($this->data[$key]) ? $this->data[$key] : null;
     }
 
     /**

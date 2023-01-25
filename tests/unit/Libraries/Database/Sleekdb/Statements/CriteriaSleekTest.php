@@ -68,9 +68,9 @@ class CriteriaSleekTest extends SleekDbalTestCase
 
         $this->assertCount(2, $users);
 
-        $this->assertEquals('John', $users[0]['firstname']);
+        $this->assertEquals('John', $users[0]->firstname);
 
-        $this->assertEquals('Jane', $users[1]['firstname']);
+        $this->assertEquals('Jane', $users[1]->firstname);
 
         $this->userModel = new SleekDbal('users');
 
@@ -78,7 +78,7 @@ class CriteriaSleekTest extends SleekDbalTestCase
 
         $this->assertCount(1, $users);
 
-        $this->assertEquals('Jane', $users[0]['firstname']);
+        $this->assertEquals('Jane', $users[0]->firstname);
     }
 
     public function testSleekCriteriaLikeAndNotLike()
@@ -89,7 +89,7 @@ class CriteriaSleekTest extends SleekDbalTestCase
 
         $this->assertCount(1, $users);
 
-        $this->assertEquals('John', $users[0]['firstname']);
+        $this->assertEquals('John', $users[0]->firstname);
 
         $this->userModel = new SleekDbal('users');
 
@@ -97,7 +97,7 @@ class CriteriaSleekTest extends SleekDbalTestCase
 
         $this->assertCount(2, $users);
 
-        $this->assertEquals('Jane', $users[1]['firstname']);
+        $this->assertEquals('Jane', $users[1]->firstname);
 
         $this->userModel = new SleekDbal('users');
 
@@ -105,7 +105,7 @@ class CriteriaSleekTest extends SleekDbalTestCase
 
         $this->assertCount(1, $users);
 
-        $this->assertEquals('Jane', $users[0]['firstname']);
+        $this->assertEquals('Jane', $users[0]->firstname);
     }
 
     public function testSleekCriteriaBetweenAndNotBetween()
@@ -116,7 +116,7 @@ class CriteriaSleekTest extends SleekDbalTestCase
 
         $this->assertCount(1, $users);
 
-        $this->assertEquals('Jane', $users[0]['firstname']);
+        $this->assertEquals('Jane', $users[0]->firstname);
 
         $this->userModel = new SleekDbal('users');
 
@@ -124,7 +124,7 @@ class CriteriaSleekTest extends SleekDbalTestCase
 
         $this->assertCount(1, $users);
 
-        $this->assertEquals('John', $users[0]['firstname']);
+        $this->assertEquals('John', $users[0]->firstname);
     }
 
     public function testSleekMultipleAndCriterias()
@@ -138,9 +138,9 @@ class CriteriaSleekTest extends SleekDbalTestCase
 
         $this->assertIsArray($events);
 
-        $this->assertEquals('Music', $events[0]['title']);
+        $this->assertEquals('Music', $events[0]->title);
 
-        $this->assertGreaterThan('2020-12-01', $events[0]['started_at']);
+        $this->assertGreaterThan('2020-12-01', $events[0]->started_at);
 
     }
 

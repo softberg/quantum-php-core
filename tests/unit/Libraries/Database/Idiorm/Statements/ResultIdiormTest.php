@@ -16,12 +16,6 @@ class ResultIdiormTest extends IdiormDbalTestCase
 
         $this->assertIsArray($users);
 
-        $this->assertEquals('John', $users[0]['firstname']);
-
-        $this->assertEquals('Jane', $users[1]['firstname']);
-
-        $users = $userModel->get(2);
-
         $this->assertEquals('John', $users[0]->firstname);
 
         $this->assertEquals('Jane', $users[1]->firstname);

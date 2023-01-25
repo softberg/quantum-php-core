@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.0
  */
 
 namespace Quantum\Libraries\Database\Idiorm\Statements;
@@ -28,12 +28,9 @@ trait Result
      * @inheritDoc
      * @throws DatabaseException
      */
-    public function get(?int $returnType = self::TYPE_ARRAY)
+    public function get()
     {
-        return ($returnType == self::TYPE_OBJECT) ?
-            $this->getOrmModel()->find_many()
-            :
-            $this->getOrmModel()->find_array();
+        return $this->getOrmModel()->find_many();
     }
 
     /**
@@ -94,7 +91,20 @@ trait Result
      */
     public function asArray(): array
     {
-        return $this->getOrmModel()->as_array();
+        $result = $this->getOrmModel()->as_array();
+
+        if (count($this->hidden) > 0) {
+            $result = $this->setHidden($result);
+        }
+
+        return $result;
     }
 
+    /**
+     * @inheritDoc
+     */
+    public function setHidden($result)
+    {
+        return array_diff_key($result, array_flip($this->hidden));
+    }
 }

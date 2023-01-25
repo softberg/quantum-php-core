@@ -16,10 +16,9 @@ class ResultSleekTest extends SleekDbalTestCase
 
         $this->assertIsArray($users);
 
-        $this->assertArrayHasKey('firstname', $users[0]);
+        $this->assertEquals('John', $users[0]->firstname);
 
-        $this->assertArrayHasKey('firstname', $users[1]);
-
+        $this->assertEquals('Jane', $users[1]->firstname);
     }
 
     public function testSleekFindOne()
@@ -88,5 +87,4 @@ class ResultSleekTest extends SleekDbalTestCase
 
         $this->assertIsArray($user->asArray());
     }
-
 }

@@ -107,14 +107,10 @@ namespace Quantum\Tests\Libraries\Database\Sleekdb\Statements {
                 ->get();
 
             $this->assertIsArray($users);
+            
+            $this->assertIsArray($users[0]->professions);
 
-            $this->assertArrayHasKey('professions', $users[0]);
-
-            $this->assertIsArray($users[0]['professions']);
-
-            $this->assertArrayHasKey('meetings', $users[0]);
-
-            $this->assertIsArray($users[0]['meetings']);
+            $this->assertIsArray($users[0]->meetings);
         }
 
         public function testSleekNestedLevelJoinTo()
@@ -137,11 +133,9 @@ namespace Quantum\Tests\Libraries\Database\Sleekdb\Statements {
 
             $this->assertCount(2, $users);
 
-            $this->assertArrayHasKey('meetings', $users[0]);
+            $this->assertArrayHasKey('tickets', $users[0]->meetings[0]);
 
-            $this->assertArrayHasKey('tickets', $users[0]['meetings'][0]);
-
-            $this->assertArrayHasKey('notes', $users[0]['meetings'][0]['tickets'][0]);
+            $this->assertArrayHasKey('notes', $users[0]->meetings[0]['tickets'][0]);
         }
 
         public function testSleekMixedLevelJoinToWithCriteria()
@@ -165,21 +159,17 @@ namespace Quantum\Tests\Libraries\Database\Sleekdb\Statements {
 
             $this->assertCount(1, $users);
 
-            $this->assertEquals('Jane', $users[0]['firstname']);
+            $this->assertEquals('Jane', $users[0]->firstname);
 
-            $this->assertArrayHasKey('professions', $users[0]);
+            $this->assertIsArray($users[0]->professions);
 
-            $this->assertIsArray($users[0]['professions']);
+            $this->assertIsArray($users[0]->meetings[0]);
 
-            $this->assertArrayHasKey('meetings', $users[0]);
+            $this->assertEquals('Marketing', $users[0]->meetings[0]['title']);
 
-            $this->assertIsArray($users[0]['meetings'][0]);
+            $this->assertArrayHasKey('tickets', $users[0]->meetings[0]);
 
-            $this->assertEquals('Marketing', $users[0]['meetings'][0]['title']);
-
-            $this->assertArrayHasKey('tickets', $users[0]['meetings'][0]);
-
-            $this->assertIsArray($users[0]['meetings'][0]['tickets']);
+            $this->assertIsArray($users[0]->meetings[0]['tickets']);
         }
 
         public function testSleekJoinToAndThrough()
@@ -198,17 +188,15 @@ namespace Quantum\Tests\Libraries\Database\Sleekdb\Statements {
 
             $this->assertIsArray($users);
 
-            $this->assertArrayHasKey('user_events', $users[0]);
+            $this->assertIsArray($users[0]->user_events);
 
-            $this->assertIsArray($users[0]['user_events']);
+            $this->assertArrayHasKey('confirmed', $users[0]->user_events[0]);
 
-            $this->assertArrayHasKey('confirmed', $users[0]['user_events'][0]);
+            $this->assertArrayHasKey('events', $users[0]->user_events[0]);
 
-            $this->assertArrayHasKey('events', $users[0]['user_events'][0]);
+            $this->assertIsArray($users[0]->user_events[0]['events']);
 
-            $this->assertIsArray($users[0]['user_events'][0]['events']);
-
-            $this->assertArrayHasKey('title', $users[0]['user_events'][0]['events'][0]);
+            $this->assertArrayHasKey('title', $users[0]->user_events[0]['events'][0]);
         }
 
         public function testSleekJoinThroughInverse()
@@ -251,13 +239,11 @@ namespace Quantum\Tests\Libraries\Database\Sleekdb\Statements {
 
             $this->assertIsArray($users);
 
-            $this->assertArrayHasKey('professions', $users[0]);
+            $this->assertIsArray($users[0]->professions);
 
-            $this->assertIsArray($users[0]['professions']);
+            $this->assertArrayHasKey('title', $users[0]->professions[0]);
 
-            $this->assertArrayHasKey('title', $users[0]['professions'][0]);
-
-            $this->assertEquals('Singer', $users[0]['professions'][0]['title']);
+            $this->assertEquals('Singer', $users[0]->professions[0]['title']);
         }
 
         public function testSleekWrongRelation()
@@ -284,9 +270,7 @@ namespace Quantum\Tests\Libraries\Database\Sleekdb\Statements {
                 ->orderBy('age', 'desc')
                 ->get();
 
-            $this->assertArrayHasKey('profession', $users[0]);
-
-            $this->assertEquals('Writer', $users[0]['profession']);
+            $this->assertEquals('Writer', $users[0]->profession);
         }
     }
 

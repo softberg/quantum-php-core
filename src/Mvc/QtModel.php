@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.6.0
+ * @since 2.9.0
  */
 
 namespace Quantum\Mvc;
@@ -65,6 +65,12 @@ abstract class QtModel
      * @var array
      */
     protected $fillable = [];
+
+    /**
+     * Models hidden properties
+     * @var array
+     */
+    public $hidden = [];
 
     /**
      * ORM database abstract layer object
@@ -166,8 +172,8 @@ abstract class QtModel
         return [
             'table',
             'idColumn',
-            'foreignKeys'
+            'foreignKeys',
+            'hidden'
         ];
     }
-
 }
