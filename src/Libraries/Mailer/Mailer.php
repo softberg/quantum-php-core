@@ -114,28 +114,32 @@ class Mailer
     private $htmlContent = null;
 
     /**
+     * mailerAdapter
+     * @var mixed
+     */
+    private $mailerAdapter;
+
+    /**
      * Mailer constructor.
      */
-    public function __construct()
+    public function __construct(MailerInterface $mailerAdapter)
     {
         if (!config()->has('mailer') || !config()->has('mailer.current')) {
             config()->import(new Setup('config', 'mailer'));
         }
 
-        if (config()->get('mailer')['current'] === 'default') {
-            $this->mailer = new PHPMailer(true);
-            $this->mailer->CharSet = 'UTF-8';
-            if (config()->has('mailer.default.mail_host')) {
-                $this->setupSmtp();
-                $this->setupDebugging();
-            } else {
-                $this->mailer->isMail();
-            }
-            $this->mailer->AllowEmpty = true;
-            $this->mailer->isHTML(true);
-        } elseif (config()->get('mailer')['current'] == 'sendinblue') {
-            $this->api_key = config()->get('mailer')['sendinblue']['api_key'];
+
+        $this->mailer = new PHPMailer(true);
+        $this->mailer->CharSet = 'UTF-8';
+        if (config()->has('mailer.default.mail_host')) {
+            $this->setupSmtp();
+            $this->setupDebugging();
+        } else {
+            $this->mailer->isMail();
         }
+        $this->mailer->AllowEmpty = true;
+        $this->mailer->isHTML(true);
+        $this->mailerAdapter = $mailerAdapter;
     }
 
     /**
@@ -391,23 +395,18 @@ class Mailer
         }
 
         $this->setOptions($options);
-        if (config()->get('mailer')['current'] == 'default') {
+
+        if (config()->get('mailer.current') == 'smtp') {
             $this->prepare();
 
-            if (config()->get('mailer')['default']['mail_trap']) {
+            if (config()->get('mailer.mail_trap')) {
                 $sent = $this->mailer->preSend();
                 $this->saveMessage($this->mailer->getLastMessageID(), $this->mailer->getSentMIMEMessage());
                 return $sent;
             } else {
                 return $this->mailer->send();
             }
-        } else if (config()->get('mailer')['current'] == 'sendinblue') {
-            $config = Configuration::getDefaultConfiguration()->setApiKey('api-key', $this->api_key);
-            $client = new TransactionalEmailsApi(
-                new Client(),
-                $config
-            );
-
+        } else if (config()->get('mailer.current') == 'sendinblue') {
             if ($this->message) {
                 if ($this->templatePath) {
                     $body = $this->createFromTemplate();
@@ -418,18 +417,14 @@ class Mailer
                 $this->htmlContent = $body;
             }
 
-            $sendSmtpEmail = new SendSmtpEmail();
-            $sendSmtpEmail['subject'] = $this->subject;
-            $sendSmtpEmail['htmlContent'] = $this->htmlContent;
-            $sendSmtpEmail['sender'] = $this->from;
-            $sendSmtpEmail['to'] = $this->addresses;
+            $data = '{  
+                "sender":' . json_encode($this->from) . ',
+                "to":' . json_encode($this->addresses) . ',
+                "subject":"' . $this->subject . '",
+                "htmlContent":"' . trim(str_replace("\n", "", $this->htmlContent)) . '"
+                }';
 
-            try {
-                $response = $client->sendTransacEmail($sendSmtpEmail);
-                return 'Email sent successfully with ID: ' . $response->getMessageId();
-            } catch (\Exception $e) {
-                return 'Error sending email: ' . $e->getMessage();
-            }
+            return $this->mailerAdapter->sendMail($data);
         }
     }
 
@@ -543,11 +538,11 @@ class Mailer
     {
         $this->mailer->isSMTP();
         $this->mailer->SMTPAuth = true;
-        $this->mailer->Host = config()->get('mailer')['default']['mail_host'];
-        $this->mailer->SMTPSecure = config()->get('mailer')['default']['mail_secure'];
-        $this->mailer->Port = config()->get('mailer')['default']['mail_port'];
-        $this->mailer->Username = config()->get('mailer')['default']['mail_username'];
-        $this->mailer->Password = config()->get('mailer')['default']['mail_password'];
+        $this->mailer->Host = config()->get('mailer.default.mail_host');
+        $this->mailer->SMTPSecure = config()->get('mailer.default.mail_secure');
+        $this->mailer->Port = config()->get('mailer.default.mail_port');
+        $this->mailer->Username = config()->get('mailer.default.mail_username');
+        $this->mailer->Password = config()->get('mailer.default.mail_password');
     }
 
     /**
