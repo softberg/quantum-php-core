@@ -40,14 +40,23 @@ class AuthManager
     public static function getHandler()
     {
         self::loadConfigs();
-            
+
+        if (!config()->has('mailer') || !config()->has('mailer.current')) {
+            config()->import(new Setup('config', 'mailer'));
+        }
+
+        $mailerAdaterClassName = ucfirst(config()->get('mailer.current')) . 'Adapter';
+        $mailerAdaterClass = '\\Quantum\\Libraries\\Mailer\\Adapters\\' . $mailerAdaterClassName;
+
+        $mailerAdapter = new $mailerAdaterClass();
+
         switch (config()->get('auth.type')) {
             case 'web':
-                return WebAuth::getInstance(self::getAuthService(), new Mailer, new Hasher);
+                return WebAuth::getInstance(self::getAuthService(), new Mailer($mailerAdapter), new Hasher);
             case 'api':
                 $jwt = (new JWToken())->setLeeway(1)->setClaims((array) config()->get('auth.claims'));
-                return ApiAuth::getInstance(self::getAuthService(), new Mailer, new Hasher, $jwt);
-            default :
+                return ApiAuth::getInstance(self::getAuthService(), new Mailer($mailerAdapter), new Hasher, $jwt);
+            default:
                 AuthException::undefinedAuthType();
         }
     }
@@ -72,5 +81,4 @@ class AuthManager
             throw AuthException::misconfiguredAuthConfig();
         }
     }
-
 }

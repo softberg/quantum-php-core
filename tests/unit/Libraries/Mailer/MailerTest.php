@@ -4,6 +4,7 @@ namespace Quantum\Tests\Libraries\Mailer;
 
 use Quantum\Libraries\Mailer\Mailer;
 use Quantum\Tests\AppTestCase;
+use Quantum\Loader\Setup;
 
 class MailerTest extends AppTestCase
 {
@@ -14,7 +15,17 @@ class MailerTest extends AppTestCase
     {
         parent::setUp();
 
-        $this->mailer = new Mailer();
+        if (!config()->has('mailer') || !config()->has('mailer.current')) {
+            config()->import(new Setup('config', 'mailer'));
+        }
+
+        $mailerAdaterClassName = ucfirst(config()->get('mailer.current')) . 'Adapter';
+
+        $mailerAdaterClass = '\\Quantum\\Libraries\\Mailer\\Adapters\\' . $mailerAdaterClassName;
+
+        $mailerAdapter = new $mailerAdaterClass();
+
+        $this->mailer = new Mailer($mailerAdapter);
     }
 
     public function testMailerConstructor()
@@ -203,5 +214,4 @@ class MailerTest extends AppTestCase
 
         $this->assertTrue($this->mailer->send($from, $to, $message, $options));
     }
-
 }

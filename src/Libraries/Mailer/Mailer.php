@@ -9,16 +9,21 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.0
  */
 
 namespace Quantum\Libraries\Mailer;
 
-use PHPMailer\PHPMailer\PHPMailer;
+use SendinBlue\Client\Api\TransactionalEmailsApi;
+use SendinBlue\Client\Model\SendSmtpEmail;
 use Quantum\Libraries\Storage\FileSystem;
+use SendinBlue\Client\Configuration;
+use PHPMailer\PHPMailer\PHPMailer;
 use Quantum\Debugger\Debugger;
 use Quantum\Logger\FileLogger;
 use PHPMailer\PHPMailer\SMTP;
+use Quantum\Loader\Setup;
+use GuzzleHttp\Client;
 use Psr\Log\LogLevel;
 use Quantum\Di\Di;
 
@@ -97,22 +102,44 @@ class Mailer
     private $templatePath;
 
     /**
+     * Sendinblue api key
+     * @var string | null
+     */
+    private $api_key = null;
+
+    /**
+     * Html message content
+     * @var string | null
+     */
+    private $htmlContent = null;
+
+    /**
+     * mailerAdapter
+     * @var mixed
+     */
+    private $mailerAdapter;
+
+    /**
      * Mailer constructor.
      */
-    public function __construct()
+    public function __construct(MailerInterface $mailerAdapter)
     {
+        if (!config()->has('mailer') || !config()->has('mailer.current')) {
+            config()->import(new Setup('config', 'mailer'));
+        }
+
+
         $this->mailer = new PHPMailer(true);
         $this->mailer->CharSet = 'UTF-8';
-
-        if (config()->has('mail_host')) {
+        if (config()->has('mailer.default.mail_host')) {
             $this->setupSmtp();
             $this->setupDebugging();
         } else {
             $this->mailer->isMail();
         }
-
         $this->mailer->AllowEmpty = true;
         $this->mailer->isHTML(true);
+        $this->mailerAdapter = $mailerAdapter;
     }
 
     /**
@@ -369,14 +396,35 @@ class Mailer
 
         $this->setOptions($options);
 
-        $this->prepare();
+        if (config()->get('mailer.current') == 'smtp') {
+            $this->prepare();
 
-        if (config()->get('mail_trap')) {
-            $sent = $this->mailer->preSend();
-            $this->saveMessage($this->mailer->getLastMessageID(), $this->mailer->getSentMIMEMessage());
-            return $sent;
-        } else {
-            return $this->mailer->send();
+            if (config()->get('mailer.mail_trap')) {
+                $sent = $this->mailer->preSend();
+                $this->saveMessage($this->mailer->getLastMessageID(), $this->mailer->getSentMIMEMessage());
+                return $sent;
+            } else {
+                return $this->mailer->send();
+            }
+        } else if (config()->get('mailer.current') == 'sendinblue') {
+            if ($this->message) {
+                if ($this->templatePath) {
+                    $body = $this->createFromTemplate();
+                } else {
+                    $body = is_array($this->message) ? implode($this->message) : $this->message;
+                }
+
+                $this->htmlContent = $body;
+            }
+
+            $data = '{  
+                "sender":' . json_encode($this->from) . ',
+                "to":' . json_encode($this->addresses) . ',
+                "subject":"' . $this->subject . '",
+                "htmlContent":"' . trim(str_replace("\n", "", $this->htmlContent)) . '"
+                }';
+
+            return $this->mailerAdapter->sendMail($data);
         }
     }
 
@@ -490,11 +538,11 @@ class Mailer
     {
         $this->mailer->isSMTP();
         $this->mailer->SMTPAuth = true;
-        $this->mailer->Host = config()->get('mail_host');
-        $this->mailer->SMTPSecure = config()->get('mail_secure');
-        $this->mailer->Port = config()->get('mail_port');
-        $this->mailer->Username = config()->get('mail_username');
-        $this->mailer->Password = config()->get('mail_password');
+        $this->mailer->Host = config()->get('mailer.default.mail_host');
+        $this->mailer->SMTPSecure = config()->get('mailer.default.mail_secure');
+        $this->mailer->Port = config()->get('mailer.default.mail_port');
+        $this->mailer->Username = config()->get('mailer.default.mail_username');
+        $this->mailer->Password = config()->get('mailer.default.mail_password');
     }
 
     /**
@@ -535,5 +583,4 @@ class Mailer
 
         return ob_get_clean();
     }
-
 }
