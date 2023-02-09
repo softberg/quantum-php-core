@@ -368,7 +368,7 @@ class HelperTest extends AppTestCase
     {
         $this->request->create('PUT', '/update', ['title' => 'Task Title', 'csrf-token' => csrf_token()]);
 
-        $this->assertTrue(csrf()->checkToken(csrf_token()));
+        $this->assertTrue(csrf()->checkToken($this->request));
     }
 
     public function testMessageHelper()

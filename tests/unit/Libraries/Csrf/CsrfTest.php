@@ -46,7 +46,7 @@ class CsrfTest extends AppTestCase
             'csrf-token' => $token
         ]);
 
-        $this->assertTrue($this->csrf->checkToken($this->request->getCsrfToken()));
+        $this->assertTrue($this->csrf->checkToken($this->request));
     }
 
     public function testCheckTokenMissing()
@@ -59,7 +59,7 @@ class CsrfTest extends AppTestCase
 
         $this->expectExceptionMessage('csrf_token_not_found');
 
-        $this->assertTrue($this->csrf->checkToken($this->request->getCsrfToken()));
+        $this->assertTrue($this->csrf->checkToken($this->request));
     }
 
     public function testCheckTokenMismatch()
@@ -76,7 +76,7 @@ class CsrfTest extends AppTestCase
 
         $this->expectExceptionMessage('csrf_token_not_matched');
 
-        $this->assertTrue($this->csrf->checkToken($this->request->getCsrfToken()));
+        $this->assertTrue($this->csrf->checkToken($this->request));
     }
 
 }
