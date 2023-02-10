@@ -108,7 +108,7 @@ class Csrf
      */
     public function checkToken(?Request $request): bool
     {
-        if (!$request->has('csrf-token')) {
+        if (!$request->has(self::TOKEN_KEY)) {
             throw CsrfException::tokenNotFound();
         }
 
@@ -117,8 +117,8 @@ class Csrf
         }
 
         $this->storage->delete(self::TOKEN_KEY);
-        $request->delete('csrf-token');
-        $request->deleteHeader('X-csrf-token');
+        $request->delete(self::TOKEN_KEY);
+        $request->deleteHeader('X-' . self::TOKEN_KEY);
 
         return true;
     }
