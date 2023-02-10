@@ -18,11 +18,12 @@ use Quantum\Exceptions\DatabaseException;
 use Quantum\Exceptions\CryptorException;
 use Quantum\Exceptions\SessionException;
 use Quantum\Exceptions\ConfigException;
+use Quantum\Libraries\Session\Session;
 use Quantum\Exceptions\CsrfException;
 use Quantum\Exceptions\LangException;
-use Quantum\Exceptions\DiException;
-use Quantum\Libraries\Session\Session;
 use Quantum\Libraries\Hasher\Hasher;
+use Quantum\Exceptions\DiException;
+use Quantum\Http\Request;
 use ReflectionException;
 
 /**
@@ -105,17 +106,19 @@ class Csrf
      * @throws CryptorException
      * @throws CsrfException
      */
-    public function checkToken(?string $token): bool
+    public function checkToken(?Request $request): bool
     {
-        if (!$token) {
+        if (!$request->has(self::TOKEN_KEY)) {
             throw CsrfException::tokenNotFound();
         }
 
-        if ($this->storage->get(self::TOKEN_KEY) !== $token) {
+        if ($this->storage->get(self::TOKEN_KEY) !== $request->getCsrfToken()) {
             throw CsrfException::tokenNotMatched();
         }
 
         $this->storage->delete(self::TOKEN_KEY);
+        $request->delete(self::TOKEN_KEY);
+        $request->deleteHeader('X-' . self::TOKEN_KEY);
 
         return true;
     }
