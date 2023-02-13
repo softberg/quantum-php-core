@@ -399,14 +399,14 @@ class Mailer
         if (config()->get('mailer.current') == 'smtp') {
             $this->prepare();
 
-            if (config()->get('mailer.mail_trap')) {
+            if (config()->get('mailer.smtp.mail_trap')) {
                 $sent = $this->mailer->preSend();
                 $this->saveMessage($this->mailer->getLastMessageID(), $this->mailer->getSentMIMEMessage());
                 return $sent;
             } else {
                 return $this->mailer->send();
             }
-        } else if (config()->get('mailer.current') == 'sendinblue') {
+        } else {
             if ($this->message) {
                 if ($this->templatePath) {
                     $body = $this->createFromTemplate();
@@ -416,14 +416,21 @@ class Mailer
 
                 $this->htmlContent = $body;
             }
-
-            $data = '{  
-                "sender":' . json_encode($this->from) . ',
-                "to":' . json_encode($this->addresses) . ',
-                "subject":"' . $this->subject . '",
-                "htmlContent":"' . trim(str_replace("\n", "", $this->htmlContent)) . '"
+            if (config()->get('mailer.current') == 'sendinblue') {
+                $data = '{  
+                    "sender":' . json_encode($this->from) . ',
+                    "to":' . json_encode($this->addresses) . ',
+                    "subject":"' . $this->subject . '",
+                    "htmlContent":"' . trim(str_replace("\n", "", $this->htmlContent)) . '"
                 }';
-
+            } else if (config()->get('mailer.current') == 'mailgun') {
+                $data = [
+                    "from" => $this->from['name'] . " " . $this->from['email'],
+                    "to" => $this->addresses[0]['name'] . " wisome4381@iucake.com",
+                    "subject" => $this->subject,
+                    "html" => trim(str_replace("\n", "", $this->htmlContent))
+                ];
+            }
             return $this->mailerAdapter->sendMail($data);
         }
     }
