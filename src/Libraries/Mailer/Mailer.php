@@ -14,16 +14,12 @@
 
 namespace Quantum\Libraries\Mailer;
 
-use SendinBlue\Client\Api\TransactionalEmailsApi;
-use SendinBlue\Client\Model\SendSmtpEmail;
 use Quantum\Libraries\Storage\FileSystem;
-use SendinBlue\Client\Configuration;
 use PHPMailer\PHPMailer\PHPMailer;
 use Quantum\Debugger\Debugger;
 use Quantum\Logger\FileLogger;
 use PHPMailer\PHPMailer\SMTP;
 use Quantum\Loader\Setup;
-use GuzzleHttp\Client;
 use Psr\Log\LogLevel;
 use Quantum\Di\Di;
 
@@ -82,6 +78,12 @@ class Mailer
      * @var string|array
      */
     private $message = null;
+
+    /**
+     * Email data
+     * @var string|array
+     */
+    private $data = null;
 
     /**
      * Email attachments
@@ -416,22 +418,38 @@ class Mailer
 
                 $this->htmlContent = $body;
             }
+
             if (config()->get('mailer.current') == 'sendinblue') {
-                $data = '{  
+                $this->data = '{  
                     "sender":' . json_encode($this->from) . ',
                     "to":' . json_encode($this->addresses) . ',
                     "subject":"' . $this->subject . '",
                     "htmlContent":"' . trim(str_replace("\n", "", $this->htmlContent)) . '"
-                }';
+                    }';
             } else if (config()->get('mailer.current') == 'mailgun') {
-                $data = [
+                $to = [];
+                foreach ($this->addresses as $key => $value) {
+                    array_push($to, $value['email']);
+                }
+
+                $this->data = [
                     "from" => $this->from['name'] . " " . $this->from['email'],
-                    "to" => $this->addresses[0]['name'] . " wisome4381@iucake.com",
+                    "to" => implode(',', $to),
                     "subject" => $this->subject,
                     "html" => trim(str_replace("\n", "", $this->htmlContent))
                 ];
+            } else if (config()->get('mailer.current') == 'mandrill') {
+                $this->data = [
+                    'message' => [
+                        'subject' => $this->subject,
+                        'html' => trim(str_replace("\n", "", $this->htmlContent)),
+                        'from_email' => $this->from['email'],
+                        'from_name' => $this->from['name'],
+                        'to' => $this->addresses,
+                    ]
+                ];
             }
-            return $this->mailerAdapter->sendMail($data);
+            return $this->mailerAdapter->sendMail($this->data);
         }
     }
 

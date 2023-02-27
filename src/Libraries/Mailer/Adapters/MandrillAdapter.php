@@ -17,26 +17,25 @@ namespace Quantum\Libraries\Mailer\Adapters;
 use Quantum\Libraries\Mailer\MailerInterface;
 use Quantum\Libraries\Curl\HttpClient;
 
-class MailgunAdapter implements MailerInterface
+class MandrillAdapter implements MailerInterface
 {
     /**
-     * Send mail by using Mailgun
+     * Send mail by using Mandrill
      * @param  string $data
      * @return bool
      */
     public function sendMail($data)
     {
         try {
+            $data["key"] = config()->get('mailer.mandrill.api_key');
+
             $httpClient = new HttpClient();
             $httpClient->createMultiRequest()
-                ->createRequest('https://api.mailgun.net/v3/' . config()->get('mailer.mailgun.domain') . '/messages')
-                ->setMethod('POST')
-                ->setHeaders([
-                    "Authorization" => "Basic " . base64_encode("api:" . config()->get('mailer.mailgun.api_key')),
-                    "Content-Type" => "application/x-www-form-urlencoded"
-                ])
+                ->createRequest("https://mandrillapp.com/api/1.0/messages/send.json")
+                ->setMethod("POST")
                 ->setData($data)
                 ->start();
+
             return true;
         } catch (\Exception $e) {
             return false;
