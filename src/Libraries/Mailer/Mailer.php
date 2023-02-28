@@ -398,59 +398,54 @@ class Mailer
 
         $this->setOptions($options);
 
-        if (config()->get('mailer.current') == 'smtp') {
-            $this->prepare();
-
-            if (config()->get('mailer.smtp.mail_trap')) {
-                $sent = $this->mailer->preSend();
-                $this->saveMessage($this->mailer->getLastMessageID(), $this->mailer->getSentMIMEMessage());
-                return $sent;
+        $this->prepare();
+        if ($this->message) {
+            if ($this->templatePath) {
+                $body = $this->createFromTemplate();
             } else {
-                return $this->mailer->send();
-            }
-        } else {
-            if ($this->message) {
-                if ($this->templatePath) {
-                    $body = $this->createFromTemplate();
-                } else {
-                    $body = is_array($this->message) ? implode($this->message) : $this->message;
-                }
-
-                $this->htmlContent = $body;
+                $body = is_array($this->message) ? implode($this->message) : $this->message;
             }
 
-            if (config()->get('mailer.current') == 'sendinblue') {
-                $this->data = '{  
-                    "sender":' . json_encode($this->from) . ',
-                    "to":' . json_encode($this->addresses) . ',
-                    "subject":"' . $this->subject . '",
-                    "htmlContent":"' . trim(str_replace("\n", "", $this->htmlContent)) . '"
-                    }';
-            } else if (config()->get('mailer.current') == 'mailgun') {
-                $to = [];
-                foreach ($this->addresses as $key => $value) {
-                    array_push($to, $value['email']);
-                }
-
-                $this->data = [
-                    "from" => $this->from['name'] . " " . $this->from['email'],
-                    "to" => implode(',', $to),
-                    "subject" => $this->subject,
-                    "html" => trim(str_replace("\n", "", $this->htmlContent))
-                ];
-            } else if (config()->get('mailer.current') == 'mandrill') {
-                $this->data = [
-                    'message' => [
-                        'subject' => $this->subject,
-                        'html' => trim(str_replace("\n", "", $this->htmlContent)),
-                        'from_email' => $this->from['email'],
-                        'from_name' => $this->from['name'],
-                        'to' => $this->addresses,
-                    ]
-                ];
-            }
-            return $this->mailerAdapter->sendMail($this->data);
+            $this->htmlContent = $body;
         }
+        if (config()->get('mailer.mail_trap')) {
+            $sent = $this->mailer->preSend();
+            $this->saveMessage($this->mailer->getLastMessageID(), $this->mailer->getSentMIMEMessage());
+            return $sent;
+        }
+        if (config()->get('mailer.current') == 'smtp') {
+            return $this->mailer->send();
+        } else if (config()->get('mailer.current') == 'sendinblue') {
+            $this->data = '{  
+                "sender":' . json_encode($this->from) . ',
+                "to":' . json_encode($this->addresses) . ',
+                "subject":"' . $this->subject . '",
+                "htmlContent":"' . trim(str_replace("\n", "", $this->htmlContent)) . '"
+                }';
+        } else if (config()->get('mailer.current') == 'mailgun') {
+            $to = [];
+            foreach ($this->addresses as $key => $value) {
+                array_push($to, $value['email']);
+            }
+
+            $this->data = [
+                "from" => $this->from['name'] . " " . $this->from['email'],
+                "to" => implode(',', $to),
+                "subject" => $this->subject,
+                "html" => trim(str_replace("\n", "", $this->htmlContent))
+            ];
+        } else if (config()->get('mailer.current') == 'mandrill') {
+            $this->data = [
+                'message' => [
+                    'subject' => $this->subject,
+                    'html' => trim(str_replace("\n", "", $this->htmlContent)),
+                    'from_email' => $this->from['email'],
+                    'from_name' => $this->from['name'],
+                    'to' => $this->addresses,
+                ]
+            ];
+        }
+        return $this->mailerAdapter->sendMail($this->data);
     }
 
     /**
