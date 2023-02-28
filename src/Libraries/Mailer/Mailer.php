@@ -444,6 +444,22 @@ class Mailer
                     'to' => $this->addresses,
                 ]
             ];
+        } else if (config()->get('mailer.current') == 'sendgrid') {
+            $this->data = [
+                'personalizations' => [
+                    ['to' => $this->addresses]
+                ],
+                'from' => [
+                    'email' => $this->from['email']
+                ],
+                'subject' => $this->subject,
+                'content' => [
+                    [
+                        'type' => 'text/html',
+                        'value' => trim(str_replace("\n", "", $this->htmlContent))
+                    ]
+                ]
+            ];
         }
         return $this->mailerAdapter->sendMail($this->data);
     }
