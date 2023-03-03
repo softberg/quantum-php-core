@@ -14,16 +14,12 @@
 
 namespace Quantum\Libraries\Mailer;
 
-use SendinBlue\Client\Api\TransactionalEmailsApi;
-use SendinBlue\Client\Model\SendSmtpEmail;
 use Quantum\Libraries\Storage\FileSystem;
-use SendinBlue\Client\Configuration;
 use PHPMailer\PHPMailer\PHPMailer;
 use Quantum\Debugger\Debugger;
 use Quantum\Logger\FileLogger;
 use PHPMailer\PHPMailer\SMTP;
 use Quantum\Loader\Setup;
-use GuzzleHttp\Client;
 use Psr\Log\LogLevel;
 use Quantum\Di\Di;
 
@@ -82,6 +78,12 @@ class Mailer
      * @var string|array
      */
     private $message = null;
+
+    /**
+     * Email data
+     * @var string|array
+     */
+    private $data = null;
 
     /**
      * Email attachments
@@ -396,36 +398,70 @@ class Mailer
 
         $this->setOptions($options);
 
-        if (config()->get('mailer.current') == 'smtp') {
-            $this->prepare();
-
-            if (config()->get('mailer.mail_trap')) {
-                $sent = $this->mailer->preSend();
-                $this->saveMessage($this->mailer->getLastMessageID(), $this->mailer->getSentMIMEMessage());
-                return $sent;
+        $this->prepare();
+        if ($this->message) {
+            if ($this->templatePath) {
+                $body = $this->createFromTemplate();
             } else {
-                return $this->mailer->send();
+                $body = is_array($this->message) ? implode($this->message) : $this->message;
             }
+
+            $this->htmlContent = $body;
+        }
+        if (config()->get('mailer.mail_trap')) {
+            $sent = $this->mailer->preSend();
+            $this->saveMessage($this->mailer->getLastMessageID(), $this->mailer->getSentMIMEMessage());
+            return $sent;
+        }
+        if (config()->get('mailer.current') == 'smtp') {
+            return $this->mailer->send();
         } else if (config()->get('mailer.current') == 'sendinblue') {
-            if ($this->message) {
-                if ($this->templatePath) {
-                    $body = $this->createFromTemplate();
-                } else {
-                    $body = is_array($this->message) ? implode($this->message) : $this->message;
-                }
-
-                $this->htmlContent = $body;
-            }
-
-            $data = '{  
+            $this->data = '{  
                 "sender":' . json_encode($this->from) . ',
                 "to":' . json_encode($this->addresses) . ',
                 "subject":"' . $this->subject . '",
                 "htmlContent":"' . trim(str_replace("\n", "", $this->htmlContent)) . '"
                 }';
+        } else if (config()->get('mailer.current') == 'mailgun') {
+            $to = [];
+            foreach ($this->addresses as $key => $value) {
+                array_push($to, $value['email']);
+            }
 
-            return $this->mailerAdapter->sendMail($data);
+            $this->data = [
+                "from" => $this->from['name'] . " " . $this->from['email'],
+                "to" => implode(',', $to),
+                "subject" => $this->subject,
+                "html" => trim(str_replace("\n", "", $this->htmlContent))
+            ];
+        } else if (config()->get('mailer.current') == 'mandrill') {
+            $this->data = [
+                'message' => [
+                    'subject' => $this->subject,
+                    'html' => trim(str_replace("\n", "", $this->htmlContent)),
+                    'from_email' => $this->from['email'],
+                    'from_name' => $this->from['name'],
+                    'to' => $this->addresses,
+                ]
+            ];
+        } else if (config()->get('mailer.current') == 'sendgrid') {
+            $this->data = [
+                'personalizations' => [
+                    ['to' => $this->addresses]
+                ],
+                'from' => [
+                    'email' => $this->from['email']
+                ],
+                'subject' => $this->subject,
+                'content' => [
+                    [
+                        'type' => 'text/html',
+                        'value' => trim(str_replace("\n", "", $this->htmlContent))
+                    ]
+                ]
+            ];
         }
+        return $this->mailerAdapter->sendMail($this->data);
     }
 
     /**

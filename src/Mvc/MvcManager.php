@@ -60,7 +60,7 @@ class MvcManager
             $action = self::getAction($controller);
 
             if ($controller->csrfVerification && in_array($request->getMethod(), Csrf::METHODS)) {
-                csrf()->checkToken($request->getCsrfToken());
+                csrf()->checkToken($request);
             }
 
             if (method_exists($controller, '__before')) {
