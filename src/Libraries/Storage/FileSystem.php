@@ -9,12 +9,14 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.0
  */
 
 namespace Quantum\Libraries\Storage;
 
+use Quantum\Libraries\Storage\Adapters\Local\LocalFileSystemAdapter;
 use Quantum\Exceptions\FileSystemException;
+use Quantum\Exceptions\AppException;
 
 /**
  * Class FileSystem
@@ -36,34 +38,31 @@ use Quantum\Exceptions\FileSystemException;
  * @method string extension(string $path)
  * @method bool isReadable(string $filename)
  * @method bool isWritable(string $filename)
+ * @method array|false listDirectory(string $dirname)
  * @method glob(string $pattern, int $flags = 0)
- * @method void require(string $file, bool $once = false)
- * @method void include(string $file, bool $once = false)
+ * @method void require (string $file, bool $once = false)
+ * @method void include (string $file, bool $once = false)
  */
 class FileSystem
 {
 
     /**
-     * @var \Quantum\Libraries\Storage\FilesystemAdapterInterface
+     * @var FilesystemAdapterInterface
      */
     private $adapter;
 
     /**
      * FileSystem constructor
-     * @param \Quantum\Libraries\Storage\FilesystemAdapterInterface|null $filesystemAdapter
+     * @param FilesystemAdapterInterface|null $filesystemAdapter
      */
     public function __construct(FilesystemAdapterInterface $filesystemAdapter = null)
     {
-        if ($filesystemAdapter) {
-            $this->adapter = $filesystemAdapter;
-        } else {
-            $this->adapter = LocalFileSystemAdapter::getInstance();
-        }
+        $this->adapter = $filesystemAdapter ?: LocalFileSystemAdapter::getInstance();
     }
 
     /**
      * Gets the current adapter
-     * @return \Quantum\Libraries\Storage\FilesystemAdapterInterface
+     * @return FilesystemAdapterInterface
      */
     public function getAdapter(): FilesystemAdapterInterface
     {
@@ -74,7 +73,7 @@ class FileSystem
      * @param string $method
      * @param array|null $arguments
      * @return mixed
-     * @throws \Quantum\Exceptions\FileSystemException
+     * @throws AppException
      */
     public function __call(string $method, ?array $arguments)
     {
