@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Quantum PHP Framework
  *
@@ -20,7 +21,7 @@ namespace Quantum\Libraries\Archive;
 interface ArchiveInterface
 {
     /**
-     * Makes a new directory
+     * Makes a new empty directory
      * @param string $archiveName
      * @param string $newDirectory
      * @return bool
@@ -28,7 +29,7 @@ interface ArchiveInterface
     public function addEmptyDir(string $archiveName, string $newDirectory): bool;
 
     /**
-     * Makes a new directory
+     * Makes a new file
      * @param string $archiveName
      * @param string $filePath
      * @param string $newFileName
@@ -37,7 +38,7 @@ interface ArchiveInterface
     public function addFile(string $archiveName, string $filePath, string $newFileName): bool;
 
     /**
-     * Makes a new directory
+     * Makes a new file from string
      * @param string $archiveName
      * @param string $newFileName
      * @param string $newFileContent
@@ -45,48 +46,51 @@ interface ArchiveInterface
      */
     public function addFromString(string $archiveName, string $newFileName, string $newFileContent): bool;
 
-    
+
     /**
-     * Makes a new directory
+     * Delete unsig name
      * @param string $archiveName
      * @param string $fileOrDirName
      * @return bool
      */
     public function deleteUsingName(string $archiveName, string $fileOrDirName): bool;
 
-    
     /**
-     * Makes a new directory
+     * Files count in the archive
+     * @return int
+     */
+    public function count(): int;
+
+    /**
+     * Extract archive
      * @param string $archiveName
      * @param string $pathToExtract
      * @return bool
      */
     public function extractTo(string $archiveName, string $pathToExtract): bool;
 
-    
     /**
-     * Makes a new directory
+     * Rename file using name
      * @param string $archiveName
      * @param string $currentName
      * @param string $newName
      * @return bool
      */
     public function renameUsingName(string $archiveName, string $currentName, string $newName): bool;
-    
+
     /**
-     * Makes a new directory
+     * Makes a multiple files
      * @param string $archiveName
      * @param array $fileNames
      * @return bool
      */
     public function addMultipleFiles(string $archiveName, array $fileNames): bool;
-    
+
     /**
-     * Makes a new directory
+     * Delete a multiple files
      * @param string $archiveName
      * @param array $fileNames
      * @return bool
      */
     public function deleteMultipleFilesUsingName(string $archiveName, array $fileNames): bool;
-
 }

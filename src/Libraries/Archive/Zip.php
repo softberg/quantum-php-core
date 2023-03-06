@@ -45,6 +45,10 @@ class Zip implements ArchiveInterface
     public function addEmptyDir(string $archiveName, string $newDirectory): bool
     {
         if ($this->zipArchive->open($archiveName, ZipArchive::CREATE) === TRUE) {
+            $newDirectory = rtrim($newDirectory, '/') . '/';
+            if ($this->zipArchive->locateName($newDirectory) !== false) {
+                return true;
+            };
             return $this->zipArchive->addEmptyDir($newDirectory);
         } else {
             return false;
@@ -80,7 +84,10 @@ class Zip implements ArchiveInterface
      */
     public function deleteUsingName(string $archiveName, string $fileOrDirName): bool
     {
-        if ($this->zipArchive->open($archiveName) === TRUE && $this->zipArchive->locateName($fileOrDirName)) {
+        if (
+            $this->zipArchive->open($archiveName) === TRUE
+            && $this->zipArchive->locateName($fileOrDirName) !== false
+        ) {
             return $this->zipArchive->deleteName($fileOrDirName);
         } else {
             return false;
@@ -102,6 +109,14 @@ class Zip implements ArchiveInterface
     /**
      * @inheritDoc
      */
+    public function count(): int
+    {
+        return $this->zipArchive->count();
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function renameUsingName(string $archiveName, string $currentName, string $newName): bool
     {
         if ($this->zipArchive->open($archiveName) === TRUE) {
@@ -116,7 +131,7 @@ class Zip implements ArchiveInterface
      */
     public function addMultipleFiles(string $archiveName, array $fileNames): bool
     {
-        if ($this->zipArchive->open($archiveName) === TRUE) {
+        if ($this->zipArchive->open($archiveName, ZipArchive::CREATE) === TRUE) {
             foreach ($fileNames as $fileNmae => $filePath) {
                 if (!$this->zipArchive->addFile($filePath, $fileNmae)) {
                     return false;
@@ -134,7 +149,7 @@ class Zip implements ArchiveInterface
     public function deleteMultipleFilesUsingName(string $archiveName, array $fileNames): bool
     {
         if ($this->zipArchive->open($archiveName) === TRUE) {
-            foreach ($fileNames as $fileOrDirName => $filePath) {
+            foreach ($fileNames as $key => $fileOrDirName) {
                 $this->zipArchive->deleteName($fileOrDirName);
             }
             return true;
