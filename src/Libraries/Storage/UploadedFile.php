@@ -9,14 +9,18 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.6.0
+ * @since 2.9.0
  */
 
-namespace Quantum\Libraries\Upload;
+namespace Quantum\Libraries\Storage;
 
 use Quantum\Exceptions\FileUploadException;
 use Quantum\Exceptions\FileSystemException;
-use Quantum\Libraries\Storage\FileSystem;
+use Quantum\Exceptions\LangException;
+use Quantum\Exceptions\AppException;
+use Quantum\Exceptions\DiException;
+use Gumlet\ImageResizeException;
+use ReflectionException;
 use Gumlet\ImageResize;
 use Quantum\Di\Di;
 use SplFileInfo;
@@ -26,14 +30,20 @@ use finfo;
  * Class File
  * @package Quantum\Libraries\Upload
  */
-class File extends SplFileInfo
+class UploadedFile extends SplFileInfo
 {
 
     /**
-     * File System
-     * @var FileSystem
+     * Local File System
+     * @var FilesystemAdapterInterface
      */
-    protected $fs;
+    protected $localFileSystem;
+
+    /**
+     * Remove File System
+     * @var FilesystemAdapterInterface
+     */
+    protected $remoteFileSystem = null;
 
     /**
      * Original file name provided by client
@@ -63,7 +73,7 @@ class File extends SplFileInfo
      * ImageResize function name
      * @var string
      */
-    protected $funcName = null;
+    protected $imageModifierFuncName = null;
 
     /**
      * ImageResize function arguments
@@ -105,18 +115,18 @@ class File extends SplFileInfo
 
     /**
      * File constructor.
-     * @param array $file
-     * @throws \Quantum\Exceptions\DiException
-     * @throws \ReflectionException
+     * @param array $meta
+     * @throws DiException
+     * @throws ReflectionException
      */
-    public function __construct(array $file)
+    public function __construct(array $meta)
     {
-        $this->fs = Di::get(FileSystem::class);
+        $this->localFileSystem = Di::get(FileSystem::class);
 
-        $this->originalName = $file['name'];
-        $this->errorCode = $file['error'];
+        $this->originalName = $meta['name'];
+        $this->errorCode = $meta['error'];
 
-        parent::__construct($file['tmp_name']);
+        parent::__construct($meta['tmp_name']);
     }
 
     /**
@@ -126,7 +136,7 @@ class File extends SplFileInfo
     public function getName(): string
     {
         if (!$this->name) {
-            $this->name = $this->fs->fileName($this->originalName);
+            $this->name = $this->localFileSystem->fileName($this->originalName);
         }
 
         return $this->name;
@@ -137,10 +147,30 @@ class File extends SplFileInfo
      * @param string $name
      * @return $this
      */
-    public function setName(string $name): File
+    public function setName(string $name): UploadedFile
     {
         $this->name = $name;
         return $this;
+    }
+
+    /**
+     * Sets the remote file system adapter
+     * @param FilesystemAdapterInterface $remoteFileSystem
+     * @return $this
+     */
+    public function setRemoteFileSystem(FilesystemAdapterInterface $remoteFileSystem): UploadedFile
+    {
+        $this->remoteFileSystem = $remoteFileSystem;
+        return $this;
+    }
+
+    /**
+     * Gets the remote file system adapter
+     * @return FilesystemAdapterInterface|null
+     */
+    public function getRemoteFileSystem(): ?FilesystemAdapterInterface
+    {
+        return $this->remoteFileSystem;
     }
 
     /**
@@ -150,7 +180,7 @@ class File extends SplFileInfo
     public function getExtension(): string
     {
         if (!$this->extension) {
-            $this->extension = strtolower($this->fs->extension($this->originalName));
+            $this->extension = strtolower($this->localFileSystem->extension($this->originalName));
         }
 
         return $this->extension;
@@ -172,11 +202,11 @@ class File extends SplFileInfo
     public function getMimeType(): string
     {
         if (!$this->mimetype) {
-            $finfo = new finfo(FILEINFO_MIME);
-            $mimetype = $finfo->file($this->getPathname());
+            $fileInfo = new finfo(FILEINFO_MIME);
+            $mimetype = $fileInfo->file($this->getPathname());
             $mimetypeParts = preg_split('/\s*[;,]\s*/', $mimetype);
             $this->mimetype = strtolower($mimetypeParts[0]);
-            unset($finfo);
+            unset($fileInfo);
         }
 
         return $this->mimetype;
@@ -194,9 +224,15 @@ class File extends SplFileInfo
     /**
      * Get image dimensions
      * @return array
+     * @throws FileUploadException
+     * @throws LangException
      */
     public function getDimensions(): array
     {
+        if (!$this->isImage($this->getPathname())) {
+            throw FileUploadException::fileTypeNotAllowed($this->getExtension());
+        }
+
         list($width, $height) = getimagesize($this->getPathname());
 
         return [
@@ -210,8 +246,10 @@ class File extends SplFileInfo
      * @param string $dest
      * @param bool $overwrite
      * @return bool
-     * @throws \Gumlet\ImageResizeException
-     * @throws \Quantum\Exceptions\FileUploadException
+     * @throws FileSystemException
+     * @throws FileUploadException
+     * @throws LangException
+     * @throws ImageResizeException
      */
     public function save(string $dest, bool $overwrite = false): bool
     {
@@ -219,47 +257,61 @@ class File extends SplFileInfo
             throw new FileUploadException($this->getErrorMessage());
         }
 
+        if (!$this->localFileSystem->isFile($this->getPathname())) {
+            throw FileUploadException::fileNotFound($this->getPathname());
+        }
+
         if (!$this->whitelisted($this->getExtension())) {
             throw FileUploadException::fileTypeNotAllowed($this->getExtension());
         }
 
-        if (!$this->fs->isDirectory($dest)) {
-            throw FileSystemException::directoryNotExists($dest);
-        }
-
-        if (!$this->fs->isWritable($dest)) {
-            throw FileSystemException::directoryNotWritable($dest);
-        }
-
         $filePath = $dest . DS . $this->getNameWithExtension();
 
-        if ($overwrite === false && $this->fs->exists($filePath)) {
-            throw FileSystemException::fileAlreadyExists();
+        if (!$this->remoteFileSystem) {
+            if (!$this->localFileSystem->isDirectory($dest)) {
+                throw FileSystemException::directoryNotExists($dest);
+            }
+
+            if (!$this->localFileSystem->isWritable($dest)) {
+                throw FileSystemException::directoryNotWritable($dest);
+            }
+
+            if ($overwrite === false && $this->localFileSystem->exists($filePath)) {
+                throw FileSystemException::fileAlreadyExists();
+            }
         }
 
         if (!$this->moveUploadedFile($filePath)) {
             return false;
         }
 
-        if ($this->funcName) {
-            $image = new ImageResize($filePath);
-            call_user_func_array([$image, $this->funcName], $this->params);
-
-            $image->save($filePath);
+        if ($this->imageModifierFuncName) {
+            $this->applyModifications($filePath);
         }
 
         return true;
     }
 
     /**
-     * Applies modification on file
+     * Sets modification function on image
      * @param string $funcName
      * @param array $params
-     * @return self
+     * @return $this
+     * @throws AppException
+     * @throws FileUploadException
+     * @throws LangException
      */
-    public function modify(string $funcName, array $params): File
+    public function modify(string $funcName, array $params): UploadedFile
     {
-        $this->funcName = $funcName;
+        if (!$this->isImage($this->getPathname())) {
+            throw FileUploadException::fileTypeNotAllowed($this->getExtension());
+        }
+
+        if (!method_exists(ImageResize::class, $funcName)) {
+            throw AppException::methodNotSupported($funcName, ImageResize::class);
+        }
+
+        $this->imageModifierFuncName = $funcName;
         $this->params = $params;
 
         return $this;
@@ -293,16 +345,30 @@ class File extends SplFileInfo
     }
 
     /**
+     * Checks if the given file is image
+     * @param $filePath
+     * @return bool
+     */
+    public function isImage($filePath): bool
+    {
+        return !!getimagesize($filePath);
+    }
+
+    /**
      * Moves an uploaded file to a new location
      * @param string $filePath
      * @return bool
      */
     protected function moveUploadedFile(string $filePath): bool
     {
-        if ($this->isUploaded()) {
-            return move_uploaded_file($this->getPathname(), $filePath);
+        if ($this->remoteFileSystem) {
+            return $this->remoteFileSystem->put($filePath, $this->localFileSystem->get($this->getPathname()));
         } else {
-            return $this->fs->isFile($this->getPathname()) && $this->fs->copy($this->getPathname(), $filePath);
+            if ($this->isUploaded()) {
+                return move_uploaded_file($this->getPathname(), $filePath);
+            } else {
+                return $this->localFileSystem->copy($this->getPathname(), $filePath);
+            }
         }
     }
 
@@ -318,5 +384,18 @@ class File extends SplFileInfo
         }
 
         return false;
+    }
+
+    /**
+     * Applies modifications on image
+     * @param $filePath
+     * @throws ImageResizeException
+     */
+    protected function applyModifications($filePath)
+    {
+        $image = new ImageResize($filePath);
+        call_user_func_array([$image, $this->imageModifierFuncName], $this->params);
+
+        $image->save($filePath);
     }
 }
