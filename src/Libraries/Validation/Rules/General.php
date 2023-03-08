@@ -16,6 +16,8 @@ namespace Quantum\Libraries\Validation\Rules;
 
 use Quantum\Factory\ModelFactory;
 use Quantum\Di\Di;
+use ReCaptcha\ReCaptcha;
+use ReCaptcha\RequestMethod\CurlPost;
 
 /**
  * Trait General
@@ -56,6 +58,23 @@ trait General
         if (!empty($value)) {
             if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
                 $this->addError($field, 'email', $param);
+            }
+        }
+    }
+
+    /**
+     * Checks Recaptcha
+     * @param string $field
+     * @param string $value
+     * @param null|mixed $param
+     */
+    protected function recaptcha(string $field, string $value, $param = null)
+    {
+        if (!empty($value)) {
+            $recaptcha = new ReCaptcha(env('RECAPTCHA_SECRET_KEY'), new CurlPost());
+
+            if (!$recaptcha->verify($value)->isSuccess()){
+                $this->addError($field, 'recaptcha', $param);
             }
         }
     }
