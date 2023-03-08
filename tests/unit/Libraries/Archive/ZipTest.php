@@ -24,127 +24,120 @@ namespace Quantum\Tests\Libraries\Archive {
             if ($this->fs->exists($this->filename)) {
                 $this->fs->remove($this->filename);
             }
-
         }
 
         public function testAddEmptyDirToZip()
         {
-            $newZip = new Zip();
+            $newZip = new Zip($this->filename);
 
-            $res = $newZip->addEmptyDir($this->filename, 'dirName');
-
-            $this->assertTrue($res);
+            $this->assertFalse($newZip->offsetExists('dirName'));
+            
+            $this->assertTrue($newZip->addEmptyDir('dirName'));
+            
+            $this->assertTrue($newZip->offsetExists('dirName'));
         }
-
+        
         public function testAddFileToZip()
         {
-            $newZip = new Zip();
-
-            $res = $newZip->addFile($this->filename, 'composer.json', 'newFileName.josn');
-
-            $this->assertTrue($res);
-
-            $deleteFileUsingName = $newZip->deleteUsingName($this->filename, 'newFileName.josn');
-
-            $this->assertTrue($deleteFileUsingName);
+            $newZip = new Zip($this->filename);
+            
+            $this->assertFalse($newZip->offsetExists('newFileName.josn'));
+            
+            $this->assertTrue($newZip->addFile('composer.json', 'newFileName.josn'));
+            
+            $this->assertTrue($newZip->offsetExists('newFileName.josn'));
         }
 
         public function testAddMultipleFilesToZip()
         {
-            $newZip = new Zip();
+            $newZip = new Zip($this->filename);
 
-            $addMultipleFiles = $newZip->addMultipleFiles($this->filename, [
+            $this->assertTrue($newZip->addMultipleFiles([
                 'composerCopy.json' => 'composer.json',
                 'phpunitCopy.xml' => 'phpunit.xml',
-            ]);
+            ]));
 
-            $this->assertTrue($addMultipleFiles);
+            $this->assertTrue($newZip->offsetExists('composerCopy.json'));
+
+            $this->assertTrue($newZip->offsetExists('phpunitCopy.xml'));
         }
 
         public function testAddFromStringToZip()
         {
-            $newZip = new Zip();
+            $newZip = new Zip($this->filename);
 
-            $res = $newZip->addFromString($this->filename, 'newFileName.txt', 'Created new file for test');
+            $this->assertTrue($newZip->addFromString('newFileName.txt', 'Created new file for test'));
 
-            $this->assertTrue($res);
+            $this->assertTrue($newZip->offsetExists('newFileName.txt'));
         }
 
         public function testExtractToFromZip()
         {
-            $newZip = new Zip();
+            $newZip = new Zip($this->filename);
 
-            $addFile = $newZip->addFromString($this->filename, 'fileForExtract.txt', 'Created new file for test');
+            $this->assertTrue($newZip->addFromString('fileForExtract.txt', 'Created new file for test'));
 
-            $this->assertTrue($addFile);
-
-            $extract = $newZip->extractTo($this->filename, base_dir());
-
-            $this->assertTrue($extract);
+            $this->assertTrue($newZip->extractTo(base_dir()));
 
             $this->fs->remove(base_dir() . DS . 'fileForExtract.txt');
         }
 
         public function testZipCount()
         {
-            $newZip = new Zip();
+            $newZip = new Zip($this->filename);
 
-            $addMultipleFiles = $newZip->addMultipleFiles($this->filename, [
+            $this->assertTrue($newZip->addMultipleFiles([
                 'composerCopy.json' => 'composer.json',
                 'phpunitCopy.xml' => 'phpunit.xml',
-            ]);
-
-            $this->assertTrue($addMultipleFiles);
+            ]));
             
-            $zipCount = $newZip->count();
+            $this->assertTrue($newZip->offsetExists('composerCopy.json'));
 
-            $this->assertEquals(2, $zipCount);
+            $this->assertTrue($newZip->offsetExists('phpunitCopy.xml'));
 
-        }
-
-        public function testRenameUsingNameInZip()
-        {
-            $newZip = new Zip();
-
-            $addFromString = $newZip->addFromString($this->filename, 'currentName.txt', 'Created new file for test');
-
-            $this->assertTrue($addFromString);
-
-            $renameUsingName = $newZip->renameUsingName($this->filename, 'currentName.txt', 'newName.txt');
-
-            $this->assertTrue($renameUsingName);
+            $this->assertEquals(2, $newZip->count());
         }
 
         public function testDeleteUsingNameFromZip()
         {
-            $newZip = new Zip();
+            $newZip = new Zip($this->filename);
 
-            $addFromString = $newZip->addFromString($this->filename, 'newName.txt', 'Created new file for test');
+            $this->assertTrue($newZip->addMultipleFiles([
+                'composerCopy.json' => 'composer.json',
+                'phpunitCopy.xml' => 'phpunit.xml',
+            ]));
 
-            $this->assertTrue($addFromString);
+            $this->assertTrue($newZip->addFromString('newName.txt', 'Created new file for test'));
 
-            $deleteUsingName = $newZip->deleteUsingName($this->filename, 'newName.txt');
+            $this->assertTrue($newZip->deleteUsingName('newName.txt'));
 
-            $this->assertTrue($deleteUsingName);
+            $this->assertFalse($newZip->offsetExists('newName.txt'));
+
+            $this->assertTrue($newZip->offsetExists('composerCopy.json'));
+
+            $this->assertTrue($newZip->offsetExists('phpunitCopy.xml'));
         }
 
         public function testDeleteMultipleFilesUsingNameFromZip()
         {
-            $newZip = new Zip();
+            $newZip = new Zip($this->filename);
 
-            $addMultipleFiles = $newZip->addMultipleFiles($this->filename, [
+            $this->assertTrue($newZip->addMultipleFiles([
                 'testDir/composerForDelete.json' => 'composer.json',
+                'composerCopy.json' => 'composer.json',
                 'phpunitForDelete.xml' => 'phpunit.xml',
-            ]);
+            ]));
 
-            $this->assertTrue($addMultipleFiles);
-
-            $deleteUsingName = $newZip->deleteMultipleFilesUsingName($this->filename, [
+            $this->assertTrue($newZip->deleteMultipleFilesUsingName([
                 'testDir/composerForDelete.json',
                 'phpunitForDelete.xml',
-            ]);
+            ]));
 
-            $this->assertTrue($deleteUsingName);
+            $this->assertFalse($newZip->offsetExists('testDir/composerForDelete.json'));
+
+            $this->assertFalse($newZip->offsetExists('phpunitForDelete.xml'));
+
+            $this->assertTrue($newZip->offsetExists('composerCopy.json'));
         }
     }
 }

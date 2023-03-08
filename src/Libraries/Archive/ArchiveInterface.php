@@ -21,12 +21,19 @@ namespace Quantum\Libraries\Archive;
 interface ArchiveInterface
 {
     /**
+     * Checks for the existence of a file
+     * @param string $fileOrDirName
+     * @return bool
+     */
+    public function offsetExists(string $fileOrDirName): bool;
+
+    /**
      * Makes a new empty directory
      * @param string $archiveName
      * @param string $newDirectory
      * @return bool
      */
-    public function addEmptyDir(string $archiveName, string $newDirectory): bool;
+    public function addEmptyDir(string $newDirectory): bool;
 
     /**
      * Makes a new file
@@ -35,7 +42,7 @@ interface ArchiveInterface
      * @param string $newFileName
      * @return bool
      */
-    public function addFile(string $archiveName, string $filePath, string $newFileName): bool;
+    public function addFile(string $filePath, string $newFileName): bool;
 
     /**
      * Makes a new file from string
@@ -44,7 +51,7 @@ interface ArchiveInterface
      * @param string $newFileContent
      * @return bool
      */
-    public function addFromString(string $archiveName, string $newFileName, string $newFileContent): bool;
+    public function addFromString(string $newFileName, string $newFileContent): bool;
 
 
     /**
@@ -53,7 +60,7 @@ interface ArchiveInterface
      * @param string $fileOrDirName
      * @return bool
      */
-    public function deleteUsingName(string $archiveName, string $fileOrDirName): bool;
+    public function deleteUsingName(string $fileOrDirName): bool;
 
     /**
      * Files count in the archive
@@ -65,18 +72,10 @@ interface ArchiveInterface
      * Extract archive
      * @param string $archiveName
      * @param string $pathToExtract
+     * @param string|array $files
      * @return bool
      */
-    public function extractTo(string $archiveName, string $pathToExtract): bool;
-
-    /**
-     * Rename file using name
-     * @param string $archiveName
-     * @param string $currentName
-     * @param string $newName
-     * @return bool
-     */
-    public function renameUsingName(string $archiveName, string $currentName, string $newName): bool;
+    public function extractTo(string $pathToExtract, $files): bool;
 
     /**
      * Makes a multiple files
@@ -84,7 +83,7 @@ interface ArchiveInterface
      * @param array $fileNames
      * @return bool
      */
-    public function addMultipleFiles(string $archiveName, array $fileNames): bool;
+    public function addMultipleFiles(array $fileNames): bool;
 
     /**
      * Delete a multiple files
@@ -92,5 +91,5 @@ interface ArchiveInterface
      * @param array $fileNames
      * @return bool
      */
-    public function deleteMultipleFilesUsingName(string $archiveName, array $fileNames): bool;
+    public function deleteMultipleFilesUsingName(array $fileNames): bool;
 }

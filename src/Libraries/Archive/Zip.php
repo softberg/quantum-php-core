@@ -22,14 +22,23 @@ use ZipArchive;
  */
 class Zip implements ArchiveInterface
 {
+    /**
+     * @var ZipArchive
+     */
     private $zipArchive;
+
+    /**
+     * @var string
+     */
+    private $archiveName;
 
     /**
      * Zip constructor
      */
-    public function __construct()
+    public function __construct(string $archiveName)
     {
         $this->zipArchive = new ZipArchive();
+        $this->archiveName = $archiveName;
     }
 
     public function __destruct()
@@ -42,14 +51,28 @@ class Zip implements ArchiveInterface
     /**
      * @inheritDoc
      */
-    public function addEmptyDir(string $archiveName, string $newDirectory): bool
+    public function offsetExists(string $fileOrDirName): bool
     {
-        if ($this->zipArchive->open($archiveName, ZipArchive::CREATE) === TRUE) {
-            $newDirectory = rtrim($newDirectory, '/') . '/';
-            if ($this->zipArchive->locateName($newDirectory) !== false) {
-                return true;
-            };
-            return $this->zipArchive->addEmptyDir($newDirectory);
+        
+        if($this->zipArchive->open($this->archiveName, ZipArchive::CREATE) === TRUE) {
+            if (strpos($fileOrDirName, '.') === false) {
+                $fileOrDirName = rtrim($fileOrDirName, '/') . '/';
+            }
+            return $this->zipArchive->locateName($fileOrDirName) !== false;
+        } 
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function addEmptyDir(string $newDirectory): bool
+    {
+        if ($this->zipArchive->open($this->archiveName, ZipArchive::CREATE) === TRUE) {
+            if (!$this->offsetExists($newDirectory)) {
+                return $this->zipArchive->addEmptyDir($newDirectory);
+            } else {
+                return false;
+            }
         } else {
             return false;
         }
@@ -58,9 +81,9 @@ class Zip implements ArchiveInterface
     /**
      * @inheritDoc
      */
-    public function addFile(string $archiveName, string $filePath, string $newFileName = ''): bool
+    public function addFile(string $filePath, string $newFileName = ''): bool
     {
-        if ($this->zipArchive->open($archiveName, ZipArchive::CREATE) === TRUE) {
+        if ($this->zipArchive->open($this->archiveName, ZipArchive::CREATE) === TRUE) {
             return $this->zipArchive->addFile($filePath, $newFileName);
         } else {
             return false;
@@ -70,9 +93,9 @@ class Zip implements ArchiveInterface
     /**
      * @inheritDoc
      */
-    public function addFromString(string $archiveName, string $newFileName, string $newFileContent): bool
+    public function addFromString(string $newFileName, string $newFileContent): bool
     {
-        if ($this->zipArchive->open($archiveName, ZipArchive::CREATE) === TRUE) {
+        if ($this->zipArchive->open($this->archiveName, ZipArchive::CREATE) === TRUE) {
             return $this->zipArchive->addFromString($newFileName, $newFileContent);
         } else {
             return false;
@@ -82,11 +105,11 @@ class Zip implements ArchiveInterface
     /**
      * @inheritDoc
      */
-    public function deleteUsingName(string $archiveName, string $fileOrDirName): bool
+    public function deleteUsingName(string $fileOrDirName): bool
     {
         if (
-            $this->zipArchive->open($archiveName) === TRUE
-            && $this->zipArchive->locateName($fileOrDirName) !== false
+            $this->zipArchive->open($this->archiveName) === TRUE
+            && $this->offsetExists($fileOrDirName)
         ) {
             return $this->zipArchive->deleteName($fileOrDirName);
         } else {
@@ -97,9 +120,9 @@ class Zip implements ArchiveInterface
     /**
      * @inheritDoc
      */
-    public function extractTo(string $archiveName, string $pathToExtract): bool
+    public function extractTo(string $pathToExtract, $files = ''): bool
     {
-        if ($this->zipArchive->open($archiveName) === TRUE) {
+        if ($this->zipArchive->open($this->archiveName) === TRUE) {
             return $this->zipArchive->extractTo($pathToExtract);
         } else {
             return false;
@@ -117,21 +140,9 @@ class Zip implements ArchiveInterface
     /**
      * @inheritDoc
      */
-    public function renameUsingName(string $archiveName, string $currentName, string $newName): bool
+    public function addMultipleFiles(array $fileNames): bool
     {
-        if ($this->zipArchive->open($archiveName) === TRUE) {
-            return $this->zipArchive->renameName($currentName, $newName);
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function addMultipleFiles(string $archiveName, array $fileNames): bool
-    {
-        if ($this->zipArchive->open($archiveName, ZipArchive::CREATE) === TRUE) {
+        if ($this->zipArchive->open($this->archiveName, ZipArchive::CREATE) === TRUE) {
             foreach ($fileNames as $fileNmae => $filePath) {
                 if (!$this->zipArchive->addFile($filePath, $fileNmae)) {
                     return false;
@@ -146,9 +157,9 @@ class Zip implements ArchiveInterface
     /**
      * @inheritDoc
      */
-    public function deleteMultipleFilesUsingName(string $archiveName, array $fileNames): bool
+    public function deleteMultipleFilesUsingName(array $fileNames): bool
     {
-        if ($this->zipArchive->open($archiveName) === TRUE) {
+        if ($this->zipArchive->open($this->archiveName) === TRUE) {
             foreach ($fileNames as $key => $fileOrDirName) {
                 $this->zipArchive->deleteName($fileOrDirName);
             }
