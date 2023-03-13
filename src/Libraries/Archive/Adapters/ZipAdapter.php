@@ -12,15 +12,16 @@
  * @since 2.9.0
  */
 
-namespace Quantum\Libraries\Archive;
+namespace Quantum\Libraries\Archive\Adapters;
 
+use Quantum\Libraries\Archive\ArchiveInterface;
 use ZipArchive;
 
 /**
  * Class ArchiveInterface
- * @package Quantum\Libraries\Archive
+ * @package Quantum\Libraries\Archive\Adapters
  */
-class Zip implements ArchiveInterface
+class ZipAdapter implements ArchiveInterface
 {
     /**
      * @var ZipArchive

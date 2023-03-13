@@ -9,18 +9,19 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.0
  */
 
-namespace Quantum\Libraries\Archive;
+namespace Quantum\Libraries\Archive\Adapters;
 
+use Quantum\Libraries\Archive\ArchiveInterface;
 use Phar;
 
 /**
  * Class ArchiveInterface
- * @package Quantum\Libraries\Archive
+ * @package Quantum\Libraries\Archive\Adapters
  */
-class PharArchive implements ArchiveInterface
+class PharAdapter implements ArchiveInterface
 {
 
     /**

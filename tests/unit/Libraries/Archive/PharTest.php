@@ -2,22 +2,22 @@
 
 namespace Quantum\Tests\Libraries\Archive {
 
+    use Quantum\Libraries\Archive\Adapters\PharAdapter;
     use Quantum\Libraries\Storage\FileSystem;
-    use Quantum\Libraries\Archive\PharArchive;
     use Quantum\Tests\AppTestCase;
 
     class PharTest extends AppTestCase
     {
 
         private $fs;
-        private $filename;
         private $newPhar;
+        private $filename;
 
         public function setUp(): void
         {
             parent::setUp();
             $this->fs = new FileSystem();
-            $this->newPhar = new PharArchive(base_dir() . DS . 'test.phar');
+            $this->newPhar = new PharAdapter(base_dir() . DS . 'test.phar');
             $this->filename = base_dir() . DS . 'test.phar';
         }
 
