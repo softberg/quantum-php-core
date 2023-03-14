@@ -362,7 +362,7 @@ class UploadedFile extends SplFileInfo
     protected function moveUploadedFile(string $filePath): bool
     {
         if ($this->remoteFileSystem) {
-            return $this->remoteFileSystem->put($filePath, $this->localFileSystem->get($this->getPathname()));
+            return (bool)$this->remoteFileSystem->put($filePath, $this->localFileSystem->get($this->getPathname()));
         } else {
             if ($this->isUploaded()) {
                 return move_uploaded_file($this->getPathname(), $filePath);

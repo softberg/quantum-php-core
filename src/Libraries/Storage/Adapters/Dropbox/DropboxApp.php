@@ -175,7 +175,7 @@ class DropboxApp
      * @param string $endpoint
      * @param array|null $params
      * @return mixed|null
-     * @throws \Exception
+     * @throws Exception
      */
     public function rpcRequest(string $endpoint, ?array $params = [])
     {
@@ -193,7 +193,7 @@ class DropboxApp
      * @param array $params
      * @param string $content
      * @return mixed|null
-     * @throws \Exception
+     * @throws Exception
      */
     public function contentRequest(string $endpoint, array $params, string $content = '')
     {

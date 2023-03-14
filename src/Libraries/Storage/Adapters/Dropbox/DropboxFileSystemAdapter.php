@@ -88,7 +88,7 @@ class DropboxFileSystemAdapter implements FilesystemAdapterInterface
     public function get(string $filename)
     {
         try {
-            return $this->dropboxApp->contentRequest(DropboxApp::ENDPOINT_DOWNLOAD_FILE, $this->dropboxApp->path($filename));
+            return (string)$this->dropboxApp->contentRequest(DropboxApp::ENDPOINT_DOWNLOAD_FILE, $this->dropboxApp->path($filename));
         } catch (Exception $e) {
             return false;
         }
