@@ -243,8 +243,7 @@ class DropboxApp
             $code = $errors['code'];
 
             if ($this->accessTokenNeedsRefresh($code, $responseBody)) {
-                $prevUrl = $this->httpClient->getUrl();
-
+                $prevUrl = $this->httpClient->url();
                 $prevData = $this->httpClient->getData();
                 $prevHeaders = $this->httpClient->getRequestHeaders();
 
