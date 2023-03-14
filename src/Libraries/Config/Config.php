@@ -9,13 +9,14 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.0
  */
 
 namespace Quantum\Libraries\Config;
 
 use Quantum\Exceptions\ConfigException;
 use Quantum\Contracts\StorageInterface;
+use Quantum\Exceptions\DiException;
 use Dflydev\DotAccessData\Data;
 use Quantum\Loader\Loader;
 use Quantum\Loader\Setup;
@@ -36,13 +37,13 @@ class Config implements StorageInterface
 
     /**
      * Instance of Config
-     * @var \Quantum\Libraries\Config\Config
+     * @var Config
      */
     private static $instance = null;
 
     /**
      * GetInstance
-     * @return \Quantum\Libraries\Config\Config|null
+     * @return Config|null
      */
     public static function getInstance(): ?Config
     {
@@ -55,9 +56,9 @@ class Config implements StorageInterface
 
     /**
      * Loads configuration
-     * @param \Quantum\Loader\Setup $setup
-     * @throws \Quantum\Exceptions\ConfigException
-     * @throws \Quantum\Exceptions\DiException
+     * @param Setup $setup
+     * @throws ConfigException
+     * @throws DiException
      * @throws \ReflectionException
      */
     public function load(Setup $setup)
@@ -71,9 +72,9 @@ class Config implements StorageInterface
 
     /**
      * Imports new config file
-     * @param \Quantum\Loader\Setup $setup
-     * @throws \Quantum\Exceptions\ConfigException
-     * @throws \Quantum\Exceptions\DiException
+     * @param Setup $setup
+     * @throws ConfigException
+     * @throws DiException
      * @throws \ReflectionException
      */
     public function import(Setup $setup)

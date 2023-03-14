@@ -14,12 +14,19 @@
 
 use Quantum\Libraries\Session\SessionManager;
 use Quantum\Libraries\Asset\AssetManager;
+use Quantum\Exceptions\DatabaseException;
 use Quantum\Libraries\Cache\CacheManager;
+use Quantum\Exceptions\SessionException;
+use Quantum\Exceptions\ConfigException;
 use Quantum\Libraries\Auth\AuthManager;
 use Quantum\Libraries\Session\Session;
+use Quantum\Exceptions\LangException;
+use Quantum\Exceptions\AuthException;
 use Quantum\Libraries\Cookie\Cookie;
+use Quantum\Exceptions\AppException;
 use Quantum\Libraries\Mailer\Mailer;
 use Quantum\Libraries\Auth\ApiAuth;
+use Quantum\Exceptions\DiException;
 use Quantum\Libraries\Auth\WebAuth;
 use Quantum\Libraries\Cache\Cache;
 use Quantum\Libraries\Csrf\Csrf;
@@ -30,11 +37,11 @@ use Quantum\Di\Di;
  * Gets the session handler
  * @return Session
  * @throws ReflectionException
- * @throws \Quantum\Exceptions\ConfigException
- * @throws \Quantum\Exceptions\DatabaseException
- * @throws \Quantum\Exceptions\DiException
- * @throws \Quantum\Exceptions\SessionException
- * @throws \Quantum\Exceptions\LangException
+ * @throws ConfigException
+ * @throws DatabaseException
+ * @throws DiException
+ * @throws SessionException
+ * @throws LangException
  */
 function session(): Session
 {
@@ -54,9 +61,9 @@ function cookie(): Cookie
  * Gets the Auth handler
  * @return ApiAuth|WebAuth
  * @throws ReflectionException
- * @throws \Quantum\Exceptions\AuthException
- * @throws \Quantum\Exceptions\ConfigException
- * @throws \Quantum\Exceptions\DiException
+ * @throws ConfigException
+ * @throws AuthException
+ * @throws DiException
  */
 function auth()
 {
@@ -67,7 +74,7 @@ function auth()
  * Gets the Mail instance
  * @return Mailer
  * @throws ReflectionException
- * @throws \Quantum\Exceptions\DiException
+ * @throws DiException
  */
 function mailer(): Mailer
 {
@@ -96,9 +103,9 @@ function hook(): HookManager
  * Gets the Cache handler
  * @return Cache
  * @throws ReflectionException
- * @throws \Quantum\Exceptions\AppException
- * @throws \Quantum\Exceptions\ConfigException
- * @throws \Quantum\Exceptions\DiException
+ * @throws ConfigException
+ * @throws AppException
+ * @throws DiException
  */
 function cache(): Cache
 {
