@@ -88,9 +88,9 @@ class DropboxAppTest extends AppTestCase
 
         $this->assertIsObject($response);
 
-        $this->assertObjectHasAttribute('access_token', $response);
+        $this->assertTrue(property_exists($response, 'access_token'));
 
-        $this->assertObjectHasAttribute('refresh_token', $response);
+        $this->assertTrue(property_exists($response, 'refresh_token'));
     }
 
     public function testDropboxRpcRequest()
@@ -101,9 +101,9 @@ class DropboxAppTest extends AppTestCase
 
         $this->assertIsObject($response);
 
-        $this->assertObjectHasAttribute('email', $response);
+        $this->assertTrue(property_exists($response, 'email'));
 
-        $this->assertObjectHasAttribute('name', $response);
+        $this->assertTrue(property_exists($response, 'name'));
     }
 
     public function testDropboxContentRequest()
