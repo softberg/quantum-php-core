@@ -45,24 +45,17 @@ class JWTokenTest extends TestCase
     {
         $jwtEncoded = $this->jwtToken->setAlgorithm('HS512')->compose();
 
-        $this->jwtToken->retrieve($jwtEncoded, ['HS512']);
+        $this->jwtToken->retrieve($jwtEncoded);
 
         $this->assertNotEmpty($this->jwtToken->fetchPayload());
 
         $jwtEncoded = $this->jwtToken->setAlgorithm('HS384')->compose();
 
-        $this->jwtToken->retrieve($jwtEncoded, ['HS384']);
+        $this->jwtToken->retrieve($jwtEncoded);
 
         $this->assertNotEmpty($this->jwtToken->fetchPayload());
 
         $jwtEncoded = $this->jwtToken->setAlgorithm('HS512')->compose();
-
-        $this->expectException(\UnexpectedValueException::class);
-
-        $this->expectExceptionMessage('Algorithm not allowed');
-
-        $this->jwtToken->retrieve($jwtEncoded, ['HS384']);
-
     }
 
     public function testRetrieveFetchPayload()
@@ -71,11 +64,10 @@ class JWTokenTest extends TestCase
 
         $jwtEncoded = $this->jwtToken->setAlgorithm('HS256')->compose();
 
-        $this->jwtToken->retrieve($jwtEncoded, ['HS256']);
+        $this->jwtToken->retrieve($jwtEncoded);
 
         $this->assertNotEmpty($this->jwtToken->fetchPayload());
     }
-
 
     public function testSetFetchData()
     {
@@ -83,7 +75,7 @@ class JWTokenTest extends TestCase
 
         $jwtEncoded = $this->jwtToken->setAlgorithm('HS256')->setData($this->userData)->compose();
 
-        $this->jwtToken->retrieve($jwtEncoded, ['HS256']);
+        $this->jwtToken->retrieve($jwtEncoded);
 
         $this->assertNotNull($this->jwtToken->fetchData());
 
@@ -96,7 +88,7 @@ class JWTokenTest extends TestCase
     {
         $jwtEncoded = $this->jwtToken->setAlgorithm('HS256')->compose();
 
-        $this->jwtToken->retrieve($jwtEncoded, ['HS256']);
+        $this->jwtToken->retrieve($jwtEncoded);
 
         $this->assertNotNull($this->jwtToken->fetchClaim('iss'));
 
@@ -108,7 +100,7 @@ class JWTokenTest extends TestCase
 
         $jwtEncoded = $this->jwtToken->setAlgorithm('HS256')->compose();
 
-        $this->jwtToken->retrieve($jwtEncoded, ['HS256']);
+        $this->jwtToken->retrieve($jwtEncoded);
 
         $this->assertNotNull($this->jwtToken->fetchClaim('sub'));
 
@@ -133,7 +125,7 @@ class JWTokenTest extends TestCase
 
         $this->assertEmpty($jwtToken->fetchPayload());
 
-        $jwtToken->retrieve($jwtEncoded, ['HS512']);
+        $jwtToken->retrieve($jwtEncoded);
 
         $this->assertNotEmpty($jwtToken->fetchPayload());
 

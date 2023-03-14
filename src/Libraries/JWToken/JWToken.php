@@ -9,13 +9,14 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.6.0
+ * @since 2.9.0
  */
 
 namespace Quantum\Libraries\JWToken;
 
 use Quantum\Exceptions\JwtException;
 use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 
 /**
  * Class JWToken
@@ -120,7 +121,7 @@ class JWToken extends JWT
      * @param mixed|null $keyId
      * @param array|null $head
      * @return string
-     * @throws \Quantum\Exceptions\JwtException
+     * @throws JwtException
      */
     public function compose($keyId = null, array $head = null): string
     {
@@ -134,12 +135,11 @@ class JWToken extends JWT
     /**
      * Retrieve and verifies the JWT
      * @param string $jwt
-     * @param array $allowed_algs
      * @return $this
      */
-    public function retrieve(string $jwt, array $allowed_algs = []): JWToken
+    public function retrieve(string $jwt): JWToken
     {
-        $this->fetchedPayload = parent::decode($jwt, $this->key, $allowed_algs ?: [$this->algorithm]);
+        $this->fetchedPayload = parent::decode($jwt, new Key($this->key, $this->algorithm));
         return $this;
     }
 
@@ -158,7 +158,7 @@ class JWToken extends JWT
      */
     public function fetchData(): ?array
     {
-        return isset($this->fetchedPayload->data) ? (array) $this->fetchedPayload->data : null;
+        return isset($this->fetchedPayload->data) ? (array)$this->fetchedPayload->data : null;
     }
 
     /**
