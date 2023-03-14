@@ -9,12 +9,14 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.4.0
+ * @since 2.9.0
  */
 
 namespace Quantum\Libraries\Validation\Rules;
 
-use Quantum\Libraries\Upload\File as FileUpload;
+use Quantum\Exceptions\FileUploadException;
+use Quantum\Libraries\Storage\UploadedFile;
+use Quantum\Exceptions\LangException;
 
 /**
  * Trait File
@@ -34,10 +36,10 @@ trait File
     /**
      * Validates file size
      * @param string $field
-     * @param \Quantum\Libraries\Upload\File $file
-     * @param mixed $param
+     * @param UploadedFile $file
+     * @param $param
      */
-    protected function fileSize(string $field, FileUpload $file, $param)
+    protected function fileSize(string $field, UploadedFile $file, $param)
     {
         if (!is_array($param)) {
             if ($file->getSize() > $param) {
@@ -53,10 +55,10 @@ trait File
     /**
      * Validates file mime type
      * @param string $field
-     * @param \Quantum\Libraries\Upload\File $file
-     * @param mixed $param
+     * @param UploadedFile $file
+     * @param $param
      */
-    protected function fileMimeType(string $field, FileUpload $file, $param)
+    protected function fileMimeType(string $field, UploadedFile $file, $param)
     {
         if (!is_array($param)) {
             if ($file->getMimetype() != $param) {
@@ -72,10 +74,11 @@ trait File
     /**
      * Validates file extension
      * @param string $field
-     * @param \Quantum\Libraries\Upload\File $file
-     * @param mixed $param
+     * @param UploadedFile $file
+     * @param $param
+     * @return void
      */
-    protected function fileExtension(string $field, FileUpload $file, $param)
+    protected function fileExtension(string $field, UploadedFile $file, $param)
     {
         if (!is_array($param)) {
             if ($file->getExtension() != $param) {
@@ -91,10 +94,12 @@ trait File
     /**
      * Validates image dimensions
      * @param string $field
-     * @param \Quantum\Libraries\Upload\File $file
+     * @param UploadedFile $file
      * @param array $param
+     * @throws FileUploadException
+     * @throws LangException
      */
-    protected function imageDimensions(string $field, FileUpload $file, array $param)
+    protected function imageDimensions(string $field, UploadedFile $file, array $param)
     {
         $dimensions = $file->getDimensions();
 
