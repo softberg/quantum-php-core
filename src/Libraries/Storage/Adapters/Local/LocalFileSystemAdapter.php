@@ -9,10 +9,13 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.0
  */
 
-namespace Quantum\Libraries\Storage;
+namespace Quantum\Libraries\Storage\Adapters\Local;
+
+use Quantum\Libraries\Storage\FilesystemAdapterInterface;
+use Throwable;
 
 /**
  * Class LocalFileSystemAdapter
@@ -28,7 +31,7 @@ class LocalFileSystemAdapter implements FilesystemAdapterInterface
 
     /**
      * Get Instance
-     * @return \Quantum\Libraries\Storage\LocalFileSystemAdapter|null
+     * @return LocalFileSystemAdapter|null
      */
     public static function getInstance(): ?LocalFileSystemAdapter
     {
@@ -144,6 +147,38 @@ class LocalFileSystemAdapter implements FilesystemAdapterInterface
     }
 
     /**
+     * @inheritDoc
+     */
+    public function listDirectory(string $dirname)
+    {
+        $entries = [];
+
+        try {
+            foreach (scandir($dirname) as $item) {
+                if ($item != '.' && $item != '..') {
+                    $entries[] = realpath($dirname . DS . $item);
+                }
+            }
+
+            return $entries;
+
+        } catch (Throwable $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Find path names matching a pattern
+     * @param string $pattern
+     * @param int $flags
+     * @return array|false
+     */
+    public function glob(string $pattern, int $flags = 0)
+    {
+        return glob($pattern, $flags);
+    }
+
+    /**
      * Is Readable
      * @param string $filename
      * @return bool
@@ -183,7 +218,7 @@ class LocalFileSystemAdapter implements FilesystemAdapterInterface
      */
     public function fileName(string $path): string
     {
-        return (string) pathinfo($path, PATHINFO_FILENAME);
+        return (string)pathinfo($path, PATHINFO_FILENAME);
     }
 
     /**
@@ -193,18 +228,7 @@ class LocalFileSystemAdapter implements FilesystemAdapterInterface
      */
     public function extension(string $path): string
     {
-        return (string) pathinfo($path, PATHINFO_EXTENSION);
-    }
-
-    /**
-     * Find path names matching a pattern
-     * @param string $pattern
-     * @param int $flags
-     * @return array|false
-     */
-    public function glob(string $pattern, int $flags = 0)
-    {
-        return glob($pattern, $flags);
+        return (string)pathinfo($path, PATHINFO_EXTENSION);
     }
 
     /**

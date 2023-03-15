@@ -8,7 +8,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.0
  */
 
 namespace Quantum\Libraries\Storage;
@@ -99,7 +99,7 @@ interface FilesystemAdapterInterface
      * @param string $filename
      * @return bool
      */
-    public function remove(string $filename);
+    public function remove(string $filename): bool;
 
     /**
      * Is File
@@ -114,5 +114,12 @@ interface FilesystemAdapterInterface
      * @return bool
      */
     public function isDirectory(string $dirname): bool;
+
+    /**
+     * Lists the files inside the directory
+     * @param string $dirname
+     * @return array|bool
+     */
+    public function listDirectory(string $dirname);
 
 }

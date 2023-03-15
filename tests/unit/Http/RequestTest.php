@@ -3,10 +3,9 @@
 namespace Quantum\Tests\Http;
 
 use Quantum\Exceptions\FileUploadException;
+use Quantum\Libraries\Storage\UploadedFile;
 use Quantum\Libraries\Session\Session;
 use Quantum\Http\Request\HttpRequest;
-use Quantum\Libraries\Upload\File;
-use Quantum\Libraries\Csrf\Csrf;
 use Quantum\Tests\AppTestCase;
 use Quantum\Http\Request;
 use Mockery;
@@ -212,7 +211,7 @@ class RequestTest extends AppTestCase
 
         $this->assertTrue($request->hasFile('image'));
 
-        $this->assertInstanceOf(File::class, $request->getFile('image'));
+        $this->assertInstanceOf(UploadedFile::class, $request->getFile('image'));
 
         $fileWithError = [
             'image' => [
@@ -259,7 +258,7 @@ class RequestTest extends AppTestCase
 
         $this->assertIsArray($image);
 
-        $this->assertInstanceOf(File::class, $image[0]);
+        $this->assertInstanceOf(UploadedFile::class, $image[0]);
 
         $this->assertEquals('foo.jpg', $image[0]->getNameWithExtension());
 

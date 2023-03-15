@@ -14,7 +14,7 @@
 
 namespace Quantum\Http\Request;
 
-use Quantum\Libraries\Upload\File as FileUpload;
+use Quantum\Libraries\Storage\UploadedFile;
 use Quantum\Exceptions\FileUploadException;
 use Quantum\Exceptions\DiException;
 use ReflectionException;
@@ -77,7 +77,7 @@ trait File
     /**
      * Handle files
      * @param array $files
-     * @return array|FileUpload[]
+     * @return array|UploadedFile[]
      * @throws DiException
      * @throws ReflectionException
      */
@@ -94,12 +94,12 @@ trait File
         }
 
         if (!is_array($files[$key]['name'])) {
-            return [$key => new FileUpload($files[$key])];
+            return [$key => new UploadedFile($files[$key])];
         } else {
             $formatted = [];
 
             foreach ($files[$key]['name'] as $index => $name) {
-                $formatted[$key][$index] = new FileUpload([
+                $formatted[$key][$index] = new UploadedFile([
                     'name' => $name,
                     'type' => $files[$key]['type'][$index],
                     'tmp_name' => $files[$key]['tmp_name'][$index],

@@ -234,7 +234,7 @@ class HttpClientTest extends AppTestCase
 
         $this->assertEquals(6, $errors['code']);
 
-        $this->assertEquals('Couldn\'t resolve host name: Could not resolve host: test.comx', $errors['message']);
+        $this->assertEquals('Couldn\'t resolve host name (CURLE_COULDNT_RESOLVE_HOST): Could not resolve host: test.comx', $errors['message']);
     }
 
     public function testHttpClientMultiRequestGetError()
@@ -253,7 +253,7 @@ class HttpClientTest extends AppTestCase
 
         $this->assertEquals(6, $errors[0]['code']);
 
-        $this->assertEquals('Couldn\'t resolve host name: Could not resolve host: test.comx', $errors[0]['message']);
+        $this->assertEquals('Couldn\'t resolve host name (CURLE_COULDNT_RESOLVE_HOST): Could not resolve host: test.comx', $errors[0]['message']);
     }
 
     public function testHttpClientCurlInfo()
@@ -267,6 +267,18 @@ class HttpClientTest extends AppTestCase
         $this->assertEquals(200, $this->httpClient->info(CURLINFO_HTTP_CODE));
 
         $this->assertEquals('https://httpbin.org/get', $this->httpClient->info(CURLINFO_EFFECTIVE_URL));
+    }
+
+    public function testHttpClientUrl()
+    {
+        $this->httpClient
+            ->createRequest('https://httpbin.org/get')
+            ->start();
+
+        $this->assertIsString($this->httpClient->url());
+
+
+        $this->assertEquals('https://httpbin.org/get', $this->httpClient->url());
     }
 
 }

@@ -14,7 +14,7 @@
 
 namespace Quantum\Http\Request;
 
-use Quantum\Libraries\Upload\File as FileUpload;
+use Quantum\Libraries\Storage\UploadedFile;
 use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Exceptions\HttpException;
 use Quantum\Exceptions\LangException;
@@ -238,7 +238,7 @@ trait Params
 
         $fs->put($tempName, $content);
 
-        $file = new FileUpload([
+        $file = new UploadedFile([
             'name' => $filename,
             'type' => $type,
             'tmp_name' => $tempName,

@@ -26,6 +26,9 @@ use Curl\Curl;
  * Curl Class
  * @package Quantum\Libraries\Curl
  * @uses php-curl-class/php-curl-class
+ * @method object addGet(string $url, array $data = [])
+ * @method object addPost(string $url, string $data = '', bool $follow_303_with_post = false)
+ * @method setHeaders($headers)
  */
 class HttpClient
 {
@@ -285,7 +288,7 @@ class HttpClient
     public function getResponse(): array
     {
         if (!$this->isMultiRequest()) {
-            return $this->response[$this->client->getId()];
+            return $this->response[$this->client->getId()] ?? [];
         }
 
         return $this->response;
@@ -298,7 +301,7 @@ class HttpClient
     public function getErrors(): array
     {
         if (!$this->isMultiRequest()) {
-            return $this->errors[$this->client->getId()];
+            return $this->errors[$this->client->getId()] ?? [];
         }
 
         return $this->errors;
@@ -324,19 +327,38 @@ class HttpClient
     }
 
     /**
-     * @param string $function
+     * Gets the current url being executed
+     * @return string|null
+     * @throws AppException
+     */
+    public function url(): ?string
+    {
+        if ($this->isMultiRequest()) {
+            throw AppException::methodNotSupported(__METHOD__, MultiCurl::class);
+        }
+
+        return $this->client->getUrl();
+    }
+
+    /**
+     * @param string $method
      * @param array $arguments
      * @return HttpClient
      * @throws HttpException
      * @throws LangException
+     * @throws AppException
      */
-    public function __call(string $function, array $arguments): HttpClient
+    public function __call(string $method, array $arguments): HttpClient
     {
         if (is_null($this->client)) {
             throw HttpException::requestNotCreated();
         }
 
-        $this->client->{$function}(...$arguments);
+        if (!method_exists($this->client, $method)) {
+            throw AppException::methodNotSupported($method, get_class($this->client));
+        }
+
+        $this->client->$method(...$arguments);
 
         return $this;
     }
@@ -352,8 +374,6 @@ class HttpClient
                 'code' => $instance->getErrorCode(),
                 'message' => $instance->getErrorMessage()
             ];
-
-            return;
         }
 
         $this->response[$instance->getId()] = [
