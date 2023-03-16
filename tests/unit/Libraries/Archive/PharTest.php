@@ -2,6 +2,7 @@
 
 namespace Quantum\Tests\Libraries\Archive {
 
+    use Phar;
     use Quantum\Libraries\Archive\Adapters\PharAdapter;
     use Quantum\Libraries\Storage\FileSystem;
     use Quantum\Tests\AppTestCase;
@@ -11,21 +12,21 @@ namespace Quantum\Tests\Libraries\Archive {
 
         private $fs;
         private $newPhar;
-        private $filename;
+        private $pharPath;
 
         public function setUp(): void
         {
             parent::setUp();
             $this->fs = new FileSystem();
-            $this->newPhar = new PharAdapter(base_dir() . DS . 'test.phar');
-            $this->filename = base_dir() . DS . 'test.phar';
+            $this->pharPath = base_dir() . DS . 'test.phar';
+            $this->newPhar = new PharAdapter($this->pharPath);
         }
 
         public function tearDown(): void
         {
-            if ($this->fs->exists($this->filename)) {
-                $this->fs->remove($this->filename);
-                $this->newPhar->removeArchive($this->filename);
+            if ($this->fs->exists($this->pharPath)) {
+                $this->fs->remove($this->pharPath);
+                $this->newPhar->removeArchive($this->pharPath);
             }
         }
 
@@ -33,16 +34,22 @@ namespace Quantum\Tests\Libraries\Archive {
         {
             $this->assertTrue($this->newPhar->addEmptyDir('dirName'));
 
+            $this->assertDirectoryExists("phar://{$this->pharPath}/dirName");
+
             $this->assertTrue($this->newPhar->offsetExists('dirName'));
 
-            $this->assertFileExists($this->filename, "filename doesn't exists");
+            $this->assertFileExists($this->pharPath, "filename doesn't exists");
         }
 
         public function testAddFileToPhar()
         {
-            $this->assertTrue($this->newPhar->addFile('./composer.json', 'newFileName.josn'));
+            $newFileName = 'newFileName.josn';
 
-            $this->assertTrue($this->newPhar->offsetExists('newFileName.josn'));
+            $this->assertFalse($this->newPhar->offsetExists($newFileName));
+
+            $this->assertTrue($this->newPhar->addFile('./composer.json', $newFileName));
+
+            $this->assertTrue($this->newPhar->offsetExists($newFileName));
         }
 
         public function testAddMultipleFilesToPhar()
@@ -59,20 +66,30 @@ namespace Quantum\Tests\Libraries\Archive {
 
         public function testAddFromStringToPhar()
         {
-            $this->assertTrue($this->newPhar->addFromString('newFileName.txt', 'Created new file for test'));
+            $newFileName = 'test-file.txt';
+            $newFileContent = 'This is a test file.';
 
-            $this->assertTrue($this->newPhar->offsetExists('newFileName.txt'));
+            $this->assertTrue($this->newPhar->addFromString($newFileName, $newFileContent));
+
+            $this->assertTrue($this->newPhar->offsetExists($newFileName));
+
+            $this->assertStringEqualsFile("phar://{$this->pharPath}/{$newFileName}", $newFileContent);
         }
 
         public function testExtractToFromPhar()
         {
-            $this->assertTrue($this->newPhar->addFromString('fileForExtract.txt', 'Created new file for test'));
+            $newFileName = 'test-file.txt';
+            $newFileContent = 'This is a test file.';
 
-            $this->assertTrue($this->newPhar->offsetExists('fileForExtract.txt'));
+            $this->assertTrue($this->newPhar->addFromString($newFileName, $newFileContent));
 
-            $this->assertTrue($this->newPhar->extractTo(base_dir(), 'fileForExtract.txt'));
+            $this->assertTrue($this->newPhar->offsetExists($newFileName));
 
-            $this->fs->remove(base_dir() . DS . 'fileForExtract.txt');
+            $this->assertTrue($this->newPhar->extractTo(base_dir(), $newFileName));
+
+            $this->assertFileExists(base_dir() . DS . $newFileName, 'test-file was not extracted');
+
+            $this->fs->remove(base_dir() . DS . $newFileName);
         }
 
         public function testPharCount()
