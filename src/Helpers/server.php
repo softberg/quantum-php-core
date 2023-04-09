@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.5.0
+ * @since 2.9.0
  */
 
 use Quantum\Environment\Server;
@@ -21,7 +21,7 @@ use Quantum\Environment\Server;
  */
 function get_user_ip(): ?string
 {
-    $server = new Server();
+    $server = Server::getInstance();
 
     if ($server->get('HTTP_CLIENT_IP')) {
         $user_ip = $server->get('HTTP_CLIENT_IP');
@@ -44,7 +44,7 @@ if (!function_exists('getallheaders')) {
      */
     function getallheaders(): array
     {
-        $server = new Server();
+        $server = Server::getInstance();
 
         $data = $server->all();
 

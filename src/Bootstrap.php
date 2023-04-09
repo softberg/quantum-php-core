@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.0
  */
 
 namespace Quantum;
@@ -25,6 +25,7 @@ use Quantum\Router\Router;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 use Quantum\Loader\Setup;
+use ReflectionException;
 use Psr\Log\LogLevel;
 use Quantum\Di\Di;
 
@@ -40,18 +41,13 @@ class Bootstrap
      * @throws Exceptions\ModuleLoaderException
      * @throws Exceptions\ControllerException
      * @throws Exceptions\MiddlewareException
-     * @throws Exceptions\DatabaseException
-     * @throws Exceptions\SessionException
      * @throws Exceptions\ConfigException
      * @throws Exceptions\RouteException
-     * @throws Exceptions\CsrfException
-     * @throws Exceptions\LangException
      * @throws Exceptions\ViewException
-     * @throws Exceptions\DiException
-     * @throws \Twig\Error\RuntimeError
+     * @throws ReflectionException
      * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
      * @throws \Twig\Error\SyntaxError
-     * @throws \ReflectionException
      */
     public static function run()
     {
@@ -59,7 +55,7 @@ class Bootstrap
             $request = Di::get(Request::class);
             $response = Di::get(Response::class);
 
-            $request->init(new Server);
+            $request->init(Server::getInstance());
             $response->init();
 
             if ($request->getMethod() == 'OPTIONS') {
@@ -93,7 +89,7 @@ class Bootstrap
      * @param Response $response
      * @throws Exceptions\ConfigException
      * @throws Exceptions\DiException
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     private static function handleCors(Response $response)
     {
