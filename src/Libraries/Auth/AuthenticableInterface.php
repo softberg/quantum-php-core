@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.4.0
+ * @since 2.9.0
  */
 
 namespace Quantum\Libraries\Auth;
@@ -43,7 +43,7 @@ interface AuthenticableInterface
 
     /**
      * User
-     * @return \Quantum\Libraries\Auth\User|null
+     * @return User|null
      */
     public function user(): ?User;
 }

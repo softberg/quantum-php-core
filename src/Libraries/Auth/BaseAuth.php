@@ -9,15 +9,16 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.0
  */
 
 namespace Quantum\Libraries\Auth;
 
-use Quantum\Exceptions\AuthException;
+use Quantum\Libraries\Mailer\MailerInterface;
 use Quantum\Libraries\JWToken\JWToken;
+use Quantum\Exceptions\AuthException;
+use Quantum\Exceptions\LangException;
 use Quantum\Libraries\Hasher\Hasher;
-use Quantum\Libraries\Mailer\Mailer;
 use Quantum\Exceptions\DiException;
 use PHPMailer\PHPMailer\Exception;
 use ReflectionException;
@@ -83,7 +84,7 @@ abstract class BaseAuth
     const REMEMBER_TOKEN_KEY = 'rememberToken';
 
     /**
-     * @var Mailer
+     * @var MailerInterface
      */
     protected $mailer;
 
@@ -174,7 +175,7 @@ abstract class BaseAuth
      * @throws DiException
      * @throws Exception
      * @throws ReflectionException
-     * @throws \Quantum\Exceptions\LangException
+     * @throws LangException
      */
     public function signup(array $userData, array $customData = null): User
     {
@@ -222,7 +223,7 @@ abstract class BaseAuth
      * @throws DiException
      * @throws Exception
      * @throws ReflectionException
-     * @throws \Quantum\Exceptions\LangException
+     * @throws LangException
      */
     public function forget(string $username): ?string
     {
@@ -443,6 +444,12 @@ abstract class BaseAuth
      * @throws Exception
      * @throws DiException
      * @throws ReflectionException
+     */
+
+    /**
+     * Send email
+     * @param User $user
+     * @param array $body
      */
     protected function sendMail(User $user, array $body)
     {
