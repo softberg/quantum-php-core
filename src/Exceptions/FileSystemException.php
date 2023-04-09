@@ -42,6 +42,16 @@ class FileSystemException extends AppException
     }
 
     /**
+     * @param string $name
+     * @return FileSystemException
+     * @throws LangException
+     */
+    public static function fileNotFound(string $name): FileSystemException
+    {
+        return new static(t('exception.file_not_found', $name), E_WARNING);
+    }
+
+    /**
      * @return FileSystemException
      * @throws LangException
      */

@@ -9,17 +9,20 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.0
  */
 
 namespace Quantum\Tracer;
 
 use Quantum\Libraries\Storage\FileSystem;
+use Quantum\Exceptions\ViewException;
+use Quantum\Exceptions\DiException;
 use Quantum\Factory\ViewFactory;
 use Quantum\Logger\FileLogger;
 use Quantum\Http\Response;
-use Quantum\Di\Di;
+use ReflectionException;
 use ErrorException;
+use Quantum\Di\Di;
 use Throwable;
 
 /**
@@ -40,7 +43,7 @@ class ErrorHandler
     private static $trace = [];
 
     /**
-     * @var \string[][]
+     * @var string[][]
      */
     private static $errorTypes = [
         E_ERROR => ['fn' => 'error', 'severity' => 'Error'],
@@ -60,11 +63,13 @@ class ErrorHandler
 
     /**
      * Setups the handlers
-     * @throws \ErrorException
-     * @throws \Quantum\Exceptions\DiException
-     * @throws \Quantum\Exceptions\HookException
-     * @throws \Quantum\Exceptions\ViewException
-     * @throws \ReflectionException
+     * @throws DiException
+     * @throws ErrorException
+     * @throws ReflectionException
+     * @throws ViewException
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
      */
     public static function setup()
     {
@@ -83,11 +88,13 @@ class ErrorHandler
     }
 
     /**
-     * @param \Throwable $e
-     * @throws \Quantum\Exceptions\DiException
-     * @throws \Quantum\Exceptions\HookException
-     * @throws \Quantum\Exceptions\ViewException
-     * @throws \ReflectionException
+     * @param Throwable $e
+     * @throws DiException
+     * @throws ReflectionException
+     * @throws ViewException
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
      */
     protected static function handle(Throwable $e)
     {
@@ -121,9 +128,9 @@ class ErrorHandler
 
     /**
      * Composes the stack trace
-     * @param \Throwable $e
-     * @throws \Quantum\Exceptions\DiException
-     * @throws \ReflectionException
+     * @param Throwable $e
+     * @throws DiException
+     * @throws ReflectionException
      */
     protected static function composeStackTrace(Throwable $e)
     {
@@ -152,8 +159,8 @@ class ErrorHandler
      * @param int $lineNumber
      * @param string $className
      * @return string
-     * @throws \Quantum\Exceptions\DiException
-     * @throws \ReflectionException
+     * @throws DiException
+     * @throws ReflectionException
      */
     protected static function getSourceCode(string $filename, int $lineNumber, string $className): string
     {
@@ -161,7 +168,7 @@ class ErrorHandler
 
         $start = max($lineNumber - floor(self::NUM_LINES / 2), 1);
 
-        $lines = $fs->getLines($filename, $start, self::NUM_LINES, FILE_IGNORE_NEW_LINES);
+        $lines = $fs->getLines($filename, $start, self::NUM_LINES);
 
         $code = '<ol start="' . key($lines) . '">';
         foreach ($lines as $currentLineNumber => $line) {
@@ -174,7 +181,7 @@ class ErrorHandler
 
     /**
      * Gets the error type
-     * @param \Throwable $e
+     * @param Throwable $e
      * @return string[]|null
      */
     private static function getErrorType(Throwable $e): ?array
