@@ -16,16 +16,82 @@ namespace Quantum\Libraries\Mailer;
 
 
 /**
- * Mailer Abstract Layer interface
+ * Interface MailerInterface
  * @package Quantum\Libraries\Mailer
  */
 interface MailerInterface
 {
-        
+
     /**
-     * Send mail by using Sendinblue
-     * @param  string $data
+     * Sets the 'From' email and the name
+     * @param string $email
+     * @param string|null $name
+     * @return MailerInterface
+     */
+    public function setFrom(string $email, ?string $name = null): MailerInterface;
+
+    /**
+     * Gets the 'From' email and the name
+     * @return array
+     */
+    public function getFrom(): array;
+
+    /**
+     * Sets 'To' addresses
+     * @param string $email
+     * @param string|null $name
+     * @return MailerInterface
+     */
+    public function setAddress(string $email, ?string $name = null): MailerInterface;
+
+    /**
+     * Gets 'To' addresses
+     * @return array
+     */
+    public function getAddresses(): array;
+
+    /**
+     * Sets the subject
+     * @param string|null $subject
+     * @return MailerInterface
+     */
+    public function setSubject(?string $subject): MailerInterface;
+
+    /**
+     * Gets the subject
+     * @return string
+     */
+    public function getSubject(): ?string;
+
+    /**
+     * Sets the template
+     * @param string $templatePath
+     * @return MailerInterface
+     */
+    public function setTemplate(string $templatePath): MailerInterface;
+
+    /**
+     * Gets the template
+     * @return string
+     */
+    public function getTemplate(): string;
+
+    /**
+     * Sets the body
+     * @param string|array $message
+     * @return MailerInterface
+     */
+    public function setBody($message): MailerInterface;
+
+    /**
+     * Gets the body
+     * @return string|array
+     */
+    public function getBody();
+
+    /**
+     * Sends an email
      * @return bool
      */
-    public function sendMail(string $data);
+    public function send(): bool;
 }

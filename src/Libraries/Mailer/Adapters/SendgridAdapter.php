@@ -16,30 +16,133 @@ namespace Quantum\Libraries\Mailer\Adapters;
 
 use Quantum\Libraries\Mailer\MailerInterface;
 use Quantum\Libraries\Curl\HttpClient;
+use Quantum\Libraries\Mailer\MailTrap;
+use Quantum\Exceptions\DiException;
+use ReflectionException;
+use Exception;
 
+/**
+ * class SendgridAdapter
+ * @package Quantum\Libraries\Mailer
+ */
 class SendgridAdapter implements MailerInterface
 {
+    use MailerAdapterTrait;
+
     /**
-     * Send mail by using Sendgrid
-     * @param  string $data
+     * @var string
+     */
+    public $name = 'Sendgrid';
+
+    /**
+     * @var HttpClient
+     */
+    private $httpClient;
+
+    /**
+     * @var string
+     */
+    private $apiKey;
+
+    /**
+     * @var string
+     */
+    private $apiUrl = 'https://api.sendgrid.com/v3/mail/send';
+
+    /**
+     * @var array
+     */
+    private $data = [];
+
+    /**
+     * @var SendgridAdapter|null
+     */
+    private static $instance = null;
+
+    /**
+     * SendgridAdapter constructor
+     * @param array $params
+     */
+    private function __construct(array $params)
+    {
+        $this->httpClient = new HttpClient();
+
+        $this->apiKey = $params['api_key'];
+    }
+
+    /**
+     * Get Instance
+     * @param array $params
+     * @return SendgridAdapter|null
+     */
+    public static function getInstance(array $params): ?SendgridAdapter
+    {
+        if (self::$instance === null) {
+            self::$instance = new self($params);
+        }
+
+        return self::$instance;
+    }
+
+    /**
+     * Prepares the data
+     */
+    private function prepare()
+    {
+        $this->data['from'] = [
+            'email' => $this->from['email']
+        ];
+
+        $this->data['personalizations'] = [
+            ['to' => $this->addresses]
+        ];
+
+        if ($this->subject) {
+            $this->data['subject'] = $this->subject;
+        }
+
+        if ($this->message) {
+            if ($this->templatePath) {
+                $body = $this->createFromTemplate();
+            } else {
+                $body = is_array($this->message) ? implode($this->message) : $this->message;
+            }
+
+            $this->data['content'] = [
+                'type' => 'text/html',
+                'value' => trim(str_replace("\n", "", $body))
+            ];
+        }
+    }
+
+    /**
      * @return bool
      */
-    public function sendMail($data)
+    private function sendEmail(): bool
     {
         try {
-            $httpClient = new HttpClient();
-            $httpClient->createMultiRequest()
-                ->createRequest('https://api.sendgrid.com/v3/mail/send')
+            $this->httpClient
+                ->createRequest($this->apiUrl)
                 ->setMethod('POST')
                 ->setHeaders([
-                    'Authorization: Bearer ' . config()->get('mailer.sendgrid.api_key'),
-                    'Content-Type: application/json'
+                    'Authorization' => 'Bearer ' . $this->apiKey,
+                    'Content-Type' => 'application/json'
                 ])
-                ->setData($data)
+                ->setData(json_encode($this->data))
                 ->start();
+
             return true;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return false;
         }
+    }
+
+    /**
+     * @return bool
+     * @throws Exception
+     */
+    private function saveEmail(): bool
+    {
+        return MailTrap::getInstance()->saveMessage($this->getMessageId(), $this->getMessageContent());
     }
 }
