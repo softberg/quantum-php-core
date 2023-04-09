@@ -203,12 +203,17 @@ class LocalFileSystemAdapter implements FilesystemAdapterInterface
      * @param string $filename
      * @param int $offset
      * @param int|null $length
-     * @param int $flags
      * @return array
      */
-    public function getLines(string $filename, int $offset, ?int $length, int $flags = 0): array
+    public function getLines(string $filename, int $offset = 0, ?int $length = null): array
     {
-        return array_slice(file($filename, $flags), $offset, $length, true);
+        $lines = file($filename, FILE_IGNORE_NEW_LINES);
+
+        if ($offset || $length) {
+            $lines = array_slice($lines, $offset, $length ?: count($lines), true);
+        }
+
+        return $lines;
     }
 
     /**

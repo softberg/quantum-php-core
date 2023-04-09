@@ -16,8 +16,8 @@ namespace Quantum\Libraries\Storage\Adapters\Dropbox;
 use Quantum\Exceptions\DatabaseException;
 use Quantum\Exceptions\CryptorException;
 use Quantum\Libraries\Curl\HttpClient;
-use Quantum\Exceptions\HttpException;
 use Quantum\Exceptions\LangException;
+use Quantum\Exceptions\HttpException;
 use Quantum\Exceptions\AppException;
 use Exception;
 
