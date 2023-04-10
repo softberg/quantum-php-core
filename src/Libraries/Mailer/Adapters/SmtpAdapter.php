@@ -93,9 +93,9 @@ class SmtpAdapter implements MailerInterface
     /**
      * Get Instance
      * @param array $params
-     * @return SmtpAdapter|null
+     * @return SmtpAdapter
      */
-    public static function getInstance(array $params): ?SmtpAdapter
+    public static function getInstance(array $params): SmtpAdapter
     {
         if (self::$instance === null) {
             self::$instance = new self($params);

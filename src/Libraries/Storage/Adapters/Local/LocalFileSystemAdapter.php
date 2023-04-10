@@ -209,6 +209,10 @@ class LocalFileSystemAdapter implements FilesystemAdapterInterface
     {
         $lines = file($filename, FILE_IGNORE_NEW_LINES);
 
+        if(!$lines) {
+            return [];
+        }
+
         if ($offset || $length) {
             $lines = array_slice($lines, $offset, $length ?: count($lines), true);
         }

@@ -144,9 +144,9 @@ trait MailerAdapterTrait
 
     /**
      * Gets the template
-     * @return string
+     * @return string|null
      */
-    public function getTemplate(): string
+    public function getTemplate(): ?string
     {
         return $this->templatePath;
     }
@@ -164,7 +164,7 @@ trait MailerAdapterTrait
 
     /**
      * Gets the body
-     * @return string|array
+     * @return array|string|null
      */
     public function getBody()
     {
@@ -252,6 +252,7 @@ trait MailerAdapterTrait
     }
 
     /**
+     * Generates the message content
      * @return string
      * @throws Exception
      */

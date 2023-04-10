@@ -71,9 +71,9 @@ class MandrillAdapter implements MailerInterface
     /**
      * Get Instance
      * @param array $params
-     * @return MandrillAdapter|null
+     * @return MandrillAdapter
      */
-    public static function getInstance(array $params): ?MandrillAdapter
+    public static function getInstance(array $params): MandrillAdapter
     {
         if (self::$instance === null) {
             self::$instance = new self($params);

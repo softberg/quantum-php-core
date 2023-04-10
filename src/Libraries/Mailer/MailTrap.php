@@ -64,9 +64,9 @@ class MailTrap
 
     /**
      * Get Instance
-     * @return MailTrap|null
+     * @return MailTrap
      */
-    public static function getInstance(): ?MailTrap
+    public static function getInstance(): MailTrap
     {
         if (self::$instance === null) {
             self::$instance = new self();
@@ -113,7 +113,7 @@ class MailTrap
     }
 
     /**
-     * Gets the parsed message Id
+     * Gets the parsed message ID
      * @return string|null
      */
     public function getParsedMessageId(): ?string
@@ -177,10 +177,10 @@ class MailTrap
     }
 
     /**
-     * Gets the parsed 'CC addresses
-     * @return array|null
+     * Gets the parsed 'CC' addresses
+     * @return array
      */
-    public function getParsedCcAddresses(): ?array
+    public function getParsedCcAddresses(): array
     {
         $addresses = explode(',', $this->message->getHeaderValue('cc'));
         return array_map('trim', $addresses);
@@ -188,9 +188,9 @@ class MailTrap
 
     /**
      * Gets the parsed 'BCC' addresses
-     * @return array|null
+     * @return array
      */
-    public function getParsedBccAddresses(): ?array
+    public function getParsedBccAddresses(): array
     {
         $addresses = explode(',', $this->message->getHeaderValue('bcc'));
         return array_map('trim', $addresses);
@@ -198,9 +198,9 @@ class MailTrap
 
     /**
      * Gets the 'Reply To' addresses
-     * @return array|null
+     * @return array
      */
-    public function getParsedReplyToAddresses(): ?array
+    public function getParsedReplyToAddresses(): array
     {
         $addresses = explode(',', $this->message->getHeaderValue('reply-to'));
         return array_map('trim', $addresses);

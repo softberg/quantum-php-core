@@ -59,7 +59,7 @@ interface MailerInterface
 
     /**
      * Gets the subject
-     * @return string
+     * @return string|null
      */
     public function getSubject(): ?string;
 
@@ -72,9 +72,9 @@ interface MailerInterface
 
     /**
      * Gets the template
-     * @return string
+     * @return string|null
      */
-    public function getTemplate(): string;
+    public function getTemplate(): ?string;
 
     /**
      * Sets the body

@@ -72,9 +72,9 @@ class SendinblueAdapter implements MailerInterface
     /**
      * Get Instance
      * @param array $params
-     * @return SendinblueAdapter|null
+     * @return SendinblueAdapter
      */
-    public static function getInstance(array $params): ?SendinblueAdapter
+    public static function getInstance(array $params): SendinblueAdapter
     {
         if (self::$instance === null) {
             self::$instance = new self($params);

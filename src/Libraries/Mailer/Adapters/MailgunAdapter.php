@@ -73,9 +73,9 @@ class MailgunAdapter implements MailerInterface
     /**
      * Get Instance
      * @param array $params
-     * @return MailgunAdapter|null
+     * @return MailgunAdapter
      */
-    public static function getInstance(array $params): ?MailgunAdapter
+    public static function getInstance(array $params): MailgunAdapter
     {
         if (self::$instance === null) {
             self::$instance = new self($params);

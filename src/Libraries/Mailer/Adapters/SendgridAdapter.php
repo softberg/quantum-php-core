@@ -71,9 +71,9 @@ class SendgridAdapter implements MailerInterface
     /**
      * Get Instance
      * @param array $params
-     * @return SendgridAdapter|null
+     * @return SendgridAdapter
      */
-    public static function getInstance(array $params): ?SendgridAdapter
+    public static function getInstance(array $params): SendgridAdapter
     {
         if (self::$instance === null) {
             self::$instance = new self($params);
