@@ -17,8 +17,6 @@ namespace Quantum\Libraries\Mailer\Adapters;
 use Quantum\Libraries\Mailer\MailerInterface;
 use Quantum\Libraries\Curl\HttpClient;
 use Quantum\Libraries\Mailer\MailTrap;
-use Quantum\Exceptions\DiException;
-use ReflectionException;
 use Exception;
 
 /**
