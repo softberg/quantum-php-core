@@ -65,7 +65,7 @@ trait MailerAdapterTrait
     private $templatePath = null;
 
     /**
-     * Sets the from email and the name
+     * Sets the 'From' email and the name
      * @param string $email
      * @param string|null $name
      * @return MailerInterface
@@ -78,7 +78,7 @@ trait MailerAdapterTrait
     }
 
     /**
-     * Gets "from" email and the "name"
+     * Gets 'From' email and the "name"
      * @return array
      */
     public function getFrom(): array
@@ -87,7 +87,7 @@ trait MailerAdapterTrait
     }
 
     /**
-     * Sets "To" addresses
+     * Sets 'To' addresses
      * @param string $email
      * @param string|null $name
      * @return MailerInterface
@@ -103,7 +103,7 @@ trait MailerAdapterTrait
     }
 
     /**
-     * Gets "To" addresses
+     * Gets 'To' addresses
      * @return array
      */
     public function getAddresses(): array
@@ -172,7 +172,7 @@ trait MailerAdapterTrait
     }
 
     /**
-     *  @inheritDoc
+     * @inheritDoc
      * @throws DiException
      * @throws ReflectionException
      * @throws Exception
