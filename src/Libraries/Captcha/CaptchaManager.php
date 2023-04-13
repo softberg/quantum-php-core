@@ -26,8 +26,10 @@ class CaptchaManager
 
         $captchaAdapter = config()->get('captcha.current');
 
-        if (!in_array($captchaAdapter, self::ADAPTERS)) {
+        if (!in_array($captchaAdapter, self::ADAPTERS) && !is_null($captchaAdapter)) {
             throw CaptchaException::cantConnect($captchaAdapter);
+        }elseif (is_null($captchaAdapter)){
+            throw new \Exception('');
         }
 
         $captchaAdapterClassName = __NAMESPACE__ . '\\Adapters\\' . ucfirst($captchaAdapter) . 'Adapter';

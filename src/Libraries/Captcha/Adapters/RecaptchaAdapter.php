@@ -30,28 +30,14 @@ class RecaptchaAdapter implements CaptchaInterface
      */
     private $secretkey;
 
+    private $http;
+
     /**
      * Remote IP address
      *
      * @var string
      */
     protected $remoteIp = null;
-
-    /**
-     * Supported themes
-     *
-     * @var array
-     * @see https://developers.google.com/recaptcha/docs/display#config
-     */
-    protected static $themes = array('light', 'dark');
-
-    /**
-     * Captcha theme. Default : light
-     *
-     * @var string
-     * @see https://developers.google.com/recaptcha/docs/display#config
-     */
-    protected $theme = null;
 
     /**
      * Supported types
@@ -77,12 +63,6 @@ class RecaptchaAdapter implements CaptchaInterface
      */
     protected $language = null;
 
-    /**
-     * CURL timeout (in seconds) to verify response
-     *
-     * @var int
-     */
-    private $verifyTimeout = 1;
 
     /**
      * Captcha size. Default : normal
@@ -132,150 +112,34 @@ class RecaptchaAdapter implements CaptchaInterface
     }
 
     /**
-     * Set theme
-     *
-     * @param string $theme (see https://developers.google.com/recaptcha/docs/display#config)
-     * @return object
-     */
-    public function setTheme($theme = 'light')
-    {
-        if (in_array($theme, self::$themes))
-            $this->theme = $theme;
-        else
-            throw new \Exception('Theme "' . $theme . '"" is not supported. Available themes : ' . join(', ', self::$themes));
-
-        return $this;
-    }
-
-    /**
-     * Set type
-     *
-     * @param string $type (see https://developers.google.com/recaptcha/docs/display#config)
-     * @return object
-     */
-    public function setType($type = 'image')
-    {
-        if (in_array($type, self::$types))
-            $this->type = $type;
-
-        return $this;
-    }
-
-    /**
-     * Set language
-     *
-     * @param string $language (see https://developers.google.com/recaptcha/docs/language)
-     * @return object
-     */
-    public function setLanguage($language)
-    {
-        $this->language = $language;
-
-        return $this;
-    }
-
-    /**
-     * Set timeout
-     *
-     * @param int $timeout
-     * @return object
-     */
-    public function setVerifyTimeout($timeout)
-    {
-        $this->verifyTimeout = $timeout;
-
-        return $this;
-    }
-
-    /**
-     * Set size
-     *
-     * @param string $size (see https://developers.google.com/recaptcha/docs/display#render_param)
-     * @return object
-     */
-    public function setSize($size)
-    {
-        $this->size = $size;
-
-        return $this;
-    }
-
-    /**
      * Generate the JS code of the captcha
      *
-     * @return string
-     */
-    public function renderJs($lang = null, $callback = false, $onLoadClass = 'onloadCallBack')
-    {
-        $data = array();
-        if (!is_null($this->language))
-            $data = array('hl' => $this->language);
-
-        return '<script src="https://www.google.com/recaptcha/api.js?' . http_build_query($data) . '"></script>';
-    }
-
-    /**
-     * Get hCaptcha js link.
-     *
-     * @param string $lang
-     * @param boolean $callback
+     * @param null $lang
+     * @param bool $callback
      * @param string $onLoadClass
-     *
      * @return string
      */
-    public function getJsLink($lang = null, $callback = false, $onLoadClass = 'onloadCallBack')
+    public function renderJs($lang = null, $callback = false, $onLoadClass = 'onloadCallBack'): string
     {
-        $client_api = static::CLIENT_API;
-        $params = [];
-
-        $callback ? $this->setCallBackParams($params, $onLoadClass) : false;
-        $lang ? $params['hl'] = $lang : null;
-
-        return $client_api . '?' . http_build_query($params);
+        return '<script src="'. self::CLIENT_API .'"></script>';
     }
 
     /**
      * Generate the HTML code block for the captcha
      *
+     * @param string $formIdentifier
+     * @param array $attributes
      * @return string
      */
-    public function display($formIdentifier = '', $attributes = [])
+    public function display(string $formIdentifier = '', array $attributes = []): string
     {
-        if (!empty($this->sitekey)) {
-            if (strtolower($this->type) == 'visible'){
-                $data = 'data-sitekey="' . $this->sitekey . '"';
-
-                if (!is_null($this->theme))
-                    $data .= ' data-theme="' . $this->theme . '"';
-
-                if (!is_null($this->type))
-                    $data .= ' data-type="' . $this->type . '"';
-
-                if (!is_null($this->size))
-                    $data .= ' data-size="' . $this->size . '"';
-
-                $captchaEleme = '<div class="col s1 offset-s2 g-recaptcha" ' . $data . '></div>';
-            } elseif (strtolower($this->type) == 'invisible') {
-                $captchaEleme = '';
-                if (!isset($attributes['data-callback'])) {
-                    $captchaEleme = '<script>
-                     document.addEventListener("DOMContentLoaded", function() {
-                        let button = document.getElementsByTagName("button");
-                    
-                        button[0].setAttribute("data-sitekey", "' . $this->sitekey . '");
-                        button[0].setAttribute("data-callback", "onSubmit");
-                        button[0].setAttribute("data-action", "submit");
-                        button[0].classList.add("g-recaptcha");
-                     })
-                    
-                    function onSubmit (token){
-                        document.getElementById("'. $formIdentifier .'").submit();
-                    }
-                </script>';
-                }
-            }
-            return $captchaEleme;
+        $captchaElement = '';
+        if (strtolower($this->type) == 'visible'){
+            $captchaElement = $this->getVisibleElement();
+        } elseif (strtolower($this->type) == 'invisible') {
+            $captchaElement = $this->getInvisibleElement($formIdentifier);
         }
+        return $captchaElement;
     }
 
     /**
@@ -284,7 +148,7 @@ class RecaptchaAdapter implements CaptchaInterface
      * @param string $response Response code after submitting form (usually $_POST['g-recaptcha-response'])
      * @return bool
      */
-    public function verifyResponse($response, $clientIp = null)
+    public function verifyResponse(string $response, $clientIp = null): bool
     {
         if (is_null($this->secretkey))
             throw new \Exception('You must set your secret key');
@@ -323,7 +187,7 @@ class RecaptchaAdapter implements CaptchaInterface
      *
      * @return array Errors code and name
      */
-    public function getErrorCodes()
+    public function getErrorCodes(): array
     {
         $errors = array();
 
@@ -390,5 +254,29 @@ class RecaptchaAdapter implements CaptchaInterface
 
         return $errors;
     }
-    
+
+    private function getInvisibleElement(string $formIdentifier): string
+    {
+        return '<script>
+                 document.addEventListener("DOMContentLoaded", function() {
+                    let button = document.getElementsByTagName("button");
+                
+                    button[0].setAttribute("data-sitekey", "' . $this->sitekey . '");
+                    button[0].setAttribute("data-callback", "onSubmit");
+                    button[0].setAttribute("data-action", "submit");
+                    button[0].classList.add("g-recaptcha");
+                 })
+                
+                function onSubmit (){
+                    document.getElementById("'. $formIdentifier .'").submit();
+                }
+            </script>';
+    }
+
+    private function getVisibleElement(): string
+    {
+        $data = 'data-sitekey="' . $this->sitekey . '"';
+
+        return '<div class="col s1 offset-s2 g-recaptcha" ' . $data . '></div>';
+    }
 }

@@ -15,9 +15,7 @@
 namespace Quantum\Libraries\Validation\Rules;
 
 use Quantum\Libraries\Captcha\CaptchaManager;
-use ReCaptcha\RequestMethod\CurlPost;
 use Quantum\Factory\ModelFactory;
-use Quantum\Di\Di;
 
 /**
  * Trait General

@@ -2,7 +2,6 @@
 
 namespace Quantum\Libraries\Captcha\Adapters;
 
-use Quantum\Exceptions\CaptchaException;
 use Quantum\Libraries\Captcha\CaptchaInterface;
 use Quantum\Libraries\Curl\HttpClient;
 
@@ -73,35 +72,15 @@ class HcaptchaAdapter implements CaptchaInterface
      *
      * @return string
      */
-    public function display($formIdentifier = '', $attributes = [])
+    public function display(string $formIdentifier = '', array $attributes = []): string
     {
+        $captchaElement = '';
         if (strtolower($this->type) == 'visible'){
-            $attributes = $this->prepareAttributes($attributes);
-            $captchaEleme = '<div' . $this->buildAttributes($attributes) . '></div>';
+            $captchaElement = $this->getVisibleElement($attributes);
         } elseif (strtolower($this->type) == 'invisible') {
-            $captchaEleme = '';
-            if (!isset($attributes['data-callback'])) {
-                $functionName = 'onSubmit' . str_replace(['-', '=', '\'', '"', '<', '>', '`'], '', $formIdentifier);
-                $attributes['data-callback'] = $functionName;
-                $captchaEleme = '<script>
-                     document.addEventListener("DOMContentLoaded", function() {
-                        let button = document.getElementsByTagName("button");
-                    
-                        button[0].setAttribute("data-sitekey", "' . $this->sitekey . '");
-                        button[0].setAttribute("data-callback", "'. $functionName .'");
-                        button[0].classList.add("h-captcha");
-                     })
-                    
-                    function '. $functionName .'(){
-                        document.getElementById("'. $formIdentifier .'").submit();
-                    }
-                </script>';
-            }
-        }else{
-            throw CaptchaException::cantConnect();
+            $captchaElement = $this->getInvisibleElement($formIdentifier);
         }
-        
-        return $captchaEleme;
+        return $captchaElement;
     }
 
     /**
@@ -113,7 +92,7 @@ class HcaptchaAdapter implements CaptchaInterface
      *
      * @return string
      */
-    public function renderJs($lang = null, $callback = false, $onLoadClass = 'onloadCallBack')
+    public function renderJs($lang = null, $callback = false, $onLoadClass = 'onloadCallBack'): string
     {
         return '<script src="' . $this->getJsLink($lang, $callback, $onLoadClass) . '" async defer></script>' . "\n";
     }
@@ -126,7 +105,7 @@ class HcaptchaAdapter implements CaptchaInterface
      *
      * @return bool
      */
-    public function verifyResponse($response, $clientIp = null)
+    public function verifyResponse(string $response, string $clientIp = null): bool
     {
         if (empty($response)) {
             return false;
@@ -161,7 +140,7 @@ class HcaptchaAdapter implements CaptchaInterface
      *
      * @return string
      */
-    public function getJsLink($lang = null, $callback = false, $onLoadClass = 'onloadCallBack')
+    public function getJsLink(string $lang = null, bool $callback = false, string $onLoadClass = 'onloadCallBack'): string
     {
         $client_api = static::CLIENT_API;
         $params = [];
@@ -189,7 +168,7 @@ class HcaptchaAdapter implements CaptchaInterface
      *
      * @return array
      */
-    protected function sendRequestVerify(array $query = [])
+    protected function sendRequestVerify(array $query = []): array
     {
         $this->http->createRequest(static::VERIFY_URL)->setMethod('POST')->setData($query)->start();
 
@@ -203,7 +182,7 @@ class HcaptchaAdapter implements CaptchaInterface
      *
      * @return array
      */
-    protected function prepareAttributes(array $attributes)
+    protected function prepareAttributes(array $attributes): array
     {
         $attributes['data-sitekey'] = $this->sitekey;
         if (!isset($attributes['class'])) {
@@ -221,7 +200,7 @@ class HcaptchaAdapter implements CaptchaInterface
      *
      * @return string
      */
-    protected function buildAttributes(array $attributes)
+    protected function buildAttributes(array $attributes): string
     {
         $html = [];
 
@@ -230,5 +209,30 @@ class HcaptchaAdapter implements CaptchaInterface
         }
 
         return count($html) ? ' ' . implode(' ', $html) : '';
+    }
+
+    private function getInvisibleElement($formIdentifier): string
+    {
+        $functionName = 'onSubmit' . str_replace(['-', '=', '\'', '"', '<', '>', '`'], '', $formIdentifier);
+
+        return '<script>
+                     document.addEventListener("DOMContentLoaded", function() {
+                        let button = document.getElementsByTagName("button");
+                    
+                        button[0].setAttribute("data-sitekey", "' . $this->sitekey . '");
+                        button[0].setAttribute("data-callback", "'. $functionName .'");
+                        button[0].classList.add("h-captcha");
+                     })
+                    
+                    function '. $functionName .'(){
+                        document.getElementById("'. $formIdentifier .'").submit();
+                    }
+                </script>';
+    }
+
+    private function getVisibleElement($attributes): string
+    {
+        $attributes = $this->prepareAttributes($attributes);
+        return '<div' . $this->buildAttributes($attributes) . '></div>';
     }
 }
