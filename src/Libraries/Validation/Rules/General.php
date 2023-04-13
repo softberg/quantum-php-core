@@ -14,10 +14,10 @@
 
 namespace Quantum\Libraries\Validation\Rules;
 
+use Quantum\Libraries\Captcha\CaptchaManager;
+use ReCaptcha\RequestMethod\CurlPost;
 use Quantum\Factory\ModelFactory;
 use Quantum\Di\Di;
-use ReCaptcha\ReCaptcha;
-use ReCaptcha\RequestMethod\CurlPost;
 
 /**
  * Trait General
@@ -63,18 +63,17 @@ trait General
     }
 
     /**
-     * Checks Recaptcha
+     * Check Captcha
      * @param string $field
      * @param string $value
      * @param null|mixed $param
      */
-    protected function recaptcha(string $field, string $value, $param = null)
+    protected function captcha(string $field, string $value, $param = null)
     {
         if (!empty($value)) {
-            $recaptcha = new ReCaptcha(env('RECAPTCHA_SECRET_KEY'), new CurlPost());
-
-            if (!$recaptcha->verify($value)->isSuccess()){
-                $this->addError($field, 'recaptcha', $param);
+            $captcha = CaptchaManager::getCaptcha();
+            if (!$captcha->verifyResponse($value)){
+                $this->addError($field, 'captcha', $param);
             }
         }
     }
