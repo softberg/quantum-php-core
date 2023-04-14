@@ -27,7 +27,7 @@ class CaptchaManager
         $captchaAdapter = config()->get('captcha.current');
 
         if (!in_array($captchaAdapter, self::ADAPTERS) && !is_null($captchaAdapter)) {
-            throw CaptchaException::cantConnect($captchaAdapter);
+            throw CaptchaException::unsupportedAdapter($captchaAdapter);
         }elseif (is_null($captchaAdapter)){
             throw new \Exception('');
         }

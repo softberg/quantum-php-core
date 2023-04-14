@@ -30,6 +30,9 @@ class RecaptchaAdapter implements CaptchaInterface
      */
     private $secretkey;
 
+    /**
+     * @var HttpClient
+     */
     private $http;
 
     /**
@@ -40,14 +43,6 @@ class RecaptchaAdapter implements CaptchaInterface
     protected $remoteIp = null;
 
     /**
-     * Supported types
-     *
-     * @var array
-     * @see https://developers.google.com/recaptcha/docs/display#config
-     */
-    protected static $types = array('image', 'audio');
-
-    /**
      * Captcha type. Default : image
      *
      * @var string
@@ -56,22 +51,8 @@ class RecaptchaAdapter implements CaptchaInterface
     protected $type = null;
 
     /**
-     * Captcha language. Default : auto-detect
-     *
-     * @var string
-     * @see https://developers.google.com/recaptcha/docs/language
+     * @var RecaptchaAdapter
      */
-    protected $language = null;
-
-
-    /**
-     * Captcha size. Default : normal
-     *
-     * @var string
-     * @see https://developers.google.com/recaptcha/docs/display#render_param
-     */
-    protected $size = null;
-
     private static $instance = null;
 
     /**
@@ -80,7 +61,6 @@ class RecaptchaAdapter implements CaptchaInterface
      * @var array
      */
     protected $errorCodes = array();
-
 
     /**
      * RecaptchaAdapter
@@ -114,12 +94,9 @@ class RecaptchaAdapter implements CaptchaInterface
     /**
      * Generate the JS code of the captcha
      *
-     * @param null $lang
-     * @param bool $callback
-     * @param string $onLoadClass
      * @return string
      */
-    public function renderJs($lang = null, $callback = false, $onLoadClass = 'onloadCallBack'): string
+    public function renderJs(): string
     {
         return '<script src="'. self::CLIENT_API .'"></script>';
     }

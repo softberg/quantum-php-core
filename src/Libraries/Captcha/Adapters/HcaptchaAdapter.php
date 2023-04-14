@@ -24,7 +24,19 @@ class HcaptchaAdapter implements CaptchaInterface
      */
     protected $sitekey;
 
+    /**
+     * The hCaptcha type.
+     *
+     * @var string
+     */
     protected $type;
+
+    /**
+     * List of errors
+     *
+     * @var array
+     */
+    protected $errorCodes = array();
 
     /**
      * The cached verified responses.
@@ -35,6 +47,9 @@ class HcaptchaAdapter implements CaptchaInterface
 
     private static $instance = null;
 
+    /**
+     * @var HttpClient
+     */
     protected $http;
 
     /**
@@ -45,7 +60,7 @@ class HcaptchaAdapter implements CaptchaInterface
     private function __construct(array $params)
     {
         $this->http = new HttpClient();
-        
+
         $this->secretkey = $params['secret_key'];
         $this->sitekey = $params['site_key'];
         $this->type = $params['type'];
@@ -86,15 +101,11 @@ class HcaptchaAdapter implements CaptchaInterface
     /**
      * Render js source
      *
-     * @param null   $lang
-     * @param bool   $callback
-     * @param string $onLoadClass
-     *
      * @return string
      */
-    public function renderJs($lang = null, $callback = false, $onLoadClass = 'onloadCallBack'): string
+    public function renderJs(): string
     {
-        return '<script src="' . $this->getJsLink($lang, $callback, $onLoadClass) . '" async defer></script>' . "\n";
+        return '<script src="'. static::CLIENT_API .'" async defer></script>' . "\n";
     }
 
     /**
@@ -127,38 +138,25 @@ class HcaptchaAdapter implements CaptchaInterface
             $this->verifiedResponses[] = $response;
             return true;
         } else {
+            if (isset($verifyResponse['error-codes'])) {
+                $this->errorCodes = $verifyResponse['error-codes'];
+            }
+
             return false;
         }
     }
 
     /**
-     * Get hCaptcha js link.
+     * Returns the errors encountered
      *
-     * @param string  $lang
-     * @param boolean $callback
-     * @param string  $onLoadClass
-     *
-     * @return string
+     * @return array Errors
      */
-    public function getJsLink(string $lang = null, bool $callback = false, string $onLoadClass = 'onloadCallBack'): string
+    public function getErrorCodes(): array
     {
-        $client_api = static::CLIENT_API;
-        $params = [];
-
-        $callback ? $this->setCallBackParams($params, $onLoadClass) : false;
-        $lang ? $params['hl'] = $lang : null;
-
-        return $client_api . '?' . http_build_query($params);
-    }
-
-    /**
-     * @param $params
-     * @param $onLoadClass
-     */
-    protected function setCallBackParams(&$params, $onLoadClass)
-    {
-        $params['render'] = 'explicit';
-        $params['onload'] = $onLoadClass;
+        if (!empty($this->errorCodes)){
+            return $this->errorCodes;
+        }
+        return [];
     }
 
     /**

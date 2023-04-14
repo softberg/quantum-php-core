@@ -8,8 +8,8 @@ class CaptchaException extends \Exception
      * @param string $name
      * @return CaptchaException
      */
-    public static function cantConnect(string $name): CaptchaException
+    public static function unsupportedAdapter(string $name): CaptchaException
     {
-        return new static(t('exception.cant_connect', $name));
+        return new static(t('exception.not_supported_adapter', $name));
     }
 }
