@@ -65,7 +65,7 @@ class MandrillAdapter implements MailerInterface
     {
         $this->httpClient = new HttpClient();
 
-        $this->apiKey = $params['api_key'];
+        $this->data['key'] = $params['api_key'];
     }
 
     /**

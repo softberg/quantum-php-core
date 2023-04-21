@@ -258,7 +258,7 @@ class SmtpAdapter implements MailerInterface
                 $body = is_array($this->message) ? implode($this->message) : $this->message;
             }
 
-            $this->mailer->Body = $body;
+            $this->mailer->Body = trim(str_replace("\n", "", $body));
         }
 
         $this->fillProperties('addAddress', $this->addresses);

@@ -87,9 +87,7 @@ class SendgridAdapter implements MailerInterface
      */
     private function prepare()
     {
-        $this->data['from'] = [
-            'email' => $this->from['email']
-        ];
+        $this->data['from'] = $this->from;
 
         $this->data['personalizations'] = [
             ['to' => $this->addresses]
@@ -107,8 +105,10 @@ class SendgridAdapter implements MailerInterface
             }
 
             $this->data['content'] = [
-                'type' => 'text/html',
-                'value' => trim(str_replace("\n", "", $body))
+                [
+                    'type' => 'text/html',
+                    'value' => trim(str_replace("\n", "", $body))
+                ]
             ];
         }
     }
