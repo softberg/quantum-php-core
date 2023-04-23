@@ -9,16 +9,21 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.0
  */
 
 namespace Quantum\Libraries\Auth;
 
+use Quantum\Libraries\Mailer\MailerInterface;
 use Quantum\Libraries\JWToken\JWToken;
-use Quantum\Libraries\Mailer\Mailer;
+use Quantum\Exceptions\AuthException;
+use Quantum\Exceptions\JwtException;
 use Quantum\Libraries\Hasher\Hasher;
+use Quantum\Exceptions\DiException;
+use PHPMailer\PHPMailer\Exception;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
+use ReflectionException;
 
 /**
  * Class ApiAuth
@@ -29,19 +34,19 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
 
     /**
      * Instance of ApiAuth
-     * @var \Quantum\Libraries\Auth\ApiAuth
+     * @var ApiAuth
      */
     private static $instance;
 
     /**
      * ApiAuth constructor.
-     * @param \Quantum\Libraries\Auth\AuthServiceInterface $authService
-     * @param \Quantum\Libraries\Mailer\Mailer $mailer
-     * @param \Quantum\Libraries\Hasher\Hasher $hasher
-     * @param \Quantum\Libraries\JWToken\JWToken|null $jwt
-     * @throws \Quantum\Exceptions\AuthException
+     * @param AuthServiceInterface $authService
+     * @param MailerInterface $mailer
+     * @param Hasher $hasher
+     * @param JWToken|null $jwt
+     * @throws AuthException
      */
-    private function __construct(AuthServiceInterface $authService, Mailer $mailer, Hasher $hasher, JWToken $jwt = null)
+    private function __construct(AuthServiceInterface $authService, MailerInterface $mailer, Hasher $hasher, JWToken $jwt = null)
     {
         $this->mailer = $mailer;
         $this->jwt = $jwt;
@@ -55,14 +60,14 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
 
     /**
      * Get Instance
-     * @param \Quantum\Libraries\Auth\AuthServiceInterface $authService
-     * @param \Quantum\Libraries\Mailer\Mailer $mailer
-     * @param \Quantum\Libraries\Hasher\Hasher $hasher
-     * @param \Quantum\Libraries\JWToken\JWToken|null $jwt
-     * @return \Quantum\Libraries\Auth\ApiAuth
-     * @throws \Quantum\Exceptions\AuthException
+     * @param AuthServiceInterface $authService
+     * @param MailerInterface $mailer
+     * @param Hasher $hasher
+     * @param JWToken|null $jwt
+     * @return ApiAuth
+     * @throws AuthException
      */
-    public static function getInstance(AuthServiceInterface $authService, Mailer $mailer, Hasher $hasher, JWToken $jwt = null): ApiAuth
+    public static function getInstance(AuthServiceInterface $authService, MailerInterface $mailer, Hasher $hasher, JWToken $jwt = null): ApiAuth
     {
         if (self::$instance === null) {
             self::$instance = new self($authService, $mailer, $hasher, $jwt);
@@ -76,11 +81,11 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
      * @param string $username
      * @param string $password
      * @return array|string
-     * @throws \PHPMailer\PHPMailer\Exception
-     * @throws \Quantum\Exceptions\AuthException
-     * @throws \Quantum\Exceptions\DiException
-     * @throws \Quantum\Exceptions\JwtException
-     * @throws \ReflectionException
+     * @throws AuthException
+     * @throws Exception
+     * @throws DiException
+     * @throws JwtException
+     * @throws ReflectionException
      */
     public function signin(string $username, string $password)
     {
@@ -122,8 +127,8 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
 
     /**
      * User
-     * @return \Quantum\Libraries\Auth\User|null
-     * @throws \Quantum\Exceptions\JwtException
+     * @return User|null
+     * @throws JwtException
      */
     public function user(): ?User
     {
@@ -146,9 +151,9 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
 
     /**
      * Get Updated Tokens
-     * @param \Quantum\Libraries\Auth\User $user
+     * @param User $user
      * @return array
-     * @throws \Quantum\Exceptions\JwtException
+     * @throws JwtException
      */
     public function getUpdatedTokens(User $user): array
     {
@@ -163,7 +168,8 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
      * @param int $otp
      * @param string $otpToken
      * @return array
-     * @throws \Quantum\Exceptions\AuthException
+     * @throws AuthException
+     * @throws JwtException
      */
     public function verifyOtp(int $otp, string $otpToken): array
     {
@@ -173,7 +179,7 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
 
     /**
      * Check Refresh Token
-     * @return \Quantum\Libraries\Auth\User|null
+     * @return User|null
      */
     protected function checkRefreshToken(): ?User
     {
@@ -182,9 +188,9 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
 
     /**
      * Set Updated Tokens
-     * @param \Quantum\Libraries\Auth\User $user
+     * @param User $user
      * @return array
-     * @throws \Quantum\Exceptions\JwtException
+     * @throws JwtException
      */
     protected function setUpdatedTokens(User $user): array
     {

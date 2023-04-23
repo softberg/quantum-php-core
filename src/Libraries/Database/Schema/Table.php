@@ -9,13 +9,15 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.0
  */
 
 namespace Quantum\Libraries\Database\Schema;
 
+use Quantum\Exceptions\DatabaseException;
 use Quantum\Exceptions\MigrationException;
 use Quantum\Libraries\Database\Database;
+use Quantum\Exceptions\LangException;
 
 /**
  * Class Table
@@ -275,7 +277,7 @@ class Table
      * @param array|null $arguments
      * @return $this
      * @throws MigrationException
-     * @throws \Quantum\Exceptions\LangException
+     * @throws LangException
      */
     public function __call(string $method, ?array $arguments)
     {
@@ -289,6 +291,7 @@ class Table
 
     /**
      * Saves the query
+     * @throws DatabaseException
      */
     private function save()
     {
@@ -303,7 +306,7 @@ class Table
      * Checks if column exists on a table
      * @param string $columnName
      * @return bool
-     * @throws \Quantum\Exceptions\DatabaseException
+     * @throws DatabaseException
      */
     private function checkColumnExists(string $columnName): bool
     {

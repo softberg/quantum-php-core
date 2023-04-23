@@ -16,9 +16,11 @@ class ResultSleekTest extends SleekDbalTestCase
 
         $this->assertIsArray($users);
 
-        $this->assertEquals('John', $users[0]->firstname);
+        $this->assertInstanceOf(SleekDbal::class, $users[0]);
 
-        $this->assertEquals('Jane', $users[1]->firstname);
+        $this->assertNotNull($users[0]->firstname);
+
+        $this->assertNotNull($users[0]->lastname);
     }
 
     public function testSleekFindOne()

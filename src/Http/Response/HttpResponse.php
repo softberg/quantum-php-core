@@ -15,8 +15,8 @@
 namespace Quantum\Http\Response;
 
 use Quantum\Exceptions\StopExecutionException;
-use Quantum\Exceptions\HttpException;
 use Quantum\Exceptions\LangException;
+use Quantum\Exceptions\HttpException;
 use Quantum\Bootstrap;
 use SimpleXMLElement;
 use DOMDocument;

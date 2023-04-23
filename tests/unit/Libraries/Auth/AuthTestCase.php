@@ -11,13 +11,12 @@ namespace Quantum\Libraries\Auth {
 
 namespace Quantum\Tests\Libraries\Auth {
 
+    use Quantum\Libraries\Database\Sleekdb\SleekDbal;
+    use Quantum\Libraries\Mailer\MailerInterface;
     use Quantum\Environment\Environment;
     use Quantum\Libraries\Auth\User;
-    use Quantum\Libraries\Database\Sleekdb\SleekDbal;
     use Quantum\Tests\AppTestCase;
     use Quantum\Loader\Setup;
-    use Quantum\Di\Di;
-    use Quantum\App;
     use Mockery;
 
     function auto_increment(array $collection, string $field)
@@ -148,7 +147,7 @@ namespace Quantum\Tests\Libraries\Auth {
                 return $user;
             });
 
-            $this->mailer = Mockery::mock('Quantum\Libraries\Mailer\Mailer');
+            $this->mailer = Mockery::mock(MailerInterface::class);
 
             $this->mailer->shouldReceive('setFrom')->andReturn($this->mailer);
 

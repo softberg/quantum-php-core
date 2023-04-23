@@ -198,7 +198,17 @@ class LocalFileSystemAdapterTest extends AppTestCase
 
         $this->assertIsArray($lines);
 
-        $this->assertEquals($lineTwo . $lineThree, implode('', $lines));
+        $this->assertCount(2, $lines);
+
+        $this->assertEquals(trim($lineTwo, PHP_EOL), $lines[1]);
+
+        $this->assertEquals(trim($lineThree, PHP_EOL), $lines[2]);
+
+        $lines = $this->fs->getLines($this->filename);
+
+        $this->assertIsArray($lines);
+
+        $this->assertCount(4, $lines);
     }
 
     public function testLocalFileNameAndExtension()

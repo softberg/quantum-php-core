@@ -9,18 +9,24 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.0
  */
 
 namespace Quantum\Libraries\Auth;
 
+use Quantum\Libraries\Mailer\MailerManager;
+use Quantum\Exceptions\ServiceException;
+use Quantum\Exceptions\ConfigException;
+use Quantum\Exceptions\MailerException;
 use Quantum\Libraries\JWToken\JWToken;
 use Quantum\Exceptions\AuthException;
-use Quantum\Libraries\Mailer\Mailer;
+use Quantum\Exceptions\LangException;
 use Quantum\Libraries\Hasher\Hasher;
+use Quantum\Exceptions\DiException;
 use Quantum\Factory\ServiceFactory;
 use Quantum\Mvc\QtService;
 use Quantum\Loader\Setup;
+use ReflectionException;
 
 /**
  * Class AuthManager
@@ -31,11 +37,14 @@ class AuthManager
 
     /**
      * Get Handler
-     * @return \Quantum\Libraries\Auth\ApiAuth|\Quantum\Libraries\Auth\WebAuth
-     * @throws \Quantum\Exceptions\AuthException
-     * @throws \Quantum\Exceptions\ConfigException
-     * @throws \Quantum\Exceptions\DiException
-     * @throws \ReflectionException
+     * @return ApiAuth|WebAuth|void
+     * @throws AuthException
+     * @throws ConfigException
+     * @throws DiException
+     * @throws ReflectionException
+     * @throws ServiceException
+     * @throws LangException
+     * @throws MailerException
      */
     public static function getHandler()
     {
@@ -45,17 +54,12 @@ class AuthManager
             config()->import(new Setup('config', 'mailer'));
         }
 
-        $mailerAdaterClassName = ucfirst(config()->get('mailer.current')) . 'Adapter';
-        $mailerAdaterClass = '\\Quantum\\Libraries\\Mailer\\Adapters\\' . $mailerAdaterClassName;
-
-        $mailerAdapter = new $mailerAdaterClass();
-
         switch (config()->get('auth.type')) {
             case 'web':
-                return WebAuth::getInstance(self::getAuthService(), new Mailer($mailerAdapter), new Hasher);
+                return WebAuth::getInstance(self::getAuthService(), MailerManager::getHandler(), new Hasher);
             case 'api':
-                $jwt = (new JWToken())->setLeeway(1)->setClaims((array) config()->get('auth.claims'));
-                return ApiAuth::getInstance(self::getAuthService(), new Mailer($mailerAdapter), new Hasher, $jwt);
+                $jwt = (new JWToken())->setLeeway(1)->setClaims((array)config()->get('auth.claims'));
+                return ApiAuth::getInstance(self::getAuthService(), MailerManager::getHandler(), new Hasher, $jwt);
             default:
                 AuthException::undefinedAuthType();
         }
@@ -63,14 +67,22 @@ class AuthManager
 
     /**
      * Gets the auth service
-     * @return \Quantum\Mvc\QtService
-     * @throws \Quantum\Exceptions\ConfigException
+     * @return QtService
+     * @throws DiException
+     * @throws ReflectionException
+     * @throws ServiceException
      */
     public static function getAuthService(): QtService
     {
         return ServiceFactory::create(config()->get('auth.service'));
     }
 
+    /**
+     * @throws ConfigException
+     * @throws ReflectionException
+     * @throws DiException
+     * @throws AuthException
+     */
     private static function loadConfigs()
     {
         if (!config()->has('auth')) {

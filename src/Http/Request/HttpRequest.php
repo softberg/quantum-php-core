@@ -14,8 +14,8 @@
 
 namespace Quantum\Http\Request;
 
-use Quantum\Exceptions\LangException;
 use Quantum\Exceptions\HttpException;
+use Quantum\Exceptions\LangException;
 use Quantum\Exceptions\DiException;
 use Quantum\Libraries\Csrf\Csrf;
 use Quantum\Environment\Server;
@@ -71,10 +71,10 @@ abstract class HttpRequest
     /**
      * Initiates the Request
      * @param Server $server
-     * @throws HttpException
-     * @throws LangException
      * @throws DiException
+     * @throws HttpException
      * @throws ReflectionException
+     * @throws LangException
      */
     public static function init(Server $server)
     {
@@ -119,10 +119,10 @@ abstract class HttpRequest
      * @param string $url
      * @param array|null $data
      * @param array|null $files
+     * @throws ReflectionException
      * @throws HttpException
      * @throws LangException
      * @throws DiException
-     * @throws ReflectionException
      */
     public static function create(string $method, string $url, array $data = null, array $files = null)
     {

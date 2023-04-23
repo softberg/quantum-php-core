@@ -255,7 +255,7 @@ class Cryptor
     }
 
     /**
-     * Gets the symmetric cryptor insatnce
+     * Gets the symmetric cryptor instance
      * @return Cryptor|null
      */
     private static function getSymmetricInstance(): ?Cryptor
@@ -268,7 +268,7 @@ class Cryptor
     }
 
     /**
-     * Gets the asymmetric cryptor insatnce
+     * Gets the asymmetric cryptor instance
      * @return Cryptor|null
      */
     private static function getAsymmetricInstance(): ?Cryptor

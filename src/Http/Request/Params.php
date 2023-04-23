@@ -16,8 +16,8 @@ namespace Quantum\Http\Request;
 
 use Quantum\Libraries\Storage\UploadedFile;
 use Quantum\Libraries\Storage\FileSystem;
-use Quantum\Exceptions\HttpException;
 use Quantum\Exceptions\LangException;
+use Quantum\Exceptions\HttpException;
 use Quantum\Exceptions\DiException;
 use Quantum\Environment\Server;
 use ReflectionException;
@@ -65,8 +65,8 @@ trait Params
      * @return array[]
      * @throws DiException
      * @throws HttpException
-     * @throws LangException
      * @throws ReflectionException
+     * @throws LangException
      */
     private static function parsedParams(): array
     {
@@ -128,7 +128,7 @@ trait Params
      */
     private static function getBoundary(): ?string
     {
-        $contentType = (new Server)->contentType();
+        $contentType = Server::getInstance()->contentType();
 
         if (!$contentType) {
             return null;

@@ -12,36 +12,38 @@
  * @since 2.9.0
  */
 
+use Quantum\Libraries\Mailer\MailerInterface;
 use Quantum\Libraries\Session\SessionManager;
+use Quantum\Libraries\Mailer\MailerManager;
 use Quantum\Libraries\Asset\AssetManager;
 use Quantum\Exceptions\DatabaseException;
 use Quantum\Libraries\Cache\CacheManager;
+use Quantum\Exceptions\ServiceException;
 use Quantum\Exceptions\SessionException;
 use Quantum\Exceptions\ConfigException;
+use Quantum\Exceptions\MailerException;
 use Quantum\Libraries\Auth\AuthManager;
 use Quantum\Libraries\Session\Session;
 use Quantum\Exceptions\LangException;
 use Quantum\Exceptions\AuthException;
 use Quantum\Libraries\Cookie\Cookie;
 use Quantum\Exceptions\AppException;
-use Quantum\Libraries\Mailer\Mailer;
 use Quantum\Libraries\Auth\ApiAuth;
 use Quantum\Exceptions\DiException;
 use Quantum\Libraries\Auth\WebAuth;
 use Quantum\Libraries\Cache\Cache;
 use Quantum\Libraries\Csrf\Csrf;
 use Quantum\Hooks\HookManager;
-use Quantum\Di\Di;
 
 /**
  * Gets the session handler
  * @return Session
  * @throws ReflectionException
- * @throws ConfigException
  * @throws DatabaseException
- * @throws DiException
  * @throws SessionException
+ * @throws ConfigException
  * @throws LangException
+ * @throws DiException
  */
 function session(): Session
 {
@@ -60,10 +62,13 @@ function cookie(): Cookie
 /**
  * Gets the Auth handler
  * @return ApiAuth|WebAuth
- * @throws ReflectionException
- * @throws ConfigException
  * @throws AuthException
+ * @throws ConfigException
  * @throws DiException
+ * @throws LangException
+ * @throws MailerException
+ * @throws ReflectionException
+ * @throws ServiceException
  */
 function auth()
 {
@@ -71,14 +76,17 @@ function auth()
 }
 
 /**
- * Gets the Mail instance
- * @return Mailer
- * @throws ReflectionException
+ * Gets the Mail handler
+ * @return MailerInterface
+ * @throws ConfigException
  * @throws DiException
+ * @throws LangException
+ * @throws ReflectionException
+ * @throws MailerException
  */
-function mailer(): Mailer
+function mailer(): MailerInterface
 {
-    return Di::get(Mailer::class);
+    return MailerManager::getHandler();
 }
 
 /**

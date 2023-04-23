@@ -9,17 +9,19 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.0
  */
 
 namespace Quantum\Libraries\Lang;
 
 use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Exceptions\LangException;
+use Quantum\Exceptions\DiException;
 use Dflydev\DotAccessData\Data;
 use Quantum\Loader\Loader;
 use Quantum\Http\Request;
 use Quantum\Loader\Setup;
+use ReflectionException;
 use Quantum\Di\Di;
 
 /**
@@ -86,8 +88,8 @@ class Lang
     /**
      * Loads translations
      * @throws LangException
-     * @throws \Quantum\Exceptions\DiException
-     * @throws \ReflectionException
+     * @throws DiException
+     * @throws ReflectionException
      */
     public function load()
     {
