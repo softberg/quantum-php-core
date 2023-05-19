@@ -9,13 +9,16 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.0
  */
 
 namespace Quantum\Console\Commands;
 
 use Quantum\Libraries\Storage\FileSystem;
+use Quantum\Exceptions\LangException;
+use Quantum\Exceptions\DiException;
 use Quantum\Console\QtCommand;
+use ReflectionException;
 use Quantum\Di\Di;
 
 /**
@@ -52,16 +55,19 @@ class DebugBarCommand extends QtCommand
      * Path to public debug bar resources
      * @var string
      */
-    private $publicDebugbarFolderPath = 'public/assets/DebugBar/Resources';
+    private $publicDebugBarFolderPath = 'public/assets/DebugBar/Resources';
 
     /**
      * Path to vendor debug bar resources
      * @var string
      */
-    private $vendorDebugbarFolderPath = 'vendor/maximebf/debugbar/src/DebugBar/Resources';
+    private $vendorDebugBarFolderPath = 'vendor/maximebf/debugbar/src/DebugBar/Resources';
 
     /**
      * Executes the command and publishes the debug bar assets
+     * @throws LangException
+     * @throws DiException
+     * @throws ReflectionException
      */
     public function exec()
     {
@@ -72,7 +78,7 @@ class DebugBarCommand extends QtCommand
             return;
         }
 
-        $this->copyResources($this->vendorDebugbarFolderPath, $this->publicDebugbarFolderPath);
+        $this->copyResources($this->vendorDebugBarFolderPath, $this->publicDebugBarFolderPath);
 
         $this->info('Debugbar resources successfully published');
     }
@@ -81,13 +87,13 @@ class DebugBarCommand extends QtCommand
      * Recursively copies the debug bar assets
      * @param string $src
      * @param string $dst
-     * @throws \Quantum\Exceptions\LangException
+     * @throws LangException
      */
     private function copyResources(string $src, string $dst)
     {
         $dir = opendir($src);
 
-        if ($dst != $this->publicDebugbarFolderPath) {
+        if ($dst != $this->publicDebugBarFolderPath) {
             if ($this->fs->makeDirectory($dst) === false) {
                 throw new \RuntimeException(t('exception.directory_cant_be_created', $dst));
             }

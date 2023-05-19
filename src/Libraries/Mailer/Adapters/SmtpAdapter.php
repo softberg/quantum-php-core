@@ -15,17 +15,299 @@
 namespace Quantum\Libraries\Mailer\Adapters;
 
 use Quantum\Libraries\Mailer\MailerInterface;
-use Quantum\Libraries\Curl\HttpClient;
+use Quantum\Libraries\Mailer\MailTrap;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use Exception;
 
+/**
+ * class SmtpAdapter
+ * @package Quantum\Libraries\Mailer
+ */
 class SmtpAdapter implements MailerInterface
 {
+
+    use MailerAdapterTrait;
+
     /**
-     * Send mail by using Sendinblue
-     * @param  string $data
-     * @return bool
+     * @var PHPMailer
      */
-    public function sendMail($data)
+    private $mailer;
+
+    /**
+     * Reply To addresses
+     * @var array
+     */
+    private $replyToAddresses = [];
+
+    /**
+     * CC addresses
+     * @var array
+     */
+    private $ccAddresses = [];
+
+    /**
+     * BCC addresses
+     * @var array
+     */
+    private $bccAddresses = [];
+
+    /**
+     * Email attachments
+     * @var array
+     */
+    private $attachments = [];
+
+    /**
+     * Email attachments created from string
+     * @var array
+     */
+    private $stringAttachments = [];
+
+    /**
+     * @var SmtpAdapter|null
+     */
+    private static $instance = null;
+
+    /**
+     * SmtpAdapter constructor
+     * @param array $params
+     */
+    private function __construct(array $params)
     {
-        return true;
+        $this->mailer = new PHPMailer(true);
+
+        $this->mailer->CharSet = 'UTF-8';
+
+        $this->setupSmtp($params);
+
+        if (config()->get('debug')) {
+            $this->mailer->SMTPDebug = SMTP::DEBUG_SERVER;
+
+            $this->mailer->Debugoutput = function ($message) {
+                $this->updateDebugBar($message);
+            };
+        }
+    }
+
+    /**
+     * Get Instance
+     * @param array $params
+     * @return SmtpAdapter
+     */
+    public static function getInstance(array $params): SmtpAdapter
+    {
+        if (self::$instance === null) {
+            self::$instance = new self($params);
+        }
+
+        return self::$instance;
+    }
+
+    /**
+     * Sets "Reply-To" address
+     * @param string $email
+     * @param string|null $name
+     * @return $this
+     */
+    public function setReplay(string $email, ?string $name = null): SmtpAdapter
+    {
+        $this->replyToAddresses[] = [
+            'email' => $email,
+            'name' => $name
+        ];
+
+        return $this;
+    }
+
+    /**
+     * Gets "Reply-To" addresses
+     * @return array
+     */
+    public function getReplays(): array
+    {
+        return $this->replyToAddresses;
+    }
+
+    /**
+     * Sets "CC" address
+     * @param string $email
+     * @param string|null $name
+     * @return $this
+     */
+    public function setCC(string $email, ?string $name = null): SmtpAdapter
+    {
+        $this->ccAddresses[] = [
+            'email' => $email,
+            'name' => $name
+        ];
+
+        return $this;
+    }
+
+    /**
+     * Gets "CC" addresses
+     * @return array
+     */
+    public function getCCs(): array
+    {
+        return $this->ccAddresses;
+    }
+
+    /**
+     * Sets "BCC" address
+     * @param string $email
+     * @param string|null $name
+     * @return $this
+     */
+    public function setBCC(string $email, ?string $name = null): SmtpAdapter
+    {
+        $this->bccAddresses[] = [
+            'email' => $email,
+            'name' => $name
+        ];
+
+        return $this;
+    }
+
+    /**
+     * Get "BCC" addresses
+     * @return array
+     */
+    public function getBCCs(): array
+    {
+        return $this->bccAddresses;
+    }
+
+    /**
+     * Sets attachments from the path on the filesystem
+     * @param string $attachment
+     * @return $this
+     */
+    public function setAttachment(string $attachment): SmtpAdapter
+    {
+        $this->attachments[] = $attachment;;
+        return $this;
+    }
+
+    /**
+     * Gets the attachments
+     * @return array
+     */
+    public function getAttachments(): array
+    {
+        return $this->attachments;
+    }
+
+    /**
+     * Sets attachment from the string
+     * @param string $content
+     * @param string $filename
+     * @return $this
+     */
+    public function setStringAttachment(string $content, string $filename): SmtpAdapter
+    {
+        $this->stringAttachments[] = [
+            'content' => $content,
+            'filename' => $filename
+        ];
+
+        return $this;
+    }
+
+    /**
+     * Gets the string attachments
+     * @return array
+     */
+    public function getStringAttachments(): array
+    {
+        return $this->stringAttachments;
+    }
+
+    /**
+     * Setups the SMTP
+     * @param array $params
+     */
+    private function setupSmtp(array $params)
+    {
+        $this->mailer->isSMTP();
+        $this->mailer->SMTPAuth = true;
+        $this->mailer->Host = $params['host'];
+        $this->mailer->SMTPSecure = $params['secure'];
+        $this->mailer->Port = $params['port'];
+        $this->mailer->Username = $params['username'];
+        $this->mailer->Password = $params['password'];
+    }
+
+    /**
+     * Prepares the data
+     * @throws Exception
+     */
+    private function prepare()
+    {
+        $this->mailer->setFrom($this->from['email'], $this->from['name']);
+
+        if ($this->subject) {
+            $this->mailer->Subject = $this->subject;
+        }
+
+        if ($this->message) {
+            if ($this->templatePath) {
+                $body = $this->createFromTemplate();
+            } else {
+                $body = is_array($this->message) ? implode($this->message) : $this->message;
+            }
+
+            $this->mailer->Body = trim(str_replace("\n", "", $body));
+        }
+
+        $this->fillProperties('addAddress', $this->addresses);
+        $this->fillProperties('addReplyTo', $this->replyToAddresses);
+        $this->fillProperties('addCC', $this->ccAddresses);
+        $this->fillProperties('addBCC', $this->bccAddresses);
+        $this->fillProperties('addAttachment', $this->attachments);
+        $this->fillProperties('addStringAttachment', $this->stringAttachments);
+    }
+
+    /**
+     * Fills the php mailer properties
+     * @param string $method
+     * @param array $fields
+     */
+    private function fillProperties(string $method, array $fields = [])
+    {
+        if (!empty($fields)) {
+            foreach ($fields as $field) {
+                if (is_string($field)) {
+                    $this->mailer->$method($field);
+                } else {
+                    $valOne = current($field);
+                    next($field);
+                    $valTwo = current($field);
+                    $this->mailer->$method($valOne, $valTwo);
+                    reset($field);
+                }
+            }
+        }
+    }
+
+    /**
+     * @return bool
+     * @throws \PHPMailer\PHPMailer\Exception
+     */
+    private function sendEmail(): bool
+    {
+        return $this->mailer->send();
+    }
+
+    /**
+     * @return bool
+     * @throws \PHPMailer\PHPMailer\Exception
+     * @throws Exception
+     */
+    private function saveEmail(): bool
+    {
+        $this->mailer->preSend();
+        return MailTrap::getInstance()->saveMessage($this->getMessageId(), $this->getMessageContent());
     }
 }

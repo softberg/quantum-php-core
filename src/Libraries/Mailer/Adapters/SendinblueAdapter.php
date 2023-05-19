@@ -16,31 +16,125 @@ namespace Quantum\Libraries\Mailer\Adapters;
 
 use Quantum\Libraries\Mailer\MailerInterface;
 use Quantum\Libraries\Curl\HttpClient;
+use Quantum\Libraries\Mailer\MailTrap;
+use Exception;
 
+/**
+ * class SendinblueAdapter
+ * @package Quantum\Libraries\Mailer
+ */
 class SendinblueAdapter implements MailerInterface
-{    
+{
+
+    use MailerAdapterTrait;
+
     /**
-     * Send mail by using Sendinblue
-     * @param  string $data
+     * @var string
+     */
+    public $name = 'Sendinblue';
+
+    /**
+     * @var HttpClient
+     */
+    private $httpClient;
+
+    /**
+     * @var string
+     */
+    private $apiKey;
+
+    /**
+     * @var string
+     */
+    private $apiUrl = 'https://api.sendinblue.com/v3/smtp/email';
+
+    /**
+     * @var array
+     */
+    private $data = [];
+
+    /**
+     * @var SendinblueAdapter|null
+     */
+    private static $instance = null;
+
+    /**
+     * SendinblueAdapter constructor
+     * @param array $params
+     */
+    private function __construct(array $params)
+    {
+        $this->httpClient = new HttpClient();
+
+        $this->apiKey = $params['api_key'];
+    }
+
+    /**
+     * Get Instance
+     * @param array $params
+     * @return SendinblueAdapter
+     */
+    public static function getInstance(array $params): SendinblueAdapter
+    {
+        if (self::$instance === null) {
+            self::$instance = new self($params);
+        }
+
+        return self::$instance;
+    }
+
+    /**
+     * Prepares the data
+     */
+    private function prepare()
+    {
+        $this->data['sender'] = $this->from;
+        $this->data['to'] = $this->addresses;
+
+        if ($this->subject) {
+            $this->data['subject'] = $this->subject;
+        }
+
+        if ($this->message) {
+            if ($this->templatePath) {
+                $body = $this->createFromTemplate();
+            } else {
+                $body = is_array($this->message) ? implode($this->message) : $this->message;
+            }
+
+            $this->data['htmlContent'] = trim(str_replace("\n", "", $body));
+        }
+    }
+
+    /**
      * @return bool
      */
-    public function sendMail($data)
+    private function sendEmail(): bool
     {
         try {
-            $httpClient = new HttpClient();
-            $httpClient->createMultiRequest()
-                ->createRequest('https://api.sendinblue.com/v3/smtp/email')
+            $this->httpClient
+                ->createRequest($this->apiUrl)
                 ->setMethod('POST')
                 ->setHeaders([
                     'Accept' => 'application/json',
-                    'api-key' => config()->get('mailer.sendinblue.api_key'),
-                    'content-type' => 'application/json'
+                    'Content-type' => 'application/json',
+                    'api-key' => $this->apiKey
                 ])
-                ->setData($data)
+                ->setData(json_encode($this->data))
                 ->start();
+
             return true;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return false;
         }
+    }
+
+    /**
+     * @return bool
+     * @throws Exception
+     */
+    private function saveEmail(): bool
+    {
+        return MailTrap::getInstance()->saveMessage($this->getMessageId(), $this->getMessageContent());
     }
 }

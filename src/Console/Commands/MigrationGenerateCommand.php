@@ -47,7 +47,6 @@ class MigrationGenerateCommand extends QtCommand
 
     /**
      * Executes the command
-     * @throws \Quantum\Exceptions\LangException
      * @throws \Quantum\Exceptions\MigrationException
      */
     public function exec()

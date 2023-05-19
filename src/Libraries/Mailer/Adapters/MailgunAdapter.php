@@ -16,30 +16,131 @@ namespace Quantum\Libraries\Mailer\Adapters;
 
 use Quantum\Libraries\Mailer\MailerInterface;
 use Quantum\Libraries\Curl\HttpClient;
+use Quantum\Libraries\Mailer\MailTrap;
+use Exception;
 
+/**
+ * class MailgunAdapter
+ * @package Quantum\Libraries\Mailer
+ */
 class MailgunAdapter implements MailerInterface
 {
+
+    use MailerAdapterTrait;
+
     /**
-     * Send mail by using Mailgun
-     * @param  string $data
+     * @var string
+     */
+    public $name = 'Mailgun';
+
+    /**
+     * @var HttpClient
+     */
+    private $httpClient;
+
+    /**
+     * @var string
+     */
+    private $apiKey;
+
+    /**
+     * @var string
+     */
+    private $apiUrl = 'https://api.mailgun.net/v3/';
+
+    /**
+     * @var array
+     */
+    private $data = [];
+
+    /**
+     * @var MailgunAdapter|null
+     */
+    private static $instance = null;
+
+    /**
+     * MailgunAdapter constructor
+     * @param array $params
+     */
+    private function __construct(array $params)
+    {
+        $this->httpClient = new HttpClient();
+
+        $this->apiKey = $params['api_key'];
+        $this->apiUrl .= $params['domain'] . '/messages';
+    }
+
+    /**
+     * Get Instance
+     * @param array $params
+     * @return MailgunAdapter
+     */
+    public static function getInstance(array $params): MailgunAdapter
+    {
+        if (self::$instance === null) {
+            self::$instance = new self($params);
+        }
+
+        return self::$instance;
+    }
+
+    /**
+     * Prepares the data
+     */
+    private function prepare()
+    {
+        $this->data['from'] = $this->from['name'] . " " . $this->from['email'];
+
+        $to = [];
+        foreach ($this->addresses as $address) {
+            $to[] = $address['email'];
+        }
+
+        $this->data['to'] = implode(',', $to);
+
+        if ($this->subject) {
+            $this->data['subject'] = $this->subject;
+        }
+
+        if ($this->message) {
+            if ($this->templatePath) {
+                $body = $this->createFromTemplate();
+            } else {
+                $body = is_array($this->message) ? implode($this->message) : $this->message;
+            }
+
+            $this->data['html'] = trim(str_replace("\n", "", $body));
+        }
+    }
+
+    /**
      * @return bool
      */
-    public function sendMail($data)
+    private function sendEmail(): bool
     {
         try {
-            $httpClient = new HttpClient();
-            $httpClient->createMultiRequest()
-                ->createRequest('https://api.mailgun.net/v3/' . config()->get('mailer.mailgun.domain') . '/messages')
+            $this->httpClient
+                ->createRequest($this->apiUrl)
                 ->setMethod('POST')
                 ->setHeaders([
-                    "Authorization" => "Basic " . base64_encode("api:" . config()->get('mailer.mailgun.api_key')),
-                    "Content-Type" => "application/x-www-form-urlencoded"
+                    'Authorization' => 'Basic ' . base64_encode('api:' . $this->apiKey),
+                    'Content-Type' => 'application/x-www-form-urlencoded'
                 ])
-                ->setData($data)
+                ->setData(json_encode($this->data))
                 ->start();
+
             return true;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return false;
         }
+    }
+
+    /**
+     * @return bool
+     * @throws Exception
+     */
+    private function saveEmail(): bool
+    {
+        return MailTrap::getInstance()->saveMessage($this->getMessageId(), $this->getMessageContent());
     }
 }

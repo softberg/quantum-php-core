@@ -248,8 +248,8 @@ class UploadedFile extends SplFileInfo
      * @return bool
      * @throws FileSystemException
      * @throws FileUploadException
-     * @throws LangException
      * @throws ImageResizeException
+     * @throws LangException
      */
     public function save(string $dest, bool $overwrite = false): bool
     {

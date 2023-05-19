@@ -142,7 +142,7 @@ namespace Quantum\Tests\Libraries\Encryption {
         public function testGetIV()
         {
             $cryptor = Cryptor::getInstance();
-//            dump($cryptor->getIV());
+
             $this->assertNull($cryptor->getIV());
 
             $cryptor->encrypt($this->phraseOne);

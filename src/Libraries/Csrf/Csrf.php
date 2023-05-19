@@ -20,7 +20,6 @@ use Quantum\Exceptions\SessionException;
 use Quantum\Exceptions\ConfigException;
 use Quantum\Libraries\Session\Session;
 use Quantum\Exceptions\CsrfException;
-use Quantum\Exceptions\LangException;
 use Quantum\Libraries\Hasher\Hasher;
 use Quantum\Exceptions\DiException;
 use Quantum\Http\Request;
@@ -60,10 +59,9 @@ class Csrf
     /**
      * @throws ConfigException
      * @throws SessionException
-     * @throws LangException
      * @throws ReflectionException
-     * @throws DiException
      * @throws DatabaseException
+     * @throws DiException
      */
     private function __construct()
     {
@@ -101,7 +99,7 @@ class Csrf
 
     /**
      * Checks the token
-     * @param string|null $token
+     * @param Request|null $request
      * @return bool
      * @throws CryptorException
      * @throws CsrfException

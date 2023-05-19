@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.0.0
+ * @since 2.9.0
  */
 
 namespace Quantum\Environment;
@@ -26,12 +26,28 @@ class Server
      */
     private $server = [];
 
+
+    private static $instance = null;
+
     /**
      * Server constructor.
      */
-    public function __construct()
+    private function __construct()
     {
         $this->server = $_SERVER ?? [];
+    }
+
+    /**
+     * Get Instance
+     * @return Server|null
+     */
+    public static function getInstance(): ?Server
+    {
+        if (self::$instance === null) {
+            self::$instance = new self();
+        }
+
+        return self::$instance;
     }
 
     /**
