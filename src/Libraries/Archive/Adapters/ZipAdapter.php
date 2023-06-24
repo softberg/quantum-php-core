@@ -15,7 +15,11 @@
 namespace Quantum\Libraries\Archive\Adapters;
 
 use Quantum\Libraries\Archive\ArchiveInterface;
+use Quantum\Libraries\Storage\FileSystem;
+use Quantum\Exceptions\ArchiveException;
+use Quantum\Exceptions\LangException;
 use ZipArchive;
+use Exception;
 
 /**
  * Class ArchiveInterface
@@ -23,10 +27,16 @@ use ZipArchive;
  */
 class ZipAdapter implements ArchiveInterface
 {
+
+    /**
+     * @var FileSystem
+     */
+    private $fs;
+
     /**
      * @var ZipArchive
      */
-    private $zipArchive;
+    private $archive;
 
     /**
      * @var string
@@ -34,108 +44,70 @@ class ZipAdapter implements ArchiveInterface
     private $archiveName;
 
     /**
-     * Zip constructor
+     * @var int|null
      */
-    public function __construct(string $archiveName)
+    private $mode;
+
+    /**
+     * ZipArchive constructor
+     * @throws LangException
+     * @throws ArchiveException
+     */
+    public function __construct(string $archiveName, ?int $mode = ZipArchive::CREATE)
     {
-        $this->zipArchive = new ZipArchive();
         $this->archiveName = $archiveName;
+        $this->mode = $mode;
+
+        $this->fs = new FileSystem();
+        $this->archive = new ZipArchive();
+
+        $this->reopen();
     }
 
-    public function __destruct()
+    /**
+     * @inheritDoc
+     */
+    public function offsetExists(string $filename): bool
     {
-        if ($this->zipArchive->filename) {
-            $this->zipArchive->close();
+        if (strpos($filename, '.') === false) {
+            $filename = rtrim($filename, '/') . '/';
         }
+
+        return $this->archive->locateName($filename) !== false;
     }
 
     /**
      * @inheritDoc
      */
-    public function offsetExists(string $fileOrDirName): bool
+    public function addEmptyDir(string $directory): bool
     {
-        
-        if($this->zipArchive->open($this->archiveName, ZipArchive::CREATE) === TRUE) {
-            if (strpos($fileOrDirName, '.') === false) {
-                $fileOrDirName = rtrim($fileOrDirName, '/') . '/';
-            }
-            return $this->zipArchive->locateName($fileOrDirName) !== false;
-        } 
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function addEmptyDir(string $newDirectory): bool
-    {
-        if ($this->zipArchive->open($this->archiveName, ZipArchive::CREATE) === TRUE) {
-            if (!$this->offsetExists($newDirectory)) {
-                return $this->zipArchive->addEmptyDir($newDirectory);
-            } else {
-                return false;
-            }
-        } else {
-            return false;
+        if (!$this->offsetExists($directory)) {
+            return $this->archive->addEmptyDir($directory);
         }
+
+        return false;
     }
 
     /**
      * @inheritDoc
+     * @throws ArchiveException
+     * @throws LangException
      */
-    public function addFile(string $filePath, string $newFileName = ''): bool
+    public function addFile(string $filePath, string $entryName = null): bool
     {
-        if ($this->zipArchive->open($this->archiveName, ZipArchive::CREATE) === TRUE) {
-            return $this->zipArchive->addFile($filePath, $newFileName);
-        } else {
-            return false;
+        if (!$this->fs->exists($filePath)) {
+            throw ArchiveException::fileNotFound($filePath);
         }
+
+        return $this->archive->addFile($filePath, $entryName);
     }
 
     /**
      * @inheritDoc
      */
-    public function addFromString(string $newFileName, string $newFileContent): bool
+    public function addFromString(string $entryName, string $content): bool
     {
-        if ($this->zipArchive->open($this->archiveName, ZipArchive::CREATE) === TRUE) {
-            return $this->zipArchive->addFromString($newFileName, $newFileContent);
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function deleteUsingName(string $fileOrDirName): bool
-    {
-        if (
-            $this->zipArchive->open($this->archiveName) === TRUE
-            && $this->offsetExists($fileOrDirName)
-        ) {
-            return $this->zipArchive->deleteName($fileOrDirName);
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function extractTo(string $pathToExtract, $files = ''): bool
-    {
-        if ($this->zipArchive->open($this->archiveName) === TRUE) {
-            return $this->zipArchive->extractTo($pathToExtract);
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function count(): int
-    {
-        return $this->zipArchive->count();
+        return $this->archive->addFromString($entryName, $content);
     }
 
     /**
@@ -143,30 +115,79 @@ class ZipAdapter implements ArchiveInterface
      */
     public function addMultipleFiles(array $fileNames): bool
     {
-        if ($this->zipArchive->open($this->archiveName, ZipArchive::CREATE) === TRUE) {
-            foreach ($fileNames as $fileNmae => $filePath) {
-                if (!$this->zipArchive->addFile($filePath, $fileNmae)) {
-                    return false;
-                }
+        try {
+            foreach ($fileNames as $entryName => $filePath) {
+                $this->addFile($filePath, $entryName);
             }
-            return true;
-        } else {
+        } catch (Exception $e) {
             return false;
         }
+
+        return true;
     }
 
     /**
      * @inheritDoc
      */
-    public function deleteMultipleFilesUsingName(array $fileNames): bool
+    public function count(): int
     {
-        if ($this->zipArchive->open($this->archiveName) === TRUE) {
-            foreach ($fileNames as $key => $fileOrDirName) {
-                $this->zipArchive->deleteName($fileOrDirName);
-            }
-            return true;
-        } else {
-            return false;
+        return $this->archive->count();
+    }
+
+    /**
+     * @inheritDoc
+     * @throws ArchiveException
+     * @throws LangException
+     */
+    public function extractTo(string $pathToExtract, $files = null): bool
+    {
+        $this->reopen();
+        return $this->archive->extractTo($pathToExtract);
+    }
+
+    /**
+     * @inheritDoc
+     * @throws ArchiveException
+     * @throws LangException
+     */
+    public function deleteFile(string $filename): bool
+    {
+        if ($this->offsetExists($filename)) {
+            $state = $this->archive->deleteName($filename);
+            $this->reopen();
+            return $state;
         }
+
+        return false;
+    }
+
+    /**
+     * @inheritDoc
+     * @throws ArchiveException
+     * @throws LangException
+     */
+    public function deleteMultipleFiles(array $fileNames): bool
+    {
+        foreach ($fileNames as $entryName) {
+            $this->deleteFile($entryName);
+        }
+
+        return true;
+    }
+
+    /**
+     * @throws LangException
+     * @throws ArchiveException
+     */
+    private function reopen()
+    {
+        if ($this->archive->filename) {
+            $this->archive->close();
+        }
+
+        if ($res = $this->archive->open($this->archiveName, $this->mode) !== true) {
+            throw ArchiveException::cantOpen($res);
+        }
+
     }
 }
