@@ -22,7 +22,7 @@ use ZipArchive;
 use Exception;
 
 /**
- * Class ArchiveInterface
+ * Class ZipAdapter
  * @package Quantum\Libraries\Archive\Adapters
  */
 class ZipAdapter implements ArchiveInterface

@@ -41,10 +41,12 @@ class ZipAdapterTest extends AppTestCase
 
     public function testAddFileToZip()
     {
-        $this->assertFalse($this->zipArchive->offsetExists('translations.php'));
+        $this->assertFalse($this->zipArchive->offsetExists('app.conf'));
 
         $this->assertTrue(
-            $this->zipArchive->addFile(base_dir() . DS . 'shared' . DS . 'config' . DS . 'config.php', 'app.conf')
+            $this->zipArchive->addFile(
+                base_dir() . DS . 'shared' . DS . 'config' . DS . 'config.php',
+                'app.conf')
         );
 
         $this->assertTrue($this->zipArchive->offsetExists('app.conf'));
