@@ -1,4 +1,4 @@
-name: Quantum PHP Framework
+name: quantum-php-framework-test
 
 on:
   push:
