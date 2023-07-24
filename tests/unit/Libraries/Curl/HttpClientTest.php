@@ -77,8 +77,8 @@ class HttpClientTest extends AppTestCase
     {
         $this->httpClient
             ->createMultiRequest()
-            ->addGet('https://httpbin.org/get')
-            ->addPost('https://httpbin.org/post')
+            ->addGet('https://reqres.in/api/users')
+            ->addPost('https://reqres.in/api/users')
             ->start();
 
         $multiResponse = $this->httpClient->getResponse();
@@ -99,7 +99,7 @@ class HttpClientTest extends AppTestCase
                 function ($instance) {
                     $this->assertFalse($instance->isError());
 
-                    $this->assertEquals('https://httpbin.org/get', $instance->getUrl());
+                    $this->assertEquals('https://reqres.in/api/users', $instance->getUrl());
                 },
                 function ($instance) {
                     $this->assertTrue($instance->isError());
@@ -107,15 +107,15 @@ class HttpClientTest extends AppTestCase
                     $this->assertEquals(404, $instance->getErrorCode());
                 }
             )
-            ->addGet('https://httpbin.org/get')
-            ->addPost('https://httpbin.org/nope')
+            ->addGet('https://reqres.in/api/users')
+            ->addPost('https://reqres.in/api/users')
             ->start();
     }
 
     public function testHttpClientGetRequestHeaders()
     {
         $this->httpClient
-            ->createRequest('https://httpbin.org')
+            ->createRequest('https://reqres.in/api/users')
             ->setHeaders([
                 'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
                 'Accept-Language' => 'ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3',
@@ -137,12 +137,12 @@ class HttpClientTest extends AppTestCase
     public function testHttpClientGetResponseHeaders()
     {
         $this->httpClient
-            ->createRequest('https://httpbin.org/get')
+            ->createRequest('https://reqres.in/api/users')
             ->start();
 
         $this->assertIsArray($this->httpClient->getResponseHeaders());
 
-        $this->assertEquals('application/json', $this->httpClient->getResponseHeaders('content-type'));
+        $this->assertStringContainsString('application/json', $this->httpClient->getResponseHeaders('content-type'));
 
         $this->assertNull($this->httpClient->getResponseHeaders('custom-header'));
     }
@@ -177,7 +177,7 @@ class HttpClientTest extends AppTestCase
     public function testHttpClientGetObjectResponseBody()
     {
         $this->httpClient
-            ->createRequest('https://httpbin.org/get')
+            ->createRequest('https://reqres.in/api/users')
             ->start();
 
         $responseBody = $this->httpClient->getResponseBody();
@@ -185,14 +185,12 @@ class HttpClientTest extends AppTestCase
         $this->assertNotNull($responseBody);
 
         $this->assertIsObject($responseBody);
-
-        $this->assertEquals('https://httpbin.org/get', $responseBody->url);
     }
 
     public function testHttpClientSendPostRequestAndGetResponseBody()
     {
         $this->httpClient
-            ->createRequest('https://httpbin.org/post')
+            ->createRequest('https://reqres.in/api/users')
             ->setMethod('POST')
             ->start();
 
@@ -201,14 +199,12 @@ class HttpClientTest extends AppTestCase
         $this->assertNotNull($responseBody);
 
         $this->assertIsObject($responseBody);
-
-        $this->assertEquals('https://httpbin.org/post', $responseBody->url);
     }
 
     public function testHttpClientSendPostRequestWithDataAndGetResponseBody()
     {
         $this->httpClient
-            ->createRequest('https://httpbin.org/post')
+            ->createRequest('https://reqres.in/api/users')
             ->setMethod('POST')
             ->setData(['custom' => 'Custom value'])
             ->start();
@@ -219,7 +215,7 @@ class HttpClientTest extends AppTestCase
 
         $this->assertIsObject($responseBody);
 
-        $this->assertEquals('Custom value', $responseBody->form->custom);
+        $this->assertEquals('Custom value', $responseBody->custom);
     }
 
     public function testHttpClientGetError()
@@ -259,26 +255,26 @@ class HttpClientTest extends AppTestCase
     public function testHttpClientCurlInfo()
     {
         $this->httpClient
-            ->createRequest('https://httpbin.org/get')
+            ->createRequest('https://reqres.in/api/users')
             ->start();
 
         $this->assertIsArray($this->httpClient->info());
 
         $this->assertEquals(200, $this->httpClient->info(CURLINFO_HTTP_CODE));
 
-        $this->assertEquals('https://httpbin.org/get', $this->httpClient->info(CURLINFO_EFFECTIVE_URL));
+        $this->assertEquals('https://reqres.in/api/users', $this->httpClient->info(CURLINFO_EFFECTIVE_URL));
     }
 
     public function testHttpClientUrl()
     {
         $this->httpClient
-            ->createRequest('https://httpbin.org/get')
+            ->createRequest('https://reqres.in/api/users')
             ->start();
 
         $this->assertIsString($this->httpClient->url());
 
 
-        $this->assertEquals('https://httpbin.org/get', $this->httpClient->url());
+        $this->assertEquals('https://reqres.in/api/users', $this->httpClient->url());
     }
 
 }

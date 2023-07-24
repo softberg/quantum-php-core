@@ -15,14 +15,28 @@
 namespace Quantum\Libraries\Archive\Adapters;
 
 use Quantum\Libraries\Archive\ArchiveInterface;
+use Quantum\Libraries\Storage\FileSystem;
+use Quantum\Exceptions\ArchiveException;
+use Quantum\Exceptions\LangException;
+use Exception;
 use Phar;
 
 /**
- * Class ArchiveInterface
+ * Class PharAdapter
  * @package Quantum\Libraries\Archive\Adapters
  */
 class PharAdapter implements ArchiveInterface
 {
+
+    /**
+     * @var FileSystem
+     */
+    private $fs;
+
+    /**
+     * @var Phar
+     */
+    private $archive;
 
     /**
      * @var string
@@ -35,16 +49,17 @@ class PharAdapter implements ArchiveInterface
     public function __construct(string $archiveName)
     {
         $this->archiveName = $archiveName;
+
+        $this->fs = new FileSystem();
+        $this->archive = new Phar($archiveName);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function removeArchive(): bool
     {
         try {
+            $this->archive = null;
             return Phar::unlinkArchive($this->archiveName);
-        } catch (\Throwable $th) {
+        } catch (Exception $e) {
             return false;
         }
     }
@@ -52,79 +67,39 @@ class PharAdapter implements ArchiveInterface
     /**
      * @inheritDoc
      */
-    public function offsetExists(string $fileOrDirName): bool
+    public function offsetExists(string $filename): bool
     {
-        $newPhar = new Phar($this->archiveName);
-        return $newPhar->offsetExists($fileOrDirName);
+        return $this->archive->offsetExists($filename);
     }
 
     /**
      * @inheritDoc
      */
-    public function addEmptyDir(string $newDirectory): bool
+    public function addEmptyDir(string $directory): bool
     {
-        try {
-            $newPhar = new Phar($this->archiveName);
-            $newPhar->addEmptyDir($newDirectory);
+        if (!$this->offsetExists($directory)) {
+            $this->archive->addEmptyDir($directory);
             return true;
-        } catch (\Throwable $th) {
-            return false;
         }
+
+        return false;
     }
 
     /**
      * @inheritDoc
+     * @throws ArchiveException
+     * @throws LangException
      */
-    public function addFile(string $newFilePath, string $newFileName = ''): bool
+    public function addFile(string $filePath, string $entryName = null): bool
     {
-        try {
-            $newPhar = new Phar($this->archiveName);
-            $newPhar->addFile($newFilePath, $newFileName);
-            return true;
-        } catch (\Throwable $th) {
-            return false;
+        if (!$this->fs->exists($filePath)) {
+            throw ArchiveException::fileNotFound($filePath);
         }
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function addFromString(string $newFileName, string $newFileContent): bool
-    {
-        try {
-            $newPhar = new Phar($this->archiveName);
-            $newPhar->addFromString($newFileName, $newFileContent);
-            return true;
-        } catch (\Throwable $th) {
-            return false;
-        }
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function deleteUsingName(string $fileName): bool
-    {
-        try {
-            $newPhar = new Phar($this->archiveName);
-            $newPhar->delete($fileName);
-            return true;
-        } catch (\Throwable $th) {
-            return false;
-        }
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function extractTo(string $pathToExtract, $files = ''): bool
-    {
 
         try {
-            $newPhar = new Phar($this->archiveName);
-            $newPhar->extractTo($pathToExtract, $files);
+            $this->archive->addFile($filePath, $entryName);
             return true;
-        } catch (\Throwable $th) {
+        } catch (Exception $e) {
             return false;
         }
     }
@@ -132,11 +107,14 @@ class PharAdapter implements ArchiveInterface
     /**
      * @inheritDoc
      */
-    public function count(): int
+    public function addFromString(string $entryName, string $content): bool
     {
-        $newPhar = new Phar($this->archiveName);
-        $pharCount = $newPhar->count();
-        return $pharCount;
+        try {
+            $this->archive->addFromString($entryName, $content);
+            return true;
+        } catch (Exception $e) {
+            return false;
+        }
     }
 
     /**
@@ -145,12 +123,33 @@ class PharAdapter implements ArchiveInterface
     public function addMultipleFiles(array $fileNames): bool
     {
         try {
-            $newPhar = new Phar($this->archiveName);
             foreach ($fileNames as $fileName => $filePath) {
-                $newPhar->addFile($filePath, $fileName);
+                $this->archive->addFile($filePath, $fileName);
             }
+        } catch (Exception $e) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function count(): int
+    {
+        return $this->archive->count();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function extractTo(string $pathToExtract, $files = null): bool
+    {
+        try {
+            $this->archive->extractTo($pathToExtract, $files);
             return true;
-        } catch (\Throwable $th) {
+        } catch (Exception $e) {
             return false;
         }
     }
@@ -158,15 +157,27 @@ class PharAdapter implements ArchiveInterface
     /**
      * @inheritDoc
      */
-    public function deleteMultipleFilesUsingName(array $fileNames): bool
+    public function deleteFile(string $filename): bool
     {
         try {
-            $newPhar = new Phar($this->archiveName);
+            $this->archive->delete($filename);
+            return true;
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function deleteMultipleFiles(array $fileNames): bool
+    {
+        try {
             foreach ($fileNames as $key => $fileName) {
-                $newPhar->delete($fileName);
+                $this->archive->delete($fileName);
             }
             return true;
-        } catch (\Throwable $th) {
+        } catch (Exception $e) {
             return false;
         }
     }

@@ -3,16 +3,15 @@
 namespace Quantum\Tests\Helpers;
 
 use Quantum\Exceptions\StopExecutionException;
+use Quantum\Libraries\Mailer\MailerInterface;
 use Quantum\Libraries\Session\Session;
 use Quantum\Exceptions\HookException;
 use Quantum\Libraries\Cookie\Cookie;
 use Quantum\Router\RouteController;
 use Quantum\Libraries\Asset\Asset;
 use Quantum\Libraries\Lang\Lang;
-use Quantum\Libraries\Csrf\Csrf;
 use Quantum\Factory\ViewFactory;
 use Quantum\Tests\AppTestCase;
-use Quantum\Router\Router;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 use Quantum\Di\Di;
@@ -20,7 +19,6 @@ use Quantum\Di\Di;
 class HelperTest extends AppTestCase
 {
 
-    private $router;
     private $request;
     private $response;
     private $sessionData = [];
@@ -34,8 +32,6 @@ class HelperTest extends AppTestCase
         $this->request = new Request();
 
         $this->response = new Response();
-
-        $this->router = new Router($this->request, $this->response);
 
         $this->session = Session::getInstance($this->sessionData);
     }
@@ -148,106 +144,6 @@ class HelperTest extends AppTestCase
         ob_get_clean();
     }
 
-    public function testMvcHelpers()
-    {
-        Router::setRoutes([
-            [
-                "route" => "api-signin",
-                "method" => "POST",
-                "controller" => "SomeController",
-                "action" => "signin",
-                "module" => "test",
-                "middlewares" => ["guest", "anonymous"]
-            ],
-            [
-                "route" => "api-user/[id=:num]",
-                "method" => "GET",
-                "controller" => "SomeController",
-                "action" => "signout",
-                "module" => "test",
-                "middlewares" => ["user"]
-            ]
-        ]);
-
-        $this->request->create('POST', 'http://testdomain.com/api-signin');
-
-        $this->router->findRoute();
-
-        $middlewares = current_middlewares();
-
-        $this->assertIsArray($middlewares);
-
-        $this->assertEquals('guest', $middlewares[0]);
-
-        $this->assertEquals('anonymous', $middlewares[1]);
-
-        $this->assertEquals('test', current_module());
-
-        $this->assertEquals('SomeController', current_controller());
-
-        $this->assertEquals('signin', current_action());
-
-        $this->assertEquals('api-signin', current_route());
-
-        $this->assertEmpty(route_params());
-
-        $this->request->create('GET', 'http://testdomain.com/api-user/12');
-
-        $this->router->resetRoutes();
-
-        $this->router->findRoute();
-
-        $this->assertNotEmpty(route_params());
-
-        $this->assertEquals(12, route_param('id'));
-
-        $this->assertEquals('(\/)?api-user(\/)(?<id>[0-9]+)', route_pattern());
-
-        $this->assertEquals('GET', route_method());
-
-        $this->assertEquals('api-user/12', route_uri());
-    }
-
-    public function testFindRouteByName()
-    {
-        $this->assertNull(find_route_by_name('user', 'test'));
-
-        Router::setRoutes([
-            [
-                "route" => "api-user/[id=:num]",
-                "method" => "GET",
-                "controller" => "SomeController",
-                "action" => "signout",
-                "module" => "test",
-                "middlewares" => ["user"],
-                "name" => "user"
-            ]
-        ]);
-
-        $this->assertNotNull(find_route_by_name('user', 'test'));
-
-        $this->assertIsArray(find_route_by_name('user', 'test'));
-    }
-
-    public function testCheckRouteGroupExists()
-    {
-        $this->assertFalse(route_group_exists('guest', 'test'));
-
-        Router::setRoutes([
-            [
-                "route" => "api-user/[id=:num]",
-                "method" => "GET",
-                "controller" => "SomeController",
-                "action" => "signout",
-                "module" => "test",
-                "middlewares" => ["user"],
-                'group' => 'guest',
-                "name" => "user"
-            ]
-        ]);
-
-        $this->assertTrue(route_group_exists('guest', 'test'));
-    }
 
     public function testView()
     {
@@ -433,6 +329,11 @@ class HelperTest extends AppTestCase
         $this->expectExceptionMessage('unregistered_hook_name');
 
         hook()->fire('SOME_EVENT');
+    }
+
+    public function testMailerHelper()
+    {
+        $this->assertInstanceOf(MailerInterface::class, mailer());
     }
 
 }

@@ -15,52 +15,47 @@
 namespace Quantum\Libraries\Archive;
 
 /**
- * Interface StorageInterface
+ * Interface ArchiveInterface
  * @package Quantum\Libraries\Archive
  */
 interface ArchiveInterface
 {
     /**
      * Checks for the existence of a file
-     * @param string $fileOrDirName
+     * @param string $filename
      * @return bool
      */
-    public function offsetExists(string $fileOrDirName): bool;
+    public function offsetExists(string $filename): bool;
 
     /**
      * Makes a new empty directory
-     * @param string $archiveName
-     * @param string $newDirectory
+     * @param string $directory
      * @return bool
      */
-    public function addEmptyDir(string $newDirectory): bool;
+    public function addEmptyDir(string $directory): bool;
 
     /**
-     * Makes a new file
-     * @param string $archiveName
+     * Adds new file to the archive
      * @param string $filePath
-     * @param string $newFileName
+     * @param string $entryName
      * @return bool
      */
-    public function addFile(string $filePath, string $newFileName): bool;
+    public function addFile(string $filePath, string $entryName): bool;
 
     /**
-     * Makes a new file from string
-     * @param string $archiveName
-     * @param string $newFileName
-     * @param string $newFileContent
+     * Adds new file to the archive from string
+     * @param string $entryName
+     * @param string $content
      * @return bool
      */
-    public function addFromString(string $newFileName, string $newFileContent): bool;
-
+    public function addFromString(string $entryName, string $content): bool;
 
     /**
-     * Delete unsig name
-     * @param string $archiveName
-     * @param string $fileOrDirName
+     * Adds multiple files to the archive
+     * @param array $fileNames
      * @return bool
      */
-    public function deleteUsingName(string $fileOrDirName): bool;
+    public function addMultipleFiles(array $fileNames): bool;
 
     /**
      * Files count in the archive
@@ -69,27 +64,24 @@ interface ArchiveInterface
     public function count(): int;
 
     /**
-     * Extract archive
-     * @param string $archiveName
+     * Extracts the archive
      * @param string $pathToExtract
      * @param string|array $files
      * @return bool
      */
-    public function extractTo(string $pathToExtract, $files): bool;
+    public function extractTo(string $pathToExtract, $files = null): bool;
 
     /**
-     * Makes a multiple files
-     * @param string $archiveName
-     * @param array $fileNames
+     * Delete the file from the archive
+     * @param string $filename
      * @return bool
      */
-    public function addMultipleFiles(array $fileNames): bool;
+    public function deleteFile(string $filename): bool;
 
     /**
      * Delete a multiple files
-     * @param string $archiveName
      * @param array $fileNames
      * @return bool
      */
-    public function deleteMultipleFilesUsingName(array $fileNames): bool;
+    public function deleteMultipleFiles(array $fileNames): bool;
 }
