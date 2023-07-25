@@ -11,7 +11,7 @@
 
 <p align="center">
     <a href="https://github.com/softberg/quantum-php-core/actions/workflows/php.yml" >   
-        <img alt="GitHub Workflow Status" src="https://img.shields.io/github/workflow/status/softberg/quantum-php-core/Quantum%20PHP%20Framework">
+        <img alt="GitHub Workflow Status" src="https://github.com/softberg/quantum-php-core/actions/workflows/php.yml/badge.svg">
     </a>
     <a href="https://codecov.io/gh/softberg/quantum-php-core" >
         <img src="https://codecov.io/gh/softberg/quantum-php-core/branch/master/graph/badge.svg"/>
