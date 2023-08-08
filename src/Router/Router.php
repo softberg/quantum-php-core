@@ -109,31 +109,19 @@ class Router extends RouteController
             $this->checkCollision();
         }
 
-        $currentRoute = null;
+        $currentRoute = $this->currentRoute();
 
-        foreach ($this->matchedRoutes as $matchedRoute) {
-            if ($this->checkMethod($matchedRoute)) {
-                $currentRoute = $matchedRoute;
-                break;
-            }
-        }
 
         if (!$currentRoute) {
             throw RouteException::incorrectMethod($this->request->getMethod());
         }
 
-        $matchedRoute['uri'] = $uri;
+        $currentRoute['uri'] = $uri;
 
-        self::setCurrentRoute($matchedRoute);
+        self::setCurrentRoute($currentRoute);
 
         if (filter_var(config()->get(Debugger::DEBUG_ENABLED), FILTER_VALIDATE_BOOLEAN)) {
-            $routeInfo = [];
-
-            array_walk($matchedRoute, function ($value, $key) use (&$routeInfo) {
-                $routeInfo[ucfirst($key)] = json_encode($value);
-            });
-
-            Debugger::addToStore(Debugger::ROUTES, LogLevel::INFO, $routeInfo);
+           $this->collectDebugData($currentRoute);
         }
     }
 
@@ -162,6 +150,37 @@ class Router extends RouteController
     {
         parent::$currentRoute = null;
         $this->matchedRoutes = [];
+    }
+
+    /**
+     * Gets the current route
+     * @return array|null
+     */
+    private function currentRoute(): ?array
+    {
+        foreach ($this->matchedRoutes as $matchedRoute) {
+            if ($this->checkMethod($matchedRoute)) {
+                return $matchedRoute;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Collects debug data
+     * @param array $currentRoute
+     * @return void
+     */
+    private function collectDebugData(array $currentRoute)
+    {
+        $routeInfo = [];
+
+        array_walk($currentRoute, function ($value, $key) use (&$routeInfo) {
+            $routeInfo[ucfirst($key)] = json_encode($value);
+        });
+
+        Debugger::addToStore(Debugger::ROUTES, LogLevel::INFO, $routeInfo);
     }
 
     /**
