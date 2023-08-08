@@ -109,9 +109,18 @@ class Router extends RouteController
             $this->checkCollision();
         }
 
-        $matchedRoute = current($this->matchedRoutes);
+        $currentRoute = null;
 
-        $this->checkMethod($matchedRoute);
+        foreach ($this->matchedRoutes as $matchedRoute) {
+            if ($this->checkMethod($matchedRoute)) {
+                $currentRoute = $matchedRoute;
+                break;
+            }
+        }
+
+        if (!$currentRoute) {
+            throw RouteException::incorrectMethod($this->request->getMethod());
+        }
 
         $matchedRoute['uri'] = $uri;
 
@@ -384,17 +393,21 @@ class Router extends RouteController
     /**
      * Checks the request method against defined route method
      * @param array $matchedRoute
-     * @throws RouteException
+     * @return bool
      */
-    private function checkMethod(array $matchedRoute)
+    private function checkMethod(array $matchedRoute): bool
     {
         if (strpos($matchedRoute['method'], '|') !== false) {
-            if (!in_array($this->request->getMethod(), explode('|', $matchedRoute['method']))) {
-                throw RouteException::incorrectMethod($this->request->getMethod());
+            if (in_array($this->request->getMethod(), explode('|', $matchedRoute['method']))) {
+                return true;
+//
             }
-        } else if ($this->request->getMethod() != $matchedRoute['method']) {
-            throw RouteException::incorrectMethod($this->request->getMethod());
+        } else if ($this->request->getMethod() == $matchedRoute['method']) {
+            return true;
+//            throw RouteException::incorrectMethod($this->request->getMethod());
         }
+
+        return false;
     }
 
     /**

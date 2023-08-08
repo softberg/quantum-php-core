@@ -168,6 +168,46 @@ class RouterTest extends AppTestCase
         $this->assertEquals('523', route_param('ref'));
     }
 
+    public function testRestfulRoutes()
+    {
+        Router::setRoutes([
+            [
+                "route" => "api-task",
+                "method" => "POST",
+                "controller" => "TaskController",
+                "action" => "create",
+                "module" => "Api",
+            ],
+            [
+                "route" => "api-task",
+                "method" => "GET",
+                "controller" => "TaskController",
+                "action" => "show",
+                "module" => "Api",
+            ]
+        ]);
+
+        $this->request->create('GET', 'http://testdomain.com/api-task');
+
+        $this->router->findRoute();
+
+        $this->assertEquals('GET', route_method());
+
+        $this->assertEquals('show', current_action());
+
+        $request = new Request();
+
+        $router = new Router($request, new Response());
+
+        $request->create('POST', 'http://testdomain.com/api-task');
+
+        $router->findRoute();
+
+        $this->assertEquals('POST', route_method());
+
+        $this->assertEquals('create', current_action());
+    }
+
     public function testRouteIncorrectMethod()
     {
         Router::setRoutes([
