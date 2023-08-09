@@ -59,7 +59,7 @@ class Router extends RouteController
      * List of routes
      * @var array
      */
-    private static $routes = [];
+    protected static $routes = [];
 
     /**
      * matched routes
@@ -109,41 +109,17 @@ class Router extends RouteController
             $this->checkCollision();
         }
 
-        $matchedRoute = current($this->matchedRoutes);
+        $currentRoute = $this->currentRoute();
 
-        $this->checkMethod($matchedRoute);
+        if (!$currentRoute) {
+            throw RouteException::incorrectMethod($this->request->getMethod());
+        }
 
-        $matchedRoute['uri'] = $uri;
-
-        self::setCurrentRoute($matchedRoute);
+        self::setCurrentRoute($currentRoute);
 
         if (filter_var(config()->get(Debugger::DEBUG_ENABLED), FILTER_VALIDATE_BOOLEAN)) {
-            $routeInfo = [];
-
-            array_walk($matchedRoute, function ($value, $key) use (&$routeInfo) {
-                $routeInfo[ucfirst($key)] = json_encode($value);
-            });
-
-            Debugger::addToStore(Debugger::ROUTES, LogLevel::INFO, $routeInfo);
+            $this->collectDebugData($currentRoute);
         }
-    }
-
-    /**
-     * Set Routes
-     * @param array $routes
-     */
-    public static function setRoutes(array $routes)
-    {
-        self::$routes = $routes;
-    }
-
-    /**
-     * Get Routes
-     * @return array
-     */
-    public static function getRoutes(): array
-    {
-        return self::$routes;
     }
 
     /**
@@ -153,6 +129,37 @@ class Router extends RouteController
     {
         parent::$currentRoute = null;
         $this->matchedRoutes = [];
+    }
+
+    /**
+     * Gets the current route
+     * @return array|null
+     */
+    private function currentRoute(): ?array
+    {
+        foreach ($this->matchedRoutes as $matchedRoute) {
+            if ($this->checkMethod($matchedRoute)) {
+                return $matchedRoute;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Collects debug data
+     * @param array $currentRoute
+     * @return void
+     */
+    private function collectDebugData(array $currentRoute)
+    {
+        $routeInfo = [];
+
+        array_walk($currentRoute, function ($value, $key) use (&$routeInfo) {
+            $routeInfo[ucfirst($key)] = json_encode($value);
+        });
+
+        Debugger::addToStore(Debugger::ROUTES, LogLevel::INFO, $routeInfo);
     }
 
     /**
@@ -171,6 +178,7 @@ class Router extends RouteController
             preg_match("/^" . $this->escape($pattern) . "$/u", $requestUri, $matches);
 
             if (count($matches)) {
+                $route['uri'] = $uri;
                 $route['params'] = $this->routeParams($params, $matches);
                 $route['pattern'] = $pattern;
                 $this->matchedRoutes[] = $route;
@@ -384,17 +392,19 @@ class Router extends RouteController
     /**
      * Checks the request method against defined route method
      * @param array $matchedRoute
-     * @throws RouteException
+     * @return bool
      */
-    private function checkMethod(array $matchedRoute)
+    private function checkMethod(array $matchedRoute): bool
     {
         if (strpos($matchedRoute['method'], '|') !== false) {
-            if (!in_array($this->request->getMethod(), explode('|', $matchedRoute['method']))) {
-                throw RouteException::incorrectMethod($this->request->getMethod());
+            if (in_array($this->request->getMethod(), explode('|', $matchedRoute['method']))) {
+                return true;
             }
-        } else if ($this->request->getMethod() != $matchedRoute['method']) {
-            throw RouteException::incorrectMethod($this->request->getMethod());
+        } else if ($this->request->getMethod() == $matchedRoute['method']) {
+            return true;
         }
+
+        return false;
     }
 
     /**

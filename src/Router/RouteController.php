@@ -44,4 +44,22 @@ abstract class RouteController
         self::$currentRoute = $route;
     }
 
+    /**
+     * Set Routes
+     * @param array $routes
+     */
+    public static function setRoutes(array $routes)
+    {
+        static::$routes = $routes;
+    }
+
+    /**
+     * Get Routes
+     * @return array
+     */
+    public static function getRoutes(): array
+    {
+        return static::$routes;
+    }
+
 }
