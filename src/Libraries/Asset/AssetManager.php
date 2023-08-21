@@ -122,7 +122,7 @@ class AssetManager
     public function get(string $name): ?Asset
     {
         foreach ($this->store as $asset) {
-            if ($asset->getName()) {
+            if ($asset->getName() == $name) {
                 return $asset;
             }
         }
