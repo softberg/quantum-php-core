@@ -1,6 +1,6 @@
 <?php
 
-namespace Libraries\Asset;
+namespace Quantum\Tests\Libraries\Asset;
 
 use Quantum\Libraries\Asset\AssetManager;
 use Quantum\Libraries\Asset\Asset;
@@ -31,24 +31,26 @@ class AssetManagerTest extends AppTestCase
         ]);
 
         $this->assetManager->register([
-            new Asset(Asset::JS, 'js/bootstrap.js', 1),
-            new Asset(Asset::JS, 'js/bootstrap-datepicker.min.js', 2)
+            new Asset(Asset::JS, 'js/bootstrap.js', '', 1),
+            new Asset(Asset::JS, 'js/bootstrap-datepicker.min.js', '', 2)
         ]);
 
         $this->assetManager->register([
-            new Asset(Asset::CSS, 'css/reset.css', 0),
-            new Asset(Asset::CSS, 'css/media.css', 2)
+            new Asset(Asset::CSS, 'css/reset.css', '', 0),
+            new Asset(Asset::CSS, 'css/media.css', '', 2)
         ]);
 
         $this->assetManager->register([
             new Asset(Asset::JS, 'js/jquery.js'),
-            new Asset(Asset::JS, 'js/custom.js')
+            new Asset(Asset::JS, 'js/custom.js', '', -1, ['async', 'defer']),
         ]);
 
+        $this->assetManager->registerAsset(new Asset(Asset::JS, 'https://code.jquery.com/jquery-3.2.1.min.js'));
+
         $expectedOutput = '<link rel="stylesheet" type="text/css" href="http://mydomain.com/assets/css/reset.css">' . PHP_EOL .
-                '<link rel="stylesheet" type="text/css" href="http://mydomain.com/assets/css/style.css">' . PHP_EOL .
-                '<link rel="stylesheet" type="text/css" href="http://mydomain.com/assets/css/media.css">' . PHP_EOL .
-                '<link rel="stylesheet" type="text/css" href="http://mydomain.com/assets/css/responsive.css">' . PHP_EOL;
+            '<link rel="stylesheet" type="text/css" href="http://mydomain.com/assets/css/style.css">' . PHP_EOL .
+            '<link rel="stylesheet" type="text/css" href="http://mydomain.com/assets/css/media.css">' . PHP_EOL .
+            '<link rel="stylesheet" type="text/css" href="http://mydomain.com/assets/css/responsive.css">' . PHP_EOL;
 
         ob_start();
 
@@ -58,10 +60,12 @@ class AssetManagerTest extends AppTestCase
 
         ob_clean();
 
-        $expectedOutput = '<script src="http://mydomain.com/assets/js/jquery.js"></script>' . PHP_EOL .
-                '<script src="http://mydomain.com/assets/js/bootstrap.js"></script>' . PHP_EOL .
-                '<script src="http://mydomain.com/assets/js/bootstrap-datepicker.min.js"></script>' . PHP_EOL .
-                '<script src="http://mydomain.com/assets/js/custom.js"></script>' . PHP_EOL;
+        $expectedOutput = '<script src="http://mydomain.com/assets/js/jquery.js" ></script>' . PHP_EOL .
+            '<script src="http://mydomain.com/assets/js/bootstrap.js" ></script>' . PHP_EOL .
+            '<script src="http://mydomain.com/assets/js/bootstrap-datepicker.min.js" ></script>' . PHP_EOL .
+            '<script src="http://mydomain.com/assets/js/custom.js" async defer></script>' . PHP_EOL;
+        '<script src="https://code.jquery.com/jquery-3.2.1.min.js" ></script>' . PHP_EOL;
+
 
         $this->assetManager->dump(AssetManager::JS_STORE);
 
@@ -70,11 +74,28 @@ class AssetManagerTest extends AppTestCase
         ob_get_clean();
     }
 
+    public function testAssetGetTag()
+    {
+        $this->assetManager->registerAsset(new Asset(Asset::JS, 'js/jquery.js', 'jQuery'));
+
+        $this->assertEquals(
+            '<script src="http://mydomain.com/assets/js/jquery.js" ></script>',
+            $this->assetManager->get('jQuery')->tag());
+    }
+
     public function testAssetUrl()
     {
-        $this->assertEquals('http://mydomain.com/assets/icons/person.png', $this->assetManager->url('icons/person.png'));
+        $this->assertEquals(
+            'http://mydomain.com/assets/icons/person.png',
+            $this->assetManager->url('icons/person.png'));
 
-        $this->assertEquals('http://mydomain.com/assets/fonts/arial.ttf', $this->assetManager->url('fonts/arial.ttf'));
+        $this->assertEquals(
+            'http://mydomain.com/assets/fonts/arial.ttf',
+            $this->assetManager->url('fonts/arial.ttf'));
+
+        $this->assertEquals(
+            'https://code.jquery.com/jquery-3.2.1.min.js',
+            $this->assetManager->url('https://code.jquery.com/jquery-3.2.1.min.js'));
     }
 
 }

@@ -9,12 +9,13 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.6.0
+ * @since 2.9.0
  */
 
 namespace Quantum\Libraries\Asset;
 
 use Quantum\Exceptions\AssetException;
+use Quantum\Exceptions\LangException;
 
 /**
  * Class AssetManager
@@ -34,10 +35,10 @@ class AssetManager
     const JS_STORE = 2;
 
     /**
-     * Asset storage
-     * @var array[][]
+     *  Asset store
+     * @var Asset[]
      */
-    private $storage = [];
+    private $store = [];
 
     /**
      * Published assets
@@ -46,23 +47,14 @@ class AssetManager
     private $published = [];
 
     /**
-     * Asset templates
-     * @var string[]
-     */
-    private $templates = [
-        self::CSS_STORE => '<link rel="stylesheet" type="text/css" href="{%1}">',
-        self::JS_STORE => '<script src="{%1}"></script>',
-    ];
-
-    /**
      * Asset instance
-     * @var \Quantum\Libraries\Asset\AssetManager|null
+     * @var AssetManager|null
      */
     private static $instance = null;
 
     /**
      * AssetManager instance
-     * @return \Quantum\Libraries\Asset\AssetManager|null
+     * @return AssetManager|null
      */
     public static function getInstance(): ?AssetManager
     {
@@ -74,8 +66,10 @@ class AssetManager
     }
 
     /**
-     * Registers assets
-     * @param \Quantum\Libraries\Asset\Asset[] $assets
+     * Register assets
+     * @param Asset[] $assets
+     * @throws AssetException
+     * @throws LangException
      */
     public function register(array $assets)
     {
@@ -85,21 +79,55 @@ class AssetManager
     }
 
     /**
+     * Register single asset
+     * @param Asset $asset
+     * @throws AssetException
+     * @throws LangException
+     */
+    public function registerAsset(Asset $asset)
+    {
+        if ($asset->getName()) {
+            foreach ($this->store as $storedAsset) {
+                if ($storedAsset->getName() == $asset->getName()) {
+                    throw AssetException::nameInUse($asset->getName());
+                }
+            }
+        }
+
+        $this->store[] = $asset;
+    }
+
+    /**
      * Dumps the assets
      * @param int $type
-     * @throws \Quantum\Exceptions\AssetException
+     * @throws AssetException
+     * @throws LangException
      */
     public function dump(int $type)
     {
-        if (empty($this->published)) {
-            $this->publish();
-        }
+        $this->publish();
 
         if (count($this->published[$type])) {
-            foreach ($this->published[$type] as $path) {
-                echo _message($this->templates[$type], $this->url($path)) . PHP_EOL;
+            foreach ($this->published[$type] as $asset) {
+                echo $asset->tag() . PHP_EOL;
             }
         }
+    }
+
+    /**
+     * Gets the asset by name
+     * @param string $name
+     * @return Asset|null
+     */
+    public function get(string $name): ?Asset
+    {
+        foreach ($this->store as $asset) {
+            if ($asset->getName() == $name) {
+                return $asset;
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -109,30 +137,24 @@ class AssetManager
      */
     public function url(string $path): string
     {
-        return base_url() . '/assets/' . $path;
+        if (!parse_url($path, PHP_URL_HOST)) {
+            return base_url() . '/assets/' . $path;
+        }
+
+        return $path;
     }
 
     /**
      * Publishes assets
-     * @throws \Quantum\Exceptions\AssetException
+     * @throws AssetException
+     * @throws LangException
      */
     private function publish()
     {
-        if (!empty($this->storage)) {
-            foreach ($this->storage as $asset) {
-                if ($asset->getPosition() != -1) {
-                    if (isset($this->published[$asset->getType()][$asset->getPosition()])) {
-                        throw AssetException::positionInUse($asset->getPosition(), $asset->getPath());
-                    }
-
-                    $this->published[$asset->getType()][$asset->getPosition()] = $asset->getPath();
-                }
-            }
-
-            foreach ($this->storage as $asset) {
-                if ($asset->getPosition() == -1) {
-                    $this->setPosition($asset->getType(), 0, $asset->getPath());
-                }
+        if (empty($this->published)) {
+            if (!empty($this->store)) {
+                $this->setPriorityAssets();
+                $this->setRegularAssets();
             }
 
             ksort($this->published[self::CSS_STORE]);
@@ -141,27 +163,46 @@ class AssetManager
     }
 
     /**
-     * Registers an asset
-     * @param \Quantum\Libraries\Asset\Asset $asset
+     * Sets assets with ordered position
+     * @throws AssetException
+     * @throws LangException
      */
-    private function registerAsset(Asset $asset)
+    private function setPriorityAssets()
     {
-        $this->storage[] = $asset;
+        foreach ($this->store as $asset) {
+            if ($asset->getPosition() != -1) {
+                if (isset($this->published[$asset->getType()][$asset->getPosition()])) {
+                    throw AssetException::positionInUse($asset->getPosition(), $asset->getPath());
+                }
+
+                $this->published[$asset->getType()][$asset->getPosition()] = $asset;
+            }
+        }
+    }
+
+    /**
+     * Sets assets without ordered position
+     */
+    private function setRegularAssets()
+    {
+        foreach ($this->store as $asset) {
+            if ($asset->getPosition() == -1) {
+                $this->setPosition($asset, 0);
+            }
+        }
     }
 
     /**
      * Sets the Position
-     * @param int $type
+     * @param Asset $asset
      * @param int $index
-     * @param string $value
      */
-    private function setPosition(int $type, int $index, string $value)
+    private function setPosition(Asset $asset, int $index)
     {
-        if (isset($this->published[$type][$index])) {
-            $this->setPosition($type, $index + 1, $value);
+        if (isset($this->published[$asset->getType()][$index])) {
+            $this->setPosition($asset, $index + 1);
         } else {
-            $this->published[$type][$index] = $value;
+            $this->published[$asset->getType()][$index] = $asset;
         }
     }
-
 }
