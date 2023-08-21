@@ -9,16 +9,17 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.0
  */
 
+use Quantum\Exceptions\LangException;
 use Quantum\Libraries\Lang\Lang;
 
 
 /**
  * Gets the current lang
  * @return string|null
- * @throws \Quantum\Exceptions\LangException
+ * @throws LangException
  */
 function current_lang(): ?string
 {
@@ -30,19 +31,18 @@ function current_lang(): ?string
  * @param string $key
  * @param $params
  * @return string|null
- * @throws \Quantum\Exceptions\LangException
+ * @throws LangException
  */
 function t(string $key, $params = null): ?string
 {
     return Lang::getInstance()->getTranslation($key, $params);
 }
 
-
 /**
  * Outputs the translation
  * @param string $key
  * @param mixed $params
- * @throws \Quantum\Exceptions\LangException
+ * @throws LangException
  */
 function _t(string $key, $params = null)
 {

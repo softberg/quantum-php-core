@@ -16,15 +16,19 @@ use Quantum\Libraries\Transformer\TransformerInterface;
 use Quantum\Libraries\Transformer\TransformerManager;
 use Quantum\Exceptions\StopExecutionException;
 use Quantum\Libraries\Encryption\Cryptor;
+use Quantum\Exceptions\DatabaseException;
 use Quantum\Libraries\Asset\AssetManager;
+use Quantum\Exceptions\CryptorException;
+use Quantum\Exceptions\AssetException;
+use Quantum\Exceptions\LangException;
 use Quantum\Exceptions\AppException;
 
 /**
  * Generates the CSRF token
  * @return string|null
  * @throws AppException
- * @throws \Quantum\Exceptions\DatabaseException
- * @throws \Quantum\Exceptions\CryptorException
+ * @throws DatabaseException
+ * @throws CryptorException
  */
 function csrf_token(): ?string
 {
@@ -175,9 +179,10 @@ function slugify(string $text): string
 }
 
 /**
- * Dumps the assets
+ *  Dumps the assets
  * @param string $type
- * @throws \Quantum\Exceptions\AssetException
+ * @throws AssetException
+ * @throws LangException
  */
 function assets(string $type)
 {
@@ -214,7 +219,7 @@ function transform(array $data, TransformerInterface $transformer): array
  * Encodes the data cryptographically
  * @param mixed $data
  * @return string
- * @throws \Quantum\Exceptions\CryptorException
+ * @throws CryptorException
  */
 function crypto_encode($data): string
 {
@@ -226,7 +231,7 @@ function crypto_encode($data): string
  * Decodes the data cryptographically
  * @param string $value
  * @return mixed|string
- * @throws \Quantum\Exceptions\CryptorException
+ * @throws CryptorException
  */
 function crypto_decode(string $value)
 {
