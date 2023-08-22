@@ -109,7 +109,7 @@ class AssetManager
 
         if (count($this->published[$type])) {
             foreach ($this->published[$type] as $asset) {
-                echo $asset->tag() . PHP_EOL;
+                echo $asset->tag();
             }
         }
     }
