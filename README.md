@@ -1,6 +1,6 @@
 <p align="center">
     <a href="https://quantumphp.io">
-        <img src="http://quantumphp.io/files/quantum-og-image.png" alt="Quantum" height="150"/>
+        <img src="https://quantumphp.io/assets/img/quantum-favicon.png" alt="Quantum" height="150"/>
     </a>
 </p>
 
@@ -11,7 +11,7 @@
 
 <p align="center">
     <a href="https://github.com/softberg/quantum-php-core/actions/workflows/php.yml" >   
-        <img alt="GitHub Workflow Status" src="https://github.com/softberg/quantum-php-core/actions/workflows/php.yml/badge.svg">
+        <img alt="GitHub Workflow Status" src="https://img.shields.io/github/workflow/status/softberg/quantum-php-core/Quantum%20PHP%20Framework">
     </a>
     <a href="https://codecov.io/gh/softberg/quantum-php-core" >
         <img src="https://codecov.io/gh/softberg/quantum-php-core/branch/master/graph/badge.svg"/>
@@ -28,7 +28,7 @@
 </p>
 
 <h2>Features</h2>
-<img src="https://assets.softberg.org/quantum-features2.png" alt="Quantum" />
+<img src="https://quantumphp.io/assets/img/features.png" alt="Quantum" />
 
 <h2>Installation</h2>
 
@@ -46,7 +46,7 @@ php qt serve
 <br/>
 
 <h2>Quick Demo</h2>
-<img src="https://assets.softberg.org/qt-short.gif"/>
+<img src="https://quantumphp.io/assets/img/qt_demo.gif"/>
 
 > **Note:** This repository contains the core code of the Quantum framework. If you want to start a new project visit the main [Quantum PHP Project repository](https://github.com/softberg/quantum-php-project).
 
