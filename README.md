@@ -6,7 +6,7 @@
 
 <h1 align="center">Quantum PHP Framework</h1>
 <p align="center">
-	Extremely simple yet powerful next generation PHP framework which makes your ideas to real projects with easy.
+	An extremely simple yet powerful next-generation PHP framework that turns your ideas into real projects with ease.
 </p>
 
 <p align="center">
