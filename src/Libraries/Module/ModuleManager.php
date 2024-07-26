@@ -42,7 +42,7 @@ class ModuleManager{
     public function addModuleConfig()
     {
         $modulesConfigPath = base_dir() . DS . 'shared' . DS . 'config' . DS . 'modules.php';
-        $modules = require_once $modulesConfigPath;
+        $modules = require $modulesConfigPath;
 
         foreach ($modules['modules'] as $module => $options) {
             if ($module == $this->moduleName  || $options['prefix'] == strtolower($this->moduleName)) {
