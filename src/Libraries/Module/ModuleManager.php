@@ -36,6 +36,9 @@ class ModuleManager{
 
     public function writeContents()
     {
+        if (!$this->fs->isDirectory(modules_dir())) {
+            $this->fs->makeDirectory(modules_dir());
+        }
         $this->copyDirectoryWithTemplates($this->templatePath, $this->modulePath);
     }
 
