@@ -16,7 +16,7 @@ class ModuleManager{
     private $modulePath;
     private $templatePath;
 
-    function __construct(string $moduleName, string $template, string $demo, bool $enabled){
+    function __construct(string $moduleName, string $template, string $demo, $enabled){
         $this->moduleName = $moduleName;
 
         $this->template = $template;
@@ -24,8 +24,6 @@ class ModuleManager{
         $this->demo = $demo;
 
         $this->optionEnabled = $enabled;
-        
-        dd($this->demo);
         
         $type = $this->demo == "yes" ? "Demo" : "Default";
 
