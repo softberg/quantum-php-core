@@ -42,15 +42,22 @@ class AssetManager
 
     /**
      * Published assets
-     * @var array
+     * @var array[]
      */
-    private $published = [];
+    private $published = [
+        self::CSS_STORE => [],
+        self::JS_STORE => []
+    ];
 
     /**
      * Asset instance
      * @var AssetManager|null
      */
     private static $instance = null;
+
+    private function __construct()
+    {
+    }
 
     /**
      * AssetManager instance
@@ -63,6 +70,36 @@ class AssetManager
         }
 
         return self::$instance;
+    }
+
+    /**
+     * Gets the asset by name
+     * @param string $name
+     * @return Asset|null
+     */
+    public function get(string $name): ?Asset
+    {
+        foreach ($this->store as $asset) {
+            if ($asset->getName() == $name) {
+                return $asset;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Asset url
+     * @param string $path
+     * @return string
+     */
+    public function url(string $path): string
+    {
+        if (!parse_url($path, PHP_URL_HOST)) {
+            return base_url() . '/assets/' . $path;
+        }
+
+        return $path;
     }
 
     /**
@@ -98,50 +135,29 @@ class AssetManager
     }
 
     /**
+     * @return void
+     */
+    public function flush() {
+        $this->store = [];
+    }
+
+    /**
      * Dumps the assets
      * @param int $type
      * @throws AssetException
      * @throws LangException
      */
-    public function dump(int $type)
+    public function dump(int $type): void
     {
-        $this->publish();
+        if (empty($this->published[$type])) {
+            $this->publish();
+        }
 
-        if (count($this->published[$type])) {
+        if ($this->published && count($this->published[$type])) {
             foreach ($this->published[$type] as $asset) {
                 echo $asset->tag();
             }
         }
-    }
-
-    /**
-     * Gets the asset by name
-     * @param string $name
-     * @return Asset|null
-     */
-    public function get(string $name): ?Asset
-    {
-        foreach ($this->store as $asset) {
-            if ($asset->getName() == $name) {
-                return $asset;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Asset url
-     * @param string $path
-     * @return string
-     */
-    public function url(string $path): string
-    {
-        if (!parse_url($path, PHP_URL_HOST)) {
-            return base_url() . '/assets/' . $path;
-        }
-
-        return $path;
     }
 
     /**
@@ -151,11 +167,9 @@ class AssetManager
      */
     private function publish()
     {
-        if (empty($this->published)) {
-            if (!empty($this->store)) {
-                $this->setPriorityAssets();
-                $this->setRegularAssets();
-            }
+        if (!empty($this->store)) {
+            $this->setPriorityAssets();
+            $this->setRegularAssets();
 
             ksort($this->published[self::CSS_STORE]);
             ksort($this->published[self::JS_STORE]);
