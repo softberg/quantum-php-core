@@ -3,7 +3,11 @@
 namespace Quantum\Libraries\Captcha;
 
 use Quantum\Exceptions\CaptchaException;
+use Quantum\Exceptions\ConfigException;
+use Quantum\Libraries\Curl\HttpClient;
+use Quantum\Exceptions\DiException;
 use Quantum\Loader\Setup;
+use ReflectionException;
 
 class CaptchaManager
 {
@@ -14,7 +18,14 @@ class CaptchaManager
 
     private static $adapter;
 
-    public static function getCaptcha() :CaptchaInterface
+    /**
+     * @return CaptchaInterface
+     * @throws CaptchaException
+     * @throws ConfigException
+     * @throws DiException
+     * @throws ReflectionException
+     */
+    public static function getHandler(): CaptchaInterface
     {
         if (self::$adapter !== null) {
             return self::$adapter;
@@ -26,15 +37,12 @@ class CaptchaManager
 
         $captchaAdapter = config()->get('captcha.current');
 
-        if (!in_array($captchaAdapter, self::ADAPTERS) && !is_null($captchaAdapter)) {
+        if (!in_array($captchaAdapter, self::ADAPTERS)) {
             throw CaptchaException::unsupportedAdapter($captchaAdapter);
-        }elseif (is_null($captchaAdapter)){
-            throw new \Exception('');
         }
 
         $captchaAdapterClassName = __NAMESPACE__ . '\\Adapters\\' . ucfirst($captchaAdapter) . 'Adapter';
-        
-        $params = config()->get('captcha.' . $captchaAdapter);
-        return self::$adapter = $captchaAdapterClassName::getInstance($params);
+
+        return self::$adapter = $captchaAdapterClassName::getInstance(config()->get('captcha.' . $captchaAdapter), new HttpClient);
     }
 }

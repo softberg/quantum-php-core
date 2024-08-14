@@ -5,8 +5,8 @@ return [
 
     'recaptcha' => [
         'type' => 'visible',
-        'secret_key' => '6LdByH0lAAAAAMunFnxJEb5sh8iOI02oxZXL7sAD',
-        'site_key' => '6LfkRXwjAAAAAAYX8Eb641ZcbdsUjjuFbJKAum4S'
+        'secret_key' => '10000000-ffff-ffff-ffff-000000000001',
+        'site_key' => '0x0000000000000000000000000000000000000000'
     ],
 
     'hcaptcha' => [

@@ -1,54 +1,41 @@
 <?php
 
+/**
+ * Quantum PHP Framework
+ *
+ * An open source software development framework for PHP
+ *
+ * @package Quantum
+ * @author Arman Ag. <arman.ag@softberg.org>
+ * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
+ * @link http://quantum.softberg.org/
+ * @since 2.9.0
+ */
+
 namespace Quantum\Libraries\Captcha\Adapters;
 
-use Quantum\Libraries\Captcha\CaptchaInterface;
 use Quantum\Libraries\Curl\HttpClient;
 
-class RecaptchaAdapter implements CaptchaInterface
+/**
+ * Class RecaptchaAdapter
+ * @package Quantum\Libraries\Captcha\Adapters
+ */
+class RecaptchaAdapter extends BaseCaptcha
 {
-    /**
-     * ReCAPTCHA URL verifying
-     *
-     * @var string
-     */
+
     const VERIFY_URL = 'https://www.google.com/recaptcha/api/siteverify';
 
     const CLIENT_API = 'https://www.google.com/recaptcha/api.js';
 
     /**
-     * Public key
-     *
      * @var string
      */
-    private $sitekey;
+    protected $name = 'g-recaptcha';
 
     /**
-     * Private key
-     *
-     * @var string
+     * @var string[]
      */
-    private $secretkey;
-
-    /**
-     * @var HttpClient
-     */
-    private $http;
-
-    /**
-     * Remote IP address
-     *
-     * @var string
-     */
-    protected $remoteIp = null;
-
-    /**
-     * Captcha type. Default : image
-     *
-     * @var string
-     * @see https://developers.google.com/recaptcha/docs/display#config
-     */
-    protected $type = null;
+    protected $elementClasses = ['g-recaptcha'];
 
     /**
      * @var RecaptchaAdapter
@@ -56,204 +43,40 @@ class RecaptchaAdapter implements CaptchaInterface
     private static $instance = null;
 
     /**
-     * List of errors
-     *
-     * @var array
-     */
-    protected $errorCodes = array();
-
-    /**
-     * RecaptchaAdapter
-     *
+     * RecaptchaAdapter constructor
      * @param array $params
-     * @return void
+     * @param HttpClient $httpClient
      */
-    private function __construct(array $params)
+    private function __construct(array $params, HttpClient $httpClient)
     {
-        $this->http = new HttpClient();
+        $this->http = $httpClient;
 
-        $this->secretkey = $params['secret_key'];
-        $this->sitekey = $params['site_key'];
-        $this->type = $params['type'];
+        $this->secretKey = $params['secret_key'];
+        $this->siteKey = $params['site_key'];
+        $this->type = $params['type'] ?? null;
     }
 
     /**
      * Get Instance
      * @param array $params
+     * @param HttpClient $httpClient
      * @return RecaptchaAdapter
      */
-    public static function getInstance(array $params): RecaptchaAdapter
+    public static function getInstance(array $params, HttpClient $httpClient): RecaptchaAdapter
     {
         if (self::$instance === null) {
-            self::$instance = new self($params);
+            self::$instance = new self($params, $httpClient);
         }
 
         return self::$instance;
     }
 
     /**
-     * Generate the JS code of the captcha
-     *
-     * @return string
+     * @return void
      */
-    public function renderJs(): string
+    public static function resetInstance(): void
     {
-        return '<script src="'. self::CLIENT_API .'"></script>';
+        self::$instance = null;
     }
 
-    /**
-     * Generate the HTML code block for the captcha
-     *
-     * @param string $formIdentifier
-     * @param array $attributes
-     * @return string
-     */
-    public function display(string $formIdentifier = '', array $attributes = []): string
-    {
-        $captchaElement = '';
-        if (strtolower($this->type) == 'visible'){
-            $captchaElement = $this->getVisibleElement();
-        } elseif (strtolower($this->type) == 'invisible') {
-            $captchaElement = $this->getInvisibleElement($formIdentifier);
-        }
-        return $captchaElement;
-    }
-
-    /**
-     * Checks the code given by the captcha
-     *
-     * @param string $response Response code after submitting form (usually $_POST['g-recaptcha-response'])
-     * @return bool
-     */
-    public function verifyResponse(string $response, $clientIp = null): bool
-    {
-        if (is_null($this->secretkey))
-            throw new \Exception('You must set your secret key');
-
-        if (empty($response)) {
-
-            $this->errorCodes = array('internal-empty-response');
-
-            return false;
-        }
-
-        $query = array(
-            'secret' => $this->secretkey,
-            'response' => $response,
-            'remoteip' => $this->remoteIp,
-        );
-
-        $url = self::VERIFY_URL . '?' . http_build_query($query);
-
-        $this->http->createRequest($url)->setMethod('GET')->start();
-        $response = (array)$this->http->getResponseBody();
-
-        if (empty($response) || is_null($response) || !$response) {
-            return false;
-        }
-
-        if (isset($response['error-codes'])) {
-            $this->errorCodes = $response['error-codes'];
-        }
-
-        return $response['success'];
-    }
-
-    /**
-     * Returns the errors encountered
-     *
-     * @return array Errors code and name
-     */
-    public function getErrorCodes(): array
-    {
-        $errors = array();
-
-        if (count($this->errorCodes) > 0) {
-            foreach ($this->errorCodes as $error) {
-                switch ($error) {
-                    case 'timeout-or-duplicate':
-                        $errors[] = array(
-                            'code' => $error,
-                            'name' => 'Timeout or duplicate.',
-                        );
-                        break;
-
-                    case 'missing-input-secret':
-                        $errors[] = array(
-                            'code' => $error,
-                            'name' => 'The secret parameter is missing.',
-                        );
-                        break;
-
-                    case 'invalid-input-secret':
-                        $errors[] = array(
-                            'code' => $error,
-                            'name' => 'The secret parameter is invalid or malformed.',
-                        );
-                        break;
-
-                    case 'missing-input-response':
-                        $errors[] = array(
-                            'code' => $error,
-                            'name' => 'The response parameter is missing.',
-                        );
-                        break;
-
-                    case 'invalid-input-response':
-                        $errors[] = array(
-                            'code' => $error,
-                            'name' => 'The response parameter is invalid or malformed.',
-                        );
-                        break;
-
-                    case 'bad-request':
-                        $errors[] = array(
-                            'code' => $error,
-                            'name' => 'The request is invalid or malformed.',
-                        );
-                        break;
-
-                    case 'internal-empty-response':
-                        $errors[] = array(
-                            'code' => $error,
-                            'name' => 'The recaptcha response is required.',
-                        );
-                        break;
-
-                    default:
-                        $errors[] = array(
-                            'code' => $error,
-                            'name' => $error,
-                        );
-                }
-            }
-        }
-
-        return $errors;
-    }
-
-    private function getInvisibleElement(string $formIdentifier): string
-    {
-        return '<script>
-                 document.addEventListener("DOMContentLoaded", function() {
-                    let button = document.getElementsByTagName("button");
-                
-                    button[0].setAttribute("data-sitekey", "' . $this->sitekey . '");
-                    button[0].setAttribute("data-callback", "onSubmit");
-                    button[0].setAttribute("data-action", "submit");
-                    button[0].classList.add("g-recaptcha");
-                 })
-                
-                function onSubmit (){
-                    document.getElementById("'. $formIdentifier .'").submit();
-                }
-            </script>';
-    }
-
-    private function getVisibleElement(): string
-    {
-        $data = 'data-sitekey="' . $this->sitekey . '"';
-
-        return '<div class="col s1 offset-s2 g-recaptcha" ' . $data . '></div>';
-    }
 }
