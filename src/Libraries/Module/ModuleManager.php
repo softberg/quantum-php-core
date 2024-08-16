@@ -1,55 +1,114 @@
 <?php
 
+/**
+ * Quantum PHP Framework
+ *
+ * An open source software development framework for PHP
+ *
+ * @package Quantum
+ * @author Arman Ag. <arman.ag@softberg.org>
+ * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
+ * @link http://quantum.softberg.org/
+ * @since 2.9.0
+ */
+
 namespace Quantum\Libraries\Module;
 
-use Quantum\Di\Di;
 use Quantum\Libraries\Storage\FileSystem;
+use Quantum\Exceptions\DiException;
+use ReflectionException;
+use Quantum\Di\Di;
+use Exception;
 
-class ModuleManager{
-
+class ModuleManager
+{
+    /**
+     * @var mixed
+     */
     protected $fs;
+
+    /**
+     * @var bool
+     */
     protected $optionEnabled;
 
+    /**
+     * @var string
+     */
     private $moduleName;
+
+    /**
+     * @var string
+     */
     private $template;
+
+    /**
+     * @var string
+     */
     private $demo;
+
+    /**
+     * @var string
+     */
     private $modulePath;
+
+    /**
+     * @var string
+     */
     private $templatePath;
 
-    function __construct(string $moduleName, string $template, string $demo, $enabled){
+    /**
+     * @param string $moduleName
+     * @param string $template
+     * @param string $demo
+     * @param bool $enabled
+     * @throws DiException
+     * @throws ReflectionException
+     */
+    function __construct(string $moduleName, string $template, string $demo, bool $enabled)
+    {
         $this->moduleName = $moduleName;
 
         $this->template = $template;
-        
+
         $this->demo = $demo;
 
         $this->optionEnabled = $enabled;
-        
+
         $type = $this->demo == "yes" ? "Demo" : "Default";
 
         $this->templatePath = __DIR__ . DS . "Templates" . DS . $type . DS . ucfirst($this->template);
-        
+
         $this->modulePath = modules_dir() . DS . $this->moduleName;
 
         $this->fs = Di::get(FileSystem::class);
     }
 
+    /**
+     * @return void
+     * @throws Exception
+     */
     public function writeContents()
     {
         if (!$this->fs->isDirectory(modules_dir())) {
             $this->fs->makeDirectory(modules_dir());
         }
+
         $this->copyDirectoryWithTemplates($this->templatePath, $this->modulePath);
     }
 
+    /**
+     * @return void
+     * @throws Exception
+     */
     public function addModuleConfig()
     {
         $modulesConfigPath = base_dir() . DS . 'shared' . DS . 'config' . DS . 'modules.php';
-        $modules = require $modulesConfigPath;
+        $modules = $this->fs->require($modulesConfigPath);
 
         foreach ($modules['modules'] as $module => $options) {
-            if ($module == $this->moduleName  || $options['prefix'] == strtolower($this->moduleName)) {
-                throw new \Exception("A module or prefix named '$this->moduleName' already exists");
+            if ($module == $this->moduleName || $options['prefix'] == strtolower($this->moduleName)) {
+                throw new Exception("A module or prefix named '$this->moduleName' already exists");
             }
         }
 
@@ -63,9 +122,16 @@ class ModuleManager{
         );
     }
 
-    private function copyDirectoryWithTemplates($src, $dst) {
+    /**
+     * @param string $src
+     * @param string $dst
+     * @return void
+     * @throws Exception
+     */
+    private function copyDirectoryWithTemplates(string $src, string $dst)
+    {
         if (!$this->fs->isDirectory($src)) {
-            throw new \Exception("Directory '$src' does not exist");
+            throw new Exception("Directory '$src' does not exist");
         }
 
         if (!$this->fs->isDirectory($dst)) {
@@ -81,7 +147,7 @@ class ModuleManager{
             if ($this->fs->isDirectory($srcPath)) {
                 $this->copyDirectoryWithTemplates($srcPath, $dstPath);
             } else {
-                $processedContent = require_once $srcPath;
+                $processedContent = $this->fs->require($srcPath);
                 $this->fs->put($dstPath, $processedContent);
             }
         }
