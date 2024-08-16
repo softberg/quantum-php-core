@@ -244,13 +244,14 @@ class LocalFileSystemAdapter implements FilesystemAdapterInterface
      * Includes the required file
      * @param string $file
      * @param bool $once
+     * @return mixed
      */
-    public function require(string $file, bool $once = false)
+    public function require(string $file, bool $once = false): mixed
     {
         if ($once) {
-            require_once $file;
+            return require_once $file;
         } else {
-            require $file;
+            return require $file;
         }
     }
 
@@ -258,13 +259,14 @@ class LocalFileSystemAdapter implements FilesystemAdapterInterface
      * Includes a file
      * @param string $file
      * @param bool $once
+     * @return mixed
      */
-    public function include(string $file, bool $once = false)
+    public function include(string $file, bool $once = false): mixed
     {
         if ($once) {
-            include_once $file;
+            return include_once $file;
         } else {
-            include $file;
+            return include $file;
         }
     }
 
