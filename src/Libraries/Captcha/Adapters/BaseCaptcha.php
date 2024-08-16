@@ -22,6 +22,7 @@ use Quantum\Exceptions\HttpException;
 use Quantum\Exceptions\LangException;
 use Quantum\Exceptions\AppException;
 use Quantum\Libraries\Asset\Asset;
+use ErrorException;
 use Exception;
 
 abstract class BaseCaptcha implements CaptchaInterface
