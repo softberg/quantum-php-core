@@ -22,6 +22,8 @@ class LocalFileSystemAdapterTest extends AppTestCase
         $this->dirname = base_dir() . DS . 'common';
 
         $this->filename = base_dir() . DS . 'test.txt';
+
+        $GLOBALS['include_count'] = 0;
     }
 
     public function tearDown(): void
@@ -218,6 +220,109 @@ class LocalFileSystemAdapterTest extends AppTestCase
         $this->assertEquals('txt', $this->fs->extension($this->filename));
     }
 
+    public function testLocalRequireOutput()
+    {
+        $this->fs->put($this->filename, $this->content);
+
+        ob_start();
+
+        $this->fs->require($this->filename);
+
+        $output = ob_get_clean();
+
+        $this->assertSame($this->content, $output);
+    }
+
+    public function testLocalRequireReturn()
+    {
+        $this->fs->put($this->filename, "<?php return ['key' => 'abc'];");
+
+        $result = $this->fs->require($this->filename);
+
+        $this->assertIsArray($result);
+
+        $this->assertArrayHasKey('key', $result);
+
+        $this->assertEquals($result['key'], 'abc');
+    }
+
+    public function testLocalRequireBehavior()
+    {
+        $this->fs->put($this->filename, '<?php return $GLOBALS["include_count"]++;');
+
+        $this->fs->require($this->filename);
+        $this->fs->require($this->filename);
+        $this->fs->require($this->filename);
+
+        $this->assertEquals(3, $GLOBALS['include_count']);
+    }
+
+    public function testLocalRequireOnceBehavior()
+    {
+        $file = base_dir() . DS . 'track1.txt';
+
+        $this->fs->put($file, '<?php return $GLOBALS["include_count"]++;');
+
+        $this->fs->require($file, true);
+        $this->fs->require($file, true);
+        $this->fs->require($file, true);
+
+        $this->assertEquals(1, $GLOBALS['include_count']);
+
+        $this->fs->remove($file);
+    }
+
+    public function testLocalIncludeOutput()
+    {
+        $this->fs->put($this->filename, $this->content);
+
+        ob_start();
+
+        $this->fs->include($this->filename);
+
+        $output = ob_get_clean();
+
+        $this->assertSame($this->content, $output);
+    }
+
+    public function testLocalIncludeReturn()
+    {
+        $this->fs->put($this->filename, "<?php return ['key' => 'abc'];");
+
+        $result = $this->fs->include($this->filename);
+
+        $this->assertIsArray($result);
+
+        $this->assertArrayHasKey('key', $result);
+
+        $this->assertEquals($result['key'], 'abc');
+    }
+
+    public function testLocalIncludeBehavior()
+    {
+        $this->fs->put($this->filename, '<?php return $GLOBALS["include_count"]++;');
+
+        $this->fs->include($this->filename);
+        $this->fs->include($this->filename);
+        $this->fs->include($this->filename);
+
+        $this->assertEquals(3, $GLOBALS['include_count']);
+    }
+
+    public function testLocalIncludeOnceBehavior()
+    {
+        $file = base_dir() . DS . 'track2.txt';
+
+        $this->fs->put($file, '<?php return $GLOBALS["include_count"]++;');
+
+        $this->fs->include($file, true);
+        $this->fs->include($file, true);
+        $this->fs->include($file, true);
+
+        $this->assertEquals(1, $GLOBALS['include_count']);
+
+        $this->fs->remove($file);
+    }
 
 }
 

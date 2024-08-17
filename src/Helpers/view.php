@@ -9,11 +9,17 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.0
  */
 
-use Quantum\Debugger\Debugger;
+use Quantum\Exceptions\ViewException;
+use Quantum\Exceptions\DiException;
 use Quantum\Factory\ViewFactory;
+use DebugBar\DebugBarException;
+use Quantum\Debugger\Debugger;
+use Twig\Error\RuntimeError;
+use Twig\Error\LoaderError;
+use Twig\Error\SyntaxError;
 
 /**
  * Rendered view
@@ -30,11 +36,11 @@ function view(): ?string
  * @param array $args
  * @return string|null
  * @throws ReflectionException
- * @throws \Quantum\Exceptions\DiException
- * @throws \Quantum\Exceptions\ViewException
- * @throws \Twig\Error\LoaderError
- * @throws \Twig\Error\RuntimeError
- * @throws \Twig\Error\SyntaxError
+ * @throws DiException
+ * @throws ViewException
+ * @throws LoaderError
+ * @throws RuntimeError
+ * @throws SyntaxError
  */
 function partial(string $partial, array $args = []): ?string
 {
@@ -54,7 +60,7 @@ function view_param(string $key)
 /**
  * Rendered debug bar
  * @return string|null
- * @throws \DebugBar\DebugBarException
+ * @throws DebugBarException
  */
 function debugbar(): ?string
 {

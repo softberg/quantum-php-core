@@ -57,7 +57,7 @@ class AssetTest extends AppTestCase
     public function testAssetTag()
     {
         $this->assertEquals(
-            '<script src="http://mydomain.com/assets/scripts/jquery.js" ></script>',
+            '<script src="http://mydomain.com/assets/scripts/jquery.js" ></script>' . PHP_EOL,
             $this->asset->tag());
     }
 

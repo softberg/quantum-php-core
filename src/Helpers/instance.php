@@ -12,12 +12,15 @@
  * @since 2.9.0
  */
 
+use Quantum\Libraries\Captcha\CaptchaInterface;
+use Quantum\Libraries\Captcha\CaptchaManager;
 use Quantum\Libraries\Mailer\MailerInterface;
 use Quantum\Libraries\Session\SessionManager;
 use Quantum\Libraries\Mailer\MailerManager;
 use Quantum\Libraries\Asset\AssetManager;
 use Quantum\Exceptions\DatabaseException;
 use Quantum\Libraries\Cache\CacheManager;
+use Quantum\Exceptions\CaptchaException;
 use Quantum\Exceptions\ServiceException;
 use Quantum\Exceptions\SessionException;
 use Quantum\Exceptions\ConfigException;
@@ -127,4 +130,16 @@ function cache(): Cache
 function csrf(): Csrf
 {
     return Csrf::getInstance();
+}
+
+/**
+ * @return CaptchaInterface
+ * @throws ConfigException
+ * @throws DiException
+ * @throws ReflectionException
+ * @throws CaptchaException
+ */
+function captcha(): CaptchaInterface
+{
+    return CaptchaManager::getHandler();
 }

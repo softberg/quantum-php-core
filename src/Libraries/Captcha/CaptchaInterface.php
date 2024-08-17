@@ -1,13 +1,45 @@
 <?php
+
 namespace Quantum\Libraries\Captcha;
 
 interface CaptchaInterface
 {
-    public function display(string $formIdentifier, array $attributes = []);
+    const MAX_TIME_DIFF = 60;
 
-    public function verifyResponse(string $response, string $clientIp = null);
+    const CAPTCHA_VISIBLE = 'visible';
 
-    public function getErrorCodes(): array;
+    const CAPTCHA_INVISIBLE = 'invisible';
 
-    public function renderJs();
+    /**
+     * @return string
+     */
+    public function getName(): string;
+
+    /**
+     * @return string|null
+     */
+    public function getType(): ?string;
+
+    /**
+     * @param string $type
+     * @return self
+     */
+    public function setType(string $type): self;
+
+    /**
+     * @param string $formIdentifier
+     * @return mixed
+     */
+    public function addToForm(string $formIdentifier);
+
+    /**
+     * @param string $response
+     * @return mixed
+     */
+    public function verify(string $response);
+
+    /**
+     * @return string|null
+     */
+    public function getErrorMessage(): ?string;
 }

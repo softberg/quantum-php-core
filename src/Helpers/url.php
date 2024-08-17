@@ -9,9 +9,15 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.0
  */
 
+use Quantum\Exceptions\DatabaseException;
+use Quantum\Exceptions\SessionException;
+use Quantum\Exceptions\CryptorException;
+use Quantum\Exceptions\ConfigException;
+use Quantum\Exceptions\LangException;
+use Quantum\Exceptions\DiException;
 use Quantum\Http\Request;
 use Quantum\Http\Response;
 
@@ -50,11 +56,12 @@ function redirect(string $url, int $code = 302)
  * @param array $data
  * @param int $code
  * @throws ReflectionException
- * @throws \Quantum\Exceptions\ConfigException
- * @throws \Quantum\Exceptions\CryptorException
- * @throws \Quantum\Exceptions\DatabaseException
- * @throws \Quantum\Exceptions\DiException
- * @throws \Quantum\Exceptions\SessionException
+ * @throws ConfigException
+ * @throws CryptorException
+ * @throws DatabaseException
+ * @throws DiException
+ * @throws SessionException
+ * @throws LangException
  */
 function redirectWith(string $url, array $data, int $code = 302)
 {
@@ -67,11 +74,12 @@ function redirectWith(string $url, array $data, int $code = 302)
  * @param string $key
  * @return mixed|null
  * @throws ReflectionException
- * @throws \Quantum\Exceptions\ConfigException
- * @throws \Quantum\Exceptions\CryptorException
- * @throws \Quantum\Exceptions\DatabaseException
- * @throws \Quantum\Exceptions\DiException
- * @throws \Quantum\Exceptions\SessionException
+ * @throws ConfigException
+ * @throws CryptorException
+ * @throws DatabaseException
+ * @throws DiException
+ * @throws SessionException
+ * @throws LangException
  */
 function old(string $key)
 {

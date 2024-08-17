@@ -9,8 +9,10 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.0
  */
+
+use Symfony\Component\VarExporter\Exception\ExceptionInterface;
 use Symfony\Component\VarExporter\VarExporter;
 use Quantum\Contracts\ReportableInterface;
 use Quantum\Logger\MessageLogger;
@@ -75,7 +77,7 @@ function debug($var, ?ReportableInterface $loggerAdapter = null)
  * Exports the variable
  * @param mixed $var
  * @return string
- * @throws \Symfony\Component\VarExporter\Exception\ExceptionInterface
+ * @throws ExceptionInterface
  */
 function export($var): string
 {

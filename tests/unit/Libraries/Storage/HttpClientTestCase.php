@@ -25,9 +25,9 @@ trait HttpClientTestCase
             return $httpClientMock;
         });
 
-        $httpClientMock->shouldReceive('setMethod')->andReturn($httpClientMock);
+        $httpClientMock->shouldReceive('setMethod')->andReturnSelf();
 
-        $httpClientMock->shouldReceive('setHeaders')->andReturn($httpClientMock);
+        $httpClientMock->shouldReceive('setHeaders')->andReturnSelf();
 
         $httpClientMock->shouldReceive('getRequestHeaders')->andReturn([]);
 
@@ -35,11 +35,12 @@ trait HttpClientTestCase
 
         $httpClientMock->shouldReceive('setData')->andReturn($httpClientMock);
 
-        $httpClientMock->shouldReceive('start')->andReturnUsing(function () {
+        $httpClientMock->shouldReceive('start')->andReturnUsing(function () use ($httpClientMock) {
             $this->response[$this->url]['body'] = $this->currentResponse;
             $this->response[$this->url]['errors'] = $this->currentErrors;
             $this->currentResponse = [];
             $this->currentErrors = [];
+            return $httpClientMock;
         });
 
         $httpClientMock->shouldReceive('getErrors')->andReturnUsing(function () {

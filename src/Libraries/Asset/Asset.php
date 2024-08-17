@@ -148,8 +148,8 @@ class Asset
     public function tag(): string
     {
         return _message(
-            $this->templates[$this->type],
-            [$this->url(), implode(' ', $this->attributes)]
-        );
+                $this->templates[$this->type],
+                [$this->url(), implode(' ', $this->attributes)]
+            ) . PHP_EOL;
     }
 }

@@ -9,13 +9,19 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.4.0
+ * @since 2.9.0
  */
 
 namespace Quantum\Libraries\Validation\Rules;
 
 use Quantum\Libraries\Captcha\CaptchaManager;
+use Quantum\Exceptions\DatabaseException;
+use Quantum\Exceptions\CaptchaException;
+use Quantum\Exceptions\ConfigException;
+use Quantum\Exceptions\ModelException;
+use Quantum\Exceptions\DiException;
 use Quantum\Factory\ModelFactory;
+use ReflectionException;
 
 /**
  * Trait General
@@ -64,13 +70,19 @@ trait General
      * Check Captcha
      * @param string $field
      * @param string $value
-     * @param null|mixed $param
+     * @param $param
+     * @return void
+     * @throws CaptchaException
+     * @throws ConfigException
+     * @throws DiException
+     * @throws ReflectionException
      */
     protected function captcha(string $field, string $value, $param = null)
     {
         if (!empty($value)) {
-            $captcha = CaptchaManager::getCaptcha();
-            if (!$captcha->verifyResponse($value)){
+            $captcha = CaptchaManager::getHandler();
+
+            if (!$captcha->verify($value)){
                 $this->addError($field, 'captcha', $param);
             }
         }
@@ -296,11 +308,16 @@ trait General
     }
 
     /**
-     * Validates uniqueness
+     *  Validates uniqueness
      * @param string $field
-     * @param mixed $value
+     * @param $value
      * @param string $param
-     * @throws \Quantum\Exceptions\DiException
+     * @return void
+     * @throws ConfigException
+     * @throws DiException
+     * @throws ReflectionException
+     * @throws DatabaseException
+     * @throws ModelException
      */
     protected function unique(string $field, $value, string $param)
     {

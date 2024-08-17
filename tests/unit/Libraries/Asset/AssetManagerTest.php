@@ -79,7 +79,7 @@ class AssetManagerTest extends AppTestCase
         $this->assetManager->registerAsset(new Asset(Asset::JS, 'js/jquery.js', 'jQuery'));
 
         $this->assertEquals(
-            '<script src="http://mydomain.com/assets/js/jquery.js" ></script>',
+            '<script src="http://mydomain.com/assets/js/jquery.js" ></script>' . PHP_EOL,
             $this->assetManager->get('jQuery')->tag());
     }
 

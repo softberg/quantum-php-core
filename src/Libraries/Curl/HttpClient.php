@@ -182,7 +182,7 @@ class HttpClient
      * @throws HttpException
      * @throws LangException
      */
-    public function start()
+    public function start(): HttpClient
     {
         if (!$this->client) {
             throw HttpException::requestNotCreated();
@@ -190,7 +190,7 @@ class HttpClient
 
         if ($this->isMultiRequest()) {
             $this->client->start();
-            return;
+            return $this;
         }
 
         $this->client->setOpt(CURLOPT_CUSTOMREQUEST, $this->method);
@@ -202,6 +202,8 @@ class HttpClient
         $this->client->exec();
 
         $this->handleResponse($this->client);
+
+        return $this;
     }
 
     /**
