@@ -140,8 +140,7 @@ class HelperTest extends AppTestCase
 
         assets('css');
         assets('js');
-// dump(ob_get_contents());
-// dd($expectedOutput);
+
         $this->assertStringContainsString($expectedOutput, ob_get_contents());
 
         ob_get_clean();
