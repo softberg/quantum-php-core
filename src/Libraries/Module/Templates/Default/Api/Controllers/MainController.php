@@ -5,11 +5,10 @@ return '<?php
 
 namespace Modules\\' . ModuleManager::$moduleName . '\Controllers;
 
-use Quantum\Factory\ViewFactory;
 use Quantum\Mvc\QtController;
 use Quantum\Http\Response;
 
-class MainController extends QtController
+class MainController extends OpenApiMainController
 {
     private $name = "' . ModuleManager::$moduleName . '";
     
