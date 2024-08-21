@@ -35,7 +35,7 @@ class ModuleManager
     /**
      * @var string
      */
-    private $moduleName;
+    public static $moduleName;
 
     /**
      * @var string
@@ -67,7 +67,7 @@ class ModuleManager
      */
     function __construct(string $moduleName, string $template, string $demo, bool $enabled)
     {
-        $this->moduleName = $moduleName;
+        self::$moduleName = $moduleName;
 
         $this->template = $template;
 
@@ -79,7 +79,7 @@ class ModuleManager
 
         $this->templatePath = __DIR__ . DS . "Templates" . DS . $type . DS . ucfirst($this->template);
 
-        $this->modulePath = modules_dir() . DS . $this->moduleName;
+        $this->modulePath = modules_dir() . DS . self::$moduleName;
 
         $this->fs = Di::get(FileSystem::class);
     }
@@ -107,8 +107,8 @@ class ModuleManager
         $modules = $this->fs->require($modulesConfigPath);
 
         foreach ($modules['modules'] as $module => $options) {
-            if ($module == $this->moduleName || $options['prefix'] == strtolower($this->moduleName)) {
-                throw new Exception("A module or prefix named '$this->moduleName' already exists");
+            if ($module == self::$moduleName || $options['prefix'] == strtolower(self::$moduleName)) {
+                throw new Exception("A module or prefix named '" . self::$moduleName . "' already exists");
             }
         }
 
@@ -116,7 +116,7 @@ class ModuleManager
             $modulesConfigPath,
             str_replace(
                 "'modules' => [",
-                $this->writeModuleConfig($this->moduleName),
+                $this->writeModuleConfig(self::$moduleName),
                 $this->fs->get($modulesConfigPath)
             )
         );
