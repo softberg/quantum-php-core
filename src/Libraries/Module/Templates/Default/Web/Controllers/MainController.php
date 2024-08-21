@@ -1,8 +1,8 @@
 <?php
-
+use Quantum\Libraries\Module\ModuleManager;
 return '<?php
 
-namespace Modules\\' . $this->moduleName . '\Controllers;
+namespace Modules\\' . ModuleManager::$moduleName . '\Controllers;
 
 use Quantum\Factory\ViewFactory;
 use Quantum\Mvc\QtController;

@@ -1,4 +1,5 @@
 <?php
+use Quantum\Libraries\Module\ModuleManager;
 
 return '<?php
 
@@ -14,7 +15,7 @@ return '<?php
  * @since 2.9.0
  */
 
-namespace Modules\\' . $this->moduleName . '\Controllers\Abstracts;
+namespace Modules\\' . ModuleManager::$moduleName . '\Controllers\Abstracts;
 
 use Quantum\Http\Response;
 use Quantum\Http\Request;
@@ -28,32 +29,32 @@ abstract class OpenApiMainController extends ApiController
 
     /**
      * @OA\Info(
-     *     title="' . $this->moduleName . '",
+     *     title="' . ModuleManager::$moduleName . '",
      *     version="1.0.0",
-     *     description="This is the ' . $this->moduleName . ' module."
+     *     description="This is the ' . ModuleManager::$moduleName . ' module."
      * )
      */
     
     /**
      * @OA\Tag(
-     *     name="' . $this->moduleName . '",
-     *     description="Operations about the ' . $this->moduleName . '"
+     *     name="' . ModuleManager::$moduleName . '",
+     *     description="Operations about the ' . ModuleManager::$moduleName . '"
      * )
      */
     
     /**
      * @OA\Get(
-     *     path="/' . strtolower($this->moduleName) . '",
-     *     tags={"' . $this->moduleName . '"},
-     *     summary="Get status of ' . $this->moduleName . '",
-     *     description="Returns status of ' . $this->moduleName . ' module.",
+     *     path="/' . strtolower(ModuleManager::$moduleName) . '",
+     *     tags={"' . ModuleManager::$moduleName . '"},
+     *     summary="Get status of ' . ModuleManager::$moduleName . '",
+     *     description="Returns status of ' . ModuleManager::$moduleName . ' module.",
      *     @OA\Response(
      *         response=200,
      *         description="Successful response",
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(property="status", type="string", example="success"),
-     *             @OA\Property(property="message", type="string", example="' . $this->moduleName . ' module.")
+     *             @OA\Property(property="message", type="string", example="' . ModuleManager::$moduleName . ' module.")
      *         )
      *     )
      * )

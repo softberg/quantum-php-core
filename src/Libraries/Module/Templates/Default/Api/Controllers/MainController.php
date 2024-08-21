@@ -1,8 +1,9 @@
 <?php
+use Quantum\Libraries\Module\ModuleManager;
 
 return '<?php
 
-namespace Modules\\' . $this->moduleName . '\Controllers;
+namespace Modules\\' . ModuleManager::$moduleName . '\Controllers;
 
 use Quantum\Factory\ViewFactory;
 use Quantum\Mvc\QtController;
@@ -10,7 +11,7 @@ use Quantum\Http\Response;
 
 class MainController extends QtController
 {
-    private $name = "' . $this->moduleName . '";
+    private $name = "' . ModuleManager::$moduleName . '";
     
     public function index(Response $response)
     {
