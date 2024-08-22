@@ -1,5 +1,7 @@
 <?php
 
+use Quantum\Libraries\Module\ModuleManager;
+
 return '<?php
 
 /**
@@ -14,7 +16,7 @@ return '<?php
  * @since 2.9.0
  */
 
-namespace Modules\Api\Controllers\Abstracts;
+namespace Modules\\' . ModuleManager::$moduleName . '\Controllers\Abstracts;
 
 use Quantum\Mvc\QtController;
 

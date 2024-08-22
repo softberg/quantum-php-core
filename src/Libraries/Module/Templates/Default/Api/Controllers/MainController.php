@@ -5,7 +5,7 @@ return '<?php
 
 namespace Modules\\' . ModuleManager::$moduleName . '\Controllers;
 
-use Quantum\Mvc\QtController;
+use Modules\ApiCustom\Controllers\Abstracts\OpenApiMainController;
 use Quantum\Http\Response;
 
 class MainController extends OpenApiMainController
