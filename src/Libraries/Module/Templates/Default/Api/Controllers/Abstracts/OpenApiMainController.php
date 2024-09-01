@@ -18,7 +18,6 @@ return '<?php
 namespace Modules\\' . ModuleManager::$moduleName . '\Controllers\Abstracts;
 
 use Quantum\Http\Response;
-use Quantum\Http\Request;
 
 /**
  * Class OpenApiPostController
