@@ -34,6 +34,8 @@ use Psr\Log\LogLevel;
 class Router extends RouteController
 {
 
+    const VALID_PARAM_NAME_PATTERN = '/^[a-zA-Z]+$/';
+
     /**
      * Parameter types
      */
@@ -97,9 +99,9 @@ class Router extends RouteController
             throw RouteException::notFound();
         }
 
-        $this->findPatternMatches($uri);
+        $this->matchedRoutes = $this->findMatches($uri);
 
-        if (!count($this->matchedRoutes)) {
+        if (empty($this->matchedRoutes)) {
             stop(function () {
                 $this->handleNotFound();
             });
@@ -155,9 +157,9 @@ class Router extends RouteController
     {
         $routeInfo = [];
 
-        array_walk($currentRoute, function ($value, $key) use (&$routeInfo) {
+        foreach ($currentRoute as $key => $value) {
             $routeInfo[ucfirst($key)] = json_encode($value);
-        });
+        }
 
         Debugger::addToStore(Debugger::ROUTES, LogLevel::INFO, $routeInfo);
     }
@@ -165,25 +167,27 @@ class Router extends RouteController
     /**
      * Finds matches by pattern
      * @param string $uri
+     * @return array
      * @throws RouteException
      */
-    private function findPatternMatches(string $uri)
+    private function findMatches(string $uri)
     {
-        $requestUri = urldecode(parse_url($uri)['path']);
+        $requestUri = urldecode(parse_url($uri, PHP_URL_PATH));
+
+        $matches = [];
 
         foreach (self::$routes as $route) {
-
             list($pattern, $params) = $this->handleRoutePattern($route);
 
-            preg_match("/^" . $this->escape($pattern) . "$/u", $requestUri, $matches);
-
-            if (count($matches)) {
+            if (preg_match("/^" . $this->escape($pattern) . "$/u", $requestUri, $matchedParams)) {
                 $route['uri'] = $uri;
-                $route['params'] = $this->routeParams($params, $matches);
+                $route['params'] = $this->routeParams($params, $matchedParams);
                 $route['pattern'] = $pattern;
-                $this->matchedRoutes[] = $route;
+                $matches[] = $route;
             }
         }
+
+        return $matches;
     }
 
     /**
@@ -215,11 +219,7 @@ class Router extends RouteController
 
                 $routePattern = $this->normalizePattern($routePattern, $segmentParam, $index, $lastIndex);
             } else {
-                $routePattern .= $segment;
-
-                if ($index != $lastIndex) {
-                    $routePattern .= '(\/)';
-                }
+                $routePattern .= $segment . ($index != $lastIndex ? '(\/)' : '');
             }
         }
 
@@ -247,7 +247,7 @@ class Router extends RouteController
             }
         }
 
-        return $routePattern .= $segmentParam['pattern'];
+        return $routePattern . $segmentParam['pattern'];
     }
 
     /**
@@ -315,24 +315,14 @@ class Router extends RouteController
      */
     private function getParamPattern(array $match, string $expr, int $index, int $lastIndex): array
     {
-        $pattern = '';
-
         $name = $this->getParamName($match, $index);
 
-        $pattern .= '(?<' . $name . '>' . $expr;
+        $pattern = '(?<' . $name . '>' . $expr;
 
         if (isset($match[4]) && is_numeric($match[4])) {
-            if (isset($match[5]) && $match[5] == '?') {
-                $pattern .= '{0,' . $match[4] . '})';
-            } else {
-                $pattern .= '{' . $match[4] . '})';
-            }
+            $pattern .= (isset($match[5]) && $match[5] == '?') ? '{0,' . $match[4] . '})' : '{' . $match[4] . '})';
         } else {
-            if (isset($match[5]) && $match[5] == '?') {
-                $pattern .= '*)';
-            } else {
-                $pattern .= '+)';
-            }
+            $pattern .= (isset($match[5]) && $match[5] == '?') ? '*)' : '+)';
         }
 
         if (isset($match[5]) && $match[5] == '?') {
@@ -358,12 +348,12 @@ class Router extends RouteController
     {
         $name = $match[1] ? rtrim($match[1], '=') : null;
 
-        if ($name) {
-            if (!preg_match('/^[a-zA-Z]+$/', $name)) {
-                throw RouteException::paramNameNotValid();
-            }
-        } else {
-            $name = '_segment' . $index;
+        if ($name === null) {
+            return '_segment' . $index;
+        }
+
+        if (!preg_match(self::VALID_PARAM_NAME_PATTERN, $name)) {
+            throw RouteException::paramNameNotValid();
         }
 
         return $name;
@@ -396,15 +386,9 @@ class Router extends RouteController
      */
     private function checkMethod(array $matchedRoute): bool
     {
-        if (strpos($matchedRoute['method'], '|') !== false) {
-            if (in_array($this->request->getMethod(), explode('|', $matchedRoute['method']))) {
-                return true;
-            }
-        } else if ($this->request->getMethod() == $matchedRoute['method']) {
-            return true;
-        }
+        $allowedMethods = explode('|', $matchedRoute['method']);
 
-        return false;
+        return in_array($this->request->getMethod(), $allowedMethods, true);
     }
 
     /**
@@ -428,10 +412,19 @@ class Router extends RouteController
      */
     private function handleNotFound()
     {
-        if ($this->request->getHeader('Accept') == 'application/json') {
-            $this->response->json(['status' => 'error', 'message' => 'Page not found'], 404);
+        $acceptHeader = $this->request->getHeader('Accept');
+        $isJson = $acceptHeader === 'application/json';
+
+        if ($isJson) {
+            $this->response->json(
+                ['status' => 'error', 'message' => 'Page not found'],
+                404
+            );
         } else {
-            $this->response->html(partial('errors/404'), 404);
+            $this->response->html(
+                partial('errors/404'),
+                404
+            );
         }
     }
 
