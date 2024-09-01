@@ -82,7 +82,7 @@ class ModuleGenerateCommand extends QtCommand
 
             $moduleManager->writeContents();
 
-            $this->info($moduleName . ' module resources successfully published');
+            $this->info($moduleName . ' module successfully created');
         } catch (Exception $e) {
             $this->error($e->getMessage());
         }
