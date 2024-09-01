@@ -170,7 +170,7 @@ class Router extends RouteController
      * @return array
      * @throws RouteException
      */
-    private function findMatches(string $uri)
+    private function findMatches(string $uri): array
     {
         $requestUri = urldecode(parse_url($uri, PHP_URL_PATH));
 
@@ -206,7 +206,7 @@ class Router extends RouteController
         $lastIndex = (int)array_key_last($routeSegments);
 
         foreach ($routeSegments as $index => $segment) {
-            $segmentParam = $this->checkSegment($segment, $index, $lastIndex);
+            $segmentParam = $this->getSegmentParam($segment, $index, $lastIndex);
 
             if (!empty($segmentParam)) {
                 $this->checkParamName($routeParams, $segmentParam['name']);
@@ -278,7 +278,7 @@ class Router extends RouteController
      * @return array
      * @throws RouteException
      */
-    private function checkSegment(string $segment, int $index, int $lastIndex): array
+    private function getSegmentParam(string $segment, int $index, int $lastIndex): array
     {
         foreach (self::PARAM_TYPES as $type => $expr) {
             if (preg_match('/\[(.*=)*(' . $type . ')(:([0-9]+))*\](\?)?/', $segment, $match)) {
