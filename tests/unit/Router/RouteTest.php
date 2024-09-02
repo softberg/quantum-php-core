@@ -119,8 +119,6 @@ class RouteTest extends AppTestCase
 
     public function testGroupRoute()
     {
-        $route = $this->route;
-
         $this->route->group('auth', function ($route) {
             $route->add('dashboard', 'GET', 'AuthController', 'dashboard');
             $route->add('users', 'GET', 'AuthController', 'users');
@@ -211,8 +209,6 @@ class RouteTest extends AppTestCase
 
         $this->expectExceptionMessage('exception.name_on_group');
 
-        $route = $this->route;
-
         $this->route->group('auth', function ($route) {
             $route->add('dashboard', 'GET', 'AuthController', 'dashboard');
         })->name('authGroup');
@@ -239,8 +235,6 @@ class RouteTest extends AppTestCase
 
     public function testNamedRoutesInGroup()
     {
-        $route = $this->route;
-
         $this->route->group('auth', function ($route) {
             $route->add('reports', 'GET', 'MainController', 'landing')->name('reports');
             $route->add('dashboard', 'GET', 'MainController', 'dashboard')->name('dash');
