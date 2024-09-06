@@ -6,10 +6,26 @@ use Quantum\Libraries\Database\PaginatorInterface;
 
 class Paginator implements PaginatorInterface
 {
-	private int $total;
-	private IdiormDbal $dbal;
-	protected int $per_page;
-	protected int $page;
+	/**
+	 * @var int
+	 */
+	private $total;
+
+	/**
+	 * @var IdiormDbal
+	 */
+	private $dbal;
+
+	/**
+	 * @var int
+	 */
+	protected $per_page;
+
+	/**
+	 * @var int
+	 */
+	protected $page;
+	
 	public $data;
 
 	public function __construct($idiormDbal, int $per_page, int $page = 1)

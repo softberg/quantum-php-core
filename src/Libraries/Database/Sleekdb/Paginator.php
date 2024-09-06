@@ -6,10 +6,26 @@ use Quantum\Libraries\Database\PaginatorInterface;
 
 class Paginator implements PaginatorInterface
 {
-	private int $total;
-	private SleekDbal $dbal;
+	/**
+	 * @var int
+	 */
+	private $total;
+
+	/**
+	 * @var SleekDbal
+	 */
+	private $dbal;
+
+	/**
+	 * @var int
+	 */
 	protected int $per_page;
+
+	/**
+	 * @var int
+	 */
 	protected int $page;
+
 	public $data;
 
 	public function __construct($sleekDbal, int $per_page, int $page = 1)
