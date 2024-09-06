@@ -45,7 +45,7 @@ trait Result
         return $result;
     }
 
-	  public function paginate(int $perPage, $currentPage = 1): Paginator
+	  public function paginate(int $perPage, int $currentPage = 1): Paginator
 	  {
 		  return new Paginator($this, $perPage, $currentPage);
 	  }
