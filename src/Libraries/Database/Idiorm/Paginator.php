@@ -3,6 +3,8 @@
 namespace Quantum\Libraries\Database\Idiorm;
 
 use Quantum\Libraries\Database\PaginatorInterface;
+use Quantum\Exceptions\DatabaseException;
+use IdiormResultSet;
 
 class Paginator implements PaginatorInterface
 {
@@ -25,9 +27,18 @@ class Paginator implements PaginatorInterface
 	 * @var int
 	 */
 	protected $page;
-	
+
+	/**
+	 * @var array|IdiormResultSet
+	 */
 	public $data;
 
+	/**
+	 * @param $idiormDbal
+	 * @param int $per_page
+	 * @param int $page
+	 * @throws DatabaseException
+	 */
 	public function __construct($idiormDbal, int $per_page, int $page = 1)
 	{
 		/** @var IdiormDbal $idiormDbal */
@@ -39,11 +50,18 @@ class Paginator implements PaginatorInterface
 		$this->page = $page;
 	}
 
+	/**
+	 * @return int
+	 */
 	public function currentPageNumber(): int
 	{
 		return $this->page;
 	}
 
+	/**
+	 * @param bool $withBaseUrl
+	 * @return string|null
+	 */
 	public function currentPageLink(bool $withBaseUrl = false): ?string
 	{
 		$current = null;
@@ -53,6 +71,9 @@ class Paginator implements PaginatorInterface
 		return $current;
 	}
 
+	/**
+	 * @return int|null
+	 */
 	public function previousPageNumber(): ?int
 	{
 		$previous = null;
@@ -65,6 +86,10 @@ class Paginator implements PaginatorInterface
 		return $previous;
 	}
 
+	/**
+	 * @param bool $withBaseUrl
+	 * @return string|null
+	 */
 	public function previousPageLink(bool $withBaseUrl = false): ?string
 	{
 		$previous = null;
@@ -74,6 +99,9 @@ class Paginator implements PaginatorInterface
 		return $previous;
 	}
 
+	/**
+	 * @return int|null
+	 */
 	public function nextPageNumber(): ?int
 	{
 		$next = null;
@@ -85,6 +113,10 @@ class Paginator implements PaginatorInterface
 		return $next;
 	}
 
+	/**
+	 * @param bool $withBaseUrl
+	 * @return string|null
+	 */
 	public function nextPageLink(bool $withBaseUrl = false): ?string
 	{
 		$next = null;
@@ -94,16 +126,27 @@ class Paginator implements PaginatorInterface
 		return $next;
 	}
 
+	/**
+	 * @param bool $withBaseUrl
+	 * @return string|null
+	 */
 	public function firstPageLink(bool $withBaseUrl = false): ?string
 	{
 		return $this->getUri($withBaseUrl) . 'per_page=' . $this->per_page . '&page=1';
 	}
 
-	public function lastPageNumber()
+	/**
+	 * @return int
+	 */
+	public function lastPageNumber(): int
 	{
 		return (int)ceil($this->total() / $this->per_page);
 	}
 
+	/**
+	 * @param bool $withBaseUrl
+	 * @return string|null
+	 */
 	public function lastPageLink(bool $withBaseUrl = false): ?string
 	{
 		$last = null;
@@ -113,27 +156,43 @@ class Paginator implements PaginatorInterface
 		return $last;
 	}
 
+	/**
+	 * @return mixed
+	 */
 	public function firstItem()
 	{
 		return $this->data[array_key_first($this->data)];
 	}
 
+	/**
+	 * @return mixed
+	 */
 	public function lastItem()
 	{
 		return $this->data[array_key_last($this->data)];
 	}
 
+	/**
+	 * @return int
+	 */
 	public function perPage()
 	{
 		return $this->per_page;
 	}
 
+	/**
+	 * @return int
+	 */
 	public function total()
 	{
 		return $this->total;
 	}
 
-	public function links(bool $withBaseUrl = false)
+	/**
+	 * @param bool $withBaseUrl
+	 * @return array
+	 */
+	public function links(bool $withBaseUrl = false): array
 	{
 		$links = [];
 		for ($i = 1; $i <= $this->lastPageNumber(); $i++) {
@@ -143,6 +202,11 @@ class Paginator implements PaginatorInterface
 		return $links;
 	}
 
+	/**
+	 * @param bool $withBaseUrl
+	 * @param $pageItemsCount
+	 * @return string|null
+	 */
 	public function getPagination(bool $withBaseUrl = false, $pageItemsCount = null): ?string
 	{
 		if (!is_null($pageItemsCount) && $pageItemsCount < 3) {
@@ -198,16 +262,28 @@ class Paginator implements PaginatorInterface
 		return $pagination;
 	}
 
+	/**
+	 * @return array|IdiormResultSet
+	 */
 	public function data()
 	{
 		return $this->data ?? [];
 	}
 
+	/**
+	 * @param IdiormDbal $idiormDbal
+	 * @return void
+	 * @throws DatabaseException
+	 */
 	private function setTotal(IdiormDbal $idiormDbal)
 	{
 		$this->total = $idiormDbal->getOrmModel()->count();
 	}
 
+	/**
+	 * @param bool $withBaseUrl
+	 * @return string
+	 */
 	private function getUri(bool $withBaseUrl = false)
 	{
 		$base_url = base_url();

@@ -2,7 +2,12 @@
 
 namespace Quantum\Libraries\Database\Sleekdb;
 
+use SleekDB\Exceptions\InvalidConfigurationException;
 use Quantum\Libraries\Database\PaginatorInterface;
+use SleekDB\Exceptions\InvalidArgumentException;
+use Quantum\Exceptions\DatabaseException;
+use Quantum\Exceptions\ModelException;
+use SleekDB\Exceptions\IOException;
 
 class Paginator implements PaginatorInterface
 {
@@ -26,8 +31,21 @@ class Paginator implements PaginatorInterface
 	 */
 	protected $page;
 
+	/**
+	 * @var array
+	 */
 	public $data;
 
+	/**
+	 * @param $sleekDbal
+	 * @param int $per_page
+	 * @param int $page
+	 * @throws DatabaseException
+	 * @throws ModelException
+	 * @throws IOException
+	 * @throws InvalidArgumentException
+	 * @throws InvalidConfigurationException
+	 */
 	public function __construct($sleekDbal, int $per_page, int $page = 1)
 	{
 		/** @var SleekDbal $sleekDbal */
@@ -39,11 +57,18 @@ class Paginator implements PaginatorInterface
 		$this->page = $page;
 	}
 
+	/**
+	 * @return int
+	 */
 	public function currentPageNumber(): int
 	{
 		return $this->page;
 	}
 
+	/**
+	 * @param bool $withBaseUrl
+	 * @return string|null
+	 */
 	public function currentPageLink(bool $withBaseUrl = false): ?string
 	{
 		$current = null;
@@ -53,6 +78,9 @@ class Paginator implements PaginatorInterface
 		return $current;
 	}
 
+	/**
+	 * @return int|null
+	 */
 	public function previousPageNumber(): ?int
 	{
 		$previous = null;
@@ -65,6 +93,10 @@ class Paginator implements PaginatorInterface
 		return $previous;
 	}
 
+	/**
+	 * @param bool $withBaseUrl
+	 * @return string|null
+	 */
 	public function previousPageLink(bool $withBaseUrl = false): ?string
 	{
 		$previous = null;
@@ -74,6 +106,9 @@ class Paginator implements PaginatorInterface
 		return $previous;
 	}
 
+	/**
+	 * @return int|null
+	 */
 	public function nextPageNumber(): ?int
 	{
 		$next = null;
@@ -85,6 +120,10 @@ class Paginator implements PaginatorInterface
 		return $next;
 	}
 
+	/**
+	 * @param bool $withBaseUrl
+	 * @return string|null
+	 */
 	public function nextPageLink(bool $withBaseUrl = false): ?string
 	{
 		$next = null;
@@ -94,16 +133,27 @@ class Paginator implements PaginatorInterface
 		return $next;
 	}
 
+	/**
+	 * @param bool $withBaseUrl
+	 * @return string|null
+	 */
 	public function firstPageLink(bool $withBaseUrl = false): ?string
 	{
 		return $this->getUri($withBaseUrl) . 'per_page=' . $this->per_page . '&page=1';
 	}
 
-	public function lastPageNumber()
+	/**
+	 * @return int
+	 */
+	public function lastPageNumber(): int
 	{
 		return (int)ceil($this->total() / $this->per_page);
 	}
 
+	/**
+	 * @param bool $withBaseUrl
+	 * @return string|null
+	 */
 	public function lastPageLink(bool $withBaseUrl = false): ?string
 	{
 		$last = null;
@@ -113,27 +163,43 @@ class Paginator implements PaginatorInterface
 		return $last;
 	}
 
+	/**
+	 * @return mixed
+	 */
 	public function firstItem()
 	{
 		return $this->data[array_key_first($this->data)];
 	}
 
+	/**
+	 * @return mixed
+	 */
 	public function lastItem()
 	{
 		return $this->data[array_key_last($this->data)];
 	}
 
-	public function perPage()
+	/**
+	 * @return int
+	 */
+	public function perPage(): int
 	{
 		return $this->per_page;
 	}
 
-	public function total()
+	/**
+	 * @return int
+	 */
+	public function total(): int
 	{
 		return $this->total;
 	}
 
-	public function links(bool $withBaseUrl = false)
+	/**
+	 * @param bool $withBaseUrl
+	 * @return array
+	 */
+	public function links(bool $withBaseUrl = false): array
 	{
 		$links = [];
 		for ($i = 1; $i <= $this->lastPageNumber(); $i++) {
@@ -143,6 +209,11 @@ class Paginator implements PaginatorInterface
 		return $links;
 	}
 
+	/**
+	 * @param bool $withBaseUrl
+	 * @param $pageItemsCount
+	 * @return string|null
+	 */
 	public function getPagination(bool $withBaseUrl = false, $pageItemsCount = null): ?string
 	{
 		if (!is_null($pageItemsCount) && $pageItemsCount < 3) {
@@ -198,7 +269,10 @@ class Paginator implements PaginatorInterface
 		return $pagination;
 	}
 
-	public function data()
+	/**
+	 * @return array|SleekDbal[]
+	 */
+	public function data(): array
 	{
 		$result = array_map(function ($element) {
 			$item = clone $this->dbal;
@@ -211,12 +285,25 @@ class Paginator implements PaginatorInterface
 		return $result ?? [];
 	}
 
+	/**
+	 * @param SleekDbal $sleekDbal
+	 * @return void
+	 * @throws DatabaseException
+	 * @throws ModelException
+	 * @throws IOException
+	 * @throws InvalidArgumentException
+	 * @throws InvalidConfigurationException
+	 */
 	private function setTotal(SleekDbal $sleekDbal)
 	{
 		$this->total = count($sleekDbal->getBuilder()->getQuery()->fetch());
 	}
 
-	private function getUri(bool $withBaseUrl = false)
+	/**
+	 * @param bool $withBaseUrl
+	 * @return string
+	 */
+	private function getUri(bool $withBaseUrl = false): string
 	{
 		$base_url = base_url();
 		$routeUrl = preg_replace('/([?&](page|per_page)=\d+)/', '', route_uri());

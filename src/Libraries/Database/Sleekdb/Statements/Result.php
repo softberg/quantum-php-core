@@ -14,6 +14,7 @@
 
 namespace Quantum\Libraries\Database\Sleekdb\Statements;
 
+use Quantum\Libraries\Database\PaginatorInterface;
 use Quantum\Libraries\Database\Sleekdb\Paginator;
 use Quantum\Libraries\Database\DbalInterface;
 
@@ -45,7 +46,12 @@ trait Result
         return $result;
     }
 
-	  public function paginate(int $perPage, int $currentPage = 1): Paginator
+	  /**
+	   * @param int $perPage
+	   * @param int $currentPage
+	   * @return PaginatorInterface
+	   */
+	  public function paginate(int $perPage, int $currentPage = 1): PaginatorInterface
 	  {
 		  return new Paginator($this, $perPage, $currentPage);
 	  }
