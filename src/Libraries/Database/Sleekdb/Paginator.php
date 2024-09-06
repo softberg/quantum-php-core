@@ -19,12 +19,12 @@ class Paginator implements PaginatorInterface
 	/**
 	 * @var int
 	 */
-	protected int $per_page;
+	protected $per_page;
 
 	/**
 	 * @var int
 	 */
-	protected int $page;
+	protected $page;
 
 	public $data;
 
