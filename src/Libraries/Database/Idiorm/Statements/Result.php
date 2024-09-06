@@ -14,6 +14,7 @@
 
 namespace Quantum\Libraries\Database\Idiorm\Statements;
 
+use Quantum\Libraries\Database\Idiorm\Paginator;
 use Quantum\Libraries\Database\DbalInterface;
 use Quantum\Exceptions\DatabaseException;
 
@@ -32,6 +33,11 @@ trait Result
     {
         return $this->getOrmModel()->find_many();
     }
+
+	  public function paginate(int $perPage, $currentPage = 1): Paginator
+	  {
+	  	  return new Paginator($this, $perPage, $currentPage);
+	  }
 
     /**
      * @inheritDoc

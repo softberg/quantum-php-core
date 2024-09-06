@@ -144,6 +144,8 @@ interface DbalInterface
      */
     public function get();
 
+		public function paginate(int $perPage, int $currentPage = 1): PaginatorInterface;
+
     /**
      * Returns the count
      * @return int

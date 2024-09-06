@@ -60,12 +60,14 @@ class PostController extends QtController
      * @param Response $response
      * @param ViewFactory $view
      */
-    public function posts(Response $response, ViewFactory $view)
+    public function posts(Request $request, Response $response, ViewFactory $view)
     {
+        $posts = $this->postService->getPosts($request);
         $view->setParams([
             \'title\' => t(\'common.posts\') . \' | \' . config()->get(\'app_name\'),
             \'langs\' => config()->get(\'langs\'),
-            \'posts\' => $this->postService->getPosts()
+            \'posts\' => $posts->data,
+            \'pagination\' => $posts
         ]);
 
         $response->html($view->render(\'post/post\'));

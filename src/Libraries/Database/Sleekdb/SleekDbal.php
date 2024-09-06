@@ -182,6 +182,21 @@ class SleekDbal implements DbalInterface
         self::$connection = $config;
     }
 
+		public function setData(array $data)
+		{
+			$this->data = $data;
+		}
+
+		public function setModifiedFields($modifiedFields)
+		{
+			$this->modifiedFields = $modifiedFields;
+		}
+
+		public function setIsNew($isNew)
+		{
+			$this->isNew = $isNew;
+		}
+
     /**
      * @inheritDoc
      */

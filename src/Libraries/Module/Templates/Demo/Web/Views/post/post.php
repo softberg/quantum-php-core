@@ -13,6 +13,11 @@ return '<div class="main-wrapper">
         <h4 class="center-align"><?php _t(\'common.no_posts\') ?>... <?php _t(\'common.try_creating\') ?></h4>
     <?php endif; ?>
 
+    <?php if (!empty($pagination)): ?>
+        <div>
+	        <?php echo $pagination->getPagination(0,5)?>
+        </div>
+    <?php endif; ?>
     <?php echo partial(\'post/partials/modal\', [\'item\' => t(\'common.the_post\')]) ?>
 </div>
 ';
