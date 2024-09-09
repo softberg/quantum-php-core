@@ -105,24 +105,26 @@ class SleekPaginatorTest extends AppTestCase
 
 	public function testSleekPaginatorFirstItem()
 	{
+		$this->userModel->orderBy('firstname', 'desc');
 		$paginator = new Paginator($this->userModel, 2, 2);
 
 		$this->assertIsArray($paginator->firstItem());
 		$this->assertIsString($paginator->firstItem()['firstname']);
-		$this->assertEquals('Benjamin', $paginator->firstItem()['firstname']);
+		$this->assertEquals('John', $paginator->firstItem()['firstname']);
 		$this->assertIsString($paginator->firstItem()['lastname']);
-		$this->assertEquals('Gentry', $paginator->firstItem()['lastname']);
+		$this->assertEquals('Doe', $paginator->firstItem()['lastname']);
 	}
 
 	public function testSleekPaginatorLastItem()
 	{
+		$this->userModel->orderBy('firstname', 'desc');
 		$paginator = new Paginator($this->userModel, 2, 2);
 
 		$this->assertIsArray($paginator->lastItem());
 		$this->assertIsString($paginator->lastItem()['firstname']);
-		$this->assertEquals('Rosa', $paginator->lastItem()['firstname']);
+		$this->assertEquals('Jane', $paginator->lastItem()['firstname']);
 		$this->assertIsString($paginator->lastItem()['lastname']);
-		$this->assertEquals('Briggs', $paginator->lastItem()['lastname']);
+		$this->assertEquals('Du', $paginator->lastItem()['lastname']);
 	}
 
 	public function testSleekPaginatorPerPage()
