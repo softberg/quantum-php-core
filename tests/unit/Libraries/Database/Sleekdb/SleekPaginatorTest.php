@@ -31,13 +31,13 @@ class SleekPaginatorTest extends AppTestCase
 		$this->userModel = new SleekDbal('users');
 	}
 
-	public function testIdiormConstructor()
+	public function testSleekConstructor()
 	{
 		$paginator = new Paginator($this->userModel, 2, 1);
 		$this->assertInstanceOf(PaginatorInterface::class, $paginator);
 	}
 
-	public function testIdiormPaginatorCurrentPageNumber()
+	public function testSleekPaginatorCurrentPageNumber()
 	{
 		$paginator = new Paginator($this->userModel, 2, 1);
 
@@ -45,14 +45,14 @@ class SleekPaginatorTest extends AppTestCase
 		$this->assertEquals(1, $paginator->currentPageNumber());
 	}
 
-	public function testIdiormPaginatorCurrentPageLink()
+	public function testSleekPaginatorCurrentPageLink()
 	{
 		$paginator = new Paginator($this->userModel, 2, 1);
 
 		$this->assertIsString($paginator->currentPageLink());
 	}
 
-	public function testIdiormPaginatorPreviousPageNumber()
+	public function testSleekPaginatorPreviousPageNumber()
 	{
 		$paginator = new Paginator($this->userModel, 2, 3);
 
@@ -60,14 +60,14 @@ class SleekPaginatorTest extends AppTestCase
 		$this->assertEquals(2, $paginator->previousPageNumber());
 	}
 
-	public function testIdiormPaginatorPreviousPageLink()
+	public function testSleekPaginatorPreviousPageLink()
 	{
 		$paginator = new Paginator($this->userModel, 2, 3);
 
 		$this->assertIsString($paginator->previousPageLink());
 	}
 
-	public function testIdiormPaginatorNextPageNumber()
+	public function testSleekPaginatorNextPageNumber()
 	{
 		$paginator = new Paginator($this->userModel, 2, 2);
 
@@ -75,14 +75,14 @@ class SleekPaginatorTest extends AppTestCase
 		$this->assertEquals(3, $paginator->nextPageNumber());
 	}
 
-	public function testIdiormPaginatorNextPageLink()
+	public function testSleekPaginatorNextPageLink()
 	{
 		$paginator = new Paginator($this->userModel, 2, 2);
 
 		$this->assertIsString($paginator->nextPageLink());
 	}
 
-	public function testIdiormPaginatorLastPageNumber()
+	public function testSleekPaginatorLastPageNumber()
 	{
 		$paginator = new Paginator($this->userModel, 2, 2);
 
@@ -90,20 +90,20 @@ class SleekPaginatorTest extends AppTestCase
 		$this->assertEquals(3, $paginator->lastPageNumber());
 	}
 
-	public function testIdiormPaginatorLastPageLink()
+	public function testSleekPaginatorLastPageLink()
 	{
 		$paginator = new Paginator($this->userModel, 2, 2);
 
 		$this->assertIsString($paginator->lastPageLink());
 	}
 
-	public function testIdiormPaginatorFirstPageLink()
+	public function testSleekPaginatorFirstPageLink()
 	{
 		$paginator = new Paginator($this->userModel, 2, 2);
 		$this->assertIsString($paginator->firstPageLink());
 	}
 
-	public function testIdiormPaginatorFirstItem()
+	public function testSleekPaginatorFirstItem()
 	{
 		$paginator = new Paginator($this->userModel, 2, 2);
 
@@ -114,7 +114,7 @@ class SleekPaginatorTest extends AppTestCase
 		$this->assertEquals('Gentry', $paginator->firstItem()['lastname']);
 	}
 
-	public function testIdiormPaginatorLastItem()
+	public function testSleekPaginatorLastItem()
 	{
 		$paginator = new Paginator($this->userModel, 2, 2);
 
@@ -125,7 +125,7 @@ class SleekPaginatorTest extends AppTestCase
 		$this->assertEquals('Briggs', $paginator->lastItem()['lastname']);
 	}
 
-	public function testIdiormPaginatorPerPage()
+	public function testSleekPaginatorPerPage()
 	{
 		$paginator = new Paginator($this->userModel, 2, 2);
 
@@ -133,7 +133,7 @@ class SleekPaginatorTest extends AppTestCase
 		$this->assertEquals(2, $paginator->perPage());
 	}
 
-	public function testIdiormPaginatorTotal()
+	public function testSleekPaginatorTotal()
 	{
 		$paginator = new Paginator($this->userModel, 2, 2);
 
@@ -141,7 +141,7 @@ class SleekPaginatorTest extends AppTestCase
 		$this->assertEquals(5, $paginator->total());
 	}
 
-	public function testIdiormPaginatorLinks()
+	public function testSleekPaginatorLinks()
 	{
 		$paginator = new Paginator($this->userModel, 2, 2);
 
@@ -152,14 +152,14 @@ class SleekPaginatorTest extends AppTestCase
 		$this->assertIsString($paginator->links()[2]);
 	}
 
-	public function testIdiormPaginatorGetPagination()
+	public function testSleekPaginatorGetPagination()
 	{
 		$paginator = new Paginator($this->userModel, 2, 3);
 
 		$this->assertIsString($paginator->getPagination());
 	}
 
-	public function testIdiormPaginatorData()
+	public function testSleekPaginatorData()
 	{
 		$paginator = new Paginator($this->userModel, 2, 2);
 
