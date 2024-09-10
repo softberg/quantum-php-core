@@ -229,7 +229,12 @@ abstract class BasePaginator implements PaginatorInterface
 		}
 
 		if ($pageItemsCount) {
-			$pagination = $this->getPageItems($pagination, $currentPage, $totalPages, $pageItemsCount, $withBaseUrl);
+			$links = $this->links($withBaseUrl);
+			$startPage = $this->calculateStartPage($currentPage, $pageItemsCount);
+			$endPage = $this->calculateEndPage($startPage, $totalPages, $pageItemsCount);
+			$pagination = $this->addFirstPageLink($pagination, $startPage);
+			$pagination = $this->getItemsLinks($pagination, $startPage, $endPage, $currentPage, $links);
+			$pagination = $this->addLastPageLink($pagination, $endPage, $totalPages, $links);
 		}
 
 		if ($currentPage < $totalPages) {
@@ -239,27 +244,6 @@ abstract class BasePaginator implements PaginatorInterface
 		$pagination .= '</ul>';
 
 		return $pagination;
-	}
-
-	/**
-	 * @param $pagination
-	 * @param $currentPage
-	 * @param $totalPages
-	 * @param $pageItemsCount
-	 * @param bool $withBaseUrl
-	 * @return mixed|string
-	 */
-	protected function getPageItems($pagination, $currentPage, $totalPages, $pageItemsCount, bool $withBaseUrl = false)
-	{
-		$startPage = $this->calculateStartPage($currentPage, $pageItemsCount);
-		$endPage = $this->calculateEndPage($startPage, $totalPages, $pageItemsCount);
-
-		$pagination = $this->addFirstPageLink($pagination, $startPage);
-
-		$links = $this->links($withBaseUrl);
-		$pagination = $this->getItemsLinks($pagination, $startPage, $endPage, $currentPage, $links);
-
-		return $this->addLastPageLink($pagination, $endPage, $totalPages, $links);
 	}
 
 	/**
