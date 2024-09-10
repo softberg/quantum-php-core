@@ -254,10 +254,7 @@ class BasePaginator implements PaginatorInterface
 		}
 
 		$links = $this->links($withBaseUrl);
-		for ($i = $startPage; $i <= $endPage; $i++) {
-			$active = $i == $currentPage ? 'class="'. self::PAGINATION_CLASS_ACTIVE .'"' : '';
-			$pagination .= '<li ' . $active . '><a href="' . $links[$i - 1] . '">' . $i . '</a></li>';
-		}
+		$pagination = $this->getItemsLinks($pagination, $startPage, $endPage, $currentPage, $links, $withBaseUrl);
 
 		if ($endPage < $totalPages) {
 			if ($endPage < $totalPages - 1) {
@@ -270,21 +267,38 @@ class BasePaginator implements PaginatorInterface
 	}
 
 	/**
-	 * @param string $nextPageLink
+	 * @param string|null $nextPageLink
 	 * @return string
 	 */
-	protected function getNextPageItem(string $nextPageLink): string
+	protected function getNextPageItem(?string $nextPageLink): string
 	{
-		return '<li><a href="' . $nextPageLink . '">Next &raquo;</a></li>';
+		$link = '';
+		if (!empty($nextPageLink)){
+			$link = '<li><a href="' . $nextPageLink . '">Next &raquo;</a></li>';
+		}
+		return $link;
 	}
 
 	/**
-	 * @param string $previousPageLink
+	 * @param string|null $previousPageLink
 	 * @return string
 	 */
-	protected function getPreviousPageItem(string $previousPageLink): string
+	protected function getPreviousPageItem(?string $previousPageLink): string
 	{
-		return '<li><a href="' . $previousPageLink . '">&laquo; Previous</a></li>';
+		$link = '';
+		if (!empty($previousPageLink)){
+			$link = '<li><a href="' . $previousPageLink . '">&laquo; Previous</a></li>';
+		}
+		return $link;
+	}
+
+	protected function getItemsLinks($pagination, $startPage, $endPage, $currentPage, array $links, bool $withBaseUrl = false)
+	{
+		for ($i = $startPage; $i <= $endPage; $i++) {
+			$active = $i == $currentPage ? 'class="'. self::PAGINATION_CLASS_ACTIVE .'"' : '';
+			$pagination .= '<li ' . $active . '><a href="' . $links[$i - 1] . '">' . $i . '</a></li>';
+		}
+		return $pagination;
 	}
 
 	public function firstItem()
