@@ -202,19 +202,18 @@ abstract class BasePaginator implements PaginatorInterface
 	 */
 	public function getPagination(bool $withBaseUrl = false, $pageItemsCount = null): ?string
 	{
-		if (!is_null($pageItemsCount) && $pageItemsCount < 3) {
-			$pageItemsCount = 3;
-		}
-
-		$currentPage = $this->currentPageNumber();
 		$totalPages = $this->lastPageNumber();
-
 		if ($totalPages <= 1) {
 			return null;
 		}
 
-		$pagination = '<ul class="'. self::PAGINATION_CLASS .'">';
+		if (!is_null($pageItemsCount) && $pageItemsCount < 3) {
+			$pageItemsCount = 3;
+		}
 
+		$pagination = '<ul class="'. self::PAGINATION_CLASS .'">';
+		$currentPage = $this->currentPageNumber();
+		
 		if ($currentPage > 1) {
 			$pagination .= $this->getPreviousPageItem($this->previousPageLink());
 		}
