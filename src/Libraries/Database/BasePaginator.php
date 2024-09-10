@@ -5,26 +5,6 @@ namespace Quantum\Libraries\Database;
 class BasePaginator implements PaginatorInterface
 {
 	/**
-	 * @var int
-	 */
-	protected $total;
-
-	/**
-	 * @var string
-	 */
-	protected $baseUrl;
-
-	/**
-	 * @var int
-	 */
-	protected $perPage;
-
-	/**
-	 * @var int
-	 */
-	protected $page;
-
-	/**
 	 * @var string
 	 */
 	protected const PAGINATION_CLASS = 'pagination';
@@ -48,6 +28,26 @@ class BasePaginator implements PaginatorInterface
 	 * @var int
 	 */
 	protected const FIRST_PAGE_NUMBER = 1;
+
+	/**
+	 * @var int
+	 */
+	protected $total;
+
+	/**
+	 * @var string
+	 */
+	protected $baseUrl;
+
+	/**
+	 * @var int
+	 */
+	protected $perPage;
+
+	/**
+	 * @var int
+	 */
+	protected $page;
 
 	/**
 	 * @return int
