@@ -254,7 +254,7 @@ abstract class BasePaginator implements PaginatorInterface
 		}
 
 		$links = $this->links($withBaseUrl);
-		$pagination = $this->getItemsLinks($pagination, $startPage, $endPage, $currentPage, $links, $withBaseUrl);
+		$pagination = $this->getItemsLinks($pagination, $startPage, $endPage, $currentPage, $links);
 
 		if ($endPage < $totalPages) {
 			if ($endPage < $totalPages - 1) {
