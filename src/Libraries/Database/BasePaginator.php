@@ -197,7 +197,12 @@ abstract class BasePaginator implements PaginatorInterface
 		return $url . $delimiter;
 	}
 
-	protected function getPageLink($pageNumber, $withBaseUrl = false): ?string
+	/**
+	 * @param $pageNumber
+	 * @param bool $withBaseUrl
+	 * @return string|null
+	 */
+	protected function getPageLink($pageNumber, bool $withBaseUrl = false): ?string
 	{
 		if (!empty($pageNumber)){
 			return $this->getUri($withBaseUrl) . self::PER_PAGE .'=' . $this->perPage . '&'. self::PAGE .'=' . $pageNumber;
@@ -272,6 +277,14 @@ abstract class BasePaginator implements PaginatorInterface
 		return $link;
 	}
 
+	/**
+	 * @param $pagination
+	 * @param $startPage
+	 * @param $endPage
+	 * @param $currentPage
+	 * @param array $links
+	 * @return mixed|string
+	 */
 	protected function getItemsLinks($pagination, $startPage, $endPage, $currentPage, array $links)
 	{
 		for ($i = $startPage; $i <= $endPage; $i++) {
@@ -281,17 +294,33 @@ abstract class BasePaginator implements PaginatorInterface
 		return $pagination;
 	}
 
+	/**
+	 * @param $currentPage
+	 * @param $pageItemsCount
+	 * @return mixed
+	 */
 	protected function calculateStartPage($currentPage, $pageItemsCount)
 	{
 		return max(1, $currentPage - ceil(($pageItemsCount - self::EDGE_PADDING) / 2));
 	}
 
+	/**
+	 * @param $startPage
+	 * @param $totalPages
+	 * @param $pageItemsCount
+	 * @return mixed
+	 */
 	protected function calculateEndPage($startPage, $totalPages, $pageItemsCount)
 	{
 		$endPage = min($totalPages, $startPage + $pageItemsCount - self::EDGE_PADDING);
 		return max(1, $endPage - $pageItemsCount + self::EDGE_PADDING);
 	}
 
+	/**
+	 * @param $pagination
+	 * @param $startPage
+	 * @return mixed|string
+	 */
 	protected function addFirstPageLink($pagination, $startPage)
 	{
 		if ($startPage > 1) {
@@ -303,6 +332,13 @@ abstract class BasePaginator implements PaginatorInterface
 		return $pagination;
 	}
 
+	/**
+	 * @param $pagination
+	 * @param $endPage
+	 * @param $totalPages
+	 * @param $links
+	 * @return mixed|string
+	 */
 	protected function addLastPageLink($pagination, $endPage, $totalPages, $links)
 	{
 		if ($endPage < $totalPages) {
