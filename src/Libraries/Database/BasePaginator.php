@@ -2,7 +2,7 @@
 
 namespace Quantum\Libraries\Database;
 
-class BasePaginator implements PaginatorInterface
+abstract class BasePaginator implements PaginatorInterface
 {
 	/**
 	 * @var string
@@ -292,27 +292,12 @@ class BasePaginator implements PaginatorInterface
 		return $link;
 	}
 
-	protected function getItemsLinks($pagination, $startPage, $endPage, $currentPage, array $links, bool $withBaseUrl = false)
+	protected function getItemsLinks($pagination, $startPage, $endPage, $currentPage, array $links)
 	{
 		for ($i = $startPage; $i <= $endPage; $i++) {
 			$active = $i == $currentPage ? 'class="'. self::PAGINATION_CLASS_ACTIVE .'"' : '';
 			$pagination .= '<li ' . $active . '><a href="' . $links[$i - 1] . '">' . $i . '</a></li>';
 		}
 		return $pagination;
-	}
-
-	public function firstItem()
-	{
-		// TODO: Implement firstItem() method.
-	}
-
-	public function lastItem()
-	{
-		// TODO: Implement lastItem() method.
-	}
-
-	public function data()
-	{
-		// TODO: Implement data() method.
 	}
 }
