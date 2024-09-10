@@ -32,6 +32,16 @@ abstract class BasePaginator implements PaginatorInterface
 	/**
 	 * @var int
 	 */
+	protected const MINIMUM_PAGE_ITEMS_COUNT = 3;
+
+	/**
+	 * @var int
+	 */
+	protected const EDGE_PADDING = 3;
+
+	/**
+	 * @var int
+	 */
 	protected $total;
 
 	/**
@@ -207,8 +217,8 @@ abstract class BasePaginator implements PaginatorInterface
 			return null;
 		}
 
-		if (!is_null($pageItemsCount) && $pageItemsCount < 3) {
-			$pageItemsCount = 3;
+		if (!is_null($pageItemsCount) && $pageItemsCount < self::MINIMUM_PAGE_ITEMS_COUNT) {
+			$pageItemsCount = self::MINIMUM_PAGE_ITEMS_COUNT;
 		}
 
 		$pagination = '<ul class="'. self::PAGINATION_CLASS .'">';
@@ -236,33 +246,20 @@ abstract class BasePaginator implements PaginatorInterface
 	 * @param $currentPage
 	 * @param $totalPages
 	 * @param $pageItemsCount
-	 * @param $withBaseUrl
+	 * @param bool $withBaseUrl
 	 * @return mixed|string
 	 */
-	protected function getPageItems($pagination, $currentPage, $totalPages, $pageItemsCount, $withBaseUrl = false)
+	protected function getPageItems($pagination, $currentPage, $totalPages, $pageItemsCount, bool $withBaseUrl = false)
 	{
-		$startPage = max(1, $currentPage - ceil(($pageItemsCount - 3) / 2));
-		$endPage = min($totalPages, $startPage + $pageItemsCount - 3);
-		$startPage = max(1, $endPage - $pageItemsCount + 3);
+		$startPage = $this->calculateStartPage($currentPage, $pageItemsCount);
+		$endPage = $this->calculateEndPage($startPage, $totalPages, $pageItemsCount);
 
-		if ($startPage > 1) {
-			$pagination .= '<li><a href="' . $this->firstPageLink() . '">1</a></li>';
-			if ($startPage > 2) {
-				$pagination .= '<li><span>...</span></li>';
-			}
-		}
+		$pagination = $this->addFirstPageLink($pagination, $startPage);
 
 		$links = $this->links($withBaseUrl);
 		$pagination = $this->getItemsLinks($pagination, $startPage, $endPage, $currentPage, $links);
 
-		if ($endPage < $totalPages) {
-			if ($endPage < $totalPages - 1) {
-				$pagination .= '<li><span>...</span></li>';
-			}
-
-			$pagination .= '<li><a href="' . $links[$totalPages - 1] . '">' . $totalPages . '</a></li>';
-		}
-		return $pagination;
+		return $this->addLastPageLink($pagination, $endPage, $totalPages, $links);
 	}
 
 	/**
@@ -296,6 +293,39 @@ abstract class BasePaginator implements PaginatorInterface
 		for ($i = $startPage; $i <= $endPage; $i++) {
 			$active = $i == $currentPage ? 'class="'. self::PAGINATION_CLASS_ACTIVE .'"' : '';
 			$pagination .= '<li ' . $active . '><a href="' . $links[$i - 1] . '">' . $i . '</a></li>';
+		}
+		return $pagination;
+	}
+
+	protected function calculateStartPage($currentPage, $pageItemsCount)
+	{
+		return max(1, $currentPage - ceil(($pageItemsCount - self::EDGE_PADDING) / 2));
+	}
+
+	protected function calculateEndPage($startPage, $totalPages, $pageItemsCount)
+	{
+		$endPage = min($totalPages, $startPage + $pageItemsCount - self::EDGE_PADDING);
+		return max(1, $endPage - $pageItemsCount + self::EDGE_PADDING);
+	}
+
+	protected function addFirstPageLink($pagination, $startPage)
+	{
+		if ($startPage > 1) {
+			$pagination .= '<li><a href="' . $this->firstPageLink() . '">'. self::FIRST_PAGE_NUMBER .'</a></li>';
+			if ($startPage > 2) {
+				$pagination .= '<li><span>...</span></li>';
+			}
+		}
+		return $pagination;
+	}
+
+	protected function addLastPageLink($pagination, $endPage, $totalPages, $links)
+	{
+		if ($endPage < $totalPages) {
+			if ($endPage < $totalPages - 1) {
+				$pagination .= '<li><span>...</span></li>';
+			}
+			$pagination .= '<li><a href="' . $links[$totalPages - 1] . '">' . $totalPages . '</a></li>';
 		}
 		return $pagination;
 	}
