@@ -3,6 +3,7 @@
 namespace Quantum\Tests\Libraries\Database\Idiorm\Statements;
 
 use Quantum\Tests\Libraries\Database\Idiorm\IdiormDbalTestCase;
+use Quantum\Libraries\Database\PaginatorInterface;
 use Quantum\Libraries\Database\Idiorm\IdiormDbal;
 
 class ResultIdiormTest extends IdiormDbalTestCase
@@ -21,6 +22,17 @@ class ResultIdiormTest extends IdiormDbalTestCase
         $this->assertEquals('Jane', $users[1]->firstname);
     }
 
+		public function testIdiormPagination()
+		{
+			$userModel = new IdiormDbal('users');
+			$users = $userModel->paginate(2);
+
+			$this->assertInstanceOf(PaginatorInterface::class, $users);
+			$this->assertIsObject($users);
+			$this->assertEquals(2, $users->total());
+			$this->assertEquals('John', $users->firstItem()->firstname);
+			$this->assertEquals('Jane', $users->lastItem()->firstname);
+		}
     public function testIdiormFindOne()
     {
         $userModel = new IdiormDbal('users');

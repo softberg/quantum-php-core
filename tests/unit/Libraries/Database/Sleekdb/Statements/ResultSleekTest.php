@@ -3,6 +3,7 @@
 namespace Quantum\Tests\Libraries\Database\Sleekdb\Statements;
 
 use Quantum\Tests\Libraries\Database\Sleekdb\SleekDbalTestCase;
+use Quantum\Libraries\Database\PaginatorInterface;
 use Quantum\Libraries\Database\Sleekdb\SleekDbal;
 
 class ResultSleekTest extends SleekDbalTestCase
@@ -22,6 +23,19 @@ class ResultSleekTest extends SleekDbalTestCase
 
         $this->assertNotNull($users[0]->lastname);
     }
+
+	public function testSleekPagination()
+	{
+		$userModel = new SleekDbal('users');
+
+		$users = $userModel->paginate(2);
+
+		$this->assertIsObject($users);
+		$this->assertInstanceOf(PaginatorInterface::class, $users);
+		$this->assertEquals(2, $users->total());
+		$this->assertNotNull('John', $users->firstItem()['firstname']);
+		$this->assertNotNull('Jane', $users->firstItem()['lastname']);
+	}
 
     public function testSleekFindOne()
     {

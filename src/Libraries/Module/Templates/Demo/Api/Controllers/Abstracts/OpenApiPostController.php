@@ -1,5 +1,7 @@
 <?php
 
+use Quantum\Http\Request;
+
 return '<?php
 
 /**
@@ -45,9 +47,10 @@ abstract class OpenApiPostController extends ApiController
      *      description="Internal Server Error"
      *    )
      *  )
+     * @param Request $request
      * @param Response $response
      */
-    abstract public function posts(Response $response);
+    abstract public function posts(Request $request, Response $response);
 
     /**
      * Get post action

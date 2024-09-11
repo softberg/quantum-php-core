@@ -46,11 +46,19 @@ class PostController extends OpenApiPostController
     /**
      * @inheritDoc
      */
-    public function posts(Response $response)
+    public function posts(Request $request, Response $response)
     {
+        $posts = $this->postService->getPosts($request);
         $response->json([
             \'status\' => \'success\',
-            \'data\' => $this->postService->getPosts()
+            \'data\' => $posts->data,
+            \'pagination\' => [
+								\'total_records\' => $posts->total(),
+								\'current_page\' => $posts->currentPageNumber(),
+								\'total_pages\' => (int) ceil($posts->total()/$posts->perPage()),
+								\'next_page\' => $posts->nextPageNumber(),
+								\'prev_page\' => $posts->previousPageNumber(),
+			      ]
         ]);
     }
 
