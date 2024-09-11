@@ -55,6 +55,10 @@ class LocalFileSystemAdapter implements FilesystemAdapterInterface
      */
     public function removeDirectory(string $dirname): bool
     {
+        if (!is_dir($dirname)) {
+            return false;
+        }
+
         return rmdir($dirname);
     }
 
@@ -64,6 +68,24 @@ class LocalFileSystemAdapter implements FilesystemAdapterInterface
     public function get(string $filename)
     {
         return file_get_contents($filename);
+    }
+
+    /**
+     * Reads and returns the content of a file as JSON.
+     * @param string $filename
+     * @return false|mixed
+     */
+    public function getJson(string $filename)
+    {
+        $content = file_get_contents($filename);
+
+        if (empty($content)) {
+            return false;
+        }
+
+        $data = json_decode($content, true);
+
+        return json_last_error() === JSON_ERROR_NONE ? $data : false;
     }
 
     /**
