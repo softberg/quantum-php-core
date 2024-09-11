@@ -9,16 +9,24 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.6.0
+ * @since 2.9.0
  */
 
 namespace Quantum\Mvc;
 
+use Quantum\Libraries\Asset\AssetManager;
+use Quantum\Exceptions\AssetException;
+use Quantum\Exceptions\LangException;
 use Quantum\Exceptions\ViewException;
 use Quantum\Renderer\DefaultRenderer;
+use Quantum\Exceptions\DiException;
 use Quantum\Renderer\TwigRenderer;
 use Quantum\Factory\ViewFactory;
 use Quantum\Debugger\Debugger;
+use Twig\Error\RuntimeError;
+use Twig\Error\LoaderError;
+use Twig\Error\SyntaxError;
+use ReflectionException;
 use Psr\Log\LogLevel;
 
 /**
@@ -41,6 +49,12 @@ class QtView
     private $view = null;
 
     /**
+     * Assets to be included
+     * @var array
+     */
+    private $assets = [];
+
+    /**
      * View params
      * @var array
      */
@@ -48,7 +62,7 @@ class QtView
 
     /**
      * QtView constructor.
-     * @throws \Quantum\Exceptions\ViewException
+     * @throws ViewException
      */
     public function __construct()
     {
@@ -60,10 +74,12 @@ class QtView
     /**
      * Sets a layout
      * @param string|null $layout
+     * @param array $assets
      */
-    public function setLayout(?string $layout)
+    public function setLayout(?string $layout, array $assets = [])
     {
         $this->layout = $layout;
+        $this->assets = $assets;
     }
 
     /**
@@ -128,12 +144,14 @@ class QtView
      * @param string $view
      * @param array $params
      * @return string|null
-     * @throws \Quantum\Exceptions\DiException
-     * @throws \Quantum\Exceptions\ViewException
-     * @throws \ReflectionException
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
+     * @throws DiException
+     * @throws LoaderError
+     * @throws ReflectionException
+     * @throws RuntimeError
+     * @throws ViewException
+     * @throws AssetException
+     * @throws LangException
+     * @throws SyntaxError
      */
     public function render(string $view, array $params = []): ?string
     {
@@ -151,6 +169,10 @@ class QtView
             Debugger::updateStoreCell(Debugger::ROUTES, LogLevel::INFO, ['View' => current_module() . '/Views/' . $view]);
         }
 
+        if(!empty($this->assets)) {
+            AssetManager::getInstance()->register($this->assets);
+        }
+
         return $this->renderFile($this->layout);
     }
 
@@ -159,12 +181,12 @@ class QtView
      * @param string $view
      * @param array $params
      * @return string|null
-     * @throws \Quantum\Exceptions\DiException
-     * @throws \Quantum\Exceptions\ViewException
-     * @throws \ReflectionException
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
+     * @throws DiException
+     * @throws ViewException
+     * @throws ReflectionException
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     public function renderPartial(string $view, array $params = []): ?string
     {
@@ -188,12 +210,12 @@ class QtView
      * Renders the view
      * @param string $view
      * @return string
-     * @throws \Quantum\Exceptions\DiException
-     * @throws \Quantum\Exceptions\ViewException
-     * @throws \ReflectionException
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
+     * @throws DiException
+     * @throws ViewException
+     * @throws ReflectionException
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     private function renderFile(string $view): string
     {
