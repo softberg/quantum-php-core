@@ -14,26 +14,15 @@ return '<?php
  * @since 2.9.0
  */
 
-namespace Modules\Api\Controllers\Abstracts;
+namespace Modules\Api\Controllers;
 
 use Quantum\Mvc\QtController;
 
 /**
- * Class ApiController
- * @package Modules\Api
- * @OA\Info(
- *    title="Quantum API documentation",
- *    version="2.9.0",
- *    description=" *Quantum Documentation: https://quantum.softberg.org/en/docs/v1/overview"
- *  ),
- * @OA\SecurityScheme(
- *    securityScheme="bearer_token",
- *    type="apiKey",
- *    name="Authorization",
- *    in="header"
- *  )
+ * Class BaseController
+ * @package Modules\Api\Controllers
  */
-abstract class ApiController extends QtController
+abstract class BaseController extends QtController
 {
 
     /**
@@ -44,7 +33,7 @@ abstract class ApiController extends QtController
     /**
      * Status success
      */
-    const STATUS_SUCCESS = \'success\';
+    const STATUS_SUCCESS = \'success\;
 
     /**
      * CSRF verification
@@ -52,5 +41,4 @@ abstract class ApiController extends QtController
      */
     public $csrfVerification = false;
 
-}
-';
+}';

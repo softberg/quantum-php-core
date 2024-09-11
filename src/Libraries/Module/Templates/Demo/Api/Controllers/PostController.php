@@ -16,7 +16,6 @@ return '<?php
 
 namespace Modules\Api\Controllers;
 
-use Modules\Api\Controllers\Abstracts\OpenApiPostController;
 use Quantum\Factory\ServiceFactory;
 use Shared\Services\PostService;
 use Quantum\Http\Response;
@@ -26,7 +25,7 @@ use Quantum\Http\Request;
  * Class PostController
  * @package Modules\Api
  */
-class PostController extends OpenApiPostController
+class PostController extends BaseController
 {
 
     /**
@@ -44,7 +43,8 @@ class PostController extends OpenApiPostController
     }
 
     /**
-     * @inheritDoc
+     * Action - get posts list
+     * @param Response $response
      */
     public function posts(Request $request, Response $response)
     {
@@ -63,9 +63,12 @@ class PostController extends OpenApiPostController
     }
 
     /**
-     * @inheritDoc
+     * Action - get single post
+     * @param Response $response
+     * @param string|null $lang
+     * @param string $postId
      */
-    public function post(?string $lang, string $postId, Response $response)
+    public function post(Response $response, ?string $lang, string $postId)
     {
         $response->json([
             \'status\' => \'success\',
@@ -74,7 +77,8 @@ class PostController extends OpenApiPostController
     }
 
     /**
-     * @inheritDoc
+     * Action - get my posts
+     * @param Response $response
      */
     public function myPosts(Response $response)
     {
@@ -85,7 +89,9 @@ class PostController extends OpenApiPostController
     }
 
     /**
-     * @inheritDoc
+     * Action - create post
+     * @param Request $request 
+     * @param Response $response
      */
     public function create(Request $request, Response $response)
     {
@@ -116,7 +122,11 @@ class PostController extends OpenApiPostController
     }
 
     /**
-     * @inheritDoc
+     * Action - amend post 
+     * @param Request $request 
+     * @param Response $response
+     * @param string|null $lang
+     * @param string $postId
      */
     public function amend(Request $request, Response $response, ?string $lang, string $postId)
     {
@@ -151,7 +161,10 @@ class PostController extends OpenApiPostController
     }
 
     /**
-     * @inheritDoc
+     * Action - delete post
+     * @param Response $response
+     * @param string|null $lang
+     * @param string $postId
      */
     public function delete(Response $response, ?string $lang, string $postId)
     {
@@ -170,7 +183,10 @@ class PostController extends OpenApiPostController
     }
 
     /**
-     * @inheritDoc
+     * Action - delete image of the post
+     * @param Response $response
+     * @param string|null $lang 
+     * @param string $postId 
      */
     public function deleteImage(Response $response, ?string $lang, string $postId)
     {
@@ -192,5 +208,4 @@ class PostController extends OpenApiPostController
             \'message\' => t(\'common.deleted_successfully\')
         ]);
     }
-}
-';
+}';

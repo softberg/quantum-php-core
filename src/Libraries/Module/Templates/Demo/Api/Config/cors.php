@@ -1,6 +1,6 @@
 <?php
 
-return '<?php
+return "<?php
 
 return [
     /**
@@ -9,9 +9,8 @@ return [
      * ---------------------------------------------------------
      * Settings defined here determines the cross-origin resource sharing
      */
-    \'Access-Control-Allow-Origin\' => \'*\',
-    \'Access-Control-Allow-Headers\' => \'Origin, X-Requested-With, Content-Type, Accept, Authorization, refresh_token\',
-    \'Access-Control-Allow-Methods\' => \'GET, POST, PUT, DELETE, OPTIONS\',
-    \'Access-Control-Allow-Credentials\' => true,
-];
-';
+    'Access-Control-Allow-Origin' => '*',
+    'Access-Control-Allow-Headers' => 'Origin, X-Requested-With, Content-Type, Accept, Authorization, refresh_token',
+    'Access-Control-Allow-Methods' => 'GET, POST, PUT, DELETE, OPTIONS',
+    'Access-Control-Allow-Credentials' => true,
+];";

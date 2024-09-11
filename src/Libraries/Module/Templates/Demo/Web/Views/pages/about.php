@@ -27,5 +27,4 @@ return "<div class=\"main-wrapper teal accent-4\">
         </div>
     </div>
 </div>
-<?php echo partial('partials/bubbles') ?>
-";
+<?php echo partial('partials/bubbles') ?>";

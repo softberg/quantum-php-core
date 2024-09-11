@@ -1,8 +1,6 @@
 <?php
 
-return '
-    <div class="material-alert success left-align" role="alert">
+return '<div class="material-alert success left-align" role="alert">
     <?php $success = session()->getFlash(\'success\'); ?>
     <?php echo $success; ?>
-</div>
-';
+</div>';

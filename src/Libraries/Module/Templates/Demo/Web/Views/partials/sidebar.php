@@ -1,20 +1,17 @@
 <?php
 
-return "
-    <ul class=\"sidenav\" id=\"mobile-demo\">
+return "<ul class=\"sidenav\" id=\"mobile-demo\">
     <li>
         <a href=\"<?php echo base_url(true) . '/' . current_lang() ?>\">
-<i class=\"material-icons left\">home</i>
-<?php _t('common.home') ?>
-</a>
-</li>
-<li>
-    <a href=\"<?php echo base_url(true) . '/' . current_lang() ?>/posts\">
-        <i class=\"material-icons left\">assignment</i>
-        <?php _t('common.posts') ?>
-    </a>
-</li>
-<?php if (auth()->check()) : ?>
+            <i class=\"material-icons left\">home</i><?php _t('common.home') ?>
+        </a>
+    </li>
+    <li>
+        <a href=\"<?php echo base_url(true) . '/' . current_lang() ?>/posts\">
+            <i class=\"material-icons left\">assignment</i><?php _t('common.posts') ?>
+        </a>
+    </li>
+    <?php if (auth()->check()) : ?>
     <li>
         <a class=\"dropdown-trigger login-list\" href=\"#!\" data-target=\"sidenav-dropdown1\">
             <i class=\"material-icons left\">person</i>
@@ -32,7 +29,7 @@ return "
             </li>
         </ul>
     </li>
-<?php else : ?>
+    <?php else : ?>
     <li>
         <?php if (route_name() != 'signup') : ?>
             <a href=\"<?php echo base_url(true) . '/' . current_lang() ?>/signup\">
@@ -49,8 +46,6 @@ return "
             </a>
         <?php endif; ?>
     </li>
-<?php endif; ?>
-<?php echo partial('partials/language', ['attr' => 'sidenav-dropdown2']) ?>
-
-</ul>
-";
+    <?php endif; ?>
+    <?php echo partial('partials/language', ['attr' => 'sidenav-dropdown2']) ?>
+</ul>";

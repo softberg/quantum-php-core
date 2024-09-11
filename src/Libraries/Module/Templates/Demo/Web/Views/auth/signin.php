@@ -62,5 +62,4 @@ return '<div class="main-wrapper teal accent-4">
             </div>
         </div>
     </div>
-</div>
-';
+</div>';

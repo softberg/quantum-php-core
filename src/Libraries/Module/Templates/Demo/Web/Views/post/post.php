@@ -19,5 +19,4 @@ return '<div class="main-wrapper">
         </div>
     <?php endif; ?>
     <?php echo partial(\'post/partials/modal\', [\'item\' => t(\'common.the_post\')]) ?>
-</div>
-';
+</div>';

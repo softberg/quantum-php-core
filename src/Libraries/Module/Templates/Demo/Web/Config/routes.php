@@ -2,38 +2,9 @@
 
 return '<?php
 
-use Quantum\Factory\ViewFactory;
-use Quantum\Http\Response;
-
 return function ($route) {
-    $route->get(\'[:alpha:2]?\', function (Response $response, ViewFactory $view) {
-        $view->setLayout(\'layouts/main\');
-
-        $view->setParams([
-            \'title\' => config()->get(\'app_name\'),
-            \'langs\' => config()->get(\'langs\')
-        ]);
-
-        $response->html($view->render(\'index\'));
-    })->name(\'home\');
-
-    $route->get(\'[:alpha:2]?/about\', function (Response $response, ViewFactory $view) {
-        $view->setLayout(\'layouts/main\');
-
-        $view->setParams([
-            \'title\' => t(\'common.about\') . \' | \' . config()->get(\'app_name\'),
-            \'langs\' => config()->get(\'langs\')
-        ]);
-
-        $response->html($view->render(\'about\'));
-    })->name(\'about\');
-
-    $route->get(\'/auth\', \'DropboxController\', \'auth\');
-    $route->get(\'/confirm\', \'DropboxController\', \'confirm\');
-    $route->get(\'/test\', \'DropboxController\', \'test\');
-    $route->get(\'/image/[:any]\', \'DropboxController\', \'image\');
-    $route->get(\'/upload\', \'DropboxController\', \'upload\');
-    $route->get(\'/list\', \'DropboxController\', \'list\');
+    $route->get(\'[:alpha:2]?\', \'PageController\', \'home\')->name(\'home\');
+    $route->get(\'[:alpha:2]?/about\', \'PageController\', \'about\')->name(\'about\');
 
     $route->get(\'[:alpha:2]?/posts\', \'PostController\', \'posts\');
     $route->get(\'[:alpha:2]?/post/[id=:any]\', \'PostController\', \'post\')->middlewares([\'Post\']);
@@ -58,5 +29,4 @@ return function ($route) {
         $route->get(\'[:alpha:2]?/my-posts/delete/[id=:any]\', \'PostController\', \'delete\')->middlewares([\'Editor\', \'Owner\']);
         $route->get(\'[:alpha:2]?/my-posts/delete-image/[id=:any]\', \'PostController\', \'deleteImage\')->middlewares([\'Editor\', \'Owner\']);
     })->middlewares([\'Auth\']);
-};
-';
+};';
