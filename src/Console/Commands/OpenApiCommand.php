@@ -9,14 +9,19 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.0
  */
 
 namespace Quantum\Console\Commands;
 
+use Quantum\Exceptions\ModuleLoaderException;
 use Quantum\Libraries\Storage\FileSystem;
+use Quantum\Exceptions\RouteException;
+use Quantum\Exceptions\DiException;
 use Quantum\Router\ModuleLoader;
 use Quantum\Console\QtCommand;
+use ReflectionException;
+use OpenApi\Generator;
 use Quantum\Di\Di;
 
 /**
@@ -78,10 +83,10 @@ class OpenApiCommand extends QtCommand
 
     /**
      * Executes the command and generate Open API specifications
-     * @throws \Quantum\Exceptions\ModuleLoaderException
-     * @throws \Quantum\Exceptions\RouteException
-     * @throws \Quantum\Exceptions\DiException
-     * @throws \ReflectionException
+     * @throws ModuleLoaderException
+     * @throws RouteException
+     * @throws DiException
+     * @throws ReflectionException
      */
     public function exec()
     {
@@ -97,6 +102,7 @@ class OpenApiCommand extends QtCommand
 
         if (!$this->fs->exists(assets_dir() . DS . 'OpenApiUi' . DS . 'index.css')) {
             $this->copyResources();
+            $this->info('OpenApi resources successfully published');
         }
 
         if (!$this->fs->isDirectory($modulePath)) {
@@ -118,8 +124,6 @@ class OpenApiCommand extends QtCommand
         }
 
         $this->generateOpenapiSpecification($module);
-
-        $this->info('OpenApi resources successfully published');
     }
 
     /**
@@ -146,7 +150,15 @@ class OpenApiCommand extends QtCommand
      */
     private function generateOpenapiSpecification(string $module)
     {
-        exec(base_dir() . DS . 'vendor' . DS . 'bin' . DS . 'openapi ' . modules_dir() . DS . $module . DS . 'Controllers' . DS . ' -o ' . modules_dir() . DS . $module . DS . 'Resources' . DS . 'openapi' . DS . 'spec.json');
+        $annotationPath = modules_dir() . DS . $module . DS . 'Controllers' . DS . 'OpenApi' . DS;
+
+        $specPath = modules_dir() . DS . $module . DS . 'Resources' . DS . 'openapi' . DS . 'spec.json';
+
+        $openApi = Generator::scan([$annotationPath]);
+
+        $this->fs->put($specPath, $openApi->toJson());
+
+        $this->info('OpenAPI specification generated successfully.');
     }
 
     /**
@@ -164,7 +176,7 @@ class OpenApiCommand extends QtCommand
 
         $route->get("spec", function (Quantum\Http\Response $response) {
             $fs = Quantum\Di\Di::get(Quantum\Libraries\Storage\FileSystem::class);
-            $response->json((array) json_decode($fs->get(modules_dir() . "' . DS . $module . DS . 'Resources' . DS . 'openapi' . DS . 'spec.json")));
+            $response->json($fs->getJson(modules_dir() . "' . DS . $module . DS . 'Resources' . DS . 'openapi' . DS . 'spec.json"));
         });
     });' . PHP_EOL;
     }
