@@ -1,20 +1,17 @@
 <?php
 
-return "
-    <ul class=\"sidenav\" id=\"mobile-demo\">
+return "<ul class=\"sidenav\" id=\"mobile-demo\">
     <li>
         <a href=\"<?php echo base_url(true) . '/' . current_lang() ?>\">
-<i class=\"material-icons left\">home</i>
-<?php _t('common.home') ?>
-</a>
-</li>
-<li>
-    <a href=\"<?php echo base_url(true) . '/' . current_lang() ?>/posts\">
-        <i class=\"material-icons left\">assignment</i>
-        <?php _t('common.posts') ?>
-    </a>
-</li>
-<?php if (auth()->check()) : ?>
+            <i class=\"material-icons left\">home</i><?php _t('common.home') ?>
+        </a>
+    </li>
+    <li>
+        <a href=\"<?php echo base_url(true) . '/' . current_lang() ?>/posts\">
+            <i class=\"material-icons left\">assignment</i><?php _t('common.posts') ?>
+        </a>
+    </li>
+    <?php if (auth()->check()) : ?>
     <li>
         <a class=\"dropdown-trigger login-list\" href=\"#!\" data-target=\"sidenav-dropdown1\">
             <i class=\"material-icons left\">person</i>
@@ -32,25 +29,23 @@ return "
             </li>
         </ul>
     </li>
-<?php else : ?>
-    <li>
+    <?php else : ?>
         <?php if (route_name() != 'signup') : ?>
-            <a href=\"<?php echo base_url(true) . '/' . current_lang() ?>/signup\">
-                <i class=\"material-icons left\">person_add</i>
-                <?php _t('common.signup') ?>
-            </a>
+            <li>
+                <a href=\"<?php echo base_url(true) . '/' . current_lang() ?>/signup\">
+                    <i class=\"material-icons left\">person_add</i>
+                    <?php _t('common.signup') ?>
+                </a>
+            </li>
         <?php endif; ?>
-    </li>
-    <li>
         <?php if (route_name() != 'signin') : ?>
-            <a href=\"<?php echo base_url(true) . '/' . current_lang() ?>/signin\">
-                <i class=\"material-icons left\">exit_to_app</i>
-                <?php _t('common.signin') ?>
-            </a>
+            <li>
+                <a href=\"<?php echo base_url(true) . '/' . current_lang() ?>/signin\">
+                    <i class=\"material-icons left\">exit_to_app</i>
+                    <?php _t('common.signin') ?>
+                </a>
+            </li>
         <?php endif; ?>
-    </li>
-<?php endif; ?>
-<?php echo partial('partials/language', ['attr' => 'sidenav-dropdown2']) ?>
-
-</ul>
-";
+    <?php endif; ?>
+    <?php echo partial('partials/language', ['attr' => 'sidenav-dropdown2']) ?>
+</ul>";

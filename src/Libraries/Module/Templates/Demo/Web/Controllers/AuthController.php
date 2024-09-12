@@ -26,7 +26,7 @@ use Quantum\Http\Request;
  * Class AuthController
  * @package Modules\Web\Controllers
  */
-class AuthController extends QtController
+class AuthController extends BaseController
 {
 
     /**
@@ -35,41 +35,41 @@ class AuthController extends QtController
     const LAYOUT = \'layouts/main\';
 
     /**
-     * Signin view
+     * Signin view page
      */
     const VIEW_SIGNIN = \'auth/signin\';
 
     /**
-     * Signup view
+     * Signup view page
      */
     const VIEW_SIGNUP = \'auth/signup\';
 
     /**
-     * Forget view
+     * Forget view page
      */
     const VIEW_FORGET = \'auth/forget\';
 
     /**
-     * Reset view
+     * Reset view page
      */
     const VIEW_RESET = \'auth/reset\';
 
     /**
-     * Reset view
+     * Verify view page
      */
     const VIEW_VERIFY = \'auth/verify\';
 
     /**
-     * Magic __before
+     * Works before an action
      * @param ViewFactory $view
      */
     public function __before(ViewFactory $view)
     {
-        $view->setLayout(self::LAYOUT);
+        parent::__before($view);
     }
 
     /**
-     *  Sign in action
+     * Action - sign in
      * @param Request $request
      * @param Response $response
      * @param ViewFactory $view
@@ -100,7 +100,7 @@ class AuthController extends QtController
     }
 
     /**
-     * Sign out action
+     * Action - sign out
      */
     public function signout()
     {
@@ -109,7 +109,7 @@ class AuthController extends QtController
     }
 
     /**
-     * Sign up action
+     * Action - sign up
      * @param Request $request
      * @param Response $response
      * @param ViewFactory $view
@@ -131,7 +131,7 @@ class AuthController extends QtController
     }
 
     /**
-     * Activate action
+     * Action - activate
      * @param Request $request
      */
     public function activate(Request $request)
@@ -141,7 +141,7 @@ class AuthController extends QtController
     }
 
     /**
-     * Forget action
+     * Action - forget
      * @param Request $request
      * @param Response $response
      * @param ViewFactory $view
@@ -163,7 +163,7 @@ class AuthController extends QtController
     }
 
     /**
-     * Reset action
+     * Action - reset
      * @param Request $request
      * @param Response $response
      * @param ViewFactory $view
@@ -185,7 +185,7 @@ class AuthController extends QtController
     }
 
     /**
-     * Verify OTP action
+     * Action - Verify OTP
      * @param Request $request
      * @param Response $response
      * @param ViewFactory $view
@@ -212,7 +212,7 @@ class AuthController extends QtController
     }
 
     /**
-     * Resend OTP action
+     * Action - Resend OTP
      */
     public function resend()
     {
@@ -223,5 +223,4 @@ class AuthController extends QtController
             redirect(base_url(true) . \'/\' . current_lang() . \'/signin\');
         }
     }
-}
-';
+}';

@@ -14,7 +14,7 @@ return '<?php
  * @since 2.9.0
  */
 
-namespace Modules\Api\Controllers\Abstracts;
+namespace Modules\Api\Controllers\OpenApi;
 
 use Quantum\Http\Response;
 use Quantum\Http\Request;
@@ -23,7 +23,7 @@ use Quantum\Http\Request;
  * Class OpenApiAuthController
  * @package Modules\Api
  */
-abstract class OpenApiAuthController extends ApiController
+abstract class OpenApiAuthController extends OpenApiController
 {
 
     /**
@@ -397,5 +397,4 @@ abstract class OpenApiAuthController extends ApiController
      * @param Response $response
      */
     abstract public function resend(Response $response);
-}
-';
+}';

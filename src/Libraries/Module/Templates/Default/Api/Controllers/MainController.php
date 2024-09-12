@@ -1,22 +1,39 @@
 <?php
-use Quantum\Libraries\Module\ModuleManager;
 
 return '<?php
 
-namespace Modules\\' . ModuleManager::$moduleName . '\Controllers;
+namespace Modules\\' . Quantum\Libraries\Module\ModuleManager::$moduleName . '\Controllers;
 
-use Modules\ApiCustom\Controllers\Abstracts\OpenApiMainController;
+use Quantum\Mvc\QtController;
 use Quantum\Http\Response;
 
-class MainController extends OpenApiMainController
+class MainController extends QtController
 {
-    private $name = "' . ModuleManager::$moduleName . '";
+    /**
+     * Status error
+     */
+    const STATUS_ERROR = \'error\';
+
+    /**
+     * Status success
+     */
+    const STATUS_SUCCESS = \'success\';
+
+    /**
+     * CSRF verification
+     * @var bool
+     */
+    public $csrfVerification = false;
     
+    /**
+     * Action - success response
+     * @param Response $response
+     */
     public function index(Response $response)
     {
         $response->json([
-        \'status\' => \'success\',
-        \'message\' => $this->name . \' module.\' 
+            \'status\' => \'success\',
+            \'message\' => Quantum\Libraries\Module\ModuleManager::$moduleName . \' module.\' 
         ]);
     }
 };';

@@ -1,7 +1,5 @@
 <?php
 
-use Quantum\Libraries\Module\ModuleManager;
-
 return '<?php
 
 /**
@@ -16,7 +14,7 @@ return '<?php
  * @since 2.9.0
  */
 
-namespace Modules\\' . ModuleManager::$moduleName . '\Controllers\Abstracts;
+namespace Modules\\' . Quantum\Libraries\Module\ModuleManager::$moduleName . '\Controllers\OpenApi;
 
 use Quantum\Mvc\QtController;
 
@@ -35,24 +33,7 @@ use Quantum\Mvc\QtController;
  *    in="header"
  *  )
  */
-abstract class ApiController extends QtController
+abstract class OpenApiController
 {
 
-    /**
-     * Status error
-     */
-    const STATUS_ERROR = \'error\';
-
-    /**
-     * Status success
-     */
-    const STATUS_SUCCESS = \'success\';
-
-    /**
-     * CSRF verification
-     * @var bool
-     */
-    public $csrfVerification = false;
-
-}
-';
+}';

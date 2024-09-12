@@ -9,8 +9,8 @@ return '<!DOCTYPE html>
 
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <link rel="shortcut icon" href="<?php echo asset()->url(\'images/favicon.ico\') ?>">
-        <link rel=\'stylesheet\' href=\'<?php echo asset()->url(\'css/materialize.min.css\') ?>\' type=\'text/css\' media=\'screen,projection\' />
-        <link rel=\'stylesheet\' href=\'<?php echo asset()->url(\'css/custom.css\') ?>\' type=\'text/css\' />
+        
+        <?php assets("css") ?>
     </head>
     <body>
 
@@ -18,7 +18,6 @@ return '<!DOCTYPE html>
 
         <?php echo debugbar() ?>
 
-        <script type=\'text/javascript\' src=\'<?php echo asset()->url(\'js/materialize.min.js\') ?>\'></script>
-        <script type=\'text/javascript\' src=\'<?php echo asset()->url(\'js/custom.js\') ?>\'></script>
+        <?php assets("js") ?>
     </body>
 </html>';

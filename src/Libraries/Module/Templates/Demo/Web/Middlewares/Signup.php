@@ -11,7 +11,7 @@ return '<?php
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.0
  */
 
 namespace Modules\Web\Middlewares;
@@ -66,9 +66,9 @@ class Signup extends QtMiddleware
             \'lastname\' => [
                 Rule::set(\'required\')
             ],
-            \'recaptcha\' => [
+            \'captcha\' => [
                 Rule::set(\'required\'),
-                Rule::set(\'recaptcha\')
+                Rule::set(\'captcha\')
             ]
         ]);
     }
@@ -82,20 +82,22 @@ class Signup extends QtMiddleware
     public function apply(Request $request, Response $response, Closure $next)
     {
         if ($request->isMethod(\'post\')) {
+            $captchaName = captcha()->getName();
 
-            if($request->has(\'g-recaptcha-response\')) {
-                $request->set(\'recaptcha\', $request->get(\'g-recaptcha-response\'));
-                $request->delete(\'g-recaptcha-response\');
+            if($request->has($captchaName . \'-response\')) {
+                $request->set(\'captcha\', $request->get($captchaName . \'-response\'));
+                $request->delete($captchaName . \'-response\');
             }
 
             if (!$this->validator->isValid($request->all())) {
                 session()->setFlash(\'error\', $this->validator->getErrors());
                 redirectWith(base_url(true) . \'/\' . current_lang() . \'/signup\', $request->all());
             }
+
+            $request->delete(\'captcha\');
         }
 
         return $next($request, $response);
     }
 
-}
-';
+}';

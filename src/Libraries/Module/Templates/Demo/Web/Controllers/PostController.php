@@ -11,7 +11,7 @@ return '<?php
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.0
  */
 
 namespace Modules\Web\Controllers;
@@ -28,7 +28,7 @@ use Quantum\Http\Request;
  * Class PostController
  * @package Modules\Web\Controllers
  */
-class PostController extends QtController
+class PostController extends BaseController
 {
 
     /**
@@ -38,7 +38,7 @@ class PostController extends QtController
     public $postService;
 
     /**
-     * Post service
+     * Auth service
      * @var AuthService
      */
     public $userService;
@@ -52,11 +52,11 @@ class PostController extends QtController
         $this->postService = ServiceFactory::get(PostService::class);
         $this->userService = ServiceFactory::get(AuthService::class);
 
-        $view->setLayout(\'layouts/main\');
+        parent::__before($view);
     }
 
     /**
-     * Get posts action
+     * Action - get posts list
      * @param Response $response
      * @param ViewFactory $view
      */
@@ -74,13 +74,13 @@ class PostController extends QtController
     }
 
     /**
-     * Get post action
+     * Action - get single post
      * @param string|null $lang
      * @param string $postId
      * @param Response $response
      * @param ViewFactory $view
      */
-    public function post(?string $lang, string $postId, Response $response, ViewFactory $view)
+    public function post(Response $response, ViewFactory $view, ?string $lang, string $postId)
     {
         $post = $this->postService->getPost($postId);
 
@@ -94,7 +94,7 @@ class PostController extends QtController
     }
 
     /**
-     * Get my posts action
+     * Action - get my posts
      * @param Request $request
      * @param Response $response
      * @param ViewFactory $view
@@ -111,7 +111,7 @@ class PostController extends QtController
     }
 
     /**
-     * Create post form
+     * Action - display form for creating a post
      * @param Response $response
      * @param ViewFactory $view
      */
@@ -126,7 +126,7 @@ class PostController extends QtController
     }
 
     /**
-     * Create post action
+     * Action - create post
      * @param Request $request
      */
     public function create(Request $request)
@@ -154,6 +154,13 @@ class PostController extends QtController
         redirect(base_url(true) . \'/\' . current_lang() . \'/my-posts\');
     }
 
+    /**
+     * Action - display form for amend the post 
+     * @param Response $request
+     * @param ViewFactory $view
+     * @param sting|null $lang
+     * @param string $postId
+     */
     public function amendForm(Response $response, ViewFactory $view, ?string $lang, string $postId)
     {
         $post = $this->postService->getPost($postId);
@@ -168,7 +175,7 @@ class PostController extends QtController
     }
 
     /**
-     * Amend post action
+     * Action - amend post 
      * @param Request $request
      * @param string|null $lang
      * @param string $postId
@@ -203,7 +210,7 @@ class PostController extends QtController
     }
 
     /**
-     * Delete post action
+     * Action - delete post
      * @param string|null $lang
      * @param string $postId
      */
@@ -221,7 +228,7 @@ class PostController extends QtController
     }
 
     /**
-     * Delete post image action
+     * Action - delete image of the post
      * @param string|null $lang
      * @param string $postId
      */
@@ -242,6 +249,4 @@ class PostController extends QtController
 
         redirect(base_url(true) . \'/\' . current_lang() . \'/my-posts\');
     }
-
-}
-';
+}';

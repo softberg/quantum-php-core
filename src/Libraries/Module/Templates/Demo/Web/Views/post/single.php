@@ -14,5 +14,4 @@ return '<div class="center-align posts-container">
 
         <p class="left-align single-blog-txt"><?php echo nl2br($post[\'content\']) ?></p>
     </div>
-</div>
-';
+</div>';

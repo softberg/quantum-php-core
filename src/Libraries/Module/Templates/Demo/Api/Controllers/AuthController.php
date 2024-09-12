@@ -16,7 +16,6 @@ return '<?php
 
 namespace Modules\Api\Controllers;
 
-use Modules\Api\Controllers\Abstracts\OpenApiAuthController;
 use Quantum\Exceptions\AuthException;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
@@ -25,11 +24,13 @@ use Quantum\Http\Request;
  * Class AuthController
  * @package Modules\Api
  */
-class AuthController extends OpenApiAuthController
+class AuthController extends BaseController
 {
 
     /**
-     * @inheritDoc
+     * Action - sign in
+     * @param Request $request
+     * @param Response $response
      */
     public function signin(Request $request, Response $response)
     {
@@ -52,7 +53,9 @@ class AuthController extends OpenApiAuthController
     }
 
     /**
-     * @inheritDoc
+     * Action - me
+     * @param Response $response
+     * @throws AuthException
      */
     public function me(Response $response)
     {
@@ -67,7 +70,9 @@ class AuthController extends OpenApiAuthController
     }
 
     /**
-     * @inheritDoc
+     * Action - sign out
+     * @param Response $response
+     * @throws AuthException
      */
     public function signout(Response $response)
     {
@@ -84,7 +89,10 @@ class AuthController extends OpenApiAuthController
     }
 
     /**
-     * @inheritDoc
+     *  Action - sign up
+     * @param Request $request
+     * @param Response $response
+     * @throws AuthException
      */
     public function signup(Request $request, Response $response)
     {
@@ -97,7 +105,10 @@ class AuthController extends OpenApiAuthController
     }
 
     /**
-     * @inheritDoc
+     * Action - activate
+     * @param Request $request
+     * @param Response $response
+     * @throws AuthException
      */
     public function activate(Request $request, Response $response)
     {
@@ -110,7 +121,10 @@ class AuthController extends OpenApiAuthController
     }
 
     /**
-     * @inheritDoc
+     * Action - forget
+     * @param Request $request
+     * @param Response $response
+     * @throws AuthException
      */
     public function forget(Request $request, Response $response)
     {
@@ -123,7 +137,10 @@ class AuthController extends OpenApiAuthController
     }
 
     /**
-     * @inheritDoc
+     * Action - reset
+     * @param Request $request
+     * @param Response $response
+     * @throws AuthException
      */
     public function reset(Request $request, Response $response)
     {
@@ -135,7 +152,9 @@ class AuthController extends OpenApiAuthController
     }
 
     /**
-     * @inheritDoc
+     * Action - Verify OTP
+     * @param Request $request
+     * @param Response $response
      */
     public function verify(Request $request, Response $response)
     {
@@ -154,7 +173,8 @@ class AuthController extends OpenApiAuthController
     }
 
     /**
-     * @inheritDoc
+     *  Action - Resend OTP
+     * @param Response $response
      */
     public function resend(Response $response)
     {
@@ -170,5 +190,4 @@ class AuthController extends OpenApiAuthController
             ]);
         }
     }
-}
-';
+}';

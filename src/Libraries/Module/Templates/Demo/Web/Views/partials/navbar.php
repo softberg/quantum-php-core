@@ -1,7 +1,6 @@
 <?php
 
-return "
-    <nav class=\"teal accent-4\">
+return "<nav class=\"teal accent-4\">
     <div class=\"nav-wrapper\">
         <span class=\"navbar-logo brand-logo\">
             <?php if (route_name() != 'home') : ?>
@@ -56,5 +55,4 @@ return "
         
     </div>
 </nav>
-<?php echo partial('partials/sidebar') ?>
-";
+<?php echo partial('partials/sidebar') ?>";

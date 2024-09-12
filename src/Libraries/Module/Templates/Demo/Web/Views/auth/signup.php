@@ -43,7 +43,9 @@ return '<div class="main-wrapper teal accent-4">
                                     <input type="text" name="lastname" value="<?php echo old(\'lastname\') ?>" />
                                 </div>
                             </div>
-                            <?php getRecaptcha(); ?>
+                             <div class="row">
+                                <?php echo $captcha->addToForm(\'signUpForm\', [\'class\' => \'col s1 offset-s4\']) ?>
+                            </div>
                             <div class="row">
                                 <div class="col s12 right-align">
                                     <a href="<?php echo base_url(true) . \'/\' . current_lang() ?>/signin" class="white-text"><?php _t(\'common.signin\') ?></a>

@@ -1,7 +1,6 @@
 <?php
 
-return '
-    <div class="material-alert error">
+return '<div class="material-alert error">
     <?php $error = session()->getFlash(\'error\') ?>
     <?php if ($error): ?>
         <?php if (is_array($error)): ?>
@@ -16,5 +15,4 @@ return '
             <?php echo $error ?>
         <?php endif; ?>
     <?php endif; ?>
-</div>
-';
+</div>';

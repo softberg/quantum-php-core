@@ -16,7 +16,7 @@ return '<?php
  * @since 2.9.0
  */
 
-namespace Modules\Api\Controllers\Abstracts;
+namespace Modules\Api\Controllers\OpenApi;
 
 use Quantum\Http\Response;
 use Quantum\Http\Request;
@@ -25,7 +25,7 @@ use Quantum\Http\Request;
  * Class OpenApiPostController
  * @package Modules\Api
  */
-abstract class OpenApiPostController extends ApiController
+abstract class OpenApiPostController extends OpenApiController
 {
 
     /**
@@ -333,5 +333,4 @@ abstract class OpenApiPostController extends ApiController
      */
     abstract public function deleteImage(Response $response, ?string $lang, string $postId);
 
-}
-';
+}';

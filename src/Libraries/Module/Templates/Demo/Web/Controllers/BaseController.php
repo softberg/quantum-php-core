@@ -2,15 +2,31 @@
 
 return '<?php
 
-namespace Modules\\' . Quantum\Libraries\Module\ModuleManager::$moduleName . '\Controllers;
+/**
+ * Quantum PHP Framework
+ *
+ * An open source software development framework for PHP
+ *
+ * @package Quantum
+ * @author Arman Ag. <arman.ag@softberg.org>
+ * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
+ * @link http://quantum.softberg.org/
+ * @since 2.9.0
+ */
+
+namespace Modules\Web\Controllers;
 
 use Quantum\Libraries\Asset\Asset;
 use Quantum\Factory\ViewFactory;
 use Quantum\Mvc\QtController;
-use Quantum\Http\Response;
 
-class MainController extends QtController
+/**
+ * Class BaseController
+ * @package Modules\Web\Controllers
+ */
+abstract class BaseController extends QtController
 {
+
     /**
      * Works before an action
      * @param ViewFactory $view
@@ -25,20 +41,4 @@ class MainController extends QtController
             new Asset(Asset::JS, \'js/custom.js\')
         ]);
     }
-    
-   /**
-     * Action - display home page
-     * @param Response $response
-     * @param ViewFactory $view
-     */
-    public function index(Response $response, ViewFactory $view)
-    {
-        $view->setLayout(\'layouts' . DS . 'main\');
-        
-        $view->setParams([
-            \'title\' => config()->get(\'app_name\'),
-        ]);
-        
-        $response->html($view->render(\'index\'));
-    }
-};';
+}';
