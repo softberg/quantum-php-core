@@ -122,6 +122,7 @@ class AuthController extends BaseController
             redirect(base_url(true) . \'/\' . current_lang() . \'/signup\');
         } else {
             $view->setParams([
+                \'captcha\' => captcha(),
                 \'title\' => t(\'common.signup\') . \' | \' . config()->get(\'app_name\'),
                 \'langs\' => config()->get(\'langs\')
             ]);
