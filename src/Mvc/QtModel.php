@@ -14,6 +14,7 @@
 
 namespace Quantum\Mvc;
 
+use Quantum\Libraries\Database\PaginatorInterface;
 use Quantum\Libraries\Database\DbalInterface;
 use Quantum\Exceptions\ModelException;
 
@@ -74,13 +75,13 @@ abstract class QtModel
 
     /**
      * ORM database abstract layer object
-     * @var \Quantum\Libraries\Database\DbalInterface
+     * @var DbalInterface
      */
     private $orm;
 
     /**
      * Sets the ORM
-     * @param \Quantum\Libraries\Database\DbalInterface $orm
+     * @param DbalInterface $orm
      */
     public function setOrm(DbalInterface $orm)
     {
@@ -90,8 +91,8 @@ abstract class QtModel
     /**
      * Fills the object properties
      * @param array $props
-     * @return \Quantum\Mvc\QtModel
-     * @throws \Quantum\Exceptions\ModelException
+     * @return QtModel
+     * @throws ModelException
      */
     public function fillObjectProps(array $props): QtModel
     {
@@ -146,7 +147,7 @@ abstract class QtModel
      * @param string $method
      * @param mixed|null $args
      * @return $this|array|int|string
-     * @throws \Quantum\Exceptions\ModelException
+     * @throws ModelException
      */
     public function __call(string $method, $args = null)
     {
@@ -156,7 +157,7 @@ abstract class QtModel
 
         $result = $this->orm->{$method}(...$args);
 
-        if (!is_object($result)) {
+        if (!is_object($result) || $result instanceof PaginatorInterface) {
             return $result;
         }
 
