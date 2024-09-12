@@ -59,10 +59,13 @@ class Paginator extends BasePaginator
 	}
 
 	/**
-	 * @return array|IdiormResultSet
+	 * @return array
 	 */
 	public function data()
 	{
+		if (!empty($this->data) && !is_array($this->data)){
+			$this->data = $this->data->as_array();
+		}
 		return $this->data ?? [];
 	}
 }
