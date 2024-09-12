@@ -228,15 +228,14 @@ abstract class BasePaginator implements PaginatorInterface
 
 		$pagination = '<ul class="'. self::PAGINATION_CLASS .'">';
 		$currentPage = $this->currentPageNumber();
-		
+
 		if ($currentPage > 1) {
 			$pagination .= $this->getPreviousPageItem($this->previousPageLink());
 		}
 
 		if ($pageItemsCount) {
 			$links = $this->links($withBaseUrl);
-			$startPage = $this->calculateStartPage($currentPage, $pageItemsCount);
-			$endPage = $this->calculateEndPage($startPage, $totalPages, $pageItemsCount);
+			list($startPage, $endPage) = $this->calculateStartEndPages($currentPage, $totalPages, $pageItemsCount);
 			$pagination = $this->addFirstPageLink($pagination, $startPage);
 			$pagination = $this->getItemsLinks($pagination, $startPage, $endPage, $currentPage, $links);
 			$pagination = $this->addLastPageLink($pagination, $endPage, $totalPages, $links);
@@ -296,24 +295,16 @@ abstract class BasePaginator implements PaginatorInterface
 
 	/**
 	 * @param $currentPage
-	 * @param $pageItemsCount
-	 * @return mixed
-	 */
-	protected function calculateStartPage($currentPage, $pageItemsCount)
-	{
-		return max(1, $currentPage - ceil(($pageItemsCount - self::EDGE_PADDING) / 2));
-	}
-
-	/**
-	 * @param $startPage
 	 * @param $totalPages
 	 * @param $pageItemsCount
-	 * @return mixed
+	 * @return array
 	 */
-	protected function calculateEndPage($startPage, $totalPages, $pageItemsCount)
+	protected function calculateStartEndPages($currentPage, $totalPages,  $pageItemsCount): array
 	{
+		$startPage = max(1, $currentPage - ceil(($pageItemsCount - self::EDGE_PADDING) / 2));
 		$endPage = min($totalPages, $startPage + $pageItemsCount - self::EDGE_PADDING);
-		return max(1, $endPage - $pageItemsCount + self::EDGE_PADDING);
+		$startPage = max(1, $endPage - $pageItemsCount + self::EDGE_PADDING);
+		return [$startPage, $endPage];
 	}
 
 	/**
