@@ -30,22 +30,22 @@ return "<ul class=\"sidenav\" id=\"mobile-demo\">
         </ul>
     </li>
     <?php else : ?>
-    <li>
         <?php if (route_name() != 'signup') : ?>
-            <a href=\"<?php echo base_url(true) . '/' . current_lang() ?>/signup\">
-                <i class=\"material-icons left\">person_add</i>
-                <?php _t('common.signup') ?>
-            </a>
+            <li>
+                <a href=\"<?php echo base_url(true) . '/' . current_lang() ?>/signup\">
+                    <i class=\"material-icons left\">person_add</i>
+                    <?php _t('common.signup') ?>
+                </a>
+            </li>
         <?php endif; ?>
-    </li>
-    <li>
         <?php if (route_name() != 'signin') : ?>
-            <a href=\"<?php echo base_url(true) . '/' . current_lang() ?>/signin\">
-                <i class=\"material-icons left\">exit_to_app</i>
-                <?php _t('common.signin') ?>
-            </a>
+            <li>
+                <a href=\"<?php echo base_url(true) . '/' . current_lang() ?>/signin\">
+                    <i class=\"material-icons left\">exit_to_app</i>
+                    <?php _t('common.signin') ?>
+                </a>
+            </li>
         <?php endif; ?>
-    </li>
     <?php endif; ?>
     <?php echo partial('partials/language', ['attr' => 'sidenav-dropdown2']) ?>
 </ul>";

@@ -44,6 +44,7 @@ class PostController extends BaseController
 
     /**
      * Action - get posts list
+     * @param Request $request 
      * @param Response $response
      */
     public function posts(Request $request, Response $response)
@@ -53,12 +54,12 @@ class PostController extends BaseController
             \'status\' => \'success\',
             \'data\' => $posts->data,
             \'pagination\' => [
-								\'total_records\' => $posts->total(),
-								\'current_page\' => $posts->currentPageNumber(),
-								\'total_pages\' => (int) ceil($posts->total()/$posts->perPage()),
-								\'next_page\' => $posts->nextPageNumber(),
-								\'prev_page\' => $posts->previousPageNumber(),
-			      ]
+                \'total_records\' => $posts->total(),
+                \'current_page\' => $posts->currentPageNumber(),
+                \'total_pages\' => (int) ceil($posts->total()/$posts->perPage()),
+                \'next_page\' => $posts->nextPageNumber(),
+                \'prev_page\' => $posts->previousPageNumber(),
+            ]
         ]);
     }
 
