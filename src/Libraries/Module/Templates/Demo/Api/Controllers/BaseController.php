@@ -33,7 +33,7 @@ abstract class BaseController extends QtController
     /**
      * Status success
      */
-    const STATUS_SUCCESS = \'success\;
+    const STATUS_SUCCESS = \'success\';
 
     /**
      * CSRF verification

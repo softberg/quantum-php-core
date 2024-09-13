@@ -32,6 +32,11 @@ class PostController extends BaseController
 {
 
     /**
+     * Auth layout
+     */
+    const LAYOUT = \'layouts/main\';
+    
+    /**
      * Post service
      * @var PostService
      */
@@ -156,7 +161,7 @@ class PostController extends BaseController
 
     /**
      * Action - display form for amend the post 
-     * @param Response $request
+     * @param Response $response
      * @param ViewFactory $view
      * @param sting|null $lang
      * @param string $postId
