@@ -303,7 +303,7 @@ abstract class BasePaginator implements PaginatorInterface
 	{
 		$startPage = max(1, $currentPage - ceil(($pageItemsCount - self::EDGE_PADDING) / 2));
 		$endPage = min($totalPages, $startPage + $pageItemsCount - self::EDGE_PADDING);
-		$startPage = max(1, $endPage - $pageItemsCount + self::EDGE_PADDING);
+
 		return [$startPage, $endPage];
 	}
 
