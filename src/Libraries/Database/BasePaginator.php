@@ -236,9 +236,9 @@ abstract class BasePaginator implements PaginatorInterface
 		if ($pageItemsCount) {
 			$links = $this->links($withBaseUrl);
 			list($startPage, $endPage) = $this->calculateStartEndPages($currentPage, $totalPages, $pageItemsCount);
-			$pagination = $this->addFirstPageLink($pagination, $startPage);
-			$pagination = $this->getItemsLinks($pagination, $startPage, $endPage, $currentPage, $links);
-			$pagination = $this->addLastPageLink($pagination, $endPage, $totalPages, $links);
+			$pagination .= $this->addFirstPageLink($startPage);
+			$pagination .= $this->getItemsLinks($startPage, $endPage, $currentPage, $links);
+			$pagination .= $this->addLastPageLink($endPage, $totalPages, $links);
 		}
 
 		if ($currentPage < $totalPages) {
@@ -277,15 +277,15 @@ abstract class BasePaginator implements PaginatorInterface
 	}
 
 	/**
-	 * @param $pagination
 	 * @param $startPage
 	 * @param $endPage
 	 * @param $currentPage
 	 * @param array $links
-	 * @return mixed|string
+	 * @return string
 	 */
-	protected function getItemsLinks($pagination, $startPage, $endPage, $currentPage, array $links)
+	protected function getItemsLinks($startPage, $endPage, $currentPage, array $links): string
 	{
+		$pagination = '';
 		for ($i = $startPage; $i <= $endPage; $i++) {
 			$active = $i == $currentPage ? 'class="'. self::PAGINATION_CLASS_ACTIVE .'"' : '';
 			$pagination .= '<li ' . $active . '><a href="' . $links[$i - 1] . '">' . $i . '</a></li>';
@@ -308,12 +308,12 @@ abstract class BasePaginator implements PaginatorInterface
 	}
 
 	/**
-	 * @param $pagination
 	 * @param $startPage
-	 * @return mixed|string
+	 * @return string
 	 */
-	protected function addFirstPageLink($pagination, $startPage)
+	protected function addFirstPageLink($startPage): string
 	{
+		$pagination = '';
 		if ($startPage > 1) {
 			$pagination .= '<li><a href="' . $this->firstPageLink() . '">'. self::FIRST_PAGE_NUMBER .'</a></li>';
 			if ($startPage > 2) {
@@ -324,14 +324,14 @@ abstract class BasePaginator implements PaginatorInterface
 	}
 
 	/**
-	 * @param $pagination
 	 * @param $endPage
 	 * @param $totalPages
 	 * @param $links
-	 * @return mixed|string
+	 * @return string
 	 */
-	protected function addLastPageLink($pagination, $endPage, $totalPages, $links)
+	protected function addLastPageLink($endPage, $totalPages, $links): string
 	{
+		$pagination = '';
 		if ($endPage < $totalPages) {
 			if ($endPage < $totalPages - 1) {
 				$pagination .= '<li><span>...</span></li>';
