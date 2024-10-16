@@ -7,7 +7,7 @@ return function ($route) {
     $route->get(\'[:alpha:2]?/about\', \'PageController\', \'about\')->name(\'about\');
 
     $route->get(\'[:alpha:2]?/posts\', \'PostController\', \'posts\');
-    $route->get(\'[:alpha:2]?/post/[id=:any]\', \'PostController\', \'post\')->middlewares([\'Post\']);
+    $route->get(\'[:alpha:2]?/post/[id=:any]\', \'PostController\', \'post\');
 
     $route->group(\'guest\', function ($route) {
         $route->add(\'[:alpha:2]?/signin\', \'GET|POST\', \'AuthController\', \'signin\')->name(\'signin\');
