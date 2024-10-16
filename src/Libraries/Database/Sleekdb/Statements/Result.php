@@ -14,9 +14,14 @@
 
 namespace Quantum\Libraries\Database\Sleekdb\Statements;
 
+use SleekDB\Exceptions\InvalidConfigurationException;
 use Quantum\Libraries\Database\PaginatorInterface;
 use Quantum\Libraries\Database\Sleekdb\Paginator;
+use SleekDB\Exceptions\InvalidArgumentException;
 use Quantum\Libraries\Database\DbalInterface;
+use Quantum\Exceptions\DatabaseException;
+use Quantum\Exceptions\ModelException;
+use SleekDB\Exceptions\IOException;
 
 /**
  * Trait Result
@@ -27,98 +32,94 @@ trait Result
     /**
      * @inheritDoc
      * @return array
-     * @throws \Quantum\Exceptions\DatabaseException
-     * @throws \Quantum\Exceptions\ModelException
-     * @throws \SleekDB\Exceptions\IOException
-     * @throws \SleekDB\Exceptions\InvalidArgumentException
-     * @throws \SleekDB\Exceptions\InvalidConfigurationException
+     * @throws DatabaseException
+     * @throws ModelException
+     * @throws IOException
+     * @throws InvalidArgumentException
+     * @throws InvalidConfigurationException
      */
     public function get(): array
     {
-        $result = array_map(function ($element) {
+        return array_map(function ($element) {
             $item = clone $this;
             $item->data = $element;
             $item->modifiedFields = $element;
             $item->isNew = false;
             return $item;
         }, $this->getBuilder()->getQuery()->fetch());
-
-        return $result;
     }
 
-	  /**
-	   * @param int $perPage
-	   * @param int $currentPage
-	   * @return PaginatorInterface
-	   */
-	  public function paginate(int $perPage, int $currentPage = 1): PaginatorInterface
-	  {
-		  return new Paginator($this, $perPage, $currentPage);
-	  }
+    /**
+     * @inheritDoc
+     * @return PaginatorInterface
+     * @throws DatabaseException
+     * @throws IOException
+     * @throws InvalidArgumentException
+     * @throws InvalidConfigurationException
+     * @throws ModelException
+     */
+    public function paginate(int $perPage, int $currentPage = 1): PaginatorInterface
+    {
+        return new Paginator($this, $perPage, $currentPage);
+    }
 
     /**
      * @inheritDoc
      * @return DbalInterface
-     * @throws \Quantum\Exceptions\DatabaseException
-     * @throws \SleekDB\Exceptions\IOException
-     * @throws \SleekDB\Exceptions\InvalidArgumentException
-     * @throws \SleekDB\Exceptions\InvalidConfigurationException
+     * @throws DatabaseException
+     * @throws IOException
+     * @throws InvalidArgumentException
+     * @throws InvalidConfigurationException
      */
     public function findOne(int $id): DbalInterface
     {
         $result = $this->getOrmModel()->findById($id);
 
-        $this->data = $result;
-        $this->modifiedFields = $result;
-        $this->isNew = false;
+        $this->updateOrmModel($result);
 
         return $this;
     }
 
     /**
      * @inheritDoc
-     * @throws \Quantum\Exceptions\DatabaseException
-     * @throws \SleekDB\Exceptions\IOException
-     * @throws \SleekDB\Exceptions\InvalidArgumentException
-     * @throws \SleekDB\Exceptions\InvalidConfigurationException
+     * @throws DatabaseException
+     * @throws IOException
+     * @throws InvalidArgumentException
+     * @throws InvalidConfigurationException
      */
     public function findOneBy(string $column, $value): DbalInterface
     {
         $result = $this->getOrmModel()->findOneBy([$column, '=', $value]);
 
-        $this->data = $result;
-        $this->modifiedFields = $result;
-        $this->isNew = false;
+        $this->updateOrmModel($result);
 
         return $this;
     }
 
     /**
      * @inheritDoc
-     * @throws \Quantum\Exceptions\DatabaseException
-     * @throws \Quantum\Exceptions\ModelException
-     * @throws \SleekDB\Exceptions\IOException
-     * @throws \SleekDB\Exceptions\InvalidArgumentException
-     * @throws \SleekDB\Exceptions\InvalidConfigurationException
+     * @throws DatabaseException
+     * @throws ModelException
+     * @throws IOException
+     * @throws InvalidArgumentException
+     * @throws InvalidConfigurationException
      */
     public function first(): DbalInterface
     {
         $result = $this->getBuilder()->getQuery()->first();
 
-        $this->data = $result;
-        $this->modifiedFields = $result;
-        $this->isNew = false;
+        $this->updateOrmModel($result);
 
         return $this;
     }
 
     /**
      * @inheritDoc
-     * @throws \Quantum\Exceptions\DatabaseException
-     * @throws \Quantum\Exceptions\ModelException
-     * @throws \SleekDB\Exceptions\IOException
-     * @throws \SleekDB\Exceptions\InvalidArgumentException
-     * @throws \SleekDB\Exceptions\InvalidConfigurationException
+     * @throws DatabaseException
+     * @throws ModelException
+     * @throws IOException
+     * @throws InvalidArgumentException
+     * @throws InvalidConfigurationException
      */
     public function count(): int
     {
@@ -140,9 +141,10 @@ trait Result
     }
 
     /**
-     * @inheritDoc
+     * @param $result
+     * @return array
      */
-    public function setHidden($result)
+    public function setHidden($result): array
     {
         return array_diff_key($result, array_flip($this->hidden));
     }

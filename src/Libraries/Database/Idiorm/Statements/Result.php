@@ -35,15 +35,15 @@ trait Result
         return $this->getOrmModel()->find_many();
     }
 
-	  /**
-	   * @param int $perPage
-	   * @param int $currentPage
-	   * @return PaginatorInterface
-	   */
-	  public function paginate(int $perPage, int $currentPage = 1): PaginatorInterface
-	  {
-	  	  return new Paginator($this, $perPage, $currentPage);
-	  }
+    /**
+     * @inheritDoc
+     * @return PaginatorInterface
+     * @throws DatabaseException
+     */
+    public function paginate(int $perPage, int $currentPage = 1): PaginatorInterface
+    {
+        return new Paginator($this, $perPage, $currentPage);
+    }
 
     /**
      * @inheritDoc
@@ -113,9 +113,10 @@ trait Result
     }
 
     /**
-     * @inheritDoc
+     * @param $result
+     * @return array
      */
-    public function setHidden($result)
+    public function setHidden($result): array
     {
         return array_diff_key($result, array_flip($this->hidden));
     }
