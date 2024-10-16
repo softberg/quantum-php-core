@@ -144,12 +144,12 @@ interface DbalInterface
      */
     public function get();
 
-		/**
-		 * @param int $perPage
-		 * @param int $currentPage
-		 * @return PaginatorInterface
-		 */
-		public function paginate(int $perPage, int $currentPage = 1): PaginatorInterface;
+    /**
+     * @param int $perPage
+     * @param int $currentPage
+     * @return PaginatorInterface
+     */
+    public function paginate(int $perPage, int $currentPage = 1): PaginatorInterface;
 
     /**
      * Returns the count

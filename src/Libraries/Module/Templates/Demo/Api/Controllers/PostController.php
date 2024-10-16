@@ -16,6 +16,7 @@ return '<?php
 
 namespace Modules\Api\Controllers;
 
+use Shared\Transformers\PostTransformer;
 use Quantum\Factory\ServiceFactory;
 use Shared\Services\PostService;
 use Quantum\Http\Response;
@@ -27,7 +28,16 @@ use Quantum\Http\Request;
  */
 class PostController extends BaseController
 {
+    /**
+     * Posts per page
+     */
+    const POSTS_PER_PAGE = 8;
 
+    /**
+     * Current page
+     */
+    const CURRENT_PAGE = 1;
+    
     /**
      * Post service
      * @var PostService
@@ -47,16 +57,19 @@ class PostController extends BaseController
      * @param Request $request 
      * @param Response $response
      */
-    public function posts(Request $request, Response $response)
+    public function posts(Request $request, Response $response, PostTransformer $transformer)
     {
-        $posts = $this->postService->getPosts($request);
+        $perPage = $request->get(\'per_page\', self::POSTS_PER_PAGE);
+        $currentPage = $request->get(\'page\', self::CURRENT_PAGE);
+        
+        $paginatedPosts = $this->postService->getPosts($request);
+        
         $response->json([
             \'status\' => \'success\',
-            \'data\' => $posts->data,
+            \'data\' => transform($paginatedPosts->data(), $transformer),
             \'pagination\' => [
-                \'total_records\' => $posts->total(),
-                \'current_page\' => $posts->currentPageNumber(),
-                \'total_pages\' => (int) ceil($posts->total()/$posts->perPage()),
+                \'total_records\' => $paginatedPosts->total(),
+                \'current_page\' => $paginatedPosts->currentPageNumber(),
                 \'next_page\' => $posts->nextPageNumber(),
                 \'prev_page\' => $posts->previousPageNumber(),
             ]
@@ -69,11 +82,18 @@ class PostController extends BaseController
      * @param string|null $lang
      * @param string $postId
      */
-    public function post(Response $response, ?string $lang, string $postId)
+    public function post(Response $response, PostTransformer $transformer, ?string $lang, string $postId)
     {
+        $post = $this->postService->getPost($postId);
+
+        if (!$post) {
+            $response->html(partial(\'errors/404\'), 404);
+            stop();
+        }
+
         $response->json([
             \'status\' => \'success\',
-            \'data\' => $this->postService->getPost($postId)
+            \'data\' => current(transform([$post], $transformer))
         ]);
     }
 
