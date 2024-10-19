@@ -257,9 +257,9 @@ class SleekDbal implements DbalInterface
     }
 
     /**
-     * @param array $modelData
+     * @param array|null $modelData
      */
-    public function updateOrmModel(array $modelData)
+    public function updateOrmModel(?array $modelData)
     {
         $this->data = $modelData;
         $this->modifiedFields = $modelData;
