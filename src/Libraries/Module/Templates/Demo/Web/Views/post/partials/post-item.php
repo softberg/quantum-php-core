@@ -2,13 +2,21 @@
 
 return '<div class="col s12 m3 post-item">
     <div class="card post-card hoverable">
-        <a href="<?php echo base_url(true) . \'/\' . current_lang() . \'/post/\' . $post[\'id\'] ?>">
+        <a href="<?php echo base_url(true) . \'/\' . current_lang() . \'/post/\' . $post[\'id\'] ?>" class="post-item-link">
             <div class="card-image card-image-box">
                 <?php if ($post[\'image\']) : ?>
                     <img src="<?php echo base_url() . \'/uploads/\' . $post[\'image\'] ?>" class="content_img">
                 <?php else : ?>
                     <img src="<?php echo base_url() ?>/assets/images/no-image.png" class="content_no_img">
                 <?php endif; ?>
+            </div>
+            <div class="card-action card-action-custom">
+                <div class="row">
+                    <div class="col s12">
+                        <div class="post-date"><?php echo $post[\'date\'] ?></div>
+                        <div class="post-author"><?php echo $post[\'author\'] ?></div>
+                    </div>
+                </div>
             </div>
         </a>
         <div class="card-content white teal-text text-darken-4">
@@ -18,14 +26,6 @@ return '<div class="col s12 m3 post-item">
                 </a>
             </span>
             <p class="truncate"><?php echo $post[\'content\'] ?></p>
-        </div>
-        <div class="card-action teal accent-4">
-            <div class="row">
-                <div class="col s12">
-                    <div class="post-date"><?php echo $post[\'date\'] ?></div>
-                    <div class="post-author"><?php echo $post[\'author\'] ?></div>
-                </div>
-            </div>
         </div>
     </div>
 </div>';

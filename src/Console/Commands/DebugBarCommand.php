@@ -74,7 +74,7 @@ class DebugBarCommand extends QtCommand
         $this->fs = Di::get(FileSystem::class);
 
         if ($this->fs->exists(assets_dir() . DS . 'DebugBar' . DS . 'Resources' . DS . 'debugbar.css')) {
-            $this->error('The debuger already installed');
+            $this->error('The debug ber already installed');
             return;
         }
 

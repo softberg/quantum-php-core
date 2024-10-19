@@ -4,7 +4,7 @@ return '<?php
 
 return function ($route) {
     $route->get(\'[:alpha:2]?/posts\', \'PostController\', \'posts\');
-    $route->get(\'[:alpha:2]?/post/[id=:any]\', \'PostController\', \'post\')->middlewares([\'Post\']);
+    $route->get(\'[:alpha:2]?/post/[id=:any]\', \'PostController\', \'post\');
 
     $route->post(\'[:alpha:2]?/signin\', \'AuthController\', \'signin\');
     $route->post(\'[:alpha:2]?/signup\', \'AuthController\', \'signup\')->middlewares([\'Signup\']);

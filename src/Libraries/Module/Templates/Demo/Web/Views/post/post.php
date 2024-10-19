@@ -14,8 +14,8 @@ return '<div class="main-wrapper">
     <?php endif; ?>
 
     <?php if (!empty($pagination)): ?>
-        <div>
-	        <?php echo $pagination->getPagination(0,5)?>
+        <div class="center-align">
+	        <?php echo $pagination->getPagination(0, 5) ?>
         </div>
     <?php endif; ?>
     <?php echo partial(\'post/partials/modal\', [\'item\' => t(\'common.the_post\')]) ?>

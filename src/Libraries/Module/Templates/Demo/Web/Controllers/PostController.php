@@ -16,6 +16,7 @@ return '<?php
 
 namespace Modules\Web\Controllers;
 
+use Shared\Transformers\PostTransformer;
 use Quantum\Factory\ServiceFactory;
 use Quantum\Factory\ViewFactory;
 use Shared\Services\AuthService;
@@ -30,7 +31,16 @@ use Quantum\Http\Request;
  */
 class PostController extends BaseController
 {
+    /**
+     * Posts per page
+     */
+    const POSTS_PER_PAGE = 8;
 
+    /**
+     * Current page
+     */
+    const CURRENT_PAGE = 1;
+    
     /**
      * Auth layout
      */
@@ -63,16 +73,21 @@ class PostController extends BaseController
     /**
      * Action - get posts list
      * @param Response $response
+     * @param PostTransformer $transformer
      * @param ViewFactory $view
      */
-    public function posts(Request $request, Response $response, ViewFactory $view)
+    public function posts(Request $request, Response $response, PostTransformer $transformer, ViewFactory $view)
     {
-        $posts = $this->postService->getPosts($request);
+        $perPage = $request->get(\'per_page\', self::POSTS_PER_PAGE);
+        $currentPage = $request->get(\'page\', self::CURRENT_PAGE);
+        
+        $paginatedPosts = $this->postService->getPosts($perPage, $currentPage);
+        
         $view->setParams([
             \'title\' => t(\'common.posts\') . \' | \' . config()->get(\'app_name\'),
             \'langs\' => config()->get(\'langs\'),
-            \'posts\' => $posts->data,
-            \'pagination\' => $posts
+            \'posts\' => transform($paginatedPosts->data(), $transformer),
+            \'pagination\' => $paginatedPosts
         ]);
 
         $response->html($view->render(\'post/post\'));
@@ -80,19 +95,25 @@ class PostController extends BaseController
 
     /**
      * Action - get single post
-     * @param string|null $lang
-     * @param string $postId
      * @param Response $response
      * @param ViewFactory $view
+     * @param PostTransformer $transformer
+     * @param string|null $lang
+     * @param string $postId
      */
-    public function post(Response $response, ViewFactory $view, ?string $lang, string $postId)
+    public function post(Response $response, ViewFactory $view, PostTransformer $transformer, ?string $lang, string $postId)
     {
         $post = $this->postService->getPost($postId);
+        
+        if (!$post) {
+            $response->html(partial(\'errors/404\'), 404);
+            stop();
+        }
 
         $view->setParams([
             \'title\' => $post[\'title\'] . \' | \' . config()->get(\'app_name\'),
             \'langs\' => config()->get(\'langs\'),
-            \'post\' => $post
+            \'post\' => current(transform([$post], $transformer))
         ]);
 
         $response->html($view->render(\'post/single\'));
@@ -163,7 +184,7 @@ class PostController extends BaseController
      * Action - display form for amend the post 
      * @param Response $response
      * @param ViewFactory $view
-     * @param sting|null $lang
+     * @param string|null $lang
      * @param string $postId
      */
     public function amendForm(Response $response, ViewFactory $view, ?string $lang, string $postId)

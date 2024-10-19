@@ -19,8 +19,12 @@ use Quantum\Libraries\Database\Sleekdb\Statements\Reducer;
 use Quantum\Libraries\Database\Sleekdb\Statements\Result;
 use Quantum\Libraries\Database\Sleekdb\Statements\Model;
 use Quantum\Libraries\Database\Sleekdb\Statements\Join;
+use SleekDB\Exceptions\InvalidConfigurationException;
+use SleekDB\Exceptions\InvalidArgumentException;
 use Quantum\Libraries\Database\DbalInterface;
 use Quantum\Exceptions\DatabaseException;
+use Quantum\Exceptions\ModelException;
+use SleekDB\Exceptions\IOException;
 use SleekDB\QueryBuilder;
 use SleekDB\Store;
 
@@ -161,6 +165,7 @@ class SleekDbal implements DbalInterface
      * @param string $table
      * @param string $idColumn
      * @param array $foreignKeys
+     * @param array $hidden
      */
     public function __construct(string $table, string $idColumn = 'id', array $foreignKeys = [], array $hidden = [])
     {
@@ -170,8 +175,9 @@ class SleekDbal implements DbalInterface
         $this->hidden = $hidden;
     }
 
-    public function __get($key) {
-        return isset($this->data[$key]) ? $this->data[$key] : null;
+    public function __get($key)
+    {
+        return $this->data[$key] ?? null;
     }
 
     /**
@@ -182,20 +188,20 @@ class SleekDbal implements DbalInterface
         self::$connection = $config;
     }
 
-		public function setData(array $data)
-		{
-			$this->data = $data;
-		}
+    public function setData(array $data)
+    {
+        $this->data = $data;
+    }
 
-		public function setModifiedFields($modifiedFields)
-		{
-			$this->modifiedFields = $modifiedFields;
-		}
+    public function setModifiedFields($modifiedFields)
+    {
+        $this->modifiedFields = $modifiedFields;
+    }
 
-		public function setIsNew($isNew)
-		{
-			$this->isNew = $isNew;
-		}
+    public function setIsNew($isNew)
+    {
+        $this->isNew = $isNew;
+    }
 
     /**
      * @inheritDoc
@@ -225,9 +231,9 @@ class SleekDbal implements DbalInterface
      * Gets the ORM model
      * @return Store
      * @throws DatabaseException
-     * @throws \SleekDB\Exceptions\IOException
-     * @throws \SleekDB\Exceptions\InvalidArgumentException
-     * @throws \SleekDB\Exceptions\InvalidConfigurationException
+     * @throws IOException
+     * @throws InvalidArgumentException
+     * @throws InvalidConfigurationException
      */
     public function getOrmModel(): Store
     {
@@ -251,11 +257,21 @@ class SleekDbal implements DbalInterface
     }
 
     /**
+     * @param array|null $modelData
+     */
+    public function updateOrmModel(?array $modelData)
+    {
+        $this->data = $modelData;
+        $this->modifiedFields = $modelData;
+        $this->isNew = false;
+    }
+
+    /**
      * Deletes the table and the data
      * @throws DatabaseException
-     * @throws \SleekDB\Exceptions\IOException
-     * @throws \SleekDB\Exceptions\InvalidArgumentException
-     * @throws \SleekDB\Exceptions\InvalidConfigurationException
+     * @throws IOException
+     * @throws InvalidArgumentException
+     * @throws InvalidConfigurationException
      */
     public function deleteTable()
     {
@@ -266,10 +282,10 @@ class SleekDbal implements DbalInterface
      * Gets the query builder object
      * @return QueryBuilder
      * @throws DatabaseException
-     * @throws \Quantum\Exceptions\ModelException
-     * @throws \SleekDB\Exceptions\IOException
-     * @throws \SleekDB\Exceptions\InvalidArgumentException
-     * @throws \SleekDB\Exceptions\InvalidConfigurationException
+     * @throws ModelException
+     * @throws IOException
+     * @throws InvalidArgumentException
+     * @throws InvalidConfigurationException
      */
     public function getBuilder(): QueryBuilder
     {
