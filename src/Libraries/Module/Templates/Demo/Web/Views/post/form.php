@@ -46,7 +46,7 @@ return '<div class="post-form full-height">
                                     title="<?php _t(\'common.delete\') ?>">
                                         <i class="material-icons">close</i>
                                     </a>
-                                    <img src="<?php echo base_url() . \'/uploads/\' . $post[\'image\'] ?>" class="update_page_img">
+                                    <img src="<?php echo base_url() . \'/uploads/\' . auth()->user()->uuid . \'/\' . $post[\'image\'] ?>" class="update_page_img">
                                 <?php endif; ?>
                             </div>
 

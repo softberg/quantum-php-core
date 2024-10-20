@@ -62,7 +62,7 @@ class PostController extends BaseController
         $perPage = $request->get(\'per_page\', self::POSTS_PER_PAGE);
         $currentPage = $request->get(\'page\', self::CURRENT_PAGE);
         
-        $paginatedPosts = $this->postService->getPosts($request);
+        $paginatedPosts = $this->postService->getPosts($perPage, $currentPage);
         
         $response->json([
             \'status\' => \'success\',
@@ -70,8 +70,8 @@ class PostController extends BaseController
             \'pagination\' => [
                 \'total_records\' => $paginatedPosts->total(),
                 \'current_page\' => $paginatedPosts->currentPageNumber(),
-                \'next_page\' => $posts->nextPageNumber(),
-                \'prev_page\' => $posts->previousPageNumber(),
+                \'next_page\' => $paginatedPosts->nextPageNumber(),
+                \'prev_page\' => $paginatedPosts->previousPageNumber(),
             ]
         ]);
     }
