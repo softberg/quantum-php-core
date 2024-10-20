@@ -268,8 +268,8 @@ class PostController extends BaseController
         }
 
         $this->postService->updatePost($postId, [
-            \'title\' => $post[\'title\'],
-            \'content\' => $post[\'content\'],
+            \'title\' => $post->title,
+            \'content\' => $post->content,
             \'image\' => \'\',
             \'updated_at\' => date(\'Y-m-d H:i:s\'),
         ]);
