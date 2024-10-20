@@ -21,7 +21,6 @@ use Quantum\Factory\ServiceFactory;
 use Quantum\Factory\ViewFactory;
 use Shared\Services\AuthService;
 use Shared\Services\PostService;
-use Quantum\Mvc\QtController;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 
@@ -105,13 +104,13 @@ class PostController extends BaseController
     {
         $post = $this->postService->getPost($postId);
         
-        if (!$post) {
+        if (!$post->asArray()) {
             $response->html(partial(\'errors/404\'), 404);
             stop();
         }
 
         $view->setParams([
-            \'title\' => $post[\'title\'] . \' | \' . config()->get(\'app_name\'),
+            \'title\' => $post->title . \' | \' . config()->get(\'app_name\'),
             \'langs\' => config()->get(\'langs\'),
             \'post\' => current(transform([$post], $transformer))
         ]);
@@ -125,12 +124,14 @@ class PostController extends BaseController
      * @param Response $response
      * @param ViewFactory $view
      */
-    public function myPosts(Request $request, Response $response, ViewFactory $view)
+    public function myPosts(Request $request, Response $response, PostTransformer $transformer,ViewFactory $view)
     {
+        $myPosts = $this->postService->getMyPosts((int)auth()->user()->id);
+        
         $view->setParams([
             \'title\' => t(\'common.my_posts\') . \' | \' . config()->get(\'app_name\'),
             \'langs\' => config()->get(\'langs\'),
-            \'posts\' => $this->postService->getMyPosts((int)auth()->user()->id)
+            \'posts\' => transform($myPosts, $transformer)
         ]);
 
         $response->html($view->render(\'post/my-posts\'));
@@ -192,9 +193,9 @@ class PostController extends BaseController
         $post = $this->postService->getPost($postId);
 
         $view->setParams([
-            \'title\' => $post[\'title\'] . \' | \' . config()->get(\'app_name\'),
+            \'title\' => $post->title . \' | \' . config()->get(\'app_name\'),
             \'langs\' => config()->get(\'langs\'),
-            \'post\' => $post
+            \'post\' => $post->asArray()
         ]);
 
         $response->html($view->render(\'post/form\'));
@@ -214,11 +215,11 @@ class PostController extends BaseController
             \'updated_at\' => date(\'Y-m-d H:i:s\'),
         ];
 
-        $post = $this->postService->getPost($postId, false);
+        $post = $this->postService->getPost($postId);
 
         if ($request->hasFile(\'image\')) {
-            if ($post[\'image\']) {
-                $this->postService->deleteImage(auth()->user()->uuid . DS .  $post[\'image\']);
+            if ($post->image) {
+                $this->postService->deleteImage(auth()->user()->uuid . DS .  $post->image);
             }
 
             $imageName = $this->postService->saveImage(
@@ -242,10 +243,10 @@ class PostController extends BaseController
      */
     public function delete(?string $lang, string $postId)
     {
-        $post = $this->postService->getPost($postId, false);
+        $post = $this->postService->getPost($postId);
 
-        if ($post[\'image\']) {
-            $this->postService->deleteImage(auth()->user()->uuid . DS . $post[\'image\']);
+        if ($post->image) {
+            $this->postService->deleteImage(auth()->user()->uuid . DS . $post->image);
         }
 
         $this->postService->deletePost($postId);
@@ -260,10 +261,10 @@ class PostController extends BaseController
      */
     public function deleteImage(?string $lang, string $postId)
     {
-        $post = $this->postService->getPost($postId, false);
+        $post = $this->postService->getPost($postId);
 
-        if ($post[\'image\']) {
-            $this->postService->deleteImage(auth()->user()->uuid . DS . $post[\'image\']);
+        if ($post->image) {
+            $this->postService->deleteImage(auth()->user()->uuid . DS . $post->image);
         }
 
         $this->postService->updatePost($postId, [

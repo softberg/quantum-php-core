@@ -18,7 +18,6 @@ namespace Modules\Web\Controllers;
 
 use Quantum\Exceptions\AuthException;
 use Quantum\Factory\ViewFactory;
-use Quantum\Mvc\QtController;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 

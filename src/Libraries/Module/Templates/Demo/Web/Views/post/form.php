@@ -15,7 +15,7 @@ return '<div class="post-form full-height">
 
                 <div class="card teal accent-4">
                     <div class="card-content">
-                        <form method="post" action="<?php echo base_url(true) . \'/\' . current_lang() . \'/my-posts/\' . (isset($post) ? \'amend/\' . $post[\'id\'] : \'create\') ?>" enctype="multipart/form-data">
+                        <form method="post" action="<?php echo base_url(true) . \'/\' . current_lang() . \'/my-posts/\' . (isset($post) ? \'amend/\' . $post[\'uuid\'] : \'create\') ?>" enctype="multipart/form-data">
                             <div class="row">
                                 <div class="input-field col s12">
                                     <input value="<?php echo $post[\'title\'] ?? old(\'title\') ?>" name="title" id="title" type="text" class="validate">
@@ -41,7 +41,7 @@ return '<div class="post-form full-height">
                             <div class="post-image">
                                 <?php if (isset($post) && $post[\'image\']) : ?>
                                     <a class="waves-effect waves-light btn modal-trigger image_delete"
-                                    data-url="<?php echo base_url(true) . \'/\' . current_lang() . \'/my-posts/delete-image/\' . $post[\'id\'] ?>"
+                                    data-url="<?php echo base_url(true) . \'/\' . current_lang() . \'/my-posts/delete-image/\' . $post[\'uuid\'] ?>"
                                     href="#modal-confirm"
                                     title="<?php _t(\'common.delete\') ?>">
                                         <i class="material-icons">close</i>

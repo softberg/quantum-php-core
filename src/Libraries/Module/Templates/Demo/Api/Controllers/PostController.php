@@ -79,6 +79,7 @@ class PostController extends BaseController
     /**
      * Action - get single post
      * @param Response $response
+     * @param PostTransformer $transformer
      * @param string|null $lang
      * @param string $postId
      */
@@ -86,8 +87,12 @@ class PostController extends BaseController
     {
         $post = $this->postService->getPost($postId);
 
-        if (!$post) {
-            $response->html(partial(\'errors/404\'), 404);
+        if (!$post->asArray()) {
+            $response->json([
+                \'status\' => \'error\',
+                \'message\' => t(\'common.post_not_found\')
+            ], 404);
+
             stop();
         }
 
@@ -100,12 +105,15 @@ class PostController extends BaseController
     /**
      * Action - get my posts
      * @param Response $response
+     * @param PostTransformer $transformer
      */
-    public function myPosts(Response $response)
+    public function myPosts(Response $response, PostTransformer $transformer)
     {
+        $myPosts = $this->postService->getMyPosts((int)auth()->user()->id);
+        
         $response->json([
             \'status\' => \'success\',
-            \'data\' => $this->postService->getMyPosts((int)auth()->user()->id)
+            \'data\' => transform($myPosts, $transformer)
         ]);
     }
 
@@ -157,11 +165,11 @@ class PostController extends BaseController
             \'updated_at\' => date(\'Y-m-d H:i:s\'),
         ];
 
-        $post = $this->postService->getPost($postId, false);
+        $post = $this->postService->getPost($postId);
 
         if ($request->hasFile(\'image\')) {
-            if ($post[\'image\']) {
-                $this->postService->deleteImage(auth()->user()->uuid . DS . $post[\'image\']);
+            if ($post->image) {
+                $this->postService->deleteImage(auth()->user()->uuid . DS . $post->image);
             }
 
             $imageName = $this->postService->saveImage(
@@ -189,10 +197,10 @@ class PostController extends BaseController
      */
     public function delete(Response $response, ?string $lang, string $postId)
     {
-        $post = $this->postService->getPost($postId, false);
+        $post = $this->postService->getPost($postId);
 
-        if ($post[\'image\']) {
-            $this->postService->deleteImage(auth()->user()->uuid . DS . $post[\'image\']);
+        if ($post->image) {
+            $this->postService->deleteImage(auth()->user()->uuid . DS . $post->image);
         }
 
         $this->postService->deletePost($postId);
@@ -211,15 +219,15 @@ class PostController extends BaseController
      */
     public function deleteImage(Response $response, ?string $lang, string $postId)
     {
-        $post = $this->postService->getPost($postId, false);
+        $post = $this->postService->getPost($postId);
 
-        if ($post[\'image\']) {
-            $this->postService->deleteImage(auth()->user()->uuid . DS . $post[\'image\']);
+        if ($post->image) {
+            $this->postService->deleteImage(auth()->user()->uuid . DS . $post->image);
         }
 
         $this->postService->updatePost($postId, [
-            \'title\' => $post[\'title\'],
-            \'content\' => $post[\'content\'],
+            \'title\' => $post->title,,
+            \'content\' => $post->content,
             \'image\' => \'\',
             \'updated_at\' => date(\'Y-m-d H:i:s\'),
         ]);
