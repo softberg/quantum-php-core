@@ -40,9 +40,9 @@ class Owner extends QtMiddleware
     {
         $postId = (string)route_param(\'id\');
 
-        $post = ServiceFactory::get(PostService::class)->getPost($postId, false);
+        $post = ServiceFactory::get(PostService::class)->getPost($postId);
 
-        if (!$post || $post[\'user_id\'] != auth()->user()->id) {
+        if (!$post->asArray() || $post->user_id != auth()->user()->id) {
             $response->json([
                 \'status\' => \'error\',
                 \'message\' => t(\'common.post_not_found\')
