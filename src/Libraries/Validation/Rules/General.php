@@ -83,7 +83,8 @@ trait General
             $captcha = CaptchaManager::getHandler();
 
             if (!$captcha->verify($value)){
-                $this->addError($field, 'captcha', $param);
+                $errorCode = $captcha->getErrorMessage();
+                $this->addError($field, 'captcha.'.$errorCode, $param);
             }
         }
     }

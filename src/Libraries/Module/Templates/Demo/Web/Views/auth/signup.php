@@ -44,7 +44,7 @@ return '<div class="main-wrapper teal accent-4">
                                 </div>
                             </div>
                              <div class="row">
-                                <?php echo $captcha->addToForm(\'signUpForm\', [\'class\' => \'col s1 offset-s4\']) ?>
+                                <?php //echo $captcha->addToForm(\'signUpForm\', [\'class\' => \'col s1 offset-s4\']) ?>
                             </div>
                             <div class="row">
                                 <div class="col s12 right-align">

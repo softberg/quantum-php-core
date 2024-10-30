@@ -66,10 +66,10 @@ class Signup extends QtMiddleware
             \'lastname\' => [
                 Rule::set(\'required\')
             ],
-            \'captcha\' => [
-                Rule::set(\'required\'),
-                Rule::set(\'captcha\')
-            ]
+//            \'captcha\' => [
+//                Rule::set(\'required\'),
+//                Rule::set(\'captcha\')
+//            ]
         ]);
     }
 
