@@ -56,7 +56,7 @@ if (!function_exists('getallheaders')) {
 
         foreach ($data as $key => $value) {
             if (substr($key, 0, 5) == 'HTTP_') {
-                $headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($key, 5)))))] = $value;
+                $headers[str_replace(' ', '-', strtolower(str_replace('_', ' ', substr($key, 5))))] = $value;
             }
         }
 
