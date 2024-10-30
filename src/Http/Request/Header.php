@@ -32,10 +32,12 @@ trait Header
      * @param string $key
      * @return bool
      */
-    public static function hasHeader(string $key): bool
-    {
-        return isset(self::$__headers[strtolower($key)]);
-    }
+	  public static function hasHeader(string $key): bool
+	  {
+	  	  list($keyWithHyphens, $keyWithUnderscores) = self::normalizeHeaderKey($key);
+
+	  	  return isset(self::$__headers[$keyWithHyphens]) || isset(self::$__headers[$keyWithUnderscores]);
+	  }
 
     /**
      * Gets the request header by given key
@@ -44,7 +46,12 @@ trait Header
      */
     public static function getHeader(string $key): ?string
     {
-        return self::hasHeader($key) ? self::$__headers[strtolower($key)] : null;
+	      if (self::hasHeader($key)) {
+		        list($keyWithHyphens, $keyWithUnderscores) = self::normalizeHeaderKey($key);
+		        return self::$__headers[$keyWithHyphens] ?? self::$__headers[$keyWithUnderscores];
+	      }
+
+				return null;
     }
 
     /**
@@ -77,4 +84,14 @@ trait Header
         }
     }
 
+	  /**
+	   * @param string $key
+	   * @return array
+	   */
+	  private static function normalizeHeaderKey(string $key): array
+	  {
+	  	$keyWithHyphens = str_replace('_', '-', strtolower($key));
+	  	$keyWithUnderscores = str_replace('-', '_', $key);
+	  	return [$keyWithHyphens, $keyWithUnderscores];
+	  }
 }
