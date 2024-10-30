@@ -258,7 +258,7 @@ abstract class BasePaginator implements PaginatorInterface
     {
         $link = '';
         if (!empty($nextPageLink)) {
-            $link = '<li><a href="' . $nextPageLink . '">Next &raquo;</a></li>';
+            $link = '<li><a href="' . $nextPageLink . '">' . t('common.pagination.next') . '</a></li>';
         }
         return $link;
     }
@@ -271,7 +271,7 @@ abstract class BasePaginator implements PaginatorInterface
     {
         $link = '';
         if (!empty($previousPageLink)) {
-            $link = '<li><a href="' . $previousPageLink . '">&laquo; Previous</a></li>';
+            $link = '<li><a href="' . $previousPageLink . '">' . t('common.pagination.prev') . '</a></li>';
         }
         return $link;
     }
