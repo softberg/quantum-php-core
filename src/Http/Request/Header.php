@@ -46,14 +46,12 @@ trait Header
      */
     public static function getHeader(string $key): ?string
     {
-	      list($keyWithHyphens, $keyWithUnderscores) = self::normalizeHeaderKey($key);
-
-	      if (array_key_exists($keyWithHyphens, self::$__headers)) {
-		        return self::$__headers[$keyWithHyphens];
-	      } elseif (array_key_exists($keyWithUnderscores, self::$__headers)) {
-		        return self::$__headers[$keyWithUnderscores];
+	      if (self::hasHeader($key)) {
+		        list($keyWithHyphens, $keyWithUnderscores) = self::normalizeHeaderKey($key);
+		        return self::$__headers[$keyWithHyphens] ?? self::$__headers[$keyWithUnderscores];
 	      }
-	      return null;
+
+				return null;
     }
 
     /**
