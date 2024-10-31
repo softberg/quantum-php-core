@@ -43,9 +43,11 @@ class LocalFileSystemAdapter implements FilesystemAdapterInterface
     }
 
     /**
+     * @param string $dirname
+     * @param string|null $parentId
      * @inheritDoc
      */
-    public function makeDirectory(string $dirname): bool
+    public function makeDirectory(string $dirname, string $parentId = null): bool
     {
         return mkdir($dirname);
     }
@@ -89,9 +91,12 @@ class LocalFileSystemAdapter implements FilesystemAdapterInterface
     }
 
     /**
+     * @param string $filename
+     * @param string $content
+     * @param string|null $parentId
      * @inheritDoc
      */
-    public function put(string $filename, string $content)
+    public function put(string $filename, string $content, string $parentId = null)
     {
         return file_put_contents($filename, $content, LOCK_EX);
     }

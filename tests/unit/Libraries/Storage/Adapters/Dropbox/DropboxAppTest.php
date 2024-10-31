@@ -3,14 +3,13 @@
 namespace Quantum\Tests\Libraries\Storage\Adapters\Dropbox;
 
 use Quantum\Libraries\Storage\Adapters\Dropbox\DropboxApp;
-use Quantum\Tests\Libraries\Storage\TokenServiceTestCase;
 use Quantum\Tests\Libraries\Storage\HttpClientTestCase;
 use Quantum\Tests\AppTestCase;
 
 class DropboxAppTest extends AppTestCase
 {
 
-    use TokenServiceTestCase;
+    use DropboxTokenServiceTestCase;
     use HttpClientTestCase;
 
     private $dropboxApp;
