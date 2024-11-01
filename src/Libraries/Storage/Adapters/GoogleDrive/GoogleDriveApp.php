@@ -97,7 +97,7 @@ class GoogleDriveApp
         return self::AUTH_URL . '?' . http_build_query($params, '', '&');
     }
 
-    public function fetchTokens($code, $redirectUrl = '', $byRefresh = false): object
+    public function fetchTokens($code, $redirectUrl = '', $byRefresh = false): ?object
     {
         $codeKey = $byRefresh ? 'refresh_token' : 'code';
 
