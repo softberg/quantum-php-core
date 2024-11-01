@@ -89,7 +89,7 @@ class GoogleDriveApp
      * Gets Auth URL
      * @param string $redirectUrl
      * @param string $accessType
-     * @return object|null
+     * @return string
      * @throws AppException
      * @throws CryptorException
      * @throws DatabaseException
@@ -116,32 +116,50 @@ class GoogleDriveApp
      * @return object|null
      * @throws Exception
      */
-    public function fetchTokens(string $code, string $redirectUrl = '', bool $byRefresh = false): ?object
+    public function fetchTokens(string $code, string $redirectUrl = ''): ?object
     {
-        $codeKey = $byRefresh ? 'refresh_token' : 'code';
 
         $params = [
-            $codeKey => $code,
-            'grant_type' => $byRefresh ? 'refresh_token' : 'authorization_code',
+            'code' => $code,
+            'grant_type' => 'authorization_code',
             'client_id' => $this->appKey,
             'client_secret' => $this->appSecret,
+            'redirect_uri' => $redirectUrl
         ];
-
-        if(!$byRefresh){
-            $params['redirect_uri'] = $redirectUrl;
-        }
 
         $response = $this->sendRequest(self::AUTH_TOKEN_URL, $params);
 
-        $this->tokenService->saveTokens($response->access_token, !$byRefresh ? $response->refresh_token : null);
+        $this->tokenService->saveTokens($response->access_token, $response->refresh_token);
 
         return $response;
     }
 
     /**
+     * Fetches the access token by refresh token
+     * @param string $refreshToken
+     * @return string
+     * @throws Exception
+     */
+    private function fetchAccessTokenByRefreshToken(string $refreshToken): string
+    {
+        $params = [
+            'refresh_token' => $refreshToken,
+            'grant_type' => 'refresh_token',
+            'client_id' => $this->appKey,
+            'client_secret' => $this->appSecret
+        ];
+
+        $response = $this->sendRequest(self::AUTH_TOKEN_URL, $params);
+
+        $this->tokenService->saveTokens($response->access_token);
+
+        return $response->access_token;
+    }
+
+    /**
      * Sends rpc request
      * @param string $uri
-     * @param null $data
+     * @param mixed|null $data
      * @param array $headers
      * @param string $method
      * @return mixed|null
@@ -161,16 +179,16 @@ class GoogleDriveApp
         if ($errors = $this->httpClient->getErrors()) {
             $code = $errors['code'];
 
-            if ($code == self::INVALID_TOKEN_ERROR_CODE) {
+            if ($this->accessTokenNeedsRefresh($code)) {
                 $prevUrl = $this->httpClient->url();
                 $prevData = $this->httpClient->getData();
                 $prevHeaders = $this->httpClient->getRequestHeaders();
 
                 $refreshToken = $this->tokenService->getRefreshToken();
 
-                $response = $this->fetchTokens($refreshToken , '', true);
+                $accessToken = $this->fetchAccessTokenByRefreshToken($refreshToken);
 
-                $prevHeaders['Authorization'] = 'Bearer ' . $response->access_token;
+                $prevHeaders['Authorization'] = 'Bearer ' . $accessToken;
 
                 $responseBody = $this->sendRequest($prevUrl, $prevData, $prevHeaders);
 
@@ -215,5 +233,19 @@ class GoogleDriveApp
     public function getFileInfo(string $fileId, bool $media = false, array $params = []){
         $queryParam = $media ? '?alt=media' : '?fields=*';
         return $this->rpcRequest(GoogleDriveApp::FILE_METADATA_URL . '/' . $fileId . $queryParam, $params, 'GET');
+    }
+
+    /**
+     * Checks if the access token need refresh
+     * @param int $code
+     * @return bool
+     */
+    private function accessTokenNeedsRefresh(int $code): bool
+    {
+        if ($code != 401) {
+            return false;
+        }
+
+        return true;
     }
 }
