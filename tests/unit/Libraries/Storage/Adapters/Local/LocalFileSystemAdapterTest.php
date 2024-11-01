@@ -8,9 +8,24 @@ use Quantum\Tests\AppTestCase;
 class LocalFileSystemAdapterTest extends AppTestCase
 {
 
+    /**
+     * @var LocalFileSystemAdapter
+     */
     private $fs;
+
+    /**
+     * @var string
+     */
     private $dirname;
+
+    /**
+     * @var string
+     */
     private $filename;
+
+    /**
+     * @var string
+     */
     private $content = 'Hello world';
 
     public function setUp(): void

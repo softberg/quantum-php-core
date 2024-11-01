@@ -96,17 +96,17 @@ class DropboxApp
     /**
      * @var string
      */
-    private $appKey = null;
+    private $appKey;
 
     /**
      * @var string
      */
-    private $appSecret = null;
+    private $appSecret;
 
     /**
      * @var TokenServiceInterface
      */
-    private $tokenService = null;
+    private $tokenService;
 
     /**
      * DropboxApp constructor
@@ -125,8 +125,11 @@ class DropboxApp
 
     /**
      * Gets the auth URL
-     * @throws CryptorException
+     * @param string $redirectUrl
+     * @param string $tokenAccessType
+     * @return string
      * @throws AppException
+     * @throws CryptorException
      * @throws DatabaseException
      */
     public function getAuthUrl(string $redirectUrl, string $tokenAccessType = 'offline'): string

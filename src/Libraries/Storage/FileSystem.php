@@ -21,10 +21,10 @@ use Quantum\Exceptions\AppException;
 /**
  * Class FileSystem
  * @package Quantum\Libraries\Storage
- * @method bool makeDirectory(string $dirname)
+ * @method bool makeDirectory(string $dirname, ?string $parentId = null)
  * @method bool removeDirectory(string $dirname)
  * @method string|false get(string $filename)
- * @method int|false put(string $filename, string $content)
+ * @method int|false put(string $filename, string $content, ?string $parentId = null)
  * @method int|false append(string $filename, string $content)
  * @method bool rename(string $oldName, string $newName)
  * @method bool copy(string $source, string $dest)

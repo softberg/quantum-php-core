@@ -3,26 +3,43 @@
 namespace Quantum\Tests\Libraries\Storage\Adapters\Dropbox;
 
 use Quantum\Libraries\Storage\Adapters\Dropbox\DropboxApp;
-use Quantum\Tests\Libraries\Storage\TokenServiceTestCase;
 use Quantum\Tests\Libraries\Storage\HttpClientTestCase;
 use Quantum\Tests\AppTestCase;
 
 class DropboxAppTest extends AppTestCase
 {
 
-    use TokenServiceTestCase;
+    use DropboxTokenServiceTestCase;
     use HttpClientTestCase;
 
+    /**
+     * @var DropboxApp
+     */
     private $dropboxApp;
 
+    /**
+     * @var string
+     */
     private $appKey = 'x0hwm8wy63rrynm';
 
+    /**
+     * @var string
+     */
     private $appSecret = 'xxx123yyy';
 
+    /**
+     * @var string
+     */
     private $authCode = 'd4k29ovC7-UAAAAAAAA3Q45go2mLgjMhJSeJNBOo-EA';
 
+    /**
+     * @var string
+     */
     private $redirectUrl = 'http://localhost/confirm';
 
+    /**
+     * @var array
+     */
     private $tokensGrantResponse = [
         "access_token" => "sl.BYEQ1_VadTz6nBU36WPBBVwokc3zWVMXGjcOKxV4Tadms8ZlEPM85aHVFa_k1sfjilCWOnl79RUncPZzJ3GhrqhLGIBFFRCH0rKMa_ZtcqkerJn-f5lu10Ki5PSw4fxYM80V4PL_",
         "token_type" => "bearer",
@@ -33,6 +50,9 @@ class DropboxAppTest extends AppTestCase
         "account_id" => "dbid:AAC9tDKbzTQlyNms0ZcB_iH3wLv7yNn-iyE"
     ];
 
+    /**
+     * @var array
+     */
     private $profileDataResponse = [
         "account_id" => "dbid:AAH4f99T0taONIb-OurWxbNQ6ywGRopQngc",
         "disabled" => false,
@@ -49,6 +69,9 @@ class DropboxAppTest extends AppTestCase
         "profile_photo_url" => "https://dl-web.dropbox.com/account_photo/get/69330102&size=128x128"
     ];
 
+    /**
+     * @var array
+     */
     private $errorResponse = [
         "error" => [
             ".tag" => "no_account"
@@ -56,6 +79,9 @@ class DropboxAppTest extends AppTestCase
         "error_summary" => "no_account/..."
     ];
 
+    /**
+     * @var string
+     */
     private $fileContentResponse = 'Some plain text!';
 
     public function setUp(): void
