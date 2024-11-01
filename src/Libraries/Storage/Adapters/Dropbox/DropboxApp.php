@@ -174,6 +174,32 @@ class DropboxApp
     }
 
     /**
+     * Fetches the access token by refresh token
+     * @param string $refreshToken
+     * @return string
+     * @throws AppException
+     * @throws HttpException
+     * @throws LangException
+     */
+    private function fetchAccessTokenByRefreshToken(string $refreshToken): string
+    {
+        $params = [
+            'refresh_token' => $refreshToken,
+            'grant_type' => 'refresh_token',
+            'client_id' => $this->appKey,
+            'client_secret' => $this->appSecret
+        ];
+
+        $tokenUrl = self::AUTH_TOKEN_URL . '?' . http_build_query($params, '', '&');
+
+        $response = $this->sendRequest($tokenUrl);
+
+        $this->tokenService->saveTokens($response->access_token);
+
+        return $response->access_token;
+    }
+
+    /**
      * Sends rpc request
      * @param string $endpoint
      * @param array|null $params
@@ -224,17 +250,17 @@ class DropboxApp
      * @param string $uri
      * @param mixed|null $data
      * @param array $headers
+     * @param string $method
      * @return mixed|null
      * @throws AppException
      * @throws HttpException
      * @throws LangException
-     * @throws Exception
      */
-    public function sendRequest(string $uri, $data = null, array $headers = [])
+    public function sendRequest(string $uri, $data = null, array $headers = [], string $method = 'POST')
     {
         $this->httpClient
             ->createRequest($uri)
-            ->setMethod('POST')
+            ->setMethod($method)
             ->setData($data)
             ->setHeaders($headers)
             ->start();
@@ -253,7 +279,6 @@ class DropboxApp
                 $refreshToken = $this->tokenService->getRefreshToken();
 
                 $accessToken = $this->fetchAccessTokenByRefreshToken($refreshToken);
-                $this->tokenService->saveTokens($accessToken);
 
                 $prevHeaders['Authorization'] = 'Bearer ' . $accessToken;
 
@@ -265,30 +290,6 @@ class DropboxApp
         }
 
         return $responseBody;
-    }
-
-    /**
-     * Fetches the access token by refresh token
-     * @param string $refreshToken
-     * @return string
-     * @throws AppException
-     * @throws HttpException
-     * @throws LangException
-     */
-    private function fetchAccessTokenByRefreshToken(string $refreshToken): string
-    {
-        $params = [
-            'refresh_token' => $refreshToken,
-            'grant_type' => 'refresh_token',
-            'client_id' => $this->appKey,
-            'client_secret' => $this->appSecret
-        ];
-
-        $tokenUrl = self::AUTH_TOKEN_URL . '?' . http_build_query($params, '', '&');
-
-        $response = $this->sendRequest($tokenUrl);
-
-        return $response->access_token;
     }
 
     /**
