@@ -38,7 +38,7 @@ class GoogleDriveFileSystemAdapter implements FilesystemAdapterInterface
         return self::$instance;
     }
 
-    public function makeDirectory($dirname, $parentId = null): bool
+    public function makeDirectory(string $dirname, ?string $parentId = null): bool
     {
         try{
             $data = [
@@ -77,7 +77,7 @@ class GoogleDriveFileSystemAdapter implements FilesystemAdapterInterface
     /**
      * @inheritDoc
      */
-    public function put(string $filename, string $content, string $parentId = null)
+    public function put(string $filename, string $content, ?string $parentId = null)
     {
         try {
             if($this->isFile($filename)){
@@ -198,7 +198,7 @@ class GoogleDriveFileSystemAdapter implements FilesystemAdapterInterface
         try {
             $meta = (array)$this->googleDriveApp->getFileInfo($filename);
 
-            return $meta['kind'] === "drive#file" && $meta['mimeType'] != GoogleDriveApp::FOLDER_MIMETYPE;
+            return $meta['kind'] === GoogleDriveApp::DRIVE_FILE_KIND && $meta['mimeType'] != GoogleDriveApp::FOLDER_MIMETYPE;
         } catch (Exception $e) {
             return false;
         }
@@ -212,7 +212,7 @@ class GoogleDriveFileSystemAdapter implements FilesystemAdapterInterface
         try {
             $meta = (array)$this->googleDriveApp->getFileInfo($dirname);
 
-            return $meta['kind'] === "drive#file" && $meta['mimeType'] === GoogleDriveApp::FOLDER_MIMETYPE;
+            return $meta['kind'] === GoogleDriveApp::DRIVE_FILE_KIND && $meta['mimeType'] === GoogleDriveApp::FOLDER_MIMETYPE;
         } catch (Exception $e) {
             return false;
         }

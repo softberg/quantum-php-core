@@ -29,14 +29,14 @@ class GoogleDriveAppTest extends AppTestCase
 
     private $fileMetadataResponse = [
         "id" => "file1",
-        "kind" => "drive#file",
+        "kind" => GoogleDriveApp::DRIVE_FILE_KIND,
         "name" => "myFile",
         "mimeType" => "text/plain"
     ];
 
     private $fileContentResponse = 'Some plain text!';
     private $errorResponse = [
-        'code' => 401,
+        'code' => GoogleDriveApp::INVALID_TOKEN_ERROR_CODE,
         'message' => 'Invalid access token',
     ];
 
@@ -66,7 +66,7 @@ class GoogleDriveAppTest extends AppTestCase
     {
         $this->currentResponse = (object)$this->tokensGrantResponse;
 
-        $response = $this->googleDriveApp->getAndSaveAccessToken($this->authCode, $this->redirectUrl);
+        $response = $this->googleDriveApp->fetchTokens($this->authCode, $this->redirectUrl);
 
         $this->assertIsObject($response);
 

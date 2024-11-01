@@ -47,7 +47,7 @@ class LocalFileSystemAdapter implements FilesystemAdapterInterface
      * @param string|null $parentId
      * @inheritDoc
      */
-    public function makeDirectory(string $dirname, string $parentId = null): bool
+    public function makeDirectory(string $dirname, ?string $parentId = null): bool
     {
         return mkdir($dirname);
     }
@@ -96,7 +96,7 @@ class LocalFileSystemAdapter implements FilesystemAdapterInterface
      * @param string|null $parentId
      * @inheritDoc
      */
-    public function put(string $filename, string $content, string $parentId = null)
+    public function put(string $filename, string $content, ?string $parentId = null)
     {
         return file_put_contents($filename, $content, LOCK_EX);
     }

@@ -41,7 +41,7 @@ class GoogleDriveFileSystemAdapterTest extends AppTestCase
     {
         $this->assertFalse($this->fs->isDirectory($this->dirname));
 
-        self::$response['kind'] = 'drive#file';
+        self::$response['kind'] = GoogleDriveApp::DRIVE_FILE_KIND;
 
         $this->fs->makeDirectory($this->dirname);
 
@@ -58,7 +58,7 @@ class GoogleDriveFileSystemAdapterTest extends AppTestCase
     {
         $this->assertFalse($this->fs->isFile($this->filename));
 
-        self::$response['kind'] = 'drive#file';
+        self::$response['kind'] = GoogleDriveApp::DRIVE_FILE_KIND;
         self::$response['mimeType'] = 'text/plain';
 
         $this->fs->put($this->filename, $this->content);
@@ -78,7 +78,7 @@ class GoogleDriveFileSystemAdapterTest extends AppTestCase
 
     public function testGoogleDriveFileAppend()
     {
-        self::$response['kind'] = 'drive#file';
+        self::$response['kind'] = GoogleDriveApp::DRIVE_FILE_KIND;
         self::$response['mimeType'] = 'text/plain';
 
         $this->fs->put($this->filename, $this->content);
@@ -100,7 +100,7 @@ class GoogleDriveFileSystemAdapterTest extends AppTestCase
 
         $this->assertFalse($this->fs->exists($newFilename));
 
-        self::$response['kind'] = 'drive#file';
+        self::$response['kind'] = GoogleDriveApp::DRIVE_FILE_KIND;
         self::$response['mimeType'] = 'text/plain';
 
         $this->fs->rename($this->filename, $newFilename);
@@ -120,7 +120,7 @@ class GoogleDriveFileSystemAdapterTest extends AppTestCase
 
         $this->assertFalse($this->fs->exists($dirName . '/' . $this->filename));
 
-        self::$response['kind'] = 'drive#file';
+        self::$response['kind'] = GoogleDriveApp::DRIVE_FILE_KIND;
         self::$response['mimeType'] = 'text/plain';
 
         $this->fs->copy($this->filename, $dirName . '/' . $this->filename);
@@ -160,13 +160,13 @@ class GoogleDriveFileSystemAdapterTest extends AppTestCase
     {
         self::$response['files'] = [
             [
-                "kind" => "drive#file",
+                "kind" => GoogleDriveApp::DRIVE_FILE_KIND,
                 "mimeType" => 'application/vnd.google-apps.folder',
                 "name" => "empty",
                 "id" => "SziOaBdnr3oAAAAAAAAAWQ",
             ],
             [
-                "kind" => "drive#file",
+                "kind" => GoogleDriveApp::DRIVE_FILE_KIND,
                 "mimeType" => 'image/png',
                 "name" => "logo.png",
                 "id" => "SziOaBdnr3oAAAAAAAAAVQ",
@@ -174,7 +174,7 @@ class GoogleDriveFileSystemAdapterTest extends AppTestCase
                 "size" => 3455,
             ],
             [
-                "kind" => "drive#file",
+                "kind" => GoogleDriveApp::DRIVE_FILE_KIND,
                 "mimeType" => 'image/jpeg',
                 "name" => "Image 19.jpg",
                 "id" => "SziOaBdnr3oAAAAAAAAAVw",

@@ -39,6 +39,16 @@ class GoogleDriveApp
     const FOLDER_MIMETYPE = 'application/vnd.google-apps.folder';
 
     /**
+     * Kind/Type  of drive file
+     */
+    const DRIVE_FILE_KIND = 'drive#file';
+
+    /**
+     * Error code for invalid token
+     */
+    const INVALID_TOKEN_ERROR_CODE = 401;
+
+    /**
      * @var HttpClient
      */
     private $httpClient;
@@ -87,7 +97,7 @@ class GoogleDriveApp
         return self::AUTH_URL . '?' . http_build_query($params, '', '&');
     }
 
-    public function getAndSaveAccessToken($code, $redirectUrl = '', $byRefresh = false): object
+    public function fetchTokens($code, $redirectUrl = '', $byRefresh = false): object
     {
         $codeKey = $byRefresh ? 'refresh_token' : 'code';
 
@@ -127,14 +137,14 @@ class GoogleDriveApp
         if ($errors) {
             $code = $errors['code'];
 
-            if ($code == 401) {
+            if ($code == self::INVALID_TOKEN_ERROR_CODE) {
                 $prevUrl = $this->httpClient->url();
                 $prevData = $this->httpClient->getData();
                 $prevHeaders = $this->httpClient->getRequestHeaders();
 
                 $refreshToken = $this->tokenService->getRefreshToken();
 
-                $response = $this->getAndSaveAccessToken($refreshToken , '', true);
+                $response = $this->fetchTokens($refreshToken , '', true);
 
                 $prevHeaders['Authorization'] = 'Bearer ' . $response->access_token;
 
@@ -150,8 +160,10 @@ class GoogleDriveApp
 
     /**
      * Sends rpc request
-     * @param string $endpoint
+     * @param string $url
      * @param mixed $params
+     * @param string $method
+     * @param string $contentType
      * @return mixed|null
      * @throws Exception
      */

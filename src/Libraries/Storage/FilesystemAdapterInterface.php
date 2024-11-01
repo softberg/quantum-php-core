@@ -26,7 +26,7 @@ interface FilesystemAdapterInterface
      * @param string|null $parentId
      * @return bool
      */
-    public function makeDirectory(string $dirname, string $parentId = null): bool;
+    public function makeDirectory(string $dirname, ?string $parentId = null): bool;
 
     /**
      * Removes the directory
@@ -49,7 +49,7 @@ interface FilesystemAdapterInterface
      * @param string|null $parentId
      * @return int|false
      */
-    public function put(string $filename, string $content, string $parentId = null);
+    public function put(string $filename, string $content, ?string $parentId = null);
 
     /**
      * Appends the content at the end of the file

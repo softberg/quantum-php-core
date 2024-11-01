@@ -59,7 +59,7 @@ class DropboxFileSystemAdapter implements FilesystemAdapterInterface
     /**
      * @inheritDoc
      */
-    public function makeDirectory(string $dirname, string $parentId = null): bool
+    public function makeDirectory(string $dirname, ?string $parentId = null): bool
     {
         try {
             $this->dropboxApp->rpcRequest(DropboxApp::ENDPOINT_CREATE_FOLDER, $this->dropboxApp->path($dirname));
@@ -97,7 +97,7 @@ class DropboxFileSystemAdapter implements FilesystemAdapterInterface
     /**
      * @inheritDoc
      */
-    public function put(string $filename, string $content, string $parentId = null)
+    public function put(string $filename, string $content, ?string $parentId = null)
     {
         try {
             $response = $this->dropboxApp->contentRequest(DropboxApp::ENDPOINT_UPLOAD_FILE,
