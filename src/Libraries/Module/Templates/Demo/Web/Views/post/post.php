@@ -18,5 +18,5 @@ return '<div class="main-wrapper">
 	        <?php echo $pagination->getPagination(0, 5) ?>
         </div>
     <?php endif; ?>
-    <?php echo partial(\'post/partials/modal\', [\'item\' => t(\'common.the_post\')]) ?>
+    <?php echo partial(\'post/partials/modal\', [\'item\' => t(\'common.post\')]) ?>
 </div>';

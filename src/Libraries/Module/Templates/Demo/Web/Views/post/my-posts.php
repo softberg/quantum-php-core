@@ -14,7 +14,7 @@ return '<div class="main-wrapper posts-container">
         <h4 class="center-align grey-text"><?php _t(\'common.no_posts\') ?>... <?php _t(\'common.try_creating\') ?></h4>
     <?php endif; ?>
 
-    <?php echo partial(\'post/partials/modal\', [\'item\' => t(\'common.the_post\')]) ?>
+    <?php echo partial(\'post/partials/modal\', [\'item\' => t(\'common.post\')]) ?>
 
     <?php if (auth()->check()): ?>
         <div class="fixed-action-btn">
