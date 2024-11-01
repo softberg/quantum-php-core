@@ -11,7 +11,7 @@ return '<div class="post-form full-height">
                     <?php echo partial(\'partials/messages/error\') ?>
                 <?php endif; ?>
 
-                <?php echo partial(\'post/partials/modal\', [\'item\' => t(\'common.the_image\')]) ?>
+                <?php echo partial(\'post/partials/modal\', [\'item\' => t(\'common.image\')]) ?>
 
                 <div class="card teal accent-4">
                     <div class="card-content">

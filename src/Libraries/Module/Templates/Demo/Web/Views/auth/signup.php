@@ -33,13 +33,13 @@ return '<div class="main-wrapper teal accent-4">
                             </div>
                             <div class="row">
                                 <div class="input-field col s12">
-                                    <label class="auth-form-label"><?php _t(\'common.first_name\'); ?></label>
+                                    <label class="auth-form-label"><?php _t(\'common.firstname\'); ?></label>
                                     <input type="text" name="firstname" value="<?php echo old(\'firstname\') ?>" />
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="input-field col s12">
-                                    <label class="auth-form-label"><?php _t(\'common.last_name\'); ?></label>
+                                    <label class="auth-form-label"><?php _t(\'common.lastname\'); ?></label>
                                     <input type="text" name="lastname" value="<?php echo old(\'lastname\') ?>" />
                                 </div>
                             </div>
