@@ -12,21 +12,42 @@ class GoogleDriveAppTest extends AppTestCase
     use GoogleDriveTokenServiceTestCase;
     use HttpClientTestCase;
 
+    /**
+     * @var GoogleDriveApp
+     */
     private $googleDriveApp;
 
-    private $appKey = 'x0hwm8wy63rrynm';
+    /**
+     * @var string
+     */
+    private  $appKey = 'x0hwm8wy63rrynm';
 
+    /**
+     * @var string
+     */
     private $appSecret = 'xxx123yyy';
 
+    /**
+     * @var string
+     */
     private $authCode = 'd4k29ovC7-UAAAAAAAA3Q45go2mLgjMhJSeJNBOo-EA';
 
+    /**
+     * @var string
+     */
     private $redirectUrl = 'http://localhost/confirm';
 
+    /**
+     * @var array
+     */
     private $tokensGrantResponse = [
         "access_token" => "sl.BYEQ1_VadTz6nBU36WPBBVwokc3zWVMXGjcOKxV4Tadms8ZlEPM85aHVFa_k1sfjilCWOnl79RUncPZzJ3GhrqhLGIBFFRCH0rKMa_ZtcqkerJn-f5lu10Ki5PSw4fxYM80V4PL_",
         "refresh_token" => "-3S067m3M5kAAAAAAAAAAcQF8zVqFUuhK-PFkFqiOfFTgiazWj5NyU-1EGWIh0ZS"
     ];
 
+    /**
+     * @var array
+     */
     private $fileMetadataResponse = [
         "id" => "file1",
         "kind" => GoogleDriveApp::DRIVE_FILE_KIND,
@@ -34,7 +55,14 @@ class GoogleDriveAppTest extends AppTestCase
         "mimeType" => "text/plain"
     ];
 
+    /**
+     * @var string
+     */
     private $fileContentResponse = 'Some plain text!';
+
+    /**
+     * @var string
+     */
     private $errorResponse = [
         'code' => GoogleDriveApp::INVALID_TOKEN_ERROR_CODE,
         'message' => 'Invalid access token',

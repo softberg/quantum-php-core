@@ -2,8 +2,10 @@
 
 namespace Quantum\Libraries\Storage\Adapters\GoogleDrive;
 
+use Quantum\Exceptions\AppException;
+use Quantum\Exceptions\CryptorException;
+use Quantum\Exceptions\DatabaseException;
 use Quantum\Libraries\Curl\HttpClient;
-use Quantum\Http\Response;
 use Exception;
 
 class GoogleDriveApp
@@ -56,17 +58,17 @@ class GoogleDriveApp
     /**
      * @var string
      */
-    private $appKey = null;
+    private $appKey;
 
     /**
      * @var string
      */
-    private $appSecret = null;
+    private $appSecret;
 
     /**
      * @var TokenServiceInterface
      */
-    private $tokenService = null;
+    private $tokenService;
 
     /**
      * GoogleDriveApp constructor
@@ -83,7 +85,16 @@ class GoogleDriveApp
         $this->httpClient = $httpClient;
     }
 
-    public function getAuthUrl($redirectUrl, $accessType = "offline"): string
+    /**
+     * Gets Auth URL
+     * @param string $redirectUrl
+     * @param string $accessType
+     * @return object|null
+     * @throws AppException
+     * @throws CryptorException
+     * @throws DatabaseException
+     */
+    public function getAuthUrl(string $redirectUrl, string $accessType = "offline"): string
     {
         $params = [
             'client_id' => $this->appKey,
@@ -97,7 +108,15 @@ class GoogleDriveApp
         return self::AUTH_URL . '?' . http_build_query($params, '', '&');
     }
 
-    public function fetchTokens($code, $redirectUrl = '', $byRefresh = false): ?object
+    /**
+     * Fetch tokens
+     * @param string $code
+     * @param string $redirectUrl
+     * @param bool $byRefresh
+     * @return object|null
+     * @throws Exception
+     */
+    public function fetchTokens(string $code, string $redirectUrl = '', bool $byRefresh = false): ?object
     {
         $codeKey = $byRefresh ? 'refresh_token' : 'code';
 
@@ -112,16 +131,23 @@ class GoogleDriveApp
             $params['redirect_uri'] = $redirectUrl;
         }
 
-        $tokenUrl = self::AUTH_TOKEN_URL;
-
-        $response = $this->sendRequest($tokenUrl, $params);
+        $response = $this->sendRequest(self::AUTH_TOKEN_URL, $params);
 
         $this->tokenService->saveTokens($response->access_token, !$byRefresh ? $response->refresh_token : null);
 
         return $response;
     }
 
-    public function sendRequest(string $uri, $data = null, array $headers = [], $method = 'POST')
+    /**
+     * Sends rpc request
+     * @param string $uri
+     * @param null $data
+     * @param array $headers
+     * @param string $method
+     * @return mixed|null
+     * @throws Exception
+     */
+    public function sendRequest(string $uri, $data = null, array $headers = [], string $method = 'POST')
     {
         $this->httpClient
             ->createRequest($uri)
@@ -130,11 +156,9 @@ class GoogleDriveApp
             ->setHeaders($headers)
             ->start();
 
-
-        $errors = $this->httpClient->getErrors();
         $responseBody = $this->httpClient->getResponseBody();
 
-        if ($errors) {
+        if ($errors = $this->httpClient->getErrors()) {
             $code = $errors['code'];
 
             if ($code == self::INVALID_TOKEN_ERROR_CODE) {
@@ -167,7 +191,7 @@ class GoogleDriveApp
      * @return mixed|null
      * @throws Exception
      */
-    public function rpcRequest(string $url, $params = [], $method = 'POST', $contentType = 'application/json')
+    public function rpcRequest(string $url, $params = [], string $method = 'POST', string $contentType = 'application/json')
     {
         try {
             $headers = [
@@ -184,11 +208,11 @@ class GoogleDriveApp
      * Gets file information
      * @param string $fileId
      * @param bool $media
-     * @param mixed $params
+     * @param array $params
      * @return mixed|null
      * @throws Exception
      */
-    public function getFileInfo(string $fileId, $media = false, $params = []){
+    public function getFileInfo(string $fileId, bool $media = false, array $params = []){
         $queryParam = $media ? '?alt=media' : '?fields=*';
         return $this->rpcRequest(GoogleDriveApp::FILE_METADATA_URL . '/' . $fileId . $queryParam, $params, 'GET');
     }

@@ -13,6 +13,9 @@ class GoogleDriveFileSystemAdapter implements FilesystemAdapterInterface
      */
     private static $instance = null;
 
+    /**
+     * @var GoogleDriveApp
+     */
     private $googleDriveApp;
 
     /**
@@ -38,6 +41,9 @@ class GoogleDriveFileSystemAdapter implements FilesystemAdapterInterface
         return self::$instance;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function makeDirectory(string $dirname, ?string $parentId = null): bool
     {
         try{

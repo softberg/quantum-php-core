@@ -9,10 +9,30 @@ use Mockery;
 
 class DropboxFileSystemAdapterTest extends AppTestCase
 {
+
+    /**
+     * @var DropboxFileSystemAdapter
+     */
     private $fs;
+
+    /**
+     * @var string
+     */
     private $dirname = 'common';
+
+    /**
+     * @var string
+     */
     private $filename = 'sample.txt';
+
+    /**
+     * @var string
+     */
     private $content = 'This file was created via dropbox api';
+
+    /**
+     * @var array
+     */
     private static $response = [];
 
     public function setUp(): void

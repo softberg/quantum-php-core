@@ -9,10 +9,35 @@ use Mockery;
 
 class GoogleDriveFileSystemAdapterTest extends AppTestCase
 {
+
+    /**
+     * @var GoogleDriveFileSystemAdapter
+     */
     private $fs;
+
+    /**
+     * @var string
+     */
     private $dirname = 'common';
+
+    /**
+     * @var string
+     */
     private $filename = 'sample.txt';
+
+    /**
+     * @var string
+     */
+    private $newFilename = 'new_name.txt';
+
+    /**
+     * @var string
+     */
     private $content = 'This file was created via dropbox api';
+
+    /**
+     * @var array
+     */
     private static $response = [];
 
     public function setUp(): void
@@ -96,40 +121,36 @@ class GoogleDriveFileSystemAdapterTest extends AppTestCase
     {
         $this->fs->put($this->filename, $this->content);
 
-        $newFilename = 'new_name.txt';
-
-        $this->assertFalse($this->fs->exists($newFilename));
+        $this->assertFalse($this->fs->exists($this->newFilename));
 
         self::$response['kind'] = GoogleDriveApp::DRIVE_FILE_KIND;
         self::$response['mimeType'] = 'text/plain';
 
-        $this->fs->rename($this->filename, $newFilename);
+        $this->fs->rename($this->filename, $this->newFilename);
 
-        $this->assertTrue($this->fs->exists($newFilename));
+        $this->assertTrue($this->fs->exists($this->newFilename));
 
-        $this->fs->remove($newFilename);
+        $this->fs->remove($this->newFilename);
     }
 
     public function testGoogleDriveFileCopy()
     {
-        $dirName = 'testing';
-
-        $this->fs->makeDirectory($dirName);
+        $this->fs->makeDirectory($this->dirname);
 
         $this->fs->put($this->filename, $this->content);
 
-        $this->assertFalse($this->fs->exists($dirName . '/' . $this->filename));
+        $this->assertFalse($this->fs->exists($this->dirname . '/' . $this->filename));
 
         self::$response['kind'] = GoogleDriveApp::DRIVE_FILE_KIND;
         self::$response['mimeType'] = 'text/plain';
 
-        $this->fs->copy($this->filename, $dirName . '/' . $this->filename);
+        $this->fs->copy($this->filename, $this->dirname . '/' . $this->filename);
 
-        $this->assertTrue($this->fs->exists($dirName . '/' . $this->filename));
+        $this->assertTrue($this->fs->exists($this->dirname . '/' . $this->filename));
 
-        $this->fs->remove($dirName . '/' . $this->filename);
+        $this->fs->remove($this->dirname . '/' . $this->filename);
 
-        $this->fs->removeDirectory($dirName);
+        $this->fs->removeDirectory($this->dirname);
     }
 
     public function testGoogleDriveFileSize()
