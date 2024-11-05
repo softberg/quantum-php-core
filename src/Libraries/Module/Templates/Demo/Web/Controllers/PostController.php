@@ -41,7 +41,7 @@ class PostController extends BaseController
     const CURRENT_PAGE = 1;
     
     /**
-     * Auth layout
+     * Main layout
      */
     const LAYOUT = \'layouts/main\';
     

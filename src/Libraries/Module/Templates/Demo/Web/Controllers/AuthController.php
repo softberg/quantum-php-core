@@ -29,7 +29,7 @@ class AuthController extends BaseController
 {
 
     /**
-     * Auth layout
+     * Main layout
      */
     const LAYOUT = \'layouts/main\';
 

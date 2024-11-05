@@ -11,6 +11,12 @@ use Quantum\Http\Response;
 
 class MainController extends QtController
 {
+
+    /**
+     * Main layout
+     */
+    const LAYOUT = \'layouts/main\';
+
     /**
      * Works before an action
      * @param ViewFactory $view
@@ -32,9 +38,7 @@ class MainController extends QtController
      * @param ViewFactory $view
      */
     public function index(Response $response, ViewFactory $view)
-    {
-        $view->setLayout(\'layouts' . DS . 'main\');
-        
+    {   
         $view->setParams([
             \'title\' => config()->get(\'app_name\'),
         ]);
