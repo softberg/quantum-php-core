@@ -9,6 +9,11 @@ use Quantum\Loader\Setup;
 class ViewCacheTest extends AppTestCase
 {
 	private $viewCache;
+
+	private $route = '/current-route';
+
+	private $sessionId = 'session-id-123';
+
 	public function setUp():void
 	{
 		parent::setUp();
@@ -20,9 +25,9 @@ class ViewCacheTest extends AppTestCase
 
 	public function testStoreViewCache()
 	{
-		$this->viewCache->set('/current-route', 'test html content', 'session-id-123', 100);
+		$this->viewCache->set($this->route, 'test html content', $this->sessionId, 100);
 
-		$viewCache = $this->viewCache->get('/current-route', 'session-id-123');
+		$viewCache = $this->viewCache->get($this->route, $this->sessionId);
 
 		$this->assertIsString($viewCache);
 		$this->assertEquals('test html content', $viewCache);
@@ -30,8 +35,8 @@ class ViewCacheTest extends AppTestCase
 
 	public function testGetViewCache()
 	{
-		$this->viewCache->set('/current-route', 'test html content', 'session-id-123', 100);
-		$viewCache = $this->viewCache->get('/current-route', 'session-id-123');
+		$this->viewCache->set($this->route, 'test html content', $this->sessionId, 100);
+		$viewCache = $this->viewCache->get($this->route, $this->sessionId);
 
 		$this->assertIsString($viewCache);
 		$this->assertEquals('test html content', $viewCache);
@@ -39,27 +44,27 @@ class ViewCacheTest extends AppTestCase
 
 	public function testExistsViewCache()
 	{
-		$this->viewCache->set('/current-route', 'test html content', 'session-id-123', 100);
+		$this->viewCache->set($this->route, 'test html content', $this->sessionId, 100);
 
-		$this->assertIsBool($this->viewCache->exists('/current-route', 'session-id-123'));
-		$this->assertTrue($this->viewCache->exists('/current-route', 'session-id-123'));
+		$this->assertIsBool($this->viewCache->exists($this->route, $this->sessionId));
+		$this->assertTrue($this->viewCache->exists($this->route, $this->sessionId));
 	}
 
 	public function testDeleteViewCache()
 	{
-		$this->viewCache->set('/current-route', 'test html content', 'session-id-123', 100);
+		$this->viewCache->set($this->route, 'test html content', $this->sessionId, 100);
 
-		$this->assertIsBool($this->viewCache->exists('/current-route', 'session-id-123'));
-		$this->assertTrue($this->viewCache->exists('/current-route', 'session-id-123'));
+		$this->assertIsBool($this->viewCache->exists($this->route, $this->sessionId));
+		$this->assertTrue($this->viewCache->exists($this->route, $this->sessionId));
 
-		$this->viewCache->delete('/current-route', 'session-id-123');
+		$this->viewCache->delete($this->route, $this->sessionId);
 
-		$this->assertIsBool($this->viewCache->exists('/current-route', 'session-id-123'));
-		$this->assertFalse($this->viewCache->exists('/current-route', 'session-id-123'));
+		$this->assertIsBool($this->viewCache->exists($this->route, $this->sessionId));
+		$this->assertFalse($this->viewCache->exists($this->route, $this->sessionId));
 	}
 
 	public function tearDown(): void
 	{
-		$this->viewCache->delete('/current-route', 'session-id-123');
+		$this->viewCache->delete($this->route, $this->sessionId);
 	}
 }
