@@ -16,6 +16,7 @@ namespace Quantum\Router;
 
 use Quantum\Exceptions\RouteException;
 use Closure;
+use Quantum\Loader\Setup;
 
 /**
  * Route Class
@@ -75,6 +76,10 @@ class Route
         $this->virtualRoutes['*'] = [];
         $this->moduleName = key($module);
         $this->moduleOptions = $module[key($module)];
+
+		if (config()->has('resource_cache') && !config()->has('view_cache')){
+			config()->import(new Setup('config', 'view_cache'));
+		}
     }
 
     /**
@@ -92,6 +97,13 @@ class Route
             'method' => $method,
             'module' => $this->moduleName
         ];
+
+	    if ($this->canSetCacheToCurrentRoute()){
+		    $this->currentRoute['cache'] = [
+			    'shouldCache' => true,
+			    'ttl' => config()->get('view_cache.ttl', 300),
+		    ];
+	    }
 
         if (is_callable($params[0])) {
             $this->currentRoute['callback'] = $params[0];
@@ -184,6 +196,41 @@ class Route
         return $this;
     }
 
+	public function cacheable(bool $shouldCache, int $ttl = null): Route
+	{
+		if (!$ttl) {
+			$ttl = config()->get('view_cache.ttl', 300);
+		}
+
+		if (isset($_COOKIE['PHPSESSID'])){
+			if (!$this->isGroup){
+				end($this->virtualRoutes['*']);
+				$lastKey = key($this->virtualRoutes['*']);
+
+				if (!$shouldCache && key_exists('cache', $this->virtualRoutes['*'][$lastKey])) {
+					unset($this->virtualRoutes['*'][$lastKey]['cache']);
+				}else{
+					$this->assignCacheToCurrentRoute($this->virtualRoutes['*'][$lastKey], $shouldCache, $ttl);
+				}
+
+				return $this;
+			}
+
+			end($this->virtualRoutes);
+			$lastKeyOfFirstRound = key($this->virtualRoutes);
+
+			foreach ($this->virtualRoutes[$lastKeyOfFirstRound] as &$route) {
+				if (!$shouldCache && key_exists('cache', $route)) {
+					unset($route['cache']);
+				}else{
+					$this->assignCacheToCurrentRoute($route, $shouldCache, $ttl);
+				}
+			}
+		}
+
+		return $this;
+	}
+
     /**
      * Sets a unique name for a route
      * @param string $name
@@ -256,5 +303,23 @@ class Route
             }
         }
     }
+
+	private function assignCacheToCurrentRoute(array &$route, bool $shouldCache, int $ttl)
+	{
+		$route['cache'] = [
+			'shouldCache' => $shouldCache,
+			'ttl' => $ttl,
+		];
+	}
+
+	private function canSetCacheToCurrentRoute(): bool
+	{
+		return isset($_COOKIE['PHPSESSID']) &&
+			config()->has('resource_cache') &&
+			config()->get('resource_cache') &&
+			!empty($this->moduleOptions) &&
+			isset($this->moduleOptions['cacheable']) &&
+			$this->moduleOptions['cacheable'];
+	}
 
 }

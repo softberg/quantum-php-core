@@ -5,5 +5,6 @@ return [
     'lang_default' => 'en',
     'lang_segment' => 1,
     'debug' => 'DEBUG',
-    'test' => 'Testing'
+    'test' => 'Testing',
+	'resource_cache' => true,
 ];

@@ -14,6 +14,7 @@
 
 namespace Quantum\Mvc;
 
+use Quantum\Libraries\ResourceCache\ViewCache;
 use Quantum\Exceptions\ControllerException;
 use Quantum\Exceptions\MiddlewareException;
 use Quantum\Libraries\Storage\FileSystem;
@@ -21,11 +22,12 @@ use Quantum\Middleware\MiddlewareManager;
 use Quantum\Exceptions\CryptorException;
 use Quantum\Exceptions\CsrfException;
 use Quantum\Exceptions\DiException;
+use Quantum\Router\RouteController;
 use Quantum\Libraries\Csrf\Csrf;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
-use Quantum\Di\Di;
 use ReflectionException;
+use Quantum\Di\Di;
 
 /**
  * Class MvcManager
@@ -50,10 +52,20 @@ class MvcManager
         if (current_middlewares()) {
             list($request, $response) = (new MiddlewareManager())->applyMiddlewares($request, $response);
         }
+		
+	    $callback = route_callback();
 
-        $callback = route_callback();
+		$currentRoute = RouteController::getCurrentRoute();
 
-        if ($callback) {
+		if (isset($currentRoute['cache']) &&
+			(new ViewCache())->exists($currentRoute['uri'], $_COOKIE['PHPSESSID'])
+		){
+			call_user_func_array(function () use ($currentRoute, &$response) {
+				$content = (new ViewCache())->get($currentRoute['uri'], $_COOKIE['PHPSESSID']);
+				$response->html($content);
+			}, []);
+
+		}elseif ($callback) {
             call_user_func_array($callback, self::getArgs($callback));
         } else {
             $controller = self::getController();

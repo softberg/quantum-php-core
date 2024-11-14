@@ -14,11 +14,13 @@
 
 namespace Quantum\Mvc;
 
+use Quantum\Libraries\ResourceCache\ViewCache;
 use Quantum\Libraries\Asset\AssetManager;
 use Quantum\Exceptions\AssetException;
 use Quantum\Exceptions\LangException;
 use Quantum\Exceptions\ViewException;
 use Quantum\Renderer\DefaultRenderer;
+use Quantum\Router\RouteController;
 use Quantum\Exceptions\DiException;
 use Quantum\Renderer\TwigRenderer;
 use Quantum\Factory\ViewFactory;
@@ -173,7 +175,15 @@ class QtView
             AssetManager::getInstance()->register($this->assets);
         }
 
-        return $this->renderFile($this->layout);
+		$content = $this->renderFile($this->layout);
+
+	    $currentRoute = RouteController::getCurrentRoute();
+
+	    if (isset($currentRoute['cache'])){
+		    (new ViewCache())->set($currentRoute['uri'], $content, $_COOKIE['PHPSESSID'], $currentRoute['cache']['ttl']);
+	    }
+
+        return $content;
     }
 
     /**
@@ -265,5 +275,4 @@ class QtView
             $value = htmlspecialchars($value, ENT_NOQUOTES, 'UTF-8');
         }
     }
-
 }
