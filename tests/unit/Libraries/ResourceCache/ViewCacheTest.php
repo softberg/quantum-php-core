@@ -14,6 +14,10 @@ class ViewCacheTest extends AppTestCase
 
 	private $sessionId = 'session-id-123';
 
+	private $content = 'test html content';
+
+	private $ttl = 100;
+
 	public function setUp():void
 	{
 		parent::setUp();
@@ -25,26 +29,26 @@ class ViewCacheTest extends AppTestCase
 
 	public function testStoreViewCache()
 	{
-		$this->viewCache->set($this->route, 'test html content', $this->sessionId, 100);
+		$this->viewCache->set($this->route, $this->content, $this->sessionId, $this->ttl);
 
 		$viewCache = $this->viewCache->get($this->route, $this->sessionId);
 
 		$this->assertIsString($viewCache);
-		$this->assertEquals('test html content', $viewCache);
+		$this->assertEquals($this->content, $viewCache);
 	}
 
 	public function testGetViewCache()
 	{
-		$this->viewCache->set($this->route, 'test html content', $this->sessionId, 100);
+		$this->viewCache->set($this->route, $this->content, $this->sessionId, $this->ttl);
 		$viewCache = $this->viewCache->get($this->route, $this->sessionId);
 
 		$this->assertIsString($viewCache);
-		$this->assertEquals('test html content', $viewCache);
+		$this->assertEquals($this->content, $viewCache);
 	}
 
 	public function testExistsViewCache()
 	{
-		$this->viewCache->set($this->route, 'test html content', $this->sessionId, 100);
+		$this->viewCache->set($this->route, $this->content, $this->sessionId, $this->ttl);
 
 		$this->assertIsBool($this->viewCache->exists($this->route, $this->sessionId));
 		$this->assertTrue($this->viewCache->exists($this->route, $this->sessionId));
@@ -52,7 +56,7 @@ class ViewCacheTest extends AppTestCase
 
 	public function testDeleteViewCache()
 	{
-		$this->viewCache->set($this->route, 'test html content', $this->sessionId, 100);
+		$this->viewCache->set($this->route, $this->content, $this->sessionId, $this->ttl);
 
 		$this->assertIsBool($this->viewCache->exists($this->route, $this->sessionId));
 		$this->assertTrue($this->viewCache->exists($this->route, $this->sessionId));
