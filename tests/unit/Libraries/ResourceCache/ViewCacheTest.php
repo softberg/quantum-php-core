@@ -24,6 +24,7 @@ class ViewCacheTest extends AppTestCase
 		if (!config()->has('view_cache')){
 			config()->import(new Setup('config', 'view_cache'));
 		}
+		config()->set('resource_cache', true);
 		$this->viewCache = new ViewCache();
 	}
 

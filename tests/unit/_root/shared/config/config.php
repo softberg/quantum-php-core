@@ -6,5 +6,4 @@ return [
     'lang_segment' => 1,
     'debug' => 'DEBUG',
     'test' => 'Testing',
-	'resource_cache' => true,
 ];

@@ -314,9 +314,9 @@ class Route
 
 	private function canSetCacheToCurrentRoute(): bool
 	{
-		return !empty(session()->getId()) &&
-			config()->get('resource_cache') &&
+		return config()->get('resource_cache') &&
+			!empty(session()->getId()) &&
+			!empty($this->moduleOptions) &&
 			!empty($this->moduleOptions['cacheable']);
 	}
-
 }
