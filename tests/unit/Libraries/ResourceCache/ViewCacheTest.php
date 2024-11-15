@@ -29,9 +29,9 @@ class ViewCacheTest extends AppTestCase
 
 	public function testStoreViewCache()
 	{
-		$this->viewCache->set($this->route, $this->content, $this->sessionId, $this->ttl);
+		$this->viewCache->set($this->route, $this->content, $this->sessionId);
 
-		$viewCache = $this->viewCache->get($this->route, $this->sessionId);
+		$viewCache = $this->viewCache->get($this->route, $this->sessionId, $this->ttl);
 
 		$this->assertIsString($viewCache);
 		$this->assertEquals($this->content, $viewCache);
@@ -39,8 +39,8 @@ class ViewCacheTest extends AppTestCase
 
 	public function testGetViewCache()
 	{
-		$this->viewCache->set($this->route, $this->content, $this->sessionId, $this->ttl);
-		$viewCache = $this->viewCache->get($this->route, $this->sessionId);
+		$this->viewCache->set($this->route, $this->content, $this->sessionId);
+		$viewCache = $this->viewCache->get($this->route, $this->sessionId, $this->ttl);
 
 		$this->assertIsString($viewCache);
 		$this->assertEquals($this->content, $viewCache);
@@ -48,23 +48,23 @@ class ViewCacheTest extends AppTestCase
 
 	public function testExistsViewCache()
 	{
-		$this->viewCache->set($this->route, $this->content, $this->sessionId, $this->ttl);
+		$this->viewCache->set($this->route, $this->content, $this->sessionId);
 
-		$this->assertIsBool($this->viewCache->exists($this->route, $this->sessionId));
-		$this->assertTrue($this->viewCache->exists($this->route, $this->sessionId));
+		$this->assertIsBool($this->viewCache->exists($this->route, $this->sessionId, $this->ttl));
+		$this->assertTrue($this->viewCache->exists($this->route, $this->sessionId, $this->ttl));
 	}
 
 	public function testDeleteViewCache()
 	{
-		$this->viewCache->set($this->route, $this->content, $this->sessionId, $this->ttl);
+		$this->viewCache->set($this->route, $this->content, $this->sessionId);
 
-		$this->assertIsBool($this->viewCache->exists($this->route, $this->sessionId));
-		$this->assertTrue($this->viewCache->exists($this->route, $this->sessionId));
+		$this->assertIsBool($this->viewCache->exists($this->route, $this->sessionId, $this->ttl));
+		$this->assertTrue($this->viewCache->exists($this->route, $this->sessionId, $this->ttl));
 
 		$this->viewCache->delete($this->route, $this->sessionId);
 
-		$this->assertIsBool($this->viewCache->exists($this->route, $this->sessionId));
-		$this->assertFalse($this->viewCache->exists($this->route, $this->sessionId));
+		$this->assertIsBool($this->viewCache->exists($this->route, $this->sessionId, $this->ttl));
+		$this->assertFalse($this->viewCache->exists($this->route, $this->sessionId, $this->ttl));
 	}
 
 	public function tearDown(): void

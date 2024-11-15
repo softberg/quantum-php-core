@@ -16,11 +16,13 @@ namespace Quantum\Mvc;
 
 use Quantum\Libraries\ResourceCache\ViewCache;
 use Quantum\Libraries\Asset\AssetManager;
+use Quantum\Exceptions\DatabaseException;
+use Quantum\Exceptions\SessionException;
+use Quantum\Exceptions\ConfigException;
 use Quantum\Exceptions\AssetException;
 use Quantum\Exceptions\LangException;
 use Quantum\Exceptions\ViewException;
 use Quantum\Renderer\DefaultRenderer;
-use Quantum\Router\RouteController;
 use Quantum\Exceptions\DiException;
 use Quantum\Renderer\TwigRenderer;
 use Quantum\Factory\ViewFactory;
@@ -141,20 +143,22 @@ class QtView
         $this->params = [];
     }
 
-    /**
-     * Renders the view
-     * @param string $view
-     * @param array $params
-     * @return string|null
-     * @throws DiException
-     * @throws LoaderError
-     * @throws ReflectionException
-     * @throws RuntimeError
-     * @throws ViewException
-     * @throws AssetException
-     * @throws LangException
-     * @throws SyntaxError
-     */
+	/**
+	 * @param string $view
+	 * @param array $params
+	 * @return string|null
+	 * @throws AssetException
+	 * @throws DiException
+	 * @throws LangException
+	 * @throws LoaderError
+	 * @throws ReflectionException
+	 * @throws RuntimeError
+	 * @throws SyntaxError
+	 * @throws ViewException
+	 * @throws ConfigException
+	 * @throws DatabaseException
+	 * @throws SessionException
+	 */
     public function render(string $view, array $params = []): ?string
     {
         if (!$this->layout) {
@@ -177,10 +181,8 @@ class QtView
 
 		$content = $this->renderFile($this->layout);
 
-	    $currentRoute = RouteController::getCurrentRoute();
-
-	    if (isset($currentRoute['cache'])){
-		    (new ViewCache())->set($currentRoute['uri'], $content, $_COOKIE['PHPSESSID'], $currentRoute['cache']['ttl']);
+	    if (route_cache()){
+		    (new ViewCache())->set(route_uri(), $content, session()->getId());
 	    }
 
         return $content;

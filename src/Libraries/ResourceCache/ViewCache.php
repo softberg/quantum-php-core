@@ -2,8 +2,12 @@
 
 namespace Quantum\Libraries\ResourceCache;
 
+use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Exceptions\ConfigException;
+use Quantum\Exceptions\DiException;
+use ReflectionException;
 use voku\helper\HtmlMin;
+use Quantum\Di\Di;
 
 class ViewCache
 {
@@ -18,25 +22,34 @@ class ViewCache
 	private $mimeType = '.tmp';
 
 	/**
+	 * @var object
+	 */
+	private static $fs;
+
+	/**
 	 * @param bool $fromCommand
 	 * @throws ConfigException
+	 * @throws DiException
+	 * @throws ReflectionException
 	 */
 	public function __construct(bool $fromCommand = false)
 	{
-		if (!config()->has('view_cache') && !$fromCommand){
+		self::$fs = Di::get(FileSystem::class);
+
+		if (!config()->has('view_cache') && !$fromCommand) {
 			throw ConfigException::configCollision('view_cache');
 		}
 
 		$configCacheDir = config()->get('view_cache.cache_dir', 'cache');
 		$module = strtolower(current_module());
 
-		$this->cacheDir = base_dir() . DS . $configCacheDir . DS . 'views/';
+		$this->cacheDir = base_dir() . DS . $configCacheDir . DS . 'views' . DS;
 
-		if ($module){
-			$this->cacheDir = base_dir() . DS . $configCacheDir . DS . 'views' . DS . $module . '/';
+		if ($module) {
+			$this->cacheDir = base_dir() . DS . $configCacheDir . DS . 'views' . DS . $module . DS;
 		}
-		
-		if (!is_dir($this->cacheDir) && !$fromCommand) {
+
+		if (!self::$fs->isDirectory($this->cacheDir) && !$fromCommand) {
 			mkdir($this->cacheDir, 0777, true);
 		}
 	}
@@ -45,44 +58,38 @@ class ViewCache
 	 * @param string $key
 	 * @param string $content
 	 * @param string $sessionId
-	 * @param int $ttl
 	 * @return void
 	 */
-	public function set(string $key, string $content, string $sessionId, int $ttl = 300): void
+	public function set(string $key, string $content, string $sessionId): void
 	{
 		if (config()->has('view_cache.minify')) {
 			$content = $this->minify($content);
 		}
 
 		$cacheFile = $this->getCacheFile($key, $sessionId);
-
-		$data = [
-			'content' => $content,
-			'expires_at' => time() + $ttl,
-		];
-
-		file_put_contents($cacheFile, serialize($data));
+		file_put_contents($cacheFile, $content);
 	}
 
 	/**
 	 * @param string $key
 	 * @param string $sessionId
+	 * @param int $ttl
 	 * @return mixed|null
 	 */
-	public function get(string $key, string $sessionId): ?string
+	public function get(string $key, string $sessionId, int $ttl): ?string
 	{
 		$cacheFile = $this->getCacheFile($key, $sessionId);
 		if (!file_exists($cacheFile)) {
 			return null;
 		}
 
-		$data = unserialize(file_get_contents($cacheFile));
-		if (time() > $data['expires_at']) {
-			unlink($cacheFile);
+		$data = file_get_contents($cacheFile);
+		if (time() > (self::$fs->lastModified($cacheFile) + $ttl)) {
+			self::$fs->remove($cacheFile);
 			return null;
 		}
 
-		return $data['content'];
+		return $data;
 	}
 
 	/**
@@ -94,27 +101,26 @@ class ViewCache
 	{
 		$cacheFile = $this->getCacheFile($key, $sessionId);
 		if (file_exists($cacheFile)) {
-			unlink($cacheFile);
+			self::$fs->remove($cacheFile);
 		}
 	}
 
 	/**
 	 * @param string $key
 	 * @param string $sessionId
+	 * @param int $ttl
 	 * @return bool
 	 */
-	public function exists(string $key, string $sessionId): bool
-	{		
-		$cacheFile = $this->getCacheFile($key, $sessionId);
+	public static function exists(string $key, string $sessionId, int $ttl): bool
+	{
+		$cacheFile = (new self())->getCacheFile($key, $sessionId);
 
 		if (!file_exists($cacheFile)) {
 			return false;
 		}
 
-		$data = unserialize(file_get_contents($cacheFile));
-
-		if (time() > $data['expires_at']) {
-			unlink($cacheFile);
+		if (time() > (self::$fs->lastModified($cacheFile) + $ttl)) {
+			self::$fs->remove($cacheFile);
 			return false;
 		}
 

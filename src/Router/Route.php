@@ -202,7 +202,7 @@ class Route
 			$ttl = config()->get('view_cache.ttl', 300);
 		}
 
-		if (isset($_COOKIE['PHPSESSID'])){
+		if (!empty(session()->getId())){
 			if (!$this->isGroup){
 				end($this->virtualRoutes['*']);
 				$lastKey = key($this->virtualRoutes['*']);
@@ -314,12 +314,9 @@ class Route
 
 	private function canSetCacheToCurrentRoute(): bool
 	{
-		return isset($_COOKIE['PHPSESSID']) &&
-			config()->has('resource_cache') &&
+		return !empty(session()->getId()) &&
 			config()->get('resource_cache') &&
-			!empty($this->moduleOptions) &&
-			isset($this->moduleOptions['cacheable']) &&
-			$this->moduleOptions['cacheable'];
+			!empty($this->moduleOptions['cacheable']);
 	}
 
 }

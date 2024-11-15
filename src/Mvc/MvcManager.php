@@ -18,11 +18,14 @@ use Quantum\Libraries\ResourceCache\ViewCache;
 use Quantum\Exceptions\ControllerException;
 use Quantum\Exceptions\MiddlewareException;
 use Quantum\Libraries\Storage\FileSystem;
+use Quantum\Exceptions\DatabaseException;
 use Quantum\Middleware\MiddlewareManager;
+use Quantum\Exceptions\SessionException;
 use Quantum\Exceptions\CryptorException;
+use Quantum\Exceptions\ConfigException;
+use Quantum\Exceptions\LangException;
 use Quantum\Exceptions\CsrfException;
 use Quantum\Exceptions\DiException;
-use Quantum\Router\RouteController;
 use Quantum\Libraries\Csrf\Csrf;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
@@ -36,123 +39,125 @@ use Quantum\Di\Di;
 class MvcManager
 {
 
-    /**
-     * Handles the request
-     * @param Request $request
-     * @param Response $response
-     * @throws MiddlewareException
-     * @throws ControllerException
-     * @throws CryptorException
-     * @throws CsrfException
-     * @throws DiException
-     * @throws ReflectionException
-     */
-    public static function handle(Request $request, Response $response)
-    {
-        if (current_middlewares()) {
-            list($request, $response) = (new MiddlewareManager())->applyMiddlewares($request, $response);
-        }
-		
-	    $callback = route_callback();
+	/**
+	 * @param Request $request
+	 * @param Response $response
+	 * @return void
+	 * @throws ConfigException
+	 * @throws ControllerException
+	 * @throws CryptorException
+	 * @throws CsrfException
+	 * @throws DiException
+	 * @throws MiddlewareException
+	 * @throws ReflectionException
+	 * @throws DatabaseException
+	 * @throws LangException
+	 * @throws SessionException
+	 */
+	public static function handle(Request $request, Response $response)
+	{
+		if (current_middlewares()) {
+			list($request, $response) = (new MiddlewareManager())->applyMiddlewares($request, $response);
+		}
 
-		$currentRoute = RouteController::getCurrentRoute();
+		$callback = route_callback();
 
-		if (isset($currentRoute['cache']) &&
-			(new ViewCache())->exists($currentRoute['uri'], $_COOKIE['PHPSESSID'])
+		if (route_cache() &&
+			ViewCache::exists(route_uri(), session()->getId(), route_cache()['ttl'])
 		){
-			call_user_func_array(function () use ($currentRoute, &$response) {
-				$content = (new ViewCache())->get($currentRoute['uri'], $_COOKIE['PHPSESSID']);
+			call_user_func_array(function () use (&$response) {
+				$content = (new ViewCache())->get(route_uri(), session()->getId(), route_cache()['ttl']);
 				$response->html($content);
 			}, []);
 
 		}elseif ($callback) {
-            call_user_func_array($callback, self::getArgs($callback));
-        } else {
-            $controller = self::getController();
-            $action = self::getAction($controller);
+			call_user_func_array($callback, self::getArgs($callback));
+		} else {
+			$controller = self::getController();
+			$action = self::getAction($controller);
 
-            if ($controller->csrfVerification && in_array($request->getMethod(), Csrf::METHODS)) {
-                csrf()->checkToken($request);
-            }
+			if ($controller->csrfVerification && in_array($request->getMethod(), Csrf::METHODS)) {
+				csrf()->checkToken($request);
+			}
 
-            if (method_exists($controller, '__before')) {
-                call_user_func_array([$controller, '__before'], self::getArgs([$controller, '__before']));
-            }
+			if (method_exists($controller, '__before')) {
+				call_user_func_array([$controller, '__before'], self::getArgs([$controller, '__before']));
+			}
 
-            call_user_func_array([$controller, $action], self::getArgs([$controller, $action]));
+			call_user_func_array([$controller, $action], self::getArgs([$controller, $action]));
 
-            if (method_exists($controller, '__after')) {
-                call_user_func_array([$controller, '__after'], self::getArgs([$controller, '__after']));
-            }
-        }
-    }
+			if (method_exists($controller, '__after')) {
+				call_user_func_array([$controller, '__after'], self::getArgs([$controller, '__after']));
+			}
+		}
+	}
 
-    /**
-     * Get Controller
-     * @return QtController
-     * @throws DiException
-     * @throws ReflectionException
-     * @throws ControllerException
-     */
-    private static function getController(): QtController
-    {
-        $fs = Di::get(FileSystem::class);
+	/**
+	 * Get Controller
+	 * @return QtController
+	 * @throws DiException
+	 * @throws ReflectionException
+	 * @throws ControllerException
+	 */
+	private static function getController(): QtController
+	{
+		$fs = Di::get(FileSystem::class);
 
-        $controllerPath = modules_dir() . DS . current_module() . DS . 'Controllers' . DS . current_controller() . '.php';
+		$controllerPath = modules_dir() . DS . current_module() . DS . 'Controllers' . DS . current_controller() . '.php';
 
-        if (!$fs->exists($controllerPath)) {
-            throw ControllerException::controllerNotFound(current_controller());
-        }
+		if (!$fs->exists($controllerPath)) {
+			throw ControllerException::controllerNotFound(current_controller());
+		}
 
-        require_once $controllerPath;
+		require_once $controllerPath;
 
-        $controllerClass = '\\Modules\\' . current_module() . '\\Controllers\\' . current_controller();
+		$controllerClass = '\\Modules\\' . current_module() . '\\Controllers\\' . current_controller();
 
-        if (!class_exists($controllerClass, false)) {
-            throw ControllerException::controllerNotDefined(current_controller());
-        }
+		if (!class_exists($controllerClass, false)) {
+			throw ControllerException::controllerNotDefined(current_controller());
+		}
 
-        return new $controllerClass();
-    }
+		return new $controllerClass();
+	}
 
-    /**
-     * Get Action
-     * @param QtController $controller
-     * @return string|null
-     * @throws ControllerException
-     */
-    private static function getAction(QtController $controller): ?string
-    {
-        $action = current_action();
+	/**
+	 * Get Action
+	 * @param QtController $controller
+	 * @return string|null
+	 * @throws ControllerException
+	 */
+	private static function getAction(QtController $controller): ?string
+	{
+		$action = current_action();
 
-        if ($action && !method_exists($controller, $action)) {
-            throw ControllerException::actionNotDefined($action);
-        }
+		if ($action && !method_exists($controller, $action)) {
+			throw ControllerException::actionNotDefined($action);
+		}
 
-        return $action;
-    }
+		return $action;
+	}
 
-    /**
-     * Get arguments
-     * @param callable $callable
-     * @return array
-     * @throws DiException
-     * @throws ReflectionException
-     */
-    private static function getArgs(callable $callable): array
-    {
-        return Di::autowire($callable, self::routeParams());
-    }
+	/**
+	 * Get arguments
+	 * @param callable $callable
+	 * @return array
+	 * @throws DiException
+	 * @throws ReflectionException
+	 */
+	private static function getArgs(callable $callable): array
+	{
+		return Di::autowire($callable, self::routeParams());
+	}
 
-    /**
-     * Gets the route parameters
-     * @return array
-     */
-    private static function routeParams(): array
-    {
-        return array_map(function ($param) {
-            return $param['value'];
-        }, route_params());
-    }
+	/**
+	 * Gets the route parameters
+	 * @return array
+	 */
+	private static function routeParams(): array
+	{
+		return array_map(function ($param) {
+			return $param['value'];
+		}, route_params());
+	}
 
 }

@@ -14,11 +14,14 @@
 
 namespace Quantum\Console\Commands;
 
+use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Exceptions\ConfigException;
 use Quantum\Exceptions\DiException;
 use Quantum\Console\QtCommand;
 use Quantum\Loader\Setup;
 use ReflectionException;
+use Quantum\Di\Di;
+use Exception;
 
 /**
  * Class EnvCommand
@@ -31,7 +34,7 @@ class ResourceCacheClearCommand extends QtCommand
 	 * Command name
 	 * @var string
 	 */
-	protected $name = 'resource_cache:clear';
+	protected $name = 'cache:clear';
 
 	/**
 	 * Command description
@@ -81,23 +84,41 @@ class ResourceCacheClearCommand extends QtCommand
 	protected $cacheDir;
 
 	/**
+	 * @var object
+	 */
+	protected $fs;
+
+	/**
 	 * @return void
+	 * @throws DiException
+	 * @throws ReflectionException
 	 */
 	public function exec()
 	{
-		$this->importConfig();
-		$this->initModule();
-		$this->initType();
+		$this->fs = Di::get(FileSystem::class);
 
-		if (is_dir($this->cacheDir)) {
+		try {
+			$this->importConfig();
+			$this->initModule();
+			$this->initType();
+		}catch (Exception $e){
+			$this->error($e->getMessage());
+			return;
+		}
+
+
+		if ($this->fs->isDirectory($this->cacheDir)) {
 			if ($this->module || $this->type) {
 				$this->clearResourceFiles($this->cacheDir, $this->module, $this->type);
 			} elseif (!empty($this->getOption('all'))) {
 				$this->removeFilesInDirectory($this->cacheDir);
+			} else {
+				$this->error('You must set at least one of these options {--all, --module=moduleName, --type=typeName}!');
+				return;
 			}
 		} else {
 			$this->error('Cache directory does not exist or is not accessible.');
-			exit();
+			return;
 		}
 
 		$this->info('Resource cache cleared successfully.');
@@ -112,24 +133,23 @@ class ResourceCacheClearCommand extends QtCommand
 			if (!config()->has('modules')) {
 				config()->import(new Setup('config', 'modules'));
 			}
-			$this->modules = array_keys(array_change_key_case(config()->get('modules')['modules']));
+			$this->modules = array_keys(array_change_key_case(config()->get('modules.modules')));
 		} catch (ConfigException|DiException|ReflectionException $e) {
 			$this->error($e->getMessage());
-			exit();
+			return;
 		}
 	}
 
 	/**
 	 * @return void
+	 * @throws ConfigException
+	 * @throws DiException
+	 * @throws ReflectionException
 	 */
 	private function importConfig(): void
 	{
 		if (!config()->has('view_cache')) {
-			try {
-				config()->import(new Setup('config', 'view_cache'));
-			} catch (\Exception $e) {
-				$this->error('Error loading configuration for view_cache.');
-			}
+			config()->import(new Setup('config', 'view_cache'));
 		}
 
 		$this->cacheDir = base_dir() . DS . config()->get('view_cache.cache_dir', 'cache');
@@ -137,6 +157,7 @@ class ResourceCacheClearCommand extends QtCommand
 
 	/**
 	 * @return void
+	 * @throws Exception
 	 */
 	private function initModule(): void
 	{
@@ -149,14 +170,14 @@ class ResourceCacheClearCommand extends QtCommand
 			if (in_array($module, $this->modules)) {
 				$this->module = $module;
 			} else {
-				$this->error("Module '{$module}' does not exist.");
-				exit();
+				throw new Exception('Module {'. $module .'} does not exist.');
 			}
 		}
 	}
 
 	/**
 	 * @return void
+	 * @throws Exception
 	 */
 	private function initType(): void
 	{
@@ -168,8 +189,7 @@ class ResourceCacheClearCommand extends QtCommand
 			if (in_array($type, $this->types)) {
 				$this->type = $type;
 			} else {
-				$this->error("Cache type '{$type}' is invalid.");
-				exit();
+				throw new Exception('Cache type {'. $type .'} is invalid.');
 			}
 		}
 	}
@@ -202,22 +222,22 @@ class ResourceCacheClearCommand extends QtCommand
 	 */
 	private function removeFilesInDirectory(string $dir): void
 	{
-		$folders = glob($dir);
-		$files = glob($dir . '/*');
+		$folders = $this->fs->glob($dir);
+		$files = $this->fs->glob($dir . DS . '*');
 
 		foreach ($files as $file) {
-			if (is_dir($file)) {
+			if ($this->fs->isDirectory($file)) {
 				$this->removeFilesInDirectory($file);
 			} else {
-				unlink($file);
+				$this->fs->remove($file);
 			}
 		}
 
 		foreach ($folders as $folder) {
-			if (count(glob($folder . '/*')) === 0 &&
+			if (count($this->fs->glob($folder . DS . '*')) === 0 &&
 				basename($dir) !== config()->get('view_cache.cache_dir', 'cache')
 			) {
-				rmdir($folder);
+				$this->fs->removeDirectory($folder);
 			}
 		}
 	}
