@@ -41,7 +41,6 @@ class ViewCache
 	}
 
 	/**
-	 * @throws ConfigException
 	 * @throws DiException
 	 * @throws ReflectionException
 	 * @throws Exception
