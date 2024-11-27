@@ -65,10 +65,10 @@ class MvcManager
 
 		if ($cacheSettings &&
 			session()->getId() &&
-			ViewCache::exists(route_uri(), session()->getId(), $cacheSettings['ttl'])
+			ViewCache::getInstance()->exists(route_uri(), session()->getId(), $cacheSettings['ttl'])
 		){
 			call_user_func_array(function () use (&$response, $cacheSettings) {
-				$content = (new ViewCache())->get(route_uri(), session()->getId(), $cacheSettings['ttl']);
+				$content = ViewCache::getInstance()->get(route_uri(), session()->getId(), $cacheSettings['ttl']);
 				$response->html($content);
 			}, []);
 

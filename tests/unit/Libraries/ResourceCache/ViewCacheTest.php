@@ -25,7 +25,7 @@ class ViewCacheTest extends AppTestCase
 			config()->import(new Setup('config', 'view_cache'));
 		}
 		config()->set('resource_cache', true);
-		$this->viewCache = new ViewCache();
+		$this->viewCache = ViewCache::getInstance();
 	}
 
 	public function testStoreViewCache()

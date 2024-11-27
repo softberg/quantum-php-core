@@ -40,13 +40,13 @@ class ResourceCacheClearCommand extends QtCommand
 	 * Command description
 	 * @var string
 	 */
-	protected $description = 'Clearing resource caches';
+	protected $description = 'Clears resource cache';
 
 	/**
 	 * Command help text
 	 * @var string
 	 */
-	protected $help = 'The command will clear the resource caches.';
+	protected $help = 'The command will clear the resource cache';
 
 	/**
 	 * Command options
@@ -133,7 +133,7 @@ class ResourceCacheClearCommand extends QtCommand
 				config()->import(new Setup('config', 'modules'));
 			}
 
-			if (config()->has('modules')){
+			if (config()->has('modules') && is_array(config()->get('modules.modules'))){
 				$this->modules = array_keys(array_change_key_case(config()->get('modules.modules')));
 			}
 		} catch (ConfigException|DiException|ReflectionException $e) {
@@ -211,6 +211,7 @@ class ResourceCacheClearCommand extends QtCommand
 			if (!$type) {
 				$dir = $dir . DS . '*';
 			}
+
 			$dir = $dir . DS . strtolower($moduleName);
 		}
 
@@ -223,14 +224,14 @@ class ResourceCacheClearCommand extends QtCommand
 	 */
 	private function removeFilesFromDirectory(string $dir): void
 	{
-		$entries = $this->fs->glob($dir . DIRECTORY_SEPARATOR . '*');
+		$entries = $this->fs->glob($dir . DS . '*');
 
 		foreach ($entries as $entry) {
 			if ($this->fs->isDirectory($entry)) {
 				$this->removeFilesFromDirectory($entry);
 
-				if (basename($entry) !== config()->get('view_cache.cache_dir', 'cache') &&
-					count($this->fs->glob($entry . DIRECTORY_SEPARATOR . '*')) === 0
+				if ($this->fs->fileName($entry) !== config()->get('view_cache.cache_dir', 'cache') &&
+					count($this->fs->glob($entry . DS . '*')) === 0
 				) {
 					$this->fs->removeDirectory($entry);
 				}

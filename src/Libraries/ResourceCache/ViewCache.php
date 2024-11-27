@@ -3,11 +3,11 @@
 namespace Quantum\Libraries\ResourceCache;
 
 use Quantum\Libraries\Storage\FileSystem;
-use Quantum\Exceptions\ConfigException;
 use Quantum\Exceptions\DiException;
 use ReflectionException;
 use voku\helper\HtmlMin;
 use Quantum\Di\Di;
+use Exception;
 
 class ViewCache
 {
@@ -24,31 +24,39 @@ class ViewCache
 	/**
 	 * @var object
 	 */
-	private static $fs;
+	private $fs;
 
 	/**
-	 * @param bool $fromCommand
+	 * @var ViewCache
+	 */
+	private static $instance = null;
+
+	public static function getInstance(): ViewCache
+	{
+		if (self::$instance === null) {
+			self::$instance = new self();
+		}
+
+		return self::$instance;
+	}
+
+	/**
 	 * @throws ConfigException
 	 * @throws DiException
 	 * @throws ReflectionException
+	 * @throws Exception
 	 */
-	public function __construct(bool $fromCommand = false)
+	public function __construct()
 	{
-		self::$fs = Di::get(FileSystem::class);
+		$this->fs = Di::get(FileSystem::class);
 
-		if (!config()->has('view_cache') && !$fromCommand) {
-			throw ConfigException::configCollision('view_cache');
+		if (!config()->has('view_cache')) {
+			throw new Exception('The config "view_cache" does not exists.');
 		}
 
-		$configCacheDir = config()->get('view_cache.cache_dir', 'cache');
+		$this->cacheDir = self::getCacheDir();
 
-		$this->cacheDir = base_dir() . DS . $configCacheDir . DS . 'views' . DS;
-
-		if ($module = current_module()) {
-			$this->cacheDir = base_dir() . DS . $configCacheDir . DS . 'views' . DS . strtolower($module) . DS;
-		}
-
-		if (!self::$fs->isDirectory($this->cacheDir) && !$fromCommand) {
+		if (!$this->fs->isDirectory($this->cacheDir)) {
 			mkdir($this->cacheDir, 0777, true);
 		}
 	}
@@ -66,7 +74,7 @@ class ViewCache
 		}
 
 		$cacheFile = $this->getCacheFile($key, $sessionId);
-		self::$fs->put($cacheFile, $content);
+		$this->fs->put($cacheFile, $content);
 
 		return $this;
 	}
@@ -80,13 +88,13 @@ class ViewCache
 	public function get(string $key, string $sessionId, int $ttl): ?string
 	{
 		$cacheFile = $this->getCacheFile($key, $sessionId);
-		if (!self::$fs->exists($cacheFile)) {
+		if (!$this->fs->exists($cacheFile)) {
 			return null;
 		}
 
-		$data = self::$fs->get($cacheFile);
-		if (time() > (self::$fs->lastModified($cacheFile) + $ttl)) {
-			self::$fs->remove($cacheFile);
+		$data = $this->fs->get($cacheFile);
+		if (time() > ($this->fs->lastModified($cacheFile) + $ttl)) {
+			$this->fs->remove($cacheFile);
 			return null;
 		}
 
@@ -101,8 +109,8 @@ class ViewCache
 	public function delete(string $key, string $sessionId): void
 	{
 		$cacheFile = $this->getCacheFile($key, $sessionId);
-		if (self::$fs->exists($cacheFile)) {
-			self::$fs->remove($cacheFile);
+		if ($this->fs->exists($cacheFile)) {
+			$this->fs->remove($cacheFile);
 		}
 	}
 
@@ -112,20 +120,33 @@ class ViewCache
 	 * @param int $ttl
 	 * @return bool
 	 */
-	public static function exists(string $key, string $sessionId, int $ttl): bool
+	public function exists(string $key, string $sessionId, int $ttl): bool
 	{
-		$cacheFile = (new self())->getCacheFile($key, $sessionId);
+		$cacheFile = $this->getCacheFile($key, $sessionId);
 
-		if (!self::$fs->exists($cacheFile)) {
+		if (!$this->fs->exists($cacheFile)) {
 			return false;
 		}
 
-		if (time() > (self::$fs->lastModified($cacheFile) + $ttl)) {
-			self::$fs->remove($cacheFile);
+		if (time() > ($this->fs->lastModified($cacheFile) + $ttl)) {
+			$this->fs->remove($cacheFile);
 			return false;
 		}
 
 		return true;
+	}
+
+	private static function getCacheDir(): string
+	{
+		$configCacheDir = config()->get('view_cache.cache_dir', 'cache');
+
+		$cacheDir = base_dir() . DS . $configCacheDir . DS . 'views' . DS;
+
+		if ($module = current_module()) {
+			$cacheDir = base_dir() . DS . $configCacheDir . DS . 'views' . DS . strtolower($module) . DS;
+		}
+
+		return $cacheDir;
 	}
 
 	/**
