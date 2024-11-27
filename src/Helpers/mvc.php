@@ -125,12 +125,12 @@ function route_uri(): string
 }
 
 /**
- * Gets the current route cache
- * @return mixed|null
+ * Gets the current route cache settings
+ * @return array|null
  */
-function route_cache()
+function route_cache_settings(): ?array
 {
-	return RouteController::getCurrentRoute()['cache'] ?? null;
+	return RouteController::getCurrentRoute()['cache_settings'] ?? null;
 }
 
 /**

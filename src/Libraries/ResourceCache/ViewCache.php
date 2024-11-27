@@ -58,16 +58,18 @@ class ViewCache
 	 * @param string $key
 	 * @param string $content
 	 * @param string $sessionId
-	 * @return void
+	 * @return ViewCache
 	 */
-	public function set(string $key, string $content, string $sessionId): void
+	public function set(string $key, string $content, string $sessionId): ViewCache
 	{
 		if (config()->has('view_cache.minify')) {
 			$content = $this->minify($content);
 		}
 
 		$cacheFile = $this->getCacheFile($key, $sessionId);
-		file_put_contents($cacheFile, $content);
+		self::$fs->put($cacheFile, $content);
+
+		return $this;
 	}
 
 	/**
@@ -79,11 +81,11 @@ class ViewCache
 	public function get(string $key, string $sessionId, int $ttl): ?string
 	{
 		$cacheFile = $this->getCacheFile($key, $sessionId);
-		if (!file_exists($cacheFile)) {
+		if (!self::$fs->exists($cacheFile)) {
 			return null;
 		}
 
-		$data = file_get_contents($cacheFile);
+		$data = self::$fs->get($cacheFile);
 		if (time() > (self::$fs->lastModified($cacheFile) + $ttl)) {
 			self::$fs->remove($cacheFile);
 			return null;
@@ -100,7 +102,7 @@ class ViewCache
 	public function delete(string $key, string $sessionId): void
 	{
 		$cacheFile = $this->getCacheFile($key, $sessionId);
-		if (file_exists($cacheFile)) {
+		if (self::$fs->exists($cacheFile)) {
 			self::$fs->remove($cacheFile);
 		}
 	}
@@ -115,7 +117,7 @@ class ViewCache
 	{
 		$cacheFile = (new self())->getCacheFile($key, $sessionId);
 
-		if (!file_exists($cacheFile)) {
+		if (!self::$fs->exists($cacheFile)) {
 			return false;
 		}
 

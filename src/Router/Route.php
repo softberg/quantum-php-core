@@ -14,9 +14,15 @@
 
 namespace Quantum\Router;
 
+use Quantum\Exceptions\DatabaseException;
+use Quantum\Exceptions\SessionException;
+use Quantum\Exceptions\ConfigException;
 use Quantum\Exceptions\RouteException;
-use Closure;
+use Quantum\Exceptions\LangException;
+use Quantum\Exceptions\DiException;
 use Quantum\Loader\Setup;
+use ReflectionException;
+use Closure;
 
 /**
  * Route Class
@@ -67,10 +73,12 @@ class Route
      */
     private $virtualRoutes = [];
 
-    /**
-     * Class constructor
-     * @param array $module
-     */
+	/**
+	 * @param array $module
+	 * @throws ConfigException
+	 * @throws DiException
+	 * @throws ReflectionException
+	 */
     public function __construct(array $module)
     {
         $this->virtualRoutes['*'] = [];
@@ -82,13 +90,18 @@ class Route
 		}
     }
 
-    /**
-     * Adds new route entry to routes
-     * @param string $route
-     * @param string $method
-     * @param array $params
-     * @return Route
-     */
+	/**
+	 * @param string $route
+	 * @param string $method
+	 * @param ...$params
+	 * @return $this
+	 * @throws ConfigException
+	 * @throws DatabaseException
+	 * @throws DiException
+	 * @throws LangException
+	 * @throws ReflectionException
+	 * @throws SessionException
+	 */
     public function add(string $route, string $method, ...$params): Route
     {
         $this->currentRoute = [
@@ -99,7 +112,7 @@ class Route
         ];
 
 	    if ($this->canSetCacheToCurrentRoute()){
-		    $this->currentRoute['cache'] = [
+		    $this->currentRoute['cache_settings'] = [
 			    'shouldCache' => true,
 			    'ttl' => config()->get('view_cache.ttl', 300),
 		    ];
@@ -124,23 +137,33 @@ class Route
         return $this;
     }
 
-    /**
-     * Adds new get route entry to routes
-     * @param string $route
-     * @param array $params
-     * @return Route
-     */
+	/**
+	 * @param string $route
+	 * @param ...$params
+	 * @return $this
+	 * @throws ConfigException
+	 * @throws DatabaseException
+	 * @throws DiException
+	 * @throws LangException
+	 * @throws ReflectionException
+	 * @throws SessionException
+	 */
     public function get(string $route, ...$params): Route
     {
         return $this->add($route, 'GET', ...$params);
     }
 
-    /**
-     * Adds new post route entry to routes
-     * @param string $route
-     * @param array $params
-     * @return Route
-     */
+	/**
+	 * @param string $route
+	 * @param ...$params
+	 * @return $this
+	 * @throws ConfigException
+	 * @throws DatabaseException
+	 * @throws DiException
+	 * @throws LangException
+	 * @throws ReflectionException
+	 * @throws SessionException
+	 */
     public function post(string $route, ...$params): Route
     {
         return $this->add($route, 'POST', ...$params);
@@ -196,35 +219,48 @@ class Route
         return $this;
     }
 
+	/**
+	 * @param bool $shouldCache
+	 * @param int|null $ttl
+	 * @return $this
+	 * @throws ConfigException
+	 * @throws DatabaseException
+	 * @throws DiException
+	 * @throws LangException
+	 * @throws ReflectionException
+	 * @throws SessionException
+	 */
 	public function cacheable(bool $shouldCache, int $ttl = null): Route
 	{
+		if (empty(session()->getId())){
+			return $this;
+		}
+
 		if (!$ttl) {
 			$ttl = config()->get('view_cache.ttl', 300);
 		}
 
-		if (!empty(session()->getId())){
-			if (!$this->isGroup){
-				end($this->virtualRoutes['*']);
-				$lastKey = key($this->virtualRoutes['*']);
+		if (!$this->isGroup){
+			end($this->virtualRoutes['*']);
+			$lastKey = key($this->virtualRoutes['*']);
 
-				if (!$shouldCache && key_exists('cache', $this->virtualRoutes['*'][$lastKey])) {
-					unset($this->virtualRoutes['*'][$lastKey]['cache']);
-				}else{
-					$this->assignCacheToCurrentRoute($this->virtualRoutes['*'][$lastKey], $shouldCache, $ttl);
-				}
-
-				return $this;
+			if (!$shouldCache && key_exists('cache_settings', $this->virtualRoutes['*'][$lastKey])) {
+				unset($this->virtualRoutes['*'][$lastKey]['cache_settings']);
+			}else{
+				$this->assignCacheToCurrentRoute($this->virtualRoutes['*'][$lastKey], $shouldCache, $ttl);
 			}
 
-			end($this->virtualRoutes);
-			$lastKeyOfFirstRound = key($this->virtualRoutes);
+			return $this;
+		}
 
-			foreach ($this->virtualRoutes[$lastKeyOfFirstRound] as &$route) {
-				if (!$shouldCache && key_exists('cache', $route)) {
-					unset($route['cache']);
-				}else{
-					$this->assignCacheToCurrentRoute($route, $shouldCache, $ttl);
-				}
+		end($this->virtualRoutes);
+		$lastKeyOfFirstRound = key($this->virtualRoutes);
+
+		foreach ($this->virtualRoutes[$lastKeyOfFirstRound] as &$route) {
+			if (!$shouldCache && key_exists('cache_settings', $route)) {
+				unset($route['cache_settings']);
+			}else{
+				$this->assignCacheToCurrentRoute($route, $shouldCache, $ttl);
 			}
 		}
 
@@ -304,14 +340,29 @@ class Route
         }
     }
 
+	/**
+	 * @param array $route
+	 * @param bool $shouldCache
+	 * @param int $ttl
+	 * @return void
+	 */
 	private function assignCacheToCurrentRoute(array &$route, bool $shouldCache, int $ttl)
 	{
-		$route['cache'] = [
+		$route['cache_settings'] = [
 			'shouldCache' => $shouldCache,
 			'ttl' => $ttl,
 		];
 	}
 
+	/**
+	 * @return bool
+	 * @throws ConfigException
+	 * @throws DatabaseException
+	 * @throws DiException
+	 * @throws LangException
+	 * @throws SessionException
+	 * @throws ReflectionException
+	 */
 	private function canSetCacheToCurrentRoute(): bool
 	{
 		return config()->get('resource_cache') &&

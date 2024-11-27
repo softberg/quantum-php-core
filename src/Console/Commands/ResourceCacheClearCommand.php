@@ -95,29 +95,28 @@ class ResourceCacheClearCommand extends QtCommand
 	 */
 	public function exec()
 	{
-		$this->fs = Di::get(FileSystem::class);
-
 		try {
 			$this->importConfig();
-			$this->initModule();
-			$this->initType();
+			$this->initModule($this->getOption('module'));
+			$this->initType($this->getOption('type'));
 		}catch (Exception $e){
 			$this->error($e->getMessage());
 			return;
 		}
 
+		$this->fs = Di::get(FileSystem::class);
 
-		if ($this->fs->isDirectory($this->cacheDir)) {
-			if ($this->module || $this->type) {
-				$this->clearResourceFiles($this->cacheDir, $this->module, $this->type);
-			} elseif (!empty($this->getOption('all'))) {
-				$this->removeFilesInDirectory($this->cacheDir);
-			} else {
-				$this->error('You must set at least one of these options {--all, --module=moduleName, --type=typeName}!');
-				return;
-			}
-		} else {
+		if (!$this->fs->isDirectory($this->cacheDir)) {
 			$this->error('Cache directory does not exist or is not accessible.');
+			return;
+		}
+
+		if ($this->module || $this->type) {
+			$this->clearResourceModuleAndType($this->module, $this->type);
+		} elseif (!empty($this->getOption('all'))) {
+			$this->removeFilesFromDirectory($this->cacheDir);
+		} else {
+			$this->error('Please specify at least one of the following options: --all, --module=moduleName or --type=typeName!');
 			return;
 		}
 
@@ -156,13 +155,12 @@ class ResourceCacheClearCommand extends QtCommand
 	}
 
 	/**
+	 * @param string|null $moduleOption
 	 * @return void
 	 * @throws Exception
 	 */
-	private function initModule(): void
+	private function initModule(?string $moduleOption): void
 	{
-		$moduleOption = $this->getOption('module');
-
 		if (!empty($moduleOption)) {
 			$this->importModules();
 			$module = strtolower($moduleOption);
@@ -176,13 +174,12 @@ class ResourceCacheClearCommand extends QtCommand
 	}
 
 	/**
+	 * @param string|null $typeOption
 	 * @return void
 	 * @throws Exception
 	 */
-	private function initType(): void
+	private function initType(?string $typeOption): void
 	{
-		$typeOption = $this->getOption('type');
-
 		if (!empty($typeOption)) {
 			$type = strtolower($typeOption);
 
@@ -195,13 +192,14 @@ class ResourceCacheClearCommand extends QtCommand
 	}
 
 	/**
-	 * @param string $dir
 	 * @param string|null $moduleName
 	 * @param string|null $type
 	 * @return void
 	 */
-	private function clearResourceFiles(string $dir, ?string $moduleName = null, ?string $type = null): void
+	private function clearResourceModuleAndType(?string $moduleName = null, ?string $type = null): void
 	{
+		$dir = $this->cacheDir;
+
 		if ($type) {
 			$dir = $dir . DS . strtolower($type);
 		}
@@ -213,31 +211,28 @@ class ResourceCacheClearCommand extends QtCommand
 			$dir = $dir . DS . strtolower($moduleName);
 		}
 
-		$this->removeFilesInDirectory($dir);
+		$this->removeFilesFromDirectory($dir);
 	}
 
 	/**
 	 * @param string $dir
 	 * @return void
 	 */
-	private function removeFilesInDirectory(string $dir): void
+	private function removeFilesFromDirectory(string $dir): void
 	{
-		$folders = $this->fs->glob($dir);
-		$files = $this->fs->glob($dir . DS . '*');
+		$entries = $this->fs->glob($dir . DIRECTORY_SEPARATOR . '*');
 
-		foreach ($files as $file) {
-			if ($this->fs->isDirectory($file)) {
-				$this->removeFilesInDirectory($file);
+		foreach ($entries as $entry) {
+			if ($this->fs->isDirectory($entry)) {
+				$this->removeFilesFromDirectory($entry);
+
+				if (basename($entry) !== config()->get('view_cache.cache_dir', 'cache') &&
+					count($this->fs->glob($entry . DIRECTORY_SEPARATOR . '*')) === 0
+				) {
+					$this->fs->removeDirectory($entry);
+				}
 			} else {
-				$this->fs->remove($file);
-			}
-		}
-
-		foreach ($folders as $folder) {
-			if (count($this->fs->glob($folder . DS . '*')) === 0 &&
-				basename($dir) !== config()->get('view_cache.cache_dir', 'cache')
-			) {
-				$this->fs->removeDirectory($folder);
+				$this->fs->remove($entry);
 			}
 		}
 	}

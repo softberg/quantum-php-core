@@ -61,12 +61,13 @@ class MvcManager
 		}
 
 		$callback = route_callback();
+		$cacheSettings = route_cache_settings();
 
-		if (route_cache() &&
-			ViewCache::exists(route_uri(), session()->getId(), route_cache()['ttl'])
+		if ($cacheSettings &&
+			ViewCache::exists(route_uri(), session()->getId(), $cacheSettings['ttl'])
 		){
-			call_user_func_array(function () use (&$response) {
-				$content = (new ViewCache())->get(route_uri(), session()->getId(), route_cache()['ttl']);
+			call_user_func_array(function () use (&$response, $cacheSettings) {
+				$content = (new ViewCache())->get(route_uri(), session()->getId(), $cacheSettings['ttl']);
 				$response->html($content);
 			}, []);
 
