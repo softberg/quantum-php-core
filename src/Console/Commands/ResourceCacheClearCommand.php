@@ -132,7 +132,10 @@ class ResourceCacheClearCommand extends QtCommand
 			if (!config()->has('modules')) {
 				config()->import(new Setup('config', 'modules'));
 			}
-			$this->modules = array_keys(array_change_key_case(config()->get('modules.modules')));
+
+			if (config()->has('modules')){
+				$this->modules = array_keys(array_change_key_case(config()->get('modules.modules')));
+			}
 		} catch (ConfigException|DiException|ReflectionException $e) {
 			$this->error($e->getMessage());
 			return;

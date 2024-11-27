@@ -64,6 +64,7 @@ class MvcManager
 		$cacheSettings = route_cache_settings();
 
 		if ($cacheSettings &&
+			session()->getId() &&
 			ViewCache::exists(route_uri(), session()->getId(), $cacheSettings['ttl'])
 		){
 			call_user_func_array(function () use (&$response, $cacheSettings) {

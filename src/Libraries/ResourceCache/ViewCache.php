@@ -41,12 +41,11 @@ class ViewCache
 		}
 
 		$configCacheDir = config()->get('view_cache.cache_dir', 'cache');
-		$module = strtolower(current_module());
 
 		$this->cacheDir = base_dir() . DS . $configCacheDir . DS . 'views' . DS;
 
-		if ($module) {
-			$this->cacheDir = base_dir() . DS . $configCacheDir . DS . 'views' . DS . $module . DS;
+		if ($module = current_module()) {
+			$this->cacheDir = base_dir() . DS . $configCacheDir . DS . 'views' . DS . strtolower($module) . DS;
 		}
 
 		if (!self::$fs->isDirectory($this->cacheDir) && !$fromCommand) {
