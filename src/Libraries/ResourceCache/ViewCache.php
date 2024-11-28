@@ -22,6 +22,11 @@ class ViewCache
 	private $mimeType = '.tmp';
 
 	/**
+	 * @var int
+	 */
+	private $ttl;
+
+	/**
 	 * @var object
 	 */
 	private $fs;
@@ -53,7 +58,9 @@ class ViewCache
 			throw new Exception('The config "view_cache" does not exists.');
 		}
 
-		$this->cacheDir = self::getCacheDir();
+		$this->cacheDir = $this->getCacheDir();
+
+		$this->ttl = is_int(config()->get('view_cache.ttl')) ? config()->get('view_cache.ttl') : 300;
 
 		if (!$this->fs->isDirectory($this->cacheDir)) {
 			mkdir($this->cacheDir, 0777, true);
@@ -91,13 +98,7 @@ class ViewCache
 			return null;
 		}
 
-		$data = $this->fs->get($cacheFile);
-		if (time() > ($this->fs->lastModified($cacheFile) + $ttl)) {
-			$this->fs->remove($cacheFile);
-			return null;
-		}
-
-		return $data;
+		return $this->fs->get($cacheFile);
 	}
 
 	/**
@@ -116,26 +117,63 @@ class ViewCache
 	/**
 	 * @param string $key
 	 * @param string $sessionId
-	 * @param int $ttl
+	 * @param int|null $ttl
 	 * @return bool
 	 */
-	public function exists(string $key, string $sessionId, int $ttl): bool
+	public function exists(string $key, string $sessionId, int $ttl = null): bool
 	{
-		$cacheFile = $this->getCacheFile($key, $sessionId);
-
-		if (!$this->fs->exists($cacheFile)) {
-			return false;
+		if (!$ttl){
+			$ttl = $this->ttl;
 		}
 
-		if (time() > ($this->fs->lastModified($cacheFile) + $ttl)) {
-			$this->fs->remove($cacheFile);
+		$cacheFile = $this->getCacheFile($key, $sessionId);
+
+		if (!$this->fs->exists($cacheFile) || $this->isExpired($cacheFile, $ttl)) {
 			return false;
 		}
 
 		return true;
 	}
 
-	private static function getCacheDir(): string
+	/**
+	 * @param $cacheFile
+	 * @param int|null $ttl
+	 * @return bool
+	 */
+	public function isExpired($cacheFile, int $ttl = null): bool
+	{
+		if (!$ttl){
+			$ttl = $this->ttl;
+		}
+
+		if (time() > ($this->fs->lastModified($cacheFile) + $ttl)) {
+			$this->fs->remove($cacheFile);
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function isEnabled(): bool
+	{
+		return is_bool(config()->get('resource_cache')) ? config()->get('resource_cache') : false;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getTtl(): int
+	{
+		return $this->ttl;
+	}
+
+	/**
+	 * @return string
+	 */
+	private function getCacheDir(): string
 	{
 		$configCacheDir = config()->get('view_cache.cache_dir', 'cache');
 

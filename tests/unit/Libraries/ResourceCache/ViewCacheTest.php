@@ -28,19 +28,10 @@ class ViewCacheTest extends AppTestCase
 		$this->viewCache = ViewCache::getInstance();
 	}
 
-	public function testStoreViewCache()
+	public function testStoreAndGetViewCache()
 	{
 		$this->viewCache->set($this->route, $this->content, $this->sessionId);
 
-		$viewCache = $this->viewCache->get($this->route, $this->sessionId, $this->ttl);
-
-		$this->assertIsString($viewCache);
-		$this->assertEquals($this->content, $viewCache);
-	}
-
-	public function testGetViewCache()
-	{
-		$this->viewCache->set($this->route, $this->content, $this->sessionId);
 		$viewCache = $this->viewCache->get($this->route, $this->sessionId, $this->ttl);
 
 		$this->assertIsString($viewCache);

@@ -14,13 +14,13 @@
 
 namespace Quantum\Router;
 
+use Quantum\Libraries\ResourceCache\ViewCache;
 use Quantum\Exceptions\DatabaseException;
 use Quantum\Exceptions\SessionException;
 use Quantum\Exceptions\ConfigException;
 use Quantum\Exceptions\RouteException;
 use Quantum\Exceptions\LangException;
 use Quantum\Exceptions\DiException;
-use Quantum\Loader\Setup;
 use ReflectionException;
 use Closure;
 
@@ -74,20 +74,19 @@ class Route
     private $virtualRoutes = [];
 
 	/**
+	 * @var ViewCache
+	 */
+	private $viewCacheInstance;
+
+	/**
 	 * @param array $module
-	 * @throws ConfigException
-	 * @throws DiException
-	 * @throws ReflectionException
 	 */
     public function __construct(array $module)
     {
         $this->virtualRoutes['*'] = [];
         $this->moduleName = key($module);
         $this->moduleOptions = $module[key($module)];
-
-		if (config()->has('resource_cache') && !config()->has('view_cache')){
-			config()->import(new Setup('config', 'view_cache'));
-		}
+		$this->viewCacheInstance = ViewCache::getInstance();
     }
 
 	/**
@@ -114,7 +113,7 @@ class Route
 	    if ($this->canSetCacheToCurrentRoute()){
 		    $this->currentRoute['cache_settings'] = [
 			    'shouldCache' => true,
-			    'ttl' => config()->get('view_cache.ttl', 300),
+			    'ttl' => $this->viewCacheInstance->getTtl(),
 		    ];
 	    }
 
@@ -237,7 +236,7 @@ class Route
 		}
 
 		if (!$ttl) {
-			$ttl = config()->get('view_cache.ttl', 300);
+			$ttl = $this->viewCacheInstance->getTtl();
 		}
 
 		if (!$this->isGroup){
@@ -365,7 +364,7 @@ class Route
 	 */
 	private function canSetCacheToCurrentRoute(): bool
 	{
-		return config()->get('resource_cache') &&
+		return $this->viewCacheInstance->isEnabled() &&
 			!empty(session()->getId()) &&
 			!empty($this->moduleOptions) &&
 			!empty($this->moduleOptions['cacheable']);
