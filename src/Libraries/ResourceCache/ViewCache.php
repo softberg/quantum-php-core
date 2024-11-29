@@ -2,8 +2,13 @@
 
 namespace Quantum\Libraries\ResourceCache;
 
+use Quantum\Exceptions\DatabaseException;
 use Quantum\Libraries\Storage\FileSystem;
+use Quantum\Exceptions\SessionException;
+use Quantum\Exceptions\ConfigException;
+use Quantum\Exceptions\LangException;
 use Quantum\Exceptions\DiException;
+use Quantum\Loader\Setup;
 use ReflectionException;
 use voku\helper\HtmlMin;
 use Quantum\Di\Di;
@@ -19,12 +24,22 @@ class ViewCache
 	/**
 	 * @var string
 	 */
+	private $sessionId;
+
+	/**
+	 * @var string
+	 */
 	private $mimeType = '.tmp';
 
 	/**
 	 * @var int
 	 */
 	private $ttl;
+
+	/**
+	 * @var bool
+	 */
+	private $isEnabled;
 
 	/**
 	 * @var object
@@ -52,15 +67,21 @@ class ViewCache
 	 */
 	public function __construct()
 	{
-		$this->fs = Di::get(FileSystem::class);
-
-		if (!config()->has('view_cache')) {
-			throw new Exception('The config "view_cache" does not exists.');
+		if (config()->get('resource_cache')){
+			try {
+				config()->import(new Setup('config','view_cache'));
+			}catch (Exception $exception){
+				throw new Exception($exception->getMessage());
+			}
 		}
+
+		$this->fs = Di::get(FileSystem::class);
 
 		$this->cacheDir = $this->getCacheDir();
 
 		$this->ttl = is_int(config()->get('view_cache.ttl')) ? config()->get('view_cache.ttl') : 300;
+
+		$this->sessionId = session()->getId();
 
 		if (!$this->fs->isDirectory($this->cacheDir)) {
 			mkdir($this->cacheDir, 0777, true);
@@ -70,16 +91,15 @@ class ViewCache
 	/**
 	 * @param string $key
 	 * @param string $content
-	 * @param string $sessionId
 	 * @return ViewCache
 	 */
-	public function set(string $key, string $content, string $sessionId): ViewCache
+	public function set(string $key, string $content): ViewCache
 	{
 		if (config()->has('view_cache.minify')) {
 			$content = $this->minify($content);
 		}
 
-		$cacheFile = $this->getCacheFile($key, $sessionId);
+		$cacheFile = $this->getCacheFile($key);
 		$this->fs->put($cacheFile, $content);
 
 		return $this;
@@ -87,14 +107,13 @@ class ViewCache
 
 	/**
 	 * @param string $key
-	 * @param string $sessionId
-	 * @param int $ttl
 	 * @return mixed|null
 	 */
-	public function get(string $key, string $sessionId, int $ttl): ?string
+	public function get(string $key): ?string
 	{
-		$cacheFile = $this->getCacheFile($key, $sessionId);
-		if (!$this->fs->exists($cacheFile)) {
+		$cacheFile = $this->getCacheFile($key);
+
+		if (!$this->exists($key)) {
 			return null;
 		}
 
@@ -103,12 +122,11 @@ class ViewCache
 
 	/**
 	 * @param string $key
-	 * @param string $sessionId
 	 * @return void
 	 */
-	public function delete(string $key, string $sessionId): void
+	public function delete(string $key): void
 	{
-		$cacheFile = $this->getCacheFile($key, $sessionId);
+		$cacheFile = $this->getCacheFile($key);
 		if ($this->fs->exists($cacheFile)) {
 			$this->fs->remove($cacheFile);
 		}
@@ -116,19 +134,13 @@ class ViewCache
 
 	/**
 	 * @param string $key
-	 * @param string $sessionId
-	 * @param int|null $ttl
 	 * @return bool
 	 */
-	public function exists(string $key, string $sessionId, int $ttl = null): bool
+	public function exists(string $key): bool
 	{
-		if (!$ttl){
-			$ttl = $this->ttl;
-		}
+		$cacheFile = $this->getCacheFile($key);
 
-		$cacheFile = $this->getCacheFile($key, $sessionId);
-
-		if (!$this->fs->exists($cacheFile) || $this->isExpired($cacheFile, $ttl)) {
+		if (!$this->fs->exists($cacheFile) || $this->isExpired($cacheFile)) {
 			return false;
 		}
 
@@ -137,16 +149,11 @@ class ViewCache
 
 	/**
 	 * @param $cacheFile
-	 * @param int|null $ttl
 	 * @return bool
 	 */
-	public function isExpired($cacheFile, int $ttl = null): bool
+	public function isExpired($cacheFile): bool
 	{
-		if (!$ttl){
-			$ttl = $this->ttl;
-		}
-
-		if (time() > ($this->fs->lastModified($cacheFile) + $ttl)) {
+		if (time() > ($this->fs->lastModified($cacheFile) + $this->ttl)) {
 			$this->fs->remove($cacheFile);
 			return true;
 		}
@@ -156,18 +163,38 @@ class ViewCache
 
 	/**
 	 * @return bool
+	 * @throws DiException
+	 * @throws ReflectionException
+	 * @throws ConfigException
+	 * @throws DatabaseException
+	 * @throws LangException
+	 * @throws SessionException
 	 */
 	public function isEnabled(): bool
 	{
-		return is_bool(config()->get('resource_cache')) ? config()->get('resource_cache') : false;
+		if (!is_null($this->isEnabled)){
+			return $this->isEnabled;
+		}
+
+		if (is_bool(config()->get('resource_cache')) && config()->get('resource_cache') && !empty(session()->getId())){
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
-	 * @return int
+	 * @param int $ttl
+	 * @return void
 	 */
-	public function getTtl(): int
+	public function setTtl(int $ttl): void
 	{
-		return $this->ttl;
+		$this->ttl = $ttl;
+	}
+
+	public function setIsEnabled(bool $enabled): void
+	{
+		$this->isEnabled = $enabled;
 	}
 
 	/**
@@ -188,12 +215,11 @@ class ViewCache
 
 	/**
 	 * @param string $key
-	 * @param string $sessionId
 	 * @return string
 	 */
-	private function getCacheFile(string $key, string $sessionId): string
+	private function getCacheFile(string $key): string
 	{
-		return $this->cacheDir . md5($key . $sessionId) . $this->mimeType;
+		return $this->cacheDir . md5($key . $this->sessionId) . $this->mimeType;
 	}
 
 	/**

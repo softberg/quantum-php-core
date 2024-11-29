@@ -31,47 +31,47 @@ use Closure;
 class Route
 {
 
-    /**
-     * Current module name
-     * @var string
-     */
-    private $moduleName;
+	/**
+	 * Current module name
+	 * @var string
+	 */
+	private $moduleName;
 
-    /**
-     * Module options
-     * @var array
-     */
-    private $moduleOptions = [];
+	/**
+	 * Module options
+	 * @var array
+	 */
+	private $moduleOptions = [];
 
-    /**
-     * Identifies the group middleware
-     * @var bool
-     */
-    private $isGroupMiddlewares;
+	/**
+	 * Identifies the group middleware
+	 * @var bool
+	 */
+	private $isGroupMiddlewares;
 
-    /**
-     * Identifies the group
-     * @var boolean
-     */
-    private $isGroup = false;
+	/**
+	 * Identifies the group
+	 * @var boolean
+	 */
+	private $isGroup = false;
 
-    /**
-     * Current group name
-     * @var string
-     */
-    private $currentGroupName = null;
+	/**
+	 * Current group name
+	 * @var string
+	 */
+	private $currentGroupName = null;
 
-    /**
-     * Current route
-     * @var array
-     */
-    private $currentRoute = [];
+	/**
+	 * Current route
+	 * @var array
+	 */
+	private $currentRoute = [];
 
-    /**
-     * Virtual routes
-     * @var array
-     */
-    private $virtualRoutes = [];
+	/**
+	 * Virtual routes
+	 * @var array
+	 */
+	private $virtualRoutes = [];
 
 	/**
 	 * @var ViewCache
@@ -80,143 +80,128 @@ class Route
 
 	/**
 	 * @param array $module
+	 * @param ViewCache $viewCache
 	 */
-    public function __construct(array $module)
-    {
-        $this->virtualRoutes['*'] = [];
-        $this->moduleName = key($module);
-        $this->moduleOptions = $module[key($module)];
-		$this->viewCacheInstance = ViewCache::getInstance();
-    }
+	public function __construct(array $module, ViewCache $viewCache)
+	{
+		$this->virtualRoutes['*'] = [];
+		$this->moduleName = key($module);
+		$this->moduleOptions = $module[key($module)];
+		$this->viewCacheInstance = $viewCache;
+	}
 
 	/**
 	 * @param string $route
 	 * @param string $method
 	 * @param ...$params
 	 * @return $this
-	 * @throws ConfigException
-	 * @throws DatabaseException
-	 * @throws DiException
-	 * @throws LangException
-	 * @throws ReflectionException
-	 * @throws SessionException
 	 */
-    public function add(string $route, string $method, ...$params): Route
-    {
-        $this->currentRoute = [
-            'route' => !empty($this->moduleOptions['prefix']) ? $this->moduleOptions['prefix'] . '/' . $route : $route,
-            'prefix' => $this->moduleOptions['prefix'],
-            'method' => $method,
-            'module' => $this->moduleName
-        ];
+	public function add(string $route, string $method, ...$params): Route
+	{
+		$this->currentRoute = [
+			'route' => !empty($this->moduleOptions['prefix']) ? $this->moduleOptions['prefix'] . '/' . $route : $route,
+			'prefix' => $this->moduleOptions['prefix'],
+			'method' => $method,
+			'module' => $this->moduleName
+		];
 
-	    if ($this->canSetCacheToCurrentRoute()){
-		    $this->currentRoute['cache_settings'] = [
-			    'shouldCache' => true,
-			    'ttl' => $this->viewCacheInstance->getTtl(),
-		    ];
-	    }
+		if (key_exists('cacheable', $this->moduleOptions)){
+			$enabled = true;
+			if (!$this->moduleOptions['cacheable']){
+				$enabled = false;
+			}
 
-        if (is_callable($params[0])) {
-            $this->currentRoute['callback'] = $params[0];
-        } else {
-            $this->currentRoute['controller'] = $params[0];
-            $this->currentRoute['action'] = $params[1];
-        }
+			$this->currentRoute['shouldCache'] = $enabled;
+		}
 
-        if ($this->currentGroupName) {
-            $this->currentRoute['group'] = $this->currentGroupName;
-            $this->virtualRoutes[$this->currentGroupName][] = $this->currentRoute;
-        } else {
-            $this->isGroup = false;
-            $this->isGroupMiddlewares = false;
-            $this->virtualRoutes['*'][] = $this->currentRoute;
-        }
+		if (is_callable($params[0])) {
+			$this->currentRoute['callback'] = $params[0];
+		} else {
+			$this->currentRoute['controller'] = $params[0];
+			$this->currentRoute['action'] = $params[1];
+		}
 
-        return $this;
-    }
+		if ($this->currentGroupName) {
+			$this->currentRoute['group'] = $this->currentGroupName;
+			$this->virtualRoutes[$this->currentGroupName][] = $this->currentRoute;
+		} else {
+			$this->isGroup = false;
+			$this->isGroupMiddlewares = false;
+			$this->virtualRoutes['*'][] = $this->currentRoute;
+		}
+
+		return $this;
+	}
 
 	/**
 	 * @param string $route
 	 * @param ...$params
 	 * @return $this
-	 * @throws ConfigException
-	 * @throws DatabaseException
-	 * @throws DiException
-	 * @throws LangException
-	 * @throws ReflectionException
-	 * @throws SessionException
 	 */
-    public function get(string $route, ...$params): Route
-    {
-        return $this->add($route, 'GET', ...$params);
-    }
+	public function get(string $route, ...$params): Route
+	{
+		return $this->add($route, 'GET', ...$params);
+	}
 
 	/**
 	 * @param string $route
 	 * @param ...$params
 	 * @return $this
-	 * @throws ConfigException
-	 * @throws DatabaseException
-	 * @throws DiException
-	 * @throws LangException
-	 * @throws ReflectionException
-	 * @throws SessionException
 	 */
-    public function post(string $route, ...$params): Route
-    {
-        return $this->add($route, 'POST', ...$params);
-    }
+	public function post(string $route, ...$params): Route
+	{
+		return $this->add($route, 'POST', ...$params);
+	}
 
-    /**
-     * Starts a named group of routes
-     * @param string $groupName
-     * @param Closure $callback
-     * @return Route
-     */
-    public function group(string $groupName, Closure $callback): Route
-    {
-        $this->currentGroupName = $groupName;
+	/**
+	 * Starts a named group of routes
+	 * @param string $groupName
+	 * @param Closure $callback
+	 * @return Route
+	 */
+	public function group(string $groupName, Closure $callback): Route
+	{
+		$this->currentGroupName = $groupName;
 
-        $this->isGroup = true;
-        $this->isGroupMiddlewares = false;
-        $callback($this);
-        $this->isGroupMiddlewares = true;
-        $this->currentGroupName = null;
+		$this->isGroup = true;
+		$this->isGroupMiddlewares = false;
+		$callback($this);
+		$this->isGroupMiddlewares = true;
+		$this->currentGroupName = null;
 
-        return $this;
-    }
+		return $this;
+	}
 
-    /**
-     * Adds middlewares to routes and route groups
-     * @param array $middlewares
-     * @return Route
-     */
-    public function middlewares(array $middlewares = []): Route
-    {
-        if (!$this->isGroup) {
-            end($this->virtualRoutes['*']);
-            $lastKey = key($this->virtualRoutes['*']);
-            $this->assignMiddlewaresToRoute($this->virtualRoutes['*'][$lastKey], $middlewares);
-            return $this;
-        }
+	/**
+	 * Adds middlewares to routes and route groups
+	 * @param array $middlewares
+	 * @return Route
+	 */
+	public function middlewares(array $middlewares = []): Route
+	{
+		if (!$this->isGroup) {
+			end($this->virtualRoutes['*']);
+			$lastKey = key($this->virtualRoutes['*']);
+			$this->assignMiddlewaresToRoute($this->virtualRoutes['*'][$lastKey], $middlewares);
+			return $this;
+		}
 
-        end($this->virtualRoutes);
-        $lastKeyOfFirstRound = key($this->virtualRoutes);
+		end($this->virtualRoutes);
+		$lastKeyOfFirstRound = key($this->virtualRoutes);
 
-        if (!$this->isGroupMiddlewares) {
-            end($this->virtualRoutes[$lastKeyOfFirstRound]);
-            $lastKeyOfSecondRound = key($this->virtualRoutes[$lastKeyOfFirstRound]);
-            $this->assignMiddlewaresToRoute($this->virtualRoutes[$lastKeyOfFirstRound][$lastKeyOfSecondRound], $middlewares);
-            return $this;
-        }
+		if (!$this->isGroupMiddlewares) {
+			end($this->virtualRoutes[$lastKeyOfFirstRound]);
+			$lastKeyOfSecondRound = key($this->virtualRoutes[$lastKeyOfFirstRound]);
+			$this->assignMiddlewaresToRoute($this->virtualRoutes[$lastKeyOfFirstRound][$lastKeyOfSecondRound], $middlewares);
+			return $this;
+		}
 
-        foreach ($this->virtualRoutes[$lastKeyOfFirstRound] as &$route) {
-            $this->assignMiddlewaresToRoute($route, $middlewares);
-        }
+		foreach ($this->virtualRoutes[$lastKeyOfFirstRound] as &$route) {
+			$this->assignMiddlewaresToRoute($route, $middlewares);
+		}
 
-        return $this;
-    }
+		return $this;
+	}
 
 	/**
 	 * @param bool $shouldCache
@@ -235,19 +220,15 @@ class Route
 			return $this;
 		}
 
-		if (!$ttl) {
-			$ttl = $this->viewCacheInstance->getTtl();
+		if ($ttl) {
+			$this->viewCacheInstance->setTtl($ttl);
 		}
 
 		if (!$this->isGroup){
 			end($this->virtualRoutes['*']);
 			$lastKey = key($this->virtualRoutes['*']);
 
-			if (!$shouldCache && key_exists('cache_settings', $this->virtualRoutes['*'][$lastKey])) {
-				unset($this->virtualRoutes['*'][$lastKey]['cache_settings']);
-			}else{
-				$this->assignCacheToCurrentRoute($this->virtualRoutes['*'][$lastKey], $shouldCache, $ttl);
-			}
+			$this->virtualRoutes['*'][$lastKey]['shouldCache'] = $shouldCache;
 
 			return $this;
 		}
@@ -256,117 +237,82 @@ class Route
 		$lastKeyOfFirstRound = key($this->virtualRoutes);
 
 		foreach ($this->virtualRoutes[$lastKeyOfFirstRound] as &$route) {
-			if (!$shouldCache && key_exists('cache_settings', $route)) {
-				unset($route['cache_settings']);
-			}else{
-				$this->assignCacheToCurrentRoute($route, $shouldCache, $ttl);
+			$route['shouldCache'] = $shouldCache;
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Sets a unique name for a route
+	 * @param string $name
+	 * @return Route
+	 * @throws RouteException
+	 */
+	public function name(string $name): Route
+	{
+		if (empty($this->currentRoute)) {
+			throw RouteException::nameBeforeDefinition();
+		}
+
+		if ($this->isGroupMiddlewares) {
+			throw RouteException::nameOnGroup();
+		}
+
+		foreach ($this->virtualRoutes as &$virtualRoute) {
+			foreach ($virtualRoute as &$route) {
+				if (isset($route['name']) && $route['name'] == $name) {
+					throw RouteException::nonUniqueName();
+				}
+
+				if ($route['route'] == $this->currentRoute['route']) {
+					$route['name'] = $name;
+				}
 			}
 		}
 
 		return $this;
 	}
 
-    /**
-     * Sets a unique name for a route
-     * @param string $name
-     * @return Route
-     * @throws RouteException
-     */
-    public function name(string $name): Route
-    {
-        if (empty($this->currentRoute)) {
-            throw RouteException::nameBeforeDefinition();
-        }
-
-        if ($this->isGroupMiddlewares) {
-            throw RouteException::nameOnGroup();
-        }
-
-        foreach ($this->virtualRoutes as &$virtualRoute) {
-            foreach ($virtualRoute as &$route) {
-                if (isset($route['name']) && $route['name'] == $name) {
-                    throw RouteException::nonUniqueName();
-                }
-
-                if ($route['route'] == $this->currentRoute['route']) {
-                    $route['name'] = $name;
-                }
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * Gets the run-time routes
-     * @return array
-     */
-    public function getRuntimeRoutes(): array
-    {
-        $runtimeRoutes = [];
-        foreach ($this->virtualRoutes as $virtualRoute) {
-            foreach ($virtualRoute as $route) {
-                $runtimeRoutes[] = $route;
-            }
-        }
-        return $runtimeRoutes;
-    }
-
-    /**
-     * Gets the virtual routes
-     * @return array
-     */
-    public function getVirtualRoutes(): array
-    {
-        return $this->virtualRoutes;
-    }
-
-    /**
-     * Assigns middlewares to the route
-     * @param array $route
-     * @param array $middlewares
-     */
-    private function assignMiddlewaresToRoute(array &$route, array $middlewares)
-    {
-        if (!key_exists('middlewares', $route)) {
-            $route['middlewares'] = $middlewares;
-        } else {
-            $middlewares = array_reverse($middlewares);
-
-            foreach ($middlewares as $middleware) {
-                array_unshift($route['middlewares'], $middleware);
-            }
-        }
-    }
-
 	/**
-	 * @param array $route
-	 * @param bool $shouldCache
-	 * @param int $ttl
-	 * @return void
+	 * Gets the run-time routes
+	 * @return array
 	 */
-	private function assignCacheToCurrentRoute(array &$route, bool $shouldCache, int $ttl)
+	public function getRuntimeRoutes(): array
 	{
-		$route['cache_settings'] = [
-			'shouldCache' => $shouldCache,
-			'ttl' => $ttl,
-		];
+		$runtimeRoutes = [];
+		foreach ($this->virtualRoutes as $virtualRoute) {
+			foreach ($virtualRoute as $route) {
+				$runtimeRoutes[] = $route;
+			}
+		}
+		return $runtimeRoutes;
 	}
 
 	/**
-	 * @return bool
-	 * @throws ConfigException
-	 * @throws DatabaseException
-	 * @throws DiException
-	 * @throws LangException
-	 * @throws SessionException
-	 * @throws ReflectionException
+	 * Gets the virtual routes
+	 * @return array
 	 */
-	private function canSetCacheToCurrentRoute(): bool
+	public function getVirtualRoutes(): array
 	{
-		return $this->viewCacheInstance->isEnabled() &&
-			!empty(session()->getId()) &&
-			!empty($this->moduleOptions) &&
-			!empty($this->moduleOptions['cacheable']);
+		return $this->virtualRoutes;
+	}
+
+	/**
+	 * Assigns middlewares to the route
+	 * @param array $route
+	 * @param array $middlewares
+	 */
+	private function assignMiddlewaresToRoute(array &$route, array $middlewares)
+	{
+		if (!key_exists('middlewares', $route)) {
+			$route['middlewares'] = $middlewares;
+		} else {
+			$middlewares = array_reverse($middlewares);
+
+			foreach ($middlewares as $middleware) {
+				array_unshift($route['middlewares'], $middleware);
+			}
+		}
 	}
 }

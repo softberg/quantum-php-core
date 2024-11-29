@@ -181,10 +181,10 @@ class QtView
 
 		$content = $this->renderFile($this->layout);
 
-	    if (($cacheSettings = route_cache_settings()) && session()->getId()){
+	    if (ViewCache::getInstance()->isEnabled()){
 		    $content =  ViewCache::getInstance()
-			    ->set(route_uri(), $content, session()->getId())
-			    ->get(route_uri(), session()->getId(), $cacheSettings['ttl']);
+			    ->set(route_uri(), $content)
+			    ->get(route_uri());
 	    }
 
         return $content;

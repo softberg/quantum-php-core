@@ -15,6 +15,7 @@
 namespace Quantum\Router;
 
 use Quantum\Exceptions\ModuleLoaderException;
+use Quantum\Libraries\ResourceCache\ViewCache;
 use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Exceptions\RouteException;
 use Quantum\Exceptions\DiException;
@@ -60,7 +61,7 @@ class ModuleLoader
                 throw RouteException::notClosure();
             }
 
-            $route = new Route([$module => $options]);
+            $route = new Route([$module => $options], ViewCache::getInstance());
 
             $routesClosure($route);
 
