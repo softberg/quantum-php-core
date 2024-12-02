@@ -3,10 +3,8 @@
 namespace Quantum\Tests\Router;
 
 use Quantum\Exceptions\RouteException;
-use Quantum\Libraries\ResourceCache\ViewCache;
 use Quantum\Tests\AppTestCase;
 use Quantum\Router\Route;
-use Mockery;
 
 class RouteTest extends AppTestCase
 {
@@ -24,9 +22,7 @@ class RouteTest extends AppTestCase
             ]
         ];
 
-	    config()->set('session.driver', 'file');
-	    Mockery::mock('Quantum\Libraries\ResourceCache\ViewCache');
-        $this->route = new Route($module, ViewCache::getInstance());
+        $this->route = new Route($module);
     }
 
     public function testCallbackRoute()
@@ -141,7 +137,8 @@ class RouteTest extends AppTestCase
 	{
 		$this->route->post('posts', 'PostsController', 'posts')->cacheable(true, 100);
 
-		$this->assertTrue($this->route->getRuntimeRoutes()[0]['shouldCache']);
+		$this->assertTrue($this->route->getRuntimeRoutes()[0]['cache_settings']['shouldCache']);
+		$this->assertEquals(100, $this->route->getRuntimeRoutes()[0]['cache_settings']['ttl']);
 	}
 
     public function testMiddlewares()

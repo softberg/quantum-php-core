@@ -62,10 +62,12 @@ class MvcManager
 
 		$callback = route_callback();
 
-		if (ViewCache::getInstance()->isEnabled() &&
-			ViewCache::getInstance()->exists(route_uri())
+		$viewCacheInstance = ViewCache::getInstance();
+
+		if ($viewCacheInstance->isEnabled() &&
+			$viewCacheInstance->exists(route_uri())
 		){
-			$content = ViewCache::getInstance()->get(route_uri());
+			$content = $viewCacheInstance->get(route_uri());
 			$response->html($content);
 		}elseif ($callback) {
 			call_user_func_array($callback, self::getArgs($callback));

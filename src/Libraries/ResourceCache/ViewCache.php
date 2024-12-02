@@ -34,7 +34,7 @@ class ViewCache
 	/**
 	 * @var int
 	 */
-	private $ttl;
+	private $ttl = 300;
 
 	/**
 	 * @var bool
@@ -68,18 +68,17 @@ class ViewCache
 	public function __construct()
 	{
 		if (config()->get('resource_cache')){
-			try {
-				config()->import(new Setup('config','view_cache'));
-			}catch (Exception $exception){
-				throw new Exception($exception->getMessage());
-			}
+			config()->import(new Setup('config','view_cache'));
 		}
 
 		$this->fs = Di::get(FileSystem::class);
 
 		$this->cacheDir = $this->getCacheDir();
 
-		$this->ttl = is_int(config()->get('view_cache.ttl')) ? config()->get('view_cache.ttl') : 300;
+		$configTtl  = config()->get('view_cache.ttl');
+		if (is_int($configTtl)){
+			$this->ttl = $configTtl;
+		}
 
 		$this->sessionId = session()->getId();
 
@@ -99,8 +98,7 @@ class ViewCache
 			$content = $this->minify($content);
 		}
 
-		$cacheFile = $this->getCacheFile($key);
-		$this->fs->put($cacheFile, $content);
+		$this->fs->put($this->getCacheFile($key), $content);
 
 		return $this;
 	}
@@ -111,13 +109,11 @@ class ViewCache
 	 */
 	public function get(string $key): ?string
 	{
-		$cacheFile = $this->getCacheFile($key);
-
 		if (!$this->exists($key)) {
 			return null;
 		}
 
-		return $this->fs->get($cacheFile);
+		return $this->fs->get($this->getCacheFile($key));
 	}
 
 	/**
@@ -176,7 +172,9 @@ class ViewCache
 			return $this->isEnabled;
 		}
 
-		if (is_bool(config()->get('resource_cache')) && config()->get('resource_cache') && !empty(session()->getId())){
+		$resourceCache = config()->get('resource_cache');
+
+		if (is_bool($resourceCache) && $resourceCache && !empty(session()->getId())){
 			return true;
 		}
 
@@ -192,9 +190,9 @@ class ViewCache
 		$this->ttl = $ttl;
 	}
 
-	public function setIsEnabled(bool $enabled): void
+	public function enableCaching(bool $state): void
 	{
-		$this->isEnabled = $enabled;
+		$this->isEnabled = $state;
 	}
 
 	/**

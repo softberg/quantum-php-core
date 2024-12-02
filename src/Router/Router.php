@@ -114,13 +114,19 @@ class Router extends RouteController
 
         $currentRoute = $this->currentRoute();
 
-	    if (is_array($currentRoute) && key_exists('shouldCache', $currentRoute)){
-		    ViewCache::getInstance()->setIsEnabled($currentRoute['shouldCache']);
-	    }
-
         if (!$currentRoute) {
             throw RouteException::incorrectMethod($this->request->getMethod());
         }
+
+	    if (!empty($currentRoute['cache_settings']) && key_exists('shouldCache', $currentRoute)){
+		    $viewCacheInstance = ViewCache::getInstance();
+
+			$viewCacheInstance->enableCaching($currentRoute['cache_settings']['shouldCache']);
+
+			if (!empty($currentRoute['cache_settings']['ttl'])){
+				$viewCacheInstance->setTtl($currentRoute['cache_settings']['ttl']);
+			}
+	    }
 
         self::setCurrentRoute($currentRoute);
 

@@ -14,7 +14,6 @@
 
 namespace Quantum\Router;
 
-use Quantum\Libraries\ResourceCache\ViewCache;
 use Quantum\Exceptions\DatabaseException;
 use Quantum\Exceptions\SessionException;
 use Quantum\Exceptions\ConfigException;
@@ -74,20 +73,13 @@ class Route
 	private $virtualRoutes = [];
 
 	/**
-	 * @var ViewCache
-	 */
-	private $viewCacheInstance;
-
-	/**
 	 * @param array $module
-	 * @param ViewCache $viewCache
 	 */
-	public function __construct(array $module, ViewCache $viewCache)
+	public function __construct(array $module)
 	{
 		$this->virtualRoutes['*'] = [];
 		$this->moduleName = key($module);
 		$this->moduleOptions = $module[key($module)];
-		$this->viewCacheInstance = $viewCache;
 	}
 
 	/**
@@ -111,7 +103,7 @@ class Route
 				$enabled = false;
 			}
 
-			$this->currentRoute['shouldCache'] = $enabled;
+			$this->currentRoute['cache_settings']['shouldCache'] = $enabled;
 		}
 
 		if (is_callable($params[0])) {
@@ -220,15 +212,15 @@ class Route
 			return $this;
 		}
 
-		if ($ttl) {
-			$this->viewCacheInstance->setTtl($ttl);
-		}
-
 		if (!$this->isGroup){
 			end($this->virtualRoutes['*']);
 			$lastKey = key($this->virtualRoutes['*']);
 
-			$this->virtualRoutes['*'][$lastKey]['shouldCache'] = $shouldCache;
+			$this->virtualRoutes['*'][$lastKey]['cache_settings']['shouldCache'] = $shouldCache;
+
+			if ($ttl) {
+				$this->virtualRoutes['*'][$lastKey]['cache_settings']['ttl'] = $ttl;
+			}
 
 			return $this;
 		}
@@ -237,7 +229,10 @@ class Route
 		$lastKeyOfFirstRound = key($this->virtualRoutes);
 
 		foreach ($this->virtualRoutes[$lastKeyOfFirstRound] as &$route) {
-			$route['shouldCache'] = $shouldCache;
+			$route['cache_settings']['shouldCache'] = $shouldCache;
+			if ($ttl) {
+				$route['cache_settings']['ttl'] = $ttl;
+			}
 		}
 
 		return $this;

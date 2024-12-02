@@ -11,19 +11,14 @@ class ViewCacheTest extends AppTestCase
 
 	private $route = '/current-route';
 
-	private $sessionId = 'tsmfr27jvuuadhvdi47vrf8cvf';
-
 	private $content = 'test html content';
 
 	public function setUp():void
 	{
 		parent::setUp();
 
-		$_COOKIE['PHPSESSID'] = $this->sessionId. time();
-
 		config()->set('resource_cache', true);
 		$this->viewCache = ViewCache::getInstance();
-
 	}
 
 	public function testStoreAndGetViewCache()
