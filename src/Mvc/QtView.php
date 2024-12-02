@@ -14,7 +14,11 @@
 
 namespace Quantum\Mvc;
 
+use Quantum\Libraries\ResourceCache\ViewCache;
 use Quantum\Libraries\Asset\AssetManager;
+use Quantum\Exceptions\DatabaseException;
+use Quantum\Exceptions\SessionException;
+use Quantum\Exceptions\ConfigException;
 use Quantum\Exceptions\AssetException;
 use Quantum\Exceptions\LangException;
 use Quantum\Exceptions\ViewException;
@@ -139,20 +143,22 @@ class QtView
         $this->params = [];
     }
 
-    /**
-     * Renders the view
-     * @param string $view
-     * @param array $params
-     * @return string|null
-     * @throws DiException
-     * @throws LoaderError
-     * @throws ReflectionException
-     * @throws RuntimeError
-     * @throws ViewException
-     * @throws AssetException
-     * @throws LangException
-     * @throws SyntaxError
-     */
+	/**
+	 * @param string $view
+	 * @param array $params
+	 * @return string|null
+	 * @throws AssetException
+	 * @throws DiException
+	 * @throws LangException
+	 * @throws LoaderError
+	 * @throws ReflectionException
+	 * @throws RuntimeError
+	 * @throws SyntaxError
+	 * @throws ViewException
+	 * @throws ConfigException
+	 * @throws DatabaseException
+	 * @throws SessionException
+	 */
     public function render(string $view, array $params = []): ?string
     {
         if (!$this->layout) {
@@ -173,7 +179,17 @@ class QtView
             AssetManager::getInstance()->register($this->assets);
         }
 
-        return $this->renderFile($this->layout);
+		$content = $this->renderFile($this->layout);
+
+	    $viewCacheInstance = ViewCache::getInstance();
+
+	    if ($viewCacheInstance->isEnabled()){
+		    $content =  $viewCacheInstance
+			    ->set(route_uri(), $content)
+			    ->get(route_uri());
+	    }
+
+        return $content;
     }
 
     /**
@@ -265,5 +281,4 @@ class QtView
             $value = htmlspecialchars($value, ENT_NOQUOTES, 'UTF-8');
         }
     }
-
 }

@@ -125,6 +125,15 @@ function route_uri(): string
 }
 
 /**
+ * Gets the current route cache settings
+ * @return array|null
+ */
+function route_cache_settings(): ?array
+{
+	return RouteController::getCurrentRoute()['cache_settings'] ?? null;
+}
+
+/**
  * Gets the current route name
  * @return string|null
  */

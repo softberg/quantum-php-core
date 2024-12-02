@@ -99,6 +99,7 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
         if (filter_var(config()->get('2FA'), FILTER_VALIDATE_BOOLEAN)) {
             return $this->twoStepVerification($user);
         } else {
+	        session()->regenerateId();
             session()->set($this->authUserKey, $this->getVisibleFields($user));
             return true;
         }
@@ -118,6 +119,7 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
     {
         if (session()->has($this->authUserKey)) {
             session()->delete($this->authUserKey);
+	        session()->regenerateId();
             $this->removeRememberToken();
 
             return true;

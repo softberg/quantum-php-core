@@ -15,6 +15,7 @@
 namespace Quantum\Router;
 
 use Quantum\Exceptions\StopExecutionException;
+use Quantum\Libraries\ResourceCache\ViewCache;
 use Quantum\Exceptions\RouteException;
 use Quantum\Exceptions\ViewException;
 use Quantum\Exceptions\DiException;
@@ -116,6 +117,16 @@ class Router extends RouteController
         if (!$currentRoute) {
             throw RouteException::incorrectMethod($this->request->getMethod());
         }
+
+	    if (!empty($currentRoute['cache_settings']) && key_exists('shouldCache', $currentRoute)){
+		    $viewCacheInstance = ViewCache::getInstance();
+
+			$viewCacheInstance->enableCaching($currentRoute['cache_settings']['shouldCache']);
+
+			if (!empty($currentRoute['cache_settings']['ttl'])){
+				$viewCacheInstance->setTtl($currentRoute['cache_settings']['ttl']);
+			}
+	    }
 
         self::setCurrentRoute($currentRoute);
 

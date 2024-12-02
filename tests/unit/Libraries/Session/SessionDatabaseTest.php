@@ -8,6 +8,9 @@ use Quantum\Libraries\Database\Database;
 use Quantum\Libraries\Session\Session;
 use Quantum\Tests\AppTestCase;
 
+/**
+ * @runTestsInSeparateProcesses
+ */
 class SessionDatabaseTest extends AppTestCase
 {
     private $session;
