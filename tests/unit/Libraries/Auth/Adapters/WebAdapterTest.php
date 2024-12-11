@@ -1,23 +1,31 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Auth;
+namespace Quantum\Tests\Libraries\Auth\Adapters;
 
-use Quantum\Exceptions\AuthException;
+use Quantum\Libraries\Auth\Adapters\WebAdapter;
+use Quantum\Tests\Libraries\Auth\AuthTestCase;
+use Quantum\Libraries\Auth\AuthException;
 use Quantum\Libraries\Hasher\Hasher;
-use Quantum\Libraries\Auth\WebAuth;
+use ReflectionClass;
 
-
-class WebAuthTest extends AuthTestCase
+class WebAdapterTest extends AuthTestCase
 {
 
     private $webAuth;
 
     public function setUp(): void
     {
-
         parent::setUp();
 
-        $this->webAuth = WebAuth::getInstance($this->authService, $this->mailer, new Hasher);
+        $reflection = new ReflectionClass(WebAdapter::class);
+
+        if ($reflection->hasProperty('instance')) {
+            $instanceProperty = $reflection->getProperty('instance');
+            $instanceProperty->setAccessible(true);
+            $instanceProperty->setValue(null);
+        }
+
+        $this->webAuth = WebAdapter::getInstance($this->authService, $this->mailer, new Hasher);
 
         $admin = $this->webAuth->signup($this->adminUser);
 
@@ -31,9 +39,9 @@ class WebAuthTest extends AuthTestCase
         $this->webAuth->signout();
     }
 
-    public function testWebAuthConstructor()
+    public function testWebAdapterConstructor()
     {
-        $this->assertInstanceOf(WebAuth::class, $this->webAuth);
+        $this->assertInstanceOf(WebAdapter::class, $this->webAuth);
     }
 
     public function testWebSigninIncorrectCredentials()

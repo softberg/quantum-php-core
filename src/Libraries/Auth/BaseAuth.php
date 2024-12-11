@@ -9,14 +9,13 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Libraries\Auth;
 
 use Quantum\Libraries\Mailer\MailerInterface;
 use Quantum\Libraries\JWToken\JWToken;
-use Quantum\Exceptions\AuthException;
 use Quantum\Exceptions\LangException;
 use Quantum\Libraries\Hasher\Hasher;
 use Quantum\Exceptions\DiException;
@@ -133,6 +132,7 @@ abstract class BaseAuth
      * Verify user schema
      * @param array $schema
      * @throws AuthException
+     * @throws LangException
      */
     protected function verifySchema(array $schema)
     {
@@ -172,9 +172,6 @@ abstract class BaseAuth
      * @param array $userData
      * @param array|null $customData
      * @return User
-     * @throws DiException
-     * @throws Exception
-     * @throws ReflectionException
      * @throws LangException
      */
     public function signup(array $userData, array $customData = null): User
@@ -220,9 +217,6 @@ abstract class BaseAuth
      * Forget
      * @param string $username
      * @return string|null
-     * @throws DiException
-     * @throws Exception
-     * @throws ReflectionException
      * @throws LangException
      */
     public function forget(string $username): ?string
@@ -302,6 +296,7 @@ abstract class BaseAuth
      * @param string $password
      * @return User
      * @throws AuthException
+     * @throws LangException
      */
     protected function getUser(string $username, string $password): User
     {
@@ -326,9 +321,6 @@ abstract class BaseAuth
      * Two-Step Verification
      * @param User $user
      * @return string
-     * @throws Exception
-     * @throws DiException
-     * @throws ReflectionException
      * @throws \Exception
      */
     protected function twoStepVerification(User $user): string

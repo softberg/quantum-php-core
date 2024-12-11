@@ -9,49 +9,51 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.5
  */
 
-namespace Quantum\Libraries\Auth;
+namespace Quantum\Libraries\Auth\Adapters;
 
+use Quantum\Libraries\Auth\AuthenticatableInterface;
+use Quantum\Libraries\Auth\AuthServiceInterface;
 use Quantum\Libraries\Mailer\MailerInterface;
+use Quantum\Libraries\Auth\AuthException;
 use Quantum\Libraries\JWToken\JWToken;
-use Quantum\Exceptions\AuthException;
+use Quantum\Exceptions\LangException;
 use Quantum\Exceptions\JwtException;
+use Quantum\Libraries\Auth\BaseAuth;
 use Quantum\Libraries\Hasher\Hasher;
-use Quantum\Exceptions\DiException;
-use PHPMailer\PHPMailer\Exception;
+use Quantum\Libraries\Auth\User;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
-use ReflectionException;
+use Exception;
 
 /**
  * Class ApiAuth
  * @package Quantum\Libraries\Auth
  */
-class ApiAuth extends BaseAuth implements AuthenticableInterface
+class ApiAdapter extends BaseAuth implements AuthenticatableInterface
 {
 
     /**
-     * Instance of ApiAuth
-     * @var ApiAuth
+     * @var ApiAdapter
      */
     private static $instance;
 
     /**
-     * ApiAuth constructor.
      * @param AuthServiceInterface $authService
      * @param MailerInterface $mailer
      * @param Hasher $hasher
      * @param JWToken|null $jwt
      * @throws AuthException
+     * @throws LangException
      */
     private function __construct(AuthServiceInterface $authService, MailerInterface $mailer, Hasher $hasher, JWToken $jwt = null)
     {
-        $this->mailer = $mailer;
-        $this->jwt = $jwt;
-        $this->hasher = $hasher;
         $this->authService = $authService;
+        $this->mailer = $mailer;
+        $this->hasher = $hasher;
+        $this->jwt = $jwt;
 
         $userSchema = $this->authService->userSchema();
 
@@ -59,15 +61,15 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
     }
 
     /**
-     * Get Instance
      * @param AuthServiceInterface $authService
      * @param MailerInterface $mailer
      * @param Hasher $hasher
      * @param JWToken|null $jwt
-     * @return ApiAuth
+     * @return self
      * @throws AuthException
+     * @throws LangException
      */
-    public static function getInstance(AuthServiceInterface $authService, MailerInterface $mailer, Hasher $hasher, JWToken $jwt = null): ApiAuth
+    public static function getInstance(AuthServiceInterface $authService, MailerInterface $mailer, Hasher $hasher, JWToken $jwt = null): self
     {
         if (self::$instance === null) {
             self::$instance = new self($authService, $mailer, $hasher, $jwt);
@@ -82,10 +84,9 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
      * @param string $password
      * @return array|string
      * @throws AuthException
-     * @throws Exception
-     * @throws DiException
      * @throws JwtException
-     * @throws ReflectionException
+     * @throws LangException
+     * @throws Exception
      */
     public function signin(string $username, string $password)
     {
@@ -135,7 +136,7 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
         try {
             $accessToken = base64_decode((string)Request::getAuthorizationBearer());
             return (new User())->setData($this->jwt->retrieve($accessToken)->fetchData());
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             if (Request::hasHeader($this->keyFields[self::REFRESH_TOKEN_KEY])) {
                 $user = $this->checkRefreshToken();
 
@@ -183,7 +184,10 @@ class ApiAuth extends BaseAuth implements AuthenticableInterface
      */
     protected function checkRefreshToken(): ?User
     {
-        return $this->authService->get($this->keyFields[self::REFRESH_TOKEN_KEY], Request::getHeader($this->keyFields[self::REFRESH_TOKEN_KEY]));
+        return $this->authService->get(
+            $this->keyFields[self::REFRESH_TOKEN_KEY],
+            Request::getHeader($this->keyFields[self::REFRESH_TOKEN_KEY])
+        );
     }
 
     /**
