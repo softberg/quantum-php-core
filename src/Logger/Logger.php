@@ -9,12 +9,11 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.4.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Logger;
 
-use Quantum\Contracts\ReportableInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
@@ -26,17 +25,25 @@ class Logger implements LoggerInterface
 {
 
     /**
-     * @var \Quantum\Contracts\ReportableInterface
+     * @var ReportableInterface
      */
-    private $reporter;
+    private $adapter;
 
     /**
      * Logger constructor.
-     * @param \Quantum\Contracts\ReportableInterface $reporter
+     * @param ReportableInterface $adapter
      */
-    public function __construct(ReportableInterface $reporter)
+    public function __construct(ReportableInterface $adapter)
     {
-        $this->reporter = $reporter;
+        $this->adapter = $adapter;
+    }
+
+    /**
+     * @return ReportableInterface
+     */
+    public function getAdapter(): ReportableInterface
+    {
+        return $this->adapter;
     }
 
     /**
@@ -108,7 +115,7 @@ class Logger implements LoggerInterface
      */
     public function log($level, $message, array $context = [])
     {
-        $this->reporter->report($level, $message, $context);
+        $this->adapter->report($level, $message, $context);
     }
 
 }
