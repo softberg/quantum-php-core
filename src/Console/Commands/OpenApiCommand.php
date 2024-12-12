@@ -9,14 +9,15 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Console\Commands;
 
-use Quantum\Exceptions\ModuleLoaderException;
+use Quantum\Router\ModuleLoaderException;
 use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Exceptions\RouteException;
+use Quantum\Exceptions\LangException;
 use Quantum\Exceptions\DiException;
 use Quantum\Router\ModuleLoader;
 use Quantum\Console\QtCommand;
@@ -83,14 +84,15 @@ class OpenApiCommand extends QtCommand
 
     /**
      * Executes the command and generate Open API specifications
-     * @throws ModuleLoaderException
-     * @throws RouteException
      * @throws DiException
+     * @throws ModuleLoaderException
      * @throws ReflectionException
+     * @throws RouteException
+     * @throws LangException
      */
     public function exec()
     {
-        ModuleLoader::loadModulesRoutes();
+        ModuleLoader::getInstance()->loadModulesRoutes();
 
         $this->fs = Di::get(FileSystem::class);
 
