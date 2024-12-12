@@ -7,53 +7,100 @@ use Quantum\Tests\AppTestCase;
 
 class ViewCacheTest extends AppTestCase
 {
-	private $viewCache;
+    private $viewCache;
 
-	private $route = '/current-route';
+    private $route = '/current-route';
 
-	private $content = 'test html content';
+    private $content = <<<HEREDOC
+    <div>
+        <span>test html content</span>span>
+    </div>
+HEREDOC;
 
-	public function setUp():void
-	{
-		parent::setUp();
+    public function setUp(): void
+    {
+        parent::setUp();
 
-		config()->set('resource_cache', true);
-		$this->viewCache = ViewCache::getInstance();
-	}
+        $this->viewCache = ViewCache::getInstance();
+    }
 
-	public function testStoreAndGetViewCache()
-	{
-		$this->viewCache->set($this->route, $this->content);
+    public function tearDown(): void
+    {
+        $this->viewCache->delete($this->route);
+    }
 
-		$viewCache = $this->viewCache->get($this->route);
+    public function testSetAndGetViewCache()
+    {
+        $this->viewCache->set($this->route, $this->content);
 
-		$this->assertIsString($viewCache);
-		$this->assertEquals($this->content, $viewCache);
-	}
+        $viewCache = $this->viewCache->get($this->route);
 
-	public function testExistsViewCache()
-	{
-		$this->viewCache->set($this->route, $this->content);
+        $this->assertEquals($this->content, $viewCache);
+    }
 
-		$this->assertIsBool($this->viewCache->exists($this->route));
-		$this->assertTrue($this->viewCache->exists($this->route));
-	}
+    public function testViewCacheContentMinification()
+    {
 
-	public function testDeleteViewCache()
-	{
-		$this->viewCache->set($this->route, $this->content);
+        $this->viewCache->enableMinification(true);
 
-		$this->assertIsBool($this->viewCache->exists($this->route));
-		$this->assertTrue($this->viewCache->exists($this->route));
+        $this->viewCache->set($this->route, $this->content);
 
-		$this->viewCache->delete($this->route);
+        $content = $this->viewCache->get($this->route);
 
-		$this->assertIsBool($this->viewCache->exists($this->route));
-		$this->assertFalse($this->viewCache->exists($this->route));
-	}
+        $minifiedContent = '<div><span>test html content</span>span> </div>';
 
-	public function tearDown(): void
-	{
-		$this->viewCache->delete($this->route);
-	}
+        $this->assertEquals($minifiedContent, $content);
+    }
+
+    public function testExistsViewCache()
+    {
+        $this->viewCache->set($this->route, $this->content);
+
+        $this->assertTrue($this->viewCache->exists($this->route));
+    }
+
+    public function testDeleteViewCache()
+    {
+        $this->viewCache->set($this->route, $this->content);
+
+        $this->assertTrue($this->viewCache->exists($this->route));
+
+        $this->viewCache->delete($this->route);
+
+        $this->assertFalse($this->viewCache->exists($this->route));
+    }
+
+    public function testGetNonExistentViewCache()
+    {
+        $viewCache = $this->viewCache->get('/non-existent-route');
+
+        $this->assertNull($viewCache);
+    }
+
+    public function testViewCacheIsExpired()
+    {
+        $this->viewCache->setTtl(1);
+
+        $this->viewCache->set($this->route, $this->content);
+
+        sleep(2);
+
+        $viewCache = $this->viewCache->get($this->route);
+
+        $this->assertNull($viewCache);
+    }
+
+    public function testEnableDisableViewCache()
+    {
+        $this->assertFalse($this->viewCache->isEnabled());
+
+        $this->viewCache->enableCaching(true);
+
+        $this->assertTrue($this->viewCache->isEnabled());
+
+        $this->viewCache->enableCaching(false);
+
+        $this->assertFalse($this->viewCache->isEnabled());
+    }
+
 }

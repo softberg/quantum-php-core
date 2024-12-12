@@ -185,19 +185,19 @@ class QtView
             $debugger->addToStoreCell(Debugger::ROUTES, LogLevel::INFO, $mergedData);
         }
 
-        if(!empty($this->assets)) {
+        if (!empty($this->assets)) {
             AssetManager::getInstance()->register($this->assets);
         }
 
-		$content = $this->renderFile($this->layout);
+        $content = $this->renderFile($this->layout);
 
-	    $viewCacheInstance = ViewCache::getInstance();
+        $viewCacheInstance = ViewCache::getInstance();
 
-	    if ($viewCacheInstance->isEnabled()){
-		    $content =  $viewCacheInstance
-			    ->set(route_uri(), $content)
-			    ->get(route_uri());
-	    }
+        if ($viewCacheInstance->isEnabled()) {
+            $content = $viewCacheInstance
+                ->set(route_uri(), $content)
+                ->get(route_uri());
+        }
 
         return $content;
     }
