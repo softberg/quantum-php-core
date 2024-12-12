@@ -109,7 +109,7 @@ class Lang
             }
         }
 
-        self::$translations = new Data();
+        $translations = [];
 
         foreach ($files as $file) {
             $fileName = $fs->fileName($file);
@@ -119,8 +119,10 @@ class Lang
             $setup->setFilename($fileName);
             $setup->setHierarchy(true);
 
-            self::$translations->import([$fileName => Di::get(Loader::class)->setup($setup)->load()]);
+            $translations[$fileName] = Di::get(Loader::class)->setup($setup)->load();
         }
+
+        $this->setTranslations($translations);
     }
 
     /**
@@ -141,6 +143,19 @@ class Lang
     public function getLang(): ?string
     {
         return self::$currentLang;
+    }
+
+    /**
+     * Sets translations manually (for testing purposes)
+     * @param array $translations
+     */
+    public function setTranslations(array $translations)
+    {
+        if (self::$translations === null) {
+            self::$translations = new Data();
+        }
+
+        self::$translations->import($translations);
     }
 
     /**

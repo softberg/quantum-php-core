@@ -60,6 +60,23 @@ namespace Quantum\Tests\Libraries\Lang {
             $this->assertEquals('ru', $this->lang->getLang());
         }
 
+        public function testSetTranslations()
+        {
+            $translations = [
+                'custom' => [
+                    'label' => 'Black',
+                    'note' => 'Note this is a new feature'
+                ]
+            ];
+
+            $this->lang->setTranslations($translations);
+
+            $this->assertNotNull($this->lang->getTranslations());
+
+            $this->assertEquals('Black', $this->lang->getTranslation('custom.label'));
+            $this->assertEquals('Note this is a new feature', $this->lang->getTranslation('custom.note'));
+        }
+
         public function testGetTranslation()
         {
             $this->assertEquals('Testing', $this->lang->getTranslation('custom.test'));
