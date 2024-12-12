@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Http\Response;
@@ -17,7 +17,7 @@ namespace Quantum\Http\Response;
 use Quantum\Exceptions\StopExecutionException;
 use Quantum\Exceptions\LangException;
 use Quantum\Exceptions\HttpException;
-use Quantum\Bootstrap;
+use InvalidArgumentException;
 use SimpleXMLElement;
 use DOMDocument;
 use Exception;
@@ -76,6 +76,12 @@ abstract class HttpResponse
      */
     private static $callbackFunction = '';
 
+
+    /**
+     * @var bool
+     */
+    private static $initialized = false;
+
     /**
      * Initialize the Response
      * @throws HttpException
@@ -83,11 +89,15 @@ abstract class HttpResponse
      */
     public static function init()
     {
-        if (get_caller_class(3) !== Bootstrap::class) {
-            throw HttpException::unexpectedResponseInitialization();
+        if (self::$initialized) {
+            return;
         }
 
-        self::$statusTexts = self::$statusTexts ?: require_once 'statuses.php';
+        if (empty(self::$statusTexts)) {
+            self::$statusTexts = require_once 'statuses.php';
+        }
+
+        self::$initialized = true;
     }
 
     /**
@@ -151,7 +161,7 @@ abstract class HttpResponse
     public static function setStatusCode(int $code)
     {
         if (!array_key_exists($code, self::$statusTexts)) {
-            throw new \InvalidArgumentException(sprintf('The HTTP status code "%s" is not valid.', $code));
+            throw new InvalidArgumentException(sprintf('The HTTP status code "%s" is not valid.', $code));
         }
 
         self::$__statusCode = $code;
@@ -202,9 +212,7 @@ abstract class HttpResponse
         }
 
         if ($data) {
-            foreach ($data as $key => $value) {
-                self::$__response[$key] = $value;
-            }
+            self::$__response = array_merge(self::$__response, $data);
         }
     }
 
@@ -225,9 +233,7 @@ abstract class HttpResponse
         }
 
         if ($data) {
-            foreach ($data as $key => $value) {
-                self::$__response[$key] = $value;
-            }
+            self::$__response = array_merge(self::$__response, $data);
         }
     }
 
@@ -236,7 +242,7 @@ abstract class HttpResponse
      * @param array $data
      * @return string
      */
-    public static function getJsonPData($data)
+    public static function getJsonPData(array $data): string
     {
         return self::$callbackFunction . '(' . json_encode($data) . ")";
     }
@@ -257,9 +263,7 @@ abstract class HttpResponse
         self::$xmlRoot = $root;
 
         if ($data) {
-            foreach ($data as $key => $value) {
-                self::$__response[$key] = $value;
-            }
+            self::$__response = array_merge(self::$__response, $data);
         }
     }
 

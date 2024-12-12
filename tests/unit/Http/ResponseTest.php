@@ -1,300 +1,287 @@
 <?php
 
-namespace Quantum\Http\Response {
+namespace Quantum\Tests\Http;
 
-    use Quantum\Bootstrap;
+use Quantum\Exceptions\StopExecutionException;
+use Quantum\Tests\AppTestCase;
+use Quantum\Http\Response;
 
-    function get_caller_class()
+class ResponseTest extends AppTestCase
+{
+
+    public function setUp(): void
     {
-        return Bootstrap::class;
+        parent::setUp();
+
+        Response::init();
     }
 
-}
-
-namespace Quantum\Tests\Http {
-
-    use Quantum\Exceptions\StopExecutionException;
-    use Quantum\Tests\AppTestCase;
-    use Quantum\Http\Response;
-
-    class ResponseTest extends AppTestCase
+    public function tearDown(): void
     {
+        Response::flush();
+    }
 
-        public function setUp(): void
-        {
-            parent::setUp();
+    public function testResponseSetHasGetAllDelete()
+    {
+        $response = new Response();
 
-            Response::init();
+        $this->assertEmpty($response->all());
+
+        $this->assertFalse($response->has('name'));
+
+        $response->set('name', 'John');
+
+        $this->assertTrue($response->has('name'));
+
+        $this->assertEquals('John', $response->get('name'));
+
+        $this->assertIsArray($response->all());
+
+        $response->delete('name');
+
+        $this->assertFalse($response->has('name'));
+
+        $this->assertNull($response->get('name'));
+
+        $this->assertEquals('Jane', $response->get('name', 'Jane'));
+    }
+
+    public function testResponseHeaderSetHasGetAllDelete()
+    {
+        $response = new Response();
+
+        $this->assertEmpty($response->allHeaders());
+
+        $this->assertFalse($response->hasHeader('X-Frame-Options'));
+
+        $response->setHeader('X-Frame-Options', 'deny');
+
+        $this->assertTrue($response->hasHeader('X-Frame-Options'));
+
+        $this->assertEquals('deny', $response->getHeader('X-Frame-Options'));
+
+        $this->assertIsArray($response->allHeaders());
+
+        $response->deleteHeader('X-Frame-Options');
+
+        $this->assertFalse($response->hasHeader('X-Frame-Options'));
+
+        $this->assertNull($response->getHeader('X-Frame-Options'));
+    }
+
+    public function testResponseStatus()
+    {
+        $response = new Response();
+
+        $this->assertEquals(200, $response->getStatusCode());
+
+        $response->setStatusCode(301);
+
+        $this->assertEquals(301, $response->getStatusCode());
+
+        $this->assertEquals('Moved Permanently', $response->getStatusText());
+    }
+
+    public function testResponseContentType()
+    {
+        $response = new Response();
+
+        $this->assertNull($response->getContentType());
+
+        $response->setContentType('application/json');
+
+        $this->assertEquals('application/json', $response->getContentType());
+    }
+
+    public function testResponseRedirect()
+    {
+        $response = new Response();
+
+        $this->assertFalse($response->hasHeader('Location'));
+
+        try {
+            $response->redirect('/');
+        } catch (StopExecutionException $e) {
+
         }
 
-        public function tearDown(): void
-        {
-            Response::flush();
+        $this->assertTrue($response->hasHeader('Location'));
+
+        $this->assertEquals('/', $response->getHeader('Location'));
+
+        $this->assertEquals(302, $response->getStatusCode());
+
+        try {
+            $response->redirect('/home', 301);
+        } catch (StopExecutionException $e) {
+
         }
 
-        public function testResponseSetHasGetAllDelete()
-        {
-            $response = new Response();
+        $this->assertEquals('/home', $response->getHeader('Location'));
 
-            $this->assertEmpty($response->all());
+        $this->assertEquals(301, $response->getStatusCode());
+    }
 
-            $this->assertFalse($response->has('name'));
+    public function testResponseJsonContent()
+    {
+        $response = new Response();
 
-            $response->set('name', 'John');
+        $response->set('firstname', 'John');
 
-            $this->assertTrue($response->has('name'));
+        $response->set('lastname', 'Doe');
 
-            $this->assertEquals('John', $response->get('name'));
+        $response->json();
 
-            $this->assertIsArray($response->all());
+        $this->assertEquals('{"firstname":"John","lastname":"Doe"}', $response->getContent());
 
-            $response->delete('name');
+        $response->set('age', 25);
 
-            $this->assertFalse($response->has('name'));
+        $this->assertEquals('{"firstname":"John","lastname":"Doe","age":25}', $response->getContent());
 
-            $this->assertNull($response->get('name'));
+        $response->json([
+            'gender' => 'male',
+            'role' => 'user'
+        ]);
 
-            $this->assertEquals('Jane', $response->get('name', 'Jane'));
-        }
+        $this->assertEquals('{"firstname":"John","lastname":"Doe","age":25,"gender":"male","role":"user"}', $response->getContent());
 
-        public function testResponseHeaderSetHasGetAllDelete()
-        {
-            $response = new Response();
+        $this->assertEquals(200, $response->getStatusCode());
+    }
 
-            $this->assertEmpty($response->allHeaders());
+    public function testResponseJsonP()
+    {
+        $response = new Response();
 
-            $this->assertFalse($response->hasHeader('X-Frame-Options'));
+        $response->set('firstname', 'John');
 
-            $response->setHeader('X-Frame-Options', 'deny');
+        $response->set('lastname', 'Doe');
 
-            $this->assertTrue($response->hasHeader('X-Frame-Options'));
+        $response->jsonp('myfunc');
 
-            $this->assertEquals('deny', $response->getHeader('X-Frame-Options'));
+        $this->assertEquals('myfunc({"firstname":"John","lastname":"Doe"})', $response->getContent());
+    }
 
-            $this->assertIsArray($response->allHeaders());
+    public function testReponseXmlContent()
+    {
+        $response = new Response();
 
-            $response->deleteHeader('X-Frame-Options');
+        $response->set('firstname', 'John');
 
-            $this->assertFalse($response->hasHeader('X-Frame-Options'));
+        $response->set('lastname', 'Doe');
 
-            $this->assertNull($response->getHeader('X-Frame-Options'));
-        }
+        $response->xml();
 
-        public function testResponseStatus()
-        {
-            $response = new Response();
+        $xml = "<?xml version=\"1.0\"?>\n" .
+            "<data>\n" .
+            "  <firstname>John</firstname>\n" .
+            "  <lastname>Doe</lastname>\n" .
+            "</data>\n";
 
-            $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals($xml, $response->getContent());
 
-            $response->setStatusCode(301);
+        $response->set('age', 25);
 
-            $this->assertEquals(301, $response->getStatusCode());
+        $xml = "<?xml version=\"1.0\"?>\n" .
+            "<data>\n" .
+            "  <firstname>John</firstname>\n" .
+            "  <lastname>Doe</lastname>\n" .
+            "  <age>25</age>\n" .
+            "</data>\n";
 
-            $this->assertEquals('Moved Permanently', $response->getStatusText());
-        }
+        $this->assertEquals($xml, $response->getContent());
 
-        public function testResponseContentType()
-        {
-            $response = new Response();
+        $response->xml([
+            'gender' => 'male',
+            'role' => 'user'
+        ]);
 
-            $this->assertNull($response->getContentType());
+        $xml = "<?xml version=\"1.0\"?>\n" .
+            "<data>\n" .
+            "  <firstname>John</firstname>\n" .
+            "  <lastname>Doe</lastname>\n" .
+            "  <age>25</age>\n" .
+            "  <gender>male</gender>\n" .
+            "  <role>user</role>\n" .
+            "</data>\n";
 
-            $response->setContentType('application/json');
+        $this->assertEquals($xml, $response->getContent());
+    }
 
-            $this->assertEquals('application/json', $response->getContentType());
-        }
+    public function testResponseXmlWithNestedArray()
+    {
+        $response = new Response();
 
-        public function testResponseRedirect()
-        {
-            $response = new Response();
+        $response->xml([
+            'article' => [
+                'title' => 'Todays news',
+                'description' => 'News content'
+            ]
+        ]);
 
-            $this->assertFalse($response->hasHeader('Location'));
-
-            try {
-                $response->redirect('/');
-            } catch (StopExecutionException $e) {
-                
-            }
-
-            $this->assertTrue($response->hasHeader('Location'));
-
-            $this->assertEquals('/', $response->getHeader('Location'));
-
-            $this->assertEquals(302, $response->getStatusCode());
-
-            try {
-                $response->redirect('/home', 301);
-            } catch (StopExecutionException $e) {
-                
-            }
-
-            $this->assertEquals('/home', $response->getHeader('Location'));
-
-            $this->assertEquals(301, $response->getStatusCode());
-        }
-
-        public function testResponseJsonContent()
-        {
-            $response = new Response();
-
-            $response->set('firstname', 'John');
-
-            $response->set('lastname', 'Doe');
-
-            $response->json();
-
-            $this->assertEquals('{"firstname":"John","lastname":"Doe"}', $response->getContent());
-
-            $response->set('age', 25);
-
-            $this->assertEquals('{"firstname":"John","lastname":"Doe","age":25}', $response->getContent());
-
-            $response->json([
-                'gender' => 'male',
-                'role' => 'user'
-            ]);
-
-            $this->assertEquals('{"firstname":"John","lastname":"Doe","age":25,"gender":"male","role":"user"}', $response->getContent());
-
-            $this->assertEquals(200, $response->getStatusCode());
-        }
-
-        public function testResponseJsonP()
-        {
-            $response = new Response();
-
-            $response->set('firstname', 'John');
-
-            $response->set('lastname', 'Doe');
-
-            $response->jsonp('myfunc');
-
-            $this->assertEquals('myfunc({"firstname":"John","lastname":"Doe"})', $response->getContent());
-        }
-
-        public function testReponseXmlContent()
-        {
-            $response = new Response();
-
-            $response->set('firstname', 'John');
-
-            $response->set('lastname', 'Doe');
-
-            $response->xml();
-
-            $xml = "<?xml version=\"1.0\"?>\n" .
-                    "<data>\n" .
-                    "  <firstname>John</firstname>\n" .
-                    "  <lastname>Doe</lastname>\n" .
-                    "</data>\n";
-
-            $this->assertEquals($xml, $response->getContent());
-
-            $response->set('age', 25);
-
-            $xml = "<?xml version=\"1.0\"?>\n" .
-                    "<data>\n" .
-                    "  <firstname>John</firstname>\n" .
-                    "  <lastname>Doe</lastname>\n" .
-                    "  <age>25</age>\n" .
-                    "</data>\n";
-
-            $this->assertEquals($xml, $response->getContent());
-
-            $response->xml([
-                'gender' => 'male',
-                'role' => 'user'
-            ]);
-
-            $xml = "<?xml version=\"1.0\"?>\n" .
-                    "<data>\n" .
-                    "  <firstname>John</firstname>\n" .
-                    "  <lastname>Doe</lastname>\n" .
-                    "  <age>25</age>\n" .
-                    "  <gender>male</gender>\n" .
-                    "  <role>user</role>\n" .
-                    "</data>\n";
-
-            $this->assertEquals($xml, $response->getContent());
-        }
-
-        public function testResponseXmlWithNestedArray()
-        {
-            $response = new Response();
-
-            $response->xml([
-                'article' => [
-                    'title' => 'Todays news',
-                    'description' => 'News content'
-                ]
-            ]);
-
-            $xml = "<?xml version=\"1.0\"?>\n" .
-                    "<data>\n" .
-                    "  <article>\n" .
-                    "    <title>Todays news</title>\n" .
-                    "    <description>News content</description>\n" .
-                    "  </article>\n" .
-                    "</data>\n";
-
-            $this->assertEquals($xml, $response->getContent());
-        }
-
-        public function testResponseXmlWithArguments()
-        {
-            $response = new Response();
-
-            $response->xml([
-                'article@{"type":"post"}' => [
-                    'title' => 'Todays news',
-                    'description@{"content":"html"}' => 'News content'
-                ]
-            ]);
-
-            $xml = "<?xml version=\"1.0\"?>\n" .
-                    "<data>\n" .
-                    "  <article type=\"post\">\n" .
-                    "    <title>Todays news</title>\n" .
-                    "    <description content=\"html\">News content</description>\n" .
-                    "  </article>\n" .
-                    "</data>\n";
-
-            $this->assertEquals($xml, $response->getContent());
-        }
-
-        public function testResponseXmlWithCustomRoot()
-        {
-            $response = new Response();
-
-            $response->xml([
-                'article@{"type":"post"}' => [
-                    'title' => 'Todays news',
-                    'description@{"content":"html"}' => 'News content'
-                ]
-                    ], '<custom></custom>', 200);
-
-            $xml = "<?xml version=\"1.0\"?>\n" .
-                    "<custom>\n" .
-                    "  <article type=\"post\">\n" .
-                    "    <title>Todays news</title>\n" .
-                    "    <description content=\"html\">News content</description>\n" .
-                    "  </article>\n" .
-                    "</custom>\n";
-
-            $this->assertEquals($xml, $response->getContent());
-        }
-
-        public function testResponseHtmlContent()
-        {
-            $response = new Response();
-
-            $response->html('<div>John Doe</div>');
-
-            $this->assertEquals('<div>John Doe</div>', $response->getContent());
-
-            $this->assertEquals(200, $response->getStatusCode());
-        }
-
+        $xml = "<?xml version=\"1.0\"?>\n" .
+            "<data>\n" .
+            "  <article>\n" .
+            "    <title>Todays news</title>\n" .
+            "    <description>News content</description>\n" .
+            "  </article>\n" .
+            "</data>\n";
+
+        $this->assertEquals($xml, $response->getContent());
+    }
+
+    public function testResponseXmlWithArguments()
+    {
+        $response = new Response();
+
+        $response->xml([
+            'article@{"type":"post"}' => [
+                'title' => 'Todays news',
+                'description@{"content":"html"}' => 'News content'
+            ]
+        ]);
+
+        $xml = "<?xml version=\"1.0\"?>\n" .
+            "<data>\n" .
+            "  <article type=\"post\">\n" .
+            "    <title>Todays news</title>\n" .
+            "    <description content=\"html\">News content</description>\n" .
+            "  </article>\n" .
+            "</data>\n";
+
+        $this->assertEquals($xml, $response->getContent());
+    }
+
+    public function testResponseXmlWithCustomRoot()
+    {
+        $response = new Response();
+
+        $response->xml([
+            'article@{"type":"post"}' => [
+                'title' => 'Todays news',
+                'description@{"content":"html"}' => 'News content'
+            ]
+        ], '<custom></custom>', 200);
+
+        $xml = "<?xml version=\"1.0\"?>\n" .
+            "<custom>\n" .
+            "  <article type=\"post\">\n" .
+            "    <title>Todays news</title>\n" .
+            "    <description content=\"html\">News content</description>\n" .
+            "  </article>\n" .
+            "</custom>\n";
+
+        $this->assertEquals($xml, $response->getContent());
+    }
+
+    public function testResponseHtmlContent()
+    {
+        $response = new Response();
+
+        $response->html('<div>John Doe</div>');
+
+        $this->assertEquals('<div>John Doe</div>', $response->getContent());
+
+        $this->assertEquals(200, $response->getStatusCode());
     }
 
 }

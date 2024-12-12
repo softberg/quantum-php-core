@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Http\Request;
@@ -20,7 +20,6 @@ use Quantum\Exceptions\DiException;
 use Quantum\Libraries\Csrf\Csrf;
 use Quantum\Environment\Server;
 use ReflectionException;
-use Quantum\Bootstrap;
 
 /**
  * Class HttpRequest
@@ -63,6 +62,11 @@ abstract class HttpRequest
     private static $__method = null;
 
     /**
+     * @var bool
+     */
+    private static $initialized = false;
+
+    /**
      * Server
      * @var Server
      */
@@ -78,8 +82,8 @@ abstract class HttpRequest
      */
     public static function init(Server $server)
     {
-        if (get_caller_class(3) !== Bootstrap::class) {
-            throw HttpException::unexpectedRequestInitialization();
+        if (self::$initialized) {
+            return;
         }
 
         self::$server = $server;
@@ -111,6 +115,8 @@ abstract class HttpRequest
             self::handleFiles($_FILES),
             $files
         );
+
+        self::$initialized = true;
     }
 
     /**
