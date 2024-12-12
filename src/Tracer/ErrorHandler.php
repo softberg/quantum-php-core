@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Tracer;
@@ -18,11 +18,14 @@ use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Exceptions\ViewException;
 use Quantum\Exceptions\DiException;
 use Quantum\Factory\ViewFactory;
-use Quantum\Logger\FileLogger;
+use Quantum\Logger\LoggerConfig;
 use Quantum\Http\Response;
+use Quantum\Logger\Logger;
 use ReflectionException;
+use Psr\Log\LogLevel;
 use ErrorException;
 use Quantum\Di\Di;
+use ParseError;
 use Throwable;
 
 /**
@@ -31,64 +34,94 @@ use Throwable;
  */
 class ErrorHandler
 {
-
     /**
      * Number of lines to be returned
      */
     const NUM_LINES = 10;
 
     /**
-     * @var array
-     */
-    private static $trace = [];
-
-    /**
      * @var string[][]
      */
-    private static $errorTypes = [
-        E_ERROR => ['fn' => 'error', 'severity' => 'Error'],
-        E_WARNING => ['fn' => 'warning', 'severity' => 'Warning'],
-        E_PARSE => ['fn' => 'error', 'severity' => 'Parsing Error'],
-        E_NOTICE => ['fn' => 'notice', 'severity' => 'Notice'],
-        E_CORE_ERROR => ['fn' => 'error', 'severity' => 'Core Error'],
-        E_CORE_WARNING => ['fn' => 'warning', 'severity' => 'Core Warning'],
-        E_COMPILE_ERROR => ['fn' => 'error', 'severity' => 'Compile Error'],
-        E_COMPILE_WARNING => ['fn' => 'warning', 'severity' => 'Compile Warning'],
-        E_USER_ERROR => ['fn' => 'error', 'severity' => 'User Error'],
-        E_USER_WARNING => ['fn' => 'warning', 'severity' => 'User Warning'],
-        E_USER_NOTICE => ['fn' => 'notice', 'severity' => 'User Notice'],
-        E_STRICT => ['fn' => 'notice', 'severity' => 'Runtime Notice'],
-        E_RECOVERABLE_ERROR => ['fn' => 'error', 'severity' => 'Catchable Fatal Error']
+    const ERROR_TYPES = [
+        E_ERROR => 'error',
+        E_WARNING => 'warning',
+        E_PARSE => 'error',
+        E_NOTICE => 'notice',
+        E_CORE_ERROR => 'error',
+        E_CORE_WARNING => 'warning',
+        E_COMPILE_ERROR => 'error',
+        E_COMPILE_WARNING => 'warning',
+        E_USER_ERROR => 'error',
+        E_USER_WARNING => 'warning',
+        E_USER_NOTICE => 'notice',
+        E_STRICT => 'notice',
+        E_RECOVERABLE_ERROR => 'error',
     ];
 
     /**
-     * Setups the handlers
-     * @throws DiException
-     * @throws ErrorException
-     * @throws ReflectionException
-     * @throws ViewException
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
+     * @var Logger
      */
-    public static function setup()
+    private $logger;
+
+    /**
+     * @var array
+     */
+    private $trace = [];
+
+    private static $instance;
+
+    private function __construct()
     {
-        set_error_handler(function ($severity, $message, $file, $line) {
+        // Prevent direct instantiation
+    }
 
-            if (!(error_reporting() && $severity)) {
-                return;
-            }
+    private function __clone()
+    {
+        // Prevent cloning
+    }
 
-            throw new ErrorException($message, 0, $severity, $file, $line);
-        });
+    /**
+     * @return ErrorHandler
+     */
+    public static function getInstance(): ErrorHandler
+    {
+        if (self::$instance === null) {
+            self::$instance = new self();
+        }
 
-        set_exception_handler(function (Throwable $e) {
-            self::handle($e);
-        });
+        return self::$instance;
+    }
+
+    /**
+     * @return void
+     */
+    public function setup(Logger $logger)
+    {
+        $this->logger = $logger;
+
+        set_error_handler([$this, 'handleError']);
+        set_exception_handler([$this, 'handleException']);
+    }
+
+    /**
+     * @param $severity
+     * @param $message
+     * @param $file
+     * @param $line
+     * @throws ErrorException
+     */
+    public function handleError($severity, $message, $file, $line)
+    {
+        if (!(error_reporting() & $severity)) {
+            return;
+        }
+
+        throw new ErrorException($message, 0, $severity, $file, $line);
     }
 
     /**
      * @param Throwable $e
+     * @return void
      * @throws DiException
      * @throws ReflectionException
      * @throws ViewException
@@ -96,34 +129,42 @@ class ErrorHandler
      * @throws \Twig\Error\RuntimeError
      * @throws \Twig\Error\SyntaxError
      */
-    protected static function handle(Throwable $e)
+    public function handleException(Throwable $e): void
     {
-        self::composeStackTrace($e);
-
-        $fn = 'info';
-        $severity = null;
-
-        $errorType = self::getErrorType($e);
- 
-        if ($errorType) {
-            extract($errorType);
-        }
+        $this->composeStackTrace($e);
 
         $view = ViewFactory::getInstance();
 
-        if (filter_var(config()->get('debug'), FILTER_VALIDATE_BOOLEAN)) {
-            Response::html($view->renderPartial('errors/trace', ['stackTrace' => self::$trace, 'errorMessage' => $e->getMessage(), 'severity' => $severity]));
+        $errorType = $this->getErrorType($e);
+
+        if (is_debug_mode()) {
+            Response::html($view->renderPartial('errors' . DS . 'trace', [
+                'stackTrace' => $this->trace,
+                'errorMessage' => $e->getMessage(),
+                'severity' => ucfirst($errorType),
+            ]));
         } else {
-            $logFile = logs_dir() . DS . date('Y-m-d') . '.log';
-            $logMessage = '[' . date('Y-m-d H:i:s') . '] ' . $severity . ': ' . $e->getMessage() . PHP_EOL . $e->getTraceAsString() . PHP_EOL;
-
-            $fn($logMessage, new FileLogger($logFile));
-
-            Response::html($view->renderPartial('errors/500'));
+            $this->logError($e, $errorType);
+            Response::html($view->renderPartial('errors' . DS . '500'));
         }
 
         Response::send();
-        exit;
+    }
+
+    /**
+     * @param Throwable $e
+     * @param string $errorType
+     * @return void
+     */
+    private function logError(Throwable $e, string $errorType): void
+    {
+        if (LoggerConfig::getLogLevel($errorType) >= LoggerConfig::getAppLogLevel()) {
+            if (method_exists($this->logger, $errorType)) {
+                $this->logger->$errorType($e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            } else {
+                $this->logger->error($e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            }
+        }
     }
 
     /**
@@ -132,22 +173,22 @@ class ErrorHandler
      * @throws DiException
      * @throws ReflectionException
      */
-    protected static function composeStackTrace(Throwable $e)
+    protected function composeStackTrace(Throwable $e)
     {
-        self::$trace[] = [
+        $this->trace[] = [
             'file' => $e->getFile(),
-            'code' => self::getSourceCode($e->getFile(), $e->getLine(), 'error-line')
+            'code' => $this->getSourceCode($e->getFile(), $e->getLine(), 'error-line'),
         ];
 
         foreach ($e->getTrace() as $item) {
-            if (isset($item['class']) && $item['class'] == __CLASS__) {
+            if (($item['class'] ?? null) === __CLASS__) {
                 continue;
             }
 
             if (isset($item['file'])) {
-                self::$trace[] = [
+                $this->trace[] = [
                     'file' => $item['file'],
-                    'code' => self::getSourceCode($item['file'], $item['line'], 'switch-line')
+                    'code' => $this->getSourceCode($item['file'], $item['line'] ?? 1, 'switch-line'),
                 ];
             }
         }
@@ -162,7 +203,7 @@ class ErrorHandler
      * @throws DiException
      * @throws ReflectionException
      */
-    protected static function getSourceCode(string $filename, int $lineNumber, string $className): string
+    protected function getSourceCode(string $filename, int $lineNumber, string $className): string
     {
         $fs = Di::get(FileSystem::class);
 
@@ -172,7 +213,8 @@ class ErrorHandler
 
         $code = '<ol start="' . key($lines) . '">';
         foreach ($lines as $currentLineNumber => $line) {
-            $code .= '<li ' . ($currentLineNumber == $lineNumber - 1 ? 'class="' . $className . '"' : '') . '><pre>' . $line . '</pre></li>';
+            $highlight = $currentLineNumber === $lineNumber ? ' class="' . $className . '"' : '';
+            $code .= '<li' . $highlight . '><pre>' . htmlspecialchars($line, ENT_QUOTES) . '</pre></li>';
         }
         $code .= '</ol>';
 
@@ -180,19 +222,24 @@ class ErrorHandler
     }
 
     /**
-     * Gets the error type
+     * Gets the error type based on the exception class
      * @param Throwable $e
-     * @return string[]|null
+     * @return string
      */
-    private static function getErrorType(Throwable $e): ?array
+    private function getErrorType(Throwable $e): string
     {
         if ($e instanceof ErrorException) {
-            $severity = $e->getSeverity();
-            return self::$errorTypes[$severity] ?? null;
-        } else if ($e->getCode()) {
-            return self::$errorTypes[$e->getCode()] ?? null;
+            return self::ERROR_TYPES[$e->getSeverity()] ?? LogLevel::ERROR;
         }
 
-        return null;
+        if ($e instanceof ParseError) {
+            return LogLevel::CRITICAL;
+        }
+
+        if ($e instanceof ReflectionException) {
+            return LogLevel::WARNING;
+        }
+
+        return LogLevel::ERROR;
     }
 }
