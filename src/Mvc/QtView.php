@@ -9,14 +9,14 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Mvc;
 
 use Quantum\Libraries\ResourceCache\ViewCache;
-use Quantum\Libraries\Asset\AssetManager;
 use Quantum\Exceptions\DatabaseException;
+use Quantum\Libraries\Asset\AssetManager;
 use Quantum\Exceptions\SessionException;
 use Quantum\Exceptions\ConfigException;
 use Quantum\Exceptions\AssetException;
@@ -26,6 +26,7 @@ use Quantum\Renderer\DefaultRenderer;
 use Quantum\Exceptions\DiException;
 use Quantum\Renderer\TwigRenderer;
 use Quantum\Factory\ViewFactory;
+use DebugBar\DebugBarException;
 use Quantum\Debugger\Debugger;
 use Twig\Error\RuntimeError;
 use Twig\Error\LoaderError;
@@ -143,22 +144,24 @@ class QtView
         $this->params = [];
     }
 
-	/**
-	 * @param string $view
-	 * @param array $params
-	 * @return string|null
-	 * @throws AssetException
-	 * @throws DiException
-	 * @throws LangException
-	 * @throws LoaderError
-	 * @throws ReflectionException
-	 * @throws RuntimeError
-	 * @throws SyntaxError
-	 * @throws ViewException
-	 * @throws ConfigException
-	 * @throws DatabaseException
-	 * @throws SessionException
-	 */
+    /**
+     * Renders the view
+     * @param string $view
+     * @param array $params
+     * @return string|null
+     * @throws AssetException
+     * @throws DiException
+     * @throws LangException
+     * @throws LoaderError
+     * @throws ReflectionException
+     * @throws RuntimeError
+     * @throws SyntaxError
+     * @throws ViewException
+     * @throws DebugBarException
+     * @throws ConfigException
+     * @throws DatabaseException
+     * @throws SessionException
+     */
     public function render(string $view, array $params = []): ?string
     {
         if (!$this->layout) {
@@ -171,8 +174,15 @@ class QtView
 
         $this->view = $this->renderFile($view);
 
-        if (filter_var(config()->get('debug'), FILTER_VALIDATE_BOOLEAN)) {
-            Debugger::updateStoreCell(Debugger::ROUTES, LogLevel::INFO, ['View' => current_module() . '/Views/' . $view]);
+        $debugger = Debugger::getInstance();
+
+        if ($debugger->isEnabled()) {
+            $routesCell = $debugger->getStoreCell(Debugger::ROUTES);
+            $currentData = current($routesCell)[LogLevel::INFO] ?? [];
+            $additionalData = ['View' => current_module() . '/Views/' . $view];
+            $mergedData = array_merge($currentData, $additionalData);
+            $debugger->clearStoreCell(Debugger::ROUTES);
+            $debugger->addToStoreCell(Debugger::ROUTES, LogLevel::INFO, $mergedData);
         }
 
         if(!empty($this->assets)) {
