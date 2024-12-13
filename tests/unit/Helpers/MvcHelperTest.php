@@ -30,7 +30,7 @@ class MvcHelperTest extends AppTestCase
                 "method" => "POST",
                 "controller" => "SomeController",
                 "action" => "signin",
-                "module" => "test",
+                "module" => "Test",
                 "middlewares" => ["guest", "anonymous"],
                 'prefix' => 'api'
             ],
@@ -39,7 +39,7 @@ class MvcHelperTest extends AppTestCase
                 "method" => "GET",
                 "controller" => "SomeController",
                 "action" => "signout",
-                "module" => "test",
+                "module" => "Test",
                 "middlewares" => ["user"],
                 'name' => 'user',
                 'prefix' => 'api'
@@ -58,7 +58,7 @@ class MvcHelperTest extends AppTestCase
 
         $this->assertEquals('anonymous', $middlewares[1]);
 
-        $this->assertEquals('test', current_module());
+        $this->assertEquals('Test', current_module());
 
         $this->assertEquals('SomeController', current_controller());
 
@@ -96,7 +96,7 @@ class MvcHelperTest extends AppTestCase
                 "route" => "home",
                 "method" => "GET",
                 "callback" => function (Response $response) {},
-                "module" => "test",
+                "module" => "Test",
             ]
         ]);
 
@@ -109,7 +109,7 @@ class MvcHelperTest extends AppTestCase
 
     public function testMvcFindRouteByName()
     {
-        $this->assertNull(find_route_by_name('user', 'test'));
+        $this->assertNull(find_route_by_name('user', 'Test'));
 
         Router::setRoutes([
             [
@@ -117,20 +117,20 @@ class MvcHelperTest extends AppTestCase
                 "method" => "GET",
                 "controller" => "SomeController",
                 "action" => "signout",
-                "module" => "test",
+                "module" => "Test",
                 "middlewares" => ["user"],
                 "name" => "user"
             ]
         ]);
 
-        $this->assertNotNull(find_route_by_name('user', 'test'));
+        $this->assertNotNull(find_route_by_name('user', 'Test'));
 
-        $this->assertIsArray(find_route_by_name('user', 'test'));
+        $this->assertIsArray(find_route_by_name('user', 'Test'));
     }
 
     public function testMvcCheckRouteGroupExists()
     {
-        $this->assertFalse(route_group_exists('guest', 'test'));
+        $this->assertFalse(route_group_exists('guest', 'Test'));
 
         Router::setRoutes([
             [
@@ -138,14 +138,14 @@ class MvcHelperTest extends AppTestCase
                 "method" => "GET",
                 "controller" => "SomeController",
                 "action" => "signout",
-                "module" => "test",
+                "module" => "Test",
                 "middlewares" => ["user"],
                 'group' => 'guest',
                 "name" => "user"
             ]
         ]);
 
-        $this->assertTrue(route_group_exists('guest', 'test'));
+        $this->assertTrue(route_group_exists('guest', 'Test'));
     }
 
 }

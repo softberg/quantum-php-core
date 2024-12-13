@@ -13,7 +13,7 @@ class ViewCacheTest extends AppTestCase
 
     private $content = <<<HEREDOC
     <div>
-        <span>test html content</span>span>
+        <span>Test html content</span>span>
     </div>
 HEREDOC;
 
@@ -47,7 +47,7 @@ HEREDOC;
 
         $content = $this->viewCache->get($this->route);
 
-        $minifiedContent = '<div><span>test html content</span>span> </div>';
+        $minifiedContent = '<div><span>Test html content</span>span> </div>';
 
         $this->assertEquals($minifiedContent, $content);
     }

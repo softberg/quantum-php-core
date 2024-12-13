@@ -4,7 +4,7 @@ namespace Quantum\Libraries\Lang {
 
     function current_module()
     {
-        return 'test';
+        return 'Test';
     }
 
 }
@@ -36,7 +36,7 @@ namespace Quantum\Tests\Libraries\Lang {
                 "method" => "POST",
                 "controller" => "SomeController",
                 "action" => "signin",
-                "module" => "test",
+                "module" => "Test",
             ]);
         }
 

@@ -22,7 +22,7 @@ class ViewHelperTest extends AppTestCase
             "method" => "POST",
             "controller" => "TestController",
             "action" => "testAction",
-            "module" => "test",
+            "module" => "Test",
         ]);
 
         $viewFactory = Di::get(ViewFactory::class);
