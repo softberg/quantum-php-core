@@ -29,10 +29,10 @@ interface AuthServiceInterface
      */
     public function get(string $field, ?string $value): ?User;
 
-    /**
+     /**
      * Add
      * @param array $data
-     * @return User|null
+     * @return User
      */
     public function add(array $data): User;
 

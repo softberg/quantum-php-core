@@ -19,7 +19,7 @@ class ServerTest extends AppTestCase
         $instance->setValue(null);
     }
 
-    public function testGetInstance()
+    public function testServerGetInstance()
     {
         $server1 = Server::getInstance();
         $server2 = Server::getInstance();
@@ -27,7 +27,7 @@ class ServerTest extends AppTestCase
         $this->assertSame($server1, $server2);
     }
 
-    public function testAll()
+    public function testServerAll()
     {
         $server = Server::getInstance();
         $server->set('REQUEST_METHOD', 'GET');
@@ -42,24 +42,22 @@ class ServerTest extends AppTestCase
         $this->assertEquals('/test', $allServerData['REQUEST_URI']);
     }
 
-    public function testGet()
+    public function testServerSetAndGet()
     {
         $server = Server::getInstance();
+
         $server->set('REQUEST_METHOD', 'POST');
 
         $this->assertEquals('POST', $server->get('REQUEST_METHOD'));
-        $this->assertNull($server->get('NON_EXISTENT_KEY'));
-    }
 
-    public function testSet()
-    {
-        $server = Server::getInstance();
         $server->set('CUSTOM_KEY', 'custom_value');
 
         $this->assertEquals('custom_value', $server->get('CUSTOM_KEY'));
+
+        $this->assertNull($server->get('NON_EXISTENT_KEY'));
     }
 
-    public function testUri()
+    public function testServerUri()
     {
         $server = Server::getInstance();
         $server->set('REQUEST_URI', '/test/uri');
@@ -67,7 +65,7 @@ class ServerTest extends AppTestCase
         $this->assertEquals('/test/uri', $server->uri());
     }
 
-    public function testQuery()
+    public function testServerQuery()
     {
         $server = Server::getInstance();
         $server->set('QUERY_STRING', 'foo=bar');
@@ -75,7 +73,7 @@ class ServerTest extends AppTestCase
         $this->assertEquals('foo=bar', $server->query());
     }
 
-    public function testMethod()
+    public function testServerMethod()
     {
         $server = Server::getInstance();
         $server->set('REQUEST_METHOD', 'PUT');
@@ -83,7 +81,7 @@ class ServerTest extends AppTestCase
         $this->assertEquals('PUT', $server->method());
     }
 
-    public function testProtocol()
+    public function testServerProtocol()
     {
         $server = Server::getInstance();
         $server->set('HTTPS', 'on');
@@ -97,7 +95,7 @@ class ServerTest extends AppTestCase
         $this->assertEquals('http', $server->protocol());
     }
 
-    public function testHost()
+    public function testServerHost()
     {
         $server = Server::getInstance();
         $server->set('SERVER_NAME', 'localhost');
@@ -105,7 +103,7 @@ class ServerTest extends AppTestCase
         $this->assertEquals('localhost', $server->host());
     }
 
-    public function testPort()
+    public function testServerPort()
     {
         $server = Server::getInstance();
         $server->set('SERVER_PORT', '9000');
@@ -113,7 +111,7 @@ class ServerTest extends AppTestCase
         $this->assertEquals('9000', $server->port());
     }
 
-    public function testContentType()
+    public function testServerContentType()
     {
         $server = Server::getInstance();
         $server->set('CONTENT_TYPE', 'application/json; charset=utf-8');
@@ -122,7 +120,7 @@ class ServerTest extends AppTestCase
         $this->assertEquals('application/json', $server->contentType(true));
     }
 
-    public function testReferrer()
+    public function testServerReferrer()
     {
         $server = Server::getInstance();
         $server->set('HTTP_REFERER', 'http://example.com');
@@ -130,7 +128,7 @@ class ServerTest extends AppTestCase
         $this->assertEquals('http://example.com', $server->referrer());
     }
 
-    public function testAjax()
+    public function testServerAjax()
     {
         $server = Server::getInstance();
         $server->set('HTTP_X_REQUESTED_WITH', 'XMLHttpRequest');

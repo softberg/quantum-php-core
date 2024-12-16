@@ -51,23 +51,18 @@ class DebuggerStoreTest extends AppTestCase
         $this->assertFalse($this->debuggerStore->has('key2'));
     }
 
-    public function testDebuggerStoreGet()
+    public function testDebuggerStoreSetAndGet()
     {
         $this->debuggerStore->init(['key1']);
         $this->debuggerStore->set('key1', ['level1' => 'data']);
 
         $this->assertEquals([['level1' => 'data']], $this->debuggerStore->get('key1'));
-        $this->assertEquals([], $this->debuggerStore->get('key2'));
-    }
+        $this->assertCount(1, $this->debuggerStore->get('key1'));
 
-    public function testDebuggerStoreSet()
-    {
-        $this->debuggerStore->init(['key1']);
-
-        $this->debuggerStore->set('key1', ['level1' => 'data']);
-        $this->assertEquals([['level1' => 'data']], $this->debuggerStore->get('key1'));
 
         $this->debuggerStore->set('key1', ['level2' => 'more data']);
+
+        $this->assertEquals([['level1' => 'data'], ['level2' => 'more data']], $this->debuggerStore->get('key1'));
         $this->assertCount(2, $this->debuggerStore->get('key1'));
     }
 

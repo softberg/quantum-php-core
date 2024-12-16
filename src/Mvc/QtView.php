@@ -174,29 +174,20 @@ class QtView
 
         $this->view = $this->renderFile($view);
 
-        $debugger = Debugger::getInstance();
-
-        if ($debugger->isEnabled()) {
-            $routesCell = $debugger->getStoreCell(Debugger::ROUTES);
-            $currentData = current($routesCell)[LogLevel::INFO] ?? [];
-            $additionalData = ['View' => current_module() . '/Views/' . $view];
-            $mergedData = array_merge($currentData, $additionalData);
-            $debugger->clearStoreCell(Debugger::ROUTES);
-            $debugger->addToStoreCell(Debugger::ROUTES, LogLevel::INFO, $mergedData);
-        }
-
         if (!empty($this->assets)) {
             AssetManager::getInstance()->register($this->assets);
+        }
+
+        $debugger = Debugger::getInstance();
+        if ($debugger->isEnabled()) {
+            $this->updateDebugger($debugger, $view);
         }
 
         $content = $this->renderFile($this->layout);
 
         $viewCacheInstance = ViewCache::getInstance();
-
         if ($viewCacheInstance->isEnabled()) {
-            $content = $viewCacheInstance
-                ->set(route_uri(), $content)
-                ->get(route_uri());
+            $content = $this->cacheContent($viewCacheInstance, route_uri(), $content);
         }
 
         return $content;
@@ -290,5 +281,37 @@ class QtView
         } else {
             $value = htmlspecialchars($value, ENT_NOQUOTES, 'UTF-8');
         }
+    }
+
+    /**
+     * @param Debugger $debugger
+     * @param string $view
+     * @return void
+     */
+    private function updateDebugger(Debugger $debugger, string $view)
+    {
+        $routesCell = $debugger->getStoreCell(Debugger::ROUTES);
+        $currentData = current($routesCell)[LogLevel::INFO] ?? [];
+        $additionalData = ['View' => current_module() . '/Views/' . $view];
+        $mergedData = array_merge($currentData, $additionalData);
+        $debugger->clearStoreCell(Debugger::ROUTES);
+        $debugger->addToStoreCell(Debugger::ROUTES, LogLevel::INFO, $mergedData);
+    }
+
+    /**
+     * @param ViewCache $viewCacheInstance
+     * @param string $uri
+     * @param string $content
+     * @return string|null
+     * @throws ConfigException
+     * @throws DatabaseException
+     * @throws DiException
+     * @throws LangException
+     * @throws ReflectionException
+     * @throws SessionException
+     */
+    private function cacheContent(ViewCache $viewCacheInstance, string $uri, string $content): ?string
+    {
+        return $viewCacheInstance->set($uri, $content)->get($uri);
     }
 }

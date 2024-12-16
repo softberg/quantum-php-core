@@ -34,11 +34,7 @@ use Psr\Log\LogLevel;
  */
 function error($var)
 {
-    $logger = LoggerManager::getHandler();
-
-    if (is_debug_mode() || LoggerConfig::getLogLevel(LogLevel::ERROR) >= LoggerConfig::getAppLogLevel()) {
-        $logger->error($var);
-    }
+    LoggerManager::getHandler()->error($var);
 }
 
 /**
@@ -53,11 +49,7 @@ function error($var)
  */
 function warning($var)
 {
-    $logger = LoggerManager::getHandler();
-
-    if (is_debug_mode() || LoggerConfig::getLogLevel(LogLevel::WARNING) >= LoggerConfig::getAppLogLevel()) {
-        $logger->warning($var);
-    }
+    LoggerManager::getHandler()->warning($var);
 }
 
 /**
@@ -72,11 +64,7 @@ function warning($var)
  */
 function notice($var)
 {
-    $logger = LoggerManager::getHandler();
-
-    if (is_debug_mode() || LoggerConfig::getLogLevel(LogLevel::NOTICE) >= LoggerConfig::getAppLogLevel()) {
-        $logger->notice($var);
-    }
+    LoggerManager::getHandler()->notice($var);
 }
 
 /**
@@ -91,11 +79,7 @@ function notice($var)
  */
 function info($var)
 {
-    $logger = LoggerManager::getHandler();
-
-    if (is_debug_mode() || LoggerConfig::getLogLevel(LogLevel::INFO) >= LoggerConfig::getAppLogLevel()) {
-        $logger->info($var);
-    }
+    LoggerManager::getHandler()->info($var);
 }
 
 /**
@@ -110,11 +94,7 @@ function info($var)
  */
 function debug($var)
 {
-    $logger = LoggerManager::getHandler();
-
-    if (is_debug_mode() || LoggerConfig::getLogLevel(LogLevel::DEBUG) >= LoggerConfig::getAppLogLevel()) {
-        $logger->debug($var);
-    }
+    LoggerManager::getHandler()->debug($var);
 }
 
 /**

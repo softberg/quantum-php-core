@@ -115,7 +115,9 @@ class Logger implements LoggerInterface
      */
     public function log($level, $message, array $context = [])
     {
-        $this->adapter->report($level, $message, $context);
+        if (is_debug_mode() || LoggerConfig::getLogLevel($level) >= LoggerConfig::getAppLogLevel()) {
+            $this->adapter->report($level, $message, $context);
+        }
     }
 
 }

@@ -158,12 +158,10 @@ class ErrorHandler
      */
     private function logError(Throwable $e, string $errorType): void
     {
-        if (LoggerConfig::getLogLevel($errorType) >= LoggerConfig::getAppLogLevel()) {
-            if (method_exists($this->logger, $errorType)) {
-                $this->logger->$errorType($e->getMessage(), ['trace' => $e->getTraceAsString()]);
-            } else {
-                $this->logger->error($e->getMessage(), ['trace' => $e->getTraceAsString()]);
-            }
+        if (method_exists($this->logger, $errorType)) {
+            $this->logger->$errorType($e->getMessage(), ['trace' => $e->getTraceAsString()]);
+        } else {
+            $this->logger->error($e->getMessage(), ['trace' => $e->getTraceAsString()]);
         }
     }
 

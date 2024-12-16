@@ -87,6 +87,9 @@ class Debugger
 
     /**
      * Debugger constructor.
+     * @param DebuggerStore $store
+     * @param DebugBar $debugBar
+     * @param array $collectors
      * @throws DebugBarException
      */
     public function __construct(DebuggerStore $store, DebugBar $debugBar, array $collectors = [])
