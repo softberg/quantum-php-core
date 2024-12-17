@@ -179,19 +179,14 @@ function slugify(string $text): string
 }
 
 /**
- *  Dumps the assets
+ * Dumps the assets
  * @param string $type
  * @throws AssetException
  * @throws LangException
  */
 function assets(string $type)
 {
-    $assetTypes = [
-        'css' => 1,
-        'js' => 2
-    ];
-
-    AssetManager::getInstance()->dump($assetTypes[$type]);
+    AssetManager::getInstance()->dump(AssetManager::STORES[$type]);
 }
 
 /**
