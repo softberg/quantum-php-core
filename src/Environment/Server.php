@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Environment;
@@ -68,11 +68,21 @@ class Server
     }
 
     /**
+     * @param $key
+     * @param $value
+     * @return void
+     */
+    public function set($key, $value): void
+    {
+        $this->server[$key] = $value;
+    }
+
+    /**
      * @return string|null
      */
     public function uri(): ?string
     {
-        return $this->server['REQUEST_URI'] ?? null;
+        return $this->get('REQUEST_URI');
     }
 
     /**
@@ -80,7 +90,7 @@ class Server
      */
     public function query(): ?string
     {
-        return $this->server['QUERY_STRING'] ?? null;
+        return $this->get('QUERY_STRING');
     }
 
     /**
@@ -88,7 +98,7 @@ class Server
      */
     public function method(): ?string
     {
-        return $this->server['REQUEST_METHOD'] ?? null;
+        return $this->get('REQUEST_METHOD');
     }
 
     /**
@@ -96,7 +106,10 @@ class Server
      */
     public function protocol(): ?string
     {
-        return ((!empty($this->server['HTTPS']) && $this->server['HTTPS'] !== 'off') || (isset($this->server['SERVER_PORT']) && $this->server['SERVER_PORT'] == 443)) ? "https" : "http";
+        $https = $this->get('HTTPS');
+        $port = $this->get('SERVER_PORT');
+
+        return (!empty($https) && strtolower($https) !== 'off') || $port == 443 ? 'https' : 'http';
     }
 
     /**
@@ -104,7 +117,7 @@ class Server
      */
     public function host(): ?string
     {
-        return $this->server['SERVER_NAME'] ?? null;
+        return $this->get('SERVER_NAME');
     }
 
     /**
@@ -112,7 +125,7 @@ class Server
      */
     public function port(): ?string
     {
-        return $this->server['SERVER_PORT'] ?? null;
+        return $this->get('SERVER_PORT');
     }
 
     /**
@@ -121,15 +134,11 @@ class Server
      */
     public function contentType(bool $exact = false): ?string
     {
-        if (isset($this->server['CONTENT_TYPE'])) {
-            if ($exact && strpos($this->server['CONTENT_TYPE'], ';')) {
-                return trim(substr($this->server['CONTENT_TYPE'], 0, strpos($this->server['CONTENT_TYPE'], ';')));
-            }
-
-            return $this->server['CONTENT_TYPE'];
+        $contentType = $this->get('CONTENT_TYPE');
+        if ($exact && $contentType && strpos($contentType, ';') !== false) {
+            return trim(explode(';', $contentType, 2)[0]);
         }
-
-        return null;
+        return $contentType;
     }
 
     /**
@@ -137,7 +146,7 @@ class Server
      */
     public function referrer(): ?string
     {
-        return $this->server['HTTP_REFERER'] ?? null;
+        return $this->get('HTTP_REFERER');
     }
 
     /**
@@ -145,11 +154,7 @@ class Server
      */
     public function ajax(): bool
     {
-        if (!empty($this->server['HTTP_X_REQUESTED_WITH']) && strtolower($this->server['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
-            return true;
-        }
-
-        return false;
+        return strtolower($this->get('HTTP_X_REQUESTED_WITH') ?? '') === 'xmlhttprequest';
     }
 
 }

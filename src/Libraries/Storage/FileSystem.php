@@ -40,8 +40,8 @@ use Quantum\Exceptions\AppException;
  * @method bool isWritable(string $filename)
  * @method array|false listDirectory(string $dirname)
  * @method glob(string $pattern, int $flags = 0)
- * @method void require (string $file, bool $once = false)
- * @method void include (string $file, bool $once = false)
+ * @method mixed require (string $file, bool $once = false)
+ * @method mixed include (string $file, bool $once = false)
  */
 class FileSystem
 {

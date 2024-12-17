@@ -9,10 +9,10 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.4.0
+ * @since 2.9.5
  */
 
-namespace Quantum\Contracts;
+namespace Quantum\Logger;
 
 /**
  * Interface ReportableInterface
@@ -25,8 +25,8 @@ interface ReportableInterface
      * Reports the message
      * @param string $level
      * @param mixed $message
-     * @param array $context
+     * @param array|null $context
      */
-    public function report(string $level, $message, array $context = []);
+    public function report(string $level, $message, ?array $context = []);
 
 }

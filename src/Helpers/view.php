@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.5
  */
 
 use Quantum\Exceptions\ViewException;
@@ -64,8 +64,10 @@ function view_param(string $key)
  */
 function debugbar(): ?string
 {
-    if (filter_var(config()->get('debug'), FILTER_VALIDATE_BOOLEAN)) {
-        return (new Debugger())->render();
+    $debugger = Debugger::getInstance();
+
+    if ($debugger->isEnabled()) {
+        return $debugger->render();
     }
 
     return null;

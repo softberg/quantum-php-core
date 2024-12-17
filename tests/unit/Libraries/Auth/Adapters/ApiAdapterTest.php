@@ -1,14 +1,15 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Auth;
+namespace Quantum\Tests\Libraries\Auth\Adapters;
 
+use Quantum\Libraries\Auth\Adapters\ApiAdapter;
+use Quantum\Tests\Libraries\Auth\AuthTestCase;
+use Quantum\Libraries\Auth\AuthException;
 use Quantum\Libraries\JWToken\JWToken;
-use Quantum\Exceptions\AuthException;
 use Quantum\Libraries\Hasher\Hasher;
-use Quantum\Libraries\Auth\ApiAuth;
 
 
-class ApiAuthTest extends AuthTestCase
+class ApiAdapterTest extends AuthTestCase
 {
     public function setUp(): void
     {
@@ -26,7 +27,7 @@ class ApiAuthTest extends AuthTestCase
                 'exp' => time() + 60
             ]);
 
-        $this->apiAuth = ApiAuth::getInstance($this->authService, $this->mailer, new Hasher, $jwt);
+        $this->apiAuth = ApiAdapter::getInstance($this->authService, $this->mailer, new Hasher, $jwt);
 
         $admin = $this->apiAuth->signup($this->adminUser);
 
@@ -40,9 +41,9 @@ class ApiAuthTest extends AuthTestCase
         $this->apiAuth->signout();
     }
 
-    public function testApiAuthConstructor()
+    public function testApiAdapterConstructor()
     {
-        $this->assertInstanceOf(ApiAuth::class, $this->apiAuth);
+        $this->assertInstanceOf(ApiAdapter::class, $this->apiAuth);
     }
 
     public function testApiSigninIncorrectCredentials()

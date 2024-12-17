@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.5
  */
 
 use Quantum\Environment\Server;
@@ -23,15 +23,9 @@ function get_user_ip(): ?string
 {
     $server = Server::getInstance();
 
-    if ($server->get('HTTP_CLIENT_IP')) {
-        $user_ip = $server->get('HTTP_CLIENT_IP');
-    } elseif ($server->get('HTTP_X_FORWARDED_FOR')) {
-        $user_ip = $server->get('HTTP_X_FORWARDED_FOR');
-    } else {
-        $user_ip = $server->get('REMOTE_ADDR');
-    }
-
-    return $user_ip;
+    return $server->get('HTTP_CLIENT_IP')
+        ?? $server->get('HTTP_X_FORWARDED_FOR')
+        ?? $server->get('REMOTE_ADDR');
 }
 
 if (!function_exists('getallheaders')) {
@@ -45,22 +39,18 @@ if (!function_exists('getallheaders')) {
     function getallheaders(): array
     {
         $server = Server::getInstance();
-
         $data = $server->all();
 
         if (empty($data)) {
             return [];
         }
 
-        $headers = [];
-
-        foreach ($data as $key => $value) {
-            if (substr($key, 0, 5) == 'HTTP_') {
-                $headers[str_replace(' ', '-', strtolower(str_replace('_', ' ', substr($key, 5))))] = $value;
+        return array_reduce(array_keys($data), function ($headers, $key) use ($data) {
+            if (strpos($key, 'HTTP_') === 0) {
+                $formattedKey = strtolower(str_replace('_', '-', substr($key, 5)));
+                $headers[$formattedKey] = $data[$key];
             }
-        }
-
-        return $headers;
+            return $headers;
+        }, []);
     }
-
 }

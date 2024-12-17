@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.5
  */
 
 use Quantum\Libraries\Transformer\TransformerInterface;
@@ -179,19 +179,14 @@ function slugify(string $text): string
 }
 
 /**
- *  Dumps the assets
+ * Dumps the assets
  * @param string $type
  * @throws AssetException
  * @throws LangException
  */
 function assets(string $type)
 {
-    $assetTypes = [
-        'css' => 1,
-        'js' => 2
-    ];
-
-    AssetManager::getInstance()->dump($assetTypes[$type]);
+    AssetManager::getInstance()->dump(AssetManager::STORES[$type]);
 }
 
 /**
@@ -213,6 +208,15 @@ function is_closure($entity): bool
 function transform(array $data, TransformerInterface $transformer): array
 {
     return TransformerManager::transform($data, $transformer);
+}
+
+/**
+ * Checks the app debug mode
+ * @return bool
+ */
+function is_debug_mode(): bool
+{
+    return filter_var(config()->get('debug'), FILTER_VALIDATE_BOOLEAN);
 }
 
 /**

@@ -1773,7 +1773,7 @@
     <file name="D:\projects\forks\quantum-php-core\src\Libraries\Auth\AuthServiceInterface.php">
       <metrics loc="54" ncloc="17" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
     </file>
-    <file name="D:\projects\forks\quantum-php-core\src\Libraries\Auth\AuthenticableInterface.php">
+    <file name="D:\projects\forks\quantum-php-core\src\Libraries\Auth\AuthenticatableInterface.php">
       <metrics loc="50" ncloc="17" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="0" coveredstatements="0" elements="0" coveredelements="0"/>
     </file>
     <file name="D:\projects\forks\quantum-php-core\src\Libraries\Auth\BaseAuth.php">

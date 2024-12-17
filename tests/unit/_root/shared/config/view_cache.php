@@ -2,6 +2,6 @@
 
 return [
 	'ttl' => 300,
-	'cache_dir' =>  'view_cache',
-	'minify' =>  true
+	'cache_dir' =>  'cache',
+	'minify' =>  false
 ];

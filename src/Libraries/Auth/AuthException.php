@@ -9,10 +9,12 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.5
  */
 
-namespace Quantum\Exceptions;
+namespace Quantum\Libraries\Auth;
+
+use Quantum\Exceptions\LangException;
 
 /**
  * Class AuthException
@@ -21,7 +23,8 @@ namespace Quantum\Exceptions;
 class AuthException extends \Exception
 {
     /**
-     * @return \Quantum\Exceptions\AuthException
+     * @return AuthException
+     * @throws LangException
      */
     public static function incorrectCredentials(): AuthException
     {
@@ -29,7 +32,8 @@ class AuthException extends \Exception
     }
 
     /**
-     * @return \Quantum\Exceptions\AuthException
+     * @return AuthException
+     * @throws LangException
      */
     public static function inactiveAccount(): AuthException
     {
@@ -37,7 +41,8 @@ class AuthException extends \Exception
     }
 
     /**
-     * @return \Quantum\Exceptions\AuthException
+     * @return AuthException
+     * @throws LangException
      */
     public static function incorrectVerificationCode(): AuthException
     {
@@ -45,7 +50,8 @@ class AuthException extends \Exception
     }
 
     /**
-     * @return \Quantum\Exceptions\AuthException
+     * @return AuthException
+     * @throws LangException
      */
     public static function verificationCodeExpired(): AuthException
     {
@@ -53,26 +59,39 @@ class AuthException extends \Exception
     }
 
     /**
-     * @return \Quantum\Exceptions\AuthException
+     * @return AuthException
+     * @throws LangException
      */
     public static function misconfiguredAuthConfig(): AuthException
     {
         return new static(t('exception.misconfigured_auth_config'));
     }
-    
+
     /**
-     * @return \Quantum\Exceptions\AuthException
+     * @param string $name
+     * @return AuthException
+     * @throws LangException
      */
-    public static function undefinedAuthType(): AuthException
+    public static function undefinedAuthType(string $name): AuthException
     {
-        return new static(t('exception.undefined_auth_type'));
+        return new static(t('exception.undefined_auth_type', ''));
     }
 
     /**
-     * @return \Quantum\Exceptions\AuthException
+     * @return AuthException
+     * @throws LangException
      */
     public static function incorrectUserSchema(): AuthException
     {
         return new static(t('exception.incorrect_user_schema'));
+    }
+
+    /**
+     * @return AuthException
+     * @throws LangException
+     */
+    public static function incorrectAuthService(): AuthException
+    {
+        return new static(t('exception.incorrect_auth_service'));
     }
 }

@@ -9,13 +9,16 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.5
  */
 
 namespace Quantum;
 
+use Quantum\Router\ModuleLoaderException;
 use Quantum\Environment\Environment;
 use Quantum\Libraries\Config\Config;
+use Quantum\Logger\LoggerException;
+use Quantum\Logger\LoggerManager;
 use Quantum\Tracer\ErrorHandler;
 use Quantum\Loader\Loader;
 use Quantum\Loader\Setup;
@@ -40,18 +43,13 @@ class App
      * @param string $baseDir
      * @throws Exceptions\ConfigException
      * @throws Exceptions\ControllerException
-     * @throws Exceptions\CsrfException
-     * @throws Exceptions\DatabaseException
      * @throws Exceptions\DiException
      * @throws Exceptions\EnvException
-     * @throws Exceptions\HookException
-     * @throws Exceptions\LangException
      * @throws Exceptions\MiddlewareException
-     * @throws Exceptions\ModuleLoaderException
+     * @throws ModuleLoaderException
      * @throws Exceptions\RouteException
-     * @throws Exceptions\SessionException
      * @throws Exceptions\ViewException
-     * @throws \ErrorException
+     * @throws LoggerException
      * @throws \ReflectionException
      * @throws \Twig\Error\LoaderError
      * @throws \Twig\Error\RuntimeError
@@ -75,7 +73,7 @@ class App
 
         Config::getInstance()->load(new Setup('config', 'config'));
 
-        ErrorHandler::setup();
+        ErrorHandler::getInstance()->setup(LoggerManager::getHandler());
 
         Bootstrap::run();
     }

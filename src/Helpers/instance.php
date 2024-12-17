@@ -9,31 +9,30 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.5
  */
 
+use Quantum\Libraries\Auth\AuthenticatableInterface;
 use Quantum\Libraries\Captcha\CaptchaInterface;
-use Quantum\Libraries\Captcha\CaptchaManager;
-use Quantum\Libraries\Mailer\MailerInterface;
 use Quantum\Libraries\Session\SessionManager;
+use Quantum\Libraries\Captcha\CaptchaManager;
+use Quantum\Libraries\Mailer\MailerException;
+use Quantum\Libraries\Mailer\MailerInterface;
 use Quantum\Libraries\Mailer\MailerManager;
-use Quantum\Libraries\Asset\AssetManager;
 use Quantum\Exceptions\DatabaseException;
 use Quantum\Libraries\Cache\CacheManager;
+use Quantum\Libraries\Asset\AssetManager;
+use Quantum\Libraries\Auth\AuthException;
 use Quantum\Exceptions\CaptchaException;
 use Quantum\Exceptions\ServiceException;
 use Quantum\Exceptions\SessionException;
-use Quantum\Exceptions\ConfigException;
-use Quantum\Exceptions\MailerException;
 use Quantum\Libraries\Auth\AuthManager;
+use Quantum\Exceptions\ConfigException;
 use Quantum\Libraries\Session\Session;
 use Quantum\Exceptions\LangException;
-use Quantum\Exceptions\AuthException;
 use Quantum\Libraries\Cookie\Cookie;
 use Quantum\Exceptions\AppException;
-use Quantum\Libraries\Auth\ApiAuth;
 use Quantum\Exceptions\DiException;
-use Quantum\Libraries\Auth\WebAuth;
 use Quantum\Libraries\Cache\Cache;
 use Quantum\Libraries\Csrf\Csrf;
 use Quantum\Hooks\HookManager;
@@ -64,7 +63,7 @@ function cookie(): Cookie
 
 /**
  * Gets the Auth handler
- * @return ApiAuth|WebAuth
+ * @return AuthenticatableInterface
  * @throws AuthException
  * @throws ConfigException
  * @throws DiException
@@ -73,7 +72,7 @@ function cookie(): Cookie
  * @throws ReflectionException
  * @throws ServiceException
  */
-function auth()
+function auth(): AuthenticatableInterface
 {
     return AuthManager::getHandler();
 }

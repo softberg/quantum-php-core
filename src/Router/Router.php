@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Router;
@@ -19,6 +19,7 @@ use Quantum\Libraries\ResourceCache\ViewCache;
 use Quantum\Exceptions\RouteException;
 use Quantum\Exceptions\ViewException;
 use Quantum\Exceptions\DiException;
+use DebugBar\DebugBarException;
 use Quantum\Debugger\Debugger;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
@@ -83,14 +84,16 @@ class Router extends RouteController
 
     /**
      * Finds the current route
-     * @throws StopExecutionException
-     * @throws ViewException
+     * @return void
      * @throws DiException
      * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     * @throws RouteException
      * @throws ReflectionException
+     * @throws RouteException
+     * @throws RuntimeError
+     * @throws StopExecutionException
+     * @throws SyntaxError
+     * @throws ViewException
+     * @throws DebugBarException
      */
     public function findRoute()
     {
@@ -118,20 +121,14 @@ class Router extends RouteController
             throw RouteException::incorrectMethod($this->request->getMethod());
         }
 
-	    if (!empty($currentRoute['cache_settings']) && key_exists('shouldCache', $currentRoute)){
-		    $viewCacheInstance = ViewCache::getInstance();
-
-			$viewCacheInstance->enableCaching($currentRoute['cache_settings']['shouldCache']);
-
-			if (!empty($currentRoute['cache_settings']['ttl'])){
-				$viewCacheInstance->setTtl($currentRoute['cache_settings']['ttl']);
-			}
-	    }
+        $this->handleCaching($currentRoute);
 
         self::setCurrentRoute($currentRoute);
 
-        if (filter_var(config()->get(Debugger::DEBUG_ENABLED), FILTER_VALIDATE_BOOLEAN)) {
-            $this->collectDebugData($currentRoute);
+        $debugger = Debugger::getInstance();
+
+        if ($debugger->isEnabled()) {
+            $debugger->addToStoreCell(Debugger::ROUTES, LogLevel::INFO, $this->collectDebugData($currentRoute));
         }
     }
 
@@ -142,6 +139,22 @@ class Router extends RouteController
     {
         parent::$currentRoute = null;
         $this->matchedRoutes = [];
+    }
+
+    /**
+     * @param array $route
+     * @return void
+     */
+    private function handleCaching(array $route): void
+    {
+        if (!empty($route['cache_settings']['shouldCache'])) {
+            $viewCache = ViewCache::getInstance();
+            $viewCache->enableCaching(true);
+
+            if (!empty($route['cache_settings']['ttl'])) {
+                $viewCache->setTtl($route['cache_settings']['ttl']);
+            }
+        }
     }
 
     /**
@@ -162,9 +175,9 @@ class Router extends RouteController
     /**
      * Collects debug data
      * @param array $currentRoute
-     * @return void
+     * @return array
      */
-    private function collectDebugData(array $currentRoute)
+    private function collectDebugData(array $currentRoute): array
     {
         $routeInfo = [];
 
@@ -172,7 +185,7 @@ class Router extends RouteController
             $routeInfo[ucfirst($key)] = json_encode($value);
         }
 
-        Debugger::addToStore(Debugger::ROUTES, LogLevel::INFO, $routeInfo);
+        return $routeInfo;
     }
 
     /**

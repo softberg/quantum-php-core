@@ -9,10 +9,12 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.5
  */
 
-namespace Quantum\Exceptions;
+namespace Quantum\Libraries\Mailer;
+
+use Quantum\Exceptions\LangException;
 
 /**
  * Class MailerException
@@ -29,6 +31,15 @@ class MailerException extends \Exception
     public static function unsupportedAdapter(string $name): MailerException
     {
         return new static(t('exception.adapter_not_supported', $name), E_WARNING);
+    }
+
+    /**
+     * @param string $error
+     * @return MailerException
+     */
+    public static function unableToSend(string $error): MailerException
+    {
+        return new static($error, E_WARNING);
     }
 
 }

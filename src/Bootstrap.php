@@ -9,14 +9,15 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.5
  */
 
 namespace Quantum;
 
 use Quantum\Exceptions\StopExecutionException;
-use Quantum\Router\ModuleLoader;
+use Quantum\Router\ModuleLoaderException;
 use Quantum\Libraries\Lang\Lang;
+use Quantum\Router\ModuleLoader;
 use Quantum\Environment\Server;
 use Quantum\Debugger\Debugger;
 use Quantum\Hooks\HookManager;
@@ -35,16 +36,20 @@ use Quantum\Di\Di;
  */
 class Bootstrap
 {
-
     /**
      * Boots the app
-     * @throws Exceptions\ModuleLoaderException
-     * @throws Exceptions\ControllerException
-     * @throws Exceptions\MiddlewareException
      * @throws Exceptions\ConfigException
+     * @throws Exceptions\ControllerException
+     * @throws Exceptions\CryptorException
+     * @throws Exceptions\CsrfException
+     * @throws Exceptions\DiException
+     * @throws Exceptions\LangException
+     * @throws Exceptions\MiddlewareException
+     * @throws ModuleLoaderException
      * @throws Exceptions\RouteException
      * @throws Exceptions\ViewException
      * @throws ReflectionException
+     * @throws \DebugBar\DebugBarException
      * @throws \Twig\Error\LoaderError
      * @throws \Twig\Error\RuntimeError
      * @throws \Twig\Error\SyntaxError
@@ -62,9 +67,10 @@ class Bootstrap
                 stop();
             }
 
-            Debugger::initStore();
+            $debugger = Debugger::getInstance();
+            $debugger->initStore();
 
-            ModuleLoader::loadModulesRoutes();
+            ModuleLoader::getInstance()->loadModulesRoutes();
 
             $router = new Router($request, $response);
             $router->findRoute();
@@ -73,7 +79,7 @@ class Bootstrap
                 Lang::getInstance((int)config()->get(Lang::LANG_SEGMENT))->load();
             }
 
-            Debugger::addToStore(Debugger::HOOKS, LogLevel::INFO, HookManager::getRegistered());
+            $debugger->addToStoreCell(Debugger::HOOKS, LogLevel::INFO, HookManager::getRegistered());
 
             MvcManager::handle($request, $response);
 

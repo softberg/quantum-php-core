@@ -9,47 +9,51 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.5
  */
 
-namespace Quantum\Libraries\Auth;
+namespace Quantum\Libraries\Auth\Adapters;
 
+use Quantum\Libraries\Auth\AuthenticatableInterface;
+use Quantum\Libraries\Auth\AuthServiceInterface;
 use Quantum\Libraries\Mailer\MailerInterface;
 use Quantum\Exceptions\DatabaseException;
+use Quantum\Libraries\Auth\AuthException;
 use Quantum\Exceptions\CryptorException;
 use Quantum\Exceptions\SessionException;
 use Quantum\Exceptions\ConfigException;
-use Quantum\Exceptions\AuthException;
+use Quantum\Exceptions\LangException;
 use Quantum\Libraries\Hasher\Hasher;
+use Quantum\Libraries\Auth\BaseAuth;
 use Quantum\Exceptions\DiException;
-use PHPMailer\PHPMailer\Exception;
+use Quantum\Libraries\Auth\User;
 use ReflectionException;
+use Exception;
 
 /**
  * Class WebAuth
  * @package Quantum\Libraries\Auth
  */
-class WebAuth extends BaseAuth implements AuthenticableInterface
+class WebAdapter extends BaseAuth implements AuthenticatableInterface
 {
 
     /**
-     * Instance of WebAuth
-     * @var WebAuth
+     * @var WebAdapter
      */
     private static $instance;
 
     /**
-     * WebAuth constructor.
      * @param AuthServiceInterface $authService
      * @param MailerInterface $mailer
      * @param Hasher $hasher
      * @throws AuthException
+     * @throws LangException
      */
     private function __construct(AuthServiceInterface $authService, MailerInterface $mailer, Hasher $hasher)
     {
+        $this->authService = $authService;
         $this->mailer = $mailer;
         $this->hasher = $hasher;
-        $this->authService = $authService;
 
         $userSchema = $this->authService->userSchema();
 
@@ -57,14 +61,14 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
     }
 
     /**
-     * Get Instance
      * @param AuthServiceInterface $authService
      * @param MailerInterface $mailer
      * @param Hasher $hasher
-     * @return WebAuth
+     * @return self
      * @throws AuthException
+     * @throws LangException
      */
-    public static function getInstance(AuthServiceInterface $authService, MailerInterface $mailer, Hasher $hasher): WebAuth
+    public static function getInstance(AuthServiceInterface $authService, MailerInterface $mailer, Hasher $hasher): self
     {
         if (self::$instance === null) {
             self::$instance = new self($authService, $mailer, $hasher);
@@ -78,15 +82,16 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
      * @param string $username
      * @param string $password
      * @param bool $remember
-     * @return bool|string
+     * @return string|true
      * @throws AuthException
-     * @throws ReflectionException
-     * @throws Exception
      * @throws ConfigException
      * @throws CryptorException
      * @throws DatabaseException
      * @throws DiException
+     * @throws ReflectionException
      * @throws SessionException
+     * @throws LangException
+     * @throws Exception
      */
     public function signin(string $username, string $password, bool $remember = false)
     {
@@ -99,7 +104,7 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
         if (filter_var(config()->get('2FA'), FILTER_VALIDATE_BOOLEAN)) {
             return $this->twoStepVerification($user);
         } else {
-	        session()->regenerateId();
+            session()->regenerateId();
             session()->set($this->authUserKey, $this->getVisibleFields($user));
             return true;
         }
@@ -108,18 +113,19 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
     /**
      * Sign Out
      * @return bool
-     * @throws ReflectionException
      * @throws ConfigException
+     * @throws CryptorException
      * @throws DatabaseException
      * @throws DiException
+     * @throws LangException
+     * @throws ReflectionException
      * @throws SessionException
-     * @throws CryptorException
      */
     public function signout(): bool
     {
         if (session()->has($this->authUserKey)) {
             session()->delete($this->authUserKey);
-	        session()->regenerateId();
+            session()->regenerateId();
             $this->removeRememberToken();
 
             return true;
@@ -131,11 +137,12 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
     /**
      * Gets the user object
      * @return User|null
-     * @throws ReflectionException
      * @throws ConfigException
      * @throws CryptorException
      * @throws DatabaseException
      * @throws DiException
+     * @throws LangException
+     * @throws ReflectionException
      * @throws SessionException
      */
     public function user(): ?User
@@ -159,12 +166,13 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
      * @param int $otp
      * @param string $otpToken
      * @return bool
-     * @throws ReflectionException
      * @throws AuthException
      * @throws ConfigException
      * @throws CryptorException
      * @throws DatabaseException
      * @throws DiException
+     * @throws LangException
+     * @throws ReflectionException
      * @throws SessionException
      */
     public function verifyOtp(int $otp, string $otpToken): bool
@@ -183,7 +191,10 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
      */
     private function checkRememberToken()
     {
-        $user = $this->authService->get($this->keyFields[self::REMEMBER_TOKEN_KEY], cookie()->get($this->keyFields[self::REMEMBER_TOKEN_KEY]));
+        $user = $this->authService->get(
+            $this->keyFields[self::REMEMBER_TOKEN_KEY],
+            cookie()->get($this->keyFields[self::REMEMBER_TOKEN_KEY])
+        );
 
         if (!$user) {
             return false;
@@ -221,7 +232,10 @@ class WebAuth extends BaseAuth implements AuthenticableInterface
     private function removeRememberToken()
     {
         if (cookie()->has($this->keyFields[self::REMEMBER_TOKEN_KEY])) {
-            $user = $this->authService->get($this->keyFields[self::REMEMBER_TOKEN_KEY], cookie()->get($this->keyFields[self::REMEMBER_TOKEN_KEY]));
+            $user = $this->authService->get(
+                $this->keyFields[self::REMEMBER_TOKEN_KEY],
+                cookie()->get($this->keyFields[self::REMEMBER_TOKEN_KEY])
+            );
 
             if ($user) {
                 $this->authService->update(

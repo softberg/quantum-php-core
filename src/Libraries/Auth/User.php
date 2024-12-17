@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Libraries\Auth;
@@ -106,7 +106,7 @@ class User
     /**
      * Gets the user property
      * @param string $property
-     * @return mixed
+     * @return string|null
      */
     public function __get(string $property)
     {

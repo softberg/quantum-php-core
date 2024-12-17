@@ -9,68 +9,92 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.5
  */
 
 use Symfony\Component\VarExporter\Exception\ExceptionInterface;
 use Symfony\Component\VarExporter\VarExporter;
-use Quantum\Contracts\ReportableInterface;
-use Quantum\Logger\MessageLogger;
-use Quantum\Logger\Logger;
+use Quantum\Exceptions\ConfigException;
+use Quantum\Exceptions\LangException;
+use Quantum\Exceptions\DiException;
+use Quantum\Logger\LoggerException;
+use Quantum\Logger\LoggerManager;
+use Quantum\Logger\LoggerConfig;
+use Psr\Log\LogLevel;
 
 /**
  * Reports error
  * @param mixed $var
- * @param ReportableInterface|null $loggerAdapter
+ * @return void
+ * @throws ReflectionException
+ * @throws ConfigException
+ * @throws DiException
+ * @throws LangException
+ * @throws LoggerException
  */
-function error($var, ?ReportableInterface $loggerAdapter = null)
+function error($var)
 {
-    $logger = new Logger($loggerAdapter ?: new MessageLogger);
-    $logger->error($var);
+    LoggerManager::getHandler()->error($var);
 }
 
 /**
  * Reports warning
  * @param mixed $var
- * @param ReportableInterface|null $loggerAdapter
+ * @return void
+ * @throws ConfigException
+ * @throws DiException
+ * @throws LangException
+ * @throws LoggerException
+ * @throws ReflectionException
  */
-function warning($var, ?ReportableInterface $loggerAdapter = null)
+function warning($var)
 {
-    $logger = new Logger($loggerAdapter ?: new MessageLogger);
-    $logger->warning($var);
+    LoggerManager::getHandler()->warning($var);
 }
 
 /**
  * Reports notice
  * @param mixed $var
- * @param ReportableInterface|null $loggerAdapter
+ * @return void
+ * @throws ConfigException
+ * @throws DiException
+ * @throws LangException
+ * @throws LoggerException
+ * @throws ReflectionException
  */
-function notice($var, ?ReportableInterface $loggerAdapter = null)
+function notice($var)
 {
-    $logger = new Logger($loggerAdapter ?: new MessageLogger);
-    $logger->notice($var);
+    LoggerManager::getHandler()->notice($var);
 }
 
 /**
  * Reports info
  * @param mixed $var
- * @param ReportableInterface|null $loggerAdapter
+ * @return void
+ * @throws ConfigException
+ * @throws DiException
+ * @throws LangException
+ * @throws LoggerException
+ * @throws ReflectionException
  */
-function info($var, ?ReportableInterface $loggerAdapter = null)
+function info($var)
 {
-    $logger = new Logger($loggerAdapter ?: new MessageLogger);
-    $logger->info($var);
+    LoggerManager::getHandler()->info($var);
 }
 
 /**
  * Reports debug
  * @param mixed $var
- * @param ReportableInterface|null $loggerAdapter
+ * @return void
+ * @throws ConfigException
+ * @throws DiException
+ * @throws LangException
+ * @throws LoggerException
+ * @throws ReflectionException
  */
-function debug($var, ?ReportableInterface $loggerAdapter = null)
+function debug($var)
 {
-    $logger = new Logger($loggerAdapter ?: new MessageLogger);
-    $logger->debug($var);
+    LoggerManager::getHandler()->debug($var);
 }
 
 /**

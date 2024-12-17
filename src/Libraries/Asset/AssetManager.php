@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Libraries\Asset;
@@ -25,14 +25,12 @@ class AssetManager
 {
 
     /**
-     * CSS assets store
+     * Assets store types
      */
-    const CSS_STORE = 1;
-
-    /**
-     * JS assets store
-     */
-    const JS_STORE = 2;
+    const STORES = [
+        'css' => Asset::CSS,
+        'js' => Asset::JS,
+    ];
 
     /**
      *  Asset store
@@ -44,10 +42,7 @@ class AssetManager
      * Published assets
      * @var array[]
      */
-    private $published = [
-        self::CSS_STORE => [],
-        self::JS_STORE => []
-    ];
+    private $published = [];
 
     /**
      * Asset instance
@@ -57,6 +52,9 @@ class AssetManager
 
     private function __construct()
     {
+        foreach (self::STORES as $type) {
+            $this->published[$type] = [];
+        }
     }
 
     /**
@@ -123,12 +121,8 @@ class AssetManager
      */
     public function registerAsset(Asset $asset)
     {
-        if ($asset->getName()) {
-            foreach ($this->store as $storedAsset) {
-                if ($storedAsset->getName() == $asset->getName()) {
-                    throw AssetException::nameInUse($asset->getName());
-                }
-            }
+        if ($asset->getName() && $this->get($asset->getName())) {
+            throw AssetException::nameInUse($asset->getName());
         }
 
         $this->store[] = $asset;
@@ -137,8 +131,10 @@ class AssetManager
     /**
      * @return void
      */
-    public function flush() {
+    public function flush()
+    {
         $this->store = [];
+        $this->published = [];
     }
 
     /**
@@ -171,8 +167,8 @@ class AssetManager
             $this->setPriorityAssets();
             $this->setRegularAssets();
 
-            ksort($this->published[self::CSS_STORE]);
-            ksort($this->published[self::JS_STORE]);
+            ksort($this->published[self::STORES['css']]);
+            ksort($this->published[self::STORES['js']]);
         }
     }
 
@@ -184,12 +180,15 @@ class AssetManager
     private function setPriorityAssets()
     {
         foreach ($this->store as $asset) {
-            if ($asset->getPosition() != -1) {
-                if (isset($this->published[$asset->getType()][$asset->getPosition()])) {
-                    throw AssetException::positionInUse($asset->getPosition(), $asset->getPath());
+            $position = $asset->getPosition();
+            $type = $asset->getType();
+
+            if ($position != -1) {
+                if (isset($this->published[$type][$position])) {
+                    throw AssetException::positionInUse($position, $asset->getPath());
                 }
 
-                $this->published[$asset->getType()][$asset->getPosition()] = $asset;
+                $this->published[$type][$position] = $asset;
             }
         }
     }
@@ -213,10 +212,12 @@ class AssetManager
      */
     private function setPosition(Asset $asset, int $index)
     {
-        if (isset($this->published[$asset->getType()][$index])) {
+        $type = $asset->getType();
+
+        if (isset($this->published[$type][$index])) {
             $this->setPosition($asset, $index + 1);
         } else {
-            $this->published[$asset->getType()][$index] = $asset;
+            $this->published[$type][$index] = $asset;
         }
     }
 }
