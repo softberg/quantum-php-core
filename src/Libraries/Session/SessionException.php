@@ -9,20 +9,21 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.5
  */
 
-namespace Quantum\Exceptions;
+namespace Quantum\Libraries\Session;
+
+use Quantum\Exceptions\AppException;
 
 /**
  * Class SessionException
- * @package Quantum\Exceptions
+ * @package Quantum\Libraries\Session
  */
-class SessionException extends \Exception
+class SessionException extends AppException
 {
     /**
      * @return SessionException
-     * @throws LangException
      */
     public static function sessionNotStarted(): SessionException
     {
@@ -31,7 +32,6 @@ class SessionException extends \Exception
 
     /**
      * @return SessionException
-     * @throws LangException
      */
     public static function sessionNotDestroyed(): SessionException
     {
@@ -40,7 +40,6 @@ class SessionException extends \Exception
 
     /**
      * @return SessionException
-     * @throws LangException
      */
     public static function sessionTableNotProvided(): SessionException
     {
