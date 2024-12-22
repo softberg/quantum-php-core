@@ -13,8 +13,7 @@
 
 namespace Quantum\Logger;
 
-use Quantum\Exceptions\ConfigException;
-use Quantum\Exceptions\LangException;
+use Quantum\Libraries\Config\ConfigException;
 use Quantum\Exceptions\DiException;
 use Quantum\Loader\Setup;
 use ReflectionException;
@@ -36,7 +35,6 @@ class LoggerManager
      * @throws DiException
      * @throws LoggerException
      * @throws ReflectionException
-     * @throws LangException
      */
     public static function getHandler(): Logger
     {

@@ -34,7 +34,13 @@ class MessageAdapter implements ReportableInterface
      */
     public function report(string $level, $message, ?array $context = [])
     {
-        Debugger::getInstance()->addToStoreCell(Debugger::MESSAGES, $level, $message);
+        $tab = $context['tab'] ?? Debugger::MESSAGES;
+
+        $debugger = Debugger::getInstance();
+
+        if ($debugger->isEnabled()) {
+            $debugger->addToStoreCell($tab, $level, $message);
+        }
     }
 
 }

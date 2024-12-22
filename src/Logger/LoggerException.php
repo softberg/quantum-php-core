@@ -14,7 +14,6 @@
 namespace Quantum\Logger;
 
 use Exception;
-use Quantum\Exceptions\LangException;
 
 /**
  * Class LoggerException
@@ -25,7 +24,6 @@ class LoggerException extends Exception
     /**
      * @param string $name
      * @return LoggerException
-     * @throws LangException
      */
     public static function unsupportedAdapter(string $name): LoggerException
     {
@@ -35,7 +33,6 @@ class LoggerException extends Exception
     /**
      * @param string $name
      * @return LoggerException
-     * @throws LangException
      */
     public static function logPathIsNotDirectory(string $name): LoggerException
     {
@@ -45,7 +42,6 @@ class LoggerException extends Exception
     /**
      * @param string $name
      * @return LoggerException
-     * @throws LangException
      */
     public static function logPathIsNotFile(string $name): LoggerException
     {
