@@ -15,9 +15,9 @@
 namespace Quantum\Libraries\Database\Idiorm\Statements;
 
 use Quantum\Libraries\Database\Idiorm\IdiormPatch;
+use Quantum\Libraries\Database\DatabaseException;
 use Quantum\Libraries\Database\DbalInterface;
-use Quantum\Exceptions\DatabaseException;
-use Quantum\Exceptions\ModelException;
+use Quantum\Libraries\Module\ModelException;
 use Quantum\Mvc\QtModel;
 
 /**

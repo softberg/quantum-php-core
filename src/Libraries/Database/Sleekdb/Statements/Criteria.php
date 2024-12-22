@@ -14,8 +14,8 @@
 
 namespace Quantum\Libraries\Database\Sleekdb\Statements;
 
+use Quantum\Libraries\Database\DatabaseException;
 use Quantum\Libraries\Database\DbalInterface;
-use Quantum\Exceptions\DatabaseException;
 
 /**
  * Trait Criteria

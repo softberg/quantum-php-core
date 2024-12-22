@@ -9,13 +9,15 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Libraries\Database;
 
-use Quantum\Exceptions\DatabaseException;
+use Quantum\Libraries\Config\ConfigException;
+use Quantum\Exceptions\DiException;
 use Quantum\Loader\Setup;
+use ReflectionException;
 
 /**
  * Class Database
@@ -38,10 +40,10 @@ class Database
 
     /**
      * Database constructor.
-     * @throws \Quantum\Exceptions\ConfigException
-     * @throws \Quantum\Exceptions\DiException
+     * @throws ConfigException
+     * @throws DiException
      * @throws DatabaseException
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     private function __construct()
     {
@@ -80,10 +82,10 @@ class Database
     /**
      * Gets the DB configurations
      * @return array
-     * @throws \Quantum\Exceptions\ConfigException
-     * @throws \Quantum\Exceptions\DiException
+     * @throws ConfigException
+     * @throws DiException
      * @throws DatabaseException
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function getConfigs(): ?array
     {

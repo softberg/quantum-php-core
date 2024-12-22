@@ -9,15 +9,15 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Libraries\Database\Schema;
 
-use Quantum\Exceptions\DatabaseException;
+use Quantum\Libraries\Database\DatabaseException;
 use Quantum\Exceptions\MigrationException;
+use Quantum\Libraries\Lang\LangException;
 use Quantum\Libraries\Database\Database;
-use Quantum\Exceptions\LangException;
 
 /**
  * Class Table
@@ -102,6 +102,7 @@ class Table
     /**
      * Table destructor
      * Saves the data before object goes out of scope
+     * @throws DatabaseException
      */
     public function __destruct()
     {

@@ -16,11 +16,11 @@ namespace Quantum\Libraries\Database\Sleekdb\Statements;
 
 use SleekDB\Exceptions\InvalidConfigurationException;
 use Quantum\Libraries\Database\PaginatorInterface;
+use Quantum\Libraries\Database\DatabaseException;
 use Quantum\Libraries\Database\Sleekdb\Paginator;
 use SleekDB\Exceptions\InvalidArgumentException;
 use Quantum\Libraries\Database\DbalInterface;
-use Quantum\Exceptions\DatabaseException;
-use Quantum\Exceptions\ModelException;
+use Quantum\Libraries\Module\ModelException;
 use SleekDB\Exceptions\IOException;
 
 /**

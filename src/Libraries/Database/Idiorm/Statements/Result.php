@@ -15,9 +15,9 @@
 namespace Quantum\Libraries\Database\Idiorm\Statements;
 
 use Quantum\Libraries\Database\PaginatorInterface;
+use Quantum\Libraries\Database\DatabaseException;
 use Quantum\Libraries\Database\Idiorm\Paginator;
 use Quantum\Libraries\Database\DbalInterface;
-use Quantum\Exceptions\DatabaseException;
 
 /**
  * Trait Result

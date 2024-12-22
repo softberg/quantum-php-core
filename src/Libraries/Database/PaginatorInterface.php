@@ -1,38 +1,111 @@
 <?php
 
+/**
+ * Quantum PHP Framework
+ *
+ * An open source software development framework for PHP
+ *
+ * @package Quantum
+ * @author Arman Ag. <arman.ag@softberg.org>
+ * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
+ * @link http://quantum.softberg.org/
+ * @since 2.9.5
+ */
+
 namespace Quantum\Libraries\Database;
 
+/**
+ * Paginator interface
+ * @package Quantum\Libraries\Database
+ */
 interface PaginatorInterface
 {
-	public function getPagination(bool $withBaseUrl): ?string;
 
+    /**
+     * @return int
+     */
 	public function currentPageNumber(): int;
 
-	public function currentPageLink(bool $withBaseUrl): ?string;
-
-	public function previousPageLink(bool $withBaseUrl): ?string;
-
+    /**
+     * @return int|null
+     */
 	public function previousPageNumber(): ?int;
 
-	public function firstPageLink(bool $withBaseUrl): ?string;
-
-	public function nextPageLink(bool $withBaseUrl): ?string;
-
+    /**
+     * @return int|null
+     */
 	public function nextPageNumber(): ?int;
 
-	public function lastPageLink(bool $withBaseUrl): ?string;
-	
-	public function lastPageNumber();
+    /**
+     * @return int
+     */
+    public function lastPageNumber(): int;
 
-	public function firstItem();
+    /**
+     * @param bool $withBaseUrl
+     * @return string|null
+     */
+    public function currentPageLink(bool $withBaseUrl): ?string;
 
-	public function lastItem();
+    /**
+     * @param bool $withBaseUrl
+     * @return string|null
+     */
+    public function firstPageLink(bool $withBaseUrl): ?string;
 
-	public function perPage();
+    /**
+     * @param bool $withBaseUrl
+     * @return string|null
+     */
+    public function previousPageLink(bool $withBaseUrl): ?string;
 
-	public function total();
+    /**
+     * @param bool $withBaseUrl
+     * @return string|null
+     */
+    public function nextPageLink(bool $withBaseUrl): ?string;
 
-	public function links(bool $withBaseUrl);
+    /**
+     * @param bool $withBaseUrl
+     * @return string|null
+     */
+    public function lastPageLink(bool $withBaseUrl): ?string;
 
-	public function data();
+    /**
+     * @return int
+     */
+	public function perPage(): int;
+
+    /**
+     * @return int
+     */
+	public function total(): int;
+
+    /**
+     * @param bool $withBaseUrl
+     * @return array
+     */
+	public function links(bool $withBaseUrl): array;
+
+    /**
+     * @param bool $withBaseUrl
+     * @param null $pageItemsCount
+     * @return string|null
+     */
+    public function getPagination(bool $withBaseUrl, $pageItemsCount = null): ?string;
+
+    /**
+     * @return mixed
+     */
+    public function firstItem();
+
+    /**
+     * @return mixed
+     */
+    public function lastItem();
+
+    /**
+     * @return array
+     */
+	public function data(): array;
 }

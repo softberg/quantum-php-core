@@ -1,41 +1,57 @@
 <?php
 
+/**
+ * Quantum PHP Framework
+ *
+ * An open source software development framework for PHP
+ *
+ * @package Quantum
+ * @author Arman Ag. <arman.ag@softberg.org>
+ * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
+ * @link http://quantum.softberg.org/
+ * @since 2.9.5
+ */
+
 namespace Quantum\Libraries\Database;
 
+/**
+ * Class BasePaginator
+ * @package Quantum\Libraries\Database
+ */
 abstract class BasePaginator implements PaginatorInterface
 {
     /**
-     * @var string
+     * Pagination class name
      */
     protected const PAGINATION_CLASS = 'pagination';
 
     /**
-     * @var string
+     * Active class name
      */
     protected const PAGINATION_CLASS_ACTIVE = 'active';
 
     /**
-     * @var string
+     * Parameter name for per page
      */
     protected const PER_PAGE = 'per_page';
 
     /**
-     * @var string
+     * Parameter name for page number
      */
     protected const PAGE = 'page';
 
     /**
-     * @var int
+     * First page number
      */
     protected const FIRST_PAGE_NUMBER = 1;
 
     /**
-     * @var int
+     * Minimum page items count
      */
     protected const MINIMUM_PAGE_ITEMS_COUNT = 3;
 
     /**
-     * @var int
+     * Edge padding
      */
     protected const EDGE_PADDING = 3;
 
@@ -60,7 +76,7 @@ abstract class BasePaginator implements PaginatorInterface
     protected $page;
 
     /**
-     * @return int
+     * @inheritDoc
      */
     public function currentPageNumber(): int
     {
@@ -68,16 +84,7 @@ abstract class BasePaginator implements PaginatorInterface
     }
 
     /**
-     * @param bool $withBaseUrl
-     * @return string|null
-     */
-    public function currentPageLink(bool $withBaseUrl = false): ?string
-    {
-        return $this->getPageLink($this->page, $withBaseUrl);
-    }
-
-    /**
-     * @return int|null
+     * @inheritDoc
      */
     public function previousPageNumber(): ?int
     {
@@ -92,16 +99,7 @@ abstract class BasePaginator implements PaginatorInterface
     }
 
     /**
-     * @param bool $withBaseUrl
-     * @return string|null
-     */
-    public function previousPageLink(bool $withBaseUrl = false): ?string
-    {
-        return $this->getPageLink($this->previousPageNumber(), $withBaseUrl);
-    }
-
-    /**
-     * @return int|null
+     * @inheritDoc
      */
     public function nextPageNumber(): ?int
     {
@@ -115,25 +113,7 @@ abstract class BasePaginator implements PaginatorInterface
     }
 
     /**
-     * @param bool $withBaseUrl
-     * @return string|null
-     */
-    public function nextPageLink(bool $withBaseUrl = false): ?string
-    {
-        return $this->getPageLink($this->nextPageNumber(), $withBaseUrl);
-    }
-
-    /**
-     * @param bool $withBaseUrl
-     * @return string|null
-     */
-    public function firstPageLink(bool $withBaseUrl = false): ?string
-    {
-        return $this->getPageLink(self::FIRST_PAGE_NUMBER, $withBaseUrl);
-    }
-
-    /**
-     * @return int
+     * @inheritDoc
      */
     public function lastPageNumber(): int
     {
@@ -141,8 +121,39 @@ abstract class BasePaginator implements PaginatorInterface
     }
 
     /**
-     * @param bool $withBaseUrl
-     * @return string|null
+     * @inheritDoc
+     */
+    public function currentPageLink(bool $withBaseUrl = false): ?string
+    {
+        return $this->getPageLink($this->page, $withBaseUrl);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function firstPageLink(bool $withBaseUrl = false): ?string
+    {
+        return $this->getPageLink(self::FIRST_PAGE_NUMBER, $withBaseUrl);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function previousPageLink(bool $withBaseUrl = false): ?string
+    {
+        return $this->getPageLink($this->previousPageNumber(), $withBaseUrl);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function nextPageLink(bool $withBaseUrl = false): ?string
+    {
+        return $this->getPageLink($this->nextPageNumber(), $withBaseUrl);
+    }
+
+    /**
+     * @inheritDoc
      */
     public function lastPageLink(bool $withBaseUrl = false): ?string
     {
@@ -150,7 +161,7 @@ abstract class BasePaginator implements PaginatorInterface
     }
 
     /**
-     * @return int
+     * @inheritDoc
      */
     public function perPage(): int
     {
@@ -158,7 +169,7 @@ abstract class BasePaginator implements PaginatorInterface
     }
 
     /**
-     * @return int
+     * @inheritDoc
      */
     public function total(): int
     {
@@ -166,8 +177,7 @@ abstract class BasePaginator implements PaginatorInterface
     }
 
     /**
-     * @param bool $withBaseUrl
-     * @return array
+     * @inheritDoc
      */
     public function links(bool $withBaseUrl = false): array
     {
@@ -180,44 +190,12 @@ abstract class BasePaginator implements PaginatorInterface
     }
 
     /**
-     * @param bool $withBaseUrl
-     * @return string
-     */
-    protected function getUri(bool $withBaseUrl = false): string
-    {
-        $routeUrl = preg_replace('/([?&](page|per_page)=\d+)/', '', route_uri());
-        $routeUrl = preg_replace('/&/', '?', $routeUrl, 1);
-        $url = $routeUrl;
-
-        if ($withBaseUrl) {
-            $url = $this->baseUrl . $routeUrl;
-        }
-
-        $delimiter = strpos($url, '?') ? '&' : '?';
-        return $url . $delimiter;
-    }
-
-    /**
-     * @param $pageNumber
-     * @param bool $withBaseUrl
-     * @return string|null
-     */
-    protected function getPageLink($pageNumber, bool $withBaseUrl = false): ?string
-    {
-        if (!empty($pageNumber)) {
-            return $this->getUri($withBaseUrl) . self::PER_PAGE . '=' . $this->perPage . '&' . self::PAGE . '=' . $pageNumber;
-        }
-        return null;
-    }
-
-    /**
-     * @param bool $withBaseUrl
-     * @param $pageItemsCount
-     * @return string|null
+     * @inheritDoc
      */
     public function getPagination(bool $withBaseUrl = false, $pageItemsCount = null): ?string
     {
         $totalPages = $this->lastPageNumber();
+
         if ($totalPages <= 1) {
             return null;
         }
@@ -251,6 +229,39 @@ abstract class BasePaginator implements PaginatorInterface
     }
 
     /**
+     * @param bool $withBaseUrl
+     * @return string
+     */
+    protected function getUri(bool $withBaseUrl = false): string
+    {
+        $routeUrl = preg_replace('/([?&](page|per_page)=\d+)/', '', route_uri());
+        $routeUrl = preg_replace('/&/', '?', $routeUrl, 1);
+        $url = $routeUrl;
+
+        if ($withBaseUrl) {
+            $url = $this->baseUrl . $routeUrl;
+        }
+
+        $delimiter = strpos($url, '?') ? '&' : '?';
+
+        return $url . $delimiter;
+    }
+
+    /**
+     * @param $pageNumber
+     * @param bool $withBaseUrl
+     * @return string|null
+     */
+    protected function getPageLink($pageNumber, bool $withBaseUrl = false): ?string
+    {
+        if (!empty($pageNumber)) {
+            return $this->getUri($withBaseUrl) . self::PER_PAGE . '=' . $this->perPage . '&' . self::PAGE . '=' . $pageNumber;
+        }
+
+        return null;
+    }
+
+    /**
      * @param string|null $nextPageLink
      * @return string
      */
@@ -260,6 +271,7 @@ abstract class BasePaginator implements PaginatorInterface
         if (!empty($nextPageLink)) {
             $link = '<li><a href="' . $nextPageLink . '">' . t('common.pagination.next') . '</a></li>';
         }
+
         return $link;
     }
 
@@ -320,6 +332,7 @@ abstract class BasePaginator implements PaginatorInterface
                 $pagination .= '<li><span>...</span></li>';
             }
         }
+
         return $pagination;
     }
 
@@ -338,6 +351,7 @@ abstract class BasePaginator implements PaginatorInterface
             }
             $pagination .= '<li><a href="' . $links[$totalPages - 1] . '">' . $totalPages . '</a></li>';
         }
+
         return $pagination;
     }
 }

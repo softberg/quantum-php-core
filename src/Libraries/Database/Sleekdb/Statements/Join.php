@@ -16,7 +16,7 @@ namespace Quantum\Libraries\Database\Sleekdb\Statements;
 
 use Quantum\Libraries\Database\Sleekdb\SleekDbal;
 use Quantum\Libraries\Database\DbalInterface;
-use Quantum\Exceptions\ModelException;
+use Quantum\Libraries\Module\ModelException;
 use SleekDB\QueryBuilder;
 use Quantum\Mvc\QtModel;
 

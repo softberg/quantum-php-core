@@ -14,7 +14,7 @@
 
 namespace Quantum\Libraries\Database\Idiorm\Statements;
 
-use Quantum\Exceptions\DatabaseException;
+use Quantum\Libraries\Database\DatabaseException;
 
 /**
  * Trait Query

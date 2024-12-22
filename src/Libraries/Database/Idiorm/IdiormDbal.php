@@ -20,11 +20,10 @@ use Quantum\Libraries\Database\Idiorm\Statements\Result;
 use Quantum\Libraries\Database\Idiorm\Statements\Model;
 use Quantum\Libraries\Database\Idiorm\Statements\Query;
 use Quantum\Libraries\Database\Idiorm\Statements\Join;
+use Quantum\Libraries\Database\DatabaseException;
 use Quantum\Libraries\Database\DbalInterface;
-use Quantum\Exceptions\DatabaseException;
-use PDO;
 use ORM;
-
+use PDO;
 
 /**
  * Class IdiormDbal

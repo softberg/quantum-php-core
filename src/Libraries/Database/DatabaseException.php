@@ -9,19 +9,21 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.5
  */
 
-namespace Quantum\Exceptions;
+namespace Quantum\Libraries\Database;
+
+use Quantum\Exceptions\AppException;
 
 /**
  * Class DatabaseException
- * @package Quantum\Exceptions
+ * @package Quantum\Libraries\Database
  */
 class DatabaseException extends AppException
 {
     /**
-     * @return \Quantum\Exceptions\DatabaseException
+     * @return DatabaseException
      */
     public static function missingConfig(): DatabaseException
     {
@@ -29,7 +31,7 @@ class DatabaseException extends AppException
     }
 
     /**
-     * @return \Quantum\Exceptions\DatabaseException
+     * @return DatabaseException
      */
     public static function incorrectConfig(): DatabaseException
     {
@@ -37,7 +39,7 @@ class DatabaseException extends AppException
     }
 
     /**
-     * @return \Quantum\Exceptions\DatabaseException
+     * @return DatabaseException
      */
     public static function ormClassNotDefined(): DatabaseException
     {
@@ -46,7 +48,7 @@ class DatabaseException extends AppException
 
     /**
      * @param string $name
-     * @return \Quantum\Exceptions\DatabaseException
+     * @return DatabaseException
      */
     public static function ormClassNotFound(string $name): DatabaseException
     {
@@ -55,7 +57,7 @@ class DatabaseException extends AppException
 
     /**
      * @param string $operator
-     * @return \Quantum\Exceptions\DatabaseException
+     * @return DatabaseException
      */
     public static function operatorNotSupported(string $operator): DatabaseException
     {
