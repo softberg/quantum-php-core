@@ -9,17 +9,16 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Libraries\Csrf;
 
-use Quantum\Exceptions\DatabaseException;
-use Quantum\Exceptions\CryptorException;
-use Quantum\Exceptions\SessionException;
-use Quantum\Exceptions\ConfigException;
+use Quantum\Libraries\Encryption\CryptorException;
+use Quantum\Libraries\Database\DatabaseException;
+use Quantum\Libraries\Session\SessionException;
+use Quantum\Libraries\Config\ConfigException;
 use Quantum\Libraries\Session\Session;
-use Quantum\Exceptions\CsrfException;
 use Quantum\Libraries\Hasher\Hasher;
 use Quantum\Exceptions\DiException;
 use Quantum\Http\Request;

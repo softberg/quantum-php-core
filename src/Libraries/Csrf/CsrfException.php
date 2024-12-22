@@ -9,19 +9,21 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.5
  */
 
-namespace Quantum\Exceptions;
+namespace Quantum\Libraries\Csrf;
+
+use Quantum\Exceptions\AppException;
 
 /**
  * Class CsrfException
- * @package Quantum\Exceptions
+ * @package Quantum\Libraries\Csrf
  */
-class CsrfException extends \Exception
+class CsrfException extends AppException
 {
     /**
-     * @return \Quantum\Exceptions\CsrfException
+     * @return CsrfException
      */
     public static function tokenNotFound(): CsrfException
     {
@@ -29,7 +31,7 @@ class CsrfException extends \Exception
     }
 
     /**
-     * @return \Quantum\Exceptions\CsrfException
+     * @return CsrfException
      */
     public static function tokenNotMatched(): CsrfException
     {
