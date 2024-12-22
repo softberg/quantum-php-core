@@ -15,11 +15,11 @@ namespace Quantum\Models {
 
 namespace Quantum\Tests\Factory {
 
-    use Quantum\Exceptions\ModelException;
     use Quantum\Factory\ModelFactory;
-    use Quantum\Tests\AppTestCase;
+    use Quantum\Libraries\Database\Exceptions\ModelException;
     use Quantum\Models\TestModel;
     use Quantum\Mvc\QtModel;
+    use Quantum\Tests\AppTestCase;
 
     /**
      * @runTestsInSeparateProcesses

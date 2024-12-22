@@ -2,9 +2,9 @@
 
 namespace Quantum\Tests\Libraries\Database\Idiorm\Statements;
 
-use Quantum\Tests\Libraries\Database\Idiorm\IdiormDbalTestCase;
-use Quantum\Libraries\Database\PaginatorInterface;
+use Quantum\Libraries\Database\Contracts\PaginatorInterface;
 use Quantum\Libraries\Database\Idiorm\IdiormDbal;
+use Quantum\Tests\Libraries\Database\Idiorm\IdiormDbalTestCase;
 
 class ResultIdiormTest extends IdiormDbalTestCase
 {

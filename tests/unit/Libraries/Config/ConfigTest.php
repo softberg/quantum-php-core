@@ -2,7 +2,7 @@
 
 namespace Quantum\Tests\Libraries\Config;
 
-use Quantum\Exceptions\ConfigException;
+use Quantum\Libraries\Config\ConfigException;
 use Quantum\Exceptions\LoaderException;
 use Quantum\Libraries\Config\Config;
 use Dflydev\DotAccessData\Data;

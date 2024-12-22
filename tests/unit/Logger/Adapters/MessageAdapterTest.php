@@ -2,10 +2,9 @@
 
 namespace Quantum\Tests\Logger\Adapters;
 
-use Mockery;
-use Quantum\Debugger\Debugger;
-use Quantum\Debugger\DebuggerStore;
 use Quantum\Logger\Adapters\MessageAdapter;
+use Quantum\Debugger\DebuggerStore;
+use Quantum\Debugger\Debugger;
 use Quantum\Tests\AppTestCase;
 
 class MessageAdapterTest extends AppTestCase
@@ -36,6 +35,7 @@ class MessageAdapterTest extends AppTestCase
         $storedMessages = $this->debugger->getStoreCell(Debugger::MESSAGES);
 
         $this->assertArrayHasKey($level, $storedMessages[0]);
+
         $this->assertEquals($message, $storedMessages[0][$level]);
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Quantum\Tests\Libraries\Database\Idiorm;
 
-use Quantum\Libraries\Database\PaginatorInterface;
+use Quantum\Libraries\Database\Contracts\PaginatorInterface;
 use Quantum\Libraries\Database\Idiorm\IdiormDbal;
 use Quantum\Libraries\Database\Idiorm\Paginator;
 use Quantum\Tests\AppTestCase;

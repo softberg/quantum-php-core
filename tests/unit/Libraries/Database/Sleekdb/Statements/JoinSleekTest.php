@@ -76,16 +76,16 @@ namespace Quantum\Models {
 
 namespace Quantum\Tests\Libraries\Database\Sleekdb\Statements {
 
-    use Quantum\Tests\Libraries\Database\Sleekdb\SleekDbalTestCase;
-    use Quantum\Models\SleekUserProfessionModel;
-    use Quantum\Models\SleekUserEventModel;
-    use Quantum\Exceptions\ModelException;
-    use Quantum\Models\SleekMeetingModel;
-    use Quantum\Models\SleekTicketModel;
-    use Quantum\Models\SleekNotesModel;
-    use Quantum\Models\SleekEventModel;
-    use Quantum\Models\SleekUserModel;
     use Quantum\Factory\ModelFactory;
+    use Quantum\Libraries\Database\Exceptions\ModelException;
+    use Quantum\Models\SleekEventModel;
+    use Quantum\Models\SleekMeetingModel;
+    use Quantum\Models\SleekNotesModel;
+    use Quantum\Models\SleekTicketModel;
+    use Quantum\Models\SleekUserEventModel;
+    use Quantum\Models\SleekUserModel;
+    use Quantum\Models\SleekUserProfessionModel;
+    use Quantum\Tests\Libraries\Database\Sleekdb\SleekDbalTestCase;
 
     /**
      * @runTestsInSeparateProcesses

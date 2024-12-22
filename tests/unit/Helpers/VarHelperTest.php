@@ -15,8 +15,6 @@ class VarHelperTest extends AppTestCase
     {
         parent::setUp();
 
-        config()->set('debug', true);
-
         $store = new DebuggerStore();
 
         $this->debugger = Debugger::getInstance($store);

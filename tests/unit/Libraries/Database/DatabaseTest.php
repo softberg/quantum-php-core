@@ -2,10 +2,10 @@
 
 namespace Quantum\Tests\Libraries\Database;
 
-use Quantum\Libraries\Database\DbalInterface;
+use Quantum\Libraries\Database\Contracts\DbalInterface;
 use Quantum\Libraries\Database\Database;
-use Quantum\Tests\AppTestCase;
 use Quantum\Loader\Setup;
+use Quantum\Tests\AppTestCase;
 
 /**
  * @runTestsInSeparateProcesses
