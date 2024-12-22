@@ -9,21 +9,23 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.5
  */
 
-namespace Quantum\Exceptions;
+namespace Quantum\Libraries\JWToken;
+
+use Quantum\Exceptions\AppException;
 
 /**
- * Class JwtException
- * @package Quantum\Exceptions
+ * Class JWTException
+ * @package Quantum\Libraries\JWToken
  */
-class JwtException extends \Exception
+class JWTException extends AppException
 {
     /**
-     * @return \Quantum\Exceptions\JwtException
+     * @return JWTException
      */
-    public static function payloadNotFound(): JwtException
+    public static function payloadNotFound(): JWTException
     {
         return new static(t('exception.jwt_payload_not_found'), E_WARNING);
     }
