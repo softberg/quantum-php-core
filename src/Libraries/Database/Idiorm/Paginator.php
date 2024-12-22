@@ -14,7 +14,7 @@
 
 namespace Quantum\Libraries\Database\Idiorm;
 
-use Quantum\Libraries\Database\DatabaseException;
+use Quantum\Libraries\Database\Exceptions\DatabaseException;
 use Quantum\Libraries\Database\BasePaginator;
 use IdiormResultSet;
 

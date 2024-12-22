@@ -9,20 +9,22 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.5
  */
 
-namespace Quantum\Exceptions;
+namespace Quantum\Libraries\Database\Exceptions;
+
+use Quantum\Exceptions\AppException;
 
 /**
  * Class ModelException
- * @package Quantum\Exceptions
+ * @package Quantum\Libraries\Module
  */
-class ModelException extends \Exception
+class ModelException extends AppException
 {
     /**
      * @param string $name
-     * @return \Quantum\Exceptions\ModelException
+     * @return ModelException
      */
     public static function notFound(string $name): ModelException
     {
@@ -31,7 +33,7 @@ class ModelException extends \Exception
 
     /**
      * @param array $names
-     * @return \Quantum\Exceptions\ModelException
+     * @return ModelException
      */
     public static function notModelInstance(array $names): ModelException
     {
@@ -40,7 +42,7 @@ class ModelException extends \Exception
 
     /**
      * @param string|null $name
-     * @return \Quantum\Exceptions\ModelException
+     * @return ModelException
      */
     public static function noTableDefined(?string $name): ModelException
     {
@@ -49,7 +51,7 @@ class ModelException extends \Exception
 
     /**
      * @param string $name
-     * @return \Quantum\Exceptions\ModelException
+     * @return ModelException
      */
     public static function undefinedMethod(string $name): ModelException
     {
@@ -58,7 +60,7 @@ class ModelException extends \Exception
 
     /**
      * @param string $name
-     * @return \Quantum\Exceptions\ModelException
+     * @return ModelException
      */
     public static function inappropriateProperty(string $name): ModelException
     {
@@ -66,8 +68,9 @@ class ModelException extends \Exception
     }
 
     /**
-     * @param string $name
-     * @return \Quantum\Exceptions\ModelException
+     * @param string $modelName
+     * @param string $tableName
+     * @return ModelException
      */
     public static function wrongRelation(string $modelName, string $tableName): ModelException
     {

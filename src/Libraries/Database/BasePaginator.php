@@ -14,6 +14,8 @@
 
 namespace Quantum\Libraries\Database;
 
+use Quantum\Libraries\Database\Contracts\PaginatorInterface;
+
 /**
  * Class BasePaginator
  * @package Quantum\Libraries\Database

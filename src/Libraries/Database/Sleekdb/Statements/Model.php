@@ -14,18 +14,18 @@
 
 namespace Quantum\Libraries\Database\Sleekdb\Statements;
 
+use Quantum\Libraries\Database\Exceptions\DatabaseException;
+use Quantum\Libraries\Database\Exceptions\ModelException;
+use Quantum\Libraries\Database\Contracts\DbalInterface;
 use SleekDB\Exceptions\InvalidConfigurationException;
-use Quantum\Libraries\Database\DatabaseException;
 use SleekDB\Exceptions\InvalidArgumentException;
-use Quantum\Libraries\Database\DbalInterface;
 use SleekDB\Exceptions\IdNotAllowedException;
-use Quantum\Libraries\Module\ModelException;
 use SleekDB\Exceptions\JsonException;
 use SleekDB\Exceptions\IOException;
 
 /**
  * Trait Model
- * @package Quantum\Libraries\Database\Sleekdb\Statements
+ * @package Quantum\Libraries\Database
  */
 trait Model
 {

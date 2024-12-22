@@ -14,7 +14,7 @@
 
 namespace Quantum\Libraries\Database\Schema;
 
-use Quantum\Libraries\Database\DatabaseException;
+use Quantum\Libraries\Database\Exceptions\DatabaseException;
 use Quantum\Exceptions\MigrationException;
 use Quantum\Libraries\Lang\LangException;
 use Quantum\Libraries\Database\Database;

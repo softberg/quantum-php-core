@@ -12,7 +12,7 @@
  * @since 2.9.5
  */
 
-namespace Quantum\Libraries\Database;
+namespace Quantum\Libraries\Database\Contracts;
 
 /**
  * Paginator interface

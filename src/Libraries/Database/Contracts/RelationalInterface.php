@@ -9,16 +9,14 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.5
  */
 
-namespace Quantum\Libraries\Database\Idiorm;
-
-use Quantum\Libraries\Database\DbalInterface;
+namespace Quantum\Libraries\Database\Contracts;
 
 /**
  * Database Abstract Layer interface
- * @package Quantum\Libraries\Database\Idiorm
+ * @package Quantum\Libraries\Database
  */
 interface RelationalInterface
 {

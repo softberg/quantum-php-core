@@ -14,6 +14,8 @@
 
 namespace Quantum\Libraries\Database;
 
+use Quantum\Libraries\Database\Exceptions\DatabaseException;
+use Quantum\Libraries\Database\Contracts\DbalInterface;
 use Quantum\Libraries\Config\ConfigException;
 use Quantum\Exceptions\DiException;
 use Quantum\Loader\Setup;

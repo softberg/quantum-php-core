@@ -14,11 +14,11 @@
 
 namespace Quantum\Libraries\Database\Sleekdb;
 
+use Quantum\Libraries\Database\Exceptions\DatabaseException;
+use Quantum\Libraries\Database\Exceptions\ModelException;
 use SleekDB\Exceptions\InvalidConfigurationException;
-use Quantum\Libraries\Database\DatabaseException;
 use SleekDB\Exceptions\InvalidArgumentException;
 use Quantum\Libraries\Database\BasePaginator;
-use Quantum\Libraries\Module\ModelException;
 use SleekDB\Exceptions\IOException;
 
 /**

@@ -9,21 +9,21 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Libraries\Database\Sleekdb;
 
+use Quantum\Libraries\Database\Exceptions\DatabaseException;
 use Quantum\Libraries\Database\Sleekdb\Statements\Criteria;
 use Quantum\Libraries\Database\Sleekdb\Statements\Reducer;
+use Quantum\Libraries\Database\Exceptions\ModelException;
 use Quantum\Libraries\Database\Sleekdb\Statements\Result;
 use Quantum\Libraries\Database\Sleekdb\Statements\Model;
+use Quantum\Libraries\Database\Contracts\DbalInterface;
 use Quantum\Libraries\Database\Sleekdb\Statements\Join;
 use SleekDB\Exceptions\InvalidConfigurationException;
-use Quantum\Libraries\Database\DatabaseException;
 use SleekDB\Exceptions\InvalidArgumentException;
-use Quantum\Libraries\Database\DbalInterface;
-use Quantum\Libraries\Module\ModelException;
 use SleekDB\Exceptions\IOException;
 use SleekDB\QueryBuilder;
 use SleekDB\Store;
