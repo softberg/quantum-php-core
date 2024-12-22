@@ -9,19 +9,21 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.5
  */
 
-namespace Quantum\Exceptions;
+namespace Quantum\Libraries\Lang;
+
+use Quantum\Exceptions\AppException;
 
 /**
  * Class LangException
- * @package Quantum\Exceptions
+ * @package Quantum\Libraries\Lang
  */
-class LangException extends \Exception
+class LangException extends AppException
 {
     /**
-     * @return \Quantum\Exceptions\LangException
+     * @return LangException
      */
     public static function misconfiguredConfig(): LangException
     {
@@ -30,7 +32,7 @@ class LangException extends \Exception
 
     /**
      * @param string $name
-     * @return \Quantum\Exceptions\LangException
+     * @return LangException
      */
     public static function translationsNotFound(string $name): LangException
     {
@@ -38,7 +40,7 @@ class LangException extends \Exception
     }
 
     /**
-     * @return \Quantum\Exceptions\LangException
+     * @return LangException
      */
     public static function misconfiguredDefaultConfig(): LangException
     {
