@@ -15,10 +15,10 @@
 namespace Quantum\Libraries\Auth;
 
 use Quantum\Libraries\Mailer\MailerException;
+use Quantum\Libraries\Config\ConfigException;
+use Quantum\Libraries\Lang\LangException;
 use Quantum\Exceptions\ServiceException;
-use Quantum\Exceptions\ConfigException;
 use Quantum\Libraries\JWToken\JWToken;
-use Quantum\Exceptions\LangException;
 use Quantum\Libraries\Hasher\Hasher;
 use Quantum\Exceptions\DiException;
 use Quantum\Factory\ServiceFactory;
@@ -92,7 +92,6 @@ class AuthManager
      * @throws AuthException
      * @throws ConfigException
      * @throws DiException
-     * @throws LangException
      * @throws ReflectionException
      */
     private static function loadConfigs()

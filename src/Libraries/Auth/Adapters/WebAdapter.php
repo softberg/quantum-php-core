@@ -15,14 +15,14 @@
 namespace Quantum\Libraries\Auth\Adapters;
 
 use Quantum\Libraries\Auth\AuthenticatableInterface;
+use Quantum\Libraries\Encryption\CryptorException;
+use Quantum\Libraries\Database\DatabaseException;
 use Quantum\Libraries\Auth\AuthServiceInterface;
+use Quantum\Libraries\Session\SessionException;
 use Quantum\Libraries\Mailer\MailerInterface;
-use Quantum\Exceptions\DatabaseException;
+use Quantum\Libraries\Config\ConfigException;
 use Quantum\Libraries\Auth\AuthException;
-use Quantum\Exceptions\CryptorException;
-use Quantum\Exceptions\SessionException;
-use Quantum\Exceptions\ConfigException;
-use Quantum\Exceptions\LangException;
+use Quantum\Libraries\Lang\LangException;
 use Quantum\Libraries\Hasher\Hasher;
 use Quantum\Libraries\Auth\BaseAuth;
 use Quantum\Exceptions\DiException;
@@ -47,7 +47,6 @@ class WebAdapter extends BaseAuth implements AuthenticatableInterface
      * @param MailerInterface $mailer
      * @param Hasher $hasher
      * @throws AuthException
-     * @throws LangException
      */
     private function __construct(AuthServiceInterface $authService, MailerInterface $mailer, Hasher $hasher)
     {
@@ -66,7 +65,6 @@ class WebAdapter extends BaseAuth implements AuthenticatableInterface
      * @param Hasher $hasher
      * @return self
      * @throws AuthException
-     * @throws LangException
      */
     public static function getInstance(AuthServiceInterface $authService, MailerInterface $mailer, Hasher $hasher): self
     {
@@ -90,7 +88,6 @@ class WebAdapter extends BaseAuth implements AuthenticatableInterface
      * @throws DiException
      * @throws ReflectionException
      * @throws SessionException
-     * @throws LangException
      * @throws Exception
      */
     public function signin(string $username, string $password, bool $remember = false)
@@ -117,7 +114,6 @@ class WebAdapter extends BaseAuth implements AuthenticatableInterface
      * @throws CryptorException
      * @throws DatabaseException
      * @throws DiException
-     * @throws LangException
      * @throws ReflectionException
      * @throws SessionException
      */
@@ -171,7 +167,6 @@ class WebAdapter extends BaseAuth implements AuthenticatableInterface
      * @throws CryptorException
      * @throws DatabaseException
      * @throws DiException
-     * @throws LangException
      * @throws ReflectionException
      * @throws SessionException
      */

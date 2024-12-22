@@ -16,7 +16,6 @@ namespace Quantum\Libraries\Auth;
 
 use Quantum\Libraries\Mailer\MailerInterface;
 use Quantum\Libraries\JWToken\JWToken;
-use Quantum\Exceptions\LangException;
 use Quantum\Libraries\Hasher\Hasher;
 use Quantum\Exceptions\DiException;
 use PHPMailer\PHPMailer\Exception;
@@ -132,7 +131,6 @@ abstract class BaseAuth
      * Verify user schema
      * @param array $schema
      * @throws AuthException
-     * @throws LangException
      */
     protected function verifySchema(array $schema)
     {
@@ -172,7 +170,6 @@ abstract class BaseAuth
      * @param array $userData
      * @param array|null $customData
      * @return User
-     * @throws LangException
      */
     public function signup(array $userData, array $customData = null): User
     {
@@ -217,7 +214,6 @@ abstract class BaseAuth
      * Forget
      * @param string $username
      * @return string|null
-     * @throws LangException
      */
     public function forget(string $username): ?string
     {
@@ -296,7 +292,6 @@ abstract class BaseAuth
      * @param string $password
      * @return User
      * @throws AuthException
-     * @throws LangException
      */
     protected function getUser(string $username, string $password): User
     {

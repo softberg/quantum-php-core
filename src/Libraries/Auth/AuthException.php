@@ -14,8 +14,6 @@
 
 namespace Quantum\Libraries\Auth;
 
-use Quantum\Exceptions\LangException;
-
 /**
  * Class AuthException
  * @package Quantum\Exceptions
@@ -24,7 +22,6 @@ class AuthException extends \Exception
 {
     /**
      * @return AuthException
-     * @throws LangException
      */
     public static function incorrectCredentials(): AuthException
     {
@@ -33,7 +30,6 @@ class AuthException extends \Exception
 
     /**
      * @return AuthException
-     * @throws LangException
      */
     public static function inactiveAccount(): AuthException
     {
@@ -42,7 +38,6 @@ class AuthException extends \Exception
 
     /**
      * @return AuthException
-     * @throws LangException
      */
     public static function incorrectVerificationCode(): AuthException
     {
@@ -51,7 +46,6 @@ class AuthException extends \Exception
 
     /**
      * @return AuthException
-     * @throws LangException
      */
     public static function verificationCodeExpired(): AuthException
     {
@@ -60,7 +54,6 @@ class AuthException extends \Exception
 
     /**
      * @return AuthException
-     * @throws LangException
      */
     public static function misconfiguredAuthConfig(): AuthException
     {
@@ -70,16 +63,14 @@ class AuthException extends \Exception
     /**
      * @param string $name
      * @return AuthException
-     * @throws LangException
      */
     public static function undefinedAuthType(string $name): AuthException
     {
-        return new static(t('exception.undefined_auth_type', ''));
+        return new static(t('exception.undefined_auth_type', $name));
     }
 
     /**
      * @return AuthException
-     * @throws LangException
      */
     public static function incorrectUserSchema(): AuthException
     {
@@ -88,7 +79,6 @@ class AuthException extends \Exception
 
     /**
      * @return AuthException
-     * @throws LangException
      */
     public static function incorrectAuthService(): AuthException
     {

@@ -17,10 +17,9 @@ namespace Quantum\Libraries\Auth\Adapters;
 use Quantum\Libraries\Auth\AuthenticatableInterface;
 use Quantum\Libraries\Auth\AuthServiceInterface;
 use Quantum\Libraries\Mailer\MailerInterface;
+use Quantum\Libraries\JWToken\JWTException;
 use Quantum\Libraries\Auth\AuthException;
 use Quantum\Libraries\JWToken\JWToken;
-use Quantum\Exceptions\LangException;
-use Quantum\Exceptions\JwtException;
 use Quantum\Libraries\Auth\BaseAuth;
 use Quantum\Libraries\Hasher\Hasher;
 use Quantum\Libraries\Auth\User;
@@ -46,7 +45,6 @@ class ApiAdapter extends BaseAuth implements AuthenticatableInterface
      * @param Hasher $hasher
      * @param JWToken|null $jwt
      * @throws AuthException
-     * @throws LangException
      */
     private function __construct(AuthServiceInterface $authService, MailerInterface $mailer, Hasher $hasher, JWToken $jwt = null)
     {
@@ -67,7 +65,6 @@ class ApiAdapter extends BaseAuth implements AuthenticatableInterface
      * @param JWToken|null $jwt
      * @return self
      * @throws AuthException
-     * @throws LangException
      */
     public static function getInstance(AuthServiceInterface $authService, MailerInterface $mailer, Hasher $hasher, JWToken $jwt = null): self
     {
@@ -84,8 +81,7 @@ class ApiAdapter extends BaseAuth implements AuthenticatableInterface
      * @param string $password
      * @return array|string
      * @throws AuthException
-     * @throws JwtException
-     * @throws LangException
+     * @throws JWTException
      * @throws Exception
      */
     public function signin(string $username, string $password)
@@ -129,7 +125,7 @@ class ApiAdapter extends BaseAuth implements AuthenticatableInterface
     /**
      * User
      * @return User|null
-     * @throws JwtException
+     * @throws JWTException
      */
     public function user(): ?User
     {
@@ -154,7 +150,7 @@ class ApiAdapter extends BaseAuth implements AuthenticatableInterface
      * Get Updated Tokens
      * @param User $user
      * @return array
-     * @throws JwtException
+     * @throws JWTException
      */
     public function getUpdatedTokens(User $user): array
     {
@@ -170,7 +166,7 @@ class ApiAdapter extends BaseAuth implements AuthenticatableInterface
      * @param string $otpToken
      * @return array
      * @throws AuthException
-     * @throws JwtException
+     * @throws JWTException
      */
     public function verifyOtp(int $otp, string $otpToken): array
     {
@@ -194,7 +190,7 @@ class ApiAdapter extends BaseAuth implements AuthenticatableInterface
      * Set Updated Tokens
      * @param User $user
      * @return array
-     * @throws JwtException
+     * @throws JWTException
      */
     protected function setUpdatedTokens(User $user): array
     {
