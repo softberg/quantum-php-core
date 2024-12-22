@@ -9,21 +9,21 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.5
  */
 
-namespace Quantum\Exceptions;
+namespace Quantum\Libraries\Config;
+
+use Quantum\Exceptions\AppException;
 
 /**
- * ConfigException class
- *
- * @package Quantum
- * @category Exceptions
+ * Class ConfigException
+ * @package Quantum\Libraries\Config
  */
-class ConfigException extends \Exception
+class ConfigException extends AppException
 {
     /**
-     * @return \Quantum\Exceptions\ConfigException
+     * @return ConfigException
      */
     public static function configAlreadyLoaded(): ConfigException
     {
@@ -32,7 +32,7 @@ class ConfigException extends \Exception
 
     /**
      * @param string $name
-     * @return \Quantum\Exceptions\ConfigException
+     * @return ConfigException
      */
     public static function configCollision(string $name): ConfigException
     {
