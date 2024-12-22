@@ -14,8 +14,7 @@
 
 namespace Quantum\Libraries\Asset;
 
-use Quantum\Exceptions\AssetException;
-use Quantum\Exceptions\LangException;
+use Quantum\Libraries\Lang\LangException;
 
 /**
  * Class AssetManager
@@ -104,7 +103,6 @@ class AssetManager
      * Register assets
      * @param Asset[] $assets
      * @throws AssetException
-     * @throws LangException
      */
     public function register(array $assets)
     {
@@ -117,7 +115,6 @@ class AssetManager
      * Register single asset
      * @param Asset $asset
      * @throws AssetException
-     * @throws LangException
      */
     public function registerAsset(Asset $asset)
     {
@@ -159,7 +156,6 @@ class AssetManager
     /**
      * Publishes assets
      * @throws AssetException
-     * @throws LangException
      */
     private function publish()
     {
@@ -175,7 +171,6 @@ class AssetManager
     /**
      * Sets assets with ordered position
      * @throws AssetException
-     * @throws LangException
      */
     private function setPriorityAssets()
     {

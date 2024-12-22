@@ -9,14 +9,14 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.5
  */
 
-namespace Quantum\Exceptions;
+namespace Quantum\Libraries\Asset;
 
 /**
  * Class AssetException
- * @package Quantum\Exceptions
+ * @package Quantum\Libraries\Asset
  */
 class AssetException extends \Exception
 {
@@ -24,7 +24,6 @@ class AssetException extends \Exception
      * @param string $position
      * @param string $name
      * @return AssetException
-     * @throws LangException
      */
     public static function positionInUse(string $position, string $name): AssetException
     {
@@ -34,7 +33,6 @@ class AssetException extends \Exception
     /**
      * @param string|null $name
      * @return AssetException
-     * @throws LangException
      */
     public static function nameInUse(?string $name): AssetException
     {
