@@ -14,14 +14,23 @@
 
 namespace Quantum;
 
+use Quantum\Libraries\Database\Exceptions\DatabaseException;
+use Quantum\Libraries\Encryption\CryptorException;
+use Quantum\Libraries\Session\SessionException;
+use Quantum\Libraries\Config\ConfigException;
+use Quantum\Libraries\Csrf\CsrfException;
+use Quantum\Libraries\Lang\LangException;
 use Quantum\Router\ModuleLoaderException;
-use Quantum\Environment\Environment;
 use Quantum\Libraries\Config\Config;
+use Quantum\Environment\Environment;
 use Quantum\Logger\LoggerException;
-use Quantum\Logger\LoggerManager;
-use Quantum\Tracer\ErrorHandler;
+use DebugBar\DebugBarException;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
+use Twig\Error\LoaderError;
 use Quantum\Loader\Loader;
 use Quantum\Loader\Setup;
+use ReflectionException;
 use Quantum\Di\Di;
 
 if (!defined('DS')) define('DS', DIRECTORY_SEPARATOR);
@@ -41,19 +50,27 @@ class App
     /**
      * Starts the app
      * @param string $baseDir
-     * @throws Exceptions\ConfigException
+     * @return void
+     * @throws ConfigException
+     * @throws CryptorException
+     * @throws CsrfException
+     * @throws DatabaseException
+     * @throws DebugBarException
+     * @throws Exceptions\AppException
      * @throws Exceptions\ControllerException
      * @throws Exceptions\DiException
      * @throws Exceptions\EnvException
      * @throws Exceptions\MiddlewareException
-     * @throws ModuleLoaderException
      * @throws Exceptions\RouteException
      * @throws Exceptions\ViewException
+     * @throws LangException
+     * @throws LoaderError
      * @throws LoggerException
-     * @throws \ReflectionException
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
+     * @throws ModuleLoaderException
+     * @throws ReflectionException
+     * @throws RuntimeError
+     * @throws SessionException
+     * @throws SyntaxError
      */
     public static function start(string $baseDir)
     {
@@ -72,8 +89,6 @@ class App
         Environment::getInstance()->load(new Setup('config', 'env'));
 
         Config::getInstance()->load(new Setup('config', 'config'));
-
-        ErrorHandler::getInstance()->setup(LoggerManager::getHandler());
 
         Bootstrap::run();
     }

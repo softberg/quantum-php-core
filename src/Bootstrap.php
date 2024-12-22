@@ -14,13 +14,22 @@
 
 namespace Quantum;
 
+use Quantum\Libraries\Database\Exceptions\DatabaseException;
 use Quantum\Exceptions\StopExecutionException;
+use Quantum\Libraries\ResourceCache\ViewCache;
+use Quantum\Libraries\Config\ConfigException;
 use Quantum\Router\ModuleLoaderException;
-use Quantum\Libraries\Lang\Lang;
+use Quantum\Logger\LoggerManager;
 use Quantum\Router\ModuleLoader;
+use Quantum\Libraries\Lang\Lang;
+use Quantum\Tracer\ErrorHandler;
+use DebugBar\DebugBarException;
 use Quantum\Environment\Server;
 use Quantum\Debugger\Debugger;
 use Quantum\Hooks\HookManager;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
+use Twig\Error\LoaderError;
 use Quantum\Mvc\MvcManager;
 use Quantum\Router\Router;
 use Quantum\Http\Response;
@@ -36,23 +45,27 @@ use Quantum\Di\Di;
  */
 class Bootstrap
 {
+
     /**
      * Boots the app
-     * @throws Exceptions\ConfigException
+     * @throws DebugBarException
      * @throws Exceptions\ControllerException
-     * @throws Exceptions\CryptorException
-     * @throws Exceptions\CsrfException
      * @throws Exceptions\DiException
-     * @throws Exceptions\LangException
      * @throws Exceptions\MiddlewareException
-     * @throws ModuleLoaderException
      * @throws Exceptions\RouteException
      * @throws Exceptions\ViewException
+     * @throws Libraries\Config\ConfigException
+     * @throws Libraries\Csrf\CsrfException
+     * @throws DatabaseException
+     * @throws Libraries\Encryption\CryptorException
+     * @throws Libraries\Lang\LangException
+     * @throws Libraries\Session\SessionException
+     * @throws LoaderError
+     * @throws Logger\LoggerException
+     * @throws ModuleLoaderException
      * @throws ReflectionException
-     * @throws \DebugBar\DebugBarException
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     public static function run()
     {
@@ -67,16 +80,26 @@ class Bootstrap
                 stop();
             }
 
+            ErrorHandler::getInstance()->setup(LoggerManager::getHandler());
+
             $debugger = Debugger::getInstance();
             $debugger->initStore();
 
             ModuleLoader::getInstance()->loadModulesRoutes();
 
-            $router = new Router($request, $response);
+            $viewCache = ViewCache::getInstance();
+
+            if($viewCache->isEnabled()) {
+                $viewCache->setup();
+            }
+
+            $router = new Router($request);
             $router->findRoute();
 
-            if (config()->get('multilang')) {
-                Lang::getInstance((int)config()->get(Lang::LANG_SEGMENT))->load();
+            $lang = Lang::getInstance();
+
+            if($lang->isEnabled()) {
+                $lang->load();
             }
 
             $debugger->addToStoreCell(Debugger::HOOKS, LogLevel::INFO, HookManager::getRegistered());
@@ -93,7 +116,7 @@ class Bootstrap
     /**
      * Handles CORS
      * @param Response $response
-     * @throws Exceptions\ConfigException
+     * @throws ConfigException
      * @throws Exceptions\DiException
      * @throws ReflectionException
      */
