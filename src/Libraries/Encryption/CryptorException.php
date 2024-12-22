@@ -9,19 +9,21 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.5
  */
 
-namespace Quantum\Exceptions;
+namespace Quantum\Libraries\Encryption;
+
+use Quantum\Exceptions\AppException;
 
 /**
  * Class CryptorException
  * @package Quantum\Exceptions
  */
-class CryptorException extends \Exception
+class CryptorException extends AppException
 {
     /**
-     * @return \Quantum\Exceptions\CryptorException
+     * @return CryptorException
      */
     public static function configNotFound(): CryptorException
     {
@@ -29,7 +31,7 @@ class CryptorException extends \Exception
     }
 
     /**
-     * @return \Quantum\Exceptions\CryptorException
+     * @return CryptorException
      */
     public static function noPublicKeyCreated(): CryptorException
     {
@@ -37,7 +39,7 @@ class CryptorException extends \Exception
     }
 
     /**
-     * @return \Quantum\Exceptions\CryptorException
+     * @return CryptorException
      */
     public static function noPrivateKeyCreated(): CryptorException
     {
@@ -45,7 +47,7 @@ class CryptorException extends \Exception
     }
 
     /**
-     * @return \Quantum\Exceptions\CryptorException
+     * @return CryptorException
      */
     public static function publicKeyNotProvided(): CryptorException
     {
@@ -53,7 +55,7 @@ class CryptorException extends \Exception
     }
 
     /**
-     * @return \Quantum\Exceptions\CryptorException
+     * @return CryptorException
      */
     public static function privateKeyNotProvided(): CryptorException
     {
@@ -61,7 +63,7 @@ class CryptorException extends \Exception
     }
 
     /**
-     * @return \Quantum\Exceptions\CryptorException
+     * @return CryptorException
      */
     public static function invalidCipher(): CryptorException
     {
