@@ -14,11 +14,11 @@
 
 namespace Quantum\Libraries\ResourceCache;
 
-use Quantum\Exceptions\DatabaseException;
+use Quantum\Libraries\Database\Exceptions\DatabaseException;
+use Quantum\Libraries\Session\SessionException;
+use Quantum\Libraries\Config\ConfigException;
+use Quantum\Libraries\Lang\LangException;
 use Quantum\Libraries\Storage\FileSystem;
-use Quantum\Exceptions\SessionException;
-use Quantum\Exceptions\ConfigException;
-use Quantum\Exceptions\LangException;
 use Quantum\Exceptions\DiException;
 use Quantum\Loader\Setup;
 use ReflectionException;
@@ -79,13 +79,21 @@ class ViewCache
      */
     public function __construct()
     {
-        if (!config()->has('view_cache')) {
-            config()->import(new Setup('config', 'view_cache'));
-        }
-
         $this->isEnabled = filter_var(config()->get('resource_cache'), FILTER_VALIDATE_BOOLEAN);
 
         $this->fs = Di::get(FileSystem::class);
+    }
+
+    /**
+     * @throws ReflectionException
+     * @throws ConfigException
+     * @throws DiException
+     */
+    public function setup()
+    {
+        if (!config()->has('view_cache')) {
+            config()->import(new Setup('config', 'view_cache'));
+        }
 
         $this->cacheDir = $this->getCacheDir();
 
@@ -249,7 +257,6 @@ class ViewCache
      * @throws ConfigException
      * @throws DatabaseException
      * @throws DiException
-     * @throws LangException
      * @throws ReflectionException
      * @throws SessionException
      */
