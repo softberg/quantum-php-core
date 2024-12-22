@@ -14,11 +14,10 @@
 
 namespace Quantum\Router;
 
-use Quantum\Exceptions\DatabaseException;
-use Quantum\Exceptions\SessionException;
-use Quantum\Exceptions\ConfigException;
+use Quantum\Libraries\Database\Exceptions\DatabaseException;
+use Quantum\Libraries\Session\SessionException;
+use Quantum\Libraries\Config\ConfigException;
 use Quantum\Exceptions\RouteException;
-use Quantum\Exceptions\LangException;
 use Quantum\Exceptions\DiException;
 use ReflectionException;
 use Closure;
@@ -40,7 +39,7 @@ class Route
      * Module options
      * @var array
      */
-    private $moduleOptions = [];
+    private $moduleOptions;
 
     /**
      * Identifies the group middleware
@@ -197,7 +196,6 @@ class Route
      * @throws ConfigException
      * @throws DatabaseException
      * @throws DiException
-     * @throws LangException
      * @throws ReflectionException
      * @throws SessionException
      */

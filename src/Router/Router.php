@@ -14,20 +14,19 @@
 
 namespace Quantum\Router;
 
-use Quantum\Exceptions\StopExecutionException;
 use Quantum\Libraries\ResourceCache\ViewCache;
+use Quantum\Libraries\Config\ConfigException;
+use Quantum\Exceptions\StopExecutionException;
 use Quantum\Exceptions\RouteException;
 use Quantum\Exceptions\ViewException;
 use Quantum\Exceptions\DiException;
-use DebugBar\DebugBarException;
+use Quantum\Logger\LoggerException;
 use Quantum\Debugger\Debugger;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 use Twig\Error\LoaderError;
-use Quantum\Http\Response;
 use Quantum\Http\Request;
 use ReflectionException;
-use Psr\Log\LogLevel;
 
 /**
  * Class Router
@@ -54,12 +53,6 @@ class Router extends RouteController
     private $request;
 
     /**
-     * Response instance
-     * @var Response;
-     */
-    private $response;
-
-    /**
      * List of routes
      * @var array
      */
@@ -74,17 +67,14 @@ class Router extends RouteController
     /**
      * Router constructor.
      * @param Request $request
-     * @param Response $response
      */
-    public function __construct(Request $request, Response $response)
+    public function __construct(Request $request)
     {
         $this->request = $request;
-        $this->response = $response;
     }
 
     /**
      * Finds the current route
-     * @return void
      * @throws DiException
      * @throws LoaderError
      * @throws ReflectionException
@@ -93,7 +83,8 @@ class Router extends RouteController
      * @throws StopExecutionException
      * @throws SyntaxError
      * @throws ViewException
-     * @throws DebugBarException
+     * @throws ConfigException
+     * @throws LoggerException
      */
     public function findRoute()
     {
@@ -107,7 +98,7 @@ class Router extends RouteController
 
         if (empty($this->matchedRoutes)) {
             stop(function () {
-                $this->handleNotFound();
+                page_not_found();
             });
         }
 
@@ -125,11 +116,7 @@ class Router extends RouteController
 
         self::setCurrentRoute($currentRoute);
 
-        $debugger = Debugger::getInstance();
-
-        if ($debugger->isEnabled()) {
-            $debugger->addToStoreCell(Debugger::ROUTES, LogLevel::INFO, $this->collectDebugData($currentRoute));
-        }
+        info($this->collectDebugData($currentRoute), ['tab' => Debugger::ROUTES]);
     }
 
     /**
@@ -147,13 +134,16 @@ class Router extends RouteController
      */
     private function handleCaching(array $route): void
     {
-        if (!empty($route['cache_settings']['shouldCache'])) {
-            $viewCache = ViewCache::getInstance();
-            $viewCache->enableCaching(true);
+        $viewCache = ViewCache::getInstance();
 
-            if (!empty($route['cache_settings']['ttl'])) {
-                $viewCache->setTtl($route['cache_settings']['ttl']);
-            }
+        $defaultCaching = $viewCache->isEnabled();
+
+        $shouldCacheForRoute = $route['cache_settings']['shouldCache'] ?? $defaultCaching;
+
+        $viewCache->enableCaching($shouldCacheForRoute);
+
+        if ($shouldCacheForRoute && !empty($route['cache_settings']['ttl'])) {
+            $viewCache->setTtl($route['cache_settings']['ttl']);
         }
     }
 
@@ -424,32 +414,4 @@ class Router extends RouteController
     {
         return str_replace('/', '\/', stripslashes($str));
     }
-
-    /**
-     * Handles page not found
-     * @throws DiException
-     * @throws ViewException
-     * @throws ReflectionException
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
-    private function handleNotFound()
-    {
-        $acceptHeader = $this->request->getHeader('Accept');
-        $isJson = $acceptHeader === 'application/json';
-
-        if ($isJson) {
-            $this->response->json(
-                ['status' => 'error', 'message' => 'Page not found'],
-                404
-            );
-        } else {
-            $this->response->html(
-                partial('errors/404'),
-                404
-            );
-        }
-    }
-
 }

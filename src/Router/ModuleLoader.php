@@ -16,7 +16,6 @@ namespace Quantum\Router;
 
 use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Exceptions\RouteException;
-use Quantum\Exceptions\LangException;
 use Quantum\Exceptions\DiException;
 use ReflectionException;
 use Quantum\Di\Di;
@@ -57,7 +56,6 @@ class ModuleLoader
 
     /**
      * Load Modules
-     * @throws LangException
      * @throws ModuleLoaderException
      * @throws RouteException
      */
@@ -81,7 +79,6 @@ class ModuleLoader
     /**
      * @return array
      * @throws ModuleLoaderException
-     * @throws LangException
      */
     private function loadModuleConfig(): array
     {
@@ -107,7 +104,6 @@ class ModuleLoader
      * @param string $module
      * @param Route $route
      * @return array
-     * @throws LangException
      * @throws ModuleLoaderException
      * @throws RouteException
      */

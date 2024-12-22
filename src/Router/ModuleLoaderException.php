@@ -14,8 +14,6 @@
 
 namespace Quantum\Router;
 
-use Quantum\Exceptions\LangException;
-
 /**
  * Class ModuleLoaderException
  * @package Quantum\Exceptions
@@ -25,7 +23,6 @@ class ModuleLoaderException extends \Exception
     /**
      * @param string $name
      * @return ModuleLoaderException
-     * @throws LangException
      */
     public static function moduleRoutesNotFound(string $name): ModuleLoaderException
     {
@@ -34,7 +31,6 @@ class ModuleLoaderException extends \Exception
 
     /**
      * @return ModuleLoaderException
-     * @throws LangException
      */
     public static function moduleConfigNotFound(): ModuleLoaderException
     {
