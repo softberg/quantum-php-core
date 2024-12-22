@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Exceptions;
@@ -18,11 +18,10 @@ namespace Quantum\Exceptions;
  * Class HttpException
  * @package Quantum\Exceptions
  */
-class HttpException extends \Exception
+class HttpException extends AppException
 {
     /**
      * @return HttpException
-     * @throws LangException
      */
     public static function unexpectedRequestInitialization(): HttpException
     {
@@ -31,7 +30,6 @@ class HttpException extends \Exception
 
     /**
      * @return HttpException
-     * @throws LangException
      */
     public static function unexpectedResponseInitialization(): HttpException
     {
@@ -40,7 +38,6 @@ class HttpException extends \Exception
 
     /**
      * @return HttpException
-     * @throws LangException
      */
     public static function requestNotCreated(): HttpException
     {
@@ -50,7 +47,6 @@ class HttpException extends \Exception
     /**
      * @param string $name
      * @return HttpException
-     * @throws LangException
      */
     public static function methodNotAvailable(string $name): HttpException
     {
@@ -59,7 +55,6 @@ class HttpException extends \Exception
 
     /**
      * @return static
-     * @throws LangException
      */
     public static function contentTypeNotSupported(): HttpException
     {

@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Exceptions;
@@ -20,7 +20,7 @@ namespace Quantum\Exceptions;
  * @package Quantum
  * @category Exceptions
  */
-class LoaderException extends \Exception
+class LoaderException extends AppException
 {
     
 }

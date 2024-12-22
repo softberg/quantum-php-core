@@ -9,20 +9,22 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Exceptions;
+
+use Exception;
 
 /**
  * Class AppException
  * @package Quantum\Exceptions
  */
-class AppException extends \Exception
+class AppException extends Exception
 {
 
     /**
-     * @return \Quantum\Exceptions\AppException
+     * @return AppException
      */
     public static function missingAppKey(): AppException
     {
@@ -47,6 +49,15 @@ class AppException extends \Exception
     public static function unsupportedDriver(string $driver): self
     {
         return new static(t('exception.not_supported_driver', $driver), E_ERROR);
+    }
+
+    /**
+     * @param string $name
+     * @return self
+     */
+    public static function fileNotFound(string $name): self
+    {
+        return new static(t('exception.file_not_found', $name), E_ERROR);
     }
 
 }

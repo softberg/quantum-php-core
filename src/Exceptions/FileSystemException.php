@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Exceptions;
@@ -24,7 +24,6 @@ class FileSystemException extends AppException
     /**
      * @param string $name
      * @return FileSystemException
-     * @throws LangException
      */
     public static function directoryNotExists(string $name): FileSystemException
     {
@@ -34,7 +33,6 @@ class FileSystemException extends AppException
     /**
      * @param string $name
      * @return FileSystemException
-     * @throws LangException
      */
     public static function directoryNotWritable(string $name): FileSystemException
     {
@@ -42,18 +40,7 @@ class FileSystemException extends AppException
     }
 
     /**
-     * @param string $name
      * @return FileSystemException
-     * @throws LangException
-     */
-    public static function fileNotFound(string $name): FileSystemException
-    {
-        return new static(t('exception.file_not_found', $name), E_WARNING);
-    }
-
-    /**
-     * @return FileSystemException
-     * @throws LangException
      */
     public static function fileAlreadyExists(): FileSystemException
     {

@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Exceptions;
@@ -18,11 +18,10 @@ namespace Quantum\Exceptions;
  * Class FileUploadException
  * @package Quantum\Exceptions
  */
-class FileUploadException extends \Exception
+class FileUploadException extends AppException
 {
     /**
      * @return FileUploadException
-     * @throws LangException
      */
     public static function fileNotUploaded(): FileUploadException
     {
@@ -32,17 +31,6 @@ class FileUploadException extends \Exception
     /**
      * @param string $name
      * @return FileUploadException
-     * @throws LangException
-     */
-    public static function fileNotFound(string $name): FileUploadException
-    {
-        return new static(t('exception.uploaded_file_not_found', $name), E_WARNING);
-    }
-
-    /**
-     * @param string $name
-     * @return FileUploadException
-     * @throws LangException
      */
     public static function fileTypeNotAllowed(string $name): FileUploadException
     {

@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Exceptions;
@@ -18,11 +18,11 @@ namespace Quantum\Exceptions;
  * Class MiddlewareException
  * @package Quantum\Exceptions
  */
-class MiddlewareException extends \Exception
+class MiddlewareException extends AppException
 {
     /**
      * @param string $name
-     * @return \Quantum\Exceptions\MiddlewareException
+     * @return MiddlewareException
      */
     public static function notDefined(string $name): MiddlewareException
     {
@@ -31,7 +31,7 @@ class MiddlewareException extends \Exception
 
     /**
      * @param string $name
-     * @return \Quantum\Exceptions\MiddlewareException
+     * @return MiddlewareException
      */
     public static function middlewareNotFound(string $name): MiddlewareException
     {
