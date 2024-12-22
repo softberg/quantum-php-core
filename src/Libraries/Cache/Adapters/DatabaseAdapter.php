@@ -14,6 +14,8 @@
 
 namespace Quantum\Libraries\Cache\Adapters;
 
+use Quantum\Libraries\Database\DatabaseException;
+use Quantum\Libraries\Database\DbalInterface;
 use Quantum\Libraries\Database\Database;
 use Psr\SimpleCache\CacheInterface;
 use InvalidArgumentException;
@@ -29,7 +31,7 @@ class DatabaseAdapter implements CacheInterface
     /**
      * @var int
      */
-    private $ttl = 30;
+    private $ttl;
 
     /**
      * @var string
@@ -37,13 +39,13 @@ class DatabaseAdapter implements CacheInterface
     private $prefix;
 
     /**
-     * @var \Quantum\Libraries\Database\DbalInterface
+     * @var DbalInterface
      */
     private $cacheModel;
 
     /**
-     * DatabaseAdapter constructor
      * @param array $params
+     * @throws DatabaseException
      */
     public function __construct(array $params)
     {
@@ -111,7 +113,7 @@ class DatabaseAdapter implements CacheInterface
     /**
      * @inheritDoc
      */
-    public function set($key, $value, $ttl = null)
+    public function set($key, $value, $ttl = null): bool
     {
         $cacheItem = $this->cacheModel->findOneBy('key', $this->keyHash($key));
 
@@ -130,7 +132,7 @@ class DatabaseAdapter implements CacheInterface
      * @inheritDoc
      * @throws InvalidArgumentException
      */
-    public function setMultiple($values, $ttl = null)
+    public function setMultiple($values, $ttl = null): bool
     {
         if (!is_array($values)) {
             throw new InvalidArgumentException(t(_message('exception.non_iterable_value', '$values')), E_WARNING);
@@ -148,7 +150,7 @@ class DatabaseAdapter implements CacheInterface
     /**
      * @inheritDoc
      */
-    public function delete($key)
+    public function delete($key): bool
     {
         $cacheItem = $this->cacheModel->findOneBy('key', $this->keyHash($key));
 
@@ -163,7 +165,7 @@ class DatabaseAdapter implements CacheInterface
      * @inheritDoc
      * @throws InvalidArgumentException
      */
-    public function deleteMultiple($keys)
+    public function deleteMultiple($keys): bool
     {
         if (!is_array($keys)) {
             throw new InvalidArgumentException(t(_message('exception.non_iterable_value', '$keys')), E_WARNING);
@@ -181,7 +183,7 @@ class DatabaseAdapter implements CacheInterface
     /**
      * @inheritDoc
      */
-    public function clear()
+    public function clear(): bool
     {
         return $this->cacheModel->deleteMany();
     }
