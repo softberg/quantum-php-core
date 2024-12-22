@@ -14,17 +14,17 @@
 
 namespace Quantum\Libraries\Auth\Adapters;
 
+use Quantum\Libraries\Database\Exceptions\DatabaseException;
 use Quantum\Libraries\Auth\AuthenticatableInterface;
 use Quantum\Libraries\Encryption\CryptorException;
-use Quantum\Libraries\Database\DatabaseException;
 use Quantum\Libraries\Auth\AuthServiceInterface;
 use Quantum\Libraries\Session\SessionException;
 use Quantum\Libraries\Mailer\MailerInterface;
 use Quantum\Libraries\Config\ConfigException;
 use Quantum\Libraries\Auth\AuthException;
 use Quantum\Libraries\Lang\LangException;
-use Quantum\Libraries\Hasher\Hasher;
 use Quantum\Libraries\Auth\BaseAuth;
+use Quantum\Libraries\Hasher\Hasher;
 use Quantum\Exceptions\DiException;
 use Quantum\Libraries\Auth\User;
 use ReflectionException;
