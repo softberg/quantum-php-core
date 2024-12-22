@@ -15,7 +15,7 @@
 namespace Quantum\Http\Response;
 
 use Quantum\Exceptions\StopExecutionException;
-use Quantum\Exceptions\LangException;
+use Quantum\Libraries\Lang\LangException;
 use Quantum\Exceptions\HttpException;
 use InvalidArgumentException;
 use SimpleXMLElement;
