@@ -12,26 +12,26 @@
  * @since 2.9.5
  */
 
+use Quantum\Libraries\Database\Exceptions\DatabaseException;
 use Quantum\Libraries\Auth\AuthenticatableInterface;
+use Quantum\Libraries\Session\SessionException;
+use Quantum\Libraries\Captcha\CaptchaException;
 use Quantum\Libraries\Captcha\CaptchaInterface;
 use Quantum\Libraries\Session\SessionManager;
 use Quantum\Libraries\Captcha\CaptchaManager;
+use Quantum\Libraries\Config\ConfigException;
 use Quantum\Libraries\Mailer\MailerException;
 use Quantum\Libraries\Mailer\MailerInterface;
 use Quantum\Libraries\Mailer\MailerManager;
-use Quantum\Exceptions\DatabaseException;
-use Quantum\Libraries\Cache\CacheManager;
-use Quantum\Libraries\Asset\AssetManager;
 use Quantum\Libraries\Auth\AuthException;
-use Quantum\Exceptions\CaptchaException;
+use Quantum\Libraries\Asset\AssetManager;
+use Quantum\Libraries\Cache\CacheManager;
+use Quantum\Libraries\Lang\LangException;
 use Quantum\Exceptions\ServiceException;
-use Quantum\Exceptions\SessionException;
 use Quantum\Libraries\Auth\AuthManager;
-use Quantum\Exceptions\ConfigException;
 use Quantum\Libraries\Session\Session;
-use Quantum\Exceptions\LangException;
-use Quantum\Libraries\Cookie\Cookie;
 use Quantum\Exceptions\AppException;
+use Quantum\Libraries\Cookie\Cookie;
 use Quantum\Exceptions\DiException;
 use Quantum\Libraries\Cache\Cache;
 use Quantum\Libraries\Csrf\Csrf;
@@ -44,7 +44,6 @@ use Quantum\Hooks\HookManager;
  * @throws DatabaseException
  * @throws SessionException
  * @throws ConfigException
- * @throws LangException
  * @throws DiException
  */
 function session(): Session

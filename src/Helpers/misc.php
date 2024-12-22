@@ -12,16 +12,22 @@
  * @since 2.9.5
  */
 
+use Quantum\Libraries\Database\Exceptions\DatabaseException;
 use Quantum\Libraries\Transformer\TransformerInterface;
 use Quantum\Libraries\Transformer\TransformerManager;
+use Quantum\Libraries\Encryption\CryptorException;
 use Quantum\Exceptions\StopExecutionException;
+use Quantum\Libraries\Asset\AssetException;
 use Quantum\Libraries\Encryption\Cryptor;
-use Quantum\Exceptions\DatabaseException;
+use Quantum\Libraries\Lang\LangException;
 use Quantum\Libraries\Asset\AssetManager;
-use Quantum\Exceptions\CryptorException;
-use Quantum\Exceptions\AssetException;
-use Quantum\Exceptions\LangException;
+use Quantum\Exceptions\ViewException;
 use Quantum\Exceptions\AppException;
+use Quantum\Exceptions\DiException;
+use Twig\Error\RuntimeError;
+use Twig\Error\LoaderError;
+use Twig\Error\SyntaxError;
+use Quantum\Http\Response;
 
 /**
  * Generates the CSRF token
@@ -217,6 +223,34 @@ function transform(array $data, TransformerInterface $transformer): array
 function is_debug_mode(): bool
 {
     return filter_var(config()->get('debug'), FILTER_VALIDATE_BOOLEAN);
+}
+
+/**
+ * Handles page not found
+ * @throws ReflectionException
+ * @throws DiException
+ * @throws ViewException
+ * @throws LoaderError
+ * @throws RuntimeError
+ * @throws SyntaxError
+ */
+function page_not_found()
+{
+    $acceptHeader = Response::getHeader('Accept');
+
+    $isJson = $acceptHeader === 'application/json';
+
+    if ($isJson) {
+        Response::json(
+            ['status' => 'error', 'message' => 'Page not found'],
+            404
+        );
+    } else {
+        Response::html(
+            partial('errors' . DS . '404'),
+            404
+        );
+    }
 }
 
 /**

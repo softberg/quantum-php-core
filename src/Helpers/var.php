@@ -14,87 +14,84 @@
 
 use Symfony\Component\VarExporter\Exception\ExceptionInterface;
 use Symfony\Component\VarExporter\VarExporter;
-use Quantum\Exceptions\ConfigException;
-use Quantum\Exceptions\LangException;
+use Quantum\Libraries\Config\ConfigException;
 use Quantum\Exceptions\DiException;
 use Quantum\Logger\LoggerException;
 use Quantum\Logger\LoggerManager;
-use Quantum\Logger\LoggerConfig;
-use Psr\Log\LogLevel;
 
 /**
  * Reports error
- * @param mixed $var
+ * @param $var
+ * @param array $context
  * @return void
- * @throws ReflectionException
  * @throws ConfigException
  * @throws DiException
- * @throws LangException
  * @throws LoggerException
+ * @throws ReflectionException
  */
-function error($var)
+function error($var, array $context = [])
 {
-    LoggerManager::getHandler()->error($var);
+    LoggerManager::getHandler()->error($var, $context);
 }
 
 /**
  * Reports warning
- * @param mixed $var
+ * @param $var
+ * @param array $context
  * @return void
  * @throws ConfigException
  * @throws DiException
- * @throws LangException
  * @throws LoggerException
  * @throws ReflectionException
  */
-function warning($var)
+function warning($var, array $context = [])
 {
-    LoggerManager::getHandler()->warning($var);
+    LoggerManager::getHandler()->warning($var, $context);
 }
 
 /**
  * Reports notice
- * @param mixed $var
+ * @param $var
+ * @param array $context
  * @return void
  * @throws ConfigException
  * @throws DiException
- * @throws LangException
  * @throws LoggerException
  * @throws ReflectionException
  */
-function notice($var)
+function notice($var, array $context = [])
 {
-    LoggerManager::getHandler()->notice($var);
+    LoggerManager::getHandler()->notice($var, $context);
 }
 
 /**
  * Reports info
- * @param mixed $var
+ * @param $var
+ * @param array $context
  * @return void
  * @throws ConfigException
  * @throws DiException
- * @throws LangException
  * @throws LoggerException
  * @throws ReflectionException
  */
-function info($var)
+function info($var, array $context = [])
 {
-    LoggerManager::getHandler()->info($var);
+    LoggerManager::getHandler()->info($var, $context);
 }
 
 /**
  * Reports debug
- * @param mixed $var
+ * @param $var
+ * @param array $context
  * @return void
  * @throws ConfigException
  * @throws DiException
- * @throws LangException
  * @throws LoggerException
  * @throws ReflectionException
  */
-function debug($var)
+function debug($var, array $context = [])
 {
-    LoggerManager::getHandler()->debug($var);
+    LoggerManager::getHandler()->debug($var, $context);
 }
 
 /**
