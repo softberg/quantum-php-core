@@ -1,13 +1,29 @@
 <?php
 
+/**
+ * Quantum PHP Framework
+ *
+ * An open source software development framework for PHP
+ *
+ * @package Quantum
+ * @author Arman Ag. <arman.ag@softberg.org>
+ * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
+ * @link http://quantum.softberg.org/
+ * @since 2.9.5
+ */
+
 namespace Quantum\Libraries\Storage\Adapters\GoogleDrive;
 
-use Quantum\Exceptions\AppException;
-use Quantum\Exceptions\CryptorException;
-use Quantum\Exceptions\DatabaseException;
+use Quantum\Libraries\Database\Exceptions\DatabaseException;
+use Quantum\Libraries\Encryption\CryptorException;
 use Quantum\Libraries\Curl\HttpClient;
+use Quantum\Exceptions\AppException;
 use Exception;
 
+/**
+ * Class GoogleDriveApp
+ * @package Quantum\Libraries\Storage
+ */
 class GoogleDriveApp
 {
     /**
