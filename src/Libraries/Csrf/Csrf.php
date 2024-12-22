@@ -14,8 +14,8 @@
 
 namespace Quantum\Libraries\Csrf;
 
+use Quantum\Libraries\Database\Exceptions\DatabaseException;
 use Quantum\Libraries\Encryption\CryptorException;
-use Quantum\Libraries\Database\DatabaseException;
 use Quantum\Libraries\Session\SessionException;
 use Quantum\Libraries\Config\ConfigException;
 use Quantum\Libraries\Session\Session;
