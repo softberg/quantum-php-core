@@ -14,11 +14,14 @@
 
 namespace Quantum\Tracer;
 
+use Quantum\Exceptions\StopExecutionException;
 use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Exceptions\ViewException;
 use Quantum\Exceptions\DiException;
 use Quantum\Factory\ViewFactory;
-use Quantum\Logger\LoggerConfig;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
+use Twig\Error\LoaderError;
 use Quantum\Http\Response;
 use Quantum\Logger\Logger;
 use ReflectionException;
@@ -123,11 +126,12 @@ class ErrorHandler
      * @param Throwable $e
      * @return void
      * @throws DiException
+     * @throws LoaderError
      * @throws ReflectionException
+     * @throws RuntimeError
+     * @throws SyntaxError
      * @throws ViewException
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
+     * @throws StopExecutionException
      */
     public function handleException(Throwable $e): void
     {
@@ -171,7 +175,7 @@ class ErrorHandler
      * @throws DiException
      * @throws ReflectionException
      */
-    protected function composeStackTrace(Throwable $e)
+    private function composeStackTrace(Throwable $e)
     {
         $this->trace[] = [
             'file' => $e->getFile(),
@@ -201,7 +205,7 @@ class ErrorHandler
      * @throws DiException
      * @throws ReflectionException
      */
-    protected function getSourceCode(string $filename, int $lineNumber, string $className): string
+    private function getSourceCode(string $filename, int $lineNumber, string $className): string
     {
         $fs = Di::get(FileSystem::class);
 
