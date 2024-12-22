@@ -9,13 +9,13 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Libraries\Cache\Adapters;
 
-use Quantum\Libraries\Database\DatabaseException;
-use Quantum\Libraries\Database\DbalInterface;
+use Quantum\Libraries\Database\Exceptions\DatabaseException;
+use Quantum\Libraries\Database\Contracts\DbalInterface;
 use Quantum\Libraries\Database\Database;
 use Psr\SimpleCache\CacheInterface;
 use InvalidArgumentException;
