@@ -9,13 +9,13 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Libraries\Curl;
 
+use Quantum\Libraries\Lang\LangException;
 use Quantum\Exceptions\HttpException;
-use Quantum\Exceptions\LangException;
 use Quantum\Exceptions\AppException;
 use Curl\CaseInsensitiveArray;
 use ErrorException;
@@ -126,7 +126,6 @@ class HttpClient
      * @param string $method
      * @return HttpClient
      * @throws HttpException
-     * @throws LangException
      */
     public function setMethod(string $method): HttpClient
     {
@@ -180,7 +179,6 @@ class HttpClient
      * Starts the request
      * @throws ErrorException
      * @throws HttpException
-     * @throws LangException
      */
     public function start(): HttpClient
     {
