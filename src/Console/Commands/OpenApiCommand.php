@@ -17,7 +17,6 @@ namespace Quantum\Console\Commands;
 use Quantum\Router\ModuleLoaderException;
 use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Exceptions\RouteException;
-use Quantum\Exceptions\LangException;
 use Quantum\Exceptions\DiException;
 use Quantum\Router\ModuleLoader;
 use Quantum\Console\QtCommand;
@@ -88,7 +87,6 @@ class OpenApiCommand extends QtCommand
      * @throws ModuleLoaderException
      * @throws ReflectionException
      * @throws RouteException
-     * @throws LangException
      */
     public function exec()
     {
