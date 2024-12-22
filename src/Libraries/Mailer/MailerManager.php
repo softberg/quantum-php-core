@@ -14,8 +14,8 @@
 
 namespace Quantum\Libraries\Mailer;
 
-use Quantum\Exceptions\ConfigException;
-use Quantum\Exceptions\LangException;
+use Quantum\Libraries\Config\ConfigException;
+use Quantum\Libraries\Lang\LangException;
 use Quantum\Exceptions\AppException;
 use Quantum\Exceptions\DiException;
 use Quantum\Loader\Setup;

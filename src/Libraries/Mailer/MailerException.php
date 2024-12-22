@@ -14,19 +14,18 @@
 
 namespace Quantum\Libraries\Mailer;
 
-use Quantum\Exceptions\LangException;
+use Quantum\Exceptions\AppException;
 
 /**
  * Class MailerException
  * @package Quantum\Exceptions
  */
-class MailerException extends \Exception
+class MailerException extends AppException
 {
 
     /**
      * @param string $name
      * @return MailerException
-     * @throws LangException
      */
     public static function unsupportedAdapter(string $name): MailerException
     {

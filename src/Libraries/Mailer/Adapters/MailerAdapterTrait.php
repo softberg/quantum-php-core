@@ -15,11 +15,9 @@
 namespace Quantum\Libraries\Mailer\Adapters;
 
 use Quantum\Libraries\Mailer\MailerInterface;
-use Quantum\Libraries\Mailer\MailerException;
 use Quantum\Exceptions\DiException;
 use Quantum\Debugger\Debugger;
 use ReflectionException;
-use Psr\Log\LogLevel;
 use Exception;
 
 /**
@@ -191,13 +189,7 @@ trait MailerAdapterTrait
 
         if (__CLASS__ != __NAMESPACE__ . '\\SmtpAdapter') {
             if (!$sent) {
-                $errors = $this->httpClient->getErrors();
-
-                if (Debugger::getInstance()->isEnabled()) {
-                    Debugger::getInstance()->addToStoreCell(Debugger::MAILS, LogLevel::WARNING, $errors);
-                }
-
-                throw MailerException::unableToSend(json_encode($errors, JSON_PRETTY_PRINT));
+                warning($this->httpClient->getErrors(), ['tab' => Debugger::MAILS]);
             }
         }
 

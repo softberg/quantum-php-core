@@ -15,12 +15,10 @@
 namespace Quantum\Libraries\Mailer\Adapters;
 
 use Quantum\Libraries\Mailer\MailerInterface;
-use Quantum\Libraries\Mailer\MailerException;
 use Quantum\Libraries\Mailer\MailTrap;
 use PHPMailer\PHPMailer\PHPMailer;
 use Quantum\Debugger\Debugger;
 use PHPMailer\PHPMailer\SMTP;
-use Psr\Log\LogLevel;
 use Exception;
 
 /**
@@ -88,11 +86,7 @@ class SmtpAdapter implements MailerInterface
             $this->mailer->SMTPDebug = SMTP::DEBUG_SERVER;
 
             $this->mailer->Debugoutput = function ($message) {
-                if (Debugger::getInstance()->isEnabled()) {
-                    Debugger::getInstance()->addToStoreCell(Debugger::MAILS, LogLevel::WARNING, $message);
-                }
-
-                throw MailerException::unableToSend($message);
+                warning($message, ['tab' => Debugger::MAILS]);
             };
         }
     }
