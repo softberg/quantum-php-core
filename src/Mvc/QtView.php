@@ -14,13 +14,13 @@
 
 namespace Quantum\Mvc;
 
+use Quantum\Libraries\Database\Exceptions\DatabaseException;
+use Quantum\Libraries\Session\SessionException;
 use Quantum\Libraries\ResourceCache\ViewCache;
-use Quantum\Exceptions\DatabaseException;
+use Quantum\Libraries\Config\ConfigException;
+use Quantum\Libraries\Asset\AssetException;
 use Quantum\Libraries\Asset\AssetManager;
-use Quantum\Exceptions\SessionException;
-use Quantum\Exceptions\ConfigException;
-use Quantum\Exceptions\AssetException;
-use Quantum\Exceptions\LangException;
+use Quantum\Libraries\Lang\LangException;
 use Quantum\Exceptions\ViewException;
 use Quantum\Renderer\DefaultRenderer;
 use Quantum\Exceptions\DiException;
@@ -45,13 +45,13 @@ class QtView
      * Layout file
      * @var string
      */
-    private $layout = null;
+    private $layoutFile = null;
 
     /**
      * Rendered view
      * @var string
      */
-    private $view = null;
+    private $viewContent;
 
     /**
      * Assets to be included
@@ -78,12 +78,12 @@ class QtView
 
     /**
      * Sets a layout
-     * @param string|null $layout
+     * @param string|null $layoutFile
      * @param array $assets
      */
-    public function setLayout(?string $layout, array $assets = [])
+    public function setLayout(?string $layoutFile, array $assets = [])
     {
-        $this->layout = $layout;
+        $this->layoutFile = $layoutFile;
         $this->assets = $assets;
     }
 
@@ -93,7 +93,7 @@ class QtView
      */
     public function getLayout(): ?string
     {
-        return $this->layout;
+        return $this->layoutFile;
     }
 
     /**
@@ -146,25 +146,25 @@ class QtView
 
     /**
      * Renders the view
-     * @param string $view
+     * @param string $viewFile
      * @param array $params
      * @return string|null
      * @throws AssetException
+     * @throws ConfigException
+     * @throws DatabaseException
+     * @throws DebugBarException
      * @throws DiException
      * @throws LangException
      * @throws LoaderError
      * @throws ReflectionException
      * @throws RuntimeError
+     * @throws SessionException
      * @throws SyntaxError
      * @throws ViewException
-     * @throws DebugBarException
-     * @throws ConfigException
-     * @throws DatabaseException
-     * @throws SessionException
      */
-    public function render(string $view, array $params = []): ?string
+    public function render(string $viewFile, array $params = []): ?string
     {
-        if (!$this->layout) {
+        if (!$this->layoutFile) {
             throw ViewException::noLayoutSet();
         }
 
@@ -172,7 +172,7 @@ class QtView
             $this->params = array_merge($this->params, $params);
         }
 
-        $this->view = $this->renderFile($view);
+        $this->viewContent = $this->renderFile($viewFile);
 
         if (!empty($this->assets)) {
             AssetManager::getInstance()->register($this->assets);
@@ -180,38 +180,38 @@ class QtView
 
         $debugger = Debugger::getInstance();
         if ($debugger->isEnabled()) {
-            $this->updateDebugger($debugger, $view);
+            $this->updateDebugger($debugger, $viewFile);
         }
 
-        $content = $this->renderFile($this->layout);
+        $layoutContent = $this->renderFile($this->layoutFile);
 
         $viewCacheInstance = ViewCache::getInstance();
         if ($viewCacheInstance->isEnabled()) {
-            $content = $this->cacheContent($viewCacheInstance, route_uri(), $content);
+            $layoutContent = $this->cacheContent($viewCacheInstance, route_uri(), $layoutContent);
         }
 
-        return $content;
+        return $layoutContent;
     }
 
     /**
      * Renders partial view
-     * @param string $view
+     * @param string $viewFile
      * @param array $params
      * @return string|null
      * @throws DiException
-     * @throws ViewException
-     * @throws ReflectionException
      * @throws LoaderError
+     * @throws ReflectionException
      * @throws RuntimeError
      * @throws SyntaxError
+     * @throws ViewException
      */
-    public function renderPartial(string $view, array $params = []): ?string
+    public function renderPartial(string $viewFile, array $params = []): ?string
     {
         if (!empty($params)) {
             $this->params = array_merge($this->params, $params);
         }
 
-        return $this->renderFile($view);
+        return $this->renderFile($viewFile);
     }
 
     /**
@@ -220,21 +220,21 @@ class QtView
      */
     public function getView(): ?string
     {
-        return $this->view;
+        return $this->viewContent;
     }
 
     /**
      * Renders the view
-     * @param string $view
+     * @param string $viewFile
      * @return string
      * @throws DiException
-     * @throws ViewException
-     * @throws ReflectionException
      * @throws LoaderError
+     * @throws ReflectionException
      * @throws RuntimeError
      * @throws SyntaxError
+     * @throws ViewException
      */
-    private function renderFile(string $view): string
+    private function renderFile(string $viewFile): string
     {
         $params = $this->xssFilter($this->params);
 
@@ -247,9 +247,9 @@ class QtView
                 throw ViewException::missingTemplateEngineConfigs();
             }
 
-            return (new TwigRenderer())->render($view, $params, $configs);
+            return (new TwigRenderer())->render($viewFile, $params, $configs);
         } else {
-            return (new DefaultRenderer())->render($view, $params);
+            return (new DefaultRenderer())->render($viewFile, $params);
         }
     }
 
@@ -285,14 +285,14 @@ class QtView
 
     /**
      * @param Debugger $debugger
-     * @param string $view
+     * @param string $viewFile
      * @return void
      */
-    private function updateDebugger(Debugger $debugger, string $view)
+    private function updateDebugger(Debugger $debugger, string $viewFile)
     {
         $routesCell = $debugger->getStoreCell(Debugger::ROUTES);
         $currentData = current($routesCell)[LogLevel::INFO] ?? [];
-        $additionalData = ['View' => current_module() . '/Views/' . $view];
+        $additionalData = ['View' => current_module() . '/Views/' . $viewFile];
         $mergedData = array_merge($currentData, $additionalData);
         $debugger->clearStoreCell(Debugger::ROUTES);
         $debugger->addToStoreCell(Debugger::ROUTES, LogLevel::INFO, $mergedData);
@@ -315,3 +315,4 @@ class QtView
         return $viewCacheInstance->set($uri, $content)->get($uri);
     }
 }
+

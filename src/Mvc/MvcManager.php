@@ -14,17 +14,17 @@
 
 namespace Quantum\Mvc;
 
+use Quantum\Libraries\Database\Exceptions\DatabaseException;
+use Quantum\Libraries\Encryption\CryptorException;
+use Quantum\Libraries\Session\SessionException;
 use Quantum\Libraries\ResourceCache\ViewCache;
+use Quantum\Libraries\Config\ConfigException;
 use Quantum\Exceptions\ControllerException;
 use Quantum\Exceptions\MiddlewareException;
-use Quantum\Libraries\Storage\FileSystem;
-use Quantum\Exceptions\DatabaseException;
+use Quantum\Libraries\Csrf\CsrfException;
 use Quantum\Middleware\MiddlewareManager;
-use Quantum\Exceptions\SessionException;
-use Quantum\Exceptions\CryptorException;
-use Quantum\Exceptions\ConfigException;
-use Quantum\Exceptions\LangException;
-use Quantum\Exceptions\CsrfException;
+use Quantum\Libraries\Storage\FileSystem;
+use Quantum\Libraries\Lang\LangException;
 use Quantum\Exceptions\DiException;
 use Quantum\Libraries\Csrf\Csrf;
 use Quantum\Http\Response;
@@ -62,10 +62,10 @@ class MvcManager
 
         $callback = route_callback();
 
-        $viewCacheInstance = ViewCache::getInstance();
+        $viewCache = ViewCache::getInstance();
 
-        if ($viewCacheInstance->isEnabled() && $viewCacheInstance->exists(route_uri())) {
-            $content = $viewCacheInstance->get(route_uri());
+        if ($viewCache->isEnabled() && $viewCache->exists(route_uri())) {
+            $content = $viewCache->get(route_uri());
             $response->html($content);
         } elseif ($callback) {
             call_user_func_array($callback, self::getArgs($callback));
