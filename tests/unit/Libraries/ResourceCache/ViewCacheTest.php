@@ -22,6 +22,7 @@ HEREDOC;
         parent::setUp();
 
         $this->viewCache = ViewCache::getInstance();
+        $this->viewCache->setup();
     }
 
     public function tearDown(): void
