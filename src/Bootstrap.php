@@ -102,7 +102,7 @@ class Bootstrap
                 $lang->load();
             }
 
-            $debugger->addToStoreCell(Debugger::HOOKS, LogLevel::INFO, HookManager::getRegistered());
+            info(HookManager::getInstance()->getRegistered(), ['tab' => Debugger::HOOKS]);
 
             MvcManager::handle($request, $response);
 

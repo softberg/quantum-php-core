@@ -199,7 +199,7 @@ class Route
      * @throws ReflectionException
      * @throws SessionException
      */
-    public function cacheable(bool $shouldCache, int $ttl = null): Route
+    public function cacheable(bool $shouldCache, ?int $ttl = null): Route
     {
         if (empty(session()->getId())) {
             return $this;

@@ -24,17 +24,17 @@ interface PaginatorInterface
     /**
      * @return int
      */
-	public function currentPageNumber(): int;
+    public function currentPageNumber(): int;
 
     /**
      * @return int|null
      */
-	public function previousPageNumber(): ?int;
+    public function previousPageNumber(): ?int;
 
     /**
      * @return int|null
      */
-	public function nextPageNumber(): ?int;
+    public function nextPageNumber(): ?int;
 
     /**
      * @return int
@@ -74,18 +74,18 @@ interface PaginatorInterface
     /**
      * @return int
      */
-	public function perPage(): int;
+    public function perPage(): int;
 
     /**
      * @return int
      */
-	public function total(): int;
+    public function total(): int;
 
     /**
      * @param bool $withBaseUrl
      * @return array
      */
-	public function links(bool $withBaseUrl): array;
+    public function links(bool $withBaseUrl): array;
 
     /**
      * @param bool $withBaseUrl
@@ -107,5 +107,5 @@ interface PaginatorInterface
     /**
      * @return array
      */
-	public function data(): array;
+    public function data(): array;
 }

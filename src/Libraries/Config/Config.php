@@ -19,6 +19,7 @@ use Quantum\Exceptions\DiException;
 use Dflydev\DotAccessData\Data;
 use Quantum\Loader\Loader;
 use Quantum\Loader\Setup;
+use ReflectionException;
 use Quantum\Di\Di;
 
 /**
@@ -58,7 +59,7 @@ class Config implements StorageInterface
      * @param Setup $setup
      * @throws ConfigException
      * @throws DiException
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function load(Setup $setup)
     {
@@ -74,7 +75,7 @@ class Config implements StorageInterface
      * @param Setup $setup
      * @throws ConfigException
      * @throws DiException
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function import(Setup $setup)
     {
@@ -108,7 +109,7 @@ class Config implements StorageInterface
 
     /**
      * Get all configs
-     * @return Data
+     * @return Data|null
      */
     public function all(): ?Data
     {

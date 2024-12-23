@@ -96,7 +96,7 @@ class HookManager
      * @param array|null $args
      * @throws HookException
      */
-    public function fire(string $name, array $args = null)
+    public function fire(string $name, ?array $args = null)
     {
         if (!$this->exists($name)) {
             throw HookException::unregisteredHookName($name);
