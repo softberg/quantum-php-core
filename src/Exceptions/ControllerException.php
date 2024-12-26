@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Exceptions;
@@ -20,11 +20,11 @@ namespace Quantum\Exceptions;
  * @package Quantum
  * @category Exceptions
  */
-class ControllerException extends \Exception
+class ControllerException extends AppException
 {
     /**
      * @param string|null $name
-     * @return \Quantum\Exceptions\ControllerException
+     * @return ControllerException
      */
     public static function controllerNotFound(?string $name): ControllerException
     {
@@ -33,7 +33,7 @@ class ControllerException extends \Exception
 
     /**
      * @param string|null $name
-     * @return \Quantum\Exceptions\ControllerException
+     * @return ControllerException
      */
     public static function controllerNotDefined(?string $name): ControllerException
     {
@@ -42,7 +42,7 @@ class ControllerException extends \Exception
 
     /**
      * @param string $name
-     * @return \Quantum\Exceptions\ControllerException
+     * @return ControllerException
      */
     public static function actionNotDefined(string $name): ControllerException
     {
@@ -51,7 +51,7 @@ class ControllerException extends \Exception
 
     /**
      * @param string $name
-     * @return \Quantum\Exceptions\ControllerException
+     * @return ControllerException
      */
     public static function undefinedMethod(string $name): ControllerException
     {

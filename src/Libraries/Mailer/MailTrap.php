@@ -15,9 +15,8 @@
 namespace Quantum\Libraries\Mailer;
 
 use Quantum\Exceptions\FileSystemException;
-use Quantum\Libraries\Storage\FileSystem;
 use Phemail\Message\MessagePartInterface;
-use Quantum\Exceptions\LangException;
+use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Exceptions\DiException;
 use Phemail\Message\MessagePart;
 use Phemail\MessageParser;
@@ -98,7 +97,6 @@ class MailTrap
      * @param $filename
      * @return MailTrap
      * @throws FileSystemException
-     * @throws LangException
      */
     public function parseMessage($filename): MailTrap
     {

@@ -25,12 +25,12 @@ namespace Quantum\Models {
 
 namespace Quantum\Tests\Mvc {
 
-    use Quantum\Libraries\Database\Idiorm\IdiormDbal;
-    use Quantum\Exceptions\ModelException;
     use Quantum\Factory\ModelFactory;
+    use Quantum\Libraries\Database\Exceptions\ModelException;
+    use Quantum\Libraries\Database\Idiorm\IdiormDbal;
     use Quantum\Models\ProfileModel;
-    use Quantum\Tests\AppTestCase;
     use Quantum\Mvc\QtModel;
+    use Quantum\Tests\AppTestCase;
 
     class QtModelTest extends AppTestCase
     {

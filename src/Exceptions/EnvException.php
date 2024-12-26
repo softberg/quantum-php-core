@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Exceptions;
@@ -18,13 +18,7 @@ namespace Quantum\Exceptions;
  * Class EnvException
  * @package Quantum\Exceptions
  */
-class EnvException extends \Exception
+class EnvException extends AppException
 {
-    /**
-     * @return EnvException
-     */
-    public static function fileNotFound(): EnvException
-    {
-        return new static('`.env` file not found', E_ERROR);
-    }
+
 }

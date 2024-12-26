@@ -9,13 +9,14 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Libraries\Cache\Adapters;
 
 use Psr\SimpleCache\CacheInterface;
 use InvalidArgumentException;
+use RedisException;
 use Exception;
 use Redis;
 
@@ -29,7 +30,7 @@ class RedisAdapter implements CacheInterface
     /**
      * @var int
      */
-    private $ttl = 30;
+    private $ttl;
 
     /**
      * @var string
@@ -37,13 +38,13 @@ class RedisAdapter implements CacheInterface
     private $prefix;
 
     /**
-     * @var \Redis
+     * @var Redis
      */
     private $redis;
 
     /**
-     * RedisAdapter constructor
      * @param array $params
+     * @throws RedisException
      */
     public function __construct(array $params)
     {
@@ -107,6 +108,7 @@ class RedisAdapter implements CacheInterface
 
     /**
      * @inheritDoc
+     * @throws RedisException
      */
     public function set($key, $value, $ttl = null)
     {
@@ -114,10 +116,16 @@ class RedisAdapter implements CacheInterface
     }
 
     /**
-     * @inheritDoc
+     *
      * @throws InvalidArgumentException
      */
-    public function setMultiple($values, $ttl = null)
+
+    /**
+     * @inheritDoc
+     * @throws RedisException
+     * @throws \Psr\SimpleCache\InvalidArgumentException
+     */
+    public function setMultiple($values, $ttl = null): bool
     {
         if (!is_array($values)) {
             throw new InvalidArgumentException(t(_message('exception.non_iterable_value', '$values')), E_WARNING);
@@ -135,7 +143,7 @@ class RedisAdapter implements CacheInterface
     /**
      * @inheritDoc
      */
-    public function delete($key)
+    public function delete($key): bool
     {
         return (bool) $this->redis->del($this->keyHash($key));
     }
@@ -144,7 +152,7 @@ class RedisAdapter implements CacheInterface
      * @inheritDoc
      * @throws InvalidArgumentException
      */
-    public function deleteMultiple($keys)
+    public function deleteMultiple($keys): bool
     {
         if (!is_array($keys)) {
             throw new InvalidArgumentException(t(_message('exception.non_iterable_value', '$values')), E_WARNING);
@@ -161,6 +169,7 @@ class RedisAdapter implements CacheInterface
 
     /**
      * @inheritDoc
+     * @throws RedisException
      */
     public function clear()
     {

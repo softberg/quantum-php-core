@@ -9,17 +9,23 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.6.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Libraries\Database\Sleekdb\Statements;
 
-use Quantum\Exceptions\ModelException;
-use Quantum\Libraries\Database\DbalInterface;
+use Quantum\Libraries\Database\Exceptions\DatabaseException;
+use Quantum\Libraries\Database\Exceptions\ModelException;
+use Quantum\Libraries\Database\Contracts\DbalInterface;
+use SleekDB\Exceptions\InvalidConfigurationException;
+use SleekDB\Exceptions\InvalidArgumentException;
+use SleekDB\Exceptions\IdNotAllowedException;
+use SleekDB\Exceptions\JsonException;
+use SleekDB\Exceptions\IOException;
 
 /**
  * Trait Model
- * @package Quantum\Libraries\Database\Sleekdb\Statements
+ * @package Quantum\Libraries\Database
  */
 trait Model
 {
@@ -47,12 +53,12 @@ trait Model
 
     /**
      * @inheritDoc
-     * @throws \Quantum\Exceptions\DatabaseException
-     * @throws \SleekDB\Exceptions\IOException
-     * @throws \SleekDB\Exceptions\IdNotAllowedException
-     * @throws \SleekDB\Exceptions\InvalidArgumentException
-     * @throws \SleekDB\Exceptions\InvalidConfigurationException
-     * @throws \SleekDB\Exceptions\JsonException
+     * @throws DatabaseException
+     * @throws IOException
+     * @throws IdNotAllowedException
+     * @throws InvalidArgumentException
+     * @throws InvalidConfigurationException
+     * @throws JsonException
      */
     public function save(): bool
     {
@@ -69,10 +75,10 @@ trait Model
 
     /**
      * @inheritDoc
-     * @throws \Quantum\Exceptions\DatabaseException
-     * @throws \SleekDB\Exceptions\IOException
-     * @throws \SleekDB\Exceptions\InvalidArgumentException
-     * @throws \SleekDB\Exceptions\InvalidConfigurationException
+     * @throws DatabaseException
+     * @throws IOException
+     * @throws InvalidArgumentException
+     * @throws InvalidConfigurationException
      */
     public function delete(): bool
     {
@@ -82,10 +88,10 @@ trait Model
 
     /**
      * @inheritDoc
-     * @throws \Quantum\Exceptions\DatabaseException
-     * @throws \SleekDB\Exceptions\IOException
-     * @throws \SleekDB\Exceptions\InvalidArgumentException
-     * @throws \SleekDB\Exceptions\InvalidConfigurationException
+     * @throws DatabaseException
+     * @throws IOException
+     * @throws InvalidArgumentException
+     * @throws InvalidConfigurationException
      * @throws ModelException
      */
     public function deleteMany(): bool

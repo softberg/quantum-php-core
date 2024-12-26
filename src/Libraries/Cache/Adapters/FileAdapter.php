@@ -9,14 +9,16 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Libraries\Cache\Adapters;
 
 use Quantum\Libraries\Storage\FileSystem;
+use Quantum\Exceptions\DiException;
 use Psr\SimpleCache\CacheInterface;
 use InvalidArgumentException;
+use ReflectionException;
 use Quantum\Di\Di;
 
 /**
@@ -34,7 +36,7 @@ class FileAdapter implements CacheInterface
     /**
      * @var int
      */
-    private $ttl = 30;
+    private $ttl;
     
     /**
      * @var string
@@ -47,8 +49,9 @@ class FileAdapter implements CacheInterface
     private $cacheDir;
 
     /**
-     * FileAdapter constructor
      * @param array $params
+     * @throws DiException
+     * @throws ReflectionException
      */
     public function __construct(array $params)
     {
@@ -130,7 +133,7 @@ class FileAdapter implements CacheInterface
      * @inheritDoc
      * @throws InvalidArgumentException
      */
-    public function setMultiple($values, $ttl = null)
+    public function setMultiple($values, $ttl = null): bool
     {
         if (!is_array($values)) {
             throw new InvalidArgumentException(t(_message('exception.non_iterable_value', '$values')), E_WARNING);
@@ -163,7 +166,7 @@ class FileAdapter implements CacheInterface
      * @inheritDoc
      * @throws InvalidArgumentException
      */
-    public function deleteMultiple($keys)
+    public function deleteMultiple($keys): bool
     {
         if (!is_array($keys)) {
             throw new InvalidArgumentException(t(_message('exception.non_iterable_value', '$keys')), E_WARNING);
@@ -181,7 +184,7 @@ class FileAdapter implements CacheInterface
     /**
      * @inheritDoc
      */
-    public function clear()
+    public function clear(): bool
     {
         if (!$this->fs->isDirectory($this->cacheDir)) {
             return false;

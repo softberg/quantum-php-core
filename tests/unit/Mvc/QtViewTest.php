@@ -4,7 +4,7 @@ namespace Quantum\Renderer {
 
     function current_module()
     {
-        return 'test';
+        return 'Test';
     }
 
 }

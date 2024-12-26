@@ -9,15 +9,15 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Libraries\Archive\Adapters;
 
+use Quantum\Libraries\Archive\ArchiveException;
 use Quantum\Libraries\Archive\ArchiveInterface;
 use Quantum\Libraries\Storage\FileSystem;
-use Quantum\Exceptions\ArchiveException;
-use Quantum\Exceptions\LangException;
+use Quantum\Exceptions\AppException;
 use ZipArchive;
 use Exception;
 
@@ -49,8 +49,8 @@ class ZipAdapter implements ArchiveInterface
     private $mode;
 
     /**
-     * ZipArchive constructor
-     * @throws LangException
+     * @param string $archiveName
+     * @param int|null $mode
      * @throws ArchiveException
      */
     public function __construct(string $archiveName, ?int $mode = ZipArchive::CREATE)
@@ -90,8 +90,7 @@ class ZipAdapter implements ArchiveInterface
 
     /**
      * @inheritDoc
-     * @throws ArchiveException
-     * @throws LangException
+     * @throws AppException
      */
     public function addFile(string $filePath, string $entryName = null): bool
     {
@@ -137,7 +136,6 @@ class ZipAdapter implements ArchiveInterface
     /**
      * @inheritDoc
      * @throws ArchiveException
-     * @throws LangException
      */
     public function extractTo(string $pathToExtract, $files = null): bool
     {
@@ -148,7 +146,6 @@ class ZipAdapter implements ArchiveInterface
     /**
      * @inheritDoc
      * @throws ArchiveException
-     * @throws LangException
      */
     public function deleteFile(string $filename): bool
     {
@@ -164,7 +161,6 @@ class ZipAdapter implements ArchiveInterface
     /**
      * @inheritDoc
      * @throws ArchiveException
-     * @throws LangException
      */
     public function deleteMultipleFiles(array $fileNames): bool
     {
@@ -176,7 +172,6 @@ class ZipAdapter implements ArchiveInterface
     }
 
     /**
-     * @throws LangException
      * @throws ArchiveException
      */
     private function reopen()

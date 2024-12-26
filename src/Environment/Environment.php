@@ -9,15 +9,18 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Environment;
 
 use Quantum\Libraries\Storage\FileSystem;
+use Quantum\Exceptions\AppException;
 use Quantum\Exceptions\EnvException;
+use Quantum\Exceptions\DiException;
 use Quantum\Loader\Loader;
 use Quantum\Loader\Setup;
+use ReflectionException;
 use Quantum\Di\Di;
 use Dotenv\Dotenv;
 
@@ -31,7 +34,7 @@ class Environment
 
     /**
      * FileSystem instance
-     * @var \Quantum\Libraries\Storage\FileSystem
+     * @var FileSystem
      */
     private $fs;
 
@@ -49,13 +52,13 @@ class Environment
 
     /**
      * Instance of Environment
-     * @var \Quantum\Environment\Environment
+     * @var Environment
      */
     private static $instance = null;
 
     /**
      * GetInstance
-     * @return \Quantum\Environment\Environment
+     * @return Environment
      */
     public static function getInstance(): Environment
     {
@@ -68,11 +71,12 @@ class Environment
 
     /**
      * Loads environment variables from file
-     * @param \Quantum\Loader\Setup $setup
+     * @param Setup $setup
      * @return $this
-     * @throws \Quantum\Exceptions\DiException
-     * @throws \ReflectionException
-     * @throws \Quantum\Exceptions\EnvException
+     * @throws AppException
+     * @throws EnvException
+     * @throws DiException
+     * @throws ReflectionException
      */
     public function load(Setup $setup): Environment
     {
@@ -85,7 +89,7 @@ class Environment
         $this->fs = Di::get(FileSystem::class);
 
         if (!$this->fs->exists(base_dir() . DS . $this->envFile)) {
-            throw EnvException::fileNotFound();
+            throw EnvException::fileNotFound('.env');
         }
 
         $this->envContent = Dotenv::createMutable(base_dir(), $this->envFile)->load();
@@ -103,15 +107,7 @@ class Environment
     {
         $val = getenv($key);
 
-        if ($val === false) {
-            if ($default) {
-                return $default;
-            }
-
-            return null;
-        }
-
-        return $val;
+        return $val !== false ? $val : $default;
     }
 
     /**
@@ -153,10 +149,11 @@ class Environment
 
         return null;
     }
-    
+
     /**
      * Checks if there is a such key
      * @param string $key
+     * @return bool
      */
     public function hasKey(string $key): bool
     {

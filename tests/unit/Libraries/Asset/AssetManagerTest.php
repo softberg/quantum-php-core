@@ -54,7 +54,7 @@ class AssetManagerTest extends AppTestCase
 
         ob_start();
 
-        $this->assetManager->dump(AssetManager::CSS_STORE);
+        $this->assetManager->dump(AssetManager::STORES['css']);
 
         $this->assertStringContainsString($expectedOutput, ob_get_contents());
 
@@ -67,7 +67,7 @@ class AssetManagerTest extends AppTestCase
         '<script src="https://code.jquery.com/jquery-3.2.1.min.js" ></script>' . PHP_EOL;
 
 
-        $this->assetManager->dump(AssetManager::JS_STORE);
+        $this->assetManager->dump(AssetManager::STORES['js']);
 
         $this->assertStringContainsString($expectedOutput, ob_get_contents());
 

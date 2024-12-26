@@ -9,14 +9,14 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Mvc;
 
-use Quantum\Libraries\Database\PaginatorInterface;
-use Quantum\Libraries\Database\DbalInterface;
-use Quantum\Exceptions\ModelException;
+use Quantum\Libraries\Database\Contracts\PaginatorInterface;
+use Quantum\Libraries\Database\Exceptions\ModelException;
+use Quantum\Libraries\Database\Contracts\DbalInterface;
 
 /**
  * Class QtModel

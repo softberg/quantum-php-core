@@ -1,14 +1,29 @@
 <?php
 
+/**
+ * Quantum PHP Framework
+ *
+ * An open source software development framework for PHP
+ *
+ * @package Quantum
+ * @author Arman Ag. <arman.ag@softberg.org>
+ * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
+ * @link http://quantum.softberg.org/
+ * @since 2.9.5
+ */
+
 namespace Quantum\Libraries\Captcha;
 
-use Quantum\Exceptions\CaptchaException;
-use Quantum\Exceptions\ConfigException;
+use Quantum\Libraries\Config\ConfigException;
 use Quantum\Libraries\Curl\HttpClient;
 use Quantum\Exceptions\DiException;
 use Quantum\Loader\Setup;
 use ReflectionException;
 
+/**
+ * Class CaptchaManager
+ * @package Quantum\Libraries\Captcha
+ */
 class CaptchaManager
 {
     const ADAPTERS = [

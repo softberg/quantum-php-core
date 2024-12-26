@@ -22,9 +22,11 @@
         "ext-simplexml": "*",
         "ext-fileinfo": "*",
         "ext-openssl": "*",
+        "ext-bcmath": "*",
         "ext-dom": "*",
         "ext-zip": "*",
-        "ext-bcmath": "*",
+        "ext-memcached": "*",
+        "ext-redis": "*",
         "j4mie/paris": "^1.5",
         "firebase/php-jwt": "^6.0",
         "gumlet/php-image-resize": "^2.0",
@@ -63,7 +65,7 @@
         }
     },
     "scripts": {
-        "test": "vendor/bin/phpunit --stderr --coverage-clover coverage.xml"
+        "test": "vendor/bin/phpunit --stderr --testdox --coverage-clover coverage.xml"
     },
     "minimum-stability": "dev",
     "prefer-stable": true

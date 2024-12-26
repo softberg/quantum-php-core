@@ -130,7 +130,7 @@ namespace Quantum\Tests\Libraries\Storage {
 
             $this->expectException(FileUploadException::class);
 
-            $this->expectExceptionMessage('exception.uploaded_file_not_found');
+            $this->expectExceptionMessage('exception.file_not_found');
 
             $this->assertFalse($uploadedFile->save(base_dir()));
         }

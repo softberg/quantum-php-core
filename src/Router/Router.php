@@ -9,24 +9,24 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Router;
 
-use Quantum\Exceptions\StopExecutionException;
 use Quantum\Libraries\ResourceCache\ViewCache;
+use Quantum\Libraries\Config\ConfigException;
+use Quantum\Exceptions\StopExecutionException;
 use Quantum\Exceptions\RouteException;
 use Quantum\Exceptions\ViewException;
 use Quantum\Exceptions\DiException;
+use Quantum\Logger\LoggerException;
 use Quantum\Debugger\Debugger;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 use Twig\Error\LoaderError;
-use Quantum\Http\Response;
 use Quantum\Http\Request;
 use ReflectionException;
-use Psr\Log\LogLevel;
 
 /**
  * Class Router
@@ -53,12 +53,6 @@ class Router extends RouteController
     private $request;
 
     /**
-     * Response instance
-     * @var Response;
-     */
-    private $response;
-
-    /**
      * List of routes
      * @var array
      */
@@ -73,24 +67,24 @@ class Router extends RouteController
     /**
      * Router constructor.
      * @param Request $request
-     * @param Response $response
      */
-    public function __construct(Request $request, Response $response)
+    public function __construct(Request $request)
     {
         $this->request = $request;
-        $this->response = $response;
     }
 
     /**
      * Finds the current route
-     * @throws StopExecutionException
-     * @throws ViewException
      * @throws DiException
      * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     * @throws RouteException
      * @throws ReflectionException
+     * @throws RouteException
+     * @throws RuntimeError
+     * @throws StopExecutionException
+     * @throws SyntaxError
+     * @throws ViewException
+     * @throws ConfigException
+     * @throws LoggerException
      */
     public function findRoute()
     {
@@ -104,7 +98,7 @@ class Router extends RouteController
 
         if (empty($this->matchedRoutes)) {
             stop(function () {
-                $this->handleNotFound();
+                page_not_found();
             });
         }
 
@@ -118,21 +112,11 @@ class Router extends RouteController
             throw RouteException::incorrectMethod($this->request->getMethod());
         }
 
-	    if (!empty($currentRoute['cache_settings']) && key_exists('shouldCache', $currentRoute)){
-		    $viewCacheInstance = ViewCache::getInstance();
-
-			$viewCacheInstance->enableCaching($currentRoute['cache_settings']['shouldCache']);
-
-			if (!empty($currentRoute['cache_settings']['ttl'])){
-				$viewCacheInstance->setTtl($currentRoute['cache_settings']['ttl']);
-			}
-	    }
+        $this->handleCaching($currentRoute);
 
         self::setCurrentRoute($currentRoute);
 
-        if (filter_var(config()->get(Debugger::DEBUG_ENABLED), FILTER_VALIDATE_BOOLEAN)) {
-            $this->collectDebugData($currentRoute);
-        }
+        info($this->collectDebugData($currentRoute), ['tab' => Debugger::ROUTES]);
     }
 
     /**
@@ -142,6 +126,25 @@ class Router extends RouteController
     {
         parent::$currentRoute = null;
         $this->matchedRoutes = [];
+    }
+
+    /**
+     * @param array $route
+     * @return void
+     */
+    private function handleCaching(array $route): void
+    {
+        $viewCache = ViewCache::getInstance();
+
+        $defaultCaching = $viewCache->isEnabled();
+
+        $shouldCacheForRoute = $route['cache_settings']['shouldCache'] ?? $defaultCaching;
+
+        $viewCache->enableCaching($shouldCacheForRoute);
+
+        if ($shouldCacheForRoute && !empty($route['cache_settings']['ttl'])) {
+            $viewCache->setTtl($route['cache_settings']['ttl']);
+        }
     }
 
     /**
@@ -162,9 +165,9 @@ class Router extends RouteController
     /**
      * Collects debug data
      * @param array $currentRoute
-     * @return void
+     * @return array
      */
-    private function collectDebugData(array $currentRoute)
+    private function collectDebugData(array $currentRoute): array
     {
         $routeInfo = [];
 
@@ -172,7 +175,7 @@ class Router extends RouteController
             $routeInfo[ucfirst($key)] = json_encode($value);
         }
 
-        Debugger::addToStore(Debugger::ROUTES, LogLevel::INFO, $routeInfo);
+        return $routeInfo;
     }
 
     /**
@@ -411,32 +414,4 @@ class Router extends RouteController
     {
         return str_replace('/', '\/', stripslashes($str));
     }
-
-    /**
-     * Handles page not found
-     * @throws DiException
-     * @throws ViewException
-     * @throws ReflectionException
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     */
-    private function handleNotFound()
-    {
-        $acceptHeader = $this->request->getHeader('Accept');
-        $isJson = $acceptHeader === 'application/json';
-
-        if ($isJson) {
-            $this->response->json(
-                ['status' => 'error', 'message' => 'Page not found'],
-                404
-            );
-        } else {
-            $this->response->html(
-                partial('errors/404'),
-                404
-            );
-        }
-    }
-
 }

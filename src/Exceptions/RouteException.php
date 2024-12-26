@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Exceptions;
@@ -18,10 +18,10 @@ namespace Quantum\Exceptions;
  * Class RouteException
  * @package Quantum\Exceptions
  */
-class RouteException extends \Exception
+class RouteException extends AppException
 {
     /**
-     * @return \Quantum\Exceptions\RouteException
+     * @return RouteException
      */
     public static function notFound(): RouteException
     {
@@ -29,7 +29,7 @@ class RouteException extends \Exception
     }
 
     /**
-     * @return \Quantum\Exceptions\RouteException
+     * @return RouteException
      */
     public static function notClosure(): RouteException
     {
@@ -38,7 +38,7 @@ class RouteException extends \Exception
 
     /**
      * @param string $name
-     * @return \Quantum\Exceptions\RouteException
+     * @return RouteException
      */
     public static function repetitiveRouteSameMethod(string $name): RouteException
     {
@@ -46,7 +46,7 @@ class RouteException extends \Exception
     }
 
     /**
-     * @return \Quantum\Exceptions\RouteException
+     * @return RouteException
      */
     public static function repetitiveRouteDifferentModules(): RouteException
     {
@@ -55,7 +55,7 @@ class RouteException extends \Exception
 
     /**
      * @param string|null $name
-     * @return \Quantum\Exceptions\RouteException
+     * @return RouteException
      */
     public static function incorrectMethod(?string $name): RouteException
     {
@@ -63,7 +63,7 @@ class RouteException extends \Exception
     }
 
     /**
-     * @return \Quantum\Exceptions\RouteException
+     * @return RouteException
      */
     public static function nameBeforeDefinition(): RouteException
     {
@@ -71,7 +71,7 @@ class RouteException extends \Exception
     }
 
     /**
-     * @return \Quantum\Exceptions\RouteException
+     * @return RouteException
      */
     public static function nameOnGroup(): RouteException
     {
@@ -79,7 +79,7 @@ class RouteException extends \Exception
     }
 
     /**
-     * @return \Quantum\Exceptions\RouteException
+     * @return RouteException
      */
     public static function nonUniqueName(): RouteException
     {
@@ -87,16 +87,15 @@ class RouteException extends \Exception
     }
 
     /**
-     * @param string $param
+     * @param string $name
      * @return RouteException
      */
     public static function paramNameNotAvailable(string $name): RouteException
     {
         return new static(t('exception.param_name_not_available', $name), E_WARNING);
     }
-    
+
     /**
-     * @param string $param
      * @return RouteException
      */
     public static function paramNameNotValid(): RouteException

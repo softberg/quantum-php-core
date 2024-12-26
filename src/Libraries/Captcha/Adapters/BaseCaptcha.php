@@ -9,17 +9,17 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Libraries\Captcha\Adapters;
 
 use Quantum\Libraries\Captcha\CaptchaInterface;
+use Quantum\Libraries\Asset\AssetException;
+use Quantum\Libraries\Lang\LangException;
 use Quantum\Libraries\Asset\AssetManager;
 use Quantum\Libraries\Curl\HttpClient;
-use Quantum\Exceptions\AssetException;
 use Quantum\Exceptions\HttpException;
-use Quantum\Exceptions\LangException;
 use Quantum\Exceptions\AppException;
 use Quantum\Libraries\Asset\Asset;
 use ErrorException;
@@ -95,7 +95,6 @@ abstract class BaseCaptcha implements CaptchaInterface
      * @param array $attributes
      * @return string
      * @throws AssetException
-     * @throws LangException
      * @throws Exception
      */
     public function addToForm(string $formIdentifier = '', array $attributes = []): string

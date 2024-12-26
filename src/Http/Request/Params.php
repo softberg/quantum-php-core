@@ -16,7 +16,6 @@ namespace Quantum\Http\Request;
 
 use Quantum\Libraries\Storage\UploadedFile;
 use Quantum\Libraries\Storage\FileSystem;
-use Quantum\Exceptions\LangException;
 use Quantum\Exceptions\HttpException;
 use Quantum\Exceptions\DiException;
 use Quantum\Environment\Server;
@@ -66,7 +65,6 @@ trait Params
      * @throws DiException
      * @throws HttpException
      * @throws ReflectionException
-     * @throws LangException
      */
     private static function parsedParams(): array
     {

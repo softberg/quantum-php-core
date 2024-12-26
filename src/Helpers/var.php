@@ -9,68 +9,89 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.5
  */
 
 use Symfony\Component\VarExporter\Exception\ExceptionInterface;
 use Symfony\Component\VarExporter\VarExporter;
-use Quantum\Contracts\ReportableInterface;
-use Quantum\Logger\MessageLogger;
-use Quantum\Logger\Logger;
+use Quantum\Libraries\Config\ConfigException;
+use Quantum\Exceptions\DiException;
+use Quantum\Logger\LoggerException;
+use Quantum\Logger\LoggerManager;
 
 /**
  * Reports error
- * @param mixed $var
- * @param ReportableInterface|null $loggerAdapter
+ * @param $var
+ * @param array $context
+ * @return void
+ * @throws ConfigException
+ * @throws DiException
+ * @throws LoggerException
+ * @throws ReflectionException
  */
-function error($var, ?ReportableInterface $loggerAdapter = null)
+function error($var, array $context = [])
 {
-    $logger = new Logger($loggerAdapter ?: new MessageLogger);
-    $logger->error($var);
+    LoggerManager::getHandler()->error($var, $context);
 }
 
 /**
  * Reports warning
- * @param mixed $var
- * @param ReportableInterface|null $loggerAdapter
+ * @param $var
+ * @param array $context
+ * @return void
+ * @throws ConfigException
+ * @throws DiException
+ * @throws LoggerException
+ * @throws ReflectionException
  */
-function warning($var, ?ReportableInterface $loggerAdapter = null)
+function warning($var, array $context = [])
 {
-    $logger = new Logger($loggerAdapter ?: new MessageLogger);
-    $logger->warning($var);
+    LoggerManager::getHandler()->warning($var, $context);
 }
 
 /**
  * Reports notice
- * @param mixed $var
- * @param ReportableInterface|null $loggerAdapter
+ * @param $var
+ * @param array $context
+ * @return void
+ * @throws ConfigException
+ * @throws DiException
+ * @throws LoggerException
+ * @throws ReflectionException
  */
-function notice($var, ?ReportableInterface $loggerAdapter = null)
+function notice($var, array $context = [])
 {
-    $logger = new Logger($loggerAdapter ?: new MessageLogger);
-    $logger->notice($var);
+    LoggerManager::getHandler()->notice($var, $context);
 }
 
 /**
  * Reports info
- * @param mixed $var
- * @param ReportableInterface|null $loggerAdapter
+ * @param $var
+ * @param array $context
+ * @return void
+ * @throws ConfigException
+ * @throws DiException
+ * @throws LoggerException
+ * @throws ReflectionException
  */
-function info($var, ?ReportableInterface $loggerAdapter = null)
+function info($var, array $context = [])
 {
-    $logger = new Logger($loggerAdapter ?: new MessageLogger);
-    $logger->info($var);
+    LoggerManager::getHandler()->info($var, $context);
 }
 
 /**
  * Reports debug
- * @param mixed $var
- * @param ReportableInterface|null $loggerAdapter
+ * @param $var
+ * @param array $context
+ * @return void
+ * @throws ConfigException
+ * @throws DiException
+ * @throws LoggerException
+ * @throws ReflectionException
  */
-function debug($var, ?ReportableInterface $loggerAdapter = null)
+function debug($var, array $context = [])
 {
-    $logger = new Logger($loggerAdapter ?: new MessageLogger);
-    $logger->debug($var);
+    LoggerManager::getHandler()->debug($var, $context);
 }
 
 /**

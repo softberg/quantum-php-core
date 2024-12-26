@@ -66,16 +66,16 @@ namespace Quantum\Models {
 
 namespace Quantum\Tests\Libraries\Database\Idiorm\Statements {
 
-    use Quantum\Tests\Libraries\Database\Idiorm\IdiormDbalTestCase;
-    use Quantum\Libraries\Database\Idiorm\IdiormDbal;
-    use Quantum\Models\CUserProfessionModel;
-    use Quantum\Exceptions\ModelException;
-    use Quantum\Models\CUserEventModel;
     use Quantum\Factory\ModelFactory;
+    use Quantum\Libraries\Database\Exceptions\ModelException;
+    use Quantum\Libraries\Database\Idiorm\IdiormDbal;
+    use Quantum\Models\CEventModel;
     use Quantum\Models\CMeetingModel;
     use Quantum\Models\CTicketModel;
-    use Quantum\Models\CEventModel;
+    use Quantum\Models\CUserEventModel;
     use Quantum\Models\CUserModel;
+    use Quantum\Models\CUserProfessionModel;
+    use Quantum\Tests\Libraries\Database\Idiorm\IdiormDbalTestCase;
 
     class JoinIdiormTest extends IdiormDbalTestCase
     {

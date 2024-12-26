@@ -9,18 +9,18 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Migration;
 
+use Quantum\Libraries\Database\Exceptions\DatabaseException;
+use Quantum\Libraries\Config\ConfigException;
 use Quantum\Exceptions\FileSystemException;
 use Quantum\Exceptions\MigrationException;
+use Quantum\Libraries\Lang\LangException;
 use Quantum\Libraries\Storage\FileSystem;
-use Quantum\Exceptions\DatabaseException;
 use Quantum\Libraries\Database\Database;
-use Quantum\Exceptions\ConfigException;
-use Quantum\Exceptions\LangException;
 use Quantum\Exceptions\AppException;
 use Quantum\Exceptions\DiException;
 use Quantum\Factory\TableFactory;
@@ -81,7 +81,6 @@ class MigrationManager
     /**
      * MigrationManager constructor.
      * @throws FileSystemException
-     * @throws LangException
      */
     public function __construct()
     {
@@ -240,7 +239,6 @@ class MigrationManager
      * @param int|null $step
      * @throws MigrationException
      * @throws DatabaseException
-     * @throws LangException
      *
      */
     private function prepareUpMigrations(?int $step = null)
@@ -269,7 +267,6 @@ class MigrationManager
      * Prepares down migrations
      * @param int|null $step
      * @throws DatabaseException
-     * @throws LangException
      * @throws MigrationException
      */
     private function prepareDownMigrations(?int $step = null)

@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Libraries\Mailer\Adapters;
@@ -17,9 +17,7 @@ namespace Quantum\Libraries\Mailer\Adapters;
 use Quantum\Libraries\Mailer\MailerInterface;
 use Quantum\Exceptions\DiException;
 use Quantum\Debugger\Debugger;
-use Quantum\Logger\FileLogger;
 use ReflectionException;
-use Psr\Log\LogLevel;
 use Exception;
 
 /**
@@ -190,8 +188,8 @@ trait MailerAdapterTrait
         $this->resetFields();
 
         if (__CLASS__ != __NAMESPACE__ . '\\SmtpAdapter') {
-            if (!$sent && config()->get('debug')) {
-                $this->updateDebugBar($this->httpClient->getErrors());
+            if (!$sent) {
+                warning($this->httpClient->getErrors(), ['tab' => Debugger::MAILS]);
             }
         }
 
@@ -310,22 +308,4 @@ trait MailerAdapterTrait
             $this->mailer->clearCustomHeaders();
         }
     }
-
-    /**
-     * Updates the debug bar
-     * @param $message
-     * @throws DiException
-     * @throws ReflectionException
-     * @throws ReflectionException
-     */
-    private function updateDebugBar($message)
-    {
-        Debugger::addToStore(Debugger::MAILS, LogLevel::WARNING, $message);
-
-        $logFile = logs_dir() . DS . date('Y-m-d') . '.log';
-        $logMessage = '[' . date('Y-m-d H:i:s') . '] ' . LogLevel::WARNING . ': ' . $message . PHP_EOL;
-
-        warning($logMessage, new FileLogger($logFile));
-    }
-
 }

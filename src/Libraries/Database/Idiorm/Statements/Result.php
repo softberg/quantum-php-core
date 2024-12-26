@@ -9,19 +9,19 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Libraries\Database\Idiorm\Statements;
 
-use Quantum\Libraries\Database\PaginatorInterface;
+use Quantum\Libraries\Database\Exceptions\DatabaseException;
+use Quantum\Libraries\Database\Contracts\PaginatorInterface;
+use Quantum\Libraries\Database\Contracts\DbalInterface;
 use Quantum\Libraries\Database\Idiorm\Paginator;
-use Quantum\Libraries\Database\DbalInterface;
-use Quantum\Exceptions\DatabaseException;
 
 /**
  * Trait Result
- * @package Quantum\Libraries\Database\Idiorm\Statements
+ * @package Quantum\Libraries\Database
  */
 trait Result
 {

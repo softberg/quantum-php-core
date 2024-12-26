@@ -2,9 +2,9 @@
 
 namespace Quantum\Tests\Libraries\Database\Sleekdb\Statements;
 
-use Quantum\Tests\Libraries\Database\Sleekdb\SleekDbalTestCase;
-use Quantum\Libraries\Database\PaginatorInterface;
+use Quantum\Libraries\Database\Contracts\PaginatorInterface;
 use Quantum\Libraries\Database\Sleekdb\SleekDbal;
+use Quantum\Tests\Libraries\Database\Sleekdb\SleekDbalTestCase;
 
 class ResultSleekTest extends SleekDbalTestCase
 {

@@ -9,14 +9,13 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Libraries\Mailer;
 
-use Quantum\Exceptions\ConfigException;
-use Quantum\Exceptions\MailerException;
-use Quantum\Exceptions\LangException;
+use Quantum\Libraries\Config\ConfigException;
+use Quantum\Libraries\Lang\LangException;
 use Quantum\Exceptions\AppException;
 use Quantum\Exceptions\DiException;
 use Quantum\Loader\Setup;

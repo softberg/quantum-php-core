@@ -229,7 +229,7 @@ class RequestTest extends AppTestCase
 
         $this->expectException(FileUploadException::class);
 
-        $this->expectExceptionMessage('uploaded_file_not_found');
+        $this->expectExceptionMessage('exception.file_not_found');
 
         $request->getFile('image');
     }

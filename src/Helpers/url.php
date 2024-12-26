@@ -9,17 +9,16 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.5
  */
 
-use Quantum\Exceptions\DatabaseException;
-use Quantum\Exceptions\SessionException;
-use Quantum\Exceptions\CryptorException;
-use Quantum\Exceptions\ConfigException;
-use Quantum\Exceptions\LangException;
+use Quantum\Libraries\Database\Exceptions\DatabaseException;
+use Quantum\Libraries\Encryption\CryptorException;
+use Quantum\Libraries\Session\SessionException;
+use Quantum\Libraries\Config\ConfigException;
 use Quantum\Exceptions\DiException;
-use Quantum\Http\Request;
 use Quantum\Http\Response;
+use Quantum\Http\Request;
 
 /**
  * Gets the base url
@@ -28,7 +27,21 @@ use Quantum\Http\Response;
  */
 function base_url(bool $withModulePrefix = false): string
 {
-    return config()->get('base_url') ?? Request::getProtocol() . '://' . Request::getHost() . ((Request::getPort() && Request::getPort() != 80) ? ':' . Request::getPort() : '') . ($withModulePrefix && !empty(route_prefix()) ? '/' . route_prefix() : '');
+    $baseUrl = config()->get('base_url');
+
+    if ($baseUrl) {
+        return $baseUrl;
+    }
+
+    $protocol = Request::getProtocol();
+    $host = Request::getHost();
+    $port = Request::getPort();
+
+    $portPart = ($port && $port != 80) ? ':' . $port : '';
+
+    $modulePrefix = ($withModulePrefix && !empty(route_prefix())) ? '/' . route_prefix() : '';
+
+    return $protocol . '://' . $host . $portPart . $modulePrefix;
 }
 
 /**
@@ -37,7 +50,18 @@ function base_url(bool $withModulePrefix = false): string
  */
 function current_url(): string
 {
-    return Request::getProtocol() . '://' . Request::getHost() . ((Request::getPort() && Request::getPort() != 80) ? ':' . Request::getPort() : '') . '/' . Request::getUri() . (Request::getQuery() ? '?' . Request::getQuery() : '');
+    $protocol = Request::getProtocol();
+    $host = Request::getHost();
+    $port = Request::getPort();
+
+    $portPart = ($port && $port != 80) ? ':' . $port : '';
+
+    $uri = Request::getUri();
+    $query = Request::getQuery();
+
+    $queryPart = $query ? '?' . $query : '';
+
+    return $protocol . '://' . $host . $portPart . '/' . $uri . $queryPart;
 }
 
 /**
@@ -61,7 +85,6 @@ function redirect(string $url, int $code = 302)
  * @throws DatabaseException
  * @throws DiException
  * @throws SessionException
- * @throws LangException
  */
 function redirectWith(string $url, array $data, int $code = 302)
 {
@@ -79,7 +102,6 @@ function redirectWith(string $url, array $data, int $code = 302)
  * @throws DatabaseException
  * @throws DiException
  * @throws SessionException
- * @throws LangException
  */
 function old(string $key)
 {

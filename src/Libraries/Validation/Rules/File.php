@@ -9,14 +9,13 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Libraries\Validation\Rules;
 
 use Quantum\Exceptions\FileUploadException;
 use Quantum\Libraries\Storage\UploadedFile;
-use Quantum\Exceptions\LangException;
 
 /**
  * Trait File
@@ -97,7 +96,6 @@ trait File
      * @param UploadedFile $file
      * @param array $param
      * @throws FileUploadException
-     * @throws LangException
      */
     protected function imageDimensions(string $field, UploadedFile $file, array $param)
     {

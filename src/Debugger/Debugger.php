@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Debugger;
@@ -20,27 +20,24 @@ use DebugBar\DataCollector\MessagesCollector;
 use DebugBar\DataCollector\PhpInfoCollector;
 use DebugBar\DataCollector\MemoryCollector;
 use DebugBar\JavascriptRenderer;
+use DebugBar\DebugBarException;
 use DebugBar\DebugBar;
 
 /**
  * Class Debugger
  * @package Quantum\Debugger
- * @uses \DebugBar\DebugBar
+ * @uses DebugBar
  */
 class Debugger
 {
 
-    /**
-     * Config key for debug status
-     */
-    const DEBUG_ENABLED = 'debug';
     /**
      * Messages tab
      */
     const MESSAGES = 'messages';
 
     /**
-     * Quaeries tab
+     * Queries tab
      */
     const QUERIES = 'queries';
 
@@ -48,7 +45,7 @@ class Debugger
      * Routes tab
      */
     const ROUTES = 'routes';
-    
+
     /**
      * Hooks tab
      */
@@ -60,16 +57,21 @@ class Debugger
     const MAILS = 'mails';
 
     /**
-     * Debugbar instance
-     * @var \DebugBar\DebugBar
-     */
-    private $debugbar;
-
-    /**
      * Store
      * @var array
      */
-    private static $store;
+    private $store;
+
+    /**
+     * @var Debugger
+     */
+    private static $instance;
+
+    /**
+     * DebugBar instance
+     * @var DebugBar
+     */
+    private $debugBar;
 
     /**
      * Assets url
@@ -85,29 +87,62 @@ class Debugger
 
     /**
      * Debugger constructor.
-     * @throws \DebugBar\DebugBarException
+     * @param DebuggerStore $store
+     * @param DebugBar $debugBar
+     * @param array $collectors
+     * @throws DebugBarException
      */
-    public function __construct()
+    public function __construct(DebuggerStore $store, DebugBar $debugBar, array $collectors = [])
     {
-        $this->debugbar = new DebugBar();
+        $this->store = $store;
+        $this->debugBar = $debugBar;
 
-        $this->debugbar->addCollector(new PhpInfoCollector());
-        $this->debugbar->addCollector(new MessagesCollector());
-        $this->debugbar->addCollector(new RequestDataCollector());
-        $this->debugbar->addCollector(new TimeDataCollector());
-        $this->debugbar->addCollector(new MemoryCollector());
+        foreach ($collectors as $collector) {
+            $this->debugBar->addCollector($collector);
+        }
     }
 
     /**
-     * Initiates the store
+     * @param DebuggerStore|null $store
+     * @param DebugBar|null $debugBar
+     * @param array|null $collectors
+     * @return Debugger
+     * @throws DebugBarException
      */
-    public static function initStore()
+    public static function getInstance(DebuggerStore $store = null, DebugBar $debugBar = null, ?array $collectors = []): Debugger
     {
-        self::$store[self::MESSAGES] = [];
-        self::$store[self::QUERIES] = [];
-        self::$store[self::ROUTES] = [];
-        self::$store[self::HOOKS] = [];
-        self::$store[self::MAILS] = [];
+        if (self::$instance === null) {
+            $debugBar = $debugBar ?? new DebugBar();
+            $store = $store ?? new DebuggerStore();
+            $collectors = $collectors ?: self::getDefaultCollectors();
+
+            self::$instance = new self($store, $debugBar, $collectors);
+        }
+
+        return self::$instance;
+    }
+
+    /**
+     * Checks if debug bar enabled
+     * @return bool
+     */
+    public function isEnabled(): bool
+    {
+        return filter_var(config()->get('debug'), FILTER_VALIDATE_BOOLEAN);
+    }
+
+    /**
+     * @return void
+     */
+    public function initStore()
+    {
+        $this->store->init([
+            Debugger::MESSAGES,
+            Debugger::QUERIES,
+            Debugger::ROUTES,
+            Debugger::HOOKS,
+            Debugger::MAILS
+        ]);
     }
 
     /**
@@ -116,49 +151,49 @@ class Debugger
      * @param string $level
      * @param mixed $data
      */
-    public static function addToStore(string $cell, string $level, $data)
+    public function addToStoreCell(string $cell, string $level, $data)
     {
         if (!empty($data)) {
-            self::$store[$cell][] = [$level => $data];
+            $this->store->set($cell, [$level => $data]);
         }
     }
 
     /**
-     * Updates the data into the store cell
      * @param string $cell
-     * @param string $level
-     * @param mixed $data
+     * @return array
      */
-    public static function updateStoreCell(string $cell, string $level, $data)
+    public function getStoreCell(string $cell): array
     {
-        if (current(self::$store[$cell])) {
-            $cellData = array_merge(current(self::$store[$cell])[$level], $data);
-            self::clearStoreCell($cell);
-            self::addToStore($cell, $level, $cellData);
-        }
+        return $this->store->get($cell);
     }
 
     /**
      * Clears the store cell
      * @param string $cell
      */
-    public static function clearStoreCell(string $cell)
+    public function clearStoreCell(string $cell)
     {
-        self::$store[$cell] = [];
+        $this->store->delete($cell);
+    }
+
+    /**
+     * @return void
+     */
+    public function resetStore()
+    {
+        $this->store->flush();
     }
 
     /**
      * Renders the debug bar
      * @return string
-     * @throws \DebugBar\DebugBarException
+     * @throws DebugBarException
      */
     public function render(): string
     {
-        $this->createTab(self::MESSAGES);
-        $this->createTab(self::QUERIES);
-        $this->createTab(self::ROUTES);
-        $this->createTab(self::HOOKS);
-        $this->createTab(self::MAILS);
+        foreach ([self::MESSAGES, self::QUERIES, self::ROUTES, self::HOOKS, self::MAILS] as $tab) {
+            $this->createTab($tab);
+        }
 
         $renderer = $this->getRenderer();
 
@@ -168,32 +203,48 @@ class Debugger
     /**
      * Creates a tab
      * @param string $type
-     * @throws \DebugBar\DebugBarException
+     * @throws DebugBarException
      */
     protected function createTab(string $type)
     {
-        if (!$this->debugbar->hasCollector($type)) {
-            $this->debugbar->addCollector(new MessagesCollector($type));
+        if (!$this->debugBar->hasCollector($type)) {
+            $this->debugBar->addCollector(new MessagesCollector($type));
         }
 
-        if (count(self::$store[$type])) {
-            foreach (self::$store[$type] as $message) {
+        $messages = $this->store->get($type);
+
+        if (count($messages)) {
+            foreach ($messages as $message) {
                 $fn = key($message);
-                $this->debugbar[$type]->$fn($message[$fn]);
+                $this->debugBar[$type]->$fn($message[$fn]);
             }
         }
     }
 
     /**
      * Gets the renderer
-     * @return \DebugBar\JavascriptRenderer
+     * @return JavascriptRenderer
      */
     protected function getRenderer(): JavascriptRenderer
     {
-        return $this->debugbar
+        return $this->debugBar
             ->getJavascriptRenderer()
             ->setBaseUrl(base_url() . $this->assetsUrl)
             ->addAssets([$this->customCss], []);
+    }
+
+    /**
+     * @return array
+     */
+    protected static function getDefaultCollectors(): array
+    {
+        return [
+            new PhpInfoCollector(),
+            new MessagesCollector(),
+            new RequestDataCollector(),
+            new TimeDataCollector(),
+            new MemoryCollector(),
+        ];
     }
 
 }

@@ -3,7 +3,7 @@
 namespace Quantum\Tests\Libraries\Cache;
 
 use Quantum\Libraries\Cache\Adapters\FileAdapter;
-use Quantum\Exceptions\CacheException;
+use Quantum\Libraries\Cache\CacheException;
 use Psr\SimpleCache\CacheInterface;
 use Quantum\Libraries\Cache\Cache;
 use Quantum\Tests\AppTestCase;

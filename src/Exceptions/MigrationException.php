@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Exceptions;
@@ -24,7 +24,6 @@ class MigrationException extends AppException
 {
     /**
      * @return MigrationException
-     * @throws LangException
      */
     public static function wrongDirection(): MigrationException
     {
@@ -34,7 +33,6 @@ class MigrationException extends AppException
     /**
      * @param string $action
      * @return MigrationException
-     * @throws LangException
      */
     public static function unsupportedAction(string $action): MigrationException
     {
@@ -44,7 +42,6 @@ class MigrationException extends AppException
     /**
      * @param string $name
      * @return MigrationException
-     * @throws LangException
      */
     public static function tableAlreadyExists(string $name): MigrationException
     {
@@ -54,7 +51,6 @@ class MigrationException extends AppException
     /**
      * @param string $name
      * @return MigrationException
-     * @throws LangException
      */
     public static function tableDoesnotExists(string $name): MigrationException
     {
@@ -64,7 +60,6 @@ class MigrationException extends AppException
     /**
      * @param string $name
      * @return MigrationException
-     * @throws LangException
      */
     public static function columnNotAvailable(string $name): MigrationException
     {
@@ -74,7 +69,6 @@ class MigrationException extends AppException
     /**
      * @param string $name
      * @return MigrationException
-     * @throws LangException
      */
     public static function methodNotDefined(string $name): MigrationException
     {
@@ -83,7 +77,6 @@ class MigrationException extends AppException
 
     /**
      * @return MigrationException
-     * @throws LangException
      */
     public static function nothingToMigrate(): MigrationException
     {

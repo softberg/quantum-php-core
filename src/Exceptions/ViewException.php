@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Exceptions;
@@ -18,11 +18,11 @@ namespace Quantum\Exceptions;
  * Class ViewException
  * @package Quantum\Exceptions
  */
-class ViewException extends \Exception
+class ViewException extends AppException
 {
     /**
      * @param string $name
-     * @return \Quantum\Exceptions\ViewException
+     * @return ViewException
      */
     public static function directInstantiation(string $name): ViewException
     {
@@ -30,7 +30,7 @@ class ViewException extends \Exception
     }
 
     /**
-     * @return \Quantum\Exceptions\ViewException
+     * @return ViewException
      */
     public static function noLayoutSet(): ViewException
     {
@@ -38,16 +38,7 @@ class ViewException extends \Exception
     }
 
     /**
-     * @param string $name
-     * @return \Quantum\Exceptions\ViewException
-     */
-    public static function fileNotFound(string $name): ViewException
-    {
-        return new static(t('exception.view_file_not_found', $name), E_ERROR);
-    }
-
-    /**
-     * @return \Quantum\Exceptions\ViewException
+     * @return ViewException
      */
     public static function missingTemplateEngineConfigs(): ViewException
     {

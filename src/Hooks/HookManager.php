@@ -9,13 +9,16 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.7.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Hooks;
 
+use Quantum\Libraries\Config\ConfigException;
 use Quantum\Exceptions\HookException;
+use Quantum\Exceptions\DiException;
 use Quantum\Loader\Setup;
+use ReflectionException;
 
 /**
  * Class HookManager
@@ -36,12 +39,15 @@ class HookManager
     private static $store = [];
 
     /**
-     * @var \Quantum\Hooks\HookManager|null
+     * @var HookManager|null
      */
     private static $instance = null;
 
     /**
-     * HookManager constructor
+     * @throws HookException
+     * @throws ConfigException
+     * @throws DiException
+     * @throws ReflectionException
      */
     private function __construct()
     {
@@ -58,7 +64,7 @@ class HookManager
 
     /**
      * HookManager instance
-     * @return \Quantum\Hooks\HookManager|null
+     * @return HookManager|null
      */
     public static function getInstance(): ?HookManager
     {
@@ -73,7 +79,7 @@ class HookManager
      * Adds new listener for given hook
      * @param string $name
      * @param callable $function
-     * @throws \Quantum\Exceptions\HookException
+     * @throws HookException
      */
     public function on(string $name, callable $function)
     {
@@ -87,18 +93,18 @@ class HookManager
     /**
      * Fires the hook
      * @param string $name
-     * @param array $args
-     * @throws \Quantum\Exceptions\HookException
+     * @param array|null $args
+     * @throws HookException
      */
-    public function fire(string $name, array $args = null)
+    public function fire(string $name, ?array $args = null)
     {
         if (!$this->exists($name)) {
             throw HookException::unregisteredHookName($name);
         }
 
-        foreach (self::$store[$name] as $index => $funcion) {
+        foreach (self::$store[$name] as $index => $fn) {
             unset(self::$store[$name][$index]);
-            $funcion($args);
+            $fn($args);
         }
     }
 
@@ -114,7 +120,7 @@ class HookManager
     /**
      * Registers new hook 
      * @param string $name
-     * @throws \Quantum\Exceptions\HookException
+     * @throws HookException
      */
     protected function register(string $name)
     {
@@ -134,5 +140,4 @@ class HookManager
     {
         return key_exists($name, self::$store);
     }
-
 }

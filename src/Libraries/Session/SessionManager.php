@@ -9,17 +9,15 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Libraries\Session;
 
+use Quantum\Libraries\Database\Exceptions\DatabaseException;
 use Quantum\Libraries\Session\Handlers\DatabaseHandler;
-use Quantum\Exceptions\DatabaseException;
-use Quantum\Exceptions\SessionException;
+use Quantum\Libraries\Config\ConfigException;
 use Quantum\Libraries\Database\Database;
-use Quantum\Exceptions\ConfigException;
-use Quantum\Exceptions\LangException;
 use Quantum\Exceptions\DiException;
 use Quantum\Loader\Setup;
 use ReflectionException;
@@ -53,7 +51,6 @@ class SessionManager
      * @throws DatabaseException
      * @throws SessionException
      * @throws ConfigException
-     * @throws LangException
      * @throws DiException
      */
     public static function getHandler(): Session

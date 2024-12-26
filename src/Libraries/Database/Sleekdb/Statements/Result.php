@@ -9,23 +9,23 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Libraries\Database\Sleekdb\Statements;
 
+use Quantum\Libraries\Database\Contracts\PaginatorInterface;
+use Quantum\Libraries\Database\Exceptions\DatabaseException;
+use Quantum\Libraries\Database\Exceptions\ModelException;
+use Quantum\Libraries\Database\Contracts\DbalInterface;
 use SleekDB\Exceptions\InvalidConfigurationException;
-use Quantum\Libraries\Database\PaginatorInterface;
 use Quantum\Libraries\Database\Sleekdb\Paginator;
 use SleekDB\Exceptions\InvalidArgumentException;
-use Quantum\Libraries\Database\DbalInterface;
-use Quantum\Exceptions\DatabaseException;
-use Quantum\Exceptions\ModelException;
 use SleekDB\Exceptions\IOException;
 
 /**
  * Trait Result
- * @package Quantum\Libraries\Database\Sleekdb\Statements
+ * @package Quantum\Libraries\Database
  */
 trait Result
 {

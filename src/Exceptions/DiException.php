@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Exceptions;
@@ -18,11 +18,11 @@ namespace Quantum\Exceptions;
  * Class DiException
  * @package Quantum\Exceptions
  */
-class DiException extends \Exception
+class DiException extends AppException
 {
     /**
      * @param string $name
-     * @return \Quantum\Exceptions\DiException
+     * @return DiException
      */
     public static function dependencyNotDefined(string $name): DiException
     {

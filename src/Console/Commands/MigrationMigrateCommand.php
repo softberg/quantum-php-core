@@ -9,16 +9,16 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Console\Commands;
 
+use Quantum\Libraries\Database\Exceptions\DatabaseException;
+use Quantum\Libraries\Config\ConfigException;
 use Quantum\Exceptions\MigrationException;
-use Quantum\Exceptions\DatabaseException;
-use Quantum\Exceptions\ConfigException;
+use Quantum\Libraries\Lang\LangException;
 use Quantum\Migration\MigrationManager;
-use Quantum\Exceptions\LangException;
 use Quantum\Exceptions\AppException;
 use Quantum\Exceptions\DiException;
 use Quantum\Console\QtCommand;

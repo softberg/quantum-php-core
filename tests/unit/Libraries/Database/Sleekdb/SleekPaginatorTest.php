@@ -2,9 +2,9 @@
 
 namespace Quantum\Tests\Libraries\Database\Sleekdb;
 
-use Quantum\Libraries\Database\PaginatorInterface;
-use Quantum\Libraries\Database\Sleekdb\SleekDbal;
+use Quantum\Libraries\Database\Contracts\PaginatorInterface;
 use Quantum\Libraries\Database\Sleekdb\Paginator;
+use Quantum\Libraries\Database\Sleekdb\SleekDbal;
 use Quantum\Loader\Setup;
 use Quantum\Tests\AppTestCase;
 

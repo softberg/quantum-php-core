@@ -9,16 +9,17 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Di;
 
-use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Exceptions\DiException;
+use ReflectionParameter;
+use ReflectionException;
 use ReflectionFunction;
-use ReflectionClass;
 use ReflectionMethod;
+use ReflectionClass;
 
 /**
  * Di Class
@@ -59,34 +60,18 @@ class Di
      * @param array $additional
      * @return array
      * @throws DiException
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public static function autowire(callable $entry, array $additional = []): array
     {
-        if (is_closure($entry)) {
-            $reflection = new ReflectionFunction($entry);
-        } else {
-            $reflection = new ReflectionMethod(...$entry);
-        }
+        $reflection = is_closure($entry)
+            ? new ReflectionFunction($entry)
+            : new ReflectionMethod(...$entry);
 
         $params = [];
 
         foreach ($reflection->getParameters() as $param) {
-            $type = $param->getType();
-
-            if ($type) {
-                if (self::instantiable($type->getName())) {
-                    $params[] = self::get($type->getName());
-                } else if ($type->getName() == 'array') {
-                    $params[] = $additional;
-                } else {
-                    $params[] = current($additional);
-                    next($additional);
-                }
-            } else {
-                $params[] = current($additional);
-                next($additional);
-            }
+            $params[] = self::resolveParameter($param, $additional);
         }
 
         return $params;
@@ -108,7 +93,7 @@ class Di
      * @param string $dependency
      * @return mixed
      * @throws DiException
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public static function get(string $dependency)
     {
@@ -117,16 +102,19 @@ class Di
         }
 
         if (!isset(self::$container[$dependency])) {
-            self::instantiate($dependency);
+            self::$container[$dependency] = self::instantiate($dependency);
         }
 
         return self::$container[$dependency];
+
     }
 
     /**
      * Instantiates the dependency
      * @param string $dependency
-     * @throws DiException|\ReflectionException
+     * @return mixed
+     * @throws DiException
+     * @throws ReflectionException
      */
     protected static function instantiate(string $dependency)
     {
@@ -138,17 +126,11 @@ class Di
 
         if ($constructor) {
             foreach ($constructor->getParameters() as $param) {
-                $type = $param->getType()->getName();
-
-                if (!$type || !self::instantiable($type)) {
-                    continue;
-                }
-
-                $params[] = self::get($type);
+                $params[] = self::resolveParameter($param);
             }
         }
 
-        self::$container[$dependency] = new $dependency(...$params);
+        return new $dependency(...$params);
     }
 
     /**
@@ -158,13 +140,34 @@ class Di
      */
     protected static function instantiable(string $type): bool
     {
-        if (class_exists($type)) {
-            $reflectionClass = new ReflectionClass($type);
+        return class_exists($type) && (new ReflectionClass($type))->isInstantiable();
+    }
 
-            return $reflectionClass->isInstantiable();
+    /**
+     * @param ReflectionParameter $param
+     * @param array|null $additional
+     * @return array|mixed|null
+     * @throws DiException
+     * @throws ReflectionException
+     */
+    private static function resolveParameter(ReflectionParameter $param, ?array &$additional = [])
+    {
+        $type = $param->getType() ? $param->getType()->getName() : null;
+
+        if ($type && self::instantiable($type)) {
+            return self::get($type);
         }
 
-        return false;
+        if ($type === 'array') {
+            return $additional;
+        }
+
+        if (count($additional)) {
+            return array_shift($additional);
+        }
+
+        return $param->isDefaultValueAvailable() ? $param->getDefaultValue() : null;
+
     }
 
     /**
@@ -173,15 +176,13 @@ class Di
      */
     private static function userDependencies(): array
     {
-        $fs = new FileSystem();
-
         $userDependencies = base_dir() . DS . 'shared' . DS . 'config' . DS . 'dependencies.php';
 
-        if (!$fs->exists($userDependencies)) {
+        if (!file_exists($userDependencies)) {
             return [];
         }
 
-        return (array) require_once $userDependencies;
+        return (array)require_once $userDependencies;
     }
 
     /**
@@ -195,7 +196,6 @@ class Di
             \Quantum\Http\Response::class,
             \Quantum\Loader\Loader::class,
             \Quantum\Factory\ViewFactory::class,
-            \Quantum\Libraries\Mailer\Mailer::class,
             \Quantum\Libraries\Storage\FileSystem::class,
         ];
     }

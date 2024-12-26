@@ -9,18 +9,16 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Http\Request;
 
 use Quantum\Exceptions\HttpException;
-use Quantum\Exceptions\LangException;
 use Quantum\Exceptions\DiException;
 use Quantum\Libraries\Csrf\Csrf;
 use Quantum\Environment\Server;
 use ReflectionException;
-use Quantum\Bootstrap;
 
 /**
  * Class HttpRequest
@@ -63,6 +61,11 @@ abstract class HttpRequest
     private static $__method = null;
 
     /**
+     * @var bool
+     */
+    private static $initialized = false;
+
+    /**
      * Server
      * @var Server
      */
@@ -74,12 +77,11 @@ abstract class HttpRequest
      * @throws DiException
      * @throws HttpException
      * @throws ReflectionException
-     * @throws LangException
      */
     public static function init(Server $server)
     {
-        if (get_caller_class(3) !== Bootstrap::class) {
-            throw HttpException::unexpectedRequestInitialization();
+        if (self::$initialized) {
+            return;
         }
 
         self::$server = $server;
@@ -111,6 +113,8 @@ abstract class HttpRequest
             self::handleFiles($_FILES),
             $files
         );
+
+        self::$initialized = true;
     }
 
     /**
@@ -121,7 +125,6 @@ abstract class HttpRequest
      * @param array|null $files
      * @throws ReflectionException
      * @throws HttpException
-     * @throws LangException
      * @throws DiException
      */
     public static function create(string $method, string $url, array $data = null, array $files = null)
@@ -185,7 +188,6 @@ abstract class HttpRequest
      * Sets the request method
      * @param string $method
      * @throws HttpException
-     * @throws LangException
      */
     public static function setMethod(string $method)
     {

@@ -1,11 +1,27 @@
 <?php
 
+/**
+ * Quantum PHP Framework
+ *
+ * An open source software development framework for PHP
+ *
+ * @package Quantum
+ * @author Arman Ag. <arman.ag@softberg.org>
+ * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
+ * @link http://quantum.softberg.org/
+ * @since 2.9.5
+ */
+
 namespace Quantum\Libraries\Database\Idiorm;
 
+use Quantum\Libraries\Database\Exceptions\DatabaseException;
 use Quantum\Libraries\Database\BasePaginator;
-use Quantum\Exceptions\DatabaseException;
 use IdiormResultSet;
 
+/**
+ * Class Paginator
+ * @package Quantum\Libraries\Database
+ */
 class Paginator extends BasePaginator
 {
 	/**
@@ -26,7 +42,6 @@ class Paginator extends BasePaginator
 	 */
 	public function __construct($idiormDbal, int $perPage, int $page = 1)
 	{
-		/** @var IdiormDbal $idiormDbal */
 		$this->total = $idiormDbal->getOrmModel()->count();
 		$this->dbal = $idiormDbal;
 		$this->dbal->limit($perPage)->offset($perPage * ($page - 1));
@@ -37,35 +52,38 @@ class Paginator extends BasePaginator
 	}
 
 	/**
-	 * @return mixed
+	 * @inheritDoc
 	 */
 	public function firstItem()
 	{
 		if (!is_array($this->data)){
 			$this->data = $this->data->as_array();
 		}
+
 		return $this->data[array_key_first($this->data)];
 	}
 
 	/**
-	 * @return mixed
+	 * @inheritDoc
 	 */
 	public function lastItem()
 	{
 		if (!is_array($this->data)){
 			$this->data = $this->data->as_array();
 		}
+
 		return $this->data[array_key_last($this->data)];
 	}
 
 	/**
-	 * @return array
+	 * @inheritDoc
 	 */
-	public function data()
-	{
+	public function data(): array
+    {
 		if (!empty($this->data) && !is_array($this->data)){
 			$this->data = $this->data->as_array();
 		}
+
 		return $this->data ?? [];
 	}
 }

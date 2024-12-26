@@ -9,17 +9,17 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Libraries\Config;
 
-use Quantum\Exceptions\ConfigException;
 use Quantum\Contracts\StorageInterface;
 use Quantum\Exceptions\DiException;
 use Dflydev\DotAccessData\Data;
 use Quantum\Loader\Loader;
 use Quantum\Loader\Setup;
+use ReflectionException;
 use Quantum\Di\Di;
 
 /**
@@ -31,7 +31,7 @@ class Config implements StorageInterface
 
     /**
      * Configs
-     * @var \Dflydev\DotAccessData\Data|null
+     * @var Data|null
      */
     private static $configs = null;
 
@@ -59,7 +59,7 @@ class Config implements StorageInterface
      * @param Setup $setup
      * @throws ConfigException
      * @throws DiException
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function load(Setup $setup)
     {
@@ -75,7 +75,7 @@ class Config implements StorageInterface
      * @param Setup $setup
      * @throws ConfigException
      * @throws DiException
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function import(Setup $setup)
     {
@@ -109,7 +109,7 @@ class Config implements StorageInterface
 
     /**
      * Get all configs
-     * @return \Dflydev\DotAccessData\Data
+     * @return Data|null
      */
     public function all(): ?Data
     {

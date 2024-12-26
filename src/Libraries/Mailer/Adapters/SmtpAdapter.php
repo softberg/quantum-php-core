@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Libraries\Mailer\Adapters;
@@ -17,6 +17,7 @@ namespace Quantum\Libraries\Mailer\Adapters;
 use Quantum\Libraries\Mailer\MailerInterface;
 use Quantum\Libraries\Mailer\MailTrap;
 use PHPMailer\PHPMailer\PHPMailer;
+use Quantum\Debugger\Debugger;
 use PHPMailer\PHPMailer\SMTP;
 use Exception;
 
@@ -85,7 +86,7 @@ class SmtpAdapter implements MailerInterface
             $this->mailer->SMTPDebug = SMTP::DEBUG_SERVER;
 
             $this->mailer->Debugoutput = function ($message) {
-                $this->updateDebugBar($message);
+                warning($message, ['tab' => Debugger::MAILS]);
             };
         }
     }

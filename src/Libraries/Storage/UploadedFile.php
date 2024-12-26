@@ -9,15 +9,16 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Libraries\Storage;
 
-use Quantum\Exceptions\FileUploadException;
 use Quantum\Exceptions\FileSystemException;
-use Quantum\Exceptions\LangException;
+use Quantum\Exceptions\FileUploadException;
+use Quantum\Libraries\Lang\LangException;
 use Quantum\Exceptions\AppException;
+use Quantum\Exceptions\EnvException;
 use Quantum\Exceptions\DiException;
 use Gumlet\ImageResizeException;
 use ReflectionException;
@@ -225,7 +226,6 @@ class UploadedFile extends SplFileInfo
      * Get image dimensions
      * @return array
      * @throws FileUploadException
-     * @throws LangException
      */
     public function getDimensions(): array
     {
@@ -246,10 +246,11 @@ class UploadedFile extends SplFileInfo
      * @param string $dest
      * @param bool $overwrite
      * @return bool
+     * @throws AppException
      * @throws FileSystemException
      * @throws FileUploadException
      * @throws ImageResizeException
-     * @throws LangException
+     * @throws EnvException
      */
     public function save(string $dest, bool $overwrite = false): bool
     {

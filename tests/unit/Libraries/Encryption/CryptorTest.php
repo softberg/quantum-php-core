@@ -16,8 +16,8 @@ namespace Quantum\Libraries\Encryption {
 
 namespace Quantum\Tests\Libraries\Encryption {
 
+    use Quantum\Libraries\Encryption\CryptorException;
     use Quantum\Libraries\Encryption\Cryptor;
-    use Quantum\Exceptions\CryptorException;
     use Quantum\Tests\AppTestCase;
 
     class CryptorTest extends AppTestCase
