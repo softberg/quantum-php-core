@@ -7,7 +7,7 @@ return '<li class="collection-item avatar">
         <img src="<?php echo base_url() ?>/assets/images/no-image.png" class="circle img-my-post">
     <?php endif; ?>
     <span class="title post-title" title="<?php echo $post[\'title\'] ?>">
-        <a class="teal-text post-title" href="<?php echo base_url(true) . \'/\' . current_lang() . \'/post/\' . $post[\'id\'] ?>">
+        <a class="teal-text post-title" href="<?php echo base_url(true) . \'/\' . current_lang() . \'/post/\' . $post[\'id\'] ?>?ref=my-posts">
             <?php echo $post[\'title\'] ?>
         </a>
     </span>
