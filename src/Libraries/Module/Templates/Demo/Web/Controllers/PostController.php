@@ -94,14 +94,17 @@ class PostController extends BaseController
 
     /**
      * Action - get single post
+     * @param Request $request
      * @param Response $response
      * @param ViewFactory $view
      * @param PostTransformer $transformer
      * @param string|null $lang
      * @param string $postId
      */
-    public function post(Response $response, ViewFactory $view, PostTransformer $transformer, ?string $lang, string $postId)
+    public function post(Request $request, Response $response, ViewFactory $view, PostTransformer $transformer, ?string $lang, string $postId)
     {
+        $ref = $request->get(\'ref\', \'posts\');
+    
         $post = $this->postService->getPost($postId);
         
         if (!$post->asArray()) {
@@ -112,7 +115,8 @@ class PostController extends BaseController
         $view->setParams([
             \'title\' => $post->title . \' | \' . config()->get(\'app_name\'),
             \'langs\' => config()->get(\'langs\'),
-            \'post\' => current(transform([$post], $transformer))
+            \'post\' => current(transform([$post], $transformer)),
+            \'referer\' => $ref,
         ]);
 
         $response->html($view->render(\'post/single\'));
