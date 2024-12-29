@@ -116,6 +116,12 @@ abstract class HttpResponse
      */
     public static function send()
     {
+        $level = ob_get_level();
+
+        for ($i = 0; $i < $level; $i++) {
+            ob_end_clean();
+        }
+
         foreach (self::$__headers as $key => $value) {
             header($key . ': ' . $value);
         }
