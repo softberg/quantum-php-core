@@ -14,7 +14,6 @@
 
 namespace Quantum\Tracer;
 
-use Quantum\Exceptions\StopExecutionException;
 use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Exceptions\ViewException;
 use Quantum\Exceptions\DiException;
@@ -67,11 +66,9 @@ class ErrorHandler
     private $logger;
 
     /**
-     * @var array
+     * @var ErrorHandler|null
      */
-    private $trace = [];
-
-    private static $instance;
+    private static $instance = null;
 
     private function __construct()
     {
@@ -86,7 +83,7 @@ class ErrorHandler
     /**
      * @return ErrorHandler
      */
-    public static function getInstance(): ErrorHandler
+    public static function getInstance(): ?ErrorHandler
     {
         if (self::$instance === null) {
             self::$instance = new self();
@@ -131,27 +128,24 @@ class ErrorHandler
      * @throws RuntimeError
      * @throws SyntaxError
      * @throws ViewException
-     * @throws StopExecutionException
      */
     public function handleException(Throwable $e): void
     {
-        $this->composeStackTrace($e);
-
         $view = ViewFactory::getInstance();
-
         $errorType = $this->getErrorType($e);
 
         if (is_debug_mode()) {
-            Response::html($view->renderPartial('errors' . DS . 'trace', [
-                'stackTrace' => $this->trace,
+            $errorPage = $view->renderPartial('errors' . DS . 'trace', [
+                'stackTrace' => $this->composeStackTrace($e),
                 'errorMessage' => $e->getMessage(),
                 'severity' => ucfirst($errorType),
-            ]));
+            ]);
         } else {
+            $errorPage = $view->renderPartial('errors' . DS . '500');
             $this->logError($e, $errorType);
-            Response::html($view->renderPartial('errors' . DS . '500'));
         }
 
+        Response::html($errorPage);
         Response::send();
     }
 
@@ -162,22 +156,21 @@ class ErrorHandler
      */
     private function logError(Throwable $e, string $errorType): void
     {
-        if (method_exists($this->logger, $errorType)) {
-            $this->logger->$errorType($e->getMessage(), ['trace' => $e->getTraceAsString()]);
-        } else {
-            $this->logger->error($e->getMessage(), ['trace' => $e->getTraceAsString()]);
-        }
+        $logMethod = method_exists($this->logger, $errorType) ? $errorType : 'error';
+
+        $this->logger->$logMethod($e->getMessage(), ['trace' => $e->getTraceAsString()]);
     }
 
     /**
      * Composes the stack trace
      * @param Throwable $e
+     * @return array
      * @throws DiException
      * @throws ReflectionException
      */
-    private function composeStackTrace(Throwable $e)
+    private function composeStackTrace(Throwable $e): array
     {
-        $this->trace[] = [
+        $trace[] = [
             'file' => $e->getFile(),
             'code' => $this->getSourceCode($e->getFile(), $e->getLine(), 'error-line'),
         ];
@@ -188,12 +181,14 @@ class ErrorHandler
             }
 
             if (isset($item['file'])) {
-                $this->trace[] = [
+                $trace[] = [
                     'file' => $item['file'],
                     'code' => $this->getSourceCode($item['file'], $item['line'] ?? 1, 'switch-line'),
                 ];
             }
         }
+
+        return $trace;
     }
 
     /**
@@ -209,18 +204,42 @@ class ErrorHandler
     {
         $fs = Di::get(FileSystem::class);
 
+        $lineNumber--;
+
         $start = max($lineNumber - floor(self::NUM_LINES / 2), 1);
 
         $lines = $fs->getLines($filename, $start, self::NUM_LINES);
 
         $code = '<ol start="' . key($lines) . '">';
+
         foreach ($lines as $currentLineNumber => $line) {
-            $highlight = $currentLineNumber === $lineNumber ? ' class="' . $className . '"' : '';
-            $code .= '<li' . $highlight . '><pre>' . htmlspecialchars($line, ENT_QUOTES) . '</pre></li>';
+            $code .= $this->formatLineItem($currentLineNumber, $line, $lineNumber, $className);
         }
+
         $code .= '</ol>';
 
         return $code;
+    }
+
+    /**
+     * Formats the line item
+     * @param int $currentLineNumber
+     * @param string $line
+     * @param int $lineNumber
+     * @param string $className
+     * @return string
+     */
+    private function formatLineItem(int $currentLineNumber, string $line, int $lineNumber, string $className): string
+    {
+        $highlightClass = $currentLineNumber === $lineNumber ? " class=\"{$className}\"" : '';
+
+        $encodedLine = htmlspecialchars($line, ENT_QUOTES);
+
+        return sprintf(
+            '<li%s><pre>%s</pre></li>',
+            $highlightClass,
+            $encodedLine
+        );
     }
 
     /**
