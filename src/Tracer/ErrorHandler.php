@@ -156,11 +156,9 @@ class ErrorHandler
      */
     private function logError(Throwable $e, string $errorType): void
     {
-        $logData = ['trace' => $e->getTraceAsString()];
-
         $logMethod = method_exists($this->logger, $errorType) ? $errorType : 'error';
 
-        $this->logger->$logMethod($e->getMessage(), $logData);
+        $this->logger->$logMethod($e->getMessage(), ['trace' => $e->getTraceAsString()]);
     }
 
     /**
