@@ -80,7 +80,9 @@ class PostController extends BaseController
         $perPage = $request->get(\'per_page\', self::POSTS_PER_PAGE);
         $currentPage = $request->get(\'page\', self::CURRENT_PAGE);
         
-        $paginatedPosts = $this->postService->getPosts($perPage, $currentPage);
+        $search = trim($request->get(\'q\'));
+        
+        $paginatedPosts = $this->postService->getPosts($perPage, $currentPage, $search);
         
         $view->setParams([
             \'title\' => t(\'common.posts\') . \' | \' . config()->get(\'app_name\'),
