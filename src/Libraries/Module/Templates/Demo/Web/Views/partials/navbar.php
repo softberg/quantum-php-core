@@ -9,6 +9,9 @@ return "<nav class=\"teal accent-4\">
         </span>
         <a href=\"#\" data-target=\"mobile-demo\" class=\"sidenav-trigger\"><i class=\"material-icons\">menu</i></a>
         <ul class=\"right hide-on-med-and-down\">
+            <?php if (route_name() == 'posts') : ?>
+                <?php echo partial('partials/search') ?>
+            <?php endif; ?>
             <li>
                 <a href=\"<?php echo base_url(true) . '/' . current_lang() ?>/posts\" class=\"white-text\">
                     <?php _t('common.posts') ?>

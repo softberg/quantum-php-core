@@ -3,7 +3,7 @@
 return '<?php
 
 return function ($route) {
-    $route->get(\'[:alpha:2]?/posts\', \'PostController\', \'posts\');
+    $route->get(\'[:alpha:2]?/posts\', \'PostController\', \'posts\')->name(\'posts\');
     $route->get(\'[:alpha:2]?/post/[id=:any]\', \'PostController\', \'post\');
 
     $route->post(\'[:alpha:2]?/signin\', \'AuthController\', \'signin\');

@@ -1,6 +1,9 @@
 <?php
 
 return "<ul class=\"sidenav\" id=\"mobile-demo\">
+    <?php if (route_name() == 'posts') : ?>
+        <?php echo partial('partials/search') ?>
+    <?php endif; ?>
     <li>
         <a href=\"<?php echo base_url(true) . '/' . current_lang() ?>\">
             <i class=\"material-icons left\">home</i><?php _t('common.home') ?>
