@@ -6,7 +6,7 @@ return function ($route) {
     $route->get(\'[:alpha:2]?\', \'PageController\', \'home\')->name(\'home\');
     $route->get(\'[:alpha:2]?/about\', \'PageController\', \'about\')->name(\'about\');
 
-    $route->get(\'[:alpha:2]?/posts\', \'PostController\', \'posts\');
+    $route->get(\'[:alpha:2]?/posts\', \'PostController\', \'posts\')->name(\'posts\');
     $route->get(\'[:alpha:2]?/post/[id=:any]\', \'PostController\', \'post\');
 
     $route->group(\'guest\', function ($route) {
