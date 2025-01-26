@@ -12,15 +12,15 @@
  * @since 2.9.5
  */
 
-namespace Quantum\Libraries\Cache;
+namespace Quantum\Libraries\Cache\Exceptions;
 
-use Quantum\Exceptions\AppException;
+use Quantum\Exceptions\BaseException;
 
 /**
  * Class CacheException
  * @package Quantum\Libraries\Cache
  */
-class CacheException extends AppException
+class CacheException extends BaseException
 {
     /**
      * @param string $name

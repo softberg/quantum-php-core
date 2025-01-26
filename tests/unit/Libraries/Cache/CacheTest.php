@@ -2,8 +2,8 @@
 
 namespace Quantum\Tests\Libraries\Cache;
 
+use Quantum\Libraries\Cache\Exceptions\CacheException;
 use Quantum\Libraries\Cache\Adapters\FileAdapter;
-use Quantum\Libraries\Cache\CacheException;
 use Psr\SimpleCache\CacheInterface;
 use Quantum\Libraries\Cache\Cache;
 use Quantum\Tests\AppTestCase;
@@ -16,7 +16,7 @@ class CacheTest extends AppTestCase
         parent::setUp();
     }
 
-    public function testCacheAdapter()
+    public function testCacheGetAdapter()
     {
         $params = [
             'prefix' => 'test',
@@ -31,7 +31,7 @@ class CacheTest extends AppTestCase
         $this->assertInstanceOf(CacheInterface::class, $cache->getAdapter());
     }
 
-    public function testAdapterMethodCall()
+    public function testCacheCallingValidMethod()
     {
         $params = [
             'prefix' => 'test',
@@ -44,12 +44,22 @@ class CacheTest extends AppTestCase
         $this->assertFalse($cache->has('test'));
 
         $this->assertNull($cache->get('test'));
+    }
+
+    public function testCacheCallingInvalidMethod()
+    {
+        $params = [
+            'prefix' => 'test',
+            'path' => base_dir() . DS . 'cache' . DS . 'data',
+            'ttl' => 60
+        ];
+
+        $cache = new Cache(new FileAdapter($params));
 
         $this->expectException(CacheException::class);
 
-        $this->expectExceptionMessage('exception.not_supported_method');
+        $this->expectExceptionMessage('The method `callingInvalidMethod` is not supported for `' . FileAdapter::class . '`');
 
-        $cache->callingSomeMethod();
+        $cache->callingInvalidMethod();
     }
-
 }

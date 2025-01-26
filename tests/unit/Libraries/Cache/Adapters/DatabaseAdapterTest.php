@@ -2,15 +2,12 @@
 
 namespace Quantum\Tests\Libraries\Cache\Adapters;
 
+use Quantum\Libraries\Database\Adapters\Sleekdb\SleekDbal;
 use Quantum\Libraries\Cache\Adapters\DatabaseAdapter;
-use Quantum\Libraries\Database\Sleekdb\SleekDbal;
 use Quantum\Tests\AppTestCase;
 use Quantum\Loader\Setup;
 
-/**
- *  @runTestsInSeparateProcesses
- */
-class DatabaseAdaptereTest extends AppTestCase
+class DatabaseAdapterTest extends AppTestCase
 {
 
     private $databaseCache;
@@ -61,7 +58,7 @@ class DatabaseAdaptereTest extends AppTestCase
         $this->assertNull($this->databaseCache->get('test'));
     }
 
-    public function testDatabaseAdaptereHas()
+    public function testDatabaseAdapterHas()
     {
         $this->assertFalse($this->databaseCache->has('test'));
 
