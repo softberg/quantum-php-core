@@ -9,16 +9,17 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.7.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Console\Commands;
 
+use Quantum\Di\Exceptions\DiException;
 use Quantum\Console\QtCommand;
 
 /**
  * Class ServeCommand
- * @package Shared\Commands
+ * @package Quantum\Console
  */
 class ServeCommand extends QtCommand
 {
@@ -79,7 +80,7 @@ class ServeCommand extends QtCommand
 
     /**
      * Executes the command
-     * @throws \Quantum\Exceptions\DiException
+     * @throws DiException
      */
     public function exec()
     {
@@ -174,4 +175,3 @@ class ServeCommand extends QtCommand
         return $port + $this->portOffset;
     }
 }
-

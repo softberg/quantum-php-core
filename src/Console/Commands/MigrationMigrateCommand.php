@@ -15,18 +15,18 @@
 namespace Quantum\Console\Commands;
 
 use Quantum\Libraries\Database\Exceptions\DatabaseException;
-use Quantum\Libraries\Config\ConfigException;
-use Quantum\Exceptions\MigrationException;
-use Quantum\Libraries\Lang\LangException;
+use Quantum\Libraries\Config\Exceptions\ConfigException;
+use Quantum\Libraries\Lang\Exceptions\LangException;
+use Quantum\Migration\Exceptions\MigrationException;
 use Quantum\Migration\MigrationManager;
-use Quantum\Exceptions\AppException;
-use Quantum\Exceptions\DiException;
+use Quantum\Di\Exceptions\DiException;
+use Quantum\Exceptions\BaseException;
 use Quantum\Console\QtCommand;
 use ReflectionException;
 
 /**
  * Class MigrationMigrateCommand
- * @package Quantum\Console\Command
+ * @package Quantum\Console
  */
 class MigrationMigrateCommand extends QtCommand
 {
@@ -61,7 +61,7 @@ class MigrationMigrateCommand extends QtCommand
 
     /**
      * Executes the command
-     * @throws AppException
+     * @throws BaseException
      * @throws ConfigException
      * @throws DatabaseException
      * @throws DiException

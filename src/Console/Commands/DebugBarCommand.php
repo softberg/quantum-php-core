@@ -14,16 +14,15 @@
 
 namespace Quantum\Console\Commands;
 
+use Quantum\Libraries\Storage\Factories\FileSystemFactory;
+use Quantum\Libraries\Lang\Exceptions\LangException;
 use Quantum\Libraries\Storage\FileSystem;
-use Quantum\Libraries\Lang\LangException;
-use Quantum\Exceptions\DiException;
+use Quantum\Exceptions\BaseException;
 use Quantum\Console\QtCommand;
-use ReflectionException;
-use Quantum\Di\Di;
 
 /**
  * Class DebugBarAssetsCommand
- * @package Quantum\Console\Commands
+ * @package Quantum\Console
  */
 class DebugBarCommand extends QtCommand
 {
@@ -66,12 +65,11 @@ class DebugBarCommand extends QtCommand
     /**
      * Executes the command and publishes the debug bar assets
      * @throws LangException
-     * @throws DiException
-     * @throws ReflectionException
+     * @throws BaseException
      */
     public function exec()
     {
-        $this->fs = Di::get(FileSystem::class);
+        $this->fs = FileSystemFactory::get();
 
         if ($this->fs->exists(assets_dir() . DS . 'DebugBar' . DS . 'Resources' . DS . 'debugbar.css')) {
             $this->error('The debug ber already installed');

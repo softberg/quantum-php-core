@@ -12,7 +12,7 @@
  * @since 2.6.0
  */
 
-namespace Quantum\Console;
+namespace Quantum\Console\Contracts;
 
 /**
  * Interface CommandInterface
