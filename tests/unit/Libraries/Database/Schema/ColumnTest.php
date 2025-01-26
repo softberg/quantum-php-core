@@ -2,9 +2,9 @@
 
 namespace Quantum\Tests\Libraries\Database\Schema;
 
+use Quantum\Libraries\Database\Constants\Type;
+use Quantum\Libraries\Database\Schemas\Column;
 use PHPUnit\Framework\TestCase;
-use Quantum\Libraries\Database\Schema\Column;
-use Quantum\Libraries\Database\Schema\Type;
 
 class ColumnTest extends TestCase
 {
@@ -170,5 +170,4 @@ class ColumnTest extends TestCase
 
         $this->assertEquals('prev', $column->get(Column::AFTER));
     }
-
 }

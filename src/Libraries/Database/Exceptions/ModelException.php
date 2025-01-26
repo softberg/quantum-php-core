@@ -14,13 +14,13 @@
 
 namespace Quantum\Libraries\Database\Exceptions;
 
-use Quantum\Exceptions\AppException;
+use Quantum\Exceptions\BaseException;
 
 /**
  * Class ModelException
  * @package Quantum\Libraries\Module
  */
-class ModelException extends AppException
+class ModelException extends BaseException
 {
     /**
      * @param string $name
@@ -76,5 +76,4 @@ class ModelException extends AppException
     {
         return new static(t('exception.wrong_relation', [$modelName, $tableName]), E_ERROR);
     }
-
 }

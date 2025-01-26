@@ -2,11 +2,11 @@
 
 namespace Quantum\Tests\Libraries\Database\Schema;
 
+use Quantum\Libraries\Database\Constants\Type;
+use Quantum\Libraries\Database\Schemas\Column;
+use Quantum\Libraries\Database\Constants\Key;
+use Quantum\Libraries\Database\Schemas\Table;
 use PHPUnit\Framework\TestCase;
-use Quantum\Libraries\Database\Schema\Column;
-use Quantum\Libraries\Database\Schema\Table;
-use Quantum\Libraries\Database\Schema\Type;
-use Quantum\Libraries\Database\Schema\Key;
 use Mockery;
 
 /**
@@ -186,5 +186,4 @@ class TableTest extends TestCase
 
         $this->assertEquals($expectedSql, $table->getSql());
     }
-
 }
