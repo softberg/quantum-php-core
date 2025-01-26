@@ -12,7 +12,9 @@
  * @since 2.9.5
  */
 
-namespace Quantum\Exceptions;
+namespace Quantum\Migration\Exceptions;
+
+use Quantum\Exceptions\BaseException;
 
 /**
  * MigrationException class
@@ -20,8 +22,9 @@ namespace Quantum\Exceptions;
  * @package Quantum
  * @category Exceptions
  */
-class MigrationException extends AppException
+class MigrationException extends BaseException
 {
+
     /**
      * @return MigrationException
      */
@@ -37,24 +40,6 @@ class MigrationException extends AppException
     public static function unsupportedAction(string $action): MigrationException
     {
         return new static(t('exception.non_supported_action', $action), E_ERROR);
-    }
-
-    /**
-     * @param string $name
-     * @return MigrationException
-     */
-    public static function tableAlreadyExists(string $name): MigrationException
-    {
-        return new static(t('exception.table_already_exists', $name), E_ERROR);
-    }
-
-    /**
-     * @param string $name
-     * @return MigrationException
-     */
-    public static function tableDoesnotExists(string $name): MigrationException
-    {
-        return new static(t('exception.table_does_not_exists', $name), E_ERROR);
     }
 
     /**
@@ -82,5 +67,4 @@ class MigrationException extends AppException
     {
         return new static(t('exception.nothing_to_migrate'), E_NOTICE);
     }
-
 }

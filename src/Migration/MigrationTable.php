@@ -9,14 +9,14 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Migration;
 
-use Quantum\Libraries\Database\Schema\Type;
-use Quantum\Exceptions\MigrationException;
-use Quantum\Factory\TableFactory;
+use Quantum\Libraries\Database\Exceptions\DatabaseException;
+use Quantum\Libraries\Database\Factories\TableFactory;
+use Quantum\Libraries\Database\Constants\Type;
 
 /**
  * Class MigrationTable
@@ -33,6 +33,8 @@ class MigrationTable extends QtMigration
     /**
      * Creates the migrations table
      * @param TableFactory|null $tableFactory
+     * @return void
+     * @throws DatabaseException
      */
     public function up(?TableFactory $tableFactory)
     {
@@ -45,11 +47,11 @@ class MigrationTable extends QtMigration
     /**
      * Drops the migrations table
      * @param TableFactory|null $tableFactory
-     * @throws MigrationException
+     * @return void
+     * @throws DatabaseException
      */
     public function down(?TableFactory $tableFactory)
     {
         $tableFactory->drop(self::TABLE);
     }
-
 }

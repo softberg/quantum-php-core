@@ -9,10 +9,10 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.7.0
+ * @since 2.9.5
  */
 
-namespace Quantum\Migration;
+namespace Quantum\Migration\Templates;
 
 /**
  * Class MigrationTable
@@ -27,14 +27,11 @@ class MigrationTemplate
      * @param string $tableName
      * @return string
      */
-    public static function create($className, $tableName)
+    public static function create(string $className, string $tableName): string
     {
         return '<?php
 
-use Quantum\Migration\QtMigration;
-use Quantum\Factory\TableFactory;
-use Quantum\Libraries\Database\Schema\Type;
-use Quantum\Libraries\Database\Schema\Key;
+use Quantum\Libraries\Database\Factories\TableFactory;
 
 
 class ' . ucfirst($className) . ' extends QtMigration
@@ -60,14 +57,11 @@ class ' . ucfirst($className) . ' extends QtMigration
      * @param string $tableName
      * @return string
      */
-    public static function alter($className, $tableName)
+    public static function alter(string $className, string $tableName): string
     {
         return '<?php
 
-use Quantum\Migration\QtMigration;
-use Quantum\Factory\TableFactory;
-use Quantum\Libraries\Database\Schema\Type;
-use Quantum\Libraries\Database\Schema\Key;
+use Quantum\Libraries\Database\Factories\TableFactory;
 
 class ' . ucfirst($className) . ' extends QtMigration
 {
@@ -92,12 +86,11 @@ class ' . ucfirst($className) . ' extends QtMigration
      * @param string $tableName
      * @return string
      */
-    public static function rename($className, $tableName)
+    public static function rename(string $className, string $tableName): string
     {
         return '<?php
 
-use Quantum\Migration\QtMigration;
-use Quantum\Factory\TableFactory;
+use Quantum\Libraries\Database\Factories\TableFactory;
 
 class ' . ucfirst($className) . ' extends QtMigration
 {
@@ -122,12 +115,11 @@ class ' . ucfirst($className) . ' extends QtMigration
      * @param string $tableName
      * @return string
      */
-    public static function drop($className, $tableName)
+    public static function drop(string $className, string $tableName): string
     {
         return '<?php
 
-use Quantum\Migration\QtMigration;
-use Quantum\Factory\TableFactory;
+use Quantum\Libraries\Database\Factories\TableFactory;
 
 class ' . ucfirst($className) . ' extends QtMigration
 {
@@ -145,5 +137,4 @@ class ' . ucfirst($className) . ' extends QtMigration
        
         ';
     }
-
 }
