@@ -2,12 +2,12 @@
 
 namespace Quantum\Tests\Libraries\Captcha\Adapters;
 
-
+use Quantum\Libraries\Captcha\Contracts\CaptchaInterface;
 use Quantum\Libraries\Captcha\Adapters\RecaptchaAdapter;
-use Quantum\Libraries\Captcha\CaptchaInterface;
+use Quantum\Libraries\HttpClient\HttpClient;
 use Quantum\Libraries\Asset\AssetManager;
-use Quantum\Libraries\Curl\HttpClient;
 use Quantum\Tests\AppTestCase;
+use Exception;
 use Mockery;
 
 class RecaptchaAdapterTest extends AppTestCase
@@ -27,13 +27,12 @@ class RecaptchaAdapterTest extends AppTestCase
 
         $this->httpClientMock = Mockery::mock(HttpClient::class);
 
-        $this->adapter = RecaptchaAdapter::getInstance(config()->get('captcha.recaptcha'), $this->httpClientMock);
+        $this->adapter = new RecaptchaAdapter(config()->get('captcha.recaptcha'), $this->httpClientMock);
     }
 
     public function tearDown(): void
     {
         AssetManager::getInstance()->flush();
-        RecaptchaAdapter::resetInstance();
         Mockery::close();
     }
 
@@ -56,7 +55,7 @@ class RecaptchaAdapterTest extends AppTestCase
 
         $this->assertEquals(CaptchaInterface::CAPTCHA_INVISIBLE, $this->adapter->getType());
 
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
 
         $this->expectExceptionMessage('Provided captcha type is not valid');
 
@@ -150,5 +149,4 @@ class RecaptchaAdapterTest extends AppTestCase
 
         $this->assertEquals('invalid-input-response', $this->adapter->getErrorMessage());
     }
-
 }

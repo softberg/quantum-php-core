@@ -1,13 +1,38 @@
 <?php
 
-namespace Quantum\Libraries\Captcha;
+/**
+ * Quantum PHP Framework
+ *
+ * An open source software development framework for PHP
+ *
+ * @package Quantum
+ * @author Arman Ag. <arman.ag@softberg.org>
+ * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
+ * @link http://quantum.softberg.org/
+ * @since 2.9.5
+ */
 
+namespace Quantum\Libraries\Captcha\Contracts;
+
+/**
+ * Interface CaptchaInterface
+ * @package Quantum\Libraries\Captcha
+ */
 interface CaptchaInterface
 {
+    /**
+     * Max time difference
+     */
     const MAX_TIME_DIFF = 60;
 
+    /**
+     * Captcha visible
+     */
     const CAPTCHA_VISIBLE = 'visible';
 
+    /**
+     * Captcha invisible
+     */
     const CAPTCHA_INVISIBLE = 'invisible';
 
     /**

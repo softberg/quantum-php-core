@@ -12,20 +12,24 @@
  * @since 2.9.5
  */
 
-namespace Quantum\Libraries\Captcha\Adapters;
+namespace Quantum\Libraries\Captcha\Traits;
 
-use Quantum\Libraries\Captcha\CaptchaInterface;
-use Quantum\Libraries\Asset\AssetException;
-use Quantum\Libraries\Lang\LangException;
+use Quantum\Libraries\Captcha\Contracts\CaptchaInterface;
+use Quantum\Libraries\Asset\Exceptions\AssetException;
+use Quantum\Libraries\Lang\Exceptions\LangException;
+use Quantum\Libraries\HttpClient\HttpClient;
+use Quantum\Http\Exceptions\HttpException;
 use Quantum\Libraries\Asset\AssetManager;
-use Quantum\Libraries\Curl\HttpClient;
-use Quantum\Exceptions\HttpException;
-use Quantum\Exceptions\AppException;
+use Quantum\Exceptions\BaseException;
 use Quantum\Libraries\Asset\Asset;
 use ErrorException;
 use Exception;
 
-abstract class BaseCaptcha implements CaptchaInterface
+/**
+ * Trait CaptchaTrait
+ * @package Quantum\Libraries\Captcha
+ */
+trait CaptchaTrait
 {
 
     /**
@@ -118,7 +122,7 @@ abstract class BaseCaptcha implements CaptchaInterface
      * @return bool
      * @throws LangException
      * @throws ErrorException
-     * @throws AppException
+     * @throws BaseException
      * @throws HttpException
      * @throws Exception
      */
@@ -255,5 +259,4 @@ abstract class BaseCaptcha implements CaptchaInterface
 
         return false;
     }
-
 }

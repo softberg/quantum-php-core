@@ -12,22 +12,15 @@
  * @since 2.9.5
  */
 
-namespace Quantum\Libraries\Captcha;
+namespace Quantum\Libraries\Captcha\Exceptions;
 
-use Quantum\Exceptions\AppException;
+use Quantum\Exceptions\BaseException;
 
 /**
  * Class CacheException
  * @package Quantum\Libraries\Captcha
  */
-class CaptchaException extends AppException
+class CaptchaException extends BaseException
 {
-    /**
-     * @param string $name
-     * @return CaptchaException
-     */
-    public static function unsupportedAdapter(string $name): CaptchaException
-    {
-        return new static(t('exception.not_supported_adapter', $name));
-    }
+
 }
