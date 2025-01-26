@@ -1,11 +1,10 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Curl;
+namespace Quantum\Tests\Libraries\HttpClient;
 
-use Quantum\Exceptions\HttpException;
-use Quantum\Libraries\Curl\HttpClient;
+use Quantum\Libraries\HttpClient\Exceptions\HttpClientException;
+use Quantum\Libraries\HttpClient\HttpClient;
 use Quantum\Tests\AppTestCase;
-
 
 class HttpClientTest extends AppTestCase
 {
@@ -27,7 +26,7 @@ class HttpClientTest extends AppTestCase
 
         $this->assertEquals('POST', $this->httpClient->getMethod());
 
-        $this->expectException(HttpException::class);
+        $this->expectException(HttpClientException::class);
 
         $this->expectExceptionMessage('exception.method_not_available');
 
@@ -276,5 +275,4 @@ class HttpClientTest extends AppTestCase
 
         $this->assertEquals('https://reqres.in/api/users', $this->httpClient->url());
     }
-
 }
