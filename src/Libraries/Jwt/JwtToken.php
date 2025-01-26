@@ -9,20 +9,21 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.5
  */
 
-namespace Quantum\Libraries\JWToken;
+namespace Quantum\Libraries\Jwt;
 
+use Quantum\Libraries\Jwt\Exceptions\JwtException;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
 /**
- * Class JWToken
- * @package Quantum\Libraries\JWToken
+ * Class JwtToken
+ * @package Quantum\Libraries\JwtToken
  * @uses JWT
  */
-class JWToken extends JWT
+class JwtToken extends JWT
 {
 
     /**
@@ -49,7 +50,7 @@ class JWToken extends JWT
     private $fetchedPayload = null;
 
     /**
-     * JWToken constructor.
+     * JwtToken constructor.
      * @param mixed $key
      */
     public function __construct(string $key = null)
@@ -61,7 +62,7 @@ class JWToken extends JWT
      * Sets extra leeway time
      * @return $this
      */
-    public function setLeeway($leeway): JWToken
+    public function setLeeway($leeway): JwtToken
     {
         parent::$leeway = $leeway;
         return $this;
@@ -72,7 +73,7 @@ class JWToken extends JWT
      * @param string $algorithm
      * @return $this
      */
-    public function setAlgorithm(string $algorithm): JWToken
+    public function setAlgorithm(string $algorithm): JwtToken
     {
         $this->algorithm = $algorithm;
         return $this;
@@ -84,7 +85,7 @@ class JWToken extends JWT
      * @param mixed $value
      * @return $this
      */
-    public function setClaim(string $key, $value): JWToken
+    public function setClaim(string $key, $value): JwtToken
     {
         $this->payload[$key] = $value;
         return $this;
@@ -95,7 +96,7 @@ class JWToken extends JWT
      * @param array $claims
      * @return $this
      */
-    public function setClaims(array $claims): JWToken
+    public function setClaims(array $claims): JwtToken
     {
         foreach ($claims as $key => $value) {
             $this->payload[$key] = $value;
@@ -109,7 +110,7 @@ class JWToken extends JWT
      * @param array $data
      * @return $this
      */
-    public function setData(array $data): JWToken
+    public function setData(array $data): JwtToken
     {
         $this->payload['data'] = $data;
         return $this;
@@ -120,12 +121,12 @@ class JWToken extends JWT
      * @param mixed|null $keyId
      * @param array|null $head
      * @return string
-     * @throws JWTException
+     * @throws JwtException
      */
     public function compose($keyId = null, array $head = null): string
     {
         if (empty($this->payload)) {
-            throw JWTException::payloadNotFound();
+            throw JwtException::payloadNotFound();
         }
 
         return parent::encode($this->payload, $this->key, $this->algorithm, $keyId, $head);
@@ -136,7 +137,7 @@ class JWToken extends JWT
      * @param string $jwt
      * @return $this
      */
-    public function retrieve(string $jwt): JWToken
+    public function retrieve(string $jwt): JwtToken
     {
         $this->fetchedPayload = parent::decode($jwt, new Key($this->key, $this->algorithm));
         return $this;
@@ -169,5 +170,4 @@ class JWToken extends JWT
     {
         return $this->fetchedPayload->$key ?? null;
     }
-
 }

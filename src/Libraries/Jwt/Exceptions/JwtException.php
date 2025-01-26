@@ -12,20 +12,20 @@
  * @since 2.9.5
  */
 
-namespace Quantum\Libraries\JWToken;
+namespace Quantum\Libraries\Jwt\Exceptions;
 
-use Quantum\Exceptions\AppException;
+use Quantum\Exceptions\BaseException;
 
 /**
- * Class JWTException
- * @package Quantum\Libraries\JWToken
+ * Class JwtException
+ * @package Quantum\Libraries\JwtToken
  */
-class JWTException extends AppException
+class JwtException extends BaseException
 {
     /**
-     * @return JWTException
+     * @return JwtException
      */
-    public static function payloadNotFound(): JWTException
+    public static function payloadNotFound(): JwtException
     {
         return new static(t('exception.jwt_payload_not_found'), E_WARNING);
     }
