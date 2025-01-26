@@ -12,13 +12,15 @@
  * @since 2.9.5
  */
 
-namespace Quantum\Exceptions;
+namespace Quantum\Router\Exceptions;
+
+use Quantum\Exceptions\BaseException;
 
 /**
  * Class RouteException
  * @package Quantum\Exceptions
  */
-class RouteException extends AppException
+class RouteException extends BaseException
 {
     /**
      * @return RouteException
@@ -102,5 +104,4 @@ class RouteException extends AppException
     {
         return new static(t('exception.param_name_not_valid'), E_WARNING);
     }
-
 }

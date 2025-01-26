@@ -3,11 +3,11 @@
 namespace Quantum\Tests\Router;
 
 use Quantum\Exceptions\StopExecutionException;
-use Quantum\Exceptions\RouteException;
+use Quantum\Router\Exceptions\RouteException;
 use Quantum\Tests\AppTestCase;
 use Quantum\Http\Response;
-use Quantum\Router\Router;
 use Quantum\Http\Request;
+use Quantum\Router\Router;
 
 class RouterTest extends AppTestCase
 {
@@ -23,7 +23,7 @@ class RouterTest extends AppTestCase
 
         $this->request = new Request();
 
-        $this->router = new Router($this->request, new Response());
+        $this->router = new Router($this->request);
 
         $reflectionClass = new \ReflectionClass(Router::class);
 
@@ -197,7 +197,7 @@ class RouterTest extends AppTestCase
 
         $request = new Request();
 
-        $router = new Router($request, new Response());
+        $router = new Router($request);
 
         $request->create('POST', 'http://testdomain.com/api-task');
 
@@ -295,5 +295,4 @@ class RouterTest extends AppTestCase
 
         $this->router->findRoute();
     }
-
 }

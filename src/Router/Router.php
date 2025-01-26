@@ -14,17 +14,14 @@
 
 namespace Quantum\Router;
 
-use Quantum\Libraries\ResourceCache\ViewCache;
-use Quantum\Libraries\Config\ConfigException;
+use Quantum\Libraries\Config\Exceptions\ConfigException;
+use Quantum\Renderer\Exceptions\RendererException;
 use Quantum\Exceptions\StopExecutionException;
-use Quantum\Exceptions\RouteException;
-use Quantum\Exceptions\ViewException;
-use Quantum\Exceptions\DiException;
-use Quantum\Logger\LoggerException;
+use Quantum\Libraries\ResourceCache\ViewCache;
+use Quantum\Router\Exceptions\RouteException;
+use Quantum\Di\Exceptions\DiException;
+use Quantum\Exceptions\BaseException;
 use Quantum\Debugger\Debugger;
-use Twig\Error\RuntimeError;
-use Twig\Error\SyntaxError;
-use Twig\Error\LoaderError;
 use Quantum\Http\Request;
 use ReflectionException;
 
@@ -53,12 +50,6 @@ class Router extends RouteController
     private $request;
 
     /**
-     * List of routes
-     * @var array
-     */
-    protected static $routes = [];
-
-    /**
      * matched routes
      * @var array
      */
@@ -75,16 +66,13 @@ class Router extends RouteController
 
     /**
      * Finds the current route
+     * @throws ConfigException
      * @throws DiException
-     * @throws LoaderError
      * @throws ReflectionException
      * @throws RouteException
-     * @throws RuntimeError
      * @throws StopExecutionException
-     * @throws SyntaxError
-     * @throws ViewException
-     * @throws ConfigException
-     * @throws LoggerException
+     * @throws BaseException
+     * @throws RendererException
      */
     public function findRoute()
     {

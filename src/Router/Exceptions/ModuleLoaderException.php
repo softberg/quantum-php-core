@@ -12,7 +12,7 @@
  * @since 2.9.5
  */
 
-namespace Quantum\Router;
+namespace Quantum\Router\Exceptions;
 
 /**
  * Class ModuleLoaderException
