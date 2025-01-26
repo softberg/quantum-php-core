@@ -82,7 +82,7 @@ class ErrorHandler
     /**
      * @return ErrorHandler
      */
-    public static function getInstance(): ?ErrorHandler
+    public static function getInstance(): ErrorHandler
     {
         if (self::$instance === null) {
             self::$instance = new self();

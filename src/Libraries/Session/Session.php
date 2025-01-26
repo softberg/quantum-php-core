@@ -21,6 +21,10 @@ use Quantum\Exceptions\BaseException;
 /**
  * Class Session
  * @package Quantum\Libraries\Session
+ * @method array all()
+ * @method bool has(string $key)
+ * @method mixed|null get(string $key)
+ * @method void delete(string $key)
  */
 class Session
 {
