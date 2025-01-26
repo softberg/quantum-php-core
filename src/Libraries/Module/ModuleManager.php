@@ -14,10 +14,9 @@
 
 namespace Quantum\Libraries\Module;
 
-use Quantum\Libraries\Storage\FileSystem;
-use Quantum\Exceptions\DiException;
+use Quantum\Libraries\Storage\Factories\FileSystemFactory;
+use Quantum\Di\Exceptions\DiException;
 use ReflectionException;
-use Quantum\Di\Di;
 use Exception;
 
 class ModuleManager
@@ -81,7 +80,7 @@ class ModuleManager
 
         $this->modulePath = modules_dir() . DS . self::$moduleName;
 
-        $this->fs = Di::get(FileSystem::class);
+        $this->fs = FileSystemFactory::get();
     }
 
     /**
