@@ -2,47 +2,59 @@
 
 namespace Quantum\Tests;
 
-use Quantum\Libraries\Storage\FileSystem;
-use Quantum\Libraries\Lang\Lang;
+use Quantum\Libraries\Storage\Factories\FileSystemFactory;
+use Quantum\App\Factories\AppFactory;
+use Quantum\Environment\Environment;
+use Quantum\Libraries\Config\Config;
 use PHPUnit\Framework\TestCase;
 use Quantum\Loader\Setup;
-use Quantum\Di\Di;
-use Quantum\App;
+use Quantum\App\App;
+use ReflectionClass;
 
 abstract class AppTestCase extends TestCase
 {
 
+    protected $fs;
+
     public function setUp(): void
     {
-        App::setBaseDir(__DIR__ . DS . '_root');
+        AppFactory::create(App::WEB, __DIR__ . DS . '_root');
 
-        App::loadCoreFunctions(dirname(__DIR__, 2) . DS . 'src' . DS . 'Helpers');
+        $this->fs = FileSystemFactory::get();
 
-        Di::loadDefinitions();
+        Config::getInstance()->flush();
 
-        config()->flush();
+        if (!$this->fs->exists(App::getBaseDir() . DS . '.env.testing')) {
+            $this->fs->copy(
+                App::getBaseDir() . DS . '.env.example',
+                App::getBaseDir() . DS . '.env.testing'
+            );
+        }
 
-        putenv('APP_KEY=' . uniqid());
+        Environment::getInstance()
+            ->setMutable(true)
+            ->load(new Setup('config', 'env'));
 
-        config()->load(new Setup('config', 'config', true));
+        Config::getInstance()->load(new Setup('config', 'config', true));
+    }
 
-        Lang::getInstance()->setLang('en')->load();
+    protected function setPrivateProperty($object, $property, $value): void
+    {
+        $reflection = new ReflectionClass($object);
+        $property = $reflection->getProperty($property);
+        $property->setAccessible(true);
+        $property->setValue($value);
     }
 
     protected function createFile(string $filePath, string $content)
     {
-        $fs = Di::get(FileSystem::class);
-
-        $fs->put($filePath, $content);
+        $this->fs->put($filePath, $content);
     }
 
     protected function removeFile(string $filePath)
     {
-        $fs = Di::get(FileSystem::class);
-
-        if($fs->exists($filePath)) {
-            $fs->remove($filePath);
+        if ($this->fs->exists($filePath)) {
+            $this->fs->remove($filePath);
         }
     }
-
 }

@@ -2,10 +2,9 @@
 
 namespace Quantum\Tests\Environment;
 
-use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Environment\Environment;
 use Quantum\Tests\AppTestCase;
-use Quantum\Loader\Setup;
+use Quantum\App\App;
 
 class EnvironmentTest extends AppTestCase
 {
@@ -16,37 +15,51 @@ class EnvironmentTest extends AppTestCase
     {
         parent::setUp();
 
-        $fs = new FileSystem();
-
-        $fs->put(base_dir() . DS . '.env.staging', "DEBUG=TRUE\nAPP_KEY=AB1234567890\n");
-
-        $this->env = Environment::getInstance()->load(new Setup('config', 'env'));
+        $this->env = Environment::getInstance();
     }
 
-    public function testEnvLoadAndGetValue()
+    public function testEnvironmentGetAppEnv()
+    {
+        $this->assertEquals('testing', $this->env->getAppEnv());
+    }
+
+    public function testEnvironmentGetValue()
     {
         $this->assertNull($this->env->getValue('NON_EXISTING_KEY'));
 
         $this->assertNotNull($this->env->getValue('APP_KEY'));
 
-        $this->assertEquals('AB1234567890', $this->env->getValue('APP_KEY'));
-
         $this->assertEquals('TRUE', $this->env->getValue('DEBUG'));
+
+        $this->assertEquals('XYZ1234567890', $this->env->getValue('APP_KEY'));
     }
 
-    public function testEnvUpdateRow()
+    public function testEnvironmentHasKey()
     {
-        $this->assertEquals('AB1234567890', $this->env->getValue('APP_KEY'));
+        $this->assertTrue($this->env->hasKey('APP_KEY'));
 
-        $this->env->updateRow('APP_KEY', 'ZX1234567890');
-
-        $this->assertEquals('ZX1234567890', $this->env->getValue('APP_KEY'));
-
-        $this->assertNull($this->env->getValue('NON_YET_EXISTING_KEY'));
-
-        $this->env->updateRow('NON_YET_EXISTING_KEY', 'Something');
-
-        $this->assertEquals('Something', $this->env->getValue('NON_YET_EXISTING_KEY'));
+        $this->assertFalse($this->env->hasKey('NON_EXISTING_KEY'));
     }
 
+    public function testEnvironmentGetRow()
+    {
+        $this->assertNull($this->env->getRow('NON_EXISTING_KEY'));
+
+        $this->assertEquals('APP_KEY=XYZ1234567890', $this->env->getRow('APP_KEY'));
+    }
+
+    public function testEnvironmentAddAndUpdateRow()
+    {
+        $this->assertNull($this->env->getValue('SOMETHING'));
+
+        $this->env->updateRow('SOMETHING', 'Something');
+
+        $this->assertEquals('Something', $this->env->getValue('SOMETHING'));
+
+        $this->env->updateRow('SOMETHING', 'Something_else');
+
+        $this->assertEquals('Something_else', $this->env->getValue('SOMETHING'));
+
+        $this->fs->remove(App::getBaseDir() . DS . '.env.testing');
+    }
 }

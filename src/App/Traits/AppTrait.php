@@ -97,7 +97,6 @@ trait AppTrait
      */
     protected function loadEnvironment()
     {
-        Environment::getInstance()->setup(new Setup('config', 'env'));
         Environment::getInstance()->load(new Setup('config', 'env'));
     }
 
