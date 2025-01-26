@@ -130,7 +130,7 @@ class UploadedFileTest extends AppTestCase
 
         $this->expectException(FileUploadException::class);
 
-        $this->expectExceptionMessage('The file `\tmp` not found');
+        $this->expectExceptionMessage('The file `' . DS . 'tmp` not found');
 
         $this->assertFalse($uploadedFile->save(base_dir()));
     }
@@ -156,7 +156,7 @@ class UploadedFileTest extends AppTestCase
 
         $this->expectException(FileSystemException::class);
 
-        $this->expectExceptionMessage('exception.file_already_exists');
+        $this->expectExceptionMessage('exception . file_already_exists');
 
         $uploadedFile->save(base_dir());
     }
@@ -191,9 +191,9 @@ class UploadedFileTest extends AppTestCase
     {
         $fileMeta = [
             'size' => 500,
-            'name' => 'foo.jpg',
+            'name' => 'foo . jpg',
             'tmp_name' => base_dir(),
-            'type' => 'image/jpg',
+            'type' => 'image / jpg',
             'error' => 1,
         ];
 
@@ -201,6 +201,6 @@ class UploadedFileTest extends AppTestCase
 
         $this->assertEquals(1, $uploadedFile->getErrorCode());
 
-        $this->assertEquals('The uploaded file exceeds the upload_max_filesize directive in php.ini', $uploadedFile->getErrorMessage());
+        $this->assertEquals('The uploaded file exceeds the upload_max_filesize directive in php . ini', $uploadedFile->getErrorMessage());
     }
 }
