@@ -12,7 +12,9 @@
  * @since 2.9.5
  */
 
-namespace Quantum\Exceptions;
+namespace Quantum\Loader\Exceptions;
+
+use Quantum\Exceptions\BaseException;
 
 /**
  * DatabaseException class
@@ -20,7 +22,7 @@ namespace Quantum\Exceptions;
  * @package Quantum
  * @category Exceptions
  */
-class LoaderException extends AppException
+class LoaderException extends BaseException
 {
     
 }

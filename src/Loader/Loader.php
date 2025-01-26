@@ -9,13 +9,15 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Loader;
 
+use Quantum\Libraries\Storage\Factories\FileSystemFactory;
+use Quantum\Loader\Exceptions\LoaderException;
 use Quantum\Libraries\Storage\FileSystem;
-use Quantum\Exceptions\LoaderException;
+use Quantum\Exceptions\BaseException;
 
 /**
  * Class Loader
@@ -62,11 +64,11 @@ class Loader
 
     /**
      * Loader constructor
-     * @param FileSystem|null $fs
+     * @throws BaseException
      */
-    public function __construct(FileSystem $fs = null)
+    public function __construct()
     {
-        $this->fs = $fs;
+        $this->fs = FileSystemFactory::get();
     }
 
     /**
@@ -103,8 +105,8 @@ class Loader
      */
     public function loadDir(string $dir)
     {
-        foreach ($this->fs->glob($dir . DS . "*.php") as $filename) {
-            $this->fs->require($filename, true);
+        foreach (glob($dir . DS . "*.php") as $filename) {
+            require_once $filename;
         }
     }
 
@@ -151,5 +153,4 @@ class Loader
 
         return $filePath;
     }
-
 }
