@@ -12,15 +12,15 @@
  * @since 2.9.5
  */
 
-namespace Quantum\Libraries\Encryption;
+namespace Quantum\Libraries\Encryption\Exceptions;
 
-use Quantum\Exceptions\AppException;
+use Quantum\Exceptions\BaseException;
 
 /**
  * Class CryptorException
- * @package Quantum\Exceptions
+ * @package Quantum\Libraries\Encryption
  */
-class CryptorException extends AppException
+class CryptorException extends BaseException
 {
     /**
      * @return CryptorException
@@ -28,14 +28,6 @@ class CryptorException extends AppException
     public static function configNotFound(): CryptorException
     {
         return new static(t('exception.openssl_config_not_found'), E_WARNING);
-    }
-
-    /**
-     * @return CryptorException
-     */
-    public static function noPublicKeyCreated(): CryptorException
-    {
-        return new static(t('exception.openssl_public_key_not_created'), E_WARNING);
     }
 
     /**
