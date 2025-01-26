@@ -8,7 +8,6 @@ namespace Quantum\Libraries\Validation {
         {
             return $key;
         }
-
     }
 }
 
@@ -22,17 +21,16 @@ namespace Quantum\Models {
         public $table = 'users';
 
     }
-
 }
 
 namespace Quantum\Tests\Libraries\Validation {
 
-    use Quantum\Libraries\Database\Idiorm\IdiormDbal;
+    use Quantum\Libraries\Database\Adapters\Idiorm\IdiormDbal;
     use Quantum\Libraries\Validation\Validator;
     use Quantum\Libraries\Validation\Rule;
     use Quantum\Factory\ModelFactory;
-    use Quantum\Tests\AppTestCase;
     use Quantum\Models\VUserModel;
+    use Quantum\Tests\AppTestCase;
     use Quantum\Http\Request;
 
     class ValidatorTest extends AppTestCase
@@ -1065,5 +1063,4 @@ namespace Quantum\Tests\Libraries\Validation {
         }
 
     }
-
 }

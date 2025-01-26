@@ -16,10 +16,10 @@ namespace Quantum\Libraries\Validation\Rules;
 
 use Quantum\Libraries\Database\Exceptions\DatabaseException;
 use Quantum\Libraries\Database\Exceptions\ModelException;
-use Quantum\Libraries\Captcha\CaptchaException;
-use Quantum\Libraries\Captcha\CaptchaManager;
-use Quantum\Libraries\Config\ConfigException;
-use Quantum\Exceptions\DiException;
+use Quantum\Libraries\Config\Exceptions\ConfigException;
+use Quantum\Libraries\Captcha\Factories\CaptchaFactory;
+use Quantum\Di\Exceptions\DiException;
+use Quantum\Exceptions\BaseException;
 use Quantum\Factory\ModelFactory;
 use ReflectionException;
 
@@ -72,15 +72,15 @@ trait General
      * @param string $value
      * @param $param
      * @return void
-     * @throws CaptchaException
      * @throws ConfigException
      * @throws DiException
      * @throws ReflectionException
+     * @throws BaseException
      */
     protected function captcha(string $field, string $value, $param = null)
     {
         if (!empty($value)) {
-            $captcha = CaptchaManager::getHandler();
+            $captcha = CaptchaFactory::get();
 
             if (!$captcha->verify($value)){
                 $errorCode = $captcha->getErrorMessage();
@@ -163,8 +163,6 @@ trait General
                 $this->addError($field, 'iban', $param);
             }
         }
-
-
     }
 
     /**
@@ -332,5 +330,4 @@ trait General
             }
         }
     }
-
 }
