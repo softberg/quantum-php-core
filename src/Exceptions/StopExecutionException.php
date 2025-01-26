@@ -18,13 +18,14 @@ namespace Quantum\Exceptions;
  * Class StopExecutionException
  * @package Quantum\Exceptions
  */
-class StopExecutionException extends AppException
+class StopExecutionException extends BaseException
 {
     /**
+     * @param int|null $code
      * @return StopExecutionException
      */
-    public static function executionTerminated(): StopExecutionException
+    public static function executionTerminated(?int $code): StopExecutionException
     {
-        return new static(t('exception.execution_terminated'));
+        return new static(t('exception.execution_terminated'), $code);
     }
 }

@@ -16,11 +16,9 @@ namespace Quantum\Exceptions;
 
 /**
  * ControllerException class
- *
- * @package Quantum
- * @category Exceptions
+ * @package Quantum\Exceptions
  */
-class ControllerException extends AppException
+class ControllerException extends BaseException
 {
     /**
      * @param string|null $name
