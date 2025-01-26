@@ -12,13 +12,15 @@
  * @since 2.9.5
  */
 
-namespace Quantum\Exceptions;
+namespace Quantum\Hooks\Exceptions;
+
+use Quantum\Exceptions\BaseException;
 
 /**
  * Class HookException
  * @package Quantum\Exceptions
  */
-class HookException extends AppException
+class HookException extends BaseException
 {
     /**
      * @param string $name

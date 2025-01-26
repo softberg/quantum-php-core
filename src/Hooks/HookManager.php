@@ -14,9 +14,9 @@
 
 namespace Quantum\Hooks;
 
-use Quantum\Libraries\Config\ConfigException;
-use Quantum\Exceptions\HookException;
-use Quantum\Exceptions\DiException;
+use Quantum\Libraries\Config\Exceptions\ConfigException;
+use Quantum\Hooks\Exceptions\HookException;
+use Quantum\Di\Exceptions\DiException;
 use Quantum\Loader\Setup;
 use ReflectionException;
 
