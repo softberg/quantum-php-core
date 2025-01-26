@@ -201,6 +201,6 @@ class UploadedFileTest extends AppTestCase
 
         $this->assertEquals(1, $uploadedFile->getErrorCode());
 
-        $this->assertEquals('The uploaded file exceeds the upload_max_filesize directive in php . ini', $uploadedFile->getErrorMessage());
+        $this->assertEquals('The uploaded file exceeds the upload_max_filesize directive in php.ini', $uploadedFile->getErrorMessage());
     }
 }
