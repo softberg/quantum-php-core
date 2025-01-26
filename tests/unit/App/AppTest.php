@@ -19,19 +19,28 @@ use Quantum\Di\Di;
 class AppTest extends TestCase
 {
 
+    private $fs;
+
     public function setUp(): void
     {
         parent::setUp();
 
         App::setBaseDir(dirname(__DIR__) . DS . '_root');
 
-        $fs = FileSystemFactory::get();
+        $this->fs = FileSystemFactory::get();
 
-        if (!$fs->exists(App::getBaseDir() . DS . '.env.testing')) {
-            $fs->copy(
+        if (! $this->fs->exists(App::getBaseDir() . DS . '.env.testing')) {
+            $this->fs->copy(
                 App::getBaseDir() . DS . '.env.example',
                 App::getBaseDir() . DS . '.env.testing'
             );
+        }
+    }
+
+    public function tearDown(): void
+    {
+        if ($this->fs->exists(App::getBaseDir() . DS . '.env.testing')) {
+            $this->fs->remove(App::getBaseDir() . DS . '.env.testing');
         }
     }
 

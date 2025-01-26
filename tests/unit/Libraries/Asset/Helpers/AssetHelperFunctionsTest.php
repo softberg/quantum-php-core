@@ -11,6 +11,8 @@ class AssetHelperFunctionsTest extends AppTestCase
 
     public function setUp(): void
     {
+        parent::setUp();
+
         $this->setPrivateProperty(AssetManager::class, 'instance', null);
     }
 

@@ -17,7 +17,7 @@ class ModuleLoaderTest extends AppTestCase
         $this->moduleLoader = ModuleLoader::getInstance();
     }
 
-    protected function tearDown(): void
+    public function tearDown(): void
     {
         parent::tearDown();
     }
