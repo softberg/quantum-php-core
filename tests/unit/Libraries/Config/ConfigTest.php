@@ -2,8 +2,8 @@
 
 namespace Quantum\Tests\Libraries\Config;
 
-use Quantum\Libraries\Config\ConfigException;
-use Quantum\Exceptions\LoaderException;
+use Quantum\Libraries\Config\Exceptions\ConfigException;
+use Quantum\Loader\Exceptions\LoaderException;
 use Quantum\Libraries\Config\Config;
 use Dflydev\DotAccessData\Data;
 use Quantum\Tests\AppTestCase;
@@ -30,12 +30,6 @@ class ConfigTest extends AppTestCase
         $this->assertNotEmpty($config->all());
 
         $this->assertInstanceOf(Data::class, $config->all());
-
-        $this->expectException(ConfigException::class);
-
-        $this->expectExceptionMessage('config_already_loaded');
-
-        $config->load(new Setup('config', 'config'));
     }
 
     public function testLoadingNonExistingConfigFile()
@@ -79,7 +73,7 @@ class ConfigTest extends AppTestCase
 
         $this->expectException(ConfigException::class);
 
-        $this->expectExceptionMessage('config_collision');
+        $this->expectExceptionMessage('Config key `config` is already in use');
 
         $config->import(new Setup('config', 'config'));
     }
@@ -158,5 +152,4 @@ class ConfigTest extends AppTestCase
 
         $this->assertEmpty($config->all());
     }
-
 }

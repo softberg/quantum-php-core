@@ -12,15 +12,15 @@
  * @since 2.9.5
  */
 
-namespace Quantum\Libraries\Config;
+namespace Quantum\Libraries\Config\Exceptions;
 
-use Quantum\Exceptions\AppException;
+use Quantum\Exceptions\BaseException;
 
 /**
  * Class ConfigException
  * @package Quantum\Libraries\Config
  */
-class ConfigException extends AppException
+class ConfigException extends BaseException
 {
     /**
      * @return ConfigException
@@ -36,7 +36,6 @@ class ConfigException extends AppException
      */
     public static function configCollision(string $name): ConfigException
     {
-        return new static(t('exception.config_collision', $name), E_WARNING);
+        return new static('Config key `' . $name . '` is already in use', E_WARNING);
     }
-
 }

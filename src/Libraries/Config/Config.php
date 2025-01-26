@@ -14,8 +14,9 @@
 
 namespace Quantum\Libraries\Config;
 
+use Quantum\Libraries\Config\Exceptions\ConfigException;
 use Quantum\Contracts\StorageInterface;
-use Quantum\Exceptions\DiException;
+use Quantum\Di\Exceptions\DiException;
 use Dflydev\DotAccessData\Data;
 use Quantum\Loader\Loader;
 use Quantum\Loader\Setup;
@@ -63,8 +64,8 @@ class Config implements StorageInterface
      */
     public function load(Setup $setup)
     {
-        if (self::$configs) {
-            throw ConfigException::configAlreadyLoaded();
+        if (self::$configs !== null) {
+            return;
         }
 
         self::$configs = new Data(Di::get(Loader::class)->setup($setup)->load());
@@ -157,5 +158,4 @@ class Config implements StorageInterface
     {
         self::$configs = null;
     }
-
 }
