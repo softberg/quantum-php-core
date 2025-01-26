@@ -12,13 +12,15 @@
  * @since 2.9.5
  */
 
-namespace Quantum\Exceptions;
+namespace Quantum\Middleware\Exceptions;
+
+use Quantum\Exceptions\BaseException;
 
 /**
  * Class MiddlewareException
  * @package Quantum\Exceptions
  */
-class MiddlewareException extends AppException
+class MiddlewareException extends BaseException
 {
     /**
      * @param string $name
@@ -37,5 +39,4 @@ class MiddlewareException extends AppException
     {
         return new static(t('exception.middleware_not_found', $name), E_WARNING);
     }
-
 }
