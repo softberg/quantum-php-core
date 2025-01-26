@@ -12,25 +12,16 @@
  * @since 2.9.5
  */
 
-namespace Quantum\Libraries\Mailer;
+namespace Quantum\Libraries\Mailer\Exceptions;
 
-use Quantum\Exceptions\AppException;
+use Quantum\Exceptions\BaseException;
 
 /**
  * Class MailerException
- * @package Quantum\Exceptions
+ * @package Quantum\Libraries\Mailer
  */
-class MailerException extends AppException
+class MailerException extends BaseException
 {
-
-    /**
-     * @param string $name
-     * @return MailerException
-     */
-    public static function unsupportedAdapter(string $name): MailerException
-    {
-        return new static(t('exception.adapter_not_supported', $name), E_WARNING);
-    }
 
     /**
      * @param string $error
@@ -40,5 +31,4 @@ class MailerException extends AppException
     {
         return new static($error, E_WARNING);
     }
-
 }

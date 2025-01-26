@@ -1,16 +1,13 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Mailer\Adapters;
+namespace Quantum\Tests\Libraries\Mailer;
 
-use Quantum\Libraries\Storage\FileSystem;
+use Quantum\Libraries\Storage\Factories\FileSystemFactory;
 use Quantum\Libraries\Mailer\MailTrap;
 use Quantum\Tests\AppTestCase;
-use Quantum\Di\Di;
 
 class MailTrapTest extends AppTestCase
 {
-
-    private $fs;
 
     private $mailTrap;
 
@@ -23,8 +20,6 @@ class MailTrapTest extends AppTestCase
     public function setUp(): void
     {
         parent::setUp();
-
-        $this->fs = Di::get(FileSystem::class);
 
         $this->mailTrap = MailTrap::getInstance();
 
@@ -247,5 +242,4 @@ Y29udGVudCBvZiB0aGUgZG9jdW1lbnQ=
 
         $this->assertStringContainsString('content of the document', base64_decode($firstAttachment['content']));
     }
-
 }

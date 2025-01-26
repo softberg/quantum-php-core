@@ -12,19 +12,20 @@
  * @since 2.9.5
  */
 
-namespace Quantum\Libraries\Mailer\Adapters;
+namespace Quantum\Libraries\Mailer\Traits;
 
-use Quantum\Libraries\Mailer\MailerInterface;
-use Quantum\Exceptions\DiException;
+use Quantum\Libraries\Mailer\Contracts\MailerInterface;
+use Quantum\Di\Exceptions\DiException;
+use Quantum\Libraries\Mailer\MailTrap;
 use Quantum\Debugger\Debugger;
 use ReflectionException;
 use Exception;
 
 /**
- * trait MailerAdapterTrait
+ * trait MailerTrait
  * @package Quantum\Libraries\Mailer
  */
-trait MailerAdapterTrait
+trait MailerTrait
 {
 
     /**
@@ -215,6 +216,20 @@ trait MailerAdapterTrait
         }
 
         return self::$messageId;
+    }
+
+    /**
+     * @return bool
+     * @throws \PHPMailer\PHPMailer\Exception
+     * @throws Exception
+     */
+    private function saveEmail(): bool
+    {
+        if (__CLASS__ == __NAMESPACE__ . '\\SmtpAdapter') {
+            $this->mailer->preSend();
+        }
+
+        return MailTrap::getInstance()->saveMessage($this->getMessageId(), $this->getMessageContent());
     }
 
     /**

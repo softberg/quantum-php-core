@@ -2,12 +2,10 @@
 
 namespace Quantum\Tests\Libraries\Mailer\Adapters;
 
+use Quantum\Libraries\Storage\Factories\FileSystemFactory;
+use Quantum\Libraries\Mailer\Contracts\MailerInterface;
 use Quantum\Libraries\Mailer\Adapters\MailgunAdapter;
-use Quantum\Libraries\Mailer\MailerInterface;
-use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Tests\AppTestCase;
-use Quantum\Loader\Setup;
-use Quantum\Di\Di;
 
 class MailgunAdapterTest extends AppTestCase
 {
@@ -18,13 +16,25 @@ class MailgunAdapterTest extends AppTestCase
     {
         parent::setUp();
 
-        config()->set('base_url', '127.0.0.1');
+        $config = [
+            'api_key' => 'xxx11122233',
+            'domain' => 'mailgun.example.com',
+        ];
 
-        if (!config()->has('mailer')) {
-            config()->import(new Setup('config', 'mailer'));
+        $this->adapter = new MailgunAdapter($config);
+    }
+
+    public function tearDown(): void
+    {
+        parent::tearDown();
+
+        $fs = FileSystemFactory::get();
+
+        $emailFile = base_dir() . DS . 'shared' . DS . 'emails' . DS . $this->adapter->getMessageId() . '.eml';
+
+        if($fs->exists($emailFile)) {
+            $fs->remove($emailFile);
         }
-
-        $this->adapter = MailgunAdapter::getInstance(config()->get('mailer.mailgun'));
     }
 
     public function testMailgunAdapterInstance()
@@ -45,8 +55,5 @@ class MailgunAdapterTest extends AppTestCase
         $this->adapter->setBody('Lorem ipsum dolor sit amet');
 
         $this->assertTrue($this->adapter->send());
-
-        Di::get(FileSystem::class)->remove(base_dir() . DS . 'shared' . DS . 'emails' . DS . $this->adapter->getMessageId() . '.eml');
     }
-
 }
