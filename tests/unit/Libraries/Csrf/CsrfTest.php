@@ -2,7 +2,7 @@
 
 namespace Quantum\Tests\Libraries\Csrf;
 
-use Quantum\Libraries\Csrf\CsrfException;
+use Quantum\Libraries\Csrf\Exceptions\CsrfException;
 use Quantum\Libraries\Csrf\Csrf;
 use Quantum\Tests\AppTestCase;
 use Quantum\Http\Request;

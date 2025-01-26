@@ -12,15 +12,15 @@
  * @since 2.9.5
  */
 
-namespace Quantum\Libraries\Csrf;
+namespace Quantum\Libraries\Csrf\Exceptions;
 
-use Quantum\Exceptions\AppException;
+use Quantum\Exceptions\BaseException;
 
 /**
  * Class CsrfException
  * @package Quantum\Libraries\Csrf
  */
-class CsrfException extends AppException
+class CsrfException extends BaseException
 {
     /**
      * @return CsrfException

@@ -1,0 +1,44 @@
+<?php
+
+/**
+ * Quantum PHP Framework
+ *
+ * An open source software development framework for PHP
+ *
+ * @package Quantum
+ * @author Arman Ag. <arman.ag@softberg.org>
+ * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
+ * @link http://quantum.softberg.org/
+ * @since 2.9.5
+ */
+
+use Quantum\Libraries\Encryption\Exceptions\CryptorException;
+use Quantum\App\Exceptions\AppException;
+use Quantum\Exceptions\BaseException;
+use Quantum\Libraries\Csrf\Csrf;
+
+/**
+ * Gets the Csrf instance
+ * @return Csrf
+ */
+function csrf(): Csrf
+{
+    return Csrf::getInstance();
+}
+
+/**
+ * Generates the CSRF token
+ * @return string|null
+ * @throws BaseException
+ * @throws CryptorException
+ */
+function csrf_token(): ?string
+{
+    $appKey = env('APP_KEY');
+
+    if (!$appKey) {
+        throw AppException::missingAppKey();
+    }
+
+    return csrf()->generateToken($appKey);
+}
