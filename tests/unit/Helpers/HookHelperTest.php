@@ -2,7 +2,8 @@
 
 namespace Quantum\Tests\Helpers;
 
-use Quantum\Exceptions\HookException;
+use Quantum\Hooks\Exceptions\HookException;
+use Quantum\Hooks\HookManager;
 use Quantum\Tests\AppTestCase;
 
 class HookHelperTest extends AppTestCase
@@ -11,6 +12,11 @@ class HookHelperTest extends AppTestCase
     public function setUp(): void
     {
         parent::setUp();
+    }
+
+    public function testHookHelperInstance()
+    {
+        $this->assertInstanceOf(HookManager::class, hook());
     }
 
     public function testHookOnAndFire()

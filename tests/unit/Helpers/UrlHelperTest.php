@@ -2,8 +2,8 @@
 
 namespace Quantum\Tests\Helpers;
 
+use Quantum\Libraries\Session\Factories\SessionFactory;
 use Quantum\Exceptions\StopExecutionException;
-use Quantum\Libraries\Session\Session;
 use Quantum\Tests\AppTestCase;
 use Quantum\Http\Response;
 use Quantum\Router\Router;
@@ -40,7 +40,7 @@ class UrlHelperTest extends AppTestCase
 
     public function testBaseUrlWithModulePrefix()
     {
-        $router = new Router($this->request, new Response());
+        $router = new Router($this->request);
 
         Router::setRoutes([
             [
@@ -94,13 +94,9 @@ class UrlHelperTest extends AppTestCase
 
     public function testRedirectWithOldData()
     {
-        if (session_status() !== PHP_SESSION_ACTIVE) {
-            session_start();
-        }
-
         $sessionData = [];
 
-        $this->session = Session::getInstance($sessionData);
+        $this->session = SessionFactory::get($sessionData);
 
         $this->request->create('POST', '/', ['firstname' => 'Josh', 'lastname' => 'Doe']);
 
@@ -117,6 +113,7 @@ class UrlHelperTest extends AppTestCase
         $this->assertEquals('Josh', old('firstname'));
 
         $this->assertEquals('Doe', old('lastname'));
-    }
 
+        $this->session->flush();
+    }
 }
