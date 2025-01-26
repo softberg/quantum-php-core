@@ -12,13 +12,15 @@
  * @since 2.9.5
  */
 
-namespace Quantum\Exceptions;
+namespace Quantum\Http\Exceptions;
+
+use Quantum\Exceptions\BaseException;
 
 /**
  * Class HttpException
  * @package Quantum\Exceptions
  */
-class HttpException extends AppException
+class HttpException extends BaseException
 {
     /**
      * @return HttpException
@@ -34,14 +36,6 @@ class HttpException extends AppException
     public static function unexpectedResponseInitialization(): HttpException
     {
         return new static(t('exception.unexpected_response_initialization'), E_WARNING);
-    }
-
-    /**
-     * @return HttpException
-     */
-    public static function requestNotCreated(): HttpException
-    {
-        return new static(t('exception.request_not_created'), E_WARNING);
     }
 
     /**

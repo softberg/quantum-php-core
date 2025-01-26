@@ -116,5 +116,4 @@ trait Url
     {
         self::$__uri = ltrim($uri, '/');
     }
-
 }

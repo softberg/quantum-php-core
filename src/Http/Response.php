@@ -66,5 +66,4 @@ class Response
     {
         return HttpResponse::$function(...$arguments);
     }
-
 }
