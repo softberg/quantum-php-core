@@ -12,15 +12,15 @@
  * @since 2.9.5
  */
 
-namespace Quantum\Libraries\Archive;
+namespace Quantum\Libraries\Archive\Exceptions;
 
-use Quantum\Exceptions\AppException;
+use Quantum\Exceptions\BaseException;
 
 /**
  * Class CacheException
  * @package Quantum\Libraries\Archive
  */
-class ArchiveException extends AppException
+class ArchiveException extends BaseException
 {
     /**
      * @param string $name
@@ -31,4 +31,11 @@ class ArchiveException extends AppException
         return new static(t('exception.cant_open', $name), E_WARNING);
     }
 
+    /**
+     * @return ArchiveException
+     */
+    public static function missingArchiveName(): ArchiveException
+    {
+        return new static(t('exception.name_not_set'), E_WARNING);
+    }
 }

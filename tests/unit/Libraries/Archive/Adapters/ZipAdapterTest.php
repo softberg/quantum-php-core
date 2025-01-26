@@ -3,22 +3,21 @@
 namespace Quantum\Tests\Libraries\Archive\Adapters;
 
 use Quantum\Libraries\Archive\Adapters\ZipAdapter;
-use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Tests\AppTestCase;
 
 class ZipAdapterTest extends AppTestCase
 {
 
-    private $fs;
     private $zipArchive;
     private $archiveName;
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->fs = new FileSystem();
+
         $this->archiveName = base_dir() . DS . 'test.zip';
-        $this->zipArchive = new ZipAdapter($this->archiveName);
+        $this->zipArchive = new ZipAdapter();
+        $this->zipArchive->setName($this->archiveName);
     }
 
     public function tearDown(): void
@@ -140,4 +139,3 @@ class ZipAdapterTest extends AppTestCase
         $this->assertFalse($this->zipArchive->offsetExists('app.conf'));
     }
 }
-
