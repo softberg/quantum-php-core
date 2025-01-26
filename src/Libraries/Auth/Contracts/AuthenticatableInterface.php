@@ -12,7 +12,9 @@
  * @since 2.9.5
  */
 
-namespace Quantum\Libraries\Auth;
+namespace Quantum\Libraries\Auth\Contracts;
+
+use Quantum\Libraries\Auth\User;
 
 /**
  * Interface AuthenticatableInterface
@@ -20,6 +22,11 @@ namespace Quantum\Libraries\Auth;
  */
 interface AuthenticatableInterface
 {
+
+    /**
+     * Auth user key
+     */
+    const AUTH_USER = 'auth_user';
 
     /**
      * Sign In
@@ -31,9 +38,9 @@ interface AuthenticatableInterface
 
     /**
      * Sign Out
-     * @return mixed
+     * @return bool
      */
-    public function signout();
+    public function signout(): bool;
 
     /**
      * Check

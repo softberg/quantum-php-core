@@ -1,19 +1,18 @@
 <?php
 
-namespace Quantum\Libraries\Auth {
+namespace Quantum\Libraries\Auth\Traits {
 
-    function random_number(int $length = 10)
+    function random_number(int $length = 10): int
     {
         return 123456789;
     }
-
 }
 
 namespace Quantum\Tests\Libraries\Auth {
 
-    use Quantum\Libraries\Database\Sleekdb\SleekDbal;
-    use Quantum\Libraries\Mailer\MailerInterface;
+    use Quantum\Libraries\Database\Adapters\Sleekdb\SleekDbal;
     use Quantum\Environment\Environment;
+    use Quantum\Libraries\Mailer\Mailer;
     use Quantum\Libraries\Auth\User;
     use Quantum\Tests\AppTestCase;
     use Quantum\Loader\Setup;
@@ -85,7 +84,7 @@ namespace Quantum\Tests\Libraries\Auth {
 
             Environment::getInstance()->load(new Setup('config', 'env'));
 
-            $this->authService = Mockery::mock('Quantum\Libraries\Auth\AuthServiceInterface');
+            $this->authService = Mockery::mock('Quantum\Libraries\Auth\Contracts\AuthServiceInterface');
 
             $this->authService->shouldReceive('userSchema')->andReturn($this->userSchema);
 
@@ -147,7 +146,7 @@ namespace Quantum\Tests\Libraries\Auth {
                 return $user;
             });
 
-            $this->mailer = Mockery::mock(MailerInterface::class);
+            $this->mailer = Mockery::mock(Mailer::class);
 
             $this->mailer->shouldReceive('setFrom')->andReturn($this->mailer);
 
@@ -161,7 +160,5 @@ namespace Quantum\Tests\Libraries\Auth {
 
             $this->mailer->shouldReceive('send')->andReturn(true);
         }
-
     }
-
 }

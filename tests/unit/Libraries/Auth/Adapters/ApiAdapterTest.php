@@ -2,11 +2,12 @@
 
 namespace Quantum\Tests\Libraries\Auth\Adapters;
 
+use Quantum\Libraries\Auth\Exceptions\AuthException;
 use Quantum\Libraries\Auth\Adapters\ApiAdapter;
 use Quantum\Tests\Libraries\Auth\AuthTestCase;
-use Quantum\Libraries\Auth\AuthException;
-use Quantum\Libraries\JWToken\JWToken;
 use Quantum\Libraries\Hasher\Hasher;
+use Quantum\Libraries\Jwt\JwtToken;
+use Quantum\Libraries\Auth\User;
 
 
 class ApiAdapterTest extends AuthTestCase
@@ -16,7 +17,7 @@ class ApiAdapterTest extends AuthTestCase
 
         parent::setUp();
 
-        $jwt = (new JWToken())
+        $jwt = (new JwtToken())
             ->setLeeway(1)
             ->setClaims([
                 'jti' => uniqid(),
@@ -27,7 +28,8 @@ class ApiAdapterTest extends AuthTestCase
                 'exp' => time() + 60
             ]);
 
-        $this->apiAuth = ApiAdapter::getInstance($this->authService, $this->mailer, new Hasher, $jwt);
+        $this->apiAuth = new ApiAdapter($this->authService, $this->mailer, new Hasher, $jwt);
+
 
         $admin = $this->apiAuth->signup($this->adminUser);
 
@@ -81,6 +83,8 @@ class ApiAdapterTest extends AuthTestCase
     {
         $this->apiAuth->signin('admin@qt.com', 'qwerty');
 
+        $this->assertInstanceOf(User::class, $this->apiAuth->user());
+
         $this->assertEquals('admin@qt.com', $this->apiAuth->user()->getFieldValue('email'));
 
         $this->assertEquals('admin', $this->apiAuth->user()->getFieldValue('role'));
@@ -114,7 +118,7 @@ class ApiAdapterTest extends AuthTestCase
         $this->assertTrue($this->apiAuth->signin('guest@qt.com', '123456'));
     }
 
-    public function testApiSignupAndActivteAccount()
+    public function testApiSignupAndActivateAccount()
     {
         $user = $this->apiAuth->signup($this->guestUser);
 
@@ -185,5 +189,4 @@ class ApiAdapterTest extends AuthTestCase
 
         $this->assertIsString($this->apiAuth->resendOtp($otp_token));
     }
-
 }

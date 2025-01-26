@@ -12,7 +12,9 @@
  * @since 2.9.5
  */
 
-namespace Quantum\Libraries\Auth;
+namespace Quantum\Libraries\Auth\Contracts;
+
+use Quantum\Libraries\Auth\User;
 
 /**
  * Interface AuthServiceInterface

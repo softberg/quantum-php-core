@@ -12,13 +12,15 @@
  * @since 2.9.5
  */
 
-namespace Quantum\Libraries\Auth;
+namespace Quantum\Libraries\Auth\Exceptions;
+
+use Quantum\Exceptions\BaseException;
 
 /**
  * Class AuthException
  * @package Quantum\Exceptions
  */
-class AuthException extends \Exception
+class AuthException extends BaseException
 {
     /**
      * @return AuthException

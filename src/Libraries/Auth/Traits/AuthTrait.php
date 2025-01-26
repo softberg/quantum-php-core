@@ -12,74 +12,33 @@
  * @since 2.9.5
  */
 
-namespace Quantum\Libraries\Auth;
+namespace Quantum\Libraries\Auth\Traits;
 
-use Quantum\Libraries\Mailer\MailerInterface;
-use Quantum\Libraries\JWToken\JWToken;
+use Quantum\Libraries\Encryption\Exceptions\CryptorException;
+use Quantum\Libraries\Database\Exceptions\DatabaseException;
+use Quantum\Libraries\Auth\Contracts\AuthServiceInterface;
+use Quantum\Libraries\Session\Exceptions\SessionException;
+use Quantum\Libraries\Config\Exceptions\ConfigException;
+use Quantum\Libraries\Mailer\Contracts\MailerInterface;
+use Quantum\Libraries\Auth\Exceptions\AuthException;
+use Quantum\Libraries\Jwt\Exceptions\JwtException;
+use Quantum\Libraries\Auth\Constants\AuthKeys;
+use Quantum\Di\Exceptions\DiException;
 use Quantum\Libraries\Hasher\Hasher;
-use Quantum\Exceptions\DiException;
-use PHPMailer\PHPMailer\Exception;
+use Quantum\Libraries\Jwt\JwtToken;
+use Quantum\Libraries\Auth\User;
 use ReflectionException;
 use ReflectionClass;
 use DateInterval;
+use Exception;
 use DateTime;
 
 /**
- * Class BaseAuth
+ * Trait AuthTrait
  * @package Quantum\Libraries\Auth
  */
-abstract class BaseAuth
+trait AuthTrait
 {
-
-    /**
-     * One time password key
-     */
-    const OTP_KEY = 'otp';
-
-    /**
-     * One time password expiry key
-     */
-    const OTP_EXPIRY_KEY = 'otpExpiry';
-
-    /**
-     * One time password token key
-     */
-    const OTP_TOKEN_KEY = 'otpToken';
-
-    /**
-     * Username key
-     */
-    const USERNAME_KEY = 'username';
-
-    /**
-     * Password key
-     */
-    const PASSWORD_KEY = 'password';
-
-    /**
-     * Access token key
-     */
-    const ACCESS_TOKEN_KEY = 'accessToken';
-
-    /**
-     * Refresh token key
-     */
-    const REFRESH_TOKEN_KEY = 'refreshToken';
-
-    /**
-     * Activation token key
-     */
-    const ACTIVATION_TOKEN_KEY = 'activationToken';
-
-    /**
-     * Reset token key
-     */
-    const RESET_TOKEN_KEY = 'resetToken';
-
-    /**
-     * Remember token key
-     */
-    const REMEMBER_TOKEN_KEY = 'rememberToken';
 
     /**
      * @var MailerInterface
@@ -92,7 +51,7 @@ abstract class BaseAuth
     protected $hasher;
 
     /**
-     * @var JWToken
+     * @var JwtToken
      */
     protected $jwt;
 
@@ -100,11 +59,6 @@ abstract class BaseAuth
      * @var AuthServiceInterface
      */
     protected $authService;
-
-    /**
-     * @var string
-     */
-    protected $authUserKey = 'auth_user';
 
     /**
      * @var int
@@ -122,43 +76,15 @@ abstract class BaseAuth
     protected $visibleFields = [];
 
     /**
-     * User
-     * @return User|null
-     */
-    protected abstract function user(): ?User;
-
-    /**
-     * Verify user schema
-     * @param array $schema
-     * @throws AuthException
-     */
-    protected function verifySchema(array $schema)
-    {
-        $reflectionClass = new ReflectionClass($this);
-        $constants = $reflectionClass->getConstants();
-
-        foreach ($constants as $constant) {
-            if (!in_array($constant, array_keys($schema))) {
-                throw AuthException::incorrectUserSchema();
-            }
-
-            if (!isset($schema[$constant]['name'])) {
-                throw AuthException::incorrectUserSchema();
-            }
-
-            $this->keyFields[$constant] = $schema[$constant]['name'];
-        }
-
-        foreach ($schema as $field) {
-            if ($field['visible']) {
-                $this->visibleFields[] = $field['name'];
-            }
-        }
-    }
-
-    /**
-     * Check
+     * @inheritDoc
      * @return bool
+     * @throws ConfigException
+     * @throws CryptorException
+     * @throws DatabaseException
+     * @throws DiException
+     * @throws ReflectionException
+     * @throws SessionException
+     * @throws JwtException
      */
     public function check(): bool
     {
@@ -175,8 +101,8 @@ abstract class BaseAuth
     {
         $activationToken = $this->generateToken();
 
-        $userData[$this->keyFields[self::PASSWORD_KEY]] = $this->hasher->hash($userData[$this->keyFields[self::PASSWORD_KEY]]);
-        $userData[$this->keyFields[self::ACTIVATION_TOKEN_KEY]] = $activationToken;
+        $userData[$this->keyFields[AuthKeys::PASSWORD]] = $this->hasher->hash($userData[$this->keyFields[AuthKeys::PASSWORD]]);
+        $userData[$this->keyFields[AuthKeys::ACTIVATION_TOKEN]] = $activationToken;
 
         $user = $this->authService->add($userData);
 
@@ -204,9 +130,9 @@ abstract class BaseAuth
     public function activate(string $token)
     {
         $this->authService->update(
-            $this->keyFields[self::ACTIVATION_TOKEN_KEY],
+            $this->keyFields[AuthKeys::ACTIVATION_TOKEN],
             $token,
-            [$this->keyFields[self::ACTIVATION_TOKEN_KEY] => '']
+            [$this->keyFields[AuthKeys::ACTIVATION_TOKEN] => '']
         );
     }
 
@@ -217,29 +143,31 @@ abstract class BaseAuth
      */
     public function forget(string $username): ?string
     {
-        $user = $this->authService->get($this->keyFields[self::USERNAME_KEY], $username);
+        $user = $this->authService->get($this->keyFields[AuthKeys::USERNAME], $username);
 
-        if ($user) {
-            $resetToken = $this->generateToken();
-
-            $this->authService->update(
-                $this->keyFields[self::USERNAME_KEY],
-                $username,
-                [$this->keyFields[self::RESET_TOKEN_KEY] => $resetToken]
-            );
-
-            $body = [
-                'user' => $user,
-                'resetToken' => $resetToken
-            ];
-
-            $this->mailer->setSubject(t('common.reset_password'));
-            $this->mailer->setTemplate(base_dir() . DS . 'shared' . DS . 'views' . DS . 'email' . DS . 'reset');
-
-            $this->sendMail($user, $body);
-
-            return $resetToken;
+        if (!$user) {
+            return null;
         }
+
+        $resetToken = $this->generateToken();
+
+        $this->authService->update(
+            $this->keyFields[AuthKeys::USERNAME],
+            $username,
+            [$this->keyFields[AuthKeys::RESET_TOKEN] => $resetToken]
+        );
+
+        $body = [
+            'user' => $user,
+            'resetToken' => $resetToken
+        ];
+
+        $this->mailer->setSubject(t('common.reset_password'));
+        $this->mailer->setTemplate(base_dir() . DS . 'shared' . DS . 'views' . DS . 'email' . DS . 'reset');
+
+        $this->sendMail($user, $body);
+
+        return $resetToken;
     }
 
     /**
@@ -249,7 +177,7 @@ abstract class BaseAuth
      */
     public function reset(string $token, string $password)
     {
-        $user = $this->authService->get($this->keyFields[self::RESET_TOKEN_KEY], $token);
+        $user = $this->authService->get($this->keyFields[AuthKeys::RESET_TOKEN], $token);
 
         if ($user) {
             if (!$this->isActivated($user)) {
@@ -257,11 +185,11 @@ abstract class BaseAuth
             }
 
             $this->authService->update(
-                $this->keyFields[self::RESET_TOKEN_KEY],
+                $this->keyFields[AuthKeys::RESET_TOKEN],
                 $token,
                 [
-                    $this->keyFields[self::PASSWORD_KEY] => $this->hasher->hash($password),
-                    $this->keyFields[self::RESET_TOKEN_KEY] => ''
+                    $this->keyFields[AuthKeys::PASSWORD] => $this->hasher->hash($password),
+                    $this->keyFields[AuthKeys::RESET_TOKEN] => ''
                 ]
             );
         }
@@ -272,11 +200,11 @@ abstract class BaseAuth
      * @param string $otpToken
      * @return string
      * @throws AuthException
-     * @throws \Exception
+     * @throws Exception
      */
     public function resendOtp(string $otpToken): string
     {
-        $user = $this->authService->get($this->keyFields[self::OTP_TOKEN_KEY], $otpToken);
+        $user = $this->authService->get($this->keyFields[AuthKeys::OTP_TOKEN], $otpToken);
 
         if (!$user) {
             throw AuthException::incorrectCredentials();
@@ -295,13 +223,13 @@ abstract class BaseAuth
      */
     protected function getUser(string $username, string $password): User
     {
-        $user = $this->authService->get($this->keyFields[self::USERNAME_KEY], $username);
+        $user = $this->authService->get($this->keyFields[AuthKeys::USERNAME], $username);
 
         if (!$user) {
             throw AuthException::incorrectCredentials();
         }
 
-        if (!$this->hasher->check($password, $user->getFieldValue($this->keyFields[self::PASSWORD_KEY]))) {
+        if (!$this->hasher->check($password, $user->getFieldValue($this->keyFields[AuthKeys::PASSWORD]))) {
             throw AuthException::incorrectCredentials();
         }
 
@@ -316,25 +244,25 @@ abstract class BaseAuth
      * Two-Step Verification
      * @param User $user
      * @return string
-     * @throws \Exception
+     * @throws Exception
      */
     protected function twoStepVerification(User $user): string
     {
         $otp = random_number($this->otpLength);
 
-        $otpToken = $this->generateToken($user->getFieldValue($this->keyFields[self::USERNAME_KEY]));
+        $otpToken = $this->generateToken($user->getFieldValue($this->keyFields[AuthKeys::USERNAME]));
 
         $time = new DateTime();
 
         $time->add(new DateInterval('PT' . config()->get('otp_expires') . 'M'));
 
         $this->authService->update(
-            $this->keyFields[self::USERNAME_KEY],
-            $user->getFieldValue($this->keyFields[self::USERNAME_KEY]),
+            $this->keyFields[AuthKeys::USERNAME],
+            $user->getFieldValue($this->keyFields[AuthKeys::USERNAME]),
             [
-                $this->keyFields[self::OTP_KEY] => $otp,
-                $this->keyFields[self::OTP_EXPIRY_KEY] => $time->format('Y-m-d H:i'),
-                $this->keyFields[self::OTP_TOKEN_KEY] => $otpToken,
+                $this->keyFields[AuthKeys::OTP] => $otp,
+                $this->keyFields[AuthKeys::OTP_EXPIRY] => $time->format('Y-m-d H:i'),
+                $this->keyFields[AuthKeys::OTP_TOKEN] => $otpToken,
             ]
         );
 
@@ -357,27 +285,27 @@ abstract class BaseAuth
      * @param string $otpToken
      * @return User
      * @throws AuthException
-     * @throws \Exception
+     * @throws Exception
      */
     protected function verifyAndUpdateOtp(int $otp, string $otpToken): User
     {
-        $user = $this->authService->get($this->keyFields[self::OTP_TOKEN_KEY], $otpToken);
+        $user = $this->authService->get($this->keyFields[AuthKeys::OTP_TOKEN], $otpToken);
 
-        if (!$user || $otp != $user->getFieldValue($this->keyFields[self::OTP_KEY])) {
+        if (!$user || $otp != $user->getFieldValue($this->keyFields[AuthKeys::OTP])) {
             throw AuthException::incorrectVerificationCode();
         }
 
-        if (new DateTime() >= new DateTime($user->getFieldValue($this->keyFields[self::OTP_EXPIRY_KEY]))) {
+        if (new DateTime() >= new DateTime($user->getFieldValue($this->keyFields[AuthKeys::OTP_EXPIRY]))) {
             throw AuthException::verificationCodeExpired();
         }
 
         $this->authService->update(
-            $this->keyFields[self::USERNAME_KEY],
-            $user->getFieldValue($this->keyFields[self::USERNAME_KEY]),
+            $this->keyFields[AuthKeys::USERNAME],
+            $user->getFieldValue($this->keyFields[AuthKeys::USERNAME]),
             [
-                $this->keyFields[self::OTP_KEY] => null,
-                $this->keyFields[self::OTP_EXPIRY_KEY] => null,
-                $this->keyFields[self::OTP_TOKEN_KEY] => null,
+                $this->keyFields[AuthKeys::OTP] => null,
+                $this->keyFields[AuthKeys::OTP_EXPIRY] => null,
+                $this->keyFields[AuthKeys::OTP_TOKEN] => null,
             ]
         );
 
@@ -411,7 +339,7 @@ abstract class BaseAuth
      */
     protected function isActivated(User $user): bool
     {
-        return empty($user->getFieldValue($this->keyFields[self::ACTIVATION_TOKEN_KEY]));
+        return empty($user->getFieldValue($this->keyFields[AuthKeys::ACTIVATION_TOKEN]));
     }
 
     /**
@@ -421,17 +349,8 @@ abstract class BaseAuth
      */
     protected function generateToken(string $val = null): string
     {
-        return base64_encode($this->hasher->hash($val ?: env('APP_KEY')));
+        return base64_encode($this->hasher->hash($val ?: config()->get('app_key')));
     }
-
-    /**
-     * Send email
-     * @param User $user
-     * @param array $body
-     * @throws Exception
-     * @throws DiException
-     * @throws ReflectionException
-     */
 
     /**
      * Send email
@@ -446,9 +365,40 @@ abstract class BaseAuth
         $appName = config()->get('app_name') ?: '';
 
         $this->mailer->setFrom($appEmail, $appName)
-            ->setAddress($user->getFieldValue($this->keyFields[self::USERNAME_KEY]), $fullName)
+            ->setAddress($user->getFieldValue($this->keyFields[AuthKeys::USERNAME]), $fullName)
             ->setBody($body)
             ->send();
     }
 
+    /**
+     * Verify user schema
+     * @param array $schema
+     * @throws AuthException
+     */
+    protected function verifySchema(array $schema)
+    {
+        $constants = (new ReflectionClass(AuthKeys::class))->getConstants();
+
+        foreach ($constants as $constant) {
+            if (!isset($schema[$constant]) || !isset($schema[$constant]['name'])) {
+                throw AuthException::incorrectUserSchema();
+            }
+
+            $this->keyFields[$constant] = $schema[$constant]['name'];
+        }
+
+        foreach ($schema as $field) {
+            if (isset($field['visible']) && $field['visible']) {
+                $this->visibleFields[] = $field['name'];
+            }
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    protected function isTwoFactorEnabled(): bool
+    {
+        return filter_var(config()->get('2FA'), FILTER_VALIDATE_BOOLEAN);
+    }
 }
