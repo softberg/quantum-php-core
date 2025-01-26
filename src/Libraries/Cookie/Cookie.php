@@ -14,7 +14,7 @@
 
 namespace Quantum\Libraries\Cookie;
 
-use Quantum\Libraries\Encryption\CryptorException;
+use Quantum\Libraries\Cookie\Contracts\CookieStorageInterface;
 
 /**
  * Class Cookie
@@ -61,7 +61,6 @@ class Cookie implements CookieStorageInterface
 
     /**
      * @inheritDoc
-     * @throws CryptorException
      */
     public function all(): array
     {
@@ -84,7 +83,6 @@ class Cookie implements CookieStorageInterface
 
     /**
      * @inheritDoc
-     * @throws CryptorException
      */
     public function get(string $key)
     {
@@ -93,7 +91,6 @@ class Cookie implements CookieStorageInterface
 
     /**
      * @inheritDoc
-     * @throws CryptorException
      */
     public function set(string $key, $value = '', int $time = 0, string $path = '/', string $domain = '', bool $secure = false, bool $httponly = false)
     {

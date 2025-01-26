@@ -12,13 +12,13 @@
  * @since 2.9.5
  */
 
-namespace Quantum\Exceptions;
+use Quantum\Libraries\Cookie\Cookie;
 
 /**
- * Class EnvException
- * @package Quantum\Exceptions
+ * Gets cookie handler
+ * @return Cookie
  */
-class EnvException extends AppException
+function cookie(): Cookie
 {
-
+    return Cookie::getInstance($_COOKIE);
 }
