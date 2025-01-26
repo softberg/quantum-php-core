@@ -12,8 +12,9 @@
  * @since 2.9.5
  */
 
-namespace Quantum\Logger;
+namespace Quantum\Libraries\Logger;
 
+use Quantum\Libraries\Logger\Contracts\ReportableInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
@@ -25,12 +26,22 @@ class Logger implements LoggerInterface
 {
 
     /**
+     * Single logger adapter
+     */
+    const SINGLE = 'single';
+
+
+    /**
+     * Daily logger adapter
+     */
+    const DAILY = 'daily';
+
+    /**
      * @var ReportableInterface
      */
     private $adapter;
 
     /**
-     * Logger constructor.
      * @param ReportableInterface $adapter
      */
     public function __construct(ReportableInterface $adapter)
@@ -119,5 +130,4 @@ class Logger implements LoggerInterface
             $this->adapter->report($level, $message, $context);
         }
     }
-
 }

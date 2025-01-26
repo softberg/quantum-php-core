@@ -1,23 +1,18 @@
 <?php
 
-namespace Quantum\Tests\Logger\Adapters;
+namespace Quantum\Tests\Libraries\Logger\Adapters;
 
-use Quantum\Libraries\Storage\FileSystem;
-use Quantum\Logger\Adapters\SingleAdapter;
-use Quantum\Logger\LoggerException;
+use Quantum\Libraries\Logger\Exceptions\LoggerException;
+use Quantum\Libraries\Logger\Adapters\SingleAdapter;
 use Quantum\Tests\AppTestCase;
-use Quantum\Di\Di;
 
 class SingleAdapterTest extends AppTestCase
 {
     private $adapter;
-    private $fileSystem;
 
     public function setUp(): void
     {
         parent::setUp();
-
-        $this->fileSystem = Di::get(FileSystem::class);
 
         $this->adapter = new SingleAdapter([
             'path' => base_dir() . DS . 'logs' . DS . 'app.log',
@@ -26,7 +21,6 @@ class SingleAdapterTest extends AppTestCase
 
     public function testSingleAdapterInstance()
     {
-        // Ensure that the adapter is an instance of SingleAdapter
         $this->assertInstanceOf(SingleAdapter::class, $this->adapter);
     }
 
@@ -49,12 +43,11 @@ class SingleAdapterTest extends AppTestCase
 
         $logFile = base_dir() . DS . 'logs' . DS . 'app.log';
 
-        $this->assertTrue($this->fileSystem->exists($logFile));
+        $this->assertTrue($this->fs->exists($logFile));
 
-        $logContent = $this->fileSystem->get($logFile);
+        $logContent = $this->fs->get($logFile);
         $this->assertStringContainsString('Test log message', $logContent);
 
-        $this->fileSystem->remove($logFile);
+        $this->fs->remove($logFile);
     }
-
 }

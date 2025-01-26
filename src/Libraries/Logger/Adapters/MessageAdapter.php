@@ -12,9 +12,9 @@
  * @since 2.9.5
  */
 
-namespace Quantum\Logger\Adapters;
+namespace Quantum\Libraries\Logger\Adapters;
 
-use Quantum\Logger\ReportableInterface;
+use Quantum\Libraries\Logger\Contracts\ReportableInterface;
 use DebugBar\DebugBarException;
 use Quantum\Debugger\Debugger;
 

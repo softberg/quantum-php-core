@@ -12,9 +12,9 @@
  * @since 2.9.5
  */
 
-namespace Quantum\Tests\Logger;
+namespace Quantum\Tests\Libraries\Logger;
 
-use Quantum\Logger\LoggerConfig;
+use Quantum\Libraries\Logger\LoggerConfig;
 use Quantum\Tests\AppTestCase;
 
 class LoggerConfigTest extends AppTestCase

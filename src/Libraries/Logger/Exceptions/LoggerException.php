@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Quantum PHP Framework
  *
@@ -11,24 +12,16 @@
  * @since 2.9.5
  */
 
-namespace Quantum\Logger;
+namespace Quantum\Libraries\Logger\Exceptions;
 
-use Exception;
+use Quantum\Exceptions\BaseException;
 
 /**
  * Class LoggerException
  * @package Quantum\Logger
  */
-class LoggerException extends Exception
+class LoggerException extends BaseException
 {
-    /**
-     * @param string $name
-     * @return LoggerException
-     */
-    public static function unsupportedAdapter(string $name): LoggerException
-    {
-        return new static(t('exception.not_supported_adapter', $name));
-    }
 
     /**
      * @param string $name

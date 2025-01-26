@@ -12,11 +12,11 @@
  * @since 2.9.5
  */
 
-namespace Quantum\Logger;
+namespace Quantum\Libraries\Logger\Contracts;
 
 /**
  * Interface ReportableInterface
- * @package Quantum\Contracts
+ * @package Quantum\Logger
  */
 interface ReportableInterface
 {

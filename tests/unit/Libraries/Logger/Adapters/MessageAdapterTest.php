@@ -1,8 +1,8 @@
 <?php
 
-namespace Quantum\Tests\Logger\Adapters;
+namespace Quantum\Tests\Libraries\Logger\Adapters;
 
-use Quantum\Logger\Adapters\MessageAdapter;
+use Quantum\Libraries\Logger\Adapters\MessageAdapter;
 use Quantum\Debugger\DebuggerStore;
 use Quantum\Debugger\Debugger;
 use Quantum\Tests\AppTestCase;

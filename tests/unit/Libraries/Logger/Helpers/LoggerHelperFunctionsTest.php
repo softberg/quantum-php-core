@@ -1,12 +1,12 @@
 <?php
 
-namespace Quantum\Tests\Helpers;
+namespace Quantum\Tests\Libraries\Logger\Helpers;
 
 use Quantum\Debugger\DebuggerStore;
 use Quantum\Debugger\Debugger;
 use Quantum\Tests\AppTestCase;
 
-class VarHelperTest extends AppTestCase
+class LoggerHelperFunctionsTest extends AppTestCase
 {
 
     private $debugger;
@@ -19,7 +19,7 @@ class VarHelperTest extends AppTestCase
 
         $this->debugger = Debugger::getInstance($store);
 
-        $this->debugger->initStore();
+        $this->debugger->resetStore();
     }
 
     public function tearDown(): void

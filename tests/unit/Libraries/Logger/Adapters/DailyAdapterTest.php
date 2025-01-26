@@ -1,24 +1,19 @@
 <?php
 
-namespace Quantum\Tests\Logger\Adapters;
+namespace Quantum\Tests\Libraries\Logger\Adapters;
 
-use Quantum\Libraries\Storage\FileSystem;
-use Quantum\Logger\Adapters\DailyAdapter;
-use Quantum\Logger\LoggerException;
+use Quantum\Libraries\Logger\Exceptions\LoggerException;
+use Quantum\Libraries\Logger\Adapters\DailyAdapter;
 use Quantum\Tests\AppTestCase;
-use Quantum\Di\Di;
 
 class DailyAdapterTest extends AppTestCase
 {
 
     private $adapter;
-    private $fileSystem;
 
     public function setUp(): void
     {
         parent::setUp();
-
-        $this->fileSystem = Di::get(FileSystem::class);
 
         $this->adapter = new DailyAdapter([
             'path' => base_dir() . DS . 'logs',
@@ -49,12 +44,11 @@ class DailyAdapterTest extends AppTestCase
 
         $logFile = base_dir() . DS . 'logs' . DS . date('Y-m-d') . '.log';
 
-        $this->assertTrue($this->fileSystem->exists($logFile));
+        $this->assertTrue($this->fs->exists($logFile));
 
-        $logContent = $this->fileSystem->get($logFile);
+        $logContent = $this->fs->get($logFile);
         $this->assertStringContainsString('Test log message', $logContent);
 
-        $this->fileSystem->remove($logFile);
+        $this->fs->remove($logFile);
     }
-
 }

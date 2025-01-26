@@ -12,12 +12,10 @@
  * @since 2.9.5
  */
 
-use Symfony\Component\VarExporter\Exception\ExceptionInterface;
-use Symfony\Component\VarExporter\VarExporter;
-use Quantum\Libraries\Config\ConfigException;
-use Quantum\Exceptions\DiException;
-use Quantum\Logger\LoggerException;
-use Quantum\Logger\LoggerManager;
+use Quantum\Libraries\Config\Exceptions\ConfigException;
+use Quantum\Libraries\Logger\Factories\LoggerFactory;
+use Quantum\Di\Exceptions\DiException;
+use Quantum\Exceptions\BaseException;
 
 /**
  * Reports error
@@ -26,12 +24,12 @@ use Quantum\Logger\LoggerManager;
  * @return void
  * @throws ConfigException
  * @throws DiException
- * @throws LoggerException
  * @throws ReflectionException
+ * @throws BaseException
  */
 function error($var, array $context = [])
 {
-    LoggerManager::getHandler()->error($var, $context);
+    LoggerFactory::get()->error($var, $context);
 }
 
 /**
@@ -39,14 +37,14 @@ function error($var, array $context = [])
  * @param $var
  * @param array $context
  * @return void
+ * @throws BaseException
  * @throws ConfigException
  * @throws DiException
- * @throws LoggerException
  * @throws ReflectionException
  */
 function warning($var, array $context = [])
 {
-    LoggerManager::getHandler()->warning($var, $context);
+    LoggerFactory::get()->warning($var, $context);
 }
 
 /**
@@ -54,14 +52,14 @@ function warning($var, array $context = [])
  * @param $var
  * @param array $context
  * @return void
+ * @throws BaseException
  * @throws ConfigException
  * @throws DiException
- * @throws LoggerException
  * @throws ReflectionException
  */
 function notice($var, array $context = [])
 {
-    LoggerManager::getHandler()->notice($var, $context);
+    LoggerFactory::get()->notice($var, $context);
 }
 
 /**
@@ -69,14 +67,14 @@ function notice($var, array $context = [])
  * @param $var
  * @param array $context
  * @return void
+ * @throws BaseException
  * @throws ConfigException
  * @throws DiException
- * @throws LoggerException
  * @throws ReflectionException
  */
 function info($var, array $context = [])
 {
-    LoggerManager::getHandler()->info($var, $context);
+    LoggerFactory::get()->info($var, $context);
 }
 
 /**
@@ -84,23 +82,12 @@ function info($var, array $context = [])
  * @param $var
  * @param array $context
  * @return void
+ * @throws BaseException
  * @throws ConfigException
  * @throws DiException
- * @throws LoggerException
  * @throws ReflectionException
  */
 function debug($var, array $context = [])
 {
-    LoggerManager::getHandler()->debug($var, $context);
-}
-
-/**
- * Exports the variable
- * @param mixed $var
- * @return string
- * @throws ExceptionInterface
- */
-function export($var): string
-{
-    return VarExporter::export($var);
+    LoggerFactory::get()->debug($var, $context);
 }

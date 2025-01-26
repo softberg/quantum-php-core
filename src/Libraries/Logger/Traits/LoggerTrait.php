@@ -12,21 +12,19 @@
  * @since 2.9.5
  */
 
-namespace Quantum\Logger\Adapters;
 
+namespace Quantum\Libraries\Logger\Traits;
+
+use Quantum\Libraries\Logger\Exceptions\LoggerException;
 use Quantum\Libraries\Storage\FileSystem;
-use Quantum\Logger\ReportableInterface;
-use Quantum\Exceptions\DiException;
-use Quantum\Logger\LoggerException;
-use ReflectionException;
-use Quantum\Di\Di;
 
 /**
- * Class BaseLogger
+ * Trait LoggerTrait
  * @package Quantum\Logger
  */
-abstract class BaseLogger implements ReportableInterface
+trait LoggerTrait
 {
+
     /**
      * @var FileSystem
      */
@@ -38,33 +36,26 @@ abstract class BaseLogger implements ReportableInterface
     protected $logFile;
 
     /**
-     * @param array $params
-     * @throws LoggerException
-     * @throws DiException
-     * @throws ReflectionException
-     */
-    public function __construct(array $params)
-    {
-        $this->fs = Di::get(FileSystem::class);
-        $this->initialize($params);
-    }
-
-    /**
-     * Initialize the adapter
+     * Initialize the logger
      * @param array $params
      * @throws LoggerException
      */
     abstract protected function initialize(array $params): void;
 
     /**
-     * @inheritDoc
+     * Reports a log message
+     * @param string $level
+     * @param $message
+     * @param array|null $context
+     * @return void
      */
-    public function report(string $level, $message, ?array $context = [])
+    public function report(string $level, $message, ?array $context = []): void
     {
         $this->fs->append($this->logFile, $this->formatMessage($level, $message, $context));
     }
 
     /**
+     * Formats the log message
      * @param string $level
      * @param $message
      * @param array|null $context
@@ -80,5 +71,4 @@ abstract class BaseLogger implements ReportableInterface
             isset($context['trace']) ? (PHP_EOL . $context['trace'] . PHP_EOL) : PHP_EOL
         );
     }
-
 }

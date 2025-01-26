@@ -12,16 +12,33 @@
  * @since 2.9.5
  */
 
-namespace Quantum\Logger\Adapters;
+namespace Quantum\Libraries\Logger\Adapters;
 
-use Quantum\Logger\LoggerException;
+use Quantum\Libraries\Logger\Contracts\ReportableInterface;
+use Quantum\Libraries\Storage\Factories\FileSystemFactory;
+use Quantum\Libraries\Logger\Exceptions\LoggerException;
+use Quantum\Libraries\Logger\Traits\LoggerTrait;
+use Quantum\Exceptions\BaseException;
 
 /**
  * Class DailyAdapter
  * @package Quantum\Logger
  */
-class DailyAdapter extends BaseLogger
+class DailyAdapter implements ReportableInterface
 {
+
+    use LoggerTrait;
+
+    /**
+     * @param array $params
+     * @throws LoggerException
+     * @throws BaseException
+     */
+    public function __construct(array $params)
+    {
+        $this->fs = FileSystemFactory::get();
+        $this->initialize($params);
+    }
 
     /**
      * Initialize the adapter for Daily logs
