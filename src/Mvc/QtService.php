@@ -28,11 +28,10 @@ class QtService
      * Handles the missing methods of the service
      * @param string $method
      * @param array $arguments
-     * @throws \Quantum\Exceptions\ServiceException
+     * @throws ServiceException
      */
     public function __call(string $method, array $arguments)
     {
         throw ServiceException::undefinedMethod($method);
     }
-
 }
