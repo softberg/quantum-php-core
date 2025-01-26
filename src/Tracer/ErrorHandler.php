@@ -14,19 +14,18 @@
 
 namespace Quantum\Tracer;
 
-use Quantum\Libraries\Storage\FileSystem;
-use Quantum\Exceptions\ViewException;
-use Quantum\Exceptions\DiException;
+use Quantum\Libraries\Config\Exceptions\ConfigException;
+use Quantum\Libraries\Storage\Factories\FileSystemFactory;
+use Symfony\Component\Console\Output\ConsoleOutput;
+use Quantum\Renderer\Exceptions\RendererException;
+use Quantum\Di\Exceptions\DiException;
+use Quantum\Exceptions\BaseException;
+use Quantum\Libraries\Logger\Logger;
 use Quantum\Factory\ViewFactory;
-use Twig\Error\RuntimeError;
-use Twig\Error\SyntaxError;
-use Twig\Error\LoaderError;
 use Quantum\Http\Response;
-use Quantum\Logger\Logger;
 use ReflectionException;
 use Psr\Log\LogLevel;
 use ErrorException;
-use Quantum\Di\Di;
 use ParseError;
 use Throwable;
 
@@ -93,7 +92,7 @@ class ErrorHandler
     }
 
     /**
-     * @return void
+     * @param Logger $logger
      */
     public function setup(Logger $logger)
     {
@@ -120,34 +119,62 @@ class ErrorHandler
     }
 
     /**
-     * @param Throwable $e
+     * @param Throwable $throwable
      * @return void
+     * @throws BaseException
+     * @throws ConfigException
      * @throws DiException
-     * @throws LoaderError
      * @throws ReflectionException
-     * @throws RuntimeError
-     * @throws SyntaxError
-     * @throws ViewException
+     * @throws RendererException
      */
-    public function handleException(Throwable $e): void
+    public function handleException(Throwable $throwable): void
+    {
+        if (PHP_SAPI === 'cli') {
+            $this->handleCliException($throwable);
+        } else {
+            $this->handleWebException($throwable);
+        }
+    }
+
+    /**
+     * @param Throwable $throwable
+     * @return void
+     */
+    private function handleCliException(Throwable $throwable): void
+    {
+        $output = new ConsoleOutput();
+        $output->writeln("<error>" . $throwable->getMessage() . "</error>");
+    }
+
+    /**
+     * @param Throwable $throwable
+     * @return void
+     * @throws BaseException
+     * @throws ConfigException
+     * @throws DiException
+     * @throws ReflectionException
+     * @throws RendererException
+     */
+    private function handleWebException(Throwable $throwable): void
     {
         $view = ViewFactory::getInstance();
-        $errorType = $this->getErrorType($e);
+        $errorType = $this->getErrorType($throwable);
 
         if (is_debug_mode()) {
             $errorPage = $view->renderPartial('errors' . DS . 'trace', [
                 'stackTrace' => $this->composeStackTrace($e),
-                'errorMessage' => $e->getMessage(),
+                'errorMessage' => $throwable->getMessage(),
                 'severity' => ucfirst($errorType),
             ]);
         } else {
             $errorPage = $view->renderPartial('errors' . DS . '500');
-            $this->logError($e, $errorType);
+            $this->logError($throwable, $errorType);
         }
 
         Response::html($errorPage);
         Response::send();
     }
+
 
     /**
      * @param Throwable $e
@@ -165,8 +192,7 @@ class ErrorHandler
      * Composes the stack trace
      * @param Throwable $e
      * @return array
-     * @throws DiException
-     * @throws ReflectionException
+     * @throws BaseException
      */
     private function composeStackTrace(Throwable $e): array
     {
@@ -197,12 +223,11 @@ class ErrorHandler
      * @param int $lineNumber
      * @param string $className
      * @return string
-     * @throws DiException
-     * @throws ReflectionException
+     * @throws BaseException
      */
     private function getSourceCode(string $filename, int $lineNumber, string $className): string
     {
-        $fs = Di::get(FileSystem::class);
+        $fs = FileSystemFactory::get();
 
         $lineNumber--;
 
