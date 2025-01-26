@@ -9,13 +9,15 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Factory;
 
 use Quantum\Exceptions\ServiceException;
+use Quantum\Di\Exceptions\DiException;
 use Quantum\Mvc\QtService;
+use ReflectionException;
 use Quantum\Di\Di;
 
 /**
@@ -35,10 +37,10 @@ class ServiceFactory
      * Creates and initiates the service once
      * @param string $serviceClass
      * @param array $args
-     * @return \Quantum\Mvc\QtService
-     * @throws \Quantum\Exceptions\DiException
-     * @throws \Quantum\Exceptions\ServiceException
-     * @throws \ReflectionException
+     * @return QtService
+     * @throws DiException
+     * @throws ServiceException
+     * @throws ReflectionException
      */
     public static function get(string $serviceClass, array $args = []): QtService
     {
@@ -49,10 +51,10 @@ class ServiceFactory
      * Creates and initiates the service
      * @param string $serviceClass
      * @param array $args
-     * @return \Quantum\Mvc\QtService
-     * @throws \Quantum\Exceptions\DiException
-     * @throws \Quantum\Exceptions\ServiceException
-     * @throws \ReflectionException
+     * @return QtService
+     * @throws DiException
+     * @throws ServiceException
+     * @throws ReflectionException
      */
     public static function create(string $serviceClass, array $args = []): QtService
     {
@@ -68,10 +70,10 @@ class ServiceFactory
      * Locates the service
      * @param string $serviceClass
      * @param array $args
-     * @return \Quantum\Mvc\QtService
-     * @throws \Quantum\Exceptions\DiException
-     * @throws \Quantum\Exceptions\ServiceException
-     * @throws \ReflectionException
+     * @return QtService
+     * @throws DiException
+     * @throws ServiceException
+     * @throws ReflectionException
      */
     private static function locate(string $serviceClass, array $args = []): QtService
     {
@@ -86,10 +88,10 @@ class ServiceFactory
      * Instantiates the service
      * @param string $serviceClass
      * @param array $args
-     * @return \Quantum\Mvc\QtService
-     * @throws \Quantum\Exceptions\DiException
-     * @throws \Quantum\Exceptions\ServiceException
-     * @throws \ReflectionException
+     * @return QtService
+     * @throws DiException
+     * @throws ServiceException
+     * @throws ReflectionException
      */
     private static function instantiate(string $serviceClass, array $args = []): QtService
     {
@@ -119,12 +121,11 @@ class ServiceFactory
      * @param callable $callable
      * @param array $args
      * @return array
-     * @throws \Quantum\Exceptions\DiException
-     * @throws \ReflectionException
+     * @throws DiException
+     * @throws ReflectionException
      */
     private static function getArgs(callable $callable, array $args): array
     {
         return Di::autowire($callable, $args);
     }
-
 }
