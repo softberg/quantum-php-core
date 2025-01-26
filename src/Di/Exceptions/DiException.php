@@ -12,13 +12,15 @@
  * @since 2.9.5
  */
 
-namespace Quantum\Exceptions;
+namespace Quantum\Di\Exceptions;
+
+use Quantum\Exceptions\BaseException;
 
 /**
  * Class DiException
  * @package Quantum\Exceptions
  */
-class DiException extends AppException
+class DiException extends BaseException
 {
     /**
      * @param string $name

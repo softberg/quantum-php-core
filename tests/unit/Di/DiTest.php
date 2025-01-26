@@ -21,9 +21,9 @@ namespace Quantum\Controllers {
 
 namespace Quantum\Tests\Di {
 
-    use Quantum\Libraries\Storage\FileSystem;
     use Quantum\Controllers\TestDiController;
-    use Quantum\Exceptions\DiException;
+    use Quantum\Libraries\Storage\FileSystem;
+    use Quantum\Di\Exceptions\DiException;
     use Quantum\Factory\ViewFactory;
     use Quantum\Tests\AppTestCase;
     use Quantum\Loader\Loader;
