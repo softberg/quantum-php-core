@@ -8,7 +8,7 @@ use Quantum\Tests\AppTestCase;
 class ConfigHelperFunctionsTest extends AppTestCase
 {
 
-    public function testAuthHelper()
+    public function testConfigHelper()
     {
         $this->assertInstanceOf(Config::class, config());
     }
