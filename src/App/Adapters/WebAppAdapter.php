@@ -108,7 +108,7 @@ class WebAppAdapter extends AppAdapter implements AppInterface
 
             stop();
         } catch (StopExecutionException $exception) {
-            self::handleCors($response);
+            $this->handleCors($response);
             $response->send();
 
             return $exception->getCode();

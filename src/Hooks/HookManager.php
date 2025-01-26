@@ -64,9 +64,9 @@ class HookManager
 
     /**
      * HookManager instance
-     * @return HookManager|null
+     * @return HookManager
      */
-    public static function getInstance(): ?HookManager
+    public static function getInstance(): HookManager
     {
         if (self::$instance == null) {
             self::$instance = new self();

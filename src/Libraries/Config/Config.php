@@ -44,9 +44,9 @@ class Config implements StorageInterface
 
     /**
      * GetInstance
-     * @return Config|null
+     * @return Config
      */
-    public static function getInstance(): ?Config
+    public static function getInstance(): Config
     {
         if (self::$instance === null) {
             self::$instance = new self();

@@ -32,9 +32,9 @@ class ViewFactory
 
     /**
      * QtView instance
-     * @return \Quantum\Mvc\QtView|null
+     * @return QtView
      */
-    public static function getInstance(): ?QtView
+    public static function getInstance(): QtView
     {
         if (self::$instance === null) {
             self::$instance = new QtView();
