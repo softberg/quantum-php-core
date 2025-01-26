@@ -1,13 +1,13 @@
 <?php
 
+namespace Quantum\Tests\Libraries\Transformer\Helpers;
 
-namespace Quantum\Tests\Libraries\Transformer;
+use Quantum\Tests\Libraries\Transformer\PostTransformer;
+use Quantum\Tests\AppTestCase;
 
-use Quantum\Libraries\Transformer\Transformer;
-use PHPUnit\Framework\TestCase;
-
-class TransformerTest extends TestCase
+class TransformerHelperFunctionsTest extends AppTestCase
 {
+
     public $posts = [
         [
             'id' => 1,
@@ -52,10 +52,9 @@ class TransformerTest extends TestCase
             'author' => 'Ken Watson'
         ]
     ];
-
-    public function testDataTransforming()
+    public function testTransformerHelper()
     {
-        $transformed = Transformer::transform($this->posts, new PostTransformer());
+        $transformed = transform($this->posts, new PostTransformer());
 
         $this->assertEquals($this->expected, $transformed);
     }

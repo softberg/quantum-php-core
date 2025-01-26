@@ -12,7 +12,7 @@
  * @since 2.8.0
  */
 
-namespace Quantum\Libraries\Transformer;
+namespace Quantum\Libraries\Transformer\Contracts;
 
 /**
  * Interface TransformerInterface

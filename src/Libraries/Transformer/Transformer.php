@@ -9,16 +9,18 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Libraries\Transformer;
+
+use Quantum\Libraries\Transformer\Contracts\TransformerInterface;
 
 /**
  * Class TransformerManager
  * @package Quantum\Libraries\Transformer
  */
-class TransformerManager
+class Transformer
 {
 
     /**
@@ -31,5 +33,4 @@ class TransformerManager
     {
         return array_map([$transformer, 'transform'], $data);
     }
-
 }
