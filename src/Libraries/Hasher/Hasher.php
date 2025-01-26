@@ -24,15 +24,6 @@ class Hasher
 {
 
     /**
-     * Supported algorithms
-     */
-    private const SUPPORTED_ALGORITHMS = [
-        PASSWORD_BCRYPT,
-        PASSWORD_ARGON2I,
-        PASSWORD_ARGON2ID
-    ];
-
-    /**
      * Default algorithm for hashing
      */
     private const DEFAULT_ALGORITHM = PASSWORD_BCRYPT;
@@ -64,14 +55,9 @@ class Hasher
      * Sets the algorithm
      * @param string $algorithm
      * @return $this
-     * @throws HasherException
      */
     public function setAlgorithm(string $algorithm): Hasher
     {
-        if (!in_array($algorithm, self::SUPPORTED_ALGORITHMS, true)) {
-            throw HasherException::algorithmNotSupported($algorithm);
-        }
-
         $this->algorithm = $algorithm;
         return $this;
     }

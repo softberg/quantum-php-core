@@ -156,7 +156,7 @@ class UploadedFileTest extends AppTestCase
 
         $this->expectException(FileSystemException::class);
 
-        $this->expectExceptionMessage('exception . file_already_exists');
+        $this->expectExceptionMessage('exception.file_already_exists');
 
         $uploadedFile->save(base_dir());
     }
