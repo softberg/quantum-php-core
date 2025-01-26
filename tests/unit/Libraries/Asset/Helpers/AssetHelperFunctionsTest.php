@@ -1,16 +1,22 @@
 <?php
 
-namespace Quantum\Tests\Helpers;
+namespace Quantum\Tests\Libraries\Asset\Helpers;
 
+use Quantum\Libraries\Asset\AssetManager;
 use Quantum\Libraries\Asset\Asset;
 use Quantum\Tests\AppTestCase;
 
-class AssetHelperTest extends AppTestCase
+class AssetHelperFunctionsTest extends AppTestCase
 {
 
     public function setUp(): void
     {
-        parent::setUp();
+        $this->setPrivateProperty(AssetManager::class, 'instance', null);
+    }
+
+    public function testAssetHelper()
+    {
+        $this->assertInstanceOf(AssetManager::class, asset());
     }
 
     public function testAssetUrl()
