@@ -6,7 +6,6 @@ namespace Quantum\Libraries\Lang {
     {
         return 'Test';
     }
-
 }
 
 namespace Quantum\Tests\Libraries\Lang {
@@ -15,9 +14,6 @@ namespace Quantum\Tests\Libraries\Lang {
     use Quantum\Libraries\Lang\Lang;
     use Quantum\Tests\AppTestCase;
 
-    /**
-     * @runTestsInSeparateProcesses
-     */
     class LangTest extends AppTestCase
     {
 
@@ -87,5 +83,4 @@ namespace Quantum\Tests\Libraries\Lang {
         }
 
     }
-
 }

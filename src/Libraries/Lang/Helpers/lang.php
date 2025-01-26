@@ -14,7 +14,6 @@
 
 use Quantum\Libraries\Lang\Lang;
 
-
 /**
  * Gets the current lang
  * @return string|null
@@ -44,6 +43,3 @@ function _t(string $key, $params = null)
 {
     echo t($key, $params);
 }
-
-
-

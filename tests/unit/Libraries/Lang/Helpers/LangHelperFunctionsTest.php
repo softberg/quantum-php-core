@@ -1,11 +1,11 @@
 <?php
 
-namespace Quantum\Tests\Helpers;
+namespace Quantum\Tests\Libraries\Lang\Helpers;
 
 use Quantum\Libraries\Lang\Lang;
 use Quantum\Tests\AppTestCase;
 
-class LangHelperTest extends AppTestCase
+class LangHelperFunctionsTest extends AppTestCase
 {
 
     public function setUp(): void
@@ -33,7 +33,7 @@ class LangHelperTest extends AppTestCase
 
         Lang::getInstance()->setTranslations($translations);
 
-        $this->assertEquals('Testing', t('custom.test'));
+        $this->assertEquals('Testing', t('custom.label'));
 
         $this->assertEquals('Information about the new feature', t('custom.info'));
     }
@@ -81,5 +81,4 @@ class LangHelperTest extends AppTestCase
 
         $this->assertEquals('custom.non_existing_key', t('custom.non_existing_key'));
     }
-
 }

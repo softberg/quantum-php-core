@@ -12,23 +12,16 @@
  * @since 2.9.5
  */
 
-namespace Quantum\Libraries\Lang;
+namespace Quantum\Libraries\Lang\Exceptions;
 
-use Quantum\Exceptions\AppException;
+use Quantum\Exceptions\BaseException;
 
 /**
  * Class LangException
  * @package Quantum\Libraries\Lang
  */
-class LangException extends AppException
+class LangException extends BaseException
 {
-    /**
-     * @return LangException
-     */
-    public static function misconfiguredConfig(): LangException
-    {
-        return new static(t('exception.misconfigured_lang_config'), E_WARNING);
-    }
 
     /**
      * @param string $name
