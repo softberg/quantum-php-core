@@ -12,7 +12,7 @@
  * @since 2.9.5
  */
 
-namespace Quantum\Libraries\Session\Handlers;
+namespace Quantum\Libraries\Session\Adapters\Database;
 
 use Quantum\Libraries\Database\Contracts\DbalInterface;
 use SessionHandlerInterface;
@@ -109,5 +109,4 @@ class DatabaseHandler implements SessionHandlerInterface
         $old = time() - $max_lifetime;
         return $this->sessionModel->criteria('ttl', '<', $old)->deleteMany();
     }
-
 }

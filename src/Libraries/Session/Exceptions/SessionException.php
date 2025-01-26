@@ -12,15 +12,15 @@
  * @since 2.9.5
  */
 
-namespace Quantum\Libraries\Session;
+namespace Quantum\Libraries\Session\Exceptions;
 
-use Quantum\Exceptions\AppException;
+use Quantum\Exceptions\BaseException;
 
 /**
  * Class SessionException
  * @package Quantum\Libraries\Session
  */
-class SessionException extends AppException
+class SessionException extends BaseException
 {
     /**
      * @return SessionException

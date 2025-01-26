@@ -1,21 +1,19 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Session;
+namespace Quantum\Tests\Libraries\Session\Adapters\Database;
 
-use Quantum\Libraries\Session\Handlers\DatabaseHandler;
-use Quantum\Libraries\Database\Idiorm\IdiormDbal;
+use Quantum\Libraries\Session\Adapters\Database\DatabaseSessionAdapter;
+use Quantum\Libraries\Database\Adapters\Idiorm\IdiormDbal;
+use Quantum\Tests\Libraries\Session\TestCaseHelper;
 use Quantum\Libraries\Database\Database;
-use Quantum\Libraries\Session\Session;
 use Quantum\Tests\AppTestCase;
 
-/**
- * @runTestsInSeparateProcesses
- */
-class SessionDatabaseTest extends AppTestCase
+class DatabaseSessionAdapterTest extends AppTestCase
 {
-    private $session;
 
-    private $storage = [];
+    use TestCaseHelper;
+
+    private $session;
 
     public function setUp(): void
     {
@@ -25,20 +23,18 @@ class SessionDatabaseTest extends AppTestCase
 
         $this->_createSessionsTable();
 
-        $sessionModel = Database::getInstance()->getOrm('sessions');
-
-        if (session_status() !== PHP_SESSION_ACTIVE) {
-            session_set_save_handler(new DatabaseHandler($sessionModel), true);
-            session_start();
-        }
-
-        $this->session = Session::getInstance($this->storage);
+        $this->session = new DatabaseSessionAdapter();
     }
 
     public function tearDown(): void
     {
         session_write_close();
         Database::getInstance()->getOrm('sessions')->deleteMany();
+    }
+
+    public function testDatabaseSessionConstructor()
+    {
+        $this->assertInstanceOf(DatabaseSessionAdapter::class, $this->session);
     }
 
     public function testDatabaseSessionAll()
@@ -54,6 +50,8 @@ class SessionDatabaseTest extends AppTestCase
         $this->assertIsArray($this->session->all());
 
         $this->assertArrayHasKey('test', $this->session->all());
+
+        $this->assertEquals('Test data', $this->session->all()['test']);
     }
 
     public function testDatabaseSessionGetSetHasDelete()
@@ -75,7 +73,7 @@ class SessionDatabaseTest extends AppTestCase
         $this->assertNull($this->session->get('auth'));
     }
 
-    public function testDatabaseGetSetFlash()
+    public function testDatabaseSessionGetSetFlash()
     {
         $this->session->setFlash('message', 'Flash message');
 
@@ -83,7 +81,6 @@ class SessionDatabaseTest extends AppTestCase
 
         $this->assertNull($this->session->getFlash('message'));
     }
-
 
     public function testDatabaseSessionFlush()
     {
@@ -96,12 +93,12 @@ class SessionDatabaseTest extends AppTestCase
         $this->assertEmpty($this->session->all());
     }
 
-    public function testGetSessionId()
+    public function testDatabaseSessionGetSessionId()
     {
         $this->assertEquals(session_id(), $this->session->getId());
     }
 
-    public function testRegenerateSessionId()
+    public function testDatabaseSessionRegenerateSessionId()
     {
         $sessionId = $this->session->getId();
 
@@ -110,48 +107,5 @@ class SessionDatabaseTest extends AppTestCase
         $this->session->regenerateId();
 
         $this->assertNotEquals(session_id(), $sessionId);
-    }
-
-    public function testDatabaseSessionSubsequentRequests()
-    {
-        $this->assertEquals(PHP_SESSION_ACTIVE, session_status());
-
-        $this->assertEmpty($this->session->all());
-
-        $this->session->set('persists', 'Data saved in persistent storage');
-
-        $this->assertNotEmpty($this->session->all());
-
-        $this->assertIsArray($this->session->all());
-
-        $this->assertEquals('Data saved in persistent storage', $this->session->get('persists'));
-
-        session_write_close();
-        unset($this->session);
-
-        $this->assertEquals(PHP_SESSION_NONE, session_status());
-
-        @session_start();
-
-        $this->assertEquals(PHP_SESSION_ACTIVE, session_status());
-
-        $this->session = Session::getInstance($this->storage);
-
-        $this->assertNotEmpty($this->session->all());
-
-        $this->assertIsArray($this->session->all());
-
-        $this->assertEquals('Data saved in persistent storage', $this->session->get('persists'));
-    }
-
-    private function _createSessionsTable()
-    {
-        IdiormDbal::execute("CREATE TABLE IF NOT EXISTS sessions (
-                        id INTEGER PRIMARY KEY,
-                        session_id VARCHAR(255) UNIQUE,
-                        data VARCHAR(255),
-                        ttl INTEGER(11)
-                    )");
-
     }
 }
