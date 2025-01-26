@@ -13,7 +13,7 @@ class DropboxFileSystemAdapterTest extends AppTestCase
     /**
      * @var DropboxFileSystemAdapter
      */
-    private $fs;
+    protected $fs;
 
     /**
      * @var string
@@ -41,24 +41,30 @@ class DropboxFileSystemAdapterTest extends AppTestCase
 
         $dropboxAppMock = Mockery::mock(DropboxApp::class);
 
-        $dropboxAppMock->shouldReceive('rpcRequest')->andReturnUsing(function ($endpoint, $params) {
-            self::$response = array_merge(self::$response, $params);
-            return self::$response;
-        });
+        $dropboxAppMock
+            ->shouldReceive('rpcRequest')
+            ->andReturnUsing(function ($endpoint, $params) {
+                self::$response = array_merge(self::$response, $params);
+                return self::$response;
+            });
 
-        $dropboxAppMock->shouldReceive('contentRequest')->andReturnUsing(function ($endpoint, $params, $content = '') {
-            if ($content) {
-                self::$response['content'] = $content;
-            }
+        $dropboxAppMock
+            ->shouldReceive('contentRequest')
+            ->andReturnUsing(function ($endpoint, $params, $content = '') {
+                if ($content) {
+                    self::$response['content'] = $content;
+                }
 
-            return self::$response['content'] ?? false;
-        });
+                return self::$response['content'] ?? false;
+            });
 
-        $dropboxAppMock->shouldReceive('path')->andReturnUsing(function ($path) {
-            return ['path' => '/' . trim($path, '/')];
-        });
+        $dropboxAppMock
+            ->shouldReceive('path')
+            ->andReturnUsing(function ($path) {
+                return ['path' => '/' . trim($path, '/')];
+            });
 
-        $this->fs = DropboxFileSystemAdapter::getInstance($dropboxAppMock);
+        $this->fs = new DropboxFileSystemAdapter($dropboxAppMock);
     }
 
     public function tearDown(): void
@@ -230,6 +236,4 @@ class DropboxFileSystemAdapterTest extends AppTestCase
         $this->assertFalse($this->fs->listDirectory('test'));
 
     }
-
 }
-

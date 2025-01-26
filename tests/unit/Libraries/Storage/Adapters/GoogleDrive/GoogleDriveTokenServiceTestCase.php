@@ -2,7 +2,7 @@
 
 namespace Quantum\Tests\Libraries\Storage\Adapters\GoogleDrive;
 
-use Quantum\Libraries\Storage\Adapters\GoogleDrive\TokenServiceInterface;
+use Quantum\Libraries\Storage\Contracts\TokenServiceInterface;
 use Mockery;
 
 trait GoogleDriveTokenServiceTestCase

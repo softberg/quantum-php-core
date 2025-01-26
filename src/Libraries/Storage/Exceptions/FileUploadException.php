@@ -12,21 +12,16 @@
  * @since 2.9.5
  */
 
-namespace Quantum\Exceptions;
+namespace Quantum\Libraries\Storage\Exceptions;
+
+use Quantum\Exceptions\BaseException;
 
 /**
  * Class FileUploadException
- * @package Quantum\Exceptions
+ * @package Quantum\Libraries\Storage
  */
-class FileUploadException extends AppException
+class FileUploadException extends BaseException
 {
-    /**
-     * @return FileUploadException
-     */
-    public static function fileNotUploaded(): FileUploadException
-    {
-        return new static(t('exception.file_not_uploaded'), E_WARNING);
-    }
 
     /**
      * @param string $name
@@ -36,5 +31,4 @@ class FileUploadException extends AppException
     {
         return new static(t('exception.file_type_not_allowed', $name), E_WARNING);
     }
-
 }

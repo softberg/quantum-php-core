@@ -12,13 +12,15 @@
  * @since 2.9.5
  */
 
-namespace Quantum\Exceptions;
+namespace Quantum\Libraries\Storage\Exceptions;
+
+use Quantum\Exceptions\BaseException;
 
 /**
  * Class FileSystemException
- * @package Quantum\Exceptions
+ * @package Quantum\Libraries\Storage
  */
-class FileSystemException extends AppException
+class FileSystemException extends BaseException
 {
 
     /**
@@ -46,5 +48,4 @@ class FileSystemException extends AppException
     {
         return new static(t('exception.file_already_exists'), E_WARNING);
     }
-
 }
