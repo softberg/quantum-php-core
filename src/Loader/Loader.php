@@ -14,10 +14,8 @@
 
 namespace Quantum\Loader;
 
-use Quantum\Libraries\Storage\Factories\FileSystemFactory;
 use Quantum\Loader\Exceptions\LoaderException;
-use Quantum\Libraries\Storage\FileSystem;
-use Quantum\Exceptions\BaseException;
+use Quantum\App\App;
 
 /**
  * Class Loader
@@ -55,21 +53,6 @@ class Loader
      * @var string
      */
     private $exceptionMessage;
-
-    /**
-     * File System
-     * @var FileSystem
-     */
-    private $fs;
-
-    /**
-     * Loader constructor
-     * @throws BaseException
-     */
-    public function __construct()
-    {
-        $this->fs = FileSystemFactory::get();
-    }
 
     /**
      * Setups the loader
@@ -139,11 +122,11 @@ class Loader
 
         $filePath .= $this->fileName . '.php';
 
-        if (!$this->fs->exists($filePath)) {
+        if (!file_exists($filePath)) {
             if ($this->hierarchical) {
-                $filePath = base_dir() . DS . 'shared' . DS . strtolower($this->pathPrefix) . DS . $this->fileName . '.php';
+                $filePath = App::getBaseDir() . DS . 'shared' . DS . strtolower($this->pathPrefix) . DS . $this->fileName . '.php';
 
-                if (!$this->fs->exists($filePath)) {
+                if (!file_exists($filePath)) {
                     throw new LoaderException(_message($this->exceptionMessage, $this->fileName));
                 }
             } else {

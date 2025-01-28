@@ -14,8 +14,8 @@
 
 namespace Quantum\Tracer;
 
-use Quantum\Libraries\Config\Exceptions\ConfigException;
 use Quantum\Libraries\Storage\Factories\FileSystemFactory;
+use Quantum\Libraries\Config\Exceptions\ConfigException;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Quantum\Renderer\Exceptions\RendererException;
 use Quantum\Di\Exceptions\DiException;
@@ -162,7 +162,7 @@ class ErrorHandler
 
         if (is_debug_mode()) {
             $errorPage = $view->renderPartial('errors' . DS . 'trace', [
-                'stackTrace' => $this->composeStackTrace($e),
+                'stackTrace' => $this->composeStackTrace($throwable),
                 'errorMessage' => $throwable->getMessage(),
                 'severity' => ucfirst($errorType),
             ]);

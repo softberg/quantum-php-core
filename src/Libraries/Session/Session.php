@@ -24,7 +24,13 @@ use Quantum\Exceptions\BaseException;
  * @method array all()
  * @method bool has(string $key)
  * @method mixed|null get(string $key)
+ * @method void set(string $key, $value)
+ * @method mixed|null getFlash(string $key)
+ * @method void setFlash(string $key, $value)
  * @method void delete(string $key)
+ * @method void flush()
+ * @method string|null getId()
+ * @method bool regenerateId()
  */
 class Session
 {

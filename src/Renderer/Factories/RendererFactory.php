@@ -35,8 +35,8 @@ class RendererFactory
      * Supported adapters
      */
     const ADAPTERS = [
-        'html' => HtmlAdapter::class,
-        'twig' => TwigAdapter::class,
+        Renderer::HTML => HtmlAdapter::class,
+        Renderer::TWIG => TwigAdapter::class,
     ];
 
     /**

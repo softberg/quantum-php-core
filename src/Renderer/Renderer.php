@@ -27,6 +27,16 @@ class Renderer
 {
 
     /**
+     * HTML adapter
+     */
+    const HTML = 'html';
+
+    /**
+     * Twig adapter
+     */
+    const TWIG = 'twig';
+
+    /**
      * @var TemplateRendererInterface
      */
     private $adapter;

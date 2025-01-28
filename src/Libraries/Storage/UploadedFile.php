@@ -14,7 +14,6 @@
 
 namespace Quantum\Libraries\Storage;
 
-use Gumlet\ImageResizeException;
 use Quantum\Libraries\Storage\Contracts\FilesystemAdapterInterface;
 use Quantum\Libraries\Storage\Exceptions\FileUploadException;
 use Quantum\Libraries\Storage\Exceptions\FileSystemException;
@@ -22,13 +21,14 @@ use Quantum\Libraries\Storage\Factories\FileSystemFactory;
 use Quantum\Libraries\Lang\Exceptions\LangException;
 use Quantum\Environment\Exceptions\EnvException;
 use Quantum\Exceptions\BaseException;
+use Gumlet\ImageResizeException;
 use Gumlet\ImageResize;
 use SplFileInfo;
 use finfo;
 
 /**
  * Class File
- * @package Quantum\Libraries\Upload
+ * @package Quantum\Libraries\Storage
  */
 class UploadedFile extends SplFileInfo
 {
