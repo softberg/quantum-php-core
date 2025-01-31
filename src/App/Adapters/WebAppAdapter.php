@@ -44,8 +44,6 @@ use Quantum\Http\Request;
 use ReflectionException;
 use Quantum\Di\Di;
 
-if (!defined('DS')) define('DS', DIRECTORY_SEPARATOR);
-
 /**
  * Class WebAppAdapter
  * @package Quantum\App

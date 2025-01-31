@@ -27,8 +27,6 @@ use Quantum\Di\Exceptions\DiException;
 use Quantum\Exceptions\BaseException;
 use ReflectionException;
 
-if (!defined('DS')) define('DS', DIRECTORY_SEPARATOR);
-
 /**
  * Class ConsoleAppAdapter
  * @package Quantum\App
