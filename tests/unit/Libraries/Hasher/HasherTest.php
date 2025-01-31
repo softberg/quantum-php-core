@@ -46,7 +46,13 @@ class HasherTest extends TestCase
 
     public function testNeedsRehash()
     {
+        $this->hasher->setCost(10);
+
         $hashed = $this->hasher->hash($this->password);
+
+        $this->assertFalse($this->hasher->needsRehash($hashed));
+
+        $this->hasher->setCost(12);
 
         $this->assertTrue($this->hasher->needsRehash($hashed));
 
@@ -63,5 +69,4 @@ class HasherTest extends TestCase
 
         $this->assertArrayHasKey('algoName', $this->hasher->info($hashed));
     }
-
 }

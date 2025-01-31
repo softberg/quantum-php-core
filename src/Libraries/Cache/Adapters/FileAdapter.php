@@ -14,16 +14,15 @@
 
 namespace Quantum\Libraries\Cache\Adapters;
 
+use Quantum\Libraries\Storage\Factories\FileSystemFactory;
 use Quantum\Libraries\Storage\FileSystem;
-use Quantum\Exceptions\DiException;
+use Quantum\Exceptions\BaseException;
 use Psr\SimpleCache\CacheInterface;
 use InvalidArgumentException;
-use ReflectionException;
-use Quantum\Di\Di;
 
 /**
  * Class FileAdapter
- * @package Quantum\Libraries\Cache\Adapters
+ * @package Quantum\Libraries\Cache
  */
 class FileAdapter implements CacheInterface
 {
@@ -50,12 +49,11 @@ class FileAdapter implements CacheInterface
 
     /**
      * @param array $params
-     * @throws DiException
-     * @throws ReflectionException
+     * @throws BaseException
      */
     public function __construct(array $params)
     {
-        $this->fs = Di::get(FileSystem::class);
+        $this->fs = FileSystemFactory::get();
         $this->ttl = $params['ttl'];
         $this->prefix = $params['prefix'];
         $this->cacheDir = $params['path'];
@@ -212,5 +210,4 @@ class FileAdapter implements CacheInterface
     {
         return $this->cacheDir . DS . sha1($this->prefix . $key);
     }
-
 }

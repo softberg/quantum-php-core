@@ -20,7 +20,7 @@ class MailerAdapterTraitTest extends AppTestCase
             config()->import(new Setup('config', 'mailer'));
         }
 
-        $this->adapter = SmtpAdapter::getInstance(config()->get('mailer.smtp'));
+        $this->adapter = new SmtpAdapter(config()->get('mailer.smtp'));
     }
 
     public function testMailerTraitSetGetFrom()
@@ -89,9 +89,8 @@ class MailerAdapterTraitTest extends AppTestCase
 
     public function testMailerTraitGetMessageId()
     {
-        $adapter = SendinblueAdapter::getInstance(config()->get('mailer.sendinblue'));
+        $adapter = new SendinblueAdapter(['api_key' => 'xxx11122233']);
 
         $this->assertIsString($adapter->getMessageId());
     }
-
 }

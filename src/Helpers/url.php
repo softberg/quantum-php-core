@@ -12,11 +12,9 @@
  * @since 2.9.5
  */
 
-use Quantum\Libraries\Database\Exceptions\DatabaseException;
-use Quantum\Libraries\Encryption\CryptorException;
-use Quantum\Libraries\Session\SessionException;
-use Quantum\Libraries\Config\ConfigException;
-use Quantum\Exceptions\DiException;
+use Quantum\Libraries\Config\Exceptions\ConfigException;
+use Quantum\Di\Exceptions\DiException;
+use Quantum\Exceptions\BaseException;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 
@@ -79,12 +77,11 @@ function redirect(string $url, int $code = 302)
  * @param string $url
  * @param array $data
  * @param int $code
- * @throws ReflectionException
+ * @return void
+ * @throws BaseException
  * @throws ConfigException
- * @throws CryptorException
- * @throws DatabaseException
  * @throws DiException
- * @throws SessionException
+ * @throws ReflectionException
  */
 function redirectWith(string $url, array $data, int $code = 302)
 {
@@ -96,12 +93,10 @@ function redirectWith(string $url, array $data, int $code = 302)
  * Gets old input values after redirect
  * @param string $key
  * @return mixed|null
- * @throws ReflectionException
  * @throws ConfigException
- * @throws CryptorException
- * @throws DatabaseException
  * @throws DiException
- * @throws SessionException
+ * @throws ReflectionException
+ * @throws BaseException
  */
 function old(string $key)
 {
@@ -127,5 +122,3 @@ function get_referrer(): ?string
 {
     return Request::getReferrer();
 }
-
-

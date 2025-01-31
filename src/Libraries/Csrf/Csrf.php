@@ -14,13 +14,13 @@
 
 namespace Quantum\Libraries\Csrf;
 
-use Quantum\Libraries\Database\Exceptions\DatabaseException;
-use Quantum\Libraries\Encryption\CryptorException;
-use Quantum\Libraries\Session\SessionException;
-use Quantum\Libraries\Config\ConfigException;
+use Quantum\Libraries\Encryption\Exceptions\CryptorException;
+use Quantum\Libraries\Config\Exceptions\ConfigException;
+use Quantum\Libraries\Csrf\Exceptions\CsrfException;
+use Quantum\Di\Exceptions\DiException;
 use Quantum\Libraries\Session\Session;
+use Quantum\Exceptions\BaseException;
 use Quantum\Libraries\Hasher\Hasher;
-use Quantum\Exceptions\DiException;
 use Quantum\Http\Request;
 use ReflectionException;
 
@@ -57,10 +57,9 @@ class Csrf
 
     /**
      * @throws ConfigException
-     * @throws SessionException
-     * @throws ReflectionException
-     * @throws DatabaseException
      * @throws DiException
+     * @throws ReflectionException
+     * @throws BaseException
      */
     private function __construct()
     {

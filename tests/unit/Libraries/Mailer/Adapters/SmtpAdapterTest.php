@@ -2,12 +2,11 @@
 
 namespace Quantum\Tests\Libraries\Mailer\Adapters;
 
+use Quantum\Libraries\Storage\Factories\FileSystemFactory;
+use Quantum\Libraries\Mailer\Contracts\MailerInterface;
 use Quantum\Libraries\Mailer\Adapters\SmtpAdapter;
-use Quantum\Libraries\Mailer\MailerInterface;
-use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Tests\AppTestCase;
 use Quantum\Loader\Setup;
-use Quantum\Di\Di;
 
 class SmtpAdapterTest extends AppTestCase
 {
@@ -22,9 +21,20 @@ class SmtpAdapterTest extends AppTestCase
             config()->import(new Setup('config', 'mailer'));
         }
 
-        config()->set('mail_trap', true);
+        $this->adapter = new SmtpAdapter(config()->get('mailer.smtp'));
+    }
 
-        $this->adapter = SmtpAdapter::getInstance(config()->get('mailer.smtp'));
+    public function tearDown(): void
+    {
+        parent::tearDown();
+
+        $fs = FileSystemFactory::get();
+
+        $emailFile = base_dir() . DS . 'shared' . DS . 'emails' . DS . $this->adapter->getMessageId() . '.eml';
+
+        if($fs->exists($emailFile)) {
+            $fs->remove($emailFile);
+        }
     }
 
     public function testSmtpAdapterInstance()
@@ -118,8 +128,5 @@ class SmtpAdapterTest extends AppTestCase
         $this->adapter->setBody('Lorem ipsum dolor sit amet');
 
         $this->assertTrue($this->adapter->send());
-
-        Di::get(FileSystem::class)->remove(base_dir() . DS . 'shared' . DS . 'emails' . DS . $this->adapter->getMessageId() . '.eml');
     }
-
 }

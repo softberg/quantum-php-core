@@ -9,18 +9,18 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Http\Request;
 
+use Quantum\Libraries\Storage\Factories\FileSystemFactory;
 use Quantum\Libraries\Storage\UploadedFile;
-use Quantum\Libraries\Storage\FileSystem;
-use Quantum\Exceptions\HttpException;
-use Quantum\Exceptions\DiException;
+use Quantum\Http\Exceptions\HttpException;
+use Quantum\Di\Exceptions\DiException;
+use Quantum\Exceptions\BaseException;
 use Quantum\Environment\Server;
 use ReflectionException;
-use Quantum\Di\Di;
 
 /**
  * Trait Params
@@ -100,6 +100,7 @@ trait Params
      * Parses the raw input
      * @param string $rawInput
      * @return array[]
+     * @throws BaseException
      * @throws DiException
      * @throws ReflectionException
      */
@@ -158,8 +159,8 @@ trait Params
      * Process blocks
      * @param array $blocks
      * @return array
+     * @throws BaseException
      * @throws DiException
-     * @throws ReflectionException
      */
     private static function processBlocks(array $blocks): array
     {
@@ -220,7 +221,7 @@ trait Params
      * @param string $block
      * @return array|null
      * @throws DiException
-     * @throws ReflectionException
+     * @throws BaseException
      */
     private static function getParsedFile(string $block): ?array
     {
@@ -230,7 +231,7 @@ trait Params
             return null;
         }
 
-        $fs = Di::get(FileSystem::class);
+        $fs = FileSystemFactory::get();
 
         $tempName = tempnam(sys_get_temp_dir(), 'qt_');
 
@@ -342,5 +343,4 @@ trait Params
 
         return $parameter;
     }
-
 }

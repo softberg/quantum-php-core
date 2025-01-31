@@ -18,7 +18,7 @@ namespace Quantum\Exceptions;
  * Class ViewException
  * @package Quantum\Exceptions
  */
-class ViewException extends AppException
+class ViewException extends BaseException
 {
     /**
      * @param string $name
@@ -36,13 +36,4 @@ class ViewException extends AppException
     {
         return new static(t('exception.layout_not_set'), E_ERROR);
     }
-
-    /**
-     * @return ViewException
-     */
-    public static function missingTemplateEngineConfigs(): ViewException
-    {
-        return new static(t('exception.template_engine_config_missing'), E_WARNING);
-    }
-
 }

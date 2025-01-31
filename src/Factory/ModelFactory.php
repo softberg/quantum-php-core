@@ -16,9 +16,9 @@ namespace Quantum\Factory;
 
 use Quantum\Libraries\Database\Exceptions\DatabaseException;
 use Quantum\Libraries\Database\Exceptions\ModelException;
-use Quantum\Libraries\Config\ConfigException;
+use Quantum\Libraries\Config\Exceptions\ConfigException;
 use Quantum\Libraries\Database\Database;
-use Quantum\Exceptions\DiException;
+use Quantum\Di\Exceptions\DiException;
 use Quantum\Loader\Setup;
 use Quantum\Mvc\QtModel;
 use ReflectionException;
@@ -42,7 +42,6 @@ class ModelFactory
      */
     public static function get(string $modelClass): QtModel
     {
-
         if (!class_exists($modelClass)) {
             throw ModelException::notFound($modelClass);
         }
@@ -61,5 +60,4 @@ class ModelFactory
 
         return $model;
     }
-
 }

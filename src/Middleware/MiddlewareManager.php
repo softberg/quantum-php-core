@@ -14,9 +14,9 @@
 
 namespace Quantum\Middleware;
 
-use Quantum\Exceptions\MiddlewareException;
-use Quantum\Http\Request;
+use Quantum\Middleware\Exceptions\MiddlewareException;
 use Quantum\Http\Response;
+use Quantum\Http\Request;
 
 /**
  * Class MiddlewareManager
@@ -48,10 +48,10 @@ class MiddlewareManager
 
     /**
      * Apply Middlewares
-     * @param \Quantum\Http\Request $request
-     * @param \Quantum\Http\Response $response
+     * @param Request $request
+     * @param Response $response
      * @return array
-     * @throws \Quantum\Exceptions\MiddlewareException
+     * @throws MiddlewareException
      */
     public function applyMiddlewares(Request $request, Response $response): array
     {
@@ -91,5 +91,4 @@ class MiddlewareManager
 
         return [$modifiedRequest, $modifiedResponse];
     }
-
 }

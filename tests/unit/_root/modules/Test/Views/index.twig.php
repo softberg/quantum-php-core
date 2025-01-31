@@ -1,0 +1,1 @@
+<p>Hello {{  (name ?? "World") }}, this is rendered twig view</p>

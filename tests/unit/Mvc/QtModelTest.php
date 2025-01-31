@@ -25,12 +25,12 @@ namespace Quantum\Models {
 
 namespace Quantum\Tests\Mvc {
 
-    use Quantum\Factory\ModelFactory;
+    use Quantum\Libraries\Database\Adapters\Idiorm\IdiormDbal;
     use Quantum\Libraries\Database\Exceptions\ModelException;
-    use Quantum\Libraries\Database\Idiorm\IdiormDbal;
+    use Quantum\Factory\ModelFactory;
     use Quantum\Models\ProfileModel;
-    use Quantum\Mvc\QtModel;
     use Quantum\Tests\AppTestCase;
+    use Quantum\Mvc\QtModel;
 
     class QtModelTest extends AppTestCase
     {
@@ -239,5 +239,4 @@ namespace Quantum\Tests\Mvc {
             $this->assertEquals($expected, $actual);
         }
     }
-
 }

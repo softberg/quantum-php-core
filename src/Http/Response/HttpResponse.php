@@ -14,9 +14,10 @@
 
 namespace Quantum\Http\Response;
 
+use Quantum\Libraries\Lang\Exceptions\LangException;
 use Quantum\Exceptions\StopExecutionException;
-use Quantum\Libraries\Lang\LangException;
-use Quantum\Exceptions\HttpException;
+use Quantum\Http\Exceptions\HttpException;
+use Quantum\Environment\Environment;
 use InvalidArgumentException;
 use SimpleXMLElement;
 use DOMDocument;
@@ -116,10 +117,10 @@ abstract class HttpResponse
      */
     public static function send()
     {
-        $level = ob_get_level();
-
-        for ($i = 0; $i < $level; $i++) {
-            ob_end_clean();
+        if (Environment::getInstance()->getAppEnv() != 'testing') {
+            while (ob_get_level() > 0) {
+                ob_end_clean();
+            }
         }
 
         foreach (self::$__headers as $key => $value) {
@@ -346,5 +347,4 @@ abstract class HttpResponse
             }
         }
     }
-
 }

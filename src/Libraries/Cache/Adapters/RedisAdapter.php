@@ -22,7 +22,7 @@ use Redis;
 
 /**
  * Class RedisAdapter
- * @package Quantum\Libraries\Cache\Adapters
+ * @package Quantum\Libraries\Cache
  */
 class RedisAdapter implements CacheInterface
 {
@@ -185,5 +185,4 @@ class RedisAdapter implements CacheInterface
     {
         return sha1($this->prefix . $key);
     }
-
 }

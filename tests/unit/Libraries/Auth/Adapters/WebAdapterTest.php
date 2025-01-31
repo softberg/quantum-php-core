@@ -2,11 +2,11 @@
 
 namespace Quantum\Tests\Libraries\Auth\Adapters;
 
+use Quantum\Libraries\Auth\Exceptions\AuthException;
 use Quantum\Libraries\Auth\Adapters\WebAdapter;
 use Quantum\Tests\Libraries\Auth\AuthTestCase;
-use Quantum\Libraries\Auth\AuthException;
 use Quantum\Libraries\Hasher\Hasher;
-use ReflectionClass;
+use Quantum\Libraries\Auth\User;
 
 class WebAdapterTest extends AuthTestCase
 {
@@ -17,15 +17,7 @@ class WebAdapterTest extends AuthTestCase
     {
         parent::setUp();
 
-        $reflection = new ReflectionClass(WebAdapter::class);
-
-        if ($reflection->hasProperty('instance')) {
-            $instanceProperty = $reflection->getProperty('instance');
-            $instanceProperty->setAccessible(true);
-            $instanceProperty->setValue(null);
-        }
-
-        $this->webAuth = WebAdapter::getInstance($this->authService, $this->mailer, new Hasher);
+        $this->webAuth = new WebAdapter($this->authService, $this->mailer, new Hasher);
 
         $admin = $this->webAuth->signup($this->adminUser);
 
@@ -60,32 +52,37 @@ class WebAdapterTest extends AuthTestCase
         $this->assertTrue($this->webAuth->signin('admin@qt.com', 'qwerty', true));
     }
 
+    public function testWebSigninWithRemember()
+    {
+        $this->webAuth->signin('admin@qt.com', 'qwerty', true);
+
+        session()->delete('auth_user');
+
+        $this->assertTrue($this->webAuth->check());
+    }
+
     public function testWebSignout()
     {
-        $this->assertFalse(session()->has('auth_user'));
+        $this->assertFalse($this->webAuth->check());
 
         $this->webAuth->signin('admin@qt.com', 'qwerty');
 
-        $this->assertTrue(session()->has('auth_user'));
+        $this->assertTrue($this->webAuth->check());
 
         $this->webAuth->signout();
 
-        $this->assertFalse(session()->has('auth_user'));
+        $this->assertFalse($this->webAuth->check());
     }
 
     public function testWebUser()
     {
         $this->webAuth->signin('admin@qt.com', 'qwerty');
 
+        $this->assertInstanceOf(User::class, $this->webAuth->user());
+
         $this->assertEquals('admin@qt.com', $this->webAuth->user()->getFieldValue('email'));
 
         $this->assertEquals('admin', $this->webAuth->user()->getFieldValue('role'));
-
-        $this->webAuth->signin('admin@qt.com', 'qwerty', true);
-
-        session()->delete('auth_user');
-
-        $this->assertEquals('admin@qt.com', $this->webAuth->user()->getFieldValue('email'));
     }
 
     public function testWebCheck()
@@ -109,7 +106,7 @@ class WebAdapterTest extends AuthTestCase
         $this->assertTrue($this->webAuth->signin('guest@qt.com', '123456'));
     }
 
-    public function testWebSignupAndActivteAccount()
+    public function testWebSignupAndActivateAccount()
     {
         $user = $this->webAuth->signup($this->guestUser);
 
@@ -166,5 +163,4 @@ class WebAdapterTest extends AuthTestCase
 
         $this->assertIsString($this->webAuth->resendOtp($otp_token));
     }
-
 }

@@ -9,13 +9,13 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Loader;
 
-use Quantum\Libraries\Storage\FileSystem;
-use Quantum\Exceptions\LoaderException;
+use Quantum\Loader\Exceptions\LoaderException;
+use Quantum\App\App;
 
 /**
  * Class Loader
@@ -55,21 +55,6 @@ class Loader
     private $exceptionMessage;
 
     /**
-     * File System
-     * @var FileSystem
-     */
-    private $fs;
-
-    /**
-     * Loader constructor
-     * @param FileSystem|null $fs
-     */
-    public function __construct(FileSystem $fs = null)
-    {
-        $this->fs = $fs;
-    }
-
-    /**
      * Setups the loader
      * @param Setup $setup
      * @return $this
@@ -103,8 +88,8 @@ class Loader
      */
     public function loadDir(string $dir)
     {
-        foreach ($this->fs->glob($dir . DS . "*.php") as $filename) {
-            $this->fs->require($filename, true);
+        foreach (glob($dir . DS . "*.php") as $filename) {
+            require_once $filename;
         }
     }
 
@@ -137,11 +122,11 @@ class Loader
 
         $filePath .= $this->fileName . '.php';
 
-        if (!$this->fs->exists($filePath)) {
+        if (!file_exists($filePath)) {
             if ($this->hierarchical) {
-                $filePath = base_dir() . DS . 'shared' . DS . strtolower($this->pathPrefix) . DS . $this->fileName . '.php';
+                $filePath = App::getBaseDir() . DS . 'shared' . DS . strtolower($this->pathPrefix) . DS . $this->fileName . '.php';
 
-                if (!$this->fs->exists($filePath)) {
+                if (!file_exists($filePath)) {
                     throw new LoaderException(_message($this->exceptionMessage, $this->fileName));
                 }
             } else {
@@ -151,5 +136,4 @@ class Loader
 
         return $filePath;
     }
-
 }

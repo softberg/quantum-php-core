@@ -2,108 +2,60 @@
 
 namespace Quantum\Tests\Libraries\Session;
 
+use Quantum\Libraries\Session\Adapters\Database\DatabaseSessionAdapter;
+use Quantum\Libraries\Session\Adapters\Native\NativeSessionAdapter;
+use Quantum\Libraries\Session\Contracts\SessionStorageInterface;
+use Quantum\Libraries\Session\Exceptions\SessionException;
 use Quantum\Libraries\Session\Session;
-use Quantum\Loader\Setup;
 use Quantum\Tests\AppTestCase;
+use Quantum\Loader\Setup;
 
 class SessionTest extends AppTestCase
 {
-
-    private $session;
-
-    private $srotage = [];
 
     public function setUp(): void
     {
         parent::setUp();
 
-        if (session_status() !== PHP_SESSION_ACTIVE) {
-            session_start();
+        parent::setUp();
+
+        if (!config()->has('session')) {
+            config()->import(new Setup('config', 'session'));
         }
-
-        $this->session = Session::getInstance($this->srotage);
     }
 
-    public function tearDown(): void
+    public function testSessionGetAdapter()
     {
-        $this->session->flush();
+        $session = new Session(new NativeSessionAdapter());
+
+        $this->assertInstanceOf(NativeSessionAdapter::class, $session->getAdapter());
+
+        $this->assertInstanceOf(SessionStorageInterface::class, $session->getAdapter());
+
+        $session = new Session(new DatabaseSessionAdapter());
+
+        $this->assertInstanceOf(DatabaseSessionAdapter::class, $session->getAdapter());
+
+        $this->assertInstanceOf(SessionStorageInterface::class, $session->getAdapter());
     }
 
-    public function testSessionConstructor()
+    public function testSessionCallingValidMethod()
     {
-        $this->assertInstanceOf(Session::class, $this->session);
+        $session = new Session(new NativeSessionAdapter());
+
+        $session->set('test', 'Test data');
+
+        $this->assertEquals('Test data', $session->get('test'));
     }
 
-    public function testSessionAll()
+    public function testSessionCallingInvalidMethod()
     {
-        $this->assertEmpty($this->session->all());
+        $mailer = new Session(new NativeSessionAdapter());
 
-        $this->session->set('test', 'Test data');
+        $this->expectException(SessionException::class);
 
-        $this->session->set('user', ['username' => 'test@unit.com']);
+        $this->expectExceptionMessage('The method `callingInvalidMethod` is not supported for `' . NativeSessionAdapter::class . '`');
 
-        $this->assertNotEmpty($this->session->all());
-
-        $this->assertIsArray($this->session->all());
-
-        $this->assertArrayHasKey('test', $this->session->all());
+        $mailer->callingInvalidMethod();
     }
-
-    public function testSessionGetSetHasDelete()
-    {
-        $this->assertNull($this->session->get('auth'));
-
-        $this->assertFalse($this->session->has('auth'));
-
-        $this->session->set('auth', 'Authenticated');
-
-        $this->assertTrue($this->session->has('auth'));
-
-        $this->assertEquals('Authenticated', $this->session->get('auth'));
-
-        $this->session->delete('auth');
-
-        $this->assertFalse($this->session->has('auth'));
-
-        $this->assertNull($this->session->get('auth'));
-    }
-
-    public function testGetSetFlash()
-    {
-        $this->session->setFlash('message', 'Flash message');
-
-        $this->assertEquals('Flash message', $this->session->getFlash('message'));
-
-        $this->assertNull($this->session->getFlash('message'));
-    }
-
-    public function testSessionFlush()
-    {
-        $this->session->set('test', 'Test data');
-
-        $this->assertNotEmpty($this->session->all());
-
-        $this->session->flush();
-
-        $this->assertEmpty($this->session->all());
-
-        session_start();
-    }
-
-    public function testGetSessionId()
-    {
-        $this->assertEquals(session_id(), $this->session->getId());
-    }
-
-    public function testRegenerateSessionId()
-    {
-        $sessionId = $this->session->getId();
-
-        $this->assertEquals(session_id(), $sessionId);
-
-        $this->session->regenerateId();
-
-        $this->assertNotEquals(session_id(), $sessionId);
-    }
-
 }

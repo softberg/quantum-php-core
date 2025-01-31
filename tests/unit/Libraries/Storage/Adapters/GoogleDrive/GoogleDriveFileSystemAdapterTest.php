@@ -13,7 +13,7 @@ class GoogleDriveFileSystemAdapterTest extends AppTestCase
     /**
      * @var GoogleDriveFileSystemAdapter
      */
-    private $fs;
+    protected $fs;
 
     /**
      * @var string
@@ -54,7 +54,7 @@ class GoogleDriveFileSystemAdapterTest extends AppTestCase
             return (object)self::$response;
         });
 
-        $this->fs = GoogleDriveFileSystemAdapter::getInstance($googleDrive);
+        $this->fs = new GoogleDriveFileSystemAdapter($googleDrive);
     }
 
     public function tearDown(): void
@@ -215,6 +215,4 @@ class GoogleDriveFileSystemAdapterTest extends AppTestCase
         $this->assertFalse($this->fs->listDirectory('test'));
 
     }
-
 }
-

@@ -90,5 +90,4 @@ trait Body
             unset(self::$__request[$key]);
         }
     }
-
 }

@@ -9,17 +9,18 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.6.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Libraries\Validation;
 
+use Quantum\Libraries\Validation\Rules\Resource;
 use Quantum\Libraries\Validation\Rules\General;
+use Quantum\Libraries\Validation\Rules\Length;
+use Quantum\Libraries\Validation\Rules\Lists;
 use Quantum\Libraries\Validation\Rules\Type;
 use Quantum\Libraries\Validation\Rules\File;
-use Quantum\Libraries\Validation\Rules\Lists;
-use Quantum\Libraries\Validation\Rules\Length;
-use Quantum\Libraries\Validation\Rules\Resource;
+use Closure;
 
 /**
  * Class Validator
@@ -96,7 +97,7 @@ class Validator
     public function updateRule(string $field, array $rule)
     {
         if (!empty($field)) {
-            if (isset($this->rules[$field]) && isset($this->rules[$field][array_keys($rule)[0]])) {
+            if (isset($this->rules[$field][array_keys($rule)[0]])) {
                 $this->rules[$field][array_keys($rule)[0]] = array_values($rule)[0];
             }
         }
@@ -176,9 +177,9 @@ class Validator
     /**
      * Adds custom validation
      * @param string $rule
-     * @param \Closure $function
+     * @param Closure $function
      */
-    public function addValidation(string $rule, \Closure $function)
+    public function addValidation(string $rule, Closure $function)
     {
         if (!empty($rule) && is_callable($function)) {
             $this->customValidations[$rule] = $function;
@@ -242,10 +243,10 @@ class Validator
 
     /**
      * Calls custom function defined by developer
-     * @param \Closure $function
+     * @param Closure $function
      * @param array $data
      */
-    protected function callCustomFunction(\Closure $function, array $data)
+    protected function callCustomFunction(Closure $function, array $data)
     {
         if (!empty($data['value'])) {
             if (is_callable($function)) {
@@ -255,5 +256,4 @@ class Validator
             }
         }
     }
-
 }

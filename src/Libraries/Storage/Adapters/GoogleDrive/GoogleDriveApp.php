@@ -14,18 +14,24 @@
 
 namespace Quantum\Libraries\Storage\Adapters\GoogleDrive;
 
+use Quantum\Libraries\Storage\Contracts\TokenServiceInterface;
+use Quantum\Libraries\Encryption\Exceptions\CryptorException;
 use Quantum\Libraries\Database\Exceptions\DatabaseException;
-use Quantum\Libraries\Encryption\CryptorException;
-use Quantum\Libraries\Curl\HttpClient;
-use Quantum\Exceptions\AppException;
+use Quantum\Libraries\Storage\Contracts\CloudAppInterface;
+use Quantum\Libraries\Storage\Traits\CloudAppTrait;
+use Quantum\Libraries\HttpClient\HttpClient;
+use Quantum\Exceptions\BaseException;
 use Exception;
 
 /**
  * Class GoogleDriveApp
  * @package Quantum\Libraries\Storage
  */
-class GoogleDriveApp
+class GoogleDriveApp implements CloudAppInterface
 {
+
+    use CloudAppTrait;
+
     /**
      * Authorization URL
      */
@@ -106,7 +112,7 @@ class GoogleDriveApp
      * @param string $redirectUrl
      * @param string $accessType
      * @return string
-     * @throws AppException
+     * @throws BaseException
      * @throws CryptorException
      * @throws DatabaseException
      */
@@ -128,13 +134,11 @@ class GoogleDriveApp
      * Fetch tokens
      * @param string $code
      * @param string $redirectUrl
-     * @param bool $byRefresh
      * @return object|null
      * @throws Exception
      */
     public function fetchTokens(string $code, string $redirectUrl = ''): ?object
     {
-
         $params = [
             'code' => $code,
             'grant_type' => 'authorization_code',
@@ -170,50 +174,6 @@ class GoogleDriveApp
         $this->tokenService->saveTokens($response->access_token);
 
         return $response->access_token;
-    }
-
-    /**
-     * Sends rpc request
-     * @param string $uri
-     * @param mixed|null $data
-     * @param array $headers
-     * @param string $method
-     * @return mixed|null
-     * @throws Exception
-     */
-    public function sendRequest(string $uri, $data = null, array $headers = [], string $method = 'POST')
-    {
-        $this->httpClient
-            ->createRequest($uri)
-            ->setMethod($method)
-            ->setData($data)
-            ->setHeaders($headers)
-            ->start();
-
-        $responseBody = $this->httpClient->getResponseBody();
-
-        if ($errors = $this->httpClient->getErrors()) {
-            $code = $errors['code'];
-
-            if ($this->accessTokenNeedsRefresh($code)) {
-                $prevUrl = $this->httpClient->url();
-                $prevData = $this->httpClient->getData();
-                $prevHeaders = $this->httpClient->getRequestHeaders();
-
-                $refreshToken = $this->tokenService->getRefreshToken();
-
-                $accessToken = $this->fetchAccessTokenByRefreshToken($refreshToken);
-
-                $prevHeaders['Authorization'] = 'Bearer ' . $accessToken;
-
-                $responseBody = $this->sendRequest($prevUrl, $prevData, $prevHeaders);
-
-            } else {
-                throw new Exception(json_encode($responseBody ?? $errors), E_ERROR);
-            }
-        }
-
-        return $responseBody;
     }
 
     /**
@@ -254,11 +214,12 @@ class GoogleDriveApp
     /**
      * Checks if the access token need refresh
      * @param int $code
+     * @param object|null $message
      * @return bool
      */
-    private function accessTokenNeedsRefresh(int $code): bool
+    private function accessTokenNeedsRefresh(int $code, ?object $message = null): bool
     {
-        if ($code != 401) {
+        if ($code != self::INVALID_TOKEN_ERROR_CODE) {
             return false;
         }
 

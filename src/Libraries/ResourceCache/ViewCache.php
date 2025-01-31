@@ -15,17 +15,15 @@
 namespace Quantum\Libraries\ResourceCache;
 
 use Quantum\Libraries\Database\Exceptions\DatabaseException;
-use Quantum\Libraries\Session\SessionException;
-use Quantum\Libraries\Config\ConfigException;
-use Quantum\Libraries\Lang\LangException;
-use Quantum\Libraries\Storage\FileSystem;
-use Quantum\Exceptions\DiException;
+use Quantum\Libraries\Storage\Factories\FileSystemFactory;
+use Quantum\Libraries\Session\Exceptions\SessionException;
+use Quantum\Libraries\Config\Exceptions\ConfigException;
+use Quantum\Di\Exceptions\DiException;
+use Quantum\Exceptions\BaseException;
 use Quantum\Loader\Setup;
 use ReflectionException;
 use voku\helper\HtmlMin;
-use Quantum\Di\Di;
 use Exception;
-
 
 /**
  * ViewCache class
@@ -33,6 +31,7 @@ use Exception;
  */
 class ViewCache
 {
+
     /**
      * @var string
      */
@@ -46,7 +45,7 @@ class ViewCache
     /**
      * @var bool
      */
-    private $isEnabled = false;
+    private $isEnabled;
 
     /**
      * @var bool
@@ -74,14 +73,13 @@ class ViewCache
 
     /**
      * @throws DiException
-     * @throws ReflectionException
      * @throws Exception
      */
     public function __construct()
     {
         $this->isEnabled = filter_var(config()->get('resource_cache'), FILTER_VALIDATE_BOOLEAN);
 
-        $this->fs = Di::get(FileSystem::class);
+        $this->fs = FileSystemFactory::get();
     }
 
     /**
@@ -110,12 +108,10 @@ class ViewCache
      * @param string $key
      * @param string $content
      * @return $this
+     * @throws BaseException
      * @throws ConfigException
-     * @throws DatabaseException
      * @throws DiException
-     * @throws LangException
      * @throws ReflectionException
-     * @throws SessionException
      */
     public function set(string $key, string $content): ViewCache
     {
@@ -131,10 +127,10 @@ class ViewCache
     /**
      * @param string $key
      * @return string|null
+     * @throws BaseException
      * @throws ConfigException
      * @throws DatabaseException
      * @throws DiException
-     * @throws LangException
      * @throws ReflectionException
      * @throws SessionException
      */
@@ -150,16 +146,15 @@ class ViewCache
     /**
      * @param string $key
      * @return void
+     * @throws BaseException
      * @throws ConfigException
-     * @throws DatabaseException
      * @throws DiException
-     * @throws LangException
      * @throws ReflectionException
-     * @throws SessionException
      */
     public function delete(string $key): void
     {
         $cacheFile = $this->getCacheFile($key);
+
         if ($this->fs->exists($cacheFile)) {
             $this->fs->remove($cacheFile);
         }
@@ -168,12 +163,10 @@ class ViewCache
     /**
      * @param string $key
      * @return bool
+     * @throws BaseException
      * @throws ConfigException
-     * @throws DatabaseException
      * @throws DiException
-     * @throws LangException
      * @throws ReflectionException
-     * @throws SessionException
      */
     public function exists(string $key): bool
     {
@@ -255,10 +248,9 @@ class ViewCache
      * @param string $key
      * @return string
      * @throws ConfigException
-     * @throws DatabaseException
      * @throws DiException
      * @throws ReflectionException
-     * @throws SessionException
+     * @throws BaseException
      */
     private function getCacheFile(string $key): string
     {

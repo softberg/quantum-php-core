@@ -9,15 +9,13 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Libraries\Module;
 
-use Quantum\Libraries\Storage\FileSystem;
-use Quantum\Exceptions\DiException;
-use ReflectionException;
-use Quantum\Di\Di;
+use Quantum\Libraries\Storage\Factories\FileSystemFactory;
+use Quantum\Exceptions\BaseException;
 use Exception;
 
 class ModuleManager
@@ -62,8 +60,7 @@ class ModuleManager
      * @param string $template
      * @param string $demo
      * @param bool $enabled
-     * @throws DiException
-     * @throws ReflectionException
+     * @throws BaseException
      */
     function __construct(string $moduleName, string $template, string $demo, bool $enabled)
     {
@@ -81,7 +78,7 @@ class ModuleManager
 
         $this->modulePath = modules_dir() . DS . self::$moduleName;
 
-        $this->fs = Di::get(FileSystem::class);
+        $this->fs = FileSystemFactory::get();
     }
 
     /**

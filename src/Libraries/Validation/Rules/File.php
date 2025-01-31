@@ -14,7 +14,7 @@
 
 namespace Quantum\Libraries\Validation\Rules;
 
-use Quantum\Exceptions\FileUploadException;
+use Quantum\Libraries\Storage\Exceptions\FileUploadException;
 use Quantum\Libraries\Storage\UploadedFile;
 
 /**
@@ -107,5 +107,4 @@ trait File
             }
         }
     }
-
 }

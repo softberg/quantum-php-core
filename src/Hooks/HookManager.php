@@ -14,9 +14,9 @@
 
 namespace Quantum\Hooks;
 
-use Quantum\Libraries\Config\ConfigException;
-use Quantum\Exceptions\HookException;
-use Quantum\Exceptions\DiException;
+use Quantum\Libraries\Config\Exceptions\ConfigException;
+use Quantum\Hooks\Exceptions\HookException;
+use Quantum\Di\Exceptions\DiException;
 use Quantum\Loader\Setup;
 use ReflectionException;
 
@@ -64,9 +64,9 @@ class HookManager
 
     /**
      * HookManager instance
-     * @return HookManager|null
+     * @return HookManager
      */
-    public static function getInstance(): ?HookManager
+    public static function getInstance(): HookManager
     {
         if (self::$instance == null) {
             self::$instance = new self();

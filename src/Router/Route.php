@@ -15,10 +15,10 @@
 namespace Quantum\Router;
 
 use Quantum\Libraries\Database\Exceptions\DatabaseException;
-use Quantum\Libraries\Session\SessionException;
-use Quantum\Libraries\Config\ConfigException;
-use Quantum\Exceptions\RouteException;
-use Quantum\Exceptions\DiException;
+use Quantum\Libraries\Session\Exceptions\SessionException;
+use Quantum\Libraries\Config\Exceptions\ConfigException;
+use Quantum\Router\Exceptions\RouteException;
+use Quantum\Di\Exceptions\DiException;
 use ReflectionException;
 use Closure;
 

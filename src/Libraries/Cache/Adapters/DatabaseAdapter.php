@@ -23,7 +23,7 @@ use Exception;
 
 /**
  * Class DatabaseAdapter
- * @package Quantum\Libraries\Cache\Adapters
+ * @package Quantum\Libraries\Cache
  */
 class DatabaseAdapter implements CacheInterface
 {
@@ -197,5 +197,4 @@ class DatabaseAdapter implements CacheInterface
     {
         return sha1($this->prefix . $key);
     }
-
 }

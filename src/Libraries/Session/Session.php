@@ -14,150 +14,70 @@
 
 namespace Quantum\Libraries\Session;
 
-use Quantum\Libraries\Encryption\CryptorException;
+use Quantum\Libraries\Session\Contracts\SessionStorageInterface;
+use Quantum\Libraries\Session\Exceptions\SessionException;
+use Quantum\Exceptions\BaseException;
 
 /**
  * Class Session
  * @package Quantum\Libraries\Session
+ * @method array all()
+ * @method bool has(string $key)
+ * @method mixed|null get(string $key)
+ * @method void set(string $key, $value)
+ * @method mixed|null getFlash(string $key)
+ * @method void setFlash(string $key, $value)
+ * @method void delete(string $key)
+ * @method void flush()
+ * @method string|null getId()
+ * @method bool regenerateId()
  */
-class Session implements SessionStorageInterface
+class Session
 {
 
     /**
-     * Session storage
-     * @var array $storage
+     * Native session adapter
      */
-    private static $storage = [];
+    const NATIVE = 'native';
 
     /**
-     * Session instance
-     * @var Session|null
+     * Database session adapter
      */
-    private static $instance = null;
+    const DATABASE = 'database';
 
     /**
-     * Session constructor.
+     * @var SessionStorageInterface
      */
-    private function __construct()
+    private $adapter;
+
+    /**
+     * @param SessionStorageInterface $adapter
+     */
+    public function __construct(SessionStorageInterface $adapter)
     {
-        // Preventing to create new object through constructor
+        $this->adapter = $adapter;
     }
 
     /**
-     * Gets the session instance
-     * @param array $storage
-     * @return Session|null
+     * @return SessionStorageInterface
      */
-    public static function getInstance(array &$storage): ?Session
+    public function getAdapter(): SessionStorageInterface
     {
-        self::$storage = &$storage;
+        return $this->adapter;
+    }
 
-        if (self::$instance === null) {
-            self::$instance = new self();
+    /**
+     * @param string $method
+     * @param array|null $arguments
+     * @return mixed
+     * @throws BaseException
+     */
+    public function __call(string $method, ?array $arguments)
+    {
+        if (!method_exists($this->adapter, $method)) {
+            throw SessionException::methodNotSupported($method, get_class($this->adapter));
         }
 
-        return self::$instance;
-    }
-
-    /**
-     * @inheritDoc
-     * @throws CryptorException
-     */
-    public function all(): array
-    {
-        $allSessions = [];
-
-        foreach (self::$storage as $key => $value) {
-            $allSessions[$key] = crypto_decode($value);
-        }
-
-        return $allSessions;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function has(string $key): bool
-    {
-        return isset(self::$storage[$key]) && !empty(self::$storage[$key]);
-    }
-
-    /**
-     * @inheritDoc
-     * @throws CryptorException
-     */
-    public function get(string $key)
-    {
-        return $this->has($key) ? crypto_decode(self::$storage[$key]) : null;
-    }
-
-    /**
-     * @inheritDoc
-     * @throws CryptorException
-     */
-    public function set(string $key, $value)
-    {
-        self::$storage[$key] = crypto_encode($value);
-    }
-
-    /**
-     * @inheritDoc
-     * @throws CryptorException
-     */
-    public function getFlash(string $key)
-    {
-        $flashData = null;
-
-        if ($this->has($key)) {
-            $flashData = $this->get($key);
-            $this->delete($key);
-        }
-
-        return $flashData;
-    }
-
-    /**
-     * @inheritDoc
-     * @throws CryptorException
-     */
-    public function setFlash(string $key, $value)
-    {
-        $this->set($key, $value);
-        return $this;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function delete(string $key)
-    {
-        if ($this->has($key)) {
-            unset(self::$storage[$key]);
-        }
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function flush()
-    {
-        self::$storage = [];
-        session_destroy();
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getId(): ?string
-    {
-        return session_id() ?? null;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function regenerateId(): bool
-    {
-        return session_regenerate_id(true);
+        return $this->adapter->$method(...$arguments);
     }
 }

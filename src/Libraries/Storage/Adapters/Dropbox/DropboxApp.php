@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Quantum PHP Framework
  *
@@ -13,20 +14,26 @@
 
 namespace Quantum\Libraries\Storage\Adapters\Dropbox;
 
+use Quantum\Libraries\Storage\Contracts\TokenServiceInterface;
+use Quantum\Libraries\Encryption\Exceptions\CryptorException;
 use Quantum\Libraries\Database\Exceptions\DatabaseException;
-use Quantum\Libraries\Encryption\CryptorException;
-use Quantum\Libraries\Lang\LangException;
-use Quantum\Libraries\Curl\HttpClient;
-use Quantum\Exceptions\HttpException;
-use Quantum\Exceptions\AppException;
+use Quantum\Libraries\Storage\Contracts\CloudAppInterface;
+use Quantum\Libraries\Lang\Exceptions\LangException;
+use Quantum\Libraries\Storage\Traits\CloudAppTrait;
+use Quantum\Libraries\HttpClient\HttpClient;
+use Quantum\Http\Exceptions\HttpException;
+use Quantum\Exceptions\BaseException;
 use Exception;
 
 /**
  * Class DropboxApp
  * @package Quantum\Libraries\Storage
  */
-class DropboxApp
+class DropboxApp implements CloudAppInterface
 {
+
+    use CloudAppTrait;
+
     /**
      * Authorization URL
      */
@@ -93,6 +100,11 @@ class DropboxApp
     const ACCESS_TOKEN_STATUS = ['invalid_access_token', 'expired_access_token'];
 
     /**
+     * Error code for invalid token
+     */
+    const INVALID_TOKEN_ERROR_CODE = 401;
+
+    /**
      * @var HttpClient
      */
     private $httpClient;
@@ -132,7 +144,7 @@ class DropboxApp
      * @param string $redirectUrl
      * @param string $tokenAccessType
      * @return string
-     * @throws AppException
+     * @throws BaseException
      * @throws CryptorException
      * @throws DatabaseException
      */
@@ -154,7 +166,7 @@ class DropboxApp
      * @param string $code
      * @param string $redirectUrl
      * @return object|null
-     * @throws AppException
+     * @throws BaseException
      * @throws HttpException
      * @throws LangException
      */
@@ -181,7 +193,7 @@ class DropboxApp
      * Fetches the access token by refresh token
      * @param string $refreshToken
      * @return string
-     * @throws AppException
+     * @throws BaseException
      * @throws HttpException
      * @throws LangException
      */
@@ -250,71 +262,25 @@ class DropboxApp
     }
 
     /**
-     * Sends request
-     * @param string $uri
-     * @param mixed|null $data
-     * @param array $headers
-     * @param string $method
-     * @return mixed|null
-     * @throws AppException
-     * @throws HttpException
-     * @throws LangException
-     */
-    public function sendRequest(string $uri, $data = null, array $headers = [], string $method = 'POST')
-    {
-        $this->httpClient
-            ->createRequest($uri)
-            ->setMethod($method)
-            ->setData($data)
-            ->setHeaders($headers)
-            ->start();
-
-        $errors = $this->httpClient->getErrors();
-        $responseBody = $this->httpClient->getResponseBody();
-
-        if ($errors) {
-            $code = $errors['code'];
-
-            if ($this->accessTokenNeedsRefresh($code, $responseBody)) {
-                $prevUrl = $this->httpClient->url();
-                $prevData = $this->httpClient->getData();
-                $prevHeaders = $this->httpClient->getRequestHeaders();
-
-                $refreshToken = $this->tokenService->getRefreshToken();
-
-                $accessToken = $this->fetchAccessTokenByRefreshToken($refreshToken);
-
-                $prevHeaders['Authorization'] = 'Bearer ' . $accessToken;
-
-                $responseBody = $this->sendRequest($prevUrl, $prevData, $prevHeaders);
-
-            } else {
-                throw new Exception(json_encode($responseBody), E_ERROR);
-            }
-        }
-
-        return $responseBody;
-    }
-
-    /**
      * Checks if the access token need refresh
      * @param int $code
-     * @param $message
+     * @param object|null $message
      * @return bool
      */
-    private function accessTokenNeedsRefresh(int $code, $message): bool
+    private function accessTokenNeedsRefresh(int $code, ?object $message = null): bool
     {
-        if ($code != 401) {
+        if ($code != self::INVALID_TOKEN_ERROR_CODE) {
             return false;
         }
 
-        $error = (array)$message->error;
+        if(isset($message->error)) {
+            $error = (array)$message->error;
 
-        if (!isset($error['.tag']) && !in_array($error['.tag'], self::ACCESS_TOKEN_STATUS)) {
-            return false;
+            if (!isset($error['.tag']) && !in_array($error['.tag'], self::ACCESS_TOKEN_STATUS)) {
+                return false;
+            }
         }
 
         return true;
     }
-
 }

@@ -14,18 +14,19 @@
 
 namespace Quantum\Mvc;
 
+use Quantum\Libraries\Encryption\Exceptions\CryptorException;
 use Quantum\Libraries\Database\Exceptions\DatabaseException;
-use Quantum\Libraries\Encryption\CryptorException;
-use Quantum\Libraries\Session\SessionException;
+use Quantum\Libraries\Session\Exceptions\SessionException;
+use Quantum\Libraries\Storage\Factories\FileSystemFactory;
+use Quantum\Libraries\Config\Exceptions\ConfigException;
+use Quantum\Middleware\Exceptions\MiddlewareException;
+use Quantum\Libraries\Csrf\Exceptions\CsrfException;
+use Quantum\Libraries\Lang\Exceptions\LangException;
 use Quantum\Libraries\ResourceCache\ViewCache;
-use Quantum\Libraries\Config\ConfigException;
 use Quantum\Exceptions\ControllerException;
-use Quantum\Exceptions\MiddlewareException;
-use Quantum\Libraries\Csrf\CsrfException;
 use Quantum\Middleware\MiddlewareManager;
-use Quantum\Libraries\Storage\FileSystem;
-use Quantum\Libraries\Lang\LangException;
-use Quantum\Exceptions\DiException;
+use Quantum\Di\Exceptions\DiException;
+use Quantum\Exceptions\BaseException;
 use Quantum\Libraries\Csrf\Csrf;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
@@ -43,15 +44,16 @@ class MvcManager
      * @param Request $request
      * @param Response $response
      * @return void
+     * @throws BaseException
      * @throws ConfigException
      * @throws ControllerException
      * @throws CryptorException
      * @throws CsrfException
+     * @throws DatabaseException
      * @throws DiException
+     * @throws LangException
      * @throws MiddlewareException
      * @throws ReflectionException
-     * @throws DatabaseException
-     * @throws LangException
      * @throws SessionException
      */
     public static function handle(Request $request, Response $response)
@@ -92,13 +94,12 @@ class MvcManager
     /**
      * Get Controller
      * @return QtController
-     * @throws DiException
-     * @throws ReflectionException
      * @throws ControllerException
+     * @throws BaseException
      */
     private static function getController(): QtController
     {
-        $fs = Di::get(FileSystem::class);
+        $fs = FileSystemFactory::get();
 
         $controllerPath = modules_dir() . DS . current_module() . DS . 'Controllers' . DS . current_controller() . '.php';
 
@@ -156,5 +157,4 @@ class MvcManager
             return $param['value'];
         }, route_params());
     }
-
 }

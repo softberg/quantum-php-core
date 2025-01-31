@@ -9,14 +9,14 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Libraries\Mailer\Adapters;
 
-use Quantum\Libraries\Mailer\MailerInterface;
-use Quantum\Libraries\Curl\HttpClient;
-use Quantum\Libraries\Mailer\MailTrap;
+use Quantum\Libraries\Mailer\Contracts\MailerInterface;
+use Quantum\Libraries\Mailer\Traits\MailerTrait;
+use Quantum\Libraries\HttpClient\HttpClient;
 use Exception;
 
 /**
@@ -25,7 +25,8 @@ use Exception;
  */
 class MandrillAdapter implements MailerInterface
 {
-    use MailerAdapterTrait;
+
+    use MailerTrait;
 
     /**
      * @var string
@@ -61,25 +62,11 @@ class MandrillAdapter implements MailerInterface
      * MandrillAdapter constructor
      * @param array $params
      */
-    private function __construct(array $params)
+    public function __construct(array $params)
     {
         $this->httpClient = new HttpClient();
 
         $this->data['key'] = $params['api_key'];
-    }
-
-    /**
-     * Get Instance
-     * @param array $params
-     * @return MandrillAdapter
-     */
-    public static function getInstance(array $params): MandrillAdapter
-    {
-        if (self::$instance === null) {
-            self::$instance = new self($params);
-        }
-
-        return self::$instance;
     }
 
     /**
@@ -130,14 +117,5 @@ class MandrillAdapter implements MailerInterface
         } catch (Exception $e) {
             return false;
         }
-    }
-
-    /**
-     * @return bool
-     * @throws Exception
-     */
-    private function saveEmail(): bool
-    {
-        return MailTrap::getInstance()->saveMessage($this->getMessageId(), $this->getMessageContent());
     }
 }

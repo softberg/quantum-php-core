@@ -75,5 +75,4 @@ trait Query
         $queryParams[] = $key . '=' . $value;
         self::$__query = implode('&', $queryParams);
     }
-
 }

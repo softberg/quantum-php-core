@@ -162,5 +162,4 @@ class Setup
     {
         return $this->hierarchical;
     }
-
 }

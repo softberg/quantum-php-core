@@ -9,10 +9,12 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.6.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Libraries\Hasher;
+
+use Quantum\Libraries\Hasher\Exceptions\HasherException;
 
 /**
  * Hasher class
@@ -22,16 +24,32 @@ class Hasher
 {
 
     /**
+     * Default algorithm for hashing
+     */
+    private const DEFAULT_ALGORITHM = PASSWORD_BCRYPT;
+
+    /**
+     * Default cost for hashing
+     */
+    private const DEFAULT_COST = 12;
+
+    /**
      * The algorithm
      * @var string
      */
-    private $algorithm = PASSWORD_BCRYPT;
+    private $algorithm;
 
     /**
      * The cost
      * @var int 
      */
-    private $cost = 12;
+    private $cost;
+
+    public function __construct()
+    {
+        $this->algorithm = self::DEFAULT_ALGORITHM;
+        $this->cost = self::DEFAULT_COST;
+    }
 
     /**
      * Sets the algorithm
@@ -57,9 +75,14 @@ class Hasher
      * Sets the cost
      * @param int $cost
      * @return $this
+     * @throws HasherException
      */
     public function setCost(int $cost): Hasher
     {
+        if ($this->algorithm === PASSWORD_BCRYPT && ($cost < 4 || $cost > 31)) {
+            throw HasherException::invalidBcryptCost();
+        }
+
         $this->cost = $cost;
         return $this;
     }
@@ -90,7 +113,7 @@ class Hasher
      */
     public function needsRehash(string $hash): bool
     {
-        return password_needs_rehash($hash, $this->algorithm);
+        return password_needs_rehash($hash, $this->algorithm, ['cost' => $this->cost]);
     }
 
     /**
@@ -113,5 +136,4 @@ class Hasher
     {
         return password_get_info($hash);
     }
-
 }

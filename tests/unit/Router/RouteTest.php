@@ -2,7 +2,7 @@
 
 namespace Quantum\Tests\Router;
 
-use Quantum\Exceptions\RouteException;
+use Quantum\Router\Exceptions\RouteException;
 use Quantum\Tests\AppTestCase;
 use Quantum\Router\Route;
 
@@ -256,5 +256,4 @@ class RouteTest extends AppTestCase
 
         $this->assertEquals('dash', $this->route->getRuntimeRoutes()[1]['name']);
     }
-
 }

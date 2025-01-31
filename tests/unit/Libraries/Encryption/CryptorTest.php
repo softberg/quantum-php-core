@@ -1,157 +1,67 @@
 <?php
 
-namespace Quantum\Libraries\Encryption {
+namespace Quantum\Tests\Libraries\Encryption;
 
-    function env($key)
+use Quantum\Libraries\Encryption\Adapters\AsymmetricEncryptionAdapter;
+use Quantum\Libraries\Encryption\Adapters\SymmetricEncryptionAdapter;
+use Quantum\Libraries\Encryption\Contracts\EncryptionInterface;
+use Quantum\Libraries\Encryption\Exceptions\CryptorException;
+use Quantum\Libraries\Encryption\Cryptor;
+use Quantum\Tests\AppTestCase;
+
+class CryptorTest extends AppTestCase
+{
+
+    public function setUp(): void
     {
-        return 'somerandomstring';
+        parent::setUp();
     }
 
-    function valid_base64($string)
+    public function testCryptorGetAdapter()
     {
-        return true;
+        $cryptor = new Cryptor(new SymmetricEncryptionAdapter());
+
+        $this->assertInstanceOf(SymmetricEncryptionAdapter::class, $cryptor->getAdapter());
+
+        $this->assertInstanceOf(EncryptionInterface::class, $cryptor->getAdapter());
+
+        $cryptor = new Cryptor(new AsymmetricEncryptionAdapter());
+
+        $this->assertInstanceOf(AsymmetricEncryptionAdapter::class, $cryptor->getAdapter());
+
+        $this->assertInstanceOf(EncryptionInterface::class, $cryptor->getAdapter());
     }
 
-}
-
-namespace Quantum\Tests\Libraries\Encryption {
-
-    use Quantum\Libraries\Encryption\CryptorException;
-    use Quantum\Libraries\Encryption\Cryptor;
-    use Quantum\Tests\AppTestCase;
-
-    class CryptorTest extends AppTestCase
+    public function testIsAsymmetric()
     {
+        $cryptor = new Cryptor(new SymmetricEncryptionAdapter());
 
-        private $phraseOne = 'Fist Phrase';
-        private $phraseTwo = 'Second Phrase';
+        $this->assertFalse($cryptor->isAsymmetric());
 
-        public function setUp(): void
-        {
-            parent::setUp();
-        }
+        $cryptor = new Cryptor(new AsymmetricEncryptionAdapter());
 
-        public function tearDown(): void
-        {
-            $symmetricCryptor = Cryptor::getInstance();
-
-            $symmetricCryptoReflection = new \ReflectionClass($symmetricCryptor);
-
-            $symmetricCryptoReflection = $symmetricCryptoReflection->getProperty('symmetricInstance');
-
-            $symmetricCryptoReflection->setAccessible(true);
-
-            $symmetricCryptoReflection->setValue(null, null);
-
-            $symmetricCryptoReflection->setAccessible(false);
-
-        }
-
-        public function testCryptorConstructor()
-        {
-            $this->assertInstanceOf(Cryptor::class, Cryptor::getInstance());
-
-            $this->assertInstanceOf(Cryptor::class, Cryptor::getInstance(true));
-        }
-
-        public function testIsAsymmetric()
-        {
-            $cryptor = Cryptor::getInstance();
-
-            $this->assertFalse($cryptor->isAsymmetric());
-
-            $cryptor = Cryptor::getInstance(true);
-
-            $this->assertTrue($cryptor->isAsymmetric());
-        }
-
-        public function testEncryptAndDecrypt()
-        {
-            $cryptor = Cryptor::getInstance();
-
-            $this->assertFalse($cryptor->isAsymmetric());
-
-            $encrypted = $cryptor->encrypt($this->phraseOne);
-
-            $this->assertEquals($this->phraseOne, $cryptor->decrypt($encrypted));
-
-            $this->assertNotEquals($this->phraseTwo, $cryptor->decrypt($encrypted));
-        }
-
-        public function testGetPublicKey()
-        {
-            $cryptor = Cryptor::getInstance(true);
-
-            $this->assertIsString($cryptor->getPublicKey());
-
-            $this->assertStringContainsString('BEGIN PUBLIC KEY', $cryptor->getPublicKey());
-        }
-
-        public function testGetPrivateKey()
-        {
-            $cryptor = Cryptor::getInstance(true);
-
-            $this->assertIsString($cryptor->getPrivateKey());
-
-            $this->assertStringContainsString('BEGIN PRIVATE KEY', $cryptor->getPrivateKey());
-        }
-
-        public function testAsymetircEncryptAndDecrypt()
-        {
-            $cryptor = Cryptor::getInstance(true);
-
-            $this->assertTrue($cryptor->isAsymmetric());
-
-            $publicKey = $cryptor->getPublicKey();
-
-            $privateKey = $cryptor->getPrivateKey();
-
-            $encrypted = $cryptor->encrypt($this->phraseOne, $publicKey);
-
-            $this->assertEquals($this->phraseOne, $cryptor->decrypt($encrypted, $privateKey));
-
-            $this->assertNotEquals($this->phraseTwo, $cryptor->decrypt($encrypted, $privateKey));
-        }
-
-        public function testAsymmetricEncryptionWIthMissingPublicKey()
-        {
-            $cryptor = Cryptor::getInstance(true);
-
-            $this->expectException(CryptorException::class);
-
-            $this->expectExceptionMessage('openssl_public_key_not_provided');
-
-            $cryptor->encrypt($this->phraseOne);
-        }
-
-        public function testAsymmetricDecryptionWIthMissingPrivateKey()
-        {
-            $cryptor = Cryptor::getInstance(true);
-
-            $publicKey = $cryptor->getPublicKey();
-
-            $encrypted = $cryptor->encrypt($this->phraseOne, $publicKey);
-
-            $this->expectException(CryptorException::class);
-
-            $this->expectExceptionMessage('openssl_private_key_not_provided');
-
-            $cryptor->decrypt($encrypted);
-        }
-
-        public function testGetIV()
-        {
-            $cryptor = Cryptor::getInstance();
-
-            $this->assertNull($cryptor->getIV());
-
-            $cryptor->encrypt($this->phraseOne);
-
-            $this->assertNotNull($cryptor->getIV());
-
-            $this->assertIsString($cryptor->getIV());
-        }
-
+        $this->assertTrue($cryptor->isAsymmetric());
     }
 
+    public function testCryptorCallingValidMethod()
+    {
+        $cryptor = new Cryptor(new SymmetricEncryptionAdapter());
+
+        $plainText = 'The early bird gets the worm, but the second mouse gets the cheese.';
+
+        $encrypted = $cryptor->encrypt($plainText);
+
+        $this->assertEquals($plainText, $cryptor->decrypt($encrypted));
+    }
+
+    public function testCryptorCallingInvalidMethod()
+    {
+        $cryptor = new Cryptor(new SymmetricEncryptionAdapter());
+
+        $this->expectException(CryptorException::class);
+
+        $this->expectExceptionMessage('The method `callingInvalidMethod` is not supported for `'. SymmetricEncryptionAdapter::class .'`');
+
+        $cryptor->callingInvalidMethod();
+    }
 }

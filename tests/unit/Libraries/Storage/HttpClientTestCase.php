@@ -2,7 +2,7 @@
 
 namespace Quantum\Tests\Libraries\Storage;
 
-use Quantum\Libraries\Curl\HttpClient;
+use Quantum\Libraries\HttpClient\HttpClient;
 use Mockery;
 
 trait HttpClientTestCase
@@ -57,5 +57,4 @@ trait HttpClientTestCase
 
         return $httpClientMock;
     }
-
 }

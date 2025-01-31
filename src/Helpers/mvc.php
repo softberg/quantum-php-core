@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.5
  */
 use Quantum\Router\RouteController;
 use Quantum\Router\Router;
@@ -52,7 +52,7 @@ function current_action(): ?string
 
 /**
  * Get current callback
- * @return \Closure $callback|null
+ * @return Closure $callback|null
  */
 function route_callback(): ?Closure
 {

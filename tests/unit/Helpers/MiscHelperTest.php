@@ -2,10 +2,7 @@
 
 namespace Quantum\Tests\Helpers;
 
-use Quantum\Libraries\Session\Session;
-use Quantum\Libraries\Cookie\Cookie;
 use Quantum\Tests\AppTestCase;
-use Quantum\Http\Request;
 
 class MiscHelperTest extends AppTestCase
 {
@@ -15,11 +12,11 @@ class MiscHelperTest extends AppTestCase
         parent::setUp();
     }
 
-    public function testRandomNumber()
+    public function testMessageHelper()
     {
-        $this->assertIsInt(random_number());
+        $this->assertEquals('Hello John', _message('Hello {%1}', 'John'));
 
-        $this->assertIsInt(random_number(5));
+        $this->assertEquals('Hello John, greetings from Jenny', _message('Hello {%1}, greetings from {%2}', ['John', 'Jenny']));
     }
 
     public function testValidBase64()
@@ -33,13 +30,12 @@ class MiscHelperTest extends AppTestCase
         $this->assertFalse(valid_base64($invalidBase64String));
     }
 
-    public function testMessageHelper()
+    public function testRandomNumber()
     {
-        $this->assertEquals('Hello John', _message('Hello {%1}', 'John'));
+        $this->assertIsInt(random_number());
 
-        $this->assertEquals('Hello John, greetings from Jenny', _message('Hello {%1}, greetings from {%2}', ['John', 'Jenny']));
+        $this->assertIsInt(random_number(5));
     }
-
 
     public function testSlugify()
     {
@@ -47,68 +43,4 @@ class MiscHelperTest extends AppTestCase
 
         $this->assertEquals('ebay-com-itm-dual-arm-tv-trkparms-aid-3d111001-26brand-3dunbranded-trksid-p2380057', slugify('ebay.com/itm/DUAL-ARM-TV/?_trkparms=aid%3D111001%26brand%3DUnbranded&_trksid=p2380057'));
     }
-
-    public function testCryptoEncodeDecode()
-    {
-        $data = "test_string";
-        $encoded = crypto_encode($data);
-
-        $this->assertNotEquals($data, $encoded);
-
-        $decoded = crypto_decode($encoded);
-
-        $this->assertEquals($data, $decoded);
-
-        $data = ['key' => 'value'];
-        $encoded = crypto_encode($data);
-
-        $this->assertIsString($encoded);
-
-        $decoded = crypto_decode($encoded);
-        $this->assertEquals($data, $decoded);
-
-        $data = (object) ['key' => 'value'];
-        $encoded = crypto_encode($data);
-
-        $this->assertIsString($encoded);
-
-        $decoded = crypto_decode($encoded);
-        $this->assertEquals($data, $decoded);
-    }
-
-    public function testCsrfToken()
-    {
-        $request = new Request();
-
-        $request->create('PUT', '/update', ['title' => 'Task Title', 'csrf-token' => csrf_token()]);
-
-        $this->assertTrue(csrf()->checkToken($request));
-    }
-
-    public function testSessionHelper()
-    {
-        $this->assertInstanceOf(Session::class, session());
-
-        $this->assertFalse(session()->has('test'));
-
-        session()->set('test', 'Testing');
-
-        $this->assertTrue(session()->has('test'));
-
-        $this->assertEquals('Testing', session()->get('test'));
-    }
-
-    public function testCookieHelper()
-    {
-        $this->assertInstanceOf(Cookie::class, cookie());
-
-        $this->assertFalse(cookie()->has('test'));
-
-        cookie()->set('test', 'Testing');
-
-        $this->assertTrue(cookie()->has('test'));
-
-        $this->assertEquals('Testing', cookie()->get('test'));
-    }
-
 }

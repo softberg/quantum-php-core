@@ -2,9 +2,9 @@
 
 namespace Quantum\Tests\Http;
 
-use Quantum\Exceptions\FileUploadException;
+use Quantum\Libraries\Storage\Exceptions\FileUploadException;
+use Quantum\Libraries\Session\Factories\SessionFactory;
 use Quantum\Libraries\Storage\UploadedFile;
-use Quantum\Libraries\Session\Session;
 use Quantum\Http\Request\HttpRequest;
 use Quantum\Tests\AppTestCase;
 use Quantum\Http\Request;
@@ -20,7 +20,7 @@ class RequestTest extends AppTestCase
     {
         parent::setUp();
 
-        $this->session = Session::getInstance($this->sessionData);
+        $this->session = SessionFactory::get($this->sessionData);
 
         $server = Mockery::mock('Quantum\Environment\Server');
 
@@ -229,7 +229,7 @@ class RequestTest extends AppTestCase
 
         $this->expectException(FileUploadException::class);
 
-        $this->expectExceptionMessage('exception.file_not_found');
+        $this->expectExceptionMessage('The file `image` not found');
 
         $request->getFile('image');
     }

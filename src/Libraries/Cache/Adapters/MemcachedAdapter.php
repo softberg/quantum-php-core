@@ -14,15 +14,15 @@
 
 namespace Quantum\Libraries\Cache\Adapters;
 
-use Quantum\Libraries\Cache\CacheException;
+use Quantum\Libraries\Cache\Exceptions\CacheException;
 use Psr\SimpleCache\CacheInterface;
 use InvalidArgumentException;
-use Exception;
 use Memcached;
+use Exception;
 
 /**
  * Class MemcachedAdapter
- * @package Quantum\Libraries\Cache\Adapters
+ * @package Quantum\Libraries\Cache
  */
 class MemcachedAdapter implements CacheInterface
 {
@@ -182,5 +182,4 @@ class MemcachedAdapter implements CacheInterface
     {
         return sha1($this->prefix . $key);
     }
-
 }

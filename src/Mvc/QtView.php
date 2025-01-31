@@ -15,22 +15,20 @@
 namespace Quantum\Mvc;
 
 use Quantum\Libraries\Database\Exceptions\DatabaseException;
-use Quantum\Libraries\Session\SessionException;
+use Quantum\Libraries\Session\Exceptions\SessionException;
+use Quantum\Libraries\Config\Exceptions\ConfigException;
+use Quantum\Libraries\Asset\Exceptions\AssetException;
+use Quantum\Libraries\Lang\Exceptions\LangException;
+use Quantum\Renderer\Exceptions\RendererException;
+use Quantum\Renderer\Factories\RendererFactory;
 use Quantum\Libraries\ResourceCache\ViewCache;
-use Quantum\Libraries\Config\ConfigException;
-use Quantum\Libraries\Asset\AssetException;
 use Quantum\Libraries\Asset\AssetManager;
-use Quantum\Libraries\Lang\LangException;
+use Quantum\Di\Exceptions\DiException;
+use Quantum\Exceptions\BaseException;
 use Quantum\Exceptions\ViewException;
-use Quantum\Renderer\DefaultRenderer;
-use Quantum\Exceptions\DiException;
-use Quantum\Renderer\TwigRenderer;
 use Quantum\Factory\ViewFactory;
 use DebugBar\DebugBarException;
 use Quantum\Debugger\Debugger;
-use Twig\Error\RuntimeError;
-use Twig\Error\LoaderError;
-use Twig\Error\SyntaxError;
 use ReflectionException;
 use Psr\Log\LogLevel;
 
@@ -149,17 +147,16 @@ class QtView
      * @param string $viewFile
      * @param array $params
      * @return string|null
+     * @throws BaseException
      * @throws AssetException
      * @throws ConfigException
      * @throws DatabaseException
      * @throws DebugBarException
      * @throws DiException
      * @throws LangException
-     * @throws LoaderError
      * @throws ReflectionException
-     * @throws RuntimeError
+     * @throws RendererException
      * @throws SessionException
-     * @throws SyntaxError
      * @throws ViewException
      */
     public function render(string $viewFile, array $params = []): ?string
@@ -198,12 +195,11 @@ class QtView
      * @param string $viewFile
      * @param array $params
      * @return string|null
+     * @throws BaseException
+     * @throws ConfigException
      * @throws DiException
-     * @throws LoaderError
      * @throws ReflectionException
-     * @throws RuntimeError
-     * @throws SyntaxError
-     * @throws ViewException
+     * @throws RendererException
      */
     public function renderPartial(string $viewFile, array $params = []): ?string
     {
@@ -227,30 +223,19 @@ class QtView
      * Renders the view
      * @param string $viewFile
      * @return string
+     * @throws ConfigException
      * @throws DiException
-     * @throws LoaderError
      * @throws ReflectionException
-     * @throws RuntimeError
-     * @throws SyntaxError
-     * @throws ViewException
+     * @throws BaseException
+     * @throws RendererException
      */
     private function renderFile(string $viewFile): string
     {
         $params = $this->xssFilter($this->params);
 
-        $templateEngine = config()->get('template_engine');
+        $renderer = RendererFactory::get();
 
-        if ($templateEngine) {
-            $configs = config()->get('template_engine.' . key($templateEngine));
-
-            if (!$configs) {
-                throw ViewException::missingTemplateEngineConfigs();
-            }
-
-            return (new TwigRenderer())->render($viewFile, $params, $configs);
-        } else {
-            return (new DefaultRenderer())->render($viewFile, $params);
-        }
+        return $renderer->render($viewFile, $params);
     }
 
     /**
@@ -303,10 +288,10 @@ class QtView
      * @param string $uri
      * @param string $content
      * @return string|null
+     * @throws BaseException
      * @throws ConfigException
      * @throws DatabaseException
      * @throws DiException
-     * @throws LangException
      * @throws ReflectionException
      * @throws SessionException
      */
@@ -315,4 +300,3 @@ class QtView
         return $viewCacheInstance->set($uri, $content)->get($uri);
     }
 }
-

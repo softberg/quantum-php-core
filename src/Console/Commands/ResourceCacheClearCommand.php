@@ -14,18 +14,18 @@
 
 namespace Quantum\Console\Commands;
 
-use Quantum\Libraries\Config\ConfigException;
-use Quantum\Libraries\Storage\FileSystem;
-use Quantum\Exceptions\DiException;
+use Quantum\Libraries\Storage\Factories\FileSystemFactory;
+use Quantum\Libraries\Config\Exceptions\ConfigException;
+use Quantum\Di\Exceptions\DiException;
+use Quantum\Exceptions\BaseException;
 use Quantum\Console\QtCommand;
 use Quantum\Loader\Setup;
 use ReflectionException;
-use Quantum\Di\Di;
 use Exception;
 
 /**
- * Class EnvCommand
- * @package Quantum\Console\Commands
+ * Class ResourceCacheClearCommand
+ * @package Quantum\Console
  */
 class ResourceCacheClearCommand extends QtCommand
 {
@@ -88,11 +88,9 @@ class ResourceCacheClearCommand extends QtCommand
 	 */
 	protected $fs;
 
-	/**
-	 * @return void
-	 * @throws DiException
-	 * @throws ReflectionException
-	 */
+    /**
+     * @throws BaseException
+     */
 	public function exec()
 	{
 		try {
@@ -104,7 +102,7 @@ class ResourceCacheClearCommand extends QtCommand
 			return;
 		}
 
-		$this->fs = Di::get(FileSystem::class);
+		$this->fs = FileSystemFactory::get();
 
 		if (!$this->fs->isDirectory($this->cacheDir)) {
 			$this->error('Cache directory does not exist or is not accessible.');

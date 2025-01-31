@@ -77,5 +77,4 @@ trait Body
             unset(self::$__response[$key]);
         }
     }
-
 }

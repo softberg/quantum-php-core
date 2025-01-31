@@ -14,10 +14,11 @@
 
 namespace Quantum\Libraries\Archive\Adapters;
 
-use Quantum\Libraries\Archive\ArchiveException;
-use Quantum\Libraries\Archive\ArchiveInterface;
+use Quantum\Libraries\Archive\Exceptions\ArchiveException;
+use Quantum\Libraries\Storage\Factories\FileSystemFactory;
+use Quantum\Libraries\Archive\Contracts\ArchiveInterface;
 use Quantum\Libraries\Storage\FileSystem;
-use Quantum\Exceptions\AppException;
+use Quantum\Exceptions\BaseException;
 use ZipArchive;
 use Exception;
 
@@ -34,41 +35,45 @@ class ZipAdapter implements ArchiveInterface
     private $fs;
 
     /**
-     * @var ZipArchive
-     */
-    private $archive;
-
-    /**
      * @var string
      */
     private $archiveName;
 
     /**
-     * @var int|null
+     * @var ZipArchive
      */
-    private $mode;
+    private $archive = null;
+
+    /**
+     * @var bool
+     */
+    private $requiresReopen = true;
+
+
+    /**
+     * @throws BaseException
+     */
+    public function __construct()
+    {
+        $this->fs = FileSystemFactory::get();
+    }
 
     /**
      * @param string $archiveName
-     * @param int|null $mode
-     * @throws ArchiveException
      */
-    public function __construct(string $archiveName, ?int $mode = ZipArchive::CREATE)
+    public function setName(string $archiveName)
     {
         $this->archiveName = $archiveName;
-        $this->mode = $mode;
-
-        $this->fs = new FileSystem();
-        $this->archive = new ZipArchive();
-
-        $this->reopen();
     }
 
     /**
      * @inheritDoc
+     * @throws ArchiveException
      */
     public function offsetExists(string $filename): bool
     {
+        $this->ensureArchiveOpen();
+
         if (strpos($filename, '.') === false) {
             $filename = rtrim($filename, '/') . '/';
         }
@@ -78,9 +83,12 @@ class ZipAdapter implements ArchiveInterface
 
     /**
      * @inheritDoc
+     * @throws ArchiveException
      */
     public function addEmptyDir(string $directory): bool
     {
+        $this->ensureArchiveOpen();
+
         if (!$this->offsetExists($directory)) {
             return $this->archive->addEmptyDir($directory);
         }
@@ -90,30 +98,44 @@ class ZipAdapter implements ArchiveInterface
 
     /**
      * @inheritDoc
-     * @throws AppException
+     * @throws BaseException
      */
     public function addFile(string $filePath, string $entryName = null): bool
     {
+        $this->ensureArchiveOpen();
+
         if (!$this->fs->exists($filePath)) {
             throw ArchiveException::fileNotFound($filePath);
         }
 
-        return $this->archive->addFile($filePath, $entryName);
+        $result = $this->archive->addFile($filePath, $entryName);
+        $this->requiresReopen = true;
+
+        return $result;
     }
 
     /**
      * @inheritDoc
+     * @throws ArchiveException
      */
     public function addFromString(string $entryName, string $content): bool
     {
-        return $this->archive->addFromString($entryName, $content);
+        $this->ensureArchiveOpen();
+
+        $result = $this->archive->addFromString($entryName, $content);
+        $this->requiresReopen = true;
+
+        return $result;
     }
 
     /**
      * @inheritDoc
+     * @throws ArchiveException
      */
     public function addMultipleFiles(array $fileNames): bool
     {
+        $this->ensureArchiveOpen();
+
         try {
             foreach ($fileNames as $entryName => $filePath) {
                 $this->addFile($filePath, $entryName);
@@ -127,9 +149,12 @@ class ZipAdapter implements ArchiveInterface
 
     /**
      * @inheritDoc
+     * @throws ArchiveException
      */
     public function count(): int
     {
+        $this->ensureArchiveOpen();
+
         return $this->archive->count();
     }
 
@@ -139,7 +164,8 @@ class ZipAdapter implements ArchiveInterface
      */
     public function extractTo(string $pathToExtract, $files = null): bool
     {
-        $this->reopen();
+        $this->ensureArchiveOpen();
+
         return $this->archive->extractTo($pathToExtract);
     }
 
@@ -149,10 +175,13 @@ class ZipAdapter implements ArchiveInterface
      */
     public function deleteFile(string $filename): bool
     {
+        $this->ensureArchiveOpen();
+
         if ($this->offsetExists($filename)) {
-            $state = $this->archive->deleteName($filename);
-            $this->reopen();
-            return $state;
+            $result = $this->archive->deleteName($filename);
+            $this->requiresReopen = true;
+
+            return $result;
         }
 
         return false;
@@ -164,8 +193,12 @@ class ZipAdapter implements ArchiveInterface
      */
     public function deleteMultipleFiles(array $fileNames): bool
     {
+        $this->ensureArchiveOpen();
+
         foreach ($fileNames as $entryName) {
-            $this->deleteFile($entryName);
+            if (!$this->deleteFile($entryName)) {
+                return false;
+            }
         }
 
         return true;
@@ -174,15 +207,34 @@ class ZipAdapter implements ArchiveInterface
     /**
      * @throws ArchiveException
      */
-    private function reopen()
+    private function ensureArchiveOpen(): void
     {
+        if ($this->requiresReopen || $this->archive === null) {
+            $this->openArchive();
+        }
+    }
+
+    /**
+     * @throws ArchiveException
+     */
+    private function openArchive()
+    {
+        if (empty($this->archiveName)) {
+            throw ArchiveException::missingArchiveName();
+        }
+
+        if ($this->archive === null) {
+            $this->archive = new ZipArchive();
+        }
+
         if ($this->archive->filename) {
             $this->archive->close();
         }
 
-        if ($res = $this->archive->open($this->archiveName, $this->mode) !== true) {
-            throw ArchiveException::cantOpen($res);
+        if ($this->archive->open($this->archiveName, ZipArchive::CREATE) !== true) {
+            throw ArchiveException::cantOpen($this->archiveName);
         }
 
+        $this->requiresReopen = false;
     }
 }

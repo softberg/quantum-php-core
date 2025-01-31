@@ -6,9 +6,6 @@ use Quantum\Libraries\Asset\AssetManager;
 use Quantum\Libraries\Asset\Asset;
 use Quantum\Tests\AppTestCase;
 
-/**
- * @runTestsInSeparateProcesses
- */
 class AssetManagerTest extends AppTestCase
 {
 

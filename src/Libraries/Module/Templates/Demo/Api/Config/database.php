@@ -33,7 +33,7 @@ return [
         'username' => env('DB_USERNAME', 'root'),
         'password' => env('DB_PASSWORD'),
         'charset' => env('DB_CHARSET', 'utf8'),
-        'orm' => Quantum\Libraries\Database\Idiorm\IdiormDbal::class
+        'orm' => \Quantum\Libraries\Database\Adapters\Idiorm\IdiormDbal::class
     ],
     'sleekdb' => [
         'driver' => 'sleekdb',
@@ -49,6 +49,6 @@ return [
             ],
         ],
         'database_dir' => base_dir() . DS . 'shared' . DS . 'store',
-        'orm' => Quantum\Libraries\Database\Sleekdb\SleekDbal::class
+        'orm' => \Quantum\Libraries\Database\Adapters\Sleekdb\SleekDbal::class
     ],
 ];"; 

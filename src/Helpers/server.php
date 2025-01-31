@@ -14,7 +14,6 @@
 
 use Quantum\Environment\Server;
 
-
 /**
  * Gets user IP
  * @return string|null

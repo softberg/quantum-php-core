@@ -94,5 +94,4 @@ trait Header
     {
         return self::getHeader('Content-Type');
     }
-
 }

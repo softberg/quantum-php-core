@@ -18,7 +18,7 @@ namespace Quantum\Exceptions;
  * Class ServiceException
  * @package Quantum\Exceptions
  */
-class ServiceException extends AppException
+class ServiceException extends BaseException
 {
     /**
      * @param string $name

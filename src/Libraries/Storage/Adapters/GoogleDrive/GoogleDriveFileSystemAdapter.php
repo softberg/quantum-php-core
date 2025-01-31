@@ -1,17 +1,28 @@
 <?php
 
+/**
+ * Quantum PHP Framework
+ *
+ * An open source software development framework for PHP
+ *
+ * @package Quantum
+ * @author Arman Ag. <arman.ag@softberg.org>
+ * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
+ * @link http://quantum.softberg.org/
+ * @since 2.9.5
+ */
+
 namespace Quantum\Libraries\Storage\Adapters\GoogleDrive;
 
-use Quantum\Libraries\Storage\FilesystemAdapterInterface;
+use Quantum\Libraries\Storage\Contracts\FilesystemAdapterInterface;
 use Exception;
 
+/**
+ * Class GoogleDriveFileSystemAdapter
+ * @package Quantum\Libraries\Storage
+ */
 class GoogleDriveFileSystemAdapter implements FilesystemAdapterInterface
 {
-
-    /**
-     * @var GoogleDriveFileSystemAdapter|null
-     */
-    private static $instance = null;
 
     /**
      * @var GoogleDriveApp
@@ -19,26 +30,11 @@ class GoogleDriveFileSystemAdapter implements FilesystemAdapterInterface
     private $googleDriveApp;
 
     /**
-     * GoogleDriveFileSystemAdapter constructor
      * @param GoogleDriveApp $googleDriveApp
      */
-    private function __construct(GoogleDriveApp $googleDriveApp)
+    public function __construct(GoogleDriveApp $googleDriveApp)
     {
         $this->googleDriveApp = $googleDriveApp;
-    }
-
-    /**
-     * Get Instance
-     * @param GoogleDriveApp $googleDriveApp
-     * @return GoogleDriveFileSystemAdapter
-     */
-    public static function getInstance(GoogleDriveApp $googleDriveApp): GoogleDriveFileSystemAdapter
-    {
-        if (self::$instance === null) {
-            self::$instance = new self($googleDriveApp);
-        }
-
-        return self::$instance;
     }
 
     /**

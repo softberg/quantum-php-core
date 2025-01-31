@@ -11,7 +11,7 @@ class LocalFileSystemAdapterTest extends AppTestCase
     /**
      * @var LocalFileSystemAdapter
      */
-    private $fs;
+    protected $fs;
 
     /**
      * @var string
@@ -32,7 +32,7 @@ class LocalFileSystemAdapterTest extends AppTestCase
     {
         parent::setUp();
 
-        $this->fs = LocalFileSystemAdapter::getInstance();
+        $this->fs = new LocalFileSystemAdapter();
 
         $this->dirname = base_dir() . DS . 'common';
 
@@ -338,6 +338,4 @@ class LocalFileSystemAdapterTest extends AppTestCase
 
         $this->fs->remove($file);
     }
-
 }
-

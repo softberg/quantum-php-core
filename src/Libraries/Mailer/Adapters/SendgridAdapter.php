@@ -9,14 +9,14 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Libraries\Mailer\Adapters;
 
-use Quantum\Libraries\Mailer\MailerInterface;
-use Quantum\Libraries\Curl\HttpClient;
-use Quantum\Libraries\Mailer\MailTrap;
+use Quantum\Libraries\Mailer\Contracts\MailerInterface;
+use Quantum\Libraries\Mailer\Traits\MailerTrait;
+use Quantum\Libraries\HttpClient\HttpClient;
 use Exception;
 
 /**
@@ -25,7 +25,8 @@ use Exception;
  */
 class SendgridAdapter implements MailerInterface
 {
-    use MailerAdapterTrait;
+
+    use MailerTrait;
 
     /**
      * @var string
@@ -61,7 +62,7 @@ class SendgridAdapter implements MailerInterface
      * SendgridAdapter constructor
      * @param array $params
      */
-    private function __construct(array $params)
+    public function __construct(array $params)
     {
         $this->httpClient = new HttpClient();
 
@@ -69,23 +70,9 @@ class SendgridAdapter implements MailerInterface
     }
 
     /**
-     * Get Instance
-     * @param array $params
-     * @return SendgridAdapter
-     */
-    public static function getInstance(array $params): SendgridAdapter
-    {
-        if (self::$instance === null) {
-            self::$instance = new self($params);
-        }
-
-        return self::$instance;
-    }
-
-    /**
      * Prepares the data
      */
-    private function prepare()
+    public function prepare()
     {
         $this->data['from'] = $this->from;
 
@@ -133,14 +120,5 @@ class SendgridAdapter implements MailerInterface
         } catch (Exception $e) {
             return false;
         }
-    }
-
-    /**
-     * @return bool
-     * @throws Exception
-     */
-    private function saveEmail(): bool
-    {
-        return MailTrap::getInstance()->saveMessage($this->getMessageId(), $this->getMessageContent());
     }
 }

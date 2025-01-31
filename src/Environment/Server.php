@@ -39,9 +39,9 @@ class Server
 
     /**
      * Get Instance
-     * @return Server|null
+     * @return Server
      */
-    public static function getInstance(): ?Server
+    public static function getInstance(): Server
     {
         if (self::$instance === null) {
             self::$instance = new self();

@@ -14,269 +14,71 @@
 
 namespace Quantum\Libraries\Encryption;
 
-use Quantum\Exceptions\AppException;
+use Quantum\Libraries\Encryption\Adapters\AsymmetricEncryptionAdapter;
+use Quantum\Libraries\Encryption\Contracts\EncryptionInterface;
+use Quantum\Libraries\Encryption\Exceptions\CryptorException;
+use Quantum\Exceptions\BaseException;
 
 /**
  * Class Cryptor
  * @package Quantum\Libraries\Encryption
+ * @method string encrypt(string $plain)
+ * @method string decrypt(string $encrypted)
  */
 class Cryptor
 {
 
     /**
-     * Asymmetric instance
-     * @var Cryptor|null
+     * Symmetric
      */
-    private static $asymmetricInstance = null;
+    const SYMMETRIC = 'symmetric';
 
     /**
-     * Symmetric instance
-     * @var Cryptor|null
+     * Asymmetric
      */
-    private static $symmetricInstance = null;
+    const ASYMMETRIC = 'asymmetric';
 
     /**
-     * Asymmetric factor
-     * @var boolean
+     * @var EncryptionInterface
      */
-    private $asymmetric = false;
+    private $adapter;
 
     /**
-     * Application key
-     * @var string
+     * @param EncryptionInterface $adapter
      */
-    private $appKey;
-
-    /**
-     * Public and private keys
-     * @var array
-     */
-    private $keys = [];
-
-    /**
-     * Digest algorithm
-     * @var string
-     */
-    private $digestAlgorithm = 'SHA512';
-
-    /**
-     * Key type
-     * @var integer
-     */
-    private $privateKeyType = OPENSSL_KEYTYPE_RSA;
-
-    /**
-     * Cipher method
-     * @var string
-     */
-    private $cipherMethod = 'aes-256-cbc';
-
-    /**
-     * Key bites
-     * @var integer
-     */
-    private $privateKeyBits = 1024;
-
-    /**
-     * The Initialization Vector
-     * @var string
-     */
-    private $iv = null;
-
-    /**
-     * Cryptor constructor.
-     * @param bool $asymmetric
-     * @throws AppException
-     * @throws CryptorException
-     */
-    private function __construct(bool $asymmetric = false)
+    public function __construct(EncryptionInterface $adapter)
     {
-        if (!$asymmetric) {
-            if (!env('APP_KEY')) {
-                throw AppException::missingAppKey();
-            }
-            $this->appKey = env('APP_KEY');
-        } else {
-            $this->generateKeyPair();
-        }
-
-        $this->asymmetric = $asymmetric;
-
+        $this->adapter = $adapter;
     }
 
     /**
-     * Gets the cryptor instance
-     * @param bool $asymmetric
-     * @return Cryptor|null
+     * @return EncryptionInterface
      */
-    public static function getInstance(bool $asymmetric = false): ?Cryptor
+    public function getAdapter(): EncryptionInterface
     {
-        if ($asymmetric) {
-            return self::getAsymmetricInstance();
-        } else {
-            return self::getSymmetricInstance();
-        }
+        return $this->adapter;
     }
 
     /**
-     * Checks if the encryption mode is asymmetric
      * @return bool
      */
     public function isAsymmetric(): bool
     {
-        return $this->asymmetric;
+        return $this->adapter instanceof AsymmetricEncryptionAdapter;
     }
 
     /**
-     * Gets the Public Key
-     * @return string
-     * @throws CryptorException
+     * @param string $method
+     * @param array|null $arguments
+     * @return mixed
+     * @throws BaseException
      */
-    public function getPublicKey(): string
+    public function __call(string $method, ?array $arguments)
     {
-        if (!isset($this->keys['public'])) {
-            throw CryptorException::noPublicKeyCreated();
+        if (!method_exists($this->adapter, $method)) {
+            throw CryptorException::methodNotSupported($method, get_class($this->adapter));
         }
 
-        return $this->keys['public'];
+        return $this->adapter->$method(...$arguments);
     }
-
-    /**
-     * Gets the Private Key
-     * @return string
-     * @throws CryptorException
-     */
-    public function getPrivateKey(): string
-    {
-        if (!isset($this->keys['private'])) {
-            throw CryptorException::noPrivateKeyCreated();
-        }
-
-        return $this->keys['private'];
-    }
-
-    /**
-     * Encrypts the plain text
-     * @param string $plain
-     * @param string|null $publicKey
-     * @return string
-     * @throws CryptorException
-     */
-    public function encrypt(string $plain, string $publicKey = null): string
-    {
-        if (!$this->isAsymmetric()) {
-            $this->iv = $this->iv();
-
-            $encrypted = openssl_encrypt($plain, $this->cipherMethod, $this->appKey, $options = 0, $this->iv);
-
-            return base64_encode(base64_encode($encrypted) . '::' . base64_encode($this->iv));
-        } else {
-            if (!$publicKey) {
-                throw CryptorException::publicKeyNotProvided();
-            }
-
-            openssl_public_encrypt($plain, $encrypted, $publicKey);
-            return base64_encode($encrypted);
-        }
-    }
-
-    /**
-     * Decrypts the encrypted text
-     * @param string $encrypted
-     * @param string|null $privateKey
-     * @return string
-     * @throws CryptorException
-     */
-    public function decrypt(string $encrypted, string $privateKey = null): string
-    {
-        if (!$this->isAsymmetric()) {
-            if (!valid_base64($encrypted)) {
-                return $encrypted;
-            }
-
-            $data = explode('::', base64_decode($encrypted), 2);
-
-            if (empty($data) || count($data) < 2) {
-                throw CryptorException::invalidCipher();
-            }
-
-            $encrypted = base64_decode($data[0]);
-            $iv = base64_decode($data[1]);
-
-            return openssl_decrypt($encrypted, $this->cipherMethod, $this->appKey, $options = 0, $iv);
-        } else {
-            if (!$privateKey) {
-                throw CryptorException::privateKeyNotProvided();
-            }
-
-            openssl_private_decrypt(base64_decode($encrypted), $decrypted, $privateKey);
-            return $decrypted;
-        }
-    }
-
-    /**
-     * Gets the Initialization Vector used
-     * @return string|null
-     */
-    public function getIV(): ?string
-    {
-        return $this->iv;
-    }
-
-    /**
-     * Generates the Initialization Vector
-     * @return string
-     */
-    private function iv(): string
-    {
-        $length = openssl_cipher_iv_length($this->cipherMethod);
-        return openssl_random_pseudo_bytes($length);
-    }
-
-    /**
-     * Generates Key Pair
-     * @throws CryptorException
-     */
-    private function generateKeyPair()
-    {
-        $resource = openssl_pkey_new([
-            "digest_alg" => $this->digestAlgorithm,
-            "private_key_type" => $this->privateKeyType,
-            "private_key_bits" => $this->privateKeyBits
-        ]);
-
-        if (!$resource) {
-            throw CryptorException::configNotFound();
-        }
-
-        openssl_pkey_export($resource, $this->keys['private']);
-        $this->keys['public'] = openssl_pkey_get_details($resource)['key'];
-    }
-
-    /**
-     * Gets the symmetric cryptor instance
-     * @return Cryptor|null
-     */
-    private static function getSymmetricInstance(): ?Cryptor
-    {
-        if (self::$symmetricInstance === null) {
-            self::$symmetricInstance = new self(false);
-        }
-
-        return self::$symmetricInstance;
-    }
-
-    /**
-     * Gets the asymmetric cryptor instance
-     * @return Cryptor|null
-     */
-    private static function getAsymmetricInstance(): ?Cryptor
-    {
-        if (self::$asymmetricInstance === null) {
-            self::$asymmetricInstance = new self(true);
-        }
-
-        return self::$asymmetricInstance;
-    }
-
 }

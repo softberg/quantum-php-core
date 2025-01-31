@@ -1,5 +1,5 @@
 <?php
 
 return [
-    'app_env' => 'staging'
+    'app_env' => 'testing'
 ];

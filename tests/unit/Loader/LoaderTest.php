@@ -2,7 +2,6 @@
 
 namespace Quantum\Tests\Loader;
 
-use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Tests\AppTestCase;
 use Quantum\Loader\Loader;
 use Quantum\Loader\Setup;
@@ -16,7 +15,7 @@ class LoaderTest extends AppTestCase
     {
         parent::setUp();
 
-        $this->loader = new Loader(new FileSystem());
+        $this->loader = new Loader();
     }
 
     public function testSetupAndLoad()

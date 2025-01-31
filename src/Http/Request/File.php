@@ -9,15 +9,14 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Http\Request;
 
+use Quantum\Libraries\Storage\Exceptions\FileUploadException;
 use Quantum\Libraries\Storage\UploadedFile;
-use Quantum\Exceptions\FileUploadException;
-use Quantum\Exceptions\DiException;
-use ReflectionException;
+use Quantum\Exceptions\BaseException;
 
 /**
  * Trait File
@@ -63,7 +62,7 @@ trait File
      * Gets the file or array of file objects
      * @param string $key
      * @return mixed
-     * @throws FileUploadException
+     * @throws BaseException
      */
     public static function getFile(string $key)
     {
@@ -78,8 +77,7 @@ trait File
      * Handle files
      * @param array $files
      * @return array|UploadedFile[]
-     * @throws DiException
-     * @throws ReflectionException
+     * @throws BaseException
      */
     private static function handleFiles(array $files): array
     {
@@ -111,5 +109,4 @@ trait File
             return $formatted;
         }
     }
-
 }

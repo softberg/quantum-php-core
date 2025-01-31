@@ -9,21 +9,19 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Console\Commands;
 
-use Quantum\Libraries\Storage\FileSystem;
-use Quantum\Environment\Environment;
-use Quantum\Exceptions\EnvException;
+use Quantum\Libraries\Storage\Factories\FileSystemFactory;
+use Quantum\Exceptions\BaseException;
 use Quantum\Console\QtCommand;
-use Quantum\Loader\Setup;
-use Quantum\Di\Di;
+use Quantum\App\App;
 
 /**
  * Class EnvCommand
- * @package Quantum\Console\Commands
+ * @package Quantum\Console
  */
 class EnvCommand extends QtCommand
 {
@@ -56,29 +54,28 @@ class EnvCommand extends QtCommand
 
     /**
      * Executes the command and creates new .env file
-     * @throws \Quantum\Exceptions\DiException
-     * @throws \ReflectionException
-     * @throws EnvException
+     * @throws BaseException
      */
     public function exec()
     {
-        $fs = Di::get(FileSystem::class);
+        $fs = FileSystemFactory::get();
 
-        if ($fs->exists('.env.example')) {
-            if (!$this->getOption('yes')) {
-                if ($fs->exists('.env')) {
-                    if (!$this->confirm("The operation will overwrite values of the existing .env and will create new one from .env.example. Continue?")) {
-                        $this->info('Operation was canceled!');
-                        return;
-                    }
-                }
-            }
-
-            copy('.env.example', '.env');
-
-            $this->info('.env is successfully generated');
-        } else {
+        if (!$fs->exists(App::getBaseDir() . DS . '.env.example')) {
             $this->error('.env.example file not found');
         }
+
+        if ($fs->exists('.env') && !$this->getOption('yes')) {
+            if (!$this->confirm("The operation will overwrite values of the existing .env and will create new one from .env.example. Continue?")) {
+                $this->info('Operation was canceled!');
+                return;
+            }
+        }
+
+        $fs->copy(
+            App::getBaseDir() . DS . '.env.example',
+            App::getBaseDir() . DS . '.env'
+        );
+
+        $this->info('.env is successfully generated');
     }
 }

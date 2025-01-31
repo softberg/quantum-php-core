@@ -9,19 +9,18 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Libraries\Mailer;
 
-use Quantum\Exceptions\FileSystemException;
-use Phemail\Message\MessagePartInterface;
+use Quantum\Libraries\Storage\Exceptions\FileSystemException;
+use Quantum\Libraries\Storage\Factories\FileSystemFactory;
 use Quantum\Libraries\Storage\FileSystem;
-use Quantum\Exceptions\DiException;
+use Phemail\Message\MessagePartInterface;
+use Quantum\Exceptions\BaseException;
 use Phemail\Message\MessagePart;
 use Phemail\MessageParser;
-use ReflectionException;
-use Quantum\Di\Di;
 
 /**
  * class MailTrap
@@ -51,13 +50,11 @@ class MailTrap
     private static $instance = null;
 
     /**
-     * MailTrap constructor
-     * @throws ReflectionException
-     * @throws DiException
+     * @throws BaseException
      */
     private function __construct()
     {
-        $this->fs = Di::get(FileSystem::class);
+        $this->fs = FileSystemFactory::get();
         $this->parser = new MessageParser();
     }
 
@@ -95,8 +92,8 @@ class MailTrap
     /**
      * Gets the parsed email
      * @param $filename
-     * @return MailTrap
-     * @throws FileSystemException
+     * @return $this
+     * @throws BaseException
      */
     public function parseMessage($filename): MailTrap
     {
@@ -258,5 +255,4 @@ class MailTrap
 
         return $attachments;
     }
-
 }

@@ -19,7 +19,7 @@ class MvcHelperTest extends AppTestCase
 
         $this->request = new Request();
 
-        $this->router = new Router($this->request, new Response());
+        $this->router = new Router($this->request);
     }
 
     public function testMvcHelpers()

@@ -9,14 +9,14 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Libraries\Storage;
 
-use Quantum\Libraries\Storage\Adapters\Local\LocalFileSystemAdapter;
-use Quantum\Exceptions\FileSystemException;
-use Quantum\Exceptions\AppException;
+use Quantum\Libraries\Storage\Contracts\FilesystemAdapterInterface;
+use Quantum\Libraries\Storage\Exceptions\FileSystemException;
+use Quantum\Exceptions\BaseException;
 
 /**
  * Class FileSystem
@@ -47,21 +47,34 @@ class FileSystem
 {
 
     /**
+     * Local adapter
+     */
+    const LOCAL = 'local';
+
+    /**
+     * Dropbox adapter
+     */
+    const DROPBOX = 'dropbox';
+
+    /**
+     * GoogleDrive adapter
+     */
+    const GDRIVE = 'gdrive';
+
+    /**
      * @var FilesystemAdapterInterface
      */
     private $adapter;
 
     /**
-     * FileSystem constructor
-     * @param FilesystemAdapterInterface|null $filesystemAdapter
+     * @param FilesystemAdapterInterface $adapter
      */
-    public function __construct(FilesystemAdapterInterface $filesystemAdapter = null)
+    public function __construct(FilesystemAdapterInterface $adapter)
     {
-        $this->adapter = $filesystemAdapter ?: LocalFileSystemAdapter::getInstance();
+        $this->adapter = $adapter;
     }
 
     /**
-     * Gets the current adapter
      * @return FilesystemAdapterInterface
      */
     public function getAdapter(): FilesystemAdapterInterface
@@ -73,7 +86,7 @@ class FileSystem
      * @param string $method
      * @param array|null $arguments
      * @return mixed
-     * @throws AppException
+     * @throws BaseException
      */
     public function __call(string $method, ?array $arguments)
     {
@@ -83,5 +96,4 @@ class FileSystem
 
         return $this->adapter->$method(...$arguments);
     }
-
 }

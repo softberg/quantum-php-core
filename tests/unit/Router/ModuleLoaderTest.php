@@ -12,18 +12,19 @@ class ModuleLoaderTest extends AppTestCase
     {
         parent::setUp();
 
+        $this->setPrivateProperty(ModuleLoader::class, 'instance', null);
+
         $this->moduleLoader = ModuleLoader::getInstance();
     }
 
-    protected function tearDown(): void
+    public function tearDown(): void
     {
         parent::tearDown();
     }
 
     public function testGetInstance()
     {
-        $moduleLoader = ModuleLoader::getInstance();
-        $this->assertInstanceOf(ModuleLoader::class, $moduleLoader);
+        $this->assertInstanceOf(ModuleLoader::class, $this->moduleLoader);
     }
 
     public function testLoadModulesRoutesWithEnabledModules()
@@ -36,6 +37,4 @@ class ModuleLoaderTest extends AppTestCase
 
         $this->assertCount(2, Router::getRoutes());
     }
-
-
 }

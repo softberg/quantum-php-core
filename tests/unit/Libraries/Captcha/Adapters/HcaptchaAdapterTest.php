@@ -2,12 +2,10 @@
 
 namespace Quantum\Tests\Libraries\Captcha\Adapters;
 
-
+use Quantum\Libraries\Captcha\Contracts\CaptchaInterface;
 use Quantum\Libraries\Captcha\Adapters\HcaptchaAdapter;
-use Quantum\Libraries\Captcha\Adapters\RecaptchaAdapter;
-use Quantum\Libraries\Captcha\CaptchaInterface;
+use Quantum\Libraries\HttpClient\HttpClient;
 use Quantum\Libraries\Asset\AssetManager;
-use Quantum\Libraries\Curl\HttpClient;
 use Quantum\Tests\AppTestCase;
 use Mockery;
 
@@ -28,13 +26,12 @@ class HcaptchaAdapterTest extends AppTestCase
 
         $this->httpClientMock = Mockery::mock(HttpClient::class);
 
-        $this->adapter = HcaptchaAdapter::getInstance(config()->get('captcha.hcaptcha'), $this->httpClientMock);
+        $this->adapter = new HcaptchaAdapter(config()->get('captcha.hcaptcha'), $this->httpClientMock);
     }
 
     public function tearDown(): void
     {
         AssetManager::getInstance()->flush();
-        HcaptchaAdapter::resetInstance();
         Mockery::close();
     }
 
@@ -45,7 +42,7 @@ class HcaptchaAdapterTest extends AppTestCase
         $this->assertInstanceOf(HcaptchaAdapter::class, $this->adapter);
     }
 
-    public function testRecaptchaSetGetType()
+    public function testHcaptchaSetGetType()
     {
         $this->assertNull($this->adapter->getType());
 
@@ -64,7 +61,7 @@ class HcaptchaAdapterTest extends AppTestCase
         $this->adapter->setType('test');
     }
 
-    public function testRecaptchaVisibleAddToForm()
+    public function testHcaptchaVisibleAddToForm()
     {
         $this->adapter->setType(CaptchaInterface::CAPTCHA_VISIBLE);
 
@@ -73,7 +70,7 @@ class HcaptchaAdapterTest extends AppTestCase
             $this->adapter->addToForm('signUpForm'));
     }
 
-    public function testRecaptchaInvisibleAddToForm()
+    public function testHcaptchaInvisibleAddToForm()
     {
         $this->adapter->setType(CaptchaInterface::CAPTCHA_INVISIBLE);
 
@@ -93,7 +90,7 @@ class HcaptchaAdapterTest extends AppTestCase
             $this->adapter->addToForm('signUpForm'));
     }
 
-    public function testRecaptchaVerifySuccess()
+    public function testHcaptchaVerifySuccess()
     {
 
         $this->httpClientMock
@@ -122,7 +119,7 @@ class HcaptchaAdapterTest extends AppTestCase
         $this->assertTrue($result);
     }
 
-    public function testRecaptchaVerifyFailure()
+    public function testHcaptchaVerifyFailure()
     {
         $this->httpClientMock
             ->shouldReceive('createRequest')
@@ -151,5 +148,4 @@ class HcaptchaAdapterTest extends AppTestCase
 
         $this->assertEquals('invalid-input-response', $this->adapter->getErrorMessage());
     }
-
 }

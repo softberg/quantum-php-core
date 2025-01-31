@@ -2,7 +2,7 @@
 
 namespace Quantum\Tests\Libraries\JWToken;
 
-use Quantum\Libraries\JWToken\JWToken;
+use Quantum\Libraries\Jwt\JwtToken;
 use PHPUnit\Framework\TestCase;
 
 class JWTokenTest extends TestCase
@@ -29,7 +29,7 @@ class JWTokenTest extends TestCase
             'exp' => time() + 300
         ];
 
-        $this->jwtToken = new JWToken($this->key);
+        $this->jwtToken = new JwtToken($this->key);
 
         $this->jwtToken
             ->setLeeway(1)
@@ -110,7 +110,7 @@ class JWTokenTest extends TestCase
 
     public function testSetClaims()
     {
-        $jwtToken = new JWToken($this->key);
+        $jwtToken = new JwtToken($this->key);
 
         $claims = [
             'jti' => uniqid(),
@@ -132,8 +132,5 @@ class JWTokenTest extends TestCase
         $this->assertIsObject($jwtToken->fetchPayload());
 
         $this->assertEquals($claims, (array)$jwtToken->fetchPayload());
-
     }
-
-
 }

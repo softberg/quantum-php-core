@@ -9,21 +9,19 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Console\Commands;
 
+use Quantum\Environment\Exceptions\EnvException;
 use Quantum\Environment\Environment;
-use Quantum\Exceptions\EnvException;
-use Quantum\Exceptions\DiException;
 use Quantum\Console\QtCommand;
-use ReflectionException;
 use Exception;
 
 /**
  * Class KeyGenerateCommand
- * @package Quantum\Console\Commands
+ * @package Quantum\Console
  */
 class KeyGenerateCommand extends QtCommand
 {
@@ -57,10 +55,7 @@ class KeyGenerateCommand extends QtCommand
 
     /**
      * Executes the command and stores the generated key to .env file
-     * @throws DiException
      * @throws EnvException
-     * @throws ReflectionException
-     * @throws Exception
      */
     public function exec()
     {
@@ -87,5 +82,4 @@ class KeyGenerateCommand extends QtCommand
     {
         return bin2hex(random_bytes((int)$this->getOption('length')));
     }
-
 }

@@ -1,7 +1,14 @@
 <?php
 
 return [
-    'table' => 'sessions',
-    'driver' => 'file',
-    'timeout' => 300,
+    'current' => 'native',
+
+    'native' => [
+        'timeout' => 300
+    ],
+
+    'database' => [
+        'table' => 'sessions',
+        'timeout' => 300,
+    ]
 ];

@@ -14,7 +14,7 @@
 
 namespace Quantum\Migration;
 
-use Quantum\Factory\TableFactory;
+use Quantum\Libraries\Database\Factories\TableFactory;
 
 /**
  * Class QtMigration

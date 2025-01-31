@@ -14,18 +14,19 @@
 
 namespace Quantum\Libraries\Auth\Adapters;
 
+use Quantum\Libraries\Auth\Contracts\AuthenticatableInterface;
+use Quantum\Libraries\Encryption\Exceptions\CryptorException;
 use Quantum\Libraries\Database\Exceptions\DatabaseException;
-use Quantum\Libraries\Auth\AuthenticatableInterface;
-use Quantum\Libraries\Encryption\CryptorException;
-use Quantum\Libraries\Auth\AuthServiceInterface;
-use Quantum\Libraries\Session\SessionException;
-use Quantum\Libraries\Mailer\MailerInterface;
-use Quantum\Libraries\Config\ConfigException;
-use Quantum\Libraries\Auth\AuthException;
-use Quantum\Libraries\Lang\LangException;
-use Quantum\Libraries\Auth\BaseAuth;
+use Quantum\Libraries\Session\Exceptions\SessionException;
+use Quantum\Libraries\Auth\Contracts\AuthServiceInterface;
+use Quantum\Libraries\Config\Exceptions\ConfigException;
+use Quantum\Libraries\Auth\Exceptions\AuthException;
+use Quantum\Libraries\Auth\Constants\AuthKeys;
+use Quantum\Libraries\Auth\Traits\AuthTrait;
+use Quantum\Di\Exceptions\DiException;
+use Quantum\Exceptions\BaseException;
 use Quantum\Libraries\Hasher\Hasher;
-use Quantum\Exceptions\DiException;
+use Quantum\Libraries\Mailer\Mailer;
 use Quantum\Libraries\Auth\User;
 use ReflectionException;
 use Exception;
@@ -34,56 +35,30 @@ use Exception;
  * Class WebAuth
  * @package Quantum\Libraries\Auth
  */
-class WebAdapter extends BaseAuth implements AuthenticatableInterface
+class WebAdapter implements AuthenticatableInterface
 {
 
-    /**
-     * @var WebAdapter
-     */
-    private static $instance;
+    use AuthTrait;
 
     /**
      * @param AuthServiceInterface $authService
-     * @param MailerInterface $mailer
+     * @param Mailer $mailer
      * @param Hasher $hasher
      * @throws AuthException
      */
-    private function __construct(AuthServiceInterface $authService, MailerInterface $mailer, Hasher $hasher)
+    public function __construct(AuthServiceInterface $authService, Mailer $mailer, Hasher $hasher)
     {
         $this->authService = $authService;
         $this->mailer = $mailer;
         $this->hasher = $hasher;
 
-        $userSchema = $this->authService->userSchema();
-
-        $this->verifySchema($userSchema);
+        $this->verifySchema($this->authService->userSchema());
     }
 
     /**
-     * @param AuthServiceInterface $authService
-     * @param MailerInterface $mailer
-     * @param Hasher $hasher
-     * @return self
-     * @throws AuthException
-     */
-    public static function getInstance(AuthServiceInterface $authService, MailerInterface $mailer, Hasher $hasher): self
-    {
-        if (self::$instance === null) {
-            self::$instance = new self($authService, $mailer, $hasher);
-        }
-
-        return self::$instance;
-    }
-
-    /**
-     * Sign In
-     * @param string $username
-     * @param string $password
-     * @param bool $remember
-     * @return string|true
+     * @inheritDoc
      * @throws AuthException
      * @throws ConfigException
-     * @throws CryptorException
      * @throws DatabaseException
      * @throws DiException
      * @throws ReflectionException
@@ -98,29 +73,27 @@ class WebAdapter extends BaseAuth implements AuthenticatableInterface
             $this->setRememberToken($user);
         }
 
-        if (filter_var(config()->get('2FA'), FILTER_VALIDATE_BOOLEAN)) {
+        if ($this->isTwoFactorEnabled()) {
             return $this->twoStepVerification($user);
-        } else {
-            session()->regenerateId();
-            session()->set($this->authUserKey, $this->getVisibleFields($user));
-            return true;
         }
+
+        session()->regenerateId();
+        session()->set(self::AUTH_USER, $this->getVisibleFields($user));
+
+        return true;
     }
 
     /**
-     * Sign Out
-     * @return bool
+     * @inheritDoc
      * @throws ConfigException
-     * @throws CryptorException
-     * @throws DatabaseException
      * @throws DiException
      * @throws ReflectionException
-     * @throws SessionException
+     * @throws BaseException
      */
     public function signout(): bool
     {
-        if (session()->has($this->authUserKey)) {
-            session()->delete($this->authUserKey);
+        if (session()->has(self::AUTH_USER)) {
+            session()->delete(self::AUTH_USER);
             session()->regenerateId();
             $this->removeRememberToken();
 
@@ -131,25 +104,25 @@ class WebAdapter extends BaseAuth implements AuthenticatableInterface
     }
 
     /**
-     * Gets the user object
-     * @return User|null
+     * @inheritDoc
      * @throws ConfigException
      * @throws CryptorException
      * @throws DatabaseException
      * @throws DiException
-     * @throws LangException
      * @throws ReflectionException
      * @throws SessionException
      */
     public function user(): ?User
     {
-        if (session()->has($this->authUserKey) && is_array(session()->get($this->authUserKey))) {
-            return (new User())->setData(session()->get($this->authUserKey));
-        } else if (cookie()->has($this->keyFields[self::REMEMBER_TOKEN_KEY])) {
+        if (session()->has(self::AUTH_USER) && is_array(session()->get(self::AUTH_USER))) {
+            return (new User())->setData(session()->get(self::AUTH_USER));
+        }
+
+        if (cookie()->has($this->keyFields[AuthKeys::REMEMBER_TOKEN])) {
             $user = $this->checkRememberToken();
 
             if ($user) {
-                session()->set($this->authUserKey, $this->getVisibleFields($user));
+                session()->set(self::AUTH_USER, $this->getVisibleFields($user));
                 return $this->user();
             }
         }
@@ -163,18 +136,16 @@ class WebAdapter extends BaseAuth implements AuthenticatableInterface
      * @param string $otpToken
      * @return bool
      * @throws AuthException
+     * @throws BaseException
      * @throws ConfigException
-     * @throws CryptorException
-     * @throws DatabaseException
      * @throws DiException
      * @throws ReflectionException
-     * @throws SessionException
      */
     public function verifyOtp(int $otp, string $otpToken): bool
     {
         $user = $this->verifyAndUpdateOtp($otp, $otpToken);
 
-        session()->set($this->authUserKey, $this->getVisibleFields($user));
+        session()->set(self::AUTH_USER, $this->getVisibleFields($user));
 
         return true;
     }
@@ -182,20 +153,19 @@ class WebAdapter extends BaseAuth implements AuthenticatableInterface
     /**
      * Check Remember Token
      * @return User|false
-     * @throws CryptorException
      */
     private function checkRememberToken()
     {
         $user = $this->authService->get(
-            $this->keyFields[self::REMEMBER_TOKEN_KEY],
-            cookie()->get($this->keyFields[self::REMEMBER_TOKEN_KEY])
+            $this->keyFields[AuthKeys::REMEMBER_TOKEN],
+            cookie()->get($this->keyFields[AuthKeys::REMEMBER_TOKEN])
         );
 
         if (!$user) {
             return false;
         }
 
-        if (filter_var(config()->get('2FA'), FILTER_VALIDATE_BOOLEAN) && !empty($user->getFieldValue($this->keyFields[self::OTP_TOKEN_KEY]))) {
+        if ($this->isTwoFactorEnabled() && !empty($user->getFieldValue($this->keyFields[AuthKeys::OTP_TOKEN]))) {
             return false;
         }
 
@@ -205,42 +175,40 @@ class WebAdapter extends BaseAuth implements AuthenticatableInterface
     /**
      * Set Remember Token
      * @param User $user
-     * @throws CryptorException
      */
     private function setRememberToken(User $user)
     {
         $rememberToken = $this->generateToken();
 
         $this->authService->update(
-            $this->keyFields[self::USERNAME_KEY],
-            $user->getFieldValue($this->keyFields[self::USERNAME_KEY]),
-            [$this->keyFields[self::REMEMBER_TOKEN_KEY] => $rememberToken]
+            $this->keyFields[AuthKeys::USERNAME],
+            $user->getFieldValue($this->keyFields[AuthKeys::USERNAME]),
+            [$this->keyFields[AuthKeys::REMEMBER_TOKEN] => $rememberToken]
         );
 
-        cookie()->set($this->keyFields[self::REMEMBER_TOKEN_KEY], $rememberToken);
+        cookie()->set($this->keyFields[AuthKeys::REMEMBER_TOKEN], $rememberToken);
     }
 
     /**
      * Remove Remember token
-     * @throws CryptorException
      */
     private function removeRememberToken()
     {
-        if (cookie()->has($this->keyFields[self::REMEMBER_TOKEN_KEY])) {
+        if (cookie()->has($this->keyFields[AuthKeys::REMEMBER_TOKEN])) {
             $user = $this->authService->get(
-                $this->keyFields[self::REMEMBER_TOKEN_KEY],
-                cookie()->get($this->keyFields[self::REMEMBER_TOKEN_KEY])
+                $this->keyFields[AuthKeys::REMEMBER_TOKEN],
+                cookie()->get($this->keyFields[AuthKeys::REMEMBER_TOKEN])
             );
 
             if ($user) {
                 $this->authService->update(
-                    $this->keyFields[self::REMEMBER_TOKEN_KEY],
-                    $user->getFieldValue($this->keyFields[self::REMEMBER_TOKEN_KEY]),
-                    [$this->keyFields[self::REMEMBER_TOKEN_KEY] => '']
+                    $this->keyFields[AuthKeys::REMEMBER_TOKEN],
+                    $user->getFieldValue($this->keyFields[AuthKeys::REMEMBER_TOKEN]),
+                    [$this->keyFields[AuthKeys::REMEMBER_TOKEN] => '']
                 );
             }
 
-            cookie()->delete($this->keyFields[self::REMEMBER_TOKEN_KEY]);
+            cookie()->delete($this->keyFields[AuthKeys::REMEMBER_TOKEN]);
         }
     }
 }
