@@ -16,8 +16,6 @@ class MailerTest extends AppTestCase
     {
         parent::setUp();
 
-        parent::setUp();
-
         if (!config()->has('mailer')) {
             config()->import(new Setup('config', 'mailer'));
         }

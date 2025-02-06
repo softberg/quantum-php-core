@@ -40,8 +40,6 @@ class AuthTest extends AuthTestCase
         $auth = new Auth(new ApiAdapter($this->authService, $this->mailer, new Hasher, $this->jwt));
 
         $this->assertInstanceOf(AuthenticatableInterface::class, $auth->getAdapter());
-
-        $this->assertInstanceOf(AuthenticatableInterface::class, $auth->getAdapter());
     }
 
     public function testAuthCallingValidMethod()
