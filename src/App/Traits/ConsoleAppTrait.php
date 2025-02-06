@@ -14,7 +14,6 @@
 
 namespace Quantum\App\Traits;
 
-use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Application;
 use Quantum\Console\QtCommand;
 use Mockery\Exception;
@@ -77,12 +76,11 @@ trait ConsoleAppTrait
     }
 
     /**
-     * @param ArgvInput $input
      * @return void
      */
-    private function validateCommand(ArgvInput $input): void
+    private function validateCommand(): void
     {
-        $commandName = $input->getFirstArgument();
+        $commandName = $this->input->getFirstArgument();
 
         if (!$this->application->has($commandName)) {
             throw new Exception("Command `$commandName` is not defined");

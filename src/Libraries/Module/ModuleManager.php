@@ -14,12 +14,17 @@
 
 namespace Quantum\Libraries\Module;
 
+use Symfony\Component\VarExporter\Exception\ExceptionInterface;
 use Quantum\Libraries\Storage\Factories\FileSystemFactory;
+use Quantum\Router\Exceptions\ModuleLoaderException;
 use Quantum\Exceptions\BaseException;
+use Quantum\Environment\Environment;
+use Quantum\Router\ModuleLoader;
 use Exception;
 
 class ModuleManager
 {
+
     /**
      * @var mixed
      */
@@ -33,7 +38,7 @@ class ModuleManager
     /**
      * @var string
      */
-    public static $moduleName;
+    private $moduleName;
 
     /**
      * @var string
@@ -56,29 +61,82 @@ class ModuleManager
     private $templatePath;
 
     /**
+     * @var string
+     */
+    private $modulesConfigPath;
+
+    /**
+     * @var ModuleManager|null
+     */
+    private static $instance = null;
+
+    /**
      * @param string $moduleName
      * @param string $template
      * @param string $demo
      * @param bool $enabled
      * @throws BaseException
      */
-    function __construct(string $moduleName, string $template, string $demo, bool $enabled)
+    private function __construct(string $moduleName, string $template, string $demo, bool $enabled)
     {
-        self::$moduleName = $moduleName;
+        $this->fs = FileSystemFactory::get();
 
+        $this->moduleName = $moduleName;
+        $this->optionEnabled = $enabled;
         $this->template = $template;
-
         $this->demo = $demo;
 
-        $this->optionEnabled = $enabled;
+        $this->modulePath = modules_dir() . DS . $moduleName;
+        $this->templatePath = $this->generateTemplatePath($template, $demo);
+        $this->modulesConfigPath = base_dir() . DS . 'shared' . DS . 'config' . DS . 'modules.php';
+    }
 
-        $type = $this->demo == "yes" ? "Demo" : "Default";
+    /**
+     * @param string $moduleName
+     * @param string $template
+     * @param string $demo
+     * @param bool $enabled
+     * @return ModuleManager
+     * @throws BaseException
+     */
+    public static function createInstance(string $moduleName, string $template, string $demo, bool $enabled): ModuleManager
+    {
+        if (self::$instance === null) {
+            self::$instance = new self($moduleName, $template, $demo, $enabled);
+        }
 
-        $this->templatePath = __DIR__ . DS . "Templates" . DS . $type . DS . ucfirst($this->template);
+        return self::$instance;
+    }
 
-        $this->modulePath = modules_dir() . DS . self::$moduleName;
+    /**
+     * @return ModuleManager
+     * @throws Exception
+     */
+    public static function getInstance(): ModuleManager
+    {
+        if (self::$instance === null) {
+            throw new Exception("ModuleManager is not instantiated, call `createInstance()` first");
+        }
 
-        $this->fs = FileSystemFactory::get();
+        return self::$instance;
+    }
+
+    /**
+     * @return string
+     */
+    public function getModuleName(): string
+    {
+        return $this->moduleName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBaseNamespace(): string
+    {
+        return Environment::getInstance()->getAppEnv() === 'testing'
+            ? "Quantum\\Tests\\_root\\modules"
+            : "Modules";
     }
 
     /**
@@ -95,28 +153,23 @@ class ModuleManager
     }
 
     /**
-     * @return void
+     * @throws ModuleLoaderException
+     * @throws ExceptionInterface
      * @throws Exception
      */
     public function addModuleConfig()
     {
-        $modulesConfigPath = base_dir() . DS . 'shared' . DS . 'config' . DS . 'modules.php';
-        $modules = $this->fs->require($modulesConfigPath);
+        $moduleConfigs = ModuleLoader::getInstance()->getModuleConfigs();
 
-        foreach ($modules['modules'] as $module => $options) {
-            if ($module == self::$moduleName || $options['prefix'] == strtolower(self::$moduleName)) {
-                throw new Exception("A module or prefix named '" . self::$moduleName . "' already exists");
+        foreach ($moduleConfigs as $module => $options) {
+            if ($module == $this->moduleName || $options['prefix'] == strtolower($this->moduleName)) {
+                throw new Exception("A module or prefix named '" . $this->moduleName . "' already exists");
             }
         }
 
-        $this->fs->put(
-            $modulesConfigPath,
-            str_replace(
-                "'modules' => [",
-                $this->writeModuleConfig(self::$moduleName),
-                $this->fs->get($modulesConfigPath)
-            )
-        );
+        $moduleConfigs[$this->moduleName] = $this->getModuleOptions($this->moduleName);
+
+        $this->updateModuleConfigFile($moduleConfigs);
     }
 
     /**
@@ -151,20 +204,38 @@ class ModuleManager
     }
 
     /**
-     * Add module to config
      * @param string $module
+     * @return array
+     */
+    private function getModuleOptions(string $module): array
+    {
+        return [
+            'prefix' => $this->template == "web" && $this->demo == "yes" ? "" : strtolower($module),
+            'enabled' => $this->optionEnabled,
+        ];
+    }
+
+    /**
+     * @param array $moduleConfigs
+     * @return void
+     * @throws ExceptionInterface
+     */
+    private function updateModuleConfigFile(array $moduleConfigs): void
+    {
+        $this->fs->put(
+            $this->modulesConfigPath,
+            "<?php\n\nreturn " . export($moduleConfigs) . ";\n"
+        );
+    }
+
+    /**
+     * @param string $template
+     * @param string $demo
      * @return string
      */
-    private function writeModuleConfig(string $module): string
+    private function generateTemplatePath(string $template, string $demo): string
     {
-        $enabled = $this->optionEnabled ? "true" : "false";
-
-        $prefix = $this->template == "web" && $this->demo == "yes" ? "" : strtolower($module);
-
-        return "'modules' => [
-        '" . $module . "' => [
-            'prefix' => '" . $prefix . "',
-            'enabled' => " . $enabled . ",
-        ],";
+        $type = $demo === 'yes' ? 'Demo' : 'Default';
+        return __DIR__ . DS . 'Templates' . DS . $type . DS . ucfirst($template);
     }
 }

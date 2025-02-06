@@ -9,11 +9,12 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Console\Commands;
 
+use Symfony\Component\VarExporter\Exception\ExceptionInterface;
 use Quantum\Libraries\Module\ModuleManager;
 use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Console\QtCommand;
@@ -69,14 +70,19 @@ class ModuleGenerateCommand extends QtCommand
 
     /**
      * Executes the command
-     * @throws Exception
+     * @throws ExceptionInterface
      */
     public function exec()
     {
         try {
             $moduleName = $this->getArgument('module');
 
-            $moduleManager = new ModuleManager($moduleName, $this->getOption('template'), $this->getOption('demo'), $this->getOption('yes'));
+            $moduleManager = ModuleManager::createInstance(
+                $moduleName,
+                $this->getOption('template'),
+                $this->getOption('demo'),
+                $this->getOption('yes')
+            );
 
             $moduleManager->addModuleConfig();
 

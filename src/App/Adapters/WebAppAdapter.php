@@ -17,12 +17,12 @@ namespace Quantum\App\Adapters;
 use Quantum\Libraries\Encryption\Exceptions\CryptorException;
 use Quantum\Libraries\Database\Exceptions\DatabaseException;
 use Quantum\Libraries\Session\Exceptions\SessionException;
-use Quantum\Libraries\Logger\Exceptions\LoggerException;
 use Quantum\Libraries\Config\Exceptions\ConfigException;
 use Quantum\Middleware\Exceptions\MiddlewareException;
 use Quantum\Libraries\Csrf\Exceptions\CsrfException;
 use Quantum\Libraries\Lang\Exceptions\LangException;
 use Quantum\Router\Exceptions\ModuleLoaderException;
+use Quantum\Renderer\Exceptions\RendererException;
 use Quantum\Environment\Exceptions\EnvException;
 use Quantum\Exceptions\StopExecutionException;
 use Quantum\Router\Exceptions\RouteException;
@@ -30,14 +30,10 @@ use Quantum\Exceptions\ControllerException;
 use Quantum\App\Contracts\AppInterface;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Exceptions\BaseException;
-use Quantum\Exceptions\ViewException;
 use Quantum\App\Traits\WebAppTrait;
 use DebugBar\DebugBarException;
 use Quantum\Debugger\Debugger;
 use Quantum\Hooks\HookManager;
-use Twig\Error\RuntimeError;
-use Twig\Error\SyntaxError;
-use Twig\Error\LoaderError;
 use Quantum\Mvc\MvcManager;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
@@ -54,6 +50,34 @@ class WebAppAdapter extends AppAdapter implements AppInterface
     use WebAppTrait;
 
     /**
+     * @var Request
+     */
+    private $request;
+
+    /**
+     * @var Response
+     */
+    private $response;
+
+    /**
+     * @throws BaseException
+     * @throws ConfigException
+     * @throws DiException
+     * @throws EnvException
+     * @throws ReflectionException
+     */
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->loadEnvironment();
+        $this->loadConfig();
+
+        $this->request = Di::get(Request::class);
+        $this->response = Di::get(Response::class);
+    }
+
+    /**
      * @return int|null
      * @throws BaseException
      * @throws ConfigException
@@ -63,33 +87,22 @@ class WebAppAdapter extends AppAdapter implements AppInterface
      * @throws DatabaseException
      * @throws DebugBarException
      * @throws DiException
-     * @throws EnvException
      * @throws LangException
-     * @throws LoaderError
-     * @throws LoggerException
      * @throws MiddlewareException
      * @throws ModuleLoaderException
      * @throws ReflectionException
      * @throws RouteException
-     * @throws RuntimeError
      * @throws SessionException
-     * @throws SyntaxError
-     * @throws ViewException
+     * @throws RendererException
      */
     public function start(): ?int
     {
-        $request = Di::get(Request::class);
-        $response = Di::get(Response::class);
-
         try {
-            $this->loadEnvironment();
-            $this->loadConfig();
-
-            $this->initializeRequestResponse($request, $response);
+            $this->initializeRequestResponse($this->request, $this->response);
 
             $this->loadLanguage();
 
-            if ($request->isMethod('OPTIONS')) {
+            if ($this->request->isMethod('OPTIONS')) {
                 stop();
             }
 
@@ -98,16 +111,16 @@ class WebAppAdapter extends AppAdapter implements AppInterface
             $this->loadModules();
             $this->setupViewCache();
 
-            $this->initializeRouter($request);
+            $this->initializeRouter($this->request);
 
             info(HookManager::getInstance()->getRegistered(), ['tab' => Debugger::HOOKS]);
 
-            MvcManager::handle($request, $response);
+            MvcManager::handle($this->request, $this->response);
 
             stop();
         } catch (StopExecutionException $exception) {
-            $this->handleCors($response);
-            $response->send();
+            $this->handleCors($this->response);
+            $this->response->send();
 
             return $exception->getCode();
         }

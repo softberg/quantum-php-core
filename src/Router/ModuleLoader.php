@@ -32,7 +32,7 @@ class ModuleLoader
     /**
      * @var array
      */
-    private static $moduleConfig = [];
+    private static $moduleConfigs = [];
 
     /**
      * @var array<Closure>
@@ -76,13 +76,13 @@ class ModuleLoader
      */
     public function loadModulesRoutes()
     {
-        if (empty(self::$moduleConfig)) {
+        if (empty(self::$moduleConfigs)) {
             $this->loadModuleConfig();
         }
 
         $modulesRoutes = [];
 
-        foreach (self::$moduleConfig['modules'] as $module => $options) {
+        foreach (self::$moduleConfigs['modules'] as $module => $options) {
             if (!$this->isModuleEnabled($options)) {
                 continue;
             }
@@ -91,6 +91,19 @@ class ModuleLoader
         }
 
         Router::setRoutes($modulesRoutes);
+    }
+
+    /**
+     * @return array
+     * @throws ModuleLoaderException
+     */
+    public function getModuleConfigs(): array
+    {
+        if (empty(self::$moduleConfigs)) {
+            $this->loadModuleConfig();
+        }
+
+        return self::$moduleConfigs;
     }
 
     /**
@@ -104,7 +117,7 @@ class ModuleLoader
             throw ModuleLoaderException::moduleConfigNotFound();
         }
 
-        self::$moduleConfig = $this->fs->require($configPath, true);
+        self::$moduleConfigs = $this->fs->require($configPath, true);
     }
 
     /**

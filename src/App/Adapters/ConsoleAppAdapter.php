@@ -27,6 +27,8 @@ use Quantum\Di\Exceptions\DiException;
 use Quantum\Exceptions\BaseException;
 use ReflectionException;
 
+if (!defined('DS')) define('DS', DIRECTORY_SEPARATOR);
+
 /**
  * Class ConsoleAppAdapter
  * @package Quantum\App
@@ -49,9 +51,36 @@ class ConsoleAppAdapter extends AppAdapter implements AppInterface
     private $version = '2.x';
 
     /**
+     * @var ArgvInput
+     */
+    protected $input;
+
+    /**
+     * @var ConsoleOutput
+     */
+    protected $output;
+
+    /**
      * @var Application
      */
     protected $application;
+
+
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->input = new ArgvInput();
+        $this->output = new ConsoleOutput();
+
+        $commandName = $this->input->getFirstArgument();
+
+        if ($commandName !== 'core:env') {
+            $this->loadEnvironment();
+        }
+
+        $this->loadConfig();
+    }
 
     /**
      * @return int|null
@@ -64,9 +93,6 @@ class ConsoleAppAdapter extends AppAdapter implements AppInterface
      */
     public function start(): ?int
     {
-        $input = new ArgvInput();
-        $output = new ConsoleOutput();
-
         try {
             $this->application = $this->createApplication($this->name, $this->version);
 
@@ -82,9 +108,9 @@ class ConsoleAppAdapter extends AppAdapter implements AppInterface
 
             $this->setupErrorHandler();
 
-            $this->validateCommand($input);
+            $this->validateCommand();
 
-            $exitCode = $this->application->run($input, $output);
+            $exitCode = $this->application->run($this->input, $this->output);
 
             stop(null, $exitCode);
         } catch (StopExecutionException $exception) {
