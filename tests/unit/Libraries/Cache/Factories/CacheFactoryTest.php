@@ -1,6 +1,6 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Cache\Factories;
+namespace Quantum\Tests\Unit\Libraries\Cache\Factories;
 
 use Quantum\Libraries\Cache\Exceptions\CacheException;
 use Quantum\Libraries\Cache\Adapters\MemcachedAdapter;
@@ -8,9 +8,8 @@ use Quantum\Libraries\Cache\Adapters\DatabaseAdapter;
 use Quantum\Libraries\Cache\Factories\CacheFactory;
 use Quantum\Libraries\Cache\Adapters\RedisAdapter;
 use Quantum\Libraries\Cache\Adapters\FileAdapter;
+use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Libraries\Cache\Cache;
-use Quantum\Tests\AppTestCase;
-use ReflectionClass;
 
 class CacheFactoryTest extends AppTestCase
 {
@@ -19,10 +18,7 @@ class CacheFactoryTest extends AppTestCase
     {
         parent::setUp();
 
-        $reflection = new ReflectionClass(CacheFactory::class);
-        $property = $reflection->getProperty('instance');
-        $property->setAccessible(true);
-        $property->setValue(null);
+        $this->setPrivateProperty(CacheFactory::class, 'instance', null);
     }
 
     public function testCacheFactoryInstance()

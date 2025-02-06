@@ -1,8 +1,7 @@
 <?php
 
-namespace Quantum\Tests\App\Adapters;
+namespace Quantum\Tests\Unit\App\Adapters;
 
-use Quantum\Libraries\Storage\Factories\FileSystemFactory;
 use Quantum\App\Adapters\WebAppAdapter;
 use PHPUnit\Framework\TestCase;
 use Quantum\Http\Request;
@@ -17,16 +16,7 @@ class WebAppAdapterTest extends TestCase
 
     public function setUp(): void
     {
-        App::setBaseDir(dirname(__DIR__, 2) . DS . '_root');
-
-        $fs = FileSystemFactory::get();
-
-        if (!$fs->exists(App::getBaseDir() . DS . '.env.testing')) {
-            $fs->copy(
-                App::getBaseDir() . DS . '.env.example',
-                App::getBaseDir() . DS . '.env.testing'
-            );
-        }
+        App::setBaseDir(PROJECT_ROOT);
 
         $this->webAppAdapter = new WebAppAdapter();
     }

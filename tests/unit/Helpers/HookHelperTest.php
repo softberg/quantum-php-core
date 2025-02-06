@@ -1,10 +1,10 @@
 <?php
 
-namespace Quantum\Tests\Helpers;
+namespace Quantum\Tests\Unit\Helpers;
 
 use Quantum\Hooks\Exceptions\HookException;
+use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Hooks\HookManager;
-use Quantum\Tests\AppTestCase;
 
 class HookHelperTest extends AppTestCase
 {

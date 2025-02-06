@@ -1,6 +1,6 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Storage;
+namespace Quantum\Tests\Unit\Libraries\Storage;
 
 use Quantum\Libraries\HttpClient\HttpClient;
 use Mockery;

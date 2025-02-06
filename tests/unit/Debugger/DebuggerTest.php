@@ -1,26 +1,29 @@
 <?php
 
-namespace Quantum\Tests\Debugger;
+namespace Quantum\Tests\Unit\Debugger;
 
 use DebugBar\DataCollector\MessagesCollector;
 use DebugBar\DataCollector\PhpInfoCollector;
 use Quantum\Debugger\DebuggerStore;
+use Quantum\Tests\Unit\AppTestCase;
 use DebugBar\JavascriptRenderer;
 use Quantum\Debugger\Debugger;
-use Quantum\Tests\AppTestCase;
 use DebugBar\DebugBar;
 use Psr\Log\LogLevel;
-use ReflectionClass;
 use Mockery;
 
 class DebuggerTest extends AppTestCase
 {
+
     private $debugger;
+
     private $debugBarMock;
+
     private $debuggerStore;
 
     public function setUp(): void
     {
+
         parent::setUp();
 
         $this->debuggerStore = new DebuggerStore();
@@ -38,10 +41,7 @@ class DebuggerTest extends AppTestCase
                 ->with($collector);
         }
 
-        $reflection = new ReflectionClass(Debugger::class);
-        $instanceProperty = $reflection->getProperty('instance');
-        $instanceProperty->setAccessible(true);
-        $instanceProperty->setValue(null);
+        $this->setPrivateProperty(Debugger::class, 'instance', null);
 
         $this->debugger = Debugger::getInstance($this->debuggerStore, $this->debugBarMock, $collectors);
     }

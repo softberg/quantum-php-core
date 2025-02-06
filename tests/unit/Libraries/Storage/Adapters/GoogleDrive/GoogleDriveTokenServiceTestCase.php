@@ -1,6 +1,6 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Storage\Adapters\GoogleDrive;
+namespace Quantum\Tests\Unit\Libraries\Storage\Adapters\GoogleDrive;
 
 use Quantum\Libraries\Storage\Contracts\TokenServiceInterface;
 use Mockery;

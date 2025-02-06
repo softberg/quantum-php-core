@@ -1,6 +1,6 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Storage;
+namespace Quantum\Tests\Unit\Libraries\Storage;
 
 use Quantum\Libraries\Storage\Adapters\GoogleDrive\GoogleDriveFileSystemAdapter;
 use Quantum\Libraries\Storage\Adapters\Dropbox\DropboxFileSystemAdapter;
@@ -10,7 +10,7 @@ use Quantum\Libraries\Storage\Adapters\GoogleDrive\GoogleDriveApp;
 use Quantum\Libraries\Storage\Exceptions\FileSystemException;
 use Quantum\Libraries\Storage\Adapters\Dropbox\DropboxApp;
 use Quantum\Libraries\Storage\FileSystem;
-use Quantum\Tests\AppTestCase;
+use Quantum\Tests\Unit\AppTestCase;
 use Mockery;
 
 class FileSystemTest extends AppTestCase

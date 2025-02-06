@@ -9,15 +9,14 @@ namespace Quantum\Services {
     {
         
     }
-
 }
 
-namespace Quantum\Tests\Mvc {
+namespace Quantum\Tests\Unit\Mvc {
 
     use Quantum\Exceptions\ServiceException;
     use Quantum\Services\TestingService;
     use Quantum\Factory\ServiceFactory;
-    use Quantum\Tests\AppTestCase;
+    use Quantum\Tests\Unit\AppTestCase;
 
     /**
      * @runTestsInSeparateProcesses

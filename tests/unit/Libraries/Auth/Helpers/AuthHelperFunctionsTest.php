@@ -1,9 +1,9 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Auth\Helpers;
+namespace Quantum\Tests\Unit\Libraries\Auth\Helpers;
 
+use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Libraries\Auth\Auth;
-use Quantum\Tests\AppTestCase;
 
 class AuthHelperFunctionsTest extends AppTestCase
 {

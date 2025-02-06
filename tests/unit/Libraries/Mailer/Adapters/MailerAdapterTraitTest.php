@@ -1,10 +1,10 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Mailer\Adapters;
+namespace Quantum\Tests\Unit\Libraries\Mailer\Adapters;
 
 use Quantum\Libraries\Mailer\Adapters\SendinblueAdapter;
 use Quantum\Libraries\Mailer\Adapters\SmtpAdapter;
-use Quantum\Tests\AppTestCase;
+use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Loader\Setup;
 
 class MailerAdapterTraitTest extends AppTestCase

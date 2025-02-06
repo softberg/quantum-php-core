@@ -1,14 +1,13 @@
 <?php
 
-namespace Quantum\Tests\Environment;
+namespace Quantum\Tests\Unit\Environment;
 
 use Quantum\Environment\Environment;
-use Quantum\Tests\AppTestCase;
+use Quantum\Tests\Unit\AppTestCase;
 use Quantum\App\App;
 
 class EnvironmentTest extends AppTestCase
 {
-
     private $env;
 
     public function setUp(): void

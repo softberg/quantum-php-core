@@ -1,8 +1,8 @@
 <?php
 
-namespace Quantum\Tests\Helpers;
+namespace Quantum\Tests\Unit\Helpers;
 
-use Quantum\Tests\AppTestCase;
+use Quantum\Tests\Unit\AppTestCase;
 
 class DirHelperTest extends AppTestCase
 {
@@ -14,49 +14,49 @@ class DirHelperTest extends AppTestCase
 
     public function testBaseDir()
     {
-        $expectedBaseDir = dirname(__DIR__) . DS . '_root';
+        $expectedBaseDir = dirname(__DIR__, 2) . DS . '_root';
         $this->assertEquals($expectedBaseDir, base_dir());
     }
 
     public function testLogsDir()
     {
-        $expected = dirname(__DIR__) . DS . '_root' . DS . 'logs';
+        $expected = dirname(__DIR__, 2) . DS . '_root' . DS . 'logs';
         $this->assertEquals($expected, logs_dir());
     }
 
     public function testFrameworkDir()
     {
-        $expected = dirname(__DIR__) . DS . '_root' . DS . 'vendor' . DS . 'quantum' . DS . 'framework' . DS . 'src';
+        $expected = dirname(__DIR__, 2) . DS . '_root' . DS . 'vendor' . DS . 'quantum' . DS . 'framework' . DS . 'src';
         $this->assertEquals($expected, framework_dir());
     }
 
     public function testModulesDir()
     {
-        $expected = dirname(__DIR__) . DS . '_root' . DS . 'modules';
+        $expected = dirname(__DIR__, 2) . DS . '_root' . DS . 'modules';
         $this->assertEquals($expected, modules_dir());
     }
 
     public function testPublicDir()
     {
-        $expected = dirname(__DIR__) . DS . '_root' . DS . 'public';
+        $expected = dirname(__DIR__, 2) . DS . '_root' . DS . 'public';
         $this->assertEquals($expected, public_dir());
     }
 
     public function testUploadsDir()
     {
-        $expected = dirname(__DIR__) . DS . '_root' . DS . 'public' . DS . 'uploads';
+        $expected = dirname(__DIR__, 2) . DS . '_root' . DS . 'public' . DS . 'uploads';
         $this->assertEquals($expected, uploads_dir());
     }
 
     public function testAssetsDir()
     {
-        $expected = dirname(__DIR__) . DS . '_root' . DS . 'public' . DS . 'assets';
+        $expected = dirname(__DIR__, 2) . DS . '_root' . DS . 'public' . DS . 'assets';
         $this->assertEquals($expected, assets_dir());
     }
 
     public function testHooksDir()
     {
-        $expected = dirname(__DIR__) . DS . '_root' . DS . 'hooks';
+        $expected = dirname(__DIR__, 2) . DS . '_root' . DS . 'hooks';
         $this->assertEquals($expected, hooks_dir());
     }
 }

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Quantum\Tests\Libraries\Transformer;
+namespace Quantum\Tests\Unit\Libraries\Transformer;
 
 use Quantum\Libraries\Transformer\Transformer;
 use PHPUnit\Framework\TestCase;

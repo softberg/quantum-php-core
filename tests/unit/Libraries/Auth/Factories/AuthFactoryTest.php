@@ -1,14 +1,13 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Auth\Factories;
+namespace Quantum\Tests\Unit\Libraries\Auth\Factories;
 
 use Quantum\Libraries\Auth\Exceptions\AuthException;
 use Quantum\Libraries\Auth\Factories\AuthFactory;
 use Quantum\Libraries\Auth\Adapters\ApiAdapter;
 use Quantum\Libraries\Auth\Adapters\WebAdapter;
+use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Libraries\Auth\Auth;
-use Quantum\Tests\AppTestCase;
-use ReflectionClass;
 
 class AuthFactoryTest extends AppTestCase
 {
@@ -17,10 +16,7 @@ class AuthFactoryTest extends AppTestCase
     {
         parent::setUp();
 
-        $reflection = new ReflectionClass(AuthFactory::class);
-        $property = $reflection->getProperty('instance');
-        $property->setAccessible(true);
-        $property->setValue(null);
+        $this->setPrivateProperty(AuthFactory::class, 'instance', null);
     }
 
     public function testAuthFactoryInstance()

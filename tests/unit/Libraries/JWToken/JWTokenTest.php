@@ -1,11 +1,11 @@
 <?php
 
-namespace Quantum\Tests\Libraries\JWToken;
+namespace Quantum\Tests\Unit\Libraries\JWToken;
 
 use Quantum\Libraries\Jwt\JwtToken;
-use PHPUnit\Framework\TestCase;
+use Quantum\Tests\Unit\AppTestCase;
 
-class JWTokenTest extends TestCase
+class JWTokenTest extends AppTestCase
 {
 
     private $jwtToken;
@@ -20,6 +20,8 @@ class JWTokenTest extends TestCase
 
     public function setUp(): void
     {
+        parent::setUp();
+
         $claims = [
             'jti' => uniqid(),
             'iss' => 'issuer',

@@ -8,13 +8,13 @@ namespace Quantum\Libraries\Auth\Traits {
     }
 }
 
-namespace Quantum\Tests\Libraries\Auth {
+namespace Quantum\Tests\Unit\Libraries\Auth {
 
     use Quantum\Libraries\Database\Adapters\Sleekdb\SleekDbal;
     use Quantum\Environment\Environment;
     use Quantum\Libraries\Mailer\Mailer;
+    use Quantum\Tests\Unit\AppTestCase;
     use Quantum\Libraries\Auth\User;
-    use Quantum\Tests\AppTestCase;
     use Quantum\Loader\Setup;
     use Mockery;
 
@@ -29,7 +29,6 @@ namespace Quantum\Tests\Libraries\Auth {
 
     abstract class AuthTestCase extends AppTestCase
     {
-
         protected static $users = [];
         protected $apiAuth;
         protected $authService;

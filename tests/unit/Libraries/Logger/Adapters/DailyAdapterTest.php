@@ -1,10 +1,10 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Logger\Adapters;
+namespace Quantum\Tests\Unit\Libraries\Logger\Adapters;
 
 use Quantum\Libraries\Logger\Exceptions\LoggerException;
 use Quantum\Libraries\Logger\Adapters\DailyAdapter;
-use Quantum\Tests\AppTestCase;
+use Quantum\Tests\Unit\AppTestCase;
 
 class DailyAdapterTest extends AppTestCase
 {

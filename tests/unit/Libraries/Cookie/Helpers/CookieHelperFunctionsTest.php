@@ -1,9 +1,9 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Cookie\Helpers;
+namespace Quantum\Tests\Unit\Libraries\Cookie\Helpers;
 
 use Quantum\Libraries\Cookie\Cookie;
-use Quantum\Tests\AppTestCase;
+use Quantum\Tests\Unit\AppTestCase;
 
 class CookieHelperFunctionsTest extends AppTestCase
 {

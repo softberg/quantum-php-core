@@ -1,9 +1,9 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Config\Helpers;
+namespace Quantum\Tests\Unit\Libraries\Config\Helpers;
 
 use Quantum\Libraries\Config\Config;
-use Quantum\Tests\AppTestCase;
+use Quantum\Tests\Unit\AppTestCase;
 
 class ConfigHelperFunctionsTest extends AppTestCase
 {

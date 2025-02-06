@@ -1,13 +1,12 @@
 <?php
 
-namespace Quantum\Tests\Mvc;
+namespace Quantum\Tests\Unit\Mvc;
 
 use Quantum\Renderer\Factories\RendererFactory;
 use Quantum\Exceptions\ViewException;
+use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Factory\ViewFactory;
-use Quantum\Tests\AppTestCase;
 use Quantum\Router\Router;
-use ReflectionClass;
 
 
 class QtViewTest extends AppTestCase
@@ -113,10 +112,7 @@ class QtViewTest extends AppTestCase
 
     public function testRenderViewWithTwig(): void
     {
-        $reflection = new ReflectionClass(RendererFactory::class);
-        $property = $reflection->getProperty('instance');
-        $property->setAccessible(true);
-        $property->setValue(null);
+        $this->setPrivateProperty(RendererFactory::class, 'instance', null);
 
         config()->set('view.current', 'twig');
         config()->set('view.twig', ['autoescape' => false]);

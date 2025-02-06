@@ -1,10 +1,10 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Database\Adapters\Idiorm;
+namespace Quantum\Tests\Unit\Libraries\Database\Adapters\Idiorm;
 
 use Quantum\Libraries\Database\Adapters\Idiorm\IdiormDbal;
 use Quantum\Libraries\Database\Database;
-use Quantum\Tests\AppTestCase;
+use Quantum\Tests\Unit\AppTestCase;
 
 abstract class IdiormDbalTestCase extends AppTestCase
 {

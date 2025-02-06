@@ -1,6 +1,6 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Logger\Factories;
+namespace Quantum\Tests\Unit\Libraries\Logger\Factories;
 
 use Quantum\Libraries\Logger\Contracts\ReportableInterface;
 use Quantum\Libraries\Logger\Exceptions\LoggerException;
@@ -9,8 +9,7 @@ use Quantum\Libraries\Logger\Factories\LoggerFactory;
 use Quantum\Libraries\Logger\Adapters\SingleAdapter;
 use Quantum\Libraries\Logger\Adapters\DailyAdapter;
 use Quantum\Libraries\Logger\Logger;
-use Quantum\Tests\AppTestCase;
-use ReflectionClass;
+use Quantum\Tests\Unit\AppTestCase;
 
 class LoggerFactoryTest extends AppTestCase
 {
@@ -19,10 +18,7 @@ class LoggerFactoryTest extends AppTestCase
     {
         parent::setUp();
 
-        $reflection = new ReflectionClass(LoggerFactory::class);
-        $property = $reflection->getProperty('instance');
-        $property->setAccessible(true);
-        $property->setValue(null);
+        $this->setPrivateProperty(LoggerFactory::class, 'instance', null);
     }
 
     public function testLoggerFactoryInstance()

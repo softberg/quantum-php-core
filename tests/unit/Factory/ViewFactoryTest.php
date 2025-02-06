@@ -1,9 +1,9 @@
 <?php
 
-namespace Quantum\Tests\Factory;
+namespace Quantum\Tests\Unit\Factory;
 
+use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Factory\ViewFactory;
-use Quantum\Tests\AppTestCase;
 use Quantum\Mvc\QtView;
 
 class ViewFactoryTest extends AppTestCase

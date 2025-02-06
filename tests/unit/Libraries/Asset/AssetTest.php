@@ -1,9 +1,9 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Asset;
+namespace Quantum\Tests\Unit\Libraries\Asset;
 
+use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Libraries\Asset\Asset;
-use Quantum\Tests\AppTestCase;
 
 class AssetTest extends AppTestCase
 {

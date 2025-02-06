@@ -1,11 +1,11 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Mailer\Adapters;
+namespace Quantum\Tests\Unit\Libraries\Mailer\Adapters;
 
 use Quantum\Libraries\Storage\Factories\FileSystemFactory;
 use Quantum\Libraries\Mailer\Contracts\MailerInterface;
 use Quantum\Libraries\Mailer\Adapters\SendgridAdapter;
-use Quantum\Tests\AppTestCase;
+use Quantum\Tests\Unit\AppTestCase;
 
 class SendgridAdapterTest extends AppTestCase
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace Quantum\Tests\Loader;
+namespace Quantum\Tests\Unit\Loader;
 
-use Quantum\Tests\AppTestCase;
+use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Loader\Setup;
 
 class SetupTest extends AppTestCase

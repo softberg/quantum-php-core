@@ -8,18 +8,16 @@ namespace Quantum\Models {
     {
 
         public $table = 'test';
-
     }
-
 }
 
-namespace Quantum\Tests\Factory {
+namespace Quantum\Tests\Unit\Factory {
 
-    use Quantum\Factory\ModelFactory;
     use Quantum\Libraries\Database\Exceptions\ModelException;
+    use Quantum\Tests\Unit\AppTestCase;
+    use Quantum\Factory\ModelFactory;
     use Quantum\Models\TestModel;
     use Quantum\Mvc\QtModel;
-    use Quantum\Tests\AppTestCase;
 
     /**
      * @runTestsInSeparateProcesses
@@ -61,5 +59,4 @@ namespace Quantum\Tests\Factory {
         }
 
     }
-
 }

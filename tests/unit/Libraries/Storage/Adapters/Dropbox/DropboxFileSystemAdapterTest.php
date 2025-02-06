@@ -1,10 +1,10 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Storage\Adapters\Dropbox;
+namespace Quantum\Tests\Unit\Libraries\Storage\Adapters\Dropbox;
 
 use Quantum\Libraries\Storage\Adapters\Dropbox\DropboxFileSystemAdapter;
 use Quantum\Libraries\Storage\Adapters\Dropbox\DropboxApp;
-use Quantum\Tests\AppTestCase;
+use Quantum\Tests\Unit\AppTestCase;
 use Mockery;
 
 class DropboxFileSystemAdapterTest extends AppTestCase

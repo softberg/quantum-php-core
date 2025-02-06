@@ -1,12 +1,12 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Database\Factories;
+namespace Quantum\Tests\Unit\Libraries\Database\Factories;
 
 use Quantum\Libraries\Database\Exceptions\DatabaseException;
 use Quantum\Libraries\Database\Factories\TableFactory;
 use Quantum\Libraries\Database\Schemas\Table;
 use Quantum\Libraries\Database\Database;
-use Quantum\Tests\AppTestCase;
+use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Loader\Setup;
 use Mockery;
 

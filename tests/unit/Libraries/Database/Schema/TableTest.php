@@ -1,6 +1,6 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Database\Schema;
+namespace Quantum\Tests\Unit\Libraries\Database\Schema;
 
 use Quantum\Libraries\Database\Constants\Type;
 use Quantum\Libraries\Database\Schemas\Column;
@@ -16,13 +16,11 @@ use Mockery;
 class TableTest extends TestCase
 {
 
-    private $db;
-
     public function setUp(): void
     {
-        $this->db = Mockery::mock('overload:Quantum\Libraries\Database\Database');
+        $db = Mockery::mock('overload:Quantum\Libraries\Database\Database');
 
-        $this->db->shouldReceive('execute')->andReturn(true);
+        $db->shouldReceive('execute')->andReturn(true);
     }
 
     public function testSetActionAndGetQuery()

@@ -1,14 +1,13 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Captcha\Factories;
+namespace Quantum\Tests\Unit\Libraries\Captcha\Factories;
 
 use Quantum\Libraries\Captcha\Exceptions\CaptchaException;
 use Quantum\Libraries\Captcha\Adapters\RecaptchaAdapter;
 use Quantum\Libraries\Captcha\Adapters\HcaptchaAdapter;
 use Quantum\Libraries\Captcha\Factories\CaptchaFactory;
 use Quantum\Libraries\Captcha\Captcha;
-use Quantum\Tests\AppTestCase;
-use ReflectionClass;
+use Quantum\Tests\Unit\AppTestCase;
 
 class CaptchaFactoryTest extends AppTestCase
 {
@@ -17,10 +16,7 @@ class CaptchaFactoryTest extends AppTestCase
     {
         parent::setUp();
 
-        $reflection = new ReflectionClass(CaptchaFactory::class);
-        $property = $reflection->getProperty('instance');
-        $property->setAccessible(true);
-        $property->setValue(null);
+        $this->setPrivateProperty(CaptchaFactory::class, 'instance', null);
     }
 
     public function testCaptchaFactoryInstance()

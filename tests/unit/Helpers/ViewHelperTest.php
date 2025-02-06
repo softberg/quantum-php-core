@@ -1,10 +1,10 @@
 <?php
 
-namespace Quantum\Tests\Helpers;
+namespace Quantum\Tests\Unit\Helpers;
 
 use Quantum\Router\RouteController;
+use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Factory\ViewFactory;
-use Quantum\Tests\AppTestCase;
 use Quantum\Di\Di;
 
 class ViewHelperTest extends AppTestCase

@@ -1,9 +1,9 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Cache\Helpers;
+namespace Quantum\Tests\Unit\Libraries\Cache\Helpers;
 
+use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Libraries\Cache\Cache;
-use Quantum\Tests\AppTestCase;
 
 class CacheHelperFunctionsTest extends AppTestCase
 {

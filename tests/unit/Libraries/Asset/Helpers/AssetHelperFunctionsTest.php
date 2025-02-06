@@ -1,10 +1,10 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Asset\Helpers;
+namespace Quantum\Tests\Unit\Libraries\Asset\Helpers;
 
 use Quantum\Libraries\Asset\AssetManager;
+use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Libraries\Asset\Asset;
-use Quantum\Tests\AppTestCase;
 
 class AssetHelperFunctionsTest extends AppTestCase
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Quantum\Tests\App\Factories;
+namespace Quantum\Tests\Unit\App\Factories;
 
 use Quantum\App\Adapters\ConsoleAppAdapter;
 use Quantum\App\Exceptions\AppException;
@@ -21,14 +21,14 @@ class AppFactoryTest extends TestCase
 
     public function testAppFactoryInstance()
     {
-        $app = AppFactory::create(App::WEB, dirname(__DIR__, 2) . DS . '_root');
+        $app = AppFactory::create(App::WEB, PROJECT_ROOT);
 
         $this->assertInstanceOf(App::class, $app);
     }
 
     public function testAppFactoryPharAdapter()
     {
-        $app = AppFactory::create(App::CONSOLE, dirname(__DIR__, 2) . DS . '_root');
+        $app = AppFactory::create(App::CONSOLE, PROJECT_ROOT);
 
         $this->assertInstanceOf(ConsoleAppAdapter::class, $app->getAdapter());
 
@@ -37,7 +37,7 @@ class AppFactoryTest extends TestCase
 
     public function testAppFactoryWebAdapter()
     {
-        $app = AppFactory::create(App::WEB, dirname(__DIR__, 2) . DS . '_root');
+        $app = AppFactory::create(App::WEB, PROJECT_ROOT);
 
         $this->assertInstanceOf(WebAppAdapter::class, $app->getAdapter());
 
@@ -50,13 +50,13 @@ class AppFactoryTest extends TestCase
 
         $this->expectExceptionMessage('The adapter `invalid_type` is not supported`');
 
-        AppFactory::create('invalid_type', __DIR__);
+        AppFactory::create('invalid_type', PROJECT_ROOT);
     }
 
     public function testAppFactoryReturnsSameInstance()
     {
-        $app1 = AppFactory::create(App::WEB, dirname(__DIR__, 2) . DS . '_root');
-        $app2 = AppFactory::create(App::WEB, dirname(__DIR__, 2) . DS . '_root');
+        $app1 = AppFactory::create(App::WEB, PROJECT_ROOT);
+        $app2 = AppFactory::create(App::WEB, PROJECT_ROOT);
 
         $this->assertSame($app1, $app2);
     }

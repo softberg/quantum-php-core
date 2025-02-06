@@ -1,9 +1,9 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Transformer\Helpers;
+namespace Quantum\Tests\Unit\Libraries\Transformer\Helpers;
 
-use Quantum\Tests\Libraries\Transformer\PostTransformer;
-use Quantum\Tests\AppTestCase;
+use Quantum\Tests\Unit\Libraries\Transformer\PostTransformer;
+use Quantum\Tests\Unit\AppTestCase;
 
 class TransformerHelperFunctionsTest extends AppTestCase
 {

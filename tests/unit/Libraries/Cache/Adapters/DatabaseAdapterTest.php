@@ -1,10 +1,10 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Cache\Adapters;
+namespace Quantum\Tests\Unit\Libraries\Cache\Adapters;
 
 use Quantum\Libraries\Database\Adapters\Sleekdb\SleekDbal;
 use Quantum\Libraries\Cache\Adapters\DatabaseAdapter;
-use Quantum\Tests\AppTestCase;
+use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Loader\Setup;
 
 class DatabaseAdapterTest extends AppTestCase

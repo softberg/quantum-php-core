@@ -1,8 +1,7 @@
 <?php
 
-namespace Quantum\Tests\App;
+namespace Quantum\Tests\Unit\App;
 
-use Quantum\Libraries\Storage\Factories\FileSystemFactory;
 use Quantum\App\Adapters\ConsoleAppAdapter;
 use Quantum\App\Exceptions\AppException;
 use Quantum\App\Adapters\WebAppAdapter;
@@ -19,29 +18,11 @@ use Quantum\Di\Di;
 class AppTest extends TestCase
 {
 
-    private $fs;
-
     public function setUp(): void
     {
         parent::setUp();
 
-        App::setBaseDir(dirname(__DIR__) . DS . '_root');
-
-        $this->fs = FileSystemFactory::get();
-
-        if (! $this->fs->exists(App::getBaseDir() . DS . '.env.testing')) {
-            $this->fs->copy(
-                App::getBaseDir() . DS . '.env.example',
-                App::getBaseDir() . DS . '.env.testing'
-            );
-        }
-    }
-
-    public function tearDown(): void
-    {
-        if ($this->fs->exists(App::getBaseDir() . DS . '.env.testing')) {
-            $this->fs->remove(App::getBaseDir() . DS . '.env.testing');
-        }
+        App::setBaseDir(PROJECT_ROOT);
     }
 
     public function testAppGetAdapter()

@@ -1,11 +1,11 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Hasher;
+namespace Quantum\Tests\Unit\Libraries\Hasher;
 
 use Quantum\Libraries\Hasher\Hasher;
-use PHPUnit\Framework\TestCase;
+use Quantum\Tests\Unit\AppTestCase;
 
-class HasherTest extends TestCase
+class HasherTest extends AppTestCase
 {
 
     private $hasher;
@@ -14,6 +14,8 @@ class HasherTest extends TestCase
 
     public function setUp(): void
     {
+        parent::setUp();
+
         $this->hasher = new Hasher();
     }
 

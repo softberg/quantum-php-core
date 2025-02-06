@@ -1,10 +1,9 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Mailer;
+namespace Quantum\Tests\Unit\Libraries\Mailer;
 
-use Quantum\Libraries\Storage\Factories\FileSystemFactory;
 use Quantum\Libraries\Mailer\MailTrap;
-use Quantum\Tests\AppTestCase;
+use Quantum\Tests\Unit\AppTestCase;
 
 class MailTrapTest extends AppTestCase
 {

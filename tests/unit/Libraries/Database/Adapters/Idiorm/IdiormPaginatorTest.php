@@ -1,11 +1,11 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Database\Adapters\Idiorm;
+namespace Quantum\Tests\Unit\Libraries\Database\Adapters\Idiorm;
 
 use Quantum\Libraries\Database\Contracts\PaginatorInterface;
 use Quantum\Libraries\Database\Adapters\Idiorm\IdiormDbal;
 use Quantum\Libraries\Database\Adapters\Idiorm\Paginator;
-use Quantum\Tests\AppTestCase;
+use Quantum\Tests\Unit\AppTestCase;
 
 
 class IdiormPaginatorTest extends AppTestCase

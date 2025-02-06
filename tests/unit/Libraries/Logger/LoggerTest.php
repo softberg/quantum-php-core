@@ -1,13 +1,13 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Logger;
+namespace Quantum\Tests\Unit\Libraries\Logger;
 
 use Quantum\Libraries\Logger\Contracts\ReportableInterface;
 use Quantum\Libraries\Logger\Adapters\MessageAdapter;
 use Quantum\Libraries\Logger\Logger;
 use Quantum\Debugger\DebuggerStore;
 use Quantum\Debugger\Debugger;
-use Quantum\Tests\AppTestCase;
+use Quantum\Tests\Unit\AppTestCase;
 
 class LoggerTest extends AppTestCase
 {

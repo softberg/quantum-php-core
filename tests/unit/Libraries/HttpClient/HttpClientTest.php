@@ -1,10 +1,10 @@
 <?php
 
-namespace Quantum\Tests\Libraries\HttpClient;
+namespace Quantum\Tests\Unit\Libraries\HttpClient;
 
 use Quantum\Libraries\HttpClient\Exceptions\HttpClientException;
 use Quantum\Libraries\HttpClient\HttpClient;
-use Quantum\Tests\AppTestCase;
+use Quantum\Tests\Unit\AppTestCase;
 
 class HttpClientTest extends AppTestCase
 {

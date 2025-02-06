@@ -20,16 +20,15 @@ namespace Quantum\Models {
             'password'
         ];
     }
-
 }
 
-namespace Quantum\Tests\Mvc {
+namespace Quantum\Tests\Unit\Mvc {
 
     use Quantum\Libraries\Database\Adapters\Idiorm\IdiormDbal;
     use Quantum\Libraries\Database\Exceptions\ModelException;
     use Quantum\Factory\ModelFactory;
     use Quantum\Models\ProfileModel;
-    use Quantum\Tests\AppTestCase;
+    use Quantum\Tests\Unit\AppTestCase;
     use Quantum\Mvc\QtModel;
 
     class QtModelTest extends AppTestCase

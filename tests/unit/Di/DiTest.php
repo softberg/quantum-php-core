@@ -9,23 +9,20 @@ namespace Quantum\Controllers {
 
     class TestDiController extends QtController
     {
-
         public function index(Request $request, Response $response, ViewFactory $view)
         {
             // method body
         }
-
     }
-
 }
 
-namespace Quantum\Tests\Di {
+namespace Quantum\Tests\Unit\Di {
 
     use Quantum\Controllers\TestDiController;
     use Quantum\Libraries\Storage\FileSystem;
     use Quantum\Di\Exceptions\DiException;
+    use Quantum\Tests\Unit\AppTestCase;
     use Quantum\Factory\ViewFactory;
-    use Quantum\Tests\AppTestCase;
     use Quantum\Loader\Loader;
     use Quantum\Http\Response;
     use Quantum\Http\Request;
@@ -80,7 +77,5 @@ namespace Quantum\Tests\Di {
 
             $this->assertInstanceOf(Response::class, $params[1]);
         }
-
     }
-
 }

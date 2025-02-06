@@ -1,12 +1,12 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Mailer;
+namespace Quantum\Tests\Unit\Libraries\Mailer;
 
 use Quantum\Libraries\Mailer\Exceptions\MailerException;
 use Quantum\Libraries\Mailer\Contracts\MailerInterface;
 use Quantum\Libraries\Mailer\Adapters\SmtpAdapter;
 use Quantum\Libraries\Mailer\Mailer;
-use Quantum\Tests\AppTestCase;
+use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Loader\Setup;
 
 class MailerTest extends AppTestCase

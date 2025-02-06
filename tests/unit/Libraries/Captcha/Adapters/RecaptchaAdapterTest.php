@@ -1,12 +1,12 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Captcha\Adapters;
+namespace Quantum\Tests\Unit\Libraries\Captcha\Adapters;
 
 use Quantum\Libraries\Captcha\Contracts\CaptchaInterface;
 use Quantum\Libraries\Captcha\Adapters\RecaptchaAdapter;
 use Quantum\Libraries\HttpClient\HttpClient;
 use Quantum\Libraries\Asset\AssetManager;
-use Quantum\Tests\AppTestCase;
+use Quantum\Tests\Unit\AppTestCase;
 use Exception;
 use Mockery;
 

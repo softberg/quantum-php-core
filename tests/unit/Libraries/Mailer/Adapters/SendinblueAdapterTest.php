@@ -1,11 +1,11 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Mailer\Adapters;
+namespace Quantum\Tests\Unit\Libraries\Mailer\Adapters;
 
 use Quantum\Libraries\Storage\Factories\FileSystemFactory;
 use Quantum\Libraries\Mailer\Adapters\SendinblueAdapter;
 use Quantum\Libraries\Mailer\Contracts\MailerInterface;
-use Quantum\Tests\AppTestCase;
+use Quantum\Tests\Unit\AppTestCase;
 
 class SendinblueAdapterTest extends AppTestCase
 {

@@ -1,9 +1,9 @@
 <?php
 
-namespace Quantum\Tests\Http;
+namespace Quantum\Tests\Unit\Http;
 
 use Quantum\Exceptions\StopExecutionException;
-use Quantum\Tests\AppTestCase;
+use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Http\Response;
 
 class ResponseTest extends AppTestCase

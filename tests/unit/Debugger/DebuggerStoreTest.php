@@ -1,9 +1,9 @@
 <?php
 
-namespace Quantum\Tests\Debugger;
+namespace Quantum\Tests\Unit\Debugger;
 
 use Quantum\Debugger\DebuggerStore;
-use Quantum\Tests\AppTestCase;
+use Quantum\Tests\Unit\AppTestCase;
 
 class DebuggerStoreTest extends AppTestCase
 {

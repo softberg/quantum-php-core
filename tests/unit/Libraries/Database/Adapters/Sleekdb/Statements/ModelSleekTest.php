@@ -1,8 +1,8 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Database\Adapters\Sleekdb\Statements;
+namespace Quantum\Tests\Unit\Libraries\Database\Adapters\Sleekdb\Statements;
 
-use Quantum\Tests\Libraries\Database\Adapters\Sleekdb\SleekDbalTestCase;
+use Quantum\Tests\Unit\Libraries\Database\Adapters\Sleekdb\SleekDbalTestCase;
 use Quantum\Libraries\Database\Adapters\Sleekdb\SleekDbal;
 
 class ModelSleekTest extends SleekDbalTestCase

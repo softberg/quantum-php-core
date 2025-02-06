@@ -1,10 +1,10 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Csrf;
+namespace Quantum\Tests\Unit\Libraries\Csrf;
 
 use Quantum\Libraries\Csrf\Exceptions\CsrfException;
+use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Libraries\Csrf\Csrf;
-use Quantum\Tests\AppTestCase;
 use Quantum\Http\Request;
 
 class CsrfTest extends AppTestCase

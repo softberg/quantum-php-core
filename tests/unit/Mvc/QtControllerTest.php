@@ -8,14 +8,13 @@ namespace Quantum\Controllers {
     {
         // Controller body
     }
-
 }
 
-namespace Quantum\Tests\Mvc {
+namespace Quantum\Tests\Unit\Mvc {
 
     use Quantum\Exceptions\ControllerException;
     use Quantum\Controllers\TestController;
-    use Quantum\Tests\AppTestCase;
+    use Quantum\Tests\Unit\AppTestCase;
 
     /**
      * @runTestsInSeparateProcesses

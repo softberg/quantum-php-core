@@ -1,9 +1,9 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Mailer\Helpers;
+namespace Quantum\Tests\Unit\Libraries\Mailer\Helpers;
 
 use Quantum\Libraries\Mailer\Mailer;
-use Quantum\Tests\AppTestCase;
+use Quantum\Tests\Unit\AppTestCase;
 
 class MailerHelperFunctionsTest extends AppTestCase
 {

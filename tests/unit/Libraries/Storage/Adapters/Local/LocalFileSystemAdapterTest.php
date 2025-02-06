@@ -1,9 +1,9 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Storage\Adapters\Local;
+namespace Quantum\Tests\Unit\Libraries\Storage\Adapters\Local;
 
 use Quantum\Libraries\Storage\Adapters\Local\LocalFileSystemAdapter;
-use Quantum\Tests\AppTestCase;
+use Quantum\Tests\Unit\AppTestCase;
 
 class LocalFileSystemAdapterTest extends AppTestCase
 {

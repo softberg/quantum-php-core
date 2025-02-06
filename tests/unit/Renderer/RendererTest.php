@@ -1,13 +1,13 @@
 <?php
 
-namespace Quantum\Tests\Renderer;
+namespace Quantum\Tests\Unit\Renderer;
 
 use Quantum\Renderer\Contracts\TemplateRendererInterface;
 use Quantum\Renderer\Exceptions\RendererException;
 use Quantum\Renderer\Adapters\TwigAdapter;
 use Quantum\Renderer\Adapters\HtmlAdapter;
 use Quantum\Renderer\Renderer;
-use Quantum\Tests\AppTestCase;
+use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Router\Router;
 
 class RendererTest extends AppTestCase

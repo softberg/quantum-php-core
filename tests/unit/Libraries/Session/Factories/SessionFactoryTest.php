@@ -1,18 +1,17 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Session\Factories;
+namespace Quantum\Tests\Unit\Libraries\Session\Factories;
 
 use Quantum\Libraries\Session\Adapters\Database\DatabaseSessionAdapter;
 use Quantum\Libraries\Session\Adapters\Native\NativeSessionAdapter;
 use Quantum\Libraries\Database\Adapters\Idiorm\IdiormDbal;
 use Quantum\Libraries\Session\Exceptions\SessionException;
 use Quantum\Libraries\Session\Factories\SessionFactory;
-use Quantum\Tests\Libraries\Session\TestCaseHelper;
+use Quantum\Tests\Unit\Libraries\Session\TestCaseHelper;
 use Quantum\Libraries\Database\Database;
 use Quantum\Libraries\Session\Session;
-use Quantum\Tests\AppTestCase;
+use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Loader\Setup;
-use ReflectionClass;
 
 class SessionFactoryTest extends AppTestCase
 {
@@ -23,10 +22,7 @@ class SessionFactoryTest extends AppTestCase
     {
         parent::setUp();
 
-        $reflection = new ReflectionClass(SessionFactory::class);
-        $property = $reflection->getProperty('instance');
-        $property->setAccessible(true);
-        $property->setValue(null);
+        $this->setPrivateProperty(SessionFactory::class, 'instance', null);
 
         IdiormDbal::connect(['driver' => 'sqlite', 'database' => ':memory:']);
 

@@ -1,10 +1,10 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Logger\Helpers;
+namespace Quantum\Tests\Unit\Libraries\Logger\Helpers;
 
 use Quantum\Debugger\DebuggerStore;
 use Quantum\Debugger\Debugger;
-use Quantum\Tests\AppTestCase;
+use Quantum\Tests\Unit\AppTestCase;
 
 class LoggerHelperFunctionsTest extends AppTestCase
 {

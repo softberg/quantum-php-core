@@ -23,12 +23,12 @@ namespace Quantum\Services {
 
 }
 
-namespace Quantum\Tests\Factory {
+namespace Quantum\Tests\Unit\Factory {
 
     use Quantum\Exceptions\ServiceException;
     use Quantum\Factory\ServiceFactory;
+    use Quantum\Tests\Unit\AppTestCase;
     use Quantum\Services\TestService;
-    use Quantum\Tests\AppTestCase;
     use Quantum\Mvc\QtService;
 
     class ServiceFactoryTest extends AppTestCase

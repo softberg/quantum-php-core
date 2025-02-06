@@ -1,13 +1,13 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Encryption;
+namespace Quantum\Tests\Unit\Libraries\Encryption;
 
 use Quantum\Libraries\Encryption\Adapters\AsymmetricEncryptionAdapter;
 use Quantum\Libraries\Encryption\Adapters\SymmetricEncryptionAdapter;
 use Quantum\Libraries\Encryption\Contracts\EncryptionInterface;
 use Quantum\Libraries\Encryption\Exceptions\CryptorException;
 use Quantum\Libraries\Encryption\Cryptor;
-use Quantum\Tests\AppTestCase;
+use Quantum\Tests\Unit\AppTestCase;
 
 class CryptorTest extends AppTestCase
 {

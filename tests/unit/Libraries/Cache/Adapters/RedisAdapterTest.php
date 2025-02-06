@@ -1,9 +1,9 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Cache\Adapters;
+namespace Quantum\Tests\Unit\Libraries\Cache\Adapters;
 
 use Quantum\Libraries\Cache\Adapters\RedisAdapter;
-use Quantum\Tests\AppTestCase;
+use Quantum\Tests\Unit\AppTestCase;
 
 class RedisAdapterTest extends AppTestCase
 {

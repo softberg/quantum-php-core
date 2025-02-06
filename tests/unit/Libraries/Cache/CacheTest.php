@@ -1,12 +1,12 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Cache;
+namespace Quantum\Tests\Unit\Libraries\Cache;
 
 use Quantum\Libraries\Cache\Exceptions\CacheException;
 use Quantum\Libraries\Cache\Adapters\FileAdapter;
 use Psr\SimpleCache\CacheInterface;
+use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Libraries\Cache\Cache;
-use Quantum\Tests\AppTestCase;
 
 class CacheTest extends AppTestCase
 {

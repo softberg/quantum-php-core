@@ -1,15 +1,14 @@
 <?php
 
-namespace Quantum\Tests\Renderer\Factories;
+namespace Quantum\Tests\Unit\Renderer\Factories;
 
 use Quantum\Renderer\Contracts\TemplateRendererInterface;
 use Quantum\Renderer\Exceptions\RendererException;
 use Quantum\Renderer\Factories\RendererFactory;
 use Quantum\Renderer\Adapters\HtmlAdapter;
 use Quantum\Renderer\Adapters\TwigAdapter;
+use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Renderer\Renderer;
-use Quantum\Tests\AppTestCase;
-use ReflectionClass;
 
 class RendererFactoryTest extends AppTestCase
 {
@@ -18,10 +17,7 @@ class RendererFactoryTest extends AppTestCase
     {
         parent::setUp();
 
-        $reflection = new ReflectionClass(RendererFactory::class);
-        $property = $reflection->getProperty('instance');
-        $property->setAccessible(true);
-        $property->setValue(null);
+        $this->setPrivateProperty(RendererFactory::class, 'instance', null);
     }
 
     public function testRendererFactoryInstance()

@@ -1,9 +1,9 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Session\Helpers;
+namespace Quantum\Tests\Unit\Libraries\Session\Helpers;
 
 use Quantum\Libraries\Session\Session;
-use Quantum\Tests\AppTestCase;
+use Quantum\Tests\Unit\AppTestCase;
 
 class SessionHelperFunctionsTest extends AppTestCase
 {

@@ -8,11 +8,11 @@ namespace Quantum\Libraries\Lang {
     }
 }
 
-namespace Quantum\Tests\Libraries\Lang {
+namespace Quantum\Tests\Unit\Libraries\Lang {
 
     use Quantum\Router\RouteController;
+    use Quantum\Tests\Unit\AppTestCase;
     use Quantum\Libraries\Lang\Lang;
-    use Quantum\Tests\AppTestCase;
 
     class LangTest extends AppTestCase
     {

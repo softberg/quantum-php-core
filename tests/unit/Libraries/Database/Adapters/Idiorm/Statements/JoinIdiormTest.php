@@ -64,9 +64,9 @@ namespace Quantum\Shared\Models {
 
 }
 
-namespace Quantum\Tests\Libraries\Database\Adapters\Idiorm\Statements {
+namespace Quantum\Tests\Unit\Libraries\Database\Adapters\Idiorm\Statements {
 
-    use Quantum\Tests\Libraries\Database\Adapters\Idiorm\IdiormDbalTestCase;
+    use Quantum\Tests\Unit\Libraries\Database\Adapters\Idiorm\IdiormDbalTestCase;
     use Quantum\Libraries\Database\Adapters\Idiorm\IdiormDbal;
     use Quantum\Libraries\Database\Exceptions\ModelException;
     use Quantum\Shared\Models\CUserProfessionModel;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Database\Schema;
+namespace Quantum\Tests\Unit\Libraries\Database\Schema;
 
 use Quantum\Libraries\Database\Constants\Type;
 use Quantum\Libraries\Database\Schemas\Column;

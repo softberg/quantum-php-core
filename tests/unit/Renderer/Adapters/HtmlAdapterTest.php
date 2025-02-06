@@ -1,9 +1,9 @@
 <?php
 
-namespace Quantum\Tests\Renderer\Adapters;
+namespace Quantum\Tests\Unit\Renderer\Adapters;
 
 use Quantum\Renderer\Adapters\HtmlAdapter;
-use Quantum\Tests\AppTestCase;
+use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Router\Router;
 
 class HtmlAdapterTest extends AppTestCase

@@ -23,14 +23,14 @@ namespace Quantum\Models {
     }
 }
 
-namespace Quantum\Tests\Libraries\Validation {
+namespace Quantum\Tests\Unit\Libraries\Validation {
 
     use Quantum\Libraries\Database\Adapters\Idiorm\IdiormDbal;
     use Quantum\Libraries\Validation\Validator;
     use Quantum\Libraries\Validation\Rule;
     use Quantum\Factory\ModelFactory;
     use Quantum\Models\VUserModel;
-    use Quantum\Tests\AppTestCase;
+    use Quantum\Tests\Unit\AppTestCase;
     use Quantum\Http\Request;
 
     class ValidatorTest extends AppTestCase

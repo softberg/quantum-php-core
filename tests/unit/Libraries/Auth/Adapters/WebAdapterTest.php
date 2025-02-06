@@ -1,10 +1,10 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Auth\Adapters;
+namespace Quantum\Tests\Unit\Libraries\Auth\Adapters;
 
 use Quantum\Libraries\Auth\Exceptions\AuthException;
+use Quantum\Tests\Unit\Libraries\Auth\AuthTestCase;
 use Quantum\Libraries\Auth\Adapters\WebAdapter;
-use Quantum\Tests\Libraries\Auth\AuthTestCase;
 use Quantum\Libraries\Hasher\Hasher;
 use Quantum\Libraries\Auth\User;
 

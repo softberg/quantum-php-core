@@ -1,9 +1,9 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Archive\Adapters;
+namespace Quantum\Tests\Unit\Libraries\Archive\Adapters;
 
 use Quantum\Libraries\Archive\Adapters\PharAdapter;
-use Quantum\Tests\AppTestCase;
+use Quantum\Tests\Unit\AppTestCase;
 
 class PharAdapterTest extends AppTestCase
 {

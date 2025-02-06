@@ -1,10 +1,10 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Encryption\Adapters;
+namespace Quantum\Tests\Unit\Libraries\Encryption\Adapters;
 
 use Quantum\Libraries\Encryption\Adapters\AsymmetricEncryptionAdapter;
 use Quantum\Libraries\Encryption\Exceptions\CryptorException;
-use Quantum\Tests\AppTestCase;
+use Quantum\Tests\Unit\AppTestCase;
 use ReflectionClass;
 
 class AsymmetricEncryptionAdapterTest extends AppTestCase

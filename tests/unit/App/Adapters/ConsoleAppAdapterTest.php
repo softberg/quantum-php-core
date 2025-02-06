@@ -1,8 +1,7 @@
 <?php
 
-namespace Quantum\Tests\App\Adapters;
+namespace Quantum\Tests\Unit\App\Adapters;
 
-use Quantum\Libraries\Storage\Factories\FileSystemFactory;
 use Quantum\App\Adapters\ConsoleAppAdapter;
 use Symfony\Component\Console\Application;
 use PHPUnit\Framework\TestCase;
@@ -17,16 +16,7 @@ class ConsoleAppAdapterTest extends TestCase
 
     public function setUp(): void
     {
-        App::setBaseDir(dirname(__DIR__, 2) . DS . '_root');
-
-        $fs = FileSystemFactory::get();
-
-        if (!$fs->exists(App::getBaseDir() . DS . '.env.testing')) {
-            $fs->copy(
-                App::getBaseDir() . DS . '.env.example',
-                App::getBaseDir() . DS . '.env.testing'
-            );
-        }
+        App::setBaseDir(PROJECT_ROOT);
 
         $applicationMock = Mockery::mock(Application::class)->makePartial();
         $applicationMock->shouldReceive('getName')->andReturn('Qt Console Application');
@@ -36,13 +26,13 @@ class ConsoleAppAdapterTest extends TestCase
         $this->consoleAppAdapter->shouldReceive('createApplication')
             ->withArgs(['Qt Console Application', '2.x'])
             ->andReturn($applicationMock);
-
-        $this->consoleAppAdapter->__construct();
     }
 
     public function testConsoleAppAdapterStartSuccessfully()
     {
         $_SERVER['argv'] = ['qt', 'list', '--quiet'];
+
+        $this->consoleAppAdapter->__construct();
 
         $result = $this->consoleAppAdapter->start();
 
@@ -52,6 +42,8 @@ class ConsoleAppAdapterTest extends TestCase
     public function testWebAppAdapterStartFails()
     {
         $_SERVER['argv'] = ['qt', 'unknown', '--quiet'];
+
+        $this->consoleAppAdapter->__construct();
 
         $this->expectException(Exception::class);
 

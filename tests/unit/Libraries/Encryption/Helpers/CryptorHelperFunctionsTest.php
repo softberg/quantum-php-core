@@ -1,9 +1,9 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Encryption\Helpers;
+namespace Quantum\Tests\Unit\Libraries\Encryption\Helpers;
 
 use Quantum\Libraries\Encryption\Cryptor;
-use Quantum\Tests\AppTestCase;
+use Quantum\Tests\Unit\AppTestCase;
 use stdClass;
 
 class CryptorHelperFunctionsTest extends AppTestCase

@@ -1,11 +1,11 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Database\Adapters\Sleekdb;
+namespace Quantum\Tests\Unit\Libraries\Database\Adapters\Sleekdb;
 
 use Quantum\Libraries\Database\Contracts\PaginatorInterface;
 use Quantum\Libraries\Database\Adapters\Sleekdb\Paginator;
 use Quantum\Libraries\Database\Adapters\Sleekdb\SleekDbal;
-use Quantum\Tests\AppTestCase;
+use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Loader\Setup;
 
 

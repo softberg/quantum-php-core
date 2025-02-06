@@ -1,13 +1,13 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Captcha;
+namespace Quantum\Tests\Unit\Libraries\Captcha;
 
 use Quantum\Libraries\Captcha\Exceptions\CaptchaException;
 use Quantum\Libraries\Captcha\Contracts\CaptchaInterface;
 use Quantum\Libraries\Captcha\Adapters\RecaptchaAdapter;
 use Quantum\Libraries\HttpClient\HttpClient;
 use Quantum\Libraries\Captcha\Captcha;
-use Quantum\Tests\AppTestCase;
+use Quantum\Tests\Unit\AppTestCase;
 
 class CaptchaTest extends AppTestCase
 {

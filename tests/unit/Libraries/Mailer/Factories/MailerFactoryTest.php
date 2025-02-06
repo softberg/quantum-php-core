@@ -1,6 +1,6 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Mailer\Factories;
+namespace Quantum\Tests\Unit\Libraries\Mailer\Factories;
 
 use Quantum\Libraries\Mailer\Exceptions\MailerException;
 use Quantum\Libraries\Mailer\Adapters\SendinblueAdapter;
@@ -10,9 +10,8 @@ use Quantum\Libraries\Mailer\Adapters\MailgunAdapter;
 use Quantum\Libraries\Mailer\Factories\MailerFactory;
 use Quantum\Libraries\Mailer\Adapters\SmtpAdapter;
 use Quantum\Libraries\Mailer\Mailer;
-use Quantum\Tests\AppTestCase;
+use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Loader\Setup;
-use ReflectionClass;
 
 class MailerFactoryTest extends AppTestCase
 {
@@ -21,10 +20,7 @@ class MailerFactoryTest extends AppTestCase
     {
         parent::setUp();
 
-        $reflection = new ReflectionClass(MailerFactory::class);
-        $property = $reflection->getProperty('instance');
-        $property->setAccessible(true);
-        $property->setValue(null);
+        $this->setPrivateProperty(MailerFactory::class, 'instance', null);
 
         if (!config()->has('mailer')) {
             config()->import(new Setup('config', 'mailer'));

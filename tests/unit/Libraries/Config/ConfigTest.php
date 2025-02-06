@@ -1,12 +1,12 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Config;
+namespace Quantum\Tests\Unit\Libraries\Config;
 
 use Quantum\Libraries\Config\Exceptions\ConfigException;
 use Quantum\Loader\Exceptions\LoaderException;
 use Quantum\Libraries\Config\Config;
+use Quantum\Tests\Unit\AppTestCase;
 use Dflydev\DotAccessData\Data;
-use Quantum\Tests\AppTestCase;
 use Quantum\Loader\Setup;
 
 class ConfigTest extends AppTestCase

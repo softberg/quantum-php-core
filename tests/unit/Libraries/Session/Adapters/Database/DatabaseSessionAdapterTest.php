@@ -1,12 +1,12 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Session\Adapters\Database;
+namespace Quantum\Tests\Unit\Libraries\Session\Adapters\Database;
 
 use Quantum\Libraries\Session\Adapters\Database\DatabaseSessionAdapter;
 use Quantum\Libraries\Database\Adapters\Idiorm\IdiormDbal;
-use Quantum\Tests\Libraries\Session\TestCaseHelper;
+use Quantum\Tests\Unit\Libraries\Session\TestCaseHelper;
 use Quantum\Libraries\Database\Database;
-use Quantum\Tests\AppTestCase;
+use Quantum\Tests\Unit\AppTestCase;
 
 class DatabaseSessionAdapterTest extends AppTestCase
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Auth;
+namespace Quantum\Tests\Unit\Libraries\Auth;
 
 use Quantum\Libraries\Auth\Contracts\AuthenticatableInterface;
 use Quantum\Libraries\Auth\Exceptions\AuthException;

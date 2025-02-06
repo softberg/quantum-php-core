@@ -1,10 +1,9 @@
 <?php
 
-namespace Quantum\Tests\Environment;
+namespace Quantum\Tests\Unit\Environment;
 
+use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Environment\Server;
-use Quantum\Tests\AppTestCase;
-use ReflectionClass;
 
 class ServerTest extends AppTestCase
 {
@@ -13,10 +12,7 @@ class ServerTest extends AppTestCase
     {
         parent::setUp();
 
-        $reflection = new ReflectionClass(Server::class);
-        $instance = $reflection->getProperty('instance');
-        $instance->setAccessible(true);
-        $instance->setValue(null);
+        $this->setPrivateProperty(Server::class, 'instance', null);
     }
 
     public function testServerGetInstance()

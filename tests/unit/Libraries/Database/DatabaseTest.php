@@ -1,11 +1,11 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Database;
+namespace Quantum\Tests\Unit\Libraries\Database;
 
 use Quantum\Libraries\Database\Contracts\DbalInterface;
 use Quantum\Libraries\Database\Database;
 use Quantum\Loader\Setup;
-use Quantum\Tests\AppTestCase;
+use Quantum\Tests\Unit\AppTestCase;
 
 /**
  * @runTestsInSeparateProcesses

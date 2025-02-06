@@ -1,10 +1,10 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Storage\Adapters\GoogleDrive;
+namespace Quantum\Tests\Unit\Libraries\Storage\Adapters\GoogleDrive;
 
 use Quantum\Libraries\Storage\Adapters\GoogleDrive\GoogleDriveFileSystemAdapter;
 use Quantum\Libraries\Storage\Adapters\GoogleDrive\GoogleDriveApp;
-use Quantum\Tests\AppTestCase;
+use Quantum\Tests\Unit\AppTestCase;
 use Mockery;
 
 class GoogleDriveFileSystemAdapterTest extends AppTestCase

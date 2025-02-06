@@ -1,11 +1,11 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Logger\Adapters;
+namespace Quantum\Tests\Unit\Libraries\Logger\Adapters;
 
 use Quantum\Libraries\Logger\Adapters\MessageAdapter;
 use Quantum\Debugger\DebuggerStore;
 use Quantum\Debugger\Debugger;
-use Quantum\Tests\AppTestCase;
+use Quantum\Tests\Unit\AppTestCase;
 
 class MessageAdapterTest extends AppTestCase
 {

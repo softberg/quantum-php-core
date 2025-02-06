@@ -1,9 +1,9 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Session\Adapters\Native;
+namespace Quantum\Tests\Unit\Libraries\Session\Adapters\Native;
 
 use Quantum\Libraries\Session\Adapters\Native\NativeSessionAdapter;
-use Quantum\Tests\AppTestCase;
+use Quantum\Tests\Unit\AppTestCase;
 
 class NativeSessionAdapterTest extends AppTestCase
 {

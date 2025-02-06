@@ -1,9 +1,9 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Csrf\Helpers;
+namespace Quantum\Tests\Unit\Libraries\Csrf\Helpers;
 
+use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Libraries\Csrf\Csrf;
-use Quantum\Tests\AppTestCase;
 use Quantum\Http\Request;
 
 class CsrfHelperFunctionsTest extends AppTestCase

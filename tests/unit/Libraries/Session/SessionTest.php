@@ -1,13 +1,13 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Session;
+namespace Quantum\Tests\Unit\Libraries\Session;
 
 use Quantum\Libraries\Session\Adapters\Database\DatabaseSessionAdapter;
 use Quantum\Libraries\Session\Adapters\Native\NativeSessionAdapter;
 use Quantum\Libraries\Session\Contracts\SessionStorageInterface;
 use Quantum\Libraries\Session\Exceptions\SessionException;
 use Quantum\Libraries\Session\Session;
-use Quantum\Tests\AppTestCase;
+use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Loader\Setup;
 
 class SessionTest extends AppTestCase

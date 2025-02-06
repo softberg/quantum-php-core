@@ -1,6 +1,6 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Session;
+namespace Quantum\Tests\Unit\Libraries\Session;
 
 use Quantum\Libraries\Database\Adapters\Idiorm\IdiormDbal;
 

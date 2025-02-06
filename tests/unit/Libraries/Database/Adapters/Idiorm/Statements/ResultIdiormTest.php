@@ -1,8 +1,8 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Database\Adapters\Idiorm\Statements;
+namespace Quantum\Tests\Unit\Libraries\Database\Adapters\Idiorm\Statements;
 
-use Quantum\Tests\Libraries\Database\Adapters\Idiorm\IdiormDbalTestCase;
+use Quantum\Tests\Unit\Libraries\Database\Adapters\Idiorm\IdiormDbalTestCase;
 use Quantum\Libraries\Database\Contracts\PaginatorInterface;
 use Quantum\Libraries\Database\Adapters\Idiorm\IdiormDbal;
 

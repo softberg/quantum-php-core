@@ -1,6 +1,6 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Storage\Adapters\Dropbox;
+namespace Quantum\Tests\Unit\Libraries\Storage\Adapters\Dropbox;
 
 use Quantum\Libraries\Storage\Contracts\TokenServiceInterface;
 use Mockery;

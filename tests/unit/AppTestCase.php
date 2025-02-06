@@ -1,6 +1,6 @@
 <?php
 
-namespace Quantum\Tests;
+namespace Quantum\Tests\Unit;
 
 use Quantum\Libraries\Storage\Factories\FileSystemFactory;
 use Quantum\App\Factories\AppFactory;
@@ -20,29 +20,16 @@ abstract class AppTestCase extends TestCase
     {
         $this->fs = FileSystemFactory::get();
 
-        AppFactory::create(App::WEB, __DIR__ . DS . '_root');
+        AppFactory::create(App::WEB, PROJECT_ROOT);
 
         Config::getInstance()->flush();
-
-        if (!$this->fs->exists(App::getBaseDir() . DS . '.env.testing')) {
-            $this->fs->copy(
-                App::getBaseDir() . DS . '.env.example',
-                App::getBaseDir() . DS . '.env.testing'
-            );
-        }
 
         Environment::getInstance()
             ->setMutable(true)
             ->load(new Setup('config', 'env'));
 
-        Config::getInstance()->load(new Setup('config', 'config', true));
-    }
-
-    public function tearDown(): void
-    {
-        if ($this->fs->exists(App::getBaseDir() . DS . '.env.testing')) {
-            $this->fs->remove(App::getBaseDir() . DS . '.env.testing');
-        }
+        Config::getInstance()
+            ->load(new Setup('config', 'config'));
     }
 
     protected function setPrivateProperty($object, $property, $value): void

@@ -1,9 +1,9 @@
 <?php
 
-namespace Quantum\Tests\Libraries\ResourceCache;
+namespace Quantum\Tests\Unit\Libraries\ResourceCache;
 
 use Quantum\Libraries\ResourceCache\ViewCache;
-use Quantum\Tests\AppTestCase;
+use Quantum\Tests\Unit\AppTestCase;
 
 class ViewCacheTest extends AppTestCase
 {

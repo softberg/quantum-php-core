@@ -1,10 +1,10 @@
 <?php
 
-namespace Quantum\Tests\Helpers;
+namespace Quantum\Tests\Unit\Helpers;
 
 use Quantum\Libraries\Session\Factories\SessionFactory;
 use Quantum\Exceptions\StopExecutionException;
-use Quantum\Tests\AppTestCase;
+use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Http\Response;
 use Quantum\Router\Router;
 use Quantum\Http\Request;

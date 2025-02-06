@@ -1,9 +1,9 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Lang\Helpers;
+namespace Quantum\Tests\Unit\Libraries\Lang\Helpers;
 
+use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Libraries\Lang\Lang;
-use Quantum\Tests\AppTestCase;
 
 class LangHelperFunctionsTest extends AppTestCase
 {

@@ -1,13 +1,13 @@
 <?php
 
-namespace Quantum\Tests\Router;
+namespace Quantum\Tests\Unit\Router;
 
 use Quantum\Exceptions\StopExecutionException;
 use Quantum\Router\Exceptions\RouteException;
-use Quantum\Tests\AppTestCase;
+use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Http\Response;
-use Quantum\Http\Request;
 use Quantum\Router\Router;
+use Quantum\Http\Request;
 
 class RouterTest extends AppTestCase
 {

@@ -1,12 +1,12 @@
 <?php
 
-namespace Quantum\Tests\Http;
+namespace Quantum\Tests\Unit\Http;
 
 use Quantum\Libraries\Storage\Exceptions\FileUploadException;
 use Quantum\Libraries\Session\Factories\SessionFactory;
 use Quantum\Libraries\Storage\UploadedFile;
 use Quantum\Http\Request\HttpRequest;
-use Quantum\Tests\AppTestCase;
+use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Http\Request;
 use Mockery;
 

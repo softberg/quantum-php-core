@@ -1,6 +1,6 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Archive\Factories;
+namespace Quantum\Tests\Unit\Libraries\Archive\Factories;
 
 use Quantum\Libraries\Archive\Exceptions\ArchiveException;
 use Quantum\Libraries\Archive\Contracts\ArchiveInterface;
@@ -8,7 +8,7 @@ use Quantum\Libraries\Archive\Factories\ArchiveFactory;
 use Quantum\Libraries\Archive\Adapters\PharAdapter;
 use Quantum\Libraries\Archive\Adapters\ZipAdapter;
 use Quantum\Libraries\Archive\Archive;
-use Quantum\Tests\AppTestCase;
+use Quantum\Tests\Unit\AppTestCase;
 
 class ArchiveFactoryTest extends AppTestCase
 {

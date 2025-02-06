@@ -1,9 +1,9 @@
 <?php
 
-namespace Quantum\Tests\Router;
+namespace Quantum\Tests\Unit\Router;
 
 use Quantum\Router\Exceptions\RouteException;
-use Quantum\Tests\AppTestCase;
+use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Router\Route;
 
 class RouteTest extends AppTestCase

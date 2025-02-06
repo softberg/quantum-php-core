@@ -1,9 +1,9 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Captcha\Helpers;
+namespace Quantum\Tests\Unit\Libraries\Captcha\Helpers;
 
 use Quantum\Libraries\Captcha\Captcha;
-use Quantum\Tests\AppTestCase;
+use Quantum\Tests\Unit\AppTestCase;
 
 class CaptchaHelperFunctionsTest extends AppTestCase
 {
