@@ -17,7 +17,6 @@ namespace Quantum\Mvc;
 use Quantum\Libraries\Encryption\Exceptions\CryptorException;
 use Quantum\Libraries\Database\Exceptions\DatabaseException;
 use Quantum\Libraries\Session\Exceptions\SessionException;
-use Quantum\Libraries\Storage\Factories\FileSystemFactory;
 use Quantum\Libraries\Config\Exceptions\ConfigException;
 use Quantum\Middleware\Exceptions\MiddlewareException;
 use Quantum\Libraries\Csrf\Exceptions\CsrfException;
@@ -28,6 +27,7 @@ use Quantum\Middleware\MiddlewareManager;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Exceptions\BaseException;
 use Quantum\Libraries\Csrf\Csrf;
+use Quantum\Loader\Loader;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 use ReflectionException;
@@ -94,28 +94,20 @@ class MvcManager
     /**
      * Get Controller
      * @return QtController
-     * @throws ControllerException
-     * @throws BaseException
+     * @throws DiException
+     * @throws ReflectionException
      */
     private static function getController(): QtController
     {
-        $fs = FileSystemFactory::get();
-
         $controllerPath = modules_dir() . DS . current_module() . DS . 'Controllers' . DS . current_controller() . '.php';
 
-        if (!$fs->exists($controllerPath)) {
-            throw ControllerException::controllerNotFound(current_controller());
-        }
+        $loader = Di::get(Loader::class);
 
-        require_once $controllerPath;
-
-        $controllerClass = '\\Modules\\' . current_module() . '\\Controllers\\' . current_controller();
-
-        if (!class_exists($controllerClass, false)) {
-            throw ControllerException::controllerNotDefined(current_controller());
-        }
-
-        return new $controllerClass();
+        return $loader->loadClassFromFile(
+            $controllerPath,
+            function () { return ControllerException::controllerNotFound(current_controller()); },
+            function () { return ControllerException::controllerNotDefined(current_controller()); }
+        );
     }
 
     /**

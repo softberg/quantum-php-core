@@ -14,8 +14,12 @@
 
 namespace Quantum\Loader;
 
+use Quantum\Libraries\Storage\Factories\FileSystemFactory;
 use Quantum\Loader\Exceptions\LoaderException;
+use Quantum\Exceptions\BaseException;
+use ReflectionException;
 use Quantum\App\App;
+use ReflectionClass;
 
 /**
  * Class Loader
@@ -135,5 +139,39 @@ class Loader
         }
 
         return $filePath;
+    }
+
+    /**
+     * Loads namespaced class from the file
+     * @param string $filePath
+     * @param callable $notFoundException
+     * @param callable $notDefinedException
+     * @param array $constructorArgs
+     * @return mixed
+     * @throws BaseException
+     * @throws ReflectionException
+     */
+    public function loadClassFromFile(
+        string $filePath,
+        callable $notFoundException,
+        callable $notDefinedException,
+        array $constructorArgs = []
+    ) {
+        $fs = FileSystemFactory::get();
+
+        if (!$fs->exists($filePath)) {
+            throw $notFoundException();
+        }
+
+        require_once $filePath;
+
+        foreach (get_declared_classes() as $className) {
+            $reflectionClass = new ReflectionClass($className);
+            if ($reflectionClass->getFileName() === $filePath) {
+                return new $className(...$constructorArgs);
+            }
+        }
+
+        throw $notDefinedException();
     }
 }
