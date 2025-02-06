@@ -45,7 +45,7 @@ class PharAdapter implements ArchiveInterface
     private $archive = null;
 
     /**
-     * @var false
+     * @var bool
      */
     private $requiresReopen = true;
 

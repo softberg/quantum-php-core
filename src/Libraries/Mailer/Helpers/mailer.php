@@ -19,10 +19,11 @@ use Quantum\Exceptions\BaseException;
 use Quantum\Libraries\Mailer\Mailer;
 
 /**
- * @throws ConfigException
- * @throws ReflectionException
+ * @return Mailer
  * @throws BaseException
+ * @throws ConfigException
  * @throws DiException
+ * @throws ReflectionException
  */
 function mailer(): Mailer
 {

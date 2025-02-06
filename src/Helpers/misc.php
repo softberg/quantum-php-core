@@ -99,6 +99,8 @@ function slugify(string $text): string
 /**
  * Stops the execution
  * @param Closure|null $closure
+ * @param int|null $code
+ * @return mixed
  * @throws StopExecutionException
  */
 function stop(Closure $closure = null, ?int $code = 0)
