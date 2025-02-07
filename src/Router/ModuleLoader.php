@@ -82,7 +82,7 @@ class ModuleLoader
 
         $modulesRoutes = [];
 
-        foreach (self::$moduleConfigs['modules'] as $module => $options) {
+        foreach (self::$moduleConfigs as $module => $options) {
             if (!$this->isModuleEnabled($options)) {
                 continue;
             }
@@ -117,7 +117,7 @@ class ModuleLoader
             throw ModuleLoaderException::moduleConfigNotFound();
         }
 
-        self::$moduleConfigs = $this->fs->require($configPath, true);
+        self::$moduleConfigs = $this->fs->require($configPath);
     }
 
     /**
