@@ -23,9 +23,7 @@ class ConsoleAppAdapterTest extends TestCase
         $applicationMock->shouldReceive('run')->andReturn(0);
 
         $this->consoleAppAdapter = Mockery::mock(ConsoleAppAdapter::class)->makePartial();
-        $this->consoleAppAdapter->shouldReceive('createApplication')
-            ->withArgs(['Qt Console Application', '2.x'])
-            ->andReturn($applicationMock);
+        $this->consoleAppAdapter->shouldReceive('createApplication')->andReturn($applicationMock);
     }
 
     public function testConsoleAppAdapterStartSuccessfully()

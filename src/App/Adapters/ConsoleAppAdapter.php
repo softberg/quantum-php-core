@@ -22,7 +22,6 @@ use Quantum\Exceptions\StopExecutionException;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Application;
 use Quantum\App\Traits\ConsoleAppTrait;
-use Quantum\App\Contracts\AppInterface;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Exceptions\BaseException;
 use ReflectionException;
@@ -33,22 +32,10 @@ if (!defined('DS')) define('DS', DIRECTORY_SEPARATOR);
  * Class ConsoleAppAdapter
  * @package Quantum\App
  */
-class ConsoleAppAdapter extends AppAdapter implements AppInterface
+class ConsoleAppAdapter extends AppAdapter
 {
 
     use ConsoleAppTrait;
-
-    /**
-     * Console application name
-     * @var string
-     */
-    private $name = 'Qt Console Application';
-
-    /**
-     * Console application version
-     * @var string
-     */
-    private $version = '2.x';
 
     /**
      * @var ArgvInput
@@ -94,13 +81,11 @@ class ConsoleAppAdapter extends AppAdapter implements AppInterface
     public function start(): ?int
     {
         try {
-            $this->application = $this->createApplication($this->name, $this->version);
+            $this->application = $this->createApplication(
+                config()->get('app_name'),
+                config()->get('app_version')
+            );
 
-            if ($this->application->getName() !== 'core:env') {
-                $this->loadEnvironment();
-            }
-
-            $this->loadConfig();
             $this->loadLanguage();
 
             $this->registerCoreCommands();

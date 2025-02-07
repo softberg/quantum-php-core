@@ -27,7 +27,6 @@ use Quantum\Environment\Exceptions\EnvException;
 use Quantum\Exceptions\StopExecutionException;
 use Quantum\Router\Exceptions\RouteException;
 use Quantum\Exceptions\ControllerException;
-use Quantum\App\Contracts\AppInterface;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Exceptions\BaseException;
 use Quantum\App\Traits\WebAppTrait;
@@ -44,7 +43,7 @@ use Quantum\Di\Di;
  * Class WebAppAdapter
  * @package Quantum\App
  */
-class WebAppAdapter extends AppAdapter implements AppInterface
+class WebAppAdapter extends AppAdapter
 {
 
     use WebAppTrait;

@@ -14,6 +14,7 @@
 
 namespace Quantum\App\Adapters;
 
+use Quantum\App\Contracts\AppInterface;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Exceptions\BaseException;
 use Quantum\App\Traits\AppTrait;
@@ -24,8 +25,9 @@ use Quantum\Di\Di;
  * Class AppAdapter
  * @package Quantum\App
  */
-abstract class AppAdapter
+abstract class AppAdapter implements AppInterface
 {
+
     use AppTrait;
 
     /**
