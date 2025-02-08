@@ -20,7 +20,7 @@ return '<?php
 
 namespace ' . $moduleManager->getBaseNamespace() . '\\' . $moduleManager->getModuleName() . '\Controllers;
 
-use Quantum\Exceptions\AuthException;
+use Quantum\Libraries\Auth\Exceptions\AuthException;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 

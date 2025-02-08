@@ -180,18 +180,12 @@ trait MailerTrait
     {
         $this->prepare();
 
-        if (config()->get('mailer.mail_trap')) {
-            $sent = $this->saveEmail();
-        } else {
-            $sent = $this->sendEmail();
-        }
+        $sent = config()->get('mailer.mail_trap') ? $this->saveEmail() : $this->sendEmail();
 
         $this->resetFields();
 
-        if ($this->name == 'SMTP') {
-            if (!$sent) {
-                warning($this->httpClient->getErrors(), ['tab' => Debugger::MAILS]);
-            }
+        if ($this->name !== 'SMTP' && !$sent) {
+            warning($this->httpClient->getErrors(), ['tab' => Debugger::MAILS]);
         }
 
         return $sent;
