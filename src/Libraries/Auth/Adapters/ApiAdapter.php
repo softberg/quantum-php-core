@@ -178,8 +178,17 @@ class ApiAdapter implements AuthenticatableInterface
      */
     private function getUserFromAccessToken(): ?User
     {
-        $accessToken = base64_decode((string)Request::getAuthorizationBearer());
-        return (new User())->setData($this->jwt->retrieve($accessToken)->fetchData());
+        $authorizationBearer = Request::getAuthorizationBearer();
+
+        if (!$authorizationBearer) {
+            return null;
+        }
+
+        $accessToken = base64_decode($authorizationBearer);
+
+        $userData = $this->jwt->retrieve($accessToken)->fetchData();
+
+        return $userData ? (new User())->setData($userData) : null;
     }
 
     /**

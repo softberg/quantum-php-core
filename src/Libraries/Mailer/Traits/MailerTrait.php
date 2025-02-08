@@ -188,7 +188,7 @@ trait MailerTrait
 
         $this->resetFields();
 
-        if (__CLASS__ != __NAMESPACE__ . '\\SmtpAdapter') {
+        if ($this->name == 'SMTP') {
             if (!$sent) {
                 warning($this->httpClient->getErrors(), ['tab' => Debugger::MAILS]);
             }
@@ -199,18 +199,18 @@ trait MailerTrait
 
     /**
      * Gets the message ID
-     * @return string
+     * @return string|null
      * @throws Exception
      */
-    public function getMessageId(): string
+    public function getMessageId(): ?string
     {
         if (self::$messageId) {
             return self::$messageId;
         }
 
-        if (__CLASS__ == __NAMESPACE__ . '\\SmtpAdapter') {
+        if ($this->name == 'SMTP') {
             preg_match('/<(.*?)@/', preg_quote($this->mailer->getLastMessageID()), $matches);
-            self::$messageId = $matches[1];
+            self::$messageId = $matches[1] ?? null;
         } else {
             self::$messageId = bin2hex(random_bytes(16));
         }
@@ -225,7 +225,7 @@ trait MailerTrait
      */
     private function saveEmail(): bool
     {
-        if (__CLASS__ == __NAMESPACE__ . '\\SmtpAdapter') {
+        if ($this->name == 'SMTP') {
             $this->mailer->preSend();
         }
 
@@ -257,7 +257,7 @@ trait MailerTrait
      */
     private function getMessageContent(): string
     {
-        if (__CLASS__ == __NAMESPACE__ . '\\SmtpAdapter') {
+        if ($this->name == 'SMTP') {
             return $this->mailer->getSentMIMEMessage();
         }
 
@@ -307,7 +307,7 @@ trait MailerTrait
         $this->message = null;
         $this->templatePath = null;
 
-        if (__CLASS__ == __NAMESPACE__ . '\\SmtpAdapter') {
+        if ($this->name == 'SMTP') {
             $this->replyToAddresses = [];
             $this->ccAddresses = [];
             $this->bccAddresses = [];
