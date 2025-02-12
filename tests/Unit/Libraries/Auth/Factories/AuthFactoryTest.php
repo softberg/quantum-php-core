@@ -2,6 +2,7 @@
 
 namespace Quantum\Tests\Unit\Libraries\Auth\Factories;
 
+use Quantum\Tests\_root\modules\Test\Services\AuthService;
 use Quantum\Libraries\Auth\Exceptions\AuthException;
 use Quantum\Libraries\Auth\Factories\AuthFactory;
 use Quantum\Libraries\Auth\Adapters\ApiAdapter;
@@ -36,7 +37,7 @@ class AuthFactoryTest extends AppTestCase
     public function testAuthFactoryApiAdapter()
     {
         config()->set('auth.type', 'api');
-        config()->set('auth.service', \Quantum\Tests\_root\modules\Test\Services\AuthService::class);
+        config()->set('auth.service', AuthService::class);
 
         $auth = AuthFactory::get();
 

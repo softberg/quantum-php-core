@@ -37,7 +37,7 @@ class ConsoleAppAdapterTest extends TestCase
         $this->assertEquals(0, $result);
     }
 
-    public function testWebAppAdapterStartFails()
+    public function testConsoleAppAdapterStartFails()
     {
         $_SERVER['argv'] = ['qt', 'unknown', '--quiet'];
 

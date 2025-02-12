@@ -23,9 +23,9 @@ class CacheFactoryTest extends AppTestCase
 
     public function testCacheFactoryInstance()
     {
-        $auth = CacheFactory::get();
+        $cache = CacheFactory::get();
 
-        $this->assertInstanceOf(Cache::class, $auth);
+        $this->assertInstanceOf(Cache::class, $cache);
     }
 
     public function testCacheFactoryFileAdapter()
@@ -89,7 +89,7 @@ class CacheFactoryTest extends AppTestCase
         $this->assertInstanceOf(RedisAdapter::class, $cache->getAdapter());
     }
 
-    public function testAuthFactoryInvalidTypeAdapter()
+    public function testCacheFactoryInvalidTypeAdapter()
     {
         config()->set('cache.current', 'invalid');
 
@@ -100,7 +100,7 @@ class CacheFactoryTest extends AppTestCase
         CacheFactory::get();
     }
 
-    public function testAuthFactoryReturnsSameInstance()
+    public function testCacheFactoryReturnsSameInstance()
     {
         $cache1 = CacheFactory::get();
         $cache2 = CacheFactory::get();

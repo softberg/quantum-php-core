@@ -17,8 +17,6 @@ class SessionTest extends AppTestCase
     {
         parent::setUp();
 
-        parent::setUp();
-
         if (!config()->has('session')) {
             config()->import(new Setup('config', 'session'));
         }
