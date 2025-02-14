@@ -1,6 +1,11 @@
 <?php
 
+use Quantum\Libraries\Module\ModuleManager;
+
+$moduleManager = ModuleManager::getInstance();
+
 return '<?php
+
 /**
  * Quantum PHP Framework
  *
@@ -10,10 +15,10 @@ return '<?php
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.5
  */
 
-namespace Modules\Web\Middlewares;
+namespace ' . $moduleManager->getBaseNamespace() . '\\' . $moduleManager->getModuleName() . '\Middlewares;
 
 use Quantum\Libraries\Validation\Validator;
 use Quantum\Libraries\Validation\Rule;
@@ -26,7 +31,7 @@ use Closure;
 
 /**
  * Class Verify
- * @package Modules\Web\Middlewares
+ * @package Modules\Web
  */
 class Verify extends QtMiddleware
 {

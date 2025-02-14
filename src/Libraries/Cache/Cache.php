@@ -14,7 +14,8 @@
 
 namespace Quantum\Libraries\Cache;
 
-use Quantum\Exceptions\AppException;
+use Quantum\Libraries\Cache\Exceptions\CacheException;
+use Quantum\Exceptions\BaseException;
 use Psr\SimpleCache\CacheInterface;
 
 /**
@@ -31,6 +32,26 @@ use Psr\SimpleCache\CacheInterface;
  */
 class Cache
 {
+
+    /**
+     * File adapter
+     */
+    const FILE = 'file';
+
+    /**
+     * Database adapter
+     */
+    const DATABASE = 'database';
+
+    /**
+     * Memcached adapter
+     */
+    const MEMCACHED = 'memcached';
+
+    /**
+     * Redis adapter
+     */
+    const REDIS = 'redis';
 
     /**
      * @var CacheInterface
@@ -59,7 +80,7 @@ class Cache
      * @param string $method
      * @param array|null $arguments
      * @return mixed
-     * @throws AppException
+     * @throws BaseException
      */
     public function __call(string $method, ?array $arguments)
     {
@@ -69,5 +90,4 @@ class Cache
 
         return $this->adapter->$method(...$arguments);
     }
-
 }

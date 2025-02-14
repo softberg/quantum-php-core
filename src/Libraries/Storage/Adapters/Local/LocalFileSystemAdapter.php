@@ -9,12 +9,12 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Libraries\Storage\Adapters\Local;
 
-use Quantum\Libraries\Storage\FilesystemAdapterInterface;
+use Quantum\Libraries\Storage\Contracts\FilesystemAdapterInterface;
 use Throwable;
 
 /**
@@ -23,24 +23,6 @@ use Throwable;
  */
 class LocalFileSystemAdapter implements FilesystemAdapterInterface
 {
-
-    /**
-     * @var LocalFileSystemAdapter|null
-     */
-    private static $instance = null;
-
-    /**
-     * Get Instance
-     * @return LocalFileSystemAdapter|null
-     */
-    public static function getInstance(): ?LocalFileSystemAdapter
-    {
-        if (self::$instance === null) {
-            self::$instance = new self();
-        }
-
-        return self::$instance;
-    }
 
     /**
      * @param string $dirname
@@ -296,5 +278,4 @@ class LocalFileSystemAdapter implements FilesystemAdapterInterface
             return include $file;
         }
     }
-
 }

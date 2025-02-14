@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Quantum PHP Framework
  *
@@ -22,7 +23,7 @@ use Quantum\Http\Request\HttpRequest;
  * @method static void flush()
  * @method static string|null getMethod()
  * @method static void setMethod(string $method)
- * @method static bool isMethod()
+ * @method static bool isMethod(string $method)
  * @method static string getProtocol()
  * @method static void setProtocol($protocol)
  * @method static string getHost()
@@ -81,5 +82,4 @@ class Request
     {
         return HttpRequest::$function(...$arguments);
     }
-
 }

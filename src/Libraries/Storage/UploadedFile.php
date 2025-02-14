@@ -14,22 +14,21 @@
 
 namespace Quantum\Libraries\Storage;
 
-use Quantum\Exceptions\FileSystemException;
-use Quantum\Exceptions\FileUploadException;
-use Quantum\Libraries\Lang\LangException;
-use Quantum\Exceptions\AppException;
-use Quantum\Exceptions\EnvException;
-use Quantum\Exceptions\DiException;
+use Quantum\Libraries\Storage\Contracts\FilesystemAdapterInterface;
+use Quantum\Libraries\Storage\Exceptions\FileUploadException;
+use Quantum\Libraries\Storage\Exceptions\FileSystemException;
+use Quantum\Libraries\Storage\Factories\FileSystemFactory;
+use Quantum\Libraries\Lang\Exceptions\LangException;
+use Quantum\Environment\Exceptions\EnvException;
+use Quantum\Exceptions\BaseException;
 use Gumlet\ImageResizeException;
-use ReflectionException;
 use Gumlet\ImageResize;
-use Quantum\Di\Di;
 use SplFileInfo;
 use finfo;
 
 /**
  * Class File
- * @package Quantum\Libraries\Upload
+ * @package Quantum\Libraries\Storage
  */
 class UploadedFile extends SplFileInfo
 {
@@ -115,14 +114,12 @@ class UploadedFile extends SplFileInfo
     protected $errorCode;
 
     /**
-     * File constructor.
      * @param array $meta
-     * @throws DiException
-     * @throws ReflectionException
+     * @throws BaseException
      */
     public function __construct(array $meta)
     {
-        $this->localFileSystem = Di::get(FileSystem::class);
+        $this->localFileSystem = FileSystemFactory::get();
 
         $this->originalName = $meta['name'];
         $this->errorCode = $meta['error'];
@@ -246,7 +243,7 @@ class UploadedFile extends SplFileInfo
      * @param string $dest
      * @param bool $overwrite
      * @return bool
-     * @throws AppException
+     * @throws BaseException
      * @throws FileSystemException
      * @throws FileUploadException
      * @throws ImageResizeException
@@ -298,7 +295,7 @@ class UploadedFile extends SplFileInfo
      * @param string $funcName
      * @param array $params
      * @return $this
-     * @throws AppException
+     * @throws BaseException
      * @throws FileUploadException
      * @throws LangException
      */
@@ -309,7 +306,7 @@ class UploadedFile extends SplFileInfo
         }
 
         if (!method_exists(ImageResize::class, $funcName)) {
-            throw AppException::methodNotSupported($funcName, ImageResize::class);
+            throw BaseException::methodNotSupported($funcName, ImageResize::class);
         }
 
         $this->imageModifierFuncName = $funcName;

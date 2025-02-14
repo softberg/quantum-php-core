@@ -1,5 +1,9 @@
 <?php
 
+use Quantum\Libraries\Module\ModuleManager;
+
+$moduleManager = ModuleManager::getInstance();
+
 return '<?php
 
 /**
@@ -11,12 +15,12 @@ return '<?php
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.5
  */
 
-namespace Modules\Api\Controllers;
+namespace ' . $moduleManager->getBaseNamespace() . '\\' . $moduleManager->getModuleName() . '\Controllers;
 
-use Quantum\Exceptions\AuthException;
+use Quantum\Libraries\Auth\Exceptions\AuthException;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 

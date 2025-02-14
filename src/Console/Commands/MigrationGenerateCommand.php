@@ -9,17 +9,19 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Console\Commands;
 
+use Quantum\Libraries\Lang\Exceptions\LangException;
+use Quantum\Migration\Exceptions\MigrationException;
 use Quantum\Migration\MigrationManager;
 use Quantum\Console\QtCommand;
 
 /**
- * Class MigrationCreateCommand
- * @package Quantum\Console\Commands
+ * Class MigrationGenerateCommand
+ * @package Quantum\Console
  */
 class MigrationGenerateCommand extends QtCommand
 {
@@ -47,7 +49,8 @@ class MigrationGenerateCommand extends QtCommand
 
     /**
      * Executes the command
-     * @throws \Quantum\Exceptions\MigrationException
+     * @throws LangException
+     * @throws MigrationException
      */
     public function exec()
     {
@@ -57,5 +60,4 @@ class MigrationGenerateCommand extends QtCommand
 
         $this->info('Migration file ' . $migrationName . ' successfully created');
     }
-
 }

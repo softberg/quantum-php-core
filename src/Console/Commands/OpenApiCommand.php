@@ -14,19 +14,18 @@
 
 namespace Quantum\Console\Commands;
 
-use Quantum\Router\ModuleLoaderException;
+use Quantum\Libraries\Storage\Factories\FileSystemFactory;
+use Quantum\Router\Exceptions\ModuleLoaderException;
+use Quantum\Router\Exceptions\RouteException;
 use Quantum\Libraries\Storage\FileSystem;
-use Quantum\Exceptions\RouteException;
-use Quantum\Exceptions\DiException;
+use Quantum\Exceptions\BaseException;
 use Quantum\Router\ModuleLoader;
 use Quantum\Console\QtCommand;
-use ReflectionException;
 use OpenApi\Generator;
-use Quantum\Di\Di;
 
 /**
  * Class OpenApiUiAssetsCommand
- * @package Quantum\Console\Commands
+ * @package Quantum\Console
  */
 class OpenApiCommand extends QtCommand
 {
@@ -83,16 +82,15 @@ class OpenApiCommand extends QtCommand
 
     /**
      * Executes the command and generate Open API specifications
-     * @throws DiException
      * @throws ModuleLoaderException
-     * @throws ReflectionException
      * @throws RouteException
+     * @throws BaseException
      */
     public function exec()
     {
         ModuleLoader::getInstance()->loadModulesRoutes();
 
-        $this->fs = Di::get(FileSystem::class);
+        $this->fs = FileSystemFactory::get();
 
         $module = $this->getArgument('module');
 
@@ -180,5 +178,4 @@ class OpenApiCommand extends QtCommand
         });
     });' . PHP_EOL;
     }
-
 }

@@ -1,5 +1,9 @@
 <?php
 
+use Quantum\Libraries\Module\ModuleManager;
+
+$moduleManager = ModuleManager::getInstance();
+
 return '<?php
 
 /**
@@ -11,10 +15,10 @@ return '<?php
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.5
  */
 
-namespace Modules\Api\Middlewares;
+namespace ' . $moduleManager->getBaseNamespace() . '\\' . $moduleManager->getModuleName() . '\Middlewares;
 
 use Quantum\Middleware\QtMiddleware;
 use Quantum\Factory\ServiceFactory;
@@ -54,5 +58,4 @@ class Owner extends QtMiddleware
         return $next($request, $response);
     }
 
-}
-';
+}';

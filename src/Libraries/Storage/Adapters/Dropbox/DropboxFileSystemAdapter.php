@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Quantum PHP Framework
  *
@@ -8,12 +9,12 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Libraries\Storage\Adapters\Dropbox;
 
-use Quantum\Libraries\Storage\FilesystemAdapterInterface;
+use Quantum\Libraries\Storage\Contracts\FilesystemAdapterInterface;
 use Exception;
 
 /**
@@ -24,36 +25,16 @@ class DropboxFileSystemAdapter implements FilesystemAdapterInterface
 {
 
     /**
-     * @var DropboxFileSystemAdapter|null
-     */
-    private static $instance = null;
-
-    /**
      * @var DropboxApp
      */
     private $dropboxApp;
 
     /**
-     * DropboxFileSystemAdapter constructor
      * @param DropboxApp $dropboxApp
      */
-    private function __construct(DropboxApp $dropboxApp)
+    public function __construct(DropboxApp $dropboxApp)
     {
         $this->dropboxApp = $dropboxApp;
-    }
-
-    /**
-     * Get Instance
-     * @param DropboxApp $dropboxApp
-     * @return DropboxFileSystemAdapter
-     */
-    public static function getInstance(DropboxApp $dropboxApp): DropboxFileSystemAdapter
-    {
-        if (self::$instance === null) {
-            self::$instance = new self($dropboxApp);
-        }
-
-        return self::$instance;
     }
 
     /**
@@ -242,5 +223,4 @@ class DropboxFileSystemAdapter implements FilesystemAdapterInterface
             return false;
         }
     }
-
 }

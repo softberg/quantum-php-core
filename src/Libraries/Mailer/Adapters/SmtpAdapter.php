@@ -14,8 +14,8 @@
 
 namespace Quantum\Libraries\Mailer\Adapters;
 
-use Quantum\Libraries\Mailer\MailerInterface;
-use Quantum\Libraries\Mailer\MailTrap;
+use Quantum\Libraries\Mailer\Contracts\MailerInterface;
+use Quantum\Libraries\Mailer\Traits\MailerTrait;
 use PHPMailer\PHPMailer\PHPMailer;
 use Quantum\Debugger\Debugger;
 use PHPMailer\PHPMailer\SMTP;
@@ -28,7 +28,12 @@ use Exception;
 class SmtpAdapter implements MailerInterface
 {
 
-    use MailerAdapterTrait;
+    use MailerTrait;
+
+    /**
+     * @var string
+     */
+    public $name = 'SMTP';
 
     /**
      * @var PHPMailer
@@ -74,7 +79,7 @@ class SmtpAdapter implements MailerInterface
      * SmtpAdapter constructor
      * @param array $params
      */
-    private function __construct(array $params)
+    public function __construct(array $params)
     {
         $this->mailer = new PHPMailer(true);
 
@@ -89,20 +94,6 @@ class SmtpAdapter implements MailerInterface
                 warning($message, ['tab' => Debugger::MAILS]);
             };
         }
-    }
-
-    /**
-     * Get Instance
-     * @param array $params
-     * @return SmtpAdapter
-     */
-    public static function getInstance(array $params): SmtpAdapter
-    {
-        if (self::$instance === null) {
-            self::$instance = new self($params);
-        }
-
-        return self::$instance;
     }
 
     /**
@@ -299,16 +290,5 @@ class SmtpAdapter implements MailerInterface
     private function sendEmail(): bool
     {
         return $this->mailer->send();
-    }
-
-    /**
-     * @return bool
-     * @throws \PHPMailer\PHPMailer\Exception
-     * @throws Exception
-     */
-    private function saveEmail(): bool
-    {
-        $this->mailer->preSend();
-        return MailTrap::getInstance()->saveMessage($this->getMessageId(), $this->getMessageContent());
     }
 }

@@ -14,18 +14,17 @@
 
 namespace Quantum\Di;
 
-use Quantum\Exceptions\DiException;
+use Quantum\Di\Exceptions\DiException;
 use ReflectionParameter;
 use ReflectionException;
 use ReflectionFunction;
 use ReflectionMethod;
+use Quantum\App\App;
 use ReflectionClass;
 
 /**
  * Di Class
- *
- * @package Quantum
- * @category Di
+ * @package Quantum/Di
  */
 class Di
 {
@@ -176,7 +175,7 @@ class Di
      */
     private static function userDependencies(): array
     {
-        $userDependencies = base_dir() . DS . 'shared' . DS . 'config' . DS . 'dependencies.php';
+        $userDependencies = App::getBaseDir() . DS . 'shared' . DS . 'config' . DS . 'dependencies.php';
 
         if (!file_exists($userDependencies)) {
             return [];
@@ -192,11 +191,10 @@ class Di
     private static function coreDependencies(): array
     {
         return [
+            \Quantum\Loader\Loader::class,
             \Quantum\Http\Request::class,
             \Quantum\Http\Response::class,
-            \Quantum\Loader\Loader::class,
             \Quantum\Factory\ViewFactory::class,
-            \Quantum\Libraries\Storage\FileSystem::class,
         ];
     }
 

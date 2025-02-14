@@ -9,13 +9,17 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Loader;
 
-use Quantum\Libraries\Storage\FileSystem;
-use Quantum\Exceptions\LoaderException;
+use Quantum\Libraries\Storage\Factories\FileSystemFactory;
+use Quantum\Loader\Exceptions\LoaderException;
+use Quantum\Exceptions\BaseException;
+use ReflectionException;
+use Quantum\App\App;
+use ReflectionClass;
 
 /**
  * Class Loader
@@ -55,21 +59,6 @@ class Loader
     private $exceptionMessage;
 
     /**
-     * File System
-     * @var FileSystem
-     */
-    private $fs;
-
-    /**
-     * Loader constructor
-     * @param FileSystem|null $fs
-     */
-    public function __construct(FileSystem $fs = null)
-    {
-        $this->fs = $fs;
-    }
-
-    /**
      * Setups the loader
      * @param Setup $setup
      * @return $this
@@ -103,8 +92,8 @@ class Loader
      */
     public function loadDir(string $dir)
     {
-        foreach ($this->fs->glob($dir . DS . "*.php") as $filename) {
-            $this->fs->require($filename, true);
+        foreach (glob($dir . DS . "*.php") as $filename) {
+            require_once $filename;
         }
     }
 
@@ -137,11 +126,11 @@ class Loader
 
         $filePath .= $this->fileName . '.php';
 
-        if (!$this->fs->exists($filePath)) {
+        if (!file_exists($filePath)) {
             if ($this->hierarchical) {
-                $filePath = base_dir() . DS . 'shared' . DS . strtolower($this->pathPrefix) . DS . $this->fileName . '.php';
+                $filePath = App::getBaseDir() . DS . 'shared' . DS . strtolower($this->pathPrefix) . DS . $this->fileName . '.php';
 
-                if (!$this->fs->exists($filePath)) {
+                if (!file_exists($filePath)) {
                     throw new LoaderException(_message($this->exceptionMessage, $this->fileName));
                 }
             } else {
@@ -152,4 +141,37 @@ class Loader
         return $filePath;
     }
 
+    /**
+     * Loads namespaced class from the file
+     * @param string $filePath
+     * @param callable $notFoundException
+     * @param callable $notDefinedException
+     * @param array $constructorArgs
+     * @return mixed
+     * @throws BaseException
+     * @throws ReflectionException
+     */
+    public function loadClassFromFile(
+        string $filePath,
+        callable $notFoundException,
+        callable $notDefinedException,
+        array $constructorArgs = []
+    ) {
+        $fs = FileSystemFactory::get();
+
+        if (!$fs->exists($filePath)) {
+            throw $notFoundException();
+        }
+
+        require_once $filePath;
+
+        foreach (get_declared_classes() as $className) {
+            $reflectionClass = new ReflectionClass($className);
+            if ($reflectionClass->getFileName() === $filePath) {
+                return new $className(...$constructorArgs);
+            }
+        }
+
+        throw $notDefinedException();
+    }
 }

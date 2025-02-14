@@ -32,5 +32,4 @@ class Rule
     {
         return [$rule => $params];
     }
-
 }

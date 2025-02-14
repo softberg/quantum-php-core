@@ -14,10 +14,11 @@
 
 namespace Quantum\Libraries\Asset;
 
-use Quantum\Libraries\Lang\LangException;
+use Quantum\Libraries\Asset\Exceptions\AssetException;
+use Quantum\Libraries\Lang\Exceptions\LangException;
 
 /**
- * Class AssetManager
+ * Class AssetFactory
  * @package Quantum\Libraries\Asset
  */
 class AssetManager
@@ -58,9 +59,9 @@ class AssetManager
 
     /**
      * AssetManager instance
-     * @return AssetManager|null
+     * @return AssetManager
      */
-    public static function getInstance(): ?AssetManager
+    public static function getInstance(): AssetManager
     {
         if (self::$instance == null) {
             self::$instance = new self();
@@ -163,8 +164,8 @@ class AssetManager
             $this->setPriorityAssets();
             $this->setRegularAssets();
 
-            ksort($this->published[self::STORES['css']]);
-            ksort($this->published[self::STORES['js']]);
+            ksort($this->published[Asset::CSS]);
+            ksort($this->published[Asset::JS]);
         }
     }
 

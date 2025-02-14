@@ -14,8 +14,9 @@
 
 namespace Quantum\Http\Request;
 
-use Quantum\Exceptions\HttpException;
-use Quantum\Exceptions\DiException;
+use Quantum\Http\Exceptions\HttpException;
+use Quantum\Di\Exceptions\DiException;
+use Quantum\Exceptions\BaseException;
 use Quantum\Libraries\Csrf\Csrf;
 use Quantum\Environment\Server;
 use ReflectionException;
@@ -74,9 +75,11 @@ abstract class HttpRequest
     /**
      * Initiates the Request
      * @param Server $server
+     * @return void
      * @throws DiException
      * @throws HttpException
      * @throws ReflectionException
+     * @throws BaseException
      */
     public static function init(Server $server)
     {
@@ -98,7 +101,7 @@ abstract class HttpRequest
 
         self::$__query = self::$server->query();
 
-        self::$__headers = array_change_key_case((array)getallheaders(), CASE_LOWER);
+        self::$__headers = array_change_key_case((array)getallheaders());
 
         list('params' => $params, 'files' => $files) = self::parsedParams();
 
@@ -123,12 +126,18 @@ abstract class HttpRequest
      * @param string $url
      * @param array|null $data
      * @param array|null $files
-     * @throws ReflectionException
-     * @throws HttpException
+     * @return void
+     * @throws BaseException
      * @throws DiException
+     * @throws HttpException
+     * @throws ReflectionException
      */
     public static function create(string $method, string $url, array $data = null, array $files = null)
     {
+        if (!self::$initialized) {
+            self::init(Server::getInstance());
+        }
+
         $parsed = parse_url($url);
 
         self::setMethod($method);
@@ -191,7 +200,7 @@ abstract class HttpRequest
      */
     public static function setMethod(string $method)
     {
-        if (!in_array($method, self::METHODS)) {
+        if (!in_array(strtoupper($method), self::METHODS)) {
             throw HttpException::methodNotAvailable($method);
         }
 
@@ -287,5 +296,4 @@ abstract class HttpRequest
     {
         return self::$server->referrer();
     }
-
 }

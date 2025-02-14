@@ -14,16 +14,18 @@
 
 namespace Quantum\Migration;
 
+use Quantum\Libraries\Storage\Exceptions\FileSystemException;
 use Quantum\Libraries\Database\Exceptions\DatabaseException;
-use Quantum\Libraries\Config\ConfigException;
-use Quantum\Exceptions\FileSystemException;
-use Quantum\Exceptions\MigrationException;
-use Quantum\Libraries\Lang\LangException;
+use Quantum\Libraries\Storage\Factories\FileSystemFactory;
+use Quantum\Libraries\Config\Exceptions\ConfigException;
+use Quantum\Libraries\Database\Factories\TableFactory;
+use Quantum\Migration\Exceptions\MigrationException;
+use Quantum\Libraries\Lang\Exceptions\LangException;
+use Quantum\Migration\Templates\MigrationTemplate;
 use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Libraries\Database\Database;
-use Quantum\Exceptions\AppException;
-use Quantum\Exceptions\DiException;
-use Quantum\Factory\TableFactory;
+use Quantum\Di\Exceptions\DiException;
+use Quantum\Exceptions\BaseException;
 use ReflectionException;
 
 /**
@@ -44,14 +46,14 @@ class MigrationManager
     const DOWNGRADE = 'down';
 
     /**
-     * @var array
+     * Available actions
      */
-    private $actions = ['create', 'alter', 'rename', 'drop'];
+    const ACTIONS = ['create', 'alter', 'rename', 'drop'];
 
     /**
-     * @var array
+     * Supported drivers
      */
-    private $drivers = ['mysql', 'pgsql', 'sqlite'];
+    const DRIVERS = ['mysql', 'pgsql', 'sqlite'];
 
     /**
      * @var array
@@ -79,12 +81,12 @@ class MigrationManager
     private $db;
 
     /**
-     * MigrationManager constructor.
+     * @throws BaseException
      * @throws FileSystemException
      */
     public function __construct()
     {
-        $this->fs = new FileSystem();
+        $this->fs = FileSystemFactory::get();
 
         $this->db = Database::getInstance();
 
@@ -107,7 +109,7 @@ class MigrationManager
      */
     public function generateMigration(string $table, string $action): string
     {
-        if (!in_array($action, $this->actions)) {
+        if (!in_array($action, self::ACTIONS)) {
             throw MigrationException::unsupportedAction($action);
         }
 
@@ -125,7 +127,7 @@ class MigrationManager
      * @param string $direction
      * @param int|null $step
      * @return int|null
-     * @throws AppException
+     * @throws BaseException
      * @throws ConfigException
      * @throws DatabaseException
      * @throws DiException
@@ -137,8 +139,8 @@ class MigrationManager
     {
         $databaseDriver = $this->db->getConfigs()['driver'];
 
-        if (!in_array($databaseDriver, $this->drivers)) {
-            throw MigrationException::unsupportedDriver($databaseDriver);
+        if (!in_array($databaseDriver, self::DRIVERS)) {
+            throw MigrationException::driverNotSupported($databaseDriver);
         }
 
         switch ($direction) {
@@ -206,7 +208,7 @@ class MigrationManager
     private function downgrade(?int $step): int
     {
         if (!$this->tableFactory->checkTableExists(MigrationTable::TABLE)) {
-            throw MigrationException::tableDoesnotExists(MigrationTable::TABLE);
+            throw DatabaseException::tableDoesNotExists(MigrationTable::TABLE);
         }
 
         $this->prepareDownMigrations($step);
@@ -342,5 +344,4 @@ class MigrationManager
             Database::execute('DELETE FROM ' . MigrationTable::TABLE . ' WHERE migration=:migration', ['migration' => $entry]);
         }
     }
-
 }

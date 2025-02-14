@@ -15,9 +15,9 @@
 namespace Quantum\Libraries\Database;
 
 use Quantum\Libraries\Database\Exceptions\DatabaseException;
+use Quantum\Libraries\Config\Exceptions\ConfigException;
 use Quantum\Libraries\Database\Contracts\DbalInterface;
-use Quantum\Libraries\Config\ConfigException;
-use Quantum\Exceptions\DiException;
+use Quantum\Di\Exceptions\DiException;
 use Quantum\Loader\Setup;
 use ReflectionException;
 
@@ -54,9 +54,9 @@ class Database
 
     /**
      * Get Instance
-     * @return Database|null
+     * @return Database
      */
-    public static function getInstance(): ?Database
+    public static function getInstance(): Database
     {
         if (self::$instance === null) {
             self::$instance = new self();
@@ -201,5 +201,4 @@ class Database
 
         return $ormClass::$method($query, $parameters);
     }
-
 }

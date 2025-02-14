@@ -12,14 +12,13 @@
  * @since 2.9.5
  */
 
-use Quantum\Exceptions\ViewException;
-use Quantum\Exceptions\DiException;
+use Quantum\Libraries\Config\Exceptions\ConfigException;
+use Quantum\Renderer\Exceptions\RendererException;
+use Quantum\Di\Exceptions\DiException;
+use Quantum\Exceptions\BaseException;
 use Quantum\Factory\ViewFactory;
 use DebugBar\DebugBarException;
 use Quantum\Debugger\Debugger;
-use Twig\Error\RuntimeError;
-use Twig\Error\LoaderError;
-use Twig\Error\SyntaxError;
 
 /**
  * Rendered view
@@ -35,12 +34,11 @@ function view(): ?string
  * @param string $partial
  * @param array $args
  * @return string|null
- * @throws ReflectionException
  * @throws DiException
- * @throws ViewException
- * @throws LoaderError
- * @throws RuntimeError
- * @throws SyntaxError
+ * @throws ReflectionException
+ * @throws BaseException
+ * @throws ConfigException
+ * @throws RendererException
  */
 function partial(string $partial, array $args = []): ?string
 {

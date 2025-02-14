@@ -14,13 +14,13 @@
 
 namespace Quantum\Libraries\Database\Exceptions;
 
-use Quantum\Exceptions\AppException;
+use Quantum\Exceptions\BaseException;
 
 /**
  * Class DatabaseException
  * @package Quantum\Libraries\Database
  */
-class DatabaseException extends AppException
+class DatabaseException extends BaseException
 {
     /**
      * @return DatabaseException
@@ -62,5 +62,23 @@ class DatabaseException extends AppException
     public static function operatorNotSupported(string $operator): DatabaseException
     {
         return new static(t('not_supported_operator', [$operator]), E_WARNING);
+    }
+
+    /**
+     * @param string $name
+     * @return DatabaseException
+     */
+    public static function tableAlreadyExists(string $name): DatabaseException
+    {
+        return new static(t('exception.table_already_exists', $name), E_ERROR);
+    }
+
+    /**
+     * @param string $name
+     * @return DatabaseException
+     */
+    public static function tableDoesNotExists(string $name): DatabaseException
+    {
+        return new static(t('exception.table_does_not_exists', $name), E_ERROR);
     }
 }

@@ -14,11 +14,12 @@
 
 namespace Quantum\Router;
 
+use Quantum\Libraries\Storage\Factories\FileSystemFactory;
+use Quantum\Router\Exceptions\ModuleLoaderException;
+use Quantum\Router\Exceptions\RouteException;
 use Quantum\Libraries\Storage\FileSystem;
-use Quantum\Exceptions\RouteException;
-use Quantum\Exceptions\DiException;
-use ReflectionException;
-use Quantum\Di\Di;
+use Quantum\Exceptions\BaseException;
+use Quantum\App\App;
 use Closure;
 
 /**
@@ -28,27 +29,41 @@ use Closure;
 class ModuleLoader
 {
 
-    private static $instance = null;
+    /**
+     * @var array
+     */
+    private static $moduleConfigs = [];
 
+    /**
+     * @var array<Closure>
+     */
+    private static $moduleRoutes = [];
+
+    /**
+     * @var FileSystem
+     */
     private $fs;
 
     /**
-     * @param FileSystem $fs
+     * @var ModuleLoader|null
      */
-    private function __construct(FileSystem $fs)
+    private static $instance = null;
+
+    /**
+     * @throws BaseException
+     */
+    private function __construct()
     {
-        $this->fs = $fs;
+        $this->fs = FileSystemFactory::get();
     }
 
     /**
      * @return ModuleLoader
-     * @throws DiException
-     * @throws ReflectionException
      */
     public static function getInstance(): ModuleLoader
     {
         if (self::$instance === null) {
-            self::$instance = new self(Di::get(FileSystem::class));
+            self::$instance = new self();
         }
 
         return self::$instance;
@@ -61,11 +76,13 @@ class ModuleLoader
      */
     public function loadModulesRoutes()
     {
-        $modules = $this->loadModuleConfig();
+        if (empty(self::$moduleConfigs)) {
+            $this->loadModuleConfig();
+        }
 
         $modulesRoutes = [];
 
-        foreach ($modules['modules'] as $module => $options) {
+        foreach (self::$moduleConfigs as $module => $options) {
             if (!$this->isModuleEnabled($options)) {
                 continue;
             }
@@ -80,15 +97,27 @@ class ModuleLoader
      * @return array
      * @throws ModuleLoaderException
      */
-    private function loadModuleConfig(): array
+    public function getModuleConfigs(): array
     {
-        $configPath = base_dir() . DS . 'shared' . DS . 'config' . DS . 'modules.php';
+        if (empty(self::$moduleConfigs)) {
+            $this->loadModuleConfig();
+        }
+
+        return self::$moduleConfigs;
+    }
+
+    /**
+     * @throws ModuleLoaderException
+     */
+    private function loadModuleConfig()
+    {
+        $configPath = App::getBaseDir() . DS . 'shared' . DS . 'config' . DS . 'modules.php';
 
         if (!$this->fs->exists($configPath)) {
             throw ModuleLoaderException::moduleConfigNotFound();
         }
 
-        return $this->fs->require($configPath, true);
+        self::$moduleConfigs = $this->fs->require($configPath);
     }
 
     /**
@@ -115,15 +144,16 @@ class ModuleLoader
             throw ModuleLoaderException::moduleRoutesNotFound($module);
         }
 
-        $routesClosure = $this->fs->require($moduleRoutes, true);
+        if(empty(self::$moduleRoutes[$module])) {
+            self::$moduleRoutes[$module] = $this->fs->require($moduleRoutes, true);
+        }
 
-        if (!$routesClosure instanceof Closure) {
+        if (!self::$moduleRoutes[$module] instanceof Closure) {
             throw RouteException::notClosure();
         }
 
-        $routesClosure($route);
+        self::$moduleRoutes[$module]($route);
 
         return $route->getRuntimeRoutes();
     }
-
 }

@@ -33,11 +33,10 @@ class QtController extends RouteController
      * Handles the missing methods of the controller
      * @param string $method
      * @param array $arguments
-     * @throws \Quantum\Exceptions\ControllerException
+     * @throws ControllerException
      */
     public function __call(string $method, array $arguments)
     {
         throw ControllerException::undefinedMethod($method);
     }
-
 }

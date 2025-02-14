@@ -9,19 +9,23 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.5
  */
 
 namespace Quantum\Libraries\Captcha\Adapters;
 
-use Quantum\Libraries\Curl\HttpClient;
+use Quantum\Libraries\Captcha\Contracts\CaptchaInterface;
+use Quantum\Libraries\Captcha\Traits\CaptchaTrait;
+use Quantum\Libraries\HttpClient\HttpClient;
 
 /**
  * Class HcaptchaAdapter
- * @package Quantum\Libraries\Captcha\Adapters
+ * @package Quantum\Libraries\Captcha
  */
-class HcaptchaAdapter extends BaseCaptcha
+class HcaptchaAdapter implements CaptchaInterface
 {
+
+    use CaptchaTrait;
 
     const VERIFY_URL = 'https://hcaptcha.com/siteverify';
 
@@ -38,16 +42,11 @@ class HcaptchaAdapter extends BaseCaptcha
     protected $elementClasses = ['h-captcha'];
 
     /**
-     * @var HcaptchaAdapter
-     */
-    private static $instance = null;
-
-    /**
      * Hcaptcha constructor
      * @param array $params
      * @param HttpClient $httpClient
      */
-    private function __construct(array $params, HttpClient $httpClient)
+    public function __construct(array $params, HttpClient $httpClient)
     {
         $this->http = $httpClient;
 
@@ -55,28 +54,4 @@ class HcaptchaAdapter extends BaseCaptcha
         $this->siteKey = $params['site_key'];
         $this->type = $params['type'] ?? null;
     }
-
-    /**
-     * Get Instance
-     * @param array $params
-     * @param HttpClient $httpClient
-     * @return HcaptchaAdapter
-     */
-    public static function getInstance(array $params, HttpClient $httpClient): HcaptchaAdapter
-    {
-        if (self::$instance === null) {
-            self::$instance = new self($params, $httpClient);
-        }
-
-        return self::$instance;
-    }
-
-    /**
-     * @return void
-     */
-    public static function resetInstance(): void
-    {
-        self::$instance = null;
-    }
-
 }

@@ -1,5 +1,9 @@
 <?php
 
+use Quantum\Libraries\Module\ModuleManager;
+
+$moduleManager = ModuleManager::getInstance();
+
 return '<?php
 
 /**
@@ -11,17 +15,17 @@ return '<?php
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.5
  */
 
-namespace Modules\Web\Controllers;
+namespace ' . $moduleManager->getBaseNamespace() . '\\' . $moduleManager->getModuleName() . '\Controllers;
 
 use Quantum\Factory\ViewFactory;
 use Quantum\Http\Response;
 
 /**
  * Class BaseController
- * @package Modules\Web\Controllers
+ * @package Modules\Web
  */
 class PageController extends BaseController
 {

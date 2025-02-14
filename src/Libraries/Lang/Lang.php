@@ -14,8 +14,10 @@
 
 namespace Quantum\Libraries\Lang;
 
-use Quantum\Libraries\Storage\FileSystem;
-use Quantum\Exceptions\DiException;
+use Quantum\Libraries\Storage\Factories\FileSystemFactory;
+use Quantum\Libraries\Lang\Exceptions\LangException;
+use Quantum\Di\Exceptions\DiException;
+use Quantum\Exceptions\BaseException;
 use Dflydev\DotAccessData\Data;
 use Quantum\Loader\Loader;
 use Quantum\Http\Request;
@@ -106,14 +108,15 @@ class Lang
     }
 
     /**
-     * Loads translations
-     * @throws LangException
+     *Loads translations
      * @throws DiException
+     * @throws LangException
      * @throws ReflectionException
+     * @throws BaseException
      */
     public function load()
     {
-        $fs = Di::get(FileSystem::class);
+        $fs = FileSystemFactory::get();
 
         $langDir = modules_dir() . DS . current_module() . DS . 'Resources' . DS . 'lang' . DS . $this->getLang();
 
@@ -210,5 +213,4 @@ class Lang
     {
         self::$translations = null;
     }
-
 }
