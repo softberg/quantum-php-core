@@ -51,15 +51,7 @@ function valid_base64(string $string): bool
 
     $decoded = base64_decode($string, true);
 
-    if (!base64_decode($string, true)) {
-        return false;
-    }
-
-    if (base64_encode($decoded) != $string) {
-        return false;
-    }
-
-    return true;
+    return $decoded !== false && base64_encode($decoded) === $string;
 }
 
 /**

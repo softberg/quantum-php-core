@@ -194,7 +194,6 @@ class Di
             \Quantum\Loader\Loader::class,
             \Quantum\Http\Request::class,
             \Quantum\Http\Response::class,
-            \Quantum\Loader\Loader::class,
             \Quantum\Factory\ViewFactory::class,
         ];
     }
