@@ -64,9 +64,8 @@ class ConsoleAppAdapter extends AppAdapter
 
         if ($commandName !== 'core:env') {
             $this->loadEnvironment();
+            $this->loadConfig();
         }
-
-        $this->loadConfig();
     }
 
     /**
@@ -82,11 +81,9 @@ class ConsoleAppAdapter extends AppAdapter
     {
         try {
             $this->application = $this->createApplication(
-                config()->get('app_name'),
-                config()->get('app_version')
+                config()->get('app_name', 'UNKNOWN'),
+                config()->get('app_version', 'UNKNOWN')
             );
-
-            $this->loadLanguage();
 
             $this->registerCoreCommands();
             $this->registerAppCommands();
