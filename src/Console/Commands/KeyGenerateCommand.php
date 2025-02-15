@@ -56,6 +56,7 @@ class KeyGenerateCommand extends QtCommand
     /**
      * Executes the command and stores the generated key to .env file
      * @throws EnvException
+     * @throws Exception
      */
     public function exec()
     {
@@ -68,7 +69,9 @@ class KeyGenerateCommand extends QtCommand
             }
         }
 
-        Environment::getInstance()->updateRow('APP_KEY', $this->generateRandomKey());
+        Environment::getInstance()
+            ->setMutable(true)
+            ->updateRow('APP_KEY', $this->generateRandomKey());
 
         $this->info('Application key successfully generated and stored.');
     }
