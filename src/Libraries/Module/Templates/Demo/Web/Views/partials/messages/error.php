@@ -1,7 +1,5 @@
-<?php
-
-return '<div class="material-alert error">
-    <?php $error = session()->getFlash(\'error\') ?>
+<div class="material-alert error">
+    <?php $error = session()->getFlash('error') ?>
     <?php if ($error): ?>
         <?php if (is_array($error)): ?>
             <ul class="left-align">

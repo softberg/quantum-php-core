@@ -1,7 +1,5 @@
 <?php
 
-return "<?php
-
 return [
     /**
      * ---------------------------------------------------------
@@ -14,5 +12,3 @@ return [
     'type' => 'web',
     'service' => Shared\Services\AuthService::class
 ];
-
-";

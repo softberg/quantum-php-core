@@ -1,11 +1,5 @@
 <?php
 
-use Quantum\Libraries\Module\ModuleManager;
-
-$moduleManager = ModuleManager::getInstance();
-
-return '<?php
-
 /**
  * Quantum PHP Framework
  *
@@ -18,7 +12,7 @@ return '<?php
  * @since 2.9.5
  */
 
-namespace ' . $moduleManager->getBaseNamespace() . '\\' . $moduleManager->getModuleName() . '\Middlewares;
+namespace {{MODULE_NAMESPACE}}\Middlewares;
 
 use Quantum\Middleware\QtMiddleware;
 use Quantum\Http\Response;
@@ -42,8 +36,8 @@ class Auth extends QtMiddleware
     {
         if (!auth()->check()) {
             $response->json([
-                \'status\' => \'error\',
-                \'message\' => t(\'validation.unauthorizedRequest\')
+                'status' => 'error',
+                'message' => t('validation.unauthorizedRequest')
             ], 401);
             
             stop();
@@ -52,4 +46,4 @@ class Auth extends QtMiddleware
         return $next($request, $response);
     }
 
-}';
+}

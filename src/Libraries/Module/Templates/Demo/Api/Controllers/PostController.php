@@ -1,11 +1,5 @@
 <?php
 
-use Quantum\Libraries\Module\ModuleManager;
-
-$moduleManager = ModuleManager::getInstance();
-
-return '<?php
-
 /**
  * Quantum PHP Framework
  *
@@ -18,7 +12,7 @@ return '<?php
  * @since 2.9.5
  */
 
-namespace ' . $moduleManager->getBaseNamespace() . '\\' . $moduleManager->getModuleName() . '\Controllers;
+namespace {{MODULE_NAMESPACE}}\Controllers;
 
 use Shared\Transformers\PostTransformer;
 use Quantum\Factory\ServiceFactory;
@@ -63,20 +57,20 @@ class PostController extends BaseController
      */
     public function posts(Request $request, Response $response, PostTransformer $transformer)
     {
-        $perPage = $request->get(\'per_page\', self::POSTS_PER_PAGE);
-        $currentPage = $request->get(\'page\', self::CURRENT_PAGE);
-        $search = trim($request->get(\'q\'));
+        $perPage = $request->get('per_page', self::POSTS_PER_PAGE);
+        $currentPage = $request->get('page', self::CURRENT_PAGE);
+        $search = trim($request->get('q'));
         
         $paginatedPosts = $this->postService->getPosts($perPage, $currentPage, $search);
         
         $response->json([
-            \'status\' => \'success\',
-            \'data\' => transform($paginatedPosts->data(), $transformer),
-            \'pagination\' => [
-                \'total_records\' => $paginatedPosts->total(),
-                \'current_page\' => $paginatedPosts->currentPageNumber(),
-                \'next_page\' => $paginatedPosts->nextPageNumber(),
-                \'prev_page\' => $paginatedPosts->previousPageNumber(),
+            'status' => 'success',
+            'data' => transform($paginatedPosts->data(), $transformer),
+            'pagination' => [
+                'total_records' => $paginatedPosts->total(),
+                'current_page' => $paginatedPosts->currentPageNumber(),
+                'next_page' => $paginatedPosts->nextPageNumber(),
+                'prev_page' => $paginatedPosts->previousPageNumber(),
             ]
         ]);
     }
@@ -94,16 +88,16 @@ class PostController extends BaseController
 
         if (!$post->asArray()) {
             $response->json([
-                \'status\' => \'error\',
-                \'message\' => t(\'common.post_not_found\')
+                'status' => 'error',
+                'message' => t('common.post_not_found')
             ], 404);
 
             stop();
         }
 
         $response->json([
-            \'status\' => \'success\',
-            \'data\' => current(transform([$post], $transformer))
+            'status' => 'success',
+            'data' => current(transform([$post], $transformer))
         ]);
     }
 
@@ -117,8 +111,8 @@ class PostController extends BaseController
         $myPosts = $this->postService->getMyPosts((int)auth()->user()->id);
         
         $response->json([
-            \'status\' => \'success\',
-            \'data\' => transform($myPosts, $transformer)
+            'status' => 'success',
+            'data' => transform($myPosts, $transformer)
         ]);
     }
 
@@ -130,28 +124,28 @@ class PostController extends BaseController
     public function create(Request $request, Response $response)
     {
         $postData = [
-            \'user_id\' => (int)auth()->user()->id,
-            \'title\' => $request->get(\'title\', null, true),
-            \'content\' => $request->get(\'content\', null, true),
-            \'image\' => \'\',
-            \'updated_at\' => date(\'Y-m-d H:i:s\'),
+            'user_id' => (int)auth()->user()->id,
+            'title' => $request->get('title', null, true),
+            'content' => $request->get('content', null, true),
+            'image' => '',
+            'updated_at' => date('Y-m-d H:i:s'),
         ];
 
-        if ($request->hasFile(\'image\')) {
+        if ($request->hasFile('image')) {
             $imageName = $this->postService->saveImage(
-                $request->getFile(\'image\'),
+                $request->getFile('image'),
                 auth()->user()->uuid,
-                slugify($request->get(\'title\'))
+                slugify($request->get('title'))
             );
 
-            $postData[\'image\'] = $imageName;
+            $postData['image'] = $imageName;
         }
 
         $this->postService->addPost($postData);
 
         $response->json([
-            \'status\' => \'success\',
-            \'message\' => t(\'common.created_successfully\')
+            'status' => 'success',
+            'message' => t('common.created_successfully')
         ]);
     }
 
@@ -165,32 +159,32 @@ class PostController extends BaseController
     public function amend(Request $request, Response $response, ?string $lang, string $postId)
     {
         $postData = [
-            \'title\' => $request->get(\'title\', null, true),
-            \'content\' => $request->get(\'content\', null, true),
-            \'updated_at\' => date(\'Y-m-d H:i:s\'),
+            'title' => $request->get('title', null, true),
+            'content' => $request->get('content', null, true),
+            'updated_at' => date('Y-m-d H:i:s'),
         ];
 
         $post = $this->postService->getPost($postId);
 
-        if ($request->hasFile(\'image\')) {
+        if ($request->hasFile('image')) {
             if ($post->image) {
                 $this->postService->deleteImage(auth()->user()->uuid . DS . $post->image);
             }
 
             $imageName = $this->postService->saveImage(
-                $request->getFile(\'image\'),
+                $request->getFile('image'),
                 auth()->user()->uuid,
-                slugify($request->get(\'title\'))
+                slugify($request->get('title'))
             );
 
-            $postData[\'image\'] = $imageName;
+            $postData['image'] = $imageName;
         }
 
         $this->postService->updatePost($postId, $postData);
 
         $response->json([
-            \'status\' => \'success\',
-            \'message\' => t(\'common.updated_successfully\')
+            'status' => 'success',
+            'message' => t('common.updated_successfully')
         ]);
     }
 
@@ -211,8 +205,8 @@ class PostController extends BaseController
         $this->postService->deletePost($postId);
 
         $response->json([
-            \'status\' => \'success\',
-            \'message\' => t(\'common.deleted_successfully\')
+            'status' => 'success',
+            'message' => t('common.deleted_successfully')
         ]);
     }
 
@@ -231,15 +225,15 @@ class PostController extends BaseController
         }
 
         $this->postService->updatePost($postId, [
-            \'title\' => $post->title,
-            \'content\' => $post->content,
-            \'image\' => \'\',
-            \'updated_at\' => date(\'Y-m-d H:i:s\'),
+            'title' => $post->title,
+            'content' => $post->content,
+            'image' => '',
+            'updated_at' => date('Y-m-d H:i:s'),
         ]);
 
         $response->json([
-            \'status\' => \'success\',
-            \'message\' => t(\'common.deleted_successfully\')
+            'status' => 'success',
+            'message' => t('common.deleted_successfully')
         ]);
     }
-}';
+}

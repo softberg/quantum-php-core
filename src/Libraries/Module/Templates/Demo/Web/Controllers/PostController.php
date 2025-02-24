@@ -1,11 +1,5 @@
 <?php
 
-use Quantum\Libraries\Module\ModuleManager;
-
-$moduleManager = ModuleManager::getInstance();
-
-return '<?php
-
 /**
  * Quantum PHP Framework
  *
@@ -18,7 +12,7 @@ return '<?php
  * @since 2.9.5
  */
 
-namespace ' . $moduleManager->getBaseNamespace() . '\\' . $moduleManager->getModuleName() . '\Controllers;
+namespace {{MODULE_NAMESPACE}}\Controllers;
 
 use Shared\Transformers\PostTransformer;
 use Quantum\Factory\ServiceFactory;
@@ -47,7 +41,7 @@ class PostController extends BaseController
     /**
      * Main layout
      */
-    const LAYOUT = \'layouts/main\';
+    const LAYOUT = 'layouts/main';
     
     /**
      * Post service
@@ -81,20 +75,20 @@ class PostController extends BaseController
      */
     public function posts(Request $request, Response $response, PostTransformer $transformer, ViewFactory $view)
     {
-        $perPage = $request->get(\'per_page\', self::POSTS_PER_PAGE);
-        $currentPage = $request->get(\'page\', self::CURRENT_PAGE);
-        $search = trim($request->get(\'q\'));
+        $perPage = $request->get('per_page', self::POSTS_PER_PAGE);
+        $currentPage = $request->get('page', self::CURRENT_PAGE);
+        $search = trim($request->get('q'));
         
         $paginatedPosts = $this->postService->getPosts($perPage, $currentPage, $search);
         
         $view->setParams([
-            \'title\' => t(\'common.posts\') . \' | \' . config()->get(\'app_name\'),
-            \'langs\' => config()->get(\'langs\'),
-            \'posts\' => transform($paginatedPosts->data(), $transformer),
-            \'pagination\' => $paginatedPosts
+            'title' => t('common.posts') . ' | ' . config()->get('app_name'),
+            'langs' => config()->get('langs'),
+            'posts' => transform($paginatedPosts->data(), $transformer),
+            'pagination' => $paginatedPosts
         ]);
 
-        $response->html($view->render(\'post/post\'));
+        $response->html($view->render('post/post'));
     }
 
     /**
@@ -108,23 +102,23 @@ class PostController extends BaseController
      */
     public function post(Request $request, Response $response, ViewFactory $view, PostTransformer $transformer, ?string $lang, string $postId)
     {
-        $ref = $request->get(\'ref\', \'posts\');
+        $ref = $request->get('ref', 'posts');
     
         $post = $this->postService->getPost($postId);
         
         if (!$post->asArray()) {
-            $response->html(partial(\'errors/404\'), 404);
+            $response->html(partial('errors/404'), 404);
             stop();
         }
 
         $view->setParams([
-            \'title\' => $post->title . \' | \' . config()->get(\'app_name\'),
-            \'langs\' => config()->get(\'langs\'),
-            \'post\' => current(transform([$post], $transformer)),
-            \'referer\' => $ref,
+            'title' => $post->title . ' | ' . config()->get('app_name'),
+            'langs' => config()->get('langs'),
+            'post' => current(transform([$post], $transformer)),
+            'referer' => $ref,
         ]);
 
-        $response->html($view->render(\'post/single\'));
+        $response->html($view->render('post/single'));
     }
 
     /**
@@ -138,12 +132,12 @@ class PostController extends BaseController
         $myPosts = $this->postService->getMyPosts((int)auth()->user()->id);
         
         $view->setParams([
-            \'title\' => t(\'common.my_posts\') . \' | \' . config()->get(\'app_name\'),
-            \'langs\' => config()->get(\'langs\'),
-            \'posts\' => transform($myPosts, $transformer)
+            'title' => t('common.my_posts') . ' | ' . config()->get('app_name'),
+            'langs' => config()->get('langs'),
+            'posts' => transform($myPosts, $transformer)
         ]);
 
-        $response->html($view->render(\'post/my-posts\'));
+        $response->html($view->render('post/my-posts'));
     }
 
     /**
@@ -154,11 +148,11 @@ class PostController extends BaseController
     public function createFrom(Response $response, ViewFactory $view)
     {
         $view->setParams([
-            \'title\' => t(\'common.new_post\') . \' | \' . config()->get(\'app_name\'),
-            \'langs\' => config()->get(\'langs\')
+            'title' => t('common.new_post') . ' | ' . config()->get('app_name'),
+            'langs' => config()->get('langs')
         ]);
 
-        $response->html($view->render(\'post/form\'));
+        $response->html($view->render('post/form'));
     }
 
     /**
@@ -168,26 +162,26 @@ class PostController extends BaseController
     public function create(Request $request)
     {
         $postData = [
-            \'user_id\' => (int)auth()->user()->id,
-            \'title\' => $request->get(\'title\', null, true),
-            \'content\' => $request->get(\'content\', null, true),
-            \'image\' => \'\',
-            \'updated_at\' => date(\'Y-m-d H:i:s\'),
+            'user_id' => (int)auth()->user()->id,
+            'title' => $request->get('title', null, true),
+            'content' => $request->get('content', null, true),
+            'image' => '',
+            'updated_at' => date('Y-m-d H:i:s'),
         ];
 
-        if ($request->hasFile(\'image\')) {
+        if ($request->hasFile('image')) {
             $imageName = $this->postService->saveImage(
-                $request->getFile(\'image\'),
+                $request->getFile('image'),
                 auth()->user()->uuid,
-                slugify($request->get(\'title\'))
+                slugify($request->get('title'))
             );
 
-            $postData[\'image\'] = $imageName;
+            $postData['image'] = $imageName;
         }
 
         $this->postService->addPost($postData);
 
-        redirect(base_url(true) . \'/\' . current_lang() . \'/my-posts\');
+        redirect(base_url(true) . '/' . current_lang() . '/my-posts');
     }
 
     /**
@@ -202,12 +196,12 @@ class PostController extends BaseController
         $post = $this->postService->getPost($postId);
 
         $view->setParams([
-            \'title\' => $post->title . \' | \' . config()->get(\'app_name\'),
-            \'langs\' => config()->get(\'langs\'),
-            \'post\' => $post->asArray()
+            'title' => $post->title . ' | ' . config()->get('app_name'),
+            'langs' => config()->get('langs'),
+            'post' => $post->asArray()
         ]);
 
-        $response->html($view->render(\'post/form\'));
+        $response->html($view->render('post/form'));
     }
 
     /**
@@ -219,30 +213,30 @@ class PostController extends BaseController
     public function amend(Request $request, ?string $lang, string $postId)
     {
         $postData = [
-            \'title\' => $request->get(\'title\', null, true),
-            \'content\' => $request->get(\'content\', null, true),
-            \'updated_at\' => date(\'Y-m-d H:i:s\'),
+            'title' => $request->get('title', null, true),
+            'content' => $request->get('content', null, true),
+            'updated_at' => date('Y-m-d H:i:s'),
         ];
 
         $post = $this->postService->getPost($postId);
 
-        if ($request->hasFile(\'image\')) {
+        if ($request->hasFile('image')) {
             if ($post->image) {
                 $this->postService->deleteImage(auth()->user()->uuid . DS .  $post->image);
             }
 
             $imageName = $this->postService->saveImage(
-                $request->getFile(\'image\'),
+                $request->getFile('image'),
                 auth()->user()->uuid,
-                slugify($request->get(\'title\'))
+                slugify($request->get('title'))
             );
 
-            $postData[\'image\'] = $imageName;
+            $postData['image'] = $imageName;
         }
 
         $this->postService->updatePost($postId, $postData);
 
-        redirect(base_url(true) . \'/\' . current_lang() . \'/my-posts\');
+        redirect(base_url(true) . '/' . current_lang() . '/my-posts');
     }
 
     /**
@@ -260,7 +254,7 @@ class PostController extends BaseController
 
         $this->postService->deletePost($postId);
 
-        redirect(base_url(true) . \'/\' . current_lang() . \'/my-posts\');
+        redirect(base_url(true) . '/' . current_lang() . '/my-posts');
     }
 
     /**
@@ -277,12 +271,12 @@ class PostController extends BaseController
         }
 
         $this->postService->updatePost($postId, [
-            \'title\' => $post->title,
-            \'content\' => $post->content,
-            \'image\' => \'\',
-            \'updated_at\' => date(\'Y-m-d H:i:s\'),
+            'title' => $post->title,
+            'content' => $post->content,
+            'image' => '',
+            'updated_at' => date('Y-m-d H:i:s'),
         ]);
 
-        redirect(base_url(true) . \'/\' . current_lang() . \'/my-posts\');
+        redirect(base_url(true) . '/' . current_lang() . '/my-posts');
     }
-}';
+}

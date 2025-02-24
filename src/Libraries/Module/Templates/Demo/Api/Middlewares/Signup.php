@@ -1,11 +1,5 @@
 <?php
 
-use Quantum\Libraries\Module\ModuleManager;
-
-$moduleManager = ModuleManager::getInstance();
-
-return '<?php
-
 /**
  * Quantum PHP Framework
  *
@@ -18,7 +12,7 @@ return '<?php
  * @since 2.9.5
  */
 
-namespace ' . $moduleManager->getBaseNamespace() . '\\' . $moduleManager->getModuleName() . '\Middlewares;
+namespace {{MODULE_NAMESPACE}}\Middlewares;
 
 use Quantum\Libraries\Validation\Validator;
 use Quantum\Libraries\Validation\Rule;
@@ -48,26 +42,26 @@ class Signup extends QtMiddleware
     {
         $this->validator = new Validator();
 
-        $this->validator->addValidation(\'uniqueUser\', function ($value) {
+        $this->validator->addValidation('uniqueUser', function ($value) {
             $userModel = ModelFactory::get(User::class);
-            return empty($userModel->findOneBy(\'email\', $value)->asArray());
+            return empty($userModel->findOneBy('email', $value)->asArray());
         });
 
         $this->validator->addRules([
-            \'email\' => [
-                Rule::set(\'required\'),
-                Rule::set(\'email\'),
-                Rule::set(\'uniqueUser\')
+            'email' => [
+                Rule::set('required'),
+                Rule::set('email'),
+                Rule::set('uniqueUser')
             ],
-            \'password\' => [
-                Rule::set(\'required\'),
-                Rule::set(\'minLen\', 6)
+            'password' => [
+                Rule::set('required'),
+                Rule::set('minLen', 6)
             ],
-            \'firstname\' => [
-                Rule::set(\'required\')
+            'firstname' => [
+                Rule::set('required')
             ],
-            \'lastname\' => [
-                Rule::set(\'required\')
+            'lastname' => [
+                Rule::set('required')
             ],
         ]);
     }
@@ -82,8 +76,8 @@ class Signup extends QtMiddleware
     {
         if (!$this->validator->isValid($request->all())) {
             $response->json([
-                \'status\' => \'error\',
-                \'message\' => $this->validator->getErrors()
+                'status' => 'error',
+                'message' => $this->validator->getErrors()
             ], 422);
 
             stop();
@@ -92,4 +86,4 @@ class Signup extends QtMiddleware
         return $next($request, $response);
     }
 
-}';
+}

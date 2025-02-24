@@ -1,7 +1,5 @@
 <?php
 
-return "<?php
-
 return [
     /**
      * ---------------------------------------------------------
@@ -13,4 +11,4 @@ return [
     'Access-Control-Allow-Headers' => 'Origin, X-Requested-With, Content-Type, Accept, Authorization, refresh_token',
     'Access-Control-Allow-Methods' => 'GET, POST, PUT, DELETE, OPTIONS',
     'Access-Control-Allow-Credentials' => true,
-];";
+];

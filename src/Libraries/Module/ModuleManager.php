@@ -197,10 +197,25 @@ class ModuleManager
             if ($this->fs->isDirectory($srcPath)) {
                 $this->copyDirectoryWithTemplates($srcPath, $dstPath);
             } else {
-                $processedContent = $this->fs->require($srcPath);
+                $content = $this->fs->get($srcPath);
+                $processedContent = $this->replacePlaceholders($content);
                 $this->fs->put($dstPath, $processedContent);
             }
         }
+    }
+
+    /**
+     * @param string $content
+     * @return string
+     */
+    private function replacePlaceholders(string $content): string
+    {
+        $placeholders = [
+            '{{MODULE_NAMESPACE}}' => $this->getBaseNamespace() .'\\' . $this->getModuleName(),
+            '{{MODULE_NAME}}' => $this->getModuleName(),
+        ];
+
+        return str_replace(array_keys($placeholders), array_values($placeholders), $content);
     }
 
     /**

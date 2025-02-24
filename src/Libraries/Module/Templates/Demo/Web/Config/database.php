@@ -1,7 +1,5 @@
 <?php
 
-return "<?php
-
 return [
     /**
      * ---------------------------------------------------------
@@ -51,4 +49,4 @@ return [
         'database_dir' => base_dir() . DS . 'shared' . DS . 'store',
         'orm' => \Quantum\Libraries\Database\Adapters\Sleekdb\SleekDbal::class
     ],
-];";
+];
