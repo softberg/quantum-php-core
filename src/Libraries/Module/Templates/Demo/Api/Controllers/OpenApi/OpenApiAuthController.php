@@ -1,11 +1,5 @@
 <?php
 
-use Quantum\Libraries\Module\ModuleManager;
-
-$moduleManager = ModuleManager::getInstance();
-
-return '<?php
-
 /**
  * Quantum PHP Framework
  *
@@ -18,7 +12,7 @@ return '<?php
  * @since 2.9.5
  */
 
-namespace ' . $moduleManager->getBaseNamespace() . '\\' . $moduleManager->getModuleName() . '\OpenApi;
+namespace {{MODULE_NAMESPACE}}\OpenApi;
 
 use Quantum\Http\Response;
 use Quantum\Http\Request;
@@ -401,4 +395,4 @@ abstract class OpenApiAuthController extends OpenApiController
      * @param Response $response
      */
     abstract public function resend(Response $response);
-}';
+}

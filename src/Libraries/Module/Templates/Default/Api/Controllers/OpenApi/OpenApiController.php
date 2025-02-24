@@ -1,11 +1,5 @@
 <?php
 
-use Quantum\Libraries\Module\ModuleManager;
-
-$moduleManager = ModuleManager::getInstance();
-
-return '<?php
-
 /**
  * Quantum PHP Framework
  *
@@ -18,7 +12,7 @@ return '<?php
  * @since 2.9.5
  */
 
-namespace '. $moduleManager->getBaseNamespace() .'\\' . $moduleManager->getModuleName() . '\Controllers\OpenApi;
+namespace {{MODULE_NAMESCPACE}}\Controllers\OpenApi;
 
 use Quantum\Mvc\QtController;
 
@@ -40,4 +34,4 @@ use Quantum\Mvc\QtController;
 abstract class OpenApiController
 {
 
-}';
+}

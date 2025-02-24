@@ -1,11 +1,5 @@
 <?php
 
-use Quantum\Libraries\Module\ModuleManager;
-
-$moduleManager = ModuleManager::getInstance();
-
-return '<?php
-
 /**
  * Quantum PHP Framework
  *
@@ -18,7 +12,7 @@ return '<?php
  * @since 2.9.5
  */
 
-namespace ' . $moduleManager->getBaseNamespace() . '\\' . $moduleManager->getModuleName() . '\Controllers;
+namespace {{MODULE_NAMESPACE}}\Controllers;
 
 use Quantum\Factory\ViewFactory;
 use Quantum\Http\Response;
@@ -33,7 +27,7 @@ class PageController extends BaseController
     /**
      * Main layout
      */
-    const LAYOUT = \'layouts/main\';
+    const LAYOUT = 'layouts/main';
 
     /**
      * Works before an action 
@@ -52,11 +46,11 @@ class PageController extends BaseController
     public function home(Response $response, ViewFactory $view)
     {
         $view->setParams([
-            \'title\' => config()->get(\'app_name\'),
-            \'langs\' => config()->get(\'langs\')
+            'title' => config()->get('app_name'),
+            'langs' => config()->get('langs')
         ]);
 
-        $response->html($view->render(\'pages/index\'));
+        $response->html($view->render('pages/index'));
     }
 
     /**
@@ -67,10 +61,10 @@ class PageController extends BaseController
     public function about(Response $response, ViewFactory $view)
     {
         $view->setParams([
-            \'title\' => t(\'common.about\') . \' | \' . config()->get(\'app_name\'),
-            \'langs\' => config()->get(\'langs\')
+            'title' => t('common.about') . ' | ' . config()->get('app_name'),
+            'langs' => config()->get('langs')
         ]);
 
-        $response->html($view->render(\'pages/about\'));
+        $response->html($view->render('pages/about'));
     }
-}';
+}

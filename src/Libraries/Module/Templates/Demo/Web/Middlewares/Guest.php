@@ -1,11 +1,5 @@
 <?php
 
-use Quantum\Libraries\Module\ModuleManager;
-
-$moduleManager = ModuleManager::getInstance();
-
-return '<?php
-
 /**
  * Quantum PHP Framework
  *
@@ -18,7 +12,7 @@ return '<?php
  * @since 2.9.5
  */
 
-namespace ' . $moduleManager->getBaseNamespace() . '\\' . $moduleManager->getModuleName() . '\Middlewares;
+namespace {{MODULE_NAMESPACE}}\Middlewares;
 
 use Quantum\Middleware\QtMiddleware;
 use Quantum\Http\Response;
@@ -41,7 +35,7 @@ class Guest extends QtMiddleware
     public function apply(Request $request, Response $response, Closure $next)
     {
         if (auth()->check()) {
-            redirect(get_referrer() ?? base_url(true) . \'/\' . current_lang());
+            redirect(get_referrer() ?? base_url(true) . '/' . current_lang());
         }
 
         return $next($request, $response);

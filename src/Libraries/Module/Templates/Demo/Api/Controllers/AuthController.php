@@ -1,11 +1,5 @@
 <?php
 
-use Quantum\Libraries\Module\ModuleManager;
-
-$moduleManager = ModuleManager::getInstance();
-
-return '<?php
-
 /**
  * Quantum PHP Framework
  *
@@ -18,7 +12,7 @@ return '<?php
  * @since 2.9.5
  */
 
-namespace ' . $moduleManager->getBaseNamespace() . '\\' . $moduleManager->getModuleName() . '\Controllers;
+namespace {{MODULE_NAMESPACE}}\Controllers;
 
 use Quantum\Libraries\Auth\Exceptions\AuthException;
 use Quantum\Http\Response;
@@ -39,19 +33,19 @@ class AuthController extends BaseController
     public function signin(Request $request, Response $response)
     {
         try {
-            $code = auth()->signin($request->get(\'email\'), $request->get(\'password\'));
+            $code = auth()->signin($request->get('email'), $request->get('password'));
 
-            if (filter_var(config()->get(\'2FA\'), FILTER_VALIDATE_BOOLEAN)) {
-                $response->set(\'code\', $code);
+            if (filter_var(config()->get('2FA'), FILTER_VALIDATE_BOOLEAN)) {
+                $response->set('code', $code);
             }
 
             $response->json([
-                \'status\' => self::STATUS_SUCCESS
+                'status' => self::STATUS_SUCCESS
             ]);
         } catch (AuthException $e) {
             $response->json([
-                \'status\' => self::STATUS_ERROR,
-                \'message\' => $e->getMessage()
+                'status' => self::STATUS_ERROR,
+                'message' => $e->getMessage()
             ], 422);
         }
     }
@@ -64,11 +58,11 @@ class AuthController extends BaseController
     public function me(Response $response)
     {
         $response->json([
-            \'status\' => self::STATUS_SUCCESS,
-            \'data\' => [
-                \'firstname\' => auth()->user()->firstname,
-                \'lastname\' => auth()->user()->lastname,
-                \'email\' => auth()->user()->email
+            'status' => self::STATUS_SUCCESS,
+            'data' => [
+                'firstname' => auth()->user()->firstname,
+                'lastname' => auth()->user()->lastname,
+                'email' => auth()->user()->email
             ]
         ]);
     }
@@ -82,12 +76,12 @@ class AuthController extends BaseController
     {
         if (auth()->signout()) {
             $response->json([
-                \'status\' => self::STATUS_SUCCESS
+                'status' => self::STATUS_SUCCESS
             ]);
         } else {
             $response->json([
-                \'status\' => self::STATUS_ERROR,
-                \'message\' => t(\'validation.unauthorizedRequest\')
+                'status' => self::STATUS_ERROR,
+                'message' => t('validation.unauthorizedRequest')
             ]);
         }
     }
@@ -103,8 +97,8 @@ class AuthController extends BaseController
         auth()->signup($request->all());
 
         $response->json([
-            \'status\' => self::STATUS_SUCCESS,
-            \'message\' => t(\'common.successfully_signed_up\')
+            'status' => self::STATUS_SUCCESS,
+            'message' => t('common.successfully_signed_up')
         ]);
     }
 
@@ -116,11 +110,11 @@ class AuthController extends BaseController
      */
     public function activate(Request $request, Response $response)
     {
-        auth()->activate($request->get(\'activation_token\'));
+        auth()->activate($request->get('activation_token'));
 
         $response->json([
-            \'status\' => self::STATUS_SUCCESS,
-            \'message\' => t(\'common.account_activated\')
+            'status' => self::STATUS_SUCCESS,
+            'message' => t('common.account_activated')
         ]);
     }
 
@@ -132,11 +126,11 @@ class AuthController extends BaseController
      */
     public function forget(Request $request, Response $response)
     {
-        auth()->forget($request->get(\'email\'));
+        auth()->forget($request->get('email'));
 
         $response->json([
-            \'status\' => self::STATUS_SUCCESS,
-            \'message\' => t(\'common.check_email\')
+            'status' => self::STATUS_SUCCESS,
+            'message' => t('common.check_email')
         ]);
     }
 
@@ -148,10 +142,10 @@ class AuthController extends BaseController
      */
     public function reset(Request $request, Response $response)
     {
-        auth()->reset($request->get(\'reset_token\'), $request->get(\'password\'));
+        auth()->reset($request->get('reset_token'), $request->get('password'));
 
         $response->json([
-            \'status\' => self::STATUS_SUCCESS
+            'status' => self::STATUS_SUCCESS
         ]);
     }
 
@@ -163,15 +157,15 @@ class AuthController extends BaseController
     public function verify(Request $request, Response $response)
     {
         try {
-            auth()->verifyOtp((int)$request->get(\'otp\'), $request->get(\'code\'));
+            auth()->verifyOtp((int)$request->get('otp'), $request->get('code'));
 
             $response->json([
-                \'status\' => self::STATUS_SUCCESS
+                'status' => self::STATUS_SUCCESS
             ]);
         } catch (AuthException $e) {
             $response->json([
-                \'status\' => self::STATUS_ERROR,
-                \'message\' => $e->getMessage()
+                'status' => self::STATUS_ERROR,
+                'message' => $e->getMessage()
             ]);
         }
     }
@@ -184,14 +178,14 @@ class AuthController extends BaseController
     {
         try {
             $response->json([
-                \'status\' => self::STATUS_SUCCESS,
-                \'code\' => auth()->resendOtp(route_param(\'code\'))
+                'status' => self::STATUS_SUCCESS,
+                'code' => auth()->resendOtp(route_param('code'))
             ]);
         } catch (AuthException $e) {
             $response->json([
-                \'status\' => self::STATUS_ERROR,
-                \'message\' => $e->getMessage()
+                'status' => self::STATUS_ERROR,
+                'message' => $e->getMessage()
             ]);
         }
     }
-}';
+}
