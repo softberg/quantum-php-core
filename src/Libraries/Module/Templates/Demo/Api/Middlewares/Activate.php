@@ -1,11 +1,5 @@
 <?php
 
-use Quantum\Libraries\Module\ModuleManager;
-
-$moduleManager = ModuleManager::getInstance();
-
-return '<?php
-
 /**
  * Quantum PHP Framework
  *
@@ -18,7 +12,7 @@ return '<?php
  * @since 2.9.5
  */
 
-namespace ' . $moduleManager->getBaseNamespace() . '\\' . $moduleManager->getModuleName() . '\Middlewares;
+namespace {{MODULE_NAMESPACE}}\Middlewares;
 
 use Quantum\Middleware\QtMiddleware;
 use Quantum\Factory\ModelFactory;
@@ -42,18 +36,18 @@ class Activate extends QtMiddleware
      */
     public function apply(Request $request, Response $response, Closure $next)
     {
-        $token = route_param(\'token\');
+        $token = route_param('token');
 
         if (!$token || !$this->checkToken($token)) {
             $response->json([
-                \'status\' => \'error\',
-                \'message\' => [t(\'validation.nonExistingRecord\', \'token\')]
+                'status' => 'error',
+                'message' => [t('validation.nonExistingRecord', 'token')]
             ], 422);
 
             stop();
         }
 
-        $request->set(\'activation_token\', $token);
+        $request->set('activation_token', $token);
 
         return $next($request, $response);
     }
@@ -66,7 +60,7 @@ class Activate extends QtMiddleware
     private function checkToken(string $token): bool
     {
         $userModel = ModelFactory::get(User::class);
-        return !empty($userModel->findOneBy(\'activation_token\', $token)->asArray());
+        return !empty($userModel->findOneBy('activation_token', $token)->asArray());
     }
 
-}';
+}

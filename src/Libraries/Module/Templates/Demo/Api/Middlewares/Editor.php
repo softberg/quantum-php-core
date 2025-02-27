@@ -1,11 +1,5 @@
 <?php
 
-use Quantum\Libraries\Module\ModuleManager;
-
-$moduleManager = ModuleManager::getInstance();
-
-return '<?php
-
 /**
  * Quantum PHP Framework
  *
@@ -18,7 +12,7 @@ return '<?php
  * @since 2.9.5
  */
 
-namespace ' . $moduleManager->getBaseNamespace() . '\\' . $moduleManager->getModuleName() . '\Middlewares;
+namespace {{MODULE_NAMESPACE}}\Middlewares;
 
 use Quantum\Libraries\Validation\Validator;
 use Quantum\Libraries\Validation\Rule;
@@ -37,7 +31,7 @@ class Editor extends QtMiddleware
     /**
      * Roles
      */
-    const ROLES = [\'admin\', \'editor\'];
+    const ROLES = ['admin', 'editor'];
 
     /**
      * @var Validator
@@ -52,25 +46,25 @@ class Editor extends QtMiddleware
     {
         $this->validator = new Validator();
 
-        if ($request->hasFile(\'image\')) {
+        if ($request->hasFile('image')) {
             $this->validator->addRules([
-                \'image\' => [
-                    Rule::set(\'fileSize\', 2 * pow(1024, 2)),
-                    Rule::set(\'fileExtension\', [\'jpeg\', \'jpg\', \'png\']),
+                'image' => [
+                    Rule::set('fileSize', 2 * pow(1024, 2)),
+                    Rule::set('fileExtension', ['jpeg', 'jpg', 'png']),
                 ]
             ]);
         }
 
         $this->validator->addRules([
-            \'title\' => [
-                Rule::set(\'required\'),
-                Rule::set(\'minLen\', 10),
-                Rule::set(\'maxLen\', 50),
+            'title' => [
+                Rule::set('required'),
+                Rule::set('minLen', 10),
+                Rule::set('maxLen', 50),
             ],
-            \'content\' => [
-                Rule::set(\'required\'),
-                Rule::set(\'minLen\', 10),
-                Rule::set(\'maxLen\', 1000),
+            'content' => [
+                Rule::set('required'),
+                Rule::set('minLen', 10),
+                Rule::set('maxLen', 1000),
             ]
         ]);
     }
@@ -85,18 +79,18 @@ class Editor extends QtMiddleware
     {
         if (!in_array(auth()->user()->role, self::ROLES)) {
             $response->json([
-                \'status\' => \'error\',
-                \'message\' => t(\'validation.unauthorizedRequest\')
+                'status' => 'error',
+                'message' => t('validation.unauthorizedRequest')
             ], 401);
 
             stop();
         }
 
-        if ($request->isMethod(\'post\') || $request->isMethod(\'put\')) {
+        if ($request->isMethod('post') || $request->isMethod('put')) {
             if (!$this->validator->isValid($request->all())) {
                 $response->json([
-                    \'status\' => \'error\',
-                    \'message\' => $this->validator->getErrors()
+                    'status' => 'error',
+                    'message' => $this->validator->getErrors()
                 ], 422);
 
                 stop();
@@ -106,4 +100,4 @@ class Editor extends QtMiddleware
         return $next($request, $response);
     }
 
-}';
+}

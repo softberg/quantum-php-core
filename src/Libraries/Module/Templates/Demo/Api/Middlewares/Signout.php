@@ -1,11 +1,5 @@
 <?php
 
-use Quantum\Libraries\Module\ModuleManager;
-
-$moduleManager = ModuleManager::getInstance();
-
-return '<?php
-
 /**
  * Quantum PHP Framework
  *
@@ -18,7 +12,7 @@ return '<?php
  * @since 2.9.5
  */
  
-namespace ' . $moduleManager->getBaseNamespace() . '\\' . $moduleManager->getModuleName() . '\Middlewares;
+namespace {{MODULE_NAMESPACE}}\Middlewares;
 
 use Quantum\Middleware\QtMiddleware;
 use Quantum\Http\Response;
@@ -40,10 +34,10 @@ class Signout extends QtMiddleware
      */
     public function apply(Request $request, Response $response, Closure $next)
     {
-        if (!Request::hasHeader(\'refresh_token\')) {
+        if (!Request::hasHeader('refresh_token')) {
             $response->json([
-                \'status\' => \'error\',
-                \'message\' => [t(\'validation.nonExistingRecord\', \'token\')]
+                'status' => 'error',
+                'message' => [t('validation.nonExistingRecord', 'token')]
             ], 422);
             
             stop();
@@ -52,4 +46,4 @@ class Signout extends QtMiddleware
         return $next($request, $response);
     }
 
-}';
+}

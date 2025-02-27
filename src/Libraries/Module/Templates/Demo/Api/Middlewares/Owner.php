@@ -1,11 +1,5 @@
 <?php
 
-use Quantum\Libraries\Module\ModuleManager;
-
-$moduleManager = ModuleManager::getInstance();
-
-return '<?php
-
 /**
  * Quantum PHP Framework
  *
@@ -18,7 +12,7 @@ return '<?php
  * @since 2.9.5
  */
 
-namespace ' . $moduleManager->getBaseNamespace() . '\\' . $moduleManager->getModuleName() . '\Middlewares;
+namespace {{MODULE_NAMESPACE}}\Middlewares;
 
 use Quantum\Middleware\QtMiddleware;
 use Quantum\Factory\ServiceFactory;
@@ -42,14 +36,14 @@ class Owner extends QtMiddleware
      */
     public function apply(Request $request, Response $response, Closure $next)
     {
-        $postId = (string)route_param(\'id\');
+        $postId = (string)route_param('id');
 
         $post = ServiceFactory::get(PostService::class)->getPost($postId);
 
         if (!$post->asArray() || $post->user_id != auth()->user()->id) {
             $response->json([
-                \'status\' => \'error\',
-                \'message\' => t(\'common.post_not_found\')
+                'status' => 'error',
+                'message' => t('common.post_not_found')
             ], 404);
 
             stop();
@@ -58,4 +52,4 @@ class Owner extends QtMiddleware
         return $next($request, $response);
     }
 
-}';
+}

@@ -1,7 +1,4 @@
-<?php
-
-return "
-    <ul class=\"bg-bubbles\">
+<ul class="bg-bubbles">
     <li></li>
     <li></li>
     <li></li>
@@ -12,4 +9,4 @@ return "
     <li></li>
     <li></li>
     <li></li>
-</ul>";
+</ul>

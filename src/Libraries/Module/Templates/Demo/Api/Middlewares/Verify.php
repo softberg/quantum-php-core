@@ -1,10 +1,4 @@
 <?php
-
-use Quantum\Libraries\Module\ModuleManager;
-
-$moduleManager = ModuleManager::getInstance();
-
-return '<?php
 /**
  * Quantum PHP Framework
  *
@@ -17,7 +11,7 @@ return '<?php
  * @since 2.9.5
  */
 
-namespace ' . $moduleManager->getBaseNamespace() . '\\' . $moduleManager->getModuleName() . '\Middlewares;
+namespace {{MODULE_NAMESPACE}}\Middlewares;
 
 use Quantum\Libraries\Validation\Validator;
 use Quantum\Libraries\Validation\Rule;
@@ -47,11 +41,11 @@ class Verify extends QtMiddleware
         $this->validator = new Validator();
 
         $this->validator->addRules([
-            \'otp\' => [
-                Rule::set(\'required\')
+            'otp' => [
+                Rule::set('required')
             ],
-            \'code\' => [
-                Rule::set(\'required\')
+            'code' => [
+                Rule::set('required')
             ],
         ]);
     }
@@ -64,12 +58,12 @@ class Verify extends QtMiddleware
      */
     public function apply(Request $request, Response $response, Closure $next)
     {
-        if ($request->isMethod(\'post\')) {
+        if ($request->isMethod('post')) {
             if (!$this->validator->isValid($request->all())) {
 
                 $response->json([
-                    \'status\' => \'error\',
-                    \'message\' => $this->validator->getErrors()
+                    'status' => 'error',
+                    'message' => $this->validator->getErrors()
                 ], 422);
 
                 stop();
@@ -79,4 +73,4 @@ class Verify extends QtMiddleware
         return $next($request, $response);
     }
 
-}';
+}

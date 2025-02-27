@@ -1,11 +1,5 @@
 <?php
 
-use Quantum\Libraries\Module\ModuleManager;
-
-$moduleManager = ModuleManager::getInstance();
-
-return '<?php
-
 /**
  * Quantum PHP Framework
  *
@@ -18,7 +12,7 @@ return '<?php
  * @since 2.9.5
  */
 
-namespace ' . $moduleManager->getBaseNamespace() . '\\' . $moduleManager->getModuleName() . '\Middlewares;
+namespace {{MODULE_NAMESPACE}}\Middlewares;
 
 use Quantum\Middleware\QtMiddleware;
 use Quantum\Factory\ModelFactory;
@@ -42,15 +36,15 @@ class Activate extends QtMiddleware
      */
     public function apply(Request $request, Response $response, Closure $next)
     {
-        $token = (string) route_param(\'token\');
+        $token = (string) route_param('token');
 
         if (!$this->checkToken($token)) {
             stop(function () use ($response) {
-                $response->html(partial(\'errors/404\'), 404);
+                $response->html(partial('errors/404'), 404);
             });
         }
 
-        $request->set(\'activation_token\', $token);
+        $request->set('activation_token', $token);
 
         return $next($request, $response);
     }
@@ -63,7 +57,7 @@ class Activate extends QtMiddleware
     private function checkToken(string $token): bool
     {
         $userModel = ModelFactory::get(User::class);
-        return !empty($userModel->findOneBy(\'activation_token\', $token)->asArray());
+        return !empty($userModel->findOneBy('activation_token', $token)->asArray());
     }
 
-}';
+}

@@ -1,6 +1,4 @@
-<?php
-
-return '<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
     <head>
         <meta charset="UTF-8">
@@ -8,7 +6,7 @@ return '<!DOCTYPE html>
         <title><?php echo $title ?></title>
 
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-        <link rel="shortcut icon" href="<?php echo asset()->url(\'images/favicon.ico\') ?>">
+        <link rel="shortcut icon" href="<?php echo asset()->url('images/favicon.ico') ?>">
         
         <?php assets("css") ?>
     </head>
@@ -20,4 +18,4 @@ return '<!DOCTYPE html>
 
         <?php assets("js") ?>
     </body>
-</html>';
+</html>

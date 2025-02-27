@@ -1,11 +1,5 @@
 <?php
 
-use Quantum\Libraries\Module\ModuleManager;
-
-$moduleManager = ModuleManager::getInstance();
-
-return '<?php
-
 /**
  * Quantum PHP Framework
  *
@@ -18,7 +12,7 @@ return '<?php
  * @since 2.9.5
  */
 
-namespace ' . $moduleManager->getBaseNamespace() . '\\' . $moduleManager->getModuleName() . '\Middlewares;
+namespace {{MODULE_NAMESPACE}}\Middlewares;
 
 use Quantum\Libraries\Validation\Validator;
 use Quantum\Libraries\Validation\Rule;
@@ -48,9 +42,9 @@ class Forget extends QtMiddleware
     {
         $this->validator = new Validator();
 
-        $this->validator->addRule(\'email\', [
-            Rule::set(\'required\'),
-            Rule::set(\'email\')
+        $this->validator->addRule('email', [
+            Rule::set('required'),
+            Rule::set('email')
         ]);
     }
 
@@ -62,20 +56,20 @@ class Forget extends QtMiddleware
      */
     public function apply(Request $request, Response $response, Closure $next)
     {
-        if ($request->isMethod(\'post\')) {
+        if ($request->isMethod('post')) {
             if (!$this->validator->isValid($request->all())) {
                 $response->json([
-                    \'status\' => \'error\',
-                    \'message\' => $this->validator->getErrors()
+                    'status' => 'error',
+                    'message' => $this->validator->getErrors()
                 ], 422);
                 
                 stop();
             }
 
-            if (!$this->emailExists($request->get(\'email\'))) {
+            if (!$this->emailExists($request->get('email'))) {
                 $response->json([
-                    \'status\' => \'error\',
-                    \'message\' => [t(\'validation.nonExistingRecord\', $request->get(\'email\'))]
+                    'status' => 'error',
+                    'message' => [t('validation.nonExistingRecord', $request->get('email'))]
                 ], 422);
                 
                 stop();
@@ -93,7 +87,7 @@ class Forget extends QtMiddleware
     private function emailExists(string $email): bool
     {
         $userModel = ModelFactory::get(User::class);
-        return !empty($userModel->findOneBy(\'email\', $email)->asArray());
+        return !empty($userModel->findOneBy('email', $email)->asArray());
     }
 
-}';
+}

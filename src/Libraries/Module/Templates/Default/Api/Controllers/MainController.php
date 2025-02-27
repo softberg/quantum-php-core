@@ -1,11 +1,5 @@
 <?php
 
-use Quantum\Libraries\Module\ModuleManager;
-
-$moduleManager = ModuleManager::getInstance();
-
-return '<?php
-
 /**
  * Quantum PHP Framework
  *
@@ -18,7 +12,7 @@ return '<?php
  * @since 2.9.5
  */
 
-namespace '. $moduleManager->getBaseNamespace() .'\\' . $moduleManager->getModuleName() . '\Controllers;
+namespace {{MODULE_NAMESPACE}}\Controllers;
 
 use Quantum\Mvc\QtController;
 use Quantum\Http\Response;
@@ -32,12 +26,12 @@ class MainController extends QtController
     /**
      * Status error
      */
-    const STATUS_ERROR = \'error\';
+    const STATUS_ERROR = 'error';
 
     /**
      * Status success
      */
-    const STATUS_SUCCESS = \'success\';
+    const STATUS_SUCCESS = 'success';
 
     /**
      * CSRF verification
@@ -52,8 +46,8 @@ class MainController extends QtController
     public function index(Response $response)
     {
         $response->json([
-            \'status\' => \'success\',
-            \'message\' => $moduleManager->getModuleName() . \' module.\' 
+            'status' => 'success',
+            'message' => '{{MODULE_NAME}} module.'
         ]);
     }
-};';
+};

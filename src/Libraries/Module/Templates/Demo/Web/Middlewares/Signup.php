@@ -1,11 +1,5 @@
 <?php
 
-use Quantum\Libraries\Module\ModuleManager;
-
-$moduleManager = ModuleManager::getInstance();
-
-return '<?php
-
 /**
  * Quantum PHP Framework
  *
@@ -18,7 +12,7 @@ return '<?php
  * @since 2.9.5
  */
 
-namespace ' . $moduleManager->getBaseNamespace() . '\\' . $moduleManager->getModuleName() . '\Middlewares;
+namespace {{MODULE_NAMESPACE}}\Middlewares;
 
 use Quantum\Libraries\Validation\Validator;
 use Quantum\Libraries\Validation\Rule;
@@ -49,30 +43,30 @@ class Signup extends QtMiddleware
     {
         $this->validator = new Validator();
 
-        $this->validator->addValidation(\'uniqueUser\', function ($value) {
+        $this->validator->addValidation('uniqueUser', function ($value) {
             $userModel = ModelFactory::get(User::class);
-            return empty($userModel->findOneBy(\'email\', $value)->asArray());
+            return empty($userModel->findOneBy('email', $value)->asArray());
         });
 
         $this->validator->addRules([
-            \'email\' => [
-                Rule::set(\'required\'),
-                Rule::set(\'email\'),
-                Rule::set(\'uniqueUser\')
+            'email' => [
+                Rule::set('required'),
+                Rule::set('email'),
+                Rule::set('uniqueUser')
             ],
-            \'password\' => [
-                Rule::set(\'required\'),
-                Rule::set(\'minLen\', 6)
+            'password' => [
+                Rule::set('required'),
+                Rule::set('minLen', 6)
             ],
-            \'firstname\' => [
-                Rule::set(\'required\')
+            'firstname' => [
+                Rule::set('required')
             ],
-            \'lastname\' => [
-                Rule::set(\'required\')
+            'lastname' => [
+                Rule::set('required')
             ],
-//            \'captcha\' => [
-//                Rule::set(\'required\'),
-//                Rule::set(\'captcha\')
+//            'captcha' => [
+//                Rule::set('required'),
+//                Rule::set('captcha')
 //            ]
         ]);
     }
@@ -85,23 +79,23 @@ class Signup extends QtMiddleware
      */
     public function apply(Request $request, Response $response, Closure $next)
     {
-        if ($request->isMethod(\'post\')) {
+        if ($request->isMethod('post')) {
             $captchaName = captcha()->getName();
 
-            if($request->has($captchaName . \'-response\')) {
-                $request->set(\'captcha\', $request->get($captchaName . \'-response\'));
-                $request->delete($captchaName . \'-response\');
+            if($request->has($captchaName . '-response')) {
+                $request->set('captcha', $request->get($captchaName . '-response'));
+                $request->delete($captchaName . '-response');
             }
 
             if (!$this->validator->isValid($request->all())) {
-                session()->setFlash(\'error\', $this->validator->getErrors());
-                redirectWith(base_url(true) . \'/\' . current_lang() . \'/signup\', $request->all());
+                session()->setFlash('error', $this->validator->getErrors());
+                redirectWith(base_url(true) . '/' . current_lang() . '/signup', $request->all());
             }
 
-            $request->delete(\'captcha\');
+            $request->delete('captcha');
         }
 
         return $next($request, $response);
     }
 
-}';
+}

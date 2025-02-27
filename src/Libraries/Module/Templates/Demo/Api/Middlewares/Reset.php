@@ -1,11 +1,5 @@
 <?php
 
-use Quantum\Libraries\Module\ModuleManager;
-
-$moduleManager = ModuleManager::getInstance();
-
-return '<?php
-
 /**
  * Quantum PHP Framework
  *
@@ -18,7 +12,7 @@ return '<?php
  * @since 2.9.5
  */
 
-namespace ' . $moduleManager->getBaseNamespace() . '\\' . $moduleManager->getModuleName() . '\Middlewares;
+namespace {{MODULE_NAMESPACE}}\Middlewares;
 
 use Quantum\Libraries\Validation\Validator;
 use Quantum\Libraries\Validation\Rule;
@@ -49,13 +43,13 @@ class Reset extends QtMiddleware
         $this->validator = new Validator();
 
         $this->validator->addRules([
-            \'password\' => [
-                Rule::set(\'required\'),
-                Rule::set(\'minLen\', 6)
+            'password' => [
+                Rule::set('required'),
+                Rule::set('minLen', 6)
             ],
-            \'repeat_password\' => [
-                Rule::set(\'required\'),
-                Rule::set(\'minLen\', 6)
+            'repeat_password' => [
+                Rule::set('required'),
+                Rule::set('minLen', 6)
             ]
         ]);
     }
@@ -68,12 +62,12 @@ class Reset extends QtMiddleware
      */
     public function apply(Request $request, Response $response, Closure $next)
     {
-        $token = route_param(\'token\');
+        $token = route_param('token');
 
         if (!$token || !$this->checkToken($token)) {
             $response->json([
-                \'status\' => \'error\',
-                \'message\' => [t(\'validation.nonExistingRecord\', \'token\')]
+                'status' => 'error',
+                'message' => [t('validation.nonExistingRecord', 'token')]
             ], 422);
 
             stop();
@@ -81,23 +75,23 @@ class Reset extends QtMiddleware
 
         if (!$this->validator->isValid($request->all())) {
             $response->json([
-                \'status\' => \'error\',
-                \'message\' => $this->validator->getErrors()
+                'status' => 'error',
+                'message' => $this->validator->getErrors()
             ], 422);
 
             stop();
         }
 
-        if (!$this->confirmPassword($request->get(\'password\'), $request->get(\'repeat_password\'))) {
+        if (!$this->confirmPassword($request->get('password'), $request->get('repeat_password'))) {
             $response->json([
-                \'status\' => \'error\',
-                \'message\' => t(\'validation.nonEqualValues\')
+                'status' => 'error',
+                'message' => t('validation.nonEqualValues')
             ], 422);
 
             stop();
         }
 
-        $request->set(\'reset_token\', $token);
+        $request->set('reset_token', $token);
 
         return $next($request, $response);
     }
@@ -110,7 +104,7 @@ class Reset extends QtMiddleware
     private function checkToken(string $token): bool
     {
         $userModel = ModelFactory::get(User::class);
-        return !empty($userModel->findOneBy(\'reset_token\', $token)->asArray());
+        return !empty($userModel->findOneBy('reset_token', $token)->asArray());
     }
 
     /**
@@ -124,4 +118,4 @@ class Reset extends QtMiddleware
         return $newPassword == $repeatPassword;
     }
 
-}';
+}

@@ -1,11 +1,5 @@
 <?php
 
-use Quantum\Libraries\Module\ModuleManager;
-
-$moduleManager = ModuleManager::getInstance();
-
-return '<?php
-
 /**
  * Quantum PHP Framework
  *
@@ -18,7 +12,7 @@ return '<?php
  * @since 2.9.5
  */
 
-namespace ' . $moduleManager->getBaseNamespace() . '\\' . $moduleManager->getModuleName() . '\Middlewares;
+namespace {{MODULE_NAMESPACE}}\Middlewares;
 
 use Quantum\Libraries\Validation\Validator;
 use Quantum\Libraries\Validation\Rule;
@@ -48,11 +42,11 @@ class Verify extends QtMiddleware
         $this->validator = new Validator();
 
         $this->validator->addRules([
-            \'otp\' => [
-                Rule::set(\'required\')
+            'otp' => [
+                Rule::set('required')
             ],
-            \'code\' => [
-                Rule::set(\'required\')
+            'code' => [
+                Rule::set('required')
             ]
         ]);
     }
@@ -65,17 +59,17 @@ class Verify extends QtMiddleware
      */
     public function apply(Request $request, Response $response, Closure $next)
     {
-        if ($request->isMethod(\'post\')) {
+        if ($request->isMethod('post')) {
             if (!$this->validator->isValid($request->all())) {
-                session()->setFlash(\'error\', $this->validator->getErrors());
-                redirectWith(base_url(true) . \'/\' . current_lang() . \'/verify\', $request->all());
+                session()->setFlash('error', $this->validator->getErrors());
+                redirectWith(base_url(true) . '/' . current_lang() . '/verify', $request->all());
             }
         } else {
-            $token = (string)route_param(\'code\');
+            $token = (string)route_param('code');
 
             if (!$this->checkToken($token)) {
                 stop(function () use ($response) {
-                    $response->html(partial(\'errors/404\'), 404);
+                    $response->html(partial('errors/404'), 404);
                 });
             }
 
@@ -87,6 +81,6 @@ class Verify extends QtMiddleware
     private function checkToken(string $token): bool
     {
         $userModel = ModelFactory::get(User::class);
-        return !empty($userModel->findOneBy(\'otp_token\', $token)->asArray());
+        return !empty($userModel->findOneBy('otp_token', $token)->asArray());
     }
-}';
+}

@@ -1,10 +1,4 @@
-<?php
-
-use Quantum\Libraries\Module\ModuleManager;
-
-$moduleManager = ModuleManager::getInstance();
-
-return '<?php
+'<?php
 
 /**
  * Quantum PHP Framework
@@ -18,7 +12,7 @@ return '<?php
  * @since 2.9.5
  */
 
-namespace ' . $moduleManager->getBaseNamespace() . '\\' . $moduleManager->getModuleName() . '\Controllers\OpenApi;
+namespace {{MODULE_NAMESPACE}}\Controllers\OpenApi;
 
 use Quantum\Http\Response;
 use Quantum\Http\Request;
@@ -335,4 +329,4 @@ abstract class OpenApiPostController extends OpenApiController
      */
     abstract public function deleteImage(Response $response, ?string $lang, string $postId);
 
-}';
+}

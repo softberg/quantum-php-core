@@ -1,11 +1,5 @@
 <?php
 
-use Quantum\Libraries\Module\ModuleManager;
-
-$moduleManager = ModuleManager::getInstance();
-
-return '<?php
-
 /**
  * Quantum PHP Framework
  *
@@ -18,7 +12,7 @@ return '<?php
  * @since 2.9.5
  */
 
-namespace ' . $moduleManager->getBaseNamespace() . '\\' . $moduleManager->getModuleName() . '\Middlewares;
+namespace {{MODULE_NAMESPACE}}\Middlewares;
 
 use Quantum\Middleware\QtMiddleware;
 use Quantum\Http\Response;
@@ -40,10 +34,10 @@ class Resend extends QtMiddleware
      */
     public function apply(Request $request, Response $response, Closure $next)
     {
-        if (!route_param(\'code\')) {
+        if (!route_param('code')) {
             $response->json([
-                \'status\' => \'error\',
-                \'message\' => t(\'validation.required\', \'code\')
+                'status' => 'error',
+                'message' => t('validation.required', 'code')
             ], 422);
 
             stop();
@@ -52,4 +46,4 @@ class Resend extends QtMiddleware
         return $next($request, $response);
     }
 
-}';
+}

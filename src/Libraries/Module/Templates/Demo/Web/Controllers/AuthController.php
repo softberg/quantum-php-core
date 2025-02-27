@@ -1,11 +1,5 @@
 <?php
 
-use Quantum\Libraries\Module\ModuleManager;
-
-$moduleManager = ModuleManager::getInstance();
-
-return '<?php
-
 /**
  * Quantum PHP Framework
  *
@@ -18,7 +12,7 @@ return '<?php
  * @since 2.9.5
  */
 
-namespace ' . $moduleManager->getBaseNamespace() . '\\' . $moduleManager->getModuleName() . '\Controllers;
+namespace {{MODULE_NAMESPACE}}\Controllers;
 
 use Quantum\Exceptions\AuthException;
 use Quantum\Factory\ViewFactory;
@@ -35,32 +29,32 @@ class AuthController extends BaseController
     /**
      * Main layout
      */
-    const LAYOUT = \'layouts/main\';
+    const LAYOUT = 'layouts/main';
 
     /**
      * Signin view page
      */
-    const VIEW_SIGNIN = \'auth/signin\';
+    const VIEW_SIGNIN = 'auth/signin';
 
     /**
      * Signup view page
      */
-    const VIEW_SIGNUP = \'auth/signup\';
+    const VIEW_SIGNUP = 'auth/signup';
 
     /**
      * Forget view page
      */
-    const VIEW_FORGET = \'auth/forget\';
+    const VIEW_FORGET = 'auth/forget';
 
     /**
      * Reset view page
      */
-    const VIEW_RESET = \'auth/reset\';
+    const VIEW_RESET = 'auth/reset';
 
     /**
      * Verify view page
      */
-    const VIEW_VERIFY = \'auth/verify\';
+    const VIEW_VERIFY = 'auth/verify';
 
     /**
      * Works before an action
@@ -79,23 +73,23 @@ class AuthController extends BaseController
      */
     public function signin(Request $request, Response $response, ViewFactory $view)
     {
-        if ($request->isMethod(\'post\')) {
+        if ($request->isMethod('post')) {
             try {
-                $code = auth()->signin($request->get(\'email\'), $request->get(\'password\'), !!$request->get(\'remember\'));
+                $code = auth()->signin($request->get('email'), $request->get('password'), !!$request->get('remember'));
 
-                if (filter_var(config()->get(\'2FA\'), FILTER_VALIDATE_BOOLEAN)) {
-                    redirect(base_url(true) . \'/\' . current_lang() . \'/verify/\' . $code);
+                if (filter_var(config()->get('2FA'), FILTER_VALIDATE_BOOLEAN)) {
+                    redirect(base_url(true) . '/' . current_lang() . '/verify/' . $code);
                 } else {
-                    redirect(base_url(true) . \'/\' . current_lang());
+                    redirect(base_url(true) . '/' . current_lang());
                 }
             } catch (AuthException $e) {
-                session()->setFlash(\'error\', $e->getMessage());
-                redirect(base_url(true) . \'/\' . current_lang() . \'/signin\');
+                session()->setFlash('error', $e->getMessage());
+                redirect(base_url(true) . '/' . current_lang() . '/signin');
             }
         } else {
             $view->setParams([
-                \'title\' => t(\'common.signin\') . \' | \' . config()->get(\'app_name\'),
-                \'langs\' => config()->get(\'langs\')
+                'title' => t('common.signin') . ' | ' . config()->get('app_name'),
+                'langs' => config()->get('langs')
             ]);
 
             $response->html($view->render(self::VIEW_SIGNIN));
@@ -108,7 +102,7 @@ class AuthController extends BaseController
     public function signout()
     {
         auth()->signout();
-        redirect(base_url(true) . \'/\' . current_lang());
+        redirect(base_url(true) . '/' . current_lang());
     }
 
     /**
@@ -119,15 +113,15 @@ class AuthController extends BaseController
      */
     public function signup(Request $request, Response $response, ViewFactory $view)
     {
-        if ($request->isMethod(\'post\')) {
+        if ($request->isMethod('post')) {
             auth()->signup($request->all());
-            session()->setFlash(\'success\', t(\'common.check_email_signup\'));
-            redirect(base_url(true) . \'/\' . current_lang() . \'/signup\');
+            session()->setFlash('success', t('common.check_email_signup'));
+            redirect(base_url(true) . '/' . current_lang() . '/signup');
         } else {
             $view->setParams([
-//                \'captcha\' => captcha(),
-                \'title\' => t(\'common.signup\') . \' | \' . config()->get(\'app_name\'),
-                \'langs\' => config()->get(\'langs\')
+//                'captcha' => captcha(),
+                'title' => t('common.signup') . ' | ' . config()->get('app_name'),
+                'langs' => config()->get('langs')
             ]);
 
             $response->html($view->render(self::VIEW_SIGNUP));
@@ -140,8 +134,8 @@ class AuthController extends BaseController
      */
     public function activate(Request $request)
     {
-        auth()->activate($request->get(\'activation_token\'));
-        redirect(base_url(true) . \'/\' . current_lang() . \'/signin\');
+        auth()->activate($request->get('activation_token'));
+        redirect(base_url(true) . '/' . current_lang() . '/signin');
     }
 
     /**
@@ -152,14 +146,14 @@ class AuthController extends BaseController
      */
     public function forget(Request $request, Response $response, ViewFactory $view)
     {
-        if ($request->isMethod(\'post\')) {
-            auth()->forget($request->get(\'email\'));
-            session()->setFlash(\'success\', t(\'common.check_email\'));
-            redirect(base_url(true) . \'/\' . current_lang() . \'/forget\');
+        if ($request->isMethod('post')) {
+            auth()->forget($request->get('email'));
+            session()->setFlash('success', t('common.check_email'));
+            redirect(base_url(true) . '/' . current_lang() . '/forget');
         } else {
             $view->setParams([
-                \'title\' => t(\'common.forget_password\') . \' | \' . config()->get(\'app_name\'),
-                \'langs\' => config()->get(\'langs\'),
+                'title' => t('common.forget_password') . ' | ' . config()->get('app_name'),
+                'langs' => config()->get('langs'),
             ]);
 
             $response->html($view->render(self::VIEW_FORGET));
@@ -174,14 +168,14 @@ class AuthController extends BaseController
      */
     public function reset(Request $request, Response $response, ViewFactory $view)
     {
-        if ($request->isMethod(\'post\')) {
-            auth()->reset($request->get(\'reset_token\'), $request->get(\'password\'));
-            redirect(base_url(true) . \'/\' . current_lang() . \'/signin\');
+        if ($request->isMethod('post')) {
+            auth()->reset($request->get('reset_token'), $request->get('password'));
+            redirect(base_url(true) . '/' . current_lang() . '/signin');
         } else {
             $view->setParams([
-                \'title\' => t(\'common.reset_password\') . \' | \' . config()->get(\'app_name\'),
-                \'langs\' => config()->get(\'langs\'),
-                \'reset_token\' => $request->get(\'reset_token\')
+                'title' => t('common.reset_password') . ' | ' . config()->get('app_name'),
+                'langs' => config()->get('langs'),
+                'reset_token' => $request->get('reset_token')
             ]);
 
             $response->html($view->render(self::VIEW_RESET));
@@ -196,19 +190,19 @@ class AuthController extends BaseController
      */
     public function verify(Request $request, Response $response, ViewFactory $view)
     {
-        if ($request->isMethod(\'post\')) {
+        if ($request->isMethod('post')) {
             try {
-                auth()->verifyOtp((int)$request->get(\'otp\'), $request->get(\'code\'));
-                redirect(base_url(true) . \'/\' . current_lang());
+                auth()->verifyOtp((int)$request->get('otp'), $request->get('code'));
+                redirect(base_url(true) . '/' . current_lang());
             } catch (AuthException $e) {
-                session()->setFlash(\'error\', $e->getMessage());
-                redirect(base_url(true) . \'/\' . current_lang() . \'/verify/\' . $request->get(\'code\'));
+                session()->setFlash('error', $e->getMessage());
+                redirect(base_url(true) . '/' . current_lang() . '/verify/' . $request->get('code'));
             }
         } else {
             $view->setParams([
-                \'title\' => t(\'common.2fa\') . \' | \' . config()->get(\'app_name\'),
-                \'langs\' => config()->get(\'langs\'),
-                \'code\' => route_param(\'code\')
+                'title' => t('common.2fa') . ' | ' . config()->get('app_name'),
+                'langs' => config()->get('langs'),
+                'code' => route_param('code')
             ]);
 
             $response->html($view->render(self::VIEW_VERIFY));
@@ -221,10 +215,10 @@ class AuthController extends BaseController
     public function resend()
     {
         try {
-            $otpToken = auth()->resendOtp(route_param(\'code\'));
-            redirect(base_url(true) . \'/\' . current_lang() . \'/verify/\' . $otpToken);
+            $otpToken = auth()->resendOtp(route_param('code'));
+            redirect(base_url(true) . '/' . current_lang() . '/verify/' . $otpToken);
         } catch (AuthException $e) {
-            redirect(base_url(true) . \'/\' . current_lang() . \'/signin\');
+            redirect(base_url(true) . '/' . current_lang() . '/signin');
         }
     }
-}';
+}
