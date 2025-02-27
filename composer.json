@@ -23,10 +23,6 @@
         "ext-fileinfo": "*",
         "ext-openssl": "*",
         "ext-bcmath": "*",
-        "ext-dom": "*",
-        "ext-zip": "*",
-        "ext-memcached": "*",
-        "ext-redis": "*",
         "j4mie/paris": "^1.5",
         "firebase/php-jwt": "^6.0",
         "gumlet/php-image-resize": "^2.0",
@@ -53,6 +49,12 @@
         "phpunit/phpunit": "^9.0",
         "mockery/mockery": "^1.4",
         "mikey179/vfsstream": "^1.6"
+    },
+    "suggest": {
+        "ext-dom": "Required for XML/HTML processing",
+        "ext-zip": "Required for ZIP file handling",
+        "ext-memcached": "Required for Memcached support",
+        "ext-redis": "Required for Redis support"
     },
     "autoload": {
         "psr-4": {
