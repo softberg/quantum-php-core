@@ -46,7 +46,7 @@ class MainController extends QtController
         ]);
     }
     
-   /**
+    /**
      * Action - display home page
      * @param Response $response
      * @param ViewFactory $view
@@ -59,4 +59,4 @@ class MainController extends QtController
         
         $response->html($view->render('index'));
     }
-};
+}

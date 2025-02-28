@@ -13,4 +13,4 @@
             <?php echo $error ?>
         <?php endif; ?>
     <?php endif; ?>
-</div>';
+</div>
