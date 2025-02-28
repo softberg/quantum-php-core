@@ -167,7 +167,7 @@ class ModuleManager
             if ($this->fs->isDirectory($srcPath)) {
                 $this->copyDirectoryWithTemplates($srcPath, $dstPath);
             } else {
-                $dstPath = pathinfo($dstPath, PATHINFO_DIRNAME) . DS . pathinfo($dstPath, PATHINFO_FILENAME) . ".php";
+                $dstPath = str_replace('.tpl', '.php', $dstPath);
                 $content = $this->fs->get($srcPath);
                 $processedContent = $this->replacePlaceholders($content);
                 $this->fs->put($dstPath, $processedContent);
