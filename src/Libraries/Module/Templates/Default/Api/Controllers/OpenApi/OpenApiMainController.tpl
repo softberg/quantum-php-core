@@ -25,17 +25,17 @@ abstract class OpenApiMainController extends OpenApiController
    
     /**
      * @OA\Get(
-     *     path="/' . strtolower($moduleManager->getModuleName()) . '",
-     *     tags={"' . $moduleManager->getModuleName() . '"},
-     *     summary="Get status of ' . $moduleManager->getModuleName() . '",
-     *     description="Returns status of ' .$moduleManager->getModuleName() . ' module.",
+     *     path="/{{MODULE_NAME}}",
+     *     tags={"{{MODULE_NAME}}"},
+     *     summary="Get status of {{MODULE_NAME}}",
+     *     description="Returns status of {{MODULE_NAME}} module.",
      *     @OA\Response(
      *         response=200,
      *         description="Successful response",
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(property="status", type="string", example="success"),
-     *             @OA\Property(property="message", type="string", example="' . $moduleManager->getModuleName() . ' module.")
+     *             @OA\Property(property="message", type="string", example="{{MODULE_NAME}} module.")
      *         )
      *     )
      * )

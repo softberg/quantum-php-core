@@ -14,7 +14,7 @@
 
 namespace {{MODULE_NAMESPACE}}\Controllers;
 
-use Quantum\Exceptions\AuthException;
+use Quantum\Libraries\Auth\Exceptions\AuthException;
 use Quantum\Factory\ViewFactory;
 use Quantum\Http\Response;
 use Quantum\Http\Request;

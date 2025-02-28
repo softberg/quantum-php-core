@@ -41,4 +41,4 @@ class Guest extends QtMiddleware
         return $next($request, $response);
     }
 
-}';
+}

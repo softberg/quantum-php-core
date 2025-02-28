@@ -12,7 +12,7 @@
  * @since 2.9.5
  */
 
-namespace {{MODULE_NAMESPACE}}\OpenApi;
+namespace {{MODULE_NAMESPACE}}\Controllers\OpenApi;
 
 use Quantum\Http\Response;
 use Quantum\Http\Request;
