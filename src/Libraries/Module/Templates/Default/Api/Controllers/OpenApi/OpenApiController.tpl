@@ -12,7 +12,7 @@
  * @since 2.9.5
  */
 
-namespace {{MODULE_NAMESCPACE}}\Controllers\OpenApi;
+namespace {{MODULE_NAMESPACE}}\Controllers\OpenApi;
 
 use Quantum\Mvc\QtController;
 

@@ -142,14 +142,18 @@ class PostController extends BaseController
 
     /**
      * Action - display form for creating a post
+     * @param Request $request
      * @param Response $response
      * @param ViewFactory $view
      */
-    public function createFrom(Response $response, ViewFactory $view)
+    public function createFrom(Request $request, Response $response, ViewFactory $view)
     {
+        $ref = $request->get('ref', 'posts');
+
         $view->setParams([
             'title' => t('common.new_post') . ' | ' . config()->get('app_name'),
-            'langs' => config()->get('langs')
+            'langs' => config()->get('langs'),
+            'referer' => $ref
         ]);
 
         $response->html($view->render('post/form'));
@@ -186,19 +190,23 @@ class PostController extends BaseController
 
     /**
      * Action - display form for amend the post 
+     * @param Request $request
      * @param Response $response
      * @param ViewFactory $view
      * @param string|null $lang
      * @param string $postId
      */
-    public function amendForm(Response $response, ViewFactory $view, ?string $lang, string $postId)
+    public function amendForm(Request $request, Response $response, ViewFactory $view, ?string $lang, string $postId)
     {
+        $ref = $request->get('ref', 'posts');
+
         $post = $this->postService->getPost($postId);
 
         $view->setParams([
             'title' => $post->title . ' | ' . config()->get('app_name'),
             'langs' => config()->get('langs'),
-            'post' => $post->asArray()
+            'post' => $post->asArray(),
+            'referer' => $ref
         ]);
 
         $response->html($view->render('post/form'));

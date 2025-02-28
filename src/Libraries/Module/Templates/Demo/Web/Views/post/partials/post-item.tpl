@@ -1,6 +1,6 @@
 <div class="col s12 m3 post-item">
     <div class="card post-card hoverable">
-        <a href="<?php echo base_url(true) . '/' . current_lang() . '/post/' . $post['id'] ?>" class="post-item-link">
+        <a href="<?php echo base_url(true) . '/' . current_lang() . '/post/' . $post['uuid'] ?>" class="post-item-link">
             <div class="card-image card-image-box">
                 <?php if ($post['image']) : ?>
                     <img src="<?php echo base_url() . '/uploads/' . $post['image'] ?>" class="content_img">
@@ -19,7 +19,7 @@
         </a>
         <div class="card-content white teal-text text-darken-4">
             <span class="card-title post-title" title="<?php echo $post['title'] ?>">
-                <a class="teal-text" href="<?php echo base_url(true) . '/' . current_lang() . '/post/' . $post['id'] ?>">
+                <a class="teal-text" href="<?php echo base_url(true) . '/' . current_lang() . '/post/' . $post['uuid'] ?>">
                     <?php echo $post['title'] ?>
                 </a>
             </span>

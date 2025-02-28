@@ -50,4 +50,4 @@ class MainController extends QtController
             'message' => '{{MODULE_NAME}} module.'
         ]);
     }
-};
+}
