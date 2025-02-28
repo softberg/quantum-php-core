@@ -77,7 +77,7 @@ class ModuleGenerateCommand extends QtCommand
         try {
             $moduleName = $this->getArgument('module');
 
-            $moduleManager = ModuleManager::createInstance(
+            $moduleManager = new ModuleManager(
                 $moduleName,
                 $this->getOption('template'),
                 $this->getOption('demo'),
