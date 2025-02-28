@@ -77,7 +77,7 @@ class ModuleManager
      * @param bool $enabled
      * @throws BaseException
      */
-    private function __construct(string $moduleName, string $template, string $demo, bool $enabled)
+    public function __construct(string $moduleName, string $template, string $demo, bool $enabled)
     {
         $this->fs = FileSystemFactory::get();
 
@@ -89,36 +89,6 @@ class ModuleManager
         $this->modulePath = modules_dir() . DS . $moduleName;
         $this->templatePath = $this->generateTemplatePath($template, $demo);
         $this->modulesConfigPath = base_dir() . DS . 'shared' . DS . 'config' . DS . 'modules.php';
-    }
-
-    /**
-     * @param string $moduleName
-     * @param string $template
-     * @param string $demo
-     * @param bool $enabled
-     * @return ModuleManager
-     * @throws BaseException
-     */
-    public static function createInstance(string $moduleName, string $template, string $demo, bool $enabled): ModuleManager
-    {
-        if (self::$instance === null) {
-            self::$instance = new self($moduleName, $template, $demo, $enabled);
-        }
-
-        return self::$instance;
-    }
-
-    /**
-     * @return ModuleManager
-     * @throws Exception
-     */
-    public static function getInstance(): ModuleManager
-    {
-        if (self::$instance === null) {
-            throw new Exception("ModuleManager is not instantiated, call `createInstance()` first");
-        }
-
-        return self::$instance;
     }
 
     /**
