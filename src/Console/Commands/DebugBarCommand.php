@@ -60,7 +60,7 @@ class DebugBarCommand extends QtCommand
      * Path to vendor debug bar resources
      * @var string
      */
-    private $vendorDebugBarFolderPath = 'vendor/maximebf/debugbar/src/DebugBar/Resources';
+    private $vendorDebugBarFolderPath = 'vendor/php-debugbar/php-debugbar/src/DebugBar/Resources';
 
     /**
      * Executes the command and publishes the debug bar assets
