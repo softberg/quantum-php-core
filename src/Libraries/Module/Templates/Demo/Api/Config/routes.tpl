@@ -20,5 +20,8 @@ return function ($route) {
         $route->add('[:alpha:2]?/my-posts/amend/[id=:any]', 'PUT', 'PostController', 'amend')->middlewares(['Editor', 'Owner']);
         $route->add('[:alpha:2]?/my-posts/delete/[id=:any]', 'DELETE', 'PostController', 'delete')->middlewares(['Editor', 'Owner']);
         $route->add('[:alpha:2]?/my-posts/delete-image/[id=:any]', 'DELETE', 'PostController', 'deleteImage')->middlewares(['Editor', 'Owner']);
+        $route->get('[:alpha:2]?/account-settings', 'AccountController', 'form');
+        $route->post('[:alpha:2]?/account-settings/update', 'AccountController', 'update')->middlewares(['Update']);
+        $route->post('[:alpha:2]?/account-settings/update-password', 'AccountController', 'updatePassword')->middlewares(['Password']);
     })->middlewares(['Auth']);
 };
