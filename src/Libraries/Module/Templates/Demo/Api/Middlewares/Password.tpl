@@ -1,0 +1,109 @@
+<?php
+
+/**
+ * Quantum PHP Framework
+ *
+ * An open source software development framework for PHP
+ *
+ * @package Quantum
+ * @author Arman Ag. <arman.ag@softberg.org>
+ * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
+ * @link http://quantum.softberg.org/
+ * @since 2.9.5
+ */
+
+namespace {{MODULE_NAMESPACE}}\Middlewares;
+
+use Quantum\Libraries\Validation\Validator;
+use Quantum\Libraries\Validation\Rule;
+use Quantum\Middleware\QtMiddleware;
+use Quantum\Http\Response;
+use Quantum\Http\Request;
+use Closure;
+use Quantum\Libraries\Hasher\Hasher;
+use Quantum\Factory\ModelFactory;
+use Shared\Models\User;
+
+/**
+ * Class Password
+ * @package Modules\Web
+ */
+class Password extends QtMiddleware
+{
+
+    /**
+     * Account password
+     */
+    const ACCOUNT_PASSWORD = '#account_password';
+    
+    /**
+     * @var Validator
+     */
+    private $validator;
+
+    /**
+     * Class constructor
+     * @throws \Exception
+     * @param Request $request
+     */
+    
+    public function __construct(Request $request)
+    {
+        $this->validator = new Validator();
+        $hasher = new Hasher();
+        $hasher->setAlgorithm(PASSWORD_BCRYPT);
+        $user = ModelFactory::get(User::class)->findOneBy('uuid', $request->get('uuid', null));
+        $currentPassword = $request->get('current_password');
+
+        $this->validator->addValidation('incorrect_password', function ($value) use ($user, $hasher, $currentPassword) {
+            return $hasher->check($currentPassword, $user->password);
+        });
+
+        $this->validator->addRules([
+            'current_password' => [
+                Rule::set('required'),
+                Rule::set('incorrect_password')
+            ],
+            'new_password' => [
+                Rule::set('required'),
+                Rule::set('minLen', 6)
+            ],
+            'confirm_password' => [
+                Rule::set('required'),
+            ],
+        ]);
+    }
+
+    /**
+     * @param Closure $next
+     */
+    public function apply(Request $request, Response $response, Closure $next)
+    {
+        if ($request->isMethod('post')) {
+            if (!$this->validator->isValid($request->all())) {
+                session()->setFlash('error', $this->validator->getErrors());
+                redirectWith(base_url(true) . '/' . current_lang() . '/account-settings' . self::ACCOUNT_PASSWORD, $request->all());
+
+            } else if (!$this->confirmPassword($request->get('new_password'), $request->get('confirm_password'))) {
+                session()->setFlash('error', t('validation.same', [t('validation.confirm_password'), t('validation.new_password')]));
+                redirectWith(base_url(true) . '/' . current_lang() . '/account-settings' . self::ACCOUNT_PASSWORD, $request->all());
+                
+            } else {
+                session()->setFlash('success', t('common.updated_successfully'));
+            }
+        }
+
+        return $next($request, $response);
+    }
+
+    /**
+     * Checks the password and repeat password
+     * @param string $newPassword
+     * @param string $repeatPassword
+     * @return bool
+     */
+    private function confirmPassword(string $newPassword, string $repeatPassword): bool
+    {
+        return $newPassword == $repeatPassword;
+    }
+}
