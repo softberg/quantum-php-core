@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.5
+ * @since 2.9.6
  */
 
 namespace Quantum\Libraries\Database\Adapters\Sleekdb\Statements;
@@ -34,7 +34,7 @@ trait Criteria
             throw DatabaseException::operatorNotSupported($operator);
         }
 
-        $this->criterias[] = [$column, $operator, $value];
+        $this->criterias[] = [$column, $operator, $this->sanitizeValue($value)];
 
         return $this;
     }
@@ -46,12 +46,11 @@ trait Criteria
     public function criterias(...$criterias): DbalInterface
     {
         foreach ($criterias as $criteria) {
-            if (is_array($criteria[0])) {
+            if (isset($criteria[0]) && is_array($criteria[0])) {
                 $this->orCriteria($criteria);
-                continue;
+            } else {
+                $this->criteria(...$criteria);
             }
-
-            $this->criteria(...$criteria);
         }
 
         return $this;
@@ -75,14 +74,31 @@ trait Criteria
     /**
      * Adds one or more OR criteria in brackets
      * @param array $orCriterias
+     * @throws DatabaseException
      */
     protected function orCriteria(array $orCriterias)
     {
         foreach ($orCriterias as $index => $criteria) {
-            $this->criterias[] = $criteria;
+            $this->criteria(...$criteria);
+
             if ($index != array_key_last($orCriterias)) {
                 $this->criterias[] = 'OR';
             }
         }
+    }
+
+    /**
+     * @param $value
+     * @return mixed|string|null
+     */
+    protected function sanitizeValue($value)
+    {
+        if (is_array($value)) {
+            return array_map(function ($v) {
+                return is_string($v) ? preg_quote($v, '/') : $v;
+            }, $value);
+        }
+
+        return is_string($value) ? preg_quote($value, '/') : $value;
     }
 }

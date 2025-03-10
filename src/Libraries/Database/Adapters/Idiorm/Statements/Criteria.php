@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.6
  */
 
 namespace Quantum\Libraries\Database\Adapters\Idiorm\Statements;
@@ -45,13 +45,11 @@ trait Criteria
     public function criterias(...$criterias): DbalInterface
     {
         foreach ($criterias as $criteria) {
-
-            if (is_array($criteria[0])) {
+            if (isset($criteria[0]) && is_array($criteria[0])) {
                 $this->orCriteria($criteria);
-                continue;
+            } else {
+                $this->criteria(...$criteria);
             }
-
-            $this->criteria(...$criteria);
         }
 
         return $this;
