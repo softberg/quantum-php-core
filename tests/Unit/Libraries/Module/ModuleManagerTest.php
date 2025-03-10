@@ -22,7 +22,7 @@ class ModuleManagerTest extends AppTestCase
 
     public function testAddModuleConfig(){
 
-        $moduleManager = ModuleManager::createInstance("Api", "api", "", true);
+        $moduleManager = new ModuleManager("Api", "api", "", true);
 
         $moduleManager->addModuleConfig();
 
@@ -37,7 +37,7 @@ class ModuleManagerTest extends AppTestCase
 
     public function testWriteContents(){
 
-        $moduleManager = ModuleManager::createInstance("Api", "api", "", true);
+        $moduleManager = new ModuleManager("Api", "api", "", true);
 
         $moduleManager->writeContents();
 
@@ -57,9 +57,7 @@ class ModuleManagerTest extends AppTestCase
     }
 
     public function testInvalidTemplate(){
-        $this->setPrivateProperty(ModuleManager::class, "instance", null);
-
-        $moduleManager = ModuleManager::createInstance("NotExists", "notExists", "yes", true);
+        $moduleManager = new ModuleManager("NotExists", "notExists", "yes", true);
 
         $this->expectException(Exception::class);
 
