@@ -58,11 +58,17 @@ class Update extends QtMiddleware
     public function apply(Request $request, Response $response, Closure $next)
     {
         if ($request->isMethod('post')) {
-            if (!$this->validator->isValid($request->all())) {
+            if ($this->validator->isValid($request->all())) {
+                $response->json([
+                    'status' => 'success'
+                ]);
+            } else {
                 $response->json([
                     'status' => 'error',
                     'message' => $this->validator->getErrors()
                 ]);
+
+                stop();
             }
         }
 

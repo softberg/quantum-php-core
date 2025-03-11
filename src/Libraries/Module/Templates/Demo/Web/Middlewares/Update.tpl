@@ -68,5 +68,4 @@ class Update extends QtMiddleware
 
         return $next($request, $response);
     }
-
 }

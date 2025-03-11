@@ -76,9 +76,10 @@ class AccountController extends BaseController
         $firstname = $request->get('firstname', null);
         $lastname = $request->get('lastname', null);
 
-        $user = $this->accountService->update($request->get('uuid', null), [
+        $user = $this->accountService->update(auth()->user()->uuid, [
             'firstname' => $firstname,
-            'lastname' => $lastname
+            'lastname' => $lastname,
+            'csrf-token' => csrf_token()
         ]);
 
         $userData = session()->get(AuthenticatableInterface::AUTH_USER);
@@ -107,9 +108,8 @@ class AccountController extends BaseController
         $hasher->setAlgorithm(PASSWORD_BCRYPT);
 
         $newPassword = $request->get('new_password', null);
-        $uuid = $request->get('uuid', null);
         
-        $this->accountService->update($uuid, [
+        $this->accountService->update(auth()->user()->uuid, [
             'password' => $hasher->hash($newPassword)
         ]);
 

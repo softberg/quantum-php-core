@@ -6,12 +6,9 @@
                     <?php echo partial('partials/messages/error') ?>
                 <?php endif; ?>
 
-
                 <?php if (session()->has('success')): ?>
                     <?php echo partial('partials/messages/success') ?>
                 <?php endif; ?>
-                
-                <?php echo $active ?>
 
                 <ul class="tabs teal account-tabs card accent-4">
                     <li class="tab col s3">

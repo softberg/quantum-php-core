@@ -26,7 +26,7 @@ use Closure;
 
 /**
  * Class Password
- * @package Modules\Web
+ * @package Modules\Api
  */
 class Password extends QtMiddleware
 {
@@ -47,14 +47,14 @@ class Password extends QtMiddleware
         $user = ModelFactory::get(User::class)->findOneBy('uuid', $request->get('uuid', null));
         $currentPassword = $request->get('current_password');
 
-        $this->validator->addValidation('incorrect_password', function ($value) use ($user, $hasher, $currentPassword) {
+        $this->validator->addValidation('password_check', function ($value) use ($user, $hasher, $currentPassword) {
             return $hasher->check($currentPassword, $user->password);
         });
 
         $this->validator->addRules([
             'current_password' => [
                 Rule::set('required'),
-                Rule::set('incorrect_password')
+                Rule::set('password_check')
             ],
             'new_password' => [
                 Rule::set('required'),
@@ -80,11 +80,20 @@ class Password extends QtMiddleware
                     'message' => $this->validator->getErrors()
                 ]);
 
+                stop();
+
             } else if (!$this->confirmPassword($request->get('new_password'), $request->get('confirm_password'))) {
                 $response->json([
-                    'status' => 'error'
+                    'status' => 'error',
+                    'message' => t('validation.same', [t('validation.confirm_password'), t('validation.new_password')])
                 ]);
+
+                stop();
                 
+            } else {
+                $response->json([
+                    'status' => 'success'
+                ]);
             }
         }
 
