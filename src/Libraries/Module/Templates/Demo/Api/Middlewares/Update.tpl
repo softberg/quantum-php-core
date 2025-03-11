@@ -27,12 +27,6 @@ use Closure;
  */
 class Update extends QtMiddleware
 {
-
-    /**
-     * Account profile
-     */
-    const ACCOUNT_PROFILE = '#account_profile';
-
     /**
      * @var Validator
      */
@@ -57,20 +51,21 @@ class Update extends QtMiddleware
     }
 
     /**
+     * @param Request $request
+     * @param Response $response
      * @param Closure $next
      */
     public function apply(Request $request, Response $response, Closure $next)
     {
         if ($request->isMethod('post')) {
-            if ($this->validator->isValid($request->all())) {
-                session()->setFlash('success', t('common.updated_successfully'));
-            } else {
-                session()->setFlash('error', $this->validator->getErrors());
-                redirectWith(base_url(true) . '/' . current_lang() . '/account-settings' . self::ACCOUNT_PROFILE, $request->all());
+            if (!$this->validator->isValid($request->all())) {
+                $response->json([
+                    'status' => 'error',
+                    'message' => $this->validator->getErrors()
+                ]);
             }
         }
 
         return $next($request, $response);
     }
-
 }

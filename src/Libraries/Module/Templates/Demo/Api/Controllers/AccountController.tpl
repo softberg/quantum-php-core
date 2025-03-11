@@ -14,17 +14,12 @@
 
 namespace {{MODULE_NAMESPACE}}\Controllers;
 
-use Shared\Transformers\PostTransformer;
+use Quantum\Libraries\Hasher\Hasher;
 use Quantum\Factory\ServiceFactory;
-use Quantum\Factory\ViewFactory;
 use Shared\Services\AccountService;
-use Shared\Services\PostService;
+use Quantum\Factory\ViewFactory;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
-use Quantum\Factory\ModelFactory;
-use Shared\Models\User;
-use Quantum\Libraries\Hasher\Hasher;
-use Quantum\Libraries\Auth\Contracts\AuthenticatableInterface;
 
 /**
  * Class AccountController
@@ -38,94 +33,74 @@ class AccountController extends BaseController
     const LAYOUT = 'layouts/main';
 
     /**
-     * Account profile
-     */
-    const ACCOUNT_PROFILE = '#account_profile';
-
-    /**
-     * Account password
-     */
-    const ACCOUNT_PASSWORD = '#account_password';
-
-    /**
      * Account service
      * @var AccountService
      */
     public $accountService;
 
     /**
-     * Action - show user info
+     * Works before an action
+     * @param ViewFactory $view
      */
-    public function form(Response $response, ViewFactory $view)
+    public function __before(ViewFactory $view)
     {
-        $view->setParams([
-            'title' => t('common.account_settings') . ' | ' . config()->get('app_name'),
-            'langs' => config()->get('langs')
-        ]);
+        $this->accountService = ServiceFactory::get(AccountService::class);
 
-        $response->html($view->render('account/form'));
+        parent::__before($view);
     }
 
     /**
      * Action - update user info
-     * @param Request $request 
+     * @param Request $request
      * @param Response $response
-     * @param string|null $lang
      */
-    public function update(Request $request, ViewFactory $view)
+    public function update(Request $request, Response $response)
     {
-        $this->accountService = ServiceFactory::get(AccountService::class);
+        try {
+            $firstname = $request->get('firstname', null);
+            $lastname = $request->get('lastname', null);
+            $uuid = $request->get('uuid', null);
+    
+            $this->accountService->update($uuid, [
+                'firstname' => $firstname,
+                'lastname' => $lastname
+            ]);
+    
+            $response->json([
+                'status' => self::STATUS_SUCCESS
+            ]);
 
-        $firstname = $request->get('firstname', null);
-        $lastname = $request->get('lastname', null);
-
-        $view->setParams([
-            'title' => t('common.account_settings') . ' | ' . config()->get('app_name'),
-            'langs' => config()->get('langs'),
-        ]);
-
-        $user = $this->accountService->update($request->get('uuid', null), [
-            'firstname' => $firstname,
-            'lastname' => $lastname
-        ]);
-
-        $userData = session()->get(AuthenticatableInterface::AUTH_USER);
-
-        $userData['firstname'] = $user->firstname;
-        $userData['lastname'] = $user->lastname;
-             
-        session()->set(AuthenticatableInterface::AUTH_USER, $userData);
-
-        redirect(base_url(true) . '/' . current_lang() . '/account-settings' . self::ACCOUNT_PROFILE);
+        } catch (AuthException $e) {
+            $response->json([
+                'status' => self::STATUS_ERROR,
+                'message' => $e->getMessage()
+            ]);
+        }
     }
 
     /**
      * Action - update password
-     * @param Request $request 
+     * @param Request $request
      * @param Response $response
-     * @param string|null $lang
      */
-    public function updatePassword(Request $request, ViewFactory $view)
+    public function updatePassword(Request $request, Response $response)
     {
-        $this->accountService = ServiceFactory::get(AccountService::class);
+        try {
+            $hasher = new Hasher();
+            $hasher->setAlgorithm(PASSWORD_BCRYPT);
 
-        $hasher = new Hasher();
-        $hasher->setAlgorithm(PASSWORD_BCRYPT);
+            $newPassword = $request->get('new_password', null);
+            $uuid = $request->get('uuid', null);
 
-        $currentPassword = $request->get('current_password', null);
-        $newPassword = $request->get('new_password', null);
-        $confirmPassword = $request->get('confirm_password', null);
-        $uuid = $request->get('uuid', null);
-        
-        $view->setParams([
-            'title' => t('common.account_settings') . ' | ' . config()->get('app_name'),
-            'langs' => config()->get('langs')
-        ]);
+            $this->accountService->update($uuid, [
+                'password' => $hasher->hash($newPassword)
+            ]);
 
-        $userData = $this->accountService->update($uuid, [
-            'password' => $hasher->hash($confirmPassword)
-        ]);
-
-        redirect(base_url(true) . '/' . current_lang() . '/account-settings' . self::ACCOUNT_PASSWORD);
+        } catch (AuthException $e) {
+            $response->json([
+                'status' => self::STATUS_ERROR,
+                'message' => $e->getMessage()
+            ]);
+        }
     }
 }

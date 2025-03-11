@@ -16,13 +16,13 @@ namespace {{MODULE_NAMESPACE}}\Middlewares;
 
 use Quantum\Libraries\Validation\Validator;
 use Quantum\Libraries\Validation\Rule;
+use Quantum\Libraries\Hasher\Hasher;
 use Quantum\Middleware\QtMiddleware;
+use Quantum\Factory\ModelFactory;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
-use Closure;
-use Quantum\Libraries\Hasher\Hasher;
-use Quantum\Factory\ModelFactory;
 use Shared\Models\User;
+use Closure;
 
 /**
  * Class Password
@@ -30,12 +30,6 @@ use Shared\Models\User;
  */
 class Password extends QtMiddleware
 {
-
-    /**
-     * Account password
-     */
-    const ACCOUNT_PASSWORD = '#account_password';
-    
     /**
      * @var Validator
      */
@@ -46,7 +40,6 @@ class Password extends QtMiddleware
      * @throws \Exception
      * @param Request $request
      */
-    
     public function __construct(Request $request)
     {
         $this->validator = new Validator();
@@ -75,6 +68,8 @@ class Password extends QtMiddleware
     }
 
     /**
+     * @param Request $request
+     * @param Response $response
      * @param Closure $next
      */
     public function apply(Request $request, Response $response, Closure $next)
@@ -82,11 +77,11 @@ class Password extends QtMiddleware
         if ($request->isMethod('post')) {
             if (!$this->validator->isValid($request->all())) {
                 session()->setFlash('error', $this->validator->getErrors());
-                redirectWith(base_url(true) . '/' . current_lang() . '/account-settings' . self::ACCOUNT_PASSWORD, $request->all());
+                redirectWith(base_url(true) . '/' . current_lang() . '/account-settings#account_password', $request->all());
 
             } else if (!$this->confirmPassword($request->get('new_password'), $request->get('confirm_password'))) {
                 session()->setFlash('error', t('validation.same', [t('validation.confirm_password'), t('validation.new_password')]));
-                redirectWith(base_url(true) . '/' . current_lang() . '/account-settings' . self::ACCOUNT_PASSWORD, $request->all());
+                redirectWith(base_url(true) . '/' . current_lang() . '/account-settings#account_password', $request->all());
                 
             } else {
                 session()->setFlash('success', t('common.updated_successfully'));

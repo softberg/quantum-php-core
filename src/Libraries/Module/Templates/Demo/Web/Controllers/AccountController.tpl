@@ -14,17 +14,14 @@
 
 namespace {{MODULE_NAMESPACE}}\Controllers;
 
-use Shared\Transformers\PostTransformer;
+use Quantum\Libraries\Auth\Contracts\AuthenticatableInterface;
+use Quantum\Libraries\Hasher\Hasher;
 use Quantum\Factory\ServiceFactory;
-use Quantum\Factory\ViewFactory;
 use Shared\Services\AccountService;
-use Shared\Services\PostService;
+use Quantum\Factory\ViewFactory;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
-use Quantum\Factory\ModelFactory;
 use Shared\Models\User;
-use Quantum\Libraries\Hasher\Hasher;
-use Quantum\Libraries\Auth\Contracts\AuthenticatableInterface;
 
 /**
  * Class AccountController
@@ -38,23 +35,26 @@ class AccountController extends BaseController
     const LAYOUT = 'layouts/main';
 
     /**
-     * Account profile
-     */
-    const ACCOUNT_PROFILE = '#account_profile';
-
-    /**
-     * Account password
-     */
-    const ACCOUNT_PASSWORD = '#account_password';
-
-    /**
      * Account service
      * @var AccountService
      */
     public $accountService;
 
     /**
+     * Works before an action
+     * @param ViewFactory $view
+     */
+    public function __before(ViewFactory $view)
+    {
+        $this->accountService = ServiceFactory::get(AccountService::class);
+
+        parent::__before($view);
+    }
+
+    /**
      * Action - show user info
+     * @param Response $response
+     * @param ViewFactory $view
      */
     public function form(Response $response, ViewFactory $view)
     {
@@ -69,20 +69,12 @@ class AccountController extends BaseController
     /**
      * Action - update user info
      * @param Request $request 
-     * @param Response $response
-     * @param string|null $lang
+     * @param ViewFactory $view
      */
     public function update(Request $request, ViewFactory $view)
     {
-        $this->accountService = ServiceFactory::get(AccountService::class);
-
         $firstname = $request->get('firstname', null);
         $lastname = $request->get('lastname', null);
-
-        $view->setParams([
-            'title' => t('common.account_settings') . ' | ' . config()->get('app_name'),
-            'langs' => config()->get('langs'),
-        ]);
 
         $user = $this->accountService->update($request->get('uuid', null), [
             'firstname' => $firstname,
@@ -96,36 +88,36 @@ class AccountController extends BaseController
              
         session()->set(AuthenticatableInterface::AUTH_USER, $userData);
 
-        redirect(base_url(true) . '/' . current_lang() . '/account-settings' . self::ACCOUNT_PROFILE);
+        $view->setParams([
+            'title' => t('common.account_settings') . ' | ' . config()->get('app_name'),
+            'langs' => config()->get('langs'),
+        ]);
+
+        redirect(base_url(true) . '/' . current_lang() . '/account-settings#account_profile');
     }
 
     /**
      * Action - update password
      * @param Request $request 
-     * @param Response $response
-     * @param string|null $lang
+     * @param ViewFactory $view
      */
     public function updatePassword(Request $request, ViewFactory $view)
     {
-        $this->accountService = ServiceFactory::get(AccountService::class);
-
         $hasher = new Hasher();
         $hasher->setAlgorithm(PASSWORD_BCRYPT);
 
-        $currentPassword = $request->get('current_password', null);
         $newPassword = $request->get('new_password', null);
-        $confirmPassword = $request->get('confirm_password', null);
         $uuid = $request->get('uuid', null);
         
+        $this->accountService->update($uuid, [
+            'password' => $hasher->hash($newPassword)
+        ]);
+
         $view->setParams([
             'title' => t('common.account_settings') . ' | ' . config()->get('app_name'),
             'langs' => config()->get('langs')
         ]);
 
-        $userData = $this->accountService->update($uuid, [
-            'password' => $hasher->hash($confirmPassword)
-        ]);
-
-        redirect(base_url(true) . '/' . current_lang() . '/account-settings' . self::ACCOUNT_PASSWORD);
+        redirect(base_url(true) . '/' . current_lang() . '/account-settings#account_password');
     }
 }
