@@ -15,10 +15,13 @@
 namespace Quantum\Libraries\Database;
 
 use Quantum\Libraries\Database\Exceptions\DatabaseException;
+use Quantum\Libraries\Database\Adapters\Idiorm\IdiormDbal;
+use Quantum\Libraries\Database\Adapters\Sleekdb\SleekDbal;
 use Quantum\Libraries\Config\Exceptions\ConfigException;
 use Quantum\Libraries\Database\Contracts\DbalInterface;
 use Quantum\Libraries\Database\Traits\RelationalTrait;
 use Quantum\Di\Exceptions\DiException;
+use Quantum\Exceptions\BaseException;
 use Quantum\Loader\Setup;
 use ReflectionException;
 
@@ -30,6 +33,13 @@ class Database
 {
 
     use RelationalTrait;
+
+    const ADAPTERS = [
+        'sleekdb' => SleekDbal::class,
+        'mysql' => IdiormDbal::class,
+        'sqlite' => IdiormDbal::class,
+        'pgsql' => IdiormDbal::class,
+    ];
 
     /**
      * Database configurations
@@ -44,15 +54,37 @@ class Database
     private static $instance = null;
 
     /**
-     * Database constructor.
+     * @var string
+     */
+    private $ormClass;
+
+    /**
+     * @throws BaseException
      * @throws ConfigException
      * @throws DiException
-     * @throws DatabaseException
      * @throws ReflectionException
      */
     private function __construct()
     {
-        $this->configs = $this->getConfigs();
+        if (!config()->has('database')) {
+            config()->import(new Setup('config', 'database'));
+        }
+
+        $adapterName = config()->get('database.current');
+
+        if (!array_key_exists($adapterName, self::ADAPTERS)) {
+            throw DatabaseException::adapterNotSupported($adapterName);
+        }
+
+        $this->ormClass = self::ADAPTERS[$adapterName];
+
+        if (!class_exists($this->ormClass)) {
+            throw DatabaseException::ormClassNotFound($this->ormClass);
+        }
+
+        if (!$this->ormClass::getConnection()) {
+            $this->ormClass::connect(config()->get('database.' . $adapterName));
+        }
     }
 
     /**
@@ -75,39 +107,27 @@ class Database
      * @param array $foreignKeys
      * @param array $hidden
      * @return DbalInterface
-     * @throws DatabaseException
      */
     public function getOrm(string $table, string $idColumn = 'id', array $foreignKeys = [], array $hidden = []): DbalInterface
     {
-        $ormClass = $this->getOrmClass();
+        return new $this->ormClass($table, $idColumn, $foreignKeys, $hidden);
+    }
 
-        return new $ormClass($table, $idColumn, $foreignKeys, $hidden);
+    /**
+     * Gets the ORM class
+     * @return string
+     */
+    public function getOrmClass(): string
+    {
+        return $this->ormClass;
     }
 
     /**
      * Gets the DB configurations
-     * @return array
-     * @throws ConfigException
-     * @throws DiException
-     * @throws DatabaseException
-     * @throws ReflectionException
+     * @return array|null
      */
     public function getConfigs(): ?array
     {
-        if (!config()->has('database') || !config()->has('database.current')) {
-            config()->import(new Setup('config', 'database'));
-        }
-
-        $currentKey = config()->get('database.current');
-
-        if (!config()->has('database.' . $currentKey)) {
-            throw DatabaseException::incorrectConfig();
-        }
-
-        if (!config()->has('database.' . $currentKey . '.orm')) {
-            throw DatabaseException::incorrectConfig();
-        }
-
-        return config()->get('database.' . $currentKey);
+        return $this->configs;
     }
 }

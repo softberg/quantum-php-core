@@ -17,7 +17,7 @@ namespace Quantum\Libraries\Database\Traits;
 use Quantum\Libraries\Database\Exceptions\DatabaseException;
 
 /**
- * Trait TableTrait
+ * Trait RelationalTrait
  * @package Quantum\Libraries\Database
  */
 trait RelationalTrait
@@ -81,26 +81,6 @@ trait RelationalTrait
     }
 
     /**
-     * Gets the ORM class
-     * @return string
-     * @throws DatabaseException
-     */
-    protected function getOrmClass(): string
-    {
-        $ormClass = $this->configs['orm'];
-
-        if (!class_exists($ormClass)) {
-            throw DatabaseException::ormClassNotFound($ormClass);
-        }
-
-        if (!$ormClass::getConnection()) {
-            $ormClass::connect($this->configs);
-        }
-
-        return $ormClass;
-    }
-
-    /**
      * Resolves the requested query
      * @param string $method
      * @param string $query
@@ -110,10 +90,6 @@ trait RelationalTrait
      */
     protected static function resolveQuery(string $method, string $query = '', array $parameters = [])
     {
-        $self = self::getInstance();
-
-        $ormClass = $self->getOrmClass();
-
-        return $ormClass::$method($query, $parameters);
+        return self::getInstance()->getOrmClass()::$method($query, $parameters);
     }
 }
