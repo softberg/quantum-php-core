@@ -125,6 +125,25 @@ class ApiAdapter implements AuthenticatableInterface
     }
 
     /**
+     * Refresh user data
+     * @return bool
+     * @throws JwtException
+     */
+    public function refreshUser(): bool
+    {
+        $refreshToken = Request::getHeader($this->keyFields[AuthKeys::REFRESH_TOKEN]);
+
+        $user = $this->authService->get($this->keyFields[AuthKeys::REFRESH_TOKEN], $refreshToken);
+
+        if($user) {
+            $this->setUpdatedTokens($user);
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * Get Updated Tokens
      * @param User $user
      * @return array

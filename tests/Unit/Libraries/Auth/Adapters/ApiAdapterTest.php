@@ -188,4 +188,26 @@ class ApiAdapterTest extends AuthTestCase
 
         $this->assertIsString($this->apiAuth->resendOtp($otp_token));
     }
+
+    public function testApiRefreshUser()
+    {
+        $this->apiAuth->signin('admin@qt.com', 'qwerty');
+
+        $this->assertEquals('Admin', $this->apiAuth->user()->firstname);
+
+        $this->assertEquals('User', $this->apiAuth->user()->lastname);
+
+        $newUserData = [
+            'firstname' => 'Super',
+            'lastname' => 'Human',
+        ];
+
+        $this->authService->update('email', $this->apiAuth->user()->email, $newUserData);
+
+        $this->apiAuth->refreshUser();
+
+        $this->assertEquals('Super', $this->apiAuth->user()->firstname);
+
+        $this->assertEquals('Human', $this->apiAuth->user()->lastname);
+    }
 }
