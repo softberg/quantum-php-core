@@ -2,10 +2,11 @@
 
 namespace Quantum\Tests\Unit\Libraries\Database;
 
+use Quantum\Libraries\Database\Adapters\Idiorm\IdiormDbal;
 use Quantum\Libraries\Database\Contracts\DbalInterface;
 use Quantum\Libraries\Database\Database;
-use Quantum\Loader\Setup;
 use Quantum\Tests\Unit\AppTestCase;
+use Quantum\Loader\Setup;
 
 /**
  * @runTestsInSeparateProcesses
@@ -34,14 +35,36 @@ class DatabaseTest extends AppTestCase
                     )");
     }
 
-    public function testGetOrm()
+    public function testDatabaseInstance()
+    {
+        $db1 = Database::getInstance();
+
+        $db2 = Database::getInstance();
+
+        $this->assertInstanceOf(Database::class, $db1);
+
+        $this->assertSame($db1, $db2);
+    }
+
+    public function testDatabaseGetConfigs()
+    {
+        $this->assertEquals(config()->get('database.sqlite'), Database::getInstance()->getConfigs());
+    }
+
+    public function testDatabaseGetOrmClass()
+    {
+        $this->assertEquals(IdiormDbal::class, Database::getInstance()->getOrmClass());
+    }
+
+    public function testDatabaseGetOrm()
     {
         $db = Database::getInstance();
 
         $this->assertInstanceOf(DbalInterface::class, $db->getOrm('user'));
     }
 
-    public function testRawQueries()
+
+    public function testDatabaseRawQueries()
     {
         $result = Database::query('SELECT * FROM users WHERE id=:id', ['id' => 1]);
 

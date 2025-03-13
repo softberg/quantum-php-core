@@ -82,8 +82,10 @@ class Database
             throw DatabaseException::ormClassNotFound($this->ormClass);
         }
 
+        $this->configs = config()->get('database.' . $adapterName);
+
         if (!$this->ormClass::getConnection()) {
-            $this->ormClass::connect(config()->get('database.' . $adapterName));
+            $this->ormClass::connect($this->configs);
         }
     }
 
@@ -101,16 +103,12 @@ class Database
     }
 
     /**
-     * Gets the ORM
-     * @param string $table
-     * @param string $idColumn
-     * @param array $foreignKeys
-     * @param array $hidden
-     * @return DbalInterface
+     * Gets the DB configurations
+     * @return array|null
      */
-    public function getOrm(string $table, string $idColumn = 'id', array $foreignKeys = [], array $hidden = []): DbalInterface
+    public function getConfigs(): ?array
     {
-        return new $this->ormClass($table, $idColumn, $foreignKeys, $hidden);
+        return $this->configs;
     }
 
     /**
@@ -123,11 +121,15 @@ class Database
     }
 
     /**
-     * Gets the DB configurations
-     * @return array|null
+     * Gets the ORM
+     * @param string $table
+     * @param string $idColumn
+     * @param array $foreignKeys
+     * @param array $hidden
+     * @return DbalInterface
      */
-    public function getConfigs(): ?array
+    public function getOrm(string $table, string $idColumn = 'id', array $foreignKeys = [], array $hidden = []): DbalInterface
     {
-        return $this->configs;
+        return new $this->ormClass($table, $idColumn, $foreignKeys, $hidden);
     }
 }
