@@ -26,7 +26,6 @@ use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Libraries\Database\Database;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Exceptions\BaseException;
-use ReflectionException;
 
 /**
  * Class MigrationManager
@@ -133,7 +132,6 @@ class MigrationManager
      * @throws DiException
      * @throws LangException
      * @throws MigrationException
-     * @throws ReflectionException
      */
     public function applyMigrations(string $direction, ?int $step = null): ?int
     {

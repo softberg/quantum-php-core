@@ -10,10 +10,6 @@ use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Loader\Setup;
 use Mockery;
 
-/**
- * @runTestsInSeparateProcesses
- * @preserveGlobalState disabled
- */
 class TableFactoryTest extends AppTestCase
 {
 

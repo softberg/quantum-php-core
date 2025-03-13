@@ -9,12 +9,10 @@ return [
         'username' => 'username',
         'password' => 'password',
         'charset' => 'charset',
-        'orm' => \Quantum\Libraries\Database\Adapters\Idiorm\IdiormDbal::class
     ],
     'sqlite' => [
         'driver' => 'sqlite',
         'database' => ':memory:',
-        'orm' => \Quantum\Libraries\Database\Adapters\Idiorm\IdiormDbal::class
     ],
     'sleekdb' => [
         'config' => [
@@ -29,6 +27,5 @@ return [
             ],
         ],
         'database_dir' => base_dir() . DS . 'shared' . DS . 'store',
-        'orm' => \Quantum\Libraries\Database\Adapters\Sleekdb\SleekDbal::class
     ]
 ];
