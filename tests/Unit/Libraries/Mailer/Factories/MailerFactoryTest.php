@@ -43,7 +43,7 @@ class MailerFactoryTest extends AppTestCase
 
     public function testMailerFactoryMailgunAdapter()
     {
-        config()->set('mailer.current', 'mailgun');
+        config()->set('mailer.default', 'mailgun');
 
         $mailer = MailerFactory::get();
 
@@ -52,7 +52,7 @@ class MailerFactoryTest extends AppTestCase
 
     public function testMailerFactoryMandrillAdapter()
     {
-        config()->set('mailer.current', 'mandrill');
+        config()->set('mailer.default', 'mandrill');
 
         $mailer = MailerFactory::get();
 
@@ -61,7 +61,7 @@ class MailerFactoryTest extends AppTestCase
 
     public function testMailerFactorySendgridAdapter()
     {
-        config()->set('mailer.current', 'sendgrid');
+        config()->set('mailer.default', 'sendgrid');
 
         $mailer = MailerFactory::get();
 
@@ -70,7 +70,7 @@ class MailerFactoryTest extends AppTestCase
 
     public function testMailerFactorySendinblueAdapter()
     {
-        config()->set('mailer.current', 'sendinblue');
+        config()->set('mailer.default', 'sendinblue');
 
         $mailer = MailerFactory::get();
 
@@ -79,7 +79,7 @@ class MailerFactoryTest extends AppTestCase
 
     public function testMailerFactoryInvalidTypeAdapter()
     {
-        config()->set('mailer.current', 'invalid');
+        config()->set('mailer.default', 'invalid');
 
         $this->expectException(MailerException::class);
 

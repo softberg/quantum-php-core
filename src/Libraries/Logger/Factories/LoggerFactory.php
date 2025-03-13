@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.6
  */
 
 namespace Quantum\Libraries\Logger\Factories;
@@ -79,7 +79,7 @@ class LoggerFactory
             config()->import(new Setup('config', 'logging'));
         }
 
-        $adapter = config()->get('logging.current');
+        $adapter = config()->get('logging.default');
 
         $adapterClass = self::getAdapterClass($adapter);
 

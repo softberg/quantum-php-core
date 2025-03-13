@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'current' => 'native',
+    'default' => 'native',
 
     'native' => [
         'timeout' => 300

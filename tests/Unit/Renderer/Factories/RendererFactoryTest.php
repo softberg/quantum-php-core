@@ -29,7 +29,7 @@ class RendererFactoryTest extends AppTestCase
 
     public function testRendererFactoryHtmlAdapter()
     {
-        config()->set('view.current', 'html');
+        config()->set('view.default', 'html');
 
         $renderer = RendererFactory::get();
 
@@ -40,7 +40,7 @@ class RendererFactoryTest extends AppTestCase
 
     public function testRendererFactoryTwigAdapter()
     {
-        config()->set('view.current', 'twig');
+        config()->set('view.default', 'twig');
 
         $renderer = RendererFactory::get();
 
@@ -51,7 +51,7 @@ class RendererFactoryTest extends AppTestCase
 
     public function testRendererFactoryInvalidTypeAdapter()
     {
-        config()->set('view.current', 'invalid');
+        config()->set('view.default', 'invalid');
 
         $this->expectException(RendererException::class);
 

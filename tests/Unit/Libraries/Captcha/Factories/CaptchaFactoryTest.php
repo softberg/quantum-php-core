@@ -41,7 +41,7 @@ class CaptchaFactoryTest extends AppTestCase
             'site_key' => '07737dfc-abfa-66ac44365d0c'
         ];
 
-        config()->set('captcha.current', 'hcaptcha');
+        config()->set('captcha.default', 'hcaptcha');
         config()->set('captcha.hcaptcha', $params);
 
         $captcha = CaptchaFactory::get();
@@ -51,7 +51,7 @@ class CaptchaFactoryTest extends AppTestCase
 
     public function testCacheFactoryInvalidTypeAdapter()
     {
-        config()->set('captcha.current', 'invalid');
+        config()->set('captcha.default', 'invalid');
 
         $this->expectException(CaptchaException::class);
 

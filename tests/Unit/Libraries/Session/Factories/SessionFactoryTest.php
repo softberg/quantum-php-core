@@ -55,7 +55,7 @@ class SessionFactoryTest extends AppTestCase
 
     public function testSessionFactoryDatabaseAdapter()
     {
-        config()->set('session.current', 'database');
+        config()->set('session.default', 'database');
 
         $session = SessionFactory::get();
 
@@ -64,7 +64,7 @@ class SessionFactoryTest extends AppTestCase
 
     public function testSessionSubsequentRequests()
     {
-        config()->set('session.current', 'database');
+        config()->set('session.default', 'database');
 
         $session = SessionFactory::get();
 
@@ -98,7 +98,7 @@ class SessionFactoryTest extends AppTestCase
 
     public function testMailerFactoryInvalidTypeAdapter()
     {
-        config()->set('session.current', 'invalid');
+        config()->set('session.default', 'invalid');
 
         $this->expectException(SessionException::class);
 

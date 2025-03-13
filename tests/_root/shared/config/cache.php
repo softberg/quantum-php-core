@@ -1,6 +1,6 @@
 <?php
 return [
-    'current' => 'file',
+    'default' => 'file',
 
     'file' => [
         'prefix' => str_replace(' ', '', env('APP_NAME')),
