@@ -43,7 +43,7 @@ class CacheFactoryTest extends AppTestCase
             'ttl' => 60
         ];
 
-        config()->set('cache.current', 'database');
+        config()->set('cache.default', 'database');
 
         config()->set('cache.database', $params);
 
@@ -61,7 +61,7 @@ class CacheFactoryTest extends AppTestCase
             'ttl' => 60
         ];
 
-        config()->set('cache.current', 'memcached');
+        config()->set('cache.default', 'memcached');
 
         config()->set('cache.memcached', $params);
 
@@ -80,7 +80,7 @@ class CacheFactoryTest extends AppTestCase
         ];
 
 
-        config()->set('cache.current', 'redis');
+        config()->set('cache.default', 'redis');
 
         config()->set('cache.redis', $params);
 
@@ -91,7 +91,7 @@ class CacheFactoryTest extends AppTestCase
 
     public function testCacheFactoryInvalidTypeAdapter()
     {
-        config()->set('cache.current', 'invalid');
+        config()->set('cache.default', 'invalid');
 
         $this->expectException(CacheException::class);
 

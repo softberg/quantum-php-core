@@ -26,7 +26,7 @@ abstract class SleekDbalTestCase extends AppTestCase
 
         config()->import(new Setup('config', 'database'));
 
-        config()->set('database.current', 'sleekdb');
+        config()->set('database.default', 'sleekdb');
 
         SleekDbal::connect(config()->get('database.sleekdb'));
 

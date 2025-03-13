@@ -47,13 +47,13 @@ class ConfigTest extends AppTestCase
 
         $config->load(new Setup('config', 'config'));
 
-        $this->assertNull($config->get('database.current'));
+        $this->assertNull($config->get('database.default'));
 
         $config->import(new Setup('config', 'database'));
 
-        $this->assertNotNull($config->get('database.current'));
+        $this->assertNotNull($config->get('database.default'));
 
-        $this->assertEquals('mysql', $config->get('database.current'));
+        $this->assertEquals('mysql', $config->get('database.default'));
     }
 
     public function testImportingNonExistingConfigFile()

@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.6
  */
 
 namespace Quantum\Libraries\Captcha\Factories;
@@ -74,7 +74,7 @@ class CaptchaFactory
             config()->import(new Setup('config', 'captcha'));
         }
 
-        $adapter = config()->get('captcha.current');
+        $adapter = config()->get('captcha.default');
 
         $adapterClass = self::getAdapterClass($adapter);
 

@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'current' => 'mysql',
+    'default' => 'mysql',
     'mysql' => [
         'driver' => 'mysql',
         'host' => 'localhost',

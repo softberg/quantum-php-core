@@ -32,7 +32,7 @@ class LoggerFactoryTest extends AppTestCase
     {
         config()->set('debug', false);
 
-        config()->set('logging.current', 'daily');
+        config()->set('logging.default', 'daily');
         config()->set('logging.daily', ['path' => logs_dir()]);
 
         $logger = LoggerFactory::get();
@@ -46,7 +46,7 @@ class LoggerFactoryTest extends AppTestCase
     {
         config()->set('debug', false);
 
-        config()->set('logging.current', 'single');
+        config()->set('logging.default', 'single');
         config()->set('logging.single', ['path' => '1.log']);
 
         $logger = LoggerFactory::get();
@@ -69,7 +69,7 @@ class LoggerFactoryTest extends AppTestCase
     {
         config()->set('debug', false);
 
-        config()->set('logging.current', 'invalid');
+        config()->set('logging.default', 'invalid');
 
         $this->expectException(LoggerException::class);
 

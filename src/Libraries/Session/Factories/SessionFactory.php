@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.6
  */
 
 namespace Quantum\Libraries\Session\Factories;
@@ -45,17 +45,16 @@ class SessionFactory
     private static $instance = null;
 
     /**
-     * @param array|null $storage
      * @return Session
      * @throws BaseException
      * @throws ConfigException
      * @throws DiException
      * @throws ReflectionException
      */
-    public static function get(?array $storage = null): Session
+    public static function get(): Session
     {
         if (self::$instance === null) {
-            return self::$instance = self::createInstance($storage);
+            return self::$instance = self::createInstance();
         }
 
         return self::$instance;
@@ -74,7 +73,7 @@ class SessionFactory
             config()->import(new Setup('Config', 'session'));
         }
 
-        $adapter = config()->get('session.current');
+        $adapter = config()->get('session.default');
 
         $adapterClass = self::getAdapterClass($adapter);
 

@@ -70,7 +70,7 @@ class Database
             config()->import(new Setup('config', 'database'));
         }
 
-        $adapterName = config()->get('database.current');
+        $adapterName = config()->get('database.default');
 
         if (!array_key_exists($adapterName, self::ADAPTERS)) {
             throw DatabaseException::adapterNotSupported($adapterName);

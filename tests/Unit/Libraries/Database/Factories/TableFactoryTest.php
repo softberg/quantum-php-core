@@ -24,7 +24,7 @@ class TableFactoryTest extends AppTestCase
             config()->import(new Setup('config', 'database', true));
         }
 
-        config()->set('database.current', 'sqlite');
+        config()->set('database.default', 'sqlite');
 
         config()->set('debug', true);
 

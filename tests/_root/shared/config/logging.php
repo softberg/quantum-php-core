@@ -1,6 +1,6 @@
 <?php
 return [
-    'current' => 'single',
+    'default' => 'single',
 
     'level' => 'info',
 
