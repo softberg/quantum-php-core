@@ -21,6 +21,11 @@
         </a>
         <ul id="sidenav-dropdown1" class="dropdown-content">
             <li>
+                <a href="<?php echo base_url(true) . '/' . current_lang() ?>/account-settings">
+                    <?php _t('common.account_settings') ?>
+                </a>
+            </li>
+            <li>
                 <a href="<?php echo base_url(true) . '/' . current_lang() ?>/my-posts">
                     <?php _t('common.my_posts') ?>
                 </a>
