@@ -104,7 +104,6 @@ class AccountController extends BaseController
     public function updatePassword(Request $request, ViewFactory $view)
     {
         $hasher = new Hasher();
-        $hasher->setAlgorithm(PASSWORD_BCRYPT);
 
         $newPassword = $request->get('new_password', null);
         

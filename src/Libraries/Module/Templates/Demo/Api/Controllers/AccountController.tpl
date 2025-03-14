@@ -83,7 +83,6 @@ class AccountController extends BaseController
     {
         try {
             $hasher = new Hasher();
-            $hasher->setAlgorithm(PASSWORD_BCRYPT);
     
             $newPassword = $request->get('new_password', null);
     

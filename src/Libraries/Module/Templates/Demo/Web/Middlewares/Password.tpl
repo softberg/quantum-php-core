@@ -44,7 +44,6 @@ class Password extends QtMiddleware
     {
         $this->validator = new Validator();
         $hasher = new Hasher();
-        $hasher->setAlgorithm(PASSWORD_BCRYPT);
         $user = ModelFactory::get(User::class)->findOneBy('uuid', auth()->user()->uuid);
         $currentPassword = $request->get('current_password');
 
