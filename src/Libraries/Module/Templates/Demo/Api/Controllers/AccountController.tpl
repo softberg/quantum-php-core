@@ -16,7 +16,7 @@ namespace {{MODULE_NAMESPACE}}\Controllers;
 
 use Quantum\Libraries\Hasher\Hasher;
 use Quantum\Factory\ServiceFactory;
-use Shared\Services\AccountService;
+use Shared\Services\AuthService;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 
@@ -27,17 +27,17 @@ use Quantum\Http\Request;
 class AccountController extends BaseController
 {
     /**
-     * Account service
-     * @var AccountService
+     * Auth service
+     * @var AuthService
      */
-    public $accountService;
+    public $authService;
     
     /**
      * Works before an action
      */
     public function __before()
     {
-        $this->accountService = ServiceFactory::get(AccountService::class);
+        $this->authService = ServiceFactory::get(AuthService::class);
     }
 
     /**
@@ -51,10 +51,19 @@ class AccountController extends BaseController
         try {
             $firstname = $request->get('firstname', null);
             $lastname = $request->get('lastname', null);
-    
-            $this->accountService->update(auth()->user()->uuid, [
+
+            $newUserData = [
                 'firstname' => $firstname,
                 'lastname' => $lastname
+            ];
+    
+            $this->authService->update('uuid', auth()->user()->uuid, $newUserData);
+
+            auth()->refreshUser();
+
+            $response->json([
+                'status' => self::STATUS_SUCCESS,
+                'message' => t('common.updated_successfully')
             ]);
         } catch (AuthException $e) {
             $response->json([
@@ -74,12 +83,16 @@ class AccountController extends BaseController
     {
         try {
             $hasher = new Hasher();
-            $hasher->setAlgorithm(PASSWORD_BCRYPT);
     
             $newPassword = $request->get('new_password', null);
     
-            $this->accountService->update(auth()->user()->uuid, [
+            $this->authService->update('uuid', auth()->user()->uuid, [
                 'password' => $hasher->hash($newPassword)
+            ]);
+
+            $response->json([
+                'status' => self::STATUS_SUCCESS,
+                'message' => t('common.updated_successfully')
             ]);
         } catch (AuthException $e) {
             $response->json([

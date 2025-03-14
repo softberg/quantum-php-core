@@ -17,7 +17,7 @@ namespace {{MODULE_NAMESPACE}}\Controllers;
 use Quantum\Libraries\Auth\Contracts\AuthenticatableInterface;
 use Quantum\Libraries\Hasher\Hasher;
 use Quantum\Factory\ServiceFactory;
-use Shared\Services\AccountService;
+use Shared\Services\AuthService;
 use Quantum\Factory\ViewFactory;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
@@ -36,9 +36,9 @@ class AccountController extends BaseController
 
     /**
      * Account service
-     * @var AccountService
+     * @var AuthService
      */
-    public $accountService;
+    public $authService;
 
     /**
      * Works before an action
@@ -46,7 +46,7 @@ class AccountController extends BaseController
      */
     public function __before(ViewFactory $view)
     {
-        $this->accountService = ServiceFactory::get(AccountService::class);
+        $this->authService = ServiceFactory::get(AuthService::class);
 
         parent::__before($view);
     }
@@ -76,10 +76,9 @@ class AccountController extends BaseController
         $firstname = $request->get('firstname', null);
         $lastname = $request->get('lastname', null);
 
-        $user = $this->accountService->update(auth()->user()->uuid, [
+        $user = $this->authService->update('uuid', uth()->user()->uuid, [
             'firstname' => $firstname,
-            'lastname' => $lastname,
-            'csrf-token' => csrf_token()
+            'lastname' => $lastname
         ]);
 
         $userData = session()->get(AuthenticatableInterface::AUTH_USER);
@@ -105,11 +104,10 @@ class AccountController extends BaseController
     public function updatePassword(Request $request, ViewFactory $view)
     {
         $hasher = new Hasher();
-        $hasher->setAlgorithm(PASSWORD_BCRYPT);
 
         $newPassword = $request->get('new_password', null);
         
-        $this->accountService->update(auth()->user()->uuid, [
+        $this->authService->update('uuid', auth()->user()->uuid, [
             'password' => $hasher->hash($newPassword)
         ]);
 
