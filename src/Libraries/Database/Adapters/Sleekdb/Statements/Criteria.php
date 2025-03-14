@@ -93,12 +93,29 @@ trait Criteria
      */
     protected function sanitizeValue($value)
     {
+        $escapeMap = [
+            '\\' => '\\\\',
+            '.' => '\.',
+            '^' => '\^',
+            '$' => '\$',
+            '*' => '\*',
+            '+' => '\+',
+            '?' => '\?',
+            '(' => '\(',
+            ')' => '\)',
+            '[' => '\[',
+            ']' => '\]',
+            '{' => '\{',
+            '}' => '\}',
+            '|' => '\|'
+        ];
+
         if (is_array($value)) {
-            return array_map(function ($v) {
-                return is_string($v) ? preg_quote($v, '/') : $v;
+            return array_map(function ($v) use ($escapeMap) {
+                return is_string($v) ? strtr($v, $escapeMap) : $v;
             }, $value);
         }
 
-        return is_string($value) ? preg_quote($value, '/') : $value;
+        return is_string($value) ? strtr($value, $escapeMap) : $value;
     }
 }
