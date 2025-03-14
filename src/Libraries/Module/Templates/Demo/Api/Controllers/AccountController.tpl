@@ -90,6 +90,8 @@ class AccountController extends BaseController
                 'password' => $hasher->hash($newPassword)
             ]);
 
+            auth()->refreshUser();
+
             $response->json([
                 'status' => self::STATUS_SUCCESS,
                 'message' => t('common.updated_successfully')

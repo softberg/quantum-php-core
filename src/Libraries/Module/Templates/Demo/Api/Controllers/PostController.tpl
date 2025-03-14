@@ -110,6 +110,8 @@ class PostController extends BaseController
     {
         $myPosts = $this->postService->getMyPosts((int)auth()->user()->id);
         
+        auth()->refreshUser();
+
         $response->json([
             'status' => 'success',
             'data' => transform($myPosts, $transformer)
@@ -142,6 +144,8 @@ class PostController extends BaseController
         }
 
         $this->postService->addPost($postData);
+
+        auth()->refreshUser();
 
         $response->json([
             'status' => 'success',
@@ -182,6 +186,8 @@ class PostController extends BaseController
 
         $this->postService->updatePost($postId, $postData);
 
+        auth()->refreshUser();
+
         $response->json([
             'status' => 'success',
             'message' => t('common.updated_successfully')
@@ -203,6 +209,8 @@ class PostController extends BaseController
         }
 
         $this->postService->deletePost($postId);
+
+        auth()->refreshUser();
 
         $response->json([
             'status' => 'success',
@@ -230,6 +238,8 @@ class PostController extends BaseController
             'image' => '',
             'updated_at' => date('Y-m-d H:i:s'),
         ]);
+
+        auth()->refreshUser();
 
         $response->json([
             'status' => 'success',

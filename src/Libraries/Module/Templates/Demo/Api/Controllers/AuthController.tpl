@@ -57,6 +57,8 @@ class AuthController extends BaseController
      */
     public function me(Response $response)
     {
+        auth()->refreshUser();
+        
         $response->json([
             'status' => self::STATUS_SUCCESS,
             'data' => [
