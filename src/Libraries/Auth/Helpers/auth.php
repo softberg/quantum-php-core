@@ -9,13 +9,11 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.6
  */
 
 use Quantum\Libraries\Config\Exceptions\ConfigException;
-use Quantum\Libraries\Mailer\Exceptions\MailerException;
 use Quantum\Libraries\Auth\Exceptions\AuthException;
-use Quantum\Libraries\Lang\Exceptions\LangException;
 use Quantum\Libraries\Auth\Factories\AuthFactory;
 use Quantum\Exceptions\ServiceException;
 use Quantum\Di\Exceptions\DiException;
@@ -24,17 +22,16 @@ use Quantum\Libraries\Auth\Auth;
 
 /**
  * Gets the Auth handler
+ * @param string|null $adapter
  * @return Auth
- * @throws BaseException
  * @throws AuthException
+ * @throws BaseException
  * @throws ConfigException
  * @throws DiException
- * @throws LangException
- * @throws MailerException
  * @throws ReflectionException
  * @throws ServiceException
  */
-function auth(): Auth
+function auth(?string $adapter = null): Auth
 {
-    return AuthFactory::get();
+    return AuthFactory::get($adapter);
 }

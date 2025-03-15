@@ -9,21 +9,19 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.6
  */
 
 namespace Quantum\Libraries\Auth\Traits;
 
-use Quantum\Libraries\Encryption\Exceptions\CryptorException;
-use Quantum\Libraries\Database\Exceptions\DatabaseException;
 use Quantum\Libraries\Auth\Contracts\AuthServiceInterface;
-use Quantum\Libraries\Session\Exceptions\SessionException;
 use Quantum\Libraries\Config\Exceptions\ConfigException;
 use Quantum\Libraries\Mailer\Contracts\MailerInterface;
 use Quantum\Libraries\Auth\Exceptions\AuthException;
 use Quantum\Libraries\Jwt\Exceptions\JwtException;
 use Quantum\Libraries\Auth\Constants\AuthKeys;
 use Quantum\Di\Exceptions\DiException;
+use Quantum\Exceptions\BaseException;
 use Quantum\Libraries\Hasher\Hasher;
 use Quantum\Libraries\Jwt\JwtToken;
 use Quantum\Libraries\Auth\User;
@@ -77,14 +75,11 @@ trait AuthTrait
 
     /**
      * @inheritDoc
-     * @return bool
      * @throws ConfigException
-     * @throws CryptorException
-     * @throws DatabaseException
      * @throws DiException
-     * @throws ReflectionException
-     * @throws SessionException
      * @throws JwtException
+     * @throws ReflectionException
+     * @throws BaseException
      */
     public function check(): bool
     {

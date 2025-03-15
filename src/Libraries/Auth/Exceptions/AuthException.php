@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.6
  */
 
 namespace Quantum\Libraries\Auth\Exceptions;
@@ -52,23 +52,6 @@ class AuthException extends BaseException
     public static function verificationCodeExpired(): AuthException
     {
         return new static(t('exception.verification_code_expired'));
-    }
-
-    /**
-     * @return AuthException
-     */
-    public static function misconfiguredAuthConfig(): AuthException
-    {
-        return new static(t('exception.misconfigured_auth_config'));
-    }
-
-    /**
-     * @param string $name
-     * @return AuthException
-     */
-    public static function undefinedAuthType(string $name): AuthException
-    {
-        return new static(t('exception.undefined_auth_type', $name));
     }
 
     /**

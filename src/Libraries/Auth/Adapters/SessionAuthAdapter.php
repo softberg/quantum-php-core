@@ -9,13 +9,12 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.6
  */
 
 namespace Quantum\Libraries\Auth\Adapters;
 
 use Quantum\Libraries\Auth\Contracts\AuthenticatableInterface;
-use Quantum\Libraries\Encryption\Exceptions\CryptorException;
 use Quantum\Libraries\Database\Exceptions\DatabaseException;
 use Quantum\Libraries\Session\Exceptions\SessionException;
 use Quantum\Libraries\Auth\Contracts\AuthServiceInterface;
@@ -35,7 +34,7 @@ use Exception;
  * Class WebAuth
  * @package Quantum\Libraries\Auth
  */
-class WebAdapter implements AuthenticatableInterface
+class SessionAuthAdapter implements AuthenticatableInterface
 {
 
     use AuthTrait;
@@ -105,12 +104,10 @@ class WebAdapter implements AuthenticatableInterface
 
     /**
      * @inheritDoc
+     * @throws BaseException
      * @throws ConfigException
-     * @throws CryptorException
-     * @throws DatabaseException
      * @throws DiException
      * @throws ReflectionException
-     * @throws SessionException
      */
     public function user(): ?User
     {
