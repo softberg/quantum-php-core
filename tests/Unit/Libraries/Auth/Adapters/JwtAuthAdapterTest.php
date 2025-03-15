@@ -2,13 +2,13 @@
 
 namespace Quantum\Tests\Unit\Libraries\Auth\Adapters;
 
+use Quantum\Libraries\Auth\Adapters\SessionAuthAdapter;
 use Quantum\Libraries\Auth\Exceptions\AuthException;
 use Quantum\Tests\Unit\Libraries\Auth\AuthTestCase;
-use Quantum\Libraries\Auth\Adapters\WebAdapter;
 use Quantum\Libraries\Hasher\Hasher;
 use Quantum\Libraries\Auth\User;
 
-class WebAdapterTest extends AuthTestCase
+class JwtAuthAdapterTest extends AuthTestCase
 {
 
     private $webAuth;
@@ -17,7 +17,7 @@ class WebAdapterTest extends AuthTestCase
     {
         parent::setUp();
 
-        $this->webAuth = new WebAdapter($this->authService, $this->mailer, new Hasher);
+        $this->webAuth = new SessionAuthAdapter($this->authService, $this->mailer, new Hasher);
 
         $admin = $this->webAuth->signup($this->adminUser);
 
@@ -33,7 +33,7 @@ class WebAdapterTest extends AuthTestCase
 
     public function testWebAdapterConstructor()
     {
-        $this->assertInstanceOf(WebAdapter::class, $this->webAuth);
+        $this->assertInstanceOf(SessionAuthAdapter::class, $this->webAuth);
     }
 
     public function testWebSigninIncorrectCredentials()
