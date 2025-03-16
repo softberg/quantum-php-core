@@ -2,212 +2,165 @@
 
 namespace Quantum\Tests\Unit\Libraries\Auth\Adapters;
 
-use Quantum\Libraries\Auth\Adapters\JwtAuthAdapter;
+use Quantum\Libraries\Auth\Adapters\SessionAuthAdapter;
 use Quantum\Libraries\Auth\Exceptions\AuthException;
 use Quantum\Tests\Unit\Libraries\Auth\AuthTestCase;
 use Quantum\Libraries\Hasher\Hasher;
-use Quantum\Libraries\Jwt\JwtToken;
 use Quantum\Libraries\Auth\User;
 
 class SessionAuthAdapterTest extends AuthTestCase
 {
+
+    private $webAuth;
+
     public function setUp(): void
     {
-
         parent::setUp();
 
-        $jwt = (new JwtToken())
-            ->setLeeway(1)
-            ->setClaims([
-                'jti' => uniqid(),
-                'iss' => 'issuer',
-                'aud' => 'audience',
-                'iat' => time(),
-                'nbf' => time() + 1,
-                'exp' => time() + 60
-            ]);
+        $this->webAuth = new SessionAuthAdapter($this->authService, $this->mailer, new Hasher);
 
-        $this->apiAuth = new JwtAuthAdapter($this->authService, $this->mailer, new Hasher, $jwt);
+        $admin = $this->webAuth->signup($this->adminUser);
 
-
-        $admin = $this->apiAuth->signup($this->adminUser);
-
-        $this->apiAuth->activate($admin->getFieldValue('activation_token'));
+        $this->webAuth->activate($admin->getFieldValue('activation_token'));
     }
 
     public function tearDown(): void
     {
         self::$users = [];
 
-        $this->apiAuth->signout();
+        $this->webAuth->signout();
     }
 
-    public function testApiAdapterConstructor()
+    public function testWebAdapterConstructor()
     {
-        $this->assertInstanceOf(JwtAuthAdapter::class, $this->apiAuth);
+        $this->assertInstanceOf(SessionAuthAdapter::class, $this->webAuth);
     }
 
-    public function testApiSigninIncorrectCredentials()
+    public function testWebSigninIncorrectCredentials()
     {
         $this->expectException(AuthException::class);
 
         $this->expectExceptionMessage('incorrect_auth_credentials');
 
-        $this->apiAuth->signin('admin@qt.com', '111111');
+        $this->webAuth->signin('admin@qt.com', '111111');
     }
 
-    public function testApiSigninCorrectCredentials()
+    public function testWebSigninCorrectCredentials()
     {
-        config()->set('2FA', false);
+        $this->assertTrue($this->webAuth->signin('admin@qt.com', 'qwerty'));
 
-        $this->assertIsArray($this->apiAuth->signin('admin@qt.com', 'qwerty'));
-
-        $this->assertArrayHasKey('access_token', $this->apiAuth->signin('admin@qt.com', 'qwerty'));
-
-        $this->assertArrayHasKey('refresh_token', $this->apiAuth->signin('admin@qt.com', 'qwerty'));
+        $this->assertTrue($this->webAuth->signin('admin@qt.com', 'qwerty', true));
     }
 
-    public function testApiSignOut()
+    public function testWebSigninWithRemember()
     {
-        $this->apiAuth->signin('admin@qt.com', 'qwerty');
+        $this->webAuth->signin('admin@qt.com', 'qwerty', true);
 
-        $this->assertTrue($this->apiAuth->check());
+        session()->delete('auth_user');
 
-        $this->apiAuth->signout();
-
-        $this->assertFalse($this->apiAuth->check());
+        $this->assertTrue($this->webAuth->check());
     }
 
-    public function testApiUser()
+    public function testWebSignout()
     {
-        $this->apiAuth->signin('admin@qt.com', 'qwerty');
+        $this->assertFalse($this->webAuth->check());
 
-        $this->assertInstanceOf(User::class, $this->apiAuth->user());
+        $this->webAuth->signin('admin@qt.com', 'qwerty');
 
-        $this->assertEquals('admin@qt.com', $this->apiAuth->user()->getFieldValue('email'));
+        $this->assertTrue($this->webAuth->check());
 
-        $this->assertEquals('admin', $this->apiAuth->user()->getFieldValue('role'));
+        $this->webAuth->signout();
 
-        $this->apiAuth->signout();
-
-        $this->assertNull($this->apiAuth->user());
+        $this->assertFalse($this->webAuth->check());
     }
 
-    public function testApiCheck()
+    public function testWebUser()
     {
-        $this->assertFalse($this->apiAuth->check());
+        $this->webAuth->signin('admin@qt.com', 'qwerty');
 
-        $this->apiAuth->signin('admin@qt.com', 'qwerty');
+        $this->assertInstanceOf(User::class, $this->webAuth->user());
 
-        $this->assertTrue($this->apiAuth->check());
+        $this->assertEquals('admin@qt.com', $this->webAuth->user()->getFieldValue('email'));
 
-        $this->apiAuth->signout();
-
-        $this->assertFalse($this->apiAuth->check());
+        $this->assertEquals('admin', $this->webAuth->user()->getFieldValue('role'));
     }
 
-    public function testApiSignupAndSigninWithoutActivation()
+    public function testWebCheck()
     {
+        $this->assertFalse($this->webAuth->check());
+
+        $this->webAuth->signin('admin@qt.com', 'qwerty');
+
+        $this->assertTrue($this->webAuth->check());
+    }
+
+    public function testWebSignupAndSigninWithoutActivation()
+    {
+
         $this->expectException(AuthException::class);
 
         $this->expectExceptionMessage('inactive_account');
 
-        $this->apiAuth->signup($this->guestUser);
+        $this->webAuth->signup($this->guestUser);
 
-        $this->assertTrue($this->apiAuth->signin('guest@qt.com', '123456'));
+        $this->assertTrue($this->webAuth->signin('guest@qt.com', '123456'));
     }
 
-    public function testApiSignupAndActivateAccount()
+    public function testWebSignupAndActivateAccount()
     {
-        $user = $this->apiAuth->signup($this->guestUser);
+        $user = $this->webAuth->signup($this->guestUser);
 
-        $this->apiAuth->activate($user->getFieldValue('activation_token'));
+        $this->webAuth->activate($user->getFieldValue('activation_token'));
 
-        $this->assertIsArray($this->apiAuth->signin('guest@qt.com', '123456'));
-
-        $this->assertArrayHasKey('access_token', $this->apiAuth->signin('guest@qt.com', '123456'));
-
-        $this->assertArrayHasKey('refresh_token', $this->apiAuth->signin('guest@qt.com', '123456'));
+        $this->assertTrue($this->webAuth->signin('guest@qt.com', '123456'));
     }
 
-    public function testApiForgetReset()
+    public function testWebForgetReset()
     {
-        $resetToken = $this->apiAuth->forget('admin@qt.com', 'tpl');
+        $resetToken = $this->webAuth->forget('admin@qt.com', 'tpl');
 
-        $this->apiAuth->reset($resetToken, '123456789');
+        $this->webAuth->reset($resetToken, '123456789');
 
-        $this->assertIsArray($this->apiAuth->signin('admin@qt.com', '123456789'));
-
-        $this->assertArrayHasKey('access_token', $this->apiAuth->signin('admin@qt.com', '123456789'));
-
-        $this->assertArrayHasKey('refresh_token', $this->apiAuth->signin('admin@qt.com', '123456789'));
+        $this->assertTrue($this->webAuth->signin('admin@qt.com', '123456789'));
     }
 
-    public function testApiVerify()
-    {
-        config()->set('2FA', true);
-
-        config()->set('otp_expires', 2);
-
-        $otp_token = $this->apiAuth->signin('admin@qt.com', 'qwerty');
-
-        $tokens = $this->apiAuth->verifyOtp(123456789, $otp_token);
-
-        $this->assertArrayHasKey('access_token', $tokens);
-
-        $this->assertArrayHasKey('refresh_token', $tokens);
-    }
-
-    public function testApiSigninWithoutVerification()
+    public function testWebWithoutVerification()
     {
         config()->set('2FA', false);
 
-        config()->set('otp_expires', 2);
+        config()->set('otp_expiry_time', 2);
 
-        $this->assertArrayHasKey('access_token', $this->apiAuth->signin('admin@qt.com', 'qwerty'));
-
-        $this->assertArrayHasKey('refresh_token', $this->apiAuth->signin('admin@qt.com', 'qwerty'));
+        $this->assertTrue($this->webAuth->signin('admin@qt.com', 'qwerty'));
     }
 
-    public function testApiSigninWithVerification()
+    public function testWebWithVerification()
     {
         config()->set('2FA', true);
 
         config()->set('otp_expires', 2);
 
-        $this->assertIsString($this->apiAuth->signin('admin@qt.com', 'qwerty'));
+        $this->assertIsString($this->webAuth->signin('admin@qt.com', 'qwerty'));
     }
 
-    public function testApiResendOtp()
+    public function testWebVerify()
     {
         config()->set('2FA', true);
 
         config()->set('otp_expires', 2);
 
-        $otp_token = $this->apiAuth->signin('admin@qt.com', 'qwerty');
+        $otp_token = $this->webAuth->signin('admin@qt.com', 'qwerty');
 
-        $this->assertIsString($this->apiAuth->resendOtp($otp_token));
+        $this->assertTrue($this->webAuth->verifyOtp(123456789, $otp_token));
     }
 
-    public function testApiRefreshUser()
+    public function testWebResendOtp()
     {
-        $this->apiAuth->signin('admin@qt.com', 'qwerty');
+        config()->set('2FA', true);
 
-        $this->assertEquals('Admin', $this->apiAuth->user()->firstname);
+        config()->set('otp_expires', 2);
 
-        $this->assertEquals('User', $this->apiAuth->user()->lastname);
+        $otp_token = $this->webAuth->signin('admin@qt.com', 'qwerty');
 
-        $newUserData = [
-            'firstname' => 'Super',
-            'lastname' => 'Human',
-        ];
-
-        $this->authService->update('email', $this->apiAuth->user()->email, $newUserData);
-
-        $this->apiAuth->refreshUser();
-
-        $this->assertEquals('Super', $this->apiAuth->user()->firstname);
-
-        $this->assertEquals('Human', $this->apiAuth->user()->lastname);
+        $this->assertIsString($this->webAuth->resendOtp($otp_token));
     }
 }
