@@ -9,14 +9,12 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.6
  */
 
 namespace Quantum\Environment;
 
-use Quantum\Libraries\Storage\Factories\FileSystemFactory;
 use Quantum\Environment\Exceptions\EnvException;
-use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Exceptions\BaseException;
 use Quantum\Loader\Loader;
@@ -33,12 +31,6 @@ use Quantum\Di\Di;
  */
 class Environment
 {
-
-    /**
-     * FileSystem instance
-     * @var FileSystem
-     */
-    private $fs;
 
     /**
      * Environment file
@@ -64,14 +56,6 @@ class Environment
      * @var Environment
      */
     private static $instance = null;
-
-    /**
-     * @throws BaseException
-     */
-    private function __construct()
-    {
-        $this->fs = FileSystemFactory::get();
-    }
 
     /**
      * GetInstance
@@ -197,14 +181,11 @@ class Environment
         $envFilePath = App::getBaseDir() . DS . $this->envFile;
 
         if ($row) {
-            $this->fs->put($envFilePath, preg_replace(
-                    '/^' . $row . '/m',
-                    $key . "=" . $value,
-                    $this->fs->get($envFilePath)
-                )
-            );
+            $envFileContent = file_get_contents($envFilePath);
+            $envFileContent = preg_replace('/^' . preg_quote($row, '/') . '/m', $key . "=" . $value, $envFileContent);
+            file_put_contents($envFilePath, $envFileContent);
         } else {
-            $this->fs->append($envFilePath, PHP_EOL . $key . "=" . $value . PHP_EOL);
+            file_put_contents($envFilePath, PHP_EOL . $key . "=" . $value . PHP_EOL, FILE_APPEND);
         }
 
         $this->envContent = Dotenv::createMutable(App::getBaseDir(), $this->envFile)->load();
