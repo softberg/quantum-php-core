@@ -11,6 +11,9 @@ use Quantum\Libraries\Auth\User;
 
 class JwtAuthAdapterTest extends AuthTestCase
 {
+
+    private $jwtAuth;
+
     public function setUp(): void
     {
 
@@ -27,24 +30,24 @@ class JwtAuthAdapterTest extends AuthTestCase
                 'exp' => time() + 60
             ]);
 
-        $this->apiAuth = new JwtAuthAdapter($this->authService, $this->mailer, new Hasher, $jwt);
+        $this->jwtAuth = new JwtAuthAdapter($this->authService, $this->mailer, new Hasher, $jwt);
 
 
-        $admin = $this->apiAuth->signup($this->adminUser);
+        $admin = $this->jwtAuth->signup($this->adminUser);
 
-        $this->apiAuth->activate($admin->getFieldValue('activation_token'));
+        $this->jwtAuth->activate($admin->getFieldValue('activation_token'));
     }
 
     public function tearDown(): void
     {
         self::$users = [];
 
-        $this->apiAuth->signout();
+        $this->jwtAuth->signout();
     }
 
     public function testApiAdapterConstructor()
     {
-        $this->assertInstanceOf(JwtAuthAdapter::class, $this->apiAuth);
+        $this->assertInstanceOf(JwtAuthAdapter::class, $this->jwtAuth);
     }
 
     public function testApiSigninIncorrectCredentials()
@@ -53,57 +56,57 @@ class JwtAuthAdapterTest extends AuthTestCase
 
         $this->expectExceptionMessage('incorrect_auth_credentials');
 
-        $this->apiAuth->signin('admin@qt.com', '111111');
+        $this->jwtAuth->signin('admin@qt.com', '111111');
     }
 
     public function testApiSigninCorrectCredentials()
     {
         config()->set('2FA', false);
 
-        $this->assertIsArray($this->apiAuth->signin('admin@qt.com', 'qwerty'));
+        $this->assertIsArray($this->jwtAuth->signin('admin@qt.com', 'qwerty'));
 
-        $this->assertArrayHasKey('access_token', $this->apiAuth->signin('admin@qt.com', 'qwerty'));
+        $this->assertArrayHasKey('access_token', $this->jwtAuth->signin('admin@qt.com', 'qwerty'));
 
-        $this->assertArrayHasKey('refresh_token', $this->apiAuth->signin('admin@qt.com', 'qwerty'));
+        $this->assertArrayHasKey('refresh_token', $this->jwtAuth->signin('admin@qt.com', 'qwerty'));
     }
 
     public function testApiSignOut()
     {
-        $this->apiAuth->signin('admin@qt.com', 'qwerty');
+        $this->jwtAuth->signin('admin@qt.com', 'qwerty');
 
-        $this->assertTrue($this->apiAuth->check());
+        $this->assertTrue($this->jwtAuth->check());
 
-        $this->apiAuth->signout();
+        $this->jwtAuth->signout();
 
-        $this->assertFalse($this->apiAuth->check());
+        $this->assertFalse($this->jwtAuth->check());
     }
 
     public function testApiUser()
     {
-        $this->apiAuth->signin('admin@qt.com', 'qwerty');
+        $this->jwtAuth->signin('admin@qt.com', 'qwerty');
 
-        $this->assertInstanceOf(User::class, $this->apiAuth->user());
+        $this->assertInstanceOf(User::class, $this->jwtAuth->user());
 
-        $this->assertEquals('admin@qt.com', $this->apiAuth->user()->getFieldValue('email'));
+        $this->assertEquals('admin@qt.com', $this->jwtAuth->user()->getFieldValue('email'));
 
-        $this->assertEquals('admin', $this->apiAuth->user()->getFieldValue('role'));
+        $this->assertEquals('admin', $this->jwtAuth->user()->getFieldValue('role'));
 
-        $this->apiAuth->signout();
+        $this->jwtAuth->signout();
 
-        $this->assertNull($this->apiAuth->user());
+        $this->assertNull($this->jwtAuth->user());
     }
 
     public function testApiCheck()
     {
-        $this->assertFalse($this->apiAuth->check());
+        $this->assertFalse($this->jwtAuth->check());
 
-        $this->apiAuth->signin('admin@qt.com', 'qwerty');
+        $this->jwtAuth->signin('admin@qt.com', 'qwerty');
 
-        $this->assertTrue($this->apiAuth->check());
+        $this->assertTrue($this->jwtAuth->check());
 
-        $this->apiAuth->signout();
+        $this->jwtAuth->signout();
 
-        $this->assertFalse($this->apiAuth->check());
+        $this->assertFalse($this->jwtAuth->check());
     }
 
     public function testApiSignupAndSigninWithoutActivation()
@@ -112,35 +115,35 @@ class JwtAuthAdapterTest extends AuthTestCase
 
         $this->expectExceptionMessage('inactive_account');
 
-        $this->apiAuth->signup($this->guestUser);
+        $this->jwtAuth->signup($this->guestUser);
 
-        $this->assertTrue($this->apiAuth->signin('guest@qt.com', '123456'));
+        $this->assertTrue($this->jwtAuth->signin('guest@qt.com', '123456'));
     }
 
     public function testApiSignupAndActivateAccount()
     {
-        $user = $this->apiAuth->signup($this->guestUser);
+        $user = $this->jwtAuth->signup($this->guestUser);
 
-        $this->apiAuth->activate($user->getFieldValue('activation_token'));
+        $this->jwtAuth->activate($user->getFieldValue('activation_token'));
 
-        $this->assertIsArray($this->apiAuth->signin('guest@qt.com', '123456'));
+        $this->assertIsArray($this->jwtAuth->signin('guest@qt.com', '123456'));
 
-        $this->assertArrayHasKey('access_token', $this->apiAuth->signin('guest@qt.com', '123456'));
+        $this->assertArrayHasKey('access_token', $this->jwtAuth->signin('guest@qt.com', '123456'));
 
-        $this->assertArrayHasKey('refresh_token', $this->apiAuth->signin('guest@qt.com', '123456'));
+        $this->assertArrayHasKey('refresh_token', $this->jwtAuth->signin('guest@qt.com', '123456'));
     }
 
     public function testApiForgetReset()
     {
-        $resetToken = $this->apiAuth->forget('admin@qt.com', 'tpl');
+        $resetToken = $this->jwtAuth->forget('admin@qt.com', 'tpl');
 
-        $this->apiAuth->reset($resetToken, '123456789');
+        $this->jwtAuth->reset($resetToken, '123456789');
 
-        $this->assertIsArray($this->apiAuth->signin('admin@qt.com', '123456789'));
+        $this->assertIsArray($this->jwtAuth->signin('admin@qt.com', '123456789'));
 
-        $this->assertArrayHasKey('access_token', $this->apiAuth->signin('admin@qt.com', '123456789'));
+        $this->assertArrayHasKey('access_token', $this->jwtAuth->signin('admin@qt.com', '123456789'));
 
-        $this->assertArrayHasKey('refresh_token', $this->apiAuth->signin('admin@qt.com', '123456789'));
+        $this->assertArrayHasKey('refresh_token', $this->jwtAuth->signin('admin@qt.com', '123456789'));
     }
 
     public function testApiVerify()
@@ -149,9 +152,9 @@ class JwtAuthAdapterTest extends AuthTestCase
 
         config()->set('otp_expires', 2);
 
-        $otp_token = $this->apiAuth->signin('admin@qt.com', 'qwerty');
+        $otp_token = $this->jwtAuth->signin('admin@qt.com', 'qwerty');
 
-        $tokens = $this->apiAuth->verifyOtp(123456789, $otp_token);
+        $tokens = $this->jwtAuth->verifyOtp(123456789, $otp_token);
 
         $this->assertArrayHasKey('access_token', $tokens);
 
@@ -164,9 +167,9 @@ class JwtAuthAdapterTest extends AuthTestCase
 
         config()->set('otp_expires', 2);
 
-        $this->assertArrayHasKey('access_token', $this->apiAuth->signin('admin@qt.com', 'qwerty'));
+        $this->assertArrayHasKey('access_token', $this->jwtAuth->signin('admin@qt.com', 'qwerty'));
 
-        $this->assertArrayHasKey('refresh_token', $this->apiAuth->signin('admin@qt.com', 'qwerty'));
+        $this->assertArrayHasKey('refresh_token', $this->jwtAuth->signin('admin@qt.com', 'qwerty'));
     }
 
     public function testApiSigninWithVerification()
@@ -175,7 +178,7 @@ class JwtAuthAdapterTest extends AuthTestCase
 
         config()->set('otp_expires', 2);
 
-        $this->assertIsString($this->apiAuth->signin('admin@qt.com', 'qwerty'));
+        $this->assertIsString($this->jwtAuth->signin('admin@qt.com', 'qwerty'));
     }
 
     public function testApiResendOtp()
@@ -184,30 +187,30 @@ class JwtAuthAdapterTest extends AuthTestCase
 
         config()->set('otp_expires', 2);
 
-        $otp_token = $this->apiAuth->signin('admin@qt.com', 'qwerty');
+        $otp_token = $this->jwtAuth->signin('admin@qt.com', 'qwerty');
 
-        $this->assertIsString($this->apiAuth->resendOtp($otp_token));
+        $this->assertIsString($this->jwtAuth->resendOtp($otp_token));
     }
 
     public function testApiRefreshUser()
     {
-        $this->apiAuth->signin('admin@qt.com', 'qwerty');
+        $this->jwtAuth->signin('admin@qt.com', 'qwerty');
 
-        $this->assertEquals('Admin', $this->apiAuth->user()->firstname);
+        $this->assertEquals('Admin', $this->jwtAuth->user()->firstname);
 
-        $this->assertEquals('User', $this->apiAuth->user()->lastname);
+        $this->assertEquals('User', $this->jwtAuth->user()->lastname);
 
         $newUserData = [
             'firstname' => 'Super',
             'lastname' => 'Human',
         ];
 
-        $this->authService->update('email', $this->apiAuth->user()->email, $newUserData);
+        $this->authService->update('email', $this->jwtAuth->user()->email, $newUserData);
 
-        $this->apiAuth->refreshUser();
+        $this->jwtAuth->refreshUser();
 
-        $this->assertEquals('Super', $this->apiAuth->user()->firstname);
+        $this->assertEquals('Super', $this->jwtAuth->user()->firstname);
 
-        $this->assertEquals('Human', $this->apiAuth->user()->lastname);
+        $this->assertEquals('Human', $this->jwtAuth->user()->lastname);
     }
 }

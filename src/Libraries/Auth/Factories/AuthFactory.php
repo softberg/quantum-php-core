@@ -47,7 +47,7 @@ class AuthFactory
     /**
      * @var Auth|null
      */
-    private static $instances = null;
+    private static $instances = [];
 
     /**
      * @param string|null $adapter
