@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.6
  */
 
 namespace Quantum\Libraries\Storage\Factories;
@@ -17,10 +17,20 @@ namespace Quantum\Libraries\Storage\Factories;
 use Quantum\Libraries\Storage\Adapters\GoogleDrive\GoogleDriveFileSystemAdapter;
 use Quantum\Libraries\Storage\Adapters\Dropbox\DropboxFileSystemAdapter;
 use Quantum\Libraries\Storage\Adapters\Local\LocalFileSystemAdapter;
+use Quantum\Libraries\Storage\Adapters\GoogleDrive\GoogleDriveApp;
+use Quantum\Libraries\Storage\Contracts\TokenServiceInterface;
 use Quantum\Libraries\Storage\Exceptions\FileSystemException;
+use Quantum\Libraries\Storage\Adapters\Dropbox\DropboxApp;
 use Quantum\Libraries\Storage\Contracts\CloudAppInterface;
+use Quantum\Libraries\Config\Exceptions\ConfigException;
+use Quantum\Libraries\HttpClient\HttpClient;
 use Quantum\Libraries\Storage\FileSystem;
+use Quantum\Exceptions\ServiceException;
+use Quantum\Di\Exceptions\DiException;
 use Quantum\Exceptions\BaseException;
+use Quantum\Factory\ServiceFactory;
+use Quantum\Loader\Setup;
+use ReflectionException;
 
 /**
  * Class FileSystemFactory
@@ -39,39 +49,113 @@ class FileSystemFactory
     ];
 
     /**
+     * Supported apps
+     */
+    const APPS = [
+        FileSystem::DROPBOX => DropboxApp::class,
+        FileSystem::GDRIVE => GoogleDriveApp::class,
+    ];
+
+    /**
      * @var array
      */
     private static $instances = [];
 
     /**
-     * @param string $type
-     * @param CloudAppInterface|null $cloudApp
+     * @param string|null $adapter
      * @return FileSystem
      * @throws BaseException
+     * @throws DiException
+     * @throws ReflectionException
+     * @throws ConfigException
      */
-    public static function get(string $type = FileSystem::LOCAL, ?CloudAppInterface $cloudApp = null): FileSystem
+    public static function get(?string $adapter = null): FileSystem
     {
-        if (!isset(self::$instances[$type])) {
-            self::$instances[$type] = self::createInstance($type, $cloudApp);
+        if (!config()->has('fs')) {
+            config()->import(new Setup('Config', 'fs'));
         }
 
-        return self::$instances[$type];
+        $adapter = $adapter ?? config()->get('fs.default');
+
+        $adapterClass = self::getAdapterClass($adapter);
+
+        if (!isset(self::$instances[$adapter])) {
+            self::$instances[$adapter] = self::createInstance($adapterClass, $adapter);
+        }
+
+        return self::$instances[$adapter];
     }
 
     /**
-     * @param string $type
-     * @param CloudAppInterface|null $cloudApp
+     * @param string $adapterClass
+     * @param string $adapter
      * @return FileSystem
+     * @throws DiException
+     * @throws FileSystemException
+     * @throws ReflectionException
+     * @throws ServiceException
+     */
+    private static function createInstance(string $adapterClass, string $adapter): FileSystem
+    {
+        return new FileSystem(new $adapterClass(
+            self::createCloudApp($adapter)
+        ));
+    }
+
+    /**
+     * @param string $adapter
+     * @return string
      * @throws BaseException
      */
-    private static function createInstance(string $type, ?CloudAppInterface $cloudApp = null): FileSystem
+    private static function getAdapterClass(string $adapter): string
     {
-        if (!isset(self::ADAPTERS[$type])) {
-            throw FileSystemException::adapterNotSupported($type);
+        if (!array_key_exists($adapter, self::ADAPTERS)) {
+            throw FileSystemException::adapterNotSupported($adapter);
         }
 
-        $adapterClass = self::ADAPTERS[$type];
+        return self::ADAPTERS[$adapter];
+    }
 
-        return new FileSystem(new $adapterClass($cloudApp));
+    /**
+     * @param string $adapter
+     * @return CloudAppInterface|null
+     * @throws DiException
+     * @throws FileSystemException
+     * @throws ReflectionException
+     * @throws ServiceException
+     */
+    private static function createCloudApp(string $adapter): ?CloudAppInterface
+    {
+        if ($adapter === FileSystem::LOCAL || !isset(self::APPS[$adapter])) {
+            return null;
+        }
+
+        $cloudAppClass = self::APPS[$adapter];
+
+        return new $cloudAppClass(
+            config()->get('fs.' . $adapter . '.params.app_key'),
+            config()->get('fs.' . $adapter . '.params.app_secret'),
+            self::createTokenService($adapter),
+            new HttpClient()
+        );
+    }
+
+    /**
+     * @param string $adapter
+     * @return TokenServiceInterface
+     * @throws FileSystemException
+     * @throws DiException
+     * @throws ServiceException
+     * @throws ReflectionException
+     */
+    private static function createTokenService(string $adapter): TokenServiceInterface
+    {
+        $authService = ServiceFactory::create(config()->get('fs.' . $adapter . '.service'));
+
+        if (!$authService instanceof TokenServiceInterface) {
+            throw FileSystemException::incorrectTokenService();
+        }
+
+        return $authService;
     }
 }
