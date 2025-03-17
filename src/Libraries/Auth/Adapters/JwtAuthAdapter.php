@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.6
  */
 
 namespace Quantum\Libraries\Auth\Adapters;
@@ -32,7 +32,7 @@ use Exception;
  * Class ApiAuth
  * @package Quantum\Libraries\Auth
  */
-class ApiAdapter implements AuthenticatableInterface
+class JwtAuthAdapter implements AuthenticatableInterface
 {
 
     use AuthTrait;

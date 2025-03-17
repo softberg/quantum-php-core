@@ -3,10 +3,10 @@
 namespace Quantum\Tests\Unit\Libraries\Auth\Factories;
 
 use Quantum\Tests\_root\modules\Test\Services\AuthService;
+use Quantum\Libraries\Auth\Adapters\SessionAuthAdapter;
+use Quantum\Libraries\Auth\Adapters\JwtAuthAdapter;
 use Quantum\Libraries\Auth\Exceptions\AuthException;
 use Quantum\Libraries\Auth\Factories\AuthFactory;
-use Quantum\Libraries\Auth\Adapters\ApiAdapter;
-use Quantum\Libraries\Auth\Adapters\WebAdapter;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Libraries\Auth\Auth;
 
@@ -17,7 +17,7 @@ class AuthFactoryTest extends AppTestCase
     {
         parent::setUp();
 
-        $this->setPrivateProperty(AuthFactory::class, 'instance', null);
+        $this->setPrivateProperty(AuthFactory::class, 'instances', null);
     }
 
     public function testAuthFactoryInstance()
@@ -27,26 +27,30 @@ class AuthFactoryTest extends AppTestCase
         $this->assertInstanceOf(Auth::class, $auth);
     }
 
-    public function testAuthFactoryWebAdapter()
+    public function testAuthFactoryDefaultAuthAdapter()
     {
         $auth = AuthFactory::get();
 
-        $this->assertInstanceOf(WebAdapter::class, $auth->getAdapter());
+        $this->assertInstanceOf(SessionAuthAdapter::class, $auth->getAdapter());
     }
 
-    public function testAuthFactoryApiAdapter()
+    public function testAuthFactorySessionAuthAdapter()
     {
-        config()->set('auth.type', 'api');
-        config()->set('auth.service', AuthService::class);
+        $auth = AuthFactory::get(Auth::SESSION);
 
-        $auth = AuthFactory::get();
+        $this->assertInstanceOf(SessionAuthAdapter::class, $auth->getAdapter());
+    }
 
-        $this->assertInstanceOf(ApiAdapter::class, $auth->getAdapter());
+    public function testAuthFactoryJwtAuthAdapter()
+    {
+        $auth = AuthFactory::get(Auth::JWT);
+
+        $this->assertInstanceOf(JwtAuthAdapter::class, $auth->getAdapter());
     }
 
     public function testAuthFactoryInvalidTypeAdapter()
     {
-        config()->set('auth.type', 'invalid');
+        config()->set('auth.default', 'invalid');
 
         $this->expectException(AuthException::class);
 
@@ -57,8 +61,8 @@ class AuthFactoryTest extends AppTestCase
 
     public function testAuthFactoryReturnsSameInstance()
     {
-        $auth1 = AuthFactory::get();
-        $auth2 = AuthFactory::get();
+        $auth1 = AuthFactory::get(Auth::SESSION);
+        $auth2 = AuthFactory::get(Auth::SESSION);
 
         $this->assertSame($auth1, $auth2);
     }

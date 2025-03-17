@@ -30,7 +30,6 @@ namespace Quantum\Tests\Unit\Libraries\Auth {
     abstract class AuthTestCase extends AppTestCase
     {
         protected static $users = [];
-        protected $apiAuth;
         protected $authService;
         protected $mailer;
         protected $userSchema = [

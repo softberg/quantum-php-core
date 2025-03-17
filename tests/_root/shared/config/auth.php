@@ -1,6 +1,21 @@
 <?php
 
 return [
-    'type' => 'web',
-    'service' => Quantum\Tests\_root\modules\Test\Services\AuthService::class
+    'default' => 'session',
+
+    'session' => [
+        'service' => Quantum\Tests\_root\modules\Test\Services\AuthService::class
+    ],
+
+    'jwt' => [
+        'service' => Quantum\Tests\_root\modules\Test\Services\AuthService::class,
+        'claims' => [
+            'jti' => uniqid(),
+            'iss' => 'issuer',
+            'aud' => 'audience',
+            'iat' => time(),
+            'nbf' => time() + 1,
+            'exp' => time() + 3600 // 1 hour
+        ]
+    ]
 ];
