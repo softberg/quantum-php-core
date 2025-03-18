@@ -150,12 +150,12 @@ class FileSystemFactory
      */
     private static function createTokenService(string $adapter): TokenServiceInterface
     {
-        $authService = ServiceFactory::create(config()->get('fs.' . $adapter . '.service'));
+        $tokenService = ServiceFactory::create(config()->get('fs.' . $adapter . '.service'));
 
-        if (!$authService instanceof TokenServiceInterface) {
+        if (!$tokenService instanceof TokenServiceInterface) {
             throw FileSystemException::incorrectTokenService();
         }
 
-        return $authService;
+        return $tokenService;
     }
 }
