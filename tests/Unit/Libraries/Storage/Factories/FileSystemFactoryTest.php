@@ -30,58 +30,30 @@ class FileSystemFactoryTest extends AppTestCase
         $this->assertInstanceOf(FileSystem::class, $fs);
     }
 
-    public function testFileSystemFactoryLocalAdapter()
+    public function testFileSystemFactoryDefaultAdapter()
     {
         $fs = FileSystemFactory::get();
 
         $this->assertInstanceOf(LocalFileSystemAdapter::class, $fs->getAdapter());
     }
 
+    public function testFileSystemFactoryLocalAdapter()
+    {
+        $fs = FileSystemFactory::get(FileSystem::LOCAL);
+
+        $this->assertInstanceOf(LocalFileSystemAdapter::class, $fs->getAdapter());
+    }
+
     public function testFileSystemFactoryDropboxAdapter()
     {
-        $dropboxAppMock = Mockery::mock(DropboxApp::class);
-
-        $dropboxAppMock
-            ->shouldReceive('rpcRequest')
-            ->andReturnUsing(function ($endpoint, $params) {
-                self::$response = array_merge(self::$response, $params);
-                return self::$response;
-            });
-
-        $dropboxAppMock
-            ->shouldReceive('contentRequest')
-            ->andReturnUsing(function ($endpoint, $params, $content = '') {
-                if ($content) {
-                    self::$response['content'] = $content;
-                }
-
-                return self::$response['content'] ?? false;
-            });
-
-        $dropboxAppMock
-            ->shouldReceive('path')
-            ->andReturnUsing(function ($path) {
-                return ['path' => '/' . trim($path, '/')];
-            });
-
-        $fs = FileSystemFactory::get(FileSystem::DROPBOX, $dropboxAppMock);
+        $fs = FileSystemFactory::get(FileSystem::DROPBOX);
 
         $this->assertInstanceOf(DropboxFileSystemAdapter::class, $fs->getAdapter());
     }
 
     public function testFileSystemFactoryGoogleDriveAdapter()
     {
-        $googleDriveAppMock = Mockery::mock(GoogleDriveApp::class)->makePartial();
-
-        $googleDriveAppMock->shouldReceive('rpcRequest')->andReturnUsing(function ($endpoint, $params) {
-            if(str_contains($endpoint, '?alt=media')){
-                return self::$response[array_key_last(self::$response)];
-            }
-            self::$response = array_merge(self::$response, (array)$params);
-            return (object)self::$response;
-        });
-
-        $fs = FileSystemFactory::get(FileSystem::GDRIVE, $googleDriveAppMock);
+        $fs = FileSystemFactory::get(FileSystem::GDRIVE);
 
         $this->assertInstanceOf(GoogleDriveFileSystemAdapter::class, $fs->getAdapter());
     }
@@ -97,8 +69,8 @@ class FileSystemFactoryTest extends AppTestCase
 
     public function testFileSystemFactoryReturnsSameInstance()
     {
-        $fs1 = FileSystemFactory::get();
-        $fs2 = FileSystemFactory::get();
+        $fs1 = FileSystemFactory::get(FileSystem::LOCAL);
+        $fs2 = FileSystemFactory::get(FileSystem::LOCAL);
 
         $this->assertSame($fs1, $fs2);
     }

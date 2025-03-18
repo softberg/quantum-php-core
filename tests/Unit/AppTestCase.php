@@ -18,8 +18,6 @@ abstract class AppTestCase extends TestCase
 
     public function setUp(): void
     {
-        $this->fs = FileSystemFactory::get();
-
         AppFactory::create(App::WEB, PROJECT_ROOT);
 
         Config::getInstance()->flush();
@@ -30,6 +28,8 @@ abstract class AppTestCase extends TestCase
 
         Config::getInstance()
             ->load(new Setup('config', 'config'));
+
+        $this->fs = FileSystemFactory::get();
     }
 
     protected function setPrivateProperty($object, $property, $value): void

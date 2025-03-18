@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.6
  */
 
 namespace Quantum\Libraries\Storage\Exceptions;
@@ -47,5 +47,13 @@ class FileSystemException extends BaseException
     public static function fileAlreadyExists(): FileSystemException
     {
         return new static(t('exception.file_already_exists'), E_WARNING);
+    }
+
+    /**
+     * @return FileSystemException
+     */
+    public static function incorrectTokenService(): FileSystemException
+    {
+        return new static(t('exception.incorrect_auth_service'), E_WARNING);
     }
 }

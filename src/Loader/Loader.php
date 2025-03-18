@@ -9,12 +9,11 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.6
  */
 
 namespace Quantum\Loader;
 
-use Quantum\Libraries\Storage\Factories\FileSystemFactory;
 use Quantum\Loader\Exceptions\LoaderException;
 use Quantum\Exceptions\BaseException;
 use ReflectionException;
@@ -157,9 +156,7 @@ class Loader
         callable $notDefinedException,
         array $constructorArgs = []
     ) {
-        $fs = FileSystemFactory::get();
-
-        if (!$fs->exists($filePath)) {
+        if (!file_exists($filePath)) {
             throw $notFoundException();
         }
 
