@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.6
  */
 
 use Quantum\Libraries\Config\Exceptions\ConfigException;
@@ -19,13 +19,14 @@ use Quantum\Exceptions\BaseException;
 use Quantum\Libraries\Cache\Cache;
 
 /**
+ * @param string|null $adapter
  * @return Cache
- * @throws ReflectionException
  * @throws BaseException
- * @throws DiException
  * @throws ConfigException
+ * @throws DiException
+ * @throws ReflectionException
  */
-function cache(): Cache
+function cache(?string $adapter = null): Cache
 {
-    return CacheFactory::get();
+    return CacheFactory::get($adapter);
 }

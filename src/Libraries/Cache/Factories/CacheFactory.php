@@ -46,41 +46,40 @@ class CacheFactory
     /**
      * @var Cache|null
      */
-    private static $instance = null;
+    private static $instances = [];
 
     /**
+     * @param string|null $adapter
      * @return Cache
      * @throws BaseException
      * @throws ConfigException
      * @throws DiException
      * @throws ReflectionException
      */
-    public static function get(): Cache
-    {
-        if (self::$instance === null) {
-            return self::$instance = self::createInstance();
-        }
-
-        return self::$instance;
-    }
-
-    /**
-     * @return Cache
-     * @throws BaseException
-     * @throws DiException
-     * @throws ConfigException
-     * @throws ReflectionException
-     */
-    private static function createInstance(): Cache
+    public static function get(?string $adapter = null): Cache
     {
         if (!config()->has('cache')) {
             config()->import(new Setup('Config', 'cache'));
         }
 
-        $adapter = config()->get('cache.default');
+        $adapter = $adapter ?? config()->get('cache.default');
 
         $adapterClass = self::getAdapterClass($adapter);
 
+        if (!isset(self::$instances[$adapter])) {
+            self::$instances[$adapter] = self::createInstance($adapterClass, $adapter);
+        }
+
+        return self::$instances[$adapter];
+    }
+
+    /**
+     * @param string $adapterClass
+     * @param string $adapter
+     * @return Cache
+     */
+    private static function createInstance(string $adapterClass, string $adapter): Cache
+    {
         return new Cache(new $adapterClass(config()->get('cache.' . $adapter)));
     }
 

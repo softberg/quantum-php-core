@@ -18,7 +18,7 @@ class CacheFactoryTest extends AppTestCase
     {
         parent::setUp();
 
-        $this->setPrivateProperty(CacheFactory::class, 'instance', null);
+        $this->setPrivateProperty(CacheFactory::class, 'instances', []);
     }
 
     public function testCacheFactoryInstance()
@@ -28,82 +28,54 @@ class CacheFactoryTest extends AppTestCase
         $this->assertInstanceOf(Cache::class, $cache);
     }
 
-    public function testCacheFactoryFileAdapter()
+    public function testCacheFactoryDefaultAdapter()
     {
         $cache = CacheFactory::get();
 
         $this->assertInstanceOf(FileAdapter::class, $cache->getAdapter());
     }
 
+    public function testCacheFactoryFileAdapter()
+    {
+        $cache = CacheFactory::get(Cache::FILE);
+
+        $this->assertInstanceOf(FileAdapter::class, $cache->getAdapter());
+    }
+
     public function testCacheFactoryDatabaseAdapter()
     {
-        $params = [
-            'prefix' => 'test',
-            'table' => 'cache',
-            'ttl' => 60
-        ];
-
-        config()->set('cache.default', 'database');
-
-        config()->set('cache.database', $params);
-
-        $cache = CacheFactory::get();
+        $cache = CacheFactory::get(Cache::DATABASE);
 
         $this->assertInstanceOf(DatabaseAdapter::class, $cache->getAdapter());
     }
 
     public function testCacheFactoryMemcachedAdapter()
     {
-        $params = [
-            'prefix' => 'test',
-            'host' => '127.0.0.1',
-            'port' => 11211,
-            'ttl' => 60
-        ];
-
-        config()->set('cache.default', 'memcached');
-
-        config()->set('cache.memcached', $params);
-
-        $cache = CacheFactory::get();
+        $cache = CacheFactory::get(Cache::MEMCACHED);
 
         $this->assertInstanceOf(MemcachedAdapter::class, $cache->getAdapter());
     }
 
     public function testCacheFactoryRedisAdapter()
     {
-        $params = [
-            'prefix' => 'test',
-            'host' => '127.0.0.1',
-            'port' => 6379,
-            'ttl' => 60
-        ];
-
-
-        config()->set('cache.default', 'redis');
-
-        config()->set('cache.redis', $params);
-
-        $cache = CacheFactory::get();
+        $cache = CacheFactory::get(Cache::REDIS);
 
         $this->assertInstanceOf(RedisAdapter::class, $cache->getAdapter());
     }
 
     public function testCacheFactoryInvalidTypeAdapter()
     {
-        config()->set('cache.default', 'invalid');
-
         $this->expectException(CacheException::class);
 
-        $this->expectExceptionMessage('The adapter `invalid` is not supported`');
+        $this->expectExceptionMessage('The adapter `invalid_type` is not supported`');
 
-        CacheFactory::get();
+        CacheFactory::get('invalid_type');
     }
 
     public function testCacheFactoryReturnsSameInstance()
     {
-        $cache1 = CacheFactory::get();
-        $cache2 = CacheFactory::get();
+        $cache1 = CacheFactory::get(Cache::FILE);
+        $cache2 = CacheFactory::get(Cache::FILE);
 
         $this->assertSame($cache1, $cache2);
     }
