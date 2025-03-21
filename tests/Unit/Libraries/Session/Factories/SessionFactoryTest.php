@@ -22,7 +22,7 @@ class SessionFactoryTest extends AppTestCase
     {
         parent::setUp();
 
-        $this->setPrivateProperty(SessionFactory::class, 'instance', null);
+        $this->setPrivateProperty(SessionFactory::class, 'instances', []);
 
         IdiormDbal::connect(['driver' => 'sqlite', 'database' => ':memory:']);
 
@@ -46,18 +46,23 @@ class SessionFactoryTest extends AppTestCase
         $this->assertInstanceOf(Session::class, $session);
     }
 
-    public function testSessionFactoryNativeSessionAdapter()
+    public function testSessionFactoryGetDefaultSessionAdapter()
     {
         $session = SessionFactory::get();
 
         $this->assertInstanceOf(NativeSessionAdapter::class, $session->getAdapter());
     }
 
-    public function testSessionFactoryDatabaseAdapter()
+    public function testSessionFactoryGetNativeSessionAdapter()
     {
-        config()->set('session.default', 'database');
+        $session = SessionFactory::get(Session::NATIVE);
 
-        $session = SessionFactory::get();
+        $this->assertInstanceOf(NativeSessionAdapter::class, $session->getAdapter());
+    }
+
+    public function testSessionFactoryGetDatabaseAdapter()
+    {
+        $session = SessionFactory::get(Session::DATABASE);
 
         $this->assertInstanceOf(DatabaseSessionAdapter::class, $session->getAdapter());
     }
@@ -79,6 +84,7 @@ class SessionFactoryTest extends AppTestCase
         $this->assertEquals('Data saved in persistent storage', $session->get('data'));
 
         session_write_close();
+
         unset($session);
 
         $this->assertEquals(PHP_SESSION_NONE, session_status());
@@ -96,21 +102,19 @@ class SessionFactoryTest extends AppTestCase
         $this->assertEquals('Data saved in persistent storage', $session->get('data'));
     }
 
-    public function testMailerFactoryInvalidTypeAdapter()
+    public function testSessionFactoryInvalidTypeAdapter()
     {
-        config()->set('session.default', 'invalid');
-
         $this->expectException(SessionException::class);
 
-        $this->expectExceptionMessage('The adapter `invalid` is not supported`');
+        $this->expectExceptionMessage('The adapter `invalid_type` is not supported`');
 
-        SessionFactory::get();
+        SessionFactory::get('invalid_type');
     }
 
     public function testMailerFactoryReturnsSameInstance()
     {
-        $session1 = SessionFactory::get();
-        $session2 = SessionFactory::get();
+        $session1 = SessionFactory::get(Session::NATIVE);
+        $session2 = SessionFactory::get(Session::NATIVE);
 
         $this->assertSame($session1, $session2);
     }
