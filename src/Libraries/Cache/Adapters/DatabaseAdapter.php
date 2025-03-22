@@ -9,15 +9,14 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.6
  */
 
 namespace Quantum\Libraries\Cache\Adapters;
 
-use Quantum\Libraries\Database\Exceptions\DatabaseException;
 use Quantum\Libraries\Database\Contracts\DbalInterface;
-use Quantum\Libraries\Database\Database;
 use Psr\SimpleCache\CacheInterface;
+use Quantum\Factory\ModelFactory;
 use InvalidArgumentException;
 use Exception;
 
@@ -45,13 +44,12 @@ class DatabaseAdapter implements CacheInterface
 
     /**
      * @param array $params
-     * @throws DatabaseException
      */
     public function __construct(array $params)
     {
         $this->ttl = $params['ttl'];
         $this->prefix = $params['prefix'];
-        $this->cacheModel = Database::getInstance()->getOrm($params['table']);
+        $this->cacheModel = ModelFactory::create($params['table']);
     }
 
     /**

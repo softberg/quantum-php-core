@@ -14,6 +14,7 @@ namespace Quantum\Models {
 namespace Quantum\Tests\Unit\Factory {
 
     use Quantum\Libraries\Database\Exceptions\ModelException;
+    use Quantum\Libraries\Database\Contracts\DbalInterface;
     use Quantum\Tests\Unit\AppTestCase;
     use Quantum\Factory\ModelFactory;
     use Quantum\Models\TestModel;
@@ -56,6 +57,13 @@ namespace Quantum\Tests\Unit\Factory {
             $this->expectExceptionMessage('not_instance_of_model');
 
             ModelFactory::get(\Mockery\Undefined::class);
+        }
+
+        public function testModelFactoryCreate()
+        {
+            $userModel = ModelFactory::create('user');
+
+            $this->assertInstanceOf(DbalInterface::class, $userModel);
         }
 
     }

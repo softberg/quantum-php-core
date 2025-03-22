@@ -3,7 +3,6 @@
 namespace Quantum\Tests\Unit\Libraries\Database;
 
 use Quantum\Libraries\Database\Adapters\Idiorm\IdiormDbal;
-use Quantum\Libraries\Database\Contracts\DbalInterface;
 use Quantum\Libraries\Database\Database;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Loader\Setup;
@@ -55,14 +54,6 @@ class DatabaseTest extends AppTestCase
     {
         $this->assertEquals(IdiormDbal::class, Database::getInstance()->getOrmClass());
     }
-
-    public function testDatabaseGetOrm()
-    {
-        $db = Database::getInstance();
-
-        $this->assertInstanceOf(DbalInterface::class, $db->getOrm('user'));
-    }
-
 
     public function testDatabaseRawQueries()
     {

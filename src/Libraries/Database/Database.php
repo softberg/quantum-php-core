@@ -18,7 +18,6 @@ use Quantum\Libraries\Database\Exceptions\DatabaseException;
 use Quantum\Libraries\Database\Adapters\Idiorm\IdiormDbal;
 use Quantum\Libraries\Database\Adapters\Sleekdb\SleekDbal;
 use Quantum\Libraries\Config\Exceptions\ConfigException;
-use Quantum\Libraries\Database\Contracts\DbalInterface;
 use Quantum\Libraries\Database\Traits\RelationalTrait;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Exceptions\BaseException;
@@ -45,7 +44,7 @@ class Database
      * Database configurations
      * @var array
      */
-    private $configs = [];
+    private $configs;
 
     /**
      * Database instance
@@ -70,19 +69,11 @@ class Database
             config()->import(new Setup('config', 'database'));
         }
 
-        $adapterName = config()->get('database.default');
+        $adapter = config()->get('database.default');
 
-        if (!array_key_exists($adapterName, self::ADAPTERS)) {
-            throw DatabaseException::adapterNotSupported($adapterName);
-        }
+        $this->ormClass = self::getAdapterClass($adapter);
 
-        $this->ormClass = self::ADAPTERS[$adapterName];
-
-        if (!class_exists($this->ormClass)) {
-            throw DatabaseException::ormClassNotFound($this->ormClass);
-        }
-
-        $this->configs = config()->get('database.' . $adapterName);
+        $this->configs = config()->get('database.' . $adapter);
 
         if (!$this->ormClass::getConnection()) {
             $this->ormClass::connect($this->configs);
@@ -103,15 +94,6 @@ class Database
     }
 
     /**
-     * Gets the DB configurations
-     * @return array|null
-     */
-    public function getConfigs(): ?array
-    {
-        return $this->configs;
-    }
-
-    /**
      * Gets the ORM class
      * @return string
      */
@@ -121,15 +103,25 @@ class Database
     }
 
     /**
-     * Gets the ORM
-     * @param string $table
-     * @param string $idColumn
-     * @param array $foreignKeys
-     * @param array $hidden
-     * @return DbalInterface
+     * Gets the DB configurations
+     * @return array|null
      */
-    public function getOrm(string $table, string $idColumn = 'id', array $foreignKeys = [], array $hidden = []): DbalInterface
+    public function getConfigs(): ?array
     {
-        return new $this->ormClass($table, $idColumn, $foreignKeys, $hidden);
+        return $this->configs;
+    }
+
+    /**
+     * @param string $adapter
+     * @return string
+     * @throws BaseException
+     */
+    private static function getAdapterClass(string $adapter): string
+    {
+        if (!array_key_exists($adapter, self::ADAPTERS)) {
+            throw DatabaseException::adapterNotSupported($adapter);
+        }
+
+        return self::ADAPTERS[$adapter];
     }
 }
