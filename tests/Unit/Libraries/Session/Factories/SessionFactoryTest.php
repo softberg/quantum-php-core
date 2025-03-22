@@ -6,11 +6,11 @@ use Quantum\Libraries\Session\Adapters\Database\DatabaseSessionAdapter;
 use Quantum\Libraries\Session\Adapters\Native\NativeSessionAdapter;
 use Quantum\Libraries\Database\Adapters\Idiorm\IdiormDbal;
 use Quantum\Libraries\Session\Exceptions\SessionException;
-use Quantum\Libraries\Session\Factories\SessionFactory;
 use Quantum\Tests\Unit\Libraries\Session\TestCaseHelper;
-use Quantum\Libraries\Database\Database;
+use Quantum\Libraries\Session\Factories\SessionFactory;
 use Quantum\Libraries\Session\Session;
 use Quantum\Tests\Unit\AppTestCase;
+use Quantum\Factory\ModelFactory;
 use Quantum\Loader\Setup;
 
 class SessionFactoryTest extends AppTestCase
@@ -36,7 +36,8 @@ class SessionFactoryTest extends AppTestCase
     public function tearDown(): void
     {
         session_write_close();
-        Database::getInstance()->getOrm('sessions')->deleteMany();
+
+        ModelFactory::create('sessions')->deleteMany();
     }
 
     public function testSessionFactoryInstance()
