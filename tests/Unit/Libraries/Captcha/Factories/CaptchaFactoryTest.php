@@ -16,7 +16,7 @@ class CaptchaFactoryTest extends AppTestCase
     {
         parent::setUp();
 
-        $this->setPrivateProperty(CaptchaFactory::class, 'instance', null);
+        $this->setPrivateProperty(CaptchaFactory::class, 'instances', []);
     }
 
     public function testCaptchaFactoryInstance()
@@ -26,44 +26,40 @@ class CaptchaFactoryTest extends AppTestCase
         $this->assertInstanceOf(Captcha::class, $captcha);
     }
 
-    public function testCacheFactoryRecaptchaAdapter()
+    public function testCacheFactoryDefaultAdapter()
     {
         $captcha = CaptchaFactory::get();
 
         $this->assertInstanceOf(RecaptchaAdapter::class, $captcha->getAdapter());
     }
 
+    public function testCacheFactoryRecaptchaAdapter()
+    {
+        $captcha = CaptchaFactory::get(Captcha::RECAPTCHA);
+
+        $this->assertInstanceOf(RecaptchaAdapter::class, $captcha->getAdapter());
+    }
+
     public function testCacheFactoryHcaptchaAdapter()
     {
-        $params = [
-            'type' => 'visible',
-            'secret_key' => '0xE1a02fB374Bf2',
-            'site_key' => '07737dfc-abfa-66ac44365d0c'
-        ];
-
-        config()->set('captcha.default', 'hcaptcha');
-        config()->set('captcha.hcaptcha', $params);
-
-        $captcha = CaptchaFactory::get();
+        $captcha = CaptchaFactory::get(Captcha::HCAPTCHA);
 
         $this->assertInstanceOf(HcaptchaAdapter::class, $captcha->getAdapter());
     }
 
     public function testCacheFactoryInvalidTypeAdapter()
     {
-        config()->set('captcha.default', 'invalid');
-
         $this->expectException(CaptchaException::class);
 
-        $this->expectExceptionMessage('The adapter `invalid` is not supported`');
+        $this->expectExceptionMessage('The adapter `invalid_type` is not supported`');
 
-        CaptchaFactory::get();
+        CaptchaFactory::get('invalid_type');
     }
 
     public function testAuthFactoryReturnsSameInstance()
     {
-        $captcha1 = CaptchaFactory::get();
-        $captcha2 = CaptchaFactory::get();
+        $captcha1 = CaptchaFactory::get(Captcha::RECAPTCHA);
+        $captcha2 = CaptchaFactory::get(Captcha::RECAPTCHA);
 
         $this->assertSame($captcha1, $captcha2);
     }

@@ -42,41 +42,40 @@ class SessionFactory
     /**
      * @var Session|null
      */
-    private static $instance = null;
+    private static $instances = [];
 
     /**
+     * @param string|null $adapter
      * @return Session
      * @throws BaseException
      * @throws ConfigException
      * @throws DiException
      * @throws ReflectionException
      */
-    public static function get(): Session
-    {
-        if (self::$instance === null) {
-            return self::$instance = self::createInstance();
-        }
-
-        return self::$instance;
-    }
-
-    /**
-     * @return Session
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws DiException
-     * @throws ReflectionException
-     */
-    private static function createInstance(): Session
+    public static function get(?string $adapter = null): Session
     {
         if (!config()->has('session')) {
             config()->import(new Setup('Config', 'session'));
         }
 
-        $adapter = config()->get('session.default');
+        $adapter = $adapter ?? config()->get('session.default');
 
         $adapterClass = self::getAdapterClass($adapter);
 
+        if (!isset(self::$instances[$adapter])) {
+            self::$instances[$adapter] = self::createInstance($adapterClass, $adapter);
+        }
+
+        return self::$instances[$adapter];
+    }
+
+    /**
+     * @param string $adapterClass
+     * @param string $adapter
+     * @return Session
+     */
+    private static function createInstance(string $adapterClass, string $adapter): Session
+    {
         return new Session(new $adapterClass(config()->get('session.' . $adapter)));
     }
 

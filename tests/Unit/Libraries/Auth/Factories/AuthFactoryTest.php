@@ -2,7 +2,6 @@
 
 namespace Quantum\Tests\Unit\Libraries\Auth\Factories;
 
-use Quantum\Tests\_root\modules\Test\Services\AuthService;
 use Quantum\Libraries\Auth\Adapters\SessionAuthAdapter;
 use Quantum\Libraries\Auth\Adapters\JwtAuthAdapter;
 use Quantum\Libraries\Auth\Exceptions\AuthException;
@@ -17,7 +16,7 @@ class AuthFactoryTest extends AppTestCase
     {
         parent::setUp();
 
-        $this->setPrivateProperty(AuthFactory::class, 'instances', null);
+        $this->setPrivateProperty(AuthFactory::class, 'instances', []);
     }
 
     public function testAuthFactoryInstance()

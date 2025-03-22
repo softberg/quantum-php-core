@@ -39,54 +39,59 @@ class LoggerFactory
     const ADAPTERS = [
         Logger::SINGLE => SingleAdapter::class,
         Logger::DAILY => DailyAdapter::class,
+        Logger::MESSAGE => MessageAdapter::class,
     ];
 
     /**
      * @var Logger|null
      */
-    private static $instance = null;
+    private static $instances = [];
 
     /**
+     * @param string|null $adapter
      * @return Logger
      * @throws BaseException
      * @throws ConfigException
      * @throws DiException
      * @throws ReflectionException
      */
-    public static function get(): Logger
+    public static function get(?string $adapter = null): Logger
     {
-        if (self::$instance === null) {
-            return self::$instance = self::createInstance();
-        }
-
-        return self::$instance;
-    }
-
-    /**
-     * @return Logger
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws DiException
-     * @throws ReflectionException
-     */
-    private static function createInstance(): Logger
-    {
-        if (is_debug_mode()) {
-            return new Logger(new MessageAdapter());
-        }
-
         if (!config()->has('logging')) {
             config()->import(new Setup('config', 'logging'));
         }
 
-        $adapter = config()->get('logging.default');
+        $isDebug = is_debug_mode();
+
+        if (!$isDebug && $adapter === Logger::MESSAGE) {
+            throw LoggerException::adapterNotAllowed(Logger::MESSAGE);
+        }
+
+        $adapter = $isDebug ? Logger::MESSAGE : ($adapter ?? config()->get('logging.default'));
 
         $adapterClass = self::getAdapterClass($adapter);
 
-        $logLevel = config()->get('logging.level', 'error');
+        $logLevel = config()->get('logging.' . $adapter . '.level', 'error');
+
         LoggerConfig::setAppLogLevel($logLevel);
 
-        return new Logger(new $adapterClass(config()->get('logging.' . $adapter)));
+        if (!isset(self::$instances[$adapter])) {
+            self::$instances[$adapter] = self::createInstance($adapterClass, $adapter);
+        }
+
+        return self::$instances[$adapter];
+    }
+
+    /**
+     * @param string $adapterClass
+     * @param string $adapter
+     * @return Logger
+     */
+    private static function createInstance(string $adapterClass, string $adapter): Logger
+    {
+        return $adapter === Logger::MESSAGE
+            ? new Logger(new MessageAdapter())
+            : new Logger(new $adapterClass(config()->get('logging.' . $adapter)));
     }
 
     /**

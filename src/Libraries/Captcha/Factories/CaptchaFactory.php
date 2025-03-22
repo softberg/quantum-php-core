@@ -43,41 +43,40 @@ class CaptchaFactory
     /**
      * @var Captcha|null
      */
-    private static $instance = null;
+    private static $instances = [];
 
     /**
+     * @param string|null $adapter
      * @return Captcha
      * @throws BaseException
      * @throws ConfigException
      * @throws DiException
      * @throws ReflectionException
      */
-    public static function get(): Captcha
-    {
-        if (self::$instance === null) {
-            return self::$instance = self::createInstance();
-        }
-
-        return self::$instance;
-    }
-
-    /**
-     * @return Captcha
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws DiException
-     * @throws ReflectionException
-     */
-    private static function createInstance(): Captcha
+    public static function get(?string $adapter = null): Captcha
     {
         if (!config()->has('captcha')) {
             config()->import(new Setup('config', 'captcha'));
         }
 
-        $adapter = config()->get('captcha.default');
+        $adapter = $adapter ?? config()->get('captcha.default');
 
         $adapterClass = self::getAdapterClass($adapter);
 
+        if (!isset(self::$instances[$adapter])) {
+            self::$instances[$adapter] = self::createInstance($adapterClass, $adapter);
+        }
+
+        return self::$instances[$adapter];
+    }
+
+    /**
+     * @param string $adapterClass
+     * @param string $adapter
+     * @return Captcha
+     */
+    private static function createInstance(string $adapterClass, string $adapter): Captcha
+    {
         return new Captcha(new $adapterClass(config()->get('captcha.' . $adapter), new HttpClient()));
     }
 

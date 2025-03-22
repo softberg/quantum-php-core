@@ -20,7 +20,7 @@ class MailerFactoryTest extends AppTestCase
     {
         parent::setUp();
 
-        $this->setPrivateProperty(MailerFactory::class, 'instance', null);
+        $this->setPrivateProperty(MailerFactory::class, 'instances', []);
 
         if (!config()->has('mailer')) {
             config()->import(new Setup('config', 'mailer'));
@@ -34,64 +34,61 @@ class MailerFactoryTest extends AppTestCase
         $this->assertInstanceOf(Mailer::class, $mailer);
     }
 
-    public function testMailerFactorySmtpAdapter()
+    public function testMailerFactoryGetDefaultAdapter()
     {
         $mailer = MailerFactory::get();
 
         $this->assertInstanceOf(SmtpAdapter::class, $mailer->getAdapter());
     }
 
-    public function testMailerFactoryMailgunAdapter()
+    public function testMailerFactoryGetSmtpAdapter()
     {
-        config()->set('mailer.default', 'mailgun');
+        $mailer = MailerFactory::get(Mailer::SMTP);
 
-        $mailer = MailerFactory::get();
+        $this->assertInstanceOf(SmtpAdapter::class, $mailer->getAdapter());
+    }
+
+    public function testMailerFactoryGetMailgunAdapter()
+    {
+        $mailer = MailerFactory::get(Mailer::MAILGUN);
 
         $this->assertInstanceOf(MailgunAdapter::class, $mailer->getAdapter());
     }
 
-    public function testMailerFactoryMandrillAdapter()
+    public function testMailerFactoryGetMandrillAdapter()
     {
-        config()->set('mailer.default', 'mandrill');
-
-        $mailer = MailerFactory::get();
+        $mailer = MailerFactory::get(Mailer::MANDRILL);
 
         $this->assertInstanceOf(MandrillAdapter::class, $mailer->getAdapter());
     }
 
-    public function testMailerFactorySendgridAdapter()
+    public function testMailerFactoryGetSendgridAdapter()
     {
-        config()->set('mailer.default', 'sendgrid');
-
-        $mailer = MailerFactory::get();
+        $mailer = MailerFactory::get(Mailer::SENDGRID);
 
         $this->assertInstanceOf(SendgridAdapter::class, $mailer->getAdapter());
     }
 
-    public function testMailerFactorySendinblueAdapter()
+    public function testMailerFactoryGetSendinblueAdapter()
     {
-        config()->set('mailer.default', 'sendinblue');
-
-        $mailer = MailerFactory::get();
+        $mailer = MailerFactory::get(Mailer::SENDINBLUE);
 
         $this->assertInstanceOf(SendinblueAdapter::class, $mailer->getAdapter());
     }
 
-    public function testMailerFactoryInvalidTypeAdapter()
+    public function testMailerFactoryGetInvalidTypeAdapter()
     {
-        config()->set('mailer.default', 'invalid');
-
         $this->expectException(MailerException::class);
 
-        $this->expectExceptionMessage('The adapter `invalid` is not supported`');
+        $this->expectExceptionMessage('The adapter `invalid_type` is not supported`');
 
-        MailerFactory::get();
+        MailerFactory::get('invalid_type');
     }
 
     public function testMailerFactoryReturnsSameInstance()
     {
-        $mailer1 = MailerFactory::get();
-        $mailer2 = MailerFactory::get();
+        $mailer1 = MailerFactory::get(Mailer::SMTP);
+        $mailer2 = MailerFactory::get(Mailer::SMTP);
 
         $this->assertSame($mailer1, $mailer2);
     }

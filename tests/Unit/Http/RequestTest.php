@@ -14,13 +14,12 @@ class RequestTest extends AppTestCase
 {
 
     private $session;
-    private $sessionData = [];
 
     public function setUp(): void
     {
         parent::setUp();
 
-        $this->session = SessionFactory::get($this->sessionData);
+        $this->session = SessionFactory::get();
 
         $server = Mockery::mock('Quantum\Environment\Server');
 

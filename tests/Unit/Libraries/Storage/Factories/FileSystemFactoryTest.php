@@ -5,18 +5,14 @@ namespace Quantum\Tests\Unit\Libraries\Storage\Factories;
 use Quantum\Libraries\Storage\Adapters\GoogleDrive\GoogleDriveFileSystemAdapter;
 use Quantum\Libraries\Storage\Adapters\Dropbox\DropboxFileSystemAdapter;
 use Quantum\Libraries\Storage\Adapters\Local\LocalFileSystemAdapter;
-use Quantum\Libraries\Storage\Adapters\GoogleDrive\GoogleDriveApp;
 use Quantum\Libraries\Storage\Exceptions\FileSystemException;
 use Quantum\Libraries\Storage\Factories\FileSystemFactory;
-use Quantum\Libraries\Storage\Adapters\Dropbox\DropboxApp;
 use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Tests\Unit\AppTestCase;
 use Mockery;
 
 class FileSystemFactoryTest extends AppTestCase
 {
-
-    private static $response = [];
 
     public function setUp(): void
     {

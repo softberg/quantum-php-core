@@ -94,9 +94,7 @@ class UrlHelperTest extends AppTestCase
 
     public function testRedirectWithOldData()
     {
-        $sessionData = [];
-
-        $this->session = SessionFactory::get($sessionData);
+        $this->session = SessionFactory::get();
 
         $this->request->create('POST', '/', ['firstname' => 'Josh', 'lastname' => 'Doe']);
 

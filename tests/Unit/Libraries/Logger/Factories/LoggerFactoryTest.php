@@ -18,7 +18,9 @@ class LoggerFactoryTest extends AppTestCase
     {
         parent::setUp();
 
-        $this->setPrivateProperty(LoggerFactory::class, 'instance', null);
+        config()->set('debug', false);
+
+        $this->setPrivateProperty(LoggerFactory::class, 'instances', []);
     }
 
     public function testLoggerFactoryInstance()
@@ -28,27 +30,8 @@ class LoggerFactoryTest extends AppTestCase
         $this->assertInstanceOf(Logger::class, $logger);
     }
 
-    public function testLoggerFactoryDailyAdapter()
+    public function testLoggerFactoryGetDefaultAdapter()
     {
-        config()->set('debug', false);
-
-        config()->set('logging.default', 'daily');
-        config()->set('logging.daily', ['path' => logs_dir()]);
-
-        $logger = LoggerFactory::get();
-
-        $this->assertInstanceOf(DailyAdapter::class, $logger->getAdapter());
-
-        $this->assertInstanceOf(ReportableInterface::class, $logger->getAdapter());
-    }
-
-    public function testLoggerFactorySingleAdapter()
-    {
-        config()->set('debug', false);
-
-        config()->set('logging.default', 'single');
-        config()->set('logging.single', ['path' => '1.log']);
-
         $logger = LoggerFactory::get();
 
         $this->assertInstanceOf(SingleAdapter::class, $logger->getAdapter());
@@ -56,8 +39,28 @@ class LoggerFactoryTest extends AppTestCase
         $this->assertInstanceOf(ReportableInterface::class, $logger->getAdapter());
     }
 
-    public function testLoggerFactoryMessageAdapter()
+    public function testLoggerFactoryGetSingleAdapter()
     {
+        $logger = LoggerFactory::get(Logger::SINGLE);
+
+        $this->assertInstanceOf(SingleAdapter::class, $logger->getAdapter());
+
+        $this->assertInstanceOf(ReportableInterface::class, $logger->getAdapter());
+    }
+
+    public function testLoggerFactoryGetDailyAdapter()
+    {
+        $logger = LoggerFactory::get(Logger::DAILY);
+
+        $this->assertInstanceOf(DailyAdapter::class, $logger->getAdapter());
+
+        $this->assertInstanceOf(ReportableInterface::class, $logger->getAdapter());
+    }
+
+    public function testLoggerFactoryGetMessageAdapter()
+    {
+        config()->set('debug', true);
+
         $logger = LoggerFactory::get();
 
         $this->assertInstanceOf(MessageAdapter::class, $logger->getAdapter());
@@ -65,23 +68,28 @@ class LoggerFactoryTest extends AppTestCase
         $this->assertInstanceOf(ReportableInterface::class, $logger->getAdapter());
     }
 
-    public function testLoggerFactoryInvalidTypeAdapter()
+    public function testLoggerFactoryTryingToGetMessageAdapter()
     {
-        config()->set('debug', false);
-
-        config()->set('logging.default', 'invalid');
-
         $this->expectException(LoggerException::class);
 
-        $this->expectExceptionMessage('The adapter `invalid` is not supported`');
+        $this->expectExceptionMessage('exception.message_logger_not_in_debug_mode');
 
-        LoggerFactory::get();
+        LoggerFactory::get(Logger::MESSAGE);
+    }
+
+    public function testLoggerFactoryInvalidTypeAdapter()
+    {
+        $this->expectException(LoggerException::class);
+
+        $this->expectExceptionMessage('The adapter `invalid_type` is not supported`');
+
+        LoggerFactory::get('invalid_type');
     }
 
     public function testLoggerFactoryReturnsSameInstance()
     {
-        $logger1 = LoggerFactory::get();
-        $logger2 = LoggerFactory::get();
+        $logger1 = LoggerFactory::get(Logger::SINGLE);
+        $logger2 = LoggerFactory::get(Logger::SINGLE);
 
         $this->assertSame($logger1, $logger2);
     }

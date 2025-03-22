@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.6
  */
 
 namespace Quantum\Libraries\Logger\Exceptions;
@@ -39,5 +39,14 @@ class LoggerException extends BaseException
     public static function logPathIsNotFile(string $name): LoggerException
     {
         return new static(t('exception.log_path_is_not_file', $name));
+    }
+
+    /**
+     * @param string $name
+     * @return LoggerException
+     */
+    public static function adapterNotAllowed(string $name): LoggerException
+    {
+        return new static(t('exception.message_logger_not_in_debug_mode', $name));
     }
 }

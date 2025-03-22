@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.6
  */
 
 namespace Quantum\Libraries\Logger\Adapters;
@@ -17,8 +17,11 @@ namespace Quantum\Libraries\Logger\Adapters;
 use Quantum\Libraries\Logger\Contracts\ReportableInterface;
 use Quantum\Libraries\Storage\Factories\FileSystemFactory;
 use Quantum\Libraries\Logger\Exceptions\LoggerException;
+use Quantum\Libraries\Config\Exceptions\ConfigException;
 use Quantum\Libraries\Logger\Traits\LoggerTrait;
+use Quantum\Di\Exceptions\DiException;
 use Quantum\Exceptions\BaseException;
+use ReflectionException;
 
 /**
  * Class SingleAdapter
@@ -31,8 +34,11 @@ class SingleAdapter implements ReportableInterface
 
     /**
      * @param array $params
-     * @throws LoggerException
      * @throws BaseException
+     * @throws LoggerException
+     * @throws DiException
+     * @throws ConfigException
+     * @throws ReflectionException
      */
     public function __construct(array $params)
     {

@@ -112,7 +112,7 @@ class QtViewTest extends AppTestCase
 
     public function testRenderViewWithTwig(): void
     {
-        $this->setPrivateProperty(RendererFactory::class, 'instance', null);
+        $this->setPrivateProperty(RendererFactory::class, 'instances', []);
 
         config()->set('view.default', 'twig');
         config()->set('view.twig', ['autoescape' => false]);

@@ -2,11 +2,19 @@
 
 namespace Quantum\Tests\Unit\Libraries\Logger;
 
+use Quantum\Libraries\Logger\Factories\LoggerFactory;
 use Quantum\Libraries\Logger\LoggerConfig;
 use Quantum\Tests\Unit\AppTestCase;
 
 class LoggerConfigTest extends AppTestCase
 {
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->setPrivateProperty(LoggerConfig::class, 'logLevel', 'error');
+    }
+
     public function testDefaultLogLevel()
     {
         $this->assertEquals('error', LoggerConfig::DEFAULT_LOG_LEVEL);

@@ -2,9 +2,14 @@
 
 namespace Quantum\Tests\Unit\Libraries\Logger\Helpers;
 
+use Quantum\Libraries\Logger\Exceptions\LoggerException;
+use Quantum\Libraries\Logger\Adapters\MessageAdapter;
+use Quantum\Libraries\Logger\Adapters\SingleAdapter;
+use Quantum\Libraries\Logger\Adapters\DailyAdapter;
+use Quantum\Libraries\Logger\Logger;
 use Quantum\Debugger\DebuggerStore;
-use Quantum\Debugger\Debugger;
 use Quantum\Tests\Unit\AppTestCase;
+use Quantum\Debugger\Debugger;
 
 class LoggerHelperFunctionsTest extends AppTestCase
 {
@@ -14,6 +19,8 @@ class LoggerHelperFunctionsTest extends AppTestCase
     public function setUp(): void
     {
         parent::setUp();
+
+        config()->set('debug', true);
 
         $store = new DebuggerStore();
 
@@ -25,6 +32,59 @@ class LoggerHelperFunctionsTest extends AppTestCase
     public function tearDown(): void
     {
         $this->debugger->resetStore();
+    }
+
+    public function testLoggerHelperGetDefaultLoggerAdapter()
+    {
+        config()->set('debug', false);
+
+        $logger = logger();
+
+        $this->assertInstanceOf(Logger::class, $logger);
+
+        $this->assertInstanceOf(SingleAdapter::class, $logger->getAdapter());
+    }
+
+    public function testLoggerHelperGetSingleLoggerAdapter()
+    {
+        config()->set('debug', false);
+
+        $logger = logger(Logger::SINGLE);
+
+        $this->assertInstanceOf(Logger::class, $logger);
+
+        $this->assertInstanceOf(SingleAdapter::class, $logger->getAdapter());
+    }
+
+    public function testLoggerHelperGetDailyLoggerAdapter()
+    {
+        config()->set('debug', false);
+
+        $logger = logger(Logger::DAILY);
+
+        $this->assertInstanceOf(Logger::class, $logger);
+
+        $this->assertInstanceOf(DailyAdapter::class, $logger->getAdapter());
+    }
+
+    public function testLoggerHelperGetMessageLoggerAdapter()
+    {
+        $logger = logger();
+
+        $this->assertInstanceOf(Logger::class, $logger);
+
+        $this->assertInstanceOf(MessageAdapter::class, $logger->getAdapter());
+    }
+
+    public function testLoggerHelperTryToGetMessageLoggerAdapterInNonDebugMode()
+    {
+        config()->set('debug', false);
+
+        $this->expectException(LoggerException::class);
+
+        $this->expectExceptionMessage('exception.message_logger_not_in_debug_mode');
+
+        logger(Logger::MESSAGE);
     }
 
     public function testErrorHelper()

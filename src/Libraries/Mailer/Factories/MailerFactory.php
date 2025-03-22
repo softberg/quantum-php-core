@@ -48,41 +48,40 @@ class MailerFactory
     /**
      * @var Mailer|null
      */
-    private static $instance = null;
+    private static $instances = [];
 
     /**
+     * @param string|null $adapter
      * @return Mailer
      * @throws BaseException
      * @throws ConfigException
      * @throws DiException
      * @throws ReflectionException
      */
-    public static function get(): Mailer
-    {
-        if (self::$instance === null) {
-            return self::$instance = self::createInstance();
-        }
-
-        return self::$instance;
-    }
-
-    /**
-     * @return Mailer
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws DiException
-     * @throws ReflectionException
-     */
-    private static function createInstance(): Mailer
+    public static function get(?string $adapter = null): Mailer
     {
         if (!config()->has('mailer')) {
             config()->import(new Setup('config', 'mailer'));
         }
 
-        $adapter = config()->get('mailer.default');
+        $adapter = $adapter ?? config()->get('mailer.default');
 
         $adapterClass = self::getAdapterClass($adapter);
 
+        if (!isset(self::$instances[$adapter])) {
+            self::$instances[$adapter] = self::createInstance($adapterClass, $adapter);
+        }
+
+        return self::$instances[$adapter];
+    }
+
+    /**
+     * @param string $adapterClass
+     * @param string $adapter
+     * @return Mailer
+     */
+    private static function createInstance(string $adapterClass, string $adapter): Mailer
+    {
         return new Mailer(new $adapterClass(config()->get('mailer.' . $adapter)));
     }
 
