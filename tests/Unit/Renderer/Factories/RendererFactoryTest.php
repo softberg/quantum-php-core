@@ -17,7 +17,7 @@ class RendererFactoryTest extends AppTestCase
     {
         parent::setUp();
 
-        $this->setPrivateProperty(RendererFactory::class, 'instance', null);
+        $this->setPrivateProperty(RendererFactory::class, 'instances', []);
     }
 
     public function testRendererFactoryInstance()
@@ -27,11 +27,18 @@ class RendererFactoryTest extends AppTestCase
         $this->assertInstanceOf(Renderer::class, $renderer);
     }
 
-    public function testRendererFactoryHtmlAdapter()
+    public function testRendererFactoryGetDefaultAdapter()
     {
-        config()->set('view.default', 'html');
-
         $renderer = RendererFactory::get();
+
+        $this->assertInstanceOf(TemplateRendererInterface::class, $renderer->getAdapter());
+
+        $this->assertInstanceOf(HtmlAdapter::class, $renderer->getAdapter());
+    }
+
+    public function testRendererFactoryGetHtmlAdapter()
+    {
+        $renderer = RendererFactory::get(Renderer::HTML);
 
         $this->assertInstanceOf(TemplateRendererInterface::class, $renderer->getAdapter());
 
@@ -40,9 +47,7 @@ class RendererFactoryTest extends AppTestCase
 
     public function testRendererFactoryTwigAdapter()
     {
-        config()->set('view.default', 'twig');
-
-        $renderer = RendererFactory::get();
+        $renderer = RendererFactory::get(Renderer::TWIG);
 
         $this->assertInstanceOf(TemplateRendererInterface::class, $renderer->getAdapter());
 
@@ -51,19 +56,17 @@ class RendererFactoryTest extends AppTestCase
 
     public function testRendererFactoryInvalidTypeAdapter()
     {
-        config()->set('view.default', 'invalid');
-
         $this->expectException(RendererException::class);
 
-        $this->expectExceptionMessage('The adapter `invalid` is not supported`');
+        $this->expectExceptionMessage('The adapter `invalid_type` is not supported`');
 
-        RendererFactory::get();
+        RendererFactory::get('invalid_type');
     }
 
     public function testRendererFactoryReturnsSameInstance()
     {
-        $renderer1 = RendererFactory::get();
-        $renderer2 = RendererFactory::get();
+        $renderer1 = RendererFactory::get(Renderer::HTML);
+        $renderer2 = RendererFactory::get(Renderer::HTML);
 
         $this->assertSame($renderer1, $renderer2);
     }

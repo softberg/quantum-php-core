@@ -42,42 +42,40 @@ class RendererFactory
     /**
      * @var Renderer|null
      */
-    private static $instance = null;
+    private static $instances = [];
 
     /**
-     * @return Renderer
-     * @throws RendererException
-     * @throws BaseException
-     * @throws DiException
-     * @throws ConfigException
-     * @throws ReflectionException
-     */
-    public static function get(): Renderer
-    {
-        if (self::$instance === null) {
-            return self::$instance = self::createInstance();
-        }
-
-        return self::$instance;
-    }
-
-    /**
+     * @param string|null $adapter
      * @return Renderer
      * @throws BaseException
      * @throws ConfigException
      * @throws DiException
      * @throws ReflectionException
      */
-    private static function createInstance(): Renderer
+    public static function get(?string $adapter = null): Renderer
     {
         if (!config()->has('view')) {
             config()->import(new Setup('config', 'view'));
         }
 
-        $adapter = config()->get('view.default');
+        $adapter = $adapter ?? config()->get('view.default');
 
         $adapterClass = self::getAdapterClass($adapter);
 
+        if (!isset(self::$instances[$adapter])) {
+            self::$instances[$adapter] = self::createInstance($adapterClass, $adapter);
+        }
+
+        return self::$instances[$adapter];
+    }
+
+    /**
+     * @param string $adapterClass
+     * @param string $adapter
+     * @return Renderer
+     */
+    private static function createInstance(string $adapterClass, string $adapter): Renderer
+    {
         return new Renderer(new $adapterClass(config()->get('view.' . $adapter)));
     }
 
