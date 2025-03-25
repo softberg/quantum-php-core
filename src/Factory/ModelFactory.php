@@ -43,8 +43,22 @@ class ModelFactory
             throw ModelException::notModelInstance([$modelClass, QtModel::class]);
         }
 
-        $model->setOrm(Database::getInstance()->getOrm($model->table, $model->idColumn, $model->foreignKeys ?? [], $model->hidden));
+        $model->setOrm(self::create($model->table, $model->idColumn, $model->foreignKeys ?? [], $model->hidden ?? []));
 
         return $model;
+    }
+
+    /**
+     * @param string $table
+     * @param string $idColumn
+     * @param array $foreignKeys
+     * @param array $hidden
+     * @return mixed
+     */
+    public static function create(string $table, string $idColumn = 'id', array $foreignKeys = [], array $hidden = [])
+    {
+        $ormClass = Database::getInstance()->getOrmClass();
+
+        return new $ormClass($table, $idColumn, $foreignKeys, $hidden);
     }
 }

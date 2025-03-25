@@ -9,16 +9,15 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.6
  */
 
 namespace Quantum\Libraries\Session\Adapters\Database;
 
 use Quantum\Libraries\Session\Contracts\SessionStorageInterface;
-use Quantum\Libraries\Database\Exceptions\DatabaseException;
 use Quantum\Libraries\Session\Exceptions\SessionException;
 use Quantum\Libraries\Session\Traits\SessionTrait;
-use Quantum\Libraries\Database\Database;
+use Quantum\Factory\ModelFactory;
 
 /**
  * Class Session
@@ -48,7 +47,6 @@ class DatabaseSessionAdapter implements SessionStorageInterface
 
     /**
      * @param array|null $params
-     * @throws DatabaseException
      * @throws SessionException
      */
     public function __construct(?array $params = null)
@@ -59,13 +57,13 @@ class DatabaseSessionAdapter implements SessionStorageInterface
     /**
      * @param array|null $params
      * @return void
-     * @throws DatabaseException
      * @throws SessionException
      */
     protected function initializeSession(?array $params = null): void
     {
         $sessionTable = $params['table'] ?? self::SESSION_TABLE;
-        $sessionModel = Database::getInstance()->getOrm($sessionTable);
+
+        $sessionModel = ModelFactory::create($sessionTable);
 
         if (session_status() !== PHP_SESSION_ACTIVE) {
             session_set_save_handler(new DatabaseHandler($sessionModel), true);
