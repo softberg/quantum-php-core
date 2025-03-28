@@ -22,7 +22,7 @@ class ModuleManagerTest extends AppTestCase
 
     public function testAddModuleConfig(){
 
-        $moduleManager = new ModuleManager("Api", "api", "", true);
+        $moduleManager = new ModuleManager("Api", "DefaultApi", "", false);
 
         $moduleManager->addModuleConfig();
 
@@ -37,7 +37,7 @@ class ModuleManagerTest extends AppTestCase
 
     public function testWriteContents(){
 
-        $moduleManager = new ModuleManager("Api", "api", "", true);
+        $moduleManager = new ModuleManager("Api", "DefaultApi", "", false);
 
         $moduleManager->writeContents();
 
