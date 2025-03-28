@@ -1,0 +1,136 @@
+#toolkit-content{
+    padding-top: 15px;
+}
+
+.sidenav .logo-container {
+    padding: 0 16px;
+    height: 64px;
+    line-height: 64px;
+    font-size: 24px;
+    box-sizing: content-box;
+}
+
+.sidenav li:not(:last-child){
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.sidenav .logo-container i.material-icons {
+    line-height: inherit;
+}
+
+iframe{
+    width: 100%;
+    border: none;
+}
+
+.email-iframe{
+    height: 400px;
+}
+
+.logs-iframe, .table-iframe{
+    height: 85vh;
+}
+
+.collapsible-header .delete-email i{
+    width: inherit;
+}
+
+.collapsible-header > .chevron > i {
+    transition: transform 0.2s ease;
+}
+
+.active > .collapsible-header > .chevron > i {
+    transform: rotate(90deg);
+}
+
+#log-collapsible{
+    text-align: left;
+}
+
+.logFiles, .tables{
+    padding-left: 0 !important;
+}
+
+.logFile-item, .table-item, .table-header{
+    cursor: pointer;
+    display: block !important;
+}
+
+.logFile-item:hover, .table-item:hover, .table-header:hover{
+    background-color: #26a69a !important;
+    color: #eafaf9;
+}
+
+.highlight{
+    table-layout: fixed;
+    width: 100%;
+}
+
+.highlight thead {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background-color: white;
+}
+
+.table-body{
+    max-width: 100%;
+}
+
+.table-body tr td,.table-body tr th{
+    width: 13%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 15px 10px;
+}
+
+.table-body .actions-column{
+    width: 5%;
+}
+
+#jsoneditor{
+    padding: 0;
+}
+
+.modal-footer{
+    padding: 4px 25px !important;
+}
+
+.jsoneditor{
+    border: none !important;
+}
+
+div.jsoneditor-field{
+    word-break: normal;
+}
+
+div.jsoneditor-tree button.jsoneditor-invisible{
+    display: none !important;
+}
+
+.jsoneditor-menu{
+    background-color: #26a69a !important;
+}
+
+#rowEditModal{
+    width: 50% !important;
+}
+
+.pagination li.active {
+    background-color: #00bfa5;
+}
+
+@media only screen and (min-width: 993px) {
+    .has-fixed-sidenav {
+        margin-left: 300px;
+    }
+
+    .navbar-logo {
+        font-size: 1.5rem;
+    }
+
+    .has-fixed-sidenav main {
+        padding: 0 20px;
+    }
+}
