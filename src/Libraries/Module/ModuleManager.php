@@ -141,10 +141,10 @@ class ModuleManager
      */
     public function writeContents()
     {
-        $this->copyDirectoryWithTemplates("$this->templatePath\src", $this->modulePath);
+        $this->copyDirectoryWithTemplates("$this->templatePath" . DS . "src", $this->modulePath);
 
         if ($this->withAssets) {
-            $this->copyAssets("$this->templatePath\assets", $this->assetsPath);
+            $this->copyAssets("$this->templatePath" . DS . "assets", $this->assetsPath);
         }
     }
 
