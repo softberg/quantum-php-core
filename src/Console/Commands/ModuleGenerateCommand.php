@@ -16,22 +16,15 @@ namespace Quantum\Console\Commands;
 
 use Symfony\Component\VarExporter\Exception\ExceptionInterface;
 use Quantum\Libraries\Module\ModuleManager;
-use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Console\QtCommand;
 use Exception;
 
 /**
- * Class OpenApiUiAssetsCommand
+ * Class ModuleGenerateCommand
  * @package Quantum\Console\Commands
  */
 class ModuleGenerateCommand extends QtCommand
 {
-    /**
-     * File System
-     * @var FileSystem
-     */
-    protected $fs;
-
     /**
      * Command name
      * @var string
@@ -64,8 +57,8 @@ class ModuleGenerateCommand extends QtCommand
      */
     protected $options = [
         ['yes', 'y', 'none', 'Module enabled status'],
-        ['template', 't', 'optional', 'The module template', 'web'],
-        ['demo', 'd', 'optional', 'Use demo template', 'no'],
+        ['template', 't', 'optional', 'The module template', 'DefaultWeb'],
+        ['with-assets', 'a', 'none', 'Install module will assets']
     ];
 
     /**
@@ -80,8 +73,8 @@ class ModuleGenerateCommand extends QtCommand
             $moduleManager = new ModuleManager(
                 $moduleName,
                 $this->getOption('template'),
-                $this->getOption('demo'),
-                $this->getOption('yes')
+                $this->getOption('yes'),
+                $this->getOption('with-assets')
             );
 
             $moduleManager->addModuleConfig();

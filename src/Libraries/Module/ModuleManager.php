@@ -16,15 +16,17 @@ namespace Quantum\Libraries\Module;
 
 use Symfony\Component\VarExporter\Exception\ExceptionInterface;
 use Quantum\Libraries\Storage\Factories\FileSystemFactory;
+use Quantum\Libraries\Config\Exceptions\ConfigException;
 use Quantum\Router\Exceptions\ModuleLoaderException;
+use Quantum\Di\Exceptions\DiException;
 use Quantum\Exceptions\BaseException;
 use Quantum\Environment\Environment;
 use Quantum\Router\ModuleLoader;
+use ReflectionException;
 use Exception;
 
 class ModuleManager
 {
-
     /**
      * @var mixed
      */
@@ -48,12 +50,12 @@ class ModuleManager
     /**
      * @var string
      */
-    private $demo;
+    private $modulePath;
 
     /**
      * @var string
      */
-    private $modulePath;
+    private $assetsPath;
 
     /**
      * @var string
@@ -61,33 +63,38 @@ class ModuleManager
     private $templatePath;
 
     /**
+     * @var bool
+     */
+    private $withAssets;
+
+    /**
      * @var string
      */
     private $modulesConfigPath;
 
     /**
-     * @var ModuleManager|null
-     */
-    private static $instance = null;
-
-    /**
      * @param string $moduleName
      * @param string $template
-     * @param string $demo
      * @param bool $enabled
+     * @param bool $withAssets
      * @throws BaseException
+     * @throws DiException
+     * @throws ConfigException
+     * @throws ReflectionException
      */
-    public function __construct(string $moduleName, string $template, string $demo, bool $enabled)
+    public function __construct(string $moduleName, string $template, bool $enabled, bool $withAssets = false)
     {
         $this->fs = FileSystemFactory::get();
 
         $this->moduleName = $moduleName;
+
+        $this->withAssets = $withAssets;
         $this->optionEnabled = $enabled;
         $this->template = $template;
-        $this->demo = $demo;
 
+        $this->assetsPath = assets_dir() . DS . $moduleName;
         $this->modulePath = modules_dir() . DS . $moduleName;
-        $this->templatePath = $this->generateTemplatePath($template, $demo);
+        $this->templatePath = __DIR__ . DS . 'Templates' . DS . ucfirst($template);
         $this->modulesConfigPath = base_dir() . DS . 'shared' . DS . 'config' . DS . 'modules.php';
     }
 
@@ -107,19 +114,6 @@ class ModuleManager
         return Environment::getInstance()->getAppEnv() === 'testing'
             ? "Quantum\\Tests\\_root\\modules"
             : "Modules";
-    }
-
-    /**
-     * @return void
-     * @throws Exception
-     */
-    public function writeContents()
-    {
-        if (!$this->fs->isDirectory(modules_dir())) {
-            $this->fs->makeDirectory(modules_dir());
-        }
-
-        $this->copyDirectoryWithTemplates($this->templatePath, $this->modulePath);
     }
 
     /**
@@ -143,12 +137,37 @@ class ModuleManager
     }
 
     /**
-     * @param string $src
-     * @param string $dst
-     * @return void
+     * @throws Exception
+     */
+    public function writeContents()
+    {
+        $this->copyDirectoryWithTemplates("$this->templatePath\src", $this->modulePath);
+
+        if ($this->withAssets) {
+            $this->copyAssets("$this->templatePath\assets", $this->assetsPath);
+        }
+    }
+
+    /**
      * @throws Exception
      */
     private function copyDirectoryWithTemplates(string $src, string $dst)
+    {
+        $this->copyDirectory($src, $dst, true);
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function copyAssets(string $src, string $dst)
+    {
+        $this->copyDirectory($src, $dst, false);
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function copyDirectory(string $src, string $dst, bool $processTemplates)
     {
         if (!$this->fs->isDirectory($src)) {
             throw new Exception("Directory '$src' does not exist");
@@ -165,14 +184,27 @@ class ModuleManager
             $dstPath = str_replace($src, $dst, $file);
 
             if ($this->fs->isDirectory($srcPath)) {
-                $this->copyDirectoryWithTemplates($srcPath, $dstPath);
+                $this->copyDirectory($srcPath, $dstPath, $processTemplates);
             } else {
-                $dstPath = str_replace('.tpl', '.php', $dstPath);
-                $content = $this->fs->get($srcPath);
-                $processedContent = $this->replacePlaceholders($content);
-                $this->fs->put($dstPath, $processedContent);
+                if ($processTemplates) {
+                    $this->processTemplates($srcPath, $dstPath);
+                }
+                else {
+                    $this->fs->copy($srcPath, $dstPath);
+                }
             }
         }
+    }
+
+    /**
+     * @param string $srcPath
+     * @param string $dstPath
+     */
+    private function processTemplates(string $srcPath, string $dstPath){
+        $dstPath = str_replace('.tpl', '.php', $dstPath);
+        $content = $this->fs->get($srcPath);
+        $processedContent = $this->replacePlaceholders($content);
+        $this->fs->put($dstPath, $processedContent);
     }
 
     /**
@@ -196,7 +228,7 @@ class ModuleManager
     private function getModuleOptions(string $module): array
     {
         return [
-            'prefix' => $this->template == "web" && $this->demo == "yes" ? "" : strtolower($module),
+            'prefix' => $this->template == "DemoWeb" ? "" : strtolower($module),
             'enabled' => $this->optionEnabled,
         ];
     }
@@ -212,16 +244,5 @@ class ModuleManager
             $this->modulesConfigPath,
             "<?php\n\nreturn " . export($moduleConfigs) . ";\n"
         );
-    }
-
-    /**
-     * @param string $template
-     * @param string $demo
-     * @return string
-     */
-    private function generateTemplatePath(string $template, string $demo): string
-    {
-        $type = $demo === 'yes' ? 'Demo' : 'Default';
-        return __DIR__ . DS . 'Templates' . DS . $type . DS . ucfirst($template);
     }
 }
