@@ -57,7 +57,7 @@ class ModuleGenerateCommand extends QtCommand
      */
     protected $options = [
         ['yes', 'y', 'none', 'Module enabled status'],
-        ['template', 't', 'optional', 'The module template', 'Default/Web'],
+        ['template', 't', 'optional', 'The module template', 'DefaultWeb'],
         ['with-assets', 'a', 'none', 'Install module will assets']
     ];
 
