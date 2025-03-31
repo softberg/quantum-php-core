@@ -72,7 +72,7 @@ class FileSystemFactory
     public static function get(?string $adapter = null): FileSystem
     {
         if (!config()->has('fs')) {
-            config()->import(new Setup('Config', 'fs'));
+            config()->import(new Setup('config', 'fs'));
         }
 
         $adapter = $adapter ?? config()->get('fs.default');

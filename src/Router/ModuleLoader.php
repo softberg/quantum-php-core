@@ -138,7 +138,7 @@ class ModuleLoader
      */
     private function getModuleRoutes(string $module, Route $route): array
     {
-        $moduleRoutes = modules_dir() . DS . $module . DS . 'Config' . DS . 'routes.php';
+        $moduleRoutes = modules_dir() . DS . $module . DS . 'config' . DS . 'routes.php';
 
         if (!$this->fs->exists($moduleRoutes)) {
             throw ModuleLoaderException::moduleRoutesNotFound($module);

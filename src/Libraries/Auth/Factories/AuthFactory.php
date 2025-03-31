@@ -62,7 +62,7 @@ class AuthFactory
     public static function get(?string $adapter = null): Auth
     {
         if (!config()->has('auth')) {
-            config()->import(new Setup('Config', 'auth'));
+            config()->import(new Setup('config', 'auth'));
         }
 
         $adapter = $adapter ?? config()->get('auth.default');

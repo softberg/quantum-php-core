@@ -59,7 +59,7 @@ class CacheFactory
     public static function get(?string $adapter = null): Cache
     {
         if (!config()->has('cache')) {
-            config()->import(new Setup('Config', 'cache'));
+            config()->import(new Setup('config', 'cache'));
         }
 
         $adapter = $adapter ?? config()->get('cache.default');
