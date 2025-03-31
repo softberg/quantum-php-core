@@ -55,7 +55,7 @@ class SessionFactory
     public static function get(?string $adapter = null): Session
     {
         if (!config()->has('session')) {
-            config()->import(new Setup('Config', 'session'));
+            config()->import(new Setup('config', 'session'));
         }
 
         $adapter = $adapter ?? config()->get('session.default');

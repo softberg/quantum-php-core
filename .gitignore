@@ -1,6 +1,6 @@
 /vendor
 /.idea
 /nbproject/*
-/tests/unit/_root/shared/store/*
+/tests/_root/shared/store/*
 composer.lock
 .phpunit.result.cache
