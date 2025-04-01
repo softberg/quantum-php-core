@@ -38,7 +38,7 @@ class MainController extends QtController
     public function __before(ViewFactory $view)
     {
         $view->setLayout(static::LAYOUT, [
-            new Asset(Asset::CSS, 'css/materialize.min.css', null, -1, ['media="screen,projection"']),
+            new Asset(Asset::CSS, 'shared/css/materialize.min.css', null, -1, ['media="screen,projection"']),
             new Asset(Asset::CSS, '{{MODULE_NAME}}/css/custom.css')
         ]);
     }

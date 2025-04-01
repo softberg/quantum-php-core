@@ -32,10 +32,10 @@ abstract class BaseController extends QtController
     public function __before(ViewFactory $view)
     {
         $view->setLayout(static::LAYOUT, [
-            new Asset(Asset::CSS, 'css/materialize.min.css', null, -1, ['media="screen,projection"']),
+            new Asset(Asset::CSS, 'shared/css/materialize.min.css', null, -1, ['media="screen,projection"']),
             new Asset(Asset::CSS, '{{MODULE_NAME}}/css/custom.css'),
-            new Asset(Asset::JS, 'js/jquery-3.7.1.min.js'),
-            new Asset(Asset::JS, 'js/materialize.min.js'),
+            new Asset(Asset::JS, 'shared/js/jquery-3.7.1.min.js'),
+            new Asset(Asset::JS, 'shared/js/materialize.min.js'),
             new Asset(Asset::JS, '{{MODULE_NAME}}/js/custom.js')
         ]);
     }

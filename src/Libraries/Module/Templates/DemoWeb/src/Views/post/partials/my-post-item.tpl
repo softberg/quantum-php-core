@@ -2,7 +2,7 @@
     <?php if ($post['image']) : ?>
         <img src="<?php echo base_url() . '/uploads/' . $post['image'] ?>" class="circle img-my-post">
     <?php else : ?>
-        <img src="<?php echo base_url() ?>/assets/images/no-image.png" class="circle img-my-post">
+        <img src="<?php echo base_url() ?>/assets/shared/images/no-image.png" class="circle img-my-post">
     <?php endif; ?>
     <span class="title post-title" title="<?php echo $post['title'] ?>">
         <a class="teal-text post-title" href="<?php echo base_url(true) . '/' . current_lang() . '/post/' . $post['uuid'] ?>?ref=my-posts">

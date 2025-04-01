@@ -6,7 +6,7 @@
         <title><?php echo $title ?></title>
 
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-        <link rel="shortcut icon" href="<?php echo asset()->url('images/favicon.ico') ?>">
+        <link rel="shortcut icon" href="<?php echo asset()->url('shared/images/favicon.ico') ?>">
         
         <?php assets("css") ?>
     </head>

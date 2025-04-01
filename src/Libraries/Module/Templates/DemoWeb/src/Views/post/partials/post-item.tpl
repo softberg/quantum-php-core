@@ -5,7 +5,7 @@
                 <?php if ($post['image']) : ?>
                     <img src="<?php echo base_url() . '/uploads/' . $post['image'] ?>" class="content_img">
                 <?php else : ?>
-                    <img src="<?php echo base_url() ?>/assets/images/no-image.png" class="content_no_img">
+                    <img src="<?php echo base_url() ?>/assets/shared/images/no-image.png" class="content_no_img">
                 <?php endif; ?>
             </div>
             <div class="card-action card-action-custom">
