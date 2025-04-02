@@ -209,3 +209,24 @@ function is_closure($entity): bool
 {
     return $entity instanceof Closure;
 }
+
+/**
+ * Recursively deletes folder
+ * @param string $dir
+ * @return bool
+ */
+function deleteDirectoryWithFiles(string $dir)
+{
+    if (!is_dir($dir)) {
+        return false;
+    }
+
+    $files = array_diff(scandir($dir), array('.', '..'));
+
+    foreach ($files as $file) {
+        $path = $dir . DS . $file;
+        is_dir($path) ? deleteDirectoryWithFiles($path) : unlink($path);
+    }
+
+    return rmdir($dir);
+}

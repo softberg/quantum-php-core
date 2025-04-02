@@ -1,6 +1,6 @@
 <?php
 
-namespace Quantum\Tests\Libraries\Module;
+namespace Quantum\Tests\Unit\Libraries\Module;
 
 use Quantum\Libraries\Module\ModuleManager;
 use Quantum\Tests\Unit\AppTestCase;
@@ -8,6 +8,7 @@ use Quantum\Mvc\QtController;
 use Quantum\Http\Response;
 use Quantum\App\App;
 use Exception;
+use Mockery;
 
 class ModuleManagerTest extends AppTestCase
 {
@@ -20,9 +21,11 @@ class ModuleManagerTest extends AppTestCase
         $this->modulesConfigPath = App::getBaseDir() . DS . 'shared' . DS . 'config' . DS . 'modules.php';
     }
 
-    public function testAddModuleConfig(){
+    public function testCreateModule(){
 
-        $moduleManager = new ModuleManager("Api", "DefaultApi", "", false);
+        $moduleManager = $this->getModuleManager();
+
+        $moduleManager->writeContents();
 
         $moduleManager->addModuleConfig();
 
@@ -33,13 +36,6 @@ class ModuleManagerTest extends AppTestCase
         $this->assertArrayHasKey("Api", $modules);
 
         $this->assertEquals("api", $modules["Api"]["prefix"]);
-    }
-
-    public function testWriteContents(){
-
-        $moduleManager = new ModuleManager("Api", "DefaultApi", "", false);
-
-        $moduleManager->writeContents();
 
         $mainController = new \Quantum\Tests\_root\modules\Api\Controllers\MainController();
 
@@ -56,8 +52,32 @@ class ModuleManagerTest extends AppTestCase
         $this->assertEquals("Api module.", $result->message);
     }
 
+    public function testAddModuleConfigWithoutModule(){
+        $moduleManager = $this->getModuleManager();
+
+        $this->expectException(Exception::class);
+
+        $this->expectExceptionMessage("Module directory does not exist, skipping config update.");
+
+        $moduleManager->addModuleConfig();
+    }
+
+    public function testIncompleteCopyTemplates(){
+        $moduleManager = Mockery::mock(ModuleManager::class, ["Api", "DefaultApi", "yes", false])->makePartial();
+
+        $moduleManager->shouldAllowMockingProtectedMethods();
+
+        $moduleManager->shouldReceive('validateModuleFiles')->andReturn(false);
+
+        $this->expectException(Exception::class);
+
+        $this->expectExceptionMessage('Module creation incomplete: missing files.');
+
+        $moduleManager->writeContents();
+    }
+
     public function testInvalidTemplate(){
-        $moduleManager = new ModuleManager("NotExists", "notExists", "yes", true);
+        $moduleManager = $this->getModuleManager("NotExists", "notExists");
 
         $this->expectException(Exception::class);
 
@@ -82,30 +102,17 @@ class ModuleManagerTest extends AppTestCase
         }
 
         if($this->fs->isDirectory($apiModulePath)) {
-            $this->deleteDirectory($apiModulePath);
-        }
-    }
-
-    private function deleteDirectory(string $dir)
-    {
-        if (!is_dir($dir)) {
-            return;
-        }
-
-        $files = array_diff(scandir($dir), array('.', '..'));
-
-        foreach ($files as $file) {
-            $path = $dir . DS . $file;
-            is_dir($path) ? $this->deleteDirectory($path) : unlink($path);
-        }
-
-        if ($dir != uploads_dir()) {
-            rmdir($dir);
+            deleteDirectoryWithFiles($apiModulePath);
         }
     }
 
     private function getModuleConfigs(){
         return $this->fs->require($this->modulesConfigPath);
+    }
+
+    private function getModuleManager($name = 'Api', $template = "DefaultApi"): ModuleManager
+    {
+        return new ModuleManager($name, $template, "yes", false);
     }
 
 }
