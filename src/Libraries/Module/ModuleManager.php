@@ -145,14 +145,13 @@ class ModuleManager
      */
     public function writeContents()
     {
-        $copiedFiles = [];
-        $this->copyDirectoryWithTemplates($this->templatePath . DS . "src", $this->modulePath, $copiedFiles);
+        $copiedTemplates = $this->copyDirectoryWithTemplates($this->templatePath . DS . "src", $this->modulePath);
 
         if ($this->withAssets) {
-            $this->copyAssets($this->templatePath . DS . "assets", $this->assetsPath, $copiedFiles);
+            $copiedAssets = $this->copyAssets($this->templatePath . DS . "assets", $this->assetsPath);
         }
 
-        if (!$this->validateModuleFiles($copiedFiles)) {
+        if (!$this->validateModuleFiles(array_merge($copiedTemplates, $copiedAssets ?? []))) {
             throw new Exception("Module creation incomplete: missing files.");
         }
     }
@@ -160,23 +159,23 @@ class ModuleManager
     /**
      * @param string $src
      * @param string $dst
-     * @param array $copiedFiles
+     * @return array
      * @throws Exception
      */
-    private function copyDirectoryWithTemplates(string $src, string $dst, array &$copiedFiles)
+    private function copyDirectoryWithTemplates(string $src, string $dst): array
     {
-        $this->copyDirectory($src, $dst, true, $copiedFiles);
+        return $this->copyDirectory($src, $dst, true);
     }
 
     /**
      * @param string $src
      * @param string $dst
-     * @param array $copiedFiles
+     * @return array
      * @throws Exception
      */
-    private function copyAssets(string $src, string $dst, array &$copiedFiles)
+    private function copyAssets(string $src, string $dst): array
     {
-        $this->copyDirectory($src, $dst, false, $copiedFiles);
+        return $this->copyDirectory($src, $dst, false);
     }
 
     /**
@@ -184,9 +183,10 @@ class ModuleManager
      * @param string $dst
      * @param bool $processTemplates
      * @param array $copiedFiles
+     * @return array
      * @throws Exception
      */
-    private function copyDirectory(string $src, string $dst, bool $processTemplates, array &$copiedFiles)
+    private function copyDirectory(string $src, string $dst, bool $processTemplates, array $copiedFiles = []): array
     {
         if (!$this->fs->isDirectory($src)) {
             throw new Exception("Directory '$src' does not exist");
@@ -203,7 +203,7 @@ class ModuleManager
             $dstPath = str_replace($src, $dst, $file);
 
             if ($this->fs->isDirectory($srcPath)) {
-                $this->copyDirectory($srcPath, $dstPath, $processTemplates, $copiedFiles);
+                $copiedFiles = $this->copyDirectory($srcPath, $dstPath, $processTemplates, $copiedFiles);
             } else {
                 if ($processTemplates) {
                     $this->processTemplates($srcPath, $dstPath);
@@ -214,6 +214,8 @@ class ModuleManager
                 $copiedFiles[] = $dstPath;
             }
         }
+
+        return $copiedFiles;
     }
 
     /**

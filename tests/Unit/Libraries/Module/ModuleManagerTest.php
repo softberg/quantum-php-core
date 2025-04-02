@@ -29,7 +29,7 @@ class ModuleManagerTest extends AppTestCase
 
         $moduleManager->addModuleConfig();
 
-        $modules = $this->getModuleConfigs();
+        $modules = $this->fs->require($this->modulesConfigPath);;
 
         $this->assertEquals("Api", $moduleManager->getModuleName());
 
@@ -88,7 +88,7 @@ class ModuleManagerTest extends AppTestCase
     {
         parent::tearDown();
 
-        $moduleConfigs = $this->getModuleConfigs();
+        $moduleConfigs = $this->fs->require($this->modulesConfigPath);
 
         $apiModulePath = App::getBaseDir() . DS . "modules" . DS . "Api";
 
@@ -106,13 +106,8 @@ class ModuleManagerTest extends AppTestCase
         }
     }
 
-    private function getModuleConfigs(){
-        return $this->fs->require($this->modulesConfigPath);
-    }
-
     private function getModuleManager($name = 'Api', $template = "DefaultApi"): ModuleManager
     {
         return new ModuleManager($name, $template, "yes", false);
     }
-
 }
