@@ -145,6 +145,10 @@ class ModuleManager
      */
     public function writeContents()
     {
+        if (!$this->fs->isDirectory(modules_dir())) {
+            $this->fs->makeDirectory(modules_dir());
+        }
+
         $copiedTemplates = $this->copyDirectoryWithTemplates($this->templatePath . DS . "src", $this->modulePath);
 
         if ($this->withAssets) {
