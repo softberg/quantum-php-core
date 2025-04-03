@@ -22,8 +22,7 @@ class ModuleManagerTest extends AppTestCase
     }
 
     public function testCreateModule(){
-
-        $moduleManager = $this->getModuleManager();
+        $moduleManager = new ModuleManager("Api", "DefaultApi", "yes", false);
 
         $moduleManager->writeContents();
 
@@ -53,7 +52,7 @@ class ModuleManagerTest extends AppTestCase
     }
 
     public function testAddModuleConfigWithoutModule(){
-        $moduleManager = $this->getModuleManager();
+        $moduleManager = new ModuleManager("Api", "DefaultApi", "yes", false);
 
         $this->expectException(Exception::class);
 
@@ -77,7 +76,7 @@ class ModuleManagerTest extends AppTestCase
     }
 
     public function testInvalidTemplate(){
-        $moduleManager = $this->getModuleManager("NotExists", "notExists");
+        $moduleManager = new ModuleManager("NotExists", "notExists", "yes", false);
 
         $this->expectException(Exception::class);
 
@@ -104,10 +103,5 @@ class ModuleManagerTest extends AppTestCase
         if($this->fs->isDirectory($apiModulePath)) {
             deleteDirectoryWithFiles($apiModulePath);
         }
-    }
-
-    private function getModuleManager($name = 'Api', $template = "DefaultApi"): ModuleManager
-    {
-        return new ModuleManager($name, $template, "yes", false);
     }
 }
