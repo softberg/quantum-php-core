@@ -123,6 +123,10 @@ class ModuleManager
      */
     public function addModuleConfig()
     {
+        if (!$this->fs->isDirectory($this->modulePath)) {
+            throw new Exception("Module directory does not exist, skipping config update.");
+        }
+
         $moduleConfigs = ModuleLoader::getInstance()->getModuleConfigs();
 
         foreach ($moduleConfigs as $module => $options) {
@@ -141,33 +145,48 @@ class ModuleManager
      */
     public function writeContents()
     {
-        $this->copyDirectoryWithTemplates("$this->templatePath" . DS . "src", $this->modulePath);
+        $copiedTemplates = $this->copyDirectoryWithTemplates($this->templatePath . DS . "src", $this->modulePath);
 
         if ($this->withAssets) {
-            $this->copyAssets("$this->templatePath" . DS . "assets", $this->assetsPath);
+            $copiedAssets = $this->copyAssets($this->templatePath . DS . "assets", $this->assetsPath);
+        }
+
+        if (!$this->validateModuleFiles(array_merge($copiedTemplates, $copiedAssets ?? []))) {
+            throw new Exception("Module creation incomplete: missing files.");
         }
     }
 
     /**
+     * @param string $src
+     * @param string $dst
+     * @return array
      * @throws Exception
      */
-    private function copyDirectoryWithTemplates(string $src, string $dst)
+    private function copyDirectoryWithTemplates(string $src, string $dst): array
     {
-        $this->copyDirectory($src, $dst, true);
+        return $this->copyDirectory($src, $dst, true);
     }
 
     /**
+     * @param string $src
+     * @param string $dst
+     * @return array
      * @throws Exception
      */
-    private function copyAssets(string $src, string $dst)
+    private function copyAssets(string $src, string $dst): array
     {
-        $this->copyDirectory($src, $dst, false);
+        return $this->copyDirectory($src, $dst, false);
     }
 
     /**
+     * @param string $src
+     * @param string $dst
+     * @param bool $processTemplates
+     * @param array $copiedFiles
+     * @return array
      * @throws Exception
      */
-    private function copyDirectory(string $src, string $dst, bool $processTemplates)
+    private function copyDirectory(string $src, string $dst, bool $processTemplates, array $copiedFiles = []): array
     {
         if (!$this->fs->isDirectory($src)) {
             throw new Exception("Directory '$src' does not exist");
@@ -184,7 +203,7 @@ class ModuleManager
             $dstPath = str_replace($src, $dst, $file);
 
             if ($this->fs->isDirectory($srcPath)) {
-                $this->copyDirectory($srcPath, $dstPath, $processTemplates);
+                $copiedFiles = $this->copyDirectory($srcPath, $dstPath, $processTemplates, $copiedFiles);
             } else {
                 if ($processTemplates) {
                     $this->processTemplates($srcPath, $dstPath);
@@ -192,15 +211,18 @@ class ModuleManager
                 else {
                     $this->fs->copy($srcPath, $dstPath);
                 }
+                $copiedFiles[] = $dstPath;
             }
         }
+
+        return $copiedFiles;
     }
 
     /**
      * @param string $srcPath
      * @param string $dstPath
      */
-    private function processTemplates(string $srcPath, string $dstPath){
+    private function processTemplates(string $srcPath, string &$dstPath){
         $dstPath = str_replace('.tpl', '.php', $dstPath);
         $content = $this->fs->get($srcPath);
         $processedContent = $this->replacePlaceholders($content);
@@ -244,5 +266,19 @@ class ModuleManager
             $this->modulesConfigPath,
             "<?php\n\nreturn " . export($moduleConfigs) . ";\n"
         );
+    }
+
+    /**
+     * @param array $copiedFiles
+     * @return bool
+     */
+    protected function validateModuleFiles(array $copiedFiles): bool
+    {
+        foreach ($copiedFiles as $file) {
+            if (!$this->fs->exists($file)) {
+                return false;
+            }
+        }
+        return true;
     }
 }

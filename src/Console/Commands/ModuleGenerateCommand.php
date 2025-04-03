@@ -77,9 +77,9 @@ class ModuleGenerateCommand extends QtCommand
                 $this->getOption('with-assets')
             );
 
-            $moduleManager->addModuleConfig();
-
             $moduleManager->writeContents();
+
+            $moduleManager->addModuleConfig();
 
             $this->info($moduleName . ' module successfully created');
         } catch (Exception $e) {
