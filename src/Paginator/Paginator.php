@@ -63,9 +63,9 @@ class Paginator implements PaginatorInterface
 
     /**
      * @param DbalInterface $ormInstance
+     * @param string $modelClass
      * @param int $perPage
      * @param int $page
-     * @param string|null $modelClass
      */
     public function __construct(DbalInterface $ormInstance, string $modelClass, int $perPage, int $page = 1)
     {
