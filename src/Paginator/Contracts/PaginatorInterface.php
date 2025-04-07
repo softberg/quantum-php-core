@@ -9,17 +9,34 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.6
  */
 
-namespace Quantum\Libraries\Database\Contracts;
+namespace Quantum\Paginator\Contracts;
+
+use Quantum\Model\ModelCollection;
 
 /**
  * Paginator interface
- * @package Quantum\Libraries\Database
+ * @package Quantum\Paginator
  */
 interface PaginatorInterface
 {
+
+    /**
+     * @return ModelCollection
+     */
+    public function data(): ModelCollection;
+
+    /**
+     * @return mixed
+     */
+    public function firstItem();
+
+    /**
+     * @return mixed
+     */
+    public function lastItem();
 
     /**
      * @return int
@@ -93,19 +110,4 @@ interface PaginatorInterface
      * @return string|null
      */
     public function getPagination(bool $withBaseUrl, $pageItemsCount = null): ?string;
-
-    /**
-     * @return mixed
-     */
-    public function firstItem();
-
-    /**
-     * @return mixed
-     */
-    public function lastItem();
-
-    /**
-     * @return array
-     */
-    public function data(): array;
 }
