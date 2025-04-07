@@ -34,12 +34,24 @@ abstract class IdiormDbalTestCase extends AppTestCase
 
     public function tearDown(): void
     {
+        IdiormDbal::execute("DROP TABLE IF EXISTS users");
+
+        IdiormDbal::execute("DROP TABLE IF EXISTS events");
+
+        IdiormDbal::execute("DROP TABLE IF EXISTS user_events");
+
+        IdiormDbal::execute("DROP TABLE IF EXISTS user_professions");
+
+        IdiormDbal::execute("DROP TABLE IF EXISTS meetings");
+
+        IdiormDbal::execute("DROP TABLE IF EXISTS tickets");
+
         IdiormDbal::disconnect();
     }
 
     private function _createUserTableWithData()
     {
-        IdiormDbal::execute("CREATE TABLE users (
+        IdiormDbal::execute("CREATE TABLE IF NOT EXISTS users (
                         id INTEGER PRIMARY KEY,
                         firstname VARCHAR(255),
                         lastname VARCHAR(255),
@@ -59,7 +71,7 @@ abstract class IdiormDbalTestCase extends AppTestCase
 
     private function _createEventsTableWithData()
     {
-        IdiormDbal::execute("CREATE TABLE events (
+        IdiormDbal::execute("CREATE TABLE IF NOT EXISTS events (
                         id INTEGER PRIMARY KEY,
                         title VARCHAR(255),
                         country VARCHAR(255),
@@ -82,7 +94,7 @@ abstract class IdiormDbalTestCase extends AppTestCase
 
     private function _createUserEventTableWithData()
     {
-        IdiormDbal::execute("CREATE TABLE user_events (
+        IdiormDbal::execute("CREATE TABLE IF NOT EXISTS user_events (
                         id INTEGER PRIMARY KEY,
                         user_id INTEGER(11),
                         event_id INTEGER(11),
@@ -107,7 +119,7 @@ abstract class IdiormDbalTestCase extends AppTestCase
 
     private function _createProfessionTableWithData()
     {
-        IdiormDbal::execute("CREATE TABLE user_professions (
+        IdiormDbal::execute("CREATE TABLE IF NOT EXISTS user_professions (
                         id INTEGER PRIMARY KEY,
                         user_id INTEGER(11),
                         title VARCHAR(255)
@@ -124,7 +136,7 @@ abstract class IdiormDbalTestCase extends AppTestCase
 
     private function _createMeetingsTableWithData()
     {
-        IdiormDbal::execute("CREATE TABLE meetings (
+        IdiormDbal::execute("CREATE TABLE IF NOT EXISTS meetings (
                         id INTEGER PRIMARY KEY,
                         user_id INTEGER (11),
                         title VARCHAR (255),
@@ -143,7 +155,7 @@ abstract class IdiormDbalTestCase extends AppTestCase
 
     private function _createTicketsTableWithData()
     {
-        IdiormDbal::execute("CREATE TABLE tickets (
+        IdiormDbal::execute("CREATE TABLE IF NOT EXISTS tickets (
                         id INTEGER PRIMARY KEY,
                         meeting_id INTEGER (11),
                         type VARCHAR (255),

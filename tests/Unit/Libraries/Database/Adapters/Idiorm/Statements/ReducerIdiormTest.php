@@ -31,9 +31,9 @@ class ReducerIdiormTest extends IdiormDbalTestCase
 
         $events = $eventsModel->orderBy('title', 'asc')->get();
 
-        $this->assertEquals('Art', $events[0]['title']);
+        $this->assertEquals('Art', $events[0]->prop('title'));
 
-        $this->assertEquals('Music', $events[count($events) - 1]['title']);
+        $this->assertEquals('Music', $events[count($events) - 1]->prop('title'));
     }
 
     public function testIdiormGroupBy()
@@ -59,7 +59,7 @@ class ReducerIdiormTest extends IdiormDbalTestCase
 
         $this->assertCount(3, $events);
 
-        $this->assertEquals(1, $events[0]['id']);
+        $this->assertEquals(1, $events[0]->prop('id'));
 
         $eventsModel = new IdiormDbal('events');
 
@@ -67,6 +67,6 @@ class ReducerIdiormTest extends IdiormDbalTestCase
 
         $this->assertCount(3, $events);
 
-        $this->assertEquals(2, $events[0]['id']);
+        $this->assertEquals(2, $events[0]->prop('id'));
     }
 }

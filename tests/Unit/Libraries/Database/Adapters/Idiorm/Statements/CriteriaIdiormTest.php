@@ -66,9 +66,9 @@ class CriteriaIdiormTest extends IdiormDbalTestCase
 
         $this->assertCount(2, $users);
 
-        $this->assertEquals('John', $users[0]['firstname']);
+        $this->assertEquals('John', $users[0]->prop('firstname'));
 
-        $this->assertEquals('Jane', $users[1]['firstname']);
+        $this->assertEquals('Jane', $users[1]->prop('firstname'));
 
         $userModel = new IdiormDbal('users');
 
@@ -76,7 +76,7 @@ class CriteriaIdiormTest extends IdiormDbalTestCase
 
         $this->assertCount(1, $users);
 
-        $this->assertEquals('Jane', $users[0]['firstname']);
+        $this->assertEquals('Jane', $users[0]->prop('firstname'));
     }
 
     public function testIdiormCriteriaLikeAndNotLike()
@@ -87,7 +87,7 @@ class CriteriaIdiormTest extends IdiormDbalTestCase
 
         $this->assertCount(1, $users);
 
-        $this->assertEquals('John', $users[0]['firstname']);
+        $this->assertEquals('John', $users[0]->prop('firstname'));
 
         $userModel = new IdiormDbal('users');
 
@@ -95,7 +95,7 @@ class CriteriaIdiormTest extends IdiormDbalTestCase
 
         $this->assertCount(2, $users);
 
-        $this->assertEquals('Jane', $users[1]['firstname']);
+        $this->assertEquals('Jane', $users[1]->prop('firstname'));
 
         $userModel = new IdiormDbal('users');
 
@@ -103,7 +103,7 @@ class CriteriaIdiormTest extends IdiormDbalTestCase
 
         $this->assertCount(1, $users);
 
-        $this->assertEquals('Jane', $users[0]['firstname']);
+        $this->assertEquals('Jane', $users[0]->prop('firstname'));
     }
 
     public function testIdiormCriteriaNullAndNotNull()
@@ -120,9 +120,9 @@ class CriteriaIdiormTest extends IdiormDbalTestCase
 
         $this->assertCount(2, $users);
 
-        $this->assertEquals('John', $users[0]['firstname']);
+        $this->assertEquals('John', $users[0]->prop('firstname'));
 
-        $this->assertEquals('Jane', $users[1]['firstname']);
+        $this->assertEquals('Jane', $users[1]->prop('firstname'));
     }
 
     public function testIdiormCriteriaWithFunction()
@@ -134,9 +134,9 @@ class CriteriaIdiormTest extends IdiormDbalTestCase
         $this->assertCount(3, $events);
 
         /** Tested at 2020-04-05 01:05:00 */
-        $this->assertEquals('2040-02-14 10:15:12', $events[0]['started_at']);
+        $this->assertEquals('2040-02-14 10:15:12', $events[0]->prop('started_at'));
 
-        $this->assertEquals('2050-02-14 10:15:12', $events[1]['started_at']);
+        $this->assertEquals('2050-02-14 10:15:12', $events[1]->prop('started_at'));
     }
 
     public function testIdiormCriteriaColumnsEqual()
@@ -210,9 +210,9 @@ class CriteriaIdiormTest extends IdiormDbalTestCase
 
         $this->assertCount(1, $events);
 
-        $this->assertEquals('Music', $events[0]['title']);
+        $this->assertEquals('Music', $events[0]->prop('title'));
 
-        $this->assertEquals('Ireland', $events[0]['country']);
+        $this->assertEquals('Ireland', $events[0]->prop('country'));
 
     }
 }

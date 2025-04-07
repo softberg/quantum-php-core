@@ -13,7 +13,7 @@ namespace Quantum\Libraries\Validation {
 
 namespace Quantum\Models {
 
-    use Quantum\Mvc\QtModel;
+    use Quantum\Model\QtModel;
 
     class VUserModel extends QtModel
     {
@@ -27,10 +27,11 @@ namespace Quantum\Tests\Unit\Libraries\Validation {
 
     use Quantum\Libraries\Database\Adapters\Idiorm\IdiormDbal;
     use Quantum\Libraries\Validation\Validator;
+    use Quantum\Model\Factories\ModelFactory;
+    use Quantum\Libraries\Database\Database;
     use Quantum\Libraries\Validation\Rule;
-    use Quantum\Factory\ModelFactory;
-    use Quantum\Models\VUserModel;
     use Quantum\Tests\Unit\AppTestCase;
+    use Quantum\Models\VUserModel;
     use Quantum\Http\Request;
 
     class ValidatorTest extends AppTestCase
@@ -62,6 +63,8 @@ namespace Quantum\Tests\Unit\Libraries\Validation {
         public function tearDown(): void
         {
             unlink(base_dir() . DS . 'php8fe2.tmp');
+
+            Database::execute("DROP TABLE IF EXISTS users");
         }
 
         public function testValidatorConstructor()
@@ -889,7 +892,7 @@ namespace Quantum\Tests\Unit\Libraries\Validation {
         {
             IdiormDbal::connect(['driver' => 'sqlite', 'database' => ':memory:']);
 
-            IdiormDbal::execute("CREATE TABLE users (
+            IdiormDbal::execute("CREATE TABLE IF NOT EXISTS users (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                         username VARCHAR(255),
                         password VARCHAR(255),

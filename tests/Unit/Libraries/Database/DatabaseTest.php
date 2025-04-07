@@ -8,8 +8,7 @@ use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Loader\Setup;
 
 /**
- * @runTestsInSeparateProcesses
- * @preserveGlobalState disabled
+
  */
 class DatabaseTest extends AppTestCase
 {
@@ -24,7 +23,7 @@ class DatabaseTest extends AppTestCase
 
         config()->set('debug', true);
 
-        Database::execute("CREATE TABLE users (
+        Database::execute("CREATE TABLE IF NOT EXISTS users (
                         id INTEGER PRIMARY KEY,
                         firstname VARCHAR(255),
                         lastname VARCHAR(255),
@@ -32,6 +31,11 @@ class DatabaseTest extends AppTestCase
                         country VARCHAR(255),
                         created_at DATETIME
                     )");
+    }
+
+    public function tearDown(): void
+    {
+        Database::execute("DROP TABLE IF EXISTS users");
     }
 
     public function testDatabaseInstance()
