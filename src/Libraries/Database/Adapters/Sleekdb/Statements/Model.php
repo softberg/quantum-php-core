@@ -9,17 +9,17 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.6
  */
 
 namespace Quantum\Libraries\Database\Adapters\Sleekdb\Statements;
 
 use Quantum\Libraries\Database\Exceptions\DatabaseException;
-use Quantum\Libraries\Database\Exceptions\ModelException;
 use Quantum\Libraries\Database\Contracts\DbalInterface;
 use SleekDB\Exceptions\InvalidConfigurationException;
 use SleekDB\Exceptions\InvalidArgumentException;
 use SleekDB\Exceptions\IdNotAllowedException;
+use Quantum\Model\Exceptions\ModelException;
 use SleekDB\Exceptions\JsonException;
 use SleekDB\Exceptions\IOException;
 

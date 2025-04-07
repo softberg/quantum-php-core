@@ -9,16 +9,18 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.6
  */
 
 use Symfony\Component\VarExporter\Exception\ExceptionInterface;
 use Quantum\Libraries\Config\Exceptions\ConfigException;
+use Quantum\Libraries\Database\Contracts\DbalInterface;
 use Quantum\Renderer\Exceptions\RendererException;
 use Quantum\Exceptions\StopExecutionException;
 use Symfony\Component\VarExporter\VarExporter;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Exceptions\BaseException;
+use Quantum\Model\QtModel;
 use Quantum\Http\Response;
 
 /**
@@ -211,11 +213,33 @@ function is_closure($entity): bool
 }
 
 /**
+ * @param DbalInterface $ormInstance
+ * @param string $modelClass
+ * @return QtModel
+ */
+function wrapToModel(DbalInterface $ormInstance, string $modelClass): QtModel
+{
+    if (!class_exists($modelClass)) {
+        throw new InvalidArgumentException("Model class '$modelClass' does not exist.");
+    }
+
+    $model = new $modelClass();
+
+    if (!$model instanceof QtModel) {
+        throw new InvalidArgumentException("Model class '$modelClass' must extend QtModel.");
+    }
+
+    $model->setOrmInstance($ormInstance);
+
+    return $model;
+}
+
+/**
  * Recursively deletes folder
  * @param string $dir
  * @return bool
  */
-function deleteDirectoryWithFiles(string $dir)
+function deleteDirectoryWithFiles(string $dir): bool
 {
     if (!is_dir($dir)) {
         return false;

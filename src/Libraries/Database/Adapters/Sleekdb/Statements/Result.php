@@ -9,18 +9,16 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.6
  */
 
 namespace Quantum\Libraries\Database\Adapters\Sleekdb\Statements;
 
-use Quantum\Libraries\Database\Contracts\PaginatorInterface;
 use Quantum\Libraries\Database\Exceptions\DatabaseException;
-use Quantum\Libraries\Database\Adapters\Sleekdb\Paginator;
-use Quantum\Libraries\Database\Exceptions\ModelException;
 use Quantum\Libraries\Database\Contracts\DbalInterface;
 use SleekDB\Exceptions\InvalidConfigurationException;
 use SleekDB\Exceptions\InvalidArgumentException;
+use Quantum\Model\Exceptions\ModelException;
 use SleekDB\Exceptions\IOException;
 
 /**
@@ -47,20 +45,6 @@ trait Result
             $item->isNew = false;
             return $item;
         }, $this->getBuilder()->getQuery()->fetch());
-    }
-
-    /**
-     * @inheritDoc
-     * @return PaginatorInterface
-     * @throws DatabaseException
-     * @throws IOException
-     * @throws InvalidArgumentException
-     * @throws InvalidConfigurationException
-     * @throws ModelException
-     */
-    public function paginate(int $perPage, int $currentPage = 1): PaginatorInterface
-    {
-        return new Paginator($this, $perPage, $currentPage);
     }
 
     /**

@@ -17,7 +17,7 @@ namespace Quantum\Libraries\Session\Adapters\Database;
 use Quantum\Libraries\Session\Contracts\SessionStorageInterface;
 use Quantum\Libraries\Session\Exceptions\SessionException;
 use Quantum\Libraries\Session\Traits\SessionTrait;
-use Quantum\Factory\ModelFactory;
+use Quantum\Model\Factories\ModelFactory;
 
 /**
  * Class Session
@@ -63,7 +63,7 @@ class DatabaseSessionAdapter implements SessionStorageInterface
     {
         $sessionTable = $params['table'] ?? self::SESSION_TABLE;
 
-        $sessionModel = ModelFactory::create($sessionTable);
+        $sessionModel = ModelFactory::createOrmInstance($sessionTable);
 
         if (session_status() !== PHP_SESSION_ACTIVE) {
             session_set_save_handler(new DatabaseHandler($sessionModel), true);

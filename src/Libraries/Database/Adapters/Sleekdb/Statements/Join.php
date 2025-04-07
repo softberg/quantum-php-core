@@ -9,16 +9,16 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.6
  */
 
 namespace Quantum\Libraries\Database\Adapters\Sleekdb\Statements;
 
 use Quantum\Libraries\Database\Adapters\Sleekdb\SleekDbal;
-use Quantum\Libraries\Database\Exceptions\ModelException;
 use Quantum\Libraries\Database\Contracts\DbalInterface;
+use Quantum\Model\Exceptions\ModelException;
+use Quantum\Model\QtModel;
 use SleekDB\QueryBuilder;
-use Quantum\Mvc\QtModel;
 
 /**
  * Trait Join

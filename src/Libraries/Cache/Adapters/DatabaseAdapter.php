@@ -15,8 +15,8 @@
 namespace Quantum\Libraries\Cache\Adapters;
 
 use Quantum\Libraries\Database\Contracts\DbalInterface;
+use Quantum\Model\Factories\ModelFactory;
 use Psr\SimpleCache\CacheInterface;
-use Quantum\Factory\ModelFactory;
 use InvalidArgumentException;
 use Exception;
 
@@ -49,7 +49,7 @@ class DatabaseAdapter implements CacheInterface
     {
         $this->ttl = $params['ttl'];
         $this->prefix = $params['prefix'];
-        $this->cacheModel = ModelFactory::create($params['table']);
+        $this->cacheModel = ModelFactory::createOrmInstance($params['table']);
     }
 
     /**

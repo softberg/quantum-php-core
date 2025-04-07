@@ -9,14 +9,12 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.6
  */
 
 namespace Quantum\Libraries\Database\Adapters\Idiorm\Statements;
 
-use Quantum\Libraries\Database\Contracts\PaginatorInterface;
 use Quantum\Libraries\Database\Exceptions\DatabaseException;
-use Quantum\Libraries\Database\Adapters\Idiorm\Paginator;
 use Quantum\Libraries\Database\Contracts\DbalInterface;
 
 /**
@@ -30,19 +28,13 @@ trait Result
      * @inheritDoc
      * @throws DatabaseException
      */
-    public function get()
+    public function get(): array
     {
-        return $this->getOrmModel()->find_many();
-    }
-
-    /**
-     * @inheritDoc
-     * @return PaginatorInterface
-     * @throws DatabaseException
-     */
-    public function paginate(int $perPage, int $currentPage = 1): PaginatorInterface
-    {
-        return new Paginator($this, $perPage, $currentPage);
+        return array_map(function ($element) {
+            $item = clone $this;
+            $item->updateOrmModel($element);
+            return $item;
+        }, $this->getOrmModel()->find_many());
     }
 
     /**

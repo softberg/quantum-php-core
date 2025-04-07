@@ -9,18 +9,18 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.6
  */
 
-namespace Quantum\Mvc;
+namespace Quantum\Model;
 
-use Quantum\Libraries\Database\Contracts\PaginatorInterface;
-use Quantum\Libraries\Database\Exceptions\ModelException;
 use Quantum\Libraries\Database\Contracts\DbalInterface;
+use Quantum\Model\Exceptions\ModelException;
+use Quantum\Paginator\Paginator;
 
 /**
  * Class QtModel
- * @package Quantum\Mvc
+ * @package Quantum\Model
  * @method string getTable()
  * @method DbalInterface select(...$columns)
  * @method DbalInterface findOne(int $id)
@@ -31,7 +31,6 @@ use Quantum\Libraries\Database\Contracts\DbalInterface;
  * @method DbalInterface having(string $column, string $operator, string $value = null)
  * @method DbalInterface orderBy(string $column, string $direction)
  * @method DbalInterface limit(int $limit)
- * @method mixed get()
  * @method array asArray()
  * @method DbalInterface create()
  * @method bool save()
@@ -77,15 +76,37 @@ abstract class QtModel
      * ORM database abstract layer object
      * @var DbalInterface
      */
-    private $orm;
+    private $ormInstance;
 
     /**
-     * Sets the ORM
-     * @param DbalInterface $orm
+     * Sets the ORM instance
+     * @param DbalInterface $ormInstance
      */
-    public function setOrm(DbalInterface $orm)
+    public function setOrmInstance(DbalInterface $ormInstance)
     {
-        $this->orm = $orm;
+        $this->ormInstance = $ormInstance;
+    }
+
+    /**
+     * @return ModelCollection
+     */
+    public function get(): ModelCollection
+    {
+        $models = array_map(function ($item) {
+            return wrapToModel($item, static::class);
+        }, $this->ormInstance->get());
+
+        return new ModelCollection($models);
+    }
+
+    /**
+     * @param int $perPage
+     * @param int $currentPage
+     * @return Paginator
+     */
+    public function paginate(int $perPage, int $currentPage = 1): Paginator
+    {
+        return new Paginator($this->ormInstance, static::class, $perPage, $currentPage);
     }
 
     /**
@@ -128,7 +149,7 @@ abstract class QtModel
      */
     public function prop(string $property, $value = null)
     {
-        return $this->orm->prop(...func_get_args());
+        return $this->ormInstance->prop(...func_get_args());
     }
 
     /**
@@ -152,7 +173,6 @@ abstract class QtModel
     }
 
     /**
-     * Allows calling the model methods
      * @param string $method
      * @param mixed|null $args
      * @return $this|array|int|string
@@ -160,13 +180,13 @@ abstract class QtModel
      */
     public function __call(string $method, $args = null)
     {
-        if (!method_exists($this->orm, $method)) {
+        if (!method_exists($this->ormInstance, $method)) {
             throw ModelException::undefinedMethod($method);
         }
 
-        $result = $this->orm->{$method}(...$args);
+        $result = $this->ormInstance->{$method}(...$args);
 
-        if (!is_object($result) || $result instanceof PaginatorInterface) {
+        if (!$result instanceof DbalInterface) {
             return $result;
         }
 

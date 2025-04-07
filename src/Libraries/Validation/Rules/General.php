@@ -9,18 +9,18 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.6
  */
 
 namespace Quantum\Libraries\Validation\Rules;
 
 use Quantum\Libraries\Database\Exceptions\DatabaseException;
-use Quantum\Libraries\Database\Exceptions\ModelException;
 use Quantum\Libraries\Config\Exceptions\ConfigException;
 use Quantum\Libraries\Captcha\Factories\CaptchaFactory;
+use Quantum\Model\Exceptions\ModelException;
+use Quantum\Model\Factories\ModelFactory;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Exceptions\BaseException;
-use Quantum\Factory\ModelFactory;
 use ReflectionException;
 
 /**

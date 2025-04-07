@@ -12,15 +12,16 @@
  * @since 2.9.6
  */
 
-namespace Quantum\Factory;
+namespace Quantum\Model\Factories;
 
-use Quantum\Libraries\Database\Exceptions\ModelException;
+use Quantum\Libraries\Database\Contracts\DbalInterface;
+use Quantum\Model\Exceptions\ModelException;
 use Quantum\Libraries\Database\Database;
-use Quantum\Mvc\QtModel;
+use Quantum\Model\QtModel;
 
 /**
  * Class ModelFactory
- * @package Quantum\Factory
+ * @package Quantum\Model
  */
 class ModelFactory
 {
@@ -43,7 +44,14 @@ class ModelFactory
             throw ModelException::notModelInstance([$modelClass, QtModel::class]);
         }
 
-        $model->setOrm(self::create($model->table, $model->idColumn, $model->foreignKeys ?? [], $model->hidden ?? []));
+        $ormInstance = self::createOrmInstance(
+            $model->table,
+            $model->idColumn,
+            $model->foreignKeys ?? [],
+            $model->hidden ?? []
+        );
+
+        $model->setOrmInstance($ormInstance);
 
         return $model;
     }
@@ -55,7 +63,7 @@ class ModelFactory
      * @param array $hidden
      * @return mixed
      */
-    public static function create(string $table, string $idColumn = 'id', array $foreignKeys = [], array $hidden = [])
+    public static function createOrmInstance(string $table, string $idColumn = 'id', array $foreignKeys = [], array $hidden = []): DbalInterface
     {
         $ormClass = Database::getInstance()->getOrmClass();
 

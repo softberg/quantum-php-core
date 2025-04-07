@@ -9,16 +9,16 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.6
  */
 
 namespace Quantum\Libraries\Database\Adapters\Idiorm\Statements;
 
 use Quantum\Libraries\Database\Exceptions\DatabaseException;
 use Quantum\Libraries\Database\Adapters\Idiorm\IdiormPatch;
-use Quantum\Libraries\Database\Exceptions\ModelException;
 use Quantum\Libraries\Database\Contracts\DbalInterface;
-use Quantum\Mvc\QtModel;
+use Quantum\Model\Exceptions\ModelException;
+use Quantum\Model\QtModel;
 
 /**
  * Trait Join
