@@ -112,6 +112,15 @@ abstract class QtModel
     }
 
     /**
+     * @return bool
+     */
+    public function isEmpty() : bool
+    {
+        return empty($this->asArray());
+    }
+
+
+    /**
      * Sets or gets the model property
      * @param string $property
      * @param mixed|null $value
