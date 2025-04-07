@@ -8,8 +8,8 @@ return [
      *
      * Current configuration to use.
      */
-    'current' => 'sleekdb',
-    
+    'default' => 'sleekdb',
+
     /**
      * ---------------------------------------------------------
      * Database Connections
@@ -25,16 +25,19 @@ return [
      * charset: Default charset
      */
     'mysql' => [
-        'driver' => env('DB_DRIVER', 'mysql'),
-        'host' => env('DB_HOST', 'localhost'),
-        'dbname' => env('DB_NAME'),
-        'username' => env('DB_USERNAME', 'root'),
-        'password' => env('DB_PASSWORD'),
-        'charset' => env('DB_CHARSET', 'utf8'),
-        'orm' => \Quantum\Libraries\Database\Adapters\Idiorm\IdiormDbal::class
+        'driver' => env("DB_DRIVER", "mysql"),
+        'host' => env("DB_HOST", "localhost"),
+        'dbname' => env("DB_NAME"),
+        'username' => env("DB_USERNAME", "root"),
+        'password' => env("DB_PASSWORD"),
+        'charset' => env("DB_CHARSET", 'utf8'),
+    ],
+    'sqlite' => [
+        'driver' => 'sqlite',
+        'database' => 'database.sqlite',
+        'prefix' => '',
     ],
     'sleekdb' => [
-        'driver' => 'sleekdb',
         'config' => [
             'auto_cache' => false,
             'cache_lifetime' => null,
@@ -47,6 +50,5 @@ return [
             ],
         ],
         'database_dir' => base_dir() . DS . 'shared' . DS . 'store',
-        'orm' => \Quantum\Libraries\Database\Adapters\Sleekdb\SleekDbal::class
-    ],
+    ]
 ];
