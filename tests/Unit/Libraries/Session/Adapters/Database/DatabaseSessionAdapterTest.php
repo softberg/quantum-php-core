@@ -5,8 +5,8 @@ namespace Quantum\Tests\Unit\Libraries\Session\Adapters\Database;
 use Quantum\Libraries\Session\Adapters\Database\DatabaseSessionAdapter;
 use Quantum\Libraries\Database\Adapters\Idiorm\IdiormDbal;
 use Quantum\Tests\Unit\Libraries\Session\TestCaseHelper;
+use Quantum\Model\Factories\ModelFactory;
 use Quantum\Tests\Unit\AppTestCase;
-use Quantum\Factory\ModelFactory;
 
 class DatabaseSessionAdapterTest extends AppTestCase
 {
@@ -30,7 +30,7 @@ class DatabaseSessionAdapterTest extends AppTestCase
     {
         session_write_close();
 
-        ModelFactory::create('sessions')->deleteMany();
+        ModelFactory::createOrmInstance('sessions')->deleteMany();
     }
 
     public function testDatabaseSessionConstructor()

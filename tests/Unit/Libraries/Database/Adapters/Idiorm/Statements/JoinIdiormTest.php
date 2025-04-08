@@ -2,7 +2,7 @@
 
 namespace Quantum\Shared\Models {
 
-    use Quantum\Mvc\QtModel;
+    use Quantum\Model\QtModel;
 
     class CUserModel extends QtModel
     {
@@ -68,14 +68,15 @@ namespace Quantum\Tests\Unit\Libraries\Database\Adapters\Idiorm\Statements {
 
     use Quantum\Tests\Unit\Libraries\Database\Adapters\Idiorm\IdiormDbalTestCase;
     use Quantum\Libraries\Database\Adapters\Idiorm\IdiormDbal;
-    use Quantum\Libraries\Database\Exceptions\ModelException;
     use Quantum\Shared\Models\CUserProfessionModel;
+    use Quantum\Model\Exceptions\ModelException;
     use Quantum\Shared\Models\CUserEventModel;
+    use Quantum\Model\Factories\ModelFactory;
     use Quantum\Shared\Models\CMeetingModel;
     use Quantum\Shared\Models\CTicketModel;
     use Quantum\Shared\Models\CEventModel;
     use Quantum\Shared\Models\CUserModel;
-    use Quantum\Factory\ModelFactory;
+    use Quantum\Model\ModelCollection;
 
     class JoinIdiormTest extends IdiormDbalTestCase
     {
@@ -88,7 +89,7 @@ namespace Quantum\Tests\Unit\Libraries\Database\Adapters\Idiorm\Statements {
 
             $this->assertCount(6, $events);
 
-            $this->assertArrayHasKey('event_id', $events[0]);
+            $this->assertEquals(1, $events[0]->prop('event_id'));
 
             $userModel = new IdiormDbal('users');
 
@@ -96,7 +97,7 @@ namespace Quantum\Tests\Unit\Libraries\Database\Adapters\Idiorm\Statements {
 
             $this->assertCount(6, $events);
 
-            $this->assertArrayHasKey('event_id', $events[0]);
+            $this->assertEquals(1, $events[0]->prop('event_id'));
         }
 
         public function testIdiormMultipleJoins()
@@ -110,7 +111,7 @@ namespace Quantum\Tests\Unit\Libraries\Database\Adapters\Idiorm\Statements {
 
             $this->assertCount(6, $result);
 
-            $this->assertArrayHasKey('title', $result[0]);
+            $this->assertEquals('Dance', $result[0]->prop('title'));
         }
 
         public function testIdiormJoinWithCondition()
@@ -141,7 +142,7 @@ namespace Quantum\Tests\Unit\Libraries\Database\Adapters\Idiorm\Statements {
 
             $this->assertCount(8, $events);
 
-            $this->assertNull($events[count($events) - 1]['id']);
+            $this->assertNull($events[count($events) - 1]->prop('id'));
         }
 
         public function testIdiormJoinTo()
@@ -155,11 +156,11 @@ namespace Quantum\Tests\Unit\Libraries\Database\Adapters\Idiorm\Statements {
                 ->joinTo($userProfessionModel)
                 ->get();
 
-            $this->assertIsArray($users);
+            $this->assertInstanceOf(ModelCollection::class, $users);
 
             $this->assertCount(2, $users);
 
-            $this->assertArrayHasKey('title', $users[0]);
+            $this->assertEquals('Writer', $users->first()->prop('title'));
 
             $query = "SELECT `users`.`id` AS `user_id`, `firstname`, `user_professions`.`title` 
                             FROM `users` 
@@ -183,11 +184,11 @@ namespace Quantum\Tests\Unit\Libraries\Database\Adapters\Idiorm\Statements {
                 ->joinTo($userEventModel, false)
                 ->get();
 
-            $this->assertIsArray($users);
+            $this->assertInstanceOf(ModelCollection::class, $users);
 
-            $this->assertArrayHasKey('title', $users[0]);
+            $this->assertEquals('Writer', $users->first()->prop('title'));
 
-            $this->assertArrayHasKey('event_id', $users[0]);
+            $this->assertEquals(1, $users->first()->prop('event_id'));
 
             $query = "SELECT `users`.*, `user_professions`.`title`, `user_events`.`event_id` 
                             FROM `users` 
@@ -212,11 +213,11 @@ namespace Quantum\Tests\Unit\Libraries\Database\Adapters\Idiorm\Statements {
                 ->joinTo($ticketModel)
                 ->get();
 
-            $this->assertIsArray($users);
+            $this->assertInstanceOf(ModelCollection::class, $users);
 
-            $this->assertArrayHasKey('title', $users[0]);
+            $this->assertEquals('Business planning', $users->first()->prop('title'));
 
-            $this->assertArrayHasKey('number', $users[0]);
+            $this->assertNull($users->first()->prop('event_id'));
 
             $query = "SELECT * FROM `users` 
                         JOIN `meetings` ON `meetings`.`user_id` = `users`.`id` 
@@ -247,11 +248,11 @@ namespace Quantum\Tests\Unit\Libraries\Database\Adapters\Idiorm\Statements {
                 ->orderBy('user_events.created_at', 'desc')
                 ->get();
 
-            $this->assertIsArray($users);
+            $this->assertInstanceOf(ModelCollection::class, $users);
 
-            $this->assertArrayHasKey('confirmed', $users[0]);
+            $this->assertEquals('Yes', $users->first()->prop('confirmed'));
 
-            $this->assertEquals('Yes', $users[0]['confirmed']);
+            $this->assertEquals('Music', $users->first()->prop('event_title'));
 
             $query = "SELECT `users`.`id` AS `user_id`, 
                              `events`.`id` AS `event_id`, 
@@ -277,7 +278,7 @@ namespace Quantum\Tests\Unit\Libraries\Database\Adapters\Idiorm\Statements {
 
             $tickets = $ticketModel->joinThrough($meetingModel)->get();
 
-            $this->assertIsArray($tickets);
+            $this->assertInstanceOf(ModelCollection::class, $tickets);
 
             $query = "SELECT * FROM `tickets` JOIN `meetings` ON `meetings`.`id` = `tickets`.`meeting_id`";
 
@@ -351,9 +352,9 @@ namespace Quantum\Tests\Unit\Libraries\Database\Adapters\Idiorm\Statements {
                 ->orderBy('age', 'desc')
                 ->get();
 
-            $this->assertArrayHasKey('profession', $users[0]);
+            $this->assertInstanceOf(ModelCollection::class, $users);
 
-            $this->assertEquals('Writer', $users[0]['profession']);
+            $this->assertEquals('Writer', $users->first()->prop('profession'));
         }
     }
 }

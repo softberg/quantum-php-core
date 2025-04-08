@@ -2,7 +2,7 @@
 
 namespace Quantum\Shared\Models {
 
-    use Quantum\Mvc\QtModel;
+    use Quantum\Model\QtModel;
 
     class SleekUserModel extends QtModel
     {
@@ -77,15 +77,16 @@ namespace Quantum\Shared\Models {
 namespace Quantum\Tests\Unit\Libraries\Database\Adapters\Sleekdb\Statements {
 
     use Quantum\Tests\Unit\Libraries\Database\Adapters\Sleekdb\SleekDbalTestCase;
-    use Quantum\Libraries\Database\Exceptions\ModelException;
     use Quantum\Shared\Models\SleekUserProfessionModel;
     use Quantum\Shared\Models\SleekUserEventModel;
+    use Quantum\Model\Exceptions\ModelException;
     use Quantum\Shared\Models\SleekMeetingModel;
     use Quantum\Shared\Models\SleekTicketModel;
     use Quantum\Shared\Models\SleekEventModel;
     use Quantum\Shared\Models\SleekNotesModel;
+    use Quantum\Model\Factories\ModelFactory;
     use Quantum\Shared\Models\SleekUserModel;
-    use Quantum\Factory\ModelFactory;
+    use Quantum\Model\ModelCollection;
 
 
     class JoinSleekTest extends SleekDbalTestCase
@@ -104,11 +105,11 @@ namespace Quantum\Tests\Unit\Libraries\Database\Adapters\Sleekdb\Statements {
                 ->joinTo($userMeetings)
                 ->get();
 
-            $this->assertIsArray($users);
-            
-            $this->assertIsArray($users[0]->professions);
+            $this->assertInstanceOf(ModelCollection::class, $users);
 
-            $this->assertIsArray($users[0]->meetings);
+            $this->assertIsArray($users->first()->prop('professions'));
+
+            $this->assertIsArray($users->first()->prop('meetings'));
         }
 
         public function testSleekNestedLevelJoinTo()
@@ -127,13 +128,17 @@ namespace Quantum\Tests\Unit\Libraries\Database\Adapters\Sleekdb\Statements {
                 ->joinTo($noteModel)
                 ->get();
 
-            $this->assertIsArray($users);
+            $this->assertInstanceOf(ModelCollection::class, $users);
 
             $this->assertCount(2, $users);
 
-            $this->assertArrayHasKey('tickets', $users[0]->meetings[0]);
+            $this->assertIsArray($users->first()->prop('meetings')[0]);
 
-            $this->assertArrayHasKey('notes', $users[0]->meetings[0]['tickets'][0]);
+            $this->assertArrayHasKey('tickets', $users->first()->prop('meetings')[0]);
+
+            $this->assertIsArray($users->first()->prop('meetings')[0]['tickets'][0]);
+
+            $this->assertArrayHasKey('notes', $users->first()->prop('meetings')[0]['tickets'][0]);
         }
 
         public function testSleekMixedLevelJoinToWithCriteria()
@@ -153,21 +158,21 @@ namespace Quantum\Tests\Unit\Libraries\Database\Adapters\Sleekdb\Statements {
                 ->criteria('age', '=', 35)
                 ->get();
 
-            $this->assertIsArray($users);
+            $this->assertInstanceOf(ModelCollection::class, $users);
 
             $this->assertCount(1, $users);
 
-            $this->assertEquals('Jane', $users[0]->firstname);
+            $this->assertEquals('Jane',$users->first()->prop('firstname'));
 
-            $this->assertIsArray($users[0]->professions);
+            $this->assertIsArray($users->first()->prop('professions'));
 
-            $this->assertIsArray($users[0]->meetings[0]);
+            $this->assertIsArray($users->first()->prop('meetings'));
 
-            $this->assertEquals('Marketing', $users[0]->meetings[0]['title']);
+            $this->assertEquals('Marketing', $users->first()->prop('meetings')[0]['title']);
 
-            $this->assertArrayHasKey('tickets', $users[0]->meetings[0]);
+            $this->assertArrayHasKey('tickets', $users->first()->prop('meetings')[0]);
 
-            $this->assertIsArray($users[0]->meetings[0]['tickets']);
+            $this->assertIsArray($users->first()->prop('meetings')[0]['tickets']);
         }
 
         public function testSleekJoinToAndThrough()
@@ -184,17 +189,17 @@ namespace Quantum\Tests\Unit\Libraries\Database\Adapters\Sleekdb\Statements {
                 ->orderBy('title', 'asc')
                 ->get();
 
-            $this->assertIsArray($users);
+            $this->assertInstanceOf(ModelCollection::class, $users);
 
-            $this->assertIsArray($users[0]->user_events);
+            $this->assertIsArray($users->first()->user_events);
 
-            $this->assertArrayHasKey('confirmed', $users[0]->user_events[0]);
+            $this->assertArrayHasKey('confirmed', $users->first()->user_events[0]);
 
-            $this->assertArrayHasKey('events', $users[0]->user_events[0]);
+            $this->assertArrayHasKey('events', $users->first()->user_events[0]);
 
-            $this->assertIsArray($users[0]->user_events[0]['events']);
+            $this->assertIsArray($users->first()->user_events[0]['events']);
 
-            $this->assertArrayHasKey('title', $users[0]->user_events[0]['events'][0]);
+            $this->assertArrayHasKey('title', $users->first()->user_events[0]['events'][0]);
         }
 
         public function testSleekJoinThroughInverse()
@@ -235,13 +240,13 @@ namespace Quantum\Tests\Unit\Libraries\Database\Adapters\Sleekdb\Statements {
                 ->orderBy('title', 'asc')
                 ->get();
 
-            $this->assertIsArray($users);
+            $this->assertInstanceOf(ModelCollection::class, $users);
 
-            $this->assertIsArray($users[0]->professions);
+            $this->assertIsArray($users->first()->professions);
 
-            $this->assertArrayHasKey('title', $users[0]->professions[0]);
+            $this->assertArrayHasKey('title', $users->first()->professions[0]);
 
-            $this->assertEquals('Singer', $users[0]->professions[0]['title']);
+            $this->assertEquals('Singer', $users->first()->professions[0]['title']);
         }
 
         public function testSleekWrongRelation()
@@ -268,7 +273,7 @@ namespace Quantum\Tests\Unit\Libraries\Database\Adapters\Sleekdb\Statements {
                 ->orderBy('age', 'desc')
                 ->get();
 
-            $this->assertEquals('Writer', $users[0]->profession);
+            $this->assertEquals('Writer', $users->first()->profession);
         }
     }
 }

@@ -84,7 +84,7 @@ class TableFactoryTest extends AppTestCase
 
     public function testGetTable()
     {
-        Database::execute("CREATE TABLE users (
+        Database::execute("CREATE TABLE IF NOT EXISTS users (
                         id INTEGER PRIMARY KEY,
                         firstname VARCHAR(255),
                         lastname VARCHAR(255),
@@ -109,7 +109,7 @@ class TableFactoryTest extends AppTestCase
 
     public function testRenameTable()
     {
-        Database::execute("CREATE TABLE users (
+        Database::execute("CREATE TABLE IF NOT EXISTS users (
                         id INTEGER PRIMARY KEY,
                         firstname VARCHAR(255),
                         lastname VARCHAR(255),
@@ -132,7 +132,7 @@ class TableFactoryTest extends AppTestCase
 
     public function testDropTable()
     {
-        Database::execute("CREATE TABLE users (
+        Database::execute("CREATE TABLE IF NOT EXISTS users (
                         id INTEGER PRIMARY KEY,
                         firstname VARCHAR(255),
                         lastname VARCHAR(255),

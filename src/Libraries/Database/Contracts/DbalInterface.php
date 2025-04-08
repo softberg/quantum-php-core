@@ -9,12 +9,12 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.6
  */
 
 namespace Quantum\Libraries\Database\Contracts;
 
-use Quantum\Mvc\QtModel;
+use Quantum\Model\QtModel;
 
 /**
  * Database Abstract Layer interface
@@ -22,16 +22,6 @@ use Quantum\Mvc\QtModel;
  */
 interface DbalInterface
 {
-
-    /**
-     * Type array
-     */
-    const TYPE_ARRAY = 1;
-
-    /**
-     * Type object
-     */
-    const TYPE_OBJECT = 2;
 
     /**
      * Connects to database
@@ -140,16 +130,9 @@ interface DbalInterface
 
     /**
      * Gets the result set
-     * @return mixed
+     * @return array
      */
-    public function get();
-
-    /**
-     * @param int $perPage
-     * @param int $currentPage
-     * @return PaginatorInterface
-     */
-    public function paginate(int $perPage, int $currentPage = 1): PaginatorInterface;
+    public function get(): array;
 
     /**
      * Returns the count

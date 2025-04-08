@@ -9,16 +9,16 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.6
  */
 
-namespace Quantum\Libraries\Database\Exceptions;
+namespace Quantum\Model\Exceptions;
 
 use Quantum\Exceptions\BaseException;
 
 /**
  * Class ModelException
- * @package Quantum\Libraries\Module
+ * @package Quantum\Model
  */
 class ModelException extends BaseException
 {

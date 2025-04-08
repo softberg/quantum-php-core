@@ -9,29 +9,32 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.6
  */
 
-namespace Quantum\Libraries\Database\Traits;
+namespace Quantum\Paginator;
 
-use Quantum\Libraries\Database\Constants\Paginator;
+use Quantum\Libraries\Database\Contracts\DbalInterface;
+use Quantum\Paginator\Contracts\PaginatorInterface;
+use Quantum\Paginator\Constants\Pagination;
+use Quantum\Model\ModelCollection;
 
 /**
- * Trait PaginatorTrait
- * @package Quantum\Libraries\Database
+ * Class Paginator
+ * @package Quantum\Paginator
  */
-trait PaginatorTrait
+class Paginator implements PaginatorInterface
 {
-
-    /**
-     * @var int
-     */
-    protected $total;
 
     /**
      * @var string
      */
     protected $baseUrl;
+
+    /**
+     * @var int
+     */
+    protected $total;
 
     /**
      * @var int
@@ -42,6 +45,84 @@ trait PaginatorTrait
      * @var int
      */
     protected $page;
+
+    /**
+     * @var ModelCollection|null
+     */
+    protected $data = null;
+
+    /**
+     * @var DbalInterface
+     */
+    private $ormInstance;
+
+    /**
+     * @var string|null
+     */
+    private $modelClass;
+
+    /**
+     * @param DbalInterface $ormInstance
+     * @param string $modelClass
+     * @param int $perPage
+     * @param int $page
+     */
+    public function __construct(DbalInterface $ormInstance, string $modelClass, int $perPage, int $page = 1)
+    {
+        $this->baseUrl = base_url();
+        $this->ormInstance = $ormInstance;
+        $this->modelClass = $modelClass;
+
+        $this->perPage = $perPage;
+        $this->page = $page;
+
+        $this->total = $this->ormInstance->count();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function data(): ModelCollection
+    {
+        $ormInstances = $this->ormInstance
+            ->limit($this->perPage)
+            ->offset($this->perPage * ($this->page - 1))
+            ->get();
+
+            $models = array_map(function ($item) {
+                return wrapToModel($item, $this->modelClass);
+            }, $ormInstances);
+
+        return new ModelCollection($models);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function firstItem()
+    {
+        $data = $this->data();
+
+        if ($data->isEmpty()) {
+            return null;
+        }
+
+        return $data->first();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function lastItem()
+    {
+        $data = $this->data();
+
+        if ($data->isEmpty()) {
+            return null;
+        }
+
+        return $data->last();
+    }
 
     /**
      * @inheritDoc
@@ -56,14 +137,15 @@ trait PaginatorTrait
      */
     public function previousPageNumber(): ?int
     {
-        $previous = null;
         if ($this->page > 1) {
-            $previous = $this->page - 1;
-        } elseif ($this->page == 1) {
-            $previous = $this->page;
+            return $this->page - 1;
         }
 
-        return $previous;
+        if ($this->page == 1) {
+            return $this->page;
+        }
+
+        return null;
     }
 
     /**
@@ -71,13 +153,15 @@ trait PaginatorTrait
      */
     public function nextPageNumber(): ?int
     {
-        $next = null;
         if ($this->page < $this->lastPageNumber()) {
-            $next = $this->page + 1;
-        } elseif ($this->page == $this->lastPageNumber()) {
-            $next = $this->page;
+            return $this->page + 1;
         }
-        return $next;
+
+        if ($this->page == $this->lastPageNumber()) {
+            return $this->page;
+        }
+
+        return null;
     }
 
     /**
@@ -101,7 +185,7 @@ trait PaginatorTrait
      */
     public function firstPageLink(bool $withBaseUrl = false): ?string
     {
-        return $this->getPageLink(Paginator::FIRST_PAGE_NUMBER, $withBaseUrl);
+        return $this->getPageLink(Pagination::FIRST_PAGE_NUMBER, $withBaseUrl);
     }
 
     /**
@@ -150,6 +234,7 @@ trait PaginatorTrait
     public function links(bool $withBaseUrl = false): array
     {
         $links = [];
+
         for ($i = 1; $i <= $this->lastPageNumber(); $i++) {
             $links[] = $this->getPageLink($i, $withBaseUrl);
         }
@@ -163,37 +248,39 @@ trait PaginatorTrait
     public function getPagination(bool $withBaseUrl = false, $pageItemsCount = null): ?string
     {
         $totalPages = $this->lastPageNumber();
+        $currentPage = $this->currentPageNumber();
 
         if ($totalPages <= 1) {
             return null;
         }
 
-        if (!is_null($pageItemsCount) && $pageItemsCount < Paginator::MINIMUM_PAGE_ITEMS_COUNT) {
-            $pageItemsCount = Paginator::MINIMUM_PAGE_ITEMS_COUNT;
-        }
+        $pageItemsCount = !empty($pageItemsCount) && $pageItemsCount < Pagination::MINIMUM_PAGE_ITEMS_COUNT
+            ? Pagination::MINIMUM_PAGE_ITEMS_COUNT
+            : $pageItemsCount;
 
-        $pagination = '<ul class="' . Paginator::PAGINATION_CLASS . '">';
-        $currentPage = $this->currentPageNumber();
+        $pagination = ['<ul class="' . Pagination::PAGINATION_CLASS . '">'];
 
         if ($currentPage > 1) {
-            $pagination .= $this->getPreviousPageItem($this->previousPageLink());
+            $pagination[] = $this->getPreviousPageItem($this->previousPageLink());
         }
 
         if ($pageItemsCount) {
             $links = $this->links($withBaseUrl);
+
             list($startPage, $endPage) = $this->calculateStartEndPages($currentPage, $totalPages, $pageItemsCount);
-            $pagination .= $this->addFirstPageLink($startPage);
-            $pagination .= $this->getItemsLinks($startPage, $endPage, $currentPage, $links);
-            $pagination .= $this->addLastPageLink($endPage, $totalPages, $links);
+
+            $pagination[] = $this->addFirstPageLink($startPage);
+            $pagination[] = $this->getItemsLinks($startPage, $endPage, $currentPage, $links);
+            $pagination[] = $this->addLastPageLink($endPage, $totalPages, $links);
         }
 
         if ($currentPage < $totalPages) {
-            $pagination .= $this->getNextPageItem($this->nextPageLink());
+            $pagination[] = $this->getNextPageItem($this->nextPageLink());
         }
 
-        $pagination .= '</ul>';
+        $pagination[] = '</ul>';
 
-        return $pagination;
+        return implode('', $pagination);
     }
 
     /**
@@ -223,7 +310,7 @@ trait PaginatorTrait
     protected function getPageLink($pageNumber, bool $withBaseUrl = false): ?string
     {
         if (!empty($pageNumber)) {
-            return $this->getUri($withBaseUrl) . Paginator::PER_PAGE . '=' . $this->perPage . '&' . Paginator::PAGE . '=' . $pageNumber;
+            return $this->getUri($withBaseUrl) . Pagination::PER_PAGE . '=' . $this->perPage . '&' . Pagination::PAGE . '=' . $pageNumber;
         }
 
         return null;
@@ -267,7 +354,7 @@ trait PaginatorTrait
     {
         $pagination = '';
         for ($i = $startPage; $i <= $endPage; $i++) {
-            $active = $i == $currentPage ? 'class="' . Paginator::PAGINATION_CLASS_ACTIVE . '"' : '';
+            $active = $i == $currentPage ? 'class="' . Pagination::PAGINATION_CLASS_ACTIVE . '"' : '';
             $pagination .= '<li ' . $active . '><a href="' . $links[$i - 1] . '">' . $i . '</a></li>';
         }
         return $pagination;
@@ -281,8 +368,8 @@ trait PaginatorTrait
      */
     protected function calculateStartEndPages($currentPage, $totalPages, $pageItemsCount): array
     {
-        $startPage = max(1, $currentPage - ceil(($pageItemsCount - Paginator::EDGE_PADDING) / 2));
-        $endPage = min($totalPages, $startPage + $pageItemsCount - Paginator::EDGE_PADDING);
+        $startPage = max(1, $currentPage - ceil(($pageItemsCount - Pagination::EDGE_PADDING) / 2));
+        $endPage = min($totalPages, $startPage + $pageItemsCount - Pagination::EDGE_PADDING);
 
         return [$startPage, $endPage];
     }
@@ -294,8 +381,9 @@ trait PaginatorTrait
     protected function addFirstPageLink($startPage): string
     {
         $pagination = '';
+
         if ($startPage > 1) {
-            $pagination .= '<li><a href="' . $this->firstPageLink() . '">' . Paginator::FIRST_PAGE_NUMBER . '</a></li>';
+            $pagination .= '<li><a href="' . $this->firstPageLink() . '">' . Pagination::FIRST_PAGE_NUMBER . '</a></li>';
             if ($startPage > 2) {
                 $pagination .= '<li><span>...</span></li>';
             }
@@ -313,6 +401,7 @@ trait PaginatorTrait
     protected function addLastPageLink($endPage, $totalPages, $links): string
     {
         $pagination = '';
+
         if ($endPage < $totalPages) {
             if ($endPage < $totalPages - 1) {
                 $pagination .= '<li><span>...</span></li>';
