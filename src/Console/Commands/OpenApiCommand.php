@@ -96,7 +96,7 @@ class OpenApiCommand extends QtCommand
 
         $modulePath = modules_dir() . DS . $module;
 
-        $routes = $modulePath . DS . 'config' . DS . 'routes.php';
+        $routes = $modulePath . DS . 'routes' . DS . 'routes.php';
 
         if (!$this->fs->exists(assets_dir() . DS . 'OpenApiUi' . DS . 'index.css')) {
             $this->copyResources();
