@@ -76,7 +76,7 @@ class AccountController extends BaseController
         $firstname = $request->get('firstname', null);
         $lastname = $request->get('lastname', null);
 
-        $user = $this->authService->update('uuid', uth()->user()->uuid, [
+        $user = $this->authService->update('uuid', auth()->user()->uuid, [
             'firstname' => $firstname,
             'lastname' => $lastname
         ]);

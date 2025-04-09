@@ -193,7 +193,7 @@ class ModuleManager
     private function copyDirectory(string $src, string $dst, bool $processTemplates, array $copiedFiles = []): array
     {
         if (!$this->fs->isDirectory($src)) {
-            throw new Exception("Directory '$src' does not exist");
+            throw new Exception("Template '$this->template' does not exist");
         }
 
         if (!$this->fs->isDirectory($dst)) {
