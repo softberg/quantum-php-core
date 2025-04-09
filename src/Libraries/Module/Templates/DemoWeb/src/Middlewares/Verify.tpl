@@ -15,9 +15,9 @@
 namespace {{MODULE_NAMESPACE}}\Middlewares;
 
 use Quantum\Libraries\Validation\Validator;
+use Quantum\Model\Factories\ModelFactory;
 use Quantum\Libraries\Validation\Rule;
 use Quantum\Middleware\QtMiddleware;
-use Quantum\Factory\ModelFactory;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 use Shared\Models\User;

@@ -84,7 +84,7 @@ class PostController extends BaseController
         $view->setParams([
             'title' => t('common.posts') . ' | ' . config()->get('app_name'),
             'langs' => config()->get('langs'),
-            'posts' => transform($paginatedPosts->data(), $transformer),
+            'posts' => transform($paginatedPosts->data()->all(), $transformer),
             'pagination' => $paginatedPosts
         ]);
 
@@ -106,7 +106,7 @@ class PostController extends BaseController
     
         $post = $this->postService->getPost($postId);
         
-        if (!$post->asArray()) {
+        if ($post->isEmpty()) {
             $response->html(partial('errors/404'), 404);
             stop();
         }
@@ -134,7 +134,7 @@ class PostController extends BaseController
         $view->setParams([
             'title' => t('common.my_posts') . ' | ' . config()->get('app_name'),
             'langs' => config()->get('langs'),
-            'posts' => transform($myPosts, $transformer)
+            'posts' => transform($myPosts->all(), $transformer)
         ]);
 
         $response->html($view->render('post/my-posts'));

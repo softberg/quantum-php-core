@@ -65,7 +65,7 @@ class PostController extends BaseController
         
         $response->json([
             'status' => 'success',
-            'data' => transform($paginatedPosts->data(), $transformer),
+            'data' => transform($paginatedPosts->data()->all(), $transformer),
             'pagination' => [
                 'total_records' => $paginatedPosts->total(),
                 'current_page' => $paginatedPosts->currentPageNumber(),
@@ -112,7 +112,7 @@ class PostController extends BaseController
         
         $response->json([
             'status' => 'success',
-            'data' => transform($myPosts, $transformer)
+            'data' => transform($myPosts->all(), $transformer)
         ]);
     }
 
