@@ -1,6 +1,6 @@
 <div class="main-wrapper">
     <div class="polaroid">
-        <h1 class="center-align teal-text">Account Settings</h1>    
+        <h1 class="center-align teal-text"><?php _t('common.account_settings'); ?></h1>    
 
         <?php if (session()->has('error')) : ?>
             <?php echo partial('partials/messages/error') ?>
