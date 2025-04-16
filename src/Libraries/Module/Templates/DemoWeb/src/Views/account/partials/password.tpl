@@ -1,4 +1,4 @@
-<div id="account_password" class="col s12">
+<div id="account_password" class="col s12 hide">
     <form method="post" class="teal accent-4 col s12 card-content" action="<?php echo base_url(true) . '/' . current_lang() ?>/account-settings/update-password" enctype="multipart/form-data">
         <div class="row">
             <div class="input-field col s12">

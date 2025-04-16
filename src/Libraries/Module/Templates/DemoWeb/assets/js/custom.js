@@ -44,12 +44,18 @@ class Custom {
 
     initTabs() {
         $('.account-tabs').tabs();
+        $('#account_password').removeClass('hide');
+    }
+
+    tabSwitcher() {
+        $('.material-alert').remove();
     }
 
     events() {
         $(document).on('click', '.modal-trigger', this.modalTrigger.bind(this));
         $(document).on('click', '.visibility-icon', this.visibilityIcon.bind(this));
         $(document).on('input', '.search-bar', this.search.bind(this));
+        $(document).on('click', '.account-tabs .tab', this.tabSwitcher.bind(this));
     }
 }
 
