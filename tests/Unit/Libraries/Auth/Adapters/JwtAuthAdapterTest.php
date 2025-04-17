@@ -207,7 +207,7 @@ class JwtAuthAdapterTest extends AuthTestCase
 
         $this->authService->update('email', $this->jwtAuth->user()->email, $newUserData);
 
-        $this->jwtAuth->refreshUser();
+        $this->jwtAuth->refreshUser($this->jwtAuth->user()->uuid);
 
         $this->assertEquals('Super', $this->jwtAuth->user()->firstname);
 

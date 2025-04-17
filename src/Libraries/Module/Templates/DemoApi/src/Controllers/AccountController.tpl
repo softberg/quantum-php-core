@@ -59,7 +59,7 @@ class AccountController extends BaseController
     
             $this->authService->update('uuid', auth()->user()->uuid, $newUserData);
 
-            auth()->refreshUser();
+            auth()->refreshUser(auth()->user()->uuid);
 
             $response->json([
                 'status' => self::STATUS_SUCCESS,

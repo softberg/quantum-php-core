@@ -126,14 +126,13 @@ class JwtAuthAdapter implements AuthenticatableInterface
 
     /**
      * Refresh user data
+     * @param string $uuid
      * @return bool
      * @throws JwtException
      */
-    public function refreshUser(): bool
+    public function refreshUser(string $uuid): bool
     {
-        $refreshToken = Request::getHeader($this->keyFields[AuthKeys::REFRESH_TOKEN]);
-
-        $user = $this->authService->get($this->keyFields[AuthKeys::REFRESH_TOKEN], $refreshToken);
+        $user = $this->authService->get('uuid', $uuid);
 
         if($user) {
             $this->setUpdatedTokens($user);
