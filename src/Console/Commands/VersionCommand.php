@@ -61,7 +61,7 @@ class VersionCommand extends QtCommand
 
         $figlet = new Figlet();
 
-        $figlet->setFont(assets_dir() . DS . 'fonts' . DS . 'figlet' . DS . 'slant.flf')->setSmushMode(Figlet::SM_SMUSH);
+        $figlet->setFont(assets_dir() . DS . 'shared' . DS . 'fonts' . DS . 'figlet' . DS . 'slant.flf')->setSmushMode(Figlet::SM_SMUSH);
 
         $this->info($figlet->render('QUANTUM PHP ' . env('APP_VERSION')));
 
