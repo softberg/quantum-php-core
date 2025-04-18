@@ -140,6 +140,26 @@ class Route
     }
 
     /**
+     * @param string $route
+     * @param ...$params
+     * @return $this
+     */
+    public function put(string $route, ...$params): Route
+    {
+        return $this->add($route, 'PUT', ...$params);
+    }
+
+    /**
+     * @param string $route
+     * @param ...$params
+     * @return $this
+     */
+    public function delete(string $route, ...$params): Route
+    {
+        return $this->add($route, 'DELETE', ...$params);
+    }
+
+    /**
      * Starts a named group of routes
      * @param string $groupName
      * @param Closure $callback
