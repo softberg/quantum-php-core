@@ -24,19 +24,19 @@ use Quantum\Router\RouteController;
 class QtController extends RouteController
 {
 
-    /**
-     * @var bool
-     */
-    public $csrfVerification = true;
+    // /**
+    //  * @var bool
+    //  */
+    // public $csrfVerification = true;
 
-    /**
-     * Handles the missing methods of the controller
-     * @param string $method
-     * @param array $arguments
-     * @throws ControllerException
-     */
-    public function __call(string $method, array $arguments)
-    {
-        throw ControllerException::undefinedMethod($method);
-    }
+    // /**
+    //  * Handles the missing methods of the controller
+    //  * @param string $method
+    //  * @param array $arguments
+    //  * @throws ControllerException
+    //  */
+    // public function __call(string $method, array $arguments)
+    // {
+    //     throw ControllerException::undefinedMethod($method);
+    // }
 }
