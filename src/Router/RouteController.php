@@ -14,6 +14,8 @@
 
 namespace Quantum\Router;
 
+use Quantum\Exceptions\ControllerException;
+
 /**
  * RouterController Class
  * @package Quantum\Router
@@ -32,6 +34,11 @@ abstract class RouteController
      * @var array
      */
     protected static $currentRoute = null;
+
+        /**
+     * @var bool
+     */
+    public $csrfVerification = true;
 
     /**
      * Gets the current route
@@ -66,5 +73,16 @@ abstract class RouteController
     public static function getRoutes(): array
     {
         return static::$routes;
+    }
+
+      /**
+     * Handles the missing methods of the controller
+     * @param string $method
+     * @param array $arguments
+     * @throws ControllerException
+     */
+    public function __call(string $method, array $arguments)
+    {
+        throw ControllerException::undefinedMethod($method);
     }
 }
