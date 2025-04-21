@@ -35,7 +35,7 @@ abstract class RouteController
      */
     protected static $currentRoute = null;
 
-        /**
+    /**
      * @var bool
      */
     public $csrfVerification = true;
@@ -75,7 +75,7 @@ abstract class RouteController
         return static::$routes;
     }
 
-      /**
+    /**
      * Handles the missing methods of the controller
      * @param string $method
      * @param array $arguments

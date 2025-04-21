@@ -2,8 +2,8 @@
 
 namespace Quantum\Handlers;
 
-use Quantum\Http\Response;
 use Quantum\Libraries\ResourceCache\ViewCache;
+use Quantum\Http\Response;
 
 class ViewCacheHandler
 {

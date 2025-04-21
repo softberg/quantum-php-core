@@ -30,10 +30,10 @@ use Quantum\Exceptions\ControllerException;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Exceptions\BaseException;
 use Quantum\App\Traits\WebAppTrait;
+use Quantum\Mvc\RouteDispatcher;
 use DebugBar\DebugBarException;
 use Quantum\Debugger\Debugger;
 use Quantum\Hooks\HookManager;
-use Quantum\Mvc\MvcManager;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 use ReflectionException;
@@ -114,7 +114,7 @@ class WebAppAdapter extends AppAdapter
 
             info(HookManager::getInstance()->getRegistered(), ['tab' => Debugger::HOOKS]);
 
-            MvcManager::handle($this->request, $this->response);
+            RouteDispatcher::handle($this->request, $this->response);
 
             stop();
         } catch (StopExecutionException $exception) {
