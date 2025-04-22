@@ -2,9 +2,9 @@
 
 namespace Quantum\Controllers {
 
-    use Quantum\Mvc\QtController;
+    use Quantum\Mvc\RouteDispatcher;
 
-    class TestController extends QtController
+    class TestController extends RouteDispatcher
     {
         // Controller body
     }
@@ -20,7 +20,7 @@ namespace Quantum\Tests\Unit\Mvc {
      * @runTestsInSeparateProcesses
      * @preserveGlobalState disabled
      */
-    class QtControllerTest extends AppTestCase
+    class RouteDispatcherTest extends AppTestCase
     {
 
         public function setUp(): void
