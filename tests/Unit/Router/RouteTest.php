@@ -117,6 +117,40 @@ class RouteTest extends AppTestCase
         $this->assertCount(1, $this->route->getVirtualRoutes()['*']);
     }
 
+    public function testPutRoute()
+    {
+        $this->assertEmpty($this->route->getRuntimeRoutes());
+
+        $this->assertEmpty($this->route->getVirtualRoutes()['*']);
+
+        $this->route->put('update', 'PostsController', 'update');
+
+        $this->assertIsArray($this->route->getRuntimeRoutes());
+
+        $this->assertIsArray($this->route->getVirtualRoutes());
+
+        $this->assertCount(1, $this->route->getRuntimeRoutes());
+
+        $this->assertCount(1, $this->route->getVirtualRoutes()['*']);
+    }
+
+    public function testDeleteRoute()
+    {
+        $this->assertEmpty($this->route->getRuntimeRoutes());
+
+        $this->assertEmpty($this->route->getVirtualRoutes()['*']);
+
+        $this->route->delete('delete', 'PostsController', 'delete');
+
+        $this->assertIsArray($this->route->getRuntimeRoutes());
+
+        $this->assertIsArray($this->route->getVirtualRoutes());
+
+        $this->assertCount(1, $this->route->getRuntimeRoutes());
+
+        $this->assertCount(1, $this->route->getVirtualRoutes()['*']);
+    }
+
     public function testGroupRoute()
     {
         $this->route->group('auth', function ($route) {
@@ -191,7 +225,7 @@ class RouteTest extends AppTestCase
         $this->assertEquals('first', $this->route->getRuntimeRoutes()[0]['name']);
     }
 
-    public function testNamingRouteBeforeDefination()
+    public function testNamingRouteBeforeDefinition()
     {
         $this->expectException(RouteException::class);
 

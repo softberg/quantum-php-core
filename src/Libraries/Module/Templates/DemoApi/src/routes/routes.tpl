@@ -17,10 +17,10 @@ return function ($route) {
         $route->get('[:alpha:2]?/signout', 'AuthController', 'signout')->middlewares(['Signout']);
         $route->get('[:alpha:2]?/my-posts', 'PostController', 'myPosts')->middlewares(['Editor']);
         $route->post('[:alpha:2]?/my-posts/create', 'PostController', 'create')->middlewares(['Editor']);
-        $route->add('[:alpha:2]?/my-posts/amend/[id=:any]', 'PUT', 'PostController', 'amend')->middlewares(['Editor', 'Owner']);
-        $route->add('[:alpha:2]?/my-posts/delete/[id=:any]', 'DELETE', 'PostController', 'delete')->middlewares(['Editor', 'Owner']);
-        $route->add('[:alpha:2]?/my-posts/delete-image/[id=:any]', 'DELETE', 'PostController', 'deleteImage')->middlewares(['Editor', 'Owner']);
-        $route->post('[:alpha:2]?/account-settings/update', 'AccountController', 'update')->middlewares(['Update']);
-        $route->post('[:alpha:2]?/account-settings/update-password', 'AccountController', 'updatePassword')->middlewares(['Password']);
+        $route->put('[:alpha:2]?/my-posts/amend/[id=:any]', 'PostController', 'amend')->middlewares(['Editor', 'Owner']);
+        $route->delete('[:alpha:2]?/my-posts/delete/[id=:any]', 'PostController', 'delete')->middlewares(['Editor', 'Owner']);
+        $route->delete('[:alpha:2]?/my-posts/delete-image/[id=:any]', 'PostController', 'deleteImage')->middlewares(['Editor', 'Owner']);
+        $route->put('[:alpha:2]?/account-settings/update', 'AccountController', 'update')->middlewares(['Update']);
+        $route->put('[:alpha:2]?/account-settings/update-password', 'AccountController', 'updatePassword')->middlewares(['Password']);
     })->middlewares(['Auth']);
 };
