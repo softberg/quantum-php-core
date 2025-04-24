@@ -3,12 +3,12 @@
 namespace Quantum\Tests\Unit\Libraries\Module;
 
 use Quantum\Libraries\Module\ModuleManager;
+use Quantum\Router\RouteController;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Http\Response;
 use Quantum\App\App;
 use Exception;
 use Mockery;
-use Quantum\Mvc\RouteDispatcher;
 
 class ModuleManagerTest extends AppTestCase
 {
@@ -38,7 +38,7 @@ class ModuleManagerTest extends AppTestCase
 
         $mainController = new \Quantum\Tests\_root\modules\Api\Controllers\MainController();
 
-        $this->assertInstanceOf(RouteDispatcher::class, $mainController);
+        $this->assertInstanceOf(RouteController::class, $mainController);
 
         $response = new Response();
 

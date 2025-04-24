@@ -2,9 +2,9 @@
 
 namespace Quantum\Controllers {
 
-    use Quantum\Mvc\RouteDispatcher;
+    use Quantum\Router\RouteController;
 
-    class TestController extends RouteDispatcher
+    class TestController extends RouteController
     {
         // Controller body
     }

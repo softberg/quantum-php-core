@@ -2,12 +2,12 @@
 
 namespace Quantum\Controllers {
 
-    use Quantum\Mvc\RouteDispatcher;
+    use Quantum\Router\RouteController;
     use Quantum\Factory\ViewFactory;
     use Quantum\Http\Response;
     use Quantum\Http\Request;
 
-    class TestDiController extends RouteDispatcher
+    class TestDiController extends RouteController
     {
         public function index(Request $request, Response $response, ViewFactory $view)
         {
