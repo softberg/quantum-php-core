@@ -11,6 +11,10 @@ class HttpClientTest extends AppTestCase
 
     private $httpClient;
 
+    private $restServer = 'https://reqres.in/api';
+
+    private $restServerApiKey = 'reqres-free-v1';
+
     public function setUp(): void
     {
         parent::setUp();
@@ -54,7 +58,9 @@ class HttpClientTest extends AppTestCase
 
         $this->assertTrue($this->httpClient->isMultiRequest());
 
-        $this->httpClient->createAsyncMultiRequest(function () {}, function () {});
+        $this->httpClient->createAsyncMultiRequest(function () {
+        }, function () {
+        });
 
         $this->assertTrue($this->httpClient->isMultiRequest());
     }
@@ -76,8 +82,9 @@ class HttpClientTest extends AppTestCase
     {
         $this->httpClient
             ->createMultiRequest()
-            ->addGet('https://reqres.in/api/users')
-            ->addPost('https://reqres.in/api/users')
+            ->setHeader('x-api-key', $this->restServerApiKey)
+            ->addGet($this->restServer . '/users')
+            ->addPost($this->restServer . '/users')
             ->start();
 
         $multiResponse = $this->httpClient->getResponse();
@@ -98,7 +105,7 @@ class HttpClientTest extends AppTestCase
                 function ($instance) {
                     $this->assertFalse($instance->isError());
 
-                    $this->assertEquals('https://reqres.in/api/users', $instance->getUrl());
+                    $this->assertEquals($this->restServer . '/users', $instance->getUrl());
                 },
                 function ($instance) {
                     $this->assertTrue($instance->isError());
@@ -106,16 +113,18 @@ class HttpClientTest extends AppTestCase
                     $this->assertEquals(404, $instance->getErrorCode());
                 }
             )
-            ->addGet('https://reqres.in/api/users')
-            ->addPost('https://reqres.in/api/users')
+            ->setHeader('x-api-key', $this->restServerApiKey)
+            ->addGet($this->restServer . '/users')
+            ->addPost($this->restServer . '/users')
             ->start();
     }
 
     public function testHttpClientGetRequestHeaders()
     {
         $this->httpClient
-            ->createRequest('https://reqres.in/api/users')
+            ->createRequest($this->restServer . '/users')
             ->setHeaders([
+                'x-api-key' => $this->restServerApiKey,
                 'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
                 'Accept-Language' => 'ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3',
                 'User-Agent' => 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'
@@ -136,7 +145,8 @@ class HttpClientTest extends AppTestCase
     public function testHttpClientGetResponseHeaders()
     {
         $this->httpClient
-            ->createRequest('https://reqres.in/api/users')
+            ->createRequest($this->restServer . '/users')
+            ->setHeader('x-api-key', $this->restServerApiKey)
             ->start();
 
         $this->assertIsArray($this->httpClient->getResponseHeaders());
@@ -176,7 +186,8 @@ class HttpClientTest extends AppTestCase
     public function testHttpClientGetObjectResponseBody()
     {
         $this->httpClient
-            ->createRequest('https://reqres.in/api/users')
+            ->createRequest($this->restServer . '/users')
+            ->setHeader('x-api-key', $this->restServerApiKey)
             ->start();
 
         $responseBody = $this->httpClient->getResponseBody();
@@ -189,7 +200,8 @@ class HttpClientTest extends AppTestCase
     public function testHttpClientSendPostRequestAndGetResponseBody()
     {
         $this->httpClient
-            ->createRequest('https://reqres.in/api/users')
+            ->createRequest($this->restServer . '/users')
+            ->setHeader('x-api-key', $this->restServerApiKey)
             ->setMethod('POST')
             ->start();
 
@@ -203,7 +215,8 @@ class HttpClientTest extends AppTestCase
     public function testHttpClientSendPostRequestWithDataAndGetResponseBody()
     {
         $this->httpClient
-            ->createRequest('https://reqres.in/api/users')
+            ->createRequest($this->restServer . '/users')
+            ->setHeader('x-api-key', $this->restServerApiKey)
             ->setMethod('POST')
             ->setData(['custom' => 'Custom value'])
             ->start();
@@ -254,7 +267,8 @@ class HttpClientTest extends AppTestCase
     public function testHttpClientCurlInfo()
     {
         $this->httpClient
-            ->createRequest('https://reqres.in/api/users')
+            ->createRequest($this->restServer . '/users')
+            ->setHeader('x-api-key', $this->restServerApiKey)
             ->start();
 
         $this->assertIsArray($this->httpClient->info());
@@ -267,7 +281,8 @@ class HttpClientTest extends AppTestCase
     public function testHttpClientUrl()
     {
         $this->httpClient
-            ->createRequest('https://reqres.in/api/users')
+            ->createRequest($this->restServer . '/users')
+            ->setHeader('x-api-key', $this->restServerApiKey)
             ->start();
 
         $this->assertIsString($this->httpClient->url());
