@@ -14,14 +14,14 @@
 
 namespace {{MODULE_NAMESPACE}}\Controllers;
 
-use Quantum\Mvc\QtController;
+use Quantum\Router\RouteController;
 use Quantum\Http\Response;
 
 /**
  * Class MainController
  * @package Modules\Api
  */
-class MainController extends QtController
+class MainController extends RouteController
 {
     /**
      * Status error

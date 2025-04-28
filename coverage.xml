@@ -4460,8 +4460,8 @@
       <line num="161" type="stmt" count="0"/>
       <metrics loc="166" ncloc="110" classes="1" methods="6" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="38" coveredstatements="0" elements="44" coveredelements="0"/>
     </file>
-    <file name="D:\projects\forks\quantum-php-core\src\Mvc\QtController.php">
-      <class name="Quantum\Mvc\QtController" namespace="global">
+    <file name="D:\projects\forks\quantum-php-core\src\Router\RouteController.php">
+      <class name="Quantum\Router\RouteController" namespace="global">
         <metrics complexity="1" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="1" coveredstatements="1" elements="2" coveredelements="2"/>
       </class>
       <line num="38" type="method" name="__call" visibility="public" complexity="1" crap="1" count="1"/>

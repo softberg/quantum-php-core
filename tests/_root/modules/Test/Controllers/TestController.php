@@ -2,9 +2,9 @@
 
 namespace Modules\Test\Controllers;
 
-use Quantum\Mvc\QtController;
+use Quantum\Router\RouteController;
 
-class TestController extends QtController
+class TestController extends RouteController
 {
 
     public function tests()
