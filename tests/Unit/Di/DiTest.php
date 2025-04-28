@@ -16,12 +16,20 @@ namespace Quantum\Controllers {
     }
 }
 
+namespace Quantum\Service {
+
+    class DummyService extends QtService
+    {
+
+    }
+}
+
 namespace Quantum\Tests\Unit\Di {
 
     use Quantum\Controllers\TestDiController;
-    use Quantum\Libraries\Storage\FileSystem;
     use Quantum\Di\Exceptions\DiException;
     use Quantum\Tests\Unit\AppTestCase;
+    use Quantum\Service\DummyService;
     use Quantum\Factory\ViewFactory;
     use Quantum\Loader\Loader;
     use Quantum\Http\Response;
@@ -37,24 +45,66 @@ namespace Quantum\Tests\Unit\Di {
             parent::setUp();
         }
 
-        public function testAddDependency()
+        public function testDiRegisterDependency()
         {
-            Di::add(Setup::class);
+            Di::register(Setup::class);
 
             $this->assertInstanceOf(Setup::class, Di::get(Setup::class));
         }
 
-        public function testGetDependency()
+        public function testDiIsRegistered()
+        {
+            $this->assertFalse(Di::isRegistered(DummyService::class));
+
+            Di::register(DummyService::class);
+
+            $this->assertTrue(Di::isRegistered(DummyService::class));
+        }
+
+        public function testDiGetCoreDependencies()
         {
             $this->assertInstanceOf(Loader::class, Di::get(Loader::class));
 
-            $this->assertNotInstanceOf(FileSystem::class, Di::get(Loader::class));
+            $this->assertInstanceOf(Request::class, Di::get(Request::class));
+
+            $this->assertInstanceOf(Response::class, Di::get(Response::class));
+        }
+
+        public function testDiGetNotRegisteredDependency()
+        {
+            $this->assertInstanceOf(Loader::class, Di::get(Loader::class));
 
             $this->expectException(DiException::class);
 
-            $this->expectExceptionMessage('dependency_not_found');
+            $this->expectExceptionMessage('dependency_not_registered');
 
             Di::get(DiException::class);
+        }
+
+        public function testDiGetReturnsSingleton()
+        {
+            Di::register(DummyService::class);
+
+            $instance1 = Di::get(DummyService::class);
+
+            $instance2 = Di::get(DummyService::class);
+
+            $this->assertInstanceOf(DummyService::class, $instance1);
+
+            $this->assertSame($instance1, $instance2);
+        }
+
+        public function testCreateReturnsNewInstance()
+        {
+            Di::register(DummyService::class);
+
+            $instance1 = Di::create(DummyService::class);
+
+            $instance2 = Di::create(DummyService::class);
+
+            $this->assertInstanceOf(DummyService::class, $instance1);
+
+            $this->assertNotSame($instance1, $instance2);
         }
 
         public function testAutowire()

@@ -2,14 +2,14 @@
 
 namespace Quantum\Services {
 
-    use Quantum\Mvc\QtService;
+    use Quantum\Service\QtService;
 
     class TestService extends QtService
     {
 
         public static $count = 0;
 
-        public function __init()
+        public function __construct()
         {
             self::$count++;
         }
@@ -18,18 +18,16 @@ namespace Quantum\Services {
         {
             return 'Hello';
         }
-
     }
-
 }
 
-namespace Quantum\Tests\Unit\Factory {
+namespace Quantum\Tests\Unit\Service\Factories {
 
-    use Quantum\Exceptions\ServiceException;
-    use Quantum\Factory\ServiceFactory;
+    use Quantum\Service\Exceptions\ServiceException;
+    use Quantum\Service\Factories\ServiceFactory;
     use Quantum\Tests\Unit\AppTestCase;
     use Quantum\Services\TestService;
-    use Quantum\Mvc\QtService;
+    use Quantum\Service\QtService;
 
     class ServiceFactoryTest extends AppTestCase
     {
@@ -42,10 +40,9 @@ namespace Quantum\Tests\Unit\Factory {
         public function tearDown(): void
         {
             TestService::$count = 0;
-            ServiceFactory::reset();
         }
 
-        public function testServiceGetInstance()
+        public function testServiceFactoryGetInstance()
         {
             $service = ServiceFactory::get(TestService::class);
 
@@ -54,24 +51,20 @@ namespace Quantum\Tests\Unit\Factory {
             $this->assertInstanceOf(TestService::class, $service);
         }
 
-        public function testServiceGetAndInit()
+        public function testServiceFactoryVerifySingletonInstance()
         {
-            /* Calling 3 tiems to verify __init() method works only once */
+            $testServiceOne = ServiceFactory::get(TestService::class);
 
-            ServiceFactory::get(TestService::class);
+            $this->assertEquals(0, TestService::$count);
 
-            $this->assertEquals(1, TestService::$count);
+            $testServiceTwo = ServiceFactory::get(TestService::class);
 
-            ServiceFactory::get(TestService::class);
+            $this->assertEquals(0, TestService::$count);
 
-            $this->assertEquals(1, TestService::$count);
-
-            ServiceFactory::get(TestService::class);
-
-            $this->assertEquals(1, TestService::$count);
+            $this->assertSame($testServiceOne, $testServiceTwo);
         }
 
-        public function testServiceCreateInstance()
+        public function testServiceFactoryCreateInstance()
         {
             $service = ServiceFactory::create(TestService::class);
 
@@ -80,31 +73,27 @@ namespace Quantum\Tests\Unit\Factory {
             $this->assertInstanceOf(TestService::class, $service);
         }
 
-        public function testServiceCreateAndInit()
+        public function testServiceFactoryVerifyFreshInstance()
         {
-            /* Calling 3 tiems to verify __init() method works each time */
-
-            ServiceFactory::create(TestService::class);
+            $testServiceOne = ServiceFactory::create(TestService::class);
 
             $this->assertEquals(1, TestService::$count);
 
-            ServiceFactory::create(TestService::class);
+            $testServiceTwo = ServiceFactory::create(TestService::class);
 
             $this->assertEquals(2, TestService::$count);
 
-            ServiceFactory::create(TestService::class);
-
-            $this->assertEquals(3, TestService::$count);
+            $this->assertNotSame($testServiceOne, $testServiceTwo);
         }
 
-        public function testServiceMethodCall()
+        public function testServiceFactoryServiceMethodCall()
         {
             $this->assertEquals('Hello', ServiceFactory::get(TestService::class)->hello());
 
             $this->assertEquals('Hello', ServiceFactory::create(TestService::class)->hello());
         }
 
-        public function testServiceNotFound()
+        public function testServiceFactoryServiceNotFound()
         {
             $this->expectException(ServiceException::class);
 
@@ -112,7 +101,5 @@ namespace Quantum\Tests\Unit\Factory {
 
             ServiceFactory::get(\NonExistentClass::class);
         }
-
     }
-
 }

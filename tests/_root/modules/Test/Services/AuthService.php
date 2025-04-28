@@ -4,7 +4,7 @@ namespace Quantum\Tests\_root\modules\Test\Services;
 
 use Quantum\Libraries\Auth\Contracts\AuthServiceInterface;
 use Quantum\Libraries\Auth\User;
-use Quantum\Mvc\QtService;
+use Quantum\Service\QtService;
 
 class AuthService extends QtService implements AuthServiceInterface
 {

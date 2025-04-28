@@ -15,7 +15,7 @@
 use Quantum\Libraries\Config\Exceptions\ConfigException;
 use Quantum\Libraries\Auth\Exceptions\AuthException;
 use Quantum\Libraries\Auth\Factories\AuthFactory;
-use Quantum\Exceptions\ServiceException;
+use Quantum\Service\Exceptions\ServiceException;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Exceptions\BaseException;
 use Quantum\Libraries\Auth\Auth;

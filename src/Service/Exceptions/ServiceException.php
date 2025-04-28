@@ -9,14 +9,16 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.7
  */
 
-namespace Quantum\Exceptions;
+namespace Quantum\Service\Exceptions;
+
+use Quantum\Exceptions\BaseException;
 
 /**
  * Class ServiceException
- * @package Quantum\Exceptions
+ * @package Quantum\Service
  */
 class ServiceException extends BaseException
 {

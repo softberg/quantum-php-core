@@ -3,7 +3,7 @@
 namespace Quantum\Services {
 
 
-    use Quantum\Mvc\QtService;
+    use Quantum\Service\QtService;
 
     class TestingService extends QtService
     {
@@ -11,11 +11,11 @@ namespace Quantum\Services {
     }
 }
 
-namespace Quantum\Tests\Unit\Mvc {
+namespace Quantum\Tests\Unit\Service {
 
-    use Quantum\Exceptions\ServiceException;
+    use Quantum\Service\Exceptions\ServiceException;
+    use Quantum\Service\Factories\ServiceFactory;
     use Quantum\Services\TestingService;
-    use Quantum\Factory\ServiceFactory;
     use Quantum\Tests\Unit\AppTestCase;
 
     /**
@@ -30,9 +30,6 @@ namespace Quantum\Tests\Unit\Mvc {
             parent::setUp();
         }
 
-        /**
-         * @runInSeparateProcess
-         */
         public function testMissingMethods()
         {
             $this->expectException(ServiceException::class);
