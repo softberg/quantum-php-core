@@ -42,7 +42,7 @@ class Di
     /**
      * Loads dependency definitions
      */
-    public static function loadDefinitions()
+    public static function registerDependencies()
     {
         foreach (self::coreDependencies() as $dependency) {
             if (!self::isRegistered($dependency)) {
@@ -215,7 +215,7 @@ class Di
         $type = $param->getType() ? $param->getType()->getName() : null;
 
         if ($type && self::instantiable($type)) {
-            return self::get($type);
+            return self::create($type);
         }
 
         if ($type === 'array') {

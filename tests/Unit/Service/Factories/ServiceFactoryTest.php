@@ -3,21 +3,36 @@
 namespace Quantum\Services {
 
     use Quantum\Service\QtService;
+    use Quantum\Models\TestModel;
 
     class TestService extends QtService
     {
 
         public static $count = 0;
 
-        public function __construct()
+        public $model;
+
+        public function __construct(TestModel $model)
         {
             self::$count++;
+
+            $this->model = $model;
         }
 
         public function hello()
         {
             return 'Hello';
         }
+    }
+}
+
+namespace Quantum\Models {
+
+    use Quantum\Model\QtModel;
+
+    class TestModel extends QtModel
+    {
+
     }
 }
 
@@ -28,6 +43,7 @@ namespace Quantum\Tests\Unit\Service\Factories {
     use Quantum\Tests\Unit\AppTestCase;
     use Quantum\Services\TestService;
     use Quantum\Service\QtService;
+    use Quantum\Model\QtModel;
 
     class ServiceFactoryTest extends AppTestCase
     {
@@ -84,6 +100,13 @@ namespace Quantum\Tests\Unit\Service\Factories {
             $this->assertEquals(2, TestService::$count);
 
             $this->assertNotSame($testServiceOne, $testServiceTwo);
+        }
+
+        public function testServiceFactoryVerifyConstructorDependencyResolved()
+        {
+            $testService = ServiceFactory::get(TestService::class);
+
+            $this->assertInstanceOf(QtModel::class, $testService->model);
         }
 
         public function testServiceFactoryServiceMethodCall()

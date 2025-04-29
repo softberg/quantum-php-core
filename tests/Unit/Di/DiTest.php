@@ -35,6 +35,7 @@ namespace Quantum\Tests\Unit\Di {
     use Quantum\Http\Response;
     use Quantum\Http\Request;
     use Quantum\Loader\Setup;
+    use ReflectionProperty;
     use Quantum\Di\Di;
 
     class DiTest extends AppTestCase
@@ -94,7 +95,7 @@ namespace Quantum\Tests\Unit\Di {
             $this->assertSame($instance1, $instance2);
         }
 
-        public function testCreateReturnsNewInstance()
+        public function testDiCreateReturnsNewInstance()
         {
             Di::register(DummyService::class);
 
@@ -107,7 +108,7 @@ namespace Quantum\Tests\Unit\Di {
             $this->assertNotSame($instance1, $instance2);
         }
 
-        public function testAutowire()
+        public function testDiAutowire()
         {
             $params = Di::autowire([new TestDiController, 'index']);
 
@@ -126,6 +127,29 @@ namespace Quantum\Tests\Unit\Di {
             $this->assertInstanceOf(Request::class, $params[0]);
 
             $this->assertInstanceOf(Response::class, $params[1]);
+        }
+
+        public function testDiReset()
+        {
+            Di::register(DummyService::class);
+
+            Di::get(DummyService::class);
+
+            $this->assertTrue(Di::isRegistered(DummyService::class));
+
+            Di::reset();
+
+            $dependenciesProperty = new ReflectionProperty(Di::class, 'dependencies');
+            $dependenciesProperty->setAccessible(true);
+
+            $containerProperty = new ReflectionProperty(Di::class, 'container');
+            $containerProperty->setAccessible(true);
+
+            $this->assertEmpty($dependenciesProperty->getValue());
+
+            $this->assertEmpty($containerProperty->getValue());
+
+            Di::registerDependencies();
         }
     }
 }
