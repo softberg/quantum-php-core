@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.7
  */
 
 namespace Quantum\Di;
@@ -42,94 +42,191 @@ class Di
     /**
      * Loads dependency definitions
      */
-    public static function loadDefinitions()
+    public static function registerDependencies()
     {
-        if (empty(self::$dependencies)) {
-            self::$dependencies = self::coreDependencies();
+        foreach (self::coreDependencies() as $dependency) {
+            if (!self::isRegistered($dependency)) {
+                self::register($dependency);
+            }
+        }
 
-            foreach (self::userDependencies() as $dependency) {
-                self::add($dependency);
+        foreach (self::userDependencies() as $dependency) {
+            if (!self::isRegistered($dependency)) {
+                self::register($dependency);
             }
         }
     }
 
     /**
-     * Creates and injects dependencies.
+     * Registers new dependency
+     * @param string $dependency
+     * @return bool
+     */
+    public static function register(string $dependency): bool
+    {
+        if (!in_array($dependency, self::$dependencies) && class_exists($dependency)) {
+            self::$dependencies[] = $dependency;
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Checks if a dependency registered
+     * @param string $dependency
+     * @return bool
+     */
+    public static function isRegistered(string $dependency): bool
+    {
+        return in_array($dependency, self::$dependencies);
+    }
+
+    /**
+     * Retrieves a shared instance of the given dependency.
+     * @param string $dependency
+     * @param array $args
+     * @return mixed
+     * @throws DiException
+     * @throws ReflectionException
+     */
+    public static function get(string $dependency, array $args = [])
+    {
+        if (!self::isRegistered($dependency)) {
+            throw DiException::dependencyNotRegistered($dependency);
+        }
+
+        return self::resolve($dependency, $args, true);
+    }
+
+    /**
+     * Creates new instance of the given dependency.
+     * @param string $dependency
+     * @param array $args
+     * @return mixed
+     * @throws DiException
+     * @throws ReflectionException
+     */
+    public static function create(string $dependency, array $args = [])
+    {
+        if (!self::isRegistered($dependency)) {
+            self::register($dependency);
+        }
+
+        return self::resolve($dependency, $args, false);
+    }
+
+    /**
+     * Automatically resolves and injects parameters for a callable.
      * @param callable $entry
-     * @param array $additional
+     * @param array $args
      * @return array
      * @throws DiException
      * @throws ReflectionException
      */
-    public static function autowire(callable $entry, array $additional = []): array
+    public static function autowire(callable $entry, array $args = []): array
     {
         $reflection = is_closure($entry)
             ? new ReflectionFunction($entry)
             : new ReflectionMethod(...$entry);
 
-        $params = [];
-
-        foreach ($reflection->getParameters() as $param) {
-            $params[] = self::resolveParameter($param, $additional);
-        }
-
-        return $params;
+        return self::resolveParameters($reflection->getParameters(), $args);
     }
 
     /**
-     * Adds new dependency
-     * @param string $dependency
+     * @return void
      */
-    public static function add(string $dependency)
+    public static function reset(): void
     {
-        if (!in_array($dependency, self::$dependencies) && class_exists($dependency)) {
-            self::$dependencies[] = $dependency;
-        }
+        self::$dependencies = [];
+        self::$container = [];
     }
 
     /**
-     * Gets the dependency from the container
+     * Resolves the dependency
      * @param string $dependency
+     * @param array $args
+     * @param bool $singleton
      * @return mixed
      * @throws DiException
      * @throws ReflectionException
      */
-    public static function get(string $dependency)
+    private static function resolve(string $dependency, array $args = [], bool $singleton = true)
     {
-        if (!in_array($dependency, self::$dependencies)) {
-            throw DiException::dependencyNotDefined($dependency);
+        if ($singleton) {
+            if (!isset(self::$container[$dependency])) {
+                self::$container[$dependency] = self::instantiate($dependency, $args);
+            }
+
+            return self::$container[$dependency];
         }
 
-        if (!isset(self::$container[$dependency])) {
-            self::$container[$dependency] = self::instantiate($dependency);
-        }
-
-        return self::$container[$dependency];
-
+        return self::instantiate($dependency, $args);
     }
 
     /**
      * Instantiates the dependency
      * @param string $dependency
+     * @param array $args
      * @return mixed
      * @throws DiException
      * @throws ReflectionException
      */
-    protected static function instantiate(string $dependency)
+    private static function instantiate(string $dependency, array $args = [])
     {
         $class = new ReflectionClass($dependency);
 
         $constructor = $class->getConstructor();
 
-        $params = [];
-
-        if ($constructor) {
-            foreach ($constructor->getParameters() as $param) {
-                $params[] = self::resolveParameter($param);
-            }
-        }
+        $params = $constructor ? self::resolveParameters($constructor->getParameters(), $args) : [];
 
         return new $dependency(...$params);
+    }
+
+    /**
+     * Resolves all parameters
+     * @param array $parameters
+     * @param array $args
+     * @return array
+     * @throws DiException
+     * @throws ReflectionException
+     */
+    private static function resolveParameters(array $parameters, array &$args = []): array
+    {
+        $resolved = [];
+
+        foreach ($parameters as $param) {
+            $resolved[] = self::resolveParameter($param, $args);
+        }
+
+        return $resolved;
+    }
+
+    /**
+     * Resolves the parameter
+     * @param ReflectionParameter $param
+     * @param array|null $args
+     * @return array|mixed|null
+     * @throws DiException
+     * @throws ReflectionException
+     */
+    private static function resolveParameter(ReflectionParameter $param, ?array &$args = [])
+    {
+        $type = $param->getType() ? $param->getType()->getName() : null;
+
+        if ($type && self::instantiable($type)) {
+            return self::create($type);
+        }
+
+        if ($type === 'array') {
+            return $args;
+        }
+
+        if (!empty($args)) {
+            return array_shift($args);
+        }
+
+        return $param->isDefaultValueAvailable() ? $param->getDefaultValue() : null;
     }
 
     /**
@@ -140,33 +237,6 @@ class Di
     protected static function instantiable(string $type): bool
     {
         return class_exists($type) && (new ReflectionClass($type))->isInstantiable();
-    }
-
-    /**
-     * @param ReflectionParameter $param
-     * @param array|null $additional
-     * @return array|mixed|null
-     * @throws DiException
-     * @throws ReflectionException
-     */
-    private static function resolveParameter(ReflectionParameter $param, ?array &$additional = [])
-    {
-        $type = $param->getType() ? $param->getType()->getName() : null;
-
-        if ($type && self::instantiable($type)) {
-            return self::get($type);
-        }
-
-        if ($type === 'array') {
-            return $additional;
-        }
-
-        if (count($additional)) {
-            return array_shift($additional);
-        }
-
-        return $param->isDefaultValueAvailable() ? $param->getDefaultValue() : null;
-
     }
 
     /**
@@ -185,7 +255,7 @@ class Di
     }
 
     /**
-     * Gets the core dependencies
+     * Loads the core dependencies
      * @return array
      */
     private static function coreDependencies(): array
@@ -197,5 +267,4 @@ class Di
             \Quantum\Factory\ViewFactory::class,
         ];
     }
-
 }

@@ -20,15 +20,15 @@ use Quantum\Libraries\Storage\Adapters\Local\LocalFileSystemAdapter;
 use Quantum\Libraries\Storage\Adapters\GoogleDrive\GoogleDriveApp;
 use Quantum\Libraries\Storage\Contracts\TokenServiceInterface;
 use Quantum\Libraries\Storage\Exceptions\FileSystemException;
-use Quantum\Libraries\Storage\Adapters\Dropbox\DropboxApp;
 use Quantum\Libraries\Storage\Contracts\CloudAppInterface;
+use Quantum\Libraries\Storage\Adapters\Dropbox\DropboxApp;
 use Quantum\Libraries\Config\Exceptions\ConfigException;
+use Quantum\Service\Exceptions\ServiceException;
+use Quantum\Service\Factories\ServiceFactory;
 use Quantum\Libraries\HttpClient\HttpClient;
 use Quantum\Libraries\Storage\FileSystem;
-use Quantum\Exceptions\ServiceException;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Exceptions\BaseException;
-use Quantum\Factory\ServiceFactory;
 use Quantum\Loader\Setup;
 use ReflectionException;
 

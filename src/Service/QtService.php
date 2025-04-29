@@ -9,16 +9,16 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.5.0
+ * @since 2.9.7
  */
 
-namespace Quantum\Mvc;
+namespace Quantum\Service;
 
-use Quantum\Exceptions\ServiceException;
+use Quantum\Service\Exceptions\ServiceException;
 
 /**
  * Class QtService
- * @package Quantum\Mvc
+ * @package Quantum\Service
  * @method void __init()
  */
 class QtService

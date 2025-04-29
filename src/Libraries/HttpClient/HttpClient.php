@@ -27,6 +27,7 @@ use Curl\Curl;
  * @uses php-curl-class/php-curl-class
  * @method object addGet(string $url, array $data = [])
  * @method object addPost(string $url, string $data = '', bool $follow_303_with_post = false)
+ * @method setHeader($key, $value)
  * @method setHeaders($headers)
  * @method setOpt($option, $value)
  */

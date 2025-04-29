@@ -42,7 +42,7 @@ abstract class AppAdapter implements AppInterface
      */
     public function __construct()
     {
-        Di::loadDefinitions();
+        Di::registerDependencies();
 
         $this->loadCoreHelperFunctions();
         $this->loadLibraryHelperFunctions();

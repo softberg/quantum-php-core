@@ -3,7 +3,7 @@
 namespace Quantum\Tests\_root\shared\Services;
 
 use Quantum\Libraries\Storage\Contracts\TokenServiceInterface;
-use Quantum\Mvc\QtService;
+use Quantum\Service\QtService;
 
 class TokenService extends QtService implements TokenServiceInterface
 {
