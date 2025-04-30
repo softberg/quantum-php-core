@@ -14,7 +14,7 @@
 
 namespace {{MODULE_NAMESPACE}}\Controllers\OpenApi;
 
-use Quantum\Mvc\QtController;
+use Quantum\Router\RouteController;
 
 /**
  * Class ApiController

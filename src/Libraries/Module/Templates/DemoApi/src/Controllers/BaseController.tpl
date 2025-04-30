@@ -14,13 +14,13 @@
 
 namespace {{MODULE_NAMESPACE}}\Controllers;
 
-use Quantum\Mvc\QtController;
+use Quantum\Router\RouteController;
 
 /**
  * Class BaseController
  * @package Modules\Api
  */
-abstract class BaseController extends QtController
+abstract class BaseController extends RouteController
 {
 
     /**

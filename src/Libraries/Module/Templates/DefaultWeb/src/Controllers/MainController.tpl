@@ -16,14 +16,14 @@ namespace {{MODULE_NAMESPACE}}\Controllers;
 
 use Quantum\Libraries\Asset\Asset;
 use Quantum\Factory\ViewFactory;
-use Quantum\Mvc\QtController;
+use Quantum\Router\RouteController;
 use Quantum\Http\Response;
 
 /**
  * Class MainController
  * @package Modules\Web
  */
-class MainController extends QtController
+class MainController extends RouteController
 {
 
     /**
