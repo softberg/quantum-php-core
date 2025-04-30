@@ -9,13 +9,13 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.7
  */
 
 namespace {{MODULE_NAMESPACE}}\Controllers;
 
+use Quantum\Service\Factories\ServiceFactory;
 use Shared\Transformers\PostTransformer;
-use Quantum\Factory\ServiceFactory;
 use Shared\Services\PostService;
 use Quantum\Http\Response;
 use Quantum\Http\Request;

@@ -9,14 +9,14 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.7
  */
 
 namespace {{MODULE_NAMESPACE}}\Controllers;
 
 use Quantum\Libraries\Auth\Contracts\AuthenticatableInterface;
+use Quantum\Service\Factories\ServiceFactory;
 use Quantum\Libraries\Hasher\Hasher;
-use Quantum\Factory\ServiceFactory;
 use Shared\Services\AuthService;
 use Quantum\Factory\ViewFactory;
 use Quantum\Http\Response;
