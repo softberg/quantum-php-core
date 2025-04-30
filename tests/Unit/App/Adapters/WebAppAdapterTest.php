@@ -3,7 +3,6 @@
 namespace Quantum\Tests\Unit\App\Adapters;
 
 use Quantum\App\Adapters\WebAppAdapter;
-use Quantum\Handlers\ViewCacheHandler;
 use PHPUnit\Framework\TestCase;
 use Quantum\Http\Request;
 use Quantum\App\App;
