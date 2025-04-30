@@ -10,7 +10,7 @@ namespace Quantum\Controllers {
     }
 }
 
-namespace Quantum\Tests\Unit\Mvc {
+namespace Quantum\Tests\Unit\Router {
 
     use Quantum\Exceptions\ControllerException;
     use Quantum\Controllers\TestController;
@@ -20,7 +20,7 @@ namespace Quantum\Tests\Unit\Mvc {
      * @runTestsInSeparateProcesses
      * @preserveGlobalState disabled
      */
-    class RouteDispatcherTest extends AppTestCase
+    class RouteControllerTest extends AppTestCase
     {
 
         public function setUp(): void
@@ -40,5 +40,4 @@ namespace Quantum\Tests\Unit\Mvc {
         }
 
     }
-
 }

@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.7
  */
 
 namespace Quantum\App\Adapters;
@@ -30,7 +30,7 @@ use Quantum\Exceptions\ControllerException;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Exceptions\BaseException;
 use Quantum\App\Traits\WebAppTrait;
-use Quantum\Mvc\RouteDispatcher;
+use Quantum\Router\RouteDispatcher;
 use DebugBar\DebugBarException;
 use Quantum\Debugger\Debugger;
 use Quantum\Hooks\HookManager;
