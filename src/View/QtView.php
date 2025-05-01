@@ -41,17 +41,17 @@ class QtView
     private $renderer;
 
     /**
-     * @var AssetManager|null
+     * @var AssetManager
      */
     private $assetManager;
 
     /**
-     * @var Debugger|null
+     * @var Debugger
      */
     private $debugger;
 
     /**
-     * @var ViewCache|null
+     * @var ViewCache
      */
     private $viewCache;
 
@@ -81,15 +81,15 @@ class QtView
 
     /**
      * @param Renderer $renderer
-     * @param AssetManager|null $assetManager
-     * @param Debugger|null $debugger
-     * @param ViewCache|null $viewCache
+     * @param AssetManager $assetManager
+     * @param Debugger $debugger
+     * @param ViewCache $viewCache
      */
     public function __construct(
         Renderer $renderer,
-        ?AssetManager $assetManager = null,
-        ?Debugger $debugger = null,
-        ?ViewCache $viewCache = null
+        AssetManager $assetManager,
+        Debugger $debugger,
+        ViewCache $viewCache
     )
     {
         $this->renderer = $renderer;
