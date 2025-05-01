@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.7
  */
 
 namespace Quantum\Tracer;
@@ -19,9 +19,10 @@ use Quantum\Libraries\Config\Exceptions\ConfigException;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Quantum\Renderer\Exceptions\RendererException;
 use Quantum\Di\Exceptions\DiException;
+use Quantum\View\Factories\ViewFactory;
 use Quantum\Exceptions\BaseException;
 use Quantum\Libraries\Logger\Logger;
-use Quantum\Factory\ViewFactory;
+use DebugBar\DebugBarException;
 use Quantum\Http\Response;
 use ReflectionException;
 use Psr\Log\LogLevel;
@@ -153,11 +154,11 @@ class ErrorHandler
      * @throws ConfigException
      * @throws DiException
      * @throws ReflectionException
-     * @throws RendererException
+     * @throws DebugBarException
      */
     private function handleWebException(Throwable $throwable): void
     {
-        $view = ViewFactory::getInstance();
+        $view = ViewFactory::get();
         $errorType = $this->getErrorType($throwable);
 
         if (is_debug_mode()) {

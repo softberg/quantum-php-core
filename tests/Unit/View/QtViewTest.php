@@ -1,11 +1,10 @@
 <?php
 
-namespace Quantum\Tests\Unit\Mvc;
+namespace Quantum\Tests\Unit\View;
 
-use Quantum\Renderer\Factories\RendererFactory;
-use Quantum\Exceptions\ViewException;
+use Quantum\View\Exceptions\ViewException;
+use Quantum\View\Factories\ViewFactory;
 use Quantum\Tests\Unit\AppTestCase;
-use Quantum\Factory\ViewFactory;
 use Quantum\Router\Router;
 
 
@@ -26,7 +25,7 @@ class QtViewTest extends AppTestCase
             "module" => "Test"
         ]);
 
-        $this->view = ViewFactory::getInstance();
+        $this->view = ViewFactory::get();
     }
 
     public function tearDown(): void
@@ -112,14 +111,16 @@ class QtViewTest extends AppTestCase
 
     public function testRenderViewWithTwig(): void
     {
-        $this->setPrivateProperty(RendererFactory::class, 'instances', []);
+        $this->setPrivateProperty(ViewFactory::class, 'instance', null);
 
         config()->set('view.default', 'twig');
         config()->set('view.twig', ['autoescape' => false]);
 
-        $this->view->setLayout('layout.twig');
+        $view = ViewFactory::get();
 
-        $renderedView = $this->view->render('index.twig', ['name' => 'Tester']);
+        $view->setLayout('layout.twig');
+
+        $renderedView = $view->render('index.twig', ['name' => 'Tester']);
 
         $this->assertIsString($renderedView);
 

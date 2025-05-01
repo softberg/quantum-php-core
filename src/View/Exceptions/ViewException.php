@@ -9,14 +9,16 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.7
  */
 
-namespace Quantum\Exceptions;
+namespace Quantum\View\Exceptions;
+
+use Quantum\Exceptions\BaseException;
 
 /**
  * Class ViewException
- * @package Quantum\Exceptions
+ * @package Quantum\View
  */
 class ViewException extends BaseException
 {
@@ -35,5 +37,13 @@ class ViewException extends BaseException
     public static function noLayoutSet(): ViewException
     {
         return new static(t('exception.layout_not_set'), E_ERROR);
+    }
+
+    /**
+     * @return ViewException
+     */
+    public static function viewNotRendered(): ViewException
+    {
+        return new static(t('exception.view_not_rendered_yet'), E_ERROR);
     }
 }

@@ -15,8 +15,8 @@
 namespace Quantum\Di;
 
 use Quantum\Di\Exceptions\DiException;
-use ReflectionParameter;
 use ReflectionException;
+use ReflectionParameter;
 use ReflectionFunction;
 use ReflectionMethod;
 use Quantum\App\App;
@@ -264,7 +264,6 @@ class Di
             \Quantum\Loader\Loader::class,
             \Quantum\Http\Request::class,
             \Quantum\Http\Response::class,
-            \Quantum\Factory\ViewFactory::class,
         ];
     }
 }
