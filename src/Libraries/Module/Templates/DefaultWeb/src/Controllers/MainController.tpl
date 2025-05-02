@@ -9,14 +9,14 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.7
  */
 
 namespace {{MODULE_NAMESPACE}}\Controllers;
 
-use Quantum\Libraries\Asset\Asset;
-use Quantum\Factory\ViewFactory;
+use Quantum\View\Factories\ViewFactory;
 use Quantum\Router\RouteController;
+use Quantum\Libraries\Asset\Asset;
 use Quantum\Http\Response;
 
 /**

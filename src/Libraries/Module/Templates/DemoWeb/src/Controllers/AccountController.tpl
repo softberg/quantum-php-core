@@ -16,9 +16,9 @@ namespace {{MODULE_NAMESPACE}}\Controllers;
 
 use Quantum\Libraries\Auth\Contracts\AuthenticatableInterface;
 use Quantum\Service\Factories\ServiceFactory;
+use Quantum\View\Factories\ViewFactory;
 use Quantum\Libraries\Hasher\Hasher;
 use Shared\Services\AuthService;
-use Quantum\Factory\ViewFactory;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 use Shared\Models\User;
@@ -42,36 +42,33 @@ class AccountController extends BaseController
 
     /**
      * Works before an action
-     * @param ViewFactory $view
      */
-    public function __before(ViewFactory $view)
+    public function __before()
     {
         $this->authService = ServiceFactory::get(AuthService::class);
 
-        parent::__before($view);
+        parent::__before();
     }
 
     /**
      * Action - show user info
      * @param Response $response
-     * @param ViewFactory $view
      */
-    public function form(Response $response, ViewFactory $view)
+    public function form(Response $response)
     {
-        $view->setParams([
+        $this->view->setParams([
             'title' => t('common.account_settings') . ' | ' . config()->get('app_name'),
             'langs' => config()->get('langs')
         ]);
 
-        $response->html($view->render('account/form'));
+        $response->html($this->view->render('account/form'));
     }
 
     /**
      * Action - update user info
      * @param Request $request 
-     * @param ViewFactory $view
      */
-    public function update(Request $request, ViewFactory $view)
+    public function update(Request $request)
     {
         $firstname = $request->get('firstname', null);
         $lastname = $request->get('lastname', null);
@@ -88,20 +85,14 @@ class AccountController extends BaseController
              
         session()->set(AuthenticatableInterface::AUTH_USER, $userData);
 
-        $view->setParams([
-            'title' => t('common.account_settings') . ' | ' . config()->get('app_name'),
-            'langs' => config()->get('langs'),
-        ]);
-
         redirect(base_url(true) . '/' . current_lang() . '/account-settings#account_profile');
     }
 
     /**
      * Action - update password
      * @param Request $request 
-     * @param ViewFactory $view
      */
-    public function updatePassword(Request $request, ViewFactory $view)
+    public function updatePassword(Request $request)
     {
         $hasher = new Hasher();
 
@@ -109,11 +100,6 @@ class AccountController extends BaseController
         
         $this->authService->update('uuid', auth()->user()->uuid, [
             'password' => $hasher->hash($newPassword)
-        ]);
-
-        $view->setParams([
-            'title' => t('common.account_settings') . ' | ' . config()->get('app_name'),
-            'langs' => config()->get('langs')
         ]);
 
         redirect(base_url(true) . '/' . current_lang() . '/account-settings#account_password');

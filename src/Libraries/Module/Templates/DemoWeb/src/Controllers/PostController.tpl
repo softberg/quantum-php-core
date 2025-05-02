@@ -16,7 +16,7 @@ namespace {{MODULE_NAMESPACE}}\Controllers;
 
 use Quantum\Service\Factories\ServiceFactory;
 use Shared\Transformers\PostTransformer;
-use Quantum\Factory\ViewFactory;
+use Quantum\View\Factories\ViewFactory;
 use Shared\Services\AuthService;
 use Shared\Services\PostService;
 use Quantum\Http\Response;
@@ -59,48 +59,46 @@ class PostController extends BaseController
      * Works before an action
      * @param ViewFactory $view
      */
-    public function __before(ViewFactory $view)
+    public function __before()
     {
         $this->postService = ServiceFactory::get(PostService::class);
         $this->userService = ServiceFactory::get(AuthService::class);
 
-        parent::__before($view);
+        parent::__before();
     }
 
     /**
      * Action - get posts list
      * @param Response $response
      * @param PostTransformer $transformer
-     * @param ViewFactory $view
      */
-    public function posts(Request $request, Response $response, PostTransformer $transformer, ViewFactory $view)
+    public function posts(Request $request, Response $response, PostTransformer $transformer)
     {
         $perPage = $request->get('per_page', self::POSTS_PER_PAGE);
         $currentPage = $request->get('page', self::CURRENT_PAGE);
         $search = trim($request->get('q'));
         
         $paginatedPosts = $this->postService->getPosts($perPage, $currentPage, $search);
-        
-        $view->setParams([
+
+        $this->view->setParams([
             'title' => t('common.posts') . ' | ' . config()->get('app_name'),
             'langs' => config()->get('langs'),
             'posts' => transform($paginatedPosts->data()->all(), $transformer),
             'pagination' => $paginatedPosts
         ]);
 
-        $response->html($view->render('post/post'));
+        $response->html($this->view->render('post/post'));
     }
 
     /**
      * Action - get single post
      * @param Request $request
      * @param Response $response
-     * @param ViewFactory $view
      * @param PostTransformer $transformer
      * @param string|null $lang
      * @param string $postId
      */
-    public function post(Request $request, Response $response, ViewFactory $view, PostTransformer $transformer, ?string $lang, string $postId)
+    public function post(Request $request, Response $response, PostTransformer $transformer, ?string $lang, string $postId)
     {
         $ref = $request->get('ref', 'posts');
     
@@ -111,52 +109,50 @@ class PostController extends BaseController
             stop();
         }
 
-        $view->setParams([
+        $this->view->setParams([
             'title' => $post->title . ' | ' . config()->get('app_name'),
             'langs' => config()->get('langs'),
             'post' => current(transform([$post], $transformer)),
             'referer' => $ref,
         ]);
 
-        $response->html($view->render('post/single'));
+        $response->html($this->view->render('post/single'));
     }
 
     /**
      * Action - get my posts
      * @param Request $request
      * @param Response $response
-     * @param ViewFactory $view
      */
-    public function myPosts(Request $request, Response $response, PostTransformer $transformer,ViewFactory $view)
+    public function myPosts(Request $request, Response $response, PostTransformer $transformer)
     {
         $myPosts = $this->postService->getMyPosts((int)auth()->user()->id);
-        
-        $view->setParams([
+
+        $this->view->setParams([
             'title' => t('common.my_posts') . ' | ' . config()->get('app_name'),
             'langs' => config()->get('langs'),
             'posts' => transform($myPosts->all(), $transformer)
         ]);
 
-        $response->html($view->render('post/my-posts'));
+        $response->html($this->view->render('post/my-posts'));
     }
 
     /**
      * Action - display form for creating a post
      * @param Request $request
      * @param Response $response
-     * @param ViewFactory $view
      */
-    public function createFrom(Request $request, Response $response, ViewFactory $view)
+    public function createFrom(Request $request, Response $response)
     {
         $ref = $request->get('ref', 'posts');
 
-        $view->setParams([
+        $this->view->setParams([
             'title' => t('common.new_post') . ' | ' . config()->get('app_name'),
             'langs' => config()->get('langs'),
             'referer' => $ref
         ]);
 
-        $response->html($view->render('post/form'));
+        $response->html($this->view->render('post/form'));
     }
 
     /**
@@ -192,24 +188,23 @@ class PostController extends BaseController
      * Action - display form for amend the post 
      * @param Request $request
      * @param Response $response
-     * @param ViewFactory $view
      * @param string|null $lang
      * @param string $postId
      */
-    public function amendForm(Request $request, Response $response, ViewFactory $view, ?string $lang, string $postId)
+    public function amendForm(Request $request, Response $response, ?string $lang, string $postId)
     {
         $ref = $request->get('ref', 'posts');
 
         $post = $this->postService->getPost($postId);
 
-        $view->setParams([
+        $this->view->setParams([
             'title' => $post->title . ' | ' . config()->get('app_name'),
             'langs' => config()->get('langs'),
             'post' => $post->asArray(),
             'referer' => $ref
         ]);
 
-        $response->html($view->render('post/form'));
+        $response->html($this->view->render('post/form'));
     }
 
     /**
