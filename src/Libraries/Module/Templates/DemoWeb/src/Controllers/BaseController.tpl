@@ -14,9 +14,10 @@
 
 namespace {{MODULE_NAMESPACE}}\Controllers;
 
+use Quantum\View\Factories\ViewFactory;
 use Quantum\Router\RouteController;
 use Quantum\Libraries\Asset\Asset;
-use Quantum\Factory\ViewFactory;
+use Quantum\View\QtView;
 
 /**
  * Class BaseController
@@ -26,12 +27,19 @@ abstract class BaseController extends RouteController
 {
 
     /**
+    * @var QtView
+    */
+    protected $view;
+
+    /**
      * Works before an action
      * @param ViewFactory $view
      */
-    public function __before(ViewFactory $view)
+    public function __before()
     {
-        $view->setLayout(static::LAYOUT, [
+        $this->view = ViewFactory::get();
+
+        $this->view->setLayout(static::LAYOUT, [
             new Asset(Asset::CSS, 'shared/css/materialize.min.css', null, -1, ['media="screen,projection"']),
             new Asset(Asset::CSS, 'shared/css/toastui-editor.min.css'),
             new Asset(Asset::CSS, '{{MODULE_NAME}}/css/custom.css'),

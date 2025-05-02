@@ -9,13 +9,13 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.7
  */
 
 namespace {{MODULE_NAMESPACE}}\Controllers;
 
 use Quantum\Libraries\Auth\Exceptions\AuthException;
-use Quantum\Factory\ViewFactory;
+use Quantum\View\Factories\ViewFactory;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 
@@ -57,21 +57,11 @@ class AuthController extends BaseController
     const VIEW_VERIFY = 'auth/verify';
 
     /**
-     * Works before an action
-     * @param ViewFactory $view
-     */
-    public function __before(ViewFactory $view)
-    {
-        parent::__before($view);
-    }
-
-    /**
      * Action - sign in
      * @param Request $request
      * @param Response $response
-     * @param ViewFactory $view
      */
-    public function signin(Request $request, Response $response, ViewFactory $view)
+    public function signin(Request $request, Response $response)
     {
         if ($request->isMethod('post')) {
             try {
@@ -87,12 +77,12 @@ class AuthController extends BaseController
                 redirect(base_url(true) . '/' . current_lang() . '/signin');
             }
         } else {
-            $view->setParams([
+            $this->view->setParams([
                 'title' => t('common.signin') . ' | ' . config()->get('app_name'),
                 'langs' => config()->get('langs')
             ]);
 
-            $response->html($view->render(self::VIEW_SIGNIN));
+            $response->html($this->view->render(self::VIEW_SIGNIN));
         }
     }
 
@@ -109,22 +99,21 @@ class AuthController extends BaseController
      * Action - sign up
      * @param Request $request
      * @param Response $response
-     * @param ViewFactory $view
      */
-    public function signup(Request $request, Response $response, ViewFactory $view)
+    public function signup(Request $request, Response $response)
     {
         if ($request->isMethod('post')) {
             auth()->signup($request->all());
             session()->setFlash('success', t('common.check_email_signup'));
             redirect(base_url(true) . '/' . current_lang() . '/signup');
         } else {
-            $view->setParams([
+            $this->view->setParams([
 //                'captcha' => captcha(),
                 'title' => t('common.signup') . ' | ' . config()->get('app_name'),
                 'langs' => config()->get('langs')
             ]);
 
-            $response->html($view->render(self::VIEW_SIGNUP));
+            $response->html($this->view->render(self::VIEW_SIGNUP));
         }
     }
 
@@ -142,21 +131,20 @@ class AuthController extends BaseController
      * Action - forget
      * @param Request $request
      * @param Response $response
-     * @param ViewFactory $view
      */
-    public function forget(Request $request, Response $response, ViewFactory $view)
+    public function forget(Request $request, Response $response)
     {
         if ($request->isMethod('post')) {
             auth()->forget($request->get('email'));
             session()->setFlash('success', t('common.check_email'));
             redirect(base_url(true) . '/' . current_lang() . '/forget');
         } else {
-            $view->setParams([
+            $this->view->setParams([
                 'title' => t('common.forget_password') . ' | ' . config()->get('app_name'),
                 'langs' => config()->get('langs'),
             ]);
 
-            $response->html($view->render(self::VIEW_FORGET));
+            $response->html($this->view->render(self::VIEW_FORGET));
         }
     }
 
@@ -164,21 +152,20 @@ class AuthController extends BaseController
      * Action - reset
      * @param Request $request
      * @param Response $response
-     * @param ViewFactory $view
      */
-    public function reset(Request $request, Response $response, ViewFactory $view)
+    public function reset(Request $request, Response $response)
     {
         if ($request->isMethod('post')) {
             auth()->reset($request->get('reset_token'), $request->get('password'));
             redirect(base_url(true) . '/' . current_lang() . '/signin');
         } else {
-            $view->setParams([
+            $this->view->setParams([
                 'title' => t('common.reset_password') . ' | ' . config()->get('app_name'),
                 'langs' => config()->get('langs'),
                 'reset_token' => $request->get('reset_token')
             ]);
 
-            $response->html($view->render(self::VIEW_RESET));
+            $response->html($this->view->render(self::VIEW_RESET));
         }
     }
 
@@ -186,9 +173,8 @@ class AuthController extends BaseController
      * Action - Verify OTP
      * @param Request $request
      * @param Response $response
-     * @param ViewFactory $view
      */
-    public function verify(Request $request, Response $response, ViewFactory $view)
+    public function verify(Request $request, Response $response)
     {
         if ($request->isMethod('post')) {
             try {
@@ -199,13 +185,13 @@ class AuthController extends BaseController
                 redirect(base_url(true) . '/' . current_lang() . '/verify/' . $request->get('code'));
             }
         } else {
-            $view->setParams([
+            $this->view->setParams([
                 'title' => t('common.2fa') . ' | ' . config()->get('app_name'),
                 'langs' => config()->get('langs'),
                 'code' => route_param('code')
             ]);
 
-            $response->html($view->render(self::VIEW_VERIFY));
+            $response->html($this->view->render(self::VIEW_VERIFY));
         }
     }
 

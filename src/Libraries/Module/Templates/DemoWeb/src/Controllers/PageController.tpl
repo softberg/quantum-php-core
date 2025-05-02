@@ -9,12 +9,12 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.7
  */
 
 namespace {{MODULE_NAMESPACE}}\Controllers;
 
-use Quantum\Factory\ViewFactory;
+use Quantum\View\Factories\ViewFactory;
 use Quantum\Http\Response;
 
 /**
@@ -30,27 +30,18 @@ class PageController extends BaseController
     const LAYOUT = 'layouts/main';
 
     /**
-     * Works before an action 
-     * @param ViewFactory $view
-     */
-    public function __before(ViewFactory $view)
-    {
-        parent::__before($view);
-    }
-
-    /**
      * Action - display home page  
      * @param Response $response
      * @param ViewFactory $view
      */
     public function home(Response $response, ViewFactory $view)
     {
-        $view->setParams([
+        $this->view->setParams([
             'title' => config()->get('app_name'),
             'langs' => config()->get('langs')
         ]);
 
-        $response->html($view->render('pages/index'));
+        $response->html($this->view->render('pages/index'));
     }
 
     /**
@@ -60,11 +51,11 @@ class PageController extends BaseController
      */
     public function about(Response $response, ViewFactory $view)
     {
-        $view->setParams([
+        $this->view->setParams([
             'title' => t('common.about') . ' | ' . config()->get('app_name'),
             'langs' => config()->get('langs')
         ]);
 
-        $response->html($view->render('pages/about'));
+        $response->html($this->view->render('pages/about'));
     }
 }
