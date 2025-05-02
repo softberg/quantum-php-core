@@ -1,6 +1,7 @@
 class Custom {
     constructor() {
         this.timeOut = null;
+        this.toastUiEditor = null;
 
         this.initPlugins();
         this.initTabs();
@@ -12,6 +13,25 @@ class Custom {
         $('textarea#content').characterCounter();
         $('.modal').modal();
         $('.sidenav').sidenav();
+
+        this.toastEditor();
+    }
+
+    toastEditor() {
+        const el = document.querySelector('#content');
+
+        if (el) {
+            let options = {
+                el,
+                viewer: true,
+                placeholder: el.dataset.placeholder,
+                initialValue: el.dataset.content,
+                height: '300px',
+                autofocus: false
+            };
+    
+            this.toastUiEditor = new toastui.Editor(options);
+        }
     }
 
     modalTrigger(e) {
@@ -51,11 +71,17 @@ class Custom {
         $('.material-alert').remove();
     }
 
+    setPostContent() {
+        let content = this.toastUiEditor.getMarkdown();
+        $('textarea[name="content"]').val(content);
+    }
+
     events() {
         $(document).on('click', '.modal-trigger', this.modalTrigger.bind(this));
         $(document).on('click', '.visibility-icon', this.visibilityIcon.bind(this));
         $(document).on('input', '.search-bar', this.search.bind(this));
         $(document).on('click', '.account-tabs .tab', this.tabSwitcher.bind(this));
+        $(document).on('submit', '#post_form', this.setPostContent.bind(this));
     }
 }
 
