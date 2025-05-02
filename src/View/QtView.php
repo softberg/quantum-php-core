@@ -170,7 +170,7 @@ class QtView
      * Renders the view.
      * @param string $viewFile
      * @param array $params
-     * @return string
+     * @return string|null
      * @throws AssetException
      * @throws BaseException
      * @throws ConfigException
@@ -180,7 +180,7 @@ class QtView
      * @throws SessionException
      * @throws ViewException
      */
-    public function render(string $viewFile, array $params = []): string
+    public function render(string $viewFile, array $params = []): ?string
     {
         if (!$this->layoutFile) {
             throw ViewException::noLayoutSet();
