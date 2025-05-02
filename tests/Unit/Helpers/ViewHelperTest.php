@@ -2,23 +2,24 @@
 
 namespace Quantum\Tests\Unit\Helpers;
 
+use Quantum\View\Factories\ViewFactory;
 use Quantum\Router\RouteController;
 use Quantum\Tests\Unit\AppTestCase;
-use Quantum\Factory\ViewFactory;
-use Quantum\Di\Di;
 
 class ViewHelperTest extends AppTestCase
 {
 
+    private $view;
+
     public function setUp(): void
     {
         parent::setUp();
+
+        $this->view = ViewFactory::get();
     }
     public function tearDown(): void
     {
-        $viewFactory = Di::get(ViewFactory::class);
-
-        $viewFactory->setLayout(null);
+        $this->view->setLayout(null);
     }
 
     public function testView()
@@ -31,11 +32,9 @@ class ViewHelperTest extends AppTestCase
             "module" => "Test",
         ]);
 
-        $viewFactory = Di::get(ViewFactory::class);
+        $this->view->setLayout('layout');
 
-        $viewFactory->setLayout('layout');
-
-        $viewFactory->render('index');
+        $this->view->render('index');
 
         $this->assertEquals('<p>Hello World, this is rendered html view</p>', view());
     }

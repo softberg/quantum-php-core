@@ -9,24 +9,30 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.7
  */
 
 use Quantum\Libraries\Config\Exceptions\ConfigException;
-use Quantum\Renderer\Exceptions\RendererException;
+use Quantum\View\Exceptions\ViewException;
+use Quantum\View\Factories\ViewFactory;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Exceptions\BaseException;
-use Quantum\Factory\ViewFactory;
 use DebugBar\DebugBarException;
 use Quantum\Debugger\Debugger;
 
 /**
  * Rendered view
  * @return string|null
+ * @throws BaseException
+ * @throws ConfigException
+ * @throws DebugBarException
+ * @throws DiException
+ * @throws ReflectionException
+ * @throws ViewException
  */
 function view(): ?string
 {
-    return ViewFactory::getInstance()->getView();
+    return ViewFactory::get()->getView();
 }
 
 /**
@@ -34,25 +40,30 @@ function view(): ?string
  * @param string $partial
  * @param array $args
  * @return string|null
- * @throws DiException
- * @throws ReflectionException
  * @throws BaseException
  * @throws ConfigException
- * @throws RendererException
+ * @throws DebugBarException
+ * @throws DiException
+ * @throws ReflectionException
  */
 function partial(string $partial, array $args = []): ?string
 {
-    return ViewFactory::getInstance()->renderPartial($partial, $args);
+    return ViewFactory::get()->renderPartial($partial, $args);
 }
 
 /**
  * Gets the param passed to view
  * @param string $key
  * @return mixed|null
+ * @throws BaseException
+ * @throws ConfigException
+ * @throws DebugBarException
+ * @throws DiException
+ * @throws ReflectionException
  */
 function view_param(string $key)
 {
-    return ViewFactory::getInstance()->getParam($key);
+    return ViewFactory::get()->getParam($key);
 }
 
 /**

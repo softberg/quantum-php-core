@@ -2,9 +2,9 @@
 
 namespace Quantum\Tests\Unit\Factory;
 
+use Quantum\View\Factories\ViewFactory;
 use Quantum\Tests\Unit\AppTestCase;
-use Quantum\Factory\ViewFactory;
-use Quantum\Mvc\QtView;
+use Quantum\View\QtView;
 
 class ViewFactoryTest extends AppTestCase
 {
@@ -20,12 +20,12 @@ class ViewFactoryTest extends AppTestCase
 
     public function testGetInstance()
     {
-        $this->assertInstanceOf(QtView::class, $this->viewFactory->getInstance());
+        $this->assertInstanceOf(QtView::class, $this->viewFactory->get());
     }
 
     public function testProxyCalls()
     {
-        $view = $this->viewFactory->getInstance();
+        $view = $this->viewFactory->get();
 
         $view->setParam('key', 'Value');
 

@@ -2,10 +2,10 @@
 
 namespace Quantum\Controllers {
 
+    use Quantum\View\Factories\ViewFactory;
     use Quantum\Router\RouteController;
-    use Quantum\Factory\ViewFactory;
-    use Quantum\Http\Response;
     use Quantum\Http\Request;
+    use Quantum\Http\Response;
 
     class TestDiController extends RouteController
     {
@@ -27,10 +27,10 @@ namespace Quantum\Service {
 namespace Quantum\Tests\Unit\Di {
 
     use Quantum\Controllers\TestDiController;
+    use Quantum\View\Factories\ViewFactory;
     use Quantum\Di\Exceptions\DiException;
     use Quantum\Tests\Unit\AppTestCase;
     use Quantum\Service\DummyService;
-    use Quantum\Factory\ViewFactory;
     use Quantum\Loader\Loader;
     use Quantum\Http\Response;
     use Quantum\Http\Request;
