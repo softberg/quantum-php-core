@@ -170,7 +170,7 @@ class QtView
      * Renders the view.
      * @param string $viewFile
      * @param array $params
-     * @return string|null
+     * @return string
      * @throws AssetException
      * @throws BaseException
      * @throws ConfigException
@@ -180,7 +180,7 @@ class QtView
      * @throws SessionException
      * @throws ViewException
      */
-    public function render(string $viewFile, array $params = []): ?string
+    public function render(string $viewFile, array $params = []): string
     {
         if (!$this->layoutFile) {
             throw ViewException::noLayoutSet();
@@ -215,9 +215,9 @@ class QtView
      * Renders partial view.
      * @param string $viewFile
      * @param array $params
-     * @return string|null
+     * @return string
      */
-    public function renderPartial(string $viewFile, array $params = []): ?string
+    public function renderPartial(string $viewFile, array $params = []): string
     {
         if (!empty($params)) {
             $this->params = array_merge($this->params, $params);
