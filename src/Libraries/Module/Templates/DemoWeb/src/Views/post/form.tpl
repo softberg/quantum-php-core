@@ -13,7 +13,7 @@
 
                 <div class="card teal accent-4">
                     <div class="card-content">
-                        <form method="post" action="<?php echo base_url(true) . '/' . current_lang() . '/my-posts/' . (isset($post) ? 'amend/' . $post['uuid'] : 'create') ?>" enctype="multipart/form-data">
+                        <form id="post_form" method="post" action="<?php echo base_url(true) . '/' . current_lang() . '/my-posts/' . (isset($post) ? 'amend/' . $post['uuid'] : 'create') ?>" enctype="multipart/form-data">
                             <div class="row">
                                 <div class="input-field col s12">
                                     <input value="<?php echo $post['title'] ?? old('title') ?>" name="title" id="title" type="text" class="validate">
@@ -22,8 +22,11 @@
                             </div>
                             <div class="row">
                                 <div class="input-field col s12">
-                                    <textarea name="content" id="content" data-length="1000" class="materialize-textarea"><?php echo $post['content'] ?? old('content') ?></textarea>
-                                    <label for="content"><?php _t('common.content') ?></label>
+                                    <div id="content"
+                                        data-content="<?php echo $post['content'] ?? old('content') ?>"
+                                        data-placeholder="<?php echo _t('common.content') ?>">
+                                    </div>
+                                    <textarea name="content" hidden></textarea>
                                 </div>
                             </div>
                             <div class="file-field input-field upload-btn">
