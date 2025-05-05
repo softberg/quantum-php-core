@@ -1,10 +1,9 @@
 class Custom {
     constructor() {
         this.timeOut = null;
-        this.toastUiEditor = null;
 
-        this.initPlugins();
         this.initTabs();
+        this.initPlugins();
         this.events();
     }
 
@@ -14,23 +13,18 @@ class Custom {
         $('.modal').modal();
         $('.sidenav').sidenav();
 
-        this.toastEditor();
+        this.easyMarkdownEditor();
     }
 
-    toastEditor() {
+    easyMarkdownEditor() {
         const el = document.querySelector('#content');
 
         if (el) {
-            let options = {
-                el,
-                viewer: true,
-                placeholder: el.dataset.placeholder,
-                initialValue: el.dataset.content,
-                height: '300px',
-                autofocus: false
-            };
-    
-            this.toastUiEditor = new toastui.Editor(options);
+            new EasyMDE({
+                element: document.getElementById('content'),
+                height: "300px",
+                maxHeight: "300px",
+            });
         }
     }
 
@@ -71,21 +65,14 @@ class Custom {
         $('.material-alert').remove();
     }
 
-    setPostContent() {
-        let content = this.toastUiEditor.getMarkdown();
-        $('textarea[name="content"]').val(content);
-    }
-
     events() {
         $(document).on('click', '.modal-trigger', this.modalTrigger.bind(this));
         $(document).on('click', '.visibility-icon', this.visibilityIcon.bind(this));
         $(document).on('input', '.search-bar', this.search.bind(this));
         $(document).on('click', '.account-tabs .tab', this.tabSwitcher.bind(this));
-        $(document).on('submit', '#post_form', this.setPostContent.bind(this));
     }
 }
 
 jQuery(document).ready(function ($) {
     new Custom();
 });
-
