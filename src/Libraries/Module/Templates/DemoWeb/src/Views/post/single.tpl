@@ -10,6 +10,7 @@
             <img src="<?php echo base_url() . '/uploads/' . $post['image'] ?>" class="single_page_img">
         <?php endif; ?>
 
-        <p class="left-align single-blog-txt"><?php echo nl2br($post['content']) ?></p>
+        <textarea id="content_preview" class="left-align single-blog-txt" hidden><?php echo nl2br($post['content']) ?></textarea>
+        <p id="preview" class="left-align"></p>
     </div>
 </div>

@@ -14,6 +14,7 @@ class Custom {
         $('.sidenav').sidenav();
 
         this.easyMarkdownEditor();
+        this.renderPreview();
     }
 
     easyMarkdownEditor() {
@@ -25,6 +26,18 @@ class Custom {
                 height: "300px",
                 maxHeight: "300px",
             });
+        }
+    }
+
+    renderPreview() {
+        const preview = document.getElementById('preview');
+        
+        if (preview) {
+            const easyMDE = new EasyMDE({
+                element: document.getElementById('content_preview'),
+            });
+            preview.innerHTML = easyMDE.options.previewRender(easyMDE.value());
+            easyMDE.toTextArea();
         }
     }
 
