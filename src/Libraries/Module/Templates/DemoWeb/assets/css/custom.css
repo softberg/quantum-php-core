@@ -746,6 +746,10 @@ div.polaroid {
     margin: 0;
 }
 
+.editor-statusbar {
+    color: #fff;
+}
+
 @media only screen and (max-width: 1500px) {
     .content_no_img {
         width: 100% !important;
