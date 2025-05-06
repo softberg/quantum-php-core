@@ -80,6 +80,12 @@ class QtView
     private $params = [];
 
     /**
+     * Parameters that should not be escaped
+     * @var array
+     */
+    private $skipEscapeParams = [];
+
+    /**
      * @param Renderer $renderer
      * @param AssetManager $assetManager
      * @param Debugger $debugger
@@ -122,10 +128,15 @@ class QtView
      * Sets view parameter
      * @param string $key
      * @param mixed $value
+     * @param bool $skipEscape
      */
-    public function setParam(string $key, $value)
+    public function setParam(string $key, $value, bool $skipEscape = false)
     {
         $this->params[$key] = $value;
+
+        if ($skipEscape) {
+            $this->skipEscapeParams[$key] = true;
+        }
     }
 
     /**
@@ -141,11 +152,12 @@ class QtView
     /**
      * Sets multiple view parameters
      * @param array $params
+     * @param bool $skipEscape
      */
-    public function setParams(array $params)
+    public function setParams(array $params, bool $skipEscape = false)
     {
         foreach ($params as $key => $value) {
-            $this->setParam($key, $value);
+            $this->setParam($key, $value, $skipEscape);
         }
     }
 
@@ -164,6 +176,7 @@ class QtView
     public function flushParams()
     {
         $this->params = [];
+        $this->skipEscapeParams = [];
     }
 
     /**
@@ -263,10 +276,28 @@ class QtView
             $this->cleaner($params);
             $params = [$params];
         } else {
-            array_walk_recursive($params, [$this, 'cleaner']);
+            foreach ($params as $key => &$value) {
+                if (!isset($this->skipEscapeParams[$key])) {
+                    $this->processValue($value);
+                }
+            }
         }
 
         return $params;
+    }
+
+    /**
+     * Process value recursively for escaping
+     * @param $value
+     * @return void
+     */
+    private function processValue(&$value)
+    {
+        if (is_array($value)) {
+            array_walk_recursive($value, [$this, 'cleaner']);
+        } else {
+            $this->cleaner($value);
+        }
     }
 
     /**
@@ -283,7 +314,6 @@ class QtView
     }
 
     /**
-     * @param Debugger $debugger
      * @param string $viewFile
      * @return void
      */
