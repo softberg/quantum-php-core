@@ -22,11 +22,9 @@
                             </div>
                             <div class="row">
                                 <div class="input-field col s12">
-                                    <div id="content"
-                                        data-content="<?php echo $post['content'] ?? old('content') ?>"
-                                        data-placeholder="<?php echo _t('common.content') ?>">
-                                    </div>
-                                    <textarea name="content" hidden></textarea>
+                                    <textarea name="content" id="content" placeholder="<?php echo _t('common.content') ?>">
+                                        <?php echo $post['content'] ?? old('content') ?>
+                                    </textarea>
                                 </div>
                             </div>
                             <div class="file-field input-field upload-btn">

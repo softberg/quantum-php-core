@@ -10,6 +10,8 @@
             <img src="<?php echo base_url() . '/uploads/' . $post['image'] ?>" class="single_page_img">
         <?php endif; ?>
 
-        <p class="left-align single-blog-txt"><?php echo nl2br($post['content']) ?></p>
+        <div class="left-align single-blog-txt">
+            <?php echo html_entity_decode($post['content']); ?>
+        </div>
     </div>
 </div>

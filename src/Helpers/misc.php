@@ -18,6 +18,7 @@ use Quantum\Libraries\Database\Contracts\DbalInterface;
 use Quantum\Renderer\Exceptions\RendererException;
 use Quantum\Exceptions\StopExecutionException;
 use Symfony\Component\VarExporter\VarExporter;
+use League\CommonMark\CommonMarkConverter;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Exceptions\BaseException;
 use Quantum\Model\QtModel;
@@ -253,4 +254,28 @@ function deleteDirectoryWithFiles(string $dir): bool
     }
 
     return rmdir($dir);
+}
+
+/**
+ * @param string $content
+ * @param bool $sanitize
+ * @return string
+ */
+function markdown_to_html(string $content, bool $sanitize = false): string
+{
+    $converter = new CommonMarkConverter();
+    $purifier = null;
+
+    if ($sanitize) {
+        $config = HTMLPurifier_Config::createDefault();
+        $purifier = new HTMLPurifier($config);
+    }
+
+    $html = $converter->convertToHtml($content);
+    
+    if ($purifier) {
+        return $purifier->purify($html);
+    }
+
+    return $html;
 }
