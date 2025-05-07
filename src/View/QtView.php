@@ -86,10 +86,10 @@ class QtView
      * @param ViewCache $viewCache
      */
     public function __construct(
-        Renderer     $renderer,
+        Renderer $renderer,
         AssetManager $assetManager,
-        Debugger     $debugger,
-        ViewCache    $viewCache
+        Debugger $debugger,
+        ViewCache $viewCache
     )
     {
         $this->renderer = $renderer;
