@@ -80,12 +80,6 @@ class QtView
     private $params = [];
 
     /**
-     * Parameters that should not be escaped
-     * @var array
-     */
-    private $skipEscapeParams = [];
-
-    /**
      * @param Renderer $renderer
      * @param AssetManager $assetManager
      * @param Debugger $debugger
@@ -128,15 +122,20 @@ class QtView
      * Sets view parameter
      * @param string $key
      * @param mixed $value
-     * @param bool $skipEscape
      */
-    public function setParam(string $key, $value, bool $skipEscape = false)
+    public function setParam(string $key, $value)
     {
         $this->params[$key] = $value;
+    }
 
-        if ($skipEscape) {
-            $this->skipEscapeParams[$key] = true;
-        }
+    /**
+     * @param string $key
+     * @param $value
+     * @return void
+     */
+    public function setRawParam(string $key, $value)
+    {
+        $this->params[$key] = new RawParam($value);
     }
 
     /**
@@ -146,18 +145,23 @@ class QtView
      */
     public function getParam(string $key)
     {
-        return $this->params[$key] ?? null;
+        $param = $this->params[$key] ?? null;
+
+        if ($param instanceof RawParam) {
+            return $param->getValue();
+        }
+
+        return $param;
     }
 
     /**
      * Sets multiple view parameters
      * @param array $params
-     * @param bool $skipEscape
      */
-    public function setParams(array $params, bool $skipEscape = false)
+    public function setParams(array $params)
     {
         foreach ($params as $key => $value) {
-            $this->setParam($key, $value, $skipEscape);
+            $this->setParam($key, $value);
         }
     }
 
@@ -167,7 +171,13 @@ class QtView
      */
     public function getParams(): array
     {
-        return $this->params;
+        $params = [];
+
+        foreach ($this->params as $key => $param) {
+            $params[$key] = ($param instanceof RawParam) ? $param->getValue() : $param;
+        }
+
+        return $params;
     }
 
     /**
@@ -176,7 +186,6 @@ class QtView
     public function flushParams()
     {
         $this->params = [];
-        $this->skipEscapeParams = [];
     }
 
     /**
@@ -260,9 +269,9 @@ class QtView
      */
     private function renderFile(string $viewFile): string
     {
-        $params = $this->xssFilter($this->params);
+        $filteredParams = $this->xssFilter($this->params);
 
-        return $this->renderer->render($viewFile, $params);
+        return $this->renderer->render($viewFile, $filteredParams);
     }
 
     /**
@@ -272,45 +281,40 @@ class QtView
      */
     private function xssFilter($params)
     {
+        if ($params instanceof RawParam) {
+            return $params->getValue();
+        }
+
         if (is_string($params)) {
-            $this->cleaner($params);
-            $params = [$params];
-        } else {
-            foreach ($params as $key => &$value) {
-                if (!isset($this->skipEscapeParams[$key])) {
-                    $this->processValue($value);
-                }
+            return $this->sanitizeHtml($params);
+        }
+
+        if (is_array($params)) {
+            foreach ($params as $key => $value) {
+                $params[$key] = $this->xssFilter($value);
             }
+
+            return $params;
+        }
+
+        if (is_object($params)) {
+            foreach (get_object_vars($params) as $property => $value) {
+                $params->$property = $this->xssFilter($value);
+            }
+
+            return $params;
         }
 
         return $params;
     }
 
     /**
-     * Process value recursively for escaping
-     * @param $value
-     * @return void
+     * @param string $value
+     * @return string
      */
-    private function processValue(&$value)
+    private function sanitizeHtml(string $value): string
     {
-        if (is_array($value)) {
-            array_walk_recursive($value, [$this, 'cleaner']);
-        } else {
-            $this->cleaner($value);
-        }
-    }
-
-    /**
-     * Cleaner
-     * @param mixed $value
-     */
-    private function cleaner(&$value)
-    {
-        if (is_object($value)) {
-            $this->xssFilter($value);
-        } else {
-            $value = htmlspecialchars($value, ENT_NOQUOTES, 'UTF-8');
-        }
+        return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
     }
 
     /**
