@@ -11,7 +11,7 @@
         <?php endif; ?>
 
         <div class="left-align single-blog-txt">
-            <?php echo html_entity_decode($post['content']); ?>
+            <?php echo $post['content'] ?>
         </div>
     </div>
 </div>
