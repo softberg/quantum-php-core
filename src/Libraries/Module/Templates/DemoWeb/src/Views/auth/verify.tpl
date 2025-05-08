@@ -2,7 +2,7 @@
     <div class="container">
         <div class="row">
             <div class=" col s12 l8 offset-l2 center-align white-text">
-                <h1><?php _t('common.2fa'); ?></h1>
+                <h1><?php _t('common.two_fa'); ?></h1>
 
                 <?php if (session()->has('error')): ?>
                     <?php echo partial('partials/messages/error') ?>

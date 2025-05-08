@@ -35,7 +35,7 @@ class AuthController extends BaseController
         try {
             $code = auth()->signin($request->get('email'), $request->get('password'));
 
-            if (filter_var(config()->get('2FA'), FILTER_VALIDATE_BOOLEAN)) {
+            if (filter_var(config()->get('TWO_FA'), FILTER_VALIDATE_BOOLEAN)) {
                 $response->set('code', $code);
             }
 

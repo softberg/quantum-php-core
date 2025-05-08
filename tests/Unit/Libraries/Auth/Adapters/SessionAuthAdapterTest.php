@@ -126,7 +126,7 @@ class SessionAuthAdapterTest extends AuthTestCase
 
     public function testWebWithoutVerification()
     {
-        config()->set('2FA', false);
+        config()->set('TWO_FA', false);
 
         config()->set('otp_expiry_time', 2);
 
@@ -135,7 +135,7 @@ class SessionAuthAdapterTest extends AuthTestCase
 
     public function testWebWithVerification()
     {
-        config()->set('2FA', true);
+        config()->set('TWO_FA', true);
 
         config()->set('otp_expires', 2);
 
@@ -144,7 +144,7 @@ class SessionAuthAdapterTest extends AuthTestCase
 
     public function testWebVerify()
     {
-        config()->set('2FA', true);
+        config()->set('TWO_FA', true);
 
         config()->set('otp_expires', 2);
 
@@ -155,7 +155,7 @@ class SessionAuthAdapterTest extends AuthTestCase
 
     public function testWebResendOtp()
     {
-        config()->set('2FA', true);
+        config()->set('TWO_FA', true);
 
         config()->set('otp_expires', 2);
 
