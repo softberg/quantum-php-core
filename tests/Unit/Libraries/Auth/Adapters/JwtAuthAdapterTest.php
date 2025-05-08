@@ -61,7 +61,7 @@ class JwtAuthAdapterTest extends AuthTestCase
 
     public function testApiSigninCorrectCredentials()
     {
-        config()->set('2FA', false);
+        config()->set('TWO_FA', false);
 
         $this->assertIsArray($this->jwtAuth->signin('admin@qt.com', 'qwerty'));
 
@@ -148,7 +148,7 @@ class JwtAuthAdapterTest extends AuthTestCase
 
     public function testApiVerify()
     {
-        config()->set('2FA', true);
+        config()->set('TWO_FA', true);
 
         config()->set('otp_expires', 2);
 
@@ -163,7 +163,7 @@ class JwtAuthAdapterTest extends AuthTestCase
 
     public function testApiSigninWithoutVerification()
     {
-        config()->set('2FA', false);
+        config()->set('TWO_FA', false);
 
         config()->set('otp_expires', 2);
 
@@ -174,7 +174,7 @@ class JwtAuthAdapterTest extends AuthTestCase
 
     public function testApiSigninWithVerification()
     {
-        config()->set('2FA', true);
+        config()->set('TWO_FA', true);
 
         config()->set('otp_expires', 2);
 
@@ -183,7 +183,7 @@ class JwtAuthAdapterTest extends AuthTestCase
 
     public function testApiResendOtp()
     {
-        config()->set('2FA', true);
+        config()->set('TWO_FA', true);
 
         config()->set('otp_expires', 2);
 

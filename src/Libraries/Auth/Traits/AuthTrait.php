@@ -394,6 +394,6 @@ trait AuthTrait
      */
     protected function isTwoFactorEnabled(): bool
     {
-        return filter_var(config()->get('2FA'), FILTER_VALIDATE_BOOLEAN);
+        return filter_var(config()->get('TWO_FA'), FILTER_VALIDATE_BOOLEAN);
     }
 }

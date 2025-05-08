@@ -67,7 +67,7 @@ class AuthController extends BaseController
             try {
                 $code = auth()->signin($request->get('email'), $request->get('password'), !!$request->get('remember'));
 
-                if (filter_var(config()->get('2FA'), FILTER_VALIDATE_BOOLEAN)) {
+                if (filter_var(config()->get('TWO_FA'), FILTER_VALIDATE_BOOLEAN)) {
                     redirect(base_url(true) . '/' . current_lang() . '/verify/' . $code);
                 } else {
                     redirect(base_url(true) . '/' . current_lang());
@@ -186,7 +186,7 @@ class AuthController extends BaseController
             }
         } else {
             $this->view->setParams([
-                'title' => t('common.2fa') . ' | ' . config()->get('app_name'),
+                'title' => t('common.two_fa') . ' | ' . config()->get('app_name'),
                 'langs' => config()->get('langs'),
                 'code' => route_param('code')
             ]);
