@@ -19,6 +19,7 @@ use Shared\Transformers\PostTransformer;
 use Quantum\View\Factories\ViewFactory;
 use Shared\Services\AuthService;
 use Shared\Services\PostService;
+use Quantum\View\RawParam;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 
@@ -112,7 +113,7 @@ class PostController extends BaseController
         $this->view->setParams([
             'title' => $post->title . ' | ' . config()->get('app_name'),
             'langs' => config()->get('langs'),
-            'post' => current(transform([$post], $transformer)),
+            'post' => new RawParam(current(transform([$post], $transformer))),
             'referer' => $ref,
         ]);
 
