@@ -9,13 +9,13 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.7
  */
 
 namespace Quantum\Console\Commands;
 
 use Symfony\Component\VarExporter\Exception\ExceptionInterface;
-use Quantum\Libraries\Module\ModuleManager;
+use Quantum\Module\ModuleManager;
 use Quantum\Console\QtCommand;
 use Exception;
 

@@ -9,22 +9,27 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.7
  */
 
-namespace Quantum\Router;
+namespace Quantum\Module;
 
 use Quantum\Libraries\Storage\Factories\FileSystemFactory;
-use Quantum\Router\Exceptions\ModuleLoaderException;
+use Quantum\Libraries\Config\Exceptions\ConfigException;
+use Quantum\Module\Exceptions\ModuleLoaderException;
 use Quantum\Router\Exceptions\RouteException;
 use Quantum\Libraries\Storage\FileSystem;
+use Quantum\Di\Exceptions\DiException;
 use Quantum\Exceptions\BaseException;
+use Quantum\Router\Router;
+use Quantum\Router\Route;
+use ReflectionException;
 use Quantum\App\App;
 use Closure;
 
 /**
  * Class ModuleLoader
- * @package Quantum\Router
+ * @package Quantum\Module
  */
 class ModuleLoader
 {
@@ -51,6 +56,9 @@ class ModuleLoader
 
     /**
      * @throws BaseException
+     * @throws DiException
+     * @throws ConfigException
+     * @throws ReflectionException
      */
     private function __construct()
     {

@@ -9,25 +9,25 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.7
  */
 
 namespace Quantum\App\Traits;
 
 use Quantum\Libraries\Config\Exceptions\ConfigException;
-use Quantum\Router\Exceptions\ModuleLoaderException;
+use Quantum\Module\Exceptions\ModuleLoaderException;
 use Quantum\Renderer\Exceptions\RendererException;
-use Quantum\Exceptions\StopExecutionException;
 use Quantum\Libraries\ResourceCache\ViewCache;
+use Quantum\Exceptions\StopExecutionException;
 use Quantum\Router\Exceptions\RouteException;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Exceptions\BaseException;
-use Quantum\Router\ModuleLoader;
+use Quantum\Module\ModuleLoader;
 use DebugBar\DebugBarException;
 use Quantum\Environment\Server;
 use Quantum\Debugger\Debugger;
-use Quantum\Http\Response;
 use Quantum\Router\Router;
+use Quantum\Http\Response;
 use Quantum\Loader\Setup;
 use ReflectionException;
 
@@ -70,18 +70,20 @@ trait WebAppTrait
     }
 
     /**
-     * @return void
+     * @return ViewCache
      * @throws ConfigException
      * @throws DiException
      * @throws ReflectionException
      */
-    private function setupViewCache()
+    private function setupViewCache(): ViewCache
     {
         $viewCache = ViewCache::getInstance();
 
         if ($viewCache->isEnabled()) {
             $viewCache->setup();
         }
+
+        return $viewCache;
     }
 
     /**

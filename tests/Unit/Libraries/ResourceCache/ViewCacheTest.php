@@ -4,6 +4,7 @@ namespace Quantum\Tests\Unit\Libraries\ResourceCache;
 
 use Quantum\Libraries\ResourceCache\ViewCache;
 use Quantum\Tests\Unit\AppTestCase;
+use Quantum\Http\Response;
 
 class ViewCacheTest extends AppTestCase
 {
@@ -28,6 +29,22 @@ HEREDOC;
     public function tearDown(): void
     {
         $this->viewCache->delete($this->route);
+        $this->viewCache->enableCaching(false);
+    }
+
+    public function testServeCachedView()
+    {
+        $this->viewCache->enableCaching(true);
+
+        $this->viewCache->set($this->route, $this->content);
+
+        $response = new Response();
+
+        $result = $this->viewCache->serveCachedView($this->route, $response);
+
+        $this->assertTrue($result);
+
+        $this->assertEquals($this->content, $response->getContent());
     }
 
     public function testSetAndGetViewCache()
@@ -41,7 +58,6 @@ HEREDOC;
 
     public function testViewCacheContentMinification()
     {
-
         $this->viewCache->enableMinification(true);
 
         $this->viewCache->set($this->route, $this->content);
