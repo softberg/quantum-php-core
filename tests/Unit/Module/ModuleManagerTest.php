@@ -1,10 +1,10 @@
 <?php
 
-namespace Quantum\Tests\Unit\Libraries\Module;
+namespace Quantum\Tests\Unit\Module;
 
-use Quantum\Libraries\Module\ModuleManager;
 use Quantum\Router\RouteController;
 use Quantum\Tests\Unit\AppTestCase;
+use Quantum\Module\ModuleManager;
 use Quantum\Http\Response;
 use Quantum\App\App;
 use Exception;

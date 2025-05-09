@@ -15,19 +15,12 @@
 namespace Quantum\Router;
 
 use Quantum\Libraries\Encryption\Exceptions\CryptorException;
-use Quantum\Libraries\Database\Exceptions\DatabaseException;
-use Quantum\Libraries\Session\Exceptions\SessionException;
-use Quantum\Libraries\Config\Exceptions\ConfigException;
 use Quantum\Libraries\Csrf\Exceptions\CsrfException;
 use Quantum\Exceptions\ControllerException;
-use Quantum\Middleware\MiddlewareExecutor;
 use Quantum\Di\Exceptions\DiException;
-use Quantum\Handlers\ViewCacheHandler;
-use Quantum\Exceptions\BaseException;
 use Quantum\Libraries\Csrf\Csrf;
-use Quantum\Http\Request;
-use Quantum\Http\Response;
 use Quantum\Loader\Loader;
+use Quantum\Http\Request;
 use ReflectionException;
 use Quantum\Di\Di;
 
@@ -35,29 +28,17 @@ class RouteDispatcher
 {
 
     /**
-     * Handles the incoming HTTP request and generates a response.
+     * Handles the incoming HTTP request.
      * @param Request $request
-     * @param Response $response
      * @return void
      * @throws ControllerException
-     * @throws DiException
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws CsrfException
-     * @throws DatabaseException
      * @throws CryptorException
-     * @throws SessionException
+     * @throws CsrfException
+     * @throws DiException
      * @throws ReflectionException
      */
-    public static function handle(Request $request, Response $response): void
+    public static function handle(Request $request): void
     {
-        list($request, $response) = (new MiddlewareExecutor())->execute($request, $response);
-
-        $viewCacheHandler = new ViewCacheHandler();
-        if ($viewCacheHandler->serveCachedView(route_uri(), $response)) {
-            return;
-        }
-
         $callback = route_callback();
 
         if ($callback) {

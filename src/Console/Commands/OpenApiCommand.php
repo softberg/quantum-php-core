@@ -9,17 +9,17 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.7
  */
 
 namespace Quantum\Console\Commands;
 
 use Quantum\Libraries\Storage\Factories\FileSystemFactory;
-use Quantum\Router\Exceptions\ModuleLoaderException;
+use Quantum\Module\Exceptions\ModuleLoaderException;
 use Quantum\Router\Exceptions\RouteException;
 use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Exceptions\BaseException;
-use Quantum\Router\ModuleLoader;
+use Quantum\Module\ModuleLoader;
 use Quantum\Console\QtCommand;
 use OpenApi\Generator;
 

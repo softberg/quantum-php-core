@@ -21,12 +21,13 @@ use Quantum\Libraries\Config\Exceptions\ConfigException;
 use Quantum\Middleware\Exceptions\MiddlewareException;
 use Quantum\Libraries\Csrf\Exceptions\CsrfException;
 use Quantum\Libraries\Lang\Exceptions\LangException;
-use Quantum\Router\Exceptions\ModuleLoaderException;
+use Quantum\Module\Exceptions\ModuleLoaderException;
 use Quantum\Renderer\Exceptions\RendererException;
 use Quantum\Environment\Exceptions\EnvException;
 use Quantum\Exceptions\StopExecutionException;
 use Quantum\Router\Exceptions\RouteException;
 use Quantum\Exceptions\ControllerException;
+use Quantum\Middleware\MiddlewareManager;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Exceptions\BaseException;
 use Quantum\App\Traits\WebAppTrait;
@@ -108,13 +109,22 @@ class WebAppAdapter extends AppAdapter
             $this->setupErrorHandler();
             $this->initializeDebugger();
             $this->loadModules();
-            $this->setupViewCache();
+
+            $viewCache = $this->setupViewCache();
 
             $this->initializeRouter($this->request);
 
             info(HookManager::getInstance()->getRegistered(), ['tab' => Debugger::HOOKS]);
 
-            RouteDispatcher::handle($this->request, $this->response);
+            if (current_middlewares()) {
+                list($this->request, $this->response) = (new MiddlewareManager())->applyMiddlewares($this->request, $this->response);
+            }
+
+            if ($viewCache->serveCachedView(route_uri(), $this->response)) {
+                stop();
+            }
+
+            RouteDispatcher::handle($this->request);
 
             stop();
         } catch (StopExecutionException $exception) {

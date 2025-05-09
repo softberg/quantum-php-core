@@ -9,22 +9,25 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.7
  */
 
-namespace Quantum\Libraries\Module;
+namespace Quantum\Module;
 
 use Symfony\Component\VarExporter\Exception\ExceptionInterface;
 use Quantum\Libraries\Storage\Factories\FileSystemFactory;
 use Quantum\Libraries\Config\Exceptions\ConfigException;
-use Quantum\Router\Exceptions\ModuleLoaderException;
+use Quantum\Module\Exceptions\ModuleLoaderException;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Exceptions\BaseException;
 use Quantum\Environment\Environment;
-use Quantum\Router\ModuleLoader;
 use ReflectionException;
 use Exception;
 
+/**
+ * Class ModuleManager
+ * @package Quantum\Module
+ */
 class ModuleManager
 {
     /**

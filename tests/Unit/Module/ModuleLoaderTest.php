@@ -1,9 +1,9 @@
 <?php
 
-namespace Quantum\Tests\Unit\Router;
+namespace Module;
 
 use Quantum\Tests\Unit\AppTestCase;
-use Quantum\Router\ModuleLoader;
+use Quantum\Module\ModuleLoader;
 use Quantum\Router\Router;
 
 class ModuleLoaderTest extends AppTestCase

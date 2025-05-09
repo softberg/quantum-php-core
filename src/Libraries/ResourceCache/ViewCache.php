@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.7
  */
 
 namespace Quantum\Libraries\ResourceCache;
@@ -20,6 +20,7 @@ use Quantum\Libraries\Session\Exceptions\SessionException;
 use Quantum\Libraries\Config\Exceptions\ConfigException;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Exceptions\BaseException;
+use Quantum\Http\Response;
 use Quantum\Loader\Setup;
 use ReflectionException;
 use voku\helper\HtmlMin;
@@ -102,6 +103,27 @@ class ViewCache
         if (!$this->fs->isDirectory($this->cacheDir)) {
             mkdir($this->cacheDir, 0777, true);
         }
+    }
+
+    /**
+     * @param string $uri
+     * @param Response $response
+     * @return bool
+     * @throws BaseException
+     * @throws ConfigException
+     * @throws DatabaseException
+     * @throws DiException
+     * @throws ReflectionException
+     * @throws SessionException
+     */
+    public function serveCachedView(string $uri, Response $response): bool
+    {
+        if ($this->isEnabled() && $this->exists($uri)) {
+            $response->html($this->get($uri));
+            return true;
+        }
+
+        return false;
     }
 
     /**
