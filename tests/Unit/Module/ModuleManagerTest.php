@@ -66,7 +66,7 @@ class ModuleManagerTest extends AppTestCase
 
         $moduleManager->shouldAllowMockingProtectedMethods();
 
-        $moduleManager->shouldReceive('validateModuleFiles')->andReturn(false);
+        $moduleManager->shouldReceive('verifyModuleFilesCreated')->andReturn(false);
 
         $this->expectException(Exception::class);
 
