@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Test\Controllers;
+namespace Quantum\Tests\_root\modules\Test\Controllers;
 
 use Quantum\Router\RouteController;
 

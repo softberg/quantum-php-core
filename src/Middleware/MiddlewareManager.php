@@ -9,18 +9,13 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.7
  */
 
 namespace Quantum\Middleware;
 
-use Quantum\Middleware\Exceptions\MiddlewareException;
-use Quantum\Di\Exceptions\DiException;
-use Quantum\Loader\Loader;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
-use ReflectionException;
-use Quantum\Di\Di;
 
 /**
  * Class MiddlewareManager
@@ -55,8 +50,6 @@ class MiddlewareManager
      * @param Request $request
      * @param Response $response
      * @return array
-     * @throws DiException
-     * @throws ReflectionException
      */
     public function applyMiddlewares(Request $request, Response $response): array
     {
@@ -75,23 +68,21 @@ class MiddlewareManager
     }
 
     /**
+     * Loads and gets the current middleware instance
      * @param Request $request
      * @param Response $response
      * @return QtMiddleware
-     * @throws DiException
-     * @throws ReflectionException
      */
     private function getMiddleware(Request $request, Response $response): QtMiddleware
     {
-        $middlewarePath = modules_dir() . DS . $this->module . DS . 'Middlewares' . DS . current($this->middlewares) . '.php';
+        $middlewareName = current($this->middlewares);
 
-        $loader = Di::get(Loader::class);
+        $middlewarePath = modules_dir() . DS . $this->module . DS . 'Middlewares' . DS . $middlewareName . '.php';
 
-        return $loader->loadClassFromFile(
-            $middlewarePath,
-            function () { return MiddlewareException::middlewareNotFound(current($this->middlewares)); },
-            function () { return MiddlewareException::notDefined(current($this->middlewares)); },
-            [$request, $response]
-        );
+        require_once $middlewarePath;
+
+        $middlewareClass = module_base_namespace() . '\\' . $this->module . '\\Middlewares\\' . $middlewareName;
+
+        return new $middlewareClass($request, $response);
     }
 }

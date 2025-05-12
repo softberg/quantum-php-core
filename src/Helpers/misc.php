@@ -9,18 +9,18 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.6
+ * @since 2.9.7
  */
 
 use Symfony\Component\VarExporter\Exception\ExceptionInterface;
 use Quantum\Libraries\Config\Exceptions\ConfigException;
 use Quantum\Libraries\Database\Contracts\DbalInterface;
-use Quantum\Renderer\Exceptions\RendererException;
 use Quantum\Exceptions\StopExecutionException;
 use Symfony\Component\VarExporter\VarExporter;
 use League\CommonMark\CommonMarkConverter;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Exceptions\BaseException;
+use DebugBar\DebugBarException;
 use Quantum\Model\QtModel;
 use Quantum\Http\Response;
 
@@ -119,11 +119,11 @@ function is_debug_mode(): bool
 /**
  * Handles page not found
  * @return void
- * @throws DiException
- * @throws ReflectionException
  * @throws BaseException
  * @throws ConfigException
- * @throws RendererException
+ * @throws DiException
+ * @throws ReflectionException
+ * @throws DebugBarException
  */
 function page_not_found()
 {

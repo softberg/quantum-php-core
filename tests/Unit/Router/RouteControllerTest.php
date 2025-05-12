@@ -4,7 +4,7 @@ namespace Quantum\Controllers {
 
     use Quantum\Router\RouteController;
 
-    class TestController extends RouteController
+    class SomeController extends RouteController
     {
         // Controller body
     }
@@ -13,7 +13,7 @@ namespace Quantum\Controllers {
 namespace Quantum\Tests\Unit\Router {
 
     use Quantum\Exceptions\ControllerException;
-    use Quantum\Controllers\TestController;
+    use Quantum\Controllers\SomeController;
     use Quantum\Tests\Unit\AppTestCase;
 
     /**
@@ -34,7 +34,7 @@ namespace Quantum\Tests\Unit\Router {
 
             $this->expectExceptionMessage('undefined_method');
 
-            $controller = new TestController();
+            $controller = new SomeController();
 
             $controller->undefinedMethod();
         }

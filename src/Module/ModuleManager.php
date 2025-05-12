@@ -20,7 +20,6 @@ use Quantum\Libraries\Config\Exceptions\ConfigException;
 use Quantum\Module\Exceptions\ModuleException;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Exceptions\BaseException;
-use Quantum\Environment\Environment;
 use ReflectionException;
 use Exception;
 
@@ -110,16 +109,6 @@ class ModuleManager
     public function getModuleName(): string
     {
         return $this->moduleName;
-    }
-
-    /**
-     * @return string
-     */
-    public function getBaseNamespace(): string
-    {
-        return Environment::getInstance()->getAppEnv() === 'testing'
-            ? "Quantum\\Tests\\_root\\modules"
-            : "Modules";
     }
 
     /**
@@ -246,7 +235,7 @@ class ModuleManager
     private function replacePlaceholders(string $content): string
     {
         $placeholders = [
-            '{{MODULE_NAMESPACE}}' => $this->getBaseNamespace() .'\\' . $this->getModuleName(),
+            '{{MODULE_NAMESPACE}}' => module_base_namespace() .'\\' . $this->getModuleName(),
             '{{MODULE_NAME}}' => $this->getModuleName(),
         ];
 

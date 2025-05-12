@@ -9,12 +9,11 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.7
  */
 
 namespace Quantum\Libraries\Csrf;
 
-use Quantum\Libraries\Encryption\Exceptions\CryptorException;
 use Quantum\Libraries\Config\Exceptions\ConfigException;
 use Quantum\Libraries\Csrf\Exceptions\CsrfException;
 use Quantum\Di\Exceptions\DiException;
@@ -84,7 +83,6 @@ class Csrf
      * Generates the CSRF token or returns the previously generated one
      * @param string $key
      * @return string|null
-     * @throws CryptorException
      */
     public function generateToken(string $key): ?string
     {
@@ -99,7 +97,6 @@ class Csrf
      * Checks the token
      * @param Request|null $request
      * @return bool
-     * @throws CryptorException
      * @throws CsrfException
      */
     public function checkToken(?Request $request): bool
