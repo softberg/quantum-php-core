@@ -17,10 +17,9 @@ namespace Quantum\Module;
 use Symfony\Component\VarExporter\Exception\ExceptionInterface;
 use Quantum\Libraries\Storage\Factories\FileSystemFactory;
 use Quantum\Libraries\Config\Exceptions\ConfigException;
-use Quantum\Module\Exceptions\ModuleLoaderException;
+use Quantum\Module\Exceptions\ModuleException;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Exceptions\BaseException;
-use Quantum\Environment\Environment;
 use ReflectionException;
 use Exception;
 
@@ -30,6 +29,9 @@ use Exception;
  */
 class ModuleManager
 {
+
+    const DEFAULT_TEMPLATE = 'DemoWeb';
+
     /**
      * @var mixed
      */
@@ -110,31 +112,21 @@ class ModuleManager
     }
 
     /**
-     * @return string
-     */
-    public function getBaseNamespace(): string
-    {
-        return Environment::getInstance()->getAppEnv() === 'testing'
-            ? "Quantum\\Tests\\_root\\modules"
-            : "Modules";
-    }
-
-    /**
-     * @throws ModuleLoaderException
+     * @throws ModuleException
      * @throws ExceptionInterface
      * @throws Exception
      */
     public function addModuleConfig()
     {
         if (!$this->fs->isDirectory($this->modulePath)) {
-            throw new Exception("Module directory does not exist, skipping config update.");
+            throw ModuleException::missingModuleDirectory();
         }
 
         $moduleConfigs = ModuleLoader::getInstance()->getModuleConfigs();
 
         foreach ($moduleConfigs as $module => $options) {
             if ($module == $this->moduleName || $options['prefix'] == strtolower($this->moduleName)) {
-                throw new Exception("A module or prefix named '" . $this->moduleName . "' already exists");
+                throw ModuleException::moduleAlreadyExists($this->moduleName);
             }
         }
 
@@ -158,8 +150,8 @@ class ModuleManager
             $copiedAssets = $this->copyAssets($this->templatePath . DS . "assets", $this->assetsPath);
         }
 
-        if (!$this->validateModuleFiles(array_merge($copiedTemplates, $copiedAssets ?? []))) {
-            throw new Exception("Module creation incomplete: missing files.");
+        if (!$this->verifyModuleFilesCreated(array_merge($copiedTemplates, $copiedAssets ?? []))) {
+            throw ModuleException::moduleCreationIncomplete();
         }
     }
 
@@ -196,7 +188,7 @@ class ModuleManager
     private function copyDirectory(string $src, string $dst, bool $processTemplates, array $copiedFiles = []): array
     {
         if (!$this->fs->isDirectory($src)) {
-            throw new Exception("Template '$this->template' does not exist");
+            throw ModuleException::missingModuleTemplate($this->template);
         }
 
         if (!$this->fs->isDirectory($dst)) {
@@ -243,7 +235,7 @@ class ModuleManager
     private function replacePlaceholders(string $content): string
     {
         $placeholders = [
-            '{{MODULE_NAMESPACE}}' => $this->getBaseNamespace() .'\\' . $this->getModuleName(),
+            '{{MODULE_NAMESPACE}}' => module_base_namespace() .'\\' . $this->getModuleName(),
             '{{MODULE_NAME}}' => $this->getModuleName(),
         ];
 
@@ -257,7 +249,7 @@ class ModuleManager
     private function getModuleOptions(string $module): array
     {
         return [
-            'prefix' => $this->template == "DemoWeb" ? "" : strtolower($module),
+            'prefix' => $this->template == self::DEFAULT_TEMPLATE ? "" : strtolower($module),
             'enabled' => $this->optionEnabled,
         ];
     }
@@ -279,7 +271,7 @@ class ModuleManager
      * @param array $copiedFiles
      * @return bool
      */
-    protected function validateModuleFiles(array $copiedFiles): bool
+    protected function verifyModuleFilesCreated(array $copiedFiles): bool
     {
         foreach ($copiedFiles as $file) {
             if (!$this->fs->exists($file)) {

@@ -14,12 +14,10 @@
 
 namespace Quantum\Router;
 
-use Quantum\Libraries\Encryption\Exceptions\CryptorException;
 use Quantum\Libraries\Csrf\Exceptions\CsrfException;
 use Quantum\Exceptions\ControllerException;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Libraries\Csrf\Csrf;
-use Quantum\Loader\Loader;
 use Quantum\Http\Request;
 use ReflectionException;
 use Quantum\Di\Di;
@@ -32,7 +30,6 @@ class RouteDispatcher
      * @param Request $request
      * @return void
      * @throws ControllerException
-     * @throws CryptorException
      * @throws CsrfException
      * @throws DiException
      * @throws ReflectionException
@@ -42,49 +39,37 @@ class RouteDispatcher
         $callback = route_callback();
 
         if ($callback) {
-            call_user_func_array($callback, self::getArgs($callback));
+            self::callControllerMethod($callback);
             return;
         }
 
-        $controller = self::getController();
-        $action = self::getAction($controller);
+        $controller = self::resolveController();
+        $action = self::resolveAction($controller);
 
-        if ($controller->csrfVerification && in_array($request->getMethod(), Csrf::METHODS)) {
-            csrf()->checkToken($request);
-        }
+        self::verifyCsrf($controller, $request);
 
-        if (method_exists($controller, '__before')) {
-            call_user_func_array([$controller, '__before'], self::getArgs([$controller, '__before']));
-        }
-
-        call_user_func_array([$controller, $action], self::getArgs([$controller, $action]));
-
-        if (method_exists($controller, '__after')) {
-            call_user_func_array([$controller, '__after'], self::getArgs([$controller, '__after']));
-        }
+        self::callControllerHook($controller, '__before');
+        self::callControllerMethod([$controller, $action]);
+        self::callControllerHook($controller, '__after');
     }
 
     /**
-     * Loads and returns the current route's controller instance.
+     * Loads and gets the current route's controller instance.
      * @return RouteController
      * @throws DiException
      * @throws ReflectionException
      */
-    private static function getController(): RouteController
+    private static function resolveController(): RouteController
     {
-        $controllerPath = modules_dir() . DS . current_module() . DS . 'Controllers' . DS . current_controller() . '.php';
+        $controllerName = current_controller();
+        $moduleName = current_module();
 
-        $loader = Di::get(Loader::class);
+        $controllerPath = modules_dir() . DS . $moduleName . DS . 'Controllers' . DS . $controllerName . '.php';
+        $controllerClass = module_base_namespace() . '\\' . $moduleName . '\\Controllers\\' . $controllerName;
 
-        return $loader->loadClassFromFile(
-            $controllerPath,
-            function () {
-                return ControllerException::controllerNotFound(current_controller());
-            },
-            function () {
-                return ControllerException::controllerNotDefined(current_controller());
-            }
-        );
+        require_once $controllerPath;
+
+        return new $controllerClass();
     }
 
     /**
@@ -93,7 +78,7 @@ class RouteDispatcher
      * @return string|null
      * @throws ControllerException
      */
-    private static function getAction(RouteController $controller): ?string
+    private static function resolveAction(RouteController $controller): ?string
     {
         $action = current_action();
 
@@ -105,25 +90,52 @@ class RouteDispatcher
     }
 
     /**
-     * Resolves and returns the arguments for a given callable using dependency injection.
+     * Calls controller method
      * @param callable $callable
-     * @return array
+     * @return void
      * @throws DiException
      * @throws ReflectionException
      */
-    private static function getArgs(callable $callable): array
+    private static function callControllerMethod(callable $callable)
     {
-        return Di::autowire($callable, self::routeParams());
+        call_user_func_array($callable, Di::autowire($callable, self::getRouteParams()));
+    }
+
+    /**
+     * Calls controller lifecycle method if it exists.
+     * @param object $controller
+     * @param string $method
+     * @return void
+     * @throws DiException
+     * @throws ReflectionException
+     */
+    private static function callControllerHook(object $controller, string $method): void
+    {
+        if (method_exists($controller, $method)) {
+            self::callControllerMethod([$controller, $method]);
+        }
     }
 
     /**
      * Retrieves the route parameters from the current route.
      * @return array
      */
-    private static function routeParams(): array
+    private static function getRouteParams(): array
     {
-        return array_map(function ($param) {
-            return $param['value'];
-        }, route_params());
+        return array_column(route_params(), 'value');
+    }
+
+    /**
+     * Verifies CSRF token if required
+     * @param RouteController $controller
+     * @param Request $request
+     * @return void
+     * @throws CsrfException
+     */
+    private static function verifyCsrf(RouteController $controller, Request $request): void
+    {
+        if ($controller->csrfVerification && in_array($request->getMethod(), Csrf::METHODS, true)) {
+            csrf()->checkToken($request);
+        }
     }
 }

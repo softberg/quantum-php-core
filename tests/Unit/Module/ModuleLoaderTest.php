@@ -29,7 +29,9 @@ class ModuleLoaderTest extends AppTestCase
 
     public function testLoadModulesRoutesWithEnabledModules()
     {
-        $this->moduleLoader->loadModulesRoutes();
+        $modulesRoutes = $this->moduleLoader->loadModulesRoutes();
+
+        Router::setRoutes($modulesRoutes);
 
         $this->assertNotEmpty(Router::getRoutes());
 

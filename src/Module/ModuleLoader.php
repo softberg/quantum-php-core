@@ -16,12 +16,11 @@ namespace Quantum\Module;
 
 use Quantum\Libraries\Storage\Factories\FileSystemFactory;
 use Quantum\Libraries\Config\Exceptions\ConfigException;
-use Quantum\Module\Exceptions\ModuleLoaderException;
+use Quantum\Module\Exceptions\ModuleException;
 use Quantum\Router\Exceptions\RouteException;
 use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Exceptions\BaseException;
-use Quantum\Router\Router;
 use Quantum\Router\Route;
 use ReflectionException;
 use Quantum\App\App;
@@ -78,11 +77,12 @@ class ModuleLoader
     }
 
     /**
-     * Load Modules
-     * @throws ModuleLoaderException
+     * Load modules routes
+     * @return array
+     * @throws ModuleException
      * @throws RouteException
      */
-    public function loadModulesRoutes()
+    public function loadModulesRoutes(): array
     {
         if (empty(self::$moduleConfigs)) {
             $this->loadModuleConfig();
@@ -98,12 +98,12 @@ class ModuleLoader
             $modulesRoutes = array_merge($modulesRoutes, $this->getModuleRoutes($module, new Route([$module => $options])));
         }
 
-        Router::setRoutes($modulesRoutes);
+        return $modulesRoutes;
     }
 
     /**
      * @return array
-     * @throws ModuleLoaderException
+     * @throws ModuleException
      */
     public function getModuleConfigs(): array
     {
@@ -115,14 +115,14 @@ class ModuleLoader
     }
 
     /**
-     * @throws ModuleLoaderException
+     * @throws ModuleException
      */
     private function loadModuleConfig()
     {
         $configPath = App::getBaseDir() . DS . 'shared' . DS . 'config' . DS . 'modules.php';
 
         if (!$this->fs->exists($configPath)) {
-            throw ModuleLoaderException::moduleConfigNotFound();
+            throw ModuleException::moduleConfigNotFound();
         }
 
         self::$moduleConfigs = $this->fs->require($configPath);
@@ -141,7 +141,7 @@ class ModuleLoader
      * @param string $module
      * @param Route $route
      * @return array
-     * @throws ModuleLoaderException
+     * @throws ModuleException
      * @throws RouteException
      */
     private function getModuleRoutes(string $module, Route $route): array
@@ -149,7 +149,7 @@ class ModuleLoader
         $moduleRoutes = modules_dir() . DS . $module . DS . 'routes' . DS . 'routes.php';
 
         if (!$this->fs->exists($moduleRoutes)) {
-            throw ModuleLoaderException::moduleRoutesNotFound($module);
+            throw ModuleException::moduleRoutesNotFound($module);
         }
 
         if(empty(self::$moduleRoutes[$module])) {

@@ -9,8 +9,10 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.7
  */
+
+use Quantum\Environment\Environment;
 use Quantum\Router\RouteController;
 use Quantum\Router\Router;
 
@@ -189,4 +191,15 @@ function route_group_exists(string $name, string $module): bool
     }
 
     return false;
+}
+
+/**
+ * Gets the module base namespace depending on env
+ * @return string
+ */
+function module_base_namespace(): string
+{
+    return Environment::getInstance()->getAppEnv() === 'testing'
+        ? "Quantum\\Tests\\_root\\modules"
+        : "Modules";
 }

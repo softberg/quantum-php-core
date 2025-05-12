@@ -15,8 +15,8 @@
 namespace Quantum\App\Traits;
 
 use Quantum\Libraries\Config\Exceptions\ConfigException;
-use Quantum\Module\Exceptions\ModuleLoaderException;
 use Quantum\Renderer\Exceptions\RendererException;
+use Quantum\Module\Exceptions\ModuleException;
 use Quantum\Libraries\ResourceCache\ViewCache;
 use Quantum\Exceptions\StopExecutionException;
 use Quantum\Router\Exceptions\RouteException;
@@ -61,12 +61,13 @@ trait WebAppTrait
 
     /**
      * @return void
-     * @throws ModuleLoaderException
+     * @throws ModuleException
      * @throws RouteException
      */
-    private function loadModules()
+    private function loadModulesRoutes()
     {
-        ModuleLoader::getInstance()->loadModulesRoutes();
+        $modulesRoutes = ModuleLoader::getInstance()->loadModulesRoutes();
+        Router::setRoutes($modulesRoutes);
     }
 
     /**
