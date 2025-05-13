@@ -14,7 +14,6 @@
 
 namespace Quantum\App\Traits;
 
-use Quantum\Renderer\Exceptions\RendererException;
 use Quantum\App\Exceptions\StopExecutionException;
 use Quantum\Libraries\ResourceCache\ViewCache;
 use Quantum\Module\Exceptions\ModuleException;
@@ -90,13 +89,13 @@ trait WebAppTrait
     /**
      * @param $request
      * @return void
+     * @throws BaseException
      * @throws ConfigException
+     * @throws DebugBarException
      * @throws DiException
      * @throws ReflectionException
      * @throws RouteException
      * @throws StopExecutionException
-     * @throws BaseException
-     * @throws RendererException
      */
     private function initializeRouter($request)
     {

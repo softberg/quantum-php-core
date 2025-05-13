@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.7
  */
 
 namespace Quantum\Migration;
@@ -17,15 +17,16 @@ namespace Quantum\Migration;
 use Quantum\Libraries\Storage\Exceptions\FileSystemException;
 use Quantum\Libraries\Database\Exceptions\DatabaseException;
 use Quantum\Libraries\Storage\Factories\FileSystemFactory;
-use Quantum\Libraries\Config\Exceptions\ConfigException;
 use Quantum\Libraries\Database\Factories\TableFactory;
-use Quantum\Migration\Exceptions\MigrationException;
 use Quantum\Libraries\Lang\Exceptions\LangException;
+use Quantum\Migration\Exceptions\MigrationException;
 use Quantum\Migration\Templates\MigrationTemplate;
+use Quantum\Config\Exceptions\ConfigException;
+use Quantum\App\Exceptions\BaseException;
 use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Libraries\Database\Database;
 use Quantum\Di\Exceptions\DiException;
-use Quantum\Exceptions\BaseException;
+use ReflectionException;
 
 /**
  * Class MigrationManager
@@ -81,7 +82,10 @@ class MigrationManager
 
     /**
      * @throws BaseException
+     * @throws DiException
      * @throws FileSystemException
+     * @throws ConfigException
+     * @throws ReflectionException
      */
     public function __construct()
     {

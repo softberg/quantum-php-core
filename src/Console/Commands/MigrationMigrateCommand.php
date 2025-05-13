@@ -22,7 +22,6 @@ use Quantum\App\Exceptions\BaseException;
 use Quantum\Migration\MigrationManager;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Console\QtCommand;
-use ReflectionException;
 
 /**
  * Class MigrationMigrateCommand
@@ -66,7 +65,6 @@ class MigrationMigrateCommand extends QtCommand
      * @throws DatabaseException
      * @throws DiException
      * @throws LangException
-     * @throws ReflectionException
      */
     public function exec()
     {
