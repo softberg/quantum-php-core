@@ -9,15 +9,14 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.7
  */
 
 namespace Quantum\Router;
 
-use Quantum\Libraries\Database\Exceptions\DatabaseException;
-use Quantum\Libraries\Session\Exceptions\SessionException;
-use Quantum\Libraries\Config\Exceptions\ConfigException;
+use Quantum\Config\Exceptions\ConfigException;
 use Quantum\Router\Exceptions\RouteException;
+use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
 use ReflectionException;
 use Closure;
@@ -214,10 +213,9 @@ class Route
      * @param int|null $ttl
      * @return $this
      * @throws ConfigException
-     * @throws DatabaseException
      * @throws DiException
      * @throws ReflectionException
-     * @throws SessionException
+     * @throws BaseException
      */
     public function cacheable(bool $shouldCache, ?int $ttl = null): Route
     {

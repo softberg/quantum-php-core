@@ -15,12 +15,12 @@
 namespace Quantum\Tracer;
 
 use Quantum\Libraries\Storage\Factories\FileSystemFactory;
-use Quantum\Libraries\Config\Exceptions\ConfigException;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Quantum\Renderer\Exceptions\RendererException;
+use Quantum\Config\Exceptions\ConfigException;
+use Quantum\App\Exceptions\BaseException;
 use Quantum\View\Factories\ViewFactory;
 use Quantum\Di\Exceptions\DiException;
-use Quantum\Exceptions\BaseException;
 use Quantum\Libraries\Logger\Logger;
 use DebugBar\DebugBarException;
 use Quantum\Http\Response;
@@ -127,6 +127,7 @@ class ErrorHandler
      * @throws DiException
      * @throws ReflectionException
      * @throws RendererException
+     * @throws DebugBarException
      */
     public function handleException(Throwable $throwable): void
     {
@@ -194,6 +195,9 @@ class ErrorHandler
      * @param Throwable $e
      * @return array
      * @throws BaseException
+     * @throws ConfigException
+     * @throws DiException
+     * @throws ReflectionException
      */
     private function composeStackTrace(Throwable $e): array
     {
@@ -225,6 +229,9 @@ class ErrorHandler
      * @param string $className
      * @return string
      * @throws BaseException
+     * @throws ConfigException
+     * @throws DiException
+     * @throws ReflectionException
      */
     private function getSourceCode(string $filename, int $lineNumber, string $className): string
     {

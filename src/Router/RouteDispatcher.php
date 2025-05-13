@@ -14,8 +14,8 @@
 
 namespace Quantum\Router;
 
+use Quantum\Router\Exceptions\RouteControllerException;
 use Quantum\Libraries\Csrf\Exceptions\CsrfException;
-use Quantum\Exceptions\ControllerException;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Libraries\Csrf\Csrf;
 use Quantum\Http\Request;
@@ -29,7 +29,7 @@ class RouteDispatcher
      * Handles the incoming HTTP request.
      * @param Request $request
      * @return void
-     * @throws ControllerException
+     * @throws RouteControllerException
      * @throws CsrfException
      * @throws DiException
      * @throws ReflectionException
@@ -76,14 +76,14 @@ class RouteDispatcher
      * Retrieves the current route's action for the controller.
      * @param RouteController $controller
      * @return string|null
-     * @throws ControllerException
+     * @throws RouteControllerException
      */
     private static function resolveAction(RouteController $controller): ?string
     {
         $action = current_action();
 
         if (!$action || !method_exists($controller, $action)) {
-            throw ControllerException::actionNotDefined($action);
+            throw RouteControllerException::actionNotDefined($action);
         }
 
         return $action;

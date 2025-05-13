@@ -16,10 +16,10 @@ namespace Quantum\Module;
 
 use Symfony\Component\VarExporter\Exception\ExceptionInterface;
 use Quantum\Libraries\Storage\Factories\FileSystemFactory;
-use Quantum\Libraries\Config\Exceptions\ConfigException;
+use Quantum\Config\Exceptions\ConfigException;
 use Quantum\Module\Exceptions\ModuleException;
+use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
-use Quantum\Exceptions\BaseException;
 use ReflectionException;
 use Exception;
 

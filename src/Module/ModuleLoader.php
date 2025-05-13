@@ -15,12 +15,12 @@
 namespace Quantum\Module;
 
 use Quantum\Libraries\Storage\Factories\FileSystemFactory;
-use Quantum\Libraries\Config\Exceptions\ConfigException;
+use Quantum\Config\Exceptions\ConfigException;
 use Quantum\Module\Exceptions\ModuleException;
 use Quantum\Router\Exceptions\RouteException;
+use Quantum\App\Exceptions\BaseException;
 use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Di\Exceptions\DiException;
-use Quantum\Exceptions\BaseException;
 use Quantum\Router\Route;
 use ReflectionException;
 use Quantum\App\App;

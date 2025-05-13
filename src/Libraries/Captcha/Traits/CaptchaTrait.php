@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.7
  */
 
 namespace Quantum\Libraries\Captcha\Traits;
@@ -19,8 +19,8 @@ use Quantum\Libraries\Asset\Exceptions\AssetException;
 use Quantum\Libraries\Lang\Exceptions\LangException;
 use Quantum\Libraries\HttpClient\HttpClient;
 use Quantum\Http\Exceptions\HttpException;
+use Quantum\App\Exceptions\BaseException;
 use Quantum\Libraries\Asset\AssetManager;
-use Quantum\Exceptions\BaseException;
 use Quantum\Libraries\Asset\Asset;
 use ErrorException;
 use Exception;

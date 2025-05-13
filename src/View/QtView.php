@@ -16,13 +16,13 @@ namespace Quantum\View;
 
 use Quantum\Libraries\Database\Exceptions\DatabaseException;
 use Quantum\Libraries\Session\Exceptions\SessionException;
-use Quantum\Libraries\Config\Exceptions\ConfigException;
 use Quantum\Libraries\Asset\Exceptions\AssetException;
 use Quantum\Libraries\ResourceCache\ViewCache;
+use Quantum\Config\Exceptions\ConfigException;
 use Quantum\View\Exceptions\ViewException;
+use Quantum\App\Exceptions\BaseException;
 use Quantum\Libraries\Asset\AssetManager;
 use Quantum\Di\Exceptions\DiException;
-use Quantum\Exceptions\BaseException;
 use Quantum\Renderer\Renderer;
 use Quantum\Debugger\Debugger;
 use ReflectionException;

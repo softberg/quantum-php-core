@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.7
  */
 
 namespace Quantum\Libraries\Encryption;
@@ -17,7 +17,7 @@ namespace Quantum\Libraries\Encryption;
 use Quantum\Libraries\Encryption\Adapters\AsymmetricEncryptionAdapter;
 use Quantum\Libraries\Encryption\Contracts\EncryptionInterface;
 use Quantum\Libraries\Encryption\Exceptions\CryptorException;
-use Quantum\Exceptions\BaseException;
+use Quantum\App\Exceptions\BaseException;
 
 /**
  * Class Cryptor

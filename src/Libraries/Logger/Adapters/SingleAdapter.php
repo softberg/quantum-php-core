@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.6
+ * @since 2.9.7
  */
 
 namespace Quantum\Libraries\Logger\Adapters;
@@ -17,10 +17,10 @@ namespace Quantum\Libraries\Logger\Adapters;
 use Quantum\Libraries\Logger\Contracts\ReportableInterface;
 use Quantum\Libraries\Storage\Factories\FileSystemFactory;
 use Quantum\Libraries\Logger\Exceptions\LoggerException;
-use Quantum\Libraries\Config\Exceptions\ConfigException;
 use Quantum\Libraries\Logger\Traits\LoggerTrait;
+use Quantum\Config\Exceptions\ConfigException;
+use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
-use Quantum\Exceptions\BaseException;
 use ReflectionException;
 
 /**

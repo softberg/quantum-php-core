@@ -5,11 +5,11 @@ namespace Quantum\Tests\Unit;
 use Quantum\Libraries\Storage\Factories\FileSystemFactory;
 use Quantum\App\Factories\AppFactory;
 use Quantum\Environment\Environment;
-use Quantum\Libraries\Config\Config;
 use PHPUnit\Framework\TestCase;
+use Quantum\Config\Config;
 use Quantum\Loader\Setup;
-use Quantum\App\App;
 use ReflectionClass;
+use Quantum\App\App;
 
 abstract class AppTestCase extends TestCase
 {

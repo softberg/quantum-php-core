@@ -12,8 +12,8 @@
  * @since 2.9.7
  */
 
+use Quantum\App\Exceptions\BaseException;
 use Quantum\App\Exceptions\AppException;
-use Quantum\Exceptions\BaseException;
 use Quantum\Libraries\Csrf\Csrf;
 
 /**

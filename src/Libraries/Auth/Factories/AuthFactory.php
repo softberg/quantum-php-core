@@ -9,20 +9,20 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.6
+ * @since 2.9.7
  */
 
 namespace Quantum\Libraries\Auth\Factories;
 
 use Quantum\Libraries\Auth\Contracts\AuthServiceInterface;
-use Quantum\Libraries\Config\Exceptions\ConfigException;
 use Quantum\Libraries\Auth\Adapters\SessionAuthAdapter;
 use Quantum\Libraries\Auth\Exceptions\AuthException;
 use Quantum\Libraries\Auth\Adapters\JwtAuthAdapter;
 use Quantum\Service\Exceptions\ServiceException;
+use Quantum\Config\Exceptions\ConfigException;
 use Quantum\Service\Factories\ServiceFactory;
+use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
-use Quantum\Exceptions\BaseException;
 use Quantum\Libraries\Hasher\Hasher;
 use Quantum\Libraries\Jwt\JwtToken;
 use Quantum\Libraries\Auth\Auth;

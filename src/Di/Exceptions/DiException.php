@@ -14,7 +14,7 @@
 
 namespace Quantum\Di\Exceptions;
 
-use Quantum\Exceptions\BaseException;
+use Quantum\App\Exceptions\BaseException;
 
 /**
  * Class DiException

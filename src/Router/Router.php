@@ -9,18 +9,18 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.7
  */
 
 namespace Quantum\Router;
 
-use Quantum\Libraries\Config\Exceptions\ConfigException;
-use Quantum\Renderer\Exceptions\RendererException;
-use Quantum\Exceptions\StopExecutionException;
+use Quantum\App\Exceptions\StopExecutionException;
 use Quantum\Libraries\ResourceCache\ViewCache;
+use Quantum\Config\Exceptions\ConfigException;
 use Quantum\Router\Exceptions\RouteException;
+use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
-use Quantum\Exceptions\BaseException;
+use DebugBar\DebugBarException;
 use Quantum\Debugger\Debugger;
 use Quantum\Http\Request;
 use ReflectionException;
@@ -66,13 +66,13 @@ class Router extends RouteController
 
     /**
      * Finds the current route
+     * @throws BaseException
      * @throws ConfigException
+     * @throws DebugBarException
      * @throws DiException
      * @throws ReflectionException
      * @throws RouteException
      * @throws StopExecutionException
-     * @throws BaseException
-     * @throws RendererException
      */
     public function findRoute()
     {

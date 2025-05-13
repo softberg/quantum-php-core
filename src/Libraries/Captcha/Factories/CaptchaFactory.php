@@ -9,19 +9,19 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.6
+ * @since 2.9.7
  */
 
 namespace Quantum\Libraries\Captcha\Factories;
 
 use Quantum\Libraries\Captcha\Exceptions\CaptchaException;
 use Quantum\Libraries\Captcha\Adapters\RecaptchaAdapter;
-use Quantum\Libraries\Config\Exceptions\ConfigException;
 use Quantum\Libraries\Captcha\Adapters\HcaptchaAdapter;
+use Quantum\Config\Exceptions\ConfigException;
 use Quantum\Libraries\HttpClient\HttpClient;
+use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Libraries\Captcha\Captcha;
-use Quantum\Exceptions\BaseException;
 use Quantum\Loader\Setup;
 use ReflectionException;
 

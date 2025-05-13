@@ -9,20 +9,20 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.6
+ * @since 2.9.7
  */
 
 namespace Quantum\Libraries\Mailer\Factories;
 
-use Quantum\Libraries\Mailer\Exceptions\MailerException;
-use Quantum\Libraries\Config\Exceptions\ConfigException;
 use Quantum\Libraries\Mailer\Adapters\SendinblueAdapter;
-use Quantum\Libraries\Mailer\Adapters\SendgridAdapter;
+use Quantum\Libraries\Mailer\Exceptions\MailerException;
 use Quantum\Libraries\Mailer\Adapters\MandrillAdapter;
+use Quantum\Libraries\Mailer\Adapters\SendgridAdapter;
 use Quantum\Libraries\Mailer\Adapters\MailgunAdapter;
 use Quantum\Libraries\Mailer\Adapters\SmtpAdapter;
+use Quantum\Config\Exceptions\ConfigException;
+use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
-use Quantum\Exceptions\BaseException;
 use Quantum\Libraries\Mailer\Mailer;
 use Quantum\Loader\Setup;
 use ReflectionException;
