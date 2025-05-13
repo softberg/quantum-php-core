@@ -15,11 +15,11 @@
 namespace Quantum\Libraries\ResourceCache;
 
 use Quantum\Libraries\Database\Exceptions\DatabaseException;
-use Quantum\Libraries\Storage\Factories\FileSystemFactory;
 use Quantum\Libraries\Session\Exceptions\SessionException;
-use Quantum\Libraries\Config\Exceptions\ConfigException;
+use Quantum\Libraries\Storage\Factories\FileSystemFactory;
+use Quantum\Config\Exceptions\ConfigException;
+use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
-use Quantum\Exceptions\BaseException;
 use Quantum\Http\Response;
 use Quantum\Loader\Setup;
 use ReflectionException;

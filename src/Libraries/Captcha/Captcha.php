@@ -9,14 +9,14 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.7
  */
 
 namespace Quantum\Libraries\Captcha;
 
 use Quantum\Libraries\Captcha\Exceptions\CaptchaException;
 use Quantum\Libraries\Captcha\Contracts\CaptchaInterface;
-use Quantum\Exceptions\BaseException;
+use Quantum\App\Exceptions\BaseException;
 
 /**
  * Class Captcha

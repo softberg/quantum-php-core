@@ -17,24 +17,24 @@ namespace Quantum\App\Adapters;
 use Quantum\Libraries\Encryption\Exceptions\CryptorException;
 use Quantum\Libraries\Database\Exceptions\DatabaseException;
 use Quantum\Libraries\Session\Exceptions\SessionException;
-use Quantum\Libraries\Config\Exceptions\ConfigException;
 use Quantum\Middleware\Exceptions\MiddlewareException;
+use Quantum\Router\Exceptions\RouteControllerException;
 use Quantum\Libraries\Csrf\Exceptions\CsrfException;
 use Quantum\Libraries\Lang\Exceptions\LangException;
 use Quantum\Renderer\Exceptions\RendererException;
+use Quantum\App\Exceptions\StopExecutionException;
 use Quantum\Environment\Exceptions\EnvException;
 use Quantum\Module\Exceptions\ModuleException;
-use Quantum\Exceptions\StopExecutionException;
+use Quantum\Config\Exceptions\ConfigException;
 use Quantum\Router\Exceptions\RouteException;
-use Quantum\Exceptions\ControllerException;
 use Quantum\Middleware\MiddlewareManager;
+use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
-use Quantum\Exceptions\BaseException;
 use Quantum\App\Traits\WebAppTrait;
 use Quantum\Router\RouteDispatcher;
 use DebugBar\DebugBarException;
 use Quantum\Debugger\Debugger;
-use Quantum\Hooks\HookManager;
+use Quantum\Hook\HookManager;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 use ReflectionException;
@@ -81,7 +81,7 @@ class WebAppAdapter extends AppAdapter
      * @return int|null
      * @throws BaseException
      * @throws ConfigException
-     * @throws ControllerException
+     * @throws RouteControllerException
      * @throws CryptorException
      * @throws CsrfException
      * @throws DatabaseException

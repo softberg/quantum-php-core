@@ -14,12 +14,12 @@
 
 namespace Quantum\View\Factories;
 
-use Quantum\Libraries\Config\Exceptions\ConfigException;
 use Quantum\Renderer\Factories\RendererFactory;
 use Quantum\Libraries\ResourceCache\ViewCache;
+use Quantum\Config\Exceptions\ConfigException;
 use Quantum\Libraries\Asset\AssetManager;
+use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
-use Quantum\Exceptions\BaseException;
 use DebugBar\DebugBarException;
 use Quantum\Debugger\Debugger;
 use Quantum\View\QtView;

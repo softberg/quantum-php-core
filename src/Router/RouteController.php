@@ -14,7 +14,7 @@
 
 namespace Quantum\Router;
 
-use Quantum\Exceptions\ControllerException;
+use Quantum\Router\Exceptions\RouteControllerException;
 
 /**
  * RouterController Class
@@ -79,10 +79,10 @@ abstract class RouteController
      * Handles the missing methods of the controller
      * @param string $method
      * @param array $arguments
-     * @throws ControllerException
+     * @throws RouteControllerException
      */
     public function __call(string $method, array $arguments)
     {
-        throw ControllerException::undefinedMethod($method);
+        throw RouteControllerException::undefinedMethod($method);
     }
 }

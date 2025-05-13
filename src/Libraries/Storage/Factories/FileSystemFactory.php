@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.6
+ * @since 2.9.7
  */
 
 namespace Quantum\Libraries\Storage\Factories;
@@ -20,15 +20,15 @@ use Quantum\Libraries\Storage\Adapters\Local\LocalFileSystemAdapter;
 use Quantum\Libraries\Storage\Adapters\GoogleDrive\GoogleDriveApp;
 use Quantum\Libraries\Storage\Contracts\TokenServiceInterface;
 use Quantum\Libraries\Storage\Exceptions\FileSystemException;
-use Quantum\Libraries\Storage\Contracts\CloudAppInterface;
 use Quantum\Libraries\Storage\Adapters\Dropbox\DropboxApp;
-use Quantum\Libraries\Config\Exceptions\ConfigException;
+use Quantum\Libraries\Storage\Contracts\CloudAppInterface;
 use Quantum\Service\Exceptions\ServiceException;
+use Quantum\Config\Exceptions\ConfigException;
 use Quantum\Service\Factories\ServiceFactory;
 use Quantum\Libraries\HttpClient\HttpClient;
+use Quantum\App\Exceptions\BaseException;
 use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Di\Exceptions\DiException;
-use Quantum\Exceptions\BaseException;
 use Quantum\Loader\Setup;
 use ReflectionException;
 

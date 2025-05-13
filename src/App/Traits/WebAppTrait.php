@@ -14,20 +14,20 @@
 
 namespace Quantum\App\Traits;
 
-use Quantum\Libraries\Config\Exceptions\ConfigException;
 use Quantum\Renderer\Exceptions\RendererException;
-use Quantum\Module\Exceptions\ModuleException;
+use Quantum\App\Exceptions\StopExecutionException;
 use Quantum\Libraries\ResourceCache\ViewCache;
-use Quantum\Exceptions\StopExecutionException;
+use Quantum\Module\Exceptions\ModuleException;
+use Quantum\Config\Exceptions\ConfigException;
 use Quantum\Router\Exceptions\RouteException;
+use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
-use Quantum\Exceptions\BaseException;
 use Quantum\Module\ModuleLoader;
 use DebugBar\DebugBarException;
 use Quantum\Environment\Server;
 use Quantum\Debugger\Debugger;
-use Quantum\Router\Router;
 use Quantum\Http\Response;
+use Quantum\Router\Router;
 use Quantum\Loader\Setup;
 use ReflectionException;
 

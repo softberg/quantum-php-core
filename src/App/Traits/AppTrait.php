@@ -9,21 +9,21 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.7
  */
 
 namespace Quantum\App\Traits;
 
-use Quantum\Libraries\Config\Exceptions\ConfigException;
 use Quantum\Libraries\Logger\Factories\LoggerFactory;
 use Quantum\Libraries\Lang\Exceptions\LangException;
 use Quantum\Environment\Exceptions\EnvException;
+use Quantum\Config\Exceptions\ConfigException;
+use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
-use Quantum\Exceptions\BaseException;
 use Quantum\Environment\Environment;
-use Quantum\Libraries\Config\Config;
-use Quantum\Tracer\ErrorHandler;
 use Quantum\Libraries\Lang\Lang;
+use Quantum\Tracer\ErrorHandler;
+use Quantum\Config\Config;
 use Quantum\Loader\Loader;
 use Quantum\Loader\Setup;
 use ReflectionException;
@@ -56,14 +56,31 @@ trait AppTrait
     }
 
     /**
-     * Loads the core helper functions
+     * Loads component helper functions
      * @throws DiException
      * @throws ReflectionException
      */
-    protected function loadCoreHelperFunctions()
+    protected function loadComponentHelperFunctions(): void
     {
         $loader = Di::get(Loader::class);
-        $loader->loadDir(dirname(__DIR__, 2) . DS . 'Helpers');
+
+        $components = [
+            'Environment',
+            'Config',
+            'Router',
+            'Model',
+            'Hook',
+            'Http',
+            'View',
+            'App',
+        ];
+
+        foreach ($components as $component) {
+            $componentHelperPath = dirname(__DIR__, 2) . DS . $component . DS . 'Helpers';
+            if (is_dir($componentHelperPath)) {
+                $loader->loadDir($componentHelperPath);
+            }
+        }
     }
 
     /**

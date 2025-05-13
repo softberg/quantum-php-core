@@ -14,11 +14,11 @@
 
 namespace Quantum\Libraries\Csrf;
 
-use Quantum\Libraries\Config\Exceptions\ConfigException;
 use Quantum\Libraries\Csrf\Exceptions\CsrfException;
+use Quantum\Config\Exceptions\ConfigException;
+use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Libraries\Session\Session;
-use Quantum\Exceptions\BaseException;
 use Quantum\Libraries\Hasher\Hasher;
 use Quantum\Http\Request;
 use ReflectionException;

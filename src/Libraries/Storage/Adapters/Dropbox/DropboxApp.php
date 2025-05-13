@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.7
  */
 
 namespace Quantum\Libraries\Storage\Adapters\Dropbox;
@@ -22,7 +22,7 @@ use Quantum\Libraries\Lang\Exceptions\LangException;
 use Quantum\Libraries\Storage\Traits\CloudAppTrait;
 use Quantum\Libraries\HttpClient\HttpClient;
 use Quantum\Http\Exceptions\HttpException;
-use Quantum\Exceptions\BaseException;
+use Quantum\App\Exceptions\BaseException;
 use Exception;
 
 /**

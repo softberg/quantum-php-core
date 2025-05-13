@@ -9,19 +9,19 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.6
+ * @since 2.9.7
  */
 
 namespace Quantum\Libraries\Logger\Factories;
 
-use Quantum\Libraries\Config\Exceptions\ConfigException;
 use Quantum\Libraries\Logger\Exceptions\LoggerException;
 use Quantum\Libraries\Logger\Adapters\MessageAdapter;
 use Quantum\Libraries\Logger\Adapters\SingleAdapter;
 use Quantum\Libraries\Logger\Adapters\DailyAdapter;
+use Quantum\Config\Exceptions\ConfigException;
 use Quantum\Libraries\Logger\LoggerConfig;
+use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
-use Quantum\Exceptions\BaseException;
 use Quantum\Libraries\Logger\Logger;
 use Quantum\Loader\Setup;
 use ReflectionException;

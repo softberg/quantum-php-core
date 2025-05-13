@@ -2,7 +2,7 @@
 
 namespace Quantum\Tests\Unit\Http;
 
-use Quantum\Exceptions\StopExecutionException;
+use Quantum\App\Exceptions\StopExecutionException;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Http\Response;
 

@@ -9,17 +9,17 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.6
+ * @since 2.9.7
  */
 
 namespace Quantum\Renderer\Factories;
 
-use Quantum\Libraries\Config\Exceptions\ConfigException;
 use Quantum\Renderer\Exceptions\RendererException;
+use Quantum\Config\Exceptions\ConfigException;
 use Quantum\Renderer\Adapters\HtmlAdapter;
 use Quantum\Renderer\Adapters\TwigAdapter;
+use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
-use Quantum\Exceptions\BaseException;
 use Quantum\Renderer\Renderer;
 use Quantum\Loader\Setup;
 use ReflectionException;

@@ -2,7 +2,7 @@
 
 namespace Quantum\Tests\Unit\Router;
 
-use Quantum\Exceptions\StopExecutionException;
+use Quantum\App\Exceptions\StopExecutionException;
 use Quantum\Router\Exceptions\RouteException;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Http\Response;

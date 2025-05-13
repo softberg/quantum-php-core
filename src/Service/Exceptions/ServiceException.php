@@ -14,7 +14,7 @@
 
 namespace Quantum\Service\Exceptions;
 
-use Quantum\Exceptions\BaseException;
+use Quantum\App\Exceptions\BaseException;
 
 /**
  * Class ServiceException

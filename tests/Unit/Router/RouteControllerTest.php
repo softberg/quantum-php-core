@@ -12,7 +12,7 @@ namespace Quantum\Controllers {
 
 namespace Quantum\Tests\Unit\Router {
 
-    use Quantum\Exceptions\ControllerException;
+    use Quantum\Router\Exceptions\RouteControllerException;
     use Quantum\Controllers\SomeController;
     use Quantum\Tests\Unit\AppTestCase;
 
@@ -30,7 +30,7 @@ namespace Quantum\Tests\Unit\Router {
 
         public function testMissingMethods()
         {
-            $this->expectException(ControllerException::class);
+            $this->expectException(RouteControllerException::class);
 
             $this->expectExceptionMessage('undefined_method');
 

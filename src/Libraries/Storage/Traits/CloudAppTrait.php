@@ -9,13 +9,13 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.7
  */
 
 namespace Quantum\Libraries\Storage\Traits;
 
 use Quantum\Http\Exceptions\HttpException;
-use Quantum\Exceptions\BaseException;
+use Quantum\App\Exceptions\BaseException;
 use Exception;
 
 /**

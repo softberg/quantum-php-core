@@ -9,13 +9,13 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.7
  */
 
 namespace Quantum\Http\Response;
 
 use Quantum\Libraries\Lang\Exceptions\LangException;
-use Quantum\Exceptions\StopExecutionException;
+use Quantum\App\Exceptions\StopExecutionException;
 use Quantum\Http\Exceptions\HttpException;
 use Quantum\Environment\Environment;
 use InvalidArgumentException;

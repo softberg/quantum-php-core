@@ -9,14 +9,14 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.6
+ * @since 2.9.7
  */
 
-use Quantum\Libraries\Config\Exceptions\ConfigException;
 use Quantum\Libraries\Session\Factories\SessionFactory;
-use Quantum\Libraries\Session\Session;
+use Quantum\Config\Exceptions\ConfigException;
+use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
-use Quantum\Exceptions\BaseException;
+use Quantum\Libraries\Session\Session;
 
 /**
  * @param string|null $adapter

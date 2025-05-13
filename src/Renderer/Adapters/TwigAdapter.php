@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.7
  */
 
 namespace Quantum\Renderer\Adapters;
@@ -17,8 +17,8 @@ namespace Quantum\Renderer\Adapters;
 use Quantum\Libraries\Storage\Factories\FileSystemFactory;
 use Quantum\Renderer\Contracts\TemplateRendererInterface;
 use Quantum\Renderer\Exceptions\RendererException;
+use Quantum\App\Exceptions\BaseException;
 use Quantum\Libraries\Storage\FileSystem;
-use Quantum\Exceptions\BaseException;
 use Twig\Loader\FilesystemLoader;
 use Twig\Error\RuntimeError;
 use Twig\Error\LoaderError;
