@@ -9,13 +9,16 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.6
+ * @since 2.9.7
  */
 
 namespace Quantum\Model;
 
 use Quantum\Libraries\Database\Contracts\DbalInterface;
+use Quantum\Paginator\Exceptions\PaginatorException;
+use Quantum\Paginator\Factories\PaginatorFactory;
 use Quantum\Model\Exceptions\ModelException;
+use Quantum\App\Exceptions\BaseException;
 use Quantum\Paginator\Paginator;
 
 /**
@@ -103,10 +106,17 @@ abstract class QtModel
      * @param int $perPage
      * @param int $currentPage
      * @return Paginator
+     * @throws BaseException
+     * @throws PaginatorException
      */
     public function paginate(int $perPage, int $currentPage = 1): Paginator
     {
-        return new Paginator($this->ormInstance, static::class, $perPage, $currentPage);
+        return PaginatorFactory::get(Paginator::MODEL, [
+            'orm' => $this->ormInstance,
+            'model' => static::class,
+            'perPage' => $perPage,
+            'page' => $currentPage
+        ]);
     }
 
     /**

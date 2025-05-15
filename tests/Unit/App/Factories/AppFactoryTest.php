@@ -26,7 +26,7 @@ class AppFactoryTest extends TestCase
         $this->assertInstanceOf(App::class, $app);
     }
 
-    public function testAppFactoryPharAdapter()
+    public function testAppFactoryConsoleAdapter()
     {
         $app = AppFactory::create(App::CONSOLE, PROJECT_ROOT);
 
