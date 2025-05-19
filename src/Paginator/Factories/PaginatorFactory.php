@@ -51,36 +51,14 @@ class PaginatorFactory
     ];
 
     /**
-     * @var array
-     */
-    private static $instances = [];
-
-    /**
-     * Get paginator instance
+     * Creates new paginator instance
      * @param string $type
      * @param array $params
      * @return Paginator
      * @throws BaseException
      * @throws PaginatorException
      */
-    public static function get(string $type, array $params): Paginator
-    {
-        if (!isset(self::$instances[$type])) {
-            self::$instances[$type] = self::createInstance($type, $params);
-        }
-
-        return self::$instances[$type];
-    }
-
-    /**
-     * Create paginator instance
-     * @param string $type
-     * @param array $params
-     * @return Paginator
-     * @throws BaseException
-     * @throws PaginatorException
-     */
-    private static function createInstance(string $type, array $params): Paginator
+    public static function create(string $type, array $params): Paginator
     {
         if (!isset(self::ADAPTERS[$type])) {
             throw PaginatorException::adapterNotSupported($type);
