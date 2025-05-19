@@ -118,7 +118,7 @@ class ViewCache
      */
     public function serveCachedView(string $uri, Response $response): bool
     {
-        if ($this->exists($uri)) {
+        if ($this->isEnabled() && $this->exists($uri)) {
             $response->html($this->get($uri));
             return true;
         }
