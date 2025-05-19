@@ -111,7 +111,7 @@ abstract class QtModel
      */
     public function paginate(int $perPage, int $currentPage = 1): Paginator
     {
-        return PaginatorFactory::get(Paginator::MODEL, [
+        return PaginatorFactory::create(Paginator::MODEL, [
             'orm' => $this->ormInstance,
             'model' => static::class,
             'perPage' => $perPage,

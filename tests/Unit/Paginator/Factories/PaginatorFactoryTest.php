@@ -23,7 +23,7 @@ class PaginatorFactoryTest extends PaginatorTestCase
 
     public function testPaginatorFactoryInstance()
     {
-        $paginator = PaginatorFactory::get(Paginator::ARRAY, [
+        $paginator = PaginatorFactory::create(Paginator::ARRAY, [
             'items' => [],
             'perPage' => 2,
             'page' => 2,
@@ -34,7 +34,7 @@ class PaginatorFactoryTest extends PaginatorTestCase
 
     public function testPaginatorFactoryArrayAdapter()
     {
-        $paginator = PaginatorFactory::get(Paginator::ARRAY, [
+        $paginator = PaginatorFactory::create(Paginator::ARRAY, [
             'items' => [],
             'perPage' => 2,
             'page' => 2,
@@ -47,7 +47,7 @@ class PaginatorFactoryTest extends PaginatorTestCase
 
     public function testPaginatorFactoryModelAdapter()
     {
-        $paginator = PaginatorFactory::get(Paginator::MODEL, [
+        $paginator = PaginatorFactory::create(Paginator::MODEL, [
             'orm' => ModelFactory::createOrmInstance('posts'),
             'model' => Post::class,
             'perPage' => 2,
@@ -65,27 +65,10 @@ class PaginatorFactoryTest extends PaginatorTestCase
 
         $this->expectExceptionMessage('The adapter `invalid_type` is not supported`');
 
-        PaginatorFactory::get('invalid_type', [
+        PaginatorFactory::create('invalid_type', [
             'items' => [],
             'perPage' => 2,
             'page' => 2,
         ]);
-    }
-
-    public function testPaginatorFactoryReturnsSameInstance()
-    {
-        $app1 = PaginatorFactory::get(Paginator::ARRAY, [
-            'items' => [],
-            'perPage' => 2,
-            'page' => 2,
-        ]);
-
-        $app2 = PaginatorFactory::get(Paginator::ARRAY, [
-            'items' => [],
-            'perPage' => 2,
-            'page' => 2,
-        ]);
-
-        $this->assertSame($app1, $app2);
     }
 }
