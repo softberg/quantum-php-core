@@ -280,6 +280,37 @@ abstract class HttpRequest
     }
 
     /**
+     * Gets Basic Auth Credentials
+     * @return array|null
+     */
+    public static function getBasicAuthCredentials(): ?array
+    {
+        if (isset($_SERVER['PHP_AUTH_USER']) && isset($_SERVER['PHP_AUTH_PW'])) {
+            return [
+                'username' => $_SERVER['PHP_AUTH_USER'],
+                'password' => $_SERVER['PHP_AUTH_PW']
+            ];
+        }
+
+        if (!self::hasHeader('Authorization')) {
+            return null;
+        }
+
+        $authorization = (string)self::getHeader('Authorization');
+
+        if (preg_match('/Basic\s(\S+)/', $authorization, $matches)) {
+            $decoded = base64_decode($matches[1], true);
+
+            if ($decoded && strpos($decoded, ':') !== false) {
+                list($username, $password) = explode(':', $decoded, 2);
+                return ['username' => $username, 'password' => $password];
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Checks to see if request was AJAX request
      * @return bool
      */
