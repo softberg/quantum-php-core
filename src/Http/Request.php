@@ -52,6 +52,7 @@ use Quantum\Http\Request\HttpRequest;
  * @method static array getAllSegments()
  * @method static string|null getCsrfToken()
  * @method static string|null getAuthorizationBearer()
+ * @method static string|null getBasicAuthCredentials()
  * @method static bool isAjax()
  * @method static string|null getReferrer()
  * @method static array|null getParams()

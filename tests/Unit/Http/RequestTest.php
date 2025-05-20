@@ -336,6 +336,52 @@ class RequestTest extends AppTestCase
         $this->assertEquals($bearerToken, $request->getAuthorizationBearer());
     }
 
+    public function testGetBasicAuthCredentialsFromSuperGlobal()
+    {
+        $request = new Request();
+
+        $credentials = [
+            'username' => "testGlobalUsername",
+            'password' => "testGlobalPassword",
+        ];
+
+        $this->assertNull($request->getBasicAuthCredentials());
+
+        $_SERVER['PHP_AUTH_USER'] = $credentials['username'];
+
+        $_SERVER['PHP_AUTH_PW'] = $credentials['password'];
+
+        $result = $request->getBasicAuthCredentials();
+
+        $this->assertNotNull($result);
+
+        $this->assertEquals($credentials, $result);
+
+        unset($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']);
+    }
+
+    public function testGetBasicAuthCredentialsFromHeader()
+    {
+        $request = new Request();
+
+        $username = 'testHeaderName';
+
+        $password = 'testHeaderPassword';
+
+        $credentials = base64_encode("$username:$password");
+
+        $this->assertNull($request->getBasicAuthCredentials());
+
+        $request->setHeader('Authorization', 'Basic ' . $credentials);
+
+        $result = $request->getBasicAuthCredentials();
+
+        $this->assertNotNull($result);
+
+        $this->assertEquals($username, $result['username']);
+        $this->assertEquals($password, $result['password']);
+    }
+
     public function testIsAjax()
     {
         $request = new Request();
