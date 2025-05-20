@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.6
+ * @since 2.9.7
  */
 
 namespace Quantum\Libraries\Database\Adapters\Sleekdb\Statements;
@@ -69,6 +69,24 @@ trait Criteria
         $this->havings[] = [$column, $operator, $value];
 
         return $this;
+    }
+
+    /**
+     * @inheritDoc
+     * @throws DatabaseException
+     */
+    public function isNull(string $column): DbalInterface
+    {
+        return $this->criteria($column, '=', null);
+    }
+
+    /**
+     * @inheritDoc
+     * @throws DatabaseException
+     */
+    public function isNotNull(string $column): DbalInterface
+    {
+        return $this->criteria($column, '!=', null);
     }
 
     /**

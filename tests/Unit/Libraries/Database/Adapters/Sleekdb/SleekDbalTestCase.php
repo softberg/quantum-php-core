@@ -110,7 +110,7 @@ abstract class SleekDbalTestCase extends AppTestCase
         $this->eventModel->create();
         $this->eventModel->prop('title', 'Music');
         $this->eventModel->prop('country', 'Ireland');
-        $this->eventModel->prop('started_at', '2019-09-14 10:15:12');
+        $this->eventModel->prop('started_at', '2020-12-14 10:15:12');
         $this->eventModel->save();
 
         $this->eventModel->create();
@@ -122,13 +122,13 @@ abstract class SleekDbalTestCase extends AppTestCase
         $this->eventModel->create();
         $this->eventModel->prop('title', 'Art');
         $this->eventModel->prop('country', 'Island');
-        $this->eventModel->prop('started_at', '2050-02-14 10:15:12');
+        $this->eventModel->prop('started_at', null);
         $this->eventModel->save();
 
         $this->eventModel->create();
         $this->eventModel->prop('title', 'Music');
         $this->eventModel->prop('country', 'Island');
-        $this->eventModel->prop('started_at', '2030-02-14 10:15:12');
+        $this->eventModel->prop('started_at', null);
         $this->eventModel->save();
     }
 

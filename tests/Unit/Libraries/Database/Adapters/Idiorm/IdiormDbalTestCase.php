@@ -85,10 +85,10 @@ abstract class IdiormDbalTestCase extends AppTestCase
                         ('Dance', 'New Zealand', '2019-01-04 20:28:33'), 
                         ('Music', 'England', '2019-09-14 10:15:12'),
                         ('Design', 'Ireland', '2020-02-14 10:15:12'),
-                        ('Music', 'Ireland', '2019-09-14 10:15:12'),
+                        ('Music', 'Ireland', '2035-09-14 10:15:12'),
                         ('Film', 'Ireland', '2040-02-14 10:15:12'),
-                        ('Art', 'Island', '2050-02-14 10:15:12'),
-                        ('Music', 'Island', '2030-02-14 10:15:12')
+                        ('Art', 'Island', NULL),
+                        ('Music', 'Island', NULL)
                     ");
     }
 

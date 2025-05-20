@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.6
+ * @since 2.9.7
  */
 
 namespace Quantum\Libraries\Database\Adapters\Idiorm\Statements;
@@ -67,6 +67,26 @@ trait Criteria
 
         $func = $this->operators[$operator];
         $this->getOrmModel()->$func($column, $value);
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     * @throws DatabaseException
+     */
+    public function isNull(string $column): DbalInterface
+    {
+        $this->getOrmModel()->where_null($column);
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     * @throws DatabaseException
+     */
+    public function isNotNull(string $column): DbalInterface
+    {
+        $this->getOrmModel()->where_not_null($column);
         return $this;
     }
 
