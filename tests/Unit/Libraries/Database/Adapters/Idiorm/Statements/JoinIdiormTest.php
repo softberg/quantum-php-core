@@ -124,7 +124,7 @@ namespace Quantum\Tests\Unit\Libraries\Database\Adapters\Idiorm\Statements {
                 ->criteria('events.started_at', '>=', '2020-01-01')
                 ->get();
 
-            $this->assertCount(3, $result);
+            $this->assertCount(2, $result);
         }
 
         /** Right join can not be tested this time because the sqlite does not support it */

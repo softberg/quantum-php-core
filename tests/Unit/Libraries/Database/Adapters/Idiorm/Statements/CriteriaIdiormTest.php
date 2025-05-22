@@ -127,16 +127,17 @@ class CriteriaIdiormTest extends IdiormDbalTestCase
 
     public function testIdiormCriteriaWithFunction()
     {
+        $now = '2035-01-01 00:00:00';
+
         $eventModel = new IdiormDbal('events');
 
-        $events = $eventModel->criteria('started_at', '>=', ['fn' => 'date("now")'])->get();
+        $events = $eventModel->criteria('started_at', '>=', ['fn' => "'$now'"])->get();
 
-        $this->assertCount(3, $events);
+        $this->assertCount(2, $events);
 
-        /** Tested at 2020-04-05 01:05:00 */
-        $this->assertEquals('2040-02-14 10:15:12', $events[0]->prop('started_at'));
+        $this->assertEquals('2035-09-14 10:15:12', $events[0]->prop('started_at'));
 
-        $this->assertEquals('2050-02-14 10:15:12', $events[1]->prop('started_at'));
+        $this->assertEquals('2040-02-14 10:15:12', $events[1]->prop('started_at'));
     }
 
     public function testIdiormCriteriaColumnsEqual()
@@ -213,6 +214,33 @@ class CriteriaIdiormTest extends IdiormDbalTestCase
         $this->assertEquals('Music', $events[0]->prop('title'));
 
         $this->assertEquals('Ireland', $events[0]->prop('country'));
+    }
 
+    public function testIdiormIsNull()
+    {
+        $eventsModel = new IdiormDbal('events');
+
+        $events = $eventsModel->isNull('started_at')->get();
+
+        $this->assertCount(2, $events);
+
+        $this->assertEquals('Art', $events[0]->prop('title'));
+
+        $this->assertEquals('Music', $events[1]->prop('title'));
+    }
+
+    public function testIdiormIsNotNull()
+    {
+        $eventsModel = new IdiormDbal('events');
+
+        $eventsModel->isNotNull('started_at');
+
+        $events = $eventsModel->get();
+
+        $this->assertGreaterThan(0, count($events));
+
+        foreach ($events as $event) {
+            $this->assertNotNull($event->prop('started_at'));
+        }
     }
 }

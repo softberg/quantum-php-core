@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.6
+ * @since 2.9.7
  */
 
 namespace Quantum\Libraries\Database\Contracts;
@@ -193,4 +193,18 @@ interface DbalInterface
      * @return DbalInterface
      */
     public function joinThrough(QtModel $model, bool $switch = true): DbalInterface;
+
+    /**
+     * Checks if the given column is NULL
+     * @param string $column
+     * @return DbalInterface
+     */
+    public function isNull(string $column): DbalInterface;
+
+    /**
+     * Checks if the given column is NOT NULL
+     * @param string $column
+     * @return DbalInterface
+     */
+    public function isNotNull(string $column): DbalInterface;
 }

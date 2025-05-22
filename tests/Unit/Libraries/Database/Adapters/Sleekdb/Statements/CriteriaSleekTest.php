@@ -185,4 +185,32 @@ class CriteriaSleekTest extends SleekDbalTestCase
 
         $this->assertCount(1, $events);
     }
+
+    public function testSleekIsNull()
+    {
+        $eventsModel = new SleekDbal('events');
+
+        $events = $eventsModel->isNull('started_at')->orderBy('id', 'asc')->get();
+
+        $this->assertCount(2, $events);
+
+        $this->assertEquals('Art', $events[0]->prop('title'));
+
+        $this->assertEquals('Music', $events[1]->prop('title'));
+    }
+
+    public function testSleekIsNotNull()
+    {
+        $eventsModel = new SleekDbal('events');
+
+        $eventsModel->isNotNull('started_at');
+
+        $events = $eventsModel->get();
+
+        $this->assertGreaterThan(0, count($events));
+
+        foreach ($events as $event) {
+            $this->assertNotNull($event->prop('started_at'));
+        }
+    }
 }
