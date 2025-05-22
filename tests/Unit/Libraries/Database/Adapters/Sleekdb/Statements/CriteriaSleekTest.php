@@ -190,7 +190,7 @@ class CriteriaSleekTest extends SleekDbalTestCase
     {
         $eventsModel = new SleekDbal('events');
 
-        $events = $eventsModel->isNull('started_at')->get();
+        $events = $eventsModel->isNull('started_at')->orderBy('id', 'asc')->get();
 
         $this->assertCount(2, $events);
 
