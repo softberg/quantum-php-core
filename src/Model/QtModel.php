@@ -25,22 +25,26 @@ use Quantum\Paginator\Paginator;
  * Class QtModel
  * @package Quantum\Model
  * @method string getTable()
- * @method DbalInterface select(...$columns)
- * @method DbalInterface findOne(int $id)
- * @method DbalInterface findOneBy(string $column, $value)
- * @method DbalInterface first()
- * @method DbalInterface criteria(string $column, string $operator, $value = null)
- * @method DbalInterface criterias(...$criterias)
- * @method DbalInterface having(string $column, string $operator, string $value = null)
- * @method DbalInterface orderBy(string $column, string $direction)
- * @method DbalInterface limit(int $limit)
+ * @method static select(...$columns)
+ * @method static findOne(int $id)
+ * @method static findOneBy(string $column, $value)
+ * @method static first()
+ * @method static criteria(string $column, string $operator, $value = null)
+ * @method static criterias(...$criterias)
+ * @method static having(string $column, string $operator, string $value = null)
+ * @method static orderBy(string $column, string $direction)
+ * @method static offset(int $offset)
+ * @method static limit(int $limit)
+ * @method int count()
  * @method array asArray()
- * @method DbalInterface create()
+ * @method static create()
  * @method bool save()
  * @method bool delete()
  * @method bool deleteMany()
- * @method DbalInterface joinTo(QtModel $model, bool $switch = true)
- * @method DbalInterface joinThrough(QtModel $model, bool $switch = true)
+ * @method static joinTo(QtModel $model, bool $switch = true)
+ * @method static joinThrough(QtModel $model, bool $switch = true)
+ * @method static isNull(string $column)
+ * @method static isNotNull(string $column)
  */
 abstract class QtModel
 {
@@ -79,7 +83,7 @@ abstract class QtModel
      * ORM database abstract layer object
      * @var DbalInterface
      */
-    private $ormInstance;
+    protected $ormInstance;
 
     /**
      * Sets the ORM instance

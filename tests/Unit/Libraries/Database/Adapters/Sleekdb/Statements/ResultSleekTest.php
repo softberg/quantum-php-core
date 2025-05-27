@@ -8,10 +8,17 @@ use Quantum\Libraries\Database\Adapters\Sleekdb\SleekDbal;
 class ResultSleekTest extends SleekDbalTestCase
 {
 
+    private $userModel;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->userModel = new SleekDbal('users');
+    }
+
     public function testSleekGet()
     {
-        $this->userModel = new SleekDbal('users');
-
         $users = $this->userModel->get();
 
         $this->assertIsArray($users);
@@ -25,8 +32,6 @@ class ResultSleekTest extends SleekDbalTestCase
 
     public function testSleekFindOne()
     {
-        $this->userModel = new SleekDbal('users');
-
         $user = $this->userModel->findOne(1);
 
         $this->assertEquals('John', $user->prop('firstname'));
@@ -36,8 +41,6 @@ class ResultSleekTest extends SleekDbalTestCase
 
     public function testSleekFindOneBy()
     {
-        $this->userModel = new SleekDbal('users');
-
         $user = $this->userModel->findOneBy('firstname', 'John');
 
         $this->assertEquals('Doe', $user->prop('lastname'));
@@ -47,8 +50,6 @@ class ResultSleekTest extends SleekDbalTestCase
 
     public function testSleekFirst()
     {
-        $this->userModel = new SleekDbal('users');
-
         $user = $this->userModel->criteria('age', '>', 40)->first();
 
         $this->assertEquals('Doe', $user->prop('lastname'));
@@ -68,8 +69,6 @@ class ResultSleekTest extends SleekDbalTestCase
 
     public function testSleekCount()
     {
-        $this->userModel = new SleekDbal('users');
-
         $this->assertIsInt($this->userModel->count());
 
         $this->assertEquals(2, $this->userModel->count());
@@ -81,9 +80,7 @@ class ResultSleekTest extends SleekDbalTestCase
 
     public function testSleekAsArray()
     {
-        $userModel = new SleekDbal('users');
-
-        $user = $userModel->first();
+        $user = $this->userModel->first();
 
         $this->assertIsObject($user);
 
