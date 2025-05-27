@@ -28,6 +28,8 @@ use SleekDB\Exceptions\IOException;
 trait Result
 {
 
+    abstract protected function resetBuilderState(): void;
+
     /**
      * @inheritDoc
      */
@@ -64,10 +66,11 @@ trait Result
         try {
             $result = $this->getBuilder()->where(['id', '=', $id])->getQuery()->first();
             $this->updateOrmModel($result);
-            return $this;
         } finally {
             $this->resetBuilderState();
         }
+
+        return $this;
     }
 
     /**
@@ -78,10 +81,11 @@ trait Result
         try {
             $result = $this->getBuilder()->where([$column, '=', $value])->getQuery()->first();
             $this->updateOrmModel($result);
-            return $this;
         } finally {
             $this->resetBuilderState();
         }
+
+        return $this;
     }
 
     /**
@@ -92,10 +96,11 @@ trait Result
         try {
             $result = $this->getBuilder()->getQuery()->first();
             $this->updateOrmModel($result);
-            return $this;
         } finally {
             $this->resetBuilderState();
         }
+
+        return $this;
     }
 
     /**
