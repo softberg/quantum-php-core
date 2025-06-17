@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.6
+ * @since 2.9.7
  */
 
 namespace Quantum\Libraries\Database\Adapters\Sleekdb\Statements;
@@ -27,72 +27,78 @@ use SleekDB\Exceptions\IOException;
  */
 trait Result
 {
-    /**
-     * @inheritDoc
-     * @return array
-     * @throws DatabaseException
-     * @throws ModelException
-     * @throws IOException
-     * @throws InvalidArgumentException
-     * @throws InvalidConfigurationException
-     */
-    public function get(): array
-    {
-        return array_map(function ($element) {
-            $item = clone $this;
-            $item->data = $element;
-            $item->modifiedFields = $element;
-            $item->isNew = false;
-            return $item;
-        }, $this->getBuilder()->getQuery()->fetch());
-    }
+
+    abstract protected function resetBuilderState(): void;
 
     /**
      * @inheritDoc
+     */
+    public function get(): array
+    {
+        try {
+            return array_map(function ($element) {
+                $item = clone $this;
+                $item->data = $element;
+                $item->modifiedFields = $element;
+                $item->isNew = false;
+                return $item;
+            }, $this->getBuilder()->getQuery()->fetch());
+        } finally {
+            $this->resetBuilderState();
+        }
+    }
+
+    /**
+     *
      * @return DbalInterface
      * @throws DatabaseException
      * @throws IOException
      * @throws InvalidArgumentException
      * @throws InvalidConfigurationException
+     * @throws ModelException
+     */
+
+    /**
+     * @inheritDoc
      */
     public function findOne(int $id): DbalInterface
     {
-        $result = $this->getOrmModel()->findById($id);
-
-        $this->updateOrmModel($result);
+        try {
+            $result = $this->getBuilder()->where(['id', '=', $id])->getQuery()->first();
+            $this->updateOrmModel($result);
+        } finally {
+            $this->resetBuilderState();
+        }
 
         return $this;
     }
 
     /**
      * @inheritDoc
-     * @throws DatabaseException
-     * @throws IOException
-     * @throws InvalidArgumentException
-     * @throws InvalidConfigurationException
      */
     public function findOneBy(string $column, $value): DbalInterface
     {
-        $result = $this->getOrmModel()->findOneBy([$column, '=', $value]);
-
-        $this->updateOrmModel($result);
+        try {
+            $result = $this->getBuilder()->where([$column, '=', $value])->getQuery()->first();
+            $this->updateOrmModel($result);
+        } finally {
+            $this->resetBuilderState();
+        }
 
         return $this;
     }
 
     /**
      * @inheritDoc
-     * @throws DatabaseException
-     * @throws ModelException
-     * @throws IOException
-     * @throws InvalidArgumentException
-     * @throws InvalidConfigurationException
      */
     public function first(): DbalInterface
     {
-        $result = $this->getBuilder()->getQuery()->first();
-
-        $this->updateOrmModel($result);
+        try {
+            $result = $this->getBuilder()->getQuery()->first();
+            $this->updateOrmModel($result);
+        } finally {
+            $this->resetBuilderState();
+        }
 
         return $this;
     }

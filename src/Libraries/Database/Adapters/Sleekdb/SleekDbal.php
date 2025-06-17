@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.6
+ * @since 2.9.7
  */
 
 namespace Quantum\Libraries\Database\Adapters\Sleekdb;
@@ -122,7 +122,7 @@ class SleekDbal implements DbalInterface
      * Foreign keys
      * @var array
      */
-    private $foreignKeys = [];
+    private $foreignKeys;
 
     /**
      * Hidden fields
@@ -193,12 +193,20 @@ class SleekDbal implements DbalInterface
         $this->data = $data;
     }
 
+    /**
+     * @param $modifiedFields
+     * @return void
+     */
     public function setModifiedFields($modifiedFields)
     {
         $this->modifiedFields = $modifiedFields;
     }
 
-    public function setIsNew($isNew)
+    /**
+     * @param bool $isNew
+     * @return void
+     */
+    public function setIsNew(bool $isNew)
     {
         $this->isNew = $isNew;
     }
@@ -326,5 +334,21 @@ class SleekDbal implements DbalInterface
         }
 
         return $this->queryBuilder;
+    }
+
+    /**
+     * Resets the builder state
+     */
+    protected function resetBuilderState(): void
+    {
+        $this->criterias = [];
+        $this->havings = [];
+        $this->selected = [];
+        $this->grouped = [];
+        $this->ordered = [];
+        $this->offset = null;
+        $this->limit = null;
+        $this->joins = [];
+        $this->queryBuilder = null;
     }
 }
