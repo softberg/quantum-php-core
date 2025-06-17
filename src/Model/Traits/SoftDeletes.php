@@ -15,7 +15,6 @@
 namespace Quantum\Model\Traits;
 
 use Quantum\Paginator\Exceptions\PaginatorException;
-use Quantum\Tests\_root\shared\Models\Products;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Model\ModelCollection;
 use Quantum\Paginator\Paginator;
