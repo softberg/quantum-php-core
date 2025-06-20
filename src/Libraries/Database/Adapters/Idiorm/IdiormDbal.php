@@ -14,6 +14,7 @@
 
 namespace Quantum\Libraries\Database\Adapters\Idiorm;
 
+use Quantum\Libraries\Database\Adapters\Idiorm\Statements\Transaction;
 use Quantum\Libraries\Database\Adapters\Idiorm\Statements\Criteria;
 use Quantum\Libraries\Database\Adapters\Idiorm\Statements\Reducer;
 use Quantum\Libraries\Database\Adapters\Idiorm\Statements\Result;
@@ -34,6 +35,7 @@ use PDO;
 class IdiormDbal implements DbalInterface, RelationalInterface
 {
 
+    use Transaction;
     use Model;
     use Result;
     use Criteria;

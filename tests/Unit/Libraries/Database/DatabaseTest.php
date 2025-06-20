@@ -84,4 +84,86 @@ class DatabaseTest extends AppTestCase
         $this->assertIsArray(Database::queryLog());
     }
 
+    public function testDatabaseTransactionMethods()
+    {
+        Database::beginTransaction();
+
+        Database::execute('INSERT INTO users (firstname, lastname, age, country)
+                                 VALUES (:firstname, :lastname, :age, :country)', [
+            'firstname' => 'Alice',
+            'lastname' => 'Smith',
+            'age' => 30,
+            'country' => 'Canada'
+        ]);
+
+        Database::rollback();
+
+        $result = Database::query('SELECT * FROM users WHERE firstname = :firstname', ['firstname' => 'Alice']);
+
+        $this->assertEmpty($result);
+
+        Database::beginTransaction();
+
+        Database::execute('INSERT INTO users (firstname, lastname, age, country)
+                                 VALUES (:firstname, :lastname, :age, :country)', [
+            'firstname' => 'Bob',
+            'lastname' => 'Marley',
+            'age' => 42,
+            'country' => 'Jamaica'
+        ]);
+
+        Database::commit();
+
+        $result = Database::query('SELECT * FROM users WHERE firstname = :firstname', ['firstname' => 'Bob']);
+
+        $this->assertNotEmpty($result);
+
+        $this->assertEquals('Marley', $result[0]['lastname']);
+    }
+
+    public function testDatabaseTransactionClosureSuccess()
+    {
+        $result = Database::transaction(function () {
+            Database::execute('INSERT INTO users (firstname, lastname, age, country)
+                                     VALUES (:firstname, :lastname, :age, :country)', [
+                'firstname' => 'Charlie',
+                'lastname' => 'Brown',
+                'age' => 28,
+                'country' => 'USA'
+            ]);
+
+            return 'committed';
+        });
+
+        $this->assertEquals('committed', $result);
+
+        $rows = Database::query('SELECT * FROM users WHERE firstname = :firstname', ['firstname' => 'Charlie']);
+
+        $this->assertNotEmpty($rows);
+
+        $this->assertEquals('Brown', $rows[0]['lastname']);
+    }
+
+    public function testDatabaseTransactionClosureFailure()
+    {
+        try {
+            Database::transaction(function () {
+                Database::execute('INSERT INTO users (firstname, lastname, age, country)
+                                         VALUES (:firstname, :lastname, :age, :country)', [
+                    'firstname' => 'Eve',
+                    'lastname' => 'Hacker',
+                    'age' => 999,
+                    'country' => 'Matrix'
+                ]);
+
+                throw new \Exception('Something went wrong!');
+            });
+        } catch (\Exception $e) {
+            $this->assertEquals('Something went wrong!', $e->getMessage());
+        }
+
+        $rows = Database::query('SELECT * FROM users WHERE firstname = :firstname', ['firstname' => 'Eve']);
+
+        $this->assertEmpty($rows);
+    }
 }
