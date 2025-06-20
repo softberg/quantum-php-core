@@ -17,6 +17,7 @@ namespace Quantum\Libraries\Database;
 use Quantum\Libraries\Database\Exceptions\DatabaseException;
 use Quantum\Libraries\Database\Adapters\Idiorm\IdiormDbal;
 use Quantum\Libraries\Database\Adapters\Sleekdb\SleekDbal;
+use Quantum\Libraries\Database\Traits\TransactionTrait;
 use Quantum\Libraries\Database\Traits\RelationalTrait;
 use Quantum\Config\Exceptions\ConfigException;
 use Quantum\App\Exceptions\BaseException;
@@ -31,6 +32,7 @@ use ReflectionException;
 class Database
 {
 
+    use TransactionTrait;
     use RelationalTrait;
 
     const ADAPTERS = [
