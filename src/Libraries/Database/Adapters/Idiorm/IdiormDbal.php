@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.7
  */
 
 namespace Quantum\Libraries\Database\Adapters\Idiorm;
@@ -23,6 +23,7 @@ use Quantum\Libraries\Database\Adapters\Idiorm\Statements\Join;
 use Quantum\Libraries\Database\Contracts\RelationalInterface;
 use Quantum\Libraries\Database\Exceptions\DatabaseException;
 use Quantum\Libraries\Database\Contracts\DbalInterface;
+use InvalidArgumentException;
 use ORM;
 use PDO;
 
@@ -39,6 +40,21 @@ class IdiormDbal implements DbalInterface, RelationalInterface
     use Reducer;
     use Join;
     use Query;
+
+    /**
+     * SQLite driver
+     */
+    const DRIVER_SQLITE = 'sqlite';
+
+    /**
+     * MySQL driver
+     */
+    const DRIVER_MYSQL = 'mysql';
+
+    /**
+     * PostgresSQL driver
+     */
+    const DRIVER_PGSQL = 'pgsql';
 
     /**
      * Default charset
@@ -61,13 +77,13 @@ class IdiormDbal implements DbalInterface, RelationalInterface
      * Foreign keys
      * @var array
      */
-    private $foreignKeys = [];
+    private $foreignKeys;
 
     /**
      * Hidden fields
      * @var array
      */
-    private $hidden = [];
+    private $hidden;
 
     /**
      * Idiorm Patch object
@@ -133,22 +149,10 @@ class IdiormDbal implements DbalInterface, RelationalInterface
      */
     public static function connect(array $config)
     {
-        $configuration = [
-            'connection_string' => self::buildConnectionString($config),
-            'logging' => config()->get('debug', false),
-            'error_mode' => PDO::ERRMODE_EXCEPTION,
-        ];
+        $driver = $config['driver'] ?? '';
+        $charset = $config['charset'] ?? self::DEFAULT_CHARSET;
 
-        if ($config['driver'] == 'mysql' || $config['driver'] == 'pgsql') {
-            $configuration = array_merge($configuration, [
-                'username' => $config['username'] ?? null,
-                'password' => $config['password'] ?? null,
-                'driver_options' => [
-                    PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES ' . ($config['charset'] ?? self::DEFAULT_CHARSET)
-                ]
-            ]);
-
-        }
+        $configuration = self::getBaseConfig($driver, $config) + self::getDriverConfig($driver, $config, $charset);
 
         (self::$ormClass)::configure($configuration);
 
@@ -207,34 +211,71 @@ class IdiormDbal implements DbalInterface, RelationalInterface
     }
 
     /**
-     * Builds connection string
-     * @param array $connectionDetails
-     * @return string
+     * @param string $driver
+     * @param array $config
+     * @return array
      */
-    protected static function buildConnectionString(array $connectionDetails): string
+    protected static function getBaseConfig(string $driver, array $config): array
     {
-        $connectionString = $connectionDetails['driver'] . ':';
+        return [
+            'connection_string' => self::buildConnectionString($driver, $config),
+            'logging' => config()->get('debug', false),
+            'error_mode' => PDO::ERRMODE_EXCEPTION,
+        ];
+    }
 
-        switch ($connectionDetails['driver']) {
-            case 'sqlite':
-                $connectionString .= $connectionDetails['database'];
-                break;
-            case 'mysql':
-            case 'pgsql':
-                $connectionString .= 'host=' . $connectionDetails['host'] . ';';
-
-                if (isset($connectionDetails['port'])) {
-                    $connectionString .= 'post=' . $connectionDetails['port'] . ';';
-                }
-
-                $connectionString .= 'dbname=' . $connectionDetails['dbname'] . ';';
-
-                if (isset($connectionDetails['charset'])) {
-                    $connectionString .= 'charset=' . $connectionDetails['charset'] . ';';
-                }
-                break;
+    /**
+     * @param string $driver
+     * @param array $config
+     * @param string $charset
+     * @return array
+     */
+    protected static function getDriverConfig(string $driver, array $config, string $charset): array
+    {
+        if ($driver === self::DRIVER_MYSQL || $driver === self::DRIVER_PGSQL) {
+            return [
+                'username' => $config['username'] ?? null,
+                'password' => $config['password'] ?? null,
+                'driver_options' => [PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES ' . $charset],
+            ];
         }
 
-        return $connectionString;
+        if ($driver === self::DRIVER_SQLITE) {
+            return [];
+        }
+
+        throw new InvalidArgumentException("Unsupported driver: $driver");
+    }
+
+    /**
+     * Builds connection string
+     * @param string $driver
+     * @param array $config
+     * @return string
+     */
+    protected static function buildConnectionString(string $driver, array $config): string
+    {
+        if ($driver === self::DRIVER_SQLITE) {
+            return $driver . ':' . ($config['database'] ?? '');
+        }
+
+        if ($driver === self::DRIVER_MYSQL || $driver === self::DRIVER_PGSQL) {
+            $parts = [
+                'host=' . ($config['host'] ?? ''),
+                'dbname=' . ($config['dbname'] ?? ''),
+            ];
+
+            if (!empty($config['port'])) {
+                $parts[] = 'port=' . $config['port'];
+            }
+
+            if (!empty($config['charset'])) {
+                $parts[] = 'charset=' . $config['charset'];
+            }
+
+            return $driver . ':' . implode(';', $parts);
+        }
+
+        throw new InvalidArgumentException("Unsupported driver: $driver");
     }
 }
