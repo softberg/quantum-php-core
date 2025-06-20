@@ -17,7 +17,7 @@ namespace Quantum\Libraries\Database\Adapters\Idiorm\Statements;
 use Quantum\Libraries\Database\Exceptions\DatabaseException;
 
 /**
- * Trait Query
+ * Trait Transaction
  * @package Quantum\Libraries\Database
  */
 trait Transaction
@@ -42,7 +42,6 @@ trait Transaction
      */
     public static function commit(): void
     {
-
         if (!self::getConnection()) {
             throw DatabaseException::missingConfig();
         }

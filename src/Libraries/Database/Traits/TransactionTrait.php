@@ -8,7 +8,7 @@ use Throwable;
 
 /**
  * Trait TransactionTrait
- * @package Quantum\Libraries\Database\Traits
+ * @package Quantum\Libraries\Database
  */
 trait TransactionTrait
 {
