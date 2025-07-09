@@ -40,6 +40,14 @@ abstract class AppTestCase extends TestCase
         $property->setValue($value);
     }
 
+    protected function getPrivateProperty($object, $property)
+    {
+        $reflection = new ReflectionClass($object);
+        $property = $reflection->getProperty($property);
+        $property->setAccessible(true);
+        return $property->getValue($object);
+    }
+
     protected function createFile(string $filePath, string $content)
     {
         $this->fs->put($filePath, $content);
