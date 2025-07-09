@@ -54,4 +54,17 @@ class ModelFactoryTest extends AppTestCase
 
         $this->assertInstanceOf(DbalInterface::class, $userModel);
     }
+
+    public function testModelFactoryCreateDynamicModel()
+    {
+        $dynamicModel = ModelFactory::createDynamicModel('test_table');
+
+        $this->assertInstanceOf(QtModel::class, $dynamicModel);
+
+        $this->assertStringContainsString('@anonymous', get_class($dynamicModel));
+
+        $ormInstance = $this->getPrivateProperty($dynamicModel, 'ormInstance');
+
+        $this->assertInstanceOf(DbalInterface::class, $ormInstance);
+    }
 }

@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.6
+ * @since 2.9.8
  */
 
 namespace Quantum\Model\Factories;
@@ -50,6 +50,25 @@ class ModelFactory
             $model->foreignKeys ?? [],
             $model->hidden ?? []
         );
+
+        $model->setOrmInstance($ormInstance);
+
+        return $model;
+    }
+
+    /**
+     * Creates anonymous dynamic model
+     * @param string $table
+     * @param string $idColumn
+     * @param array $foreignKeys
+     * @param array $hidden
+     * @return QtModel
+     */
+    public static function createDynamicModel(string $table, string $idColumn = 'id', array $foreignKeys = [], array $hidden = []): QtModel
+    {
+        $model = new class extends QtModel {};
+
+        $ormInstance = self::createOrmInstance($table, $idColumn, $foreignKeys, $hidden);
 
         $model->setOrmInstance($ormInstance);
 
