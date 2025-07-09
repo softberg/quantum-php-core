@@ -9,18 +9,21 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 2.9.8
  */
 
 namespace Quantum\Libraries\Mailer;
 
 use Quantum\Libraries\Storage\Exceptions\FileSystemException;
 use Quantum\Libraries\Storage\Factories\FileSystemFactory;
+use Quantum\Config\Exceptions\ConfigException;
 use Phemail\Message\MessagePartInterface;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Libraries\Storage\FileSystem;
+use Quantum\Di\Exceptions\DiException;
 use Phemail\Message\MessagePart;
 use Phemail\MessageParser;
+use ReflectionException;
 
 /**
  * class MailTrap
@@ -50,12 +53,21 @@ class MailTrap
     private static $instance = null;
 
     /**
+     * @var string
+     */
+    private $emailsDirectory;
+
+    /**
      * @throws BaseException
+     * @throws ConfigException
+     * @throws DiException
+     * @throws ReflectionException
      */
     private function __construct()
     {
         $this->fs = FileSystemFactory::get();
         $this->parser = new MessageParser();
+        $this->emailsDirectory = base_dir() . DS . 'shared' . DS . 'emails';
     }
 
     /**
@@ -79,25 +91,22 @@ class MailTrap
      */
     public function saveMessage(string $filename, string $content): bool
     {
-        $emailsDirectory = base_dir() . DS . 'shared' . DS . 'emails';
-
-        if ($this->fs->isDirectory($emailsDirectory)) {
-            $this->fs->put($emailsDirectory . DS . $filename . '.eml', $content);
-            return true;
+        if (!$this->fs->isDirectory($this->emailsDirectory)) {
+            return false;
         }
 
-        return false;
+        return (bool) $this->fs->put($this->emailsDirectory . DS . $filename . '.eml', $content);
     }
 
     /**
      * Gets the parsed email
-     * @param $filename
+     * @param string $filename
      * @return $this
      * @throws BaseException
      */
-    public function parseMessage($filename): MailTrap
+    public function parseMessage(string $filename): MailTrap
     {
-        $filePath = base_dir() . DS . 'shared' . DS . 'emails' . DS . $filename . '.eml';
+        $filePath = $this->emailsDirectory . DS . $filename . '.eml';
 
         if (!$this->fs->exists($filePath)) {
             throw FileSystemException::fileNotFound($filename);

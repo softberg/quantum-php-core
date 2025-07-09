@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 2.9.8
  */
 
 namespace Quantum\View;
@@ -106,7 +106,10 @@ class QtView
     public function setLayout(?string $layoutFile, array $assets = [])
     {
         $this->layoutFile = $layoutFile;
-        $this->assets = $assets;
+
+        if(!empty($assets)) {
+            $this->assets = array_merge($this->assets, $assets);
+        }
     }
 
     /**

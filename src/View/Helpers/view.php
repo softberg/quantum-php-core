@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 2.9.8
  */
 
 use Quantum\Config\Exceptions\ConfigException;
@@ -20,6 +20,7 @@ use Quantum\View\Factories\ViewFactory;
 use Quantum\Di\Exceptions\DiException;
 use DebugBar\DebugBarException;
 use Quantum\Debugger\Debugger;
+use Quantum\View\RawParam;
 
 /**
  * Rendered view
@@ -65,6 +66,16 @@ function partial(string $partial, array $args = []): ?string
 function view_param(string $key)
 {
     return ViewFactory::get()->getParam($key);
+}
+
+/**
+ * Creates a raw param
+ * @param $value
+ * @return RawParam
+ */
+function raw_param($value): RawParam
+{
+    return new RawParam($value);
 }
 
 /**
