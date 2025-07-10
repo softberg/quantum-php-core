@@ -48,9 +48,7 @@ class DatabaseService extends QtService
      */
     public function getTables(): array
     {
-        $storeDirectory = base_dir() . DS . 'shared' . DS . 'store';
-
-        $databaseFolder = fs()->listDirectory($storeDirectory);
+        $databaseFolder = fs()->listDirectory($this->storeDirectory);
 
         $tables = [];
 

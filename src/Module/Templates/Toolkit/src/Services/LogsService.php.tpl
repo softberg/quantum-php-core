@@ -44,7 +44,7 @@ class LogsService extends QtService
 
         foreach ($logFiles as $logFile) {
             if (str_contains($logFile, '.log')) {
-                $filteredLogFiles[] = pathinfo($logFile, PATHINFO_BASENAME);
+                $filteredLogFiles[] = fs()->fileNameWithExtension($logFile);
             }
         }
 
