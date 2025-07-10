@@ -222,7 +222,7 @@ class ModuleManager
      * @param string $dstPath
      */
     private function processTemplates(string $srcPath, string &$dstPath){
-        $dstPath = str_replace('.tpl', '.php', $dstPath);
+        $dstPath = str_replace('.php.tpl', '.php', $dstPath);
         $content = $this->fs->get($srcPath);
         $processedContent = $this->replacePlaceholders($content);
         $this->fs->put($dstPath, $processedContent);
