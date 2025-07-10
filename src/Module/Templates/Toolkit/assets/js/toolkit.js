@@ -1,8 +1,15 @@
 class ToolkitLogs {
+    constructor() {
+        this.$logsIframe = $('.logs-iframe');
+    }
+
     handleLogFileClick(event) {
-        $('.logs-iframe').attr('src', window.location.origin + '/toolkit/logs/view?logFile=' + $(event.currentTarget).data('file'));
-        $(event.currentTarget).siblings().removeClass('active');
-        $(event.currentTarget).addClass('active');
+        const $target = $(event.currentTarget);
+        const file = $target.data('file');
+
+        this.$logsIframe.attr('src', `${window.location.origin}/toolkit/logs/view?logFile=${file}`);
+        $target.siblings().removeClass('active');
+        $target.addClass('active');
     }
 
     events() {
@@ -15,11 +22,17 @@ class ToolkitLogs {
 }
 
 class ToolkitEmails {
+    constructor() {
+        this.$deleteModal = $('#deleteModal');
+        this.$confirmDelete = $('#confirmDelete');
+    }
+
     handleDeleteClick(event) {
         event.stopPropagation();
-        let deleteUrl = $(event.currentTarget).data('delete-url');
-        $('#confirmDelete').attr('href', deleteUrl);
-        $('#deleteModal').modal('open');
+        const $target = $(event.currentTarget);
+        const deleteUrl = $target.data('delete-url');
+        this.$confirmDelete.attr('href', deleteUrl);
+        this.$deleteModal.modal('open');
     }
 
     events() {
@@ -32,111 +45,118 @@ class ToolkitEmails {
 }
 
 class ToolkitDatabase {
-    openModal(modal, actionUrl, title, data, options) {
-        if (typeof data === 'undefined') data = {};
-        if (typeof options === 'undefined') options = { mode: 'form', search: false };
+    constructor() {
+        this.$jsonEditorContainer = $('#jsoneditor');
+        this.$createTableModal = $('#createTableModal');
+        this.$rowActionModal = $('#rowActionModal');
+        this.$rowDeleteModal = $('#rowDelete');
+        this.$modalConfirm = $('#modal-confirm');
+    }
 
+    openModal(modal, actionUrl, title, data = {}, options = { mode: 'form', search: false }) {
         modal.data('action', actionUrl);
         modal.find('.modal-title').text(title);
 
-        $('#jsoneditor').empty();
-
-        window.editor = new JSONEditor(document.getElementById('jsoneditor'), options);
+        this.$jsonEditorContainer.empty();
+        window.editor = new JSONEditor(this.$jsonEditorContainer[0], options);
         window.editor.set(data);
 
         modal.modal('open');
     }
 
-    submitForm(modal, additionalFields) {
-        if (typeof additionalFields === 'undefined') additionalFields = {};
-        let $form = $('<form>', {method: 'POST', action: modal.data('action')});
+    submitForm(modal, additionalFields = {}) {
+        const $form = $('<form>', { method: 'POST', action: modal.data('action') });
 
-        $form.append($('<input>', { type: 'hidden', name: 'data', value: JSON.stringify(window.editor.get()) }));
+        $form.append($('<input>', {
+            type: 'hidden',
+            name: 'data',
+            value: JSON.stringify(window.editor.get())
+        }));
 
-        for (let name in additionalFields) {
-            if (additionalFields.hasOwnProperty(name)) {
-                $form.append($('<input>', { type: 'hidden', name: name, value: additionalFields[name] }));
-            }
+        for (const [name, value] of Object.entries(additionalFields)) {
+            $form.append($('<input>', { type: 'hidden', name, value }));
         }
 
         $('body').append($form);
-
         $form.submit();
     }
 
     handleTableItemClick(event) {
-        $('.table-iframe').attr('src', window.location.origin + '/toolkit/database/view?table=' + $(event.currentTarget).data('name'));
-        $(event.currentTarget).siblings().removeClass('active');
-        $(event.currentTarget).addClass('active');
+        const $target = $(event.currentTarget);
+        const table = $target.data('name');
+
+        $('.table-iframe').attr('src', `${window.location.origin}/toolkit/database/view?table=${table}`);
+        $target.siblings().removeClass('active');
+        $target.addClass('active');
     }
 
     handleRowAddOrCreate(event) {
-        let isTableCreate = $(event.currentTarget).hasClass('create-table');
+        const $target = $(event.currentTarget);
+        const isTableCreate = $target.hasClass('create-table');
+        const modal = isTableCreate ? this.$createTableModal : this.$rowActionModal;
+        const actionUrl = '/toolkit/database/create';
+        const title = isTableCreate ? 'Creating Table' : $target.data('modal-title');
 
-        let modal = isTableCreate ? $('#createTableModal') : $('#rowActionModal');
-        let actionUrl = '/toolkit/database/create';
-        let title = isTableCreate ? 'Creating Table' : $(event.currentTarget).data('modal-title');
         let json = {};
         let options = { mode: 'tree', search: false };
 
         if (!isTableCreate) {
-            let rowData = $('.row-data').first().data('row');
-            options = { mode: rowData ? 'form' : 'tree', search: false };
+            const rowData = $('.row-data').first().data('row');
+            options.mode = rowData ? 'form' : 'tree';
+
             if (rowData) {
-                for (let key in rowData) {
-                    if (rowData.hasOwnProperty(key) && key !== 'id') {
+                for (const key of Object.keys(rowData)) {
+                    if (key !== 'id') {
                         json[key] = '';
                     }
                 }
             }
 
-            let tableName = modal.data('table');
+            const tableName = modal.data('table');
             modal.data('original-name', tableName);
         } else {
             modal.removeData('original-name');
         }
+
         this.openModal(modal, actionUrl, title, json, options);
     }
 
     handleRowEdit(event) {
-        let data = $(event.currentTarget).parent().data('row');
-        let editModal = $('#rowActionModal');
+        const data = { ...$(event.currentTarget).parent().data('row') };
+        const title = $(event.currentTarget).data('modal-title');
 
-        editModal.data('id', data.id);
-
+        this.$rowActionModal.data('id', data.id);
         delete data.id;
 
-        this.openModal(editModal, '/toolkit/database/update', $(event.currentTarget).data('modal-title'), data);
+        this.openModal(this.$rowActionModal, '/toolkit/database/update', title, data);
     }
 
     handleRowDelete(event) {
-        let deleteUrl = $(event.currentTarget).data('url');
-        $('#modal-confirm').attr('href', deleteUrl);
-        $('#rowDelete').modal('open');
+        const deleteUrl = $(event.currentTarget).data('url');
+        this.$modalConfirm.attr('href', deleteUrl);
+        this.$rowDeleteModal.modal('open');
     }
 
     handleRowAction() {
-        let $rowActionModal = $('#rowActionModal');
-        let originalName = $rowActionModal.data('original-name');
-        let additionalFields = {
-            table: $rowActionModal.data('table'),
-            rowId: $rowActionModal.data('id'),
-            'csrf-token': $rowActionModal.data('csrf')
+        const originalName = this.$rowActionModal.data('original-name');
+
+        const additionalFields = {
+            table: this.$rowActionModal.data('table'),
+            rowId: this.$rowActionModal.data('id'),
+            'csrf-token': this.$rowActionModal.data('csrf')
         };
 
         if (originalName) {
             additionalFields.originalName = originalName;
         }
 
-        this.submitForm($rowActionModal, additionalFields);
+        this.submitForm(this.$rowActionModal, additionalFields);
     }
 
     handleSubmitTable() {
-        let $createTableModal = $('#createTableModal');
-
-        this.submitForm($createTableModal, {
-            table: $createTableModal.find('#tableName').val(),
-            'csrf-token': $createTableModal.data('csrf')
+        this.submitForm(this.$createTableModal, {
+            table: this.$createTableModal.find('#tableName').val(),
+            'csrf-token': this.$createTableModal.data('csrf')
         });
     }
 
@@ -157,6 +177,7 @@ class ToolkitDatabase {
 
 jQuery(document).ready(function ($) {
     window.editor = undefined;
+
     $('.modal').modal();
     $('.collapsible').collapsible();
     $('.sidenav').sidenav();
