@@ -1,5 +1,17 @@
 <?php
 
+/**
+ * Quantum PHP Framework
+ *
+ * An open source software development framework for PHP
+ *
+ * @package Quantum
+ * @author Arman Ag. <arman.ag@softberg.org>
+ * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
+ * @link http://quantum.softberg.org/
+ * @since 2.9.8
+ */
+
 namespace Modules\Toolkit\Controllers;
 
 use Quantum\Service\Exceptions\ServiceException;
@@ -10,8 +22,13 @@ use Quantum\Http\Response;
 use Quantum\Http\Request;
 use ReflectionException;
 
-class EmailsController extends MainController
+/**
+ * Class EmailsController
+ * @package Modules\Toolkit
+ */
+class EmailsController extends BaseController
 {
+
     /**
      * Email service
      * @var EmailService
@@ -34,9 +51,9 @@ class EmailsController extends MainController
      * @param Request $request
      * @param Response $response
      */
-    public function index(Request $request, Response $response)
+    public function list(Request $request, Response $response)
     {
-        $perPage = $request->get('per_page', self::EMAILS_PER_PAGE);
+        $perPage = $request->get('per_page', self::ITEMS_PER_PAGE);
         $currentPage = $request->get('page', self::CURRENT_PAGE);
 
         $data = $this->emailService->getEmails($perPage, $currentPage);
@@ -47,27 +64,27 @@ class EmailsController extends MainController
             'pagination' => $data
         ]);
 
-        $response->html($this->view->render('pages/emails'));
+        $response->html($this->view->render('pages/email/index'));
     }
 
     /**
-     * @param Request $request
      * @param Response $response
+     * @param string $emailId
      */
-    public function viewEmail(Request $request, Response $response)
+    public function single(Response $response, string $emailId)
     {
-        $email = $this->emailService->getEmail($request->getQueryParam('emailId'));
+        $email = $this->emailService->getEmail($emailId);
 
         $response->html(quoted_printable_decode($email->getParsedBody()));
     }
 
     /**
-     * @param Request $request
+     * @param string $emailId
      */
-    public function deleteEmail(Request $request)
+    public function delete(string $emailId)
     {
-        $this->emailService->deleteEmail($request->getQueryParam('emailId'));
+        $this->emailService->deleteEmail($emailId);
 
-        redirect(base_url() . '/toolkit/emails');
+        redirect(base_url(true) . '/emails');
     }
 }

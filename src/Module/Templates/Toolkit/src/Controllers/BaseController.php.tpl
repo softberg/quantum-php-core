@@ -1,37 +1,50 @@
 <?php
 
+/**
+ * Quantum PHP Framework
+ *
+ * An open source software development framework for PHP
+ *
+ * @package Quantum
+ * @author Arman Ag. <arman.ag@softberg.org>
+ * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
+ * @link http://quantum.softberg.org/
+ * @since 2.9.8
+ */
+
 namespace Modules\Toolkit\Controllers;
 
 use Quantum\View\Factories\ViewFactory;
 use Quantum\Router\RouteController;
 use Quantum\Libraries\Asset\Asset;
+use Quantum\View\QtView;
 
-class MainController extends RouteController
+/**
+ * Class BaseController
+ * @package Modules\Toolkit
+ */
+class BaseController extends RouteController
 {
+
     /**
      * Main layout
      */
     const LAYOUT = 'layouts/main';
 
     /**
-     * Emails per page
+     * Items per page
      */
-    const EMAILS_PER_PAGE = 10;
-
-    /**
-     * Logs per page
-     */
-    const LOGS_PER_PAGE = 10;
-
-    /**
-     * Rows per page
-     */
-    const ROWS_PER_PAGE = 20;
+    const ITEMS_PER_PAGE = 20;
 
     /**
      * Current page
      */
     const CURRENT_PAGE = 1;
+
+    /**
+     * @var QtView
+     */
+    protected $view;
 
     /**
      * Works before an action
