@@ -1,128 +1,167 @@
-jQuery(document).ready(function ($) {
-    $('.modal').modal();
+class ToolkitLogs {
+    handleLogFileClick(event) {
+        $('.logs-iframe').attr('src', window.location.origin + '/toolkit/logs/view?logFile=' + $(event.currentTarget).data('file'));
+        $(event.currentTarget).siblings().removeClass('active');
+        $(event.currentTarget).addClass('active');
+    }
 
-    $('.modal-trigger').on('click', function (event) {
+    events() {
+        $('.logFile-item').on('click', this.handleLogFileClick.bind(this));
+    }
+
+    init() {
+        this.events();
+    }
+}
+
+class ToolkitEmails {
+    handleDeleteClick(event) {
         event.stopPropagation();
-        let targetModalId = $(this).data('target');
-        $('#' + targetModalId).modal('open');
-    });
+        let deleteUrl = $(event.currentTarget).data('delete-url');
+        $('#confirmDelete').attr('href', deleteUrl);
+        $('#deleteModal').modal('open');
+    }
 
-    $('.visibility-icon').on('click', function () {
-        if ($(this).hasClass('on')) {
-            $('.off').removeClass('hide');
-            $(this).parent('.input-field').find('input[type=text]').attr('type', 'password');
+    events() {
+        $('.delete-trigger').on('click', this.handleDeleteClick.bind(this));
+    }
 
-        } else {
-            $('.on').removeClass('hide');
-            $(this).parent('.input-field').find('input[type=password]').attr('type', 'text');
-        }
+    init() {
+        this.events();
+    }
+}
 
-        $(this).addClass('hide');
-    });
+class ToolkitDatabase {
+    openModal(modal, actionUrl, title, data, options) {
+        if (typeof data === 'undefined') data = {};
+        if (typeof options === 'undefined') options = { mode: 'form', search: false };
 
-    $('.collapsible').collapsible();
-
-    $('.collapsible-header').hover(
-        function () {
-            const icon = $(this).find('.status-icon');
-            icon.data('original', icon.text());
-            $(icon).parent().addClass("chevron");
-            icon.text('chevron_right');
-        },
-        function () {
-            const icon = $(this).find('.status-icon');
-            $(icon).parent().removeClass("chevron");
-            icon.text(icon.data('original'));
-        }
-    );
-
-    $('.logFile-item').on('click', function (){
-        $('.logs-iframe').attr('src', window.location.origin + "/toolkit/logs/view?logDate=" + $(this).data("file"));
-        $(this).siblings().removeClass('active');
-        $(this).addClass('active');
-    });
-
-    $('.table-item').on('click', function (){
-        $('.table-iframe').attr('src', window.location.origin + "/toolkit/database/view?table=" + $(this).data("name"));
-        $(this).siblings().removeClass('active');
-        $(this).addClass('active');
-    });
-
-    let editor;
-
-    function setupModal(modal, action, title, data = {}, options = { mode: 'form', search: false }) {
-        modal.data('action', action);
+        modal.data('action', actionUrl);
         modal.find('.modal-title').text(title);
-        $("#jsoneditor").empty();
-        editor = new JSONEditor(document.getElementById("jsoneditor"), options);
-        editor.set(data);
+
+        $('#jsoneditor').empty();
+
+        window.editor = new JSONEditor(document.getElementById('jsoneditor'), options);
+        window.editor.set(data);
+
         modal.modal('open');
     }
 
-    function submitForm(modal, additionalFields = {}) {
-        const $form = $('<form>', { method: 'POST', action: modal.data('action') });
+    submitForm(modal, additionalFields) {
+        if (typeof additionalFields === 'undefined') additionalFields = {};
+        let $form = $('<form>', {method: 'POST', action: modal.data('action')});
 
-        $form.append($('<input>', { type: 'hidden', name: 'data', value: JSON.stringify(editor.get()) }));
+        $form.append($('<input>', { type: 'hidden', name: 'data', value: JSON.stringify(window.editor.get()) }));
 
-        Object.entries(additionalFields).forEach(([name, value]) => {
-            $form.append($('<input>', { type: 'hidden', name, value }));
-        });
+        for (let name in additionalFields) {
+            if (additionalFields.hasOwnProperty(name)) {
+                $form.append($('<input>', { type: 'hidden', name: name, value: additionalFields[name] }));
+            }
+        }
 
         $('body').append($form);
+
         $form.submit();
     }
 
-    $('.row-add').on('click', function(){
+    handleTableItemClick(event) {
+        $('.table-iframe').attr('src', window.location.origin + '/toolkit/database/view?table=' + $(event.currentTarget).data('name'));
+        $(event.currentTarget).siblings().removeClass('active');
+        $(event.currentTarget).addClass('active');
+    }
 
-        let rowData = $('.row-data').first().data('row');
+    handleRowAddOrCreate(event) {
+        let isTableCreate = $(event.currentTarget).hasClass('create-table');
 
+        let modal = isTableCreate ? $('#createTableModal') : $('#rowActionModal');
+        let actionUrl = '/toolkit/database/create';
+        let title = isTableCreate ? 'Creating Table' : $(event.currentTarget).data('modal-title');
         let json = {};
+        let options = { mode: 'tree', search: false };
 
-        let options = { mode: 'form', search: false };
+        if (!isTableCreate) {
+            let rowData = $('.row-data').first().data('row');
+            options = { mode: rowData ? 'form' : 'tree', search: false };
+            if (rowData) {
+                for (let key in rowData) {
+                    if (rowData.hasOwnProperty(key) && key !== 'id') {
+                        json[key] = '';
+                    }
+                }
+            }
 
-        if(rowData){
-            json = Object.fromEntries(
-                Object.keys(rowData)
-                    .filter(key => key !== 'id')
-                    .map(key => [key, ''])
-            );
-        }else{
-            options.mode = 'tree';
+            let tableName = modal.data('table');
+            modal.data('original-name', tableName);
+        } else {
+            modal.removeData('original-name');
         }
+        this.openModal(modal, actionUrl, title, json, options);
+    }
 
-        setupModal($('#rowActionModal'), 'create', $(this).data('modal-title'), json, options);
-    });
-
-    $('.row-edit').on('click', function(){
-        let data = $(this).parent().data("row");
+    handleRowEdit(event) {
+        let data = $(event.currentTarget).parent().data('row');
         let editModal = $('#rowActionModal');
-        editModal.data('id', data.id);
-        delete data.id;
-        setupModal(editModal, 'update', $(this).data('modal-title'), data);
-    });
 
-    $('.row-action').on('click', function () {
+        editModal.data('id', data.id);
+
+        delete data.id;
+
+        this.openModal(editModal, '/toolkit/database/update', $(event.currentTarget).data('modal-title'), data);
+    }
+
+    handleRowDelete(event) {
+        let deleteUrl = $(event.currentTarget).data('url');
+        $('#modal-confirm').attr('href', deleteUrl);
+        $('#rowDelete').modal('open');
+    }
+
+    handleRowAction() {
         let $rowActionModal = $('#rowActionModal');
-        submitForm($rowActionModal, {
+        let originalName = $rowActionModal.data('original-name');
+        let additionalFields = {
             table: $rowActionModal.data('table'),
             rowId: $rowActionModal.data('id'),
-            'csrf-token': $rowActionModal.data('csrf'),
-        });
-    });
+            'csrf-token': $rowActionModal.data('csrf')
+        };
 
-    $('.create-table').on('click', function () {
-        setupModal($('#createTableModal'), 'database/create', 'Creating Table', {}, { mode: 'tree', search: false });
-    });
+        if (originalName) {
+            additionalFields.originalName = originalName;
+        }
 
-    $('.submit-table').on('click', function () {
+        this.submitForm($rowActionModal, additionalFields);
+    }
+
+    handleSubmitTable() {
         let $createTableModal = $('#createTableModal');
-        submitForm($createTableModal, {
+
+        this.submitForm($createTableModal, {
             table: $createTableModal.find('#tableName').val(),
-            'csrf-token': $createTableModal.data('csrf'),
+            'csrf-token': $createTableModal.data('csrf')
         });
-    });
+    }
 
+    events() {
+        $('.table-item').on('click', this.handleTableItemClick.bind(this));
+        $('.row-add').on('click', this.handleRowAddOrCreate.bind(this));
+        $('.row-edit').on('click', this.handleRowEdit.bind(this));
+        $('.row-delete').on('click', this.handleRowDelete.bind(this));
+        $('.row-action').on('click', this.handleRowAction.bind(this));
+        $('.create-table').on('click', this.handleRowAddOrCreate.bind(this));
+        $('.submit-table').on('click', this.handleSubmitTable.bind(this));
+    }
+
+    init() {
+        this.events();
+    }
+}
+
+jQuery(document).ready(function ($) {
+    window.editor = undefined;
+    $('.modal').modal();
+    $('.collapsible').collapsible();
     $('.sidenav').sidenav();
+
+    new ToolkitLogs().init();
+    new ToolkitEmails().init();
+    new ToolkitDatabase().init();
 });
-
-
