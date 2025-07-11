@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 2.9.8
  */
 
 namespace Quantum\Console\Commands;
@@ -18,8 +18,8 @@ use Quantum\Environment\Exceptions\EnvException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Environment\Environment;
-use Laminas\Text\Figlet\Figlet;
 use Quantum\Console\QtCommand;
+use Povils\Figlet\Figlet;
 use Quantum\Loader\Setup;
 use ReflectionException;
 
@@ -61,9 +61,12 @@ class VersionCommand extends QtCommand
 
         $figlet = new Figlet();
 
-        $figlet->setFont(assets_dir() . DS . 'shared' . DS . 'fonts' . DS . 'figlet' . DS . 'slant.flf')->setSmushMode(Figlet::SM_SMUSH);
+        $renderedFiglet = $figlet
+            ->setFontDir(assets_dir() . DS . 'shared' . DS . 'fonts' . DS . 'figlet' . DS)
+            ->setFont('slant')
+            ->render('QUANTUM PHP ' . env('APP_VERSION'));
 
-        $this->info($figlet->render('QUANTUM PHP ' . env('APP_VERSION')));
+        $this->info($renderedFiglet);
 
         $this->info('- - - Q U A N T U M   P H P   F R A M E W O R K  ' . env('APP_VERSION') . '  I N S T A L L E D - - -');
     }
