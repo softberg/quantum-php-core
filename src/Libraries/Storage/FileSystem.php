@@ -35,6 +35,7 @@ use Quantum\App\Exceptions\BaseException;
  * @method bool isFile(string $filename)
  * @method bool isDirectory(string $dirname)
  * @method string fileName(string $path)
+ * @method string fileNameWithExtension(string $path)
  * @method string extension(string $path)
  * @method bool isReadable(string $filename)
  * @method bool isWritable(string $filename)

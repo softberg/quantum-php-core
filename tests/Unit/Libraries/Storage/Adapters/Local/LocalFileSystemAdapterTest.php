@@ -235,6 +235,11 @@ class LocalFileSystemAdapterTest extends AppTestCase
         $this->assertEquals('txt', $this->fs->extension($this->filename));
     }
 
+    public function testLocalFileNameWithExtension()
+    {
+        $this->assertEquals('test.txt', $this->fs->fileNameWithExtension($this->filename));
+    }
+
     public function testLocalRequireOutput()
     {
         $this->fs->put($this->filename, $this->content);

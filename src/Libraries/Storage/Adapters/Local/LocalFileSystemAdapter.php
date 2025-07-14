@@ -230,6 +230,16 @@ class LocalFileSystemAdapter implements FilesystemAdapterInterface
     }
 
     /**
+     * Gets the filename with extension
+     * @param string $path
+     * @return string
+     */
+    public function fileNameWithExtension(string $path): string
+    {
+        return (string)pathinfo($path, PATHINFO_BASENAME);
+    }
+
+    /**
      * Gets the file name
      * @param string $path
      * @return string
