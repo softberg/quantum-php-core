@@ -16,6 +16,7 @@ namespace {{MODULE_NAMESPACE}}\Middlewares;
 
 use Quantum\Libraries\Validation\Validator;
 use Quantum\Model\Factories\ModelFactory;
+use Quantum\Http\Constants\StatusCode;
 use Quantum\Libraries\Validation\Rule;
 use Quantum\Middleware\QtMiddleware;
 use Quantum\Http\Response;
@@ -66,21 +67,23 @@ class Reset extends QtMiddleware
                     ]
                 ]);
 
-                redirect(get_referrer());
+                redirect(get_referrer(), StatusCode::UNAUTHORIZED);
             }
 
             if (!$this->validator->isValid($request->all())) {
                 session()->setFlash('error', $this->validator->getErrors());
-                redirect(get_referrer());
+
+                redirect(get_referrer(), StatusCode::UNPROCESSABLE_ENTITY);
             }
 
             if (!$this->confirmPassword($request->get('password'), $request->get('repeat_password'))) {
                 session()->setFlash('error', t('validation.nonEqualValues'));
-                redirect(get_referrer());
+
+                redirect(get_referrer(), StatusCode::UNPROCESSABLE_ENTITY);
             }
         } elseif ($request->isMethod('get')) {
             if (!$this->checkToken($token)) {
-                $response->html(partial('errors/404'), 404);
+                $response->html(partial('errors/404'), StatusCode::NOT_FOUND);
                 stop();
             }
         }
@@ -111,5 +114,4 @@ class Reset extends QtMiddleware
     {
         return $newPassword == $repeatPassword;
     }
-
 }

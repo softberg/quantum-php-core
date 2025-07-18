@@ -38,5 +38,4 @@ abstract class BaseController extends RouteController
      * @var bool
      */
     public $csrfVerification = false;
-
 }

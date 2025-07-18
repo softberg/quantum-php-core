@@ -16,6 +16,7 @@ namespace {{MODULE_NAMESPACE}}\Middlewares;
 
 use Quantum\Libraries\Validation\Validator;
 use Quantum\Model\Factories\ModelFactory;
+use Quantum\Http\Constants\StatusCode;
 use Quantum\Libraries\Validation\Rule;
 use Quantum\Libraries\Hasher\Hasher;
 use Quantum\Middleware\QtMiddleware;
@@ -77,14 +78,23 @@ class Password extends QtMiddleware
         if ($request->isMethod('post')) {
             if (!$this->validator->isValid($request->all())) {
                 session()->setFlash('error', $this->validator->getErrors());
-                redirectWith(base_url(true) . '/' . current_lang() . '/account-settings#account_password', $request->all());
+
+                redirectWith(
+                    base_url(true) . '/' . current_lang() . '/account-settings#account_password',
+                    $request->all(),
+                    StatusCode::UNPROCESSABLE_ENTITY
+                );
 
             }
 
             if (!$this->confirmPassword($request->get('new_password'), $request->get('confirm_password'))) {
                 session()->setFlash('error', t('validation.same', [t('validation.confirm_password'), t('validation.new_password')]));
-                redirectWith(base_url(true) . '/' . current_lang() . '/account-settings#account_password', $request->all());
-                
+
+                redirectWith(
+                    base_url(true) . '/' . current_lang() . '/account-settings#account_password',
+                    $request->all(),
+                    StatusCode::UNPROCESSABLE_ENTITY
+                );
             }
         }
 

@@ -16,6 +16,7 @@ namespace {{MODULE_NAMESPACE}}\Middlewares;
 
 use Quantum\Libraries\Validation\Validator;
 use Quantum\Model\Factories\ModelFactory;
+use Quantum\Http\Constants\StatusCode;
 use Quantum\Libraries\Validation\Rule;
 use Quantum\Libraries\Hasher\Hasher;
 use Quantum\Middleware\QtMiddleware;
@@ -77,7 +78,7 @@ class Password extends QtMiddleware
                 $response->json([
                     'status' => 'error',
                     'message' => $this->validator->getErrors()
-                ]);
+                ], StatusCode::UNPROCESSABLE_ENTITY);
 
                 stop();
             }
@@ -86,7 +87,7 @@ class Password extends QtMiddleware
                 $response->json([
                     'status' => 'error',
                     'message' => t('validation.same', [t('validation.confirm_password'), t('validation.new_password')])
-                ]);
+                ], StatusCode::UNPROCESSABLE_ENTITY);
 
                 stop();
             }

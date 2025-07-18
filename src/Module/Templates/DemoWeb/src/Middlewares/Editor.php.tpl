@@ -15,6 +15,7 @@
 namespace {{MODULE_NAMESPACE}}\Middlewares;
 
 use Quantum\Libraries\Validation\Validator;
+use Quantum\Http\Constants\StatusCode;
 use Quantum\Libraries\Validation\Rule;
 use Quantum\Middleware\QtMiddleware;
 use Quantum\Http\Response;
@@ -78,19 +79,27 @@ class Editor extends QtMiddleware
     public function apply(Request $request, Response $response, Closure $next)
     {
         if (!in_array(auth()->user()->role, self::ROLES)) {
-            redirect(base_url(true) . '/' . current_lang());
+            redirect(
+                base_url(true) . '/' . current_lang(),
+                StatusCode::UNAUTHORIZED
+            );
         }
 
         if ($request->isMethod('post')) {
             if (!$this->validator->isValid($request->all())) {
                 $data = $request->all();
+
                 unset($data['image']);
                 session()->setFlash('error', $this->validator->getErrors());
-                redirectWith(get_referrer(), $data);
+
+                redirectWith(
+                    get_referrer(),
+                    $data,
+                    StatusCode::UNPROCESSABLE_ENTITY
+                );
             }
         }
 
         return $next($request, $response);
     }
-
 }

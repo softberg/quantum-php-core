@@ -15,6 +15,7 @@
 namespace {{MODULE_NAMESPACE}}\Middlewares;
 
 use Quantum\Model\Factories\ModelFactory;
+use Quantum\Http\Constants\StatusCode;
 use Quantum\Middleware\QtMiddleware;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
@@ -42,7 +43,7 @@ class Activate extends QtMiddleware
             $response->json([
                 'status' => 'error',
                 'message' => [t('validation.nonExistingRecord', 'token')]
-            ], 422);
+            ], StatusCode::UNPROCESSABLE_ENTITY);
 
             stop();
         }
@@ -62,5 +63,4 @@ class Activate extends QtMiddleware
         $userModel = ModelFactory::get(User::class);
         return !empty($userModel->findOneBy('activation_token', $token)->asArray());
     }
-
 }

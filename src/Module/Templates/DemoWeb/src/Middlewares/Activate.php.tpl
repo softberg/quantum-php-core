@@ -15,6 +15,7 @@
 namespace {{MODULE_NAMESPACE}}\Middlewares;
 
 use Quantum\Model\Factories\ModelFactory;
+use Quantum\Http\Constants\StatusCode;
 use Quantum\Middleware\QtMiddleware;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
@@ -40,7 +41,10 @@ class Activate extends QtMiddleware
 
         if (!$this->checkToken($token)) {
             stop(function () use ($response) {
-                $response->html(partial('errors/404'), 404);
+                $response->html(
+                    partial('errors/404'),
+                    StatusCode::NOT_FOUND
+                );
             });
         }
 

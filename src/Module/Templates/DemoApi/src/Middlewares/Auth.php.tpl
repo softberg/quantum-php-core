@@ -14,6 +14,7 @@
 
 namespace {{MODULE_NAMESPACE}}\Middlewares;
 
+use Quantum\Http\Constants\StatusCode;
 use Quantum\Middleware\QtMiddleware;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
@@ -38,12 +39,11 @@ class Auth extends QtMiddleware
             $response->json([
                 'status' => 'error',
                 'message' => t('validation.unauthorizedRequest')
-            ], 401);
+            ], StatusCode::UNAUTHORIZED);
             
             stop();
         }
 
         return $next($request, $response);
     }
-
 }

@@ -16,6 +16,7 @@ namespace {{MODULE_NAMESPACE}}\Middlewares;
 
 use Quantum\Libraries\Validation\Validator;
 use Quantum\Model\Factories\ModelFactory;
+use Quantum\Http\Constants\StatusCode;
 use Quantum\Libraries\Validation\Rule;
 use Quantum\Middleware\QtMiddleware;
 use Quantum\Http\Response;
@@ -68,7 +69,7 @@ class Reset extends QtMiddleware
             $response->json([
                 'status' => 'error',
                 'message' => [t('validation.nonExistingRecord', 'token')]
-            ], 422);
+            ], StatusCode::UNPROCESSABLE_ENTITY);
 
             stop();
         }

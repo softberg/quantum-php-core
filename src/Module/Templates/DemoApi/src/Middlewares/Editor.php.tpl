@@ -15,6 +15,7 @@
 namespace {{MODULE_NAMESPACE}}\Middlewares;
 
 use Quantum\Libraries\Validation\Validator;
+use Quantum\Http\Constants\StatusCode;
 use Quantum\Libraries\Validation\Rule;
 use Quantum\Middleware\QtMiddleware;
 use Quantum\Http\Response;
@@ -81,7 +82,7 @@ class Editor extends QtMiddleware
             $response->json([
                 'status' => 'error',
                 'message' => t('validation.unauthorizedRequest')
-            ], 401);
+            ], StatusCode::UNAUTHORIZED);
 
             stop();
         }
@@ -91,7 +92,7 @@ class Editor extends QtMiddleware
                 $response->json([
                     'status' => 'error',
                     'message' => $this->validator->getErrors()
-                ], 422);
+                ], StatusCode::UNPROCESSABLE_ENTITY);
 
                 stop();
             }
@@ -99,5 +100,4 @@ class Editor extends QtMiddleware
 
         return $next($request, $response);
     }
-
 }

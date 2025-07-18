@@ -15,6 +15,7 @@
 namespace {{MODULE_NAMESPACE}}\Controllers;
 
 use Quantum\Libraries\Auth\Exceptions\AuthException;
+use Quantum\Http\Constants\StatusCode;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 
@@ -46,7 +47,7 @@ class AuthController extends BaseController
             $response->json([
                 'status' => self::STATUS_ERROR,
                 'message' => $e->getMessage()
-            ], 422);
+            ], StatusCode::UNPROCESSABLE_ENTITY);
         }
     }
 
@@ -82,7 +83,7 @@ class AuthController extends BaseController
             $response->json([
                 'status' => self::STATUS_ERROR,
                 'message' => t('validation.unauthorizedRequest')
-            ]);
+            ], StatusCode::UNAUTHORIZED);
         }
     }
 
@@ -166,7 +167,7 @@ class AuthController extends BaseController
             $response->json([
                 'status' => self::STATUS_ERROR,
                 'message' => $e->getMessage()
-            ]);
+            ], StatusCode::UNAUTHORIZED);
         }
     }
 
@@ -185,7 +186,7 @@ class AuthController extends BaseController
             $response->json([
                 'status' => self::STATUS_ERROR,
                 'message' => $e->getMessage()
-            ]);
+            ], StatusCode::UNAUTHORIZED);
         }
     }
 }

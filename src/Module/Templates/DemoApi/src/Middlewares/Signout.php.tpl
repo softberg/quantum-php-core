@@ -14,6 +14,7 @@
  
 namespace {{MODULE_NAMESPACE}}\Middlewares;
 
+use Quantum\Http\Constants\StatusCode;
 use Quantum\Middleware\QtMiddleware;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
@@ -38,7 +39,7 @@ class Signout extends QtMiddleware
             $response->json([
                 'status' => 'error',
                 'message' => [t('validation.nonExistingRecord', 'token')]
-            ], 422);
+            ], StatusCode::UNPROCESSABLE_ENTITY);
             
             stop();
         }

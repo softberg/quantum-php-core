@@ -16,6 +16,7 @@ namespace {{MODULE_NAMESPACE}}\Middlewares;
 
 use Quantum\Libraries\Validation\Validator;
 use Quantum\Model\Factories\ModelFactory;
+use Quantum\Http\Constants\StatusCode;
 use Quantum\Libraries\Validation\Rule;
 use Quantum\Middleware\QtMiddleware;
 use Quantum\Http\Response;
@@ -89,7 +90,12 @@ class Signup extends QtMiddleware
 
             if (!$this->validator->isValid($request->all())) {
                 session()->setFlash('error', $this->validator->getErrors());
-                redirectWith(base_url(true) . '/' . current_lang() . '/signup', $request->all());
+
+                redirectWith(
+                    base_url(true) . '/' . current_lang() . '/signup',
+                    $request->all(),
+                    StatusCode::UNPROCESSABLE_ENTITY
+                );
             }
 
             $request->delete('captcha');
@@ -97,5 +103,4 @@ class Signup extends QtMiddleware
 
         return $next($request, $response);
     }
-
 }
