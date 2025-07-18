@@ -1,17 +1,32 @@
 <?php
 
+/**
+ * Quantum PHP Framework
+ *
+ * An open source software development framework for PHP
+ *
+ * @package Quantum
+ * @author Arman Ag. <arman.ag@softberg.org>
+ * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
+ * @link http://quantum.softberg.org/
+ * @since 2.9.8
+ */
+
 namespace Modules\Toolkit\Controllers;
 
 use Quantum\Libraries\Database\Exceptions\DatabaseException;
 use Modules\Toolkit\Services\DatabaseService;
 use Quantum\Service\Factories\ServiceFactory;
-use Quantum\View\Factories\ViewFactory;
-use Quantum\Libraries\Asset\Asset;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 
-class DatabaseController extends MainController
+/**
+ * Class DatabaseController
+ * @package Modules\Toolkit
+ */
+class DatabaseController extends BaseController
 {
+
     /**
      * @var DatabaseService
      */
@@ -30,8 +45,8 @@ class DatabaseController extends MainController
     /**
      * @param Response $response
      */
-    public function index(Response $response){
-
+    public function list(Response $response)
+    {
         $tables = $this->databaseService->getTables();
 
         $this->view->setParams([
@@ -39,7 +54,7 @@ class DatabaseController extends MainController
             'tables' => $tables,
         ]);
 
-        $response->html($this->view->render('pages/databaseTables'));
+        $response->html($this->view->render('pages/database/index'));
     }
 
     /**
@@ -47,49 +62,32 @@ class DatabaseController extends MainController
      * @param Response $response
      * @throws DatabaseException
      */
-    public function view(Request $request, Response $response){
-
+    public function single(Request $request, Response $response)
+    {
         $tableName = $request->get('table');
-        $perPage = $request->get('per_page', self::ROWS_PER_PAGE);
+        $perPage = $request->get('per_page', self::ITEMS_PER_PAGE);
         $currentPage = $request->get('page', self::CURRENT_PAGE);
 
-        $tableColumns = [];
+        $tableData = $this->databaseService->getTableData($tableName, $perPage, $currentPage);
 
-        $table = $this->databaseService->getTable($tableName, $perPage, $currentPage);
-
-        if(!empty($table->data())){
-            foreach($table->firstItem()->asArray() as $key => $value){
-                if ($key == "id"){
-                    array_unshift($tableColumns, $key);
-                }else{
-                    $tableColumns[] = $key;
-                }
-            }
-        }
-
-        $this->view->setLayout('layouts/iframe', [
-            new Asset(Asset::CSS, 'Toolkit/css/materialize.min.css', null, -1, ['media="screen,projection"']),
-            new Asset(Asset::CSS, 'Toolkit/css/toolkit.css'),
-            new Asset(Asset::JS, 'Toolkit/js/jquery-3.7.1.min.js'),
-            new Asset(Asset::JS, 'Toolkit/js/materialize.min.js'),
-            new Asset(Asset::JS, 'Toolkit/js/toolkit.js')
-        ]);
+        $this->view->setLayout('layouts/iframe');
 
         $this->view->setParams([
             'title' => 'Database',
             'tableName' => $tableName,
-            'tableColumns' => $tableColumns,
-            'tableData' => $table->data(),
-            'pagination' => $table,
+            'tableColumns' => $tableData['columns'],
+            'tableData' => $tableData['data'],
+            'pagination' => $tableData['pagination'],
         ]);
 
-        $response->html($this->view->render('pages/databaseTable'));
+        $response->html($this->view->render('pages/database/table'));
     }
 
     /**
      * @param Request $request
      */
-    public function create(Request $request){
+    public function create(Request $request)
+    {
         $tableName = $request->get('table');
 
         $newData = json_decode(htmlspecialchars_decode($request->get('data')), true);
@@ -102,7 +100,8 @@ class DatabaseController extends MainController
     /**
      * @param Request $request
      */
-    public function update(Request $request){
+    public function update(Request $request)
+    {
         $tableName = $request->get('table');
         $id = $request->get('rowId');
         $updatedData = json_decode(htmlspecialchars_decode($request->get('data')), true);
@@ -115,7 +114,8 @@ class DatabaseController extends MainController
     /**
      * @param Request $request
      */
-    public function delete(Request $request){
+    public function delete(Request $request)
+    {
         $tableName = $request->get('tableName');
         $id = $request->get('id');
 
