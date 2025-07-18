@@ -9,13 +9,14 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 2.9.8
  */
 
 namespace Quantum\Environment;
 
 use Quantum\Environment\Exceptions\EnvException;
 use Quantum\App\Exceptions\BaseException;
+use Quantum\Environment\Constants\Env;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Loader\Loader;
 use Quantum\Loader\Setup;
@@ -49,7 +50,7 @@ class Environment
      */
     private $envContent = [];
 
-    private static $appEnv = 'production';
+    private static $appEnv = Env::PRODUCTION;
 
     /**
      * Instance of Environment
@@ -97,8 +98,9 @@ class Environment
 
         $envConfig = Di::get(Loader::class)->setup($setup)->load();
 
-        $appEnv = $envConfig['app_env'] ?? 'production';
-        $this->envFile = ".env" . ($appEnv !== 'production' ? ".$appEnv" : '');
+        $appEnv = $envConfig['app_env'] ?? Env::PRODUCTION;
+
+        $this->envFile = ".env" . ($appEnv !== Env::PRODUCTION ? ".$appEnv" : '');
 
         if (!file_exists(App::getBaseDir() . DS . $this->envFile)) {
             throw EnvException::fileNotFound($this->envFile);
@@ -192,6 +194,7 @@ class Environment
     }
 
     /**
+     * Finds the row by provided key
      * @param string $key
      * @return string|null
      */
