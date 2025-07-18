@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 2.9.8
  */
 
 namespace Quantum\Libraries\Storage;
@@ -20,8 +20,11 @@ use Quantum\Libraries\Storage\Exceptions\FileUploadException;
 use Quantum\Libraries\Storage\Factories\FileSystemFactory;
 use Quantum\Libraries\Lang\Exceptions\LangException;
 use Quantum\Environment\Exceptions\EnvException;
+use Quantum\Config\Exceptions\ConfigException;
 use Quantum\App\Exceptions\BaseException;
+use Quantum\Di\Exceptions\DiException;
 use Gumlet\ImageResizeException;
+use ReflectionException;
 use Gumlet\ImageResize;
 use SplFileInfo;
 use finfo;
@@ -116,6 +119,9 @@ class UploadedFile extends SplFileInfo
     /**
      * @param array $meta
      * @throws BaseException
+     * @throws ConfigException
+     * @throws DiException
+     * @throws ReflectionException
      */
     public function __construct(array $meta)
     {
