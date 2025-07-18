@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 2.9.8
  */
 
 namespace Quantum\Http;
@@ -55,10 +55,6 @@ use Quantum\Http\Request\HttpRequest;
  * @method static array|null getBasicAuthCredentials()
  * @method static bool isAjax()
  * @method static string|null getReferrer()
- * @method static array|null getParams()
- * @method static array|null postParams()
- * @method static array getRawInputs()
- * @method static array handleFiles(array $_files)
  * @mixin HttpRequest
  */
 class Request

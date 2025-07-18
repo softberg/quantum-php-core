@@ -9,10 +9,10 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.4.0
+ * @since 2.9.8
  */
 
-namespace Quantum\Http\Request;
+namespace Quantum\Http\Traits\Request;
 
 /**
  * Trait Url
@@ -115,5 +115,33 @@ trait Url
     public static function setUri(string $uri)
     {
         self::$__uri = ltrim($uri, '/');
+    }
+
+
+    /**
+     * Returns the URI segment at the specified index.
+     * @param int $index
+     * @return string|null
+     */
+    public static function getSegment(int $index): ?string
+    {
+        $segments = self::getAllSegments();
+
+        if (isset($segments[$index])) {
+            return $segments[$index];
+        }
+
+        return null;
+    }
+
+    /**
+     * Gets all URI segments as an array.
+     * @return array
+     */
+    public static function getAllSegments(): array
+    {
+        $segments = explode('/', trim(parse_url(self::$__uri)['path'], '/'));
+        array_unshift($segments, 'zero_segment');
+        return $segments;
     }
 }

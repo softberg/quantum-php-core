@@ -9,10 +9,13 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.4.0
+ * @since 2.9.8
  */
 
-namespace Quantum\Http\Response;
+namespace Quantum\Http\Traits\Response;
+
+use Quantum\App\Exceptions\StopExecutionException;
+use Quantum\Http\Constants\ContentType;
 
 /**
  * Trait Header
@@ -90,8 +93,21 @@ trait Header
      * Gets the content type
      * @return string|null
      */
-    public static function getContentType(): ?string
+    public static function getContentType(): string
     {
-        return self::getHeader('Content-Type');
+        return self::getHeader('Content-Type') ?? ContentType::HTML;
+    }
+
+    /**
+     * Redirect
+     * @param string $url
+     * @param int $code
+     * @throws StopExecutionException
+     */
+    public static function redirect(string $url, int $code = 302)
+    {
+        self::setStatusCode($code);
+        self::setHeader('Location', $url);
+        stop();
     }
 }

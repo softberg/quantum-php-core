@@ -9,14 +9,23 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 2.9.8
  */
 
 namespace Quantum\Http\Request;
 
+use Quantum\Config\Exceptions\ConfigException;
 use Quantum\Http\Exceptions\HttpException;
 use Quantum\App\Exceptions\BaseException;
+use Quantum\Http\Traits\Request\RawInput;
+use Quantum\Http\Traits\Request\Internal;
+use Quantum\Http\Traits\Request\Header;
+use Quantum\Http\Traits\Request\Params;
 use Quantum\Di\Exceptions\DiException;
+use Quantum\Http\Traits\Request\Query;
+use Quantum\Http\Traits\Request\Body;
+use Quantum\Http\Traits\Request\File;
+use Quantum\Http\Traits\Request\Url;
 use Quantum\Libraries\Csrf\Csrf;
 use Quantum\Environment\Server;
 use ReflectionException;
@@ -34,26 +43,23 @@ abstract class HttpRequest
     use Query;
     use Params;
     use File;
-
-    /**
-     * Multipart form data
-     */
-    const CONTENT_FORM_DATA = 'multipart/form-data';
-
-    /**
-     * JSON payload
-     */
-    const CONTENT_JSON_PAYLOAD = 'application/json';
-
-    /**
-     * URL encoded
-     */
-    const CONTENT_URL_ENCODED = 'application/x-www-form-urlencoded';
+    use RawInput;
+    use Internal;
 
     /**
      * Available methods
      */
     const METHODS = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
+
+    /**
+     * Default port for HTTP
+     */
+    const DEFAULT_HTTP_PORT = 80;
+
+    /**
+     * Default port for HTTPS
+     */
+    const DEFAULT_HTTPS_PORT = 443;
 
     /**
      * Request method
@@ -62,24 +68,22 @@ abstract class HttpRequest
     private static $__method = null;
 
     /**
+     * @var Server
+     */
+    protected static $server;
+
+    /**
      * @var bool
      */
     private static $initialized = false;
 
     /**
-     * Server
-     * @var Server
-     */
-    private static $server;
-
-    /**
-     * Initiates the Request
+     * Initializes the request static properties using the server instance.
      * @param Server $server
-     * @return void
-     * @throws DiException
-     * @throws HttpException
-     * @throws ReflectionException
      * @throws BaseException
+     * @throws ConfigException
+     * @throws DiException
+     * @throws ReflectionException
      */
     public static function init(Server $server)
     {
@@ -87,87 +91,22 @@ abstract class HttpRequest
             return;
         }
 
+        self::flush();
+
         self::$server = $server;
 
-        self::$__method = self::$server->method();
+        self::setServerInfo();
+        self::setContentType();
+        self::setRequestHeaders();
 
-        self::$__protocol = self::$server->protocol();
+        list('params' => $rawInputParams, 'files' => $rawInputFiles) = self::getRawInputParams();
 
-        self::$__host = self::$server->host();
-
-        self::$__port = self::$server->port();
-
-        self::$__uri = self::$server->uri();
-
-        self::$__query = self::$server->query();
-
-        self::$__headers = array_change_key_case((array)getallheaders());
-
-        list('params' => $params, 'files' => $files) = self::parsedParams();
-
-        self::$__request = array_merge(
-            self::$__request,
-            self::getParams(),
-            self::postParams(),
-            $params
-        );
-
-        self::$__files = array_merge(
-            self::handleFiles($_FILES),
-            $files
-        );
+        self::setRequestParams($rawInputParams);
+        self::setUploadedFiles($rawInputFiles);
 
         self::$initialized = true;
     }
 
-    /**
-     * Creates new request for internal use
-     * @param string $method
-     * @param string $url
-     * @param array|null $data
-     * @param array|null $files
-     * @return void
-     * @throws BaseException
-     * @throws DiException
-     * @throws HttpException
-     * @throws ReflectionException
-     */
-    public static function create(string $method, string $url, array $data = null, array $files = null)
-    {
-        if (!self::$initialized) {
-            self::init(Server::getInstance());
-        }
-
-        $parsed = parse_url($url);
-
-        self::setMethod($method);
-
-        if (isset($parsed['scheme'])) {
-            self::setProtocol($parsed['scheme']);
-        }
-
-        if (isset($parsed['host'])) {
-            self::setHost($parsed['host']);
-        }
-
-        if (isset($parsed['port'])) {
-            self::setPort($parsed['port']);
-        }
-        if (isset($parsed['path'])) {
-            self::setUri($parsed['path']);
-        }
-        if (isset($parsed['query'])) {
-            self::setQuery($parsed['query']);
-        }
-
-        if ($data) {
-            self::$__request = $data;
-        }
-
-        if ($files) {
-            self::$__files = self::handleFiles($files);
-        }
-    }
 
     /**
      * Flushes the request header , body and files
@@ -182,6 +121,36 @@ abstract class HttpRequest
         self::$__port = null;
         self::$__uri = null;
         self::$__query = null;
+
+        self::$initialized = false;
+    }
+
+    /**
+     * Sets the merged request parameters
+     * @param array $params
+     */
+    public static function setRequestParams(array $params)
+    {
+        self::$__request = array_merge(
+            self::getParams(),
+            self::postParams(),
+            self::jsonPayloadParams(),
+            self::urlEncodedParams(),
+            $params
+        );
+    }
+
+    /**
+     * Sets the uploaded files array merging handled $_FILES and parsed files
+     * @param array $rawInputFiles
+     * @throws BaseException
+     */
+    public static function setUploadedFiles(array $files)
+    {
+        self::$__files = array_merge(
+            self::handleFiles($_FILES),
+            $files
+        );
     }
 
     /**
@@ -208,39 +177,13 @@ abstract class HttpRequest
     }
 
     /**
+     * Checks if the current method matches the given method
      * @param string $method
      * @return bool
      */
     public static function isMethod(string $method): bool
     {
         return strcasecmp($method, self::$__method) == 0;
-    }
-
-    /**
-     * Gets the nth segment
-     * @param integer $number
-     * @return string|null
-     */
-    public static function getSegment(int $number): ?string
-    {
-        $segments = self::getAllSegments();
-
-        if (isset($segments[$number])) {
-            return $segments[$number];
-        }
-
-        return null;
-    }
-
-    /**
-     * Gets the segments of current URI
-     * @return array
-     */
-    public static function getAllSegments(): array
-    {
-        $segments = explode('/', trim(parse_url(self::$__uri)['path'], '/'));
-        array_unshift($segments, 'zero_segment');
-        return $segments;
     }
 
     /**
@@ -261,70 +204,77 @@ abstract class HttpRequest
     }
 
     /**
-     * Gets Authorization Bearer token
-     * @return string|null
+     * Gets the base url
+     * @param bool $withModulePrefix
+     * @return string
      */
-    public static function getAuthorizationBearer(): ?string
+    public static function getBaseUrl(bool $withModulePrefix = false): string
     {
-        $bearerToken = null;
+        $baseUrl = config()->get('base_url');
 
-        $authorization = (string)self::getHeader('Authorization');
+        $prefix = route_prefix();
+        $modulePrefix = ($withModulePrefix && !empty($prefix)) ? '/' . $prefix : '';
 
-        if (self::hasHeader('Authorization')) {
-            if (preg_match('/Bearer\s(\S+)/', $authorization, $matches)) {
-                $bearerToken = $matches[1];
-            }
+        if ($baseUrl) {
+            return $baseUrl . $modulePrefix;
         }
 
-        return $bearerToken;
+        return self::getHostPrefix() . $modulePrefix;
     }
 
     /**
-     * Gets Basic Auth Credentials
-     * @return array|null
+     * Gets the current url
+     * @return string
      */
-    public static function getBasicAuthCredentials(): ?array
+    public static function getCurrentUrl(): string
     {
-        if (isset($_SERVER['PHP_AUTH_USER']) && isset($_SERVER['PHP_AUTH_PW'])) {
-            return [
-                'username' => $_SERVER['PHP_AUTH_USER'],
-                'password' => $_SERVER['PHP_AUTH_PW']
-            ];
-        }
+        $uri = self::getUri();
+        $query = self::getQuery();
+        $queryPart = $query ? '?' . $query : '';
 
-        if (!self::hasHeader('Authorization')) {
-            return null;
-        }
-
-        $authorization = (string)self::getHeader('Authorization');
-
-        if (preg_match('/Basic\s(\S+)/', $authorization, $matches)) {
-            $decoded = base64_decode($matches[1], true);
-
-            if ($decoded && strpos($decoded, ':') !== false) {
-                list($username, $password) = explode(':', $decoded, 2);
-                return ['username' => $username, 'password' => $password];
-            }
-        }
-
-        return null;
+        return self::getHostPrefix() . '/' . $uri . $queryPart;
     }
 
     /**
-     * Checks to see if request was AJAX request
-     * @return bool
+     * Gets the protocol, host, and optional port part of the URL.
+     * @return string
      */
-    public static function isAjax(): bool
+    private static function getHostPrefix(): string
     {
-        return self::hasHeader('X-REQUESTED-WITH') || self::$server->ajax();
+        $protocol = self::getProtocol();
+        $host = self::getHost();
+        $port = self::getPort();
+
+        $defaultPort = $protocol === 'https' ? self::DEFAULT_HTTPS_PORT : self::DEFAULT_HTTP_PORT;
+
+        $portPart = ($port && $port != $defaultPort) ? ':' . $port : '';
+
+        return $protocol . '://' . $host . $portPart;
     }
 
     /**
-     * Gets the referrer
-     * @return string|null
+     * Sets server data (method, protocol, host, port, uri, query).
      */
-    public static function getReferrer(): ?string
+    private static function setServerInfo()
     {
-        return self::$server->referrer();
+        foreach (['method', 'protocol', 'host', 'port', 'uri', 'query'] as $name) {
+            self::${"__{$name}"} = self::$server->$name();
+        }
+    }
+
+    /**
+     * Sets the normalized request content type.
+     */
+    private static function setContentType()
+    {
+        self::$__contentType = self::$server->contentType(true);
+    }
+
+    /**
+     * Sets request headers, normalizing keys to lowercase.
+     */
+    private static function setRequestHeaders()
+    {
+        self::$__headers = array_change_key_case((array)getallheaders());
     }
 }

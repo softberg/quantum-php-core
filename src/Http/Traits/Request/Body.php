@@ -9,10 +9,13 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.4.0
+ * @since 2.9.8
  */
 
-namespace Quantum\Http\Request;
+namespace Quantum\Http\Traits\Request;
+
+use Quantum\App\Constants\ReservedKeys;
+use InvalidArgumentException;
 
 /**
  * Trait Body
@@ -46,19 +49,19 @@ trait Body
      */
     public static function get(string $key, string $default = null, bool $raw = false)
     {
-        $data = $default;
-
-        if (self::has($key)) {
-            if ($raw) {
-                $data = self::$__request[$key];
-            } else {
-                $data = is_array(self::$__request[$key]) ?
-                    filter_var_array(self::$__request[$key], FILTER_SANITIZE_STRING) :
-                    filter_var(self::$__request[$key], FILTER_SANITIZE_STRING);
-            }
+        if(!self::has($key)) {
+            return $default;
         }
 
-        return $data;
+        $value = self::$__request[$key];
+
+        if ($raw) {
+            return $value;
+        }
+
+        return is_array($value)
+            ? array_map('strip_tags', $value)
+            : strip_tags($value);
     }
 
     /**
@@ -68,6 +71,10 @@ trait Body
      */
     public static function set(string $key, $value)
     {
+        if ($key === ReservedKeys::RENDERED_VIEW) {
+            throw new InvalidArgumentException("Cannot set reserved key: `$key`");
+        }
+
         self::$__request[$key] = $value;
     }
 

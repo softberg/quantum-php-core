@@ -9,14 +9,15 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 2.9.8
  */
 
-namespace Quantum\Http\Request;
+namespace Quantum\Http\Traits\Request;
 
 use Quantum\Libraries\Storage\Exceptions\FileUploadException;
 use Quantum\Libraries\Storage\UploadedFile;
 use Quantum\App\Exceptions\BaseException;
+use ReflectionException;
 
 /**
  * Trait File
@@ -78,8 +79,9 @@ trait File
      * @param array $files
      * @return array|UploadedFile[]
      * @throws BaseException
+     * @throws ReflectionException
      */
-    private static function handleFiles(array $files): array
+    public static function handleFiles(array $files): array
     {
         if (!count($files)) {
             return [];
