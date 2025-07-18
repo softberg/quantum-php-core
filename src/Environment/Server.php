@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.8
  */
 
 namespace Quantum\Environment;
@@ -24,7 +24,7 @@ class Server
     /**
      * @var array
      */
-    private $server = [];
+    private $server;
 
 
     private static $instance = null;
@@ -51,6 +51,14 @@ class Server
     }
 
     /**
+     * Flushes the server params
+     */
+    public function flush()
+    {
+        $this->server = [];
+    }
+
+    /**
      * @return array
      */
     public function all(): array
@@ -69,10 +77,18 @@ class Server
 
     /**
      * @param $key
-     * @param $value
-     * @return void
+     * @return bool
      */
-    public function set($key, $value): void
+    public function has($key): bool
+    {
+        return array_key_exists($key, $this->server);
+    }
+
+    /**
+     * @param $key
+     * @param $value
+     */
+    public function set($key, $value)
     {
         $this->server[$key] = $value;
     }
@@ -135,9 +151,11 @@ class Server
     public function contentType(bool $exact = false): ?string
     {
         $contentType = $this->get('CONTENT_TYPE');
+
         if ($exact && $contentType && strpos($contentType, ';') !== false) {
             return trim(explode(';', $contentType, 2)[0]);
         }
+
         return $contentType;
     }
 
@@ -156,5 +174,4 @@ class Server
     {
         return strtolower($this->get('HTTP_X_REQUESTED_WITH') ?? '') === 'xmlhttprequest';
     }
-
 }
