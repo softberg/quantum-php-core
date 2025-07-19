@@ -14,9 +14,9 @@
 
 namespace Quantum\Http\Traits\Response;
 
+use Quantum\Http\Exceptions\HttpException;
 use Quantum\App\Constants\ReservedKeys;
 use Quantum\Http\Constants\ContentType;
-use Quantum\Http\Exceptions\HttpException;
 use SimpleXMLElement;
 use DOMDocument;
 use Exception;

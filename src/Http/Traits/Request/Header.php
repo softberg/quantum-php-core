@@ -110,10 +110,10 @@ trait Header
      */
     public static function getBasicAuthCredentials(): ?array
     {
-        if (static::$server->has('PHP_AUTH_USER') && static::$server->has('PHP_AUTH_PW')) {
+        if (self::$server->has('PHP_AUTH_USER') && static::$server->has('PHP_AUTH_PW')) {
             return [
-                'username' => static::$server->get('PHP_AUTH_USER'),
-                'password' => static::$server->get('PHP_AUTH_PW'),
+                'username' => self::$server->get('PHP_AUTH_USER'),
+                'password' => self::$server->get('PHP_AUTH_PW'),
             ];
         }
 
