@@ -14,8 +14,10 @@
 
 namespace Quantum\Http\Traits\Request;
 
+use Quantum\Config\Exceptions\ConfigException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Http\Constants\ContentType;
+use Quantum\Di\Exceptions\DiException;
 use Quantum\Environment\Server;
 use ReflectionException;
 
@@ -27,19 +29,30 @@ trait Internal
 {
 
     /**
+     * Creates an internal request for testing purposes
      * @param string $method
      * @param string $url
-     * @param array|null $data
-     * @param array|null $files
-     * @return void
+     * @param array $params
+     * @param array $headers
+     * @param array $files
      * @throws BaseException
      * @throws ReflectionException
+     * @throws ConfigException
+     * @throws DiException
      */
-    public static function create(string $method, string $url, array $data = null, array $files = null): void
+    public static function create(
+        string $method,
+        string $url,
+        array  $params = [],
+        array  $headers = [],
+        array  $files = []
+    )
     {
         $parsed = parse_url($url);
 
         $server = Server::getInstance();
+
+        $server->flush();
 
         $server->set('REQUEST_METHOD', strtoupper($method));
 
@@ -69,14 +82,20 @@ trait Internal
             $server->set('QUERY_STRING', '');
         }
 
-        self::detectAndSetContentType($server, $data, $files);
+        self::detectAndSetContentType($server, $params, $files);
 
-        static::flush();
+        if ($headers) {
+            foreach ($headers as $name => $value) {
+                $server->set('HTTP_' . strtoupper($name), $value);
+            }
+        }
 
-        static::init(Server::getInstance());
+        self::flush();
 
-        if ($data) {
-            self::setRequestParams($data);
+        self::init($server);
+
+        if ($params) {
+            self::setRequestParams($params);
         }
 
         if ($files) {
