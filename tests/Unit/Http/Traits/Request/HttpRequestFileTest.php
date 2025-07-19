@@ -34,7 +34,7 @@ class HttpRequestFileTest extends AppTestCase
             ],
         ];
 
-        $request->create('POST', '/upload', null, $file);
+        $request->create('POST', '/upload', [], [], $file);
 
         $this->assertTrue($request->hasFile('image'));
 
@@ -50,7 +50,7 @@ class HttpRequestFileTest extends AppTestCase
             ],
         ];
 
-        $request->create('POST', '/upload', null, $fileWithError);
+        $request->create('POST', '/upload', [], [], $fileWithError);
 
         $this->assertFalse($request->hasFile('image'));
 
@@ -77,7 +77,7 @@ class HttpRequestFileTest extends AppTestCase
             ],
         ];
 
-        $request->create('POST', '/upload', null, $files);
+        $request->create('POST', '/upload', [], [], $files);
 
         $this->assertTrue($request->hasFile('image'));
 

@@ -44,7 +44,7 @@ class HttpRequestInternalTest extends AppTestCase
             ]
         ];
 
-        Request::create('POST', 'http://localhost/upload', null, $files);
+        Request::create('POST', 'http://localhost/upload', [], [], $files);
 
         $this->assertEquals('multipart/form-data', Server::getInstance()->get('CONTENT_TYPE'));
     }
@@ -86,7 +86,7 @@ class HttpRequestInternalTest extends AppTestCase
 
         $request = new Request();
 
-        $request->create('POST', 'http://localhost/upload', [], $files);
+        $request->create('POST', 'http://localhost/upload', [], [], $files);
 
         $this->assertTrue($request->hasFile('document'));
 

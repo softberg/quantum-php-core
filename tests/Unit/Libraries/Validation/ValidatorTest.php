@@ -933,7 +933,7 @@ namespace Quantum\Tests\Unit\Libraries\Validation {
                 ],
             ];
 
-            $this->request->create('POST', '/upload', null, $file);
+            $this->request->create('POST', '/upload', [], [], $file);
 
             $this->validator->addRule('image', [
                 Rule::set('fileSize', 1000)
@@ -966,7 +966,7 @@ namespace Quantum\Tests\Unit\Libraries\Validation {
                 ],
             ];
 
-            $this->request->create('POST', '/upload', null, $file);
+            $this->request->create('POST', '/upload', [], [], $file);
 
             $this->validator->addRule('image', [
                 Rule::set('fileMimeType', 'image/png')
@@ -1005,7 +1005,7 @@ namespace Quantum\Tests\Unit\Libraries\Validation {
                 ],
             ];
 
-            $this->request->create('POST', '/upload', null, $file);
+            $this->request->create('POST', '/upload', [], [], $file);
 
             $this->validator->addRule('image', [
                 Rule::set('fileExtension', 'jpg')
@@ -1044,7 +1044,7 @@ namespace Quantum\Tests\Unit\Libraries\Validation {
                 ],
             ];
 
-            $this->request->create('POST', '/upload', null, $file);
+            $this->request->create('POST', '/upload', [], [], $file);
 
             $this->validator->addRule('image', [
                 Rule::set('imageDimensions', [28, 18])
