@@ -17,6 +17,7 @@ namespace {{MODULE_NAMESPACE}}\Controllers;
 use Quantum\Service\Factories\ServiceFactory;
 use Shared\Transformers\PostTransformer;
 use Quantum\View\Factories\ViewFactory;
+use Quantum\Http\Constants\StatusCode;
 use Shared\Services\AuthService;
 use Shared\Services\PostService;
 use Quantum\View\RawParam;
@@ -106,7 +107,7 @@ class PostController extends BaseController
         $post = $this->postService->getPost($postId);
         
         if ($post->isEmpty()) {
-            $response->html(partial('errors/404'), 404);
+            $response->html(partial('errors/404'), StatusCode::NOT_FOUND);
             stop();
         }
 

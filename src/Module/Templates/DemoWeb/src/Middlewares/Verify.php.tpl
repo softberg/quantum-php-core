@@ -16,6 +16,7 @@ namespace {{MODULE_NAMESPACE}}\Middlewares;
 
 use Quantum\Libraries\Validation\Validator;
 use Quantum\Model\Factories\ModelFactory;
+use Quantum\Http\Constants\StatusCode;
 use Quantum\Libraries\Validation\Rule;
 use Quantum\Middleware\QtMiddleware;
 use Quantum\Http\Response;
@@ -62,17 +63,21 @@ class Verify extends QtMiddleware
         if ($request->isMethod('post')) {
             if (!$this->validator->isValid($request->all())) {
                 session()->setFlash('error', $this->validator->getErrors());
-                redirectWith(base_url(true) . '/' . current_lang() . '/verify', $request->all());
+
+                redirectWith(
+                    base_url(true) . '/' . current_lang() . '/verify',
+                    $request->all(),
+                    StatusCode::UNPROCESSABLE_ENTITY
+                );
             }
         } else {
             $token = (string)route_param('code');
 
             if (!$this->checkToken($token)) {
                 stop(function () use ($response) {
-                    $response->html(partial('errors/404'), 404);
+                    $response->html(partial('errors/404'), StatusCode::NOT_FOUND);
                 });
             }
-
         }
 
         return $next($request, $response);

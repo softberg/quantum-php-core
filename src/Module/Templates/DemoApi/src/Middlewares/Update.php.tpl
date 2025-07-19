@@ -15,6 +15,7 @@
 namespace {{MODULE_NAMESPACE}}\Middlewares;
 
 use Quantum\Libraries\Validation\Validator;
+use Quantum\Http\Constants\StatusCode;
 use Quantum\Libraries\Validation\Rule;
 use Quantum\Middleware\QtMiddleware;
 use Quantum\Http\Response;
@@ -66,7 +67,7 @@ class Update extends QtMiddleware
                 $response->json([
                     'status' => 'error',
                     'message' => $this->validator->getErrors()
-                ]);
+                ], StatusCode::UNPROCESSABLE_ENTITY);
 
                 stop();
             }

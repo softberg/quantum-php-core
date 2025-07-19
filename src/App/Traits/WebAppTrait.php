@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 2.9.8
  */
 
 namespace Quantum\App\Traits;
@@ -19,6 +19,7 @@ use Quantum\Libraries\ResourceCache\ViewCache;
 use Quantum\Module\Exceptions\ModuleException;
 use Quantum\Config\Exceptions\ConfigException;
 use Quantum\Router\Exceptions\RouteException;
+use Quantum\Http\Exceptions\HttpException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Module\ModuleLoader;
@@ -27,6 +28,7 @@ use Quantum\Environment\Server;
 use Quantum\Debugger\Debugger;
 use Quantum\Http\Response;
 use Quantum\Router\Router;
+use Quantum\Http\Request;
 use Quantum\Loader\Setup;
 use ReflectionException;
 
@@ -38,18 +40,20 @@ trait WebAppTrait
 {
 
     /**
-     * @param $request
-     * @param $response
-     * @return void
+     * @param Request $request
+     * @param Response $response
+     * @throws BaseException
+     * @throws DiException
+     * @throws ReflectionException
+     * @throws HttpException
      */
-    private function initializeRequestResponse($request, $response)
+    private function initializeRequestResponse(Request $request, Response $response)
     {
         $request->init(Server::getInstance());
         $response->init();
     }
 
     /**
-     * @return void
      * @throws DebugBarException
      */
     private function initializeDebugger()
@@ -59,7 +63,6 @@ trait WebAppTrait
     }
 
     /**
-     * @return void
      * @throws ModuleException
      * @throws RouteException
      */
@@ -88,7 +91,6 @@ trait WebAppTrait
 
     /**
      * @param $request
-     * @return void
      * @throws BaseException
      * @throws ConfigException
      * @throws DebugBarException
@@ -105,7 +107,6 @@ trait WebAppTrait
 
     /**
      * @param Response $response
-     * @return void
      * @throws ConfigException
      * @throws DiException
      * @throws ReflectionException

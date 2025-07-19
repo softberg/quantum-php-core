@@ -53,7 +53,7 @@ class ConfigTest extends AppTestCase
 
         $this->assertNotNull($config->get('database.default'));
 
-        $this->assertEquals('mysql', $config->get('database.default'));
+        $this->assertEquals('sqlite', $config->get('database.default'));
     }
 
     public function testImportingNonExistingConfigFile()

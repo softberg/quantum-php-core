@@ -15,6 +15,7 @@
 namespace {{MODULE_NAMESPACE}}\Middlewares;
 
 use Quantum\Libraries\Validation\Validator;
+use Quantum\Http\Constants\StatusCode;
 use Quantum\Libraries\Validation\Rule;
 use Quantum\Middleware\QtMiddleware;
 use Quantum\Http\Response;
@@ -62,7 +63,12 @@ class Update extends QtMiddleware
                 session()->setFlash('success', t('common.updated_successfully'));
             } else {
                 session()->setFlash('error', $this->validator->getErrors());
-                redirectWith(base_url(true) . '/' . current_lang() . '/account-settings#account_profile', $request->all());
+
+                redirectWith(
+                    base_url(true) . '/' . current_lang() . '/account-settings#account_profile',
+                    $request->all(),
+                    StatusCode::UNPROCESSABLE_ENTITY
+                );
             }
         }
 

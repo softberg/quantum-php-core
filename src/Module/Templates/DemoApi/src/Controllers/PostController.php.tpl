@@ -16,6 +16,7 @@ namespace {{MODULE_NAMESPACE}}\Controllers;
 
 use Quantum\Service\Factories\ServiceFactory;
 use Shared\Transformers\PostTransformer;
+use Quantum\Http\Constants\StatusCode;
 use Shared\Services\PostService;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
@@ -90,7 +91,7 @@ class PostController extends BaseController
             $response->json([
                 'status' => 'error',
                 'message' => t('common.post_not_found')
-            ], 404);
+            ], StatusCode::NOT_FOUND);
 
             stop();
         }

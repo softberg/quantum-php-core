@@ -16,6 +16,7 @@ namespace {{MODULE_NAMESPACE}}\Middlewares;
 
 use Quantum\Libraries\Validation\Validator;
 use Quantum\Model\Factories\ModelFactory;
+use Quantum\Http\Constants\StatusCode;
 use Quantum\Libraries\Validation\Rule;
 use Quantum\Middleware\QtMiddleware;
 use Quantum\Http\Response;
@@ -61,7 +62,7 @@ class Forget extends QtMiddleware
                 $response->json([
                     'status' => 'error',
                     'message' => $this->validator->getErrors()
-                ], 422);
+                ], StatusCode::UNPROCESSABLE_ENTITY);
                 
                 stop();
             }
@@ -70,7 +71,7 @@ class Forget extends QtMiddleware
                 $response->json([
                     'status' => 'error',
                     'message' => [t('validation.nonExistingRecord', $request->get('email'))]
-                ], 422);
+                ], StatusCode::UNPROCESSABLE_ENTITY);
                 
                 stop();
             }

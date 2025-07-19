@@ -15,6 +15,7 @@
 namespace {{MODULE_NAMESPACE}}\Middlewares;
 
 use Quantum\Service\Factories\ServiceFactory;
+use Quantum\Http\Constants\StatusCode;
 use Quantum\Middleware\QtMiddleware;
 use Shared\Services\PostService;
 use Quantum\Http\Response;
@@ -41,11 +42,10 @@ class Owner extends QtMiddleware
         $post = ServiceFactory::get(PostService::class)->getPost($postId);
 
         if (!$post->asArray() || $post->user_id != auth()->user()->id) {
-            $response->html(partial('errors/404'), 404);
+            $response->html(partial('errors/404'), StatusCode::NOT_FOUND);
             stop();
         }
 
         return $next($request, $response);
     }
-
 }

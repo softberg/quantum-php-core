@@ -15,6 +15,7 @@
 namespace {{MODULE_NAMESPACE}}\Controllers;
 
 use Quantum\Libraries\Auth\Exceptions\AuthException;
+use Quantum\Http\Constants\StatusCode;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 
@@ -73,7 +74,11 @@ class AuthController extends BaseController
                 }
             } catch (AuthException $e) {
                 session()->setFlash('error', $e->getMessage());
-                redirect(base_url(true) . '/' . current_lang() . '/signin');
+
+                redirect(
+                    base_url(true) . '/' . current_lang() . '/signin',
+                    StatusCode::UNAUTHORIZED
+                );
             }
         } else {
             $this->view->setParams([
@@ -181,7 +186,11 @@ class AuthController extends BaseController
                 redirect(base_url(true) . '/' . current_lang());
             } catch (AuthException $e) {
                 session()->setFlash('error', $e->getMessage());
-                redirect(base_url(true) . '/' . current_lang() . '/verify/' . $request->get('code'));
+
+                redirect(
+                    base_url(true) . '/' . current_lang() . '/verify/' . $request->get('code'),
+                    StatusCode::UNAUTHORIZED
+                );
             }
         } else {
             $this->view->setParams([
@@ -203,7 +212,10 @@ class AuthController extends BaseController
             $otpToken = auth()->resendOtp(route_param('code'));
             redirect(base_url(true) . '/' . current_lang() . '/verify/' . $otpToken);
         } catch (AuthException $e) {
-            redirect(base_url(true) . '/' . current_lang() . '/signin');
+            redirect(
+                base_url(true) . '/' . current_lang() . '/signin',
+                StatusCode::UNAUTHORIZED
+            );
         }
     }
 }

@@ -9,12 +9,16 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 2.9.8
  */
 
 use Quantum\Config\Exceptions\ConfigException;
 use Quantum\App\Exceptions\BaseException;
+use Quantum\Http\Constants\ContentType;
+use Quantum\App\Constants\ReservedKeys;
 use Quantum\Di\Exceptions\DiException;
+use Quantum\Http\Constants\StatusCode;
+use Quantum\Http\Response\HttpStatus;
 use DebugBar\DebugBarException;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
@@ -26,21 +30,7 @@ use Quantum\Http\Request;
  */
 function base_url(bool $withModulePrefix = false): string
 {
-    $baseUrl = config()->get('base_url');
-
-    if ($baseUrl) {
-        return $baseUrl;
-    }
-
-    $protocol = Request::getProtocol();
-    $host = Request::getHost();
-    $port = Request::getPort();
-
-    $portPart = ($port && $port != 80) ? ':' . $port : '';
-
-    $modulePrefix = ($withModulePrefix && !empty(route_prefix())) ? '/' . route_prefix() : '';
-
-    return $protocol . '://' . $host . $portPart . $modulePrefix;
+    return Request::getBaseUrl($withModulePrefix);
 }
 
 /**
@@ -49,18 +39,7 @@ function base_url(bool $withModulePrefix = false): string
  */
 function current_url(): string
 {
-    $protocol = Request::getProtocol();
-    $host = Request::getHost();
-    $port = Request::getPort();
-
-    $portPart = ($port && $port != 80) ? ':' . $port : '';
-
-    $uri = Request::getUri();
-    $query = Request::getQuery();
-
-    $queryPart = $query ? '?' . $query : '';
-
-    return $protocol . '://' . $host . $portPart . '/' . $uri . $queryPart;
+    return Request::getCurrentUrl();
 }
 
 /**
@@ -68,7 +47,7 @@ function current_url(): string
  * @param string $url
  * @param int $code
  */
-function redirect(string $url, int $code = 302)
+function redirect(string $url, int $code = StatusCode::FOUND)
 {
     Response::redirect($url, $code);
 }
@@ -84,9 +63,9 @@ function redirect(string $url, int $code = 302)
  * @throws DiException
  * @throws ReflectionException
  */
-function redirectWith(string $url, array $data, int $code = 302)
+function redirectWith(string $url, array $data, int $code = StatusCode::FOUND)
 {
-    session()->set('__prev_request', $data);
+    session()->set(ReservedKeys::PREV_REQUEST, $data);
     Response::redirect($url, $code);
 }
 
@@ -101,18 +80,22 @@ function redirectWith(string $url, array $data, int $code = 302)
  */
 function old(string $key)
 {
-    if (session()->has('__prev_request')) {
-        $prevRequest = session()->get('__prev_request');
-
-        if (is_array($prevRequest) && array_key_exists($key, $prevRequest)) {
-            $value = $prevRequest[$key];
-            unset($prevRequest[$key]);
-            session()->set('__prev_request', $prevRequest);
-            return $value;
-        }
+    if (!session()->has(ReservedKeys::PREV_REQUEST)) {
+        return null;
     }
 
-    return null;
+    $prevRequest = session()->get(ReservedKeys::PREV_REQUEST);
+
+    if (!is_array($prevRequest) || !isset($prevRequest[$key])) {
+        return null;
+    }
+
+    $value = $prevRequest[$key];
+    unset($prevRequest[$key]);
+
+    session()->set(ReservedKeys::PREV_REQUEST, $prevRequest);
+
+    return $value;
 }
 
 /**
@@ -137,17 +120,17 @@ function page_not_found()
 {
     $acceptHeader = Response::getHeader('Accept');
 
-    $isJson = $acceptHeader === 'application/json';
+    $isJson = $acceptHeader === ContentType::JSON;
 
     if ($isJson) {
         Response::json(
             ['status' => 'error', 'message' => 'Page not found'],
-            404
+            StatusCode::NOT_FOUND
         );
     } else {
         Response::html(
-            partial('errors' . DS . '404'),
-            404
+            partial('errors' . DS . StatusCode::NOT_FOUND),
+            StatusCode::NOT_FOUND
         );
     }
 }

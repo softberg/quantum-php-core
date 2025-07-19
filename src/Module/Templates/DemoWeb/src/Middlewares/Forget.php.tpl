@@ -16,6 +16,7 @@ namespace {{MODULE_NAMESPACE}}\Middlewares;
 
 use Quantum\Libraries\Validation\Validator;
 use Quantum\Model\Factories\ModelFactory;
+use Quantum\Http\Constants\StatusCode;
 use Quantum\Libraries\Validation\Rule;
 use Quantum\Middleware\QtMiddleware;
 use Quantum\Http\Response;
@@ -60,7 +61,11 @@ class Forget extends QtMiddleware
         if ($request->isMethod('post')) {
             if (!$this->validator->isValid($request->all())) {
                 session()->setFlash('error', $this->validator->getErrors());
-                redirect(base_url(true) . '/' . current_lang() . '/forget');
+
+                redirect(
+                    base_url(true) . '/' . current_lang() . '/forget',
+                    StatusCode::UNPROCESSABLE_ENTITY
+                );
             }
 
             if (!$this->emailExists($request->get('email'))) {
@@ -70,7 +75,10 @@ class Forget extends QtMiddleware
                     ]
                 ]);
 
-                redirect(base_url(true) . '/' . current_lang() . '/forget');
+                redirect(
+                    base_url(true) . '/' . current_lang() . '/forget',
+                    StatusCode::UNPROCESSABLE_ENTITY
+                );
             }
         }
 
@@ -88,5 +96,4 @@ class Forget extends QtMiddleware
         $userModel = ModelFactory::get(User::class);
         return !empty($userModel->findOneBy('email', $email)->asArray());
     }
-
 }
