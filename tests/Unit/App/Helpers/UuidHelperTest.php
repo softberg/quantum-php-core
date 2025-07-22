@@ -38,7 +38,7 @@ class UuidHelperTest extends AppTestCase
     public function testUuidOrderedIsChronologicallyIncreasing()
     {
         $uuid1 = uuid_ordered();
-        usleep(10); // short delay
+        usleep(10);
         $uuid2 = uuid_ordered();
 
         $this->assertLessThan(
