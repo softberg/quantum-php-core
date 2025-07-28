@@ -63,10 +63,10 @@ class DatabaseSessionAdapter implements SessionStorageInterface
     {
         $sessionTable = $params['table'] ?? self::SESSION_TABLE;
 
-        $sessionModel = ModelFactory::createOrmInstance($sessionTable);
+        $sessionModel = ModelFactory::createDynamicModel($sessionTable);
 
         if (session_status() !== PHP_SESSION_ACTIVE) {
-            session_set_save_handler(new DatabaseHandler($sessionModel), true);
+            session_set_save_handler(new DatabaseHandler($sessionModel->getOrmInstance()), true);
 
             if (@session_start() === false) {
                 throw SessionException::sessionNotStarted();

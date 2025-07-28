@@ -49,7 +49,7 @@ class DatabaseAdapter implements CacheInterface
     {
         $this->ttl = $params['ttl'];
         $this->prefix = $params['prefix'];
-        $this->cacheModel = ModelFactory::createOrmInstance($params['table']);
+        $this->cacheModel = ModelFactory::createDynamicModel($params['table']);
     }
 
     /**
