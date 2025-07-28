@@ -9,15 +9,15 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 2.9.8
  */
 
 namespace Quantum\Paginator\Adapters;
 
-use Quantum\Libraries\Database\Contracts\DbalInterface;
 use Quantum\Paginator\Contracts\PaginatorInterface;
 use Quantum\Paginator\Traits\PaginatorTrait;
 use Quantum\Model\ModelCollection;
+use Quantum\Model\QtModel;
 
 /**
  * Class ModelPaginator
@@ -29,40 +29,27 @@ class ModelPaginator implements PaginatorInterface
     use PaginatorTrait;
 
     /**
-     * @var DbalInterface
-     */
-    private $ormInstance;
-
-    /**
      * @var string
      */
     private $modelClass;
 
     /**
-     * @param DbalInterface $ormInstance
-     * @param string $modelClass
+     * @var QtModel
+     */
+    private $model;
+
+    /**
+     * @param QtModel $model
      * @param int $perPage
      * @param int $page
      */
-    public function __construct(DbalInterface $ormInstance, string $modelClass, int $perPage, int $page = 1)
+    public function __construct(QtModel $model, int $perPage, int $page = 1)
     {
         $this->initialize($perPage, $page);
-        $this->ormInstance = $ormInstance;
-        $this->modelClass = $modelClass;
-        $this->total = $this->ormInstance->count();
-    }
 
-    /**
-     * @inheritDoc
-     */
-    public static function fromArray(array $params): PaginatorInterface
-    {
-        return new self(
-            $params['orm'],
-            $params['model'],
-            $params['perPage'] ?? 10,
-            $params['page'] ?? 1
-        );
+        $this->model = $model;
+        $this->modelClass = $model->getModelName();
+        $this->total = $model->count();
     }
 
     /**
@@ -70,14 +57,14 @@ class ModelPaginator implements PaginatorInterface
      */
     public function data(): ModelCollection
     {
-        $ormInstances = $this->ormInstance
+        $result = $this->model
             ->limit($this->perPage)
             ->offset($this->perPage * ($this->page - 1))
             ->get();
 
         $models = array_map(function ($item) {
-            return wrapToModel($item, $this->modelClass);
-        }, $ormInstances);
+            return wrapToModel($item->getOrmInstance(), $this->modelClass);
+        }, iterator_to_array($result));
 
         return new ModelCollection($models);
     }
