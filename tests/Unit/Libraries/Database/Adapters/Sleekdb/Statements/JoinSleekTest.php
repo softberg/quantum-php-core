@@ -1,237 +1,163 @@
 <?php
 
-namespace Quantum\Shared\Models {
+namespace Quantum\Tests\Unit\Libraries\Database\Adapters\Sleekdb\Statements;
 
-    use Quantum\Model\QtModel;
+use Quantum\Tests\Unit\Libraries\Database\Adapters\Sleekdb\SleekDbalTestCase;
+use Quantum\Tests\_root\shared\Models\TestUserProfessionModel;
+use Quantum\Tests\_root\shared\Models\TestUserEventModel;
+use Quantum\Tests\_root\shared\Models\TestUserMeetingModel;
+use Quantum\Tests\_root\shared\Models\TestTicketModel;
+use Quantum\Tests\_root\shared\Models\TestEventModel;
+use Quantum\Tests\_root\shared\Models\TestNotesModel;
+use Quantum\Tests\_root\shared\Models\TestUserModel;
+use Quantum\Model\Exceptions\ModelException;
+use Quantum\Model\Factories\ModelFactory;
+use Quantum\Model\ModelCollection;
 
-    class SleekUserModel extends QtModel
+
+class JoinSleekTest extends SleekDbalTestCase
+{
+
+    public function testSleekSameLevelJoinTo()
     {
+        $userModel = ModelFactory::get(TestUserModel::class);
 
-        public $table = 'users';
+        $userProfessionModel = ModelFactory::get(TestUserProfessionModel::class);
 
+        $userMeetings = ModelFactory::get(TestUserMeetingModel::class);
+
+        $users = $userModel
+            ->joinTo($userProfessionModel, false)
+            ->joinTo($userMeetings)
+            ->get();
+
+        $this->assertInstanceOf(ModelCollection::class, $users);
+
+        $this->assertIsArray($users->first()->prop('user_professions'));
+
+        $this->assertIsArray($users->first()->prop('user_meetings'));
     }
 
-    class SleekUserProfessionModel extends QtModel
+    public function testSleekNestedLevelJoinTo()
     {
+        $userModel = ModelFactory::get(TestUserModel::class);
 
-        public $table = 'professions';
-        public $foreignKeys = [
-            'users' => 'user_id'
-        ];
+        $meetingModel = ModelFactory::get(TestUserMeetingModel::class);
 
+        $ticketModel = ModelFactory::get(TestTicketModel::class);
+
+        $noteModel = ModelFactory::get(TestNotesModel::class);
+
+        $users = $userModel
+            ->joinTo($meetingModel)
+            ->joinTo($ticketModel)
+            ->joinTo($noteModel)
+            ->get();
+
+        $this->assertInstanceOf(ModelCollection::class, $users);
+
+        $this->assertCount(2, $users);
+
+        $this->assertIsArray($users->first()->prop('user_meetings')[0]);
+
+        $this->assertArrayHasKey('tickets', $users->first()->prop('user_meetings')[0]);
+
+        $this->assertIsArray($users->first()->prop('user_meetings')[0]['tickets'][0]);
+
+        $this->assertArrayHasKey('notes', $users->first()->prop('user_meetings')[0]['tickets'][0]);
     }
 
-    class SleekUserEventModel extends QtModel
+    public function testSleekMixedLevelJoinToWithCriteria()
     {
+        $userModel = ModelFactory::get(TestUserModel::class);
 
-        public $table = 'user_events';
-        public $foreignKeys = [
-            'users' => 'user_id',
-            'events' => 'event_id'
-        ];
+        $userProfessionModel = ModelFactory::get(TestUserProfessionModel::class);
 
+        $meetingModel = ModelFactory::get(TestUserMeetingModel::class);
+
+        $ticketModel = ModelFactory::get(TestTicketModel::class);
+
+        $users = $userModel
+            ->joinTo($userProfessionModel, false)
+            ->joinTo($meetingModel)
+            ->joinTo($ticketModel)
+            ->criteria('age', '=', 35)
+            ->get();
+
+        $this->assertInstanceOf(ModelCollection::class, $users);
+
+        $this->assertCount(1, $users);
+
+        $this->assertEquals('Jane', $users->first()->prop('firstname'));
+
+        $this->assertIsArray($users->first()->prop('user_professions'));
+
+        $this->assertIsArray($users->first()->prop('user_meetings'));
+
+        $this->assertEquals('Marketing', $users->first()->prop('user_meetings')[0]['title']);
+
+        $this->assertArrayHasKey('tickets', $users->first()->prop('user_meetings')[0]);
+
+        $this->assertIsArray($users->first()->prop('user_meetings')[0]['tickets']);
     }
 
-    class SleekEventModel extends QtModel
+    public function testSleekJoinToAndThrough()
     {
+        $userModel = ModelFactory::get(TestUserModel::class);
 
-        public $table = 'events';
-        public $foreignKeys = [
-            'user_events' => 'event_id'
-        ];
+        $userEventModel = ModelFactory::get(TestUserEventModel::class);
 
+        $eventModel = ModelFactory::get(TestEventModel::class);
+
+        $users = $userModel
+            ->joinTo($userEventModel)
+            ->joinThrough($eventModel)
+            ->orderBy('title', 'asc')
+            ->get();
+
+        $this->assertInstanceOf(ModelCollection::class, $users);
+
+        $this->assertIsArray($users->first()->user_events);
+
+        $this->assertArrayHasKey('confirmed', $users->first()->user_events[0]);
+
+        $this->assertArrayHasKey('events', $users->first()->user_events[0]);
+
+        $this->assertIsArray($users->first()->user_events[0]['events']);
+
+        $this->assertArrayHasKey('title', $users->first()->user_events[0]['events'][0]);
     }
 
-    class SleekMeetingModel extends QtModel
+    public function testSleekJoinThroughInverse()
     {
+        $ticketModel = ModelFactory::get(TestTicketModel::class);
 
-        public $table = 'meetings';
-        public $foreignKeys = [
-            'users' => 'user_id'
-        ];
+        $noteModel = ModelFactory::get(TestNotesModel::class);
 
+        $notes = $noteModel->joinThrough($ticketModel)->criteria('id', '=', 3)->first()->asArray();
+
+        $this->assertArrayHasKey('note', $notes);
+
+        $this->assertEquals('note three', $notes['note']);
+
+        $this->assertArrayHasKey('tickets', $notes);
+
+        $this->assertIsArray($notes['tickets']);
+
+        $this->assertArrayHasKey('number', $notes['tickets'][0]);
+
+        $this->assertEquals('R4563', $notes['tickets'][0]['number']);
     }
 
-    class SleekTicketModel extends QtModel
+    public function testSleekJoinToAndJoinThroughUsingSwitch()
     {
+        $userModel = ModelFactory::get(TestUserModel::class);
 
-        public $table = 'tickets';
-        public $foreignKeys = [
-            'meetings' => 'meeting_id'
-        ];
+        $userProfessionModel = ModelFactory::get(TestUserProfessionModel::class);
 
-    }
+        $userEventModel = ModelFactory::get(TestUserEventModel::class);
 
-    class SleekNotesModel extends QtModel
-    {
-
-        public $table = 'notes';
-        public $foreignKeys = [
-            'tickets' => 'ticket_id'
-        ];
-
-    }
-
-}
-
-namespace Quantum\Tests\Unit\Libraries\Database\Adapters\Sleekdb\Statements {
-
-    use Quantum\Tests\Unit\Libraries\Database\Adapters\Sleekdb\SleekDbalTestCase;
-    use Quantum\Shared\Models\SleekUserProfessionModel;
-    use Quantum\Shared\Models\SleekUserEventModel;
-    use Quantum\Model\Exceptions\ModelException;
-    use Quantum\Shared\Models\SleekMeetingModel;
-    use Quantum\Shared\Models\SleekTicketModel;
-    use Quantum\Shared\Models\SleekEventModel;
-    use Quantum\Shared\Models\SleekNotesModel;
-    use Quantum\Model\Factories\ModelFactory;
-    use Quantum\Shared\Models\SleekUserModel;
-    use Quantum\Model\ModelCollection;
-
-
-    class JoinSleekTest extends SleekDbalTestCase
-    {
-
-        public function testSleekSameLevelJoinTo()
-        {
-            $userModel = ModelFactory::get(SleekUserModel::class);
-
-            $userProfessionModel = ModelFactory::get(SleekUserProfessionModel::class);
-
-            $userMeetings = ModelFactory::get(SleekMeetingModel::class);
-
-            $users = $userModel
-                ->joinTo($userProfessionModel, false)
-                ->joinTo($userMeetings)
-                ->get();
-
-            $this->assertInstanceOf(ModelCollection::class, $users);
-
-            $this->assertIsArray($users->first()->prop('professions'));
-
-            $this->assertIsArray($users->first()->prop('meetings'));
-        }
-
-        public function testSleekNestedLevelJoinTo()
-        {
-            $userModel = ModelFactory::get(SleekUserModel::class);
-
-            $meetingModel = ModelFactory::get(SleekMeetingModel::class);
-
-            $ticketModel = ModelFactory::get(SleekTicketModel::class);
-
-            $noteModel = ModelFactory::get(SleekNotesModel::class);
-
-            $users = $userModel
-                ->joinTo($meetingModel)
-                ->joinTo($ticketModel)
-                ->joinTo($noteModel)
-                ->get();
-
-            $this->assertInstanceOf(ModelCollection::class, $users);
-
-            $this->assertCount(2, $users);
-
-            $this->assertIsArray($users->first()->prop('meetings')[0]);
-
-            $this->assertArrayHasKey('tickets', $users->first()->prop('meetings')[0]);
-
-            $this->assertIsArray($users->first()->prop('meetings')[0]['tickets'][0]);
-
-            $this->assertArrayHasKey('notes', $users->first()->prop('meetings')[0]['tickets'][0]);
-        }
-
-        public function testSleekMixedLevelJoinToWithCriteria()
-        {
-            $userModel = ModelFactory::get(SleekUserModel::class);
-
-            $userProfessionModel = ModelFactory::get(SleekUserProfessionModel::class);
-
-            $meetingModel = ModelFactory::get(SleekMeetingModel::class);
-
-            $ticketModel = ModelFactory::get(SleekTicketModel::class);
-
-            $users = $userModel
-                ->joinTo($userProfessionModel, false)
-                ->joinTo($meetingModel)
-                ->joinTo($ticketModel)
-                ->criteria('age', '=', 35)
-                ->get();
-
-            $this->assertInstanceOf(ModelCollection::class, $users);
-
-            $this->assertCount(1, $users);
-
-            $this->assertEquals('Jane',$users->first()->prop('firstname'));
-
-            $this->assertIsArray($users->first()->prop('professions'));
-
-            $this->assertIsArray($users->first()->prop('meetings'));
-
-            $this->assertEquals('Marketing', $users->first()->prop('meetings')[0]['title']);
-
-            $this->assertArrayHasKey('tickets', $users->first()->prop('meetings')[0]);
-
-            $this->assertIsArray($users->first()->prop('meetings')[0]['tickets']);
-        }
-
-        public function testSleekJoinToAndThrough()
-        {
-            $userModel = ModelFactory::get(SleekUserModel::class);
-
-            $userEventModel = ModelFactory::get(SleekUserEventModel::class);
-
-            $eventModel = ModelFactory::get(SleekEventModel::class);
-
-            $users = $userModel
-                ->joinTo($userEventModel)
-                ->joinThrough($eventModel)
-                ->orderBy('title', 'asc')
-                ->get();
-
-            $this->assertInstanceOf(ModelCollection::class, $users);
-
-            $this->assertIsArray($users->first()->user_events);
-
-            $this->assertArrayHasKey('confirmed', $users->first()->user_events[0]);
-
-            $this->assertArrayHasKey('events', $users->first()->user_events[0]);
-
-            $this->assertIsArray($users->first()->user_events[0]['events']);
-
-            $this->assertArrayHasKey('title', $users->first()->user_events[0]['events'][0]);
-        }
-
-        public function testSleekJoinThroughInverse()
-        {
-            $ticketModel = ModelFactory::get(SleekTicketModel::class);
-
-            $noteModel = ModelFactory::get(SleekNotesModel::class);
-
-            $notes = $noteModel->joinThrough($ticketModel)->criteria('id', '=', 3)->first()->asArray();
-
-            $this->assertArrayHasKey('note', $notes);
-
-            $this->assertEquals('note three', $notes['note']);
-
-            $this->assertArrayHasKey('tickets', $notes);
-
-            $this->assertIsArray($notes['tickets']);
-
-            $this->assertArrayHasKey('number', $notes['tickets'][0]);
-
-            $this->assertEquals('R4563', $notes['tickets'][0]['number']);
-        }
-
-        public function testSleekJoinToAndJoinThroughUsingSwitch()
-        {
-            $userModel = ModelFactory::get(SleekUserModel::class);
-
-            $userProfessionModel = ModelFactory::get(SleekUserProfessionModel::class);
-
-            $userEventModel = ModelFactory::get(SleekUserEventModel::class);
-
-            $eventModel = ModelFactory::get(SleekEventModel::class);
+        $eventModel = ModelFactory::get(TestEventModel::class);
 
             $users = $userModel
                 ->joinTo($userProfessionModel, false)
@@ -240,40 +166,39 @@ namespace Quantum\Tests\Unit\Libraries\Database\Adapters\Sleekdb\Statements {
                 ->orderBy('title', 'asc')
                 ->get();
 
-            $this->assertInstanceOf(ModelCollection::class, $users);
+        $this->assertInstanceOf(ModelCollection::class, $users);
 
-            $this->assertIsArray($users->first()->professions);
+        $this->assertIsArray($users->first()->user_professions);
 
-            $this->assertArrayHasKey('title', $users->first()->professions[0]);
+        $this->assertArrayHasKey('title', $users->first()->user_professions[0]);
 
-            $this->assertEquals('Singer', $users->first()->professions[0]['title']);
-        }
+        $this->assertEquals('Singer', $users->first()->user_professions[0]['title']);
+    }
 
-        public function testSleekWrongRelation()
-        {
-            $this->expectException(ModelException::class);
+    public function testSleekWrongRelation()
+    {
+        $this->expectException(ModelException::class);
 
-            $this->expectExceptionMessage('wrong_relation');
+        $this->expectExceptionMessage('wrong_relation');
 
-            $eventModel = ModelFactory::get(SleekEventModel::class);
+        $eventModel = ModelFactory::get(TestEventModel::class);
 
-            $noteModel = ModelFactory::get(SleekNotesModel::class);
+        $noteModel = ModelFactory::get(TestNotesModel::class);
 
-            $eventModel->joinTo($noteModel)->get();
-        }
+        $eventModel->joinTo($noteModel)->get();
+    }
 
-        public function testSleekSelectFieldsAtJoin()
-        {
-            $userModel = ModelFactory::get(SleekUserModel::class);
+    public function testSleekSelectFieldsAtJoin()
+    {
+        $userModel = ModelFactory::get(TestUserModel::class);
 
-            $userProfessionModel = ModelFactory::get(SleekUserProfessionModel::class);
+        $userProfessionModel = ModelFactory::get(TestUserProfessionModel::class);
 
-            $users = $userModel->joinTo($userProfessionModel)
-                ->select('firstname', 'lastname', 'age', 'country', ['professions.title' => 'profession'])
-                ->orderBy('age', 'desc')
-                ->get();
+        $users = $userModel->joinTo($userProfessionModel)
+            ->select('firstname', 'lastname', 'age', 'country', ['user_professions.title' => 'profession'])
+            ->orderBy('age', 'desc')
+            ->get();
 
-            $this->assertEquals('Writer', $users->first()->profession);
-        }
+        $this->assertEquals('Writer', $users->first()->profession);
     }
 }

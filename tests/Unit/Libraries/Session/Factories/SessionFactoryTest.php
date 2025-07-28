@@ -37,7 +37,7 @@ class SessionFactoryTest extends AppTestCase
     {
         session_write_close();
 
-        ModelFactory::createOrmInstance('sessions')->deleteMany();
+        ModelFactory::createDynamicModel('sessions')->deleteMany();
     }
 
     public function testSessionFactoryInstance()

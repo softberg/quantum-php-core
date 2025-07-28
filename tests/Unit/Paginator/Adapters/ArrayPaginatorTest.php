@@ -8,6 +8,7 @@ use Quantum\Tests\Unit\AppTestCase;
 class ArrayPaginatorTest extends AppTestCase
 {
     private $items;
+
     private $paginator;
 
     public function setUp(): void
@@ -30,29 +31,6 @@ class ArrayPaginatorTest extends AppTestCase
     public function testArrayPaginatorConstructor()
     {
         $this->assertInstanceOf(ArrayPaginator::class, $this->paginator);
-    }
-
-    public function testArrayPaginatorFromArray()
-    {
-        $params = [
-            'items' => $this->items,
-            'perPage' => 2,
-            'page' => 2,
-        ];
-
-        $paginator = ArrayPaginator::fromArray($params);
-
-        $this->assertInstanceOf(ArrayPaginator::class, $paginator);
-
-        $data = $paginator->data();
-
-        $this->assertIsArray($data);
-
-        $this->assertCount(2, $data);
-
-        $this->assertEquals('Item 3', $data[0]['title']);
-
-        $this->assertEquals('Item 4', $data[1]['title']);
     }
 
     public function testArrayPaginatorData()

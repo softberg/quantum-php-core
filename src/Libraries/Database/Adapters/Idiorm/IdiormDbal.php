@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 2.9.8
  */
 
 namespace Quantum\Libraries\Database\Adapters\Idiorm;
@@ -62,6 +62,12 @@ class IdiormDbal implements DbalInterface, RelationalInterface
      * Default charset
      */
     const DEFAULT_CHARSET = 'utf8';
+
+    /**
+     * Associated model name
+     * @var string
+     */
+    private $modelName;
 
     /**
      * The database table associated with model
@@ -132,14 +138,21 @@ class IdiormDbal implements DbalInterface, RelationalInterface
     private static $ormClass = ORM::class;
 
     /**
-     * Class constructor
      * @param string $table
+     * @param string|null $modelName
      * @param string $idColumn
      * @param array $foreignKeys
      * @param array $hidden
      */
-    public function __construct(string $table, string $idColumn = 'id', array $foreignKeys = [], array $hidden = [])
+    public function __construct(
+        string $table,
+        string $modelName = null,
+        string $idColumn = 'id',
+        array $foreignKeys = [],
+        array $hidden = []
+    )
     {
+        $this->modelName = $modelName;
         $this->table = $table;
         $this->idColumn = $idColumn;
         $this->foreignKeys = $foreignKeys;
@@ -202,6 +215,24 @@ class IdiormDbal implements DbalInterface, RelationalInterface
         }
 
         return $this->ormModel;
+    }
+
+    /**
+     * Gets foreign keys
+     * @return array
+     */
+    public function getForeignKeys(): array
+    {
+        return $this->foreignKeys;
+    }
+
+    /**
+     * Gets the associated model name
+     * @return string
+     */
+    public function getModelName(): string
+    {
+        return $this->modelName;
     }
 
     /**

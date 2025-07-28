@@ -2,12 +2,23 @@
 
 namespace Quantum\Tests\Unit\Libraries\Database\Adapters\Idiorm;
 
+use Quantum\Tests\Unit\Libraries\Database\Adapters\DatabaseSeeder;
 use Quantum\Libraries\Database\Adapters\Idiorm\IdiormDbal;
 use Quantum\Libraries\Database\Database;
 use Quantum\Tests\Unit\AppTestCase;
 
 abstract class IdiormDbalTestCase extends AppTestCase
 {
+
+    private $tables = [
+        'users',
+        'user_professions',
+        'events',
+        'user_events',
+        'user_meetings',
+        'tickets',
+        'notes'
+    ];
 
     public function setUp(): void
     {
@@ -19,37 +30,39 @@ abstract class IdiormDbalTestCase extends AppTestCase
 
         IdiormDbal::connect(['driver' => 'sqlite', 'database' => ':memory:']);
 
-        $this->_createUserTableWithData();
+        $this->createTables();
 
-        $this->_createEventsTableWithData();
+        $seeder = new DatabaseSeeder(IdiormDbal::class);
 
-        $this->_createUserEventTableWithData();
-
-        $this->_createProfessionTableWithData();
-
-        $this->_createMeetingsTableWithData();
-
-        $this->_createTicketsTableWithData();
+        $seeder->seed();
     }
 
     public function tearDown(): void
     {
-        IdiormDbal::execute("DROP TABLE IF EXISTS users");
-
-        IdiormDbal::execute("DROP TABLE IF EXISTS events");
-
-        IdiormDbal::execute("DROP TABLE IF EXISTS user_events");
-
-        IdiormDbal::execute("DROP TABLE IF EXISTS user_professions");
-
-        IdiormDbal::execute("DROP TABLE IF EXISTS meetings");
-
-        IdiormDbal::execute("DROP TABLE IF EXISTS tickets");
+        $this->deleteTables();
 
         IdiormDbal::disconnect();
     }
 
-    private function _createUserTableWithData()
+    private function createTables()
+    {
+        $this->createUserTable();
+        $this->createUserProfessionTable();
+        $this->createEventsTable();
+        $this->createUserEventTable();
+        $this->createUserMeetingsTable();
+        $this->createTicketsTable();
+        $this->createNotesTable();
+    }
+
+    private function deleteTables()
+    {
+        foreach ($this->tables as $table) {
+            IdiormDbal::execute("DROP TABLE IF EXISTS $table");
+        }
+    }
+
+    private function createUserTable()
     {
         IdiormDbal::execute("CREATE TABLE IF NOT EXISTS users (
                         id INTEGER PRIMARY KEY,
@@ -59,17 +72,9 @@ abstract class IdiormDbalTestCase extends AppTestCase
                         country VARCHAR(255),
                         created_at DATETIME
                     )");
-
-        IdiormDbal::execute("INSERT INTO 
-                    users
-                        (firstname, lastname, age, country, created_at) 
-                    VALUES
-                        ('John', 'Doe', 45, 'Ireland', '2020-01-04 20:28:33'), 
-                        ('Jane', 'Du', 35, 'England', '2020-02-14 10:15:12')
-                    ");
     }
 
-    private function _createEventsTableWithData()
+    private function createEventsTable()
     {
         IdiormDbal::execute("CREATE TABLE IF NOT EXISTS events (
                         id INTEGER PRIMARY KEY,
@@ -77,22 +82,9 @@ abstract class IdiormDbalTestCase extends AppTestCase
                         country VARCHAR(255),
                         started_at DATETIME
                     )");
-
-        IdiormDbal::execute("INSERT INTO 
-                    events
-                        (title, country, started_at) 
-                    VALUES
-                        ('Dance', 'New Zealand', '2019-01-04 20:28:33'), 
-                        ('Music', 'England', '2019-09-14 10:15:12'),
-                        ('Design', 'Ireland', '2020-02-14 10:15:12'),
-                        ('Music', 'Ireland', '2035-09-14 10:15:12'),
-                        ('Film', 'Ireland', '2040-02-14 10:15:12'),
-                        ('Art', 'Island', NULL),
-                        ('Music', 'Island', NULL)
-                    ");
     }
 
-    private function _createUserEventTableWithData()
+    private function createUserEventTable()
     {
         IdiormDbal::execute("CREATE TABLE IF NOT EXISTS user_events (
                         id INTEGER PRIMARY KEY,
@@ -101,59 +93,28 @@ abstract class IdiormDbalTestCase extends AppTestCase
                         confirmed VARCHAR(3), 
                         created_at DATETIME
                     )");
-
-        IdiormDbal::execute("INSERT INTO 
-                    user_events
-                        (user_id, event_id, confirmed, created_at) 
-                    VALUES
-                        (1, 1, 'Yes', '2020-01-04 20:28:33'),
-                        (1, 2, 'No', '2020-02-19 05:15:12'),
-                        (1, 7, 'No', '2020-02-22 11:15:15'),
-                        (2, 2, 'Yes', '2020-03-10 02:17:12'),
-                        (2, 3, 'No', '2020-04-17 12:25:18'),
-                        (2, 5, 'No', '2020-04-15 11:10:12'),
-                        (100, 200, 'No', '2020-04-15 11:10:12'),
-                        (110, 220, 'No', '2020-04-15 11:10:12')
-                    ");
     }
 
-    private function _createProfessionTableWithData()
+    private function createUserProfessionTable()
     {
         IdiormDbal::execute("CREATE TABLE IF NOT EXISTS user_professions (
                         id INTEGER PRIMARY KEY,
                         user_id INTEGER(11),
                         title VARCHAR(255)
                     )");
-
-        IdiormDbal::execute("INSERT INTO 
-                    user_professions
-                        (user_id, title) 
-                    VALUES
-                        (1, 'Writer'), 
-                        (2, 'Singer')
-                    ");
     }
 
-    private function _createMeetingsTableWithData()
+    private function createUserMeetingsTable()
     {
-        IdiormDbal::execute("CREATE TABLE IF NOT EXISTS meetings (
+        IdiormDbal::execute("CREATE TABLE IF NOT EXISTS user_meetings (
                         id INTEGER PRIMARY KEY,
                         user_id INTEGER (11),
                         title VARCHAR (255),
                         start_date DATETIME
         )");
-
-        IdiormDbal::execute("INSERT INTO 
-                        meetings 
-                            (user_id, title, start_date)
-                        VALUES 
-                            (1, 'Business planning', '2021-11-01 11:00:00'),
-                            (1, 'Business management', '2021-11-05 11:00:00'),
-                            (2, 'Marketing', '2021-11-10 13:00:00')
-        ");
     }
 
-    private function _createTicketsTableWithData()
+    private function createTicketsTable()
     {
         IdiormDbal::execute("CREATE TABLE IF NOT EXISTS tickets (
                         id INTEGER PRIMARY KEY,
@@ -161,16 +122,14 @@ abstract class IdiormDbalTestCase extends AppTestCase
                         type VARCHAR (255),
                         number VARCHAR (255) 
         )");
+    }
 
-        IdiormDbal::execute("INSERT INTO 
-                        tickets 
-                            (meeting_id, type, number)
-                        VALUES 
-                            (1, 'regular', 'R1245'),
-                            (1, 'regular', 'R4563'),
-                            (1, 'vip', 'V4563'),
-                            (2, 'vip', 'V7854'),
-                            (2, 'vip', 'V7410')
-        ");
+    private function createNotesTable()
+    {
+        IdiormDbal::execute("CREATE TABLE IF NOT EXISTS notes (
+                        id INTEGER PRIMARY KEY,
+                        ticket_id INTEGER (11),
+                        note text
+        )");
     }
 }

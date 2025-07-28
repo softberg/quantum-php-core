@@ -2,14 +2,13 @@
 
 namespace Quantum\Tests\Unit\Paginator\Adapters;
 
+use Quantum\Tests\_root\shared\Models\TestPostModel;
 use Quantum\Tests\Unit\Paginator\PaginatorTestCase;
 use Quantum\Paginator\Adapters\ModelPaginator;
-use Quantum\Tests\_root\shared\Models\Post;
 use Quantum\Model\Factories\ModelFactory;
 
 class ModelPaginatorTest extends PaginatorTestCase
 {
-    private $postModel;
     private $paginator;
 
     public function setUp(): void
@@ -18,46 +17,14 @@ class ModelPaginatorTest extends PaginatorTestCase
 
         config()->set('base_url', 'http://localhost');
 
-        $this->postModel = ModelFactory::createOrmInstance('posts');
+        $postModel = ModelFactory::createDynamicModel('posts', TestPostModel::class);
 
-        $this->paginator = new ModelPaginator($this->postModel, Post::class, 2, 1);
+        $this->paginator = new ModelPaginator($postModel, 2, 1);
     }
 
     public function testModelPaginatorConstructor()
     {
         $this->assertInstanceOf(ModelPaginator::class, $this->paginator);
-    }
-
-    public function testModelPaginatorFromArray()
-    {
-        $params = [
-            'orm' => $this->postModel,
-            'model' => Post::class,
-            'perPage' => 2,
-            'page' => 2,
-        ];
-
-        $paginator = ModelPaginator::fromArray($params);
-
-        $this->assertInstanceOf(ModelPaginator::class, $paginator);
-
-        $data = $paginator->data();
-
-        $this->assertIsIterable($data);
-
-        $this->assertEquals(2, $data->count());
-
-        $titles = [];
-
-        foreach ($data as $post) {
-            $this->assertInstanceOf(Post::class, $post);
-
-            $titles[] = $post->title;
-        }
-
-        $this->assertContains('News', $titles);
-
-        $this->assertContains('Note', $titles);
     }
 
     public function testModelPaginatorData()
@@ -68,7 +35,7 @@ class ModelPaginatorTest extends PaginatorTestCase
 
         $this->assertEquals(2, $data->count());
 
-        $this->assertInstanceOf(Post::class, $data->first());
+        $this->assertInstanceOf(TestPostModel::class, $data->first());
 
         $this->assertEquals('Hi', $data->first()->title);
 
@@ -79,7 +46,7 @@ class ModelPaginatorTest extends PaginatorTestCase
     {
         $firstItem = $this->paginator->firstItem();
 
-        $this->assertInstanceOf(Post::class, $firstItem);
+        $this->assertInstanceOf(TestPostModel::class, $firstItem);
 
         $this->assertEquals('Hi', $firstItem->title);
 
@@ -89,7 +56,7 @@ class ModelPaginatorTest extends PaginatorTestCase
     public function testModelPaginatorLastItem()
     {
         $lastItem = $this->paginator->lastItem();
-        $this->assertInstanceOf(Post::class, $lastItem);
+        $this->assertInstanceOf(TestPostModel::class, $lastItem);
         $this->assertEquals('Hey', $lastItem->title);
         $this->assertEquals('Hello world', $lastItem->content);
     }

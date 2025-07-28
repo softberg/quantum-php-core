@@ -4,7 +4,7 @@ namespace Quantum\Tests\_root\shared\Models;
 
 use Quantum\Model\QtModel;
 
-class Profile extends QtModel
+class TestProfileModel extends QtModel
 {
 
     public $idColumn = 'id';

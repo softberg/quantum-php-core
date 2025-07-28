@@ -4,7 +4,7 @@
 namespace Quantum\Tests\Unit\Model;
 
 use Quantum\Libraries\Database\Adapters\Idiorm\IdiormDbal;
-use Quantum\Tests\_root\shared\Models\Profile;
+use Quantum\Tests\_root\shared\Models\TestProfileModel;
 use Quantum\Model\Exceptions\ModelException;
 use Quantum\Model\Factories\ModelFactory;
 use Quantum\Tests\Unit\AppTestCase;
@@ -27,7 +27,7 @@ class QtModelTest extends AppTestCase
 
         $this->_createProfileTableWithData();
 
-        $this->model = ModelFactory::get(Profile::class);
+        $this->model = ModelFactory::get(TestProfileModel::class);
     }
 
     public function tearDown(): void
@@ -35,9 +35,25 @@ class QtModelTest extends AppTestCase
         IdiormDbal::execute("DROP TABLE profiles");
     }
 
-    public function testModelInstance()
+    public function testQtModelInstance()
     {
         $this->assertInstanceOf(QtModel::class, $this->model);
+    }
+
+    public function testQtModelSetAndGetOrmInstance()
+    {
+        $ormInstance = new IdiormDbal('profiles');
+
+        $this->model->setOrmInstance($ormInstance);
+
+        $this->assertSame($ormInstance, $this->model->getOrmInstance());
+    }
+
+    public function testQtModelRelationsReturnsArray()
+    {
+        $relations = $this->model->relations();
+
+        $this->assertIsArray($relations);
     }
 
     public function testQtModelGetReturnsModelCollection()
@@ -48,7 +64,7 @@ class QtModelTest extends AppTestCase
 
         $this->assertNotEmpty($collection);
 
-        $this->assertInstanceOf(Profile::class, $collection->first());
+        $this->assertInstanceOf(TestProfileModel::class, $collection->first());
     }
 
     public function testQtModelPaginateReturnsPaginator()
@@ -63,7 +79,7 @@ class QtModelTest extends AppTestCase
 
         $this->assertCount(1, $collection);
 
-        $this->assertInstanceOf(Profile::class, $collection->first());
+        $this->assertInstanceOf(TestProfileModel::class, $collection->first());
     }
 
     public function testQtModelIsEmptyReturnsFalse()
@@ -80,15 +96,6 @@ class QtModelTest extends AppTestCase
         $record = $this->model->first();
 
         $this->assertTrue($record->isEmpty());
-    }
-
-    public function testQtModelWrapToModelReturnsModelInstance()
-    {
-        $dbalOrmInstance = ModelFactory::createOrmInstance('profiles');
-
-        $profileModel = wrapToModel($dbalOrmInstance, Profile::class);
-
-        $this->assertInstanceOf(Profile::class, $profileModel);
     }
 
     public function testQtModelFillObjectProps()
@@ -187,7 +194,7 @@ class QtModelTest extends AppTestCase
 
     public function testQtModelCallingModelWithCriterias()
     {
-        $profileModel = ModelFactory::get(Profile::class);
+        $profileModel = ModelFactory::get(TestProfileModel::class);
 
         $user = $profileModel->criteria('age', '<', '50')->orderBy('age', 'asc')->first();
 

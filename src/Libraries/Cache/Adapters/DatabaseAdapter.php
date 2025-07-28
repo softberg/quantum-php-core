@@ -9,15 +9,15 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.6
+ * @since 2.9.8
  */
 
 namespace Quantum\Libraries\Cache\Adapters;
 
-use Quantum\Libraries\Database\Contracts\DbalInterface;
 use Quantum\Model\Factories\ModelFactory;
 use Psr\SimpleCache\CacheInterface;
 use InvalidArgumentException;
+use Quantum\Model\QtModel;
 use Exception;
 
 /**
@@ -38,7 +38,7 @@ class DatabaseAdapter implements CacheInterface
     private $prefix;
 
     /**
-     * @var DbalInterface
+     * @var QtModel
      */
     private $cacheModel;
 
@@ -49,7 +49,7 @@ class DatabaseAdapter implements CacheInterface
     {
         $this->ttl = $params['ttl'];
         $this->prefix = $params['prefix'];
-        $this->cacheModel = ModelFactory::createOrmInstance($params['table']);
+        $this->cacheModel = ModelFactory::createDynamicModel($params['table']);
     }
 
     /**

@@ -2,25 +2,25 @@
 
 namespace Quantum\Tests\Unit\Model;
 
-use Quantum\Tests\_root\shared\Models\User;
+use Quantum\Tests\_root\shared\Models\TestUserModel;
+use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Model\ModelCollection;
-use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 use stdClass;
 
-class ModelCollectionTest extends TestCase
+class ModelCollectionTest extends AppTestCase
 {
     private $modelCollection;
     private $model1;
     private $model2;
 
-    protected function setUp(): void
+    public function setUp(): void
     {
         parent::setUp();
 
         $this->modelCollection = new ModelCollection();
-        $this->model1 = new User();
-        $this->model2 = new User();
+        $this->model1 = new TestUserModel();
+        $this->model2 = new TestUserModel();
     }
 
     public function testModelCollectionConstructorWithValidModels()

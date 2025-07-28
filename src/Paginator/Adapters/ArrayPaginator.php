@@ -9,9 +9,8 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 2.9.8
  */
-
 
 namespace Quantum\Paginator\Adapters;
 
@@ -41,21 +40,9 @@ class ArrayPaginator implements PaginatorInterface
     public function __construct(array $items, int $perPage, int $page = 1)
     {
         $this->initialize($perPage, $page);
+
         $this->items = $items;
         $this->total = count($items);
-    }
-
-    /**
-     * @param array $params
-     * @return PaginatorInterface
-     */
-    public static function fromArray(array $params): PaginatorInterface
-    {
-        return new self(
-            $params['items'],
-            $params['perPage'] ?? 10,
-            $params['page'] ?? 1
-        );
     }
 
     /**

@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 2.9.8
  */
 
 namespace Quantum\Paginator\Factories;
@@ -26,6 +26,7 @@ use Quantum\Paginator\Paginator;
  */
 class PaginatorFactory
 {
+
     /**
      * Supported adapters
      */
@@ -35,15 +36,15 @@ class PaginatorFactory
     ];
 
     /**
-     * Required parameters for each adapter
+     * Required parameters for each adapter type.
      */
     const REQUIRED_PARAMS = [
         Paginator::ARRAY => ['items'],
-        Paginator::MODEL => ['orm', 'model'],
+        Paginator::MODEL => ['model'],
     ];
 
     /**
-     * Default parameters
+     * Default parameters applied to all adapters.
      */
     const DEFAULT_PARAMS = [
         'perPage' => 10,
@@ -51,7 +52,7 @@ class PaginatorFactory
     ];
 
     /**
-     * Creates new paginator instance
+     * Creates a new paginator instance using the selected adapter type.
      * @param string $type
      * @param array $params
      * @return Paginator
@@ -66,25 +67,51 @@ class PaginatorFactory
 
         self::validateRequiredParams($type, $params);
 
-        $params = array_merge(self::DEFAULT_PARAMS, $params);
-
         $adapterClass = self::ADAPTERS[$type];
 
-        return new Paginator($adapterClass::fromArray($params));
+        $constructorArgs = self::buildConstructorArgs($type, $params);
+
+        $adapter = new $adapterClass(...$constructorArgs);
+
+        return new Paginator($adapter);
     }
 
     /**
-     * Validate required parameters
+     * Validates that all required parameters are present.
      * @param string $type
      * @param array $params
+     * @return void
      * @throws PaginatorException
      */
     private static function validateRequiredParams(string $type, array $params): void
     {
-        $missingParams = array_diff(self::REQUIRED_PARAMS[$type], array_keys($params));
+        $missing = array_diff(self::REQUIRED_PARAMS[$type], array_keys($params));
 
-        if (!empty($missingParams)) {
-            throw PaginatorException::missingRequiredParams($type, $missingParams);
+        if (!empty($missing)) {
+            throw PaginatorException::missingRequiredParams($type, $missing);
         }
+    }
+
+    /**
+     * Builds the list of arguments in the correct order for adapter instantiation.
+     * @param string $type
+     * @param array $params
+     * @return array
+     */
+    private static function buildConstructorArgs(string $type, array $params): array
+    {
+        $params = array_merge(self::DEFAULT_PARAMS, $params);
+
+        $args = [];
+
+        foreach (self::REQUIRED_PARAMS[$type] as $key) {
+            $args[] = $params[$key];
+        }
+
+        foreach (array_keys(self::DEFAULT_PARAMS) as $key) {
+            $args[] = $params[$key];
+        }
+
+        return $args;
     }
 }
