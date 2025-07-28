@@ -31,14 +31,21 @@ function model(string $modelClass): QtModel
 /**
  * Creates anonymous dynamic model
  * @param string $table
+ * @param string $modelName
  * @param string $idColumn
  * @param array $foreignKeys
  * @param array $hidden
  * @return QtModel
  */
-function dynamicModel(string $table, string $idColumn = 'id', array $foreignKeys = [], array $hidden = []): QtModel
+function dynamicModel(
+    string $table,
+    string $modelName = '@anonymous',
+    string $idColumn = 'id',
+    array $foreignKeys = [],
+    array $hidden = []
+): QtModel
 {
-    return ModelFactory::createDynamicModel($table, $idColumn, $foreignKeys, $hidden);
+    return ModelFactory::createDynamicModel($table, $modelName, $idColumn, $foreignKeys, $hidden);
 }
 
 /**

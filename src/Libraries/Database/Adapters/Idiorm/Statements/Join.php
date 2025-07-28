@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.6
+ * @since 2.9.8
  */
 
 namespace Quantum\Libraries\Database\Adapters\Idiorm\Statements;
@@ -72,24 +72,28 @@ trait Join
      * @throws DatabaseException
      * @throws ModelException
      */
-    public function joinTo(QtModel $model, bool $switch = true): DbalInterface
+    public function joinTo(QtModel $modelToJoin, bool $switch = true): DbalInterface
     {
-        if (!isset($model->foreignKeys[$this->table])) {
-            throw ModelException::wrongRelation(get_class($model), $this->table);
+        $foreignKeys = $modelToJoin->relations();
+        $relatedModelName = $this->getModelName();
+
+        if (!isset($foreignKeys[$relatedModelName])) {
+            throw ModelException::wrongRelation(get_class($modelToJoin), $relatedModelName);
         }
 
-        $this->getOrmModel()->join($model->table,
+        $this->getOrmModel()->join($modelToJoin->table,
             [
-                $model->table . '.' . $model->foreignKeys[$this->table],
+                $modelToJoin->table . '.' . $foreignKeys[$relatedModelName]['foreign_key'],
                 '=',
-                $this->table . '.' . $this->idColumn
+                $this->table . '.' . $foreignKeys[$relatedModelName]['local_key']
             ]
         );
 
         if ($switch) {
-            $this->table = $model->table;
-            $this->idColumn = $model->idColumn;
-            $this->foreignKeys = $model->foreignKeys;
+            $this->modelName = get_class($modelToJoin);
+            $this->table = $modelToJoin->table;
+            $this->idColumn = $modelToJoin->idColumn;
+            $this->foreignKeys = $foreignKeys;
         }
 
         return $this;
@@ -100,24 +104,28 @@ trait Join
      * @throws DatabaseException
      * @throws ModelException
      */
-    public function joinThrough(QtModel $model, bool $switch = true): DbalInterface
+    public function joinThrough(QtModel $modelToJoin, bool $switch = true): DbalInterface
     {
-        if (!isset($this->foreignKeys[$model->table])) {
-            throw ModelException::wrongRelation(get_class($model), $this->table);
+        $foreignKeys = $this->getForeignKeys();
+        $relatedModelName = get_class($modelToJoin);
+
+        if (!isset($foreignKeys[$relatedModelName])) {
+            throw ModelException::wrongRelation($relatedModelName, $this->getModelName());
         }
 
-        $this->getOrmModel()->join($model->table,
+        $this->getOrmModel()->join($modelToJoin->table,
             [
-                $model->table . '.' . $model->idColumn,
+                $modelToJoin->table . '.' . $foreignKeys[$relatedModelName]['local_key'],
                 '=',
-                $this->table . '.' . $this->foreignKeys[$model->table]
+                $this->table . '.' .  $foreignKeys[$relatedModelName]['foreign_key'],
             ]
         );
 
         if ($switch) {
-            $this->table = $model->table;
-            $this->idColumn = $model->idColumn;
-            $this->foreignKeys = $model->foreignKeys;
+            $this->modelName = get_class($modelToJoin);
+            $this->table = $modelToJoin->table;
+            $this->idColumn = $modelToJoin->idColumn;
+            $this->foreignKeys = $modelToJoin->relations();
         }
 
         return $this;

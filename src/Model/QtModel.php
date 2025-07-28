@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 2.9.8
  */
 
 namespace Quantum\Model;
@@ -25,6 +25,7 @@ use Quantum\Paginator\Paginator;
  * Class QtModel
  * @package Quantum\Model
  * @method string getTable()
+ * @method string getModelName()
  * @method static select(...$columns)
  * @method static findOne(int $id)
  * @method static findOneBy(string $column, $value)
@@ -95,6 +96,24 @@ abstract class QtModel
     }
 
     /**
+     * Gets ORM instance of current model
+     * @return DbalInterface
+     */
+    public function getOrmInstance(): DbalInterface
+    {
+        return $this->ormInstance;
+    }
+
+    /**
+     * Returns the model's foreign key relations.
+     * @return array
+     */
+    public function relations(): array
+    {
+        return [];
+    }
+
+    /**
      * @return ModelCollection
      */
     public function get(): ModelCollection
@@ -116,8 +135,7 @@ abstract class QtModel
     public function paginate(int $perPage, int $currentPage = 1): Paginator
     {
         return PaginatorFactory::create(Paginator::MODEL, [
-            'orm' => $this->ormInstance,
-            'model' => static::class,
+            'model' => $this,
             'perPage' => $perPage,
             'page' => $currentPage
         ]);
@@ -216,7 +234,6 @@ abstract class QtModel
         return [
             'table',
             'idColumn',
-            'foreignKeys',
             'hidden'
         ];
     }

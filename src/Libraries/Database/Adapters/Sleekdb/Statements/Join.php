@@ -9,13 +9,14 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.6
+ * @since 2.9.8
  */
 
 namespace Quantum\Libraries\Database\Adapters\Sleekdb\Statements;
 
 use Quantum\Libraries\Database\Adapters\Sleekdb\SleekDbal;
 use Quantum\Libraries\Database\Contracts\DbalInterface;
+use SleekDB\Exceptions\InvalidArgumentException;
 use Quantum\Model\Exceptions\ModelException;
 use Quantum\Model\QtModel;
 use SleekDB\QueryBuilder;
@@ -88,33 +89,18 @@ trait Join
 
         $queryBuilder->join(function ($item) use ($currentItem, $modelToJoin, $switch, $joinType, $level) {
 
-            $newQueryBuilder = (new self($modelToJoin->table))->getOrmModel()->createQueryBuilder();
+            $sleekModel = new self($modelToJoin->table, get_class($modelToJoin), $modelToJoin->idColumn, $modelToJoin->relations());
+
+            $newQueryBuilder = $sleekModel->getOrmModel()->createQueryBuilder();
 
             if ($joinType == self::JOINTO) {
-                if (!isset($modelToJoin->foreignKeys[$currentItem->table])) {
-                    throw ModelException::wrongRelation(get_class($modelToJoin), $currentItem->table);
-                }
-
-                $newQueryBuilder->where([
-                    $modelToJoin->foreignKeys[$currentItem->table],
-                    '=',
-                    $item[$currentItem->idColumn]
-                ]);
+                $this->applyJoinTo($newQueryBuilder, $modelToJoin, $currentItem, $item);
             } else if ($joinType == self::JOINTHROUGH) {
-                if (!isset($currentItem->foreignKeys[$modelToJoin->table])) {
-                    throw ModelException::wrongRelation(get_class($modelToJoin), $currentItem->table);
-                }
-
-                $newQueryBuilder->where([
-                    $modelToJoin->idColumn,
-                    '=',
-                    $item[$currentItem->foreignKeys[$modelToJoin->table]]
-                ]);
+                $this->applyJoinThrough($newQueryBuilder, $modelToJoin, $currentItem, $item);
             }
 
             if ($switch && isset($this->joins[$level])) {
-                $sleekModel = new self($modelToJoin->table, $modelToJoin->idColumn, $modelToJoin->foreignKeys);
-                $this->applyJoin($newQueryBuilder, $sleekModel, $this->joins[$level], ++$level);
+                $this->applyJoin($newQueryBuilder, $sleekModel, $this->joins[$level], $level + 1);
             }
 
             return $newQueryBuilder;
@@ -122,9 +108,61 @@ trait Join
         }, $modelToJoin->table);
 
         if (!$switch && isset($this->joins[$level])) {
-            $this->applyJoin($queryBuilder, $currentItem, $this->joins[$level], ++$level);
+            $this->applyJoin($queryBuilder, $currentItem, $this->joins[$level], $level + 1);
         }
 
         return $queryBuilder;
+    }
+
+    /**
+     * Apply join condition for JOINTO type
+     * @param QueryBuilder $queryBuilder
+     * @param QtModel $modelToJoin
+     * @param SleekDbal $currentItem
+     * @param array $item
+     * @return void
+     * @throws InvalidArgumentException
+     * @throws ModelException
+     */
+    private function applyJoinTo(QueryBuilder $queryBuilder, QtModel $modelToJoin, SleekDbal $currentItem, array $item): void
+    {
+        $foreignKeys = $modelToJoin->relations();
+        $relatedModelName = $currentItem->getModelName();
+
+        if (!isset($foreignKeys[$relatedModelName])) {
+            throw ModelException::wrongRelation(get_class($modelToJoin), $relatedModelName);
+        }
+
+        $queryBuilder->where([
+            $foreignKeys[$relatedModelName]['foreign_key'],
+            '=',
+            $item[$foreignKeys[$relatedModelName]['local_key']]
+        ]);
+    }
+
+    /**
+     * Apply join condition for JOINTHROUGH type
+     * @param QueryBuilder $queryBuilder
+     * @param QtModel $modelToJoin
+     * @param SleekDbal $currentItem
+     * @param array $item
+     * @return void
+     * @throws ModelException
+     * @throws InvalidArgumentException
+     */
+    private function applyJoinThrough(QueryBuilder $queryBuilder, QtModel $modelToJoin, SleekDbal $currentItem, array $item): void
+    {
+        $foreignKeys = $currentItem->getForeignKeys();
+        $relatedModelName = get_class($modelToJoin);
+
+        if (!isset($foreignKeys[$relatedModelName])) {
+            throw ModelException::wrongRelation($relatedModelName, $currentItem->getModelName());
+        }
+
+        $queryBuilder->where([
+            $foreignKeys[$relatedModelName]['local_key'],
+            '=',
+            $item[$foreignKeys[$relatedModelName]['foreign_key']]
+        ]);
     }
 }

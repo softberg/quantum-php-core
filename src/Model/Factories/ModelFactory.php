@@ -46,8 +46,9 @@ class ModelFactory
 
         $ormInstance = self::createOrmInstance(
             $model->table,
+            $modelClass,
             $model->idColumn,
-            $model->foreignKeys ?? [],
+            $model->relations(),
             $model->hidden ?? []
         );
 
@@ -59,16 +60,23 @@ class ModelFactory
     /**
      * Creates anonymous dynamic model
      * @param string $table
-     * @param string $idColumn
+     * @param string $modelName
+     * @param string|null $idColumn
      * @param array $foreignKeys
      * @param array $hidden
      * @return QtModel
      */
-    public static function createDynamicModel(string $table, string $idColumn = 'id', array $foreignKeys = [], array $hidden = []): QtModel
+    public static function createDynamicModel(
+        string $table,
+        string $modelName = '@anonymous',
+        string $idColumn = 'id',
+        array  $foreignKeys = [],
+        array  $hidden = []
+    ): QtModel
     {
         $model = new class extends QtModel {};
 
-        $ormInstance = self::createOrmInstance($table, $idColumn, $foreignKeys, $hidden);
+        $ormInstance = self::createOrmInstance($table, $modelName, $idColumn, $foreignKeys, $hidden);
 
         $model->setOrmInstance($ormInstance);
 
@@ -77,15 +85,22 @@ class ModelFactory
 
     /**
      * @param string $table
+     * @param string|null $modelName
      * @param string $idColumn
      * @param array $foreignKeys
      * @param array $hidden
      * @return mixed
      */
-    public static function createOrmInstance(string $table, string $idColumn = 'id', array $foreignKeys = [], array $hidden = []): DbalInterface
+    protected static function createOrmInstance(
+        string $table,
+        string $modelName,
+        string $idColumn,
+        array  $foreignKeys = [],
+        array  $hidden = []
+    ): DbalInterface
     {
         $ormClass = Database::getInstance()->getOrmClass();
 
-        return new $ormClass($table, $idColumn, $foreignKeys, $hidden);
+        return new $ormClass($table, $modelName, $idColumn, $foreignKeys, $hidden);
     }
 }
