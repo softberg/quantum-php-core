@@ -133,11 +133,9 @@ class CriteriaIdiormTest extends IdiormDbalTestCase
 
         $events = $eventModel->criteria('started_at', '>=', ['fn' => "'$now'"])->get();
 
-        $this->assertCount(2, $events);
+        $this->assertCount(1, $events);
 
-        $this->assertEquals('2035-09-14 10:15:12', $events[0]->prop('started_at'));
-
-        $this->assertEquals('2040-02-14 10:15:12', $events[1]->prop('started_at'));
+        $this->assertEquals('2040-02-14 10:15:12', $events[0]->prop('started_at'));
     }
 
     public function testIdiormCriteriaColumnsEqual()

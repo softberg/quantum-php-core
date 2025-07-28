@@ -3,7 +3,7 @@
 namespace Quantum\Tests\Unit\Model;
 
 use Quantum\Libraries\Database\Adapters\Idiorm\IdiormDbal;
-use Quantum\Tests\_root\shared\Models\Products;
+use Quantum\Tests\_root\shared\Models\TestProductsModel;
 use Quantum\Model\Factories\ModelFactory;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Model\ModelCollection;
@@ -24,7 +24,7 @@ class ModelSoftDeletesIdiOrm extends AppTestCase
 
         $this->_createProductsTableWithData();
 
-        $this->model = ModelFactory::get(Products::class);
+        $this->model = ModelFactory::get(TestProductsModel::class);
     }
 
     public function tearDown(): void
@@ -76,7 +76,7 @@ class ModelSoftDeletesIdiOrm extends AppTestCase
 
         $this->assertEquals(5, $this->model->withTrashed()->count());
 
-        $product = ModelFactory::get(Products::class)->findOne(1);
+        $product = ModelFactory::get(TestProductsModel::class)->findOne(1);
 
         $this->assertTrue($product->isEmpty());
     }
@@ -123,7 +123,7 @@ class ModelSoftDeletesIdiOrm extends AppTestCase
     {
         $this->assertEquals(4, $this->model->count());
 
-        $this->assertEquals(6, ModelFactory::get(Products::class)->withTrashed()->count());
+        $this->assertEquals(6, ModelFactory::get(TestProductsModel::class)->withTrashed()->count());
     }
 
     public function testFindOneRespectsSoftDelete()
@@ -132,7 +132,7 @@ class ModelSoftDeletesIdiOrm extends AppTestCase
 
         $this->assertTrue($product->isEmpty());
 
-        $product = ModelFactory::get(Products::class)->withTrashed()->findOne(3);
+        $product = ModelFactory::get(TestProductsModel::class)->withTrashed()->findOne(3);
 
         $this->assertFalse($product->isEmpty());
 
@@ -145,7 +145,7 @@ class ModelSoftDeletesIdiOrm extends AppTestCase
 
         $this->assertTrue($product->isEmpty());
 
-        $product = ModelFactory::get(Products::class)->withTrashed()->findOneBy('title', 'Product C');
+        $product = ModelFactory::get(TestProductsModel::class)->withTrashed()->findOneBy('title', 'Product C');
 
         $this->assertFalse($product->isEmpty());
     }
@@ -158,7 +158,7 @@ class ModelSoftDeletesIdiOrm extends AppTestCase
 
         $this->assertNull($product->prop('deleted_at'));
 
-        $product = ModelFactory::get(Products::class)->withTrashed()->criteria('title', '=', 'Product C')->first();
+        $product = ModelFactory::get(TestProductsModel::class)->withTrashed()->criteria('title', '=', 'Product C')->first();
 
         $this->assertFalse($product->isEmpty());
     }

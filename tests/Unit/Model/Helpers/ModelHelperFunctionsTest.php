@@ -3,8 +3,8 @@
 namespace Quantum\Tests\Unit\Model\Helpers;
 
 use Quantum\Libraries\Database\Contracts\DbalInterface;
+use Quantum\Tests\_root\shared\Models\TestUserModel;
 use Quantum\Model\Exceptions\ModelException;
-use Quantum\Tests\_root\shared\Models\User;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Model\QtModel;
 use Mockery;
@@ -19,9 +19,9 @@ class ModelHelperFunctionsTest extends AppTestCase
 
     public function testModelReturnsQtModelInstance()
     {
-        $model = model(User::class);
+        $model = model(TestUserModel::class);
 
-        $this->assertInstanceOf(User::class, $model);
+        $this->assertInstanceOf(TestUserModel::class, $model);
 
         $this->assertInstanceOf(QtModel::class, $model);
     }
@@ -35,18 +35,20 @@ class ModelHelperFunctionsTest extends AppTestCase
 
     public function testDynamicModelReturnsAnonymousQtModel()
     {
-        $dynamic = dynamicModel('test_table');
+        $dynamicModel = dynamicModel('test_table', TestUserModel::class);
 
-        $this->assertInstanceOf(QtModel::class, $dynamic);
+        $this->assertInstanceOf(QtModel::class, $dynamicModel);
 
-        $this->assertStringContainsString('@anonymous', get_class($dynamic));
+        $this->assertStringContainsString('@anonymous', get_class($dynamicModel));
+
+        $this->assertEquals(TestUserModel::class, $dynamicModel->getModelName());
     }
 
     public function testWrapToModelReturnsModelInstance()
     {
         $dbal = Mockery::mock(DbalInterface::class);
 
-        $model = wrapToModel($dbal, User::class);
+        $model = wrapToModel($dbal, TestUserModel::class);
 
         $this->assertInstanceOf(QtModel::class, $model);
     }

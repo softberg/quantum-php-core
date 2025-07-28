@@ -3,8 +3,8 @@
 namespace Quantum\Tests\Unit\Model\Factories;
 
 use Quantum\Libraries\Database\Contracts\DbalInterface;
+use Quantum\Tests\_root\shared\Models\TestUserModel;
 use Quantum\Model\Exceptions\ModelException;
-use Quantum\Tests\_root\shared\Models\User;
 use Quantum\Model\Factories\ModelFactory;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Model\QtModel;
@@ -23,11 +23,11 @@ class ModelFactoryTest extends AppTestCase
 
     public function testModelFactoryGet()
     {
-        $userModel = ModelFactory::get(User::class);
+        $userModel = ModelFactory::get(TestUserModel::class);
 
         $this->assertInstanceOf(QtModel::class, $userModel);
 
-        $this->assertInstanceOf(User::class, $userModel);
+        $this->assertInstanceOf(TestUserModel::class, $userModel);
     }
 
     public function testModelFactoryGetNonExistingModel()
@@ -48,20 +48,15 @@ class ModelFactoryTest extends AppTestCase
         ModelFactory::get(\Mockery\Undefined::class);
     }
 
-    public function testModelFactoryCreateOrmInstance()
-    {
-        $userModel = ModelFactory::createOrmInstance('user');
-
-        $this->assertInstanceOf(DbalInterface::class, $userModel);
-    }
-
     public function testModelFactoryCreateDynamicModel()
     {
-        $dynamicModel = ModelFactory::createDynamicModel('test_table');
+        $dynamicModel = ModelFactory::createDynamicModel('test_table', TestUserModel::class);
 
         $this->assertInstanceOf(QtModel::class, $dynamicModel);
 
         $this->assertStringContainsString('@anonymous', get_class($dynamicModel));
+
+        $this->assertEquals(TestUserModel::class, $dynamicModel->getModelName());
 
         $ormInstance = $this->getPrivateProperty($dynamicModel, 'ormInstance');
 

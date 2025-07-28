@@ -5,7 +5,7 @@ namespace Quantum\Tests\_root\shared\Models;
 use Quantum\Model\Traits\SoftDeletes;
 use Quantum\Model\QtModel;
 
-class Products extends QtModel
+class TestProductsModel extends QtModel
 {
 
     use SoftDeletes;

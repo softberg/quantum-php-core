@@ -7,9 +7,6 @@ use Quantum\Libraries\Database\Database;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Loader\Setup;
 
-/**
-
- */
 class DatabaseTest extends AppTestCase
 {
 
