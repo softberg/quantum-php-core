@@ -21,7 +21,7 @@ use Quantum\Http\Request;
 
 /**
  * Class AuthController
- * @package Modules\Api
+ * @package Modules\{{MODULE_NAME}}
  */
 class AuthController extends BaseController
 {
@@ -54,7 +54,6 @@ class AuthController extends BaseController
     /**
      * Action - me
      * @param Response $response
-     * @throws AuthException
      */
     public function me(Response $response)
     {
@@ -71,7 +70,6 @@ class AuthController extends BaseController
     /**
      * Action - sign out
      * @param Response $response
-     * @throws AuthException
      */
     public function signout(Response $response)
     {
@@ -91,7 +89,6 @@ class AuthController extends BaseController
      *  Action - sign up
      * @param Request $request
      * @param Response $response
-     * @throws AuthException
      */
     public function signup(Request $request, Response $response)
     {
@@ -107,7 +104,6 @@ class AuthController extends BaseController
      * Action - activate
      * @param Request $request
      * @param Response $response
-     * @throws AuthException
      */
     public function activate(Request $request, Response $response)
     {
@@ -123,7 +119,6 @@ class AuthController extends BaseController
      * Action - forget
      * @param Request $request
      * @param Response $response
-     * @throws AuthException
      */
     public function forget(Request $request, Response $response)
     {
@@ -139,7 +134,6 @@ class AuthController extends BaseController
      * Action - reset
      * @param Request $request
      * @param Response $response
-     * @throws AuthException
      */
     public function reset(Request $request, Response $response)
     {

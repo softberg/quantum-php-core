@@ -3,25 +3,11 @@
 return [
     /**
      * ---------------------------------------------------------
-     * Current database settings
+     * Database configurations
      * ---------------------------------------------------------
      */
     'default' => 'sleekdb',
 
-    /**
-     * ---------------------------------------------------------
-     * Database Connections
-     * ---------------------------------------------------------
-     *
-     * You can define as many database configurations as you want.
-     *
-     * driver: mysql, pgsql, sqlite
-     * host: The database server (localhost)
-     * dbname: The database name
-     * username: Username of the database server
-     * password: Password of the database server
-     * charset: Default charset
-     */
     'mysql' => [
         'driver' => env("DB_DRIVER", "mysql"),
         'host' => env("DB_HOST", "localhost"),

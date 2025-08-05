@@ -18,7 +18,7 @@ use Quantum\Router\RouteController;
 
 /**
  * Class BaseController
- * @package Modules\Api
+ * @package Modules\{{MODULE_NAME}}
  */
 abstract class BaseController extends RouteController
 {

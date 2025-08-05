@@ -14,15 +14,16 @@
 
 namespace {{MODULE_NAMESPACE}}\Controllers;
 
+use Quantum\Libraries\Auth\Exceptions\AuthException;
 use Quantum\Service\Factories\ServiceFactory;
+use Modules\{{MODULE_NAME}}\Services\AuthService;
 use Quantum\Libraries\Hasher\Hasher;
-use Shared\Services\AuthService;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 
 /**
  * Class AccountController
- * @package Modules\Api\Controllers
+ * @package Modules\{{MODULE_NAME}}
  */
 class AccountController extends BaseController
 {
@@ -44,13 +45,12 @@ class AccountController extends BaseController
      * Action - update user info
      * @param Request $request
      * @param Response $response
-     * @throws AuthException
      */
     public function update(Request $request, Response $response)
     {
         try {
-            $firstname = $request->get('firstname', null);
-            $lastname = $request->get('lastname', null);
+            $firstname = $request->get('firstname');
+            $lastname = $request->get('lastname');
 
             $newUserData = [
                 'firstname' => $firstname,
@@ -77,14 +77,13 @@ class AccountController extends BaseController
      * Action - update password
      * @param Request $request
      * @param Response $response
-     * @throws AuthException
      */
     public function updatePassword(Request $request, Response $response)
     {
         try {
             $hasher = new Hasher();
     
-            $newPassword = $request->get('new_password', null);
+            $newPassword = $request->get('new_password');
     
             $this->authService->update('uuid', auth()->user()->uuid, [
                 'password' => $hasher->hash($newPassword)

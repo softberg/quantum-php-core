@@ -21,7 +21,7 @@ use Quantum\View\QtView;
 
 /**
  * Class BaseController
- * @package Modules\Web
+ * @package Modules\{{MODULE_NAME}}
  */
 abstract class BaseController extends RouteController
 {

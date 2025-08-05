@@ -5,7 +5,7 @@ return function ($route) {
     $route->get('[:alpha:2]?/about', 'PageController', 'about')->name('about');
 
     $route->get('[:alpha:2]?/posts', 'PostController', 'posts')->name('posts');
-    $route->get('[:alpha:2]?/post/[id=:any]', 'PostController', 'post');
+    $route->get('[:alpha:2]?/post/[uuid=:any]', 'PostController', 'post');
 
     $route->group('guest', function ($route) {
         $route->add('[:alpha:2]?/signin', 'GET|POST', 'AuthController', 'signin')->name('signin');
@@ -22,10 +22,10 @@ return function ($route) {
         $route->get('[:alpha:2]?/my-posts', 'PostController', 'myPosts')->middlewares(['Editor']);
         $route->get('[:alpha:2]?/my-posts/create', 'PostController', 'createFrom')->middlewares(['Editor']);
         $route->post('[:alpha:2]?/my-posts/create', 'PostController', 'create')->middlewares(['Editor']);
-        $route->get('[:alpha:2]?/my-posts/amend/[id=:any]', 'PostController', 'amendForm')->middlewares(['Editor', 'Owner']);
-        $route->post('[:alpha:2]?/my-posts/amend/[id=:any]', 'PostController', 'amend')->middlewares(['Editor', 'Owner']);
-        $route->get('[:alpha:2]?/my-posts/delete/[id=:any]', 'PostController', 'delete')->middlewares(['Editor', 'Owner']);
-        $route->get('[:alpha:2]?/my-posts/delete-image/[id=:any]', 'PostController', 'deleteImage')->middlewares(['Editor', 'Owner']);
+        $route->get('[:alpha:2]?/my-posts/amend/[uuid=:any]', 'PostController', 'amendForm')->middlewares(['Editor', 'Owner']);
+        $route->post('[:alpha:2]?/my-posts/amend/[uuid=:any]', 'PostController', 'amend')->middlewares(['Editor', 'Owner']);
+        $route->get('[:alpha:2]?/my-posts/delete/[uuid=:any]', 'PostController', 'delete')->middlewares(['Editor', 'Owner']);
+        $route->get('[:alpha:2]?/my-posts/delete-image/[uuid=:any]', 'PostController', 'deleteImage')->middlewares(['Editor', 'Owner']);
         $route->get('[:alpha:2]?/account-settings', 'AccountController', 'form');
         $route->post('[:alpha:2]?/account-settings/update', 'AccountController', 'update')->middlewares(['Update']);
         $route->post('[:alpha:2]?/account-settings/update-password', 'AccountController', 'updatePassword')->middlewares(['Password']);

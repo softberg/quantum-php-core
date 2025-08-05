@@ -16,14 +16,14 @@ namespace {{MODULE_NAMESPACE}}\Controllers;
 
 use Quantum\Libraries\Auth\Contracts\AuthenticatableInterface;
 use Quantum\Service\Factories\ServiceFactory;
+use Modules\{{MODULE_NAME}}\Services\AuthService;
 use Quantum\Libraries\Hasher\Hasher;
-use Shared\Services\AuthService;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 
 /**
  * Class AccountController
- * @package Modules\Web\Controllers
+ * @package Modules\{{MODULE_NAME}}
  */
 class AccountController extends BaseController
 {
