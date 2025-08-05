@@ -116,13 +116,13 @@ namespace Quantum\Tests\Unit\Libraries\Validation {
 
             $errors = $this->validator->getErrors();
 
-            $this->assertEquals('validation.minLen', $errors['text'][1]);
+            $this->assertEquals('validation.minLen', $errors['text'][0]);
 
             $this->assertFalse($this->validator->isValid(['text' => 'verylongemailaddress@longdomain.cc']));
 
             $errors = $this->validator->getErrors();
 
-            $this->assertEquals('validation.maxLen', $errors['text'][2]);
+            $this->assertEquals('validation.maxLen', $errors['text'][0]);
         }
 
         public function testMultipleFields()

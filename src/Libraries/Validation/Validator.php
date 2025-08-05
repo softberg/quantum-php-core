@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.8
  */
 
 namespace Quantum\Libraries\Validation;
@@ -24,7 +24,7 @@ use Closure;
 
 /**
  * Class Validator
- * @package Quantum\Libraries\Validator
+ * @package Quantum\Libraries\Validation
  */
 class Validator
 {
@@ -55,176 +55,181 @@ class Validator
     private $data = [];
 
     /**
-     * Custom validations
-     * @var array
+     * Custom validation callbacks
+     * @var Closure[]
      */
     private $customValidations = [];
 
     /**
-     * Add a rules for given field
+     * Add rules for a single field
      * @param string $field
-     * @param array $rules
+     * @param array $rules Format: [['ruleName' => param], ...]
      */
     public function addRule(string $field, array $rules)
     {
-        if (!empty($field)) {
-            foreach ($rules as $rule) {
-                if (!isset($this->rules[$field])) {
-                    $this->rules[$field] = [];
-                }
+        if (empty($field)) {
+            return;
+        }
 
-                $this->rules[$field][array_keys($rule)[0]] = array_values($rule)[0];
-            }
+        if (!isset($this->rules[$field])) {
+            $this->rules[$field] = [];
+        }
+
+        foreach ($rules as $rule) {
+            $ruleName = key($rule);
+            $ruleParam = current($rule);
+            $this->rules[$field][$ruleName] = $ruleParam;
         }
     }
 
     /**
-     * Adds rules for multiple fields
-     * @param array $rules
+     * Add multiple rules for multiple fields
+     * @param array $rules Format: ['field' => [ ['rule' => param], ... ], ...]
      */
-    public function addRules(array $rules)
+    public function addRules(array $rules): void
     {
-        foreach ($rules as $field => $params) {
-            $this->addRule($field, $params);
+        foreach ($rules as $field => $fieldRules) {
+            $this->addRule($field, $fieldRules);
         }
     }
 
     /**
-     * Updates the single rule in rules list for given field
+     * Update a single rule for a field if exists
      * @param string $field
-     * @param array $rule
+     * @param array $rule Format: ['ruleName' => param]
      */
     public function updateRule(string $field, array $rule)
     {
-        if (!empty($field)) {
-            if (isset($this->rules[$field][array_keys($rule)[0]])) {
-                $this->rules[$field][array_keys($rule)[0]] = array_values($rule)[0];
-            }
+        if (empty($field)) {
+            return;
+        }
+
+        $ruleName = key($rule);
+        $ruleParam = current($rule);
+
+        if (isset($this->rules[$field][$ruleName])) {
+            $this->rules[$field][$ruleName] = $ruleParam;
         }
     }
 
     /**
-     * Deletes the the rule in rules list for given field
+     * Delete a rule or all rules for a given field
      * @param string $field
-     * @param string|null $rule
+     * @param string|null $rule Specific rule to delete; if null deletes all rules for field
+     * @return void
      */
-    public function deleteRule(string $field, string $rule = null)
+    public function deleteRule(string $field, string $rule = null): void
     {
-        if (!empty($field)) {
-            if (isset($this->rules[$field])) {
-                if (!empty($rule) && isset($this->rules[$field][$rule])) {
-                    unset($this->rules[$field][$rule]);
-                } else {
-                    if (empty($rule)) {
-                        unset($this->rules[$field]);
-                    }
-                }
+        if (empty($field) || !isset($this->rules[$field])) {
+            return;
+        }
+
+        if ($rule !== null) {
+            unset($this->rules[$field][$rule]);
+            if (empty($this->rules[$field])) {
+                unset($this->rules[$field]);
             }
+        } else {
+            unset($this->rules[$field]);
         }
     }
 
     /**
-     * Flush ruels
+     * Flush all rules and errors
+     * @return void
      */
-    public function flushRules()
+    public function flushRules(): void
     {
         $this->rules = [];
         $this->flushErrors();
     }
 
     /**
-     * Validates the data against the rules
+     * Validate given data against defined rules
      * @param array $data
-     * @return bool
+     * @return bool True if valid, false otherwise
      */
     public function isValid(array $data): bool
     {
         $this->data = $data;
+        $this->flushErrors();
 
-        if (count($this->rules)) {
+        if (empty($this->rules)) {
+            return true;
+        }
 
-            foreach ($this->rules as $field => $rule) {
-                if (!array_key_exists($field, $data)) {
-                    $data[$field] = '';
-                }
+        foreach ($this->rules as $field => $_) {
+            if (!array_key_exists($field, $data)) {
+                $data[$field] = '';
+            }
+        }
+
+        foreach ($data as $field => $value) {
+            if (!isset($this->rules[$field])) {
+                continue;
             }
 
-            foreach ($data as $field => $value) {
-
-                if (isset($this->rules[$field])) {
-                    foreach ($this->rules[$field] as $method => $param) {
-
-                        if (is_callable([$this, $method])) {
-                            $this->$method($field, $value, $param);
-                        } elseif (isset($this->customValidations[$method])) {
-                            $data = [
-                                'rule' => $method,
-                                'field' => $field,
-                                'value' => $value,
-                                'param' => $param ?? null
-                            ];
-
-                            $this->callCustomFunction($this->customValidations[$method], $data);
-                        }
-                    }
+            foreach ($this->rules[$field] as $rule => $param) {
+                if (method_exists($this, $rule) && is_callable([$this, $rule])) {
+                    $this->$rule($field, $value, $param);
+                } elseif (isset($this->customValidations[$rule])) {
+                    $this->executeCustomRule($rule, $field, $value, $param);
                 }
             }
         }
 
-        return !count($this->errors);
+        return empty($this->errors);
     }
 
     /**
-     * Adds custom validation
-     * @param string $rule
-     * @param Closure $function
+     * Add a custom validation rule
+     * @param string $rule Rule name
+     * @param Closure $function Callback function with signature function($value, $param): bool
+     * @return void
      */
-    public function addValidation(string $rule, Closure $function)
+    public function addValidation(string $rule, Closure $function): void
     {
-        if (!empty($rule) && is_callable($function)) {
-            $this->customValidations[$rule] = $function;
+        if (empty($rule) || !is_callable($function)) {
+            return;
         }
+
+        $this->customValidations[$rule] = $function;
     }
 
     /**
-     * Gets validation errors
+     * Gets validation errors with translations
      * @return array
      */
     public function getErrors(): array
     {
-        if (count($this->errors)) {
-            $messages = [];
-            foreach ($this->errors as $field => $errors) {
-                if (count($errors)) {
-                    foreach ($errors as $rule => $param) {
-                        $translationParams = [t('common.'.$field)];
-
-                        if ($param) {
-                            $translationParams[] = $param;
-                        }
-
-                        if (!isset($messages[$field])) {
-                            $messages[$field] = [];
-                        }
-
-                        $messages[$field][] = t("validation.$rule", $translationParams);
-                    }
-                }
-            }
-
-            return $messages;
+        if (empty($this->errors)) {
+            return [];
         }
 
-        return [];
+        $messages = [];
+
+        foreach ($this->errors as $field => $fieldErrors) {
+            foreach ($fieldErrors as $rule => $param) {
+                $translationParams = [t('common.' . $field)];
+                if ($param !== null && $param !== '') {
+                    $translationParams[] = $param;
+                }
+
+                $messages[$field][] = t("validation.$rule", $translationParams);
+            }
+        }
+
+        return $messages;
     }
 
     /**
-     * Adds validation Error
+     * Adds an error for a field and rule
      * @param string $field
      * @param string $rule
-     * @param null|mixed $param
+     * @param mixed|null $param
+     * @return void
      */
-    protected function addError(string $field, string $rule, $param = null)
+    protected function addError(string $field, string $rule, $param = null): void
     {
         if (!isset($this->errors[$field])) {
             $this->errors[$field] = [];
@@ -234,26 +239,31 @@ class Validator
     }
 
     /**
-     * Flush errors
+     * Flush all errors
+     * @return void
      */
-    public function flushErrors()
+    public function flushErrors(): void
     {
         $this->errors = [];
     }
 
     /**
-     * Calls custom function defined by developer
-     * @param Closure $function
-     * @param array $data
+     * Executes user defined rule
+     * @param string $rule
+     * @param string $field
+     * @param $value
+     * @param $param
      */
-    protected function callCustomFunction(Closure $function, array $data)
+    protected function executeCustomRule(string $rule, string $field, $value, $param)
     {
-        if (!empty($data['value'])) {
-            if (is_callable($function)) {
-                if (!$function($data['value'], $data['param'])) {
-                    $this->addError($data['field'], $data['rule'], $data['param']);
-                }
-            }
+        if ($value === '' || $value === null) {
+            return;
+        }
+
+        $function = $this->customValidations[$rule];
+
+        if (!$function($value, $param)) {
+            $this->addError($field, $rule, $param);
         }
     }
 }
