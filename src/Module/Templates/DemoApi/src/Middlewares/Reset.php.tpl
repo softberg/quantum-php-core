@@ -14,46 +14,19 @@
 
 namespace {{MODULE_NAMESPACE}}\Middlewares;
 
-use Quantum\Libraries\Validation\Validator;
 use Quantum\Model\Factories\ModelFactory;
-use Quantum\Http\Constants\StatusCode;
 use Quantum\Libraries\Validation\Rule;
-use Quantum\Middleware\QtMiddleware;
+use Modules\{{MODULE_NAME}}\Models\User;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
-use Shared\Models\User;
 use Closure;
 
 /**
  * Class Reset
- * @package Modules\Api
+ * @package Modules\{{MODULE_NAME}}
  */
-class Reset extends QtMiddleware
+class Reset extends BaseMiddleware
 {
-
-    /**
-     * @var Validator
-     */
-    private $validator;
-
-    /**
-     * Class constructor
-     */
-    public function __construct()
-    {
-        $this->validator = new Validator();
-
-        $this->validator->addRules([
-            'password' => [
-                Rule::set('required'),
-                Rule::set('minLen', 6)
-            ],
-            'repeat_password' => [
-                Rule::set('required'),
-                Rule::set('minLen', 6)
-            ]
-        ]);
-    }
 
     /**
      * @param Request $request
@@ -63,34 +36,11 @@ class Reset extends QtMiddleware
      */
     public function apply(Request $request, Response $response, Closure $next)
     {
-        $token = route_param('token');
+        $token = (string) route_param('token');
 
-        if (!$token || !$this->checkToken($token)) {
-            $response->json([
-                'status' => 'error',
-                'message' => [t('validation.nonExistingRecord', 'token')]
-            ], StatusCode::UNPROCESSABLE_ENTITY);
+        $request->set('token', $token);
 
-            stop();
-        }
-
-        if (!$this->validator->isValid($request->all())) {
-            $response->json([
-                'status' => 'error',
-                'message' => $this->validator->getErrors()
-            ], 422);
-
-            stop();
-        }
-
-        if (!$this->confirmPassword($request->get('password'), $request->get('repeat_password'))) {
-            $response->json([
-                'status' => 'error',
-                'message' => t('validation.nonEqualValues')
-            ], 422);
-
-            stop();
-        }
+        $this->validateRequest($request, $response);
 
         $request->set('reset_token', $token);
 
@@ -98,25 +48,37 @@ class Reset extends QtMiddleware
     }
 
     /**
-     * Check token
-     * @param string $token
-     * @return bool
+     * @inheritDoc
      */
-    private function checkToken(string $token): bool
+    protected function defineValidationRules(Request $request): void
     {
-        $userModel = ModelFactory::get(User::class);
-        return !empty($userModel->findOneBy('reset_token', $token)->asArray());
+        $this->registerCustomRules();
+
+        $this->validator->addRules([
+            'password' => [
+                Rule::set('required'),
+                Rule::set('minLen', 6),
+            ],
+            'repeat_password' => [
+                Rule::set('required'),
+                Rule::set('minLen', 6),
+                Rule::set('same', 'password'),
+            ],
+            'token' => [
+                Rule::set('required'),
+                Rule::set('token_exists'),
+            ],
+        ]);
     }
 
     /**
-     * Checks the password and repeat password
-     * @param string $newPassword
-     * @param string $repeatPassword
-     * @return bool
+     * Registers custom validation rules
      */
-    private function confirmPassword(string $newPassword, string $repeatPassword): bool
+    private function registerCustomRules(Request $request): void
     {
-        return $newPassword == $repeatPassword;
+        $this->validator->addValidation('token_exists', function ($token) {
+            $userModel = ModelFactory::get(User::class)->findOneBy('reset_token', $token);
+            return $userModel && !$userModel->isEmpty();
+        });
     }
-
 }

@@ -14,18 +14,18 @@
 
 namespace {{MODULE_NAMESPACE}}\Middlewares;
 
-use Quantum\Http\Constants\StatusCode;
-use Quantum\Middleware\QtMiddleware;
+use Quantum\Libraries\Validation\Rule;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 use Closure;
 
 /**
  * Class Resend
- * @package Modules\Web
+ * @package Modules\{{MODULE_NAME}}
  */
-class Resend extends QtMiddleware
+class Resend extends BaseMiddleware
 {
+
 
     /**
      * @param Request $request
@@ -35,13 +35,36 @@ class Resend extends QtMiddleware
      */
     public function apply(Request $request, Response $response, Closure $next)
     {
-        if (!route_param('code')) {
-            redirect(
-                base_url(true) . '/' . current_lang() . '/signin',
-                StatusCode::UNPROCESSABLE_ENTITY
-            );
-        }
+        $code = (string) route_param('code');
+
+        $request->set('code', $code);
+
+        $this->validateRequest($request, $response);
 
         return $next($request, $response);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function defineValidationRules(Request $request): void
+    {
+        $this->validator->addRules([
+            'code' => [
+                Rule::set('required'),
+            ],
+        ]);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function respondWithError(
+        Request $request,
+        Response $response,
+        $message,
+    ): void {
+        session()->setFlash('error', $message);
+        redirect(base_url(true) . '/' . current_lang() . '/signin');
     }
 }

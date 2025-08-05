@@ -14,43 +14,19 @@
 
 namespace {{MODULE_NAMESPACE}}\Middlewares;
 
-use Quantum\Libraries\Validation\Validator;
-use Quantum\Http\Constants\StatusCode;
 use Quantum\Libraries\Validation\Rule;
-use Quantum\Middleware\QtMiddleware;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 use Closure;
 
 /**
  * Class Verify
- * @package Modules\Api
+ * @package Modules\{{MODULE_NAME}}
  */
 
-class Verify extends QtMiddleware
+class Verify extends BaseMiddleware
 {
 
-    /**
-     * @var Validator
-     */
-    private $validator;
-
-    /**
-     * Class constructor
-     */
-    public function __construct()
-    {
-        $this->validator = new Validator();
-
-        $this->validator->addRules([
-            'otp' => [
-                Rule::set('required')
-            ],
-            'code' => [
-                Rule::set('required')
-            ],
-        ]);
-    }
 
     /**
      * @param Request $request
@@ -61,18 +37,20 @@ class Verify extends QtMiddleware
     public function apply(Request $request, Response $response, Closure $next)
     {
         if ($request->isMethod('post')) {
-            if (!$this->validator->isValid($request->all())) {
-
-                $response->json([
-                    'status' => 'error',
-                    'message' => $this->validator->getErrors()
-                ], StatusCode::UNPROCESSABLE_ENTITY);
-
-                stop();
-            }
+            $this->validateRequest($request, $response);
         }
 
         return $next($request, $response);
     }
 
+    /**
+     * @inheritDoc
+     */
+    protected function defineValidationRules(Request $request)
+    {
+        $this->validator->addRules([
+            'otp' => [Rule::set('required')],
+            'code' => [Rule::set('required')],
+        ]);
+    }
 }

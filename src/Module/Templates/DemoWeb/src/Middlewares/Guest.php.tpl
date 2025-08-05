@@ -14,7 +14,6 @@
 
 namespace {{MODULE_NAMESPACE}}\Middlewares;
 
-use Quantum\Http\Constants\StatusCode;
 use Quantum\Middleware\QtMiddleware;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
@@ -22,7 +21,7 @@ use Closure;
 
 /**
  * Class Guest
- * @package Modules\Web
+ * @package Modules\{{MODULE_NAME}}
  */
 class Guest extends QtMiddleware
 {
@@ -36,10 +35,7 @@ class Guest extends QtMiddleware
     public function apply(Request $request, Response $response, Closure $next)
     {
         if (auth()->check()) {
-            redirect(
-                get_referrer() ?? base_url(true) . '/' . current_lang(),
-                StatusCode::UNAUTHORIZED
-            );
+            redirect(get_referrer() ?? base_url(true) . '/' . current_lang());
         }
 
         return $next($request, $response);

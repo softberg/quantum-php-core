@@ -14,63 +14,19 @@
 
 namespace {{MODULE_NAMESPACE}}\Middlewares;
 
-use Quantum\Libraries\Validation\Validator;
 use Quantum\Model\Factories\ModelFactory;
-use Quantum\Http\Constants\StatusCode;
 use Quantum\Libraries\Validation\Rule;
-use Quantum\Middleware\QtMiddleware;
+use Modules\{{MODULE_NAME}}\Models\User;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
-use Shared\Models\User;
 use Closure;
 
 /**
  * Class Signup
- * @package Modules\Web
+ * @package Modules\{{MODULE_NAME}}
  */
-class Signup extends QtMiddleware
+class Signup extends BaseMiddleware
 {
-
-    /**
-     * @var Validator
-     */
-    private $validator;
-
-    /**
-     * Class constructor
-     * @throws \Exception
-     */
-    public function __construct()
-    {
-        $this->validator = new Validator();
-
-        $this->validator->addValidation('uniqueUser', function ($value) {
-            $userModel = ModelFactory::get(User::class);
-            return empty($userModel->findOneBy('email', $value)->asArray());
-        });
-
-        $this->validator->addRules([
-            'email' => [
-                Rule::set('required'),
-                Rule::set('email'),
-                Rule::set('uniqueUser')
-            ],
-            'password' => [
-                Rule::set('required'),
-                Rule::set('minLen', 6)
-            ],
-            'firstname' => [
-                Rule::set('required')
-            ],
-            'lastname' => [
-                Rule::set('required')
-            ],
-//            'captcha' => [
-//                Rule::set('required'),
-//                Rule::set('captcha')
-//            ]
-        ]);
-    }
 
     /**
      * @param Request $request
@@ -83,24 +39,66 @@ class Signup extends QtMiddleware
         if ($request->isMethod('post')) {
             $captchaName = captcha()->getName();
 
-            if($request->has($captchaName . '-response')) {
+            if ($request->has($captchaName . '-response')) {
                 $request->set('captcha', $request->get($captchaName . '-response'));
                 $request->delete($captchaName . '-response');
             }
 
-            if (!$this->validator->isValid($request->all())) {
-                session()->setFlash('error', $this->validator->getErrors());
-
-                redirectWith(
-                    base_url(true) . '/' . current_lang() . '/signup',
-                    $request->all(),
-                    StatusCode::UNPROCESSABLE_ENTITY
-                );
-            }
+            $this->validateRequest($request, $response);
 
             $request->delete('captcha');
         }
 
         return $next($request, $response);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function defineValidationRules(Request $request)
+    {
+        $this->registerCustomRules();
+
+        $this->validator->addRules([
+            'email' => [
+                Rule::set('required'),
+                Rule::set('email'),
+                Rule::set('uniqueUser'),
+            ],
+            'password' => [
+                Rule::set('required'),
+                Rule::set('minLen', 6),
+            ],
+            'firstname' => [
+                Rule::set('required'),
+            ],
+            'lastname' => [
+                Rule::set('required'),
+            ],
+//            'captcha' => [
+//                Rule::set('required'),
+//                Rule::set('captcha'),
+//            ],
+        ]);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function respondWithError(Request $request, Response $response, $message)
+    {
+        session()->setFlash('error', $message);
+        redirectWith(base_url(true) . '/' . current_lang() . '/signup', $request->all());
+    }
+
+    /**
+     * Register custom validation rules
+     */
+    private function registerCustomRules()
+    {
+        $this->validator->addValidation('uniqueUser', function ($value) {
+            $userModel = ModelFactory::get(User::class)->findOneBy('email', $value);
+            return $userModel && $userModel->isEmpty();
+        });
     }
 }

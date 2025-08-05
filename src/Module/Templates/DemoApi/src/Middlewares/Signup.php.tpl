@@ -14,58 +14,20 @@
 
 namespace {{MODULE_NAMESPACE}}\Middlewares;
 
-use Quantum\Libraries\Validation\Validator;
 use Quantum\Model\Factories\ModelFactory;
-use Quantum\Http\Constants\StatusCode;
 use Quantum\Libraries\Validation\Rule;
-use Quantum\Middleware\QtMiddleware;
+use Modules\{{MODULE_NAME}}\Models\User;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
-use Shared\Models\User;
 use Closure;
 
 /**
  * Class Signup
- * @package Modules\Api
+ * @package Modules\{{MODULE_NAME}}
  */
-class Signup extends QtMiddleware
+class Signup extends BaseMiddleware
 {
 
-    /**
-     * @var Validator
-     */
-    private $validator;
-
-    /**
-     * Class constructor
-     */
-    public function __construct()
-    {
-        $this->validator = new Validator();
-
-        $this->validator->addValidation('uniqueUser', function ($value) {
-            $userModel = ModelFactory::get(User::class);
-            return empty($userModel->findOneBy('email', $value)->asArray());
-        });
-
-        $this->validator->addRules([
-            'email' => [
-                Rule::set('required'),
-                Rule::set('email'),
-                Rule::set('uniqueUser')
-            ],
-            'password' => [
-                Rule::set('required'),
-                Rule::set('minLen', 6)
-            ],
-            'firstname' => [
-                Rule::set('required')
-            ],
-            'lastname' => [
-                Rule::set('required')
-            ],
-        ]);
-    }
 
     /**
      * @param Request $request
@@ -75,16 +37,45 @@ class Signup extends QtMiddleware
      */
     public function apply(Request $request, Response $response, Closure $next)
     {
-        if (!$this->validator->isValid($request->all())) {
-            $response->json([
-                'status' => 'error',
-                'message' => $this->validator->getErrors()
-            ], StatusCode::UNPROCESSABLE_ENTITY);
-
-            stop();
-        }
+        $this->validateRequest($request, $response);
 
         return $next($request, $response);
     }
 
+    /**
+     * @inheritDoc
+     */
+    protected function defineValidationRules(Request $request)
+    {
+        $this->registerCustomRules();
+
+        $this->validator->addRules([
+            'email' => [
+                Rule::set('required'),
+                Rule::set('email'),
+                Rule::set('uniqueUser'),
+            ],
+            'password' => [
+                Rule::set('required'),
+                Rule::set('minLen', 6),
+            ],
+            'firstname' => [
+                Rule::set('required'),
+            ],
+            'lastname' => [
+                Rule::set('required'),
+            ],
+        ]);
+    }
+
+    /**
+     * Registers custom validation rules
+     */
+    private function registerCustomRules()
+    {
+        $this->validator->addValidation('uniqueUser', function ($value) {
+            $userModel = ModelFactory::get(User::class)->findOneBy('email', $value);
+            return $userModel && $userModel->isEmpty();
+        });
+    }
 }

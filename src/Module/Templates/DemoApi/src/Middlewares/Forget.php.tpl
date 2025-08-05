@@ -14,40 +14,20 @@
 
 namespace {{MODULE_NAMESPACE}}\Middlewares;
 
-use Quantum\Libraries\Validation\Validator;
 use Quantum\Model\Factories\ModelFactory;
-use Quantum\Http\Constants\StatusCode;
 use Quantum\Libraries\Validation\Rule;
-use Quantum\Middleware\QtMiddleware;
+use Modules\{{MODULE_NAME}}\Models\User;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
-use Shared\Models\User;
 use Closure;
 
 /**
  * Class Forget
- * @package Modules\Api
+ * @package Modules\{{MODULE_NAME}}
  */
-class Forget extends QtMiddleware
+class Forget extends BaseMiddleware
 {
 
-    /**
-     * @var Validator
-     */
-    private $validator;
-
-    /**
-     * Class constructor
-     */
-    public function __construct()
-    {
-        $this->validator = new Validator();
-
-        $this->validator->addRule('email', [
-            Rule::set('required'),
-            Rule::set('email')
-        ]);
-    }
 
     /**
      * @param Request $request
@@ -58,37 +38,34 @@ class Forget extends QtMiddleware
     public function apply(Request $request, Response $response, Closure $next)
     {
         if ($request->isMethod('post')) {
-            if (!$this->validator->isValid($request->all())) {
-                $response->json([
-                    'status' => 'error',
-                    'message' => $this->validator->getErrors()
-                ], StatusCode::UNPROCESSABLE_ENTITY);
-                
-                stop();
-            }
-
-            if (!$this->emailExists($request->get('email'))) {
-                $response->json([
-                    'status' => 'error',
-                    'message' => [t('validation.nonExistingRecord', $request->get('email'))]
-                ], StatusCode::UNPROCESSABLE_ENTITY);
-                
-                stop();
-            }
+            $this->validateRequest($request, $response);
         }
-
-        return $next($request, $response);
     }
 
     /**
-     * Check for email existence
-     * @param string $email
-     * @return bool
+     * @inheritDoc
      */
-    private function emailExists(string $email): bool
+    protected function defineValidationRules(Request $request): void
     {
-        $userModel = ModelFactory::get(User::class);
-        return !empty($userModel->findOneBy('email', $email)->asArray());
+        $this->registerCustomRules();
+
+        $this->validator->addRules([
+            'email' => [
+                Rule::set('required'),
+                Rule::set('email'),
+                Rule::set('email_exists'),
+            ],
+        ]);
     }
 
+    /**
+     * Registers custom validation rules
+     */
+    private function registerCustomRules(): void
+    {
+        $this->validator->addValidation('email_exists', function ($email) {
+            $userModel = ModelFactory::get(User::class)->findOneBy('email', $email);
+            return $userModel && !$userModel->isEmpty();
+        });
+    }
 }
