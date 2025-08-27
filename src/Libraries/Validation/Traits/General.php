@@ -248,7 +248,7 @@ trait General
      * @return bool
      * @throws ModelException
      */
-    protected function exists($value, string $field, string $className): bool
+    protected function exists(string $field, $value, string $className): bool
     {
         $model = ModelFactory::get(ucfirst($className));
 
