@@ -14,12 +14,14 @@
 
 namespace Quantum\Libraries\Validation;
 
-use Quantum\Libraries\Validation\Rules\Resource;
-use Quantum\Libraries\Validation\Rules\General;
-use Quantum\Libraries\Validation\Rules\Length;
-use Quantum\Libraries\Validation\Rules\Lists;
-use Quantum\Libraries\Validation\Rules\Type;
-use Quantum\Libraries\Validation\Rules\File;
+use Quantum\Libraries\Validation\Traits\Resource;
+use Quantum\Libraries\Validation\Traits\General;
+use Quantum\Libraries\Validation\Traits\Length;
+use Quantum\Libraries\Validation\Traits\Lists;
+use Quantum\Libraries\Validation\Traits\Type;
+use Quantum\Libraries\Validation\Traits\File;
+use BadMethodCallException;
+use RuntimeException;
 use Closure;
 
 /**
@@ -58,27 +60,19 @@ class Validator
      * Custom validation callbacks
      * @var Closure[]
      */
-    private $customValidations = [];
+    private $customRules = [];
 
     /**
      * Add rules for a single field
      * @param string $field
      * @param array $rules Format: [['ruleName' => param], ...]
      */
-    public function addRule(string $field, array $rules)
+    public function setRule(string $field, array $rules)
     {
-        if (empty($field)) {
-            return;
-        }
-
-        if (!isset($this->rules[$field])) {
-            $this->rules[$field] = [];
-        }
-
         foreach ($rules as $rule) {
             $ruleName = key($rule);
             $ruleParam = current($rule);
-            $this->rules[$field][$ruleName] = $ruleParam;
+            $this->setOrUpdateRule($field, $ruleName, $ruleParam);
         }
     }
 
@@ -86,10 +80,10 @@ class Validator
      * Add multiple rules for multiple fields
      * @param array $rules Format: ['field' => [ ['rule' => param], ... ], ...]
      */
-    public function addRules(array $rules): void
+    public function setRules(array $rules): void
     {
         foreach ($rules as $field => $fieldRules) {
-            $this->addRule($field, $fieldRules);
+            $this->setRule($field, $fieldRules);
         }
     }
 
@@ -100,16 +94,9 @@ class Validator
      */
     public function updateRule(string $field, array $rule)
     {
-        if (empty($field)) {
-            return;
-        }
-
         $ruleName = key($rule);
         $ruleParam = current($rule);
-
-        if (isset($this->rules[$field][$ruleName])) {
-            $this->rules[$field][$ruleName] = $ruleParam;
-        }
+        $this->setOrUpdateRule($field, $ruleName, $ruleParam);
     }
 
     /**
@@ -120,12 +107,13 @@ class Validator
      */
     public function deleteRule(string $field, string $rule = null): void
     {
-        if (empty($field) || !isset($this->rules[$field])) {
+        if (!isset($this->rules[$field])) {
             return;
         }
 
         if ($rule !== null) {
             unset($this->rules[$field][$rule]);
+
             if (empty($this->rules[$field])) {
                 unset($this->rules[$field]);
             }
@@ -169,11 +157,19 @@ class Validator
                 continue;
             }
 
-            foreach ($this->rules[$field] as $rule => $param) {
-                if (method_exists($this, $rule) && is_callable([$this, $rule])) {
-                    $this->$rule($field, $value, $param);
-                } elseif (isset($this->customValidations[$rule])) {
-                    $this->executeCustomRule($rule, $field, $value, $param);
+            foreach ($this->rules[$field] as $rule => $params) {
+                $ruleParams = is_array($params) ? $params : [$params];
+
+                if (method_exists($this, $rule)) {
+                    $isValid = $this->$rule($field, $value, ...$ruleParams);
+                } elseif (isset($this->customRules[$rule])) {
+                    $isValid = $this->executeCustomRule($rule, $field, $value, ...$ruleParams);
+                } else {
+                    throw new BadMethodCallException("Validation rule '{$rule}' not found.");
+                }
+
+                if (!$isValid) {
+                    $this->addError($field, $rule, $params);
                 }
             }
         }
@@ -187,13 +183,13 @@ class Validator
      * @param Closure $function Callback function with signature function($value, $param): bool
      * @return void
      */
-    public function addValidation(string $rule, Closure $function): void
+    public function addRule(string $rule, Closure $function): void
     {
         if (empty($rule) || !is_callable($function)) {
             return;
         }
 
-        $this->customValidations[$rule] = $function;
+        $this->customRules[$rule] = $function;
     }
 
     /**
@@ -252,18 +248,31 @@ class Validator
      * @param string $rule
      * @param string $field
      * @param $value
-     * @param $param
+     * @param mixed ...$params
+     * @return bool
      */
-    protected function executeCustomRule(string $rule, string $field, $value, $param)
+    protected function executeCustomRule(string $rule, string $field, $value, ...$params): bool
     {
-        if ($value === '' || $value === null) {
-            return;
+        $function = $this->customRules[$rule];
+
+        if (!is_callable($function)) {
+            throw new RuntimeException("Validation rule '{$rule}' is not callable.");
         }
 
-        $function = $this->customValidations[$rule];
+        return (bool) $function($value, ...$params);
+    }
 
-        if (!$function($value, $param)) {
-            $this->addError($field, $rule, $param);
+    /**
+     * @param string $field
+     * @param string $ruleName
+     * @param $ruleParam
+     */
+    private function setOrUpdateRule(string $field, string $ruleName, $ruleParam): void
+    {
+        if (!isset($this->rules[$field])) {
+            $this->rules[$field] = [];
         }
+
+        $this->rules[$field][$ruleName] = $ruleParam;
     }
 }
