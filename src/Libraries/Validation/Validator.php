@@ -161,9 +161,9 @@ class Validator
                 $ruleParams = is_array($params) ? $params : [$params];
 
                 if (method_exists($this, $rule)) {
-                    $isValid = $this->$rule($field, $value, ...$ruleParams);
+                    $isValid = $this->$rule($value, ...$ruleParams);
                 } elseif (isset($this->customRules[$rule])) {
-                    $isValid = $this->executeCustomRule($rule, $field, $value, ...$ruleParams);
+                    $isValid = $this->executeCustomRule($rule, $value, ...$ruleParams);
                 } else {
                     throw new BadMethodCallException("Validation rule '{$rule}' not found.");
                 }
@@ -246,12 +246,11 @@ class Validator
     /**
      * Executes user defined rule
      * @param string $rule
-     * @param string $field
      * @param $value
      * @param mixed ...$params
      * @return bool
      */
-    protected function executeCustomRule(string $rule, string $field, $value, ...$params): bool
+    protected function executeCustomRule(string $rule, $value, ...$params): bool
     {
         $function = $this->customRules[$rule];
 

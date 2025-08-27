@@ -292,7 +292,7 @@ class GeneralRuleTest extends AppTestCase
        $this->createUsersTable();
 
         $this->validator->setRule('username', [
-            Rule::unique(TestUserModel::class)
+            Rule::unique(TestUserModel::class, 'username')
         ]);
 
         $this->assertTrue($this->validator->isValid(['username' => 'john@doe']));
@@ -313,7 +313,7 @@ class GeneralRuleTest extends AppTestCase
         $this->createUsersTable();
 
         $this->validator->setRule('username', [
-            Rule::exists(TestUserModel::class)
+            Rule::exists(TestUserModel::class, 'username')
         ]);
 
         $this->assertFalse($this->validator->isValid(['username' => 'john@doe']));

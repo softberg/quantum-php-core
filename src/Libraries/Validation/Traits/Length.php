@@ -23,36 +23,33 @@ trait Length
 
     /**
      * Checks the min Length
-     * @param string $field
      * @param string $value
      * @param int $minLength
      * @return bool
      */
-    protected function minLen(string $field, string $value, int $minLength): bool
+    protected function minLen(string $value, int $minLength): bool
     {
         return mb_strlen($value) >= $minLength;
     }
 
     /**
      * Checks the max Length
-     * @param string $field
      * @param string $value
      * @param int $maxLength
      * @return bool
      */
-    protected function maxLen(string $field, string $value, int $maxLength): bool
+    protected function maxLen(string $value, int $maxLength): bool
     {
         return mb_strlen($value) <= $maxLength;
     }
 
     /**
      * Checks the exact length
-     * @param string $field
      * @param string $value
      * @param int $exactLength
      * @return bool
      */
-    protected function exactLen(string $field, string $value, int $exactLength): bool
+    protected function exactLen(string $value, int $exactLength): bool
     {
         return mb_strlen($value) === $exactLength;
     }
