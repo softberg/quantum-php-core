@@ -51,18 +51,18 @@ class Password extends BaseMiddleware
     {
         $this->registerCustomRules($request);
 
-        $this->validator->addRules([
+        $this->validator->setRules([
             'current_password' => [
-                Rule::set('required'),
-                Rule::set('password_check'),
+                Rule::required(),
+                Rule::passwordCheck(),
             ],
             'new_password' => [
-                Rule::set('required'),
-                Rule::set('minLen', 6),
+                Rule::required(),
+                Rule::minLen( 6),
             ],
             'confirm_password' => [
-                Rule::set('required'),
-                Rule::set('same', 'new_password'),
+                Rule::required(),
+                Rule::same('new_password'),
             ],
         ]);
     }
@@ -81,7 +81,7 @@ class Password extends BaseMiddleware
      */
     private function registerCustomRules(Request $request)
     {
-        $this->validator->addValidation('password_check', function () use ($request) {
+        $this->validator->addRule('passwordCheck', function () use ($request) {
             $user = ModelFactory::get(User::class)->findOneBy('uuid', auth()->user()->uuid);
             return $user && (new Hasher())->check($request->get('current_password'), $user->password);
         });

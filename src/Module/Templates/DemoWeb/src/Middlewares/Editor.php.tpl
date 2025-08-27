@@ -34,7 +34,7 @@ class Editor extends BaseMiddleware
     /**
      * Max image size in bytes (2MB)
      */
-    private const MAX_IMAGE_SIZE = 2 * 1024 * 1024;
+    private const MAX_IMAGE_SIZE_MB = 2 * 1024 * 1024;
 
     /**
      * Allowed image file extensions
@@ -66,24 +66,24 @@ class Editor extends BaseMiddleware
     protected function defineValidationRules(Request $request)
     {
         if ($request->hasFile('image')) {
-            $this->validator->addRules([
+            $this->validator->setRules([
                 'image' => [
-                    Rule::set('fileSize', self::MAX_IMAGE_SIZE),
-                    Rule::set('fileExtension', self::ALLOWED_IMAGE_EXTENSIONS),
+                    Rule::fileSize(self::MAX_IMAGE_SIZE_MB),
+                    Rule::fileExtension(...self::ALLOWED_IMAGE_EXTENSIONS),
                 ],
             ]);
         }
 
-        $this->validator->addRules([
+        $this->validator->setRules([
             'title' => [
-                Rule::set('required'),
-                Rule::set('minLen', 10),
-                Rule::set('maxLen', 50),
+                Rule::required(),
+                Rule::minLen(10),
+                Rule::maxLen(50),
             ],
             'content' => [
-                Rule::set('required'),
-                Rule::set('minLen', 10),
-                Rule::set('maxLen', 1000),
+                Rule::required(),
+                Rule::minLen(10),
+                Rule::maxLen(1000),
             ],
         ]);
     }

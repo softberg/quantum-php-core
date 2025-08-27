@@ -53,26 +53,24 @@ class Reset extends BaseMiddleware
      */
     protected function defineValidationRules(Request $request): void
     {
-        $this->registerCustomRules();
-
         if ($request->isMethod('post')) {
-            $this->validator->addRules([
+            $this->validator->setRules([
                 'password' => [
-                    Rule::set('required'),
-                    Rule::set('minLen', 6),
+                    Rule::required(),
+                    Rule::minLen(6),
                 ],
                 'repeat_password' => [
-                    Rule::set('required'),
-                    Rule::set('minLen', 6),
-                    Rule::set('same', 'password'),
+                    Rule::required(),
+                    Rule::minLen(6),
+                    Rule::same('password'),
                 ],
             ]);
         }
 
-        $this->validator->addRules([
+        $this->validator->setRules([
             'token' => [
-                Rule::set('required'),
-                Rule::set('token_exists'),
+                Rule::required(),
+                Rule::exists(User::class, 'reset_token'),
             ],
         ]);
     }
@@ -89,16 +87,5 @@ class Reset extends BaseMiddleware
 
         session()->setFlash('error', $message);
         redirect(get_referrer());
-    }
-
-    /**
-     * Register custom validation rules
-     */
-    private function registerCustomRules()
-    {
-        $this->validator->addValidation('token_exists', function ($token) {
-            $userModel = ModelFactory::get(User::class)->findOneBy('reset_token', $token);
-            return $userModel && !$userModel->isEmpty();
-        });
     }
 }

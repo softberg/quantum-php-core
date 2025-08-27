@@ -48,9 +48,13 @@ class Verify extends BaseMiddleware
      */
     protected function defineValidationRules(Request $request)
     {
-        $this->validator->addRules([
-            'otp' => [Rule::set('required')],
-            'code' => [Rule::set('required')],
+        $this->validator->setRules([
+            'otp' => [
+                Rule::required()
+            ],
+            'code' => [
+                Rule::required()
+            ],
         ]);
     }
 }

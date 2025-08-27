@@ -46,9 +46,13 @@ class Update extends BaseMiddleware
      */
     protected function defineValidationRules(Request $request)
     {
-        $this->validator->addRules([
-            'firstname' => [Rule::set('required')],
-            'lastname' => [Rule::set('required')],
+        $this->validator->setRules([
+            'firstname' => [
+                Rule::required()
+            ],
+            'lastname' => [
+                Rule::required()
+            ],
         ]);
     }
 }

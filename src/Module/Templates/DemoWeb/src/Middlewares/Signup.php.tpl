@@ -57,27 +57,25 @@ class Signup extends BaseMiddleware
      */
     protected function defineValidationRules(Request $request)
     {
-        $this->registerCustomRules();
-
-        $this->validator->addRules([
+        $this->validator->setRules([
             'email' => [
-                Rule::set('required'),
-                Rule::set('email'),
-                Rule::set('uniqueUser'),
+                Rule::required(),
+                Rule::email(),
+                Rule::unique(User::class, 'email'),
             ],
             'password' => [
-                Rule::set('required'),
-                Rule::set('minLen', 6),
+                Rule::required(),
+                Rule::minLen(6),
             ],
             'firstname' => [
-                Rule::set('required'),
+                Rule::required(),
             ],
             'lastname' => [
-                Rule::set('required'),
+                Rule::required(),
             ],
 //            'captcha' => [
-//                Rule::set('required'),
-//                Rule::set('captcha'),
+//                Rule::required(),
+//                Rule::captcha(),
 //            ],
         ]);
     }
@@ -89,16 +87,5 @@ class Signup extends BaseMiddleware
     {
         session()->setFlash('error', $message);
         redirectWith(base_url(true) . '/' . current_lang() . '/signup', $request->all());
-    }
-
-    /**
-     * Register custom validation rules
-     */
-    private function registerCustomRules()
-    {
-        $this->validator->addValidation('uniqueUser', function ($value) {
-            $userModel = ModelFactory::get(User::class)->findOneBy('email', $value);
-            return $userModel && $userModel->isEmpty();
-        });
     }
 }

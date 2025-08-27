@@ -51,13 +51,13 @@ class Verify extends BaseMiddleware
      */
     protected function defineValidationRules(Request $request)
     {
-        $this->registerCustomRules();
-
-        $this->validator->addRules([
-            'otp' => [Rule::set('required')],
+        $this->validator->setRules([
+            'otp' => [
+                Rule::required()
+            ],
             'code' => [
-                Rule::set('required'),
-                Rule::set('code_exists'),
+                Rule::required(),
+                Rule::exists(User::class, 'otp_token'),
             ],
         ]);
     }
@@ -74,16 +74,5 @@ class Verify extends BaseMiddleware
 
         session()->setFlash('error', $message);
         redirectWith(base_url(true) . '/' . current_lang() . '/verify', $request->all());
-    }
-
-    /**
-     * Register custom validation rules
-     */
-    private function registerCustomRules()
-    {
-        $this->validator->addValidation('code_exists', function ($code) {
-            $userModel = ModelFactory::get(User::class)->findOneBy('otp_token', $code);
-            return $userModel && !$userModel->isEmpty();
-        });
     }
 }

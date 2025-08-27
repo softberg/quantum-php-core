@@ -50,14 +50,12 @@ class Forget extends BaseMiddleware
      */
     protected function defineValidationRules(Request $request)
     {
-        $this->registerCustomRules();
-
-        $this->validator->addRules([
+        $this->validator->setRules([
             'email' => [
-                Rule::set('required'),
-                Rule::set('email'),
-                Rule::set('email_exists'),
-            ]
+                Rule::required(),
+                Rule::email(),
+                Rule::exists(User::class, 'email'),
+            ],
         ]);
     }
 
@@ -76,16 +74,5 @@ class Forget extends BaseMiddleware
 
         session()->setFlash('error', $message);
         redirectWith(base_url(true) . '/' . current_lang() . '/forget', $data);
-    }
-
-    /**
-     * Register custom validation rules
-     */
-    private function registerCustomRules(): void
-    {
-        $this->validator->addValidation('email_exists', function ($email) {
-            $userModel = ModelFactory::get(User::class);
-            return !empty($userModel->findOneBy('email', $email)->asArray());
-        });
     }
 }

@@ -49,9 +49,9 @@ class Resend extends BaseMiddleware
      */
     protected function defineValidationRules(Request $request): void
     {
-        $this->validator->addRules([
+        $this->validator->setRules([
             'code' => [
-                Rule::set('required'),
+                Rule::required(),
             ],
         ]);
     }

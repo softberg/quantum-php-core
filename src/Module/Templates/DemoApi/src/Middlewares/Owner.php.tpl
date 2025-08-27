@@ -52,10 +52,10 @@ class Owner extends BaseMiddleware
     {
         $this->registerCustomRules();
 
-        $this->validator->addRules([
+        $this->validator->setRules([
             'uuid' => [
-                Rule::set('required'),
-                Rule::set('post_owner'),
+                Rule::required(),
+                Rule::postOwner(),
             ],
         ]);
     }
@@ -65,9 +65,9 @@ class Owner extends BaseMiddleware
      */
     private function registerCustomRules(): void
     {
-        $this->validator->addValidation('post_owner', function ($postUuid) {
+        $this->validator->addRule('postOwner', function ($postUuid) {
             $post = ServiceFactory::get(PostService::class)->getPost($postUuid);
-            return $post && !$post->isEmpty() && $post->user_uuid === auth()->user()->uuid;
+            return !$post->isEmpty() && $post->user_uuid === auth()->user()->uuid;
         });
     }
 }

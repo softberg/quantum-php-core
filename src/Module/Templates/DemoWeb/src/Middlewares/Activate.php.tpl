@@ -53,12 +53,10 @@ class Activate extends BaseMiddleware
      */
     protected function defineValidationRules(Request $request)
     {
-        $this->registerCustomRules();
-
-        $this->validator->addRules([
+        $this->validator->setRules([
             'token' => [
-                Rule::set('required'),
-                Rule::set('token_exists'),
+                Rule::required(),
+                Rule::exists(User::class, 'activation_token'),
             ]
         ]);
     }
@@ -70,16 +68,5 @@ class Activate extends BaseMiddleware
     {
         $response->html(partial('errors/404'), StatusCode::NOT_FOUND);
         stop();
-    }
-
-    /**
-     * Registers custom validation rules
-     */
-    private function registerCustomRules()
-    {
-        $this->validator->addValidation('token_exists', function ($token) {
-            $userModel = ModelFactory::get(User::class)->findOneBy('activation_token', $token);
-            return $userModel && !$userModel->isEmpty();
-        });
     }
 }
