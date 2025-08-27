@@ -248,7 +248,7 @@ trait General
      * @return bool
      * @throws ModelException
      */
-    protected function exists(string $field, $value, string $className): bool
+    protected function exists($value, string $field, string $className): bool
     {
         $model = ModelFactory::get(ucfirst($className));
 
@@ -259,15 +259,14 @@ trait General
 
     /**
      * Check Captcha
-     * @param string $field
      * @param string $value
-     * @return mixed|true
+     * @return bool
      * @throws BaseException
      * @throws ConfigException
      * @throws DiException
      * @throws ReflectionException
      */
-    protected function captcha(string $field, string $value)
+    protected function captcha(string $value): bool
     {
         $captcha = CaptchaFactory::get();
 

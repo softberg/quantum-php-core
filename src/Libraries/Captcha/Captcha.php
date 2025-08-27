@@ -25,7 +25,7 @@ use Quantum\App\Exceptions\BaseException;
  * @method string|null getType()
  * @method CaptchaInterface setType(string $type)
  * @method mixed addToForm(string $formIdentifier)
- * @method mixed verify(string $response)
+ * @method bool verify(string $response)
  * @method string|null getErrorMessage()
  */
 class Captcha
