@@ -61,22 +61,16 @@ trait General
     protected function creditCard(string $field, string $value): bool
     {
         $number = preg_replace('/\D/', '', $value);
+        $length = function_exists('mb_strlen') ? mb_strlen($number) : strlen($number);
 
-        if (function_exists('mb_strlen')) {
-            $number_length = mb_strlen($number);
-        } else {
-            $number_length = strlen($number);
+        if ($length == 0) {
+            return false;
         }
 
-        if ($number_length == 0) {
-            $this->addError($field, 'creditCard');
-        }
-
-        $parity = $number_length % 2;
-
+        $parity = $length % 2;
         $total = 0;
 
-        for ($i = 0; $i < $number_length; ++$i) {
+        for ($i = 0; $i < $length; ++$i) {
             $digit = $number[$i];
 
             if ($i % 2 == $parity) {
