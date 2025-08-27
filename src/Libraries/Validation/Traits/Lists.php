@@ -23,12 +23,11 @@ trait Lists
 
     /**
      * Validates that the field value is contained within a given string.
-     * @param string $field
      * @param string $value
      * @param string $haystack
      * @return bool
      */
-    protected function contains(string $field, string $value, string $haystack): bool
+    protected function contains(string $value, string $haystack): bool
     {
         $value = trim(strtolower($value));
         $haystack = trim(strtolower($haystack));
@@ -38,12 +37,11 @@ trait Lists
 
     /**
      * Verifies that a value is contained within the pre-defined value set.
-     * @param string $field
      * @param string $value
      * @param string ...$list
      * @return bool
      */
-    protected function containsList(string $field, string $value, string ...$list): bool
+    protected function containsList(string $value, string ...$list): bool
     {
         $value = trim(strtolower($value));
 
@@ -56,12 +54,11 @@ trait Lists
 
     /**
      * Verifies that a value is not contained within the pre-defined value set.
-     * @param string $field
      * @param string $value
      * @param string ...$list
      * @return bool
      */
-    protected function doesntContainsList(string $field, string $value, string ...$list): bool
+    protected function doesntContainsList(string $value, string ...$list): bool
     {
         $value = trim(strtolower($value));
 
