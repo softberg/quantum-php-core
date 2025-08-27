@@ -23,88 +23,80 @@ trait Type
 
     /**
      * Checks the alpha characters
-     * @param string $field
      * @param string $value
      * @return bool
      */
-    protected function alpha(string $field, string $value): bool
+    protected function alpha(string $value): bool
     {
         return preg_match('/^([a-zÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÒÓÔÕÖßÙÚÛÜÝàáâãäåçèéêëìíîïðòóôõöùúûüýÿ])+$/i', $value) === 1;
     }
 
     /**
      * Checks the alpha and numeric characters
-     * @param string $field
      * @param string $value
      * @return bool
      */
-    protected function alphaNumeric(string $field, string $value): bool
+    protected function alphaNumeric(string $value): bool
     {
         return preg_match('/^([a-z0-9ÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÒÓÔÕÖßÙÚÛÜÝàáâãäåçèéêëìíîïðòóôõöùúûüýÿ])+$/i', $value) === 1;
     }
 
     /**
      * Checks the alpha and dash characters
-     * @param string $field
      * @param string $value
      * @return bool
      */
-    protected function alphaDash(string $field, string $value): bool
+    protected function alphaDash(string $value): bool
     {
         return preg_match('/^([a-zÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÒÓÔÕÖßÙÚÛÜÝàáâãäåçèéêëìíîïðòóôõöùúûüýÿ_-])+$/i', $value) === 1;
     }
 
     /**
      * Checks the alphanumeric and space characters
-     * @param string $field
      * @param string $value
      * @return bool
      */
-    protected function alphaSpace(string $field, string $value): bool
+    protected function alphaSpace(string $value): bool
     {
         return preg_match('/^([a-z0-9ÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÒÓÔÕÖßÙÚÛÜÝàáâãäåçèéêëìíîïðòóôõöùúûüýÿ\s])+$/i', $value) === 1;
     }
 
     /**
      * Checks the numeric value
-     * @param string $field
      * @param string $value
      * @return bool
      */
-    protected function numeric(string $field, string $value): bool
+    protected function numeric(string $value): bool
     {
         return is_numeric($value);
     }
 
     /**
      * Checks the integer value
-     * @param string $field
      * @param string $value
      * @return bool
      */
-    protected function integer(string $field, string $value): bool
+    protected function integer(string $value): bool
     {
         return filter_var($value, FILTER_VALIDATE_INT) !== false;
     }
 
     /**
      * Checks the float value
-     * @param string $field
      * @param string $value
      * @return bool
      */
-    protected function float(string $field, string $value): bool
+    protected function float(string $value): bool
     {
         return filter_var($value, FILTER_VALIDATE_FLOAT) !== false;
     }
 
     /**
      * Checks the boolean value
-     * @param string $field
      * @param $value
      * @return bool
      */
-    protected function boolean(string $field, $value): bool
+    protected function boolean($value): bool
     {
         $booleans = ['1', 'true', true, 1, '0', 'false', false, 0, 'yes', 'no', 'on', 'off'];
 
@@ -113,24 +105,22 @@ trait Type
 
     /**
      * Determines if the provided numeric value is lower to a specific value
-     * @param string $field
      * @param string $value
      * @param $minValue
      * @return bool
      */
-    protected function minNumeric(string $field, string $value, $minValue): bool
+    protected function minNumeric(string $value, $minValue): bool
     {
         return is_numeric($value) && is_numeric($minValue) && ($value >= $minValue);
     }
 
     /**
      * Determines if the provided numeric value is higher to a specific value
-     * @param string $field
      * @param string $value
      * @param $maxValue
      * @return bool
      */
-    protected function maxNumeric(string $field, string $value, $maxValue): bool
+    protected function maxNumeric(string $value, $maxValue): bool
     {
         return is_numeric($value) && is_numeric($maxValue) && ($value <= $maxValue);
     }

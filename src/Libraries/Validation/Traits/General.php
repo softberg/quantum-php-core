@@ -32,33 +32,30 @@ trait General
 
     /**
      * Checks Field Required
-     * @param string $field
      * @param string $value
      * @return bool
      */
-    protected function required(string $field, string $value): bool
+    protected function required(string $value): bool
     {
         return !empty($value);
     }
 
     /**
      * Checks Email
-     * @param string $field
      * @param string $value
      * @return bool
      */
-    protected function email(string $field, string $value): bool
+    protected function email(string $value): bool
     {
         return filter_var($value, FILTER_VALIDATE_EMAIL) !== false;
     }
 
     /**
      * Checks for a valid credit card number
-     * @param string $field
      * @param string $value
      * @return bool
      */
-    protected function creditCard(string $field, string $value): bool
+    protected function creditCard(string $value): bool
     {
         $number = preg_replace('/\D/', '', $value);
         $length = function_exists('mb_strlen') ? mb_strlen($number) : strlen($number);
@@ -89,11 +86,10 @@ trait General
 
     /**
      * Checks for a valid IBAN
-     * @param string $field
      * @param string $value
      * @return bool
      */
-    protected function iban(string $field, string $value): bool
+    protected function iban(string $value): bool
     {
         static $character = [
             'A' => 10, 'C' => 12, 'D' => 13, 'E' => 14, 'F' => 15, 'G' => 16,
@@ -116,22 +112,20 @@ trait General
 
     /**
      * Checks for a valid format human name
-     * @param string $field
      * @param string $value
      * @return bool
      */
-    protected function name(string $field, string $value): bool
+    protected function name(string $value): bool
     {
         return preg_match("/^([a-z \p{L} '-])+$/i", $value) === 1;
     }
 
     /**
      * Checks that the provided string is a likely street address.
-     * @param string $field
      * @param string $value
      * @return bool
      */
-    protected function streetAddress(string $field, string $value): bool
+    protected function streetAddress(string $value): bool
     {
         $hasLetter = preg_match('/[a-zA-Z]/', $value);
         $hasDigit = preg_match('/\d/', $value);
@@ -142,11 +136,10 @@ trait General
 
     /**
      * Validates the phone number // 555-555-5555 , 5555425555, 555 555 5555, 1(519) 555-4444, 1 (519) 555-4422, +1-555-555-5555
-     * @param string $field
      * @param string $value
      * @return bool
      */
-    protected function phoneNumber(string $field, string $value): bool
+    protected function phoneNumber(string $value): bool
     {
         $regex = '/^(\+*\d[\s-]?)?[\(\[\s-]{0,2}?\d{3}[\)\]\s-]{0,2}?\d{3}[\s-]?\d{4}$/i';
 
@@ -155,12 +148,11 @@ trait General
 
     /**
      * Determines if the provided input is a valid date
-     * @param string $field
      * @param string $value
      * @param string|null $format
      * @return bool
      */
-    protected function date(string $field, string $value, ?string $format = null): bool
+    protected function date(string $value, ?string $format = null): bool
     {
         if (!$format) {
             $cdate1 = date('Y-m-d', strtotime($value));
@@ -176,35 +168,32 @@ trait General
 
     /**
      * Ensures the value starts with a certain character / set of character
-     * @param string $field
      * @param string $value
      * @param string|null $text
      * @return bool
      */
-    protected function starts(string $field, string $value, ?string $text = null): bool
+    protected function starts(string $value, ?string $text = null): bool
     {
         return strpos($value, $text) === 0;
     }
 
     /**
      * Custom regex validator
-     * @param string $field
      * @param string $value
      * @param string $pattern
      * @return bool
      */
-    protected function regex(string $field, string $value, string $pattern): bool
+    protected function regex(string $value, string $pattern): bool
     {
         return preg_match($pattern, $value) === 1;
     }
 
     /**
      * Validates JSON string
-     * @param string $field
      * @param string $value
      * @return bool
      */
-    protected function jsonString(string $field, string $value): bool
+    protected function jsonString(string $value): bool
     {
         $value = htmlspecialchars_decode($value, ENT_QUOTES);
 
@@ -213,46 +202,45 @@ trait General
 
     /**
      * Validates same value for both fields
-     * @param string $field
      * @param string $value
      * @param string $otherField
      * @return bool
      */
-    protected function same(string $field, string $value, string $otherField): bool
+    protected function same(string $value, string $otherField): bool
     {
         return $value == $this->data[$otherField];
     }
 
     /**
      *  Validates uniqueness
-     * @param string $field
      * @param $value
      * @param string $className
+     * @param string $columnName
      * @return bool
      * @throws ModelException
      */
-    protected function unique(string $field, $value, string $className): bool
+    protected function unique($value, string $className, string $columnName): bool
     {
         $model = ModelFactory::get(ucfirst($className));
 
-        $row = $model->findOneBy($field, $value);
+        $row = $model->findOneBy($columnName, $value);
 
         return !$row->count();
     }
 
     /**
      * Validates record existence
-     * @param string $field
      * @param $value
      * @param string $className
+     * @param string $columnName
      * @return bool
      * @throws ModelException
      */
-    protected function exists(string $field, $value, string $className): bool
+    protected function exists($value, string $className, string $columnName): bool
     {
         $model = ModelFactory::get(ucfirst($className));
 
-        $row = $model->findOneBy($field, $value);
+        $row = $model->findOneBy($columnName, $value);
 
         return $row->count() > 0;
     }

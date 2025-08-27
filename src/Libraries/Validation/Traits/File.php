@@ -26,13 +26,12 @@ trait File
 
     /**
      * Validates file size
-     * @param string $field
      * @param UploadedFile $file
      * @param int|null $maxSize
      * @param int|null $minSize
      * @return bool
      */
-    public function fileSize(string $field, UploadedFile $file, int $maxSize, ?int $minSize = null): bool
+    public function fileSize(UploadedFile $file, int $maxSize, ?int $minSize = null): bool
     {
         $size = $file->getSize();
         $minSize = $minSize ?? 0;
@@ -42,38 +41,35 @@ trait File
 
     /**
      * Validates file mime type
-     * @param string $field
      * @param UploadedFile $file
      * @param string ...$mimeTypes
      * @return bool
      */
-    public function fileMimeType(string $field, UploadedFile $file, string ...$mimeTypes): bool
+    public function fileMimeType(UploadedFile $file, string ...$mimeTypes): bool
     {
         return in_array($file->getMimetype(), $mimeTypes);
     }
 
     /**
      * Validates file extension
-     * @param string $field
      * @param UploadedFile $file
      * @param string ...$extensions
      * @return bool
      */
-    public function fileExtension(string $field, UploadedFile $file, string ...$extensions): bool
+    public function fileExtension(UploadedFile $file, string ...$extensions): bool
     {
         return in_array($file->getExtension(), $extensions);
     }
 
     /**
      * Validates image dimensions
-     * @param string $field
      * @param UploadedFile $file
      * @param int|null $width
      * @param int|null $height
      * @return bool
      * @throws FileUploadException
      */
-    public function imageDimensions(string $field, UploadedFile $file, ?int $width = null, ?int $height = null): bool
+    public function imageDimensions(UploadedFile $file, ?int $width = null, ?int $height = null): bool
     {
         $dimensions = $file->getDimensions();
 

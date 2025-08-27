@@ -23,22 +23,20 @@ trait Resource
 
     /**
      * Checks for valid URL or subdomain
-     * @param string $field
      * @param string $value
      * @return bool
      */
-    protected function url(string $field, string $value): bool
+    protected function url(string $value): bool
     {
         return filter_var($value, FILTER_VALIDATE_URL) !== false;
     }
 
     /**
      * Checks to see if the url exists
-     * @param string $field
      * @param string $value
      * @return bool
      */
-    protected function urlExists(string $field, string $value): bool
+    protected function urlExists(string $value): bool
     {
         if (filter_var($value, FILTER_VALIDATE_URL) === false) {
             return false;
@@ -59,33 +57,30 @@ trait Resource
 
     /**
      * Checks for valid IP address
-     * @param string $field
      * @param string $value
      * @return bool
      */
-    protected function ip(string $field, string $value): bool
+    protected function ip(string $value): bool
     {
         return filter_var($value, FILTER_VALIDATE_IP) !== false;
     }
 
     /**
      * Checks for valid IPv4 address
-     * @param string $field
      * @param string $value
      * @return bool
      */
-    protected function ipv4(string $field, string $value): bool
+    protected function ipv4(string $value): bool
     {
         return filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) !== false;
     }
 
     /**
      * Checks for valid IPv6 address
-     * @param string $field
      * @param string $value
      * @return bool
      */
-    protected function ipv6(string $field, string $value): bool
+    protected function ipv6(string $value): bool
     {
         return filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) !== false;
     }
