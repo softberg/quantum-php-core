@@ -55,7 +55,7 @@ class Signup extends BaseMiddleware
             ],
             'password' => [
                 Rule::required(),
-                Rule::set('minLen', 6),
+                Rule::minLen(6),
             ],
             'firstname' => [
                 Rule::required(),
