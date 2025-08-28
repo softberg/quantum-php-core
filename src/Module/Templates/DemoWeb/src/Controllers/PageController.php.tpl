@@ -18,7 +18,7 @@ use Quantum\Http\Response;
 
 /**
  * Class PageController
- * @package Modules\Web
+ * @package Modules\{{MODULE_NAME}}
  */
 class PageController extends BaseController
 {

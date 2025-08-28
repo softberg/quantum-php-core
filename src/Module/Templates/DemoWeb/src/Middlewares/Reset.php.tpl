@@ -14,40 +14,20 @@
 
 namespace {{MODULE_NAMESPACE}}\Middlewares;
 
-use Quantum\Libraries\Validation\Validator;
 use Quantum\Model\Factories\ModelFactory;
 use Quantum\Http\Constants\StatusCode;
 use Quantum\Libraries\Validation\Rule;
-use Quantum\Middleware\QtMiddleware;
+use Modules\{{MODULE_NAME}}\Models\User;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
-use Shared\Models\User;
 use Closure;
 
 /**
  * Class Reset
- * @package Modules\Web
+ * @package Modules\{{MODULE_NAME}}
  */
-class Reset extends QtMiddleware
+class Reset extends BaseMiddleware
 {
-
-    /**
-     * @var Validator
-     */
-    private $validator;
-
-    /**
-     * Class constructor
-     */
-    public function __construct()
-    {
-        $this->validator = new Validator();
-
-        $this->validator->addRule('password', [
-            Rule::set('required'),
-            Rule::set('minLen', 6)
-        ]);
-    }
 
     /**
      * @param Request $request
@@ -57,36 +37,11 @@ class Reset extends QtMiddleware
      */
     public function apply(Request $request, Response $response, Closure $next)
     {
-        $token = route_param('token');
+        $token = (string) route_param('token');
 
-        if ($token && $request->isMethod('post')) {
-            if (!$this->checkToken($token)) {
-                session()->setFlash('error', [
-                    'password' => [
-                        t('validation.nonExistingRecord', 'token')
-                    ]
-                ]);
+        $request->set('token', $token);
 
-                redirect(get_referrer(), StatusCode::UNAUTHORIZED);
-            }
-
-            if (!$this->validator->isValid($request->all())) {
-                session()->setFlash('error', $this->validator->getErrors());
-
-                redirect(get_referrer(), StatusCode::UNPROCESSABLE_ENTITY);
-            }
-
-            if (!$this->confirmPassword($request->get('password'), $request->get('repeat_password'))) {
-                session()->setFlash('error', t('validation.nonEqualValues'));
-
-                redirect(get_referrer(), StatusCode::UNPROCESSABLE_ENTITY);
-            }
-        } elseif ($request->isMethod('get')) {
-            if (!$this->checkToken($token)) {
-                $response->html(partial('errors/404'), StatusCode::NOT_FOUND);
-                stop();
-            }
-        }
+        $this->validateRequest($request, $response);
 
         $request->set('reset_token', $token);
 
@@ -94,24 +49,43 @@ class Reset extends QtMiddleware
     }
 
     /**
-     * Check token
-     * @param string $token
-     * @return bool
+     * @inheritDoc
      */
-    private function checkToken(string $token): bool
+    protected function defineValidationRules(Request $request): void
     {
-        $userModel = ModelFactory::get(User::class);
-        return !empty($userModel->findOneBy('reset_token', $token)->asArray());
+        if ($request->isMethod('post')) {
+            $this->validator->setRules([
+                'password' => [
+                    Rule::required(),
+                    Rule::minLen(6),
+                ],
+                'repeat_password' => [
+                    Rule::required(),
+                    Rule::minLen(6),
+                    Rule::same('password'),
+                ],
+            ]);
+        }
+
+        $this->validator->setRules([
+            'token' => [
+                Rule::required(),
+                Rule::exists(User::class, 'reset_token'),
+            ],
+        ]);
     }
 
     /**
-     * Checks the password and repeat password
-     * @param string $newPassword
-     * @param string $repeatPassword
-     * @return bool
+     * @inheritDoc
      */
-    private function confirmPassword(string $newPassword, string $repeatPassword): bool
+    protected function respondWithError(Request $request, Response $response, $message)
     {
-        return $newPassword == $repeatPassword;
+        if ($request->isMethod('get') && isset($message['token'])) {
+            $response->html(partial('errors/404'), StatusCode::NOT_FOUND);
+            stop();
+        }
+
+        session()->setFlash('error', $message);
+        redirect(get_referrer());
     }
 }

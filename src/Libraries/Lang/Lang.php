@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 2.9.8
  */
 
 namespace Quantum\Libraries\Lang;
@@ -118,7 +118,7 @@ class Lang
     {
         $fs = FileSystemFactory::get();
 
-        $langDir = modules_dir() . DS . current_module() . DS . 'Resources' . DS . 'lang' . DS . $this->getLang();
+        $langDir = modules_dir() . DS . current_module() . DS . 'resources' . DS . 'lang' . DS . $this->getLang();
 
         $files = $fs->glob($langDir . DS . "*.php");
 
@@ -138,7 +138,7 @@ class Lang
             $fileName = $fs->fileName($file);
 
             $setup = new Setup();
-            $setup->setPathPrefix('Resources' . DS . 'lang' . DS . $this->getLang());
+            $setup->setPathPrefix('resources' . DS . 'lang' . DS . $this->getLang());
             $setup->setFilename($fileName);
             $setup->setHierarchy(true);
 

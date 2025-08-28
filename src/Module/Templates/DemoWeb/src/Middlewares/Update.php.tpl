@@ -14,42 +14,18 @@
 
 namespace {{MODULE_NAMESPACE}}\Middlewares;
 
-use Quantum\Libraries\Validation\Validator;
-use Quantum\Http\Constants\StatusCode;
 use Quantum\Libraries\Validation\Rule;
-use Quantum\Middleware\QtMiddleware;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 use Closure;
 
 /**
  * Class Update
- * @package Modules\Web
+ * @package Modules\{{MODULE_NAME}}
  */
-class Update extends QtMiddleware
+class Update extends BaseMiddleware
 {
-    /**
-     * @var Validator
-     */
-    private $validator;
 
-    /**
-     * Class constructor
-     * @throws \Exception
-     */
-    public function __construct()
-    {
-        $this->validator = new Validator();
-
-        $this->validator->addRules([
-            'firstname' => [
-                Rule::set('required')
-            ],
-            'lastname' => [
-                Rule::set('required')
-            ]
-        ]);
-    }
 
     /**
      * @param Request $request
@@ -59,19 +35,37 @@ class Update extends QtMiddleware
     public function apply(Request $request, Response $response, Closure $next)
     {
         if ($request->isMethod('post')) {
-            if ($this->validator->isValid($request->all())) {
-                session()->setFlash('success', t('common.updated_successfully'));
-            } else {
-                session()->setFlash('error', $this->validator->getErrors());
-
-                redirectWith(
-                    base_url(true) . '/' . current_lang() . '/account-settings#account_profile',
-                    $request->all(),
-                    StatusCode::UNPROCESSABLE_ENTITY
-                );
-            }
+            $this->validateRequest($request, $response);
         }
 
         return $next($request, $response);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function defineValidationRules(Request $request)
+    {
+        $this->validator->setRules([
+            'firstname' => [
+                Rule::required()
+            ],
+            'lastname' => [
+                Rule::required()
+            ],
+        ]);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function respondWithError(
+        Request $request,
+        Response $response,
+        $message
+    )
+    {
+        session()->setFlash('error', $message);
+        redirectWith(base_url(true) . '/' . current_lang() . '/account-settings#account_profile', $request->all());
     }
 }

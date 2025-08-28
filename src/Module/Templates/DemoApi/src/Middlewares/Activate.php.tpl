@@ -15,18 +15,17 @@
 namespace {{MODULE_NAMESPACE}}\Middlewares;
 
 use Quantum\Model\Factories\ModelFactory;
-use Quantum\Http\Constants\StatusCode;
-use Quantum\Middleware\QtMiddleware;
+use Quantum\Libraries\Validation\Rule;
+use Modules\{{MODULE_NAME}}\Models\User;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
-use Shared\Models\User;
 use Closure;
 
 /**
  * Class Activate
- * @package Modules\Api
+ * @package Modules\{{MODULE_NAME}}
  */
-class Activate extends QtMiddleware
+class Activate extends BaseMiddleware
 {
 
     /**
@@ -37,16 +36,11 @@ class Activate extends QtMiddleware
      */
     public function apply(Request $request, Response $response, Closure $next)
     {
-        $token = route_param('token');
+        $token = (string)route_param('token');
 
-        if (!$token || !$this->checkToken($token)) {
-            $response->json([
-                'status' => 'error',
-                'message' => [t('validation.nonExistingRecord', 'token')]
-            ], StatusCode::UNPROCESSABLE_ENTITY);
+        $request->set('token', $token);
 
-            stop();
-        }
+        $this->validateRequest($request, $response);
 
         $request->set('activation_token', $token);
 
@@ -54,13 +48,15 @@ class Activate extends QtMiddleware
     }
 
     /**
-     * Check token
-     * @param string $token
-     * @return bool
+     * @inheritDoc
      */
-    private function checkToken(string $token): bool
+    protected function defineValidationRules(Request $request)
     {
-        $userModel = ModelFactory::get(User::class);
-        return !empty($userModel->findOneBy('activation_token', $token)->asArray());
+        $this->validator->setRules([
+            'token' => [
+                Rule::required(),
+                Rule::exists(User::class, 'activation_token'),
+            ]
+        ]);
     }
 }

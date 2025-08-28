@@ -123,7 +123,7 @@ class OpenApiCommand extends QtCommand
             return;
         }
 
-        if (route_group_exists('openapi', $module) && $this->fs->exists($modulePath . DS . 'Resources' . DS . 'openApi' . DS . 'spec.json')) {
+        if (route_group_exists('openapi', $module) && $this->fs->exists($modulePath . DS . 'resources' . DS . 'openApi' . DS . 'spec.json')) {
             $this->error('The Open API specifications already installed for `' . ucfirst($module) . '` module');
             return;
         }
@@ -132,15 +132,15 @@ class OpenApiCommand extends QtCommand
             $this->fs->put($routes, str_replace('return function ($route) {', $this->openapiRoutes($module), $this->fs->get($routes)));
         }
 
-        if (!$this->fs->isDirectory($modulePath . DS . 'Resources' . DS . 'openapi')) {
-            $this->fs->makeDirectory($modulePath . DS . 'Resources' . DS . 'openapi');
+        if (!$this->fs->isDirectory($modulePath . DS . 'resources' . DS . 'openapi')) {
+            $this->fs->makeDirectory($modulePath . DS . 'resources' . DS . 'openapi');
         }
 
         $this->generateOpenapiSpecification($module);
     }
 
     /**
-     * Copies OpenApi Resources
+     * Copies OpenApi resources
      */
     private function copyResources()
     {
@@ -165,7 +165,7 @@ class OpenApiCommand extends QtCommand
     {
         $annotationPath = modules_dir() . DS . $module . DS . 'Controllers' . DS . 'OpenApi' . DS;
 
-        $specPath = modules_dir() . DS . $module . DS . 'Resources' . DS . 'openapi' . DS . 'spec.json';
+        $specPath = modules_dir() . DS . $module . DS . 'resources' . DS . 'openapi' . DS . 'spec.json';
 
         $openApi = Generator::scan([$annotationPath]);
 
@@ -189,7 +189,7 @@ class OpenApiCommand extends QtCommand
 
         $route->get("spec", function (Quantum\Http\Response $response) {
             $fs = Quantum\Libraries\Storage\Factories\FileSystemFactory::get();
-            $response->json($fs->getJson(modules_dir() . "' . DS . $module . DS . 'Resources' . DS . 'openapi' . DS . 'spec.json"));
+            $response->json($fs->getJson(modules_dir() . "' . DS . $module . DS . 'resources' . DS . 'openapi' . DS . 'spec.json"));
         });
     });' . PHP_EOL;
     }

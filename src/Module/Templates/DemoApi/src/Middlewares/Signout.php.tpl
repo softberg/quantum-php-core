@@ -14,17 +14,15 @@
  
 namespace {{MODULE_NAMESPACE}}\Middlewares;
 
-use Quantum\Http\Constants\StatusCode;
-use Quantum\Middleware\QtMiddleware;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 use Closure;
 
 /**
  * Class Signout
- * @package Modules\Api
+ * @package Modules\{{MODULE_NAME}}
  */
-class Signout extends QtMiddleware
+class Signout extends BaseMiddleware
 {
 
     /**
@@ -35,16 +33,14 @@ class Signout extends QtMiddleware
      */
     public function apply(Request $request, Response $response, Closure $next)
     {
-        if (!Request::hasHeader('refresh_token')) {
-            $response->json([
-                'status' => 'error',
-                'message' => [t('validation.nonExistingRecord', 'token')]
-            ], StatusCode::UNPROCESSABLE_ENTITY);
-            
-            stop();
+        if (!$request->hasHeader('refresh_token')) {
+            $this->respondWithError(
+                $request,
+                $response,
+                [t('validation.nonExistingRecord', 'token')]
+            );
         }
 
         return $next($request, $response);
     }
-
 }

@@ -15,18 +15,18 @@
 namespace {{MODULE_NAMESPACE}}\Middlewares;
 
 use Quantum\Model\Factories\ModelFactory;
+use Quantum\Libraries\Validation\Rule;
 use Quantum\Http\Constants\StatusCode;
-use Quantum\Middleware\QtMiddleware;
+use Modules\{{MODULE_NAME}}\Models\User;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
-use Shared\Models\User;
 use Closure;
 
 /**
  * Class Activate
- * @package Modules\Web
+ * @package Modules\{{MODULE_NAME}}
  */
-class Activate extends QtMiddleware
+class Activate extends BaseMiddleware
 {
 
     /**
@@ -37,16 +37,11 @@ class Activate extends QtMiddleware
      */
     public function apply(Request $request, Response $response, Closure $next)
     {
-        $token = (string) route_param('token');
+        $token = (string)route_param('token');
 
-        if (!$this->checkToken($token)) {
-            stop(function () use ($response) {
-                $response->html(
-                    partial('errors/404'),
-                    StatusCode::NOT_FOUND
-                );
-            });
-        }
+        $request->set('token', $token);
+
+        $this->validateRequest($request, $response);
 
         $request->set('activation_token', $token);
 
@@ -54,14 +49,24 @@ class Activate extends QtMiddleware
     }
 
     /**
-     * Check token
-     * @param string $token
-     * @return bool
+     * @inheritDoc
      */
-    private function checkToken(string $token): bool
+    protected function defineValidationRules(Request $request)
     {
-        $userModel = ModelFactory::get(User::class);
-        return !empty($userModel->findOneBy('activation_token', $token)->asArray());
+        $this->validator->setRules([
+            'token' => [
+                Rule::required(),
+                Rule::exists(User::class, 'activation_token'),
+            ]
+        ]);
     }
 
+    /**
+     * @inheritDoc
+     */
+    protected function respondWithError(Request $request, Response $response, $message)
+    {
+        $response->html(partial('errors/404'), StatusCode::NOT_FOUND);
+        stop();
+    }
 }

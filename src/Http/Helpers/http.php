@@ -18,7 +18,6 @@ use Quantum\Http\Constants\ContentType;
 use Quantum\App\Constants\ReservedKeys;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Http\Constants\StatusCode;
-use Quantum\Http\Response\HttpStatus;
 use DebugBar\DebugBarException;
 use Quantum\Http\Response;
 use Quantum\Http\Request;

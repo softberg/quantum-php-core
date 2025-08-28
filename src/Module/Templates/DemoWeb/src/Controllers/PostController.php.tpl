@@ -15,18 +15,15 @@
 namespace {{MODULE_NAMESPACE}}\Controllers;
 
 use Quantum\Service\Factories\ServiceFactory;
-use Shared\Transformers\PostTransformer;
-use Quantum\View\Factories\ViewFactory;
 use Quantum\Http\Constants\StatusCode;
-use Shared\Services\AuthService;
-use Shared\Services\PostService;
+use Modules\{{MODULE_NAME}}\Services\PostService;
 use Quantum\View\RawParam;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 
 /**
  * Class PostController
- * @package Modules\Web
+ * @package Modules\{{MODULE_NAME}}
  */
 class PostController extends BaseController
 {
@@ -51,41 +48,30 @@ class PostController extends BaseController
      */
     public $postService;
 
-    /**
-     * Auth service
-     * @var AuthService
-     */
-    public $userService;
-
-    /**
-     * Works before an action
-     * @param ViewFactory $view
-     */
     public function __before()
     {
         $this->postService = ServiceFactory::get(PostService::class);
-        $this->userService = ServiceFactory::get(AuthService::class);
 
         parent::__before();
     }
 
     /**
      * Action - get posts list
+     * @param Request $request
      * @param Response $response
-     * @param PostTransformer $transformer
-     */
-    public function posts(Request $request, Response $response, PostTransformer $transformer)
+    */
+    public function posts(Request $request, Response $response)
     {
         $perPage = $request->get('per_page', self::POSTS_PER_PAGE);
         $currentPage = $request->get('page', self::CURRENT_PAGE);
         $search = trim($request->get('q'));
-        
+
         $paginatedPosts = $this->postService->getPosts($perPage, $currentPage, $search);
 
         $this->view->setParams([
             'title' => t('common.posts') . ' | ' . config()->get('app_name'),
             'langs' => config()->get('langs'),
-            'posts' => transform($paginatedPosts->data()->all(), $transformer),
+            'posts' => $this->postService->transformData($paginatedPosts->data()->all()),
             'pagination' => $paginatedPosts
         ]);
 
@@ -96,15 +82,14 @@ class PostController extends BaseController
      * Action - get single post
      * @param Request $request
      * @param Response $response
-     * @param PostTransformer $transformer
      * @param string|null $lang
-     * @param string $postId
+     * @param string $postUuid
      */
-    public function post(Request $request, Response $response, PostTransformer $transformer, ?string $lang, string $postId)
+    public function post(Request $request, Response $response, ?string $lang, string $postUuid)
     {
         $ref = $request->get('ref', 'posts');
     
-        $post = $this->postService->getPost($postId);
+        $post = $this->postService->getPost($postUuid);
         
         if ($post->isEmpty()) {
             $response->html(partial('errors/404'), StatusCode::NOT_FOUND);
@@ -114,7 +99,7 @@ class PostController extends BaseController
         $this->view->setParams([
             'title' => $post->title . ' | ' . config()->get('app_name'),
             'langs' => config()->get('langs'),
-            'post' => new RawParam(current(transform([$post], $transformer))),
+            'post' => new RawParam(current($this->postService->transformData([$post]))),
             'referer' => $ref,
         ]);
 
@@ -126,14 +111,14 @@ class PostController extends BaseController
      * @param Request $request
      * @param Response $response
      */
-    public function myPosts(Request $request, Response $response, PostTransformer $transformer)
+    public function myPosts(Request $request, Response $response)
     {
-        $myPosts = $this->postService->getMyPosts((int)auth()->user()->id);
+        $myPosts = $this->postService->getMyPosts(auth()->user()->uuid);
 
         $this->view->setParams([
             'title' => t('common.my_posts') . ' | ' . config()->get('app_name'),
             'langs' => config()->get('langs'),
-            'posts' => transform($myPosts->all(), $transformer)
+            'posts' => $this->postService->transformData($myPosts->all())
         ]);
 
         $response->html($this->view->render('post/my-posts'));
@@ -164,7 +149,7 @@ class PostController extends BaseController
     public function create(Request $request)
     {
         $postData = [
-            'user_id' => (int)auth()->user()->id,
+            'user_uuid' => auth()->user()->uuid,
             'title' => $request->get('title', null, true),
             'content' => $request->get('content', null, true),
             'image' => '',
@@ -191,13 +176,13 @@ class PostController extends BaseController
      * @param Request $request
      * @param Response $response
      * @param string|null $lang
-     * @param string $postId
+     * @param string $postUuid
      */
-    public function amendForm(Request $request, Response $response, ?string $lang, string $postId)
+    public function amendForm(Request $request, Response $response, ?string $lang, string $postUuid)
     {
         $ref = $request->get('ref', 'posts');
 
-        $post = $this->postService->getPost($postId);
+        $post = $this->postService->getPost($postUuid);
 
         $this->view->setParams([
             'title' => $post->title . ' | ' . config()->get('app_name'),
@@ -213,9 +198,9 @@ class PostController extends BaseController
      * Action - amend post 
      * @param Request $request
      * @param string|null $lang
-     * @param string $postId
+     * @param string $postUuid
      */
-    public function amend(Request $request, ?string $lang, string $postId)
+    public function amend(Request $request, ?string $lang, string $postUuid)
     {
         $postData = [
             'title' => $request->get('title', null, true),
@@ -223,7 +208,7 @@ class PostController extends BaseController
             'updated_at' => date('Y-m-d H:i:s'),
         ];
 
-        $post = $this->postService->getPost($postId);
+        $post = $this->postService->getPost($postUuid);
 
         if ($request->hasFile('image')) {
             if ($post->image) {
@@ -239,7 +224,7 @@ class PostController extends BaseController
             $postData['image'] = $imageName;
         }
 
-        $this->postService->updatePost($postId, $postData);
+        $this->postService->updatePost($postUuid, $postData);
 
         redirect(base_url(true) . '/' . current_lang() . '/my-posts');
     }
@@ -247,17 +232,17 @@ class PostController extends BaseController
     /**
      * Action - delete post
      * @param string|null $lang
-     * @param string $postId
+     * @param string $postUuid
      */
-    public function delete(?string $lang, string $postId)
+    public function delete(?string $lang, string $postUuid)
     {
-        $post = $this->postService->getPost($postId);
+        $post = $this->postService->getPost($postUuid);
 
         if ($post->image) {
             $this->postService->deleteImage(auth()->user()->uuid . DS . $post->image);
         }
 
-        $this->postService->deletePost($postId);
+        $this->postService->deletePost($postUuid);
 
         redirect(base_url(true) . '/' . current_lang() . '/my-posts');
     }
@@ -265,17 +250,17 @@ class PostController extends BaseController
     /**
      * Action - delete image of the post
      * @param string|null $lang
-     * @param string $postId
+     * @param string $postUuid
      */
-    public function deleteImage(?string $lang, string $postId)
+    public function deleteImage(?string $lang, string $postUuid)
     {
-        $post = $this->postService->getPost($postId);
+        $post = $this->postService->getPost($postUuid);
 
         if ($post->image) {
             $this->postService->deleteImage(auth()->user()->uuid . DS . $post->image);
         }
 
-        $this->postService->updatePost($postId, [
+        $this->postService->updatePost($postUuid, [
             'title' => $post->title,
             'content' => $post->content,
             'image' => '',

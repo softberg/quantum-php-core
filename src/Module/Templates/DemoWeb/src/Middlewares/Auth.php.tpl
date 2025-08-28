@@ -14,7 +14,6 @@
 
 namespace {{MODULE_NAMESPACE}}\Middlewares;
 
-use Quantum\Http\Constants\StatusCode;
 use Quantum\Middleware\QtMiddleware;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
@@ -22,7 +21,7 @@ use Closure;
 
 /**
  * Class Auth
- * @package Modules\Web
+ * @package Modules\{{MODULE_NAME}}
  */
 class Auth extends QtMiddleware
 {
@@ -36,10 +35,7 @@ class Auth extends QtMiddleware
     public function apply(Request $request, Response $response, Closure $next)
     {
         if (!auth()->check()) {
-            redirect(
-                base_url(true) . '/' . current_lang() . '/signin',
-                StatusCode::UNAUTHORIZED
-            );
+            redirect(base_url(true) . '/' . current_lang() . '/signin');
         }
 
         return $next($request, $response);

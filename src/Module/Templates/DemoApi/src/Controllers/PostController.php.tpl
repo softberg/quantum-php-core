@@ -15,15 +15,15 @@
 namespace {{MODULE_NAMESPACE}}\Controllers;
 
 use Quantum\Service\Factories\ServiceFactory;
-use Shared\Transformers\PostTransformer;
 use Quantum\Http\Constants\StatusCode;
-use Shared\Services\PostService;
+use Modules\{{MODULE_NAME}}\Services\PostService;
+use Quantum\View\RawParam;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 
 /**
  * Class PostController
- * @package Modules\Api
+ * @package Modules\{{MODULE_NAME}}
  */
 class PostController extends BaseController
 {
@@ -56,7 +56,7 @@ class PostController extends BaseController
      * @param Request $request 
      * @param Response $response
      */
-    public function posts(Request $request, Response $response, PostTransformer $transformer)
+    public function posts(Request $request, Response $response)
     {
         $perPage = $request->get('per_page', self::POSTS_PER_PAGE);
         $currentPage = $request->get('page', self::CURRENT_PAGE);
@@ -66,7 +66,7 @@ class PostController extends BaseController
         
         $response->json([
             'status' => 'success',
-            'data' => transform($paginatedPosts->data()->all(), $transformer),
+            'data' => $this->postService->transformData($paginatedPosts->data()->all()),
             'pagination' => [
                 'total_records' => $paginatedPosts->total(),
                 'current_page' => $paginatedPosts->currentPageNumber(),
@@ -79,15 +79,14 @@ class PostController extends BaseController
     /**
      * Action - get single post
      * @param Response $response
-     * @param PostTransformer $transformer
      * @param string|null $lang
-     * @param string $postId
+     * @param string $postUuid
      */
-    public function post(Response $response, PostTransformer $transformer, ?string $lang, string $postId)
+    public function post(Response $response, ?string $lang, string $postUuid)
     {
-        $post = $this->postService->getPost($postId);
+        $post = $this->postService->getPost($postUuid);
 
-        if (!$post->asArray()) {
+        if ($post->isEmpty()) {
             $response->json([
                 'status' => 'error',
                 'message' => t('common.post_not_found')
@@ -98,22 +97,21 @@ class PostController extends BaseController
 
         $response->json([
             'status' => 'success',
-            'data' => current(transform([$post], $transformer))
+            'data' => new RawParam(current($this->postService->transformData([$post]))),
         ]);
     }
 
     /**
      * Action - get my posts
      * @param Response $response
-     * @param PostTransformer $transformer
      */
-    public function myPosts(Response $response, PostTransformer $transformer)
+    public function myPosts(Response $response)
     {
-        $myPosts = $this->postService->getMyPosts((int)auth()->user()->id);
+        $myPosts = $this->postService->getMyPosts(auth()->user()->uuid);
         
         $response->json([
             'status' => 'success',
-            'data' => transform($myPosts->all(), $transformer)
+            'data' => $this->postService->transformData($myPosts->all())
         ]);
     }
 
@@ -125,7 +123,7 @@ class PostController extends BaseController
     public function create(Request $request, Response $response)
     {
         $postData = [
-            'user_id' => (int)auth()->user()->id,
+            'user_uuid' => auth()->user()->uuid,
             'title' => $request->get('title', null, true),
             'content' => $request->get('content', null, true),
             'image' => '',
@@ -155,9 +153,9 @@ class PostController extends BaseController
      * @param Request $request 
      * @param Response $response
      * @param string|null $lang
-     * @param string $postId
+     * @param string $postUuid
      */
-    public function amend(Request $request, Response $response, ?string $lang, string $postId)
+    public function amend(Request $request, Response $response, ?string $lang, string $postUuid)
     {
         $postData = [
             'title' => $request->get('title', null, true),
@@ -165,7 +163,7 @@ class PostController extends BaseController
             'updated_at' => date('Y-m-d H:i:s'),
         ];
 
-        $post = $this->postService->getPost($postId);
+        $post = $this->postService->getPost($postUuid);
 
         if ($request->hasFile('image')) {
             if ($post->image) {
@@ -181,7 +179,7 @@ class PostController extends BaseController
             $postData['image'] = $imageName;
         }
 
-        $this->postService->updatePost($postId, $postData);
+        $this->postService->updatePost($postUuid, $postData);
 
         $response->json([
             'status' => 'success',
@@ -193,17 +191,17 @@ class PostController extends BaseController
      * Action - delete post
      * @param Response $response
      * @param string|null $lang
-     * @param string $postId
+     * @param string $postUuid
      */
-    public function delete(Response $response, ?string $lang, string $postId)
+    public function delete(Response $response, ?string $lang, string $postUuid)
     {
-        $post = $this->postService->getPost($postId);
+        $post = $this->postService->getPost($postUuid);
 
         if ($post->image) {
             $this->postService->deleteImage(auth()->user()->uuid . DS . $post->image);
         }
 
-        $this->postService->deletePost($postId);
+        $this->postService->deletePost($postUuid);
 
         $response->json([
             'status' => 'success',
@@ -215,17 +213,17 @@ class PostController extends BaseController
      * Action - delete image of the post
      * @param Response $response
      * @param string|null $lang 
-     * @param string $postId 
+     * @param string $postUuid
      */
-    public function deleteImage(Response $response, ?string $lang, string $postId)
+    public function deleteImage(Response $response, ?string $lang, string $postUuid)
     {
-        $post = $this->postService->getPost($postId);
+        $post = $this->postService->getPost($postUuid);
 
         if ($post->image) {
             $this->postService->deleteImage(auth()->user()->uuid . DS . $post->image);
         }
 
-        $this->postService->updatePost($postId, [
+        $this->postService->updatePost($postUuid, [
             'title' => $post->title,
             'content' => $post->content,
             'image' => '',

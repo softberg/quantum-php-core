@@ -14,19 +14,17 @@
 
 namespace {{MODULE_NAMESPACE}}\Middlewares;
 
-use Quantum\Libraries\Validation\Validator;
 use Quantum\Http\Constants\StatusCode;
 use Quantum\Libraries\Validation\Rule;
-use Quantum\Middleware\QtMiddleware;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 use Closure;
 
 /**
  * Class Editor
- * @package Modules\Api
+ * @package Modules\{{MODULE_NAME}}
  */
-class Editor extends QtMiddleware
+class Editor extends BaseMiddleware
 {
 
     /**
@@ -35,40 +33,14 @@ class Editor extends QtMiddleware
     const ROLES = ['admin', 'editor'];
 
     /**
-     * @var Validator
+     * Max image size in MB
      */
-    private $validator;
+    private const MAX_IMAGE_SIZE_MB = 2 * 1024 * 1024;
 
     /**
-     * Class constructor
-     * @param Request $request
+     * Allowed image types
      */
-    public function __construct(Request $request)
-    {
-        $this->validator = new Validator();
-
-        if ($request->hasFile('image')) {
-            $this->validator->addRules([
-                'image' => [
-                    Rule::set('fileSize', 2 * pow(1024, 2)),
-                    Rule::set('fileExtension', ['jpeg', 'jpg', 'png']),
-                ]
-            ]);
-        }
-
-        $this->validator->addRules([
-            'title' => [
-                Rule::set('required'),
-                Rule::set('minLen', 10),
-                Rule::set('maxLen', 50),
-            ],
-            'content' => [
-                Rule::set('required'),
-                Rule::set('minLen', 10),
-                Rule::set('maxLen', 1000),
-            ]
-        ]);
-    }
+    private const ALLOWED_IMAGE_EXTENSIONS = ['jpeg', 'jpg', 'png'];
 
     /**
      * @param Request $request
@@ -79,25 +51,46 @@ class Editor extends QtMiddleware
     public function apply(Request $request, Response $response, Closure $next)
     {
         if (!in_array(auth()->user()->role, self::ROLES)) {
-            $response->json([
-                'status' => 'error',
-                'message' => t('validation.unauthorizedRequest')
-            ], StatusCode::UNAUTHORIZED);
-
-            stop();
+            $this->respondWithError(
+                $request,
+                $response,
+                t('validation.unauthorizedRequest'),
+                StatusCode::UNAUTHORIZED
+            );
         }
 
         if ($request->isMethod('post') || $request->isMethod('put')) {
-            if (!$this->validator->isValid($request->all())) {
-                $response->json([
-                    'status' => 'error',
-                    'message' => $this->validator->getErrors()
-                ], StatusCode::UNPROCESSABLE_ENTITY);
-
-                stop();
-            }
+            $this->validateRequest($request, $response);
         }
 
         return $next($request, $response);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function defineValidationRules(Request $request)
+    {
+        if ($request->hasFile('image')) {
+            $this->validator->setRules([
+                'image' => [
+                    Rule::fileSize(self::MAX_IMAGE_SIZE_MB),
+                    Rule::fileExtension(...self::ALLOWED_IMAGE_EXTENSIONS),
+                ],
+            ]);
+        }
+
+        $this->validator->setRules([
+            'title' => [
+                Rule::required(),
+                Rule::minLen(10),
+                Rule::maxLen(50),
+            ],
+            'content' => [
+                Rule::required(),
+                Rule::minLen(10),
+                Rule::maxLen(1000),
+            ],
+        ]);
     }
 }

@@ -14,43 +14,20 @@
 
 namespace {{MODULE_NAMESPACE}}\Middlewares;
 
-use Quantum\Libraries\Validation\Validator;
 use Quantum\Model\Factories\ModelFactory;
 use Quantum\Http\Constants\StatusCode;
 use Quantum\Libraries\Validation\Rule;
-use Quantum\Middleware\QtMiddleware;
+use Modules\{{MODULE_NAME}}\Models\User;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
-use Shared\Models\User;
 use Closure;
 
 /**
  * Class Verify
- * @package Modules\Web
+ * @package Modules\{{MODULE_NAME}}
  */
-class Verify extends QtMiddleware
+class Verify extends BaseMiddleware
 {
-    /**
-     * @var Validator
-     */
-    private $validator;
-
-    /**
-     * Class constructor
-     */
-    public function __construct()
-    {
-        $this->validator = new Validator();
-
-        $this->validator->addRules([
-            'otp' => [
-                Rule::set('required')
-            ],
-            'code' => [
-                Rule::set('required')
-            ]
-        ]);
-    }
 
     /**
      * @param Request $request
@@ -60,32 +37,42 @@ class Verify extends QtMiddleware
      */
     public function apply(Request $request, Response $response, Closure $next)
     {
-        if ($request->isMethod('post')) {
-            if (!$this->validator->isValid($request->all())) {
-                session()->setFlash('error', $this->validator->getErrors());
+        $code = (string) route_param('code');
 
-                redirectWith(
-                    base_url(true) . '/' . current_lang() . '/verify',
-                    $request->all(),
-                    StatusCode::UNPROCESSABLE_ENTITY
-                );
-            }
-        } else {
-            $token = (string)route_param('code');
+        $request->set('code', $code);
 
-            if (!$this->checkToken($token)) {
-                stop(function () use ($response) {
-                    $response->html(partial('errors/404'), StatusCode::NOT_FOUND);
-                });
-            }
-        }
+        $this->validateRequest($request, $response);
 
         return $next($request, $response);
     }
 
-    private function checkToken(string $token): bool
+    /**
+     * @inheritDoc
+     */
+    protected function defineValidationRules(Request $request)
     {
-        $userModel = ModelFactory::get(User::class);
-        return !empty($userModel->findOneBy('otp_token', $token)->asArray());
+        $this->validator->setRules([
+            'otp' => [
+                Rule::required()
+            ],
+            'code' => [
+                Rule::required(),
+                Rule::exists(User::class, 'otp_token'),
+            ],
+        ]);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function respondWithError(Request $request, Response $response, $message)
+    {
+        if ($request->isMethod('get') && isset($message['code'])) {
+            $response->html(partial('errors/404'), StatusCode::NOT_FOUND);
+            stop();
+        }
+
+        session()->setFlash('error', $message);
+        redirectWith(base_url(true) . '/' . current_lang() . '/verify', $request->all());
     }
 }

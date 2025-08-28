@@ -15,19 +15,20 @@
 namespace {{MODULE_NAMESPACE}}\Middlewares;
 
 use Quantum\Service\Factories\ServiceFactory;
+use Quantum\Libraries\Validation\Rule;
 use Quantum\Http\Constants\StatusCode;
-use Quantum\Middleware\QtMiddleware;
-use Shared\Services\PostService;
+use Modules\{{MODULE_NAME}}\Services\PostService;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 use Closure;
 
 /**
  * Class Editor
- * @package Modules\Web
+ * @package Modules\{{MODULE_NAME}}
  */
-class Owner extends QtMiddleware
+class Owner extends BaseMiddleware
 {
+
 
     /**
      * @param Request $request
@@ -37,15 +38,47 @@ class Owner extends QtMiddleware
      */
     public function apply(Request $request, Response $response, Closure $next)
     {
-        $postId = (string) route_param('id');
+        $uuid = (string)route_param('uuid');
 
-        $post = ServiceFactory::get(PostService::class)->getPost($postId);
+        $request->set('uuid', $uuid);
 
-        if (!$post->asArray() || $post->user_id != auth()->user()->id) {
-            $response->html(partial('errors/404'), StatusCode::NOT_FOUND);
-            stop();
-        }
+        $this->validateRequest($request, $response);
 
         return $next($request, $response);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function defineValidationRules(Request $request)
+    {
+        $this->registerCustomRules();
+
+        $this->validator->setRules([
+            'uuid' => [
+                Rule::required(),
+                Rule::postOwner(),
+            ],
+        ]);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function respondWithError(Request $request, Response $response, $message = null)
+    {
+        $response->html(partial('errors/404'),  StatusCode::NOT_FOUND);
+        stop();
+    }
+
+    /**
+     * Register custom validation rules
+     */
+    private function registerCustomRules()
+    {
+        $this->validator->addRule('postOwner', function ($postUuid) {
+            $post = ServiceFactory::get(PostService::class)->getPost($postUuid);
+            return !$post->isEmpty() && $post->user_uuid === auth()->user()->uuid;
+        });
     }
 }

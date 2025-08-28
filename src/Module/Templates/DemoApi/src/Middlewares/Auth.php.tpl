@@ -15,16 +15,15 @@
 namespace {{MODULE_NAMESPACE}}\Middlewares;
 
 use Quantum\Http\Constants\StatusCode;
-use Quantum\Middleware\QtMiddleware;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 use Closure;
 
 /**
  * Class Auth
- * @package Modules\Api
+ * @package Modules\{{MODULE_NAME}}
  */
-class Auth extends QtMiddleware
+class Auth extends BaseMiddleware
 {
     
     /**
@@ -36,12 +35,12 @@ class Auth extends QtMiddleware
     public function apply(Request $request, Response $response, Closure $next)
     {
         if (!auth()->check()) {
-            $response->json([
-                'status' => 'error',
-                'message' => t('validation.unauthorizedRequest')
-            ], StatusCode::UNAUTHORIZED);
-            
-            stop();
+            $this->respondWithError(
+                $request,
+                $response,
+                t('validation.unauthorizedRequest'),
+                StatusCode::UNAUTHORIZED
+            );
         }
 
         return $next($request, $response);

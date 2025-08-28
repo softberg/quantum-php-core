@@ -14,18 +14,18 @@
 
 namespace {{MODULE_NAMESPACE}}\Middlewares;
 
-use Quantum\Http\Constants\StatusCode;
-use Quantum\Middleware\QtMiddleware;
+use Quantum\Libraries\Validation\Rule;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 use Closure;
 
 /**
  * Class Resend
- * @package Modules\Api
+ * @package Modules\{{MODULE_NAME}}
  */
-class Resend extends QtMiddleware
+class Resend extends BaseMiddleware
 {
+
 
     /**
      * @param Request $request
@@ -35,16 +35,24 @@ class Resend extends QtMiddleware
      */
     public function apply(Request $request, Response $response, Closure $next)
     {
-        if (!route_param('code')) {
-            $response->json([
-                'status' => 'error',
-                'message' => t('validation.required', 'code')
-            ], StatusCode::UNPROCESSABLE_ENTITY);
+        $code = (string) route_param('code');
 
-            stop();
-        }
+        $request->set('code', $code);
+
+        $this->validateRequest($request, $response);
 
         return $next($request, $response);
     }
 
+    /**
+     * @inheritDoc
+     */
+    protected function defineValidationRules(Request $request): void
+    {
+        $this->validator->setRules([
+            'code' => [
+                Rule::required(),
+            ],
+        ]);
+    }
 }
