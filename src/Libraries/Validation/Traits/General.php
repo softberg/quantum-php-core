@@ -223,9 +223,9 @@ trait General
     {
         $model = ModelFactory::get(ucfirst($className));
 
-        $row = $model->findOneBy($columnName, $value);
+        $record = $model->findOneBy($columnName, $value);
 
-        return !$row->count();
+        return $record->isEmpty();
     }
 
     /**
@@ -240,9 +240,9 @@ trait General
     {
         $model = ModelFactory::get(ucfirst($className));
 
-        $row = $model->findOneBy($columnName, $value);
+        $record = $model->findOneBy($columnName, $value);
 
-        return $row->count() > 0;
+        return !$record->isEmpty();
     }
 
     /**

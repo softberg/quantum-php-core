@@ -169,7 +169,7 @@ class Validator
                 }
 
                 if (!$isValid) {
-                    $this->addError($field, $rule, $params);
+                    $this->addError($field, $rule, ...$ruleParams);
                 }
             }
         }
