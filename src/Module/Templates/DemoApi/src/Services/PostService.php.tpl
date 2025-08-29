@@ -63,13 +63,13 @@ class PostService extends QtService
 
     /**
      * Get posts
-     * @param int $perPage
-     * @param int $currentPage
+     * @param int|null $perPage
+     * @param int|null $currentPage
      * @param string|null $search
-     * @return Paginator
+     * @return Paginator|ModelCollection
      * @throws ModelException
      */
-    public function getPosts(int $perPage, int $currentPage, ?string $search = null): Paginator
+    public function getPosts(?int $perPage = null, ?int $currentPage = null, ?string $search = null)
     {
         $query = $this->model
             ->joinThrough(ModelFactory::get(User::class))
@@ -96,7 +96,7 @@ class PostService extends QtService
             $query->criterias($criterias);
         }
 
-        return $query->paginate($perPage, $currentPage);
+        return $perPage ? $query->paginate($perPage, $currentPage) : $query->get();
     }
 
     /**

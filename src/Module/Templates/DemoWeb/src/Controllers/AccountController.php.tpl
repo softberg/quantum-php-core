@@ -43,7 +43,7 @@ class AccountController extends BaseController
      */
     public function __before()
     {
-        $this->authService = ServiceFactory::get(AuthService::class);
+        $this->authService = ServiceFactory::create(AuthService::class);
 
         parent::__before();
     }

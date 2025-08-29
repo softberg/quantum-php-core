@@ -50,7 +50,7 @@ class PostController extends BaseController
 
     public function __before()
     {
-        $this->postService = ServiceFactory::get(PostService::class);
+        $this->postService = ServiceFactory::create(PostService::class);
 
         parent::__before();
     }
