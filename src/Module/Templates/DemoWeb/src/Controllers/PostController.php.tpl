@@ -16,7 +16,7 @@ namespace {{MODULE_NAMESPACE}}\Controllers;
 
 use Quantum\Service\Factories\ServiceFactory;
 use Quantum\Http\Constants\StatusCode;
-use Modules\{{MODULE_NAME}}\Services\PostService;
+use {{MODULE_NAMESPACE}}\Services\PostService;
 use Quantum\View\RawParam;
 use Quantum\Http\Response;
 use Quantum\Http\Request;

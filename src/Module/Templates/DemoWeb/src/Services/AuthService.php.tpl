@@ -20,7 +20,7 @@ use Quantum\Model\Exceptions\ModelException;
 use Quantum\Libraries\Auth\User as AuthUser;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Model\Factories\ModelFactory;
-use Modules\{{MODULE_NAME}}\Models\User;
+use {{MODULE_NAMESPACE}}\Models\User;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Model\ModelCollection;
 use Quantum\Service\QtService;

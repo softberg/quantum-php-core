@@ -9,11 +9,11 @@ return [
     'default' => 'session',
 
     'session' => [
-        'service' => Modules\{{MODULE_NAME}}\Services\AuthService::class,
+        'service' => {{MODULE_NAMESPACE}}\Services\AuthService::class,
     ],
 
     'jwt' => [
-        'service' => Modules\{{MODULE_NAME}}\Services\AuthService::class,
+        'service' => {{MODULE_NAMESPACE}}\Services\AuthService::class,
         'claims' => [
             'jti' => uniqid(),
             'iss' => 'issuer',
