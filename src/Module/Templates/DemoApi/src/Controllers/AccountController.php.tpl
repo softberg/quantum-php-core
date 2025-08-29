@@ -16,7 +16,7 @@ namespace {{MODULE_NAMESPACE}}\Controllers;
 
 use Quantum\Libraries\Auth\Exceptions\AuthException;
 use Quantum\Service\Factories\ServiceFactory;
-use Modules\{{MODULE_NAME}}\Services\AuthService;
+use {{MODULE_NAMESPACE}}\Services\AuthService;
 use Quantum\Libraries\Hasher\Hasher;
 use Quantum\Http\Response;
 use Quantum\Http\Request;

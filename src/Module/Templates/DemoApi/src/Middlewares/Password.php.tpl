@@ -17,7 +17,7 @@ namespace {{MODULE_NAMESPACE}}\Middlewares;
 use Quantum\Model\Factories\ModelFactory;
 use Quantum\Libraries\Validation\Rule;
 use Quantum\Libraries\Hasher\Hasher;
-use Modules\{{MODULE_NAME}}\Models\User;
+use {{MODULE_NAMESPACE}}\Models\User;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 use Closure;

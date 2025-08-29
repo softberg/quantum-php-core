@@ -16,7 +16,7 @@ namespace {{MODULE_NAMESPACE}}\Middlewares;
 
 use Quantum\Service\Factories\ServiceFactory;
 use Quantum\Libraries\Validation\Rule;
-use Modules\{{MODULE_NAME}}\Services\PostService;
+use {{MODULE_NAMESPACE}}\Services\PostService;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 use Closure;
