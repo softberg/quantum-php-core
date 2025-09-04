@@ -1,0 +1,11 @@
+build:
+  environment:
+    php:
+      version: 7.4
+  dependencies:
+    before:
+      - curl -sS https://getcomposer.org/installer | php -- --2
+      - mv composer.phar /usr/local/bin/composer
+  tests:
+    override:
+      - php-scrutinizer-run
