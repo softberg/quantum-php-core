@@ -26,21 +26,25 @@ class DiException extends BaseException
      * @param string $name
      * @return DiException
      */
-    public static function dependencyNotRegistered($name): DiException
+    public static function dependencyNotRegistered(string $name): DiException
     {
         return new self(t('exception.dependency_not_registered', $name), E_ERROR);
     }
 
-    public static function dependencyAlreadyRegistered($name): DiException
+    /**
+     * @param string $name
+     * @return DiException
+     */
+    public static function dependencyAlreadyRegistered(string $name): DiException
     {
         return new self(t('exception.dependency_already_registered', $name), E_ERROR);
     }
 
     /**
-     * @param $name
+     * @param string $name
      * @return DiException
      */
-    public static function dependencyNotInstantiable($name): DiException
+    public static function dependencyNotInstantiable(string $name): DiException
     {
         return new self(t('exception.dependency_not_instantiable', $name), E_ERROR);
     }
