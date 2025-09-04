@@ -235,7 +235,7 @@ class Di
 
         $concrete = self::$dependencies[$type] ?? $type;
 
-        if (self::instantiable($concrete)) {
+        if ($concrete && self::instantiable($concrete)) {
             return self::create($concrete);
         }
 
