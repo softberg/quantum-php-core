@@ -5,7 +5,8 @@ build:
   dependencies:
     before:
       - curl -sS https://getcomposer.org/installer | php -- --2
-      - mv composer.phar /usr/local/bin/composer
+      - mv composer.phar composer
+      - export PATH="$PWD:$PATH"
   tests:
     override:
       - php-scrutinizer-run
