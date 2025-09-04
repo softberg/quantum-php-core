@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 2.9.8
  */
 
 namespace Quantum\Di;
@@ -40,46 +40,55 @@ class Di
     private static $container = [];
 
     /**
+     * @var array
+     */
+    private static $resolving = [];
+
+    /**
      * Loads dependency definitions
      */
     public static function registerDependencies()
     {
-        foreach (self::coreDependencies() as $dependency) {
-            if (!self::isRegistered($dependency)) {
-                self::register($dependency);
-            }
-        }
-
-        foreach (self::userDependencies() as $dependency) {
-            if (!self::isRegistered($dependency)) {
-                self::register($dependency);
+        foreach (self::coreDependencies() + self::userDependencies() as $abstract => $concrete) {
+            if (!self::isRegistered($abstract)) {
+                self::register($concrete, $abstract);
             }
         }
     }
 
     /**
      * Registers new dependency
-     * @param string $dependency
-     * @return bool
+     * @param string $concrete
+     * @param string|null $abstract
+     * @throws DiException
      */
-    public static function register(string $dependency): bool
+    public static function register(string $concrete, ?string $abstract = null)
     {
-        if (!in_array($dependency, self::$dependencies) && class_exists($dependency)) {
-            self::$dependencies[] = $dependency;
-            return true;
+        $key = $abstract ?? $concrete;
+
+        if (isset(self::$dependencies[$key])) {
+            throw DiException::dependencyAlreadyRegistered($key);
         }
 
-        return false;
+        if (!class_exists($concrete)) {
+            throw DiException::dependencyNotInstantiable($concrete);
+        }
+
+        if ($abstract !== null && !class_exists($abstract) && !interface_exists($abstract)) {
+            throw DiException::invalidAbstractDependency($abstract);
+        }
+
+        self::$dependencies[$key] = $concrete;
     }
 
     /**
      * Checks if a dependency registered
-     * @param string $dependency
+     * @param string $abstract
      * @return bool
      */
-    public static function isRegistered(string $dependency): bool
+    public static function isRegistered(string $abstract): bool
     {
-        return in_array($dependency, self::$dependencies);
+        return isset(self::$dependencies[$abstract]);
     }
 
     /**
@@ -140,47 +149,57 @@ class Di
     {
         self::$dependencies = [];
         self::$container = [];
+        self::$resolving = [];
     }
 
     /**
      * Resolves the dependency
-     * @param string $dependency
+     * @param string $abstract
      * @param array $args
      * @param bool $singleton
      * @return mixed
      * @throws DiException
      * @throws ReflectionException
      */
-    private static function resolve(string $dependency, array $args = [], bool $singleton = true)
+    private static function resolve(string $abstract, array $args = [], bool $singleton = true)
     {
-        if ($singleton) {
-            if (!isset(self::$container[$dependency])) {
-                self::$container[$dependency] = self::instantiate($dependency, $args);
+        self::checkCircularDependency($abstract);
+
+        self::$resolving[$abstract] = true;
+
+        try {
+            $concrete = self::$dependencies[$abstract];
+
+            if ($singleton) {
+                if (!isset(self::$container[$abstract])) {
+                    self::$container[$abstract] = self::instantiate($concrete, $args);
+                }
+                return self::$container[$abstract];
             }
 
-            return self::$container[$dependency];
+            return self::instantiate($concrete, $args);
+        } finally {
+            unset(self::$resolving[$abstract]);
         }
-
-        return self::instantiate($dependency, $args);
     }
 
     /**
      * Instantiates the dependency
-     * @param string $dependency
+     * @param string $concrete
      * @param array $args
      * @return mixed
      * @throws DiException
      * @throws ReflectionException
      */
-    private static function instantiate(string $dependency, array $args = [])
+    private static function instantiate(string $concrete, array $args = [])
     {
-        $class = new ReflectionClass($dependency);
+        $class = new ReflectionClass($concrete);
 
         $constructor = $class->getConstructor();
 
         $params = $constructor ? self::resolveParameters($constructor->getParameters(), $args) : [];
 
-        return new $dependency(...$params);
+        return new $concrete(...$params);
     }
 
     /**
@@ -214,8 +233,10 @@ class Di
     {
         $type = $param->getType() ? $param->getType()->getName() : null;
 
-        if ($type && self::instantiable($type)) {
-            return self::create($type);
+        $concrete = self::$dependencies[$type] ?? $type;
+
+        if ($concrete && self::instantiable($concrete)) {
+            return self::create($concrete);
         }
 
         if ($type === 'array') {
@@ -231,12 +252,25 @@ class Di
 
     /**
      * Checks if the class is instantiable
-     * @param string $type
+     * @param string $class
      * @return bool
      */
-    protected static function instantiable(string $type): bool
+    protected static function instantiable(string $class): bool
     {
-        return class_exists($type) && (new ReflectionClass($type))->isInstantiable();
+        return class_exists($class) && (new ReflectionClass($class))->isInstantiable();
+    }
+
+    /**
+     * @param string $abstract
+     * @return void
+     * @throws DiException
+     */
+    private static function checkCircularDependency(string $abstract): void
+    {
+        if (isset(self::$resolving[$abstract])) {
+            $chain = implode(' -> ', array_keys(self::$resolving)) . ' -> ' . $abstract;
+            throw DiException::circularDependency($chain);
+        }
     }
 
     /**
@@ -261,9 +295,9 @@ class Di
     private static function coreDependencies(): array
     {
         return [
-            \Quantum\Loader\Loader::class,
-            \Quantum\Http\Request::class,
-            \Quantum\Http\Response::class,
+            \Quantum\Loader\Loader::class => \Quantum\Loader\Loader::class,
+            \Quantum\Http\Request::class => \Quantum\Http\Request::class,
+            \Quantum\Http\Response::class => \Quantum\Http\Response::class,
         ];
     }
 }

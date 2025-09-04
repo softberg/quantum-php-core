@@ -2,6 +2,7 @@
 
 namespace Quantum\Controllers {
 
+    use Quantum\Service\DummyServiceInterface;
     use Quantum\View\Factories\ViewFactory;
     use Quantum\Router\RouteController;
     use Quantum\Http\Request;
@@ -13,20 +14,44 @@ namespace Quantum\Controllers {
         {
             // method body
         }
+
+        public function handleService(DummyServiceInterface $service)
+        {
+            return $service;
+        }
     }
 }
 
 namespace Quantum\Service {
 
-    class DummyService extends QtService
+    interface DummyServiceInterface {}
+
+    class DummyService extends QtService implements DummyServiceInterface
     {
 
+    }
+
+    class CircularDependencyA
+    {
+        public function __construct(CircularDependencyB $b)
+        {
+        }
+    }
+
+    class CircularDependencyB
+    {
+        public function __construct(CircularDependencyA $a)
+        {
+        }
     }
 }
 
 namespace Quantum\Tests\Unit\Di {
 
+    use Quantum\Service\DummyServiceInterface;
     use Quantum\Controllers\TestDiController;
+    use Quantum\Service\CircularDependencyA;
+    use Quantum\Service\CircularDependencyB;
     use Quantum\View\Factories\ViewFactory;
     use Quantum\Di\Exceptions\DiException;
     use Quantum\Tests\Unit\AppTestCase;
@@ -44,6 +69,9 @@ namespace Quantum\Tests\Unit\Di {
         public function setUp(): void
         {
             parent::setUp();
+
+            Di::reset();
+            Di::registerDependencies();
         }
 
         public function testDiRegisterDependency()
@@ -51,6 +79,32 @@ namespace Quantum\Tests\Unit\Di {
             Di::register(Setup::class);
 
             $this->assertInstanceOf(Setup::class, Di::get(Setup::class));
+        }
+
+        public function testDiAttemptingToRegisterAlreadyRegisteredDependency(): void
+        {
+            $this->expectException(DiException::class);
+
+            $this->expectExceptionMessage('exception.dependency_already_registered');
+
+            Di::register(Setup::class);
+            Di::register(Setup::class);
+        }
+
+        public function testDiAttemptingToRegisterNonExistentClass(): void
+        {
+            $this->expectException(DiException::class);
+            $this->expectExceptionMessage('exception.dependency_not_instantiable');
+
+            Di::register('NonExistentClass');
+        }
+
+        public function testDiAttemptingToRegisterNonExistentAbstract(): void
+        {
+            $this->expectException(DiException::class);
+            $this->expectExceptionMessage('exception.invalid_abstract_dependency');
+
+            Di::register(DummyService::class, 'NonExistentInterface');
         }
 
         public function testDiIsRegistered()
@@ -62,6 +116,15 @@ namespace Quantum\Tests\Unit\Di {
             $this->assertTrue(Di::isRegistered(DummyService::class));
         }
 
+        public function testDiAbstractToConcreteBinding()
+        {
+            Di::register(DummyService::class, DummyServiceInterface::class);
+
+            $instance = Di::get(DummyServiceInterface::class);
+
+            $this->assertInstanceOf(DummyService::class, $instance);
+        }
+
         public function testDiGetCoreDependencies()
         {
             $this->assertInstanceOf(Loader::class, Di::get(Loader::class));
@@ -71,7 +134,7 @@ namespace Quantum\Tests\Unit\Di {
             $this->assertInstanceOf(Response::class, Di::get(Response::class));
         }
 
-        public function testDiGetNotRegisteredDependency()
+        public function testDiAttemptingToGetNotRegisteredDependency()
         {
             $this->assertInstanceOf(Loader::class, Di::get(Loader::class));
 
@@ -80,6 +143,22 @@ namespace Quantum\Tests\Unit\Di {
             $this->expectExceptionMessage('dependency_not_registered');
 
             Di::get(DiException::class);
+        }
+
+        public function testDiCircularDependencyDetectedAtResolve(): void
+        {
+            $this->expectException(DiException::class);
+
+            $this->expectExceptionMessage(
+                'Circular dependency detected: ' . CircularDependencyA::class .
+                ' -> ' . CircularDependencyB::class .
+                ' -> ' . CircularDependencyA::class
+            );
+
+            Di::register(CircularDependencyA::class);
+            Di::register(CircularDependencyB::class);
+
+            Di::create(CircularDependencyA::class);
         }
 
         public function testDiGetReturnsSingleton()
@@ -127,6 +206,19 @@ namespace Quantum\Tests\Unit\Di {
             $this->assertInstanceOf(Request::class, $params[0]);
 
             $this->assertInstanceOf(Response::class, $params[1]);
+        }
+
+        public function testDiAutowireWithAbstract()
+        {
+            Di::register(DummyService::class, DummyServiceInterface::class);
+
+            $controller = new TestDiController();
+
+            $params = Di::autowire([$controller, 'handleService']);
+
+            $this->assertInstanceOf(DummyServiceInterface::class, $params[0]);
+
+            $this->assertInstanceOf(DummyService::class, $params[0]);
         }
 
         public function testDiReset()
