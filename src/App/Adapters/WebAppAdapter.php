@@ -9,24 +9,22 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 2.9.8
  */
 
 namespace Quantum\App\Adapters;
 
-use Quantum\Libraries\Encryption\Exceptions\CryptorException;
 use Quantum\Libraries\Database\Exceptions\DatabaseException;
 use Quantum\Libraries\Session\Exceptions\SessionException;
-use Quantum\Middleware\Exceptions\MiddlewareException;
 use Quantum\Router\Exceptions\RouteControllerException;
 use Quantum\Libraries\Csrf\Exceptions\CsrfException;
 use Quantum\Libraries\Lang\Exceptions\LangException;
-use Quantum\Renderer\Exceptions\RendererException;
 use Quantum\App\Exceptions\StopExecutionException;
 use Quantum\Environment\Exceptions\EnvException;
 use Quantum\Module\Exceptions\ModuleException;
 use Quantum\Config\Exceptions\ConfigException;
 use Quantum\Router\Exceptions\RouteException;
+use Quantum\Http\Exceptions\HttpException;
 use Quantum\Middleware\MiddlewareManager;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
@@ -78,22 +76,21 @@ class WebAppAdapter extends AppAdapter
     }
 
     /**
+     * Starts the web app
      * @return int|null
      * @throws BaseException
      * @throws ConfigException
-     * @throws RouteControllerException
-     * @throws CryptorException
      * @throws CsrfException
      * @throws DatabaseException
      * @throws DebugBarException
      * @throws DiException
+     * @throws HttpException
      * @throws LangException
-     * @throws MiddlewareException
-     * @throws ModuleException
      * @throws ReflectionException
+     * @throws RouteControllerException
      * @throws RouteException
      * @throws SessionException
-     * @throws RendererException
+     * @throws ModuleException
      */
     public function start(): ?int
     {
@@ -109,7 +106,8 @@ class WebAppAdapter extends AppAdapter
             $this->setupErrorHandler();
             $this->initializeDebugger();
 
-            $this->loadModulesRoutes();
+            $this->loadModules();
+
             $this->initializeRouter($this->request);
 
             info(HookManager::getInstance()->getRegistered(), ['tab' => Debugger::HOOKS]);

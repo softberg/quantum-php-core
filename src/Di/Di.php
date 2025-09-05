@@ -19,7 +19,6 @@ use ReflectionException;
 use ReflectionParameter;
 use ReflectionFunction;
 use ReflectionMethod;
-use Quantum\App\App;
 use ReflectionClass;
 
 /**
@@ -45,11 +44,11 @@ class Di
     private static $resolving = [];
 
     /**
-     * Loads dependency definitions
+     * Register dependencies
      */
-    public static function registerDependencies()
+    public static function registerDependencies(array $dependencies)
     {
-        foreach (self::coreDependencies() + self::userDependencies() as $abstract => $concrete) {
+        foreach ($dependencies as $abstract => $concrete) {
             if (!self::isRegistered($abstract)) {
                 self::register($concrete, $abstract);
             }
@@ -271,33 +270,5 @@ class Di
             $chain = implode(' -> ', array_keys(self::$resolving)) . ' -> ' . $abstract;
             throw DiException::circularDependency($chain);
         }
-    }
-
-    /**
-     * Loads user defined dependencies
-     * @return array
-     */
-    private static function userDependencies(): array
-    {
-        $userDependencies = App::getBaseDir() . DS . 'shared' . DS . 'config' . DS . 'dependencies.php';
-
-        if (!file_exists($userDependencies)) {
-            return [];
-        }
-
-        return (array)require_once $userDependencies;
-    }
-
-    /**
-     * Loads the core dependencies
-     * @return array
-     */
-    private static function coreDependencies(): array
-    {
-        return [
-            \Quantum\Loader\Loader::class => \Quantum\Loader\Loader::class,
-            \Quantum\Http\Request::class => \Quantum\Http\Request::class,
-            \Quantum\Http\Response::class => \Quantum\Http\Response::class,
-        ];
     }
 }

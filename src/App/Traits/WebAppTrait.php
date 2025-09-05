@@ -31,6 +31,7 @@ use Quantum\Router\Router;
 use Quantum\Http\Request;
 use Quantum\Loader\Setup;
 use ReflectionException;
+use Quantum\Di\Di;
 
 /**
  * Trait WebAppTrait
@@ -63,12 +64,18 @@ trait WebAppTrait
     }
 
     /**
+     * Load modules
      * @throws ModuleException
      * @throws RouteException
      */
-    private function loadModulesRoutes()
+    private function loadModules()
     {
-        $modulesRoutes = ModuleLoader::getInstance()->loadModulesRoutes();
+        $moduleLoader = ModuleLoader::getInstance();
+
+        $modulesDependencies = $moduleLoader->loadModulesDependencies();
+        Di::registerDependencies($modulesDependencies);
+
+        $modulesRoutes = $moduleLoader->loadModulesRoutes();
         Router::setRoutes($modulesRoutes);
     }
 

@@ -27,7 +27,7 @@ class ModuleLoaderTest extends AppTestCase
         $this->assertInstanceOf(ModuleLoader::class, $this->moduleLoader);
     }
 
-    public function testLoadModulesRoutesWithEnabledModules()
+    public function testLoadModulesRoutes()
     {
         $modulesRoutes = $this->moduleLoader->loadModulesRoutes();
 
@@ -38,5 +38,27 @@ class ModuleLoaderTest extends AppTestCase
         $this->assertIsArray(Router::getRoutes());
 
         $this->assertCount(2, Router::getRoutes());
+    }
+
+    public function testLoadModulesDependencies()
+    {
+        $deps = $this->moduleLoader->loadModulesDependencies();
+
+        $this->assertIsArray($deps);
+
+        $this->assertArrayHasKey("Quantum\Libraries\Transformer\Transformer", $deps);
+        $this->assertSame("Shared\Transformers\PostTransformer", $deps["Quantum\Libraries\Transformer\Transformer"]);
+
+        $this->assertArrayHasKey("Quantum\Service\QtService", $deps);
+        $this->assertSame("Shared\Services\TokenService", $deps["Quantum\Service\QtService"]);
+    }
+
+    public function testGetModuleConfigs()
+    {
+        $configs = $this->moduleLoader->getModuleConfigs();
+
+        $this->assertIsArray($configs);
+        $this->assertArrayHasKey('Test', $configs);
+        $this->assertArrayNotHasKey('Mame', $configs);
     }
 }

@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 2.9.8
  */
 
 namespace Quantum\Module;
@@ -32,6 +32,11 @@ use Closure;
  */
 class ModuleLoader
 {
+
+    /**
+     * @var array
+     */
+    private static $moduleDependencies = [];
 
     /**
      * @var array
@@ -99,6 +104,46 @@ class ModuleLoader
         }
 
         return $modulesRoutes;
+    }
+
+    /**
+     * @return array
+     * @throws ModuleException
+     */
+    public function loadModulesDependencies(): array
+    {
+        if (empty(self::$moduleConfigs)) {
+            $this->loadModuleConfig();
+        }
+
+        $modulesDependencies = [];
+
+        foreach (self::$moduleConfigs as $module => $options) {
+            $modulesDependencies = array_merge($modulesDependencies, $this->getModuleDependencies($module));
+        }
+
+        return $modulesDependencies;
+    }
+
+    /**
+     * @param string $module
+     * @return array
+     */
+    public function getModuleDependencies(string $module): array
+    {
+        if (!isset(self::$moduleDependencies[$module])) {
+            $file = modules_dir() . DS . $module . DS . 'config' . DS . 'dependencies.php';
+
+            if ($this->fs->exists($file)) {
+                $deps = $this->fs->require($file);
+
+                self::$moduleDependencies[$module] = is_array($deps) ? $deps : [];
+            } else {
+                self::$moduleDependencies[$module] = [];
+            }
+        }
+
+        return self::$moduleDependencies[$module];
     }
 
     /**
