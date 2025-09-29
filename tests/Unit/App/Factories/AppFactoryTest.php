@@ -60,4 +60,17 @@ class AppFactoryTest extends TestCase
 
         $this->assertSame($app1, $app2);
     }
+
+    public function testAppFactoryDestroy()
+    {
+        $app1 = AppFactory::create(App::WEB, PROJECT_ROOT);
+
+        AppFactory::destroy(App::WEB);
+
+        $app2 = AppFactory::create(App::WEB, PROJECT_ROOT);
+
+        $this->assertInstanceOf(App::class, $app2);
+
+        $this->assertNotSame($app1, $app2);
+    }
 }

@@ -58,6 +58,15 @@ class AppFactory
 
     /**
      * @param string $type
+     * @return void
+     */
+    public static function destroy(string $type)
+    {
+        unset(self::$instances[$type]);
+    }
+
+    /**
+     * @param string $type
      * @param string $baseDir
      * @return App
      * @throws BaseException

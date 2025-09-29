@@ -1,6 +1,11 @@
 <?php
 
+use Quantum\Tests\_root\modules\Test\Transformers\PostTransformer;
+use Quantum\Libraries\Transformer\Contracts\TransformerInterface;
+use Quantum\Libraries\Storage\Contracts\TokenServiceInterface;
+use Quantum\Tests\_root\shared\Services\TokenService;
+
 return [
-    \Quantum\Libraries\Transformer\Transformer::class => \Shared\Transformers\PostTransformer::class,
-    \Quantum\Service\QtService::class => \Shared\Services\TokenService::class,
+    TransformerInterface::class => PostTransformer::class,
+    TokenServiceInterface::class => TokenService::class,
 ];
