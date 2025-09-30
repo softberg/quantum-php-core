@@ -69,9 +69,6 @@ namespace Quantum\Tests\Unit\Di {
         public function setUp(): void
         {
             parent::setUp();
-
-            Di::reset();
-            Di::registerDependencies();
         }
 
         public function testDiRegisterDependency()
@@ -240,8 +237,6 @@ namespace Quantum\Tests\Unit\Di {
             $this->assertEmpty($dependenciesProperty->getValue());
 
             $this->assertEmpty($containerProperty->getValue());
-
-            Di::registerDependencies();
         }
     }
 }

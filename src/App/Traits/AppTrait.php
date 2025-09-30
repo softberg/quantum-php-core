@@ -55,6 +55,15 @@ trait AppTrait
         return self::$baseDir;
     }
 
+    protected function loadCoreDependencies()
+    {
+        $file = dirname(__DIR__) . DS . 'Config' . DS . 'dependencies.php';
+
+        $coreDependencies = (is_file($file) && is_array($deps = require $file)) ? $deps : [];
+
+        Di::registerDependencies($coreDependencies);
+    }
+
     /**
      * Loads component helper functions
      * @throws DiException

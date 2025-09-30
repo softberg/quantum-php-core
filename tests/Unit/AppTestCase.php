@@ -10,6 +10,7 @@ use Quantum\Config\Config;
 use Quantum\Loader\Setup;
 use ReflectionClass;
 use Quantum\App\App;
+use Quantum\Di\Di;
 
 abstract class AppTestCase extends TestCase
 {
@@ -18,6 +19,10 @@ abstract class AppTestCase extends TestCase
 
     public function setUp(): void
     {
+        if (!file_exists(PROJECT_ROOT . DS . '.env.testing')) {
+            createEnvFile();
+        }
+
         AppFactory::create(App::WEB, PROJECT_ROOT);
 
         Config::getInstance()->flush();
@@ -29,7 +34,21 @@ abstract class AppTestCase extends TestCase
         Config::getInstance()
             ->load(new Setup('config', 'config'));
 
+        $coreDependencies = [
+            \Quantum\Loader\Loader::class => \Quantum\Loader\Loader::class,
+            \Quantum\Http\Request::class => \Quantum\Http\Request::class,
+            \Quantum\Http\Response::class => \Quantum\Http\Response::class,
+        ];
+
+        Di::registerDependencies($coreDependencies);
+
         $this->fs = FileSystemFactory::get();
+    }
+
+    public function tearDown(): void
+    {
+        AppFactory::destroy(App::WEB);
+        Di::reset();
     }
 
     protected function setPrivateProperty($object, $property, $value): void
