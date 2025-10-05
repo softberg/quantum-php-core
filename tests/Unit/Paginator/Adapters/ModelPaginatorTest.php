@@ -6,6 +6,8 @@ use Quantum\Tests\_root\shared\Models\TestPostModel;
 use Quantum\Tests\Unit\Paginator\PaginatorTestCase;
 use Quantum\Paginator\Adapters\ModelPaginator;
 use Quantum\Model\Factories\ModelFactory;
+use Quantum\Model\ModelCollection;
+use Quantum\Model\QtModel;
 
 class ModelPaginatorTest extends PaginatorTestCase
 {
@@ -33,13 +35,46 @@ class ModelPaginatorTest extends PaginatorTestCase
 
         $this->assertIsIterable($data);
 
+        $this->assertInstanceOf(ModelCollection::class, $data);
+
+        $this->assertInstanceOf(ModelCollection::class, $data);
+
         $this->assertEquals(2, $data->count());
 
-        $this->assertInstanceOf(TestPostModel::class, $data->first());
+        $record = $data->first();
 
-        $this->assertEquals('Hi', $data->first()->title);
+        $this->assertInstanceOf(QtModel::class, $record);
 
-        $this->assertEquals('First post!', $data->first()->content);
+        $this->assertInstanceOf(TestPostModel::class, $record);
+
+        $this->assertEquals('Hi', $record->title);
+
+        $this->assertEquals('First post!', $record->content);
+    }
+
+    public function testModelPaginatorDataWithAnonymousModel()
+    {
+        $dynamicModel = ModelFactory::createDynamicModel('posts');
+
+        $this->paginator = new ModelPaginator($dynamicModel, 2, 1);
+
+        $data = $this->paginator->data();
+
+        $this->assertIsIterable($data);
+
+        $this->assertInstanceOf(ModelCollection::class, $data);
+
+        $this->assertEquals(2, $data->count());
+
+        $record = $data->first();
+
+        $this->assertInstanceOf(QtModel::class, $record);
+
+        $this->assertStringContainsString('@anonymous', get_class($record));
+
+        $this->assertEquals('Hi', $record->title);
+
+        $this->assertEquals('First post!', $record->content);
     }
 
     public function testModelPaginatorFirstItem()

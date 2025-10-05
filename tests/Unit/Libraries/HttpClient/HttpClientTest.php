@@ -11,9 +11,9 @@ class HttpClientTest extends AppTestCase
 
     private $httpClient;
 
-    private $restServer = 'https://reqres.in/api';
+    private $restServer = 'https://api.thedogapi.com/v1';
 
-    private $restServerApiKey = 'reqres-free-v1';
+    private $restServerApiKey = 'live_U3JuUI7JmyksBMiYM5xsBH3ZkA8zNFwhIusK1Mwz80nrokn6UtC3XUM5D7T5fSkx';
 
     public function setUp(): void
     {
@@ -83,8 +83,8 @@ class HttpClientTest extends AppTestCase
         $this->httpClient
             ->createMultiRequest()
             ->setHeader('x-api-key', $this->restServerApiKey)
-            ->addGet($this->restServer . '/users')
-            ->addPost($this->restServer . '/users')
+            ->addGet($this->restServer . '/breeds')
+            ->addPost($this->restServer . '/breeds')
             ->start();
 
         $multiResponse = $this->httpClient->getResponse();
@@ -105,24 +105,24 @@ class HttpClientTest extends AppTestCase
                 function ($instance) {
                     $this->assertFalse($instance->isError());
 
-                    $this->assertEquals($this->restServer . '/users', $instance->getUrl());
+                    $this->assertEquals($this->restServer . '/breeds', $instance->getUrl());
                 },
                 function ($instance) {
                     $this->assertTrue($instance->isError());
 
-                    $this->assertEquals(404, $instance->getErrorCode());
+                    $this->assertEquals(405, $instance->getErrorCode());
                 }
             )
             ->setHeader('x-api-key', $this->restServerApiKey)
-            ->addGet($this->restServer . '/users')
-            ->addPost($this->restServer . '/users')
+            ->addGet($this->restServer . '/breeds')
+            ->addPost($this->restServer . '/breeds')
             ->start();
     }
 
     public function testHttpClientGetRequestHeaders()
     {
         $this->httpClient
-            ->createRequest($this->restServer . '/users')
+            ->createRequest($this->restServer . '/breeds/?limit=10&page=0')
             ->setHeaders([
                 'x-api-key' => $this->restServerApiKey,
                 'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
@@ -145,8 +145,9 @@ class HttpClientTest extends AppTestCase
     public function testHttpClientGetResponseHeaders()
     {
         $this->httpClient
-            ->createRequest($this->restServer . '/users')
+            ->createRequest($this->restServer . '/breeds/?limit=10&page=0')
             ->setHeader('x-api-key', $this->restServerApiKey)
+            ->setOpt(CURLOPT_FOLLOWLOCATION, true)
             ->start();
 
         $this->assertIsArray($this->httpClient->getResponseHeaders());
@@ -186,39 +187,39 @@ class HttpClientTest extends AppTestCase
     public function testHttpClientGetObjectResponseBody()
     {
         $this->httpClient
-            ->createRequest($this->restServer . '/users')
+            ->createRequest($this->restServer . '/breeds/?limit=10&page=0')
             ->setHeader('x-api-key', $this->restServerApiKey)
+            ->setOpt(CURLOPT_FOLLOWLOCATION, true)
             ->start();
 
         $responseBody = $this->httpClient->getResponseBody();
 
         $this->assertNotNull($responseBody);
 
-        $this->assertIsObject($responseBody);
+        $this->assertIsArray($responseBody);
     }
 
     public function testHttpClientSendPostRequestAndGetResponseBody()
     {
         $this->httpClient
-            ->createRequest($this->restServer . '/users')
+            ->createRequest($this->restServer . '/images/search?format=json&limit=10')
             ->setHeader('x-api-key', $this->restServerApiKey)
-            ->setMethod('POST')
+            ->setOpt(CURLOPT_FOLLOWLOCATION, true)
             ->start();
 
         $responseBody = $this->httpClient->getResponseBody();
 
-        $this->assertNotNull($responseBody);
+        $imageId = $responseBody[0]->id;
 
-        $this->assertIsObject($responseBody);
-    }
-
-    public function testHttpClientSendPostRequestWithDataAndGetResponseBody()
-    {
         $this->httpClient
-            ->createRequest($this->restServer . '/users')
+            ->createRequest($this->restServer . '/votes')
             ->setHeader('x-api-key', $this->restServerApiKey)
+            ->setHeader('Content-Type', 'application/json')
             ->setMethod('POST')
-            ->setData(['custom' => 'Custom value'])
+            ->setData([
+                "image_id" => $imageId,
+                "value"=> 1,
+            ])
             ->start();
 
         $responseBody = $this->httpClient->getResponseBody();
@@ -227,7 +228,9 @@ class HttpClientTest extends AppTestCase
 
         $this->assertIsObject($responseBody);
 
-        $this->assertEquals('Custom value', $responseBody->custom);
+        $this->assertObjectHasProperty('message', $responseBody);
+
+        $this->assertEquals('SUCCESS', $responseBody->message);
     }
 
     public function testHttpClientGetError()
@@ -267,7 +270,7 @@ class HttpClientTest extends AppTestCase
     public function testHttpClientCurlInfo()
     {
         $this->httpClient
-            ->createRequest($this->restServer . '/users')
+            ->createRequest($this->restServer . '/breeds')
             ->setHeader('x-api-key', $this->restServerApiKey)
             ->start();
 
@@ -275,19 +278,19 @@ class HttpClientTest extends AppTestCase
 
         $this->assertEquals(200, $this->httpClient->info(CURLINFO_HTTP_CODE));
 
-        $this->assertEquals('https://reqres.in/api/users', $this->httpClient->info(CURLINFO_EFFECTIVE_URL));
+        $this->assertEquals('https://api.thedogapi.com/v1/breeds', $this->httpClient->info(CURLINFO_EFFECTIVE_URL));
     }
 
     public function testHttpClientUrl()
     {
         $this->httpClient
-            ->createRequest($this->restServer . '/users')
+            ->createRequest($this->restServer . '/breeds')
             ->setHeader('x-api-key', $this->restServerApiKey)
             ->start();
 
         $this->assertIsString($this->httpClient->url());
 
 
-        $this->assertEquals('https://reqres.in/api/users', $this->httpClient->url());
+        $this->assertEquals('https://api.thedogapi.com/v1/breeds', $this->httpClient->url());
     }
 }

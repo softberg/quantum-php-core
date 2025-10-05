@@ -62,11 +62,13 @@ class ModelPaginator implements PaginatorInterface
             ->offset($this->perPage * ($this->page - 1))
             ->get();
 
-        $models = array_map(function ($item) {
-            return wrapToModel($item->getOrmInstance(), $this->modelClass);
-        }, iterator_to_array($result));
+        if($this->modelClass != '@anonymous') {
+            $result = array_map(function ($item) {
+                return wrapToModel($item->getOrmInstance(), $this->modelClass);
+            }, iterator_to_array($result));
+        }
 
-        return new ModelCollection($models);
+        return new ModelCollection($result);
     }
 
     /**
