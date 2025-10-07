@@ -95,9 +95,11 @@ class PostController extends BaseController
             stop();
         }
 
+        $rawData = new RawParam(current($this->postService->transformData([$post])));
+
         $response->json([
             'status' => 'success',
-            'data' => new RawParam(current($this->postService->transformData([$post]))),
+            'data' => $rawData->getValue(),
         ]);
     }
 
