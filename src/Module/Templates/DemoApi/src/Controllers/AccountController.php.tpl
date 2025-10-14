@@ -52,12 +52,10 @@ class AccountController extends BaseController
             $firstname = $request->get('firstname');
             $lastname = $request->get('lastname');
 
-            $newUserData = [
+            $this->authService->update('uuid', auth()->user()->uuid, [
                 'firstname' => $firstname,
                 'lastname' => $lastname
-            ];
-    
-            $this->authService->update('uuid', auth()->user()->uuid, $newUserData);
+            ]);
 
             auth()->refreshUser(auth()->user()->uuid);
 

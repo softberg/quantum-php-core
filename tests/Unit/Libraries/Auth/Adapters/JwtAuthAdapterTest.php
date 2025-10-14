@@ -196,9 +196,11 @@ class JwtAuthAdapterTest extends AuthTestCase
     {
         $this->jwtAuth->signin('admin@qt.com', 'qwerty');
 
-        $this->assertEquals('Admin', $this->jwtAuth->user()->firstname);
+        $user = $this->jwtAuth->user();
 
-        $this->assertEquals('User', $this->jwtAuth->user()->lastname);
+        $this->assertEquals('Admin', $user->firstname);
+
+        $this->assertEquals('User', $user->lastname);
 
         $newUserData = [
             'firstname' => 'Super',
@@ -209,8 +211,10 @@ class JwtAuthAdapterTest extends AuthTestCase
 
         $this->jwtAuth->refreshUser($this->jwtAuth->user()->uuid);
 
-        $this->assertEquals('Super', $this->jwtAuth->user()->firstname);
+        $refreshedUser = $this->jwtAuth->user();
 
-        $this->assertEquals('Human', $this->jwtAuth->user()->lastname);
+        $this->assertEquals('Super', $refreshedUser->firstname);
+
+        $this->assertEquals('Human', $refreshedUser->lastname);
     }
 }

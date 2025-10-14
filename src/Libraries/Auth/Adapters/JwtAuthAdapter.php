@@ -111,6 +111,25 @@ class JwtAuthAdapter implements AuthenticatableInterface
     }
 
     /**
+     * Refresh user data
+     * @param string $uuid
+     * @return bool
+     * @throws JwtException
+     */
+    public function refreshUser(string $uuid): bool
+    {
+        $user = $this->authService->get('uuid', $uuid);
+
+        if(!$user) {
+            return false;
+        }
+
+        $this->setUpdatedTokens($user);
+
+        return true;
+    }
+
+    /**
      * Verify OTP
      * @param int $otp
      * @param string $otpToken
@@ -122,24 +141,6 @@ class JwtAuthAdapter implements AuthenticatableInterface
     {
         $user = $this->verifyAndUpdateOtp($otp, $otpToken);
         return $this->setUpdatedTokens($user);
-    }
-
-    /**
-     * Refresh user data
-     * @param string $uuid
-     * @return bool
-     * @throws JwtException
-     */
-    public function refreshUser(string $uuid): bool
-    {
-        $user = $this->authService->get('uuid', $uuid);
-
-        if($user) {
-            $this->setUpdatedTokens($user);
-            return true;
-        }
-
-        return false;
     }
 
     /**
