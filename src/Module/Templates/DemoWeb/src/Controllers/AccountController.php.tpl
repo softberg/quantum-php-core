@@ -68,20 +68,15 @@ class AccountController extends BaseController
      */
     public function update(Request $request)
     {
-        $firstname = $request->get('firstname', null);
-        $lastname = $request->get('lastname', null);
+        $firstname = $request->get('firstname');
+        $lastname = $request->get('lastname');
 
         $user = $this->authService->update('uuid', auth()->user()->uuid, [
             'firstname' => $firstname,
             'lastname' => $lastname
         ]);
 
-        $userData = session()->get(AuthenticatableInterface::AUTH_USER);
-
-        $userData['firstname'] = $user->firstname;
-        $userData['lastname'] = $user->lastname;
-             
-        session()->set(AuthenticatableInterface::AUTH_USER, $userData);
+        auth()->refreshUser(auth()->user()->uuid);
 
         redirect(base_url(true) . '/' . current_lang() . '/account-settings#account_profile');
     }

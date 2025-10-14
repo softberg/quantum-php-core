@@ -163,4 +163,30 @@ class SessionAuthAdapterTest extends AuthTestCase
 
         $this->assertIsString($this->sessionAuth->resendOtp($otp_token));
     }
+
+    public function testWebRefreshUser()
+    {
+        $this->sessionAuth->signin('admin@qt.com', 'qwerty');
+
+        $user = $this->sessionAuth->user();
+
+        $this->assertEquals('Admin', $user->firstname);
+
+        $this->assertEquals('User', $user->lastname);
+
+        $newUserData = [
+            'firstname' => 'Super',
+            'lastname' => 'Human',
+        ];
+
+        $this->authService->update('uuid', $user->uuid, $newUserData);
+
+        $this->sessionAuth->refreshUser($user->uuid);
+
+        $refreshedUser = $this->sessionAuth->user();
+
+        $this->assertEquals('Super', $refreshedUser->firstname);
+
+        $this->assertEquals('Human', $refreshedUser->lastname);
+    }
 }

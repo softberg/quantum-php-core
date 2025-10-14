@@ -128,6 +128,31 @@ class SessionAuthAdapter implements AuthenticatableInterface
     }
 
     /**
+     * Refresh user data
+     * @param string $uuid
+     * @return bool
+     * @throws BaseException
+     * @throws ConfigException
+     * @throws DiException
+     * @throws ReflectionException
+     */
+    public function refreshUser(string $uuid): bool
+    {
+        $user = $this->authService->get('uuid', $uuid);
+
+        if (!$user) {
+            return false;
+        }
+
+        $sessionData = session()->get(self::AUTH_USER);
+        $sessionData = array_merge($sessionData, $this->getVisibleFields($user));
+
+        session()->set(self::AUTH_USER, $sessionData);
+
+        return true;
+    }
+
+    /**
      * Verify OTP
      * @param int $otp
      * @param string $otpToken
