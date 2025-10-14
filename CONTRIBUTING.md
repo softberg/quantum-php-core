@@ -82,12 +82,6 @@ Open a GitHub issue for discussions or questions before large changes. Use clear
 
 ---
 
-## Recognition
-
-Contributors are listed in `CONTRIBUTORS.md` and mentioned in release notes. Active contributors may be invited as reviewers or maintainers. If you build something cool using Quantum PHP Framework, we’d love to feature it!
-
----
-
 > “Code is written once, but read many times.” Keep it clean, minimal, and purposeful.
 
 Happy coding ⚡  
