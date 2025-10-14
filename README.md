@@ -50,10 +50,18 @@ php qt serve
 
 > **Note:** This repository contains the core code of the Quantum framework. If you want to start a new project visit the main [Quantum PHP Project repository](https://github.com/softberg/quantum-php-project).
 
-<h3>Give it a star if you like the project</h3>
+<h2>Give it a star if you like the project</h2>
 <img width="100" src="https://i.imgur.com/YaY5arh.gif">
 
-<h3>Learn More</h3>
+<h2>Learn More</h2>
 
 - [Website](https://quantumphp.io/)
-- [Blog](http://blog.softberg.org/category/quantum-php-framework/)
+
+<h2>Contributing</h2>
+
+We welcome contributions! Please read our [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on how to contribute to Quantum PHP, including setup instructions, coding standards, and the development workflow.
+
+<h2>License</h2>
+
+Quantum PHP is licensed under the [MIT License](https://github.com/softberg/quantum-php-core/blob/master/LICENSE). See the LICENSE file for more details.
+
