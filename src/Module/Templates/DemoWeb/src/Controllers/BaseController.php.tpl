@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.8
+ * @since 2.9.9
  */
 
 namespace {{MODULE_NAMESPACE}}\Controllers;
@@ -47,5 +47,7 @@ abstract class BaseController extends RouteController
             new Asset(Asset::JS, 'shared/js/easymde.min.js'),
             new Asset(Asset::JS, '{{MODULE_NAME}}/js/custom.js')
         ]);
+
+        $this->view->setParam('langs', config()->get('lang.supported'));
     }
 }

@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.8
+ * @since 2.9.9
  */
 
 namespace {{MODULE_NAMESPACE}}\Controllers;
@@ -78,7 +78,6 @@ class AuthController extends BaseController
         } else {
             $this->view->setParams([
                 'title' => t('common.signin') . ' | ' . config()->get('app_name'),
-                'langs' => config()->get('langs')
             ]);
 
             $response->html($this->view->render(self::VIEW_SIGNIN));
@@ -109,7 +108,6 @@ class AuthController extends BaseController
             $this->view->setParams([
 //                'captcha' => captcha(),
                 'title' => t('common.signup') . ' | ' . config()->get('app_name'),
-                'langs' => config()->get('langs')
             ]);
 
             $response->html($this->view->render(self::VIEW_SIGNUP));
@@ -140,7 +138,6 @@ class AuthController extends BaseController
         } else {
             $this->view->setParams([
                 'title' => t('common.forget_password') . ' | ' . config()->get('app_name'),
-                'langs' => config()->get('langs'),
             ]);
 
             $response->html($this->view->render(self::VIEW_FORGET));
@@ -160,7 +157,6 @@ class AuthController extends BaseController
         } else {
             $this->view->setParams([
                 'title' => t('common.reset_password') . ' | ' . config()->get('app_name'),
-                'langs' => config()->get('langs'),
                 'reset_token' => $request->get('reset_token')
             ]);
 
@@ -186,7 +182,6 @@ class AuthController extends BaseController
         } else {
             $this->view->setParams([
                 'title' => t('common.two_fa') . ' | ' . config()->get('app_name'),
-                'langs' => config()->get('langs'),
                 'code' => route_param('code')
             ]);
 

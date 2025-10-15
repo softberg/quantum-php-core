@@ -9,18 +9,25 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.9
  */
 
-use Quantum\Libraries\Lang\Lang;
+use Quantum\Libraries\Lang\Exceptions\LangException;
+use Quantum\Libraries\Lang\Factories\LangFactory;
+use Quantum\Config\Exceptions\ConfigException;
+use Quantum\Di\Exceptions\DiException;
 
 /**
  * Gets the current lang
  * @return string|null
+ * @throws ConfigException
+ * @throws DiException
+ * @throws LangException
+ * @throws ReflectionException
  */
 function current_lang(): ?string
 {
-    return Lang::getInstance()->getLang();
+    return LangFactory::get()->getLang();
 }
 
 /**
@@ -28,16 +35,25 @@ function current_lang(): ?string
  * @param string $key
  * @param $params
  * @return string|null
+ * @throws ConfigException
+ * @throws ReflectionException
+ * @throws DiException
+ * @throws LangException
  */
 function t(string $key, $params = null): ?string
 {
-    return Lang::getInstance()->getTranslation($key, $params);
+    return LangFactory::get()->getTranslation($key, $params);
 }
 
 /**
  * Outputs the translation
  * @param string $key
- * @param mixed $params
+ * @param $params
+ * @return void
+ * @throws ConfigException
+ * @throws DiException
+ * @throws LangException
+ * @throws ReflectionException
  */
 function _t(string $key, $params = null)
 {

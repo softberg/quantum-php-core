@@ -2,68 +2,45 @@
 
 namespace Quantum\Tests\Unit\Libraries\Lang\Helpers;
 
+use Quantum\Libraries\Lang\Factories\LangFactory;
 use Quantum\Tests\Unit\AppTestCase;
-use Quantum\Libraries\Lang\Lang;
 
 class LangHelperFunctionsTest extends AppTestCase
 {
 
+    private $lang;
+
     public function setUp(): void
     {
         parent::setUp();
+
+        $this->lang = LangFactory::get();
+
+        $this->lang->load();
     }
 
     public function testCurrentLang()
     {
         $this->assertEquals('en', current_lang());
 
-        Lang::getInstance()->setLang('am');
+        $this->lang->setLang('am');
 
         $this->assertEquals('am', current_lang());
     }
 
     public function testHelperT()
     {
-        $translations = [
-            'custom' => [
-                'label' => 'Testing',
-                'info' => 'Information about the new feature'
-            ]
-        ];
+        $this->assertEquals('Testing', t('custom.test'));
 
-        Lang::getInstance()->setTranslations($translations);
-
-        $this->assertEquals('Testing', t('custom.label'));
-
-        $this->assertEquals('Information about the new feature', t('custom.info'));
-    }
-
-    public function testHelperTWithParams()
-    {
-        $translations = [
-            'custom' => [
-                'info' => 'Information about the new feature: {%1}'
-            ]
-        ];
-
-        Lang::getInstance()->setTranslations($translations);
-
-        $this->assertEquals('Information about the new feature: new', t('custom.info', 'new'));
+        $this->assertEquals('Information about the new feature', t('custom.info', ['new']));
     }
 
     public function testHelperUnderscoreT()
     {
-        $translations = [
-            'custom' => [
-                'test' => 'Testing'
-            ]
-        ];
-
-        Lang::getInstance()->setTranslations($translations);
-
         ob_start();
 
         _t('custom.test');
+
         $output = ob_get_clean();
 
         $this->assertEquals('Testing', $output);
@@ -71,14 +48,6 @@ class LangHelperFunctionsTest extends AppTestCase
 
     public function testHelperTFail()
     {
-        $translations = [
-            'custom' => [
-                'label' => 'Testing',
-            ]
-        ];
-
-        Lang::getInstance()->setTranslations($translations);
-
         $this->assertEquals('custom.non_existing_key', t('custom.non_existing_key'));
     }
 }

@@ -1,86 +1,73 @@
 <?php
 
-namespace Quantum\Libraries\Lang {
+namespace Quantum\Tests\Unit\Libraries\Lang;
 
-    function current_module()
+use Quantum\Libraries\Lang\Translator;
+use Quantum\Router\RouteController;
+use Quantum\Tests\Unit\AppTestCase;
+use Quantum\Libraries\Lang\Lang;
+
+class LangTest extends AppTestCase
+{
+
+    private $lang;
+
+    public function setUp(): void
     {
-        return 'Test';
+        parent::setUp();
+
+        $translator = new Translator('en');
+        $this->lang = new Lang('en', true, $translator);
+
+        RouteController::setCurrentRoute([
+            "route" => "api-signin",
+            "method" => "POST",
+            "controller" => "SomeController",
+            "action" => "signin",
+            "module" => "Test",
+        ]);
     }
-}
 
-namespace Quantum\Tests\Unit\Libraries\Lang {
-
-    use Quantum\Router\RouteController;
-    use Quantum\Tests\Unit\AppTestCase;
-    use Quantum\Libraries\Lang\Lang;
-
-    class LangTest extends AppTestCase
+    public function testLangGetSet()
     {
+        $this->assertEquals('en', $this->lang->getLang());
 
-        private $lang;
+        $this->lang->setLang('ru');
 
-        public function setUp(): void
-        {
-            parent::setUp();
+        $this->assertEquals('ru', $this->lang->getLang());
+    }
 
-            $this->lang = Lang::getInstance();
+    public function testLangIsEnabled(): void
+    {
+        $this->assertTrue($this->lang->isEnabled());
 
-            $this->lang->setLang('en');
+        $langDisabled = new Lang('en', false, new Translator('en'));
 
-            RouteController::setCurrentRoute([
-                "route" => "api-signin",
-                "method" => "POST",
-                "controller" => "SomeController",
-                "action" => "signin",
-                "module" => "Test",
-            ]);
-        }
+        $this->assertFalse($langDisabled->isEnabled());
+    }
 
-        public function testLangLoad()
-        {
-            $this->lang->flush();
 
-            $this->assertEmpty($this->lang->getTranslations());
+    public function testLangLoadAndGetTranslation(): void
+    {
+        $this->lang->flush();
 
-            $this->lang->load();
+        $this->assertEquals('custom.test', $this->lang->getTranslation('custom.test'));
 
-            $this->assertNotEmpty($this->lang->getTranslations());
-        }
+        $this->lang->load();
 
-        public function testLangGetSet()
-        {
-            $this->assertEquals('en', $this->lang->getLang());
+        $this->assertEquals('Testing', $this->lang->getTranslation('custom.test'));
 
-            $this->lang->setLang('ru');
+        $this->assertEquals('Information about the new feature', $this->lang->getTranslation('custom.info', ['new']));
+    }
 
-            $this->assertEquals('ru', $this->lang->getLang());
-        }
+    public function testLangFlushResetsTranslations(): void
+    {
+        $this->lang->load();
 
-        public function testSetTranslations()
-        {
-            $translations = [
-                'custom' => [
-                    'label' => 'Black',
-                    'note' => 'Note this is a new feature'
-                ]
-            ];
+        $this->assertEquals('Testing', $this->lang->getTranslation('custom.test'));
 
-            $this->lang->setTranslations($translations);
+        $this->lang->flush();
 
-            $this->assertNotNull($this->lang->getTranslations());
-
-            $this->assertEquals('Black', $this->lang->getTranslation('custom.label'));
-            $this->assertEquals('Note this is a new feature', $this->lang->getTranslation('custom.note'));
-        }
-
-        public function testGetTranslation()
-        {
-            $this->assertEquals('Testing', $this->lang->getTranslation('custom.test'));
-
-            $this->assertEquals('Information about the new feature', $this->lang->getTranslation('custom.info', 'new'));
-
-            $this->assertEquals('custom.not-exists', $this->lang->getTranslation('custom.not-exists'));
-        }
-
+        $this->assertEquals('test', $this->lang->getTranslation('test'));
     }
 }
