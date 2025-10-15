@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.8
+ * @since 2.9.9
  */
 
 namespace {{MODULE_NAMESPACE}}\Controllers;
@@ -70,7 +70,6 @@ class PostController extends BaseController
 
         $this->view->setParams([
             'title' => t('common.posts') . ' | ' . config()->get('app_name'),
-            'langs' => config()->get('langs'),
             'posts' => $this->postService->transformData($paginatedPosts->data()->all()),
             'pagination' => $paginatedPosts
         ]);
@@ -98,7 +97,6 @@ class PostController extends BaseController
 
         $this->view->setParams([
             'title' => $post->title . ' | ' . config()->get('app_name'),
-            'langs' => config()->get('langs'),
             'post' => new RawParam(current($this->postService->transformData([$post]))),
             'referer' => $ref,
         ]);
@@ -117,7 +115,6 @@ class PostController extends BaseController
 
         $this->view->setParams([
             'title' => t('common.my_posts') . ' | ' . config()->get('app_name'),
-            'langs' => config()->get('langs'),
             'posts' => $this->postService->transformData($myPosts->all())
         ]);
 
@@ -135,7 +132,6 @@ class PostController extends BaseController
 
         $this->view->setParams([
             'title' => t('common.new_post') . ' | ' . config()->get('app_name'),
-            'langs' => config()->get('langs'),
             'referer' => $ref
         ]);
 
@@ -186,7 +182,6 @@ class PostController extends BaseController
 
         $this->view->setParams([
             'title' => $post->title . ' | ' . config()->get('app_name'),
-            'langs' => config()->get('langs'),
             'post' => $post->asArray(),
             'referer' => $ref
         ]);

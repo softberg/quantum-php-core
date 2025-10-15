@@ -9,22 +9,22 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.8
+ * @since 2.9.9
  */
 
 namespace Quantum\App\Traits;
 
 use Quantum\Libraries\Logger\Factories\LoggerFactory;
 use Quantum\Libraries\Lang\Exceptions\LangException;
+use Quantum\Libraries\Lang\Factories\LangFactory;
 use Quantum\Environment\Exceptions\EnvException;
 use Quantum\Config\Exceptions\ConfigException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Environment\Environment;
-use Quantum\Libraries\Lang\Lang;
 use Quantum\Tracer\ErrorHandler;
-use Quantum\Config\Config;
 use Quantum\Loader\Loader;
+use Quantum\Config\Config;
 use Quantum\Loader\Setup;
 use ReflectionException;
 use Quantum\App\App;
@@ -169,7 +169,7 @@ trait AppTrait
      */
     protected function loadLanguage()
     {
-        $lang = Lang::getInstance();
+        $lang = LangFactory::get();
 
         if ($lang->isEnabled()) {
             $lang->load();
