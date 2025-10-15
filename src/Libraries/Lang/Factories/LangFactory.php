@@ -54,7 +54,6 @@ class LangFactory
 
         $isEnabled = filter_var(config()->get('lang.enabled'), FILTER_VALIDATE_BOOLEAN);
 
-
         $langSegmentIndex = (int)config()->get('lang.url_segment');
 
         if (!empty(route_prefix()) && $langSegmentIndex == 1) {

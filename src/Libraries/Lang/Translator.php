@@ -93,10 +93,10 @@ class Translator
     /**
      * Get translation by key
      * @param string $key
-     * @param array|null $params
+     * @param array|string|null $params
      * @return string
      */
-    public function get(string $key, array $params = null): string
+    public function get(string $key, $params = null): string
     {
         if ($this->translations && $this->translations->has($key)) {
             $message = $this->translations->get($key);
