@@ -31,7 +31,7 @@ use Quantum\Di\Di;
 class Translator
 {
 
-    protected string $lang;
+    protected $lang;
     
     /**
      * @var Data|null
