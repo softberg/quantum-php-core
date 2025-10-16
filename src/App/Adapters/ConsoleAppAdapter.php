@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 2.9.9
  */
 
 namespace Quantum\App\Adapters;
@@ -64,7 +64,7 @@ class ConsoleAppAdapter extends AppAdapter
 
         if ($commandName !== 'core:env') {
             $this->loadEnvironment();
-            $this->loadConfig();
+            $this->loadAppConfig();
         }
     }
 
@@ -81,8 +81,8 @@ class ConsoleAppAdapter extends AppAdapter
     {
         try {
             $this->application = $this->createApplication(
-                config()->get('app_name', 'UNKNOWN'),
-                config()->get('app_version', 'UNKNOWN')
+                config()->get('app.name', 'UNKNOWN'),
+                config()->get('app.version', 'UNKNOWN')
             );
 
             $this->registerCoreCommands();

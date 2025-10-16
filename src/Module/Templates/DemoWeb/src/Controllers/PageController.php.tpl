@@ -35,7 +35,7 @@ class PageController extends BaseController
     public function home(Response $response)
     {
         $this->view->setParams([
-            'title' => config()->get('app_name'),
+            'title' => config()->get('app.name'),
         ]);
 
         $response->html($this->view->render('pages/index'));
@@ -48,7 +48,7 @@ class PageController extends BaseController
     public function about(Response $response)
     {
         $this->view->setParams([
-            'title' => t('common.about') . ' | ' . config()->get('app_name'),
+            'title' => t('common.about') . ' | ' . config()->get('app.name'),
         ]);
 
         $response->html($this->view->render('pages/about'));

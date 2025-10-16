@@ -2,34 +2,20 @@
 
 namespace Quantum\Tests\Unit\Libraries\Mailer\Adapters;
 
-use Quantum\Libraries\Storage\Factories\FileSystemFactory;
 use Quantum\Libraries\Mailer\Adapters\SendinblueAdapter;
+use Quantum\Tests\Unit\Libraries\Mailer\MailerTestCase;
 use Quantum\Libraries\Mailer\Contracts\MailerInterface;
-use Quantum\Tests\Unit\AppTestCase;
 
-class SendinblueAdapterTest extends AppTestCase
+class SendinblueAdapterTest extends MailerTestCase
 {
 
-    private $adapter;
+    protected $adapter;
 
     public function setUp(): void
     {
         parent::setUp();
 
         $this->adapter = new SendinblueAdapter(['api_key' => 'xxx111222333']);
-    }
-
-    public function tearDown(): void
-    {
-        parent::tearDown();
-
-        $fs = FileSystemFactory::get();
-
-        $emailFile = base_dir() . DS . 'shared' . DS . 'emails' . DS . $this->adapter->getMessageId() . '.eml';
-
-        if($fs->exists($emailFile)) {
-            $fs->remove($emailFile);
-        }
     }
 
     public function testSendinblueAdapterInstance()

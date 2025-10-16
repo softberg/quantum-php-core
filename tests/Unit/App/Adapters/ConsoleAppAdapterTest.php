@@ -26,6 +26,11 @@ class ConsoleAppAdapterTest extends TestCase
         $this->consoleAppAdapter->shouldReceive('createApplication')->andReturn($applicationMock);
     }
 
+    public function tearDown(): void
+    {
+        config()->flush();
+    }
+
     public function testConsoleAppAdapterStartSuccessfully()
     {
         $_SERVER['argv'] = ['qt', 'list', '--quiet'];

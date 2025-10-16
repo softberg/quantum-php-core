@@ -20,11 +20,11 @@ class LoaderTest extends AppTestCase
 
     public function testSetupAndLoad()
     {
-        $this->loader->setup(new Setup('config', 'config'));
+        $this->loader->setup(new Setup('config', 'app'));
 
         $content = $this->loader->load();
 
-        $this->assertEquals(base_dir() . DS . 'shared' . DS . 'config' . DS . 'config.php', $this->loader->getFilePath());
+        $this->assertEquals(base_dir() . DS . 'shared' . DS . 'config' . DS . 'app.php', $this->loader->getFilePath());
 
         $this->assertIsArray($content);
     }

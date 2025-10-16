@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 2.9.9
  */
 
 use Symfony\Component\VarExporter\Exception\ExceptionInterface;
@@ -88,7 +88,7 @@ function slugify(string $text): string
  */
 function is_debug_mode(): bool
 {
-    return filter_var(config()->get('debug'), FILTER_VALIDATE_BOOLEAN);
+    return filter_var(config()->get('app.debug'), FILTER_VALIDATE_BOOLEAN);
 }
 
 /**

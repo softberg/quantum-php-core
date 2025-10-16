@@ -21,6 +21,11 @@ class WebAppAdapterTest extends TestCase
         $this->webAppAdapter = new WebAppAdapter();
     }
 
+    public function tearDown(): void
+    {
+        config()->flush();
+    }
+
     public function testWebAppAdapterStartSuccessfully()
     {
         $request = Di::get(Request::class);

@@ -25,22 +25,21 @@ abstract class AppTestCase extends TestCase
 
         AppFactory::create(App::WEB, PROJECT_ROOT);
 
-        Config::getInstance()->flush();
+        config()->flush();
 
         Environment::getInstance()
             ->setMutable(true)
             ->load(new Setup('config', 'env'));
 
-        Config::getInstance()
-            ->load(new Setup('config', 'config'));
+        config()->import(new Setup('config', 'app'));
 
-        $coreDependencies = [
-            \Quantum\Loader\Loader::class => \Quantum\Loader\Loader::class,
-            \Quantum\Http\Request::class => \Quantum\Http\Request::class,
-            \Quantum\Http\Response::class => \Quantum\Http\Response::class,
-        ];
-
-        Di::registerDependencies($coreDependencies);
+//        $coreDependencies = [
+//            \Quantum\Loader\Loader::class => \Quantum\Loader\Loader::class,
+//            \Quantum\Http\Request::class => \Quantum\Http\Request::class,
+//            \Quantum\Http\Response::class => \Quantum\Http\Response::class,
+//        ];
+//
+//        Di::registerDependencies($coreDependencies);
 
         $this->fs = FileSystemFactory::get();
     }
@@ -48,6 +47,7 @@ abstract class AppTestCase extends TestCase
     public function tearDown(): void
     {
         AppFactory::destroy(App::WEB);
+        config()->flush();
         Di::reset();
     }
 

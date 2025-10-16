@@ -18,7 +18,7 @@ class LoggerFactoryTest extends AppTestCase
     {
         parent::setUp();
 
-        config()->set('debug', false);
+        config()->set('app.debug', false);
 
         $this->setPrivateProperty(LoggerFactory::class, 'instances', []);
     }
@@ -59,7 +59,7 @@ class LoggerFactoryTest extends AppTestCase
 
     public function testLoggerFactoryGetMessageAdapter()
     {
-        config()->set('debug', true);
+        config()->set('app.debug', true);
 
         $logger = LoggerFactory::get();
 

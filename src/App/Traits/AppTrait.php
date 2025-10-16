@@ -143,9 +143,9 @@ trait AppTrait
      * @throws ReflectionException
      * @throws ConfigException
      */
-    protected function loadConfig()
+    protected function loadAppConfig()
     {
-        Config::getInstance()->load(new Setup('config', 'config'));
+        Config::getInstance()->import(new Setup('config', 'app'));
     }
 
     /**

@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.8
+ * @since 2.9.9
  */
 
 namespace Quantum\Libraries\Database\Adapters\Idiorm;
@@ -252,7 +252,7 @@ class IdiormDbal implements DbalInterface, RelationalInterface
     {
         return [
             'connection_string' => self::buildConnectionString($driver, $config),
-            'logging' => config()->get('debug', false),
+            'logging' => config()->get('app.debug', false),
             'error_mode' => PDO::ERRMODE_EXCEPTION,
         ];
     }

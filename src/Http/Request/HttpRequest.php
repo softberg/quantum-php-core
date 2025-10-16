@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.8
+ * @since 2.9.9
  */
 
 namespace Quantum\Http\Request;
@@ -210,7 +210,7 @@ abstract class HttpRequest
      */
     public static function getBaseUrl(bool $withModulePrefix = false): string
     {
-        $baseUrl = config()->get('base_url');
+        $baseUrl = config()->get('app.base_url');
 
         $prefix = route_prefix();
         $modulePrefix = ($withModulePrefix && !empty($prefix)) ? '/' . $prefix : '';

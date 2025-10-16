@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.8
+ * @since 2.9.9
  */
 
 namespace {{MODULE_NAMESPACE}}\Controllers;
@@ -36,7 +36,7 @@ class AuthController extends BaseController
         try {
             $code = auth()->signin($request->get('email'), $request->get('password'));
 
-            if (filter_var(config()->get('TWO_FA'), FILTER_VALIDATE_BOOLEAN)) {
+            if (filter_var(config()->get('auth.two_fa'), FILTER_VALIDATE_BOOLEAN)) {
                 $response->set('code', $code);
             }
 

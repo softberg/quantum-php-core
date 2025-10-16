@@ -48,10 +48,10 @@ class DebuggerTest extends AppTestCase
 
     public function testDebuggerIsEnabled()
     {
-        config()->set('debug', true);
+        config()->set('app.debug', true);
         $this->assertTrue($this->debugger->isEnabled());
 
-        config()->set('debug', false);
+        config()->set('app.debug', false);
         $this->assertFalse($this->debugger->isEnabled());
     }
 

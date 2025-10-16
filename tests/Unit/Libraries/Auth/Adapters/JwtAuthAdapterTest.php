@@ -146,11 +146,11 @@ class JwtAuthAdapterTest extends AuthTestCase
         $this->assertArrayHasKey('refresh_token', $this->jwtAuth->signin('admin@qt.com', '123456789'));
     }
 
-    public function testApiVerify()
+    public function testApiVerifyOtp()
     {
-        config()->set('TWO_FA', true);
+        config()->set('auth.two_fa', true);
 
-        config()->set('otp_expires', 2);
+        config()->set('auth.otp_expires', 2);
 
         $otp_token = $this->jwtAuth->signin('admin@qt.com', 'qwerty');
 
@@ -163,9 +163,9 @@ class JwtAuthAdapterTest extends AuthTestCase
 
     public function testApiSigninWithoutVerification()
     {
-        config()->set('TWO_FA', false);
+        config()->set('auth.two_fa', false);
 
-        config()->set('otp_expires', 2);
+        config()->set('auth.otp_expires', 2);
 
         $this->assertArrayHasKey('access_token', $this->jwtAuth->signin('admin@qt.com', 'qwerty'));
 
@@ -174,18 +174,18 @@ class JwtAuthAdapterTest extends AuthTestCase
 
     public function testApiSigninWithVerification()
     {
-        config()->set('TWO_FA', true);
+        config()->set('auth.two_fa', true);
 
-        config()->set('otp_expires', 2);
+        config()->set('auth.otp_expires', 2);
 
         $this->assertIsString($this->jwtAuth->signin('admin@qt.com', 'qwerty'));
     }
 
     public function testApiResendOtp()
     {
-        config()->set('TWO_FA', true);
+        config()->set('auth.two_fa', true);
 
-        config()->set('otp_expires', 2);
+        config()->set('auth.otp_expires', 2);
 
         $otp_token = $this->jwtAuth->signin('admin@qt.com', 'qwerty');
 

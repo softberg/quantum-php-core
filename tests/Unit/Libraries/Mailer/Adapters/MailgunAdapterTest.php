@@ -2,15 +2,14 @@
 
 namespace Quantum\Tests\Unit\Libraries\Mailer\Adapters;
 
-use Quantum\Libraries\Storage\Factories\FileSystemFactory;
+use Quantum\Tests\Unit\Libraries\Mailer\MailerTestCase;
 use Quantum\Libraries\Mailer\Contracts\MailerInterface;
 use Quantum\Libraries\Mailer\Adapters\MailgunAdapter;
-use Quantum\Tests\Unit\AppTestCase;
 
-class MailgunAdapterTest extends AppTestCase
+class MailgunAdapterTest extends MailerTestCase
 {
 
-    private $adapter;
+    protected $adapter;
 
     public function setUp(): void
     {
@@ -22,19 +21,6 @@ class MailgunAdapterTest extends AppTestCase
         ];
 
         $this->adapter = new MailgunAdapter($config);
-    }
-
-    public function tearDown(): void
-    {
-        parent::tearDown();
-
-        $fs = FileSystemFactory::get();
-
-        $emailFile = base_dir() . DS . 'shared' . DS . 'emails' . DS . $this->adapter->getMessageId() . '.eml';
-
-        if($fs->exists($emailFile)) {
-            $fs->remove($emailFile);
-        }
     }
 
     public function testMailgunAdapterInstance()

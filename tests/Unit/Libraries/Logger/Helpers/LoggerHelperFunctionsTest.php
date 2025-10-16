@@ -20,7 +20,7 @@ class LoggerHelperFunctionsTest extends AppTestCase
     {
         parent::setUp();
 
-        config()->set('debug', true);
+        config()->set('app.debug', true);
 
         $store = new DebuggerStore();
 
@@ -36,7 +36,7 @@ class LoggerHelperFunctionsTest extends AppTestCase
 
     public function testLoggerHelperGetDefaultLoggerAdapter()
     {
-        config()->set('debug', false);
+        config()->set('app.debug', false);
 
         $logger = logger();
 
@@ -47,7 +47,7 @@ class LoggerHelperFunctionsTest extends AppTestCase
 
     public function testLoggerHelperGetSingleLoggerAdapter()
     {
-        config()->set('debug', false);
+        config()->set('app.debug', false);
 
         $logger = logger(Logger::SINGLE);
 
@@ -58,7 +58,7 @@ class LoggerHelperFunctionsTest extends AppTestCase
 
     public function testLoggerHelperGetDailyLoggerAdapter()
     {
-        config()->set('debug', false);
+        config()->set('app.debug', false);
 
         $logger = logger(Logger::DAILY);
 
@@ -78,7 +78,7 @@ class LoggerHelperFunctionsTest extends AppTestCase
 
     public function testLoggerHelperTryToGetMessageLoggerAdapterInNonDebugMode()
     {
-        config()->set('debug', false);
+        config()->set('app.debug', false);
 
         $this->expectException(LoggerException::class);
 
