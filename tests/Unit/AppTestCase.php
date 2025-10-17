@@ -6,7 +6,6 @@ use Quantum\Libraries\Storage\Factories\FileSystemFactory;
 use Quantum\App\Factories\AppFactory;
 use Quantum\Environment\Environment;
 use PHPUnit\Framework\TestCase;
-use Quantum\Config\Config;
 use Quantum\Loader\Setup;
 use ReflectionClass;
 use Quantum\App\App;
@@ -32,14 +31,6 @@ abstract class AppTestCase extends TestCase
             ->load(new Setup('config', 'env'));
 
         config()->import(new Setup('config', 'app'));
-
-//        $coreDependencies = [
-//            \Quantum\Loader\Loader::class => \Quantum\Loader\Loader::class,
-//            \Quantum\Http\Request::class => \Quantum\Http\Request::class,
-//            \Quantum\Http\Response::class => \Quantum\Http\Response::class,
-//        ];
-//
-//        Di::registerDependencies($coreDependencies);
 
         $this->fs = FileSystemFactory::get();
     }
