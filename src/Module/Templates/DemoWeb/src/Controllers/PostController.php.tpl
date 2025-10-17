@@ -69,7 +69,7 @@ class PostController extends BaseController
         $paginatedPosts = $this->postService->getPosts($perPage, $currentPage, $search);
 
         $this->view->setParams([
-            'title' => t('common.posts') . ' | ' . config()->get('app_name'),
+            'title' => t('common.posts') . ' | ' . config()->get('app.name'),
             'posts' => $this->postService->transformData($paginatedPosts->data()->all()),
             'pagination' => $paginatedPosts
         ]);
@@ -96,7 +96,7 @@ class PostController extends BaseController
         }
 
         $this->view->setParams([
-            'title' => $post->title . ' | ' . config()->get('app_name'),
+            'title' => $post->title . ' | ' . config()->get('app.name'),
             'post' => new RawParam(current($this->postService->transformData([$post]))),
             'referer' => $ref,
         ]);
@@ -114,7 +114,7 @@ class PostController extends BaseController
         $myPosts = $this->postService->getMyPosts(auth()->user()->uuid);
 
         $this->view->setParams([
-            'title' => t('common.my_posts') . ' | ' . config()->get('app_name'),
+            'title' => t('common.my_posts') . ' | ' . config()->get('app.name'),
             'posts' => $this->postService->transformData($myPosts->all())
         ]);
 
@@ -131,7 +131,7 @@ class PostController extends BaseController
         $ref = $request->get('ref', 'posts');
 
         $this->view->setParams([
-            'title' => t('common.new_post') . ' | ' . config()->get('app_name'),
+            'title' => t('common.new_post') . ' | ' . config()->get('app.name'),
             'referer' => $ref
         ]);
 
@@ -181,7 +181,7 @@ class PostController extends BaseController
         $post = $this->postService->getPost($postUuid);
 
         $this->view->setParams([
-            'title' => $post->title . ' | ' . config()->get('app_name'),
+            'title' => $post->title . ' | ' . config()->get('app.name'),
             'post' => $post->asArray(),
             'referer' => $ref
         ]);

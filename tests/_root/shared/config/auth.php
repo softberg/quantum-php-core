@@ -17,5 +17,8 @@ return [
             'nbf' => time() + 1,
             'exp' => time() + 3600 // 1 hour
         ]
-    ]
+    ],
+
+    'two_fa' => env('TWO_FA', true),
+    'otp_expires' => 2,
 ];

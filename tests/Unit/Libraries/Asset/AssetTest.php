@@ -14,7 +14,7 @@ class AssetTest extends AppTestCase
     {
         parent::setUp();
 
-        config()->set('base_url', 'http://mydomain.com');
+        config()->set('app.base_url', 'http://mydomain.com');
 
         $this->asset = new Asset(Asset::JS, 'scripts/jquery.js', 'jQuery');
 

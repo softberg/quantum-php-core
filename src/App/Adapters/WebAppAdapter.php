@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.8
+ * @since 2.9.9
  */
 
 namespace Quantum\App\Adapters;
@@ -69,7 +69,7 @@ class WebAppAdapter extends AppAdapter
         parent::__construct();
 
         $this->loadEnvironment();
-        $this->loadConfig();
+        $this->loadAppConfig();
 
         $this->request = Di::get(Request::class);
         $this->response = Di::get(Response::class);

@@ -44,7 +44,7 @@ class ZipAdapterTest extends AppTestCase
 
         $this->assertTrue(
             $this->zipArchive->addFile(
-                base_dir() . DS . 'shared' . DS . 'config' . DS . 'config.php',
+                base_dir() . DS . 'shared' . DS . 'config' . DS . 'app.php',
                 'app.conf')
         );
 
@@ -61,7 +61,7 @@ class ZipAdapterTest extends AppTestCase
     public function testAddMultipleFilesToZip()
     {
         $this->assertTrue($this->zipArchive->addMultipleFiles([
-            'app.conf' => base_dir() . DS . 'shared' . DS . 'config' . DS . 'config.php',
+            'app.conf' => base_dir() . DS . 'shared' . DS . 'config' . DS . 'app.php',
             'session.conf' => base_dir() . DS . 'shared' . DS . 'config' . DS . 'session.php'
         ]));
 
@@ -73,7 +73,7 @@ class ZipAdapterTest extends AppTestCase
     public function testZipCount()
     {
         $this->assertTrue($this->zipArchive->addMultipleFiles([
-            'app.conf' => base_dir() . DS . 'shared' . DS . 'config' . DS . 'config.php',
+            'app.conf' => base_dir() . DS . 'shared' . DS . 'config' . DS . 'app.php',
             'session.conf' => base_dir() . DS . 'shared' . DS . 'config' . DS . 'session.php'
         ]));
 
@@ -98,7 +98,7 @@ class ZipAdapterTest extends AppTestCase
     public function testDeleteFileFromZip()
     {
         $this->zipArchive->addMultipleFiles([
-            'app.conf' => base_dir() . DS . 'shared' . DS . 'config' . DS . 'config.php',
+            'app.conf' => base_dir() . DS . 'shared' . DS . 'config' . DS . 'app.php',
             'session.conf' => base_dir() . DS . 'shared' . DS . 'config' . DS . 'session.php'
         ]);
 
@@ -118,7 +118,7 @@ class ZipAdapterTest extends AppTestCase
     public function testDeleteMultipleFilesFromZip()
     {
         $this->zipArchive->addMultipleFiles([
-            'app.conf' => base_dir() . DS . 'shared' . DS . 'config' . DS . 'config.php',
+            'app.conf' => base_dir() . DS . 'shared' . DS . 'config' . DS . 'app.php',
             'directoryOne/session.conf' => base_dir() . DS . 'shared' . DS . 'config' . DS . 'session.php'
         ]);
 

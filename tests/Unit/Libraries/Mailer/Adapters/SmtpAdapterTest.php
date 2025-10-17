@@ -2,16 +2,15 @@
 
 namespace Quantum\Tests\Unit\Libraries\Mailer\Adapters;
 
-use Quantum\Libraries\Storage\Factories\FileSystemFactory;
+use Quantum\Tests\Unit\Libraries\Mailer\MailerTestCase;
 use Quantum\Libraries\Mailer\Contracts\MailerInterface;
 use Quantum\Libraries\Mailer\Adapters\SmtpAdapter;
-use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Loader\Setup;
 
-class SmtpAdapterTest extends AppTestCase
+class SmtpAdapterTest extends MailerTestCase
 {
 
-    private $adapter;
+    protected $adapter;
 
     public function setUp(): void
     {
@@ -22,19 +21,6 @@ class SmtpAdapterTest extends AppTestCase
         }
 
         $this->adapter = new SmtpAdapter(config()->get('mailer.smtp'));
-    }
-
-    public function tearDown(): void
-    {
-        parent::tearDown();
-
-        $fs = FileSystemFactory::get();
-
-        $emailFile = base_dir() . DS . 'shared' . DS . 'emails' . DS . $this->adapter->getMessageId() . '.eml';
-
-        if($fs->exists($emailFile)) {
-            $fs->remove($emailFile);
-        }
     }
 
     public function testSmtpAdapterInstance()

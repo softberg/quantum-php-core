@@ -26,7 +26,7 @@ abstract class IdiormDbalTestCase extends AppTestCase
 
         $this->setPrivateProperty(Database::class, 'instance', null);
 
-        config()->set('debug', true);
+        config()->set('app.debug', true);
 
         IdiormDbal::connect(['driver' => 'sqlite', 'database' => ':memory:']);
 

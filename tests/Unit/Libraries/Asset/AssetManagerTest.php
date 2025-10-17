@@ -15,7 +15,7 @@ class AssetManagerTest extends AppTestCase
     {
         parent::setUp();
 
-        config()->set('base_url', 'http://mydomain.com');
+        config()->set('app.base_url', 'http://mydomain.com');
 
         $this->assetManager = AssetManager::getInstance();
     }

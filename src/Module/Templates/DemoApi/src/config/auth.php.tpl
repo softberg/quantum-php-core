@@ -22,5 +22,23 @@ return [
             'nbf' => time() + 1,
             'exp' => time() + 3600,
         ]
-    ]
+    ],
+
+    /**
+     * ---------------------------------------------------------
+     * Two-factor authentication
+     * ---------------------------------------------------------
+     *
+     * Enables or disables 2-factor authentication
+     */
+    'two_fa' => env('TWO_FA', true),
+
+    /**
+     * ---------------------------------------------------------
+     * OTP expiration
+     * ---------------------------------------------------------
+     *
+     * OTP expires after minutes defined
+     */
+    'otp_expires' => 2,
 ];

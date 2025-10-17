@@ -25,6 +25,11 @@ class AppTest extends TestCase
         App::setBaseDir(PROJECT_ROOT);
     }
 
+    public function tearDown(): void
+    {
+        config()->flush();
+    }
+
     public function testAppGetAdapter()
     {
         $app = new App(new WebAppAdapter());
@@ -32,6 +37,8 @@ class AppTest extends TestCase
         $this->assertInstanceOf(WebAppAdapter::class, $app->getAdapter());
 
         $this->assertInstanceOf(AppInterface::class, $app->getAdapter());
+
+        config()->flush();
 
         $app = new App(new ConsoleAppAdapter());
 

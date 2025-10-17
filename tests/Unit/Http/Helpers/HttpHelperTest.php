@@ -33,6 +33,8 @@ class HttpHelperTest extends AppTestCase
 
     public function testBaseUrlWithoutModulePrefix()
     {
+        config()->set('app.base_url', null);
+
         $this->request->create('GET', 'https://example.com');
 
         $this->assertEquals('https://example.com', base_url());
@@ -40,6 +42,8 @@ class HttpHelperTest extends AppTestCase
 
     public function testBaseUrlWithModulePrefix()
     {
+        config()->set('app.base_url', null);
+
         $router = new Router($this->request);
 
         Router::setRoutes([

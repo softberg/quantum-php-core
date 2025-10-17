@@ -6,7 +6,6 @@ use Quantum\Libraries\Storage\Factories\FileSystemFactory;
 use Quantum\App\Factories\AppFactory;
 use Quantum\Environment\Environment;
 use PHPUnit\Framework\TestCase;
-use Quantum\Config\Config;
 use Quantum\Loader\Setup;
 use ReflectionClass;
 use Quantum\App\App;
@@ -25,22 +24,13 @@ abstract class AppTestCase extends TestCase
 
         AppFactory::create(App::WEB, PROJECT_ROOT);
 
-        Config::getInstance()->flush();
+        config()->flush();
 
         Environment::getInstance()
             ->setMutable(true)
             ->load(new Setup('config', 'env'));
 
-        Config::getInstance()
-            ->load(new Setup('config', 'config'));
-
-        $coreDependencies = [
-            \Quantum\Loader\Loader::class => \Quantum\Loader\Loader::class,
-            \Quantum\Http\Request::class => \Quantum\Http\Request::class,
-            \Quantum\Http\Response::class => \Quantum\Http\Response::class,
-        ];
-
-        Di::registerDependencies($coreDependencies);
+        config()->import(new Setup('config', 'app'));
 
         $this->fs = FileSystemFactory::get();
     }
@@ -48,6 +38,7 @@ abstract class AppTestCase extends TestCase
     public function tearDown(): void
     {
         AppFactory::destroy(App::WEB);
+        config()->flush();
         Di::reset();
     }
 

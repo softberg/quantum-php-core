@@ -43,7 +43,7 @@ class PharAdapterTest extends AppTestCase
 
         $this->assertTrue(
             $this->pharArchive->addFile(
-                base_dir() . DS . 'shared' . DS . 'config' . DS . 'config.php',
+                base_dir() . DS . 'shared' . DS . 'config' . DS . 'app.php',
                 'app.conf')
         );
 
@@ -64,7 +64,7 @@ class PharAdapterTest extends AppTestCase
     public function testAddMultipleFilesToPhar()
     {
         $this->assertTrue($this->pharArchive->addMultipleFiles([
-            'app.conf' => base_dir() . DS . 'shared' . DS . 'config' . DS . 'config.php',
+            'app.conf' => base_dir() . DS . 'shared' . DS . 'config' . DS . 'app.php',
             'session.conf' => base_dir() . DS . 'shared' . DS . 'config' . DS . 'session.php'
         ]));
 
@@ -76,7 +76,7 @@ class PharAdapterTest extends AppTestCase
     public function testPharCount()
     {
         $this->assertTrue($this->pharArchive->addMultipleFiles([
-            'app.conf' => base_dir() . DS . 'shared' . DS . 'config' . DS . 'config.php',
+            'app.conf' => base_dir() . DS . 'shared' . DS . 'config' . DS . 'app.php',
             'session.conf' => base_dir() . DS . 'shared' . DS . 'config' . DS . 'session.php'
         ]));
 
@@ -102,7 +102,7 @@ class PharAdapterTest extends AppTestCase
     public function testDeleteFileFromPhar()
     {
         $this->pharArchive->addMultipleFiles([
-            'app.conf' => base_dir() . DS . 'shared' . DS . 'config' . DS . 'config.php',
+            'app.conf' => base_dir() . DS . 'shared' . DS . 'config' . DS . 'app.php',
             'session.conf' => base_dir() . DS . 'shared' . DS . 'config' . DS . 'session.php'
         ]);
 
@@ -122,7 +122,7 @@ class PharAdapterTest extends AppTestCase
     public function testDeleteMultipleFilesUsingNameFromPhar()
     {
         $this->pharArchive->addMultipleFiles([
-            'app.conf' => base_dir() . DS . 'shared' . DS . 'config' . DS . 'config.php',
+            'app.conf' => base_dir() . DS . 'shared' . DS . 'config' . DS . 'app.php',
             'directoryOne/session.conf' => base_dir() . DS . 'shared' . DS . 'config' . DS . 'session.php'
         ]);
 

@@ -23,7 +23,7 @@ class AssetHelperFunctionsTest extends AppTestCase
 
     public function testAssetUrl()
     {
-        config()->set('base_url', 'http://mydomain.com');
+        config()->set('app.base_url', 'http://mydomain.com');
 
         $this->assertEquals('http://mydomain.com/assets/css/style.css', asset()->url('css/style.css'));
 

@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.9
  */
 
 namespace Quantum\Debugger;
@@ -128,7 +128,7 @@ class Debugger
      */
     public function isEnabled(): bool
     {
-        return filter_var(config()->get('debug'), FILTER_VALIDATE_BOOLEAN);
+        return filter_var(config()->get('app.debug'), FILTER_VALIDATE_BOOLEAN);
     }
 
     /**

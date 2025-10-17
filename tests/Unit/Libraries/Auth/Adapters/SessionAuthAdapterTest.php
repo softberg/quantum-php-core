@@ -124,40 +124,40 @@ class SessionAuthAdapterTest extends AuthTestCase
         $this->assertTrue($this->sessionAuth->signin('admin@qt.com', '123456789'));
     }
 
-    public function testWebWithoutVerification()
+    public function testWebVerifyOtp()
     {
-        config()->set('TWO_FA', false);
+        config()->set('auth.two_fa', true);
 
-        config()->set('otp_expiry_time', 2);
-
-        $this->assertTrue($this->sessionAuth->signin('admin@qt.com', 'qwerty'));
-    }
-
-    public function testWebWithVerification()
-    {
-        config()->set('TWO_FA', true);
-
-        config()->set('otp_expires', 2);
-
-        $this->assertIsString($this->sessionAuth->signin('admin@qt.com', 'qwerty'));
-    }
-
-    public function testWebVerify()
-    {
-        config()->set('TWO_FA', true);
-
-        config()->set('otp_expires', 2);
+        config()->set('auth.otp_expires', 2);
 
         $otp_token = $this->sessionAuth->signin('admin@qt.com', 'qwerty');
 
         $this->assertTrue($this->sessionAuth->verifyOtp(123456789, $otp_token));
     }
 
+    public function testWebSigninWithoutVerification()
+    {
+        config()->set('auth.two_fa', false);
+
+        config()->set('auth.otp_expires', 2);
+
+        $this->assertTrue($this->sessionAuth->signin('admin@qt.com', 'qwerty'));
+    }
+
+    public function testWebSigninWithVerification()
+    {
+        config()->set('auth.two_fa', true);
+
+        config()->set('auth.otp_expires', 2);
+
+        $this->assertIsString($this->sessionAuth->signin('admin@qt.com', 'qwerty'));
+    }
+
     public function testWebResendOtp()
     {
-        config()->set('TWO_FA', true);
+        config()->set('auth.two_fa', true);
 
-        config()->set('otp_expires', 2);
+        config()->set('auth.otp_expires', 2);
 
         $otp_token = $this->sessionAuth->signin('admin@qt.com', 'qwerty');
 

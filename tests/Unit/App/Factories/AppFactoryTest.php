@@ -26,6 +26,11 @@ class AppFactoryTest extends TestCase
         $this->assertInstanceOf(App::class, $app);
     }
 
+    public function tearDown(): void
+    {
+        config()->flush();
+    }
+
     public function testAppFactoryConsoleAdapter()
     {
         $app = AppFactory::create(App::CONSOLE, PROJECT_ROOT);

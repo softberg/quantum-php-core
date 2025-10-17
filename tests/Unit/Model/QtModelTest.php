@@ -21,7 +21,7 @@ class QtModelTest extends AppTestCase
     {
         parent::setUp();
 
-        config()->set('debug', true);
+        config()->set('app.debug', true);
 
         IdiormDbal::connect(['driver' => 'sqlite', 'database' => ':memory:']);
 

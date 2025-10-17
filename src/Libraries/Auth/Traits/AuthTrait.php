@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 2.9.9
  */
 
 namespace Quantum\Libraries\Auth\Traits;
@@ -249,7 +249,7 @@ trait AuthTrait
 
         $time = new DateTime();
 
-        $time->add(new DateInterval('PT' . config()->get('otp_expires') . 'M'));
+        $time->add(new DateInterval('PT' . config()->get('auth.otp_expires') . 'M'));
 
         $this->authService->update(
             $this->keyFields[AuthKeys::USERNAME],
@@ -344,7 +344,7 @@ trait AuthTrait
      */
     protected function generateToken(string $val = null): string
     {
-        return base64_encode($this->hasher->hash($val ?: config()->get('app_key')));
+        return base64_encode($this->hasher->hash($val ?: config()->get('app.key')));
     }
 
     /**
@@ -356,8 +356,8 @@ trait AuthTrait
     {
         $fullName = ($user->hasField('firstname') && $user->hasField('lastname')) ? $user->getFieldValue('firstname') . ' ' . $user->getFieldValue('lastname') : '';
 
-        $appEmail = config()->get('app_email') ?: '';
-        $appName = config()->get('app_name') ?: '';
+        $appEmail = config()->get('app.email') ?: '';
+        $appName = config()->get('app.name') ?: '';
 
         $this->mailer->setFrom($appEmail, $appName)
             ->setAddress($user->getFieldValue($this->keyFields[AuthKeys::USERNAME]), $fullName)
@@ -394,6 +394,6 @@ trait AuthTrait
      */
     protected function isTwoFactorEnabled(): bool
     {
-        return filter_var(config()->get('TWO_FA'), FILTER_VALIDATE_BOOLEAN);
+        return filter_var(config()->get('auth.two_fa'), FILTER_VALIDATE_BOOLEAN);
     }
 }

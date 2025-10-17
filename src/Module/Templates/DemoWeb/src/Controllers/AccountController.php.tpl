@@ -55,7 +55,7 @@ class AccountController extends BaseController
     public function form(Response $response)
     {
         $this->view->setParams([
-            'title' => t('common.account_settings') . ' | ' . config()->get('app_name'),
+            'title' => t('common.account_settings') . ' | ' . config()->get('app.name'),
         ]);
 
         $response->html($this->view->render('account/form'));
