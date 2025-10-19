@@ -46,7 +46,7 @@ function framework_dir(): string
  * @param string|null $moduleDir
  * @return string
  */
-function modules_dir(string $moduleDir = null): string
+function modules_dir(?string $moduleDir = null): string
 {
     return $moduleDir ?? App::getBaseDir() . DS . 'modules';
 }

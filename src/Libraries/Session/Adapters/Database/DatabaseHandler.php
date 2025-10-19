@@ -104,9 +104,10 @@ class DatabaseHandler implements SessionHandlerInterface
     /**
      * @inheritDoc
      */
-    public function gc($max_lifetime): bool
+    public function gc($max_lifetime): int|false
     {
         $old = time() - $max_lifetime;
-        return $this->sessionModel->criteria('ttl', '<', $old)->deleteMany();
+        $deleted = $this->sessionModel->criteria('ttl', '<', $old)->deleteMany();
+        return $deleted !== false ? $deleted : false;
     }
 }

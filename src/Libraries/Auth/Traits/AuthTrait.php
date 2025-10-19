@@ -92,7 +92,7 @@ trait AuthTrait
      * @param array|null $customData
      * @return User
      */
-    public function signup(array $userData, array $customData = null): User
+    public function signup(array $userData, ?array $customData = null): User
     {
         $activationToken = $this->generateToken();
 
@@ -342,7 +342,7 @@ trait AuthTrait
      * @param string|null $val
      * @return string
      */
-    protected function generateToken(string $val = null): string
+    protected function generateToken(?string $val = null): string
     {
         return base64_encode($this->hasher->hash($val ?: config()->get('app.key')));
     }

@@ -146,7 +146,7 @@ class IdiormDbal implements DbalInterface, RelationalInterface
      */
     public function __construct(
         string $table,
-        string $modelName = null,
+        ?string $modelName = null,
         string $idColumn = 'id',
         array $foreignKeys = [],
         array $hidden = []

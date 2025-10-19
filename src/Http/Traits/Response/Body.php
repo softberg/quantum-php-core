@@ -60,7 +60,7 @@ trait Body
      * @param string|null $default
      * @return mixed
      */
-    public static function get(string $key, string $default = null)
+    public static function get(string $key, ?string $default = null)
     {
         return self::has($key) ? self::$__response[$key] : $default;
     }
@@ -100,7 +100,7 @@ trait Body
      * @param array|null $data
      * @param int|null $code
      */
-    public static function json(array $data = null, int $code = null)
+    public static function json(?array $data = null, ?int $code = null)
     {
         self::setContentType(ContentType::JSON);
 
@@ -119,7 +119,7 @@ trait Body
      * @param array|null $data
      * @param int|null $code
      */
-    public static function jsonp(string $callback, ?array $data = null, int $code = null)
+    public static function jsonp(string $callback, ?array $data = null, ?int $code = null)
     {
         self::setContentType(ContentType::JSONP);
 
@@ -149,7 +149,7 @@ trait Body
      * @param array|null $data
      * @param int|null $code
      */
-    public static function xml(array $data = null, $root = '<data></data>', int $code = null)
+    public static function xml(?array $data = null, $root = '<data></data>', ?int $code = null)
     {
         self::setContentType(ContentType::XML);
 
@@ -169,7 +169,7 @@ trait Body
      * @param string $html
      * @param int|null $code
      */
-    public static function html(string $html, int $code = null)
+    public static function html(string $html, ?int $code = null)
     {
         self::setContentType(ContentType::HTML);
 
