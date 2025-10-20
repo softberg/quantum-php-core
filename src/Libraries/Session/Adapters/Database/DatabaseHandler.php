@@ -108,6 +108,6 @@ class DatabaseHandler implements SessionHandlerInterface
     {
         $old = time() - $max_lifetime;
         $deleted = $this->sessionModel->criteria('ttl', '<', $old)->deleteMany();
-        return $deleted !== false ? $deleted : false;
+        return $deleted === false ? false : (int)$deleted;
     }
 }
