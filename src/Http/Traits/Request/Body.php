@@ -47,7 +47,7 @@ trait Body
      * @param bool $raw
      * @return mixed
      */
-    public static function get(string $key, string $default = null, bool $raw = false)
+    public static function get(string $key, ?string $default = null, bool $raw = false)
     {
         if(!self::has($key)) {
             return $default;

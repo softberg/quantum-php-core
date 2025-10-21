@@ -59,7 +59,7 @@ trait Criteria
      * @inheritDoc
      * @throws DatabaseException
      */
-    public function having(string $column, string $operator, string $value = null): DbalInterface
+    public function having(string $column, string $operator, ?string $value = null): DbalInterface
     {
         if (!key_exists($operator, $this->operators)) {
             throw DatabaseException::operatorNotSupported($operator);
@@ -98,7 +98,7 @@ trait Criteria
      * @param string|null $func
      * @throws DatabaseException
      */
-    protected function addCriteria(string $column, string $operator, $value, string $func = null)
+    protected function addCriteria(string $column, string $operator, $value, ?string $func = null)
     {
         if ($operator == '#=#') {
             $this->getOrmModel()->where_raw($column . ' = ' . $value);

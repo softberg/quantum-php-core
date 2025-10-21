@@ -21,7 +21,7 @@ use Quantum\App\Exceptions\StopExecutionException;
  * @return mixed
  * @throws StopExecutionException
  */
-function stop(Closure $closure = null, ?int $code = 0)
+function stop(?Closure $closure = null, ?int $code = 0)
 {
     if ($closure) {
         $closure();

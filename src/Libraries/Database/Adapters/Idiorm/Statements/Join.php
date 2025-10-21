@@ -31,7 +31,7 @@ trait Join
      * @inheritDoc
      * @throws DatabaseException
      */
-    public function join(string $table, array $constraint, string $tableAlias = null): DbalInterface
+    public function join(string $table, array $constraint, ?string $tableAlias = null): DbalInterface
     {
         $this->getOrmModel()->join($table, $constraint, $tableAlias);
         return $this;
