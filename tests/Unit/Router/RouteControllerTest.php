@@ -32,11 +32,11 @@ namespace Quantum\Tests\Unit\Router {
         {
             $this->expectException(RouteControllerException::class);
 
-            $this->expectExceptionMessage('undefined_method');
+            $this->expectExceptionMessage('Action `undefinedAction` not defined');
 
             $controller = new SomeController();
 
-            $controller->undefinedMethod();
+            $controller->undefinedAction();
         }
 
     }

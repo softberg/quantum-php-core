@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 2.9.9
  */
 
 namespace Quantum\Router;
@@ -83,6 +83,6 @@ abstract class RouteController
      */
     public function __call(string $method, array $arguments)
     {
-        throw RouteControllerException::undefinedMethod($method);
+        throw RouteControllerException::actionNotDefined($method);
     }
 }
