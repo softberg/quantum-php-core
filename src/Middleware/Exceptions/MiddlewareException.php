@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 2.9.9
  */
 
 namespace Quantum\Middleware\Exceptions;
@@ -22,14 +22,6 @@ use Quantum\App\Exceptions\BaseException;
  */
 class MiddlewareException extends BaseException
 {
-    /**
-     * @param string $name
-     * @return MiddlewareException
-     */
-    public static function notDefined(string $name): MiddlewareException
-    {
-        return new static(t('exception.middleware_not_defined', $name), E_WARNING);
-    }
 
     /**
      * @param string $name
@@ -37,6 +29,6 @@ class MiddlewareException extends BaseException
      */
     public static function middlewareNotFound(string $name): MiddlewareException
     {
-        return new static(t('exception.middleware_not_found', $name), E_WARNING);
+        return new static("Middleware class `$name` not found.", E_ERROR);
     }
 }

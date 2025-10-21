@@ -9,11 +9,12 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 2.9.9
  */
 
 namespace Quantum\Middleware;
 
+use Quantum\Middleware\Exceptions\MiddlewareException;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 
@@ -50,6 +51,7 @@ class MiddlewareManager
      * @param Request $request
      * @param Response $response
      * @return array
+     * @throws MiddlewareException
      */
     public function applyMiddlewares(Request $request, Response $response): array
     {
@@ -72,16 +74,15 @@ class MiddlewareManager
      * @param Request $request
      * @param Response $response
      * @return QtMiddleware
+     * @throws MiddlewareException
      */
     private function getMiddleware(Request $request, Response $response): QtMiddleware
     {
-        $middlewareName = current($this->middlewares);
+        $middlewareClass = module_base_namespace() . '\\' . $this->module . '\\Middlewares\\' . current($this->middlewares);
 
-        $middlewarePath = modules_dir() . DS . $this->module . DS . 'Middlewares' . DS . $middlewareName . '.php';
-
-        require_once $middlewarePath;
-
-        $middlewareClass = module_base_namespace() . '\\' . $this->module . '\\Middlewares\\' . $middlewareName;
+        if (!class_exists($middlewareClass)) {
+            throw MiddlewareException::middlewareNotFound($middlewareClass);
+        }
 
         return new $middlewareClass($request, $response);
     }

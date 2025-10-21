@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 2.9.9
  */
 
 namespace Quantum\Router;
@@ -56,18 +56,15 @@ class RouteDispatcher
     /**
      * Loads and gets the current route's controller instance.
      * @return RouteController
-     * @throws DiException
-     * @throws ReflectionException
+     * @throws RouteControllerException
      */
     private static function resolveController(): RouteController
     {
-        $controllerName = current_controller();
-        $moduleName = current_module();
+        $controllerClass = module_base_namespace() . '\\' . current_module() . '\\Controllers\\' . current_controller();
 
-        $controllerPath = modules_dir() . DS . $moduleName . DS . 'Controllers' . DS . $controllerName . '.php';
-        $controllerClass = module_base_namespace() . '\\' . $moduleName . '\\Controllers\\' . $controllerName;
-
-        require_once $controllerPath;
+        if (!class_exists($controllerClass)) {
+            throw RouteControllerException::controllerNotDefined($controllerClass);
+        }
 
         return new $controllerClass();
     }
