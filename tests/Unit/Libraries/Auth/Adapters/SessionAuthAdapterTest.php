@@ -17,6 +17,8 @@ class SessionAuthAdapterTest extends AuthTestCase
     {
         parent::setUp();
 
+        config()->set('auth.two_fa', false);
+
         $this->sessionAuth = new SessionAuthAdapter($this->authService, $this->mailer, new Hasher);
 
         $admin = $this->sessionAuth->signup($this->adminUser);
@@ -117,7 +119,7 @@ class SessionAuthAdapterTest extends AuthTestCase
 
     public function testWebForgetReset()
     {
-        $resetToken = $this->sessionAuth->forget('admin@qt.com', 'tpl');
+        $resetToken = $this->sessionAuth->forget('admin@qt.com');
 
         $this->sessionAuth->reset($resetToken, '123456789');
 

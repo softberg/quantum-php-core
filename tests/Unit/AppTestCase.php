@@ -24,13 +24,9 @@ abstract class AppTestCase extends TestCase
 
         AppFactory::create(App::WEB, PROJECT_ROOT);
 
-        config()->flush();
-
         Environment::getInstance()
             ->setMutable(true)
             ->load(new Setup('config', 'env'));
-
-        config()->import(new Setup('config', 'app'));
 
         $this->fs = FileSystemFactory::get();
     }

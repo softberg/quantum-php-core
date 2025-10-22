@@ -76,7 +76,9 @@ namespace Quantum\Tests\Unit\Libraries\Auth {
         {
             parent::setUp();
 
-            config()->import(new Setup('config', 'database'));
+            if (!config()->has('database')) {
+                config()->import(new Setup('config', 'database'));
+            }
 
             config()->set('database.default', 'sleekdb');
 

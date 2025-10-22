@@ -11,6 +11,8 @@ class SessionHelperFunctionsTest extends AppTestCase
 {
     public function testSessionHelperGetDefaultSessionAdapter()
     {
+        config()->delete('session');
+
         $session = session();
 
         $this->assertInstanceOf(Session::class, $session);

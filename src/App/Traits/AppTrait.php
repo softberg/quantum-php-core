@@ -145,7 +145,9 @@ trait AppTrait
      */
     protected function loadAppConfig()
     {
-        Config::getInstance()->import(new Setup('config', 'app'));
+        if (!config()->has('app')) {
+            Config::getInstance()->import(new Setup('config', 'app'));
+        }
     }
 
     /**
