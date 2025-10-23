@@ -14,7 +14,6 @@
 
 namespace {{MODULE_NAMESPACE}}\Controllers;
 
-use Quantum\Libraries\Auth\Contracts\AuthenticatableInterface;
 use Quantum\Service\Factories\ServiceFactory;
 use {{MODULE_NAMESPACE}}\Services\AuthService;
 use Quantum\Libraries\Hasher\Hasher;
