@@ -15,7 +15,7 @@
 namespace {{MODULE_NAMESPACE}}\Controllers;
 
 use Quantum\Service\Factories\ServiceFactory;
-use {{MODULE_NAMESPACE}}\PostService;
+use {{MODULE_NAMESPACE}}\Services\PostService;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 
