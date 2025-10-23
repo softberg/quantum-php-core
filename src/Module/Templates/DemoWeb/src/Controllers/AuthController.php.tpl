@@ -17,6 +17,7 @@ namespace {{MODULE_NAMESPACE}}\Controllers;
 use Quantum\Libraries\Auth\Exceptions\AuthException;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
+use {{MODULE_NAMESPACE}}\Enums\Role;
 
 /**
  * Class AuthController
@@ -101,7 +102,13 @@ class AuthController extends BaseController
     public function signup(Request $request, Response $response)
     {
         if ($request->isMethod('post')) {
-            auth()->signup($request->all());
+            $userData = $request->all();
+
+            $userData['uuid'] =  uuid_ordered();
+            $userData['role'] = Role::EDITOR;
+
+            auth()->signup($userData);
+
             session()->setFlash('success', t('common.check_email_signup'));
             redirect(base_url(true) . '/' . current_lang() . '/signup');
         } else {

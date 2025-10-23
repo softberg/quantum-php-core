@@ -19,7 +19,11 @@
                 <li>
                     <a class="dropdown-trigger login-list" href="#!" data-target="dropdown1">
                         <span class="hide-on-small-only show-on-medium-and-up">
-                            <i class="material-icons left">person</i>
+                            <?php if (auth()->user()->image): ?>
+                                <img src="<?php echo base_url() . '/uploads/' . auth()->user()->uuid . '/' . auth()->user()->image ?>" alt="Avatar" class="circle left user-avatar">
+                            <?php else: ?>
+                                <i class="material-icons left">person</i>
+                            <?php endif; ?>
                             <?php echo auth()->user()->firstname . ' ' . auth()->user()->lastname ?>
                             <i class="material-icons right">arrow_drop_down</i>
                         </span>

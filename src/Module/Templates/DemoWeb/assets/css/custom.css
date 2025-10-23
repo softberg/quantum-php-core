@@ -298,6 +298,13 @@ a:hover {
     margin-top: 6px;
 }
 
+.user-avatar {
+    width:32px;
+    height:32px;
+    object-fit:cover;
+    margin-top: 18px;
+    margin-right:8px;
+}
 
 .post-item {
     margin-bottom: 15px;

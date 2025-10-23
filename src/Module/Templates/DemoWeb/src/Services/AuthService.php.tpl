@@ -94,9 +94,6 @@ class AuthService extends QtService implements AuthServiceInterface
      */
     public function add(array $data): AuthUser
     {
-        $data['uuid'] = $data['uuid'] ?? uuid_ordered();
-        $data['role'] = $data['role'] ?? 'editor';
-
         $this->createUserDirectory($data['uuid']);
 
         $user = $this->model->create();
@@ -149,6 +146,7 @@ class AuthService extends QtService implements AuthServiceInterface
             'role' => ['name' => 'role', 'visible' => true],
             'username' => ['name' => 'email', 'visible' => true],
             'password' => ['name' => 'password', 'visible' => false],
+            'image' => ['name' => 'image', 'visible' => true],
             'activationToken' => ['name' => 'activation_token', 'visible' => false],
             'rememberToken' => ['name' => 'remember_token', 'visible' => false],
             'resetToken' => ['name' => 'reset_token', 'visible' => false],
@@ -170,6 +168,10 @@ class AuthService extends QtService implements AuthServiceInterface
      */
     private function createUserDirectory(string $uuid)
     {
-        fs()->makeDirectory(uploads_dir() . DS . $uuid);
+        $userDirectory = uploads_dir() . DS . $uuid;
+
+        if(!fs()->isDirectory($userDirectory)) {
+            fs()->makeDirectory($userDirectory);
+        }
     }
 }
