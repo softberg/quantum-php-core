@@ -14,11 +14,28 @@ Don’t hesitate to open a new issue if you find something worth improving.
 
 ## Local Setup (Fork-Based)
 
+Quantum consists of **two repositories** that serve different purposes:
+
+🧩 1. `quantum-php-core` **(The core framework)**
+
+If your goal is to contribute to the core framework (e.g., routing, DI, ORM, view engine, etc.):
+
 1. Fork the repository on GitHub and clone your fork locally:
 
 ```bash
 git clone https://github.com/your-username/quantum-php-core.git
 cd quantum-php-core
+composer install
+vendor/bin/phpunit --stderr
+```
+
+🚀 2. `quantum-php-project` **(Starter Project)**
+
+If you want to run Quantum project locally, see how modules work, or test the framework in action, use the starter project:
+
+```bash
+git clone https://github.com/softberg/quantum-php-project.git
+cd quantum-php-project
 composer install
 php qt serve
 ```
@@ -56,7 +73,7 @@ git push origin feature/your-feature-name
 
 ## Testing
 
-Quantum uses PHPUnit for tests. If you add new features, make sure they include unit tests — especially for database or HTTP-related components. For in-memory testing, use SQLite in-memory databases (for example, in tests using IdiormDbal).
+Quantum uses **PHPUnit** for tests. If you add new features, make sure they include unit tests — especially for database or HTTP-related components. For in-memory testing, use SQLite in-memory databases (for example, in tests using IdiormDbal).
 
 ---
 
