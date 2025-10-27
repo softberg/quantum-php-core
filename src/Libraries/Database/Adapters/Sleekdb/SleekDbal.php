@@ -370,7 +370,7 @@ class SleekDbal implements DbalInterface
     /**
      * Resets the builder state
      */
-    protected function resetBuilderState()
+    protected function resetBuilderState(): void
     {
         $this->criterias = [];
         $this->havings = [];
