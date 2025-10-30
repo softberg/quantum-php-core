@@ -89,7 +89,6 @@ class PostManagementController extends BaseController
             'title' => $request->get('title', null, true),
             'content' => $request->get('content', null, true),
             'image' => '',
-            'updated_at' => date('Y-m-d H:i:s'),
         ];
 
         if ($request->hasFile('image')) {
@@ -140,7 +139,6 @@ class PostManagementController extends BaseController
         $postData = [
             'title' => $request->get('title', null, true),
             'content' => $request->get('content', null, true),
-            'updated_at' => date('Y-m-d H:i:s'),
         ];
 
         $post = $this->postService->getPost($postUuid);

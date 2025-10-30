@@ -29,7 +29,7 @@ use ReflectionException;
 
 /**
  * Class AuthService
- * @package Modules\{{MODULE_NAME}}
+ * @package Modules\
  */
 class AuthService extends QtService implements AuthServiceInterface
 {
@@ -127,7 +127,7 @@ class AuthService extends QtService implements AuthServiceInterface
     /**
      * Delete users table
      */
-    public function deleteTable()
+    public function deleteAllUsers()
     {
         $this->model->deleteTable();
     }

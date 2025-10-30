@@ -13,14 +13,17 @@ return function ($route) {
     $route->post('[:alpha:2]?/verify', 'AuthController', 'verify')->middlewares(['Verify']);
 
     $route->group('auth', function ($route) {
-        $route->get('[:alpha:2]?/me', 'AuthController', 'me');
-        $route->get('[:alpha:2]?/signout', 'AuthController', 'signout')->middlewares(['Signout']);
         $route->get('[:alpha:2]?/my-posts', 'PostManagementController', 'myPosts')->middlewares(['Editor']);
         $route->post('[:alpha:2]?/my-posts/create', 'PostManagementController', 'create')->middlewares(['Editor']);
         $route->put('[:alpha:2]?/my-posts/amend/[uuid=:any]', 'PostManagementController', 'amend')->middlewares(['Editor', 'Owner']);
         $route->delete('[:alpha:2]?/my-posts/delete/[uuid=:any]', 'PostManagementController', 'delete')->middlewares(['Editor', 'Owner']);
         $route->delete('[:alpha:2]?/my-posts/delete-image/[uuid=:any]', 'PostManagementController', 'deleteImage')->middlewares(['Editor', 'Owner']);
+
+        $route->post('[:alpha:2]?/comments/create/[uuid=:any]', 'CommentController', 'create')->middlewares(['Comment']);
+
         $route->put('[:alpha:2]?/account-settings/update', 'AccountController', 'update')->middlewares(['Update']);
         $route->put('[:alpha:2]?/account-settings/update-password', 'AccountController', 'updatePassword')->middlewares(['Password']);
+        $route->get('[:alpha:2]?/signout', 'AuthController', 'signout')->middlewares(['Signout']);
+        $route->get('[:alpha:2]?/me', 'AuthController', 'me');
     })->middlewares(['Auth']);
 };

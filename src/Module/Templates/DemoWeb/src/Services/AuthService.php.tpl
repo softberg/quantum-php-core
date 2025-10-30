@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.8
+ * @since 2.9.9
  */
 
 namespace {{MODULE_NAMESPACE}}\Services;
@@ -94,6 +94,9 @@ class AuthService extends QtService implements AuthServiceInterface
      */
     public function add(array $data): AuthUser
     {
+        $data['uuid'] = $data['uuid'] ?? uuid_ordered();
+        $data['created_at'] = date('Y-m-d H:i:s');
+
         $this->createUserDirectory($data['uuid']);
 
         $user = $this->model->create();
@@ -127,7 +130,7 @@ class AuthService extends QtService implements AuthServiceInterface
     /**
      * Delete users table
      */
-    public function deleteTable()
+    public function deleteAllUsers()
     {
         $this->model->deleteTable();
     }

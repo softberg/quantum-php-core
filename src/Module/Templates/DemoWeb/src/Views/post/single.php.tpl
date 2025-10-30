@@ -13,5 +13,10 @@
         <div class="left-align single-blog-txt">
             <?php echo $post['content'] ?>
         </div>
+
+        <?php echo partial('post/comments', [
+            'post' => $post,
+            'comments' => $comments
+        ]) ?>
     </div>
 </div>

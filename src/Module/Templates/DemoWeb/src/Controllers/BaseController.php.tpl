@@ -17,6 +17,7 @@ namespace {{MODULE_NAMESPACE}}\Controllers;
 use Quantum\View\Factories\ViewFactory;
 use Quantum\Router\RouteController;
 use Quantum\Libraries\Asset\Asset;
+use Quantum\Http\Request;
 use Quantum\View\QtView;
 
 /**
@@ -36,18 +37,20 @@ abstract class BaseController extends RouteController
      */
     public function __before()
     {
-        $this->view = ViewFactory::get();
+        if (Request::isMethod('get')) {
+            $this->view = ViewFactory::get();
 
-        $this->view->setLayout(static::LAYOUT, [
-            new Asset(Asset::CSS, 'shared/css/materialize.min.css', null, -1, ['media="screen,projection"']),
-            new Asset(Asset::CSS, 'shared/css/easymde.min.css'),
-            new Asset(Asset::CSS, '{{MODULE_NAME}}/css/custom.css'),
-            new Asset(Asset::JS, 'shared/js/jquery-3.7.1.min.js'),
-            new Asset(Asset::JS, 'shared/js/materialize.min.js'),
-            new Asset(Asset::JS, 'shared/js/easymde.min.js'),
-            new Asset(Asset::JS, '{{MODULE_NAME}}/js/custom.js')
-        ]);
+            $this->view->setLayout(static::LAYOUT, [
+                new Asset(Asset::CSS, 'shared/css/materialize.min.css', null, -1, ['media="screen,projection"']),
+                new Asset(Asset::CSS, 'shared/css/easymde.min.css'),
+                new Asset(Asset::CSS, '{{MODULE_NAME}}/css/custom.css'),
+                new Asset(Asset::JS, 'shared/js/jquery-3.7.1.min.js'),
+                new Asset(Asset::JS, 'shared/js/materialize.min.js'),
+                new Asset(Asset::JS, 'shared/js/easymde.min.js'),
+                new Asset(Asset::JS, '{{MODULE_NAME}}/js/custom.js')
+            ]);
 
-        $this->view->setParam('langs', config()->get('lang.supported'));
+            $this->view->setParam('langs', config()->get('lang.supported'));
+        }
     }
 }

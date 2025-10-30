@@ -18,14 +18,16 @@
             <?php if (auth()->check()) : ?>
                 <li>
                     <a class="dropdown-trigger login-list" href="#!" data-target="dropdown1">
-                        <span class="hide-on-small-only show-on-medium-and-up">
+                        <span class="show-on-medium-and-up-header-avatar-box">
                             <?php if (auth()->user()->image): ?>
-                                <img src="<?php echo base_url() . '/uploads/' . auth()->user()->uuid . '/' . auth()->user()->image ?>" alt="Avatar" class="circle left user-avatar">
+                                <img src="<?php echo base_url() . '/uploads/' . auth()->user()->uuid . '/' . auth()->user()->image ?>"
+                                     alt="Avatar" class="circle left user-avatar">
+                                <?php echo auth()->user()->firstname . ' ' . auth()->user()->lastname ?>
+                                <i class="material-icons right">arrow_drop_down</i>
                             <?php else: ?>
                                 <i class="material-icons left">person</i>
                             <?php endif; ?>
-                            <?php echo auth()->user()->firstname . ' ' . auth()->user()->lastname ?>
-                            <i class="material-icons right">arrow_drop_down</i>
+
                         </span>
                     </a>
                     <ul id="dropdown1" class="dropdown-content">
@@ -62,7 +64,7 @@
             <?php endif; ?>
             <?php echo partial('partials/language', ['attr' => 'dropdown2']) ?>
         </ul>
-        
+
     </div>
 </nav>
 <?php echo partial('partials/sidebar') ?>

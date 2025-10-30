@@ -299,11 +299,11 @@ a:hover {
 }
 
 .user-avatar {
-    width:32px;
-    height:32px;
-    object-fit:cover;
-    margin-top: 18px;
-    margin-right:8px;
+    flex: 0 0 32px;
+    width: 32px;
+    height: 32px;
+    object-fit: cover;
+    margin-right: 8px;
 }
 
 .post-item {
@@ -471,6 +471,83 @@ input[type=password] {
     width: 160px;
     height: 160px;
     animation-delay: 11s;
+}
+
+.comment-input-box {
+    position: relative;
+    margin-bottom: 16px;
+}
+.comment-input-box label{
+    position: absolute;
+    top: 4px;
+    padding: 0 24px;
+}
+.comment-input-box textarea{
+    border: 1px solid #ededed;
+    border-radius: 8px;
+    box-shadow: none;
+    padding: 24px;
+    height: 100px;
+    outline-color: #ccc;
+}
+
+.comments-list,
+.comments-section {
+    margin-top: 60px;
+}
+
+.comment-box.card-panel {
+    box-shadow: none;
+    position: relative;
+    padding: 16px 0;
+}
+
+.comment-item {
+    position: relative;
+}
+
+.comment-item::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    height: 1px;
+    width: 100%;
+    background: linear-gradient(90deg, rgba(0,0,0, 0) 0%, rgba(0,0,0, 0.1) 50%, rgba(0,0,0, 0));
+}
+
+.comment-item:last-child::after {
+    display: none;
+}
+
+.comment-box-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.comment-box-header img {
+    flex: 0 0 32px;
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+}
+
+.comment-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: none;
+    background: #F1F2F3;
+    border-color: #E0E0E1;
+    color: #000;
+}
+
+.comment-date-time  {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 4px;
 }
 
 @keyframes square {
@@ -778,9 +855,20 @@ div.polaroid {
         margin-right: 15px !important;
     }
 }
+@media only screen and (min-width: 601px) {
+    .show-on-medium-and-up-header-avatar-box{
+        display: flex;
+        align-items: center;
+    }
+
+}
 
 @media only screen and (max-width: 600px) {
     .navbar-logo img {
         height: 44px;
+    }
+
+    .show-on-medium-and-up-header-avatar-box{
+        display: none;
     }
 }

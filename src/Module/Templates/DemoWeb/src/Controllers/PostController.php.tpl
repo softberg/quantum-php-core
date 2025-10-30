@@ -15,6 +15,7 @@
 namespace {{MODULE_NAMESPACE}}\Controllers;
 
 use Quantum\Service\Factories\ServiceFactory;
+use {{MODULE_NAMESPACE}}\Services\CommentService;
 use Quantum\Http\Constants\StatusCode;
 use {{MODULE_NAMESPACE}}\Services\PostService;
 use Quantum\View\RawParam;
@@ -52,7 +53,6 @@ class PostController extends BaseController
     public function __before()
     {
         $this->postService = ServiceFactory::create(PostService::class);
-
         parent::__before();
     }
 
@@ -96,9 +96,15 @@ class PostController extends BaseController
             stop();
         }
 
+        $commentService = ServiceFactory::create(CommentService::class);
+        $comments = $commentService->getCommentsByPost($postUuid);
+
+        $comments = $commentService->transformData($comments->all());
+
         $this->view->setParams([
             'title' => $post->title . ' | ' . config()->get('app.name'),
             'post' => new RawParam(current($this->postService->transformData([$post]))),
+            'comments' => $comments,
             'referer' => $ref,
         ]);
 
