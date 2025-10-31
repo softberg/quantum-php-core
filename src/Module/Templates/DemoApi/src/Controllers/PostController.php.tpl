@@ -16,8 +16,8 @@ namespace {{MODULE_NAMESPACE}}\Controllers;
 
 use Quantum\Service\Factories\ServiceFactory;
 use Quantum\Http\Constants\StatusCode;
+use {{MODULE_NAMESPACE}}\Services\CommentService;
 use {{MODULE_NAMESPACE}}\Services\PostService;
-use Quantum\View\RawParam;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 
@@ -36,7 +36,7 @@ class PostController extends BaseController
      * Current page
      */
     const CURRENT_PAGE = 1;
-    
+
     /**
      * Post service
      * @var PostService
@@ -53,7 +53,7 @@ class PostController extends BaseController
 
     /**
      * Action - get posts list
-     * @param Request $request 
+     * @param Request $request
      * @param Response $response
      */
     public function posts(Request $request, Response $response)
@@ -61,9 +61,9 @@ class PostController extends BaseController
         $perPage = $request->get('per_page', self::POSTS_PER_PAGE);
         $currentPage = $request->get('page', self::CURRENT_PAGE);
         $search = trim($request->get('q'));
-        
+
         $paginatedPosts = $this->postService->getPosts($perPage, $currentPage, $search);
-        
+
         $response->json([
             'status' => 'success',
             'data' => $this->postService->transformData($paginatedPosts->data()->all()),
@@ -95,11 +95,18 @@ class PostController extends BaseController
             stop();
         }
 
-        $rawData = new RawParam(current($this->postService->transformData([$post])));
+        $postData = current($this->postService->transformData([$post]));
+
+        $commentService = ServiceFactory::create(CommentService::class);
+        $comments = $commentService->getCommentsByPost($postUuid);
+
+        $commentsData = $commentService->transformData($comments->all());
+
+        $postData['comments'] = $commentsData;
 
         $response->json([
             'status' => 'success',
-            'data' => $rawData->getValue(),
+            'data' => $postData,
         ]);
     }
 }

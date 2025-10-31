@@ -13,28 +13,35 @@
         </a>
     </li>
     <?php if (auth()->check()) : ?>
-    <li>
-        <a class="dropdown-trigger login-list" href="#!" data-target="sidenav-dropdown1">
-            <i class="material-icons left">person</i>
-            <?php echo auth()->user()->firstname . ' ' . auth()->user()->lastname ?>
-            <i class="material-icons right">arrow_drop_down</i>
-        </a>
-        <ul id="sidenav-dropdown1" class="dropdown-content">
-            <li>
-                <a href="<?php echo base_url(true) . '/' . current_lang() ?>/account-settings">
-                    <?php _t('common.account_settings') ?>
-                </a>
-            </li>
-            <li>
-                <a href="<?php echo base_url(true) . '/' . current_lang() ?>/my-posts">
-                    <?php _t('common.my_posts') ?>
-                </a>
-            </li>
-            <li>
-                <a href="<?php echo base_url(true) . '/' . current_lang() ?>/signout"><?php _t('common.signout'); ?></a>
-            </li>
-        </ul>
-    </li>
+        <li>
+            <a class="dropdown-trigger login-list" href="#!" data-target="sidenav-dropdown1">
+                <span class="show-on-medium-and-up-header-avatar-box">
+                    <?php if (auth()->user()->image): ?>
+                        <img src="<?php echo base_url() . '/uploads/' . auth()->user()->uuid . '/' . auth()->user()->image ?>"
+                             alt="Avatar" class="circle left user-avatar">
+                            <?php echo auth()->user()->firstname . ' ' . auth()->user()->lastname ?>
+                            <i class="material-icons right">arrow_drop_down</i>
+                    <?php else: ?>
+                        <i class="material-icons left">person</i>
+                    <?php endif; ?>
+                </span>
+            </a>
+            <ul id="sidenav-dropdown1" class="dropdown-content">
+                <li>
+                    <a href="<?php echo base_url(true) . '/' . current_lang() ?>/account-settings">
+                        <?php _t('common.account_settings') ?>
+                    </a>
+                </li>
+                <li>
+                    <a href="<?php echo base_url(true) . '/' . current_lang() ?>/my-posts">
+                        <?php _t('common.my_posts') ?>
+                    </a>
+                </li>
+                <li>
+                    <a href="<?php echo base_url(true) . '/' . current_lang() ?>/signout"><?php _t('common.signout'); ?></a>
+                </li>
+            </ul>
+        </li>
     <?php else : ?>
         <?php if (route_name() != 'signup') : ?>
             <li>
