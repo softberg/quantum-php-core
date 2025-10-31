@@ -157,6 +157,7 @@ class PostService extends QtService
     public function addPost(array $data): array
     {
         $data['uuid'] = $data['uuid'] ?? uuid_ordered();
+        $data['created_at'] = date('Y-m-d H:i:s');
 
         $post = $this->model->create();
         $post->fillObjectProps($data);
@@ -173,6 +174,8 @@ class PostService extends QtService
      */
     public function updatePost(string $uuid, array $data)
     {
+        $data['updated_at'] = date('Y-m-d H:i:s');
+
         $post = $this->model->findOneBy('uuid', $uuid);
         $post->fillObjectProps($data);
         $post->save();

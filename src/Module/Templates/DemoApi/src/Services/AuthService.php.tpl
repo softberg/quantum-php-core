@@ -29,7 +29,7 @@ use ReflectionException;
 
 /**
  * Class AuthService
- * @package Modules\
+ * @package Modules\{{MODULE_NAME}}
  */
 class AuthService extends QtService implements AuthServiceInterface
 {
@@ -94,6 +94,9 @@ class AuthService extends QtService implements AuthServiceInterface
      */
     public function add(array $data): AuthUser
     {
+        $data['uuid'] = $data['uuid'] ?? uuid_ordered();
+        $data['created_at'] = date('Y-m-d H:i:s');
+
         $this->createUserDirectory($data['uuid']);
 
         $user = $this->model->create();
@@ -117,6 +120,8 @@ class AuthService extends QtService implements AuthServiceInterface
         if ($user->isEmpty()) {
             return null;
         }
+
+        $data['updated_at'] = date('Y-m-d H:i:s');
 
         $user->fillObjectProps($data);
         $user->save();

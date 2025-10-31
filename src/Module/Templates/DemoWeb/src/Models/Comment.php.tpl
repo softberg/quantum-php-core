@@ -66,6 +66,6 @@ class Comment extends QtModel
         'user_uuid',
         'content',
         'created_at',
-        'updated_at'
+        'updated_at',
     ];
 }
