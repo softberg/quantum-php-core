@@ -85,6 +85,8 @@ class ConsoleAppAdapter extends AppAdapter
                 config()->get('app.version', 'UNKNOWN')
             );
 
+            $this->loadLanguage();
+
             $this->registerCoreCommands();
             $this->registerAppCommands();
 
