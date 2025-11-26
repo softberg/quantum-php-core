@@ -9,14 +9,16 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.9
  */
 
 namespace Quantum\App\Traits;
 
 use Symfony\Component\Console\Application;
 use Quantum\Console\QtCommand;
-use Mockery\Exception;
+use ReflectionException;
+use ReflectionClass;
+use Exception;
 
 /**
  * Class ConsoleAppTrait
@@ -37,6 +39,7 @@ trait ConsoleAppTrait
 
     /**
      * @return void
+     * @throws ReflectionException
      */
     private function registerCoreCommands()
     {
@@ -48,6 +51,7 @@ trait ConsoleAppTrait
 
     /**
      * @return void
+     * @throws ReflectionException
      */
     private function registerAppCommands()
     {
@@ -61,22 +65,32 @@ trait ConsoleAppTrait
      * @param string $directory
      * @param string $namespace
      * @return void
+     * @throws ReflectionException
      */
     private function registerCommands(string $directory, string $namespace)
     {
         foreach (get_directory_classes($directory) as $className) {
             $commandClass = $namespace . $className;
 
-            $command = new $commandClass();
+            if (!class_exists($commandClass)) {
+                continue;
+            }
 
-            if ($command instanceof QtCommand) {
-                $this->application->add($command);
+            $commandReflection = new ReflectionClass($commandClass);
+
+            if (!$commandReflection->isInstantiable()) {
+                continue;
+            }
+
+            if ($commandReflection->isSubclassOf(QtCommand::class)) {
+                $this->application->add($commandReflection->newInstance());
             }
         }
     }
 
     /**
      * @return void
+     * @throws Exception
      */
     private function validateCommand(): void
     {
