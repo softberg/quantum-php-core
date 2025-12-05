@@ -9,26 +9,24 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.8
+ * @since 2.9.9
  */
 
 namespace {{MODULE_NAMESPACE}}\Middlewares;
 
 use Quantum\Service\Factories\ServiceFactory;
+use {{MODULE_NAMESPACE}}\Services\CommentService;
 use Quantum\Libraries\Validation\Rule;
-use Quantum\Http\Constants\StatusCode;
-use {{MODULE_NAMESPACE}}\Services\PostService;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 use Closure;
 
 /**
- * Class Editor
+ * Class CommentOwner
  * @package Modules\{{MODULE_NAME}}
  */
-class Owner extends BaseMiddleware
+class CommentOwner extends BaseMiddleware
 {
-
 
     /**
      * @param Request $request
@@ -50,35 +48,26 @@ class Owner extends BaseMiddleware
     /**
      * @inheritDoc
      */
-    protected function defineValidationRules(Request $request)
+    protected function defineValidationRules(Request $request): void
     {
         $this->registerCustomRules();
 
         $this->validator->setRules([
             'uuid' => [
                 Rule::required(),
-                Rule::postOwner(),
+                Rule::commentOwner(),
             ],
         ]);
     }
 
     /**
-     * @inheritDoc
+     * Registers custom validation rules
      */
-    protected function respondWithError(Request $request, Response $response, $message = null)
+    private function registerCustomRules(): void
     {
-        $response->html(partial('errors/404'),  StatusCode::NOT_FOUND);
-        stop();
-    }
-
-    /**
-     * Register custom validation rules
-     */
-    private function registerCustomRules()
-    {
-        $this->validator->addRule('postOwner', function ($postUuid) {
-            $post = ServiceFactory::get(PostService::class)->getPost($postUuid);
-            return !$post->isEmpty() && $post->user_uuid === auth()->user()->uuid;
+        $this->validator->addRule('commentOwner', function ($commentUuid) {
+            $comment = ServiceFactory::get(CommentService::class)->getComment($commentUuid);
+            return !$comment->isEmpty() && $comment->user_uuid === auth()->user()->uuid;
         });
     }
 }
