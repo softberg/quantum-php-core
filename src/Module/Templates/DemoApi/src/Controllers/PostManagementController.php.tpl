@@ -79,11 +79,12 @@ class PostManagementController extends BaseController
             $postData['image'] = $imageName;
         }
 
-        $this->postService->addPost($postData);
+        $post = $this->postService->addPost($postData);
 
         $response->json([
             'status' => 'success',
-            'message' => t('common.created_successfully')
+            'message' => t('common.created_successfully'),
+            'data' => current($this->postService->transformData([$post]))
         ]);
     }
 
@@ -118,11 +119,12 @@ class PostManagementController extends BaseController
             $postData['image'] = $imageName;
         }
 
-        $this->postService->updatePost($postUuid, $postData);
+        $post = $this->postService->updatePost($postUuid, $postData);
 
         $response->json([
             'status' => 'success',
-            'message' => t('common.updated_successfully')
+            'message' => t('common.updated_successfully'),
+            'data' => current($this->postService->transformData([$post]))
         ]);
     }
 

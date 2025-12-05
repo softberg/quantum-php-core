@@ -15,11 +15,12 @@ return function ($route) {
     $route->group('auth', function ($route) {
         $route->get('[:alpha:2]?/my-posts', 'PostManagementController', 'myPosts')->middlewares(['Editor']);
         $route->post('[:alpha:2]?/my-posts/create', 'PostManagementController', 'create')->middlewares(['Editor']);
-        $route->put('[:alpha:2]?/my-posts/amend/[uuid=:any]', 'PostManagementController', 'amend')->middlewares(['Editor', 'Owner']);
-        $route->delete('[:alpha:2]?/my-posts/delete/[uuid=:any]', 'PostManagementController', 'delete')->middlewares(['Editor', 'Owner']);
-        $route->delete('[:alpha:2]?/my-posts/delete-image/[uuid=:any]', 'PostManagementController', 'deleteImage')->middlewares(['Editor', 'Owner']);
+        $route->put('[:alpha:2]?/my-posts/amend/[uuid=:any]', 'PostManagementController', 'amend')->middlewares(['Editor', 'PostOwner']);
+        $route->delete('[:alpha:2]?/my-posts/delete/[uuid=:any]', 'PostManagementController', 'delete')->middlewares(['Editor', 'PostOwner']);
+        $route->delete('[:alpha:2]?/my-posts/delete-image/[uuid=:any]', 'PostManagementController', 'deleteImage')->middlewares(['Editor', 'PostOwner']);
 
         $route->post('[:alpha:2]?/comments/create/[uuid=:any]', 'CommentController', 'create')->middlewares(['Comment']);
+        $route->delete('[:alpha:2]?/comments/delete/[uuid=:any]', 'CommentController', 'delete')->middlewares(['CommentOwner']);
 
         $route->put('[:alpha:2]?/account-settings/update', 'AccountController', 'update')->middlewares(['Update']);
         $route->put('[:alpha:2]?/account-settings/update-password', 'AccountController', 'updatePassword')->middlewares(['Password']);

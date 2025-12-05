@@ -21,12 +21,13 @@ return function ($route) {
         $route->get('[:alpha:2]?/my-posts', 'PostManagementController', 'myPosts')->middlewares(['Editor']);
         $route->get('[:alpha:2]?/my-posts/create', 'PostManagementController', 'createFrom')->middlewares(['Editor']);
         $route->post('[:alpha:2]?/my-posts/create', 'PostManagementController', 'create')->middlewares(['Editor']);
-        $route->get('[:alpha:2]?/my-posts/amend/[uuid=:any]', 'PostManagementController', 'amendForm')->middlewares(['Editor', 'Owner']);
-        $route->post('[:alpha:2]?/my-posts/amend/[uuid=:any]', 'PostManagementController', 'amend')->middlewares(['Editor', 'Owner']);
-        $route->get('[:alpha:2]?/my-posts/delete/[uuid=:any]', 'PostManagementController', 'delete')->middlewares(['Editor', 'Owner']);
-        $route->get('[:alpha:2]?/my-posts/delete-image/[uuid=:any]', 'PostManagementController', 'deleteImage')->middlewares(['Editor', 'Owner']);
+        $route->get('[:alpha:2]?/my-posts/amend/[uuid=:any]', 'PostManagementController', 'amendForm')->middlewares(['Editor', 'PostOwner']);
+        $route->post('[:alpha:2]?/my-posts/amend/[uuid=:any]', 'PostManagementController', 'amend')->middlewares(['Editor', 'PostOwner']);
+        $route->get('[:alpha:2]?/my-posts/delete/[uuid=:any]', 'PostManagementController', 'delete')->middlewares(['Editor', 'PostOwner']);
+        $route->get('[:alpha:2]?/my-posts/delete-image/[uuid=:any]', 'PostManagementController', 'deleteImage')->middlewares(['Editor', 'PostOwner']);
 
         $route->post('[:alpha:2]?/comments/create/[uuid=:any]', 'CommentController', 'create')->middlewares(['Comment']);
+        $route->get('[:alpha:2]?/comments/delete/[uuid=:any]', 'CommentController', 'delete')->middlewares(['CommentOwner']);
 
         $route->get('[:alpha:2]?/account-settings', 'AccountController', 'form');
         $route->post('[:alpha:2]?/account-settings/update', 'AccountController', 'update')->middlewares(['Update']);

@@ -9,23 +9,23 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.8
+ * @since 2.9.9
  */
 
 namespace {{MODULE_NAMESPACE}}\Middlewares;
 
 use Quantum\Service\Factories\ServiceFactory;
+use {{MODULE_NAMESPACE}}\Services\CommentService;
 use Quantum\Libraries\Validation\Rule;
-use {{MODULE_NAMESPACE}}\Services\PostService;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 use Closure;
 
 /**
- * Class Owner
+ * Class CommentOwner
  * @package Modules\{{MODULE_NAME}}
  */
-class Owner extends BaseMiddleware
+class CommentOwner extends BaseMiddleware
 {
 
     /**
@@ -55,7 +55,7 @@ class Owner extends BaseMiddleware
         $this->validator->setRules([
             'uuid' => [
                 Rule::required(),
-                Rule::postOwner(),
+                Rule::commentOwner(),
             ],
         ]);
     }
@@ -65,9 +65,9 @@ class Owner extends BaseMiddleware
      */
     private function registerCustomRules(): void
     {
-        $this->validator->addRule('postOwner', function ($postUuid) {
-            $post = ServiceFactory::get(PostService::class)->getPost($postUuid);
-            return !$post->isEmpty() && $post->user_uuid === auth()->user()->uuid;
+        $this->validator->addRule('commentOwner', function ($commentUuid) {
+            $comment = ServiceFactory::get(CommentService::class)->getComment($commentUuid);
+            return !$comment->isEmpty() && $comment->user_uuid === auth()->user()->uuid;
         });
     }
 }
