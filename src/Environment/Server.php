@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.8
+ * @since 2.9.9
  */
 
 namespace Quantum\Environment;
@@ -173,5 +173,51 @@ class Server
     public function ajax(): bool
     {
         return strtolower($this->get('HTTP_X_REQUESTED_WITH') ?? '') === 'xmlhttprequest';
+    }
+
+    /**
+     * @return string|null
+     */
+    public function ip(): ?string
+    {
+        return $this->get('HTTP_CLIENT_IP')
+            ?? $this->get('HTTP_X_FORWARDED_FOR')
+            ?? $this->get('REMOTE_ADDR');
+    }
+
+    /**
+     * @return array
+     */
+    function getAllHeaders(): array
+    {
+        $data = $this->all();
+
+        if (empty($data)) {
+            return [];
+        }
+
+        return array_reduce(array_keys($data), function ($headers, $key) use ($data) {
+            if (strpos($key, 'HTTP_') === 0) {
+                $formattedKey = strtolower(str_replace('_', '-', substr($key, 5)));
+                $headers[$formattedKey] = $data[$key];
+            }
+            return $headers;
+        }, []);
+    }
+
+    /**
+     * @return string|null
+     */
+    public function acceptedLang(): ?string
+    {
+        $accept = $this->get('HTTP_ACCEPT_LANGUAGE');
+
+        if (!$accept) {
+            return null;
+        }
+
+        $first = explode(',', $accept)[0];
+
+        return strtolower(substr(trim($first), 0, 2));
     }
 }

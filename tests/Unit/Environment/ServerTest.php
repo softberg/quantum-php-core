@@ -136,4 +136,71 @@ class ServerTest extends AppTestCase
         $this->assertFalse($server->ajax());
     }
 
+    public function testServerGetUserIpFromRemoteAddr()
+    {
+        $server = Server::getInstance();
+
+        $server->set('HTTP_CLIENT_IP', '192.168.1.1');
+        $server->set('HTTP_X_FORWARDED_FOR', null);
+        $server->set('REMOTE_ADDR', null);
+        $this->assertEquals('192.168.1.1', $server->ip());
+
+        $server->set('HTTP_CLIENT_IP', null);
+        $server->set('HTTP_X_FORWARDED_FOR', '203.0.113.5');
+        $server->set('REMOTE_ADDR', null);
+        $this->assertEquals('203.0.113.5', $server->ip());
+
+        $server->set('HTTP_CLIENT_IP', null);
+        $server->set('HTTP_X_FORWARDED_FOR', null);
+        $server->set('REMOTE_ADDR', '198.51.100.1');
+        $this->assertEquals('198.51.100.1', $server->ip());
+
+        $server->set('HTTP_CLIENT_IP', null);
+        $server->set('HTTP_X_FORWARDED_FOR', null);
+        $server->set('REMOTE_ADDR', null);
+        $this->assertNull($server->ip());
+    }
+
+    public function testServerGetAllHeadersFromServerClass()
+    {
+        $server = Server::getInstance();
+
+        $server->set('HTTP_USER_AGENT', 'Mozilla/5.0');
+        $server->set('HTTP_ACCEPT', 'text/html');
+        $server->set('HTTP_X_CUSTOM_HEADER', 'CustomValue');
+        $server->set('SERVER_NAME', 'example.com');
+
+        $headers = $server->getAllHeaders();
+
+        $this->assertArrayHasKey('user-agent', $headers);
+        $this->assertArrayHasKey('accept', $headers);
+        $this->assertArrayHasKey('x-custom-header', $headers);
+
+        $this->assertEquals('Mozilla/5.0', $headers['user-agent']);
+        $this->assertEquals('text/html', $headers['accept']);
+        $this->assertEquals('CustomValue', $headers['x-custom-header']);
+
+        $this->assertArrayNotHasKey('SERVER_NAME', $headers);
+    }
+
+    public function testServerAcceptedLang()
+    {
+        $server = Server::getInstance();
+
+        $server->set('HTTP_ACCEPT_LANGUAGE', null);
+        $this->assertNull($server->acceptedLang());
+
+        $server->set('HTTP_ACCEPT_LANGUAGE', 'en-US');
+        $this->assertEquals('en', $server->acceptedLang());
+
+        $server->set('HTTP_ACCEPT_LANGUAGE', 'fr-CA,fr;q=0.8,en-US;q=0.6,en;q=0.4');
+        $this->assertEquals('fr', $server->acceptedLang());
+
+        $server->set('HTTP_ACCEPT_LANGUAGE', '  de-DE , en-US ');
+        $this->assertEquals('de', $server->acceptedLang());
+
+        $server->set('HTTP_ACCEPT_LANGUAGE', 'ES-ES');
+        $this->assertEquals('es', $server->acceptedLang());
+    }
+
 }
