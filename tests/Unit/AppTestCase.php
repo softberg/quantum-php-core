@@ -5,7 +5,9 @@ namespace Quantum\Tests\Unit;
 use Quantum\Libraries\Storage\Factories\FileSystemFactory;
 use Quantum\App\Factories\AppFactory;
 use Quantum\Environment\Environment;
+use Quantum\Router\RouteController;
 use PHPUnit\Framework\TestCase;
+use Quantum\Http\Request;
 use Quantum\Loader\Setup;
 use ReflectionClass;
 use Quantum\App\App;
@@ -64,5 +66,25 @@ abstract class AppTestCase extends TestCase
         if ($this->fs->exists($filePath)) {
             $this->fs->remove($filePath);
         }
+    }
+
+    protected function testRequest(
+        string $uri,
+        string $method = 'GET',
+        array $body = [],
+        array $headers = []
+    )
+    {
+        $request = new Request();
+
+        $request->create($method, $uri, $body, $headers);
+
+        RouteController::setCurrentRoute([
+            "route" => "test",
+            "method" => $method,
+            "controller" => 'TestController',
+            "action" => 'testAction',
+            "module" => 'Test',
+        ]);
     }
 }

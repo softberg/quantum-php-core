@@ -53,17 +53,39 @@ class LangFactory
         }
 
         $isEnabled = filter_var(config()->get('lang.enabled'), FILTER_VALIDATE_BOOLEAN);
+        $supported = (array)config()->get('lang.supported');
+        $default = config()->get('lang.default');
 
-        $langSegmentIndex = (int)config()->get('lang.url_segment');
+        $queryLang = Request::getQueryParam('lang');
 
-        if (!empty(route_prefix()) && $langSegmentIndex == 1) {
-            $langSegmentIndex++;
+        $lang = $queryLang && in_array($queryLang, $supported)
+            ? $queryLang
+            : null;
+
+        if (empty($lang)) {
+            $segmentIndex = (int)config()->get('lang.url_segment');
+
+            if (!empty(route_prefix()) && $segmentIndex == 1) {
+                $segmentIndex++;
+            }
+
+            $segmentLang = Request::getSegment($segmentIndex);
+
+            $lang = $segmentLang && in_array($segmentLang, $supported)
+                ? $segmentLang
+                : null;
         }
 
-        $lang = Request::getSegment($langSegmentIndex);
+        if (empty($lang)) {
+            $acceptedLang = server()->acceptedLang();
 
-        if (empty($lang) || !in_array($lang, (array)config()->get('lang.supported'))) {
-            $lang = config()->get('lang.default');
+            $lang = $acceptedLang && in_array($acceptedLang, $supported)
+                ? $acceptedLang
+                : null;
+        }
+
+        if (empty($lang)) {
+            $lang = $default;
         }
 
         if (!$lang) {
@@ -71,7 +93,6 @@ class LangFactory
         }
 
         $translator = new Translator($lang);
-
         return self::$instance = new Lang($lang, $isEnabled, $translator);
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Quantum\Tests\Unit\Libraries\Lang;
+namespace Quantum\Tests\Unit\Libraries\Lang\Factories;
 
 use Quantum\Libraries\Lang\Exceptions\LangException;
 use Quantum\Libraries\Lang\Factories\LangFactory;
@@ -15,16 +15,9 @@ class LangFactoryTest extends AppTestCase
         parent::setUp();
 
         $this->setPrivateProperty(LangFactory::class, 'instance', null);
-
-        config()->set('lang', [
-            'enabled' => true,
-            'default' => 'en',
-            'supported' => ['en', 'es'],
-            'url_segment' => 1
-        ]);
     }
 
-    public function testLangFactoryGetLangInstance(): void
+    public function testLangFactoryGetLangInstance()
     {
         $lang = LangFactory::get();
 
@@ -35,7 +28,7 @@ class LangFactoryTest extends AppTestCase
         $this->assertTrue($lang->isEnabled());
     }
 
-    public function testLangFactoryGetReturnsSameInstance(): void
+    public function testLangFactoryGetReturnsSameInstance()
     {
         $first = LangFactory::get();
 
@@ -44,20 +37,88 @@ class LangFactoryTest extends AppTestCase
         $this->assertSame($first, $second);
     }
 
-    public function testLangFactoryGetFallsBackToDefaultIfSegmentInvalid(): void
+    public function testLangFactoryDetectedFromRouteParameter()
     {
-        config()->set('lang.url_segment', 0);
+        $this->testRequest('http://127.0.0.1/es/api/rest');
+
+        $lang = LangFactory::get();
+
+        $this->assertEquals('es', $lang->getLang());
+    }
+
+    public function testLangFactoryDetectedFromQueryParameter()
+    {
+        $this->testRequest('http://127.0.0.1/api/rest?lang=es');
+
+        $lang = LangFactory::get();
+
+        $this->assertEquals('es', $lang->getLang());
+    }
+
+    public function testLangFactoryDetectedFromAcceptedLangParameter()
+    {
+        $this->testRequest('http://127.0.0.1/api/rest', 'GET', [], ['Accept-Language' => 'es, en;q=0.8, fr;q=0.6']);
+
+        $lang = LangFactory::get();
+
+        $this->assertEquals('es', $lang->getLang());
+    }
+
+    public function testLangFactoryFallsBackToDefaultIfNoLangDetected()
+    {
+        $this->testRequest('http://127.0.0.1/api/rest');
 
         $lang = LangFactory::get();
 
         $this->assertEquals('en', $lang->getLang());
     }
 
-    public function testGetThrowsIfNoDefaultConfigured(): void
+    public function testLangFactoryFallsBackToDefaultIfProvidedLangIsNotSupported()
     {
+        config()->set('lang', [
+            'enabled' => true,
+            'default' => 'en',
+            'supported' => ['en', 'es'],
+            'url_segment' => 1
+        ]);
+
+        $this->testRequest('http://127.0.0.1/fr/api/rest');
+
+        $lang = LangFactory::get();
+
+        $this->assertEquals('en', $lang->getLang());
+
+        $this->setPrivateProperty(LangFactory::class, 'instance', null);
+
+        $this->testRequest('http://127.0.0.1/api/rest?lang=fr');
+
+        $lang = LangFactory::get();
+
+        $this->assertEquals('en', $lang->getLang());
+
+        $this->setPrivateProperty(LangFactory::class, 'instance', null);
+
+        $this->testRequest('http://127.0.0.1/api/rest', 'GET', [], ['Accept-Language' => 'fr, en;q=0.8, fr;q=0.6']);
+
+        $lang = LangFactory::get();
+
+        $this->assertEquals('en', $lang->getLang());
+    }
+
+    public function testLangFactoryThrowsErrorIfNoDefaultLangFound()
+    {
+        config()->set('lang', [
+            'enabled' => true,
+            'default' => null,
+            'supported' => ['en', 'es'],
+            'url_segment' => 1
+        ]);
+
+        $this->testRequest('http://127.0.0.1/fr/api/rest');
+
         $this->expectException(LangException::class);
 
-        config()->set('lang.default', null);
+        $this->expectExceptionMessage('Misconfigured lang default config');
 
         LangFactory::get();
     }

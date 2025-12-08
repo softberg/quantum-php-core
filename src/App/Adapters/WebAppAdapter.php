@@ -97,8 +97,6 @@ class WebAppAdapter extends AppAdapter
         try {
             $this->initializeRequestResponse($this->request, $this->response);
 
-            $this->loadLanguage();
-
             if ($this->request->isMethod('OPTIONS')) {
                 stop();
             }
@@ -109,6 +107,8 @@ class WebAppAdapter extends AppAdapter
             $this->loadModules();
 
             $this->initializeRouter($this->request);
+
+            $this->loadLanguage();
 
             info(HookManager::getInstance()->getRegistered(), ['tab' => Debugger::HOOKS]);
 

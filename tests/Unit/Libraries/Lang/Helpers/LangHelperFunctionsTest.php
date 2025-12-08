@@ -14,12 +14,14 @@ class LangHelperFunctionsTest extends AppTestCase
     {
         parent::setUp();
 
+        $this->setPrivateProperty(LangFactory::class, 'instance', null);
+
         $this->lang = LangFactory::get();
 
         $this->lang->load();
     }
 
-    public function testCurrentLang()
+    public function testLangHelperCurrentLang()
     {
         $this->assertEquals('en', current_lang());
 
@@ -28,14 +30,14 @@ class LangHelperFunctionsTest extends AppTestCase
         $this->assertEquals('am', current_lang());
     }
 
-    public function testHelperT()
+    public function testLangHelperT()
     {
         $this->assertEquals('Testing', t('custom.test'));
 
         $this->assertEquals('Information about the new feature', t('custom.info', ['new']));
     }
 
-    public function testHelperUnderscoreT()
+    public function testLangHelperUnderscoreT()
     {
         ob_start();
 
@@ -46,7 +48,7 @@ class LangHelperFunctionsTest extends AppTestCase
         $this->assertEquals('Testing', $output);
     }
 
-    public function testHelperTFail()
+    public function testLangHelperTFail()
     {
         $this->assertEquals('custom.non_existing_key', t('custom.non_existing_key'));
     }
