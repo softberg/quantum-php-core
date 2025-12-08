@@ -86,7 +86,7 @@ trait Internal
 
         if ($headers) {
             foreach ($headers as $name => $value) {
-                $server->set('HTTP_' . strtoupper($name), $value);
+                $server->set('HTTP_' . strtoupper(str_replace('-', '_', $name)), $value);
             }
         }
 

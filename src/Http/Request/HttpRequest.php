@@ -142,8 +142,9 @@ abstract class HttpRequest
 
     /**
      * Sets the uploaded files array merging handled $_FILES and parsed files
-     * @param array $rawInputFiles
+     * @param array $files
      * @throws BaseException
+     * @throws ReflectionException
      */
     public static function setUploadedFiles(array $files)
     {
