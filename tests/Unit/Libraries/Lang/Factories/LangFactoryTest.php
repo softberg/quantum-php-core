@@ -73,7 +73,7 @@ class LangFactoryTest extends AppTestCase
         $this->assertEquals('en', $lang->getLang());
     }
 
-    public function testLangFactoryGetFallsBackToDefaultIfProvidedLangIsNotSupported()
+    public function testLangFactoryFallsBackToDefaultIfProvidedLangIsNotSupported()
     {
         config()->set('lang', [
             'enabled' => true,
