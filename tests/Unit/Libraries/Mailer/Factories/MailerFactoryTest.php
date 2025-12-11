@@ -80,7 +80,7 @@ class MailerFactoryTest extends AppTestCase
     {
         $this->expectException(MailerException::class);
 
-        $this->expectExceptionMessage('The adapter `invalid_type` is not supported`');
+        $this->expectExceptionMessage('The adapter `invalid_type` is not supported');
 
         MailerFactory::get('invalid_type');
     }

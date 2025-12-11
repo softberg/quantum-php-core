@@ -267,7 +267,7 @@ class JoinIdiormTest extends IdiormDbalTestCase
     {
         $this->expectException(ModelException::class);
 
-        $this->expectExceptionMessage('wrong_relation');
+        $this->expectExceptionMessage('The model `' . TestTicketModel::class . '` does not define relation with `' . TestEventModel::class . '`');
 
         $eventModel = ModelFactory::get(TestEventModel::class);
 

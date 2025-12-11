@@ -229,7 +229,7 @@ class RouteTest extends AppTestCase
     {
         $this->expectException(RouteException::class);
 
-        $this->expectExceptionMessage('exception.name_before_route_definition');
+        $this->expectExceptionMessage('Names can not be set before route definition');
 
         $this->route->name('myposts')->get('my-posts', 'PostController', 'myPosts');
     }
@@ -238,7 +238,7 @@ class RouteTest extends AppTestCase
     {
         $this->expectException(RouteException::class);
 
-        $this->expectExceptionMessage('exception.name_is_not_unique');
+        $this->expectExceptionMessage('Route names should be unique');
 
         $this->route->post('post/1', 'PostController', 'getPost')->name('post');
 
@@ -249,7 +249,7 @@ class RouteTest extends AppTestCase
     {
         $this->expectException(RouteException::class);
 
-        $this->expectExceptionMessage('exception.name_on_group');
+        $this->expectExceptionMessage('Name can not be set on route groups');
 
         $this->route->group('auth', function ($route) {
             $route->add('dashboard', 'GET', 'AuthController', 'dashboard');

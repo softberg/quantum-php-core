@@ -32,7 +32,7 @@ class HttpClientTest extends AppTestCase
 
         $this->expectException(HttpClientException::class);
 
-        $this->expectExceptionMessage('exception.method_not_available');
+        $this->expectExceptionMessage('Provided request method `NOPE` is not available.');
 
         $this->httpClient->setMethod('NOPE');
     }

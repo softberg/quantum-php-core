@@ -65,7 +65,7 @@ class PaginatorFactoryTest extends PaginatorTestCase
     {
         $this->expectException(PaginatorException::class);
 
-        $this->expectExceptionMessage('The adapter `invalid_type` is not supported`');
+        $this->expectExceptionMessage('The adapter `invalid_type` is not supported');
 
         PaginatorFactory::create('invalid_type', [
             'items' => [],

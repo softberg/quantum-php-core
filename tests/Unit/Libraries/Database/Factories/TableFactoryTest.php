@@ -77,9 +77,9 @@ class TableFactoryTest extends AppTestCase
 
         $this->expectException(DatabaseException::class);
 
-        $this->expectExceptionMessage('table_already_exists');
+        $this->expectExceptionMessage('The table `users` is already exists');
 
-        $table = $this->tableFactory->create('users');
+        $this->tableFactory->create('users');
     }
 
     public function testGetTable()
@@ -102,7 +102,7 @@ class TableFactoryTest extends AppTestCase
     {
         $this->expectException(DatabaseException::class);
 
-        $this->expectExceptionMessage('table_does_not_exists');
+        $this->expectExceptionMessage('The table `users` does not exists');
 
         $table = $this->tableFactory->get('users');
     }
@@ -125,7 +125,7 @@ class TableFactoryTest extends AppTestCase
     {
         $this->expectException(DatabaseException::class);
 
-        $this->expectExceptionMessage('table_does_not_exists');
+        $this->expectExceptionMessage('The table `users` does not exists');
 
         $this->tableFactory->rename('users', 'system_users');
     }
@@ -148,7 +148,7 @@ class TableFactoryTest extends AppTestCase
     {
         $this->expectException(DatabaseException::class);
 
-        $this->expectExceptionMessage('table_does_not_exists');
+        $this->expectExceptionMessage('The table `users` does not exists');
 
         $this->tableFactory->drop('users', 'system_users');
     }

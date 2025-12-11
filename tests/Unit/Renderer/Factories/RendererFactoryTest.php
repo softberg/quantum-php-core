@@ -58,7 +58,7 @@ class RendererFactoryTest extends AppTestCase
     {
         $this->expectException(RendererException::class);
 
-        $this->expectExceptionMessage('The adapter `invalid_type` is not supported`');
+        $this->expectExceptionMessage('The adapter `invalid_type` is not supported');
 
         RendererFactory::get('invalid_type');
     }

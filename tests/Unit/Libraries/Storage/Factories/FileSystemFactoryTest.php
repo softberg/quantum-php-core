@@ -58,7 +58,7 @@ class FileSystemFactoryTest extends AppTestCase
     {
         $this->expectException(FileSystemException::class);
 
-        $this->expectExceptionMessage('The adapter `invalid_type` is not supported`');
+        $this->expectExceptionMessage('The adapter `invalid_type` is not supported');
 
         FileSystemFactory::get('invalid_type');
     }

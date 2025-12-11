@@ -51,7 +51,7 @@ class CaptchaFactoryTest extends AppTestCase
     {
         $this->expectException(CaptchaException::class);
 
-        $this->expectExceptionMessage('The adapter `invalid_type` is not supported`');
+        $this->expectExceptionMessage('The adapter `invalid_type` is not supported');
 
         CaptchaFactory::get('invalid_type');
     }

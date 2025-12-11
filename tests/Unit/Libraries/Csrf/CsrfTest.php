@@ -3,6 +3,7 @@
 namespace Quantum\Tests\Unit\Libraries\Csrf;
 
 use Quantum\Libraries\Csrf\Exceptions\CsrfException;
+use Quantum\Libraries\Csrf\Enums\ExceptionMessages;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Libraries\Csrf\Csrf;
 use Quantum\Http\Request;
@@ -57,7 +58,7 @@ class CsrfTest extends AppTestCase
 
         $this->expectException(CsrfException::class);
 
-        $this->expectExceptionMessage('csrf_token_not_found');
+        $this->expectExceptionMessage(ExceptionMessages::CSRF_TOKEN_MISSING);
 
         $this->assertTrue($this->csrf->checkToken($this->request));
     }
@@ -74,7 +75,7 @@ class CsrfTest extends AppTestCase
 
         $this->expectException(CsrfException::class);
 
-        $this->expectExceptionMessage('csrf_token_not_matched');
+        $this->expectExceptionMessage(ExceptionMessages::CSRF_TOKEN_MISMATCH);
 
         $this->assertTrue($this->csrf->checkToken($this->request));
     }

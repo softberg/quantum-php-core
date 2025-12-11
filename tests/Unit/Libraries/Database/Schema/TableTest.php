@@ -2,10 +2,10 @@
 
 namespace Quantum\Tests\Unit\Libraries\Database\Schema;
 
-use Quantum\Libraries\Database\Constants\Type;
 use Quantum\Libraries\Database\Schemas\Column;
-use Quantum\Libraries\Database\Constants\Key;
 use Quantum\Libraries\Database\Schemas\Table;
+use Quantum\Libraries\Database\Enums\Type;
+use Quantum\Libraries\Database\Enums\Key;
 use PHPUnit\Framework\TestCase;
 use Mockery;
 

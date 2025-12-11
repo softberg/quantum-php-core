@@ -4,6 +4,7 @@ namespace Quantum\Tests\Unit\Libraries\Encryption\Adapters;
 
 use Quantum\Libraries\Encryption\Adapters\AsymmetricEncryptionAdapter;
 use Quantum\Libraries\Encryption\Exceptions\CryptorException;
+use Quantum\Libraries\Encryption\Enums\ExceptionMessages;
 use Quantum\Tests\Unit\AppTestCase;
 use ReflectionClass;
 
@@ -48,7 +49,7 @@ class AsymmetricEncryptionAdapterTest extends AppTestCase
         $instanceProperty->setValue($adapterInstance, null);
 
         $this->expectException(CryptorException::class);
-        $this->expectExceptionMessage("exception.openssl_public_key_not_provided");
+        $this->expectExceptionMessage(ExceptionMessages::PUBLIC_KEY_MISSING);
 
         $adapterInstance->encrypt("Some text");
     }
@@ -63,7 +64,7 @@ class AsymmetricEncryptionAdapterTest extends AppTestCase
         $instanceProperty->setValue($adapterInstance, null);
 
         $this->expectException(CryptorException::class);
-        $this->expectExceptionMessage("exception.openssl_private_key_not_provided");
+        $this->expectExceptionMessage(ExceptionMessages::PRIVATE_KEY_MISSING);
 
         $adapterInstance->decrypt("Some encrypted text");
     }
