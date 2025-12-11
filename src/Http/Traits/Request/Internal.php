@@ -16,8 +16,8 @@ namespace Quantum\Http\Traits\Request;
 
 use Quantum\Config\Exceptions\ConfigException;
 use Quantum\App\Exceptions\BaseException;
-use Quantum\Http\Constants\ContentType;
 use Quantum\Di\Exceptions\DiException;
+use Quantum\Http\Enums\ContentType;
 use Quantum\Environment\Server;
 use ReflectionException;
 

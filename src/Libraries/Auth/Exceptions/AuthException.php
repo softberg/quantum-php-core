@@ -9,11 +9,12 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 2.9.9
  */
 
 namespace Quantum\Libraries\Auth\Exceptions;
 
+use Quantum\Libraries\Auth\Enums\ExceptionMessages;
 use Quantum\App\Exceptions\BaseException;
 
 /**
@@ -27,7 +28,7 @@ class AuthException extends BaseException
      */
     public static function incorrectCredentials(): AuthException
     {
-        return new static(t('exception.incorrect_auth_credentials'));
+        return new static(ExceptionMessages::INCORRECT_CREDENTIALS, E_ERROR);
     }
 
     /**
@@ -35,7 +36,7 @@ class AuthException extends BaseException
      */
     public static function inactiveAccount(): AuthException
     {
-        return new static(t('exception.inactive_account'));
+        return new static(ExceptionMessages::INACTIVE_ACCOUNT);
     }
 
     /**
@@ -43,7 +44,7 @@ class AuthException extends BaseException
      */
     public static function incorrectVerificationCode(): AuthException
     {
-        return new static(t('exception.incorrect_verification_code'));
+        return new static(ExceptionMessages::INCORRECT_VERIFICATION_CODE, E_ERROR);
     }
 
     /**
@@ -51,7 +52,7 @@ class AuthException extends BaseException
      */
     public static function verificationCodeExpired(): AuthException
     {
-        return new static(t('exception.verification_code_expired'));
+        return new static(ExceptionMessages::VERIFICATION_CODE_EXPIRED, E_ERROR);
     }
 
     /**
@@ -59,14 +60,6 @@ class AuthException extends BaseException
      */
     public static function incorrectUserSchema(): AuthException
     {
-        return new static(t('exception.incorrect_user_schema'));
-    }
-
-    /**
-     * @return AuthException
-     */
-    public static function incorrectAuthService(): AuthException
-    {
-        return new static(t('exception.incorrect_auth_service'));
+        return new static(ExceptionMessages::INCORRECT_USER_SCHEMA, E_ERROR);
     }
 }

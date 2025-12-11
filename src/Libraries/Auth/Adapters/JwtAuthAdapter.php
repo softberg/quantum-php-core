@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.6
+ * @since 2.9.9
  */
 
 namespace Quantum\Libraries\Auth\Adapters;
@@ -18,8 +18,8 @@ use Quantum\Libraries\Auth\Contracts\AuthenticatableInterface;
 use Quantum\Libraries\Auth\Contracts\AuthServiceInterface;
 use Quantum\Libraries\Auth\Exceptions\AuthException;
 use Quantum\Libraries\Jwt\Exceptions\JwtException;
-use Quantum\Libraries\Auth\Constants\AuthKeys;
 use Quantum\Libraries\Auth\Traits\AuthTrait;
+use Quantum\Libraries\Auth\Enums\AuthKeys;
 use Quantum\Libraries\Mailer\Mailer;
 use Quantum\Libraries\Hasher\Hasher;
 use Quantum\Libraries\Jwt\JwtToken;

@@ -9,11 +9,12 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 2.9.9
  */
 
 namespace Quantum\Libraries\Encryption\Exceptions;
 
+use Quantum\Libraries\Encryption\Enums\ExceptionMessages;
 use Quantum\App\Exceptions\BaseException;
 
 /**
@@ -22,28 +23,13 @@ use Quantum\App\Exceptions\BaseException;
  */
 class CryptorException extends BaseException
 {
-    /**
-     * @return CryptorException
-     */
-    public static function configNotFound(): CryptorException
-    {
-        return new static(t('exception.openssl_config_not_found'), E_WARNING);
-    }
-
-    /**
-     * @return CryptorException
-     */
-    public static function noPrivateKeyCreated(): CryptorException
-    {
-        return new static(t('exception.openssl_private_key_not_created'), E_WARNING);
-    }
 
     /**
      * @return CryptorException
      */
     public static function publicKeyNotProvided(): CryptorException
     {
-        return new static(t('exception.openssl_public_key_not_provided'), E_WARNING);
+        return new static(ExceptionMessages::PUBLIC_KEY_MISSING, E_WARNING);
     }
 
     /**
@@ -51,7 +37,7 @@ class CryptorException extends BaseException
      */
     public static function privateKeyNotProvided(): CryptorException
     {
-        return new static(t('exception.openssl_private_key_not_provided'), E_WARNING);
+        return new static(ExceptionMessages::PRIVATE_KEY_MISSING, E_WARNING);
     }
 
     /**
@@ -59,6 +45,6 @@ class CryptorException extends BaseException
      */
     public static function invalidCipher(): CryptorException
     {
-        return new static(t('exception.openssl_invalid_cipher'), E_WARNING);
+        return new static(ExceptionMessages::INVALID_CIPHER, E_WARNING);
     }
 }

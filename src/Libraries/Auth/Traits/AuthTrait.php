@@ -19,7 +19,7 @@ use Quantum\Libraries\Mailer\Contracts\MailerInterface;
 use Quantum\Libraries\Auth\Exceptions\AuthException;
 use Quantum\Libraries\Jwt\Exceptions\JwtException;
 use Quantum\Config\Exceptions\ConfigException;
-use Quantum\Libraries\Auth\Constants\AuthKeys;
+use Quantum\Libraries\Auth\Enums\AuthKeys;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Libraries\Hasher\Hasher;

@@ -9,10 +9,12 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 2.9.9
  */
 
 namespace Quantum\Module\Exceptions;
+
+use Quantum\Module\Enums\ExceptionMessages;
 
 /**
  * Class ModuleLoaderException
@@ -20,13 +22,14 @@ namespace Quantum\Module\Exceptions;
  */
 class ModuleException extends \Exception
 {
+
     /**
      * @param string $name
      * @return ModuleException
      */
     public static function moduleRoutesNotFound(string $name): ModuleException
     {
-        return new static(t('exception.module_routes_not_found', $name), E_ERROR);
+        return new static(_message(ExceptionMessages::MODULE_ROUTES_NOT_FOUND, $name), E_ERROR);
     }
 
     /**
@@ -34,7 +37,7 @@ class ModuleException extends \Exception
      */
     public static function moduleConfigNotFound(): ModuleException
     {
-        return new static(t('exception.module_config_not_found'), E_ERROR);
+        return new static(ExceptionMessages::MODULE_CONFIG_NOT_FOUND, E_ERROR);
     }
 
     /**
@@ -42,7 +45,7 @@ class ModuleException extends \Exception
      */
     public static function moduleCreationIncomplete(): ModuleException
     {
-        return new static("Module creation incomplete: missing files.", E_ERROR);
+        return new static(ExceptionMessages::MODULE_CREATION_INCOMPLETE, E_ERROR);
     }
 
     /**
@@ -51,7 +54,7 @@ class ModuleException extends \Exception
      */
     public static function missingModuleTemplate(string $name): ModuleException
     {
-        return new static("Template `" . $name . "` does not exist", E_ERROR);
+        return new static(_message(ExceptionMessages::MISSING_MODULE_TEMPLATE, [$name]), E_ERROR);
     }
 
     /**
@@ -59,7 +62,7 @@ class ModuleException extends \Exception
      */
     public static function missingModuleDirectory(): ModuleException
     {
-        return new static("Module directory does not exist, skipping config update.", E_ERROR);
+        return new static(ExceptionMessages::MISSING_MODULE_DIRECTORY, E_ERROR);
     }
 
     /**
@@ -68,6 +71,6 @@ class ModuleException extends \Exception
      */
     public static function moduleAlreadyExists(string $name): ModuleException
     {
-        return new static("A module or prefix named `" . $name . "` already exists", E_ERROR);
+        return new static(_message(ExceptionMessages::MODULE_ALREADY_EXISTS, [$name]), E_ERROR);
     }
 }

@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.8
+ * @since 2.9.9
  */
 
 namespace Quantum\Model;
@@ -206,14 +206,14 @@ abstract class QtModel
 
     /**
      * @param string $method
-     * @param mixed|null $args
-     * @return $this|array|int|string
-     * @throws ModelException
+     * @param $args
+     * @return $this
+     * @throws BaseException
      */
     public function __call(string $method, $args = null)
     {
         if (!method_exists($this->ormInstance, $method)) {
-            throw ModelException::undefinedMethod($method);
+            throw ModelException::methodNotSupported($method, get_class($this->ormInstance));
         }
 
         $result = $this->ormInstance->{$method}(...$args);

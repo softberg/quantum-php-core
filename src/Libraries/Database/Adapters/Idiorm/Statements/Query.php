@@ -9,12 +9,13 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.9
  */
 
 namespace Quantum\Libraries\Database\Adapters\Idiorm\Statements;
 
 use Quantum\Libraries\Database\Exceptions\DatabaseException;
+use Quantum\App\Exceptions\BaseException;
 
 /**
  * Trait Query
@@ -25,12 +26,12 @@ trait Query
 
     /**
      * @inheritDoc
-     * @throws DatabaseException
+     * @throws BaseException
      */
     public static function execute(string $query, array $parameters = []): bool
     {
         if (!self::getConnection()) {
-            throw DatabaseException::missingConfig();
+            throw DatabaseException::missingConfig('database');
         }
 
         return (self::$ormClass)::raw_execute($query, $parameters);
@@ -38,12 +39,12 @@ trait Query
 
     /**
      * @inheritDoc
-     * @throws DatabaseException
+     * @throws BaseException
      */
     public static function query(string $query, array $parameters = []): array
     {
         if (!self::getConnection()) {
-            throw DatabaseException::missingConfig();
+            throw DatabaseException::missingConfig('database');
         }
 
         return (self::$ormClass)::for_table('dummy')->raw_query($query, $parameters)->find_array();
@@ -51,12 +52,12 @@ trait Query
 
     /**
      * @inheritDoc
-     * @throws DatabaseException
+     * @throws BaseException
      */
     public static function lastQuery(): ?string
     {
         if (!self::getConnection()) {
-            throw DatabaseException::missingConfig();
+            throw DatabaseException::missingConfig('database');
         }
 
         return (self::$ormClass)::get_last_query();
@@ -64,12 +65,12 @@ trait Query
 
     /**
      * @inheritDoc
-     * @throws DatabaseException
+     * @throws BaseException
      */
     public static function lastStatement(): object
     {
         if (!self::getConnection()) {
-            throw DatabaseException::missingConfig();
+            throw DatabaseException::missingConfig('database');
         }
 
         return (self::$ormClass)::get_last_statement();
@@ -77,12 +78,12 @@ trait Query
 
     /**
      * @inheritDoc
-     * @throws DatabaseException
+     * @throws BaseException
      */
     public static function queryLog(): array
     {
         if (!self::getConnection()) {
-            throw DatabaseException::missingConfig();
+            throw DatabaseException::missingConfig('database');
         }
 
         return (self::$ormClass)::get_query_log();
@@ -92,7 +93,7 @@ trait Query
      * Fetches columns of the table
      * @param string $table
      * @return array
-     * @throws DatabaseException
+     * @throws BaseException
      */
     public static function fetchColumns(string $table): array
     {

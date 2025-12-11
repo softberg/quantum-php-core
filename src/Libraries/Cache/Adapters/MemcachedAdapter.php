@@ -9,12 +9,13 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.9
  */
 
 namespace Quantum\Libraries\Cache\Adapters;
 
 use Quantum\Libraries\Cache\Exceptions\CacheException;
+use Quantum\App\Exceptions\BaseException;
 use Psr\SimpleCache\CacheInterface;
 use InvalidArgumentException;
 use Memcached;
@@ -42,10 +43,9 @@ class MemcachedAdapter implements CacheInterface
      */
     private $memcached;
 
-
     /**
      * @param array $params
-     * @throws CacheException
+     * @throws BaseException
      */
     public function __construct(array $params)
     {

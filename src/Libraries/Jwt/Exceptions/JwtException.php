@@ -9,11 +9,12 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 2.9.9
  */
 
 namespace Quantum\Libraries\Jwt\Exceptions;
 
+use Quantum\Libraries\Jwt\Enums\ExceptionMessages;
 use Quantum\App\Exceptions\BaseException;
 
 /**
@@ -22,11 +23,12 @@ use Quantum\App\Exceptions\BaseException;
  */
 class JwtException extends BaseException
 {
+
     /**
      * @return JwtException
      */
     public static function payloadNotFound(): JwtException
     {
-        return new static(t('exception.jwt_payload_not_found'), E_WARNING);
+        return new static(ExceptionMessages::MISSING_PAYLOAD, E_WARNING);
     }
 }

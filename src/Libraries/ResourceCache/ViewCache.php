@@ -9,11 +9,12 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 2.9.9
  */
 
 namespace Quantum\Libraries\ResourceCache;
 
+use Quantum\Libraries\ResourceCache\Exceptions\ResourceCacheException;
 use Quantum\Libraries\Database\Exceptions\DatabaseException;
 use Quantum\Libraries\Session\Exceptions\SessionException;
 use Quantum\Libraries\Storage\Factories\FileSystemFactory;
@@ -282,13 +283,14 @@ class ViewCache
     /**
      * @param string $content
      * @return string
+     * @throws ResourceCacheException
      */
     private function minify(string $content): string
     {
-        if (class_exists(HtmlMin::class)) {
-            return (new HtmlMin())->minify($content);
+        if (!class_exists(HtmlMin::class)) {
+            throw ResourceCacheException::classNotFound('HtmlMin', 'voku/html-min');
         }
 
-        return $content;
+        return (new HtmlMin())->minify($content);
     }
 }

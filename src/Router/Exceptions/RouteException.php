@@ -9,11 +9,12 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 2.9.9
  */
 
 namespace Quantum\Router\Exceptions;
 
+use Quantum\Router\Enums\ExceptionMessages;
 use Quantum\App\Exceptions\BaseException;
 
 /**
@@ -25,9 +26,9 @@ class RouteException extends BaseException
     /**
      * @return RouteException
      */
-    public static function notFound(): RouteException
+    public static function routeNotFound(): RouteException
     {
-        return new static(t('exception.route_not_found'), E_ERROR);
+        return new static(ExceptionMessages::ROUTE_NOT_FOUND, E_ERROR);
     }
 
     /**
@@ -35,7 +36,7 @@ class RouteException extends BaseException
      */
     public static function notClosure(): RouteException
     {
-        return new static(t('exception.routes_not_closure'), E_WARNING);
+        return new static(ExceptionMessages::ROUTE_NOT_CLOSURE, E_WARNING);
     }
 
     /**
@@ -44,7 +45,7 @@ class RouteException extends BaseException
      */
     public static function repetitiveRouteSameMethod(string $name): RouteException
     {
-        return new static(t('exception.repetitive_route_same_method', $name), E_WARNING);
+        return new static(_message(ExceptionMessages::REPETITIVE_ROUTE_WITH_SAME_NAME, [$name]), E_WARNING);
     }
 
     /**
@@ -52,7 +53,7 @@ class RouteException extends BaseException
      */
     public static function repetitiveRouteDifferentModules(): RouteException
     {
-        return new static(t('exception.repetitive_route_different_modules'), E_WARNING);
+        return new static(ExceptionMessages::REPETITIVE_ROUTE_IN_DIFFERENT_MODULES, E_WARNING);
     }
 
     /**
@@ -61,7 +62,7 @@ class RouteException extends BaseException
      */
     public static function incorrectMethod(?string $name): RouteException
     {
-        return new static(t('exception.incorrect_method', $name), E_WARNING);
+        return new static(_message(ExceptionMessages::INCORRECT_METHOD, [$name]), E_WARNING);
     }
 
     /**
@@ -69,7 +70,7 @@ class RouteException extends BaseException
      */
     public static function nameBeforeDefinition(): RouteException
     {
-        return new static(t('exception.name_before_route_definition'));
+        return new static(ExceptionMessages::NAME_BEFORE_ROUTE_DEFINITION, E_WARNING);
     }
 
     /**
@@ -77,7 +78,7 @@ class RouteException extends BaseException
      */
     public static function nameOnGroup(): RouteException
     {
-        return new static(t('exception.name_on_group'));
+        return new static(ExceptionMessages::NAME_ON_ROUTE_GROUP, E_WARNING);
     }
 
     /**
@@ -85,7 +86,7 @@ class RouteException extends BaseException
      */
     public static function nonUniqueName(): RouteException
     {
-        return new static(t('exception.name_is_not_unique'));
+        return new static(ExceptionMessages::NAME_NOT_UNIQUE, E_WARNING);
     }
 
     /**
@@ -94,7 +95,7 @@ class RouteException extends BaseException
      */
     public static function paramNameNotAvailable(string $name): RouteException
     {
-        return new static(t('exception.param_name_not_available', $name), E_WARNING);
+        return new static(_message(ExceptionMessages::ROUTE_PARAM_NAME_IN_USE, [$name]), E_WARNING);
     }
 
     /**
@@ -102,6 +103,6 @@ class RouteException extends BaseException
      */
     public static function paramNameNotValid(): RouteException
     {
-        return new static(t('exception.param_name_not_valid'), E_WARNING);
+        return new static(ExceptionMessages::INVALID_ROUTE_PARAM_NAME, E_WARNING);
     }
 }

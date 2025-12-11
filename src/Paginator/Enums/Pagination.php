@@ -9,10 +9,10 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.6
+ * @since 2.9.9
  */
 
-namespace Quantum\Paginator\Constants;
+namespace Quantum\Paginator\Enums;
 
 /**
  * Class Pagination

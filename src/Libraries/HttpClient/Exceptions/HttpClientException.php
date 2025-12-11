@@ -9,11 +9,12 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 2.9.9
  */
 
 namespace Quantum\Libraries\HttpClient\Exceptions;
 
+use Quantum\Libraries\HttpClient\Enums\ExceptionMessages;
 use Quantum\App\Exceptions\BaseException;
 
 /**
@@ -24,19 +25,11 @@ class HttpClientException extends BaseException
 {
 
     /**
-     * @param string $name
      * @return HttpClientException
      */
-    public static function methodNotAvailable(string $name): self
-    {
-        return new static(t('exception.method_not_available', $name), E_WARNING);
-    }
 
-    /**
-     * @return HttpClientException
-     */
     public static function requestNotCreated(): self
     {
-        return new static(t('exception.request_not_created'), E_WARNING);
+        return new static(ExceptionMessages::REQUEST_NOT_CREATED, E_WARNING);
     }
 }

@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 2.9.9
  */
 
 namespace Quantum\Config;
@@ -25,7 +25,7 @@ use Quantum\Di\Di;
 
 /**
  * Class Config
- * @package Quantum\Libraries\Config
+ * @package Quantum\Config
  */
 class Config implements StorageInterface
 {
