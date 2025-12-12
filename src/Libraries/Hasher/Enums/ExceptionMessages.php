@@ -25,8 +25,4 @@ final class ExceptionMessages extends BaseExceptionMessages
     const ALGORITHM_NOT_SUPPORTED = 'The algorithm {%1} not supported.';
 
     const INVALID_BCRYPT_COST = 'Provided bcrypt cost is invalid.';
-
-
-
-
 }

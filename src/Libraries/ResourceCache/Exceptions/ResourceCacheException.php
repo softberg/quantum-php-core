@@ -14,23 +14,13 @@
 
 namespace Quantum\Libraries\ResourceCache\Exceptions;
 
-use Quantum\Libraries\ResourceCache\Enums\ExceptionMessages;
 use Quantum\App\Exceptions\BaseException;
 
 /**
- * Class JwtException
- * @package Quantum\Libraries\JwtToken
+ * Class ResourceCacheException
+ * @package Quantum\Libraries\ResourceCache
  */
 class ResourceCacheException extends BaseException
 {
 
-    /**
-     * @param string $className
-     * @param string $packageName
-     * @return ResourceCacheException
-     */
-    public static function classNotFound(string $className, string $packageName): ResourceCacheException
-    {
-        return new static(_message(ExceptionMessages::TRANSLATION_FILES_NOT_FOUND, [$className, $packageName]), E_WARNING);
-    }
 }

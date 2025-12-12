@@ -283,14 +283,22 @@ class ViewCache
     /**
      * @param string $content
      * @return string
-     * @throws ResourceCacheException
+     * @throws BaseException
      */
     private function minify(string $content): string
     {
-        if (!class_exists(HtmlMin::class)) {
-            throw ResourceCacheException::classNotFound('HtmlMin', 'voku/html-min');
+        if (!$this->htmlMinifierExists()) {
+            throw ResourceCacheException::notFound('Package', 'HtmlMin');
         }
 
         return (new HtmlMin())->minify($content);
+    }
+
+    /**
+     * @return bool
+     */
+    protected function htmlMinifierExists(): bool
+    {
+        return class_exists(HtmlMin::class);
     }
 }
