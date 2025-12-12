@@ -9,13 +9,14 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.8
+ * @since 2.9.9
  */
 
 namespace Quantum\Model\Factories;
 
 use Quantum\Libraries\Database\Contracts\DbalInterface;
 use Quantum\Model\Exceptions\ModelException;
+use Quantum\App\Exceptions\BaseException;
 use Quantum\Libraries\Database\Database;
 use Quantum\Model\QtModel;
 
@@ -31,17 +32,18 @@ class ModelFactory
      * @param string $modelClass
      * @return QtModel
      * @throws ModelException
+     * @throws BaseException
      */
     public static function get(string $modelClass): QtModel
     {
         if (!class_exists($modelClass)) {
-            throw ModelException::notFound($modelClass);
+            throw ModelException::notFound('Model', $modelClass);
         }
 
         $model = new $modelClass();
 
         if (!$model instanceof QtModel) {
-            throw ModelException::notModelInstance([$modelClass, QtModel::class]);
+            throw ModelException::notInstanceOf($modelClass, QtModel::class);
         }
 
         $ormInstance = self::createOrmInstance(

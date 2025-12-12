@@ -9,10 +9,12 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 2.9.9
  */
 
 namespace Quantum\App\Exceptions;
+
+use Quantum\App\Enums\ExceptionMessages;
 
 /**
  * Class StopExecutionException
@@ -20,12 +22,13 @@ namespace Quantum\App\Exceptions;
  */
 class StopExecutionException extends BaseException
 {
+
     /**
      * @param int|null $code
      * @return StopExecutionException
      */
     public static function executionTerminated(?int $code): StopExecutionException
     {
-        return new static(t('exception.execution_terminated'), $code);
+        return new static(ExceptionMessages::EXECUTION_TERMINATED, $code);
     }
 }

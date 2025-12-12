@@ -64,7 +64,7 @@ class LoggerFactory
         $isDebug = is_debug_mode();
 
         if (!$isDebug && $adapter === Logger::MESSAGE) {
-            throw LoggerException::adapterNotAllowed(Logger::MESSAGE);
+            throw LoggerException::adapterNotSupported(Logger::MESSAGE);
         }
 
         $adapter = $isDebug ? Logger::MESSAGE : ($adapter ?? config()->get('logging.default'));

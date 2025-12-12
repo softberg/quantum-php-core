@@ -224,7 +224,7 @@ class RouterTest extends AppTestCase
 
         $this->expectException(RouteException::class);
 
-        $this->expectExceptionMessage('incorrect_method');
+        $this->expectExceptionMessage('Incorrect route method `GET`');
 
         $this->router->findRoute();
     }
@@ -252,7 +252,7 @@ class RouterTest extends AppTestCase
 
         $this->expectException(RouteException::class);
 
-        $this->expectExceptionMessage('repetitive_route_same_method');
+        $this->expectExceptionMessage('Repetitive Routes with same method `POST`');
 
         $this->router->findRoute();
     }
@@ -280,7 +280,7 @@ class RouterTest extends AppTestCase
 
         $this->expectException(RouteException::class);
 
-        $this->expectExceptionMessage('repetitive_route_different_modules');
+        $this->expectExceptionMessage('Repetitive Routes in different modules');
 
         $this->router->findRoute();
     }
@@ -291,7 +291,7 @@ class RouterTest extends AppTestCase
 
         $this->expectException(StopExecutionException::class);
 
-        $this->expectExceptionMessage('execution_terminated');
+        $this->expectExceptionMessage('Execution was terminated');
 
         $this->router->findRoute();
     }

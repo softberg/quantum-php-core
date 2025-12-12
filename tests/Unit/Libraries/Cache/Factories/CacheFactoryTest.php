@@ -67,7 +67,7 @@ class CacheFactoryTest extends AppTestCase
     {
         $this->expectException(CacheException::class);
 
-        $this->expectExceptionMessage('The adapter `invalid_type` is not supported`');
+        $this->expectExceptionMessage('The adapter `invalid_type` is not supported');
 
         CacheFactory::get('invalid_type');
     }

@@ -9,15 +9,15 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.8
+ * @since 2.9.9
  */
 
 use Quantum\Config\Exceptions\ConfigException;
 use Quantum\App\Exceptions\BaseException;
-use Quantum\Http\Constants\ContentType;
-use Quantum\App\Constants\ReservedKeys;
 use Quantum\Di\Exceptions\DiException;
-use Quantum\Http\Constants\StatusCode;
+use Quantum\App\Enums\ReservedKeys;
+use Quantum\Http\Enums\ContentType;
+use Quantum\Http\Enums\StatusCode;
 use DebugBar\DebugBarException;
 use Quantum\Http\Response;
 use Quantum\Http\Request;

@@ -2,7 +2,7 @@
 
 namespace Quantum\Tests\Unit\Http;
 
-use Quantum\Http\Constants\ContentType;
+use Quantum\Http\Enums\ContentType;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Http\Response;
 use Throwable;

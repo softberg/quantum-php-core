@@ -82,7 +82,7 @@ namespace Quantum\Tests\Unit\Di {
         {
             $this->expectException(DiException::class);
 
-            $this->expectExceptionMessage('exception.dependency_already_registered');
+            $this->expectExceptionMessage('The dependency `Quantum\Loader\Setup` is already registered.');
 
             Di::register(Setup::class);
             Di::register(Setup::class);
@@ -91,7 +91,7 @@ namespace Quantum\Tests\Unit\Di {
         public function testDiAttemptingToRegisterNonExistentClass(): void
         {
             $this->expectException(DiException::class);
-            $this->expectExceptionMessage('exception.dependency_not_instantiable');
+            $this->expectExceptionMessage('The dependency `NonExistentClass` is not instantiable.');
 
             Di::register('NonExistentClass');
         }
@@ -99,7 +99,7 @@ namespace Quantum\Tests\Unit\Di {
         public function testDiAttemptingToRegisterNonExistentAbstract(): void
         {
             $this->expectException(DiException::class);
-            $this->expectExceptionMessage('exception.invalid_abstract_dependency');
+            $this->expectExceptionMessage('The dependency `NonExistentInterface` is not valid abstract class.');
 
             Di::register(DummyService::class, 'NonExistentInterface');
         }
@@ -137,7 +137,7 @@ namespace Quantum\Tests\Unit\Di {
 
             $this->expectException(DiException::class);
 
-            $this->expectExceptionMessage('dependency_not_registered');
+            $this->expectExceptionMessage('The dependency `Quantum\Di\Exceptions\DiException` is not registered.');
 
             Di::get(DiException::class);
         }
@@ -147,9 +147,9 @@ namespace Quantum\Tests\Unit\Di {
             $this->expectException(DiException::class);
 
             $this->expectExceptionMessage(
-                'Circular dependency detected: ' . CircularDependencyA::class .
+                'Circular dependency detected: `' . CircularDependencyA::class .
                 ' -> ' . CircularDependencyB::class .
-                ' -> ' . CircularDependencyA::class
+                ' -> ' . CircularDependencyA::class . '`'
             );
 
             Di::register(CircularDependencyA::class);

@@ -53,7 +53,7 @@ class AppFactoryTest extends TestCase
     {
         $this->expectException(AppException::class);
 
-        $this->expectExceptionMessage('The adapter `invalid_type` is not supported`');
+        $this->expectExceptionMessage('The adapter `invalid_type` is not supported');
 
         AppFactory::create('invalid_type', PROJECT_ROOT);
     }

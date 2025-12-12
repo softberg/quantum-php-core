@@ -9,11 +9,12 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 2.9.9
  */
 
 namespace Quantum\Libraries\Logger\Exceptions;
 
+use Quantum\Libraries\Logger\Enums\ExceptionMessages;
 use Quantum\App\Exceptions\BaseException;
 
 /**
@@ -29,7 +30,7 @@ class LoggerException extends BaseException
      */
     public static function logPathIsNotDirectory(string $name): LoggerException
     {
-        return new static(t('exception.log_path_is_not_directory', $name));
+        return new static(_message(ExceptionMessages::LOG_PATH_NOT_DIRECTORY, [$name]), E_ERROR);
     }
 
     /**
@@ -38,15 +39,6 @@ class LoggerException extends BaseException
      */
     public static function logPathIsNotFile(string $name): LoggerException
     {
-        return new static(t('exception.log_path_is_not_file', $name));
-    }
-
-    /**
-     * @param string $name
-     * @return LoggerException
-     */
-    public static function adapterNotAllowed(string $name): LoggerException
-    {
-        return new static(t('exception.message_logger_not_in_debug_mode', $name));
+        return new static(_message(ExceptionMessages::LOG_PATH_NOT_FILE, [$name]), E_ERROR);
     }
 }

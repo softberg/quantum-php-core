@@ -107,7 +107,7 @@ class SessionFactoryTest extends AppTestCase
     {
         $this->expectException(SessionException::class);
 
-        $this->expectExceptionMessage('The adapter `invalid_type` is not supported`');
+        $this->expectExceptionMessage('The adapter `invalid_type` is not supported');
 
         SessionFactory::get('invalid_type');
     }

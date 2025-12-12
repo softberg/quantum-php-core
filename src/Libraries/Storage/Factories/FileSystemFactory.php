@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 2.9.9
  */
 
 namespace Quantum\Libraries\Storage\Factories;
@@ -90,8 +90,8 @@ class FileSystemFactory
      * @param string $adapterClass
      * @param string $adapter
      * @return FileSystem
+     * @throws BaseException
      * @throws DiException
-     * @throws FileSystemException
      * @throws ReflectionException
      * @throws ServiceException
      */
@@ -119,8 +119,8 @@ class FileSystemFactory
     /**
      * @param string $adapter
      * @return CloudAppInterface|null
+     * @throws BaseException
      * @throws DiException
-     * @throws FileSystemException
      * @throws ReflectionException
      * @throws ServiceException
      */
@@ -143,17 +143,19 @@ class FileSystemFactory
     /**
      * @param string $adapter
      * @return TokenServiceInterface
-     * @throws FileSystemException
+     * @throws BaseException
      * @throws DiException
-     * @throws ServiceException
      * @throws ReflectionException
+     * @throws ServiceException
      */
     private static function createTokenService(string $adapter): TokenServiceInterface
     {
-        $tokenService = ServiceFactory::create(config()->get('fs.' . $adapter . '.service'));
+        $serviceClass = config()->get('fs.' . $adapter . '.service');
+
+        $tokenService = ServiceFactory::create($serviceClass);
 
         if (!$tokenService instanceof TokenServiceInterface) {
-            throw FileSystemException::incorrectTokenService();
+            throw FileSystemException::notInstanceOf($serviceClass, TokenServiceInterface::class);
         }
 
         return $tokenService;

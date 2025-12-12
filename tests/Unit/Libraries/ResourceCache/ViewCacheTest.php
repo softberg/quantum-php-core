@@ -2,9 +2,30 @@
 
 namespace Quantum\Tests\Unit\Libraries\ResourceCache;
 
+use Quantum\Libraries\ResourceCache\Exceptions\ResourceCacheException;
 use Quantum\Libraries\ResourceCache\ViewCache;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Http\Response;
+
+class ViewCacheDouble extends ViewCache
+{
+    private $forceMissingHtmlMin = false;
+
+    public function simulateMissingHtmlMin(bool $state): void
+    {
+        $this->forceMissingHtmlMin = $state;
+    }
+
+    protected function htmlMinifierExists(): bool
+    {
+        if ($this->forceMissingHtmlMin) {
+            return false;
+        }
+
+        return class_exists(\voku\helper\HtmlMin::class);
+    }
+
+}
 
 class ViewCacheTest extends AppTestCase
 {
@@ -67,6 +88,17 @@ HEREDOC;
         $minifiedContent = '<div><span>Test html content</span>span> </div>';
 
         $this->assertEquals($minifiedContent, $content);
+    }
+
+    public function testViewCacheMinificationMissingDependency()
+    {
+        $viewCache = new ViewCacheDouble();
+        $viewCache->enableMinification(true);
+        $viewCache->simulateMissingHtmlMin(true);
+
+        $this->expectException(ResourceCacheException::class);
+
+        $viewCache->set($this->route, '<div>test</div>');
     }
 
     public function testExistsViewCache()

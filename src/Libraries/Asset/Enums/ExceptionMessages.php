@@ -1,0 +1,28 @@
+<?php
+
+/**
+ * Quantum PHP Framework
+ *
+ * An open source software development framework for PHP
+ *
+ * @package Quantum
+ * @author Arman Ag. <arman.ag@softberg.org>
+ * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
+ * @link http://quantum.softberg.org/
+ * @since 2.9.9
+ */
+
+namespace Quantum\Libraries\Asset\Enums;
+
+use Quantum\App\Enums\ExceptionMessages as BaseExceptionMessages;
+
+/**
+ * Class ExceptionMessages
+ * @package Quantum\Libraries\Asset
+ */
+final class ExceptionMessages extends BaseExceptionMessages
+{
+    const POSITION_IN_USE = 'Position `{%1}` for asset `{%2}` is in use';
+
+    const NAME_IN_USE = 'The name {%1} is in use';
+}

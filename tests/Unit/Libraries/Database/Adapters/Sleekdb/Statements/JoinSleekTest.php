@@ -4,8 +4,8 @@ namespace Quantum\Tests\Unit\Libraries\Database\Adapters\Sleekdb\Statements;
 
 use Quantum\Tests\Unit\Libraries\Database\Adapters\Sleekdb\SleekDbalTestCase;
 use Quantum\Tests\_root\shared\Models\TestUserProfessionModel;
-use Quantum\Tests\_root\shared\Models\TestUserEventModel;
 use Quantum\Tests\_root\shared\Models\TestUserMeetingModel;
+use Quantum\Tests\_root\shared\Models\TestUserEventModel;
 use Quantum\Tests\_root\shared\Models\TestTicketModel;
 use Quantum\Tests\_root\shared\Models\TestEventModel;
 use Quantum\Tests\_root\shared\Models\TestNotesModel;
@@ -179,7 +179,7 @@ class JoinSleekTest extends SleekDbalTestCase
     {
         $this->expectException(ModelException::class);
 
-        $this->expectExceptionMessage('wrong_relation');
+        $this->expectExceptionMessage('The model `' . TestNotesModel::class . '` does not define relation with `' . TestEventModel::class . '`');
 
         $eventModel = ModelFactory::get(TestEventModel::class);
 

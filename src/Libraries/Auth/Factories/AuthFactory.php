@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 2.9.9
  */
 
 namespace Quantum\Libraries\Auth\Factories;
@@ -114,17 +114,19 @@ class AuthFactory
     /**
      * @param string $adapter
      * @return AuthServiceInterface
-     * @throws AuthException
+     * @throws BaseException
      * @throws DiException
      * @throws ReflectionException
      * @throws ServiceException
      */
     private static function createAuthService(string $adapter): AuthServiceInterface
     {
-        $authService = ServiceFactory::create(config()->get('auth.' . $adapter . '.service'));
+        $authServiceClass = config()->get('auth.' . $adapter . '.service');
+
+        $authService = ServiceFactory::create($authServiceClass);
 
         if (!$authService instanceof AuthServiceInterface) {
-            throw AuthException::incorrectAuthService();
+            throw AuthException::notInstanceOf($authServiceClass, AuthServiceInterface::class);
         }
 
         return $authService;

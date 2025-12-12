@@ -16,10 +16,10 @@ namespace Quantum\Http\Response;
 
 use Quantum\Http\Traits\Response\Header;
 use Quantum\Http\Traits\Response\Status;
-use Quantum\Environment\Constants\Env;
-use Quantum\Http\Constants\StatusCode;
 use Quantum\Http\Traits\Response\Body;
 use Quantum\Environment\Environment;
+use Quantum\Environment\Enums\Env;
+use Quantum\Http\Enums\StatusCode;
 use Exception;
 
 /**

@@ -72,7 +72,7 @@ class LoggerFactoryTest extends AppTestCase
     {
         $this->expectException(LoggerException::class);
 
-        $this->expectExceptionMessage('exception.message_logger_not_in_debug_mode');
+        $this->expectExceptionMessage('The adapter `message` is not supported.');
 
         LoggerFactory::get(Logger::MESSAGE);
     }
@@ -81,7 +81,7 @@ class LoggerFactoryTest extends AppTestCase
     {
         $this->expectException(LoggerException::class);
 
-        $this->expectExceptionMessage('The adapter `invalid_type` is not supported`');
+        $this->expectExceptionMessage('The adapter `invalid_type` is not supported');
 
         LoggerFactory::get('invalid_type');
     }

@@ -9,13 +9,13 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.9
  */
 
 namespace Quantum\Libraries\Database\Traits;
 
 use Quantum\Libraries\Database\Schemas\Column;
-use Quantum\Libraries\Database\Constants\Key;
+use Quantum\Libraries\Database\Enums\Key;
 
 /**
  * Trait TableTrait

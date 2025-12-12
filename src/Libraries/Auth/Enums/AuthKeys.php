@@ -12,7 +12,7 @@
  * @since 2.9.5
  */
 
-namespace Quantum\Libraries\Auth\Constants;
+namespace Quantum\Libraries\Auth\Enums;
 
 /**
  * Class AuthKeys

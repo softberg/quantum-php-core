@@ -47,7 +47,7 @@ class CryptorFactoryTest extends AppTestCase
     {
         $this->expectException(CryptorException::class);
 
-        $this->expectExceptionMessage('The adapter `invalid_type` is not supported`');
+        $this->expectExceptionMessage('The adapter `invalid_type` is not supported');
 
         CryptorFactory::get('invalid_type');
     }
