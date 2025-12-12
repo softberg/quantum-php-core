@@ -9,11 +9,12 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 2.9.9
  */
 
 namespace Quantum\Migration\Exceptions;
 
+use Quantum\Migration\Enums\ExceptionMessages;
 use Quantum\App\Exceptions\BaseException;
 
 /**
@@ -30,7 +31,7 @@ class MigrationException extends BaseException
      */
     public static function wrongDirection(): MigrationException
     {
-        return new static(t('exception.wrong_migration_direction'), E_ERROR);
+        return new static(ExceptionMessages::WRONG_MIGRATION_DIRECTION, E_ERROR);
     }
 
     /**
@@ -39,25 +40,7 @@ class MigrationException extends BaseException
      */
     public static function unsupportedAction(string $action): MigrationException
     {
-        return new static(t('exception.non_supported_action', $action), E_ERROR);
-    }
-
-    /**
-     * @param string $name
-     * @return MigrationException
-     */
-    public static function columnNotAvailable(string $name): MigrationException
-    {
-        return new static(t('exception.column_not_available', $name), E_ERROR);
-    }
-
-    /**
-     * @param string $name
-     * @return MigrationException
-     */
-    public static function methodNotDefined(string $name): MigrationException
-    {
-        return new static(t('exception.method_not_defined', $name), E_ERROR);
+        return new static(_message(ExceptionMessages::NOT_SUPPORTED_ACTION, [$action]), E_ERROR);
     }
 
     /**
@@ -65,6 +48,6 @@ class MigrationException extends BaseException
      */
     public static function nothingToMigrate(): MigrationException
     {
-        return new static(t('exception.nothing_to_migrate'), E_NOTICE);
+        return new static(ExceptionMessages::NOTHING_TO_MIGRATE, E_NOTICE);
     }
 }

@@ -9,10 +9,12 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.9
  */
 
 namespace Quantum\Libraries\Asset\Exceptions;
+
+use Quantum\Libraries\Asset\Enums\ExceptionMessages;
 
 /**
  * Class AssetException
@@ -27,7 +29,7 @@ class AssetException extends \Exception
      */
     public static function positionInUse(string $position, string $name): AssetException
     {
-        return new self(t('exception.position_in_use', [$position, $name]), E_WARNING);
+        return new self(_message(ExceptionMessages::POSITION_IN_USE, [$position, $name]), E_WARNING);
     }
 
     /**
@@ -36,6 +38,6 @@ class AssetException extends \Exception
      */
     public static function nameInUse(?string $name): AssetException
     {
-        return new self(t('exception.name_in_use', [$name]), E_WARNING);
+        return new self(_message(ExceptionMessages::NAME_IN_USE, [$name]), E_WARNING);
     }
 }

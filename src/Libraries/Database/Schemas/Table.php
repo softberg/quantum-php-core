@@ -9,15 +9,15 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.9
  */
 
 namespace Quantum\Libraries\Database\Schemas;
 
 use Quantum\Libraries\Database\Exceptions\DatabaseException;
-use Quantum\Libraries\Lang\Exceptions\LangException;
 use Quantum\Migration\Exceptions\MigrationException;
 use Quantum\Libraries\Database\Traits\TableTrait;
+use Quantum\App\Exceptions\BaseException;
 use Quantum\Libraries\Database\Database;
 
 /**
@@ -278,13 +278,12 @@ class Table
      * @param string $method
      * @param array|null $arguments
      * @return $this
-     * @throws MigrationException
-     * @throws LangException
+     * @throws BaseException
      */
     public function __call(string $method, ?array $arguments)
     {
         if (!method_exists(Column::class, $method)) {
-            throw MigrationException::methodNotDefined($method);
+            throw MigrationException::methodNotSupported($method, Column::class);
         }
 
         $this->columns[$this->columnKey()]['column']->{$method}(...$arguments);

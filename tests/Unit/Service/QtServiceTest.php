@@ -17,6 +17,7 @@ namespace Quantum\Tests\Unit\Service {
     use Quantum\Service\Factories\ServiceFactory;
     use Quantum\Services\TestingService;
     use Quantum\Tests\Unit\AppTestCase;
+    use Quantum\Service\QtService;
 
     /**
      * @runTestsInSeparateProcesses
@@ -34,7 +35,7 @@ namespace Quantum\Tests\Unit\Service {
         {
             $this->expectException(ServiceException::class);
 
-            $this->expectExceptionMessage('undefined_method');
+            $this->expectExceptionMessage('The method `undefinedMethod` is not supported for `' . QtService::class . '`');
 
             $service = (new ServiceFactory)->get(TestingService::class);
 

@@ -2,8 +2,8 @@
 
 namespace Quantum\Tests\Unit\Libraries\Database\Schema;
 
-use Quantum\Libraries\Database\Constants\Type;
 use Quantum\Libraries\Database\Schemas\Column;
+use Quantum\Libraries\Database\Enums\Type;
 use PHPUnit\Framework\TestCase;
 
 class ColumnTest extends TestCase

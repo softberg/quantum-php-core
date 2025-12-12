@@ -9,13 +9,14 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.9
  */
 
 namespace Quantum\Libraries\Encryption\Adapters;
 
 use Quantum\Libraries\Encryption\Contracts\EncryptionInterface;
 use Quantum\Libraries\Encryption\Exceptions\CryptorException;
+use Quantum\App\Exceptions\BaseException;
 
 /**
  * Class AsymmetricEncryptionAdapter
@@ -45,7 +46,7 @@ class AsymmetricEncryptionAdapter implements EncryptionInterface
     private $privateKey;
 
     /**
-     * @throws CryptorException
+     * @throws BaseException
      */
     public function __construct()
     {
@@ -56,6 +57,7 @@ class AsymmetricEncryptionAdapter implements EncryptionInterface
     }
 
     /**
+     * Encrypts the string
      * @param string $plain
      * @return string
      * @throws CryptorException
@@ -71,6 +73,7 @@ class AsymmetricEncryptionAdapter implements EncryptionInterface
     }
 
     /**
+     * Decrypts the string
      * @param string $encrypted
      * @return string
      * @throws CryptorException
@@ -86,8 +89,9 @@ class AsymmetricEncryptionAdapter implements EncryptionInterface
     }
 
     /**
+     * Generate key pairs
      * @return array
-     * @throws CryptorException
+     * @throws BaseException
      */
     private function generateKeyPair(): array
     {
@@ -98,7 +102,7 @@ class AsymmetricEncryptionAdapter implements EncryptionInterface
         ]);
 
         if (!$resource) {
-            throw CryptorException::configNotFound();
+            throw CryptorException::missingConfig('openssl.cnf');
         }
 
         openssl_pkey_export($resource, $privateKey);

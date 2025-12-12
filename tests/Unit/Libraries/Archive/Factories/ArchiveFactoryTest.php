@@ -47,7 +47,7 @@ class ArchiveFactoryTest extends AppTestCase
     {
         $this->expectException(ArchiveException::class);
 
-        $this->expectExceptionMessage('The adapter `invalid_type` is not supported`');
+        $this->expectExceptionMessage('The adapter `invalid_type` is not supported');
 
         ArchiveFactory::get('invalid_type');
     }

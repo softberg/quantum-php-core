@@ -9,14 +9,14 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.8
+ * @since 2.9.9
  */
 
 namespace Quantum\Http\Traits\Response;
 
 use Quantum\Http\Exceptions\HttpException;
-use Quantum\App\Constants\ReservedKeys;
-use Quantum\Http\Constants\ContentType;
+use Quantum\App\Enums\ReservedKeys;
+use Quantum\Http\Enums\ContentType;
 use SimpleXMLElement;
 use DOMDocument;
 use Exception;

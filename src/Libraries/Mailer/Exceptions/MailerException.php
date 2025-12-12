@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 2.9.9
  */
 
 namespace Quantum\Libraries\Mailer\Exceptions;
@@ -23,12 +23,4 @@ use Quantum\App\Exceptions\BaseException;
 class MailerException extends BaseException
 {
 
-    /**
-     * @param string $error
-     * @return MailerException
-     */
-    public static function unableToSend(string $error): MailerException
-    {
-        return new static($error, E_WARNING);
-    }
 }

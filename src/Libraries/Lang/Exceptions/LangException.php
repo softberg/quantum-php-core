@@ -14,6 +14,7 @@
 
 namespace Quantum\Libraries\Lang\Exceptions;
 
+use Quantum\Libraries\Lang\Enums\ExceptionMessages;
 use Quantum\App\Exceptions\BaseException;
 
 /**
@@ -28,7 +29,7 @@ class LangException extends BaseException
      */
     public static function translationsNotFound(): LangException
     {
-        return new static('Translation files not found', E_WARNING);
+        return new static(ExceptionMessages::TRANSLATION_FILES_NOT_FOUND, E_WARNING);
     }
 
     /**
@@ -36,6 +37,6 @@ class LangException extends BaseException
      */
     public static function misconfiguredDefaultConfig(): LangException
     {
-        return new static('Misconfigured lang default config', E_WARNING);
+        return new static(ExceptionMessages::MISCONFIGURED_DEFAULT_LANG, E_WARNING);
     }
 }

@@ -14,6 +14,7 @@
 
 namespace Quantum\Router\Exceptions;
 
+use Quantum\Router\Enums\ExceptionMessages;
 use Quantum\App\Exceptions\BaseException;
 
 /**
@@ -29,7 +30,7 @@ class RouteControllerException extends BaseException
      */
     public static function controllerNotDefined(?string $name): RouteControllerException
     {
-        return new static("Controller class `$name` not found.", E_ERROR);
+        return new static(_message(ExceptionMessages::CONTROLLER_NOT_FOUND, [$name]), E_ERROR);
     }
 
     /**
@@ -38,6 +39,6 @@ class RouteControllerException extends BaseException
      */
     public static function actionNotDefined(string $name): RouteControllerException
     {
-        return new static("Action `$name` not defined", E_ERROR);
+        return new static(_message(ExceptionMessages::ACTION_NOT_DEFINED, [$name]), E_ERROR);
     }
 }

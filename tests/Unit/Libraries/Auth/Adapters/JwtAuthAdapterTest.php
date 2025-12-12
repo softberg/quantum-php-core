@@ -2,8 +2,9 @@
 
 namespace Quantum\Tests\Unit\Libraries\Auth\Adapters;
 
-use Quantum\Libraries\Auth\Adapters\JwtAuthAdapter;
 use Quantum\Libraries\Auth\Exceptions\AuthException;
+use Quantum\Libraries\Auth\Adapters\JwtAuthAdapter;
+use Quantum\Libraries\Auth\Enums\ExceptionMessages;
 use Quantum\Tests\Unit\Libraries\Auth\AuthTestCase;
 use Quantum\Libraries\Hasher\Hasher;
 use Quantum\Libraries\Jwt\JwtToken;
@@ -54,7 +55,7 @@ class JwtAuthAdapterTest extends AuthTestCase
     {
         $this->expectException(AuthException::class);
 
-        $this->expectExceptionMessage('incorrect_auth_credentials');
+        $this->expectExceptionMessage(ExceptionMessages::INCORRECT_CREDENTIALS);
 
         $this->jwtAuth->signin('admin@qt.com', '111111');
     }
@@ -113,7 +114,7 @@ class JwtAuthAdapterTest extends AuthTestCase
     {
         $this->expectException(AuthException::class);
 
-        $this->expectExceptionMessage('inactive_account');
+        $this->expectExceptionMessage(ExceptionMessages::INACTIVE_ACCOUNT);
 
         $this->jwtAuth->signup($this->guestUser);
 

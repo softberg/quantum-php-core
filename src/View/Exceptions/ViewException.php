@@ -9,11 +9,12 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 2.9.9
  */
 
 namespace Quantum\View\Exceptions;
 
+use Quantum\View\Enums\ExceptionMessages;
 use Quantum\App\Exceptions\BaseException;
 
 /**
@@ -22,21 +23,13 @@ use Quantum\App\Exceptions\BaseException;
  */
 class ViewException extends BaseException
 {
-    /**
-     * @param string $name
-     * @return ViewException
-     */
-    public static function directInstantiation(string $name): ViewException
-    {
-        return new static(t('exception.direct_view_instance', $name), E_WARNING);
-    }
 
     /**
      * @return ViewException
      */
     public static function noLayoutSet(): ViewException
     {
-        return new static(t('exception.layout_not_set'), E_ERROR);
+        return new static(ExceptionMessages::LAYOUT_NOT_SET, E_ERROR);
     }
 
     /**
@@ -44,6 +37,6 @@ class ViewException extends BaseException
      */
     public static function viewNotRendered(): ViewException
     {
-        return new static(t('exception.view_not_rendered_yet'), E_ERROR);
+        return new static(ExceptionMessages::VIEW_NOT_RENDERED_YET, E_ERROR);
     }
 }

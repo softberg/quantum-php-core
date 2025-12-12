@@ -152,11 +152,13 @@ class UploadedFileTest extends AppTestCase
 
         $uploadedFile->save(base_dir());
 
-        $this->assertTrue(file_exists(base_dir() . DS . $uploadedFile->getNameWithExtension()));
+        $filePath = base_dir() . DS . $uploadedFile->getNameWithExtension();
+
+        $this->assertTrue(file_exists($filePath));
 
         $this->expectException(FileSystemException::class);
 
-        $this->expectExceptionMessage('exception.file_already_exists');
+        $this->expectExceptionMessage('The file ' . $filePath . ' already exists');
 
         $uploadedFile->save(base_dir());
     }

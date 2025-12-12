@@ -9,11 +9,12 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 2.9.9
  */
 
 namespace Quantum\Libraries\Storage\Exceptions;
 
+use Quantum\Libraries\Storage\Enums\ExceptionMessages;
 use Quantum\App\Exceptions\BaseException;
 
 /**
@@ -29,7 +30,7 @@ class FileSystemException extends BaseException
      */
     public static function directoryNotExists(string $name): FileSystemException
     {
-        return new static(t('exception.directory_not_exist', $name), E_WARNING);
+        return new static(_message(ExceptionMessages::DIRECTORY_NOT_EXISTS, [$name]), E_WARNING);
     }
 
     /**
@@ -38,22 +39,15 @@ class FileSystemException extends BaseException
      */
     public static function directoryNotWritable(string $name): FileSystemException
     {
-        return new static(t('exception.directory_not_writable', $name), E_WARNING);
+        return new static(_message(ExceptionMessages::DIRECTORY_NOT_WRITABLE, [$name]), E_WARNING);
     }
 
     /**
+     * @param string $path
      * @return FileSystemException
      */
-    public static function fileAlreadyExists(): FileSystemException
+    public static function fileAlreadyExists(string $path): FileSystemException
     {
-        return new static(t('exception.file_already_exists'), E_WARNING);
-    }
-
-    /**
-     * @return FileSystemException
-     */
-    public static function incorrectTokenService(): FileSystemException
-    {
-        return new static(t('exception.incorrect_auth_service'), E_WARNING);
+        return new static(_message(ExceptionMessages::FILE_ALREADY_EXISTS, [$path]), E_WARNING);
     }
 }

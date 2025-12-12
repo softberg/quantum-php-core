@@ -9,11 +9,12 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 2.9.9
  */
 
 namespace Quantum\Libraries\Hasher\Exceptions;
 
+use Quantum\Libraries\Hasher\Enums\ExceptionMessages;
 use Quantum\App\Exceptions\BaseException;
 
 /**
@@ -30,7 +31,7 @@ class HasherException extends BaseException
      */
     public static function algorithmNotSupported(string $algorithm): self
     {
-        return new static(t('exception.not_supported_algorithm', $algorithm), E_WARNING);
+        return new static(_message(ExceptionMessages::ALGORITHM_NOT_SUPPORTED, $algorithm), E_WARNING);
     }
 
     /**
@@ -39,6 +40,6 @@ class HasherException extends BaseException
      */
     public static function invalidBcryptCost(): self
     {
-        return new static(t('exception.invalid_bcrypt_cost'), E_WARNING);
+        return new static(ExceptionMessages::INVALID_BCRYPT_COST, E_WARNING);
     }
 }

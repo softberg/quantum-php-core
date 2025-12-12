@@ -9,11 +9,12 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 2.9.9
  */
 
 namespace Quantum\Libraries\Database\Exceptions;
 
+use Quantum\Libraries\Database\Enums\ExceptionMessages;
 use Quantum\App\Exceptions\BaseException;
 
 /**
@@ -22,37 +23,13 @@ use Quantum\App\Exceptions\BaseException;
  */
 class DatabaseException extends BaseException
 {
-    /**
-     * @return DatabaseException
-     */
-    public static function missingConfig(): DatabaseException
-    {
-        return new static(t('exception.config_not_provided'), E_ERROR);
-    }
 
     /**
      * @return DatabaseException
      */
     public static function incorrectConfig(): DatabaseException
     {
-        return new static(t('exception.incorrect_config'), E_ERROR);
-    }
-
-    /**
-     * @return DatabaseException
-     */
-    public static function ormClassNotDefined(): DatabaseException
-    {
-        return new static(t('exception.orm_class_not_defined'), E_ERROR);
-    }
-
-    /**
-     * @param string $name
-     * @return DatabaseException
-     */
-    public static function ormClassNotFound(string $name): DatabaseException
-    {
-        return new static(t('exception.orm_class_not_found', $name), E_ERROR);
+        return new static(ExceptionMessages::INCORRECT_CONFIG, E_ERROR);
     }
 
     /**
@@ -61,7 +38,7 @@ class DatabaseException extends BaseException
      */
     public static function operatorNotSupported(string $operator): DatabaseException
     {
-        return new static(t('not_supported_operator', [$operator]), E_WARNING);
+        return new static(_message(ExceptionMessages::NOT_SUPPORTED_OPERATOR, [$operator]), E_WARNING);
     }
 
     /**
@@ -70,7 +47,7 @@ class DatabaseException extends BaseException
      */
     public static function tableAlreadyExists(string $name): DatabaseException
     {
-        return new static(t('exception.table_already_exists', $name), E_ERROR);
+        return new static(_message(ExceptionMessages::TABLE_ALREADY_EXISTS, $name), E_ERROR);
     }
 
     /**
@@ -79,6 +56,6 @@ class DatabaseException extends BaseException
      */
     public static function tableDoesNotExists(string $name): DatabaseException
     {
-        return new static(t('exception.table_does_not_exists', $name), E_ERROR);
+        return new static(_message(ExceptionMessages::TABLE_NOT_EXISTS, $name), E_ERROR);
     }
 }

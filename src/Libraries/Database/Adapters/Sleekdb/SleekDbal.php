@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.8
+ * @since 2.9.9
  */
 
 namespace Quantum\Libraries\Database\Adapters\Sleekdb;
@@ -24,6 +24,7 @@ use Quantum\Libraries\Database\Contracts\DbalInterface;
 use SleekDB\Exceptions\InvalidConfigurationException;
 use SleekDB\Exceptions\InvalidArgumentException;
 use Quantum\Model\Exceptions\ModelException;
+use Quantum\App\Exceptions\BaseException;
 use SleekDB\Exceptions\IOException;
 use SleekDB\QueryBuilder;
 use SleekDB\Store;
@@ -255,12 +256,13 @@ class SleekDbal implements DbalInterface
      * @throws IOException
      * @throws InvalidArgumentException
      * @throws InvalidConfigurationException
+     * @throws BaseException
      */
     public function getOrmModel(): Store
     {
         if (!$this->ormModel) {
             if (!self::getConnection()) {
-                throw DatabaseException::missingConfig();
+                throw DatabaseException::missingConfig('database');
             }
 
             $connection = self::getConnection();

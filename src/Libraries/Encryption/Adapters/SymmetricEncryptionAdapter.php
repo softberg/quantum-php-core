@@ -51,6 +51,7 @@ class SymmetricEncryptionAdapter implements EncryptionInterface
     }
 
     /**
+     * Encrypts the string
      * @param string $plain
      * @return string
      */
@@ -64,6 +65,7 @@ class SymmetricEncryptionAdapter implements EncryptionInterface
     }
 
     /**
+     * Decrypts the string
      * @param string $encrypted
      * @return string
      * @throws CryptorException
@@ -87,6 +89,7 @@ class SymmetricEncryptionAdapter implements EncryptionInterface
     }
 
     /**
+     * Generates initialization vector
      * @return string
      */
     private function generateIV(): string

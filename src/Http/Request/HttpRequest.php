@@ -166,12 +166,13 @@ abstract class HttpRequest
     /**
      * Sets the request method
      * @param string $method
-     * @throws HttpException
+     * @return void
+     * @throws BaseException
      */
     public static function setMethod(string $method)
     {
         if (!in_array(strtoupper($method), self::METHODS)) {
-            throw HttpException::methodNotAvailable($method);
+            throw HttpException::requestMethodNotAvailable($method);
         }
 
         self::$__method = $method;

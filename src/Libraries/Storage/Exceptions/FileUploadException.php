@@ -9,11 +9,12 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 2.9.9
  */
 
 namespace Quantum\Libraries\Storage\Exceptions;
 
+use Quantum\Libraries\Storage\Enums\ExceptionMessages;
 use Quantum\App\Exceptions\BaseException;
 
 /**
@@ -29,6 +30,6 @@ class FileUploadException extends BaseException
      */
     public static function fileTypeNotAllowed(string $name): FileUploadException
     {
-        return new static(t('exception.file_type_not_allowed', $name), E_WARNING);
+        return new static(_message(ExceptionMessages::FILE_TYPE_NOT_ALLOWED, [$name]), E_WARNING);
     }
 }

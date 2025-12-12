@@ -3,8 +3,8 @@
 namespace Quantum\Tests\Unit\Libraries\Auth\Factories;
 
 use Quantum\Libraries\Auth\Adapters\SessionAuthAdapter;
-use Quantum\Libraries\Auth\Adapters\JwtAuthAdapter;
 use Quantum\Libraries\Auth\Exceptions\AuthException;
+use Quantum\Libraries\Auth\Adapters\JwtAuthAdapter;
 use Quantum\Libraries\Auth\Factories\AuthFactory;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Libraries\Auth\Auth;
@@ -53,7 +53,7 @@ class AuthFactoryTest extends AppTestCase
 
         $this->expectException(AuthException::class);
 
-        $this->expectExceptionMessage('The adapter `invalid` is not supported`');
+        $this->expectExceptionMessage('The adapter `invalid` is not supported');
 
         AuthFactory::get();
     }

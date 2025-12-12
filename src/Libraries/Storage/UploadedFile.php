@@ -281,7 +281,7 @@ class UploadedFile extends SplFileInfo
             }
 
             if ($overwrite === false && $this->localFileSystem->exists($filePath)) {
-                throw FileSystemException::fileAlreadyExists();
+                throw FileSystemException::fileAlreadyExists($filePath);
             }
         }
 

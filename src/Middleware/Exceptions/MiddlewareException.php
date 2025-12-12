@@ -14,6 +14,7 @@
 
 namespace Quantum\Middleware\Exceptions;
 
+use Quantum\Middleware\Enums\ExceptionMessages;
 use Quantum\App\Exceptions\BaseException;
 
 /**
@@ -29,6 +30,6 @@ class MiddlewareException extends BaseException
      */
     public static function middlewareNotFound(string $name): MiddlewareException
     {
-        return new static("Middleware class `$name` not found.", E_ERROR);
+        return new static(_message(ExceptionMessages::MIDDLEWARE_NOT_FOUND, [$name]), E_ERROR);
     }
 }

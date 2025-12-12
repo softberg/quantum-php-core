@@ -117,7 +117,7 @@ class QtModelTest extends AppTestCase
     {
         $this->expectException(ModelException::class);
 
-        $this->expectExceptionMessage('inappropriate_property');
+        $this->expectExceptionMessage('Inappropriate property `country` for fillable object');
 
         $this->model->fillObjectProps(['country' => 'Ireland']);
     }
@@ -135,7 +135,7 @@ class QtModelTest extends AppTestCase
     {
         $this->expectException(ModelException::class);
 
-        $this->expectExceptionMessage('undefined_model_method');
+        $this->expectExceptionMessage('The method `undefinedMethod` is not supported for `' . IdiormDbal::class . '`');
 
         $this->model->undefinedMethod();
     }

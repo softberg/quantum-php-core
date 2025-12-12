@@ -34,7 +34,7 @@ class ModelFactoryTest extends AppTestCase
     {
         $this->expectException(ModelException::class);
 
-        $this->expectExceptionMessage('model_not_found');
+        $this->expectExceptionMessage('Model `NonExistentClass` not found');
 
         ModelFactory::get(\NonExistentClass::class);
     }
@@ -43,7 +43,7 @@ class ModelFactoryTest extends AppTestCase
     {
         $this->expectException(ModelException::class);
 
-        $this->expectExceptionMessage('not_instance_of_model');
+        $this->expectExceptionMessage('The `Mockery\Undefined` is not instance of `Quantum\Model\QtModel`');
 
         ModelFactory::get(\Mockery\Undefined::class);
     }

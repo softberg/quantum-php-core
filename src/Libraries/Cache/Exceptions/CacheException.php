@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 2.9.9
  */
 
 namespace Quantum\Libraries\Cache\Exceptions;
@@ -22,12 +22,5 @@ use Quantum\App\Exceptions\BaseException;
  */
 class CacheException extends BaseException
 {
-    /**
-     * @param string $name
-     * @return CacheException
-     */
-    public static function cantConnect(string $name): CacheException
-    {
-        return new static(t('exception.cant_connect', $name));
-    }
+
 }

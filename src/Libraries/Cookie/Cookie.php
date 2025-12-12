@@ -9,12 +9,13 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.9
  */
 
 namespace Quantum\Libraries\Cookie;
 
 use Quantum\Libraries\Cookie\Contracts\CookieStorageInterface;
+use Quantum\App\Exceptions\BaseException;
 
 /**
  * Class Cookie
@@ -61,6 +62,7 @@ class Cookie implements CookieStorageInterface
 
     /**
      * @inheritDoc
+     * @throws BaseException
      */
     public function all(): array
     {
@@ -83,6 +85,7 @@ class Cookie implements CookieStorageInterface
 
     /**
      * @inheritDoc
+     * @throws BaseException
      */
     public function get(string $key)
     {
@@ -91,6 +94,7 @@ class Cookie implements CookieStorageInterface
 
     /**
      * @inheritDoc
+     * @throws BaseException
      */
     public function set(string $key, $value = '', int $time = 0, string $path = '/', string $domain = '', bool $secure = false, bool $httponly = false)
     {

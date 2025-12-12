@@ -82,7 +82,7 @@ class LoggerHelperFunctionsTest extends AppTestCase
 
         $this->expectException(LoggerException::class);
 
-        $this->expectExceptionMessage('exception.message_logger_not_in_debug_mode');
+        $this->expectExceptionMessage('The adapter `message` is not supported');
 
         logger(Logger::MESSAGE);
     }

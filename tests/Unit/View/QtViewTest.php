@@ -98,7 +98,7 @@ class QtViewTest extends AppTestCase
     {
         $this->expectException(ViewException::class);
 
-        $this->expectExceptionMessage('layout_not_set');
+        $this->expectExceptionMessage('Layout is not set');
 
         $this->view->render('index');
     }

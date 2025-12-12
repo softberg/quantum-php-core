@@ -24,6 +24,7 @@ use Quantum\Libraries\Database\Adapters\Idiorm\Statements\Join;
 use Quantum\Libraries\Database\Contracts\RelationalInterface;
 use Quantum\Libraries\Database\Exceptions\DatabaseException;
 use Quantum\Libraries\Database\Contracts\DbalInterface;
+use Quantum\App\Exceptions\BaseException;
 use InvalidArgumentException;
 use ORM;
 use PDO;
@@ -202,13 +203,13 @@ class IdiormDbal implements DbalInterface, RelationalInterface
     /**
      * Gets the ORM model
      * @return ORM
-     * @throws DatabaseException
+     * @throws BaseException
      */
     public function getOrmModel(): ORM
     {
         if (!$this->ormModel) {
             if (!self::getConnection()) {
-                throw DatabaseException::missingConfig();
+                throw DatabaseException::missingConfig('database');
             }
 
             $this->ormModel = (self::$ormClass)::for_table($this->table)->use_id_column($this->idColumn);
