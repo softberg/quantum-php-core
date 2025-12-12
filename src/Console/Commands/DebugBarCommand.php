@@ -9,16 +9,19 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 2.9.9
  */
 
 namespace Quantum\Console\Commands;
 
+use Quantum\Libraries\Storage\Exceptions\FileSystemException;
 use Quantum\Libraries\Storage\Factories\FileSystemFactory;
-use Quantum\Libraries\Lang\Exceptions\LangException;
+use Quantum\Config\Exceptions\ConfigException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Libraries\Storage\FileSystem;
+use Quantum\Di\Exceptions\DiException;
 use Quantum\Console\QtCommand;
+use ReflectionException;
 
 /**
  * Class DebugBarAssetsCommand
@@ -64,8 +67,11 @@ class DebugBarCommand extends QtCommand
 
     /**
      * Executes the command and publishes the debug bar assets
-     * @throws LangException
      * @throws BaseException
+     * @throws FileSystemException
+     * @throws ConfigException
+     * @throws DiException
+     * @throws ReflectionException
      */
     public function exec()
     {
@@ -85,7 +91,8 @@ class DebugBarCommand extends QtCommand
      * Recursively copies the debug bar assets
      * @param string $src
      * @param string $dst
-     * @throws LangException
+     * @return void
+     * @throws FileSystemException
      */
     private function copyResources(string $src, string $dst)
     {
@@ -93,7 +100,7 @@ class DebugBarCommand extends QtCommand
 
         if ($dst != $this->publicDebugBarFolderPath) {
             if ($this->fs->makeDirectory($dst) === false) {
-                throw new \RuntimeException(t('exception.directory_cant_be_created', $dst));
+                throw FileSystemException::directoryNotWritable($dst);
             }
         }
 

@@ -15,6 +15,7 @@
 namespace Quantum\Libraries\Cache\Adapters;
 
 use Quantum\Libraries\Cache\Exceptions\CacheException;
+use Quantum\Libraries\Cache\Enums\ExceptionMessages;
 use Quantum\App\Exceptions\BaseException;
 use Psr\SimpleCache\CacheInterface;
 use InvalidArgumentException;
@@ -81,11 +82,12 @@ class MemcachedAdapter implements CacheInterface
 
     /**
      * @inheritDoc
+     * @throws InvalidArgumentException
      */
     public function getMultiple($keys, $default = null)
     {
         if (!is_array($keys)) {
-            throw new InvalidArgumentException(t(_message('exception.non_iterable_value', '$values')), E_WARNING);
+            throw new InvalidArgumentException(_message(ExceptionMessages::ARGUMENT_NOT_ITERABLE, '$values'), E_WARNING);
         }
 
         $result = [];
@@ -126,7 +128,7 @@ class MemcachedAdapter implements CacheInterface
     public function setMultiple($values, $ttl = null): bool
     {
         if (!is_array($values)) {
-            throw new InvalidArgumentException(t(_message('exception.non_iterable_value', '$values')), E_WARNING);
+            throw new InvalidArgumentException(_message(ExceptionMessages::ARGUMENT_NOT_ITERABLE, '$values'), E_WARNING);
         }
 
         $results = [];
@@ -153,7 +155,7 @@ class MemcachedAdapter implements CacheInterface
     public function deleteMultiple($keys): bool
     {
         if (!is_array($keys)) {
-            throw new InvalidArgumentException(t(_message('exception.non_iterable_value', '$values')), E_WARNING);
+            throw new InvalidArgumentException(_message(ExceptionMessages::ARGUMENT_NOT_ITERABLE, '$values'), E_WARNING);
         }
 
         $results = [];
