@@ -48,40 +48,51 @@ class LangFactory
             return self::$instance;
         }
 
+        list($isEnabled, $supported, $default) = self::loadLangConfig();
+
+        $lang = self::detectLanguage($supported, $default);
+
+        $translator = new Translator($lang);
+
+        return self::$instance = new Lang($lang, $isEnabled, $translator);
+
+    }
+
+    /**
+     * @return array
+     * @throws ConfigException
+     * @throws DiException
+     * @throws ReflectionException
+     */
+    private static function loadLangConfig(): array
+    {
         if (!config()->has('lang')) {
             config()->import(new Setup('config', 'lang'));
         }
 
-        $isEnabled = filter_var(config()->get('lang.enabled'), FILTER_VALIDATE_BOOLEAN);
-        $supported = (array)config()->get('lang.supported');
-        $default = config()->get('lang.default');
+        return [
+            filter_var(config()->get('lang.enabled'), FILTER_VALIDATE_BOOLEAN),
+            (array)config()->get('lang.supported'),
+            config()->get('lang.default'),
+        ];
+    }
 
-        $queryLang = Request::getQueryParam('lang');
-
-        $lang = $queryLang && in_array($queryLang, $supported)
-            ? $queryLang
-            : null;
+    /**
+     * @param array $supported
+     * @param string|null $default
+     * @return string
+     * @throws LangException
+     */
+    private static function detectLanguage(array $supported, ?string $default): string
+    {
+        $lang = self::getLangFromQuery($supported);
 
         if (empty($lang)) {
-            $segmentIndex = (int)config()->get('lang.url_segment');
-
-            if (!empty(route_prefix()) && $segmentIndex == 1) {
-                $segmentIndex++;
-            }
-
-            $segmentLang = Request::getSegment($segmentIndex);
-
-            $lang = $segmentLang && in_array($segmentLang, $supported)
-                ? $segmentLang
-                : null;
+            $lang = self::getLangFromUrlSegment($supported);
         }
 
         if (empty($lang)) {
-            $acceptedLang = server()->acceptedLang();
-
-            $lang = $acceptedLang && in_array($acceptedLang, $supported)
-                ? $acceptedLang
-                : null;
+            $lang = self::getLangFromHeader($supported);
         }
 
         if (empty($lang)) {
@@ -92,7 +103,45 @@ class LangFactory
             throw LangException::misconfiguredDefaultConfig();
         }
 
-        $translator = new Translator($lang);
-        return self::$instance = new Lang($lang, $isEnabled, $translator);
+        return $lang;
+    }
+
+    /**
+     * @param array $supported
+     * @return string|null
+     */
+    private static function getLangFromQuery(array $supported): ?string
+    {
+        $queryLang = Request::getQueryParam('lang');
+
+        return $queryLang && in_array($queryLang, $supported) ? $queryLang : null;
+    }
+
+    /**
+     * @param array $supported
+     * @return string|null
+     */
+    private static function getLangFromUrlSegment(array $supported): ?string
+    {
+        $segmentIndex = (int)config()->get('lang.url_segment');
+
+        if (!empty(route_prefix()) && $segmentIndex == 1) {
+            $segmentIndex++;
+        }
+
+        $segmentLang = Request::getSegment($segmentIndex);
+
+        return $segmentLang && in_array($segmentLang, $supported) ? $segmentLang : null;
+    }
+
+    /**
+     * @param array $supported
+     * @return string|null
+     */
+    private static function getLangFromHeader(array $supported): ?string
+    {
+        $acceptedLang = server()->acceptedLang();
+
+        return $acceptedLang && in_array($acceptedLang, $supported) ? $acceptedLang : null;
     }
 }
