@@ -9,16 +9,20 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 2.9.9
  */
 
 namespace Quantum\Libraries\Cache\Adapters;
 
 use Quantum\Libraries\Storage\Factories\FileSystemFactory;
+use Quantum\Libraries\Cache\Enums\ExceptionMessages;
+use Quantum\Config\Exceptions\ConfigException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Libraries\Storage\FileSystem;
+use Quantum\Di\Exceptions\DiException;
 use Psr\SimpleCache\CacheInterface;
 use InvalidArgumentException;
+use ReflectionException;
 
 /**
  * Class FileAdapter
@@ -50,6 +54,9 @@ class FileAdapter implements CacheInterface
     /**
      * @param array $params
      * @throws BaseException
+     * @throws ConfigException
+     * @throws DiException
+     * @throws ReflectionException
      */
     public function __construct(array $params)
     {
@@ -84,11 +91,12 @@ class FileAdapter implements CacheInterface
 
     /**
      * @inheritDoc
+     * @throws InvalidArgumentException
      */
     public function getMultiple($keys, $default = null)
     {
         if (!is_array($keys)) {
-            throw new InvalidArgumentException(t(_message('exception.non_iterable_value', '$keys')), E_WARNING);
+            throw new InvalidArgumentException(_message(ExceptionMessages::ARGUMENT_NOT_ITERABLE, '$keys'), E_WARNING);
         }
 
         $result = [];
@@ -134,7 +142,7 @@ class FileAdapter implements CacheInterface
     public function setMultiple($values, $ttl = null): bool
     {
         if (!is_array($values)) {
-            throw new InvalidArgumentException(t(_message('exception.non_iterable_value', '$values')), E_WARNING);
+            throw new InvalidArgumentException(_message(ExceptionMessages::ARGUMENT_NOT_ITERABLE, '$values'), E_WARNING);
         }
 
         $results = [];
@@ -167,7 +175,7 @@ class FileAdapter implements CacheInterface
     public function deleteMultiple($keys): bool
     {
         if (!is_array($keys)) {
-            throw new InvalidArgumentException(t(_message('exception.non_iterable_value', '$keys')), E_WARNING);
+            throw new InvalidArgumentException(_message(ExceptionMessages::ARGUMENT_NOT_ITERABLE, '$keys'), E_WARNING);
         }
 
         $results = [];

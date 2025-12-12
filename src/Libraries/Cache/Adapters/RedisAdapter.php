@@ -9,11 +9,12 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 2.9.9
  */
 
 namespace Quantum\Libraries\Cache\Adapters;
 
+use Quantum\Libraries\Cache\Enums\ExceptionMessages;
 use Psr\SimpleCache\CacheInterface;
 use InvalidArgumentException;
 use RedisException;
@@ -76,11 +77,12 @@ class RedisAdapter implements CacheInterface
 
     /**
      * @inheritDoc
+     * @throws InvalidArgumentException
      */
     public function getMultiple($keys, $default = null)
     {
         if (!is_array($keys)) {
-            throw new InvalidArgumentException(t(_message('exception.non_iterable_value', '$values')), E_WARNING);
+            throw new InvalidArgumentException(_message(ExceptionMessages::ARGUMENT_NOT_ITERABLE, '$values'), E_WARNING);
         }
 
         $result = [];
@@ -128,7 +130,7 @@ class RedisAdapter implements CacheInterface
     public function setMultiple($values, $ttl = null): bool
     {
         if (!is_array($values)) {
-            throw new InvalidArgumentException(t(_message('exception.non_iterable_value', '$values')), E_WARNING);
+            throw new InvalidArgumentException(_message(ExceptionMessages::ARGUMENT_NOT_ITERABLE, '$values'), E_WARNING);
         }
 
         $results = [];
@@ -155,7 +157,7 @@ class RedisAdapter implements CacheInterface
     public function deleteMultiple($keys): bool
     {
         if (!is_array($keys)) {
-            throw new InvalidArgumentException(t(_message('exception.non_iterable_value', '$values')), E_WARNING);
+            throw new InvalidArgumentException(_message(ExceptionMessages::ARGUMENT_NOT_ITERABLE, '$values'), E_WARNING);
         }
 
         $results = [];
