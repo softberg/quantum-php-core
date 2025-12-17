@@ -10,9 +10,9 @@ class CriteriaSleekTest extends SleekDbalTestCase
 
     public function testSleekCriteriaEquals()
     {
-        $this->userModel = new SleekDbal('users');
+        $this->userProfileModel = new SleekDbal('profiles');
 
-        $user = $this->userModel->criteria('firstname', '=', 'John')->first();
+        $user = $this->userProfileModel->criteria('firstname', '=', 'John')->first();
 
         $this->assertEquals('John', $user->prop('firstname'));
 
@@ -21,9 +21,9 @@ class CriteriaSleekTest extends SleekDbalTestCase
 
     public function testSleekCriteriaNotEquals()
     {
-        $this->userModel = new SleekDbal('users');
+        $this->userProfileModel = new SleekDbal('profiles');
 
-        $user = $this->userModel->criteria('firstname', '!=', 'John')->first();
+        $user = $this->userProfileModel->criteria('firstname', '!=', 'John')->first();
 
         $this->assertEquals('Jane', $user->prop('firstname'));
 
@@ -32,39 +32,39 @@ class CriteriaSleekTest extends SleekDbalTestCase
 
     public function testSleekCriteriaGreaterAndGreaterOrEqual()
     {
-        $this->userModel = new SleekDbal('users');
+        $this->userProfileModel = new SleekDbal('profiles');
 
-        $users = $this->userModel->criteria('age', '>', 35)->get();
+        $users = $this->userProfileModel->criteria('age', '>', 35)->get();
 
         $this->assertCount(1, $users);
 
-        $this->userModel = new SleekDbal('users');
+        $this->userProfileModel = new SleekDbal('profiles');
 
-        $users = $this->userModel->criteria('age', '>=', 35)->get();
+        $users = $this->userProfileModel->criteria('age', '>=', 35)->get();
 
         $this->assertCount(2, $users);
     }
 
     public function testSleekCriteriaSmallerAndSmallerOrEqual()
     {
-        $this->userModel = new SleekDbal('users');
+        $this->userProfileModel = new SleekDbal('profiles');
 
-        $users = $this->userModel->criteria('age', '<', 35)->get();
+        $users = $this->userProfileModel->criteria('age', '<', 35)->get();
 
         $this->assertCount(0, $users);
 
-        $this->userModel = new SleekDbal('users');
+        $this->userProfileModel = new SleekDbal('profiles');
 
-        $users = $this->userModel->criteria('age', '<=', 35)->get();
+        $users = $this->userProfileModel->criteria('age', '<=', 35)->get();
 
         $this->assertCount(1, $users);
     }
 
     public function testSleekCriteriaInAndNotIn()
     {
-        $this->userModel = new SleekDbal('users');
+        $this->userProfileModel = new SleekDbal('profiles');
 
-        $users = $this->userModel->criteria('age', 'IN', [35, 40, 45])->orderBy('age', 'desc')->get();
+        $users = $this->userProfileModel->criteria('age', 'IN', [35, 40, 45])->orderBy('age', 'desc')->get();
 
         $this->assertCount(2, $users);
 
@@ -72,9 +72,9 @@ class CriteriaSleekTest extends SleekDbalTestCase
 
         $this->assertEquals('Jane', $users[1]->firstname);
 
-        $this->userModel = new SleekDbal('users');
+        $this->userProfileModel = new SleekDbal('profiles');
 
-        $users = $this->userModel->criteria('age', 'NOT IN', [30, 40, 45])->get();
+        $users = $this->userProfileModel->criteria('age', 'NOT IN', [30, 40, 45])->get();
 
         $this->assertCount(1, $users);
 
@@ -83,25 +83,25 @@ class CriteriaSleekTest extends SleekDbalTestCase
 
     public function testSleekCriteriaLikeAndNotLike()
     {
-        $this->userModel = new SleekDbal('users');
+        $this->userProfileModel = new SleekDbal('profiles');
 
-        $users = $this->userModel->criteria('firstname', 'LIKE', '%Jo%')->get();
+        $users = $this->userProfileModel->criteria('firstname', 'LIKE', '%Jo%')->get();
 
         $this->assertCount(1, $users);
 
         $this->assertEquals('John', $users[0]->firstname);
 
-        $this->userModel = new SleekDbal('users');
+        $this->userProfileModel = new SleekDbal('profiles');
 
-        $users = $this->userModel->criteria('firstname', 'LIKE', '%J%')->orderBy('firstname', 'desc')->get();
+        $users = $this->userProfileModel->criteria('firstname', 'LIKE', '%J%')->orderBy('firstname', 'desc')->get();
 
         $this->assertCount(2, $users);
 
         $this->assertEquals('Jane', $users[1]->firstname);
 
-        $this->userModel = new SleekDbal('users');
+        $this->userProfileModel = new SleekDbal('profiles');
 
-        $users = $this->userModel->criteria('firstname', 'NOT LIKE', '%Jo%')->get();
+        $users = $this->userProfileModel->criteria('firstname', 'NOT LIKE', '%Jo%')->get();
 
         $this->assertCount(1, $users);
 
@@ -110,17 +110,17 @@ class CriteriaSleekTest extends SleekDbalTestCase
 
     public function testSleekCriteriaBetweenAndNotBetween()
     {
-        $this->userModel = new SleekDbal('users');
+        $this->userProfileModel = new SleekDbal('profiles');
 
-        $users = $this->userModel->criteria('age', 'BETWEEN', [20, 40])->get();
+        $users = $this->userProfileModel->criteria('age', 'BETWEEN', [20, 40])->get();
 
         $this->assertCount(1, $users);
 
         $this->assertEquals('Jane', $users[0]->firstname);
 
-        $this->userModel = new SleekDbal('users');
+        $this->userProfileModel = new SleekDbal('profiles');
 
-        $users = $this->userModel->criteria('age', 'NOT BETWEEN', [0, 40])->get();
+        $users = $this->userProfileModel->criteria('age', 'NOT BETWEEN', [0, 40])->get();
 
         $this->assertCount(1, $users);
 

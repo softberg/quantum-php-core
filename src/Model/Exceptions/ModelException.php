@@ -30,7 +30,10 @@ class ModelException extends BaseException
      */
     public static function inappropriateProperty(string $name): ModelException
     {
-        return new static(_message(ExceptionMessages::INAPPROPRIATE_MODEL_PROPERTY, $name), E_WARNING);
+        return new static(
+            _message(ExceptionMessages::INAPPROPRIATE_MODEL_PROPERTY, $name),
+            E_WARNING
+        );
     }
 
     /**
@@ -40,6 +43,60 @@ class ModelException extends BaseException
      */
     public static function wrongRelation(string $modelName, string $tableName): ModelException
     {
-        return new static(_message(ExceptionMessages::WRONG_RELATION, [$modelName, $tableName]), E_ERROR);
+        return new static(
+            _message(ExceptionMessages::WRONG_RELATION, [$modelName, $tableName]),
+            E_ERROR
+        );
+    }
+
+    /**
+     * @param string $modelName
+     * @param string $relatedModelName
+     * @return ModelException
+     */
+    public static function relationTypeMissing(string $modelName, string $relatedModelName): ModelException
+    {
+        return new static(
+            _message(ExceptionMessages::RELATION_TYPE_MISSING, [$modelName, $relatedModelName]),
+            E_ERROR
+        );
+    }
+
+    /**
+     * @param string $modelName
+     * @param string $relatedModelName
+     * @return ModelException
+     */
+    public static function missingRelationKeys(string $modelName, string $relatedModelName): ModelException
+    {
+        return new static(
+            _message(ExceptionMessages::MISSING_RELATION_KEYS, [$modelName, $relatedModelName]),
+            E_ERROR
+        );
+    }
+
+    /**
+     * @param string $modelName
+     * @param string $foreignKey
+     * @return ModelException
+     */
+    public static function missingForeignKeyValue(string $modelName, string $foreignKey): ModelException
+    {
+        return new static(
+            _message(ExceptionMessages::MISSING_FOREIGN_KEY, [$foreignKey, $modelName]),
+            E_ERROR
+        );
+    }
+
+    /**
+     * @param string $relationType
+     * @return ModelException
+     */
+    public static function unsupportedRelationType(string $relationType): ModelException
+    {
+        return new static(
+            _message(ExceptionMessages::UNSUPPORTED_RELATION, [$relationType]),
+            E_ERROR
+        );
     }
 }

@@ -291,6 +291,7 @@ class SleekDbal implements DbalInterface
 
     /**
      * Deletes the table and the data
+     * @throws BaseException
      * @throws DatabaseException
      * @throws IOException
      * @throws InvalidArgumentException
@@ -304,11 +305,12 @@ class SleekDbal implements DbalInterface
     /**
      * Gets the query builder object
      * @return QueryBuilder
+     * @throws BaseException
      * @throws DatabaseException
-     * @throws ModelException
      * @throws IOException
      * @throws InvalidArgumentException
      * @throws InvalidConfigurationException
+     * @throws ModelException
      */
     public function getBuilder(): QueryBuilder
     {

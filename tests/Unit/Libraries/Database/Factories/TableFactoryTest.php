@@ -54,19 +54,19 @@ class TableFactoryTest extends AppTestCase
 
     public function tearDown(): void
     {
-        Database::execute("DROP TABLE IF EXISTS users");
+        Database::execute("DROP TABLE IF EXISTS profiles");
     }
 
     public function testCreateTable()
     {
-        $table = $this->tableFactory->create('users');
+        $table = $this->tableFactory->create('profiles');
 
         $this->assertInstanceOf(Table::class, $table);
     }
 
     public function testAttemptToCreateTableWhichAlreadyExists()
     {
-        Database::execute("CREATE TABLE users (
+        Database::execute("CREATE TABLE profiles (
                         id INTEGER PRIMARY KEY,
                         firstname VARCHAR(255),
                         lastname VARCHAR(255),
@@ -77,14 +77,14 @@ class TableFactoryTest extends AppTestCase
 
         $this->expectException(DatabaseException::class);
 
-        $this->expectExceptionMessage('The table `users` is already exists');
+        $this->expectExceptionMessage('The table `profiles` is already exists');
 
-        $this->tableFactory->create('users');
+        $this->tableFactory->create('profiles');
     }
 
     public function testGetTable()
     {
-        Database::execute("CREATE TABLE IF NOT EXISTS users (
+        Database::execute("CREATE TABLE IF NOT EXISTS profiles (
                         id INTEGER PRIMARY KEY,
                         firstname VARCHAR(255),
                         lastname VARCHAR(255),
@@ -93,7 +93,7 @@ class TableFactoryTest extends AppTestCase
                         created_at DATETIME
                     )");
 
-        $table = $this->tableFactory->get('users');
+        $table = $this->tableFactory->get('profiles');
 
         $this->assertInstanceOf(Table::class, $table);
     }
@@ -102,14 +102,14 @@ class TableFactoryTest extends AppTestCase
     {
         $this->expectException(DatabaseException::class);
 
-        $this->expectExceptionMessage('The table `users` does not exists');
+        $this->expectExceptionMessage('The table `profiles` does not exists');
 
-        $table = $this->tableFactory->get('users');
+        $table = $this->tableFactory->get('profiles');
     }
 
     public function testRenameTable()
     {
-        Database::execute("CREATE TABLE IF NOT EXISTS users (
+        Database::execute("CREATE TABLE IF NOT EXISTS profiles (
                         id INTEGER PRIMARY KEY,
                         firstname VARCHAR(255),
                         lastname VARCHAR(255),
@@ -118,21 +118,21 @@ class TableFactoryTest extends AppTestCase
                         created_at DATETIME
                     )");
 
-        $this->assertTrue($this->tableFactory->rename('users', 'system_users'));
+        $this->assertTrue($this->tableFactory->rename('profiles', 'system_users'));
     }
 
     public function testAttemptToRenameNonExistingTable()
     {
         $this->expectException(DatabaseException::class);
 
-        $this->expectExceptionMessage('The table `users` does not exists');
+        $this->expectExceptionMessage('The table `profiles` does not exists');
 
-        $this->tableFactory->rename('users', 'system_users');
+        $this->tableFactory->rename('profiles', 'system_users');
     }
 
     public function testDropTable()
     {
-        Database::execute("CREATE TABLE IF NOT EXISTS users (
+        Database::execute("CREATE TABLE IF NOT EXISTS profiles (
                         id INTEGER PRIMARY KEY,
                         firstname VARCHAR(255),
                         lastname VARCHAR(255),
@@ -141,15 +141,15 @@ class TableFactoryTest extends AppTestCase
                         created_at DATETIME
                     )");
 
-        $this->assertTrue($this->tableFactory->drop('users'));
+        $this->assertTrue($this->tableFactory->drop('profiles'));
     }
 
     public function testAttemptToDropNonExistingTable()
     {
         $this->expectException(DatabaseException::class);
 
-        $this->expectExceptionMessage('The table `users` does not exists');
+        $this->expectExceptionMessage('The table `profiles` does not exists');
 
-        $this->tableFactory->drop('users', 'system_users');
+        $this->tableFactory->drop('profiles');
     }
 }

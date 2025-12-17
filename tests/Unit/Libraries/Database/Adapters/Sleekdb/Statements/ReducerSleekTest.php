@@ -10,15 +10,15 @@ class ReducerSleekTest extends SleekDbalTestCase
 
     public function testSleekSelect()
     {
-        $userModel = new SleekDbal('users');
+        $userProfileModel = new SleekDbal('profiles');
 
-        $user = $userModel->select('age')->first();
+        $user = $userProfileModel->select('age')->first();
 
         $this->assertCount(2, $user->asArray());
 
         $userModel = new SleekDbal('users');
 
-        $user = $userModel
+        $user = $userProfileModel
             ->select('id', ['firstname' => 'name'], ['lastname' => 'surname'], 'age')
             ->orderBy('id', 'asc')
             ->get();

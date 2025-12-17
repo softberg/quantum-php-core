@@ -2,23 +2,32 @@
 
 namespace Quantum\Tests\_root\shared\Models;
 
+use Quantum\Libraries\Database\Enums\Relation;
 use Quantum\Model\QtModel;
 
 class TestProfileModel extends QtModel
 {
+    public $table = 'profiles';
 
     public $idColumn = 'id';
 
-    public $table = 'profiles';
-
     protected $fillable = [
-        'password',
+        'user_id',
         'firstname',
         'lastname',
-        'age'
+        'age',
+        'country',
+        'created_at',
     ];
 
-    public $hidden = [
-        'password'
-    ];
+    public function relations(): array
+    {
+        return [
+            TestUserModel::class => [
+                'type' => Relation::BELONGS_TO,
+                'foreign_key' => 'user_id',
+                'local_key' => 'id'
+            ],
+        ];
+    }
 }

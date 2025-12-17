@@ -22,7 +22,9 @@ class DatabaseTest extends AppTestCase
 
         config()->set('debug', true);
 
-        Database::execute("CREATE TABLE IF NOT EXISTS users (
+        $this->setPrivateProperty(Database::class, 'instance', null);
+
+        Database::execute("CREATE TABLE IF NOT EXISTS profiles (
                         id INTEGER PRIMARY KEY,
                         firstname VARCHAR(255),
                         lastname VARCHAR(255),
@@ -34,7 +36,7 @@ class DatabaseTest extends AppTestCase
 
     public function tearDown(): void
     {
-        Database::execute("DROP TABLE IF EXISTS users");
+        Database::execute("DROP TABLE IF EXISTS profiles");
     }
 
     public function testDatabaseInstance()
@@ -60,17 +62,17 @@ class DatabaseTest extends AppTestCase
 
     public function testDatabaseRawQueries()
     {
-        $result = Database::query('SELECT * FROM users WHERE id=:id', ['id' => 1]);
+        $result = Database::query('SELECT * FROM profiles WHERE id=:id', ['id' => 1]);
 
         $this->assertIsArray($result);
 
         $this->assertEmpty($result);
 
-        Database::execute('INSERT INTO users (firstname, lastname, age, country)
+        Database::execute('INSERT INTO profiles (firstname, lastname, age, country)
                                      VALUES (:firstname, :lastname, :age, :country)',
                 ['firstname' => 'John', 'lastname' => 'Doe', 'age' => '56', 'country' => 'Spain']);
 
-        $result = Database::query('SELECT * FROM users WHERE id=:id', ['id' => 1]);
+        $result = Database::query('SELECT * FROM profiles WHERE id=:id', ['id' => 1]);
 
         $this->assertNotEmpty($result);
 
@@ -78,7 +80,7 @@ class DatabaseTest extends AppTestCase
 
         $this->assertEquals('Doe', $result[0]['lastname']);
 
-        $this->assertEquals("SELECT * FROM users WHERE '1'=:'1'", Database::lastQuery());
+        $this->assertEquals("SELECT * FROM profiles WHERE '1'=:'1'", Database::lastQuery());
 
         $this->assertIsArray(Database::queryLog());
     }
@@ -87,7 +89,7 @@ class DatabaseTest extends AppTestCase
     {
         Database::beginTransaction();
 
-        Database::execute('INSERT INTO users (firstname, lastname, age, country)
+        Database::execute('INSERT INTO profiles (firstname, lastname, age, country)
                                  VALUES (:firstname, :lastname, :age, :country)', [
             'firstname' => 'Alice',
             'lastname' => 'Smith',
@@ -97,13 +99,13 @@ class DatabaseTest extends AppTestCase
 
         Database::rollback();
 
-        $result = Database::query('SELECT * FROM users WHERE firstname = :firstname', ['firstname' => 'Alice']);
+        $result = Database::query('SELECT * FROM profiles WHERE firstname = :firstname', ['firstname' => 'Alice']);
 
         $this->assertEmpty($result);
 
         Database::beginTransaction();
 
-        Database::execute('INSERT INTO users (firstname, lastname, age, country)
+        Database::execute('INSERT INTO profiles (firstname, lastname, age, country)
                                  VALUES (:firstname, :lastname, :age, :country)', [
             'firstname' => 'Bob',
             'lastname' => 'Marley',
@@ -113,7 +115,7 @@ class DatabaseTest extends AppTestCase
 
         Database::commit();
 
-        $result = Database::query('SELECT * FROM users WHERE firstname = :firstname', ['firstname' => 'Bob']);
+        $result = Database::query('SELECT * FROM profiles WHERE firstname = :firstname', ['firstname' => 'Bob']);
 
         $this->assertNotEmpty($result);
 
@@ -123,7 +125,7 @@ class DatabaseTest extends AppTestCase
     public function testDatabaseTransactionClosureSuccess()
     {
         $result = Database::transaction(function () {
-            Database::execute('INSERT INTO users (firstname, lastname, age, country)
+            Database::execute('INSERT INTO profiles (firstname, lastname, age, country)
                                      VALUES (:firstname, :lastname, :age, :country)', [
                 'firstname' => 'Charlie',
                 'lastname' => 'Brown',
@@ -136,7 +138,7 @@ class DatabaseTest extends AppTestCase
 
         $this->assertEquals('committed', $result);
 
-        $rows = Database::query('SELECT * FROM users WHERE firstname = :firstname', ['firstname' => 'Charlie']);
+        $rows = Database::query('SELECT * FROM profiles WHERE firstname = :firstname', ['firstname' => 'Charlie']);
 
         $this->assertNotEmpty($rows);
 
@@ -147,7 +149,7 @@ class DatabaseTest extends AppTestCase
     {
         try {
             Database::transaction(function () {
-                Database::execute('INSERT INTO users (firstname, lastname, age, country)
+                Database::execute('INSERT INTO profiles (firstname, lastname, age, country)
                                          VALUES (:firstname, :lastname, :age, :country)', [
                     'firstname' => 'Eve',
                     'lastname' => 'Hacker',
@@ -161,7 +163,7 @@ class DatabaseTest extends AppTestCase
             $this->assertEquals('Something went wrong!', $e->getMessage());
         }
 
-        $rows = Database::query('SELECT * FROM users WHERE firstname = :firstname', ['firstname' => 'Eve']);
+        $rows = Database::query('SELECT * FROM profiles WHERE firstname = :firstname', ['firstname' => 'Eve']);
 
         $this->assertEmpty($rows);
     }

@@ -8,13 +8,10 @@ class TestNotesModel extends QtModel
 {
     public $table = 'notes';
 
-    public function relations(): array
-    {
-        return [
-            TestTicketModel::class => [
-                'foreign_key' => 'ticket_id',
-                'local_key' => 'id'
-            ]
-        ];
-    }
+    public $idColumn = 'id';
+
+    public $fillable = [
+        'ticket_id',
+        'note',
+    ];
 }
