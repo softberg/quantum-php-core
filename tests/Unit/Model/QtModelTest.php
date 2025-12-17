@@ -117,9 +117,9 @@ class QtModelTest extends AppTestCase
     {
         $this->expectException(ModelException::class);
 
-        $this->expectExceptionMessage('Inappropriate property `country` for fillable object');
+        $this->expectExceptionMessage('Inappropriate property `currency` for fillable object');
 
-        $this->model->fillObjectProps(['country' => 'Ireland']);
+        $this->model->fillObjectProps(['currency' => 'Ireland']);
     }
 
     public function testQtModelSetterAndGetter()
@@ -196,7 +196,7 @@ class QtModelTest extends AppTestCase
     {
         $profileModel = ModelFactory::get(TestProfileModel::class);
 
-        $user = $profileModel->criteria('age', '<', '50')->orderBy('age', 'asc')->first();
+        $user = $profileModel->criteria('age', '<', '40')->orderBy('age', 'asc')->first();
 
         $this->assertIsObject($user);
 
@@ -215,16 +215,19 @@ class QtModelTest extends AppTestCase
     {
         $expected = [
             "id" => "1",
+            "user_id" => "1",
             "firstname" => "John",
             "lastname" => "Doe",
-            "age" => "45"
+            "age" => "45",
+            "country" => "Ireland",
+            "created_at" => "2025-12-17 19:27:46"
         ];
 
-        $actual = $this->model->orderBy('id', 'asc')->first()->asArray();
+        $profileModel = ModelFactory::get(TestProfileModel::class);
+
+        $actual = $profileModel->orderBy('id', 'asc')->first()->asArray();
 
         $this->assertIsArray($actual);
-
-        $this->assertArrayNotHasKey('password', $actual);
 
         $this->assertEquals($expected, $actual);
     }
@@ -233,18 +236,20 @@ class QtModelTest extends AppTestCase
     {
         IdiormDbal::execute("CREATE TABLE IF NOT EXISTS profiles (
                         id INTEGER PRIMARY KEY,
-                        password VAARCHAR(255),
+                        user_id INTEGER(11),
                         firstname VARCHAR(255),
                         lastname VARCHAR(255),
-                        age int(11)
+                        age INTEGER(11),
+                        country VARCHAR(255),
+                        created_at DATETIME
                     )");
 
-        IdiormDbal::execute("INSERT INTO 
-                    profiles
-                        (password, firstname, lastname, age) 
+        IdiormDbal::execute("
+                    INSERT INTO profiles
+                        (user_id, firstname, lastname, age, country, created_at)
                     VALUES
-                        ('@R45sdfFD7dsf&', 'John', 'Doe', 45),
-                        ('@RaTRdfF9dsa*', 'Jane', 'Dous', 35)
-                    ");
+                        (1, 'John', 'Doe', 45, 'Ireland', '2025-12-17 19:27:46'),
+                        (2, 'Jane', 'Due', 35, 'England', '2025-12-17 19:27:47')
+                ");
     }
 }
