@@ -3,9 +3,9 @@
 namespace Quantum\Tests\Unit\Model;
 
 use Quantum\Tests\_root\shared\Models\TestUserModel;
+use Quantum\Model\Exceptions\ModelException;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Model\ModelCollection;
-use InvalidArgumentException;
 use stdClass;
 
 class ModelCollectionTest extends AppTestCase
@@ -32,7 +32,7 @@ class ModelCollectionTest extends AppTestCase
 
     public function testModelCollectionConstructorWithInvalidModels()
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(ModelException::class);
 
         new ModelCollection([new stdClass(), $this->model1, $this->model2]);
     }

@@ -32,7 +32,7 @@ abstract class IdiormDbalTestCase extends AppTestCase
 
         $this->createTables();
 
-        $seeder = new DatabaseSeeder(IdiormDbal::class);
+        $seeder = new DatabaseSeeder();
 
         $seeder->seed();
     }
@@ -46,6 +46,8 @@ abstract class IdiormDbalTestCase extends AppTestCase
 
     private function createTables()
     {
+        $this->createUserTable();
+        $this->createProfileTable();
         $this->createUserTable();
         $this->createUserProfessionTable();
         $this->createEventsTable();
@@ -66,6 +68,16 @@ abstract class IdiormDbalTestCase extends AppTestCase
     {
         IdiormDbal::execute("CREATE TABLE IF NOT EXISTS users (
                         id INTEGER PRIMARY KEY,
+                        email VARCHAR(255),
+                        password VARCHAR(255)
+                    )");
+    }
+
+    private function createProfileTable()
+    {
+        IdiormDbal::execute("CREATE TABLE IF NOT EXISTS profiles (
+                        id INTEGER PRIMARY KEY,
+                        user_id INTEGER(11),
                         firstname VARCHAR(255),
                         lastname VARCHAR(255),
                         age INTEGER(11),

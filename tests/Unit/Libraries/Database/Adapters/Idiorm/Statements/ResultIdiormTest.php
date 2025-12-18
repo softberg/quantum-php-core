@@ -10,9 +10,9 @@ class ResultIdiormTest extends IdiormDbalTestCase
 
     public function testIdiormGet()
     {
-        $userModel = new IdiormDbal('users');
+        $userProfileModel = new IdiormDbal('profiles');
 
-        $users = $userModel->get();
+        $users = $userProfileModel->get();
 
         $this->assertIsArray($users);
 
@@ -23,9 +23,9 @@ class ResultIdiormTest extends IdiormDbalTestCase
 
     public function testIdiormFindOne()
     {
-        $userModel = new IdiormDbal('users');
+        $userProfileModel = new IdiormDbal('profiles');
 
-        $user = $userModel->findOne(1);
+        $user = $userProfileModel->findOne(1);
 
         $this->assertEquals('John', $user->prop('firstname'));
 
@@ -34,9 +34,9 @@ class ResultIdiormTest extends IdiormDbalTestCase
 
     public function testIdiormFindOneBy()
     {
-        $userModel = new IdiormDbal('users');
+        $userProfileModel = new IdiormDbal('profiles');
 
-        $user = $userModel->findOneBy('firstname', 'John');
+        $user = $userProfileModel->findOneBy('firstname', 'John');
 
         $this->assertEquals('Doe', $user->prop('lastname'));
 
@@ -45,17 +45,17 @@ class ResultIdiormTest extends IdiormDbalTestCase
 
     public function testIdiormFirst()
     {
-        $userModel = new IdiormDbal('users');
+        $userProfileModel = new IdiormDbal('profiles');
 
-        $user = $userModel->first();
+        $user = $userProfileModel->first();
 
         $this->assertEquals('Doe', $user->prop('lastname'));
 
         $this->assertEquals('45', $user->prop('age'));
 
-        $userModel = new IdiormDbal('users');
+        $userProfileModel = new IdiormDbal('profiles');
 
-        $user = $userModel->criteria('age', '<', 50)->first();
+        $user = $userProfileModel->criteria('age', '<', 50)->first();
 
         $this->assertEquals('John', $user->prop('firstname'));
 
@@ -66,9 +66,9 @@ class ResultIdiormTest extends IdiormDbalTestCase
 
     public function testIdiormCount()
     {
-        $userModel = new IdiormDbal('users');
+        $userProfileModel = new IdiormDbal('profiles');
 
-        $userCount = $userModel->count();
+        $userCount = $userProfileModel->count();
 
         $this->assertIsInt($userCount);
 
@@ -77,9 +77,9 @@ class ResultIdiormTest extends IdiormDbalTestCase
 
     public function testIdiormAsArray()
     {
-        $userModel = new IdiormDbal('users');
+        $userProfileModel = new IdiormDbal('profiles');
 
-        $user = $userModel->first();
+        $user = $userProfileModel->first();
 
         $this->assertIsObject($user);
 

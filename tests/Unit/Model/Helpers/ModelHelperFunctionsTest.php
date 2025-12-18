@@ -57,7 +57,7 @@ class ModelHelperFunctionsTest extends AppTestCase
     {
         $dbal = Mockery::mock(DbalInterface::class);
 
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(ModelException::class);
 
         wrapToModel($dbal, 'NonExistentModelClass');
     }
@@ -66,7 +66,7 @@ class ModelHelperFunctionsTest extends AppTestCase
     {
         $dbal = Mockery::mock(DbalInterface::class);
 
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(ModelException::class);
 
         wrapToModel($dbal, \stdClass::class);
     }

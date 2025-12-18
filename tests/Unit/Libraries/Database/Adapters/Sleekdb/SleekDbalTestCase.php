@@ -13,6 +13,7 @@ abstract class SleekDbalTestCase extends AppTestCase
 
     private $tables = [
         'users',
+        'profiles',
         'user_professions',
         'events',
         'user_events',
@@ -35,7 +36,7 @@ abstract class SleekDbalTestCase extends AppTestCase
 
         SleekDbal::connect(config()->get('database.sleekdb'));
 
-        $seeder = new DatabaseSeeder(SleekDbal::class);
+        $seeder = new DatabaseSeeder();
 
         $seeder->seed();
     }

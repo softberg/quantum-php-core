@@ -7,12 +7,48 @@ use Quantum\Tests\_root\shared\Models\TestUserProfessionModel;
 use Quantum\Tests\_root\shared\Models\TestUserMeetingModel;
 use Quantum\Libraries\Database\Adapters\Idiorm\IdiormDbal;
 use Quantum\Tests\_root\shared\Models\TestUserEventModel;
+use Quantum\Tests\_root\shared\Models\TestProfileModel;
 use Quantum\Tests\_root\shared\Models\TestTicketModel;
+use Quantum\Tests\_root\shared\Models\TestNotesModel;
 use Quantum\Tests\_root\shared\Models\TestEventModel;
 use Quantum\Tests\_root\shared\Models\TestUserModel;
 use Quantum\Model\Exceptions\ModelException;
 use Quantum\Model\Factories\ModelFactory;
 use Quantum\Model\ModelCollection;
+use Quantum\Model\QtModel;
+
+
+class BrokenProfileMissingTypeModel extends QtModel
+{
+    public $table = 'profiles';
+
+    public function relations(): array
+    {
+        return [
+            TestUserModel::class => [
+                // 'type' intentionally missing
+                'foreign_key' => 'user_id',
+                'local_key'  => 'id',
+            ],
+        ];
+    }
+}
+
+class BrokenProfileUnsupportedRelationModel extends QtModel
+{
+    public $table = 'profiles';
+
+    public function relations(): array
+    {
+        return [
+            TestUserModel::class => [
+                'type' => 'SIDEWAYS',
+                'foreign_key' => 'user_id',
+                'local_key'  => 'id',
+            ],
+        ];
+    }
+}
 
 class JoinIdiormTest extends IdiormDbalTestCase
 {
@@ -81,215 +117,305 @@ class JoinIdiormTest extends IdiormDbalTestCase
         $this->assertNull($events[count($events) - 1]->prop('id'));
     }
 
-    public function testIdiormJoinTo()
+    public function testIdiormJoinToHasOne()
     {
         $userModel = ModelFactory::get(TestUserModel::class);
+        $profileModel = ModelFactory::get(TestProfileModel::class);
 
-        $userProfessionModel = ModelFactory::get(TestUserProfessionModel::class);
-
-        $users = $userModel->select(['users.id' => 'user_id'],
-            'firstname', 'user_professions.title')
-            ->joinTo($userProfessionModel)
+        $users = $userModel
+            ->joinTo($profileModel)
             ->get();
 
         $this->assertInstanceOf(ModelCollection::class, $users);
 
         $this->assertCount(2, $users);
 
-        $this->assertEquals('Writer', $users->first()->prop('title'));
+        $user = $users->first()->asArray();
 
-        $expectedQuery = "SELECT `users`.`id` AS `user_id`, `firstname`, `user_professions`.`title` 
+        $this->assertArrayHasKey('email', $user);
+
+        $this->assertArrayHasKey('firstname', $user);
+
+        $this->assertArrayHasKey('lastname', $user);
+
+        $this->assertArrayHasKey('age', $user);
+
+        $this->assertArrayHasKey('country', $user);
+
+        $expectedQuery = "SELECT * 
                             FROM `users` 
-                                JOIN `user_professions` ON `user_professions`.`user_id` = `users`.`id`";
+                                JOIN `profiles` ON `profiles`.`user_id` = `users`.`id`";
 
         $expectedQuery = preg_replace('/[\s\t]+/', ' ', preg_replace('/' . PHP_EOL . '+/', '', $expectedQuery));
 
         $this->assertEquals($expectedQuery, IdiormDbal::lastQuery());
     }
 
+    public function testIdiormJoinToBelongsTo()
+    {
+        $userModel = ModelFactory::get(TestUserModel::class);
+        $profileModel = ModelFactory::get(TestProfileModel::class);
+
+        $profiles = $profileModel
+            ->joinTo($userModel)
+            ->get();
+
+        $this->assertInstanceOf(ModelCollection::class, $profiles);
+
+        $user = $profiles->first()->asArray();
+
+        $this->assertArrayHasKey('email', $user);
+
+        $this->assertArrayHasKey('firstname', $user);
+
+        $this->assertArrayHasKey('lastname', $user);
+
+        $this->assertArrayHasKey('age', $user);
+
+        $this->assertArrayHasKey('country', $user);
+
+        $expectedQuery = "SELECT * 
+                            FROM `profiles` 
+                                JOIN `users` ON `users`.`id` = `profiles`.`user_id`";
+
+        $expectedQuery = preg_replace('/[\s\t]+/', ' ', preg_replace('/' . PHP_EOL . '+/', '', $expectedQuery));
+
+        $this->assertEquals($expectedQuery, IdiormDbal::lastQuery());
+
+        $this->assertIsArray($user);
+    }
+
     public function testIdiormJoinToFromSameTable()
     {
         $userModel = ModelFactory::get(TestUserModel::class);
-
         $userProfessionModel = ModelFactory::get(TestUserProfessionModel::class);
+        $userMeetings = ModelFactory::get(TestUserMeetingModel::class);
 
-        $userEventModel = ModelFactory::get(TestUserEventModel::class);
-
-        $users = $userModel->select('users.*', 'user_professions.title', 'user_events.event_id')
+        $users = $userModel
             ->joinTo($userProfessionModel, false)
-            ->joinTo($userEventModel, false)
+            ->joinTo($userMeetings)
             ->get();
 
         $this->assertInstanceOf(ModelCollection::class, $users);
 
-        $this->assertEquals('Writer', $users->first()->prop('title'));
+        $user = $users->first()->asArray();
 
-        $this->assertEquals(1, $users->first()->prop('event_id'));
+        $this->assertArrayHasKey('email', $user);
 
-        $query = "SELECT `users`.*, `user_professions`.`title`, `user_events`.`event_id` 
-                            FROM `users` 
-                                JOIN `user_professions` ON `user_professions`.`user_id` = `users`.`id` 
-                                JOIN `user_events` ON `user_events`.`user_id` = `users`.`id`";
+        $this->assertArrayHasKey('user_id', $user);
 
-        $query = preg_replace('/[\s\t]+/', ' ', preg_replace('/' . PHP_EOL . '+/', '', $query));
+        $this->assertArrayHasKey('title', $user);
 
-        $this->assertEquals($query, IdiormDbal::lastQuery());
+        $this->assertArrayHasKey('start_date', $user);
+
+        $this->assertInstanceOf(ModelCollection::class, $users);
+
+        $expectedQuery = "SELECT * 
+                        FROM `users` 
+                            JOIN `user_professions` ON `user_professions`.`user_id` = `users`.`id` 
+                            JOIN `user_meetings` ON `user_meetings`.`user_id` = `users`.`id`";
+
+        $expectedQuery = preg_replace('/[\s\t]+/', ' ', preg_replace('/' . PHP_EOL . '+/', '', $expectedQuery));
+
+        $this->assertEquals($expectedQuery, IdiormDbal::lastQuery());
     }
 
     public function testIdiormJoinToWithTableSwitch()
     {
         $userModel = ModelFactory::get(TestUserModel::class);
-
         $meetingModel = ModelFactory::get(TestUserMeetingModel::class);
-
         $ticketModel = ModelFactory::get(TestTicketModel::class);
+        $noteModel = ModelFactory::get(TestNotesModel::class);
 
         $users = $userModel
             ->joinTo($meetingModel)
             ->joinTo($ticketModel)
+            ->joinTo($noteModel)
+            ->groupBy('users.id')
             ->get();
 
         $this->assertInstanceOf(ModelCollection::class, $users);
 
-        $this->assertEquals('Business planning', $users->first()->prop('title'));
+        $this->assertCount(2, $users);
 
-        $this->assertNull($users->first()->prop('event_id'));
+        $user = $users->first()->asArray();
 
-        $query = "SELECT * FROM `users` 
+        $this->assertArrayHasKey('email', $user);
+
+        $this->assertArrayHasKey('user_id', $user);
+
+        $this->assertArrayHasKey('title', $user);
+
+        $this->assertArrayHasKey('start_date', $user);
+
+        $this->assertArrayHasKey('meeting_id', $user);
+
+        $this->assertArrayHasKey('type', $user);
+
+        $this->assertArrayHasKey('ticket_id', $user);
+
+        $this->assertArrayHasKey('note', $user);
+
+        $expectedQuery = "SELECT * 
+                    FROM `users` 
                         JOIN `user_meetings` ON `user_meetings`.`user_id` = `users`.`id` 
-                        JOIN `tickets` ON `tickets`.`meeting_id` = `user_meetings`.`id`";
+                        JOIN `tickets` ON `tickets`.`meeting_id` = `user_meetings`.`id`
+                        JOIN `notes` ON `notes`.`ticket_id` = `tickets`.`id`
+                    GROUP BY `users`.`id`";
 
-        $query = preg_replace('/[\s\t]+/', ' ', preg_replace('/' . PHP_EOL . '+/', '', $query));
+        $expectedQuery = preg_replace('/[\s\t]+/', ' ', preg_replace('/' . PHP_EOL . '+/', '', $expectedQuery));
 
-        $this->assertEquals($query, IdiormDbal::lastQuery());
+        $this->assertEquals($expectedQuery, IdiormDbal::lastQuery());
     }
 
-    public function testIdiormJoinToAndThrough()
+    public function testIdiormJoiningViaPivotModel()
     {
         $userModel = ModelFactory::get(TestUserModel::class);
-
         $userEventModel = ModelFactory::get(TestUserEventModel::class);
-
         $eventModel = ModelFactory::get(TestEventModel::class);
 
-        $users = $userModel->select(
-            ['users.id' => 'user_id'],
-            ['events.id' => 'event_id'],
-            'firstname',
-            'confirmed',
-            ['events.title' => 'event_title'])
+        $users = $userModel
             ->joinTo($userEventModel)
-            ->joinThrough($eventModel)
-            ->criteria('user_events.confirmed', '=', 'Yes')
-            ->orderBy('user_events.created_at', 'desc')
+            ->joinTo($eventModel)
+            ->get();
+
+        $this->assertNotEmpty($users);
+
+        $user = $users->first();
+
+        $this->assertInstanceOf(TestUserModel::class, $user);
+
+        $userRecord = $users->first()->asArray();
+
+        $this->assertArrayHasKey('email', $userRecord);
+
+        $this->assertArrayHasKey('user_id', $userRecord);
+
+        $this->assertArrayHasKey('event_id', $userRecord);
+
+        $this->assertArrayHasKey('confirmed', $userRecord);
+
+        $this->assertArrayHasKey('title', $userRecord);
+
+        $this->assertArrayHasKey('country', $userRecord);
+
+        $this->assertArrayHasKey('started_at', $userRecord);
+
+        $expectedQuery = "SELECT * 
+                            FROM `users`
+                                JOIN `user_events` ON `user_events`.`user_id` = `users`.`id` 
+                                JOIN `events` ON `events`.`id` = `user_events`.`event_id`";
+
+        $expectedQuery = preg_replace('/[\s\t]+/', ' ', preg_replace('/' . PHP_EOL . '+/', '', $expectedQuery));
+
+        $this->assertEquals($expectedQuery, IdiormDbal::lastQuery());
+    }
+
+    public function testIdiormJoinToWithCriteria()
+    {
+        $userModel = ModelFactory::get(TestUserModel::class);
+        $profileModel = ModelFactory::get(TestProfileModel::class);
+        $userProfessionModel = ModelFactory::get(TestUserProfessionModel::class);
+        $meetingModel = ModelFactory::get(TestUserMeetingModel::class);
+        $ticketModel = ModelFactory::get(TestTicketModel::class);
+
+        $users = $userModel
+            ->joinTo($profileModel, false)
+            ->joinTo($userProfessionModel, false)
+            ->joinTo($meetingModel)
+            ->joinTo($ticketModel)
+            ->criteria('email', 'LIKE', '%jane%')
+            ->groupBy('users.id')
             ->get();
 
         $this->assertInstanceOf(ModelCollection::class, $users);
 
-        $this->assertEquals('Yes', $users->first()->prop('confirmed'));
+        $this->assertCount(1, $users);
 
-        $this->assertEquals('Music', $users->first()->prop('event_title'));
+        $expectedQuery = "SELECT * 
+                            FROM `users` 
+                                JOIN `profiles` ON `profiles`.`user_id` = `users`.`id` 
+                                JOIN `user_professions` ON `user_professions`.`user_id` = `users`.`id` 
+                                JOIN `user_meetings` ON `user_meetings`.`user_id` = `users`.`id` 
+                                JOIN `tickets` ON `tickets`.`meeting_id` = `user_meetings`.`id` 
+                            WHERE `users`.`email` 
+                                      LIKE '%jane%' 
+                            GROUP BY `users`.`id`";
 
-        $query = "SELECT `users`.`id` AS `user_id`, 
-                             `events`.`id` AS `event_id`, 
-                             `firstname`, 
-                             `confirmed`, 
-                             `events`.`title` AS `event_title` 
-                        FROM `users` 
-                            JOIN `user_events` ON `user_events`.`user_id` = `users`.`id` 
-                            JOIN `events` ON `events`.`id` = `user_events`.`event_id` 
-                        WHERE `user_events`.`confirmed` = 'Yes' 
-                        ORDER BY `user_events`.`created_at` DESC";
+        $expectedQuery = preg_replace('/[\s\t]+/', ' ', preg_replace('/' . PHP_EOL . '+/', '', $expectedQuery));
 
-        $query = preg_replace('/[\s\t]+/', ' ', preg_replace('/' . PHP_EOL . '+/', '', $query));
-
-        $this->assertEquals($query, IdiormDbal::lastQuery());
-    }
-
-    public function testIdiormJoinThroughInverse()
-    {
-        $meetingModel = ModelFactory::get(TestUserMeetingModel::class);
-
-        $ticketModel = ModelFactory::get(TestTicketModel::class);
-
-        $tickets = $ticketModel->joinThrough($meetingModel)->get();
-
-        $this->assertInstanceOf(ModelCollection::class, $tickets);
-
-        $query = "SELECT * FROM `tickets` JOIN `user_meetings` ON `user_meetings`.`id` = `tickets`.`meeting_id`";
-
-        $query = preg_replace('/[\s\t]+/', ' ', preg_replace('/' . PHP_EOL . '+/', '', $query));
-
-        $this->assertEquals($query, IdiormDbal::lastQuery());
-    }
-
-    public function testIdiormJoinToAndJoinThrough()
-    {
-        $userModel = ModelFactory::get(TestUserModel::class);
-
-        $userProfessionModel = ModelFactory::get(TestUserProfessionModel::class);
-
-        $userEventModel = ModelFactory::get(TestUserEventModel::class);
-
-        $eventModel = ModelFactory::get(TestEventModel::class);
-
-        $user = $userModel->select(
-            ['users.id' => 'user_id'],
-            'firstname',
-            ['user_professions.title' => 'profession_title'],
-            ['events.title' => 'event_title'])
-            ->joinTo($userProfessionModel, false)
-            ->joinTo($userEventModel)
-            ->joinThrough($eventModel)
-            ->first();
-
-        $this->assertEquals('John', $user->firstname);
-
-        $this->assertEquals('Writer', $user->profession_title);
-
-        $this->assertEquals('Dance', $user->event_title);
-
-        $query = "SELECT `users`.`id` AS `user_id`,
-                    `firstname`, `user_professions`.`title` AS `profession_title`, 
-                    `events`.`title` AS `event_title` 
-                FROM `users` 
-                    JOIN `user_professions` ON `user_professions`.`user_id` = `users`.`id` 
-                    JOIN `user_events` ON `user_events`.`user_id` = `users`.`id` 
-                    JOIN `events` ON `events`.`id` = `user_events`.`event_id` 
-                    LIMIT 1";
-
-        $query = preg_replace('/[\s\t]+/', ' ', preg_replace('/' . PHP_EOL . '+/', '', $query));
-
-        $this->assertEquals($query, IdiormDbal::lastQuery());
-    }
-
-    public function testIdiormWrongRelation()
-    {
-        $this->expectException(ModelException::class);
-
-        $this->expectExceptionMessage('The model `' . TestTicketModel::class . '` does not define relation with `' . TestEventModel::class . '`');
-
-        $eventModel = ModelFactory::get(TestEventModel::class);
-
-        $ticketModel = ModelFactory::get(TestTicketModel::class);
-
-        $eventModel->joinTo($ticketModel)->get();
+        $this->assertEquals($expectedQuery, IdiormDbal::lastQuery());
     }
 
     public function testIdiormSelectFieldsAtJoin()
     {
         $userModel = ModelFactory::get(TestUserModel::class);
-
+        $profileModel = ModelFactory::get(TestProfileModel::class);
         $userProfessionModel = ModelFactory::get(TestUserProfessionModel::class);
 
         $users = $userModel
-            ->joinTo($userProfessionModel, false)
-            ->select('firstname', 'lastname', 'age', 'country', ['user_professions.title' => 'profession'])
+            ->joinTo($profileModel, false)
+            ->joinTo($userProfessionModel)
+            ->select(
+                'firstname',
+                'lastname',
+                'age',
+                'country',
+                ['user_professions.title' => 'profession']
+            )
             ->orderBy('age', 'desc')
             ->get();
 
         $this->assertInstanceOf(ModelCollection::class, $users);
 
         $this->assertEquals('Writer', $users->first()->prop('profession'));
+
+        $expectedQuery = "SELECT 
+                            `firstname`, 
+                            `lastname`, 
+                            `age`, 
+                            `country`, 
+                            `user_professions`.`title` AS `profession` 
+                        FROM `users` 
+                            JOIN `profiles` ON `profiles`.`user_id` = `users`.`id` 
+                            JOIN `user_professions` ON `user_professions`.`user_id` = `users`.`id` 
+                        ORDER BY `age` DESC";
+
+        $expectedQuery = preg_replace('/[\s\t]+/', ' ', preg_replace('/' . PHP_EOL . '+/', '', $expectedQuery));
+
+        $this->assertEquals($expectedQuery, IdiormDbal::lastQuery());
+    }
+
+    public function testIdiormThrowsExceptionForWrongRelation()
+    {
+        $this->expectException(ModelException::class);
+
+        $this->expectExceptionMessage('The model `' . TestEventModel::class . '` does not define relation with `' . TestNotesModel::class . '`');
+
+        $eventModel = ModelFactory::get(TestEventModel::class);
+
+        $ticketModel = ModelFactory::get(TestNotesModel::class);
+
+        $eventModel->joinTo($ticketModel)->get();
+    }
+
+    public function testIdiormJoinThrowsExceptionWhenRelationKeysMissing()
+    {
+        $this->expectException(ModelException::class);
+        $this->expectExceptionMessage('Relation type is missing for model `'  . BrokenProfileMissingTypeModel::class .'`');
+
+        ModelFactory::get(BrokenProfileMissingTypeModel::class)
+            ->joinTo(ModelFactory::get(TestUserModel::class))
+            ->get();
+    }
+
+    public function testIdiormJoinThrowsExceptionForUnsupportedRelationType()
+    {
+        $this->expectException(ModelException::class);
+        $this->expectExceptionMessage('Relation type `SIDEWAYS` is not supported');
+
+        ModelFactory::get(BrokenProfileUnsupportedRelationModel::class)
+            ->joinTo(ModelFactory::get(TestUserModel::class))
+            ->get();
     }
 }

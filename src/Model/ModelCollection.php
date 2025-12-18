@@ -9,12 +9,13 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.6
+ * @since 2.9.9
  */
 
 namespace Quantum\Model;
 
-use InvalidArgumentException;
+use Quantum\Model\Exceptions\ModelException;
+use Quantum\App\Exceptions\BaseException;
 use IteratorAggregate;
 use Countable;
 use Generator;
@@ -43,6 +44,7 @@ class ModelCollection implements Countable, IteratorAggregate
 
     /**
      * @param iterable $models
+     * @throws BaseException
      */
     public function __construct(iterable $models = [])
     {
@@ -57,6 +59,7 @@ class ModelCollection implements Countable, IteratorAggregate
      * Add a model to the collection
      * @param QtModel $model
      * @return self
+     * @throws BaseException
      */
     public function add(QtModel $model): self
     {
@@ -77,6 +80,7 @@ class ModelCollection implements Countable, IteratorAggregate
      * Remove a model from the collection
      * @param QtModel $model
      * @return self
+     * @throws BaseException
      */
     public function remove(QtModel $model): self
     {
@@ -94,6 +98,7 @@ class ModelCollection implements Countable, IteratorAggregate
     /**
      * Get all models as an array
      * @return QtModel[]
+     * @throws BaseException
      */
     public function all(): array
     {
@@ -104,6 +109,7 @@ class ModelCollection implements Countable, IteratorAggregate
     /**
      * Get the count of models in the collection
      * @return int
+     * @throws BaseException
      */
     public function count(): int
     {
@@ -114,6 +120,7 @@ class ModelCollection implements Countable, IteratorAggregate
     /**
      * Get the first model in the collection
      * @return QtModel|null
+     * @throws BaseException
      */
     public function first(): ?QtModel
     {
@@ -127,6 +134,7 @@ class ModelCollection implements Countable, IteratorAggregate
     /**
      * Get the last model in the collection
      * @return QtModel|null
+     * @throws BaseException
      */
     public function last(): ?QtModel
     {
@@ -146,7 +154,7 @@ class ModelCollection implements Countable, IteratorAggregate
     /**
      * Get an iterator for the collection
      * @return Generator
-     * @throws InvalidArgumentException
+     * @throws BaseException
      */
     public function getIterator(): Generator
     {
@@ -164,7 +172,7 @@ class ModelCollection implements Countable, IteratorAggregate
 
     /**
      * Process models from original source into the internal array
-     * @throws InvalidArgumentException
+     * @throws BaseException
      */
     private function processModels()
     {
@@ -184,13 +192,14 @@ class ModelCollection implements Countable, IteratorAggregate
 
     /**
      * Validate that an item is a QtModel instance
-     * @param mixed $model
-     * @throws InvalidArgumentException
+     * @param $model
+     * @return void
+     * @throws BaseException
      */
     private function validateModel($model): void
     {
         if (!$model instanceof QtModel) {
-            throw new InvalidArgumentException('All items must be instances of QtModel.');
+            throw ModelException::notInstanceOf(get_class($model), QtModel::class);
         }
     }
 }

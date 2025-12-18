@@ -7,8 +7,16 @@ class TestData
     public static function users(): array
     {
         return [
-            ['firstname' => 'John', 'lastname' => 'Doe', 'age' => 45, 'country' => 'Ireland', 'created_at' => date('Y-m-d H:i:s')],
-            ['firstname' => 'Jane', 'lastname' => 'Du', 'age' => 35, 'country' => 'England', 'created_at' => date('Y-m-d H:i:s')],
+            ['email' => 'john@test.com', 'password' => 'hashed1'],
+            ['email' => 'jane@test.com', 'password' => 'hashed2'],
+        ];
+    }
+
+    public static function profiles(): array
+    {
+        return [
+            ['user_id' => 1, 'firstname' => 'John', 'lastname' => 'Doe', 'age' => 45, 'country' => 'Ireland', 'created_at' => date('Y-m-d H:i:s')],
+            ['user_id' => 2, 'firstname' => 'Jane', 'lastname' => 'Du', 'age' => 35, 'country' => 'England', 'created_at' => date('Y-m-d H:i:s')],
         ];
     }
 

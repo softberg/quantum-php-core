@@ -8,18 +8,18 @@ use Quantum\Libraries\Database\Adapters\Sleekdb\SleekDbal;
 class ResultSleekTest extends SleekDbalTestCase
 {
 
-    private $userModel;
+    private $userProfileModel;
 
     public function setUp(): void
     {
         parent::setUp();
 
-        $this->userModel = new SleekDbal('users');
+        $this->userProfileModel = new SleekDbal('profiles');
     }
 
     public function testSleekGet()
     {
-        $users = $this->userModel->get();
+        $users = $this->userProfileModel->get();
 
         $this->assertIsArray($users);
 
@@ -32,7 +32,7 @@ class ResultSleekTest extends SleekDbalTestCase
 
     public function testSleekFindOne()
     {
-        $user = $this->userModel->findOne(1);
+        $user = $this->userProfileModel->findOne(1);
 
         $this->assertEquals('John', $user->prop('firstname'));
 
@@ -41,7 +41,7 @@ class ResultSleekTest extends SleekDbalTestCase
 
     public function testSleekFindOneBy()
     {
-        $user = $this->userModel->findOneBy('firstname', 'John');
+        $user = $this->userProfileModel->findOneBy('firstname', 'John');
 
         $this->assertEquals('Doe', $user->prop('lastname'));
 
@@ -50,13 +50,13 @@ class ResultSleekTest extends SleekDbalTestCase
 
     public function testSleekFirst()
     {
-        $user = $this->userModel->criteria('age', '>', 40)->first();
+        $user = $this->userProfileModel->criteria('age', '>', 40)->first();
 
         $this->assertEquals('Doe', $user->prop('lastname'));
 
         $this->assertEquals('45', $user->prop('age'));
 
-        $userModel = new SleekDbal('users');
+        $userModel = new SleekDbal('profiles');
 
         $user = $userModel->criteria('age', '<', 40)->first();
 
@@ -69,18 +69,18 @@ class ResultSleekTest extends SleekDbalTestCase
 
     public function testSleekCount()
     {
-        $this->assertIsInt($this->userModel->count());
+        $this->assertIsInt($this->userProfileModel->count());
 
-        $this->assertEquals(2, $this->userModel->count());
+        $this->assertEquals(2, $this->userProfileModel->count());
 
-        $this->userModel->criteria('age', '>', 40);
+        $this->userProfileModel->criteria('age', '>', 40);
 
-        $this->assertEquals(1, $this->userModel->count());
+        $this->assertEquals(1, $this->userProfileModel->count());
     }
 
     public function testSleekAsArray()
     {
-        $user = $this->userModel->first();
+        $user = $this->userProfileModel->first();
 
         $this->assertIsObject($user);
 

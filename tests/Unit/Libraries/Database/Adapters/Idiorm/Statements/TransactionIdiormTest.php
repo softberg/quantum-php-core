@@ -16,7 +16,7 @@ class TransactionIdiormTest extends IdiormDbalTestCase
     {
         IdiormDbal::beginTransaction();
 
-        IdiormDbal::execute('INSERT INTO users (firstname, lastname, age, country)
+        IdiormDbal::execute('INSERT INTO profiles (firstname, lastname, age, country)
                                  VALUES (:firstname, :lastname, :age, :country)', [
             'firstname' => 'Alice',
             'lastname' => 'Smith',
@@ -26,7 +26,7 @@ class TransactionIdiormTest extends IdiormDbalTestCase
 
         IdiormDbal::rollback();
 
-        $result = IdiormDbal::query('SELECT * FROM users WHERE firstname = :firstname', ['firstname' => 'Alice']);
+        $result = IdiormDbal::query('SELECT * FROM profiles WHERE firstname = :firstname', ['firstname' => 'Alice']);
 
         $this->assertEmpty($result);
     }
@@ -35,7 +35,7 @@ class TransactionIdiormTest extends IdiormDbalTestCase
     {
         IdiormDbal::beginTransaction();
 
-        IdiormDbal::execute('INSERT INTO users (firstname, lastname, age, country)
+        IdiormDbal::execute('INSERT INTO profiles (firstname, lastname, age, country)
                                  VALUES (:firstname, :lastname, :age, :country)', [
             'firstname' => 'Bob',
             'lastname' => 'Marley',
@@ -45,7 +45,7 @@ class TransactionIdiormTest extends IdiormDbalTestCase
 
         IdiormDbal::commit();
 
-        $result = IdiormDbal::query('SELECT * FROM users WHERE firstname = :firstname', ['firstname' => 'Bob']);
+        $result = IdiormDbal::query('SELECT * FROM profiles WHERE firstname = :firstname', ['firstname' => 'Bob']);
 
         $this->assertNotEmpty($result);
 

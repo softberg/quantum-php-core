@@ -10,9 +10,9 @@ class CriteriaIdiormTest extends IdiormDbalTestCase
 
     public function testIdiormCriteriaEquals()
     {
-        $userModel = new IdiormDbal('users');
+        $userProfileModel = new IdiormDbal('profiles');
 
-        $user = $userModel->criteria('firstname', '=', 'John')->first();
+        $user = $userProfileModel->criteria('firstname', '=', 'John')->first();
 
         $this->assertEquals('John', $user->prop('firstname'));
 
@@ -21,48 +21,48 @@ class CriteriaIdiormTest extends IdiormDbalTestCase
 
     public function testIdiormCriteriaNotEquals()
     {
-        $userModel = new IdiormDbal('users');
+        $userProfileModel = new IdiormDbal('profiles');
 
-        $user = $userModel->criteria('firstname', '!=', 'John')->first();
+        $user = $userProfileModel->criteria('firstname', '!=', 'John')->first();
 
         $this->assertEquals('Jane', $user->prop('firstname'));
     }
 
     public function testIdiormCriteriaGreaterAndGreaterOrEqual()
     {
-        $userModel = new IdiormDbal('users');
+        $userProfileModel = new IdiormDbal('profiles');
 
-        $users = $userModel->criteria('age', '>', 35)->get();
+        $users = $userProfileModel->criteria('age', '>', 35)->get();
 
         $this->assertCount(1, $users);
 
-        $userModel = new IdiormDbal('users');
+        $userProfileModel = new IdiormDbal('profiles');
 
-        $users = $userModel->criteria('age', '>=', 35)->get();
+        $users = $userProfileModel->criteria('age', '>=', 35)->get();
 
         $this->assertCount(2, $users);
     }
 
     public function testIdiormCriteriaSmallerAndSmallerOrEqual()
     {
-        $userModel = new IdiormDbal('users');
+        $userProfileModel = new IdiormDbal('profiles');
 
-        $users = $userModel->criteria('age', '<', 35)->get();
+        $users = $userProfileModel->criteria('age', '<', 35)->get();
 
         $this->assertCount(0, $users);
 
-        $userModel = new IdiormDbal('users');
+        $userProfileModel = new IdiormDbal('profiles');
 
-        $users = $userModel->criteria('age', '<=', 35)->get();
+        $users = $userProfileModel->criteria('age', '<=', 35)->get();
 
         $this->assertCount(1, $users);
     }
 
     public function testIdiormCriteriaInAndNotIn()
     {
-        $userModel = new IdiormDbal('users');
+        $userProfileModel = new IdiormDbal('profiles');
 
-        $users = $userModel->criteria('age', 'IN', [35, 40, 45])->get();
+        $users = $userProfileModel->criteria('age', 'IN', [35, 40, 45])->get();
 
         $this->assertCount(2, $users);
 
@@ -70,9 +70,9 @@ class CriteriaIdiormTest extends IdiormDbalTestCase
 
         $this->assertEquals('Jane', $users[1]->prop('firstname'));
 
-        $userModel = new IdiormDbal('users');
+        $userProfileModel = new IdiormDbal('profiles');
 
-        $users = $userModel->criteria('age', 'NOT IN', [30, 40, 45])->get();
+        $users = $userProfileModel->criteria('age', 'NOT IN', [30, 40, 45])->get();
 
         $this->assertCount(1, $users);
 
@@ -81,25 +81,25 @@ class CriteriaIdiormTest extends IdiormDbalTestCase
 
     public function testIdiormCriteriaLikeAndNotLike()
     {
-        $userModel = new IdiormDbal('users');
+        $userProfileModel = new IdiormDbal('profiles');
 
-        $users = $userModel->criteria('firstname', 'LIKE', '%Jo%')->get();
+        $users = $userProfileModel->criteria('firstname', 'LIKE', '%Jo%')->get();
 
         $this->assertCount(1, $users);
 
         $this->assertEquals('John', $users[0]->prop('firstname'));
 
-        $userModel = new IdiormDbal('users');
+        $userProfileModel = new IdiormDbal('profiles');
 
-        $users = $userModel->criteria('firstname', 'LIKE', '%J%')->get();
+        $users = $userProfileModel->criteria('firstname', 'LIKE', '%J%')->get();
 
         $this->assertCount(2, $users);
 
         $this->assertEquals('Jane', $users[1]->prop('firstname'));
 
-        $userModel = new IdiormDbal('users');
+        $userProfileModel = new IdiormDbal('profiles');
 
-        $users = $userModel->criteria('firstname', 'NOT LIKE', '%Jo%')->get();
+        $users = $userProfileModel->criteria('firstname', 'NOT LIKE', '%Jo%')->get();
 
         $this->assertCount(1, $users);
 
@@ -108,15 +108,15 @@ class CriteriaIdiormTest extends IdiormDbalTestCase
 
     public function testIdiormCriteriaNullAndNotNull()
     {
-        $userModel = new IdiormDbal('users');
+        $userProfileModel = new IdiormDbal('profiles');
 
-        $users = $userModel->criteria('firstname', 'NULL', '')->get();
+        $users = $userProfileModel->criteria('firstname', 'NULL', '')->get();
 
         $this->assertCount(0, $users);
 
-        $userModel = new IdiormDbal('users');
+        $userProfileModel = new IdiormDbal('profiles');
 
-        $users = $userModel->criteria('firstname', 'NOT NULL', '')->get();
+        $users = $userProfileModel->criteria('firstname', 'NOT NULL', '')->get();
 
         $this->assertCount(2, $users);
 
@@ -140,14 +140,14 @@ class CriteriaIdiormTest extends IdiormDbalTestCase
 
     public function testIdiormCriteriaColumnsEqual()
     {
-        $userModel = new IdiormDbal('users');
+        $userProfileModel = new IdiormDbal('profiles');
 
-        $userModel->join('user_events', ['user_events.user_id', '=', 'users.id'])
+        $userProfileModel->join('user_events', ['user_events.user_id', '=', 'profiles.user_id'])
             ->join('events', ['user_events.event_id', '=', 'events.id'])
-            ->criteria('users.country', '#=#', 'events.country')
+            ->criteria('profiles.country', '#=#', 'events.country')
             ->get();
 
-        $expectedQuery = "SELECT * FROM `users` JOIN `user_events` ON `user_events`.`user_id` = `users`.`id` JOIN `events` ON `user_events`.`event_id` = `events`.`id` WHERE users.country = events.country";
+        $expectedQuery = "SELECT * FROM `profiles` JOIN `user_events` ON `user_events`.`user_id` = `profiles`.`user_id` JOIN `events` ON `user_events`.`event_id` = `events`.`id` WHERE profiles.country = events.country";
 
         $this->assertEquals($expectedQuery, IdiormDbal::lastQuery());
     }

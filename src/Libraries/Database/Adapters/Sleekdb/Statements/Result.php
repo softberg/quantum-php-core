@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 2.9.9
  */
 
 namespace Quantum\Libraries\Database\Adapters\Sleekdb\Statements;
@@ -19,6 +19,7 @@ use Quantum\Libraries\Database\Contracts\DbalInterface;
 use SleekDB\Exceptions\InvalidConfigurationException;
 use SleekDB\Exceptions\InvalidArgumentException;
 use Quantum\Model\Exceptions\ModelException;
+use Quantum\App\Exceptions\BaseException;
 use SleekDB\Exceptions\IOException;
 
 /**
@@ -38,9 +39,7 @@ trait Result
         try {
             return array_map(function ($element) {
                 $item = clone $this;
-                $item->data = $element;
-                $item->modifiedFields = $element;
-                $item->isNew = false;
+                $item->updateOrmModel($element);
                 return $item;
             }, $this->getBuilder()->getQuery()->fetch());
         } finally {
@@ -49,17 +48,13 @@ trait Result
     }
 
     /**
-     *
-     * @return DbalInterface
+     * @inheritDoc
+     * @throws BaseException
      * @throws DatabaseException
      * @throws IOException
      * @throws InvalidArgumentException
      * @throws InvalidConfigurationException
      * @throws ModelException
-     */
-
-    /**
-     * @inheritDoc
      */
     public function findOne(int $id): DbalInterface
     {
@@ -75,6 +70,12 @@ trait Result
 
     /**
      * @inheritDoc
+     * @throws BaseException
+     * @throws DatabaseException
+     * @throws IOException
+     * @throws InvalidArgumentException
+     * @throws InvalidConfigurationException
+     * @throws ModelException
      */
     public function findOneBy(string $column, $value): DbalInterface
     {
@@ -90,6 +91,12 @@ trait Result
 
     /**
      * @inheritDoc
+     * @throws BaseException
+     * @throws DatabaseException
+     * @throws IOException
+     * @throws InvalidArgumentException
+     * @throws InvalidConfigurationException
+     * @throws ModelException
      */
     public function first(): DbalInterface
     {
@@ -106,10 +113,11 @@ trait Result
     /**
      * @inheritDoc
      * @throws DatabaseException
-     * @throws ModelException
      * @throws IOException
      * @throws InvalidArgumentException
      * @throws InvalidConfigurationException
+     * @throws ModelException
+     * @throws BaseException
      */
     public function count(): int
     {

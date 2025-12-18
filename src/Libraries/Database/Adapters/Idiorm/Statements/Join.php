@@ -9,15 +9,16 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.8
+ * @since 2.9.9
  */
 
 namespace Quantum\Libraries\Database\Adapters\Idiorm\Statements;
 
-use Quantum\Libraries\Database\Exceptions\DatabaseException;
 use Quantum\Libraries\Database\Adapters\Idiorm\IdiormPatch;
 use Quantum\Libraries\Database\Contracts\DbalInterface;
+use Quantum\Libraries\Database\Enums\Relation;
 use Quantum\Model\Exceptions\ModelException;
+use Quantum\App\Exceptions\BaseException;
 use Quantum\Model\QtModel;
 
 /**
@@ -29,7 +30,7 @@ trait Join
 
     /**
      * @inheritDoc
-     * @throws DatabaseException
+     * @throws BaseException
      */
     public function join(string $table, array $constraint, ?string $tableAlias = null): DbalInterface
     {
@@ -39,7 +40,7 @@ trait Join
 
     /**
      * @inheritDoc
-     * @throws DatabaseException
+     * @throws BaseException
      */
     public function innerJoin(string $table, array $constraint, ?string $tableAlias = null): DbalInterface
     {
@@ -49,7 +50,7 @@ trait Join
 
     /**
      * @inheritDoc
-     * @throws DatabaseException
+     * @throws BaseException
      */
     public function leftJoin(string $table, array $constraint, ?string $tableAlias = null): DbalInterface
     {
@@ -59,7 +60,7 @@ trait Join
 
     /**
      * @inheritDoc
-     * @throws DatabaseException
+     * @throws BaseException
      */
     public function rightJoin(string $table, array $constraint, ?string $tableAlias = null): DbalInterface
     {
@@ -69,65 +70,97 @@ trait Join
 
     /**
      * @inheritDoc
-     * @throws DatabaseException
+     * @throws BaseException
      * @throws ModelException
      */
-    public function joinTo(QtModel $modelToJoin, bool $switch = true): DbalInterface
+    public function joinTo(QtModel $relatedModel, bool $switch = true): DbalInterface
     {
-        $foreignKeys = $modelToJoin->relations();
-        $relatedModelName = $this->getModelName();
+        $relation = $this->getValidatedRelation($relatedModel);
 
-        if (!isset($foreignKeys[$relatedModelName])) {
-            throw ModelException::wrongRelation(get_class($modelToJoin), $relatedModelName);
+        switch ($relation['type']) {
+            case Relation::HAS_ONE:
+            case Relation::HAS_MANY:
+                $this->applyHasRelation($relatedModel, $relation);
+                break;
+
+            case Relation::BELONGS_TO:
+                $this->applyBelongsTo($relatedModel, $relation);
+                break;
+
+            default:
+                throw ModelException::unsupportedRelationType($relation['type']);
         }
 
-        $this->getOrmModel()->join($modelToJoin->table,
-            [
-                $modelToJoin->table . '.' . $foreignKeys[$relatedModelName]['foreign_key'],
-                '=',
-                $this->table . '.' . $foreignKeys[$relatedModelName]['local_key']
-            ]
-        );
-
         if ($switch) {
-            $this->modelName = get_class($modelToJoin);
-            $this->table = $modelToJoin->table;
-            $this->idColumn = $modelToJoin->idColumn;
-            $this->foreignKeys = $foreignKeys;
+            $this->modelName = get_class($relatedModel);
+            $this->table = $relatedModel->table;
+            $this->idColumn = $relatedModel->idColumn;
+            $this->foreignKeys = $relatedModel->relations();
         }
 
         return $this;
     }
 
     /**
-     * @inheritDoc
-     * @throws DatabaseException
-     * @throws ModelException
+     * @param QtModel $relatedModel
+     * @param array $relation
+     * @return void
+     * @throws BaseException
      */
-    public function joinThrough(QtModel $modelToJoin, bool $switch = true): DbalInterface
+    protected function applyHasRelation(QtModel $relatedModel, array $relation): void
     {
-        $foreignKeys = $this->getForeignKeys();
-        $relatedModelName = get_class($modelToJoin);
-
-        if (!isset($foreignKeys[$relatedModelName])) {
-            throw ModelException::wrongRelation($relatedModelName, $this->getModelName());
-        }
-
-        $this->getOrmModel()->join($modelToJoin->table,
+        $this->getOrmModel()->join(
+            $relatedModel->table,
             [
-                $modelToJoin->table . '.' . $foreignKeys[$relatedModelName]['local_key'],
+                $relatedModel->table . '.' . $relation['foreign_key'],
                 '=',
-                $this->table . '.' .  $foreignKeys[$relatedModelName]['foreign_key'],
+                $this->table . '.' . $relation['local_key']
             ]
         );
+    }
 
-        if ($switch) {
-            $this->modelName = get_class($modelToJoin);
-            $this->table = $modelToJoin->table;
-            $this->idColumn = $modelToJoin->idColumn;
-            $this->foreignKeys = $modelToJoin->relations();
+    /**
+     * @param QtModel $relatedModel
+     * @param array $relation
+     * @return void
+     * @throws BaseException
+     */
+    protected function applyBelongsTo(QtModel $relatedModel, array $relation): void
+    {
+        $this->getOrmModel()->join(
+            $relatedModel->table,
+            [
+                $relatedModel->table . '.' . $relation['local_key'],
+                '=',
+                $this->table . '.' . $relation['foreign_key']
+            ]
+        );
+    }
+
+    /**
+     * @param QtModel $modelToJoin
+     * @return array
+     * @throws ModelException
+     */
+    private function getValidatedRelation(QtModel $modelToJoin): array
+    {
+        $relations = $this->getForeignKeys();
+        $relatedModelName = get_class($modelToJoin);
+
+        if (!isset($relations[$relatedModelName])) {
+            throw ModelException::wrongRelation($this->getModelName(), $relatedModelName);
         }
 
-        return $this;
+        $relation = $relations[$relatedModelName];
+
+        if (empty($relation['type'])) {
+            throw ModelException::relationTypeMissing($this->getModelName(), $relatedModelName);
+        }
+
+        if (empty($relation['foreign_key']) || empty($relation['local_key'])) {
+            throw ModelException::missingRelationKeys($this->getModelName(), $relatedModelName);
+        }
+
+        return $relation;
     }
 }

@@ -10,15 +10,15 @@ class ReducerIdiormTest extends IdiormDbalTestCase
 
     public function testIdiormSelect()
     {
-        $userModel = new IdiormDbal('users');
+        $userProfileModel = new IdiormDbal('profiles');
 
-        $user = $userModel->select('id', 'age')->first();
+        $user = $userProfileModel->select('id', 'age')->first();
 
         $this->assertCount(2, $user->asArray());
 
-        $userModel = new IdiormDbal('users');
+        $userProfileModel = new IdiormDbal('profiles');
 
-        $user = $userModel->select('id', ['firstname' => 'name'], ['lastname' => 'surname'])->first();
+        $user = $userProfileModel->select('id', ['firstname' => 'name'], ['lastname' => 'surname'])->first();
 
         $this->assertEquals('John', $user->prop('name'));
 

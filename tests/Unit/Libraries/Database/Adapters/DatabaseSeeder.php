@@ -2,9 +2,19 @@
 
 namespace Quantum\Tests\Unit\Libraries\Database\Adapters;
 
+use Quantum\Tests\_root\shared\Models\TestUserProfessionModel;
+use Quantum\Tests\_root\shared\Models\TestUserMeetingModel;
+use Quantum\Tests\_root\shared\Models\TestUserEventModel;
+use Quantum\Tests\_root\shared\Models\TestProfileModel;
+use Quantum\Tests\_root\shared\Models\TestTicketModel;
+use Quantum\Tests\_root\shared\Models\TestEventModel;
+use Quantum\Tests\_root\shared\Models\TestNotesModel;
+use Quantum\Tests\_root\shared\Models\TestUserModel;
+
 class DatabaseSeeder
 {
     private $userModel;
+    private $profileModel;
     private $userProfessionModel;
     private $eventModel;
     private $userEventModel;
@@ -12,20 +22,22 @@ class DatabaseSeeder
     private $ticketModel;
     private $noteModel;
 
-    public function __construct(string $dbalClass)
+    public function __construct()
     {
-        $this->userModel = new $dbalClass('users');
-        $this->userProfessionModel = new $dbalClass('user_professions');
-        $this->eventModel = new $dbalClass('events');
-        $this->userEventModel = new $dbalClass('user_events');
-        $this->userMeetingModel = new $dbalClass('user_meetings');
-        $this->ticketModel = new $dbalClass('tickets');
-        $this->noteModel = new $dbalClass('notes');
+        $this->userModel = model(TestUserModel::class);
+        $this->profileModel = model(TestProfileModel::class);
+        $this->userProfessionModel = model(TestUserProfessionModel::class);
+        $this->eventModel = model(TestEventModel::class);
+        $this->userEventModel = model(TestUserEventModel::class);
+        $this->userMeetingModel = model(TestUserMeetingModel::class);
+        $this->ticketModel = model(TestTicketModel::class);
+        $this->noteModel = model(TestNotesModel::class);
     }
 
     public function seed(): void
     {
         $this->seedUsers();
+        $this->seedProfiles();
         $this->seedUserProfessions();
         $this->seedEvents();
         $this->seedUserEvents();
@@ -36,91 +48,73 @@ class DatabaseSeeder
 
     private function seedUsers(): void
     {
-        foreach (TestData::users() as $user) {
+
+        foreach (TestData::users() as $userData) {
             $this->userModel->create();
-
-            foreach ($user as $field => $value) {
-                $this->userModel->prop($field, $value);
-            }
-
+            $this->userModel->fillObjectProps($userData);
             $this->userModel->save();
+        }
+    }
+
+    private function seedProfiles(): void
+    {
+        foreach (TestData::profiles() as $profileData) {
+            $this->profileModel->create();
+            $this->profileModel->fillObjectProps($profileData);
+            $this->profileModel->save();
         }
     }
 
     private function seedUserProfessions(): void
     {
-        foreach (TestData::userProfessions() as $profession) {
+        foreach (TestData::userProfessions() as $professionData) {
             $this->userProfessionModel->create();
-
-            foreach ($profession as $field => $value) {
-                $this->userProfessionModel->prop($field, $value);
-            }
-
+            $this->userProfessionModel->fillObjectProps($professionData);
             $this->userProfessionModel->save();
         }
     }
 
     private function seedEvents(): void
     {
-        foreach (TestData::events() as $event) {
+        foreach (TestData::events() as $eventData) {
             $this->eventModel->create();
-
-            foreach ($event as $field => $value) {
-                $this->eventModel->prop($field, $value);
-            }
-
+            $this->eventModel->fillObjectProps($eventData);
             $this->eventModel->save();
         }
     }
 
     private function seedUserEvents(): void
     {
-        foreach (TestData::userEvents() as $userEvent) {
+        foreach (TestData::userEvents() as $userEventData) {
             $this->userEventModel->create();
-
-            foreach ($userEvent as $field => $value) {
-                $this->userEventModel->prop($field, $value);
-            }
-
+            $this->userEventModel->fillObjectProps($userEventData);
             $this->userEventModel->save();
         }
     }
 
     private function seedUserMeetings(): void
     {
-        foreach (TestData::userMeetings() as $meeting) {
+        foreach (TestData::userMeetings() as $meetingData) {
             $this->userMeetingModel->create();
-
-            foreach ($meeting as $field => $value) {
-                $this->userMeetingModel->prop($field, $value);
-            }
-
+            $this->userMeetingModel->fillObjectProps($meetingData);
             $this->userMeetingModel->save();
         }
     }
 
     private function seedTickets(): void
     {
-        foreach (TestData::tickets() as $ticket) {
+        foreach (TestData::tickets() as $ticketData) {
             $this->ticketModel->create();
-
-            foreach ($ticket as $field => $value) {
-                $this->ticketModel->prop($field, $value);
-            }
-
+            $this->ticketModel->fillObjectProps($ticketData);
             $this->ticketModel->save();
         }
     }
 
     private function seedNotes(): void
     {
-        foreach (TestData::notes() as $note) {
+        foreach (TestData::notes() as $noteData) {
             $this->noteModel->create();
-
-            foreach ($note as $field => $value) {
-                $this->noteModel->prop($field, $value);
-            }
-
+            $this->noteModel->fillObjectProps($noteData);
             $this->noteModel->save();
         }
     }
