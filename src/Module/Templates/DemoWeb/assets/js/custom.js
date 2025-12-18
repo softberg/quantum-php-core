@@ -65,11 +65,43 @@ class Custom {
         $('.material-alert').remove();
     }
 
+    copyCommand(event) {
+        let button = jQuery(event.currentTarget);
+        let container = button.closest('.cli-command');
+        let codeElement = container.find('code');
+        let codeText = codeElement.text().trim();
+
+        navigator.clipboard.writeText(codeText)
+            .then(() => {
+                button.find('.copy-content').hide();
+                button.find('.done-icon').show();
+
+                setTimeout(() => {
+                    button.find('.done-icon').hide();
+                    button.find('.copy-content').show();
+                }, 2000);
+
+                let tooltip = $('<span class="copy-tooltip">Copied!</span>');
+                button.append(tooltip);
+                setTimeout(() => {
+                    tooltip.addClass('show');
+                }, 10);
+
+                setTimeout(() => {
+                    tooltip.remove();
+                }, 1500);
+            })
+            .catch(err => {
+                console.error("Failed to copy:", err);
+            });
+    }
+
     events() {
         $(document).on('click', '.modal-trigger', this.modalTrigger.bind(this));
         $(document).on('click', '.visibility-icon', this.visibilityIcon.bind(this));
         $(document).on('input', '.search-bar', this.search.bind(this));
         $(document).on('click', '.account-tabs .tab', this.tabSwitcher.bind(this));
+        $(document).on('click', '.copy-btn', this.copyCommand.bind(this));
     }
 }
 

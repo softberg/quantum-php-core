@@ -872,3 +872,76 @@ div.polaroid {
         display: none;
     }
 }
+
+.cli-list {
+    text-align: center;
+    display: flex;
+    justify-content: unset;
+    flex-direction: column;
+    width: 60%;
+    margin: 0 auto;
+    margin-top: 32px;
+}
+
+.cli-item {
+    margin-bottom: 18px;
+}
+
+.cli-desc {
+    text-align: justify;
+    margin-bottom: 6px;
+}
+
+.cli-command {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 6px;
+    padding: 10px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.cli-command code {
+    color: white;
+    font-size: 0.95rem;
+    white-space: nowrap;
+}
+
+.copy-btn {
+    background: transparent;
+    border: none;
+    color: #b2dfdb;
+    cursor: pointer;
+    font-size: 1.1rem;
+    position: relative;
+}
+
+.copy-btn,
+.copy-btn:focus,
+.copy-btn:active,
+.copy-btn:hover {
+    background-color: transparent !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+.copy-tooltip {
+    position: absolute;
+    background: #333;
+    color: #fff;
+    padding: 6px 9px;
+    font-size: 12px;
+    border-radius: 4px;
+    top: -24px;
+    left: 141%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+    z-index: 10;
+}
+
+.copy-tooltip.show {
+    opacity: 1;
+}
