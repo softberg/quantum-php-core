@@ -9,14 +9,17 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 2.9.9
  */
 
 namespace Quantum\Console\Commands;
 
 use Quantum\Libraries\Storage\Factories\FileSystemFactory;
+use Quantum\Config\Exceptions\ConfigException;
 use Quantum\App\Exceptions\BaseException;
+use Quantum\Di\Exceptions\DiException;
 use Quantum\Console\QtCommand;
+use ReflectionException;
 use Quantum\App\App;
 
 /**
@@ -55,6 +58,9 @@ class EnvCommand extends QtCommand
     /**
      * Executes the command and creates new .env file
      * @throws BaseException
+     * @throws ConfigException
+     * @throws DiException
+     * @throws ReflectionException
      */
     public function exec()
     {
