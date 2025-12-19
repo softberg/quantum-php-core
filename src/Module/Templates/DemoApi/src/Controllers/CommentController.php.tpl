@@ -14,8 +14,10 @@
 
 namespace {{MODULE_NAMESPACE}}\Controllers;
 
-use Quantum\Service\Factories\ServiceFactory;
+use Quantum\Service\Exceptions\ServiceException;
+use Quantum\App\Exceptions\BaseException;
 use {{MODULE_NAMESPACE}}\Services\CommentService;
+use Quantum\Di\Exceptions\DiException;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 
@@ -31,9 +33,15 @@ class CommentController extends BaseController
      */
     public $commentService;
 
+    /**
+     * @throws ReflectionException
+     * @throws BaseException
+     * @throws DiException
+     * @throws ServiceException
+     */
     public function __before()
     {
-        $this->commentService = ServiceFactory::create(CommentService::class);
+        $this->commentService = service(CommentService::class);
     }
 
     /**
@@ -45,13 +53,11 @@ class CommentController extends BaseController
      */
     public function create(Request $request, Response $response, ?string $lang, string $uuid)
     {
-        $data = [
+        $comment = $this->commentService->addComment([
             'post_uuid' => $uuid,
             'user_uuid' => auth()->user()->uuid,
             'content' => trim($request->get('content')),
-        ];
-
-        $comment = $this->commentService->addComment($data);
+        ]);
 
         $response->json([
             'status' => 'success',

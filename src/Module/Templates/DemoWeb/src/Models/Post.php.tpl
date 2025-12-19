@@ -9,11 +9,12 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.8
+ * @since 2.9.9
  */
 
 namespace {{MODULE_NAMESPACE}}\Models;
 
+use Quantum\Libraries\Database\Enums\Relation;
 use Quantum\Model\Traits\SoftDeletes;
 use Quantum\Model\QtModel;
 
@@ -39,20 +40,6 @@ class Post extends QtModel
     public $table = 'posts';
 
     /**
-     * Model relations configuration
-     * @return array[]
-     */
-    public function relations(): array
-    {
-        return [
-            User::class => [
-                'foreign_key' => 'user_uuid',
-                'local_key' => 'uuid',
-            ]
-        ];
-    }
-
-    /**
      * Fillable properties
      * @var array
      */
@@ -65,4 +52,19 @@ class Post extends QtModel
         'created_at',
         'updated_at'
     ];
+
+    /**
+     * Model relations configuration
+     * @return array[]
+     */
+    public function relations(): array
+    {
+        return [
+            User::class => [
+                'type' => Relation::BELONGS_TO,
+                'foreign_key' => 'user_uuid',
+                'local_key' => 'uuid',
+            ]
+        ];
+    }
 }

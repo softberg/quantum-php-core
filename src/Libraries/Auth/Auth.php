@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 2.9.9
  */
 
 namespace Quantum\Libraries\Auth;
@@ -21,7 +21,7 @@ use Quantum\App\Exceptions\BaseException;
 /**
  * Class Auth
  * @package Quantum\Libraries\Auth
- * @method mixed signin(string $username, string $password)
+ * @method mixed signin(string $username, string $password, bool $remember = false)
  * @method bool signout()
  * @method bool check()
  * @method User user()

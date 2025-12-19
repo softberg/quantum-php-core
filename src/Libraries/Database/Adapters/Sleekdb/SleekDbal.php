@@ -43,16 +43,6 @@ class SleekDbal implements DbalInterface
     use Join;
 
     /**
-     * Join type join to
-     */
-    const JOINTO = 'joinTo';
-
-    /**
-     * Join type join through
-     */
-    const JOINTHROUGH = 'joinThrough';
-
-    /**
      * @var bool
      */
     protected $isNew = false;

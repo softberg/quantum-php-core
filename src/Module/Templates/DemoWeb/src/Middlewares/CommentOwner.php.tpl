@@ -14,7 +14,6 @@
 
 namespace {{MODULE_NAMESPACE}}\Middlewares;
 
-use Quantum\Service\Factories\ServiceFactory;
 use {{MODULE_NAMESPACE}}\Services\CommentService;
 use Quantum\Libraries\Validation\Rule;
 use Quantum\Http\Response;
@@ -66,7 +65,7 @@ class CommentOwner extends BaseMiddleware
     private function registerCustomRules(): void
     {
         $this->validator->addRule('commentOwner', function ($commentUuid) {
-            $comment = ServiceFactory::get(CommentService::class)->getComment($commentUuid);
+            $comment = service(CommentService::class)->getComment($commentUuid);
             return !$comment->isEmpty() && $comment->user_uuid === auth()->user()->uuid;
         });
     }

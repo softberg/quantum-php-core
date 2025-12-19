@@ -14,7 +14,9 @@
 
 namespace {{MODULE_NAMESPACE}}\Controllers;
 
-use Quantum\Service\Factories\ServiceFactory;
+use Quantum\Service\Exceptions\ServiceException;
+use Quantum\App\Exceptions\BaseException;
+use Quantum\Di\Exceptions\DiException;
 use Quantum\Http\Enums\StatusCode;
 use {{MODULE_NAMESPACE}}\Services\CommentService;
 use {{MODULE_NAMESPACE}}\Services\PostService;
@@ -44,11 +46,14 @@ class PostController extends BaseController
     public $postService;
 
     /**
-     * Works before an action
+     * @throws ReflectionException
+     * @throws BaseException
+     * @throws DiException
+     * @throws ServiceException
      */
     public function __before()
     {
-        $this->postService = ServiceFactory::create(PostService::class);
+        $this->postService = service(PostService::class);
     }
 
     /**
@@ -97,7 +102,8 @@ class PostController extends BaseController
 
         $postData = current($this->postService->transformData([$post]));
 
-        $commentService = ServiceFactory::create(CommentService::class);
+        $commentService = service(CommentService::class);
+
         $comments = $commentService->getCommentsByPost($postUuid);
 
         $commentsData = $commentService->transformData($comments->all());

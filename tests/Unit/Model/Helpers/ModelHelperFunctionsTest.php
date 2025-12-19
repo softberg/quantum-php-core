@@ -11,12 +11,6 @@ use Mockery;
 
 class ModelHelperFunctionsTest extends AppTestCase
 {
-
-    public function setUp(): void
-    {
-        parent::setUp();
-    }
-
     public function testModelReturnsQtModelInstance()
     {
         $model = model(TestUserModel::class);

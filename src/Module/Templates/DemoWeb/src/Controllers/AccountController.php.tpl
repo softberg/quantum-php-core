@@ -14,7 +14,6 @@
 
 namespace {{MODULE_NAMESPACE}}\Controllers;
 
-use Quantum\Service\Factories\ServiceFactory;
 use {{MODULE_NAMESPACE}}\Services\AuthService;
 use Quantum\Libraries\Hasher\Hasher;
 use Quantum\Http\Response;
@@ -42,8 +41,7 @@ class AccountController extends BaseController
      */
     public function __before()
     {
-        $this->authService = ServiceFactory::create(AuthService::class);
-
+        $this->authService = service(AuthService::class);
         parent::__before();
     }
 

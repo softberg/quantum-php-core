@@ -14,7 +14,6 @@
 
 namespace {{MODULE_NAMESPACE}}\Controllers;
 
-use Quantum\Service\Factories\ServiceFactory;
 use {{MODULE_NAMESPACE}}\Services\PostService;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
@@ -39,8 +38,7 @@ class PostManagementController extends BaseController
 
     public function __before()
     {
-        $this->postService = ServiceFactory::create(PostService::class);
-
+        $this->postService = service(PostService::class);
         parent::__before();
     }
 

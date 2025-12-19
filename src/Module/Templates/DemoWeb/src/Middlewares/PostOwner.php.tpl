@@ -14,7 +14,6 @@
 
 namespace {{MODULE_NAMESPACE}}\Middlewares;
 
-use Quantum\Service\Factories\ServiceFactory;
 use Quantum\Libraries\Validation\Rule;
 use Quantum\Http\Enums\StatusCode;
 use {{MODULE_NAMESPACE}}\Services\PostService;
@@ -77,7 +76,7 @@ class PostOwner extends BaseMiddleware
     private function registerCustomRules()
     {
         $this->validator->addRule('postOwner', function ($postUuid) {
-            $post = ServiceFactory::get(PostService::class)->getPost($postUuid);
+            $post = service(PostService::class)->getPost($postUuid);
             return !$post->isEmpty() && $post->user_uuid === auth()->user()->uuid;
         });
     }
