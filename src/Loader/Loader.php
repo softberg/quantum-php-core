@@ -9,15 +9,12 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 2.9.9
  */
 
 namespace Quantum\Loader;
 
 use Quantum\Loader\Exceptions\LoaderException;
-use Quantum\App\Exceptions\BaseException;
-use ReflectionException;
-use ReflectionClass;
 use Quantum\App\App;
 
 /**
@@ -107,23 +104,33 @@ class Loader
     }
 
     /**
+     * Checks if the setup points to valid file
+     * @return bool
+     */
+    public function fileExists(): bool
+    {
+        $filePath = $this->resolveFilePath();
+
+        if (file_exists($filePath)) {
+            return true;
+        }
+
+        if ($this->hierarchical) {
+            $filePath = App::getBaseDir() . DS . 'shared' . DS . strtolower($this->pathPrefix) . DS . $this->fileName . '.php';
+            return file_exists($filePath);
+        }
+
+        return false;
+    }
+
+    /**
      * Gets the file path
      * @return string
      * @throws LoaderException
      */
     public function getFilePath(): string
     {
-        $filePath = '';
-
-        if ($this->module) {
-            $filePath = modules_dir() . DS . $this->module . DS;
-        }
-
-        if ($this->pathPrefix) {
-            $filePath .= $this->pathPrefix . DS;
-        }
-
-        $filePath .= $this->fileName . '.php';
+        $filePath = $this->resolveFilePath();
 
         if (!file_exists($filePath)) {
             if ($this->hierarchical) {
@@ -141,34 +148,22 @@ class Loader
     }
 
     /**
-     * Loads namespaced class from the file
-     * @param string $filePath
-     * @param callable $notFoundException
-     * @param callable $notDefinedException
-     * @param array $constructorArgs
-     * @return mixed
-     * @throws BaseException
-     * @throws ReflectionException
+     * @return string
      */
-    public function loadClassFromFile(
-        string $filePath,
-        callable $notFoundException,
-        callable $notDefinedException,
-        array $constructorArgs = []
-    ) {
-        if (!file_exists($filePath)) {
-            throw $notFoundException();
+    private function resolveFilePath(): string
+    {
+        $filePath = '';
+
+        if ($this->module) {
+            $filePath = modules_dir() . DS . $this->module . DS;
         }
 
-        require_once $filePath;
-
-        foreach (get_declared_classes() as $className) {
-            $reflectionClass = new ReflectionClass($className);
-            if ($reflectionClass->getFileName() === $filePath) {
-                return new $className(...$constructorArgs);
-            }
+        if ($this->pathPrefix) {
+            $filePath .= $this->pathPrefix . DS;
         }
 
-        throw $notDefinedException();
+        $filePath .= $this->fileName . '.php';
+
+        return $filePath;
     }
 }
