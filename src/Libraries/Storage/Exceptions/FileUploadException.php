@@ -32,4 +32,13 @@ class FileUploadException extends BaseException
     {
         return new static(_message(ExceptionMessages::FILE_TYPE_NOT_ALLOWED, [$name]), E_WARNING);
     }
+
+    /**
+     * @param string $name
+     * @return FileUploadException
+     */
+    public static function incorrectMimeTypesConfig(string $name): FileUploadException
+    {
+        return new static(_message(ExceptionMessages::MISSING_CONFIG, $name), E_ERROR);
+    }
 }
