@@ -48,6 +48,10 @@ class UploadedFileTest extends AppTestCase
         if (file_exists(base_dir() . DS . 'foo.jpg')) {
             unlink(base_dir() . DS . 'foo.jpg');
         }
+
+        if (file_exists(base_dir() . DS . 'foo.txt')) {
+            unlink(base_dir() . DS . 'foo.txt');
+        }
     }
 
     public function testUploadedFileConstructor()
@@ -143,6 +147,49 @@ class UploadedFileTest extends AppTestCase
 
         $uploadedFile->save(base_dir());
 
+        $this->assertTrue(file_exists(base_dir() . DS . $uploadedFile->getNameWithExtension()));
+    }
+
+    public function testUploadedFileUploadNotAllowedExtensionForMimeType()
+    {
+        $fileMeta = $this->fileMeta;
+        $fileMeta['name'] = 'foo.php';
+
+        $uploadedFile = new UploadedDouble($fileMeta);
+
+        $this->expectException(FileUploadException::class);
+        $this->expectExceptionMessage('The file type `php` is not allowed.');
+
+        $uploadedFile->save(base_dir());
+    }
+
+    public function testUploadedFileUploadNotAllowedMimeType()
+    {
+        $fileMeta = $this->fileMeta;
+        $fileMeta['name'] = 'foo.jpg';
+        $fileMeta['tmp_name'] = base_dir() . DS . 'journal.log';
+
+        $uploadedFile = new UploadedDouble($fileMeta);
+
+        $this->expectException(FileUploadException::class);
+        $this->expectExceptionMessage('The file type `jpg` is not allowed.');
+
+        $uploadedFile->save(base_dir());
+    }
+
+    public function testUploadedFileUploadAllowedAfterSetterOverride()
+    {
+        $fileMeta = $this->fileMeta;
+        $fileMeta['name'] = 'foo.txt';
+        $fileMeta['tmp_name'] = base_dir() . DS . 'journal.log';
+
+        $uploadedFile = new UploadedDouble($fileMeta);
+
+        $uploadedFile->setAllowedMimeTypes([
+            $uploadedFile->getMimeType() => ['txt'],
+        ]);
+
+        $this->assertTrue($uploadedFile->save(base_dir()));
         $this->assertTrue(file_exists(base_dir() . DS . $uploadedFile->getNameWithExtension()));
     }
 

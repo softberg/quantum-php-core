@@ -23,6 +23,7 @@ use Quantum\Environment\Exceptions\EnvException;
 use Quantum\Config\Exceptions\ConfigException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
+use Quantum\Loader\Setup;
 use Gumlet\ImageResizeException;
 use ReflectionException;
 use Gumlet\ImageResize;
@@ -99,15 +100,13 @@ class UploadedFile extends SplFileInfo
     ];
 
     /**
-     * Blacklisted extensions
+     * Allowed mime types => allowed extensions map
      * @var array
      */
-    protected $blacklistedExtensions = [
-        'php([0-9])?', 'pht', 'phar', 'phpt', 'pgif', 'phtml', 'phtm', 'phps',
-        'cgi', 'inc', 'env', 'htaccess', 'htpasswd', 'config', 'conf',
-        'bat', 'exe', 'msi', 'cmd', 'dll', 'sh', 'com', 'app', 'sys', 'drv',
-        'pl', 'jar', 'jsp', 'js', 'vb', 'vbscript', 'wsf', 'asp', 'py',
-        'cer', 'csr', 'crt',
+    protected $allowedMimeTypes = [
+        'image/jpeg' => ['jpg', 'jpeg'],
+        'image/png' => ['png'],
+        'application/pdf' => ['pdf'],
     ];
 
     /**
@@ -130,7 +129,21 @@ class UploadedFile extends SplFileInfo
         $this->originalName = $meta['name'];
         $this->errorCode = $meta['error'];
 
+        $this->loadAllowedMimeTypesFromConfig();
+
         parent::__construct($meta['tmp_name']);
+    }
+
+    /**
+     * Sets the allowed mime types => extensions map
+     * @param array $allowedMimeTypes
+     * @param bool $merge
+     * @return $this
+     */
+    public function setAllowedMimeTypes(array $allowedMimeTypes, bool $merge = true): UploadedFile
+    {
+        $this->setAllowedMimeTypesMap($allowedMimeTypes, $merge);
+        return $this;
     }
 
     /**
@@ -265,7 +278,7 @@ class UploadedFile extends SplFileInfo
             throw FileUploadException::fileNotFound($this->getPathname());
         }
 
-        if (!$this->whitelisted($this->getExtension())) {
+        if (!$this->allowed($this->getExtension(), $this->getMimeType())) {
             throw FileUploadException::fileTypeNotAllowed($this->getExtension());
         }
 
@@ -377,17 +390,55 @@ class UploadedFile extends SplFileInfo
     }
 
     /**
-     * Whitelist the file extension
+     * Validates upload against allowed mime types => extensions map
      * @param string $extension
+     * @param string $mimeType
      * @return bool
      */
-    protected function whitelisted(string $extension): bool
+    protected function allowed(string $extension, string $mimeType): bool
     {
-        if (!preg_match('/(' . implode('|', $this->blacklistedExtensions) . ')$/i', $extension)) {
-            return true;
+        $extension = strtolower($extension);
+        $mimeType = strtolower($mimeType);
+
+        return isset($this->allowedMimeTypes[$mimeType]) &&
+            in_array($extension, $this->allowedMimeTypes[$mimeType], true);
+    }
+
+    /**
+     * Loads allowed mime types from config (shared/config/uploads.php) if present.
+	 * @return void
+     * @throws FileUploadException
+     */
+    protected function loadAllowedMimeTypesFromConfig(): void
+    {
+		if (!config()->has('uploads')) {
+			config()->import(new Setup('config', 'uploads'));
+		}
+
+        $allowedMimeTypesMap = config()->get('uploads.allowed_mime_types');
+
+        if ($allowedMimeTypesMap !== null && !is_array($allowedMimeTypesMap)) {
+            throw FileUploadException::incorrectMimeTypesConfig('uploads');
         }
 
-        return false;
+        if (is_array($allowedMimeTypesMap)) {
+            $this->setAllowedMimeTypesMap($allowedMimeTypesMap);
+        }
+    }
+
+    /**
+     * Sets the allowed mime types => extensions map
+     * @param array $allowedMimeTypes
+     * @param bool $merge
+     * @return void
+     */
+    protected function setAllowedMimeTypesMap(array $allowedMimeTypes, bool $merge = true): void
+    {
+        if ($merge) {
+            $this->allowedMimeTypes = array_merge_recursive($this->allowedMimeTypes, $allowedMimeTypes);
+        } else {
+            $this->allowedMimeTypes = $allowedMimeTypes;
+        }
     }
 
     /**
