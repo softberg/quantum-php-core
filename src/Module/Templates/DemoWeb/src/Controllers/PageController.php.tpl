@@ -14,6 +14,7 @@
 
 namespace {{MODULE_NAMESPACE}}\Controllers;
 
+use {{MODULE_NAMESPACE}}\Services\CommandService;
 use Quantum\Http\Response;
 
 /**
@@ -51,6 +52,8 @@ class PageController extends BaseController
             'title' => t('common.about') . ' | ' . config()->get('app.name'),
         ]);
 
-        $response->html($this->view->render('pages/about'));
+        $commands = service(CommandService::class)->getAllCommands();
+
+        $response->html($this->view->render('pages/about', ['commands' => $commands]));
     }
 }
