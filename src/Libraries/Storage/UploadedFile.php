@@ -135,13 +135,14 @@ class UploadedFile extends SplFileInfo
     }
 
     /**
-     * Overrides the default allowed mime types => extensions map
+     * Sets the allowed mime types => extensions map
      * @param array $allowedMimeTypes
+     * @param bool $merge
      * @return $this
      */
-    public function setAllowedMimeTypes(array $allowedMimeTypes): UploadedFile
+    public function setAllowedMimeTypes(array $allowedMimeTypes, bool $merge = true): UploadedFile
     {
-        $this->allowedMimeTypes = $allowedMimeTypes;
+        $this->setAllowedMimeTypesMap($allowedMimeTypes, $merge);
         return $this;
     }
 
@@ -406,6 +407,7 @@ class UploadedFile extends SplFileInfo
     /**
      * Loads allowed mime types from config (shared/config/uploads.php) if present.
 	 * @return void
+     * @throws FileUploadException
      */
     protected function loadAllowedMimeTypesFromConfig(): void
     {
@@ -415,8 +417,27 @@ class UploadedFile extends SplFileInfo
 
         $allowedMimeTypesMap = config()->get('uploads.allowed_mime_types');
 
+        if ($allowedMimeTypesMap !== null && !is_array($allowedMimeTypesMap)) {
+            throw FileUploadException::incorrectMimeTypesConfig('uploads.allowed_mime_types');
+        }
+
         if (is_array($allowedMimeTypesMap)) {
-            $this->allowedMimeTypes = $allowedMimeTypesMap;
+            $this->setAllowedMimeTypesMap($allowedMimeTypesMap);
+        }
+    }
+
+    /**
+     * Sets the allowed mime types => extensions map
+     * @param array $allowedMimeTypes
+     * @param bool $merge
+     * @return void
+     */
+    protected function setAllowedMimeTypesMap(array $allowedMimeTypes, bool $merge = true): void
+    {
+        if ($merge) {
+            $this->allowedMimeTypes = array_merge_recursive($this->allowedMimeTypes, $allowedMimeTypes);
+        } else {
+            $this->allowedMimeTypes = $allowedMimeTypes;
         }
     }
 
