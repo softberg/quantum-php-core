@@ -15,7 +15,6 @@
 namespace Quantum\Libraries\Storage\Exceptions;
 
 use Quantum\Libraries\Storage\Enums\ExceptionMessages;
-use Quantum\App\Enums\ExceptionMessages as BaseExceptionMessages;
 use Quantum\App\Exceptions\BaseException;
 
 /**
@@ -40,6 +39,6 @@ class FileUploadException extends BaseException
      */
     public static function incorrectMimeTypesConfig(string $name): FileUploadException
     {
-        return new static(_message(BaseExceptionMessages::MISSING_CONFIG, $name), E_ERROR);
+        return new static(_message(ExceptionMessages::MISSING_CONFIG, $name), E_ERROR);
     }
 }

@@ -418,7 +418,7 @@ class UploadedFile extends SplFileInfo
         $allowedMimeTypesMap = config()->get('uploads.allowed_mime_types');
 
         if ($allowedMimeTypesMap !== null && !is_array($allowedMimeTypesMap)) {
-            throw FileUploadException::incorrectMimeTypesConfig('uploads.allowed_mime_types');
+            throw FileUploadException::incorrectMimeTypesConfig('uploads');
         }
 
         if (is_array($allowedMimeTypesMap)) {
