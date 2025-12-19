@@ -18,7 +18,18 @@ class LoaderTest extends AppTestCase
         $this->loader = new Loader();
     }
 
-    public function testSetupAndLoad()
+    public function testLoaderFileExists()
+    {
+        $this->loader->setup(new Setup('config', 'app'));
+
+        $this->assertTrue($this->loader->fileExists());
+
+        $this->loader->setup(new Setup('config', 'unknown'));
+
+        $this->assertFalse($this->loader->fileExists());
+    }
+
+    public function testLoaderSetupAndLoad()
     {
         $this->loader->setup(new Setup('config', 'app'));
 

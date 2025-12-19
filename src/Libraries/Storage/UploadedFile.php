@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.8
+ * @since 2.9.9
  */
 
 namespace Quantum\Libraries\Storage;
@@ -23,10 +23,12 @@ use Quantum\Environment\Exceptions\EnvException;
 use Quantum\Config\Exceptions\ConfigException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
-use Quantum\Loader\Setup;
 use Gumlet\ImageResizeException;
+use Quantum\Loader\Loader;
+use Quantum\Loader\Setup;
 use ReflectionException;
 use Gumlet\ImageResize;
+use Quantum\Di\Di;
 use SplFileInfo;
 use finfo;
 
@@ -406,22 +408,32 @@ class UploadedFile extends SplFileInfo
 
     /**
      * Loads allowed mime types from config (shared/config/uploads.php) if present.
-	 * @return void
+     * @throws ConfigException
+     * @throws DiException
      * @throws FileUploadException
+     * @throws ReflectionException
      */
     protected function loadAllowedMimeTypesFromConfig(): void
     {
-		if (!config()->has('uploads')) {
-			config()->import(new Setup('config', 'uploads'));
-		}
+        if (!config()->has('uploads')) {
+            $loader = Di::get(Loader::class);
+            $setup = new Setup('config', 'uploads');
+            $loader->setup($setup);
 
-        $allowedMimeTypesMap = config()->get('uploads.allowed_mime_types');
+            if (!$loader->fileExists()) {
+                return;
+            }
 
-        if ($allowedMimeTypesMap !== null && !is_array($allowedMimeTypesMap)) {
+            config()->import($setup);
+        }
+
+        $allowedMimeTypesMap = config()->get('uploads.allowed_mime_types') ?? [];
+
+        if (!is_array($allowedMimeTypesMap)) {
             throw FileUploadException::incorrectMimeTypesConfig('uploads');
         }
 
-        if (is_array($allowedMimeTypesMap)) {
+        if ($allowedMimeTypesMap) {
             $this->setAllowedMimeTypesMap($allowedMimeTypesMap);
         }
     }
