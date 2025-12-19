@@ -43,7 +43,6 @@ use Quantum\Paginator\Paginator;
  * @method bool delete()
  * @method bool deleteMany()
  * @method static joinTo(QtModel $model, bool $switch = true)
- * @method static joinThrough(QtModel $model, bool $switch = true)
  * @method static isNull(string $column)
  * @method static isNotNull(string $column)
  */
@@ -115,6 +114,7 @@ abstract class QtModel
 
     /**
      * @return ModelCollection
+     * @throws BaseException
      */
     public function get(): ModelCollection
     {

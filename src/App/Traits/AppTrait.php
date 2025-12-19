@@ -77,6 +77,7 @@ trait AppTrait
             'Environment',
             'Config',
             'Router',
+            'Service',
             'Model',
             'Hook',
             'Http',
