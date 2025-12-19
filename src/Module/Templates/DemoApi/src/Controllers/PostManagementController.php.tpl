@@ -14,8 +14,10 @@
 
 namespace {{MODULE_NAMESPACE}}\Controllers;
 
-use Quantum\Service\Factories\ServiceFactory;
+use Quantum\Service\Exceptions\ServiceException;
+use Quantum\App\Exceptions\BaseException;
 use {{MODULE_NAMESPACE}}\Services\PostService;
+use Quantum\Di\Exceptions\DiException;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 
@@ -35,9 +37,16 @@ class PostManagementController extends BaseController
     /**
      * Works before an action
      */
+
+    /**
+     * @throws ReflectionException
+     * @throws BaseException
+     * @throws DiException
+     * @throws ServiceException
+     */
     public function __before()
     {
-        $this->postService = ServiceFactory::create(PostService::class);
+        $this->postService = service(PostService::class);
     }
 
     /**

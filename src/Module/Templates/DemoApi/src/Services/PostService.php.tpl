@@ -22,13 +22,11 @@ use {{MODULE_NAMESPACE}}\Transformers\PostTransformer;
 use Quantum\Model\Exceptions\ModelException;
 use Quantum\Libraries\Storage\UploadedFile;
 use Quantum\App\Exceptions\BaseException;
-use Quantum\Model\Factories\ModelFactory;
 use {{MODULE_NAMESPACE}}\Models\User;
 use {{MODULE_NAMESPACE}}\Models\Post;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Model\ModelCollection;
 use Gumlet\ImageResizeException;
-use Quantum\Paginator\Paginator;
 use Quantum\Service\QtService;
 use Quantum\Model\QtModel;
 use ReflectionException;
@@ -52,11 +50,12 @@ class PostService extends QtService
 
     /**
      * @param PostTransformer $transformer
+     * @throws BaseException
      * @throws ModelException
      */
     public function __construct(PostTransformer $transformer)
     {
-        $this->model = ModelFactory::get(Post::class);
+        $this->model = model(Post::class);
 
         $this->transformer = $transformer;
     }
@@ -66,13 +65,14 @@ class PostService extends QtService
      * @param int|null $perPage
      * @param int|null $currentPage
      * @param string|null $search
-     * @return Paginator|ModelCollection
+     * @return mixed
+     * @throws BaseException
      * @throws ModelException
      */
     public function getPosts(?int $perPage = null, ?int $currentPage = null, ?string $search = null)
     {
         $query = $this->model
-            ->joinThrough(ModelFactory::get(User::class))
+            ->joinTo(model(User::class))
             ->select(
                 'posts.uuid',
                 'title',
@@ -103,12 +103,13 @@ class PostService extends QtService
      * Get post
      * @param string $uuid
      * @return Post
+     * @throws BaseException
      * @throws ModelException
      */
     public function getPost(string $uuid): Post
     {
         return $this->model
-            ->joinThrough(ModelFactory::get(User::class))
+            ->joinTo(model(User::class))
             ->criteria('uuid', '=', $uuid)
             ->select(
                 'posts.uuid',
@@ -128,12 +129,13 @@ class PostService extends QtService
      * Get my posts
      * @param string $userUuid
      * @return ModelCollection|null
+     * @throws BaseException
      * @throws ModelException
      */
     public function getMyPosts(string $userUuid): ?ModelCollection
     {
         return $this->model
-            ->joinThrough(ModelFactory::get(User::class))
+            ->joinTo(model(User::class))
             ->criteria('user_uuid', '=', $userUuid)
             ->select(
                 'posts.uuid',
@@ -152,6 +154,7 @@ class PostService extends QtService
      * Add post
      * @param array $data
      * @return Post
+     * @throws BaseException
      * @throws ModelException
      */
     public function addPost(array $data): Post
@@ -171,6 +174,7 @@ class PostService extends QtService
      * @param string $uuid
      * @param array $data
      * @return Post
+     * @throws BaseException
      * @throws ModelException
      */
     public function updatePost(string $uuid, array $data): Post

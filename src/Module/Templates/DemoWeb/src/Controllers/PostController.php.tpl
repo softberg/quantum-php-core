@@ -14,10 +14,9 @@
 
 namespace {{MODULE_NAMESPACE}}\Controllers;
 
-use Quantum\Service\Factories\ServiceFactory;
 use {{MODULE_NAMESPACE}}\Services\CommentService;
-use Quantum\Http\Enums\StatusCode;
 use {{MODULE_NAMESPACE}}\Services\PostService;
+use Quantum\Http\Enums\StatusCode;
 use Quantum\View\RawParam;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
@@ -52,7 +51,7 @@ class PostController extends BaseController
 
     public function __before()
     {
-        $this->postService = ServiceFactory::create(PostService::class);
+        $this->postService = service(PostService::class);
         parent::__before();
     }
 
@@ -96,7 +95,8 @@ class PostController extends BaseController
             stop();
         }
 
-        $commentService = ServiceFactory::create(CommentService::class);
+        $commentService = service(CommentService::class);
+
         $comments = $commentService->getCommentsByPost($postUuid);
 
         $comments = $commentService->transformData($comments->all());

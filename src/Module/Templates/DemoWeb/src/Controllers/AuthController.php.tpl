@@ -15,9 +15,9 @@
 namespace {{MODULE_NAMESPACE}}\Controllers;
 
 use Quantum\Libraries\Auth\Exceptions\AuthException;
+use {{MODULE_NAMESPACE}}\Enums\Role;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
-use {{MODULE_NAMESPACE}}\Enums\Role;
 
 /**
  * Class AuthController

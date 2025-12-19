@@ -14,7 +14,6 @@
 
 namespace {{MODULE_NAMESPACE}}\Controllers;
 
-use Quantum\Service\Factories\ServiceFactory;
 use {{MODULE_NAMESPACE}}\Services\CommentService;
 use Quantum\Http\Request;
 
@@ -32,7 +31,7 @@ class CommentController extends BaseController
 
     public function __before()
     {
-        $this->commentService = ServiceFactory::create(CommentService::class);
+        $this->commentService = service(CommentService::class);
         parent::__before();
     }
 
@@ -44,18 +43,11 @@ class CommentController extends BaseController
      */
     public function create(Request $request, ?string $lang, string $uuid)
     {
-        $data = [
+        $this->commentService->addComment([
             'post_uuid' => $uuid,
             'user_uuid' => auth()->user()->uuid,
             'content' => trim($request->get('content')),
-        ];
-
-        if (!$data['content']) {
-            session()->setFlash('error', t('common.comment_required'));
-            redirect(get_referrer());
-        }
-
-        $this->commentService->addComment($data);
+        ]);
 
         session()->setFlash('success', t('common.comment_added'));
         redirect(get_referrer());
