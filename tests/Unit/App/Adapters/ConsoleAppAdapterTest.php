@@ -2,6 +2,8 @@
 
 namespace Quantum\Tests\Unit\App\Adapters;
 
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Input\InputInterface;
 use Quantum\App\Adapters\ConsoleAppAdapter;
 use Symfony\Component\Console\Application;
 use PHPUnit\Framework\TestCase;
@@ -22,8 +24,13 @@ class ConsoleAppAdapterTest extends TestCase
         $applicationMock->shouldReceive('getName')->andReturn('Qt Console Application');
         $applicationMock->shouldReceive('run')->andReturn(0);
 
-        $this->consoleAppAdapter = Mockery::mock(ConsoleAppAdapter::class)->makePartial();
-        $this->consoleAppAdapter->shouldReceive('createApplication')->andReturn($applicationMock);
+        $this->consoleAppAdapter = Mockery::mock(ConsoleAppAdapter::class)
+            ->shouldAllowMockingProtectedMethods()
+            ->makePartial();
+
+        $this->consoleAppAdapter
+            ->shouldReceive('createApplication')
+            ->andReturn($applicationMock);
     }
 
     public function tearDown(): void
