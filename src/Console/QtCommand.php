@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 2.9.9
  */
 
 namespace Quantum\Console;
@@ -84,6 +84,85 @@ abstract class QtCommand extends Command implements CommandInterface
     }
 
     /**
+     * Returns the argument value for a given argument name.
+     * @param string|null $key
+     * @return mixed|string
+     */
+    public function getArgument(string $key = null)
+    {
+        return $this->input->getArgument($key) ?? '';
+    }
+
+    /**
+     * Returns the option value for a given option name.
+     * @param string|null $key
+     * @return mixed|string
+     */
+    public function getOption(string $key = null)
+    {
+        return $this->input->getOption($key) ?? '';
+    }
+
+    /**
+     * Outputs the string to console
+     * @param string $message
+     */
+    public function output(string $message)
+    {
+        $this->output->writeln($message);
+    }
+
+    /**
+     * Outputs the string to console as info
+     * @param string $message
+     */
+    public function info(string $message)
+    {
+        $this->output->writeln("<info>$message</info>");
+    }
+
+    /**
+     * Outputs the string to console as comment
+     * @param string $message
+     */
+    public function comment(string $message)
+    {
+        $this->output->writeln("<comment>$message</comment>");
+    }
+
+    /**
+     * Outputs the string to console as question
+     * @param string $message
+     */
+    public function question(string $message)
+    {
+        $this->output->writeln("<question>$message</question>");
+    }
+
+    /**
+     * Asks confirmation
+     * @param string $message
+     * @return bool
+     */
+    public function confirm(string $message): bool
+    {
+        $helper = $this->getHelper('question');
+
+        $question = new ConfirmationQuestion($message . ' [y/N] ', false);
+
+        return (bool) $helper->ask($this->input, $this->output, $question);
+    }
+
+    /**
+     * Outputs the string to console as error
+     * @param string $message
+     */
+    public function error(string $message)
+    {
+        $this->output->writeln("<error>$message</error>");
+    }
+
+    /**
      * Configures the current command.
      */
     protected function configure()
@@ -102,88 +181,6 @@ abstract class QtCommand extends Command implements CommandInterface
         $this->input = $input;
         $this->output = $output;
         $this->exec();
-    }
-
-    /**
-     * Returns the argument value for a given argument name.
-     * @param string|null $key
-     * @return mixed|string
-     */
-    protected function getArgument(string $key = null)
-    {
-        return $this->input->getArgument($key) ?? '';
-    }
-
-    /**
-     * Returns the option value for a given option name.
-     * @param string|null $key
-     * @return mixed|string
-     */
-    protected function getOption(string $key = null)
-    {
-        return $this->input->getOption($key) ?? '';
-    }
-
-    /**
-     * Outputs the string to console
-     * @param string $message
-     */
-    public function output(string $message)
-    {
-        $this->output->writeln($message);
-    }
-
-    /**
-     * Outputs the string to console as info
-     * @param string $message
-     */
-    protected function info(string $message)
-    {
-        $this->output->writeln("<info>$message</info>");
-    }
-
-    /**
-     * Outputs the string to console as comment
-     * @param string $message
-     */
-    protected function comment(string $message)
-    {
-        $this->output->writeln("<comment>$message</comment>");
-    }
-
-    /**
-     * Outputs the string to console as question
-     * @param string $message
-     */
-    protected function question(string $message)
-    {
-        $this->output->writeln("<question>$message</question>");
-    }
-
-    /**
-     * Asks confirmation
-     * @param string $message
-     * @return bool
-     */
-    public function confirm(string $message): bool
-    {
-        $helper = $this->getHelper('question');
-        $question = new ConfirmationQuestion($message . ' [y/N] ', false);
-
-        if ($helper->ask($this->input, $this->output, $question)) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Outputs the string to console as error
-     * @param string $message
-     */
-    protected function error(string $message)
-    {
-        $this->output->writeln("<error>$message</error>");
     }
 
     /**
@@ -228,5 +225,4 @@ abstract class QtCommand extends Command implements CommandInterface
             }
         }
     }
-
 }

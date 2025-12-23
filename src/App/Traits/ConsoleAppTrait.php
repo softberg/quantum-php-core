@@ -15,9 +15,8 @@
 namespace Quantum\App\Traits;
 
 use Symfony\Component\Console\Application;
-use Quantum\Console\QtCommand;
+use Quantum\Console\CommandDiscovery;
 use ReflectionException;
-use ReflectionClass;
 use Exception;
 
 /**
@@ -64,32 +63,18 @@ trait ConsoleAppTrait
     /**
      * @param string $directory
      * @param string $namespace
-     * @return void
      * @throws ReflectionException
      */
     private function registerCommands(string $directory, string $namespace)
     {
-        foreach (get_directory_classes($directory) as $className) {
-            $commandClass = $namespace . $className;
+        $commands = CommandDiscovery::discover($directory, $namespace);
 
-            if (!class_exists($commandClass)) {
-                continue;
-            }
-
-            $commandReflection = new ReflectionClass($commandClass);
-
-            if (!$commandReflection->isInstantiable()) {
-                continue;
-            }
-
-            if ($commandReflection->isSubclassOf(QtCommand::class)) {
-                $this->application->add($commandReflection->newInstance());
-            }
+        foreach ($commands as $command) {
+            $this->application->add(new $command['class']());
         }
     }
 
     /**
-     * @return void
      * @throws Exception
      */
     private function validateCommand(): void
