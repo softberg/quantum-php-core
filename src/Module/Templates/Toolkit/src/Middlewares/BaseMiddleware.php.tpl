@@ -12,7 +12,7 @@
  * @since 2.9.9
  */
 
-namespace {{MODULE_NAMESPACE}}\Middlewares;
+namespace Modules\Toolkit\Middlewares;
 
 use Quantum\Libraries\Validation\Validator;
 use Quantum\Middleware\QtMiddleware;

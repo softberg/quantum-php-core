@@ -9,14 +9,14 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.8
+ * @since 2.9.9
  */
 
 namespace Modules\Toolkit\Controllers;
 
 use Quantum\Service\Exceptions\ServiceException;
 use Modules\Toolkit\Services\DashboardService;
-use Quantum\Service\Factories\ServiceFactory;
+use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
@@ -37,12 +37,13 @@ class DashboardController extends BaseController
 
     /**
      * @throws DiException
-     * @throws ServiceException
      * @throws ReflectionException
+     * @throws ServiceException
+     * @throws BaseException
      */
     public function __before()
     {
-        $this->dashboardService = ServiceFactory::get(DashboardService::class);
+        $this->dashboardService = service(DashboardService::class);
 
         parent::__before();
     }

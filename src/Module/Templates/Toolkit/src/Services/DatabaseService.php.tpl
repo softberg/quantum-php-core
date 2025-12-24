@@ -9,14 +9,13 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.8
+ * @since 2.9.9
  */
 
 namespace Modules\Toolkit\Services;
 
 use Quantum\Libraries\Storage\Exceptions\FileSystemException;
 use Quantum\Config\Exceptions\ConfigException;
-use Quantum\Model\Factories\ModelFactory;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Paginator\Paginator;
@@ -93,9 +92,7 @@ class DatabaseService extends QtService
      */
     public function getTableData(string $tableName, int $perPage, int $currentPage): array
     {
-        $table = ModelFactory::createDynamicModel($tableName);
-
-        $paginator = $table
+        $paginator = dynamicModel($tableName)
             ->orderBy("id", "DESC")
             ->paginate($perPage, $currentPage);
 
@@ -114,9 +111,9 @@ class DatabaseService extends QtService
      */
     public function createTableRow(string $tableName, array $data): void
     {
-        $table = ModelFactory::createDynamicModel($tableName);
+        $model = dynamicModel($tableName);
 
-        $row = $table->create();
+        $row = $model->create();
 
         foreach ($data as $field => $value) {
             $row->prop($field, $value);
@@ -134,9 +131,9 @@ class DatabaseService extends QtService
      */
     public function updateTable(string $tableName, int $id, array $data): void
     {
-        $table = ModelFactory::createDynamicModel($tableName);
+        $model = dynamicModel($tableName);
 
-        $row = $table->findOne($id);
+        $row = $model->findOne($id);
 
         foreach ($data as $field => $value) {
             $row->prop($field, $value);
@@ -153,9 +150,7 @@ class DatabaseService extends QtService
      */
     public function deleteTableRow(string $tableName, int $id): void
     {
-        $table = ModelFactory::createDynamicModel($tableName);
-
-        $table->findOne($id)->delete();
+        dynamicModel($tableName)->findOne($id)->delete();
     }
 
     /**
@@ -166,6 +161,7 @@ class DatabaseService extends QtService
     private function extractColumns(Paginator $paginator): array
     {
         $firstRow = $paginator->firstItem();
+
         if (!$firstRow) {
             return [];
         }

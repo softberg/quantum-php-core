@@ -12,7 +12,6 @@
  * @since 2.9.8
  */
 
-
 const LEVEL_ATTRIBUTES = [
     'emergency' => [
         'class' => 'red-text text-darken-4',

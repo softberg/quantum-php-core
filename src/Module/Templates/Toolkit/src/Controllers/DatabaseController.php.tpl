@@ -9,14 +9,13 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.8
+ * @since 2.9.9
  */
 
 namespace Modules\Toolkit\Controllers;
 
 use Quantum\Libraries\Database\Exceptions\DatabaseException;
 use Modules\Toolkit\Services\DatabaseService;
-use Quantum\Service\Factories\ServiceFactory;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 
@@ -37,7 +36,7 @@ class DatabaseController extends BaseController
      */
     public function __before()
     {
-        $this->databaseService = ServiceFactory::get(DatabaseService::class);
+        $this->databaseService = service(DatabaseService::class);
 
         parent::__before();
     }

@@ -9,13 +9,13 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.8
+ * @since 2.9.9
  */
 
 namespace Modules\Toolkit\Controllers;
 
 use Quantum\Service\Exceptions\ServiceException;
-use Quantum\Service\Factories\ServiceFactory;
+use Quantum\App\Exceptions\BaseException;
 use Modules\Toolkit\Services\LogsService;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Http\Response;
@@ -28,6 +28,7 @@ use ReflectionException;
  */
 class LogsController extends BaseController
 {
+
     /**
      * Logs service
      * @var LogsService
@@ -36,12 +37,13 @@ class LogsController extends BaseController
 
     /**
      * @throws DiException
-     * @throws ServiceException
      * @throws ReflectionException
+     * @throws ServiceException
+     * @throws BaseException
      */
     public function __before()
     {
-        $this->logsService = ServiceFactory::get(LogsService::class);
+        $this->logsService = service(LogsService::class);
 
         parent::__before();
     }
