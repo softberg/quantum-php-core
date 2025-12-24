@@ -13,7 +13,7 @@ return function ($route) {
 
         $route->get('database', 'DatabaseController', 'list');
         $route->get('database/view', 'DatabaseController', 'single');
-        $route->post('database/create', 'DatabaseController', 'create')->middlewares(['UniqueTable']);
+        $route->post('database/create', 'DatabaseController', 'create')->middlewares(['CreateTable']);
         $route->post('database/update', 'DatabaseController', 'update');
         $route->get('database/delete', 'DatabaseController', 'delete');
     })->middlewares(['BasicAuth']);
