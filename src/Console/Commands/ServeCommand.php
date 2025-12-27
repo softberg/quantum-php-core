@@ -87,14 +87,12 @@ class ServeCommand extends QtCommand
         if (!$this->portAvailable()) {
             $this->portOffset += 1;
             $this->exec();
+        } elseif (!$this->openBrowserCommand()) {
+            $this->info('Starting development server at: ' . $this->host() . ':' . $this->port());
+            exec($this->runServerCommand(), $out);
         } else {
-            if (!$this->openBrowserCommand()) {
-                $this->info('Starting development server at: ' . $this->host() . ':' . $this->port());
-                exec($this->runServerCommand(), $out);
-            } else {
-                $this->info('Starting development server at: ' . $this->host() . ':' . $this->port());
-                exec($this->openBrowserCommand() . ' && ' . $this->runServerCommand(), $out);
-            }
+            $this->info('Starting development server at: ' . $this->host() . ':' . $this->port());
+            exec($this->openBrowserCommand() . ' && ' . $this->runServerCommand(), $out);
         }
     }
 

@@ -222,7 +222,7 @@ class JwtAuthAdapter implements AuthenticatableInterface
 
         $user = $this->checkRefreshToken();
 
-        if ($user) {
+        if ($user instanceof \Quantum\Libraries\Auth\User) {
             $this->setUpdatedTokens($user);
             return $this->user();
         }

@@ -87,15 +87,15 @@ class LangFactory
     {
         $lang = self::getLangFromQuery($supported);
 
-        if (empty($lang)) {
+        if (in_array($lang, [null, '', '0'], true)) {
             $lang = self::getLangFromUrlSegment($supported);
         }
 
-        if (empty($lang)) {
+        if (in_array($lang, [null, '', '0'], true)) {
             $lang = self::getLangFromHeader($supported);
         }
 
-        if (empty($lang)) {
+        if (in_array($lang, [null, '', '0'], true)) {
             $lang = $default;
         }
 
@@ -125,7 +125,7 @@ class LangFactory
     {
         $segmentIndex = (int)config()->get('lang.url_segment');
 
-        if (!empty(route_prefix()) && $segmentIndex == 1) {
+        if (!in_array(route_prefix(), [null, '', '0'], true) && $segmentIndex === 1) {
             $segmentIndex++;
         }
 

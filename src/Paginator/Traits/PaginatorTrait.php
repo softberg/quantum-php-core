@@ -260,7 +260,7 @@ trait PaginatorTrait
      */
     protected function getPageLink(?int $pageNumber, bool $withBaseUrl = false): ?string
     {
-        if (!empty($pageNumber)) {
+        if ($pageNumber !== null && $pageNumber !== 0) {
             return $this->getUri($withBaseUrl) . Pagination::PER_PAGE . '=' . $this->perPage . '&' . Pagination::PAGE . '=' . $pageNumber;
         }
 
@@ -276,7 +276,7 @@ trait PaginatorTrait
     {
         $link = '';
 
-        if (!empty($nextPageLink)) {
+        if (!in_array($nextPageLink, [null, '', '0'], true)) {
             $link = '<li><a href="' . $nextPageLink . '">' . t('common.pagination.next') . '</a></li>';
         }
 
@@ -292,7 +292,7 @@ trait PaginatorTrait
     {
         $link = '';
 
-        if (!empty($previousPageLink)) {
+        if (!in_array($previousPageLink, [null, '', '0'], true)) {
             $link = '<li><a href="' . $previousPageLink . '">' . t('common.pagination.prev') . '</a></li>';
         }
 
@@ -312,7 +312,7 @@ trait PaginatorTrait
         $pagination = '';
 
         for ($i = $startPage; $i <= $endPage; $i++) {
-            $active = $i == $currentPage ? 'class="' . Pagination::PAGINATION_CLASS_ACTIVE . '"' : '';
+            $active = $i === $currentPage ? 'class="' . Pagination::PAGINATION_CLASS_ACTIVE . '"' : '';
             $pagination .= '<li ' . $active . '><a href="' . $links[$i - 1] . '">' . $i . '</a></li>';
         }
 

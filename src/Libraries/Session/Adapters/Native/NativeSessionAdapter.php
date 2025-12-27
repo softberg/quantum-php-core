@@ -62,16 +62,12 @@ class NativeSessionAdapter implements SessionStorageInterface
     {
         $timeout = $params['timeout'] ?? self::SESSION_TIMEOUT;
 
-        if (session_status() !== PHP_SESSION_ACTIVE) {
-            if (@session_start() === false) {
-                throw SessionException::sessionNotStarted();
-            }
+        if (session_status() !== PHP_SESSION_ACTIVE && @session_start() === false) {
+            throw SessionException::sessionNotStarted();
         }
 
-        if (isset($_SESSION['LAST_ACTIVITY']) && time() - $_SESSION['LAST_ACTIVITY'] > $timeout) {
-            if (@session_destroy() === false) {
-                throw SessionException::sessionNotDestroyed();
-            }
+        if (isset($_SESSION['LAST_ACTIVITY']) && time() - $_SESSION['LAST_ACTIVITY'] > $timeout && @session_destroy() === false) {
+            throw SessionException::sessionNotDestroyed();
         }
 
         $_SESSION['LAST_ACTIVITY'] = time();

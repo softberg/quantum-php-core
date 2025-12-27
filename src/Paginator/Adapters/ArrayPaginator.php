@@ -64,7 +64,7 @@ class ArrayPaginator implements PaginatorInterface
     {
         $data = $this->data();
 
-        if (empty($data)) {
+        if ($data === []) {
             return null;
         }
 
@@ -78,7 +78,7 @@ class ArrayPaginator implements PaginatorInterface
     {
         $data = $this->data();
 
-        if (empty($data)) {
+        if ($data === []) {
             return null;
         }
 

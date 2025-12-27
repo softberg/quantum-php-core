@@ -10,6 +10,7 @@ use Quantum\Http\Request;
 class FileRuleTest extends AppTestCase
 {
 
+    public $validator;
     private $request;
 
     public function setUp(): void

@@ -84,7 +84,7 @@ trait Internal
 
         self::detectAndSetContentType($server, $params, $files);
 
-        if ($headers) {
+        if ($headers !== []) {
             foreach ($headers as $name => $value) {
                 $server->set('HTTP_' . strtoupper(str_replace('-', '_', $name)), $value);
             }
@@ -94,11 +94,11 @@ trait Internal
 
         self::init($server);
 
-        if ($params) {
+        if ($params !== []) {
             self::setRequestParams($params);
         }
 
-        if ($files) {
+        if ($files !== []) {
             self::setUploadedFiles(self::handleFiles($files));
         }
     }

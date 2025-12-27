@@ -112,7 +112,7 @@ class ErrorHandler
      */
     public function handleError($severity, $message, $file, $line)
     {
-        if (!(error_reporting() & $severity)) {
+        if ((error_reporting() & $severity) === 0) {
             return;
         }
 

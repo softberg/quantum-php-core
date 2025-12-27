@@ -89,14 +89,12 @@ trait Reducer
         foreach ($columns as &$column) {
             $exploded = explode('.', $column);
 
-            if (count($exploded) == 1) {
+            if (count($exploded) === 1) {
                 $column = $exploded[0];
+            } elseif ($exploded[0] == $this->getTable()) {
+                $column = $exploded[1];
             } else {
-                if ($exploded[0] == $this->getTable()) {
-                    $column = $exploded[1];
-                } else {
-                    $column = $exploded[0] . '.0.' . $exploded[1];
-                }
+                $column = $exploded[0] . '.0.' . $exploded[1];
             }
         }
 

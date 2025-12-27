@@ -66,7 +66,7 @@ class RouteListCommand extends QtCommand
                     return strtolower($route['module']) === strtolower($module);
                 });
 
-                if (empty($routes)) {
+                if ($routes === []) {
                     $this->error('The module is not found');
                     return;
                 }

@@ -138,6 +138,6 @@ class HookManager
      */
     protected function exists(string $name): bool
     {
-        return key_exists($name, self::$store);
+        return array_key_exists($name, self::$store);
     }
 }

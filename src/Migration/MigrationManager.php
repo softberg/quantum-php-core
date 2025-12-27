@@ -250,7 +250,7 @@ class MigrationManager
         $migratedEntries = $this->getMigratedEntries();
         $migrationFiles = $this->getMigrationFiles();
 
-        if (empty($migratedEntries) && empty($migrationFiles)) {
+        if ($migratedEntries === [] && $migrationFiles === []) {
             throw MigrationException::nothingToMigrate();
         }
 
@@ -277,7 +277,7 @@ class MigrationManager
     {
         $migratedEntries = $this->getMigratedEntries();
 
-        if (empty($migratedEntries)) {
+        if ($migratedEntries === []) {
             throw MigrationException::nothingToMigrate();
         }
 

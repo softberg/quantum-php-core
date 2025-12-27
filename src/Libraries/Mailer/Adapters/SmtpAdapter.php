@@ -268,7 +268,7 @@ class SmtpAdapter implements MailerInterface
      */
     private function fillProperties(string $method, array $fields = [])
     {
-        if (!empty($fields)) {
+        if ($fields !== []) {
             foreach ($fields as $field) {
                 if (is_string($field)) {
                     $this->mailer->$method($field);

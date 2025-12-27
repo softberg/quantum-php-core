@@ -73,7 +73,7 @@ trait File
     {
         $dimensions = $file->getDimensions();
 
-        if (empty($dimensions)) {
+        if ($dimensions === []) {
             return true;
         }
 

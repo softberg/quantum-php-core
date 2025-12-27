@@ -23,7 +23,7 @@ use Quantum\App\Exceptions\StopExecutionException;
  */
 function stop(?Closure $closure = null, ?int $code = 0)
 {
-    if ($closure) {
+    if ($closure instanceof \Closure) {
         $closure();
     }
 

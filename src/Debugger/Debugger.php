@@ -213,7 +213,7 @@ class Debugger
 
         $messages = $this->store->get($type);
 
-        if (count($messages)) {
+        if (count($messages) > 0) {
             foreach ($messages as $message) {
                 $fn = key($message);
                 $this->debugBar[$type]->$fn($message[$fn]);

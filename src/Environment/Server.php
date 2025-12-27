@@ -192,7 +192,7 @@ class Server
     {
         $data = $this->all();
 
-        if (empty($data)) {
+        if ($data === []) {
             return [];
         }
 

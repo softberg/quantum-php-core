@@ -8,9 +8,6 @@ use Quantum\Libraries\Mailer\Contracts\MailerInterface;
 
 class SendinblueAdapterTest extends MailerTestCase
 {
-
-    protected $adapter;
-
     public function setUp(): void
     {
         parent::setUp();

@@ -84,7 +84,7 @@ class Router extends RouteController
 
         $this->matchedRoutes = $this->findMatches($uri);
 
-        if (empty($this->matchedRoutes)) {
+        if ($this->matchedRoutes === []) {
             stop(function () {
                 page_not_found();
             });
@@ -210,7 +210,7 @@ class Router extends RouteController
         foreach ($routeSegments as $index => $segment) {
             $segmentParam = $this->getSegmentParam($segment, $index, $lastIndex);
 
-            if (!empty($segmentParam)) {
+            if ($segmentParam !== []) {
                 $this->checkParamName($routeParams, $segmentParam['name']);
 
                 $routeParams[] = [
@@ -221,7 +221,7 @@ class Router extends RouteController
 
                 $routePattern = $this->normalizePattern($routePattern, $segmentParam, $index, $lastIndex);
             } else {
-                $routePattern .= $segment . ($index != $lastIndex ? '(\/)' : '');
+                $routePattern .= $segment . ($index !== $lastIndex ? '(\/)' : '');
             }
         }
 
@@ -241,10 +241,10 @@ class Router extends RouteController
      */
     private function normalizePattern(string $routePattern, array $segmentParam, int $index, int $lastIndex): string
     {
-        if ($index == $lastIndex) {
-            if (mb_substr($routePattern, -5) == '(\/)?') {
+        if ($index === $lastIndex) {
+            if (mb_substr($routePattern, -5) === '(\/)?') {
                 $routePattern = mb_substr($routePattern, 0, mb_strlen($routePattern) - 5);
-            } elseif (mb_substr($routePattern, -4) == '(\/)') {
+            } elseif (mb_substr($routePattern, -4) === '(\/)') {
                 $routePattern = mb_substr($routePattern, 0, mb_strlen($routePattern) - 4);
             }
         }
@@ -264,7 +264,7 @@ class Router extends RouteController
 
         foreach ($params as &$param) {
             $param['value'] = $arguments[$param['name']] ?? null;
-            if (mb_substr($param['name'], 0, 1) == '_') {
+            if (mb_substr($param['name'], 0, 1) === '_') {
                 $param['name'] = null;
             }
         }
@@ -328,9 +328,9 @@ class Router extends RouteController
         }
 
         if (isset($match[5]) && $match[5] == '?') {
-            $pattern = ($index == $lastIndex ? '(\/)?' . $pattern : $pattern . '(\/)?');
+            $pattern = ($index === $lastIndex ? '(\/)?' . $pattern : $pattern . '(\/)?');
         } else {
-            $pattern = ($index == $lastIndex ? '(\/)' . $pattern : $pattern . '(\/)');
+            $pattern = ($index === $lastIndex ? '(\/)' . $pattern : $pattern . '(\/)');
         }
 
         return [

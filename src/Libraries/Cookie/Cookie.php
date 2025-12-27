@@ -99,7 +99,7 @@ class Cookie implements CookieStorageInterface
     public function set(string $key, $value = '', int $time = 0, string $path = '/', string $domain = '', bool $secure = false, bool $httponly = false)
     {
         self::$storage[$key] = crypto_encode($value);
-        setcookie($key, crypto_encode($value), $time ? time() + $time : $time, $path, $domain, $secure, $httponly);
+        setcookie($key, crypto_encode($value), $time !== 0 ? time() + $time : $time, $path, $domain, $secure, $httponly);
     }
 
     /**
@@ -119,7 +119,7 @@ class Cookie implements CookieStorageInterface
     public function flush()
     {
         if (count(self::$storage)) {
-            foreach (self::$storage as $key => $value) {
+            foreach (array_keys(self::$storage) as $key) {
                 $this->delete($key, '/');
             }
         }

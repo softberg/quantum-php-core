@@ -8,6 +8,7 @@ use Quantum\Router\Router;
 
 class ModuleLoaderTest extends AppTestCase
 {
+    public $moduleLoader;
     public function setUp(): void
     {
         parent::setUp();

@@ -38,7 +38,7 @@ class RouteDispatcher
     {
         $callback = route_callback();
 
-        if ($callback) {
+        if ($callback instanceof \Closure) {
             self::callControllerMethod($callback);
             return;
         }

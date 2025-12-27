@@ -296,10 +296,8 @@ trait RawInput
                 }
             }
 
-            if (stripos($line, 'Content-Type') !== false) {
-                if (preg_match('/Content-Type:\s*(.+)/i', $line, $match)) {
-                    $contentType = trim($match[1]);
-                }
+            if (stripos($line, 'Content-Type') !== false && preg_match('/Content-Type:\s*(.+)/i', $line, $match)) {
+                $contentType = trim($match[1]);
             }
         }
 
@@ -313,10 +311,8 @@ trait RawInput
      */
     private static function arrayParam(string $parameter)
     {
-        if (strpos($parameter, '[') !== false) {
-            if (preg_match('/^([^[]*)\[([^]]*)\](.*)$/', $parameter, $match)) {
-                return [$match[1], $match[2]];
-            }
+        if (strpos($parameter, '[') !== false && preg_match('/^([^[]*)\[([^]]*)\](.*)$/', $parameter, $match)) {
+            return [$match[1], $match[2]];
         }
 
         return $parameter;

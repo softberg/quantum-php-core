@@ -8,9 +8,6 @@ use Quantum\Libraries\Mailer\Adapters\SendgridAdapter;
 
 class SendgridAdapterTest extends MailerTestCase
 {
-
-    protected $adapter;
-
     public function setUp(): void
     {
         parent::setUp();

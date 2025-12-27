@@ -148,7 +148,7 @@ class ModelCollection implements Countable, IteratorAggregate
      */
     public function isEmpty(): bool
     {
-        return $this->first() === null;
+        return !$this->first() instanceof \Quantum\Model\QtModel;
     }
 
     /**

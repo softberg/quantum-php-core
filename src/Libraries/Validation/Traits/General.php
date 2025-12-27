@@ -37,7 +37,7 @@ trait General
      */
     protected function required(string $value): bool
     {
-        return !empty($value);
+        return $value !== '' && $value !== '0';
     }
 
     /**
@@ -70,7 +70,7 @@ trait General
         for ($i = 0; $i < $length; ++$i) {
             $digit = $number[$i];
 
-            if ($i % 2 == $parity) {
+            if ($i % 2 === $parity) {
                 $digit *= 2;
 
                 if ($digit > 9) {
@@ -81,7 +81,7 @@ trait General
             $total += $digit;
         }
 
-        return $total % 10 == 0;
+        return $total % 10 === 0;
     }
 
     /**

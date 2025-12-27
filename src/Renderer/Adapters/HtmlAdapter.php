@@ -69,7 +69,7 @@ class HtmlAdapter implements TemplateRendererInterface
         ob_start();
         ob_implicit_flush(0);
 
-        if (!empty($params)) {
+        if ($params !== []) {
             extract($params);
         }
 

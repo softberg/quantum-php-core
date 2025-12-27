@@ -128,10 +128,11 @@ trait CaptchaTrait
      */
     public function verify(string $code): bool
     {
-        if (is_null($this->secretKey))
+        if (is_null($this->secretKey)) {
             throw new Exception('The secret key is not set');
+        }
 
-        if (empty($code)) {
+        if ($code === '' || $code === '0') {
             $this->errorCodes = ['internal-empty-response'];
             return false;
         }
@@ -200,7 +201,7 @@ trait CaptchaTrait
      */
     protected function getInvisibleElement(string $formIdentifier): string
     {
-        if (empty($formIdentifier)) {
+        if ($formIdentifier === '' || $formIdentifier === '0') {
             throw new Exception('Form identifier is not provided to captcha element');
         }
 
@@ -253,10 +254,6 @@ trait CaptchaTrait
      */
     protected function detectReplayAttack(string $challengeTs): bool
     {
-        if (time() - strtotime($challengeTs) > self::MAX_TIME_DIFF) {
-            return true;
-        }
-
-        return false;
+        return time() - strtotime($challengeTs) > self::MAX_TIME_DIFF;
     }
 }

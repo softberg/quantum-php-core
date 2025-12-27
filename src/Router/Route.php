@@ -89,7 +89,7 @@ class Route
     public function add(string $route, string $method, ...$params): Route
     {
         $this->currentRoute = [
-            'route' => !empty($this->moduleOptions['prefix']) ? $this->moduleOptions['prefix'] . '/' . $route : $route,
+            'route' => empty($this->moduleOptions['prefix']) ? $route : $this->moduleOptions['prefix'] . '/' . $route,
             'prefix' => $this->moduleOptions['prefix'] ?? '',
             'method' => $method,
             'module' => $this->moduleName,
@@ -258,7 +258,7 @@ class Route
      */
     public function name(string $name): Route
     {
-        if (empty($this->currentRoute)) {
+        if ($this->currentRoute === []) {
             throw RouteException::nameBeforeDefinition();
         }
 
@@ -312,7 +312,7 @@ class Route
      */
     private function assignMiddlewaresToRoute(array &$route, array $middlewares)
     {
-        if (!key_exists('middlewares', $route)) {
+        if (!array_key_exists('middlewares', $route)) {
             $route['middlewares'] = $middlewares;
         } else {
             $middlewares = array_reverse($middlewares);

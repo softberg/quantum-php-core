@@ -94,10 +94,8 @@ trait Header
 
         $authorization = (string)self::getHeader('Authorization');
 
-        if (self::hasHeader('Authorization')) {
-            if (preg_match('/Bearer\s(\S+)/', $authorization, $matches)) {
-                $bearerToken = $matches[1];
-            }
+        if (self::hasHeader('Authorization') && preg_match('/Bearer\s(\S+)/', $authorization, $matches)) {
+            $bearerToken = $matches[1];
         }
 
         return $bearerToken;

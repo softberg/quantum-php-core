@@ -370,7 +370,7 @@ class UploadedFile extends SplFileInfo
      */
     public function isImage($filePath): bool
     {
-        return !!getimagesize($filePath);
+        return (bool) getimagesize($filePath);
     }
 
     /**
@@ -382,12 +382,10 @@ class UploadedFile extends SplFileInfo
     {
         if ($this->remoteFileSystem) {
             return (bool)$this->remoteFileSystem->put($filePath, $this->localFileSystem->get($this->getPathname()));
+        } elseif ($this->isUploaded()) {
+            return move_uploaded_file($this->getPathname(), $filePath);
         } else {
-            if ($this->isUploaded()) {
-                return move_uploaded_file($this->getPathname(), $filePath);
-            } else {
-                return $this->localFileSystem->copy($this->getPathname(), $filePath);
-            }
+            return $this->localFileSystem->copy($this->getPathname(), $filePath);
         }
     }
 
@@ -433,7 +431,7 @@ class UploadedFile extends SplFileInfo
             throw FileUploadException::incorrectMimeTypesConfig('uploads');
         }
 
-        if ($allowedMimeTypesMap) {
+        if ($allowedMimeTypesMap !== []) {
             $this->setAllowedMimeTypesMap($allowedMimeTypesMap);
         }
     }
@@ -446,11 +444,7 @@ class UploadedFile extends SplFileInfo
      */
     protected function setAllowedMimeTypesMap(array $allowedMimeTypes, bool $merge = true): void
     {
-        if ($merge) {
-            $this->allowedMimeTypes = array_merge_recursive($this->allowedMimeTypes, $allowedMimeTypes);
-        } else {
-            $this->allowedMimeTypes = $allowedMimeTypes;
-        }
+        $this->allowedMimeTypes = $merge ? array_merge_recursive($this->allowedMimeTypes, $allowedMimeTypes) : $allowedMimeTypes;
     }
 
     /**

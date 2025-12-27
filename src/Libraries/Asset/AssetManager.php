@@ -160,7 +160,7 @@ class AssetManager
      */
     private function publish()
     {
-        if (!empty($this->store)) {
+        if ($this->store !== []) {
             $this->setPriorityAssets();
             $this->setRegularAssets();
 

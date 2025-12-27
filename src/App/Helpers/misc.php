@@ -75,7 +75,7 @@ function slugify(string $text): string
     $text = trim($text, '-');
     $text = mb_strtolower($text);
 
-    if (empty($text)) {
+    if ($text === '' || $text === '0') {
         return 'n-a';
     }
 

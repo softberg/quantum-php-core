@@ -230,7 +230,7 @@ class Di
      */
     private static function resolveParameter(ReflectionParameter $param, ?array &$args = [])
     {
-        $type = $param->getType() ? $param->getType()->getName() : null;
+        $type = $param->getType() instanceof \ReflectionType ? $param->getType()->getName() : null;
 
         $concrete = self::$dependencies[$type] ?? $type;
 
@@ -242,7 +242,7 @@ class Di
             return $args;
         }
 
-        if (!empty($args)) {
+        if ($args !== null && $args !== []) {
             return array_shift($args);
         }
 

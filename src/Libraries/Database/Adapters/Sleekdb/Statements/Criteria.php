@@ -99,7 +99,7 @@ trait Criteria
         foreach ($orCriterias as $index => $criteria) {
             $this->criteria(...$criteria);
 
-            if ($index != array_key_last($orCriterias)) {
+            if ($index !== array_key_last($orCriterias)) {
                 $this->criterias[] = 'OR';
             }
         }
