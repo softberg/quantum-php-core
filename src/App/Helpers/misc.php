@@ -57,7 +57,7 @@ function random_number(int $length = 10): int
 {
     $randomString = '';
     for ($i = 0; $i < $length; $i++) {
-        $randomString .= rand(0, 9);
+        $randomString .= random_int(0, 9);
     }
     return (int)$randomString;
 }

@@ -251,7 +251,7 @@ class UploadedFile extends SplFileInfo
             throw FileUploadException::fileTypeNotAllowed($this->getExtension());
         }
 
-        list($width, $height) = getimagesize($this->getPathname());
+        [$width, $height] = getimagesize($this->getPathname());
 
         return [
             'width' => $width,

@@ -64,7 +64,7 @@ class MailerFactory
             config()->import(new Setup('config', 'mailer'));
         }
 
-        $adapter = $adapter ?? config()->get('mailer.default');
+        $adapter ??= config()->get('mailer.default');
 
         $adapterClass = self::getAdapterClass($adapter);
 

@@ -169,9 +169,7 @@ class ValidatorTest extends AppTestCase
 
     public function testCustomValidator()
     {
-        $this->validator->addRule('checkName', function ($value, $param = null) {
-            return $value == $param;
-        });
+        $this->validator->addRule('checkName', fn($value, $param = null) => $value == $param);
 
         $this->validator->setRules([
             'name' => [

@@ -185,18 +185,14 @@ class Route
     public function middlewares(array $middlewares = []): Route
     {
         if (!$this->isGroup) {
-            end($this->virtualRoutes['*']);
-            $lastKey = key($this->virtualRoutes['*']);
+            $lastKey = array_key_last($this->virtualRoutes['*']);
             $this->assignMiddlewaresToRoute($this->virtualRoutes['*'][$lastKey], $middlewares);
             return $this;
         }
-
-        end($this->virtualRoutes);
-        $lastKeyOfFirstRound = key($this->virtualRoutes);
+        $lastKeyOfFirstRound = array_key_last($this->virtualRoutes);
 
         if (!$this->isGroupMiddlewares) {
-            end($this->virtualRoutes[$lastKeyOfFirstRound]);
-            $lastKeyOfSecondRound = key($this->virtualRoutes[$lastKeyOfFirstRound]);
+            $lastKeyOfSecondRound = array_key_last($this->virtualRoutes[$lastKeyOfFirstRound]);
             $this->assignMiddlewaresToRoute($this->virtualRoutes[$lastKeyOfFirstRound][$lastKeyOfSecondRound], $middlewares);
             return $this;
         }
@@ -224,8 +220,7 @@ class Route
         }
 
         if (!$this->isGroup) {
-            end($this->virtualRoutes['*']);
-            $lastKey = key($this->virtualRoutes['*']);
+            $lastKey = array_key_last($this->virtualRoutes['*']);
 
             $this->virtualRoutes['*'][$lastKey]['cache_settings']['shouldCache'] = $shouldCache;
 
@@ -235,9 +230,7 @@ class Route
 
             return $this;
         }
-
-        end($this->virtualRoutes);
-        $lastKeyOfFirstRound = key($this->virtualRoutes);
+        $lastKeyOfFirstRound = array_key_last($this->virtualRoutes);
 
         foreach ($this->virtualRoutes[$lastKeyOfFirstRound] as &$route) {
             $route['cache_settings']['shouldCache'] = $shouldCache;

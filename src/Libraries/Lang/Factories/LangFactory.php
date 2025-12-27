@@ -48,7 +48,7 @@ class LangFactory
             return self::$instance;
         }
 
-        list($isEnabled, $supported, $default) = self::loadLangConfig();
+        [$isEnabled, $supported, $default] = self::loadLangConfig();
 
         $lang = self::detectLanguage($supported, $default);
 

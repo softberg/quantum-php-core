@@ -108,7 +108,7 @@ trait RawInput
 
             switch ($type) {
                 case 'file':
-                    list($nameParam, $file) = self::getParsedFile($block);
+                    [$nameParam, $file] = self::getParsedFile($block);
 
                     if (!$file) {
                         continue 2;
@@ -142,7 +142,7 @@ trait RawInput
         $arrayParam = self::arrayParam($nameParam);
 
         if (is_array($arrayParam)) {
-            list($name, $key) = $arrayParam;
+            [$name, $key] = $arrayParam;
 
             if ($key === '') {
                 $files[$name][] = $file;
@@ -195,7 +195,7 @@ trait RawInput
      */
     private static function getParsedFile(string $block): ?array
     {
-        list($name, $filename, $type, $content) = self::parseFileData($block);
+        [$name, $filename, $type, $content] = self::parseFileData($block);
 
         if (!$content) {
             return null;
@@ -235,9 +235,9 @@ trait RawInput
             return ['-unknown-', '-unknown-', ContentType::OCTET_STREAM, ''];
         }
 
-        list($rawHeaders, $content) = $parts;
+        [$rawHeaders, $content] = $parts;
 
-        list($name, $filename, $contentType) = self::parseHeaders($rawHeaders);
+        [$name, $filename, $contentType] = self::parseHeaders($rawHeaders);
 
         $content = substr($content, 0, strlen($content) - 2);
 

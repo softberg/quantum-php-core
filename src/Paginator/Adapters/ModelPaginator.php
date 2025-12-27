@@ -63,9 +63,7 @@ class ModelPaginator implements PaginatorInterface
             ->get();
 
         if($this->modelClass != '@anonymous') {
-            $result = array_map(function ($item) {
-                return wrapToModel($item->getOrmInstance(), $this->modelClass);
-            }, iterator_to_array($result));
+            $result = array_map(fn($item) => wrapToModel($item->getOrmInstance(), $this->modelClass), iterator_to_array($result));
         }
 
         return new ModelCollection($result);

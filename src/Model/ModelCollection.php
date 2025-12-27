@@ -86,9 +86,7 @@ class ModelCollection implements Countable, IteratorAggregate
     {
         $this->processModels();
 
-        $this->models = array_filter($this->models, function ($m) use ($model) {
-            return $m !== $model;
-        });
+        $this->models = array_filter($this->models, fn($m) => $m !== $model);
 
         $this->originalModels = $this->models;
 

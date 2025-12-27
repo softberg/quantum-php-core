@@ -127,11 +127,7 @@ trait Url
     {
         $segments = self::getAllSegments();
 
-        if (isset($segments[$index])) {
-            return $segments[$index];
-        }
-
-        return null;
+        return $segments[$index] ?? null;
     }
 
     /**

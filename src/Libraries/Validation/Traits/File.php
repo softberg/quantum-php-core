@@ -34,7 +34,7 @@ trait File
     public function fileSize(UploadedFile $file, int $maxSize, ?int $minSize = null): bool
     {
         $size = $file->getSize();
-        $minSize = $minSize ?? 0;
+        $minSize ??= 0;
 
         return $size >= $minSize && $size <= $maxSize;
     }

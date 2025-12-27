@@ -99,7 +99,7 @@ abstract class HttpRequest
         self::setContentType();
         self::setRequestHeaders();
 
-        list('params' => $rawInputParams, 'files' => $rawInputFiles) = self::getRawInputParams();
+        ['params' => $rawInputParams, 'files' => $rawInputFiles] = self::getRawInputParams();
 
         self::setRequestParams($rawInputParams);
         self::setUploadedFiles($rawInputFiles);

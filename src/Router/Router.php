@@ -179,7 +179,7 @@ class Router extends RouteController
         $matches = [];
 
         foreach (self::$routes as $route) {
-            list($pattern, $params) = $this->handleRoutePattern($route);
+            [$pattern, $params] = $this->handleRoutePattern($route);
 
             if (preg_match("/^" . $this->escape($pattern) . "$/u", $requestUri, $matchedParams)) {
                 $route['uri'] = $uri;

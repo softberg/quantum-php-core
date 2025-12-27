@@ -207,7 +207,7 @@ class ErrorHandler
         ];
 
         foreach ($e->getTrace() as $item) {
-            if (($item['class'] ?? null) === __CLASS__) {
+            if (($item['class'] ?? null) === self::class) {
                 continue;
             }
 

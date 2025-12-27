@@ -34,7 +34,7 @@ trait Header
      */
     public static function hasHeader(string $key): bool
     {
-        list($keyWithHyphens, $keyWithUnderscores) = self::normalizeHeaderKey($key);
+        [$keyWithHyphens, $keyWithUnderscores] = self::normalizeHeaderKey($key);
 
         return isset(self::$__headers[$keyWithHyphens]) || isset(self::$__headers[$keyWithUnderscores]);
     }
@@ -47,7 +47,7 @@ trait Header
     public static function getHeader(string $key): ?string
     {
         if (self::hasHeader($key)) {
-            list($keyWithHyphens, $keyWithUnderscores) = self::normalizeHeaderKey($key);
+            [$keyWithHyphens, $keyWithUnderscores] = self::normalizeHeaderKey($key);
             return self::$__headers[$keyWithHyphens] ?? self::$__headers[$keyWithUnderscores];
         }
 
@@ -125,7 +125,7 @@ trait Header
             $decoded = base64_decode($matches[1], true);
 
             if ($decoded && strpos($decoded, ':') !== false) {
-                list($username, $password) = explode(':', $decoded, 2);
+                [$username, $password] = explode(':', $decoded, 2);
                 return ['username' => $username, 'password' => $password];
             }
         }

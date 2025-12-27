@@ -216,7 +216,7 @@ trait PaginatorTrait
         if ($pageItemsCount) {
             $links = $this->links($withBaseUrl);
 
-            list($startPage, $endPage) = $this->calculateStartEndPages($currentPage, $totalPages, $pageItemsCount);
+            [$startPage, $endPage] = $this->calculateStartEndPages($currentPage, $totalPages, $pageItemsCount);
 
             $pagination[] = $this->addFirstPageLink($startPage);
             $pagination[] = $this->getItemsLinks($startPage, $endPage, $currentPage, $links);

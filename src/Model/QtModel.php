@@ -118,9 +118,7 @@ abstract class QtModel
      */
     public function get(): ModelCollection
     {
-        $models = array_map(function ($item) {
-            return wrapToModel($item, static::class);
-        }, $this->ormInstance->get());
+        $models = array_map(fn($item) => wrapToModel($item, static::class), $this->ormInstance->get());
 
         return new ModelCollection($models);
     }

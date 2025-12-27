@@ -99,7 +99,7 @@ class Cookie implements CookieStorageInterface
     public function set(string $key, $value = '', int $time = 0, string $path = '/', string $domain = '', bool $secure = false, bool $httponly = false)
     {
         self::$storage[$key] = crypto_encode($value);
-        setcookie($key, crypto_encode($value), $time !== 0 ? time() + $time : $time, $path, $domain, $secure, $httponly);
+        setcookie($key, crypto_encode($value), ['expires' => $time !== 0 ? time() + $time : $time, 'path' => $path, 'domain' => $domain, 'secure' => $secure, 'httponly' => $httponly]);
     }
 
     /**
@@ -109,7 +109,7 @@ class Cookie implements CookieStorageInterface
     {
         if ($this->has($key)) {
             unset(self::$storage[$key]);
-            setcookie($key, '', time() - 3600, $path);
+            setcookie($key, '', ['expires' => time() - 3600, 'path' => $path]);
         }
     }
 

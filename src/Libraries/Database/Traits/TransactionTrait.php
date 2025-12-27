@@ -52,7 +52,7 @@ trait TransactionTrait
         $db = self::getInstance()->getOrmClass();
 
         if (!method_exists($db, $method)) {
-            throw DatabaseException::methodNotSupported($method, __CLASS__);
+            throw DatabaseException::methodNotSupported($method, self::class);
         }
 
         return $db::$method();

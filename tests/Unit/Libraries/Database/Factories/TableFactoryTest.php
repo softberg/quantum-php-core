@@ -31,7 +31,7 @@ class TableFactoryTest extends AppTestCase
         $this->tableFactory = new TableFactory();
 
         Mockery::getConfiguration()->setConstantsMap([
-            'Quantum\Libraries\Database\Schemas\Table' => [
+            \Quantum\Libraries\Database\Schemas\Table::class => [
                 'CREATE' => 1,
                 'ALTER' => 2,
                 'DROP' => 3,
@@ -41,13 +41,9 @@ class TableFactoryTest extends AppTestCase
 
         $this->table = Mockery::mock('overload:Quantum\Libraries\Database\Schemas\Table');
 
-        $this->table->shouldReceive('setAction')->andReturnUsing(function ($action) {
-            return $this->table;
-        });
+        $this->table->shouldReceive('setAction')->andReturnUsing(fn($action) => $this->table);
 
-        $this->table->shouldReceive('getAction')->andReturnUsing(function () {
-            return $this->table->action;
-        });
+        $this->table->shouldReceive('getAction')->andReturnUsing(fn() => $this->table->action);
 
         $this->table->shouldReceive('save')->andReturn(0);
     }

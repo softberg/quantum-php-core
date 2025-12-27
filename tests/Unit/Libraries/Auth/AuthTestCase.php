@@ -86,7 +86,7 @@ namespace Quantum\Tests\Unit\Libraries\Auth {
 
             Environment::getInstance()->load(new Setup('config', 'env'));
 
-            $this->authService = Mockery::mock('Quantum\Libraries\Auth\Contracts\AuthServiceInterface');
+            $this->authService = Mockery::mock(\Quantum\Libraries\Auth\Contracts\AuthServiceInterface::class);
 
             $this->authService->shouldReceive('userSchema')->andReturn($this->userSchema);
 

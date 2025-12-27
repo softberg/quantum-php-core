@@ -174,7 +174,7 @@ trait General
      */
     protected function starts(string $value, ?string $text = null): bool
     {
-        return strpos($value, $text) === 0;
+        return strpos($value, (string) $text) === 0;
     }
 
     /**
