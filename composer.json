@@ -1,7 +1,11 @@
 {
     "name": "quantum/framework",
     "description": "The Quantum PHP Framework",
-    "keywords": ["framework", "php", "quantum"],
+    "keywords": [
+        "framework",
+        "php",
+        "quantum"
+    ],
     "license": "MIT",
     "homepage": "https://quantumphp.io",
     "support": {
@@ -15,7 +19,7 @@
         }
     ],
     "require": {
-        "php": ">=7.3",
+        "php": "^7.4",
         "ext-pdo": "*",
         "ext-curl": "*",
         "ext-json": "*",
