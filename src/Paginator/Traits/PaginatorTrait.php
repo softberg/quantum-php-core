@@ -309,7 +309,7 @@ trait PaginatorTrait
      */
     protected function getItemsLinks(int $startPage, int $endPage, int $currentPage, array $links): string
     {
-        $pagination = '';
+        $pagination = [];
 
         for ($i = $startPage; $i <= $endPage; $i++) {
             $active = $i === $currentPage ? 'class="' . Pagination::PAGINATION_CLASS_ACTIVE . '"' : '';
