@@ -136,6 +136,10 @@ trait Url
      */
     public static function getAllSegments(): array
     {
+        if (self::$__uri === null) {
+            return ['zero_segment'];
+        }
+        
         $segments = explode('/', trim(parse_url(self::$__uri)['path'], '/'));
         array_unshift($segments, 'zero_segment');
         return $segments;
