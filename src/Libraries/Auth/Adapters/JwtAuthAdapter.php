@@ -44,7 +44,7 @@ class JwtAuthAdapter implements AuthenticatableInterface
      * @param JwtToken|null $jwt
      * @throws AuthException
      */
-    public function __construct(AuthServiceInterface $authService, Mailer $mailer, Hasher $hasher, JwtToken $jwt = null)
+    public function __construct(AuthServiceInterface $authService, Mailer $mailer, Hasher $hasher, ?JwtToken $jwt = null)
     {
         $this->authService = $authService;
         $this->mailer = $mailer;

@@ -166,7 +166,7 @@ class SleekDbal implements DbalInterface
      */
     public function __construct(
         string $table,
-        string $modelName = null,
+        ?string $modelName = null,
         string $idColumn = 'id',
         array  $foreignKeys = [],
         array  $hidden = []
@@ -179,7 +179,7 @@ class SleekDbal implements DbalInterface
         $this->hidden = $hidden;
     }
 
-    public function __get($key)
+    public function __get(string $key)
     {
         return $this->data[$key] ?? null;
     }

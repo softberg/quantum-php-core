@@ -105,7 +105,7 @@ class Validator
      * @param string|null $rule Specific rule to delete; if null deletes all rules for field
      * @return void
      */
-    public function deleteRule(string $field, string $rule = null): void
+    public function deleteRule(string $field, ?string $rule = null): void
     {
         if (!isset($this->rules[$field])) {
             return;
