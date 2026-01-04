@@ -60,9 +60,7 @@ class DropboxFileSystemAdapterTest extends AppTestCase
 
         $dropboxAppMock
             ->shouldReceive('path')
-            ->andReturnUsing(function ($path) {
-                return ['path' => '/' . trim($path, '/')];
-            });
+            ->andReturnUsing(fn($path) => ['path' => '/' . trim($path, '/')]);
 
         $this->fs = new DropboxFileSystemAdapter($dropboxAppMock);
     }

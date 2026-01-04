@@ -171,7 +171,7 @@ class GoogleDriveFileSystemAdapter implements FilesystemAdapterInterface
     {
         try {
             $meta = (array)$this->googleDriveApp->getFileInfo($filename);
-            return !empty($meta['modifiedTime']) ? strtotime($meta['modifiedTime']) : false;
+            return empty($meta['modifiedTime']) ? false : strtotime($meta['modifiedTime']);
         } catch (Exception $e) {
             return false;
         }

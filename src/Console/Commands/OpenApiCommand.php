@@ -148,7 +148,7 @@ class OpenApiCommand extends QtCommand
 
         if (is_resource($dir)) {
             while (($file = readdir($dir))) {
-                if (($file != '.') && ($file != '..') && !in_array($file, $this->excludeFileNames)) {
+                if (($file !== '.') && ($file !== '..') && !in_array($file, $this->excludeFileNames)) {
                     copy($this->vendorOpenApiFolderPath . DS . $file, $this->publicOpenApiFolderPath . DS . $file);
                 }
             }

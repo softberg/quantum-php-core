@@ -92,7 +92,7 @@ class MailgunAdapter implements MailerInterface
             if ($this->templatePath) {
                 $body = $this->createFromTemplate();
             } else {
-                $body = is_array($this->message) ? implode($this->message) : $this->message;
+                $body = is_array($this->message) ? implode('', $this->message) : $this->message;
             }
 
             $this->data['html'] = trim(str_replace("\n", "", $body));

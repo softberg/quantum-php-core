@@ -112,8 +112,8 @@ class Debugger
     public static function getInstance(DebuggerStore $store = null, DebugBar $debugBar = null, ?array $collectors = []): Debugger
     {
         if (self::$instance === null) {
-            $debugBar = $debugBar ?? new DebugBar();
-            $store = $store ?? new DebuggerStore();
+            $debugBar ??= new DebugBar();
+            $store ??= new DebuggerStore();
             $collectors = $collectors ?: self::getDefaultCollectors();
 
             self::$instance = new self($store, $debugBar, $collectors);
@@ -213,7 +213,7 @@ class Debugger
 
         $messages = $this->store->get($type);
 
-        if (count($messages)) {
+        if (count($messages) > 0) {
             foreach ($messages as $message) {
                 $fn = key($message);
                 $this->debugBar[$type]->$fn($message[$fn]);

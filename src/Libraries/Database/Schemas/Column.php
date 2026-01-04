@@ -308,7 +308,7 @@ class Column
      */
     public function nullable(bool $indeed = true)
     {
-        $this->nullable = (!$indeed ? 'NOT ' : '') . 'NULL';
+        $this->nullable = ($indeed ? '' : 'NOT ') . 'NULL';
     }
 
     /**

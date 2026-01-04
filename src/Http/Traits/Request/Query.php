@@ -52,6 +52,10 @@ trait Query
      */
     public static function getQueryParam(string $key): ?string
     {
+        if (self::$__query === null) {
+            return null;
+        }
+        
         $query = explode('&', self::$__query);
 
         foreach ($query as $items) {

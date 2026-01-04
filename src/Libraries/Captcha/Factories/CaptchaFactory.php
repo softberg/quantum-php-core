@@ -59,7 +59,7 @@ class CaptchaFactory
             config()->import(new Setup('config', 'captcha'));
         }
 
-        $adapter = $adapter ?? config()->get('captcha.default');
+        $adapter ??= config()->get('captcha.default');
 
         $adapterClass = self::getAdapterClass($adapter);
 

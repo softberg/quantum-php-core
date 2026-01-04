@@ -12,6 +12,7 @@ use Mockery;
 
 class RecaptchaAdapterTest extends AppTestCase
 {
+    public $httpClientMock;
     private $secretKey = '10000000-ffff-ffff-ffff-000000000001';
     private $siteKey = '0x0000000000000000000000000000000000000000';
 

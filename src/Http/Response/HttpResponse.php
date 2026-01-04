@@ -83,7 +83,7 @@ abstract class HttpResponse
      */
     public static function send()
     {
-        if (Environment::getInstance()->getAppEnv() != Env::TESTING) {
+        if (Environment::getInstance()->getAppEnv() !== Env::TESTING) {
             while (ob_get_level() > 0) {
                 ob_end_clean();
             }

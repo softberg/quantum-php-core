@@ -40,7 +40,7 @@ trait Params
      */
     private static function getParams(): array
     {
-        if (empty($_GET)) {
+        if ($_GET === []) {
             return [];
         }
 
@@ -53,7 +53,7 @@ trait Params
      */
     private static function postParams(): array
     {
-        if (empty($_POST)) {
+        if ($_POST === []) {
             return [];
         }
 

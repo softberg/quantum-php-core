@@ -316,8 +316,8 @@ trait AuthTrait
     {
         $userData = $user->getData();
 
-        if (count($this->visibleFields)) {
-            foreach ($userData as $field => $value) {
+        if (count($this->visibleFields) > 0) {
+            foreach (array_keys($userData) as $field) {
                 if (!in_array($field, $this->visibleFields)) {
                     unset($userData[$field]);
                 }
@@ -334,7 +334,7 @@ trait AuthTrait
      */
     protected function isActivated(User $user): bool
     {
-        return empty($user->getFieldValue($this->keyFields[AuthKeys::ACTIVATION_TOKEN]));
+        return in_array($user->getFieldValue($this->keyFields[AuthKeys::ACTIVATION_TOKEN]), [null, '', '0'], true);
     }
 
     /**

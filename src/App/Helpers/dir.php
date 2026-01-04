@@ -98,7 +98,7 @@ function deleteDirectoryWithFiles(string $dir): bool
         return false;
     }
 
-    $files = array_diff(scandir($dir), array('.', '..'));
+    $files = array_diff(scandir($dir), ['.', '..']);
 
     foreach ($files as $file) {
         $path = $dir . DS . $file;

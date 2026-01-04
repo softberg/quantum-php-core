@@ -100,7 +100,7 @@ class User
      */
     public function hasField(string $field): bool
     {
-        return key_exists($field, $this->data);
+        return array_key_exists($field, $this->data);
     }
 
     /**

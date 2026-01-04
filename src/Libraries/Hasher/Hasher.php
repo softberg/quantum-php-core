@@ -37,18 +37,16 @@ class Hasher
      * The algorithm
      * @var string
      */
-    private $algorithm;
+    private $algorithm = self::DEFAULT_ALGORITHM;
 
     /**
      * The cost
      * @var int 
      */
-    private $cost;
+    private $cost = self::DEFAULT_COST;
 
     public function __construct()
     {
-        $this->algorithm = self::DEFAULT_ALGORITHM;
-        $this->cost = self::DEFAULT_COST;
     }
 
     /**

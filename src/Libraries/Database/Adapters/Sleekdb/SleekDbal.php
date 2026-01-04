@@ -166,7 +166,7 @@ class SleekDbal implements DbalInterface
      */
     public function __construct(
         string $table,
-        string $modelName = null,
+        ?string $modelName = null,
         string $idColumn = 'id',
         array  $foreignKeys = [],
         array  $hidden = []
@@ -179,7 +179,7 @@ class SleekDbal implements DbalInterface
         $this->hidden = $hidden;
     }
 
-    public function __get($key)
+    public function __get(string $key)
     {
         return $this->data[$key] ?? null;
     }
@@ -308,27 +308,27 @@ class SleekDbal implements DbalInterface
             $this->queryBuilder = $this->getOrmModel()->createQueryBuilder();
         }
 
-        if (!empty($this->selected)) {
+        if ($this->selected !== []) {
             $this->queryBuilder->select($this->selected);
         }
 
-        if (!empty($this->joins)) {
+        if ($this->joins !== []) {
             $this->applyJoins();
         }
 
-        if (!empty($this->criterias)) {
+        if ($this->criterias !== []) {
             $this->queryBuilder->where($this->criterias);
         }
 
-        if (!empty($this->havings)) {
+        if ($this->havings !== []) {
             $this->queryBuilder->having($this->havings);
         }
 
-        if (!empty($this->grouped)) {
+        if ($this->grouped !== []) {
             $this->queryBuilder->groupBy($this->grouped);
         }
 
-        if (!empty($this->ordered)) {
+        if ($this->ordered !== []) {
             $this->queryBuilder->orderBy($this->ordered);
         }
 

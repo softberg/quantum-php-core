@@ -247,7 +247,7 @@ class SmtpAdapter implements MailerInterface
             if ($this->templatePath) {
                 $body = $this->createFromTemplate();
             } else {
-                $body = is_array($this->message) ? implode($this->message) : $this->message;
+                $body = is_array($this->message) ? implode('', $this->message) : $this->message;
             }
 
             $this->mailer->Body = trim(str_replace("\n", "", $body));
@@ -268,7 +268,7 @@ class SmtpAdapter implements MailerInterface
      */
     private function fillProperties(string $method, array $fields = [])
     {
-        if (!empty($fields)) {
+        if ($fields !== []) {
             foreach ($fields as $field) {
                 if (is_string($field)) {
                     $this->mailer->$method($field);

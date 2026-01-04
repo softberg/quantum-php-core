@@ -112,7 +112,7 @@ class ErrorHandler
      */
     public function handleError($severity, $message, $file, $line)
     {
-        if (!(error_reporting() & $severity)) {
+        if ((error_reporting() & $severity) === 0) {
             return;
         }
 
@@ -207,7 +207,7 @@ class ErrorHandler
         ];
 
         foreach ($e->getTrace() as $item) {
-            if (($item['class'] ?? null) === __CLASS__) {
+            if (($item['class'] ?? null) === self::class) {
                 continue;
             }
 

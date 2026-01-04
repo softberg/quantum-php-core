@@ -269,7 +269,7 @@ class DropboxApp implements CloudAppInterface
      */
     private function accessTokenNeedsRefresh(int $code, ?object $message = null): bool
     {
-        if ($code != self::INVALID_TOKEN_ERROR_CODE) {
+        if ($code !== self::INVALID_TOKEN_ERROR_CODE) {
             return false;
         }
 

@@ -43,11 +43,7 @@ class DatabaseHandler implements SessionHandlerInterface
      */
     public function open($path, $name): bool
     {
-        if ($this->sessionModel::getConnection()) {
-            return true;
-        }
-
-        return false;
+        return (bool) $this->sessionModel::getConnection();
     }
 
     /**
@@ -55,11 +51,7 @@ class DatabaseHandler implements SessionHandlerInterface
      */
     public function close(): bool
     {
-        if (!$this->sessionModel::getConnection()) {
-            return true;
-        }
-
-        return false;
+        return !$this->sessionModel::getConnection();
     }
 
     /**

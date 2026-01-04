@@ -163,8 +163,8 @@ function find_route_by_name(string $name, string $module): ?array
 {
     foreach (Router::getRoutes() as $route) {
         if (isset($route['name']) &&
-                strtolower($route['name']) == strtolower($name) &&
-                strtolower($route['module']) == strtolower($module)) {
+                strtolower($route['name']) === strtolower($name) &&
+                strtolower($route['module']) === strtolower($module)) {
             
             return $route;
         }
@@ -183,8 +183,8 @@ function route_group_exists(string $name, string $module): bool
 {
     foreach (Router::getRoutes() as $route) {
         if (isset($route['group']) &&
-                strtolower($route['group']) == strtolower($name) &&
-                strtolower($route['module']) == strtolower($module)) {
+                strtolower($route['group']) === strtolower($name) &&
+                strtolower($route['module']) === strtolower($module)) {
 
             return true;
         }

@@ -87,7 +87,7 @@ class PaginatorFactory
     {
         $missing = array_diff(self::REQUIRED_PARAMS[$type], array_keys($params));
 
-        if (!empty($missing)) {
+        if ($missing !== []) {
             throw PaginatorException::missingRequiredParams($type, $missing[0]);
         }
     }

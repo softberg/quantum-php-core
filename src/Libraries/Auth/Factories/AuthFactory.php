@@ -65,7 +65,7 @@ class AuthFactory
             config()->import(new Setup('config', 'auth'));
         }
 
-        $adapter = $adapter ?? config()->get('auth.default');
+        $adapter ??= config()->get('auth.default');
 
         $adapterClass = self::getAdapterClass($adapter);
 

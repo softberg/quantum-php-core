@@ -58,7 +58,7 @@ class SessionFactory
             config()->import(new Setup('config', 'session'));
         }
 
-        $adapter = $adapter ?? config()->get('session.default');
+        $adapter ??= config()->get('session.default');
 
         $adapterClass = self::getAdapterClass($adapter);
 

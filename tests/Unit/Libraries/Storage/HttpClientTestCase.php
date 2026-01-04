@@ -43,17 +43,11 @@ trait HttpClientTestCase
             return $httpClientMock;
         });
 
-        $httpClientMock->shouldReceive('getErrors')->andReturnUsing(function () {
-            return (array)$this->response[$this->url]['errors'];
-        });
+        $httpClientMock->shouldReceive('getErrors')->andReturnUsing(fn() => (array)$this->response[$this->url]['errors']);
 
-        $httpClientMock->shouldReceive('getResponseBody')->andReturnUsing(function () {
-            return $this->response[$this->url]['body'];
-        });
+        $httpClientMock->shouldReceive('getResponseBody')->andReturnUsing(fn() => $this->response[$this->url]['body']);
 
-        $httpClientMock->shouldReceive('url')->andReturnUsing(function() {
-            return $this->url;
-        });
+        $httpClientMock->shouldReceive('url')->andReturnUsing(fn() => $this->url);
 
         return $httpClientMock;
     }

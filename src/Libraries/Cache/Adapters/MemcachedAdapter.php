@@ -105,12 +105,7 @@ class MemcachedAdapter implements CacheInterface
     public function has($key): bool
     {
         $cacheItem = $this->memcached->get($this->keyHash($key));
-
-        if (!$cacheItem) {
-            return false;
-        }
-
-        return true;
+        return (bool) $cacheItem;
     }
 
     /**

@@ -62,7 +62,7 @@ class CacheFactory
             config()->import(new Setup('config', 'cache'));
         }
 
-        $adapter = $adapter ?? config()->get('cache.default');
+        $adapter ??= config()->get('cache.default');
 
         $adapterClass = self::getAdapterClass($adapter);
 

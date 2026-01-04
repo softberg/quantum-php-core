@@ -63,7 +63,7 @@ class LocalFileSystemAdapter implements FilesystemAdapterInterface
     {
         $content = file_get_contents($filename);
 
-        if (empty($content)) {
+        if (in_array($content, ['', '0', false], true)) {
             return false;
         }
 
@@ -164,7 +164,7 @@ class LocalFileSystemAdapter implements FilesystemAdapterInterface
 
         try {
             foreach (scandir($dirname) as $item) {
-                if ($item != '.' && $item != '..') {
+                if ($item !== '.' && $item !== '..') {
                     $entries[] = realpath($dirname . DS . $item);
                 }
             }

@@ -13,6 +13,7 @@ use Quantum\Loader\Setup;
 class GeneralRuleTest extends AppTestCase
 {
 
+    public $validator;
     public function setUp(): void
     {
         parent::setUp();

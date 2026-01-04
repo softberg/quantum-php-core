@@ -89,7 +89,7 @@ class Route
     public function add(string $route, string $method, ...$params): Route
     {
         $this->currentRoute = [
-            'route' => !empty($this->moduleOptions['prefix']) ? $this->moduleOptions['prefix'] . '/' . $route : $route,
+            'route' => empty($this->moduleOptions['prefix']) ? $route : $this->moduleOptions['prefix'] . '/' . $route,
             'prefix' => $this->moduleOptions['prefix'] ?? '',
             'method' => $method,
             'module' => $this->moduleName,
@@ -185,18 +185,14 @@ class Route
     public function middlewares(array $middlewares = []): Route
     {
         if (!$this->isGroup) {
-            end($this->virtualRoutes['*']);
-            $lastKey = key($this->virtualRoutes['*']);
+            $lastKey = array_key_last($this->virtualRoutes['*']);
             $this->assignMiddlewaresToRoute($this->virtualRoutes['*'][$lastKey], $middlewares);
             return $this;
         }
-
-        end($this->virtualRoutes);
-        $lastKeyOfFirstRound = key($this->virtualRoutes);
+        $lastKeyOfFirstRound = array_key_last($this->virtualRoutes);
 
         if (!$this->isGroupMiddlewares) {
-            end($this->virtualRoutes[$lastKeyOfFirstRound]);
-            $lastKeyOfSecondRound = key($this->virtualRoutes[$lastKeyOfFirstRound]);
+            $lastKeyOfSecondRound = array_key_last($this->virtualRoutes[$lastKeyOfFirstRound]);
             $this->assignMiddlewaresToRoute($this->virtualRoutes[$lastKeyOfFirstRound][$lastKeyOfSecondRound], $middlewares);
             return $this;
         }
@@ -224,8 +220,7 @@ class Route
         }
 
         if (!$this->isGroup) {
-            end($this->virtualRoutes['*']);
-            $lastKey = key($this->virtualRoutes['*']);
+            $lastKey = array_key_last($this->virtualRoutes['*']);
 
             $this->virtualRoutes['*'][$lastKey]['cache_settings']['shouldCache'] = $shouldCache;
 
@@ -235,9 +230,7 @@ class Route
 
             return $this;
         }
-
-        end($this->virtualRoutes);
-        $lastKeyOfFirstRound = key($this->virtualRoutes);
+        $lastKeyOfFirstRound = array_key_last($this->virtualRoutes);
 
         foreach ($this->virtualRoutes[$lastKeyOfFirstRound] as &$route) {
             $route['cache_settings']['shouldCache'] = $shouldCache;
@@ -258,7 +251,7 @@ class Route
      */
     public function name(string $name): Route
     {
-        if (empty($this->currentRoute)) {
+        if ($this->currentRoute === []) {
             throw RouteException::nameBeforeDefinition();
         }
 
@@ -312,7 +305,7 @@ class Route
      */
     private function assignMiddlewaresToRoute(array &$route, array $middlewares)
     {
-        if (!key_exists('middlewares', $route)) {
+        if (!array_key_exists('middlewares', $route)) {
             $route['middlewares'] = $middlewares;
         } else {
             $middlewares = array_reverse($middlewares);

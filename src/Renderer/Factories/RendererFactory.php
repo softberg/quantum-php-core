@@ -58,7 +58,7 @@ class RendererFactory
             config()->import(new Setup('config', 'view'));
         }
 
-        $adapter = $adapter ?? config()->get('view.default');
+        $adapter ??= config()->get('view.default');
 
         $adapterClass = self::getAdapterClass($adapter);
 

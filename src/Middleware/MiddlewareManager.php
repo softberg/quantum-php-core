@@ -61,7 +61,7 @@ class MiddlewareManager
 
         $currentMiddleware = $this->getMiddleware($request, $response);
 
-        list($request, $response) = $currentMiddleware->apply($request, $response, function ($request, $response) {
+        [$request, $response] = $currentMiddleware->apply($request, $response, function ($request, $response) {
             next($this->middlewares);
             return [$request, $response];
         });

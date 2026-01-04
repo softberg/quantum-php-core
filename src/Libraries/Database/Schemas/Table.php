@@ -298,7 +298,7 @@ class Table
     {
         $sql = $this->getSql();
 
-        if ($sql) {
+        if ($sql !== '' && $sql !== '0') {
             Database::execute($sql);
         }
     }

@@ -44,11 +44,12 @@ trait Model
      */
     public function prop(string $key, $value = null)
     {
-        if (func_num_args() == 2) {
+        if (func_num_args() === 2) {
             $this->modifiedFields[$key] = $value;
         } else {
             return $this->modifiedFields[$key] ?? null;
         }
+        return null;
     }
 
     /**

@@ -105,7 +105,7 @@ class Validator
      * @param string|null $rule Specific rule to delete; if null deletes all rules for field
      * @return void
      */
-    public function deleteRule(string $field, string $rule = null): void
+    public function deleteRule(string $field, ?string $rule = null): void
     {
         if (!isset($this->rules[$field])) {
             return;
@@ -142,7 +142,7 @@ class Validator
         $this->data = $data;
         $this->flushErrors();
 
-        if (empty($this->rules)) {
+        if ($this->rules === []) {
             return true;
         }
 
@@ -174,7 +174,7 @@ class Validator
             }
         }
 
-        return empty($this->errors);
+        return $this->errors === [];
     }
 
     /**
@@ -185,7 +185,7 @@ class Validator
      */
     public function addRule(string $rule, Closure $function): void
     {
-        if (empty($rule) || !is_callable($function)) {
+        if ($rule === '' || $rule === '0' || !is_callable($function)) {
             return;
         }
 
@@ -198,7 +198,7 @@ class Validator
      */
     public function getErrors(): array
     {
-        if (empty($this->errors)) {
+        if ($this->errors === []) {
             return [];
         }
 

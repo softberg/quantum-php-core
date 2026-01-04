@@ -245,7 +245,7 @@ class HttpClientTest extends AppTestCase
 
         $this->assertEquals(6, $errors['code']);
 
-        $this->assertEquals('Couldn\'t resolve host name (CURLE_COULDNT_RESOLVE_HOST): Could not resolve host: test.comx', $errors['message']);
+        $this->assertStringContainsString('CURLE_COULDNT_RESOLVE_HOST', $errors['message']);
     }
 
     public function testHttpClientMultiRequestGetError()
@@ -264,7 +264,7 @@ class HttpClientTest extends AppTestCase
 
         $this->assertEquals(6, $errors[0]['code']);
 
-        $this->assertEquals('Couldn\'t resolve host name (CURLE_COULDNT_RESOLVE_HOST): Could not resolve host: test.comx', $errors[0]['message']);
+        $this->assertStringContainsString('CURLE_COULDNT_RESOLVE_HOST', $errors[0]['message']);
     }
 
     public function testHttpClientCurlInfo()

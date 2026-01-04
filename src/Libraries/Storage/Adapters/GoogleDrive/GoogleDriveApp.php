@@ -194,7 +194,7 @@ class GoogleDriveApp implements CloudAppInterface
             ];
             return $this->sendRequest($url, $params, $headers, $method);
         }catch (Exception $e){
-            throw new Exception($e->getMessage(), (int)$e->getCode());
+            throw new Exception($e->getMessage(), (int)$e->getCode(), $e);
         }
     }
 
@@ -219,10 +219,6 @@ class GoogleDriveApp implements CloudAppInterface
      */
     private function accessTokenNeedsRefresh(int $code, ?object $message = null): bool
     {
-        if ($code != self::INVALID_TOKEN_ERROR_CODE) {
-            return false;
-        }
-
-        return true;
+        return $code === self::INVALID_TOKEN_ERROR_CODE;
     }
 }

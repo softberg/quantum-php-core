@@ -111,7 +111,7 @@ function markdown_to_html(string $content, bool $sanitize = false): string
 
     $html = $converter->convertToHtml($content);
 
-    if ($purifier) {
+    if ($purifier instanceof \HTMLPurifier) {
         return $purifier->purify($html);
     }
 
