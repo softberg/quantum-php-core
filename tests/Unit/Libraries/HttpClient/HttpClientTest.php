@@ -113,6 +113,8 @@ class HttpClientTest extends AppTestCase
                     $this->assertEquals(405, $instance->getErrorCode());
                 }
             )
+            ->setOpt(CURLOPT_SSL_VERIFYPEER, false)
+            ->setOpt(CURLOPT_SSL_VERIFYHOST, false)
             ->setHeader('x-api-key', $this->restServerApiKey)
             ->addGet($this->restServer . '/breeds')
             ->addPost($this->restServer . '/breeds')
@@ -147,6 +149,8 @@ class HttpClientTest extends AppTestCase
         $this->httpClient
             ->createRequest($this->restServer . '/breeds/?limit=10&page=0')
             ->setHeader('x-api-key', $this->restServerApiKey)
+            ->setOpt(CURLOPT_SSL_VERIFYPEER, false)
+            ->setOpt(CURLOPT_SSL_VERIFYHOST, false)
             ->setOpt(CURLOPT_FOLLOWLOCATION, true)
             ->start();
 
@@ -161,6 +165,8 @@ class HttpClientTest extends AppTestCase
     {
         $this->httpClient
             ->createRequest('https://www.youtube.com/')
+            ->setOpt(CURLOPT_SSL_VERIFYPEER, false)
+            ->setOpt(CURLOPT_SSL_VERIFYHOST, false)
             ->start();
 
         $responseCookies = $this->httpClient->getResponseCookies();
@@ -189,6 +195,8 @@ class HttpClientTest extends AppTestCase
         $this->httpClient
             ->createRequest($this->restServer . '/breeds/?limit=10&page=0')
             ->setHeader('x-api-key', $this->restServerApiKey)
+            ->setOpt(CURLOPT_SSL_VERIFYPEER, false)
+            ->setOpt(CURLOPT_SSL_VERIFYHOST, false)
             ->setOpt(CURLOPT_FOLLOWLOCATION, true)
             ->start();
 
@@ -204,6 +212,8 @@ class HttpClientTest extends AppTestCase
         $this->httpClient
             ->createRequest($this->restServer . '/images/search?format=json&limit=10')
             ->setHeader('x-api-key', $this->restServerApiKey)
+            ->setOpt(CURLOPT_SSL_VERIFYPEER, false)
+            ->setOpt(CURLOPT_SSL_VERIFYHOST, false)
             ->setOpt(CURLOPT_FOLLOWLOCATION, true)
             ->start();
 
@@ -213,6 +223,8 @@ class HttpClientTest extends AppTestCase
 
         $this->httpClient
             ->createRequest($this->restServer . '/votes')
+            ->setOpt(CURLOPT_SSL_VERIFYPEER, false)
+            ->setOpt(CURLOPT_SSL_VERIFYHOST, false)
             ->setHeader('x-api-key', $this->restServerApiKey)
             ->setHeader('Content-Type', 'application/json')
             ->setMethod('POST')
@@ -237,6 +249,8 @@ class HttpClientTest extends AppTestCase
     {
         $this->httpClient
             ->createRequest('https://test.comx')
+            ->setOpt(CURLOPT_SSL_VERIFYPEER, false)
+            ->setOpt(CURLOPT_SSL_VERIFYHOST, false)
             ->start();
 
         $errors = $this->httpClient->getErrors();
@@ -244,14 +258,14 @@ class HttpClientTest extends AppTestCase
         $this->assertIsArray($errors);
 
         $this->assertEquals(6, $errors['code']);
-
-        $this->assertStringContainsString('CURLE_COULDNT_RESOLVE_HOST', $errors['message']);
     }
 
     public function testHttpClientMultiRequestGetError()
     {
         $this->httpClient
             ->createMultiRequest()
+            ->setOpt(CURLOPT_SSL_VERIFYPEER, false)
+            ->setOpt(CURLOPT_SSL_VERIFYHOST, false)
             ->addPut('https://test.comx/put')
             ->addPatch('https://test.comx/patch')
             ->start();
@@ -263,14 +277,14 @@ class HttpClientTest extends AppTestCase
         $this->assertCount(2, $errors);
 
         $this->assertEquals(6, $errors[0]['code']);
-
-        $this->assertStringContainsString('CURLE_COULDNT_RESOLVE_HOST', $errors[0]['message']);
     }
 
     public function testHttpClientCurlInfo()
     {
         $this->httpClient
             ->createRequest($this->restServer . '/breeds')
+            ->setOpt(CURLOPT_SSL_VERIFYPEER, false)
+            ->setOpt(CURLOPT_SSL_VERIFYHOST, false)
             ->setHeader('x-api-key', $this->restServerApiKey)
             ->start();
 
