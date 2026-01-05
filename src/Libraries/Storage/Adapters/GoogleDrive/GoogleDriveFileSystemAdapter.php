@@ -82,18 +82,33 @@ class GoogleDriveFileSystemAdapter implements FilesystemAdapterInterface
     public function put(string $filename, string $content, ?string $parentId = null)
     {
         try {
-            if($this->isFile($filename)){
-                return $this->googleDriveApp->rpcRequest(GoogleDriveApp::FILE_MEDIA_URL . '/' . $filename . '?uploadType=media', $content, 'PATCH', 'application/octet-stream');
-            }else{
+            if ($this->isFile($filename)) {
+                $fileId = $filename;
+            } else {
                 $data = [
-                    'name' => $filename,
-                    'parents' => $parentId ? [$parentId] : ['root']
+                    'name'    => $filename,
+                    'parents' => $parentId ? [$parentId] : ['root'],
                 ];
 
-                $newFile = $this->googleDriveApp->rpcRequest(GoogleDriveApp::FILE_METADATA_URL, $data);
+                $newFile = $this->googleDriveApp->rpcRequest(
+                    GoogleDriveApp::FILE_METADATA_URL,
+                    $data
+                );
 
-                return $this->put($newFile->id, $content);
+                if (!isset($newFile->id)) {
+                    throw new Exception('Google Drive file creation failed');
+                }
+
+                $fileId = $newFile->id;
             }
+
+            return $this->googleDriveApp->rpcRequest(
+                GoogleDriveApp::FILE_MEDIA_URL . '/' . $fileId . '?uploadType=media',
+                $content,
+                'PUT',
+                'application/octet-stream'
+            );
+
         } catch (Exception $e) {
             return false;
         }

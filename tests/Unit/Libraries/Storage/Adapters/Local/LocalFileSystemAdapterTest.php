@@ -175,7 +175,7 @@ class LocalFileSystemAdapterTest extends AppTestCase
 
         $this->assertIsString(current($entries));
 
-        $this->assertFalse($this->fs->listDirectory('nowhere'));
+        $this->assertEmpty($this->fs->listDirectory('nowhere'));
     }
 
     public function testLocalGlob()

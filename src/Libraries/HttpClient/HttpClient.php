@@ -72,6 +72,11 @@ class HttpClient
     /**
      * @var array
      */
+    private array $requestHeaders = [];
+
+    /**
+     * @var array
+     */
     private $response = [];
 
     /**
@@ -206,13 +211,11 @@ class HttpClient
     {
         $this->ensureSingleRequest();
 
-        $requestHeaders = $this->formatHeaders($this->client->getRequestHeaders());
-
-        if ($header) {
-            return $requestHeaders[$header] ?? null;
+        if ($header !== null) {
+            return $this->requestHeaders[$header] ?? null;
         }
 
-        return $requestHeaders;
+        return $this->requestHeaders;
     }
 
     /**
@@ -325,6 +328,8 @@ class HttpClient
             throw HttpClientException::methodNotSupported($method, get_class($this->client));
         }
 
+        $this->interceptCall($method, $arguments);
+
         $this->client->$method(...$arguments);
 
         return $this;
@@ -366,6 +371,10 @@ class HttpClient
         ];
     }
 
+    /**
+     * @param CaseInsensitiveArray $headers
+     * @return array
+     */
     private function formatHeaders(CaseInsensitiveArray $headers): array
     {
         $formatted = [];
@@ -385,6 +394,28 @@ class HttpClient
     {
         if ($this->isMultiRequest()) {
             throw HttpClientException::methodNotSupported(__METHOD__, MultiCurl::class);
+        }
+    }
+
+    /**
+     * @param string $method
+     * @param array $arguments
+     * @return void
+     */
+    private function interceptCall(string $method, array $arguments): void
+    {
+        switch ($method) {
+            case 'setHeaders':
+                if (isset($arguments[0]) && is_array($arguments[0])) {
+                    $this->requestHeaders = array_change_key_case($arguments[0], CASE_LOWER);
+                }
+                break;
+
+            case 'setHeader':
+                if (isset($arguments[0], $arguments[1])) {
+                    $this->requestHeaders[strtolower($arguments[0])] = $arguments[1];
+                }
+                break;
         }
     }
 }

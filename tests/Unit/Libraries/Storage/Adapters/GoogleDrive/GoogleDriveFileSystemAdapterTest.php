@@ -33,7 +33,7 @@ class GoogleDriveFileSystemAdapterTest extends AppTestCase
     /**
      * @var string
      */
-    private $content = 'This file was created via dropbox api';
+    private $content = 'This file was created via gdrive api';
 
     /**
      * @var array
@@ -50,7 +50,9 @@ class GoogleDriveFileSystemAdapterTest extends AppTestCase
             if(str_contains($endpoint, '?alt=media')){
                 return self::$response[array_key_last(self::$response)];
             }
+
             self::$response = array_merge(self::$response, (array)$params);
+
             return (object)self::$response;
         });
 
@@ -161,7 +163,7 @@ class GoogleDriveFileSystemAdapterTest extends AppTestCase
 
         self::$response['size'] = strlen($text);
 
-        $this->assertEquals(10, $this->fs->size($this->filename));
+        $this->assertEquals(strlen($text), $this->fs->size($this->filename));
     }
 
     public function testGoogleDriveFileLastModified()
@@ -172,9 +174,10 @@ class GoogleDriveFileSystemAdapterTest extends AppTestCase
 
         self::$response['modifiedTime'] = $modified;
 
-        $this->assertIsInt($this->fs->lastModified($this->filename));
+        $result = $this->fs->lastModified($this->filename);
 
-        $this->assertEquals(strtotime($modified), $this->fs->lastModified($this->filename));
+        $this->assertIsInt($result);
+        $this->assertEquals(strtotime($modified), $result);
     }
 
     public function testGoogleDriveListDirectory()
@@ -212,7 +215,7 @@ class GoogleDriveFileSystemAdapterTest extends AppTestCase
 
         self::$response = [];
 
-        $this->assertFalse($this->fs->listDirectory('test'));
+        $this->assertNull($this->fs->listDirectory('test'));
 
     }
 }
