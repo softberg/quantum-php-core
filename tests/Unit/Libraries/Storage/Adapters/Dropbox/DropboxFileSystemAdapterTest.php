@@ -231,7 +231,7 @@ class DropboxFileSystemAdapterTest extends AppTestCase
 
         self::$response = [];
 
-        $this->assertFalse($this->fs->listDirectory('test'));
+        $this->assertNull($this->fs->listDirectory('test'));
 
     }
 }
