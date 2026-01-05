@@ -53,10 +53,6 @@ class GoogleDriveFileSystemAdapterTest extends AppTestCase
 
             self::$response = array_merge(self::$response, (array)$params);
 
-            if(!empty(self::$response) && !isset(self::$response['id'])) {
-                self::$response['id'] = uniqid();
-            }
-
             return (object)self::$response;
         });
 
