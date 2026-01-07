@@ -11,7 +11,7 @@ declare(strict_types=1);
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Config\Exceptions;
@@ -30,8 +30,11 @@ class ConfigException extends BaseException
      * @param string $name
      * @return ConfigException
      */
-    public static function configCollision(string $name): ConfigException
+    public static function configCollision(string $name): self
     {
-        return new static(_message(ExceptionMessages::CONFIG_COLLISION, [$name]), E_WARNING);
+        return new self(
+            _message(ExceptionMessages::CONFIG_COLLISION, [$name]),
+            E_WARNING
+        );
     }
 }

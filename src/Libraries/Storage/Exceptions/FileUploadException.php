@@ -11,11 +11,12 @@ declare(strict_types=1);
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Storage\Exceptions;
 
+use Quantum\App\Enums\ExceptionMessages as ExceptionMessagesAlias;
 use Quantum\Libraries\Storage\Enums\ExceptionMessages;
 use Quantum\App\Exceptions\BaseException;
 
@@ -30,17 +31,23 @@ class FileUploadException extends BaseException
      * @param string $name
      * @return FileUploadException
      */
-    public static function fileTypeNotAllowed(string $name): FileUploadException
+    public static function fileTypeNotAllowed(string $name): self
     {
-        return new static(_message(ExceptionMessages::FILE_TYPE_NOT_ALLOWED, [$name]), E_WARNING);
+        return new self(
+            _message(ExceptionMessages::FILE_TYPE_NOT_ALLOWED, [$name]),
+            E_WARNING
+        );
     }
 
     /**
      * @param string $name
      * @return FileUploadException
      */
-    public static function incorrectMimeTypesConfig(string $name): FileUploadException
+    public static function incorrectMimeTypesConfig(string $name): self
     {
-        return new static(_message(ExceptionMessages::MISSING_CONFIG, $name), E_ERROR);
+        return new self(
+            _message(ExceptionMessagesAlias::MISSING_CONFIG, $name),
+            E_ERROR
+        );
     }
 }

@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Mailer\Adapters;
@@ -36,7 +36,7 @@ class MandrillAdapter implements MailerInterface
     /**
      * @var HttpClient
      */
-    private $httpClient;
+    protected $httpClient;
 
     /**
      * @var string

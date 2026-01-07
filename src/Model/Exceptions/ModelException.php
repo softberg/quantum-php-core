@@ -11,7 +11,7 @@ declare(strict_types=1);
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Model\Exceptions;
@@ -30,9 +30,9 @@ class ModelException extends BaseException
      * @param string $name
      * @return ModelException
      */
-    public static function inappropriateProperty(string $name): ModelException
+    public static function inappropriateProperty(string $name): self
     {
-        return new static(
+        return new self(
             _message(ExceptionMessages::INAPPROPRIATE_MODEL_PROPERTY, $name),
             E_WARNING
         );
@@ -43,9 +43,9 @@ class ModelException extends BaseException
      * @param string $tableName
      * @return ModelException
      */
-    public static function wrongRelation(string $modelName, string $tableName): ModelException
+    public static function wrongRelation(string $modelName, string $tableName): self
     {
-        return new static(
+        return new self(
             _message(ExceptionMessages::WRONG_RELATION, [$modelName, $tableName]),
             E_ERROR
         );
@@ -56,9 +56,9 @@ class ModelException extends BaseException
      * @param string $relatedModelName
      * @return ModelException
      */
-    public static function relationTypeMissing(string $modelName, string $relatedModelName): ModelException
+    public static function relationTypeMissing(string $modelName, string $relatedModelName): self
     {
-        return new static(
+        return new self(
             _message(ExceptionMessages::RELATION_TYPE_MISSING, [$modelName, $relatedModelName]),
             E_ERROR
         );
@@ -69,9 +69,9 @@ class ModelException extends BaseException
      * @param string $relatedModelName
      * @return ModelException
      */
-    public static function missingRelationKeys(string $modelName, string $relatedModelName): ModelException
+    public static function missingRelationKeys(string $modelName, string $relatedModelName): self
     {
-        return new static(
+        return new self(
             _message(ExceptionMessages::MISSING_RELATION_KEYS, [$modelName, $relatedModelName]),
             E_ERROR
         );
@@ -82,9 +82,9 @@ class ModelException extends BaseException
      * @param string $foreignKey
      * @return ModelException
      */
-    public static function missingForeignKeyValue(string $modelName, string $foreignKey): ModelException
+    public static function missingForeignKeyValue(string $modelName, string $foreignKey): self
     {
-        return new static(
+        return new self(
             _message(ExceptionMessages::MISSING_FOREIGN_KEY, [$foreignKey, $modelName]),
             E_ERROR
         );
@@ -94,9 +94,9 @@ class ModelException extends BaseException
      * @param string $relationType
      * @return ModelException
      */
-    public static function unsupportedRelationType(string $relationType): ModelException
+    public static function unsupportedRelationType(string $relationType): self
     {
-        return new static(
+        return new self(
             _message(ExceptionMessages::UNSUPPORTED_RELATION, [$relationType]),
             E_ERROR
         );

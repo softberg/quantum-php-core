@@ -11,7 +11,7 @@ declare(strict_types=1);
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Archive\Exceptions;
@@ -29,16 +29,22 @@ class ArchiveException extends BaseException
      * @param string $name
      * @return ArchiveException
      */
-    public static function cantOpen(string $name): ArchiveException
+    public static function cantOpen(string $name): self
     {
-        return new static(_message(ExceptionMessages::CANT_OPEN, $name), E_WARNING);
+        return new self(
+            _message(ExceptionMessages::CANT_OPEN, $name),
+            E_WARNING
+        );
     }
 
     /**
      * @return ArchiveException
      */
-    public static function missingArchiveName(): ArchiveException
+    public static function missingArchiveName(): self
     {
-        return new static(ExceptionMessages::NAME_NOT_SET, E_WARNING);
+        return new self(
+            ExceptionMessages::NAME_NOT_SET,
+            E_WARNING
+        );
     }
 }

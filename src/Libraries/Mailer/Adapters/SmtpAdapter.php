@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Mailer\Adapters;
@@ -38,37 +38,37 @@ class SmtpAdapter implements MailerInterface
     /**
      * @var PHPMailer
      */
-    private $mailer;
+    protected $mailer;
 
     /**
      * Reply To addresses
      * @var array
      */
-    private $replyToAddresses = [];
+    protected $replyToAddresses = [];
 
     /**
      * CC addresses
      * @var array
      */
-    private $ccAddresses = [];
+    protected $ccAddresses = [];
 
     /**
      * BCC addresses
      * @var array
      */
-    private $bccAddresses = [];
+    protected $bccAddresses = [];
 
     /**
      * Email attachments
      * @var array
      */
-    private $attachments = [];
+    protected $attachments = [];
 
     /**
      * Email attachments created from string
      * @var array
      */
-    private $stringAttachments = [];
+    protected $stringAttachments = [];
 
     /**
      * @var SmtpAdapter|null

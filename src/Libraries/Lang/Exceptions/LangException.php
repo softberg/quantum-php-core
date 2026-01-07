@@ -11,7 +11,7 @@ declare(strict_types=1);
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Lang\Exceptions;
@@ -29,16 +29,22 @@ class LangException extends BaseException
     /**
      * @return LangException
      */
-    public static function translationsNotFound(): LangException
+    public static function translationsNotFound(): self
     {
-        return new static(ExceptionMessages::TRANSLATION_FILES_NOT_FOUND, E_WARNING);
+        return new self(
+            ExceptionMessages::TRANSLATION_FILES_NOT_FOUND,
+            E_WARNING
+        );
     }
 
     /**
      * @return LangException
      */
-    public static function misconfiguredDefaultConfig(): LangException
+    public static function misconfiguredDefaultConfig(): self
     {
-        return new static(ExceptionMessages::MISCONFIGURED_DEFAULT_LANG, E_WARNING);
+        return new self(
+            ExceptionMessages::MISCONFIGURED_DEFAULT_LANG,
+            E_WARNING
+        );
     }
 }
