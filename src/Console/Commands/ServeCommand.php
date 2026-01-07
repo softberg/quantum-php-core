@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 3.0.0
  */
 
 namespace Quantum\Console\Commands;
@@ -71,7 +71,7 @@ class ServeCommand extends QtCommand
 
     /**
      * Command arguments
-     * @var \string[][]
+     * @var string[][]
      */
     protected $options = [
         ['host', null, 'optional', 'Host', '127.0.0.1'],

@@ -67,7 +67,7 @@ abstract class QtCommand extends Command implements CommandInterface
     protected $input;
 
     /**
-     * @var OutputInterface;
+     * @var OutputInterface
      */
     protected $output;
 

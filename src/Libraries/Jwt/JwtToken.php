@@ -9,12 +9,13 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Jwt;
 
 use Quantum\Libraries\Jwt\Exceptions\JwtException;
+use Quantum\Environment\Exceptions\EnvException;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
@@ -51,7 +52,8 @@ class JwtToken extends JWT
 
     /**
      * JwtToken constructor.
-     * @param mixed $key
+     * @param string|null $key
+     * @throws EnvException
      */
     public function __construct(string $key = null)
     {

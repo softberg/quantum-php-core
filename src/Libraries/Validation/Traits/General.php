@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.8
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Validation\Traits;
@@ -68,7 +68,7 @@ trait General
         $total = 0;
 
         for ($i = 0; $i < $length; ++$i) {
-            $digit = $number[$i];
+            $digit = (int) $number[$i];
 
             if ($i % 2 === $parity) {
                 $digit *= 2;

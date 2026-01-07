@@ -9,15 +9,15 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Storage;
 
+use Quantum\Libraries\Storage\Contracts\LocalFilesystemAdapterInterface;
 use Quantum\Libraries\Storage\Contracts\FilesystemAdapterInterface;
 use Quantum\Libraries\Storage\Exceptions\FileSystemException;
 use Quantum\Libraries\Storage\Exceptions\FileUploadException;
-use Quantum\Libraries\Storage\Factories\FileSystemFactory;
 use Quantum\Libraries\Lang\Exceptions\LangException;
 use Quantum\Environment\Exceptions\EnvException;
 use Quantum\Config\Exceptions\ConfigException;
@@ -41,7 +41,7 @@ class UploadedFile extends SplFileInfo
 
     /**
      * Local File System
-     * @var FilesystemAdapterInterface
+     * @var LocalFilesystemAdapterInterface
      */
     protected $localFileSystem;
 
@@ -126,7 +126,16 @@ class UploadedFile extends SplFileInfo
      */
     public function __construct(array $meta)
     {
-        $this->localFileSystem = FileSystemFactory::get();
+        $adapter = fs()->getAdapter();
+
+        if (!$adapter instanceof LocalFilesystemAdapterInterface) {
+            throw FileSystemException::methodNotSupported(
+                'local filesystem operations',
+                get_class($adapter)
+            );
+        }
+
+        $this->localFileSystem = $adapter;
 
         $this->originalName = $meta['name'];
         $this->errorCode = $meta['error'];
