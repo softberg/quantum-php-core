@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Router;
@@ -72,10 +72,10 @@ class RouteDispatcher
     /**
      * Retrieves the current route's action for the controller.
      * @param RouteController $controller
-     * @return string|null
+     * @return string
      * @throws RouteControllerException
      */
-    private static function resolveAction(RouteController $controller): ?string
+    private static function resolveAction(RouteController $controller): string
     {
         $action = current_action();
 

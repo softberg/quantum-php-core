@@ -11,7 +11,7 @@ declare(strict_types=1);
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\HttpClient\Exceptions;
@@ -32,6 +32,9 @@ class HttpClientException extends BaseException
 
     public static function requestNotCreated(): self
     {
-        return new static(ExceptionMessages::REQUEST_NOT_CREATED, E_WARNING);
+        return new self(
+            ExceptionMessages::REQUEST_NOT_CREATED,
+            E_WARNING
+        );
     }
 }

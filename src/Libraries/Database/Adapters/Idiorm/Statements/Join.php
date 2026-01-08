@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Database\Adapters\Idiorm\Statements;
@@ -54,7 +54,10 @@ trait Join
      */
     public function leftJoin(string $table, array $constraint, ?string $tableAlias = null): DbalInterface
     {
-        IdiormPatch::getInstance()->use($this->getOrmModel())->leftJoin($table, $constraint, $tableAlias);
+        IdiormPatch::getInstance()
+            ->use($this->getOrmModel())
+            ->leftJoin($table, $constraint, $tableAlias);
+
         return $this;
     }
 
@@ -64,7 +67,10 @@ trait Join
      */
     public function rightJoin(string $table, array $constraint, ?string $tableAlias = null): DbalInterface
     {
-        IdiormPatch::getInstance()->use($this->getOrmModel())->rightJoin($table, $constraint, $tableAlias);
+        IdiormPatch::getInstance()
+            ->use($this->getOrmModel())
+            ->rightJoin($table, $constraint, $tableAlias);
+
         return $this;
     }
 

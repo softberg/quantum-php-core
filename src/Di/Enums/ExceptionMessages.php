@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Di\Enums;
@@ -32,4 +32,6 @@ final class ExceptionMessages extends BaseExceptionMessages
     const INVALID_ABSTRACT_DEPENDENCY = 'The dependency `{%1}` is not valid abstract class.';
 
     const CIRCULAR_DEPENDENCY = 'Circular dependency detected: `{%1}`';
+
+    const INVALID_CALLABLE = 'Invalid callable provided: expected Closure or array-style callable `{%1}`';
 }

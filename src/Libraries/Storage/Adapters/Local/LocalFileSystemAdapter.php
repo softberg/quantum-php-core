@@ -9,19 +9,19 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Storage\Adapters\Local;
 
-use Quantum\Libraries\Storage\Contracts\FilesystemAdapterInterface;
+use Quantum\Libraries\Storage\Contracts\LocalFilesystemAdapterInterface;
 use Throwable;
 
 /**
  * Class LocalFileSystemAdapter
  * @package Quantum\Libraries\Storage
  */
-class LocalFileSystemAdapter implements FilesystemAdapterInterface
+class LocalFileSystemAdapter implements LocalFilesystemAdapterInterface
 {
 
     /**
@@ -177,10 +177,7 @@ class LocalFileSystemAdapter implements FilesystemAdapterInterface
     }
 
     /**
-     * Find path names matching a pattern
-     * @param string $pattern
-     * @param int $flags
-     * @return array|false
+     * @inheritDoc
      */
     public function glob(string $pattern, int $flags = 0)
     {
@@ -188,9 +185,7 @@ class LocalFileSystemAdapter implements FilesystemAdapterInterface
     }
 
     /**
-     * Is Readable
-     * @param string $filename
-     * @return bool
+     * @inheritDoc
      */
     public function isReadable(string $filename): bool
     {
@@ -198,9 +193,7 @@ class LocalFileSystemAdapter implements FilesystemAdapterInterface
     }
 
     /**
-     * Is Writable
-     * @param string $filename
-     * @return bool
+     * @inheritDoc
      */
     public function isWritable(string $filename): bool
     {
@@ -208,11 +201,7 @@ class LocalFileSystemAdapter implements FilesystemAdapterInterface
     }
 
     /**
-     * Gets the content between given lines
-     * @param string $filename
-     * @param int $offset
-     * @param int|null $length
-     * @return array
+     * @inheritDoc
      */
     public function getLines(string $filename, int $offset = 0, ?int $length = null): array
     {
@@ -230,9 +219,7 @@ class LocalFileSystemAdapter implements FilesystemAdapterInterface
     }
 
     /**
-     * Gets the filename with extension
-     * @param string $path
-     * @return string
+     * @inheritDoc
      */
     public function fileNameWithExtension(string $path): string
     {
@@ -240,9 +227,7 @@ class LocalFileSystemAdapter implements FilesystemAdapterInterface
     }
 
     /**
-     * Gets the file name
-     * @param string $path
-     * @return string
+     * @inheritDoc
      */
     public function fileName(string $path): string
     {
@@ -250,9 +235,7 @@ class LocalFileSystemAdapter implements FilesystemAdapterInterface
     }
 
     /**
-     * Gets the file extension
-     * @param string $path
-     * @return string
+     * @inheritDoc
      */
     public function extension(string $path): string
     {
@@ -260,10 +243,7 @@ class LocalFileSystemAdapter implements FilesystemAdapterInterface
     }
 
     /**
-     * Includes the required file
-     * @param string $file
-     * @param bool $once
-     * @return mixed
+     * @inheritDoc
      */
     public function require(string $file, bool $once = false)
     {
@@ -275,10 +255,7 @@ class LocalFileSystemAdapter implements FilesystemAdapterInterface
     }
 
     /**
-     * Includes a file
-     * @param string $file
-     * @param bool $once
-     * @return mixed
+     * @inheritDoc
      */
     public function include(string $file, bool $once = false)
     {

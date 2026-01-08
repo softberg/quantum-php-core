@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Cache\Adapters;
@@ -113,14 +113,9 @@ class RedisAdapter implements CacheInterface
     }
 
     /**
-     *
-     * @throws InvalidArgumentException
-     */
-
-    /**
      * @inheritDoc
      * @throws RedisException
-     * @throws \Psr\SimpleCache\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function setMultiple($values, $ttl = null): bool
     {

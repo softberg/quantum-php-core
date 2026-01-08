@@ -11,7 +11,7 @@ declare(strict_types=1);
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Database\Exceptions;
@@ -29,35 +29,47 @@ class DatabaseException extends BaseException
     /**
      * @return DatabaseException
      */
-    public static function incorrectConfig(): DatabaseException
+    public static function incorrectConfig(): self
     {
-        return new static(ExceptionMessages::INCORRECT_CONFIG, E_ERROR);
+        return new self(
+            ExceptionMessages::INCORRECT_CONFIG,
+            E_ERROR
+        );
     }
 
     /**
      * @param string $operator
      * @return DatabaseException
      */
-    public static function operatorNotSupported(string $operator): DatabaseException
+    public static function operatorNotSupported(string $operator): self
     {
-        return new static(_message(ExceptionMessages::NOT_SUPPORTED_OPERATOR, [$operator]), E_WARNING);
+        return new self(
+            _message(ExceptionMessages::NOT_SUPPORTED_OPERATOR, [$operator]),
+            E_WARNING
+        );
     }
 
     /**
      * @param string $name
      * @return DatabaseException
      */
-    public static function tableAlreadyExists(string $name): DatabaseException
+    public static function tableAlreadyExists(string $name): self
     {
-        return new static(_message(ExceptionMessages::TABLE_ALREADY_EXISTS, $name), E_ERROR);
+        return new self(
+            _message(ExceptionMessages::TABLE_ALREADY_EXISTS, $name),
+            E_ERROR
+        );
     }
 
     /**
      * @param string $name
      * @return DatabaseException
      */
-    public static function tableDoesNotExists(string $name): DatabaseException
+    public static function tableDoesNotExists(string $name): self
     {
-        return new static(_message(ExceptionMessages::TABLE_NOT_EXISTS, $name), E_ERROR);
+        return new self(
+            _message(ExceptionMessages::TABLE_NOT_EXISTS, $name),
+            E_ERROR
+        );
     }
 }

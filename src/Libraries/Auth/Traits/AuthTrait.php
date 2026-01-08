@@ -9,19 +9,19 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Auth\Traits;
 
 use Quantum\Libraries\Auth\Contracts\AuthServiceInterface;
-use Quantum\Libraries\Mailer\Contracts\MailerInterface;
 use Quantum\Libraries\Auth\Exceptions\AuthException;
 use Quantum\Libraries\Jwt\Exceptions\JwtException;
 use Quantum\Config\Exceptions\ConfigException;
 use Quantum\Libraries\Auth\Enums\AuthKeys;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
+use Quantum\Libraries\Mailer\Mailer;
 use Quantum\Libraries\Hasher\Hasher;
 use Quantum\Libraries\Jwt\JwtToken;
 use Quantum\Libraries\Auth\User;
@@ -39,7 +39,7 @@ trait AuthTrait
 {
 
     /**
-     * @var MailerInterface
+     * @var Mailer
      */
     protected $mailer;
 

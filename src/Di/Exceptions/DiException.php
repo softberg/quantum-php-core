@@ -11,7 +11,7 @@ declare(strict_types=1);
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Di\Exceptions;
@@ -68,5 +68,14 @@ class DiException extends BaseException
     public static function circularDependency(string $chain): DiException
     {
         return new self(_message(ExceptionMessages::CIRCULAR_DEPENDENCY, [$chain]), 0);
+    }
+
+    /**
+     * @param string|null $entry
+     * @return DiException
+     */
+    public static function invalidCallable(?string $entry = null): DiException
+    {
+        return new self(_message(ExceptionMessages::INVALID_CALLABLE, [$entry]), E_ERROR);
     }
 }

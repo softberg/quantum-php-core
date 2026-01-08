@@ -9,12 +9,12 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 3.0.0
  */
 
 namespace Quantum\Tracer;
 
-use Quantum\Libraries\Storage\Factories\FileSystemFactory;
+use Quantum\Libraries\Storage\Contracts\LocalFilesystemAdapterInterface;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Quantum\Renderer\Exceptions\RendererException;
 use Quantum\Config\Exceptions\ConfigException;
@@ -42,7 +42,7 @@ class ErrorHandler
     const NUM_LINES = 10;
 
     /**
-     * @var string[][]
+     * @var array<int, string>
      */
     const ERROR_TYPES = [
         E_ERROR => 'error',
@@ -235,13 +235,17 @@ class ErrorHandler
      */
     private function getSourceCode(string $filename, int $lineNumber, string $className): string
     {
-        $fs = FileSystemFactory::get();
-
         $lineNumber--;
 
         $start = max($lineNumber - floor(self::NUM_LINES / 2), 1);
 
-        $lines = $fs->getLines($filename, $start, self::NUM_LINES);
+        $adapter = fs()->getAdapter();
+
+        if (!$adapter instanceof LocalFilesystemAdapterInterface) {
+            return '';
+        }
+
+        $lines = $adapter->getLines($filename, $start, self::NUM_LINES);
 
         $code = '<ol start="' . key($lines) . '">';
 

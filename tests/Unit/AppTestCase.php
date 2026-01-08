@@ -20,10 +20,6 @@ abstract class AppTestCase extends TestCase
 
     public function setUp(): void
     {
-        if (!file_exists(PROJECT_ROOT . DS . '.env.testing')) {
-            createEnvFile();
-        }
-
         AppFactory::create(App::WEB, PROJECT_ROOT);
 
         Environment::getInstance()

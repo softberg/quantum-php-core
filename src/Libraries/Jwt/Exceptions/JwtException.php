@@ -11,7 +11,7 @@ declare(strict_types=1);
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Jwt\Exceptions;
@@ -29,8 +29,11 @@ class JwtException extends BaseException
     /**
      * @return JwtException
      */
-    public static function payloadNotFound(): JwtException
+    public static function payloadNotFound(): self
     {
-        return new static(ExceptionMessages::MISSING_PAYLOAD, E_WARNING);
+        return new self(
+            ExceptionMessages::MISSING_PAYLOAD,
+            E_WARNING
+        );
     }
 }

@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 3.0.0
  */
 
 namespace Quantum\Router;
@@ -54,7 +54,7 @@ class Route
 
     /**
      * Current group name
-     * @var string
+     * @var string|null
      */
     private $currentGroupName = null;
 

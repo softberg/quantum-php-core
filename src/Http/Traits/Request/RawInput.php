@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Http\Traits\Request;
@@ -223,7 +223,7 @@ trait RawInput
     /**
      * Parses a file block into metadata and binary content
      * @param string $block
-     * @return array{name: string, filename: string, contentType: string, content: string}
+     * @return array{string, string, string, string}
      */
     private static function parseFileData(string $block): array
     {
@@ -274,7 +274,7 @@ trait RawInput
     /**
      * Extracts name, filename, and content type from header lines
      * @param string $rawHeaders
-     * @return array{name: string, filename: string, contentType: string}
+     * @return array{string, string, string}
      */
     private static function parseHeaders(string $rawHeaders): array
     {

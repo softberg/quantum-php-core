@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Storage\Contracts;
@@ -39,14 +39,14 @@ interface CloudAppInterface
     /**
      * Send request
      * @param string $url
-     * @param array $data
+     * @param array|string|null $data
      * @param array $headers
      * @param string $method
      * @return mixed
      */
     public function sendRequest(
         string $url,
-        array $data = [],
+        $data = null,
         array $headers = [],
         string $method = 'POST'
     );

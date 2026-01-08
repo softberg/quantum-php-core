@@ -37,7 +37,7 @@ jobs:
         with:
           php-version: ${{ matrix.php-versions }}
           extensions: redis, memcached
-          ini-values:  phar.readonly=0, error_reporting=E_ALL
+          ini-values: phar.readonly=0, error_reporting=E_ALL
 
       - name: Validate composer.json and composer.lock
         run: composer validate --strict
@@ -53,6 +53,9 @@ jobs:
 
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress
+
+      - name: Run PHPStan
+        run: composer phpstan
 
       - name: Run tests
         run: composer test -- --fail-on-warning --fail-on-risky

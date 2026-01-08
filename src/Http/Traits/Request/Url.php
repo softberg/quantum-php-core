@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.8
+ * @since 3.0.0
  */
 
 namespace Quantum\Http\Traits\Request;
@@ -23,25 +23,25 @@ trait Url
 
     /**
      * Scheme
-     * @var string
+     * @var string|null
      */
     private static $__protocol = null;
 
     /**
      * Host name
-     * @var string
+     * @var string|null
      */
     private static $__host = null;
 
     /**
      * Server port
-     * @var string
+     * @var string|null
      */
     private static $__port = null;
 
     /**
      * Request URI
-     * @var string
+     * @var string|null
      */
     private static $__uri = null;
 

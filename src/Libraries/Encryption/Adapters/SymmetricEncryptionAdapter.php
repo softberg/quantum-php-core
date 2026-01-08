@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Encryption\Adapters;
@@ -78,7 +78,7 @@ class SymmetricEncryptionAdapter implements EncryptionInterface
 
         $data = explode('::', base64_decode($encrypted), 2);
 
-        if (empty($data) || count($data) < 2) {
+        if (count($data) < 2) {
             throw CryptorException::invalidCipher();
         }
 
