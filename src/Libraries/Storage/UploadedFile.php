@@ -129,9 +129,9 @@ class UploadedFile extends SplFileInfo
         $adapter = fs()->getAdapter();
 
         if (!$adapter instanceof LocalFilesystemAdapterInterface) {
-            throw FileSystemException::methodNotSupported(
-                'local filesystem operations',
-                get_class($adapter)
+            throw FileSystemException::notInstanceOf(
+                get_class($adapter),
+                LocalFilesystemAdapterInterface::class
             );
         }
 
