@@ -76,6 +76,7 @@
         }
     },
     "scripts": {
+        "phpstan": "phpstan analyse --memory-limit=512M --no-progress --error-format=github",
         "test": "vendor/bin/phpunit --stderr --testdox --coverage-clover coverage.xml"
     },
     "minimum-stability": "stable",

@@ -54,6 +54,9 @@ jobs:
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress
 
+      - name: Run PHPStan
+          run: composer phpstan
+
       - name: Run tests
         run: composer test -- --fail-on-warning --fail-on-risky
 
