@@ -35,7 +35,7 @@
         "symfony/console": "^5.4",
         "vlucas/phpdotenv": "^5.0",
         "dflydev/dot-access-data": "^3.0",
-        "php-debugbar/php-debugbar": "^2.0",
+        "php-debugbar/php-debugbar": "^1.8",
         "phpmailer/phpmailer": "^6.0",
         "twig/twig": "^3.0",
         "php-curl-class/php-curl-class": "^11.0",
