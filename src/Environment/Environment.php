@@ -137,6 +137,10 @@ class Environment
             throw EnvException::environmentNotLoaded();
         }
 
+        if (array_key_exists($key, $this->envContent)) {
+            return $this->envContent[$key];
+        }
+
         $val = getenv($key);
 
         return $val !== false ? $val : $default;
