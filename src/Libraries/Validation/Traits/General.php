@@ -107,7 +107,7 @@ trait General
         $iban = substr($iban, 4) . substr($iban, 0, 4);
         $iban = strtr($iban, $character);
 
-        return bcmod($iban, 97) == 1;
+        return bcmod($iban, '97') == 1;
     }
 
     /**

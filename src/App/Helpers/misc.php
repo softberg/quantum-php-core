@@ -121,16 +121,6 @@ function get_caller_function(int $index = 2): ?string
 }
 
 /**
- * Checks if the entity is closure
- * @param mixed $entity
- * @return bool
- */
-function is_closure($entity): bool
-{
-    return $entity instanceof Closure;
-}
-
-/**
  * Exports the variable
  * @param $var
  * @return string

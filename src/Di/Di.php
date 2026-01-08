@@ -20,6 +20,7 @@ use ReflectionParameter;
 use ReflectionFunction;
 use ReflectionMethod;
 use ReflectionClass;
+use Closure;
 
 /**
  * Di Class
@@ -134,9 +135,14 @@ class Di
      */
     public static function autowire(callable $entry, array $args = []): array
     {
-        $reflection = is_closure($entry)
-            ? new ReflectionFunction($entry)
-            : new ReflectionMethod(...$entry);
+        if ($entry instanceof Closure) {
+            $reflection = new ReflectionFunction($entry);
+        } elseif(is_array($entry)) {
+            [$target, $method] = $entry;
+            $reflection = new ReflectionMethod($target, $method);
+        } else {
+            throw DiException::invalidCallable();
+        }
 
         return self::resolveParameters($reflection->getParameters(), $args);
     }
