@@ -1,9 +1,13 @@
 parameters:
     phpVersion: 70400
-    level: 3
+    level: 4
 
     paths:
         - src
+
+    ignoreErrors:
+        - identifier: trait.unused
+          path: src/Model/Traits
 
     checkNullables: true
     checkUninitializedProperties: true

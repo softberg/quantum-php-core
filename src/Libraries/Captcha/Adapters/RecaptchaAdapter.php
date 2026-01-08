@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Captcha\Adapters;
@@ -40,11 +40,6 @@ class RecaptchaAdapter implements CaptchaInterface
      * @var string[]
      */
     protected $elementClasses = ['g-recaptcha'];
-
-    /**
-     * @var RecaptchaAdapter
-     */
-    private static $instance = null;
 
     /**
      * RecaptchaAdapter constructor

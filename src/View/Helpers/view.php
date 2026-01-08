@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.8
+ * @since 3.0.0
  */
 
 use Quantum\Config\Exceptions\ConfigException;
@@ -41,14 +41,14 @@ function view(): ?string
  * Rendered partial
  * @param string $partial
  * @param array $args
- * @return string|null
+ * @return string
  * @throws BaseException
  * @throws ConfigException
  * @throws DebugBarException
  * @throws DiException
  * @throws ReflectionException
  */
-function partial(string $partial, array $args = []): ?string
+function partial(string $partial, array $args = []): string
 {
     return ViewFactory::get()->renderPartial($partial, $args);
 }

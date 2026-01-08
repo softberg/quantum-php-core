@@ -54,11 +54,6 @@ class SendgridAdapter implements MailerInterface
     private $data = [];
 
     /**
-     * @var SendgridAdapter|null
-     */
-    private static $instance = null;
-
-    /**
      * SendgridAdapter constructor
      * @param array $params
      */

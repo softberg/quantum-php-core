@@ -9,18 +9,22 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.8
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Validation;
 
+use Quantum\Libraries\Lang\Exceptions\LangException;
 use Quantum\Libraries\Validation\Traits\Resource;
 use Quantum\Libraries\Validation\Traits\General;
 use Quantum\Libraries\Validation\Traits\Length;
 use Quantum\Libraries\Validation\Traits\Lists;
+use Quantum\Config\Exceptions\ConfigException;
 use Quantum\Libraries\Validation\Traits\Type;
 use Quantum\Libraries\Validation\Traits\File;
+use Quantum\Di\Exceptions\DiException;
 use BadMethodCallException;
+use ReflectionException;
 use RuntimeException;
 use Closure;
 
@@ -185,7 +189,7 @@ class Validator
      */
     public function addRule(string $rule, Closure $function): void
     {
-        if ($rule === '' || $rule === '0' || !is_callable($function)) {
+        if ($rule === '' || $rule === '0') {
             return;
         }
 
@@ -195,6 +199,10 @@ class Validator
     /**
      * Gets validation errors with translations
      * @return array
+     * @throws ConfigException
+     * @throws DiException
+     * @throws LangException
+     * @throws ReflectionException
      */
     public function getErrors(): array
     {

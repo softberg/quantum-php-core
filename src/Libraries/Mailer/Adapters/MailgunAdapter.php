@@ -54,11 +54,6 @@ class MailgunAdapter implements MailerInterface
     private $data = [];
 
     /**
-     * @var MailgunAdapter|null
-     */
-    private static $instance = null;
-
-    /**
      * MailgunAdapter constructor
      * @param array $params
      */

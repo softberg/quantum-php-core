@@ -71,11 +71,6 @@ class SmtpAdapter implements MailerInterface
     protected $stringAttachments = [];
 
     /**
-     * @var SmtpAdapter|null
-     */
-    private static $instance = null;
-
-    /**
      * SmtpAdapter constructor
      * @param array $params
      */

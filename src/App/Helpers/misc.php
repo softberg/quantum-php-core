@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 use Symfony\Component\VarExporter\Exception\ExceptionInterface;
@@ -111,10 +111,13 @@ function get_caller_class(int $index = 2): ?string
  */
 function get_caller_function(int $index = 2): ?string
 {
-    $caller = debug_backtrace();
-    $caller = $caller[$index];
+    $trace = debug_backtrace();
 
-    return $caller['function'] ?? null;
+    if (!isset($trace[$index])) {
+        return null;
+    }
+
+    return $trace[$index]['function'];
 }
 
 /**

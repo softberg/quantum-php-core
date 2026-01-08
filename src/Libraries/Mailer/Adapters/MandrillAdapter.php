@@ -41,22 +41,12 @@ class MandrillAdapter implements MailerInterface
     /**
      * @var string
      */
-    private $apiKey;
-
-    /**
-     * @var string
-     */
     private $apiUrl = 'https://mandrillapp.com/api/1.0/messages/send.json';
 
     /**
      * @var array
      */
     private $data = [];
-
-    /**
-     * @var MandrillAdapter|null
-     */
-    private static $instance = null;
 
     /**
      * MandrillAdapter constructor

@@ -54,11 +54,6 @@ class SendinblueAdapter implements MailerInterface
     private $data = [];
 
     /**
-     * @var SendinblueAdapter|null
-     */
-    private static $instance = null;
-
-    /**
      * SendinblueAdapter constructor
      * @param array $params
      */

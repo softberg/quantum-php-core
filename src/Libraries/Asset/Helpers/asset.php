@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 3.0.0
  */
 
 use Quantum\Libraries\Asset\Exceptions\AssetException;
@@ -18,9 +18,9 @@ use Quantum\Libraries\Asset\AssetManager;
 
 /**
  * Gets the AssetFactory instance
- * @return AssetManager|null
+ * @return AssetManager
  */
-function asset(): ?AssetManager
+function asset(): AssetManager
 {
     return AssetManager::getInstance();
 }

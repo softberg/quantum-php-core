@@ -246,7 +246,7 @@ class Di
             return $args;
         }
 
-        if ($args !== null && $args !== []) {
+        if ($args !== []) {
             return array_shift($args);
         }
 

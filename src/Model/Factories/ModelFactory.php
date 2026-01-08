@@ -51,7 +51,7 @@ class ModelFactory
             $modelClass,
             $model->idColumn,
             $model->relations(),
-            $model->hidden ?? []
+            $model->hidden
         );
 
         $model->setOrmInstance($ormInstance);
