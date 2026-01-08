@@ -99,7 +99,7 @@ trait Criteria
         foreach ($orCriterias as $index => $criteria) {
             $this->criteria(...$criteria);
 
-            if ($index != array_key_last($orCriterias)) {
+            if ($index !== array_key_last($orCriterias)) {
                 $this->criterias[] = 'OR';
             }
         }
@@ -129,9 +129,7 @@ trait Criteria
         ];
 
         if (is_array($value)) {
-            return array_map(function ($v) use ($escapeMap) {
-                return is_string($v) ? strtr($v, $escapeMap) : $v;
-            }, $value);
+            return array_map(fn($v) => is_string($v) ? strtr($v, $escapeMap) : $v, $value);
         }
 
         return is_string($value) ? strtr($value, $escapeMap) : $value;

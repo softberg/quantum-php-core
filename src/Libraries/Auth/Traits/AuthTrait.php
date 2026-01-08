@@ -9,19 +9,19 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Auth\Traits;
 
 use Quantum\Libraries\Auth\Contracts\AuthServiceInterface;
-use Quantum\Libraries\Mailer\Contracts\MailerInterface;
 use Quantum\Libraries\Auth\Exceptions\AuthException;
 use Quantum\Libraries\Jwt\Exceptions\JwtException;
 use Quantum\Config\Exceptions\ConfigException;
 use Quantum\Libraries\Auth\Enums\AuthKeys;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
+use Quantum\Libraries\Mailer\Mailer;
 use Quantum\Libraries\Hasher\Hasher;
 use Quantum\Libraries\Jwt\JwtToken;
 use Quantum\Libraries\Auth\User;
@@ -39,7 +39,7 @@ trait AuthTrait
 {
 
     /**
-     * @var MailerInterface
+     * @var Mailer
      */
     protected $mailer;
 
@@ -316,8 +316,8 @@ trait AuthTrait
     {
         $userData = $user->getData();
 
-        if (count($this->visibleFields)) {
-            foreach ($userData as $field => $value) {
+        if (count($this->visibleFields) > 0) {
+            foreach (array_keys($userData) as $field) {
                 if (!in_array($field, $this->visibleFields)) {
                     unset($userData[$field]);
                 }
@@ -334,7 +334,7 @@ trait AuthTrait
      */
     protected function isActivated(User $user): bool
     {
-        return empty($user->getFieldValue($this->keyFields[AuthKeys::ACTIVATION_TOKEN]));
+        return in_array($user->getFieldValue($this->keyFields[AuthKeys::ACTIVATION_TOKEN]), [null, '', '0'], true);
     }
 
     /**

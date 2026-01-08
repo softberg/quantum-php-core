@@ -33,7 +33,7 @@ trait TableTrait
         $tableSchema = array_filter([$this->columnsSql(), $this->indexesSql()]);
         $sql = '';
 
-        if ($tableSchema) {
+        if ($tableSchema !== []) {
             $sql = 'CREATE TABLE `' . $this->name . '` (';
             $sql .= implode(', ', $tableSchema);
             $sql .= ');';
@@ -51,7 +51,7 @@ trait TableTrait
         $tableSchema = array_filter([$this->columnsSql(), $this->indexesSql(), $this->dropIndexesSql()]);
         $sql = '';
 
-        if ($tableSchema) {
+        if ($tableSchema !== []) {
             $sql = 'ALTER TABLE `' . $this->name . '` ';
             $sql .= implode(', ', $tableSchema);
             $sql .= ';';
@@ -108,7 +108,7 @@ trait TableTrait
                     $this->droppedIndexKeys[] = $entry['column']->get('indexDrop');
                 }
 
-                if ($columnString) {
+                if ($columnString !== '' && $columnString !== '0') {
                     $columns[] = $columnString;
                 }
             }

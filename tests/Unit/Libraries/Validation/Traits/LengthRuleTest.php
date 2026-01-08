@@ -9,6 +9,7 @@ use Quantum\Tests\Unit\AppTestCase;
 class LengthRuleTest extends AppTestCase
 {
 
+    public $validator;
     private $request;
 
     public function setUp(): void

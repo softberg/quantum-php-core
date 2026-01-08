@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Session\Adapters\Database;
@@ -43,11 +43,7 @@ class DatabaseHandler implements SessionHandlerInterface
      */
     public function open($path, $name): bool
     {
-        if ($this->sessionModel::getConnection()) {
-            return true;
-        }
-
-        return false;
+        return (bool) $this->sessionModel::getConnection();
     }
 
     /**
@@ -55,11 +51,7 @@ class DatabaseHandler implements SessionHandlerInterface
      */
     public function close(): bool
     {
-        if (!$this->sessionModel::getConnection()) {
-            return true;
-        }
-
-        return false;
+        return !$this->sessionModel::getConnection();
     }
 
     /**
@@ -104,10 +96,16 @@ class DatabaseHandler implements SessionHandlerInterface
     /**
      * @inheritDoc
      */
-    #[\ReturnTypeWillChange]
-    public function gc($max_lifetime): bool
+    public function gc($max_lifetime)
     {
         $old = time() - $max_lifetime;
-        return $this->sessionModel->criteria('ttl', '<', $old)->deleteMany();
+
+        $result = $this->sessionModel->criteria('ttl', '<', $old)->deleteMany();
+
+        if ($result === false) {
+            return false;
+        }
+
+        return 0;
     }
 }

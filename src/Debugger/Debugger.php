@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Debugger;
@@ -58,7 +58,7 @@ class Debugger
 
     /**
      * Store
-     * @var array
+     * @var DebuggerStore
      */
     private $store;
 
@@ -112,8 +112,8 @@ class Debugger
     public static function getInstance(DebuggerStore $store = null, DebugBar $debugBar = null, ?array $collectors = []): Debugger
     {
         if (self::$instance === null) {
-            $debugBar = $debugBar ?? new DebugBar();
-            $store = $store ?? new DebuggerStore();
+            $debugBar ??= new DebugBar();
+            $store ??= new DebuggerStore();
             $collectors = $collectors ?: self::getDefaultCollectors();
 
             self::$instance = new self($store, $debugBar, $collectors);
@@ -213,7 +213,7 @@ class Debugger
 
         $messages = $this->store->get($type);
 
-        if (count($messages)) {
+        if (count($messages) > 0) {
             foreach ($messages as $message) {
                 $fn = key($message);
                 $this->debugBar[$type]->$fn($message[$fn]);

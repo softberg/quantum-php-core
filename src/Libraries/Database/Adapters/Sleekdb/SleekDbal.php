@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Database\Adapters\Sleekdb;
@@ -83,12 +83,12 @@ class SleekDbal implements DbalInterface
     protected $ordered = [];
 
     /**
-     * @var int
+     * @var int|null
      */
     protected $offset;
 
     /**
-     * @var int
+     * @var int|null
      */
     protected $limit;
 
@@ -166,7 +166,7 @@ class SleekDbal implements DbalInterface
      */
     public function __construct(
         string $table,
-        string $modelName = null,
+        ?string $modelName = null,
         string $idColumn = 'id',
         array  $foreignKeys = [],
         array  $hidden = []
@@ -179,7 +179,7 @@ class SleekDbal implements DbalInterface
         $this->hidden = $hidden;
     }
 
-    public function __get($key)
+    public function __get(string $key)
     {
         return $this->data[$key] ?? null;
     }
@@ -308,27 +308,27 @@ class SleekDbal implements DbalInterface
             $this->queryBuilder = $this->getOrmModel()->createQueryBuilder();
         }
 
-        if (!empty($this->selected)) {
+        if ($this->selected !== []) {
             $this->queryBuilder->select($this->selected);
         }
 
-        if (!empty($this->joins)) {
+        if ($this->joins !== []) {
             $this->applyJoins();
         }
 
-        if (!empty($this->criterias)) {
+        if ($this->criterias !== []) {
             $this->queryBuilder->where($this->criterias);
         }
 
-        if (!empty($this->havings)) {
+        if ($this->havings !== []) {
             $this->queryBuilder->having($this->havings);
         }
 
-        if (!empty($this->grouped)) {
+        if ($this->grouped !== []) {
             $this->queryBuilder->groupBy($this->grouped);
         }
 
-        if (!empty($this->ordered)) {
+        if ($this->ordered !== []) {
             $this->queryBuilder->orderBy($this->ordered);
         }
 

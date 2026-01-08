@@ -9,6 +9,7 @@ use Quantum\Tests\Unit\AppTestCase;
 class TypeRuleTest extends AppTestCase
 {
 
+    public $validator;
     public function setUp(): void
     {
         parent::setUp();

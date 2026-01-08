@@ -9,9 +9,6 @@ use Quantum\Loader\Setup;
 
 class SmtpAdapterTest extends MailerTestCase
 {
-
-    protected $adapter;
-
     public function setUp(): void
     {
         parent::setUp();

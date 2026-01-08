@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.8
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Validation\Traits;
@@ -27,14 +27,14 @@ trait File
     /**
      * Validates file size
      * @param UploadedFile $file
-     * @param int|null $maxSize
+     * @param int $maxSize
      * @param int|null $minSize
      * @return bool
      */
     public function fileSize(UploadedFile $file, int $maxSize, ?int $minSize = null): bool
     {
         $size = $file->getSize();
-        $minSize = $minSize ?? 0;
+        $minSize ??= 0;
 
         return $size >= $minSize && $size <= $maxSize;
     }
@@ -73,7 +73,7 @@ trait File
     {
         $dimensions = $file->getDimensions();
 
-        if (empty($dimensions)) {
+        if ($dimensions === []) {
             return true;
         }
 

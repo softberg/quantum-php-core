@@ -1,0 +1,44 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+## [3.0.0] - TBD
+
+### Changed
+- **BREAKING:** Minimum PHP version requirement raised from 7.3 to 7.4
+- Modernized codebase with PHP 7.4+ syntax using Rector:
+  - Array destructuring: `list()` → `[]`
+  - Arrow functions for simple closures
+  - Null coalescing assignment operator (`??=`)
+  - Class constant references using `::class`
+  - Secure random number generation with `random_int()`
+  - Modern `setcookie()` array syntax
+- Updated CI pipeline to test against PHP 7.4, 8.0, and 8.1
+- CI now fails on PHP warnings and deprecations for stricter quality control
+- Added `declare(strict_types=1)` to all Exception classes for improved type safety
+
+### Fixed
+- PHP 8.1 compatibility: Fixed null parameter deprecations in `explode()`, `parse_url()`, and `str_replace()`
+- PHP 8.4 forward compatibility: Fixed implicitly nullable parameters in database and auth adapters
+- PHP 8.4 forward compatibility: Added missing type hint to `SleekDbal::__get()` magic method
+- Fixed deprecated `E_STRICT` constant usage in test bootstrap
+- Fixed cURL error message assertions for cross-version compatibility
+
+### Added
+- Rector as dev dependency for automated code refactoring
+- Additional PHP extensions required in CI: `bcmath`, `gd`, `zip`
+- PHPUnit strict testing flags: `--fail-on-warning`, `--fail-on-risky`
+
+### Removed
+- Support for PHP 7.3 and earlier versions
+
+---
+
+## [2.x.x] - Previous versions
+
+See Git history for changes in earlier versions.

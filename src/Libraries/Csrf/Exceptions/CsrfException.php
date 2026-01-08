@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Quantum PHP Framework
  *
@@ -9,7 +11,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Csrf\Exceptions;
@@ -26,16 +28,22 @@ class CsrfException extends BaseException
     /**
      * @return CsrfException
      */
-    public static function tokenNotFound(): CsrfException
+    public static function tokenNotFound(): self
     {
-        return new static(ExceptionMessages::CSRF_TOKEN_MISSING, E_WARNING);
+        return new self(
+            ExceptionMessages::CSRF_TOKEN_MISSING,
+            E_WARNING
+        );
     }
 
     /**
      * @return CsrfException
      */
-    public static function tokenNotMatched(): CsrfException
+    public static function tokenNotMatched(): self
     {
-        return new static(ExceptionMessages::CSRF_TOKEN_MISMATCH, E_WARNING);
+        return new self(
+            ExceptionMessages::CSRF_TOKEN_MISMATCH,
+            E_WARNING
+        );
     }
 }

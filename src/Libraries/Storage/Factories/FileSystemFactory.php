@@ -75,7 +75,7 @@ class FileSystemFactory
             config()->import(new Setup('config', 'fs'));
         }
 
-        $adapter = $adapter ?? config()->get('fs.default');
+        $adapter ??= config()->get('fs.default');
 
         $adapterClass = self::getAdapterClass($adapter);
 

@@ -26,7 +26,9 @@ use Quantum\App\Traits\ConsoleAppTrait;
 use Quantum\Di\Exceptions\DiException;
 use ReflectionException;
 
-if (!defined('DS')) define('DS', DIRECTORY_SEPARATOR);
+if (!defined('DS')) {
+    define('DS', DIRECTORY_SEPARATOR);
+}
 
 /**
  * Class ConsoleAppAdapter

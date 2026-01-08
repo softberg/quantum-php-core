@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Quantum PHP Framework
  *
@@ -9,7 +11,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\App\Exceptions;
@@ -26,8 +28,11 @@ class AppException extends BaseException
     /**
      * @return AppException
      */
-    public static function missingAppKey(): AppException
+    public static function missingAppKey(): self
     {
-        return new static(ExceptionMessages::APP_KEY_MISSING, E_ERROR);
+        return new self(
+            ExceptionMessages::APP_KEY_MISSING,
+            E_ERROR
+        );
     }
 }

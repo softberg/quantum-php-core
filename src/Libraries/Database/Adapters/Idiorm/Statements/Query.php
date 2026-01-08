@@ -9,13 +9,13 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Database\Adapters\Idiorm\Statements;
 
 use Quantum\Libraries\Database\Exceptions\DatabaseException;
-use Quantum\App\Exceptions\BaseException;
+use PDOException;
 
 /**
  * Trait Query
@@ -26,7 +26,7 @@ trait Query
 
     /**
      * @inheritDoc
-     * @throws BaseException
+     * @throws DatabaseException
      */
     public static function execute(string $query, array $parameters = []): bool
     {
@@ -34,12 +34,19 @@ trait Query
             throw DatabaseException::missingConfig('database');
         }
 
-        return (self::$ormClass)::raw_execute($query, $parameters);
+        try {
+            return (self::$ormClass)::raw_execute($query, $parameters);
+        } catch (PDOException $e) {
+            throw new DatabaseException(
+                $e->getMessage(),
+                (int) $e->getCode(),
+            );
+        }
     }
 
     /**
      * @inheritDoc
-     * @throws BaseException
+     * @throws DatabaseException
      */
     public static function query(string $query, array $parameters = []): array
     {
@@ -47,12 +54,21 @@ trait Query
             throw DatabaseException::missingConfig('database');
         }
 
-        return (self::$ormClass)::for_table('dummy')->raw_query($query, $parameters)->find_array();
+        try {
+            return (self::$ormClass)::for_table('dummy')
+                ->raw_query($query, $parameters)
+                ->find_array();
+        } catch (PDOException $e) {
+            throw new DatabaseException(
+                $e->getMessage(),
+                (int) $e->getCode(),
+            );
+        }
     }
 
     /**
      * @inheritDoc
-     * @throws BaseException
+     * @throws DatabaseException
      */
     public static function lastQuery(): ?string
     {
@@ -65,7 +81,7 @@ trait Query
 
     /**
      * @inheritDoc
-     * @throws BaseException
+     * @throws DatabaseException
      */
     public static function lastStatement(): object
     {
@@ -78,7 +94,7 @@ trait Query
 
     /**
      * @inheritDoc
-     * @throws BaseException
+     * @throws DatabaseException
      */
     public static function queryLog(): array
     {
@@ -93,7 +109,7 @@ trait Query
      * Fetches columns of the table
      * @param string $table
      * @return array
-     * @throws BaseException
+     * @throws DatabaseException
      */
     public static function fetchColumns(string $table): array
     {

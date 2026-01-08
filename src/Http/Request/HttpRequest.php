@@ -99,7 +99,7 @@ abstract class HttpRequest
         self::setContentType();
         self::setRequestHeaders();
 
-        list('params' => $rawInputParams, 'files' => $rawInputFiles) = self::getRawInputParams();
+        ['params' => $rawInputParams, 'files' => $rawInputFiles] = self::getRawInputParams();
 
         self::setRequestParams($rawInputParams);
         self::setUploadedFiles($rawInputFiles);
@@ -185,7 +185,7 @@ abstract class HttpRequest
      */
     public static function isMethod(string $method): bool
     {
-        return strcasecmp($method, self::$__method) == 0;
+        return strcasecmp($method, self::$__method) === 0;
     }
 
     /**
@@ -215,7 +215,7 @@ abstract class HttpRequest
         $baseUrl = config()->get('app.base_url');
 
         $prefix = route_prefix();
-        $modulePrefix = ($withModulePrefix && !empty($prefix)) ? '/' . $prefix : '';
+        $modulePrefix = ($withModulePrefix && !in_array($prefix, [null, '', '0'], true)) ? '/' . $prefix : '';
 
         if ($baseUrl) {
             return $baseUrl . $modulePrefix;

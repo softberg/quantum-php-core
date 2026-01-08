@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 use Symfony\Component\VarExporter\Exception\ExceptionInterface;
@@ -57,7 +57,7 @@ function random_number(int $length = 10): int
 {
     $randomString = '';
     for ($i = 0; $i < $length; $i++) {
-        $randomString .= rand(0, 9);
+        $randomString .= random_int(0, 9);
     }
     return (int)$randomString;
 }
@@ -75,7 +75,7 @@ function slugify(string $text): string
     $text = trim($text, '-');
     $text = mb_strtolower($text);
 
-    if (empty($text)) {
+    if ($text === '' || $text === '0') {
         return 'n-a';
     }
 
@@ -111,20 +111,13 @@ function get_caller_class(int $index = 2): ?string
  */
 function get_caller_function(int $index = 2): ?string
 {
-    $caller = debug_backtrace();
-    $caller = $caller[$index];
+    $trace = debug_backtrace();
 
-    return $caller['function'] ?? null;
-}
+    if (!isset($trace[$index])) {
+        return null;
+    }
 
-/**
- * Checks if the entity is closure
- * @param mixed $entity
- * @return bool
- */
-function is_closure($entity): bool
-{
-    return $entity instanceof Closure;
+    return $trace[$index]['function'];
 }
 
 /**

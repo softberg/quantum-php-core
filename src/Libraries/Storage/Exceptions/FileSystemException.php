@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Quantum PHP Framework
  *
@@ -9,7 +11,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Storage\Exceptions;
@@ -28,26 +30,35 @@ class FileSystemException extends BaseException
      * @param string $name
      * @return FileSystemException
      */
-    public static function directoryNotExists(string $name): FileSystemException
+    public static function directoryNotExists(string $name): self
     {
-        return new static(_message(ExceptionMessages::DIRECTORY_NOT_EXISTS, [$name]), E_WARNING);
+        return new self(
+            _message(ExceptionMessages::DIRECTORY_NOT_EXISTS, [$name]),
+            E_WARNING
+        );
     }
 
     /**
      * @param string $name
      * @return FileSystemException
      */
-    public static function directoryNotWritable(string $name): FileSystemException
+    public static function directoryNotWritable(string $name): self
     {
-        return new static(_message(ExceptionMessages::DIRECTORY_NOT_WRITABLE, [$name]), E_WARNING);
+        return new self(
+            _message(ExceptionMessages::DIRECTORY_NOT_WRITABLE, [$name]),
+            E_WARNING
+        );
     }
 
     /**
      * @param string $path
      * @return FileSystemException
      */
-    public static function fileAlreadyExists(string $path): FileSystemException
+    public static function fileAlreadyExists(string $path): self
     {
-        return new static(_message(ExceptionMessages::FILE_ALREADY_EXISTS, [$path]), E_WARNING);
+        return new self(
+            _message(ExceptionMessages::FILE_ALREADY_EXISTS, [$path]),
+            E_WARNING
+        );
     }
 }

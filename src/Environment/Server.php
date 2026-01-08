@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Environment;
@@ -34,7 +34,7 @@ class Server
      */
     private function __construct()
     {
-        $this->server = $_SERVER ?? [];
+        $this->server = $_SERVER;
     }
 
     /**
@@ -192,7 +192,7 @@ class Server
     {
         $data = $this->all();
 
-        if (empty($data)) {
+        if ($data === []) {
             return [];
         }
 

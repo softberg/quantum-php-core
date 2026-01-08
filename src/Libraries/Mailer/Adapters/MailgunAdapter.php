@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Mailer\Adapters;
@@ -36,7 +36,7 @@ class MailgunAdapter implements MailerInterface
     /**
      * @var HttpClient
      */
-    private $httpClient;
+    protected $httpClient;
 
     /**
      * @var string
@@ -52,11 +52,6 @@ class MailgunAdapter implements MailerInterface
      * @var array
      */
     private $data = [];
-
-    /**
-     * @var MailgunAdapter|null
-     */
-    private static $instance = null;
 
     /**
      * MailgunAdapter constructor
@@ -92,7 +87,7 @@ class MailgunAdapter implements MailerInterface
             if ($this->templatePath) {
                 $body = $this->createFromTemplate();
             } else {
-                $body = is_array($this->message) ? implode($this->message) : $this->message;
+                $body = is_array($this->message) ? implode('', $this->message) : $this->message;
             }
 
             $this->data['html'] = trim(str_replace("\n", "", $body));

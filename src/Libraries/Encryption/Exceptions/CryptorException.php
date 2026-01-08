@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Quantum PHP Framework
  *
@@ -9,7 +11,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Encryption\Exceptions;
@@ -27,24 +29,33 @@ class CryptorException extends BaseException
     /**
      * @return CryptorException
      */
-    public static function publicKeyNotProvided(): CryptorException
+    public static function publicKeyNotProvided(): self
     {
-        return new static(ExceptionMessages::PUBLIC_KEY_MISSING, E_WARNING);
+        return new self(
+            ExceptionMessages::PUBLIC_KEY_MISSING,
+            E_WARNING
+        );
     }
 
     /**
      * @return CryptorException
      */
-    public static function privateKeyNotProvided(): CryptorException
+    public static function privateKeyNotProvided(): self
     {
-        return new static(ExceptionMessages::PRIVATE_KEY_MISSING, E_WARNING);
+        return new self(
+            ExceptionMessages::PRIVATE_KEY_MISSING,
+            E_WARNING
+        );
     }
 
     /**
      * @return CryptorException
      */
-    public static function invalidCipher(): CryptorException
+    public static function invalidCipher(): self
     {
-        return new static(ExceptionMessages::INVALID_CIPHER, E_WARNING);
+        return new self(
+            ExceptionMessages::INVALID_CIPHER,
+            E_WARNING
+        );
     }
 }

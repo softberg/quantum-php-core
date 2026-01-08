@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Quantum PHP Framework
  *
@@ -9,7 +11,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Environment\Exceptions;
@@ -27,16 +29,22 @@ class EnvException extends BaseException
     /**
      * @return EnvException
      */
-    public static function environmentImmutable(): EnvException
+    public static function environmentImmutable(): self
     {
-        return new static(ExceptionMessages::IMMUTABLE_ENVIRONMENT, E_ERROR);
+        return new self(
+            ExceptionMessages::IMMUTABLE_ENVIRONMENT,
+            E_ERROR
+        );
     }
 
     /**
      * @return EnvException
      */
-    public static function environmentNotLoaded(): EnvException
+    public static function environmentNotLoaded(): self
     {
-        return new static(ExceptionMessages::ENVIRONMENT_NOT_LOADED, E_ERROR);
+        return new self(
+            ExceptionMessages::ENVIRONMENT_NOT_LOADED,
+            E_ERROR
+        );
     }
 }

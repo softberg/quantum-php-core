@@ -15,7 +15,7 @@ jobs:
     strategy:
       matrix:
         operating-system: [ ubuntu-latest ]
-        php-versions: [ '7.3', '7.4' ]
+        php-versions: [ '7.4', '8.0', '8.1' ]
         redis-version: [ 6 ]
 
     runs-on: ${{ matrix.operating-system }}
@@ -37,7 +37,7 @@ jobs:
         with:
           php-version: ${{ matrix.php-versions }}
           extensions: redis, memcached
-          ini-values:  phar.readonly=0
+          ini-values: phar.readonly=0, error_reporting=E_ALL
 
       - name: Validate composer.json and composer.lock
         run: composer validate --strict
@@ -54,8 +54,11 @@ jobs:
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress
 
+      - name: Run PHPStan
+        run: composer phpstan
+
       - name: Run tests
-        run: composer test
+        run: composer test -- --fail-on-warning --fail-on-risky
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3

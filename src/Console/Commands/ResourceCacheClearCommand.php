@@ -162,7 +162,7 @@ class ResourceCacheClearCommand extends QtCommand
 	 */
 	private function initModule(?string $moduleOption): void
 	{
-		if (!empty($moduleOption)) {
+		if (!in_array($moduleOption, [null, '', '0'], true)) {
 			$this->importModules();
 			$module = strtolower($moduleOption);
 
@@ -181,7 +181,7 @@ class ResourceCacheClearCommand extends QtCommand
 	 */
 	private function initType(?string $typeOption): void
 	{
-		if (!empty($typeOption)) {
+		if (!in_array($typeOption, [null, '', '0'], true)) {
 			$type = strtolower($typeOption);
 
 			if (in_array($type, $this->types)) {

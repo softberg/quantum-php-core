@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 3.0.0
  */
 
 namespace Quantum\Renderer\Factories;
@@ -40,7 +40,7 @@ class RendererFactory
     ];
 
     /**
-     * @var Renderer|null
+     * @var array<string, Renderer>
      */
     private static $instances = [];
 
@@ -58,7 +58,7 @@ class RendererFactory
             config()->import(new Setup('config', 'view'));
         }
 
-        $adapter = $adapter ?? config()->get('view.default');
+        $adapter ??= config()->get('view.default');
 
         $adapterClass = self::getAdapterClass($adapter);
 

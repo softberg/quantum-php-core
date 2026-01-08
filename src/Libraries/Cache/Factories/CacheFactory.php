@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Cache\Factories;
@@ -44,7 +44,7 @@ class CacheFactory
     ];
 
     /**
-     * @var Cache|null
+     * @var array<string, Cache>
      */
     private static $instances = [];
 
@@ -62,7 +62,7 @@ class CacheFactory
             config()->import(new Setup('config', 'cache'));
         }
 
-        $adapter = $adapter ?? config()->get('cache.default');
+        $adapter ??= config()->get('cache.default');
 
         $adapterClass = self::getAdapterClass($adapter);
 

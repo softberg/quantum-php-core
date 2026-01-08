@@ -113,7 +113,7 @@ class WebAppAdapter extends AppAdapter
             info(HookManager::getInstance()->getRegistered(), ['tab' => Debugger::HOOKS]);
 
             if (current_middlewares()) {
-                list($this->request, $this->response) = (new MiddlewareManager())->applyMiddlewares($this->request, $this->response);
+                [$this->request, $this->response] = (new MiddlewareManager())->applyMiddlewares($this->request, $this->response);
             }
 
             $viewCache = $this->setupViewCache();

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Quantum PHP Framework
  *
@@ -9,7 +11,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Router\Exceptions;
@@ -26,83 +28,113 @@ class RouteException extends BaseException
     /**
      * @return RouteException
      */
-    public static function routeNotFound(): RouteException
+    public static function routeNotFound(): self
     {
-        return new static(ExceptionMessages::ROUTE_NOT_FOUND, E_ERROR);
+        return new self(
+            ExceptionMessages::ROUTE_NOT_FOUND,
+            E_ERROR
+        );
     }
 
     /**
      * @return RouteException
      */
-    public static function notClosure(): RouteException
+    public static function notClosure(): self
     {
-        return new static(ExceptionMessages::ROUTE_NOT_CLOSURE, E_WARNING);
+        return new self(
+            ExceptionMessages::ROUTE_NOT_CLOSURE,
+            E_WARNING
+        );
     }
 
     /**
      * @param string $name
      * @return RouteException
      */
-    public static function repetitiveRouteSameMethod(string $name): RouteException
+    public static function repetitiveRouteSameMethod(string $name): self
     {
-        return new static(_message(ExceptionMessages::REPETITIVE_ROUTE_WITH_SAME_NAME, [$name]), E_WARNING);
+        return new self(
+            _message(ExceptionMessages::REPETITIVE_ROUTE_WITH_SAME_NAME, [$name]),
+            E_WARNING
+        );
     }
 
     /**
      * @return RouteException
      */
-    public static function repetitiveRouteDifferentModules(): RouteException
+    public static function repetitiveRouteDifferentModules(): self
     {
-        return new static(ExceptionMessages::REPETITIVE_ROUTE_IN_DIFFERENT_MODULES, E_WARNING);
+        return new self(
+            ExceptionMessages::REPETITIVE_ROUTE_IN_DIFFERENT_MODULES,
+            E_WARNING
+        );
     }
 
     /**
      * @param string|null $name
      * @return RouteException
      */
-    public static function incorrectMethod(?string $name): RouteException
+    public static function incorrectMethod(?string $name): self
     {
-        return new static(_message(ExceptionMessages::INCORRECT_METHOD, [$name]), E_WARNING);
+        return new self(
+            _message(ExceptionMessages::INCORRECT_METHOD, [$name]),
+            E_WARNING
+        );
     }
 
     /**
      * @return RouteException
      */
-    public static function nameBeforeDefinition(): RouteException
+    public static function nameBeforeDefinition(): self
     {
-        return new static(ExceptionMessages::NAME_BEFORE_ROUTE_DEFINITION, E_WARNING);
+        return new self(
+            ExceptionMessages::NAME_BEFORE_ROUTE_DEFINITION,
+            E_WARNING
+        );
     }
 
     /**
      * @return RouteException
      */
-    public static function nameOnGroup(): RouteException
+    public static function nameOnGroup(): self
     {
-        return new static(ExceptionMessages::NAME_ON_ROUTE_GROUP, E_WARNING);
+        return new self(
+            ExceptionMessages::NAME_ON_ROUTE_GROUP,
+            E_WARNING
+        );
     }
 
     /**
      * @return RouteException
      */
-    public static function nonUniqueName(): RouteException
+    public static function nonUniqueName(): self
     {
-        return new static(ExceptionMessages::NAME_NOT_UNIQUE, E_WARNING);
+        return new self(
+            ExceptionMessages::NAME_NOT_UNIQUE,
+            E_WARNING
+        );
     }
 
     /**
      * @param string $name
      * @return RouteException
      */
-    public static function paramNameNotAvailable(string $name): RouteException
+    public static function paramNameNotAvailable(string $name): self
     {
-        return new static(_message(ExceptionMessages::ROUTE_PARAM_NAME_IN_USE, [$name]), E_WARNING);
+        return new self(
+            _message(ExceptionMessages::ROUTE_PARAM_NAME_IN_USE, [$name]),
+            E_WARNING
+        );
     }
 
     /**
      * @return RouteException
      */
-    public static function paramNameNotValid(): RouteException
+    public static function paramNameNotValid(): self
     {
-        return new static(ExceptionMessages::INVALID_ROUTE_PARAM_NAME, E_WARNING);
+        return new self(
+            ExceptionMessages::INVALID_ROUTE_PARAM_NAME,
+            E_WARNING
+        );
     }
 }

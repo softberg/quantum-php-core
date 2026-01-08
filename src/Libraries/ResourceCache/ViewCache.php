@@ -194,12 +194,7 @@ class ViewCache
     public function exists(string $key): bool
     {
         $cacheFile = $this->getCacheFile($key);
-
-        if (!$this->fs->exists($cacheFile) || $this->isExpired($cacheFile)) {
-            return false;
-        }
-
-        return true;
+        return $this->fs->exists($cacheFile) && !$this->isExpired($cacheFile);
     }
 
     /**

@@ -8,9 +8,6 @@ use Quantum\Libraries\Mailer\Adapters\MailgunAdapter;
 
 class MailgunAdapterTest extends MailerTestCase
 {
-
-    protected $adapter;
-
     public function setUp(): void
     {
         parent::setUp();

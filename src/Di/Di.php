@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.8
+ * @since 3.0.0
  */
 
 namespace Quantum\Di;
@@ -20,6 +20,7 @@ use ReflectionParameter;
 use ReflectionFunction;
 use ReflectionMethod;
 use ReflectionClass;
+use Closure;
 
 /**
  * Di Class
@@ -134,9 +135,14 @@ class Di
      */
     public static function autowire(callable $entry, array $args = []): array
     {
-        $reflection = is_closure($entry)
-            ? new ReflectionFunction($entry)
-            : new ReflectionMethod(...$entry);
+        if ($entry instanceof Closure) {
+            $reflection = new ReflectionFunction($entry);
+        } elseif(is_array($entry)) {
+            [$target, $method] = $entry;
+            $reflection = new ReflectionMethod($target, $method);
+        } else {
+            throw DiException::invalidCallable();
+        }
 
         return self::resolveParameters($reflection->getParameters(), $args);
     }
@@ -223,14 +229,18 @@ class Di
     /**
      * Resolves the parameter
      * @param ReflectionParameter $param
-     * @param array|null $args
+     * @param array $args
      * @return array|mixed|null
      * @throws DiException
      * @throws ReflectionException
      */
-    private static function resolveParameter(ReflectionParameter $param, ?array &$args = [])
+    private static function resolveParameter(ReflectionParameter $param, array &$args = [])
     {
-        $type = $param->getType() ? $param->getType()->getName() : null;
+        $type = null;
+
+        if ($param->getType() instanceof \ReflectionNamedType) {
+            $type = $param->getType()->getName();
+        }
 
         $concrete = self::$dependencies[$type] ?? $type;
 
@@ -242,7 +252,7 @@ class Di
             return $args;
         }
 
-        if (!empty($args)) {
+        if ($args !== []) {
             return array_shift($args);
         }
 

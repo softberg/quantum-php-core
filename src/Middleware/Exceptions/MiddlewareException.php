@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Quantum PHP Framework
  *
@@ -9,7 +11,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Middleware\Exceptions;
@@ -28,8 +30,11 @@ class MiddlewareException extends BaseException
      * @param string $name
      * @return MiddlewareException
      */
-    public static function middlewareNotFound(string $name): MiddlewareException
+    public static function middlewareNotFound(string $name): self
     {
-        return new static(_message(ExceptionMessages::MIDDLEWARE_NOT_FOUND, [$name]), E_ERROR);
+        return new self(
+            _message(ExceptionMessages::MIDDLEWARE_NOT_FOUND, [$name]),
+            E_ERROR
+        );
     }
 }

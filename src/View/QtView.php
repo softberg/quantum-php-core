@@ -107,7 +107,7 @@ class QtView
     {
         $this->layoutFile = $layoutFile;
 
-        if(!empty($assets)) {
+        if($assets !== []) {
             $this->assets = array_merge($this->assets, $assets);
         }
     }
@@ -211,13 +211,13 @@ class QtView
             throw ViewException::noLayoutSet();
         }
 
-        if (!empty($params)) {
+        if ($params !== []) {
             $this->params = array_merge($this->params, $params);
         }
 
         $this->viewContent = $this->renderFile($viewFile);
 
-        if (!empty($this->assets)) {
+        if ($this->assets !== []) {
             $this->assetManager->register($this->assets);
         }
 
@@ -244,7 +244,7 @@ class QtView
      */
     public function renderPartial(string $viewFile, array $params = []): string
     {
-        if (!empty($params)) {
+        if ($params !== []) {
             $this->params = array_merge($this->params, $params);
         }
 

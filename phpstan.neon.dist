@@ -1,0 +1,16 @@
+parameters:
+    phpVersion: 70400
+    level: 5
+
+    paths:
+        - src
+
+    ignoreErrors:
+        - identifier: trait.unused
+          path: src/Model/Traits
+
+    checkNullables: true
+    checkUninitializedProperties: true
+
+    checkDynamicProperties: false
+    treatPhpDocTypesAsCertain: false

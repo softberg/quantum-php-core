@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.8
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Validation\Traits;
@@ -37,7 +37,7 @@ trait General
      */
     protected function required(string $value): bool
     {
-        return !empty($value);
+        return $value !== '' && $value !== '0';
     }
 
     /**
@@ -68,9 +68,9 @@ trait General
         $total = 0;
 
         for ($i = 0; $i < $length; ++$i) {
-            $digit = $number[$i];
+            $digit = (int) $number[$i];
 
-            if ($i % 2 == $parity) {
+            if ($i % 2 === $parity) {
                 $digit *= 2;
 
                 if ($digit > 9) {
@@ -81,7 +81,7 @@ trait General
             $total += $digit;
         }
 
-        return $total % 10 == 0;
+        return $total % 10 === 0;
     }
 
     /**
@@ -107,7 +107,7 @@ trait General
         $iban = substr($iban, 4) . substr($iban, 0, 4);
         $iban = strtr($iban, $character);
 
-        return bcmod($iban, 97) == 1;
+        return bcmod($iban, '97') == 1;
     }
 
     /**
@@ -174,7 +174,7 @@ trait General
      */
     protected function starts(string $value, ?string $text = null): bool
     {
-        return strpos($value, $text) === 0;
+        return strpos($value, (string) $text) === 0;
     }
 
     /**

@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.8
+ * @since 3.0.0
  */
 
 namespace Quantum\Http\Traits\Request;
@@ -23,25 +23,25 @@ trait Url
 
     /**
      * Scheme
-     * @var string
+     * @var string|null
      */
     private static $__protocol = null;
 
     /**
      * Host name
-     * @var string
+     * @var string|null
      */
     private static $__host = null;
 
     /**
      * Server port
-     * @var string
+     * @var string|null
      */
     private static $__port = null;
 
     /**
      * Request URI
-     * @var string
+     * @var string|null
      */
     private static $__uri = null;
 
@@ -127,11 +127,7 @@ trait Url
     {
         $segments = self::getAllSegments();
 
-        if (isset($segments[$index])) {
-            return $segments[$index];
-        }
-
-        return null;
+        return $segments[$index] ?? null;
     }
 
     /**
@@ -140,6 +136,10 @@ trait Url
      */
     public static function getAllSegments(): array
     {
+        if (self::$__uri === null) {
+            return ['zero_segment'];
+        }
+        
         $segments = explode('/', trim(parse_url(self::$__uri)['path'], '/'));
         array_unshift($segments, 'zero_segment');
         return $segments;

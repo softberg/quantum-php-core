@@ -16,6 +16,7 @@ use Mockery;
 class FileSystemTest extends AppTestCase
 {
 
+    public $googleDriveAppMock;
     private $dropboxAppMock;
 
     public function setUp(): void

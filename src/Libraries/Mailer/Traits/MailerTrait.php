@@ -9,14 +9,16 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Mailer\Traits;
 
 use Quantum\Libraries\Mailer\Contracts\MailerInterface;
+use Quantum\Libraries\HttpClient\HttpClient;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Libraries\Mailer\MailTrap;
+use PHPMailer\PHPMailer\PHPMailer;
 use Quantum\Debugger\Debugger;
 use ReflectionException;
 use Exception;
@@ -42,13 +44,13 @@ trait MailerTrait
 
     /**
      * Email subject
-     * @var string
+     * @var string|null
      */
     private $subject = null;
 
     /**
      * Email body
-     * @var string|array
+     * @var string|array|null
      */
     private $message = null;
 
@@ -59,9 +61,49 @@ trait MailerTrait
 
     /**
      * Template path
-     * @var string
+     * @var string|null
      */
     private $templatePath = null;
+
+    /**
+     * @var HttpClient
+     */
+    protected $httpClient;
+
+    /**
+     * @var PHPMailer
+     */
+    protected $mailer;
+
+    /**
+     * Reply To addresses
+     * @var array
+     */
+    protected $replyToAddresses = [];
+
+    /**
+     * CC addresses
+     * @var array
+     */
+    protected $ccAddresses = [];
+
+    /**
+     * BCC addresses
+     * @var array
+     */
+    protected $bccAddresses = [];
+
+    /**
+     * Email attachments
+     * @var array
+     */
+    protected $attachments = [];
+
+    /**
+     * Email attachments created from string
+     * @var array
+     */
+    protected $stringAttachments = [];
 
     /**
      * Sets the 'From' email and the name

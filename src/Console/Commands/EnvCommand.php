@@ -70,11 +70,9 @@ class EnvCommand extends QtCommand
             $this->error('.env.example file not found');
         }
 
-        if ($fs->exists('.env') && !$this->getOption('yes')) {
-            if (!$this->confirm("The operation will overwrite values of the existing .env and will create new one from .env.example. Continue?")) {
-                $this->info('Operation was canceled!');
-                return;
-            }
+        if ($fs->exists('.env') && !$this->getOption('yes') && !$this->confirm("The operation will overwrite values of the existing .env and will create new one from .env.example. Continue?")) {
+            $this->info('Operation was canceled!');
+            return;
         }
 
         $fs->copy(

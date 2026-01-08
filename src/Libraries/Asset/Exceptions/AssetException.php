@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Quantum PHP Framework
  *
@@ -9,7 +11,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Asset\Exceptions;
@@ -23,11 +25,11 @@ use Quantum\Libraries\Asset\Enums\ExceptionMessages;
 class AssetException extends \Exception
 {
     /**
-     * @param string $position
+     * @param int $position
      * @param string $name
      * @return AssetException
      */
-    public static function positionInUse(string $position, string $name): AssetException
+    public static function positionInUse(int $position, string $name): AssetException
     {
         return new self(_message(ExceptionMessages::POSITION_IN_USE, [$position, $name]), E_WARNING);
     }

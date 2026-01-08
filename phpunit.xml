@@ -7,7 +7,12 @@
         verbose="true"
         stderr="true"
         stopOnFailure="false"
+        convertDeprecationsToExceptions="false"
 >
+    <php>
+        <ini name="error_reporting" value="E_ALL &amp; ~E_DEPRECATED"/>
+    </php>
+
     <testsuites>
         <testsuite name="Quantum PHP Framework Test Suite">
             <directory>./tests/Unit</directory>

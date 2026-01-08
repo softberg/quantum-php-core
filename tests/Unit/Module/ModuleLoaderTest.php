@@ -8,6 +8,7 @@ use Quantum\Router\Router;
 
 class ModuleLoaderTest extends AppTestCase
 {
+    public $moduleLoader;
     public function setUp(): void
     {
         parent::setUp();
@@ -46,11 +47,11 @@ class ModuleLoaderTest extends AppTestCase
 
         $this->assertIsArray($deps);
 
-        $this->assertArrayHasKey("Quantum\Libraries\Transformer\Contracts\TransformerInterface", $deps);
-        $this->assertSame("Quantum\Tests\_root\modules\Test\Transformers\PostTransformer", $deps["Quantum\Libraries\Transformer\Contracts\TransformerInterface"]);
+        $this->assertArrayHasKey(\Quantum\Libraries\Transformer\Contracts\TransformerInterface::class, $deps);
+        $this->assertSame(\Quantum\Tests\_root\modules\Test\Transformers\PostTransformer::class, $deps[\Quantum\Libraries\Transformer\Contracts\TransformerInterface::class]);
 
-        $this->assertArrayHasKey("Quantum\Libraries\Storage\Contracts\TokenServiceInterface", $deps);
-        $this->assertSame("Quantum\Tests\_root\shared\Services\TokenService", $deps["Quantum\Libraries\Storage\Contracts\TokenServiceInterface"]);
+        $this->assertArrayHasKey(\Quantum\Libraries\Storage\Contracts\TokenServiceInterface::class, $deps);
+        $this->assertSame(\Quantum\Tests\_root\shared\Services\TokenService::class, $deps[\Quantum\Libraries\Storage\Contracts\TokenServiceInterface::class]);
     }
 
     public function testGetModuleConfigs()

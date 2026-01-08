@@ -9,15 +9,15 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Storage;
 
+use Quantum\Libraries\Storage\Contracts\LocalFilesystemAdapterInterface;
 use Quantum\Libraries\Storage\Contracts\FilesystemAdapterInterface;
 use Quantum\Libraries\Storage\Exceptions\FileSystemException;
 use Quantum\Libraries\Storage\Exceptions\FileUploadException;
-use Quantum\Libraries\Storage\Factories\FileSystemFactory;
 use Quantum\Libraries\Lang\Exceptions\LangException;
 use Quantum\Environment\Exceptions\EnvException;
 use Quantum\Config\Exceptions\ConfigException;
@@ -41,7 +41,7 @@ class UploadedFile extends SplFileInfo
 
     /**
      * Local File System
-     * @var FilesystemAdapterInterface
+     * @var LocalFilesystemAdapterInterface
      */
     protected $localFileSystem;
 
@@ -126,7 +126,16 @@ class UploadedFile extends SplFileInfo
      */
     public function __construct(array $meta)
     {
-        $this->localFileSystem = FileSystemFactory::get();
+        $adapter = fs()->getAdapter();
+
+        if (!$adapter instanceof LocalFilesystemAdapterInterface) {
+            throw FileSystemException::notInstanceOf(
+                get_class($adapter),
+                LocalFilesystemAdapterInterface::class
+            );
+        }
+
+        $this->localFileSystem = $adapter;
 
         $this->originalName = $meta['name'];
         $this->errorCode = $meta['error'];
@@ -251,7 +260,7 @@ class UploadedFile extends SplFileInfo
             throw FileUploadException::fileTypeNotAllowed($this->getExtension());
         }
 
-        list($width, $height) = getimagesize($this->getPathname());
+        [$width, $height] = getimagesize($this->getPathname());
 
         return [
             'width' => $width,
@@ -370,7 +379,7 @@ class UploadedFile extends SplFileInfo
      */
     public function isImage($filePath): bool
     {
-        return !!getimagesize($filePath);
+        return (bool) getimagesize($filePath);
     }
 
     /**
@@ -382,12 +391,10 @@ class UploadedFile extends SplFileInfo
     {
         if ($this->remoteFileSystem) {
             return (bool)$this->remoteFileSystem->put($filePath, $this->localFileSystem->get($this->getPathname()));
+        } elseif ($this->isUploaded()) {
+            return move_uploaded_file($this->getPathname(), $filePath);
         } else {
-            if ($this->isUploaded()) {
-                return move_uploaded_file($this->getPathname(), $filePath);
-            } else {
-                return $this->localFileSystem->copy($this->getPathname(), $filePath);
-            }
+            return $this->localFileSystem->copy($this->getPathname(), $filePath);
         }
     }
 
@@ -433,7 +440,7 @@ class UploadedFile extends SplFileInfo
             throw FileUploadException::incorrectMimeTypesConfig('uploads');
         }
 
-        if ($allowedMimeTypesMap) {
+        if ($allowedMimeTypesMap !== []) {
             $this->setAllowedMimeTypesMap($allowedMimeTypesMap);
         }
     }
@@ -446,11 +453,7 @@ class UploadedFile extends SplFileInfo
      */
     protected function setAllowedMimeTypesMap(array $allowedMimeTypes, bool $merge = true): void
     {
-        if ($merge) {
-            $this->allowedMimeTypes = array_merge_recursive($this->allowedMimeTypes, $allowedMimeTypes);
-        } else {
-            $this->allowedMimeTypes = $allowedMimeTypes;
-        }
+        $this->allowedMimeTypes = $merge ? array_merge_recursive($this->allowedMimeTypes, $allowedMimeTypes) : $allowedMimeTypes;
     }
 
     /**

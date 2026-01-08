@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Model\Factories;
@@ -51,7 +51,7 @@ class ModelFactory
             $modelClass,
             $model->idColumn,
             $model->relations(),
-            $model->hidden ?? []
+            $model->hidden
         );
 
         $model->setOrmInstance($ormInstance);
@@ -63,7 +63,7 @@ class ModelFactory
      * Creates anonymous dynamic model
      * @param string $table
      * @param string $modelName
-     * @param string|null $idColumn
+     * @param string $idColumn
      * @param array $foreignKeys
      * @param array $hidden
      * @return QtModel
@@ -87,11 +87,11 @@ class ModelFactory
 
     /**
      * @param string $table
-     * @param string|null $modelName
+     * @param string $modelName
      * @param string $idColumn
      * @param array $foreignKeys
      * @param array $hidden
-     * @return mixed
+     * @return DbalInterface
      */
     protected static function createOrmInstance(
         string $table,

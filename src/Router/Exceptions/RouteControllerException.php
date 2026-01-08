@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Quantum PHP Framework
  *
@@ -9,7 +11,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Router\Exceptions;
@@ -28,17 +30,23 @@ class RouteControllerException extends BaseException
      * @param string|null $name
      * @return RouteControllerException
      */
-    public static function controllerNotDefined(?string $name): RouteControllerException
+    public static function controllerNotDefined(?string $name): self
     {
-        return new static(_message(ExceptionMessages::CONTROLLER_NOT_FOUND, [$name]), E_ERROR);
+        return new self(
+            _message(ExceptionMessages::CONTROLLER_NOT_FOUND, [$name]),
+            E_ERROR
+        );
     }
 
     /**
      * @param string $name
      * @return RouteControllerException
      */
-    public static function actionNotDefined(string $name): RouteControllerException
+    public static function actionNotDefined(string $name): self
     {
-        return new static(_message(ExceptionMessages::ACTION_NOT_DEFINED, [$name]), E_ERROR);
+        return new self(
+            _message(ExceptionMessages::ACTION_NOT_DEFINED, [$name]),
+            E_ERROR
+        );
     }
 }

@@ -98,15 +98,13 @@ class DebugBarCommand extends QtCommand
     {
         $dir = opendir($src);
 
-        if ($dst != $this->publicDebugBarFolderPath) {
-            if ($this->fs->makeDirectory($dst) === false) {
-                throw FileSystemException::directoryNotWritable($dst);
-            }
+        if ($dst != $this->publicDebugBarFolderPath && $this->fs->makeDirectory($dst) === false) {
+            throw FileSystemException::directoryNotWritable($dst);
         }
 
         if (is_resource($dir)) {
             while (($file = readdir($dir))) {
-                if (($file != '.') && ($file != '..')) {
+                if (($file !== '.') && ($file !== '..')) {
                     if ($this->fs->isDirectory($src . DS . $file)) {
                         $this->copyResources($src . DS . $file, $dst . DS . $file);
                     } else {

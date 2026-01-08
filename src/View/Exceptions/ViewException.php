@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Quantum PHP Framework
  *
@@ -9,7 +11,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\View\Exceptions;
@@ -27,16 +29,22 @@ class ViewException extends BaseException
     /**
      * @return ViewException
      */
-    public static function noLayoutSet(): ViewException
+    public static function noLayoutSet(): self
     {
-        return new static(ExceptionMessages::LAYOUT_NOT_SET, E_ERROR);
+        return new self(
+            ExceptionMessages::LAYOUT_NOT_SET,
+            E_ERROR
+        );
     }
 
     /**
      * @return ViewException
      */
-    public static function viewNotRendered(): ViewException
+    public static function viewNotRendered(): self
     {
-        return new static(ExceptionMessages::VIEW_NOT_RENDERED_YET, E_ERROR);
+        return new self(
+            ExceptionMessages::VIEW_NOT_RENDERED_YET,
+            E_ERROR
+        );
     }
 }

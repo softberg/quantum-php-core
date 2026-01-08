@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.8
+ * @since 3.0.0
  */
 
 namespace Quantum\Http\Traits\Request;
@@ -23,7 +23,7 @@ trait Query
 
     /**
      * Query string
-     * @var string
+     * @var string|null
      */
     private static $__query = null;
 
@@ -52,6 +52,10 @@ trait Query
      */
     public static function getQueryParam(string $key): ?string
     {
+        if (self::$__query === null) {
+            return null;
+        }
+        
         $query = explode('&', self::$__query);
 
         foreach ($query as $items) {

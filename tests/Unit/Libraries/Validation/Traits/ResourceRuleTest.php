@@ -9,6 +9,7 @@ use Quantum\Tests\Unit\AppTestCase;
 class ResourceRuleTest extends AppTestCase
 {
 
+    public $validator;
     private $request;
 
     public function setUp(): void

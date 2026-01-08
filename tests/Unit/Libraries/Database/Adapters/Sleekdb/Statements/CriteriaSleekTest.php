@@ -8,6 +8,7 @@ use Quantum\Libraries\Database\Adapters\Sleekdb\SleekDbal;
 class CriteriaSleekTest extends SleekDbalTestCase
 {
 
+    public $userProfileModel;
     public function testSleekCriteriaEquals()
     {
         $this->userProfileModel = new SleekDbal('profiles');

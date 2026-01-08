@@ -30,7 +30,7 @@ trait Criteria
      */
     public function criteria(string $column, string $operator, $value = null): DbalInterface
     {
-        if (!key_exists($operator, $this->operators)) {
+        if (!array_key_exists($operator, $this->operators)) {
             throw DatabaseException::operatorNotSupported($operator);
         }
 
@@ -61,7 +61,7 @@ trait Criteria
      */
     public function having(string $column, string $operator, ?string $value = null): DbalInterface
     {
-        if (!key_exists($operator, $this->operators)) {
+        if (!array_key_exists($operator, $this->operators)) {
             throw DatabaseException::operatorNotSupported($operator);
         }
 
@@ -100,9 +100,9 @@ trait Criteria
      */
     protected function addCriteria(string $column, string $operator, $value, ?string $func = null)
     {
-        if ($operator == '#=#') {
+        if ($operator === '#=#') {
             $this->getOrmModel()->where_raw($column . ' = ' . $value);
-        } else if (is_array($value) && count($value) == 1 && key($value) == 'fn') {
+        } elseif (is_array($value) && count($value) === 1 && key($value) == 'fn') {
             $this->getOrmModel()->where_raw($column . ' ' . $operator . ' ' . $value['fn']);
         } else {
             $this->getOrmModel()->$func($column, $value);
@@ -126,7 +126,7 @@ trait Criteria
 
             $clause .= '`' . $criteria[0] . '` ' . $criteria[1] . ' ?';
 
-            if ($index == array_key_last($orCriterias)) {
+            if ($index === array_key_last($orCriterias)) {
                 $clause .= ')';
             } else {
                 $clause .= ' OR ';

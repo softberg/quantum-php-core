@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Console;
@@ -67,7 +67,7 @@ abstract class QtCommand extends Command implements CommandInterface
     protected $input;
 
     /**
-     * @var OutputInterface;
+     * @var OutputInterface
      */
     protected $output;
 
@@ -175,12 +175,15 @@ abstract class QtCommand extends Command implements CommandInterface
      * Executes the current command.
      * @param InputInterface $input
      * @param OutputInterface $output
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->input = $input;
         $this->output = $output;
         $this->exec();
+
+        return Command::SUCCESS;
     }
 
     /**

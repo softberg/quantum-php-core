@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Http\Traits\Request;
@@ -108,7 +108,7 @@ trait RawInput
 
             switch ($type) {
                 case 'file':
-                    list($nameParam, $file) = self::getParsedFile($block);
+                    [$nameParam, $file] = self::getParsedFile($block);
 
                     if (!$file) {
                         continue 2;
@@ -142,7 +142,7 @@ trait RawInput
         $arrayParam = self::arrayParam($nameParam);
 
         if (is_array($arrayParam)) {
-            list($name, $key) = $arrayParam;
+            [$name, $key] = $arrayParam;
 
             if ($key === '') {
                 $files[$name][] = $file;
@@ -195,7 +195,7 @@ trait RawInput
      */
     private static function getParsedFile(string $block): ?array
     {
-        list($name, $filename, $type, $content) = self::parseFileData($block);
+        [$name, $filename, $type, $content] = self::parseFileData($block);
 
         if (!$content) {
             return null;
@@ -223,7 +223,7 @@ trait RawInput
     /**
      * Parses a file block into metadata and binary content
      * @param string $block
-     * @return array{name: string, filename: string, contentType: string, content: string}
+     * @return array{string, string, string, string}
      */
     private static function parseFileData(string $block): array
     {
@@ -235,9 +235,9 @@ trait RawInput
             return ['-unknown-', '-unknown-', ContentType::OCTET_STREAM, ''];
         }
 
-        list($rawHeaders, $content) = $parts;
+        [$rawHeaders, $content] = $parts;
 
-        list($name, $filename, $contentType) = self::parseHeaders($rawHeaders);
+        [$name, $filename, $contentType] = self::parseHeaders($rawHeaders);
 
         $content = substr($content, 0, strlen($content) - 2);
 
@@ -274,7 +274,7 @@ trait RawInput
     /**
      * Extracts name, filename, and content type from header lines
      * @param string $rawHeaders
-     * @return array{name: string, filename: string, contentType: string}
+     * @return array{string, string, string}
      */
     private static function parseHeaders(string $rawHeaders): array
     {
@@ -296,10 +296,8 @@ trait RawInput
                 }
             }
 
-            if (stripos($line, 'Content-Type') !== false) {
-                if (preg_match('/Content-Type:\s*(.+)/i', $line, $match)) {
-                    $contentType = trim($match[1]);
-                }
+            if (stripos($line, 'Content-Type') !== false && preg_match('/Content-Type:\s*(.+)/i', $line, $match)) {
+                $contentType = trim($match[1]);
             }
         }
 
@@ -313,10 +311,8 @@ trait RawInput
      */
     private static function arrayParam(string $parameter)
     {
-        if (strpos($parameter, '[') !== false) {
-            if (preg_match('/^([^[]*)\[([^]]*)\](.*)$/', $parameter, $match)) {
-                return [$match[1], $match[2]];
-            }
+        if (strpos($parameter, '[') !== false && preg_match('/^([^[]*)\[([^]]*)\](.*)$/', $parameter, $match)) {
+            return [$match[1], $match[2]];
         }
 
         return $parameter;

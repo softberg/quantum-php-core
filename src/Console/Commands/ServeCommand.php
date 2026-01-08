@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 3.0.0
  */
 
 namespace Quantum\Console\Commands;
@@ -71,7 +71,7 @@ class ServeCommand extends QtCommand
 
     /**
      * Command arguments
-     * @var \string[][]
+     * @var array<int, list<string|null>>
      */
     protected $options = [
         ['host', null, 'optional', 'Host', '127.0.0.1'],
@@ -87,14 +87,12 @@ class ServeCommand extends QtCommand
         if (!$this->portAvailable()) {
             $this->portOffset += 1;
             $this->exec();
+        } elseif (!$this->openBrowserCommand()) {
+            $this->info('Starting development server at: ' . $this->host() . ':' . $this->port());
+            exec($this->runServerCommand(), $out);
         } else {
-            if (!$this->openBrowserCommand()) {
-                $this->info('Starting development server at: ' . $this->host() . ':' . $this->port());
-                exec($this->runServerCommand(), $out);
-            } else {
-                $this->info('Starting development server at: ' . $this->host() . ':' . $this->port());
-                exec($this->openBrowserCommand() . ' && ' . $this->runServerCommand(), $out);
-            }
+            $this->info('Starting development server at: ' . $this->host() . ':' . $this->port());
+            exec($this->openBrowserCommand() . ' && ' . $this->runServerCommand(), $out);
         }
     }
 

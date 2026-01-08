@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Quantum PHP Framework
  *
@@ -9,7 +11,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Session\Exceptions;
@@ -26,16 +28,22 @@ class SessionException extends BaseException
     /**
      * @return SessionException
      */
-    public static function sessionNotStarted(): SessionException
+    public static function sessionNotStarted(): self
     {
-        return new static(ExceptionMessages::SESSION_NOT_STARTED, E_WARNING);
+        return new self(
+            ExceptionMessages::SESSION_NOT_STARTED,
+            E_WARNING
+        );
     }
 
     /**
      * @return SessionException
      */
-    public static function sessionNotDestroyed(): SessionException
+    public static function sessionNotDestroyed(): self
     {
-        return new static(ExceptionMessages::SESSION_NOT_DESTROYED, E_WARNING);
+        return new self(
+            ExceptionMessages::SESSION_NOT_DESTROYED,
+            E_WARNING
+        );
     }
 }

@@ -12,6 +12,7 @@ use Quantum\Http\Request;
 class HttpHelperTest extends AppTestCase
 {
 
+    public $session;
     private $request;
     private $response;
 

@@ -9,12 +9,11 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Session\Traits;
 
-use Quantum\Libraries\Database\Exceptions\DatabaseException;
 use Quantum\Libraries\Session\Exceptions\SessionException;
 
 /**
@@ -110,12 +109,11 @@ trait SessionTrait
      */
     public function getId(): ?string
     {
-        return session_id() ?? null;
+        return session_id();
     }
 
     /**
      * @inheritDoc
-     * @throws DatabaseException
      * @throws SessionException
      */
     public function regenerateId(): bool

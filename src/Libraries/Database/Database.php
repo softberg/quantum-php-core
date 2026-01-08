@@ -73,7 +73,7 @@ class Database
 
         $adapter = config()->get('database.default');
 
-        $this->ormClass = self::getAdapterClass($adapter);
+        $this->ormClass = $this->getAdapterClass($adapter);
 
         $this->configs = config()->get('database.' . $adapter);
 
@@ -118,7 +118,7 @@ class Database
      * @return string
      * @throws BaseException
      */
-    private static function getAdapterClass(string $adapter): string
+    private function getAdapterClass(string $adapter): string
     {
         if (!array_key_exists($adapter, self::ADAPTERS)) {
             throw DatabaseException::adapterNotSupported($adapter);

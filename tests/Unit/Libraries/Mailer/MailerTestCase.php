@@ -7,6 +7,7 @@ use Quantum\Di\Di;
 
 abstract class MailerTestCase extends AppTestCase
 {
+    protected $adapter;
     public function tearDown(): void
     {
         parent::tearDown();

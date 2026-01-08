@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Auth\Factories;
@@ -45,7 +45,7 @@ class AuthFactory
     ];
 
     /**
-     * @var Auth|null
+     * @var array<string, Auth>
      */
     private static $instances = [];
 
@@ -65,7 +65,7 @@ class AuthFactory
             config()->import(new Setup('config', 'auth'));
         }
 
-        $adapter = $adapter ?? config()->get('auth.default');
+        $adapter ??= config()->get('auth.default');
 
         $adapterClass = self::getAdapterClass($adapter);
 
