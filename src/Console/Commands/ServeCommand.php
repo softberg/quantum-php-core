@@ -71,7 +71,7 @@ class ServeCommand extends QtCommand
 
     /**
      * Command arguments
-     * @var string[][]
+     * @var array<int, list<string|null>>
      */
     protected $options = [
         ['host', null, 'optional', 'Host', '127.0.0.1'],

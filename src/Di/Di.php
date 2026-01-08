@@ -223,12 +223,12 @@ class Di
     /**
      * Resolves the parameter
      * @param ReflectionParameter $param
-     * @param array|null $args
+     * @param array $args
      * @return array|mixed|null
      * @throws DiException
      * @throws ReflectionException
      */
-    private static function resolveParameter(ReflectionParameter $param, ?array &$args = [])
+    private static function resolveParameter(ReflectionParameter $param, array &$args = [])
     {
         $type = null;
 

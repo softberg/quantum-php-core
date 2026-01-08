@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Database\Adapters\Idiorm;
@@ -102,7 +102,7 @@ class IdiormDbal implements DbalInterface, RelationalInterface
 
     /**
      * ORM Model
-     * @var object
+     * @var ORM|null
      */
     private $ormModel;
 
@@ -114,7 +114,7 @@ class IdiormDbal implements DbalInterface, RelationalInterface
 
     /**
      * Operators map
-     * @var string[]
+     * @var array<string, string|null>
      */
     private $operators = [
         '=' => 'where_equal',

@@ -23,17 +23,26 @@ use Exception;
  * Class BaseException
  * @package Quantum\App
  */
-class BaseException extends Exception
+abstract class BaseException extends Exception
 {
+
+    /**
+     * @param string $message
+     * @param int $code
+     */
+    final public function __construct(string $message = "", int $code = 0)
+    {
+        parent::__construct($message, $code);
+    }
 
     /**
      * @param string $methodName
      * @param string $className
-     * @return self
+     * @return static
      */
-    public static function methodNotSupported(string $methodName, string $className): self
+    public static function methodNotSupported(string $methodName, string $className)
     {
-        return new self(
+        return new static(
             _message(ExceptionMessages::METHOD_NOT_SUPPORTED, [$methodName, $className]),
             E_WARNING
         );
@@ -41,11 +50,11 @@ class BaseException extends Exception
 
     /**
      * @param string $name
-     * @return self
+     * @return static
      */
-    public static function adapterNotSupported(string $name): self
+    public static function adapterNotSupported(string $name)
     {
-        return new self(
+        return new static(
             _message(ExceptionMessages::ADAPTER_NOT_SUPPORTED, [$name]),
             E_ERROR
         );
@@ -53,11 +62,11 @@ class BaseException extends Exception
 
     /**
      * @param string $name
-     * @return self
+     * @return static
      */
-    public static function driverNotSupported(string $name): self
+    public static function driverNotSupported(string $name)
     {
-        return new self(
+        return new static(
             _message(ExceptionMessages::DRIVER_NOT_SUPPORTED, [$name]),
             E_ERROR
         );
@@ -65,11 +74,11 @@ class BaseException extends Exception
 
     /**
      * @param string $name
-     * @return self
+     * @return static
      */
-    public static function fileNotFound(string $name): self
+    public static function fileNotFound(string $name)
     {
-        return new self(
+        return new static(
             _message(ExceptionMessages::FILE_NOT_FOUND, [$name]),
             E_ERROR
         );
@@ -78,11 +87,11 @@ class BaseException extends Exception
     /**
      * @param string $subject
      * @param string $name
-     * @return self
+     * @return static
      */
-    public static function notFound(string $subject, string $name): self
+    public static function notFound(string $subject, string $name)
     {
-        return new self(
+        return new static(
             _message(ExceptionMessages::NOT_FOUND, [$subject, $name]),
             E_ERROR
         );
@@ -91,11 +100,11 @@ class BaseException extends Exception
     /**
      * @param string $instance
      * @param string $name
-     * @return self
+     * @return static
      */
-    public static function notInstanceOf(string $instance, string $name): self
+    public static function notInstanceOf(string $instance, string $name)
     {
-        return new self(
+        return new static(
             _message(ExceptionMessages::NOT_INSTANCE_OF, [$instance, $name]),
             E_ERROR
         );
@@ -103,11 +112,11 @@ class BaseException extends Exception
 
     /**
      * @param string $name
-     * @return self
+     * @return static
      */
-    public static function cantConnect(string $name): self
+    public static function cantConnect(string $name)
     {
-        return new self(
+        return new static(
             _message(ExceptionMessages::CANT_CONNECT, [$name]),
             E_ERROR
         );
@@ -115,12 +124,12 @@ class BaseException extends Exception
 
     /**
      * @param string $name
-     * @return self
+     * @return static
      */
 
-    public static function missingConfig(string $name): self
+    public static function missingConfig(string $name)
     {
-        return new self(
+        return new static(
             _message(ExceptionMessages::MISSING_CONFIG, $name),
             E_ERROR
         );
@@ -128,11 +137,11 @@ class BaseException extends Exception
 
     /**
      * @param string $name
-     * @return self
+     * @return static
      */
-    public static function requestMethodNotAvailable(string $name): self
+    public static function requestMethodNotAvailable(string $name)
     {
-        return new self(
+        return new static(
             _message(ExceptionMessages::UNAVAILABLE_REQUEST_METHOD, [$name]),
             E_WARNING
         );

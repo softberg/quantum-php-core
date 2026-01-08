@@ -44,13 +44,13 @@ trait MailerTrait
 
     /**
      * Email subject
-     * @var string
+     * @var string|null
      */
     private $subject = null;
 
     /**
      * Email body
-     * @var string|array
+     * @var string|array|null
      */
     private $message = null;
 
@@ -61,7 +61,7 @@ trait MailerTrait
 
     /**
      * Template path
-     * @var string
+     * @var string|null
      */
     private $templatePath = null;
 

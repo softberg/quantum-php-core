@@ -1,8 +1,12 @@
 parameters:
     phpVersion: 70400
-
-
-    level: 0
+    level: 3
 
     paths:
         - src
+
+    checkNullables: true
+    checkUninitializedProperties: true
+
+    checkDynamicProperties: false
+    treatPhpDocTypesAsCertain: false

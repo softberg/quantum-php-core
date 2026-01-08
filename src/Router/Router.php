@@ -112,7 +112,7 @@ class Router extends RouteController
      */
     public function resetRoutes()
     {
-        parent::$currentRoute = null;
+        parent::$currentRoute = [];
         $this->matchedRoutes = [];
     }
 
