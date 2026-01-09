@@ -94,7 +94,7 @@ class RecaptchaAdapterTest extends AppTestCase
             </script>';
 
         $expected = str_replace("\r\n", "\n", $expected);
-        $actual   = str_replace("\r\n", "\n", $actual);
+        $actual = str_replace("\r\n", "\n", $actual);
 
         $this->assertSame($expected, $actual);
     }
