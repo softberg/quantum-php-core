@@ -8,7 +8,6 @@ use Quantum\Tests\Unit\AppTestCase;
 
 class SymmetricEncryptionAdapterTest extends AppTestCase
 {
-
     protected $adapter;
     protected $plainText = 'The early bird gets the worm, but the second mouse gets the cheese.';
 
@@ -41,6 +40,6 @@ class SymmetricEncryptionAdapterTest extends AppTestCase
     {
         $this->expectException(CryptorException::class);
 
-        $this->adapter->decrypt("invalidEncryptedData");
+        $this->adapter->decrypt('invalidEncryptedData');
     }
 }

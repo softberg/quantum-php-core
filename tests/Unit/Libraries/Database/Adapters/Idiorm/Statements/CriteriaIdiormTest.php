@@ -7,7 +7,6 @@ use Quantum\Libraries\Database\Adapters\Idiorm\IdiormDbal;
 
 class CriteriaIdiormTest extends IdiormDbalTestCase
 {
-
     public function testIdiormCriteriaEquals()
     {
         $userProfileModel = new IdiormDbal('profiles');
@@ -147,7 +146,7 @@ class CriteriaIdiormTest extends IdiormDbalTestCase
             ->criteria('profiles.country', '#=#', 'events.country')
             ->get();
 
-        $expectedQuery = "SELECT * FROM `profiles` JOIN `user_events` ON `user_events`.`user_id` = `profiles`.`user_id` JOIN `events` ON `user_events`.`event_id` = `events`.`id` WHERE profiles.country = events.country";
+        $expectedQuery = 'SELECT * FROM `profiles` JOIN `user_events` ON `user_events`.`user_id` = `profiles`.`user_id` JOIN `events` ON `user_events`.`event_id` = `events`.`id` WHERE profiles.country = events.country';
 
         $this->assertEquals($expectedQuery, IdiormDbal::lastQuery());
     }
@@ -174,7 +173,7 @@ class CriteriaIdiormTest extends IdiormDbalTestCase
         $eventsModel->criterias([
             ['title', '=', 'Music'],
             ['title', '=', 'Dance'],
-            ['title', '=', 'Art']
+            ['title', '=', 'Art'],
         ])->groupBy('title')->get();
 
         $expectedQuery = "SELECT * FROM `events` WHERE (`title` = 'Music' OR `title` = 'Dance' OR `title` = 'Art') GROUP BY `title`";
@@ -188,7 +187,7 @@ class CriteriaIdiormTest extends IdiormDbalTestCase
 
         $eventsModel->criterias([
             ['title', '=', 'Music'],
-            ['title', '=', 'Design']
+            ['title', '=', 'Design'],
         ], ['country', '=', 'Ireland'])->get();
 
         $expectedQuery = "SELECT * FROM `events` WHERE (`title` = 'Music' OR `title` = 'Design') AND `country` = 'Ireland'";

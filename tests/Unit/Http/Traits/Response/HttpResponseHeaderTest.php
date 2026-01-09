@@ -7,7 +7,6 @@ use Quantum\Http\Response;
 
 class HttpResponseHeaderTest extends AppTestCase
 {
-
     public function setUp(): void
     {
         parent::setUp();

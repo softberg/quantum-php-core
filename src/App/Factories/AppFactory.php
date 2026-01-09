@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 3.0.0
  */
 
 namespace Quantum\App\Factories;
@@ -26,11 +26,10 @@ use Quantum\App\App;
  */
 class AppFactory
 {
-
     /**
      * Supported adapters
      */
-    const ADAPTERS = [
+    public const ADAPTERS = [
         App::WEB => WebAppAdapter::class,
         App::CONSOLE => ConsoleAppAdapter::class,
     ];

@@ -24,7 +24,6 @@ use Quantum\App\Enums\ExceptionMessages;
  */
 class AppException extends BaseException
 {
-
     /**
      * @return AppException
      */

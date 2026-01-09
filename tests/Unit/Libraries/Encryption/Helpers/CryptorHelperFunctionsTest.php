@@ -8,7 +8,6 @@ use stdClass;
 
 class CryptorHelperFunctionsTest extends AppTestCase
 {
-
     public function testCryptoEncodeAndDecodeWithSymmetricEncryption()
     {
         $stringValue = 'simple string';
@@ -22,7 +21,6 @@ class CryptorHelperFunctionsTest extends AppTestCase
 
         $this->assertIsString($decryptedString);
         $this->assertEquals($stringValue, $decryptedString);
-
 
         $data = ['key' => 'value'];
 
@@ -60,7 +58,7 @@ class CryptorHelperFunctionsTest extends AppTestCase
         $this->assertIsString($encryptedString);
         $this->assertNotEmpty($encryptedString);
 
-        $decryptedString = crypto_decode($encryptedString,Cryptor::ASYMMETRIC);
+        $decryptedString = crypto_decode($encryptedString, Cryptor::ASYMMETRIC);
 
         $this->assertIsString($decryptedString);
         $this->assertEquals($stringValue, $decryptedString);

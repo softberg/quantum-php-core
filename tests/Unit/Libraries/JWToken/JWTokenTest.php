@@ -7,9 +7,8 @@ use Quantum\Tests\Unit\AppTestCase;
 
 class JWTokenTest extends AppTestCase
 {
-
     private $jwtToken;
-    
+
     private $key = 'appkey';
 
     private $userData = [
@@ -28,7 +27,7 @@ class JWTokenTest extends AppTestCase
             'aud' => 'audience',
             'iat' => time(),
             'nbf' => time() + 1,
-            'exp' => time() + 300
+            'exp' => time() + 300,
         ];
 
         $this->jwtToken = new JwtToken($this->key);
@@ -83,7 +82,6 @@ class JWTokenTest extends AppTestCase
 
         $this->assertEquals($this->userData, $this->jwtToken->fetchData());
 
-
     }
 
     public function testSetFetchClaim()
@@ -118,7 +116,7 @@ class JWTokenTest extends AppTestCase
             'jti' => uniqid(),
             'iat' => time(),
             'nbf' => time() + 1,
-            'exp' => time() + 500
+            'exp' => time() + 500,
         ];
 
         $jwtToken->setLeeway(1)->setClaims($claims);

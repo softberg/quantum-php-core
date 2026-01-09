@@ -57,7 +57,8 @@
         "mockery/mockery": "^1.4",
         "mikey179/vfsstream": "^1.6",
         "rector/rector": "^2.3",
-        "phpstan/phpstan": "^2.1"
+        "phpstan/phpstan": "^2.1",
+        "friendsofphp/php-cs-fixer": "^3.92"
     },
     "suggest": {
         "ext-dom": "Required for XML/HTML processing",
@@ -76,7 +77,9 @@
         }
     },
     "scripts": {
-        "phpstan": "phpstan analyse --memory-limit=512M --no-progress --error-format=github",
+        "cs:check": "vendor/bin/php-cs-fixer check",
+        "cs:fix": "vendor/bin/php-cs-fixer fix",
+        "phpstan": "vendor/bin/phpstan analyse --memory-limit=-1 --error-format=github",
         "test": "vendor/bin/phpunit --stderr --testdox --coverage-clover coverage.xml"
     },
     "minimum-stability": "stable",

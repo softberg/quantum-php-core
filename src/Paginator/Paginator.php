@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 3.0.0
  */
 
 namespace Quantum\Paginator;
@@ -40,16 +40,15 @@ use Quantum\App\Exceptions\BaseException;
  */
 class Paginator
 {
-
     /**
      * Array paginator type
      */
-    const ARRAY = 'array';
+    public const ARRAY = 'array';
 
     /**
      * Model paginator type
      */
-    const MODEL = 'model';
+    public const MODEL = 'model';
 
     /**
      * @var PaginatorInterface
@@ -87,4 +86,4 @@ class Paginator
 
         return $this->adapter->$method(...$arguments);
     }
-} 
+}

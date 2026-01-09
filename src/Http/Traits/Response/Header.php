@@ -23,7 +23,6 @@ use Quantum\Http\Enums\ContentType;
  */
 trait Header
 {
-
     /**
      * Response headers
      * @var array

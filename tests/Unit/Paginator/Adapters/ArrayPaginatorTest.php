@@ -22,7 +22,7 @@ class ArrayPaginatorTest extends AppTestCase
             ['id' => 2, 'title' => 'Item 2'],
             ['id' => 3, 'title' => 'Item 3'],
             ['id' => 4, 'title' => 'Item 4'],
-            ['id' => 5, 'title' => 'Item 5']
+            ['id' => 5, 'title' => 'Item 5'],
         ];
 
         $this->paginator = new ArrayPaginator($this->items, 2, 1);
@@ -132,4 +132,4 @@ class ArrayPaginatorTest extends AppTestCase
     {
         $this->assertEquals(2, $this->paginator->perPage());
     }
-} 
+}

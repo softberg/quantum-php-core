@@ -25,7 +25,6 @@ use Quantum\App\Exceptions\BaseException;
  */
 class MiddlewareException extends BaseException
 {
-
     /**
      * @param string $name
      * @return MiddlewareException

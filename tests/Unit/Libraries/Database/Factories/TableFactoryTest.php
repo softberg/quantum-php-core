@@ -12,7 +12,6 @@ use Mockery;
 
 class TableFactoryTest extends AppTestCase
 {
-
     private $tableFactory;
     private $table;
 
@@ -36,21 +35,21 @@ class TableFactoryTest extends AppTestCase
                 'ALTER' => 2,
                 'DROP' => 3,
                 'RENAME' => 4,
-            ]
+            ],
         ]);
 
         $this->table = Mockery::mock('overload:Quantum\Libraries\Database\Schemas\Table');
 
-        $this->table->shouldReceive('setAction')->andReturnUsing(fn($action) => $this->table);
+        $this->table->shouldReceive('setAction')->andReturnUsing(fn ($action) => $this->table);
 
-        $this->table->shouldReceive('getAction')->andReturnUsing(fn() => $this->table->action);
+        $this->table->shouldReceive('getAction')->andReturnUsing(fn () => $this->table->action);
 
         $this->table->shouldReceive('save')->andReturn(0);
     }
 
     public function tearDown(): void
     {
-        Database::execute("DROP TABLE IF EXISTS profiles");
+        Database::execute('DROP TABLE IF EXISTS profiles');
     }
 
     public function testCreateTable()
@@ -62,14 +61,14 @@ class TableFactoryTest extends AppTestCase
 
     public function testAttemptToCreateTableWhichAlreadyExists()
     {
-        Database::execute("CREATE TABLE profiles (
+        Database::execute('CREATE TABLE profiles (
                         id INTEGER PRIMARY KEY,
                         firstname VARCHAR(255),
                         lastname VARCHAR(255),
                         age INTEGER(11),
                         country VARCHAR(255),
                         created_at DATETIME
-                    )");
+                    )');
 
         $this->expectException(DatabaseException::class);
 
@@ -80,14 +79,14 @@ class TableFactoryTest extends AppTestCase
 
     public function testGetTable()
     {
-        Database::execute("CREATE TABLE IF NOT EXISTS profiles (
+        Database::execute('CREATE TABLE IF NOT EXISTS profiles (
                         id INTEGER PRIMARY KEY,
                         firstname VARCHAR(255),
                         lastname VARCHAR(255),
                         age INTEGER(11),
                         country VARCHAR(255),
                         created_at DATETIME
-                    )");
+                    )');
 
         $table = $this->tableFactory->get('profiles');
 
@@ -105,14 +104,14 @@ class TableFactoryTest extends AppTestCase
 
     public function testRenameTable()
     {
-        Database::execute("CREATE TABLE IF NOT EXISTS profiles (
+        Database::execute('CREATE TABLE IF NOT EXISTS profiles (
                         id INTEGER PRIMARY KEY,
                         firstname VARCHAR(255),
                         lastname VARCHAR(255),
                         age INTEGER(11),
                         country VARCHAR(255),
                         created_at DATETIME
-                    )");
+                    )');
 
         $this->assertTrue($this->tableFactory->rename('profiles', 'system_users'));
     }
@@ -128,14 +127,14 @@ class TableFactoryTest extends AppTestCase
 
     public function testDropTable()
     {
-        Database::execute("CREATE TABLE IF NOT EXISTS profiles (
+        Database::execute('CREATE TABLE IF NOT EXISTS profiles (
                         id INTEGER PRIMARY KEY,
                         firstname VARCHAR(255),
                         lastname VARCHAR(255),
                         age INTEGER(11),
                         country VARCHAR(255),
                         created_at DATETIME
-                    )");
+                    )');
 
         $this->assertTrue($this->tableFactory->drop('profiles'));
     }

@@ -31,16 +31,15 @@ use ReflectionException;
  */
 class Router extends RouteController
 {
-
-    const VALID_PARAM_NAME_PATTERN = '/^[a-zA-Z]+$/';
+    public const VALID_PARAM_NAME_PATTERN = '/^[a-zA-Z]+$/';
 
     /**
      * Parameter types
      */
-    const PARAM_TYPES = [
+    public const PARAM_TYPES = [
         ':alpha' => '[a-zA-Z]',
         ':num' => '[0-9]',
-        ':any' => '[^\/]'
+        ':any' => '[^\/]',
     ];
 
     /**
@@ -181,7 +180,7 @@ class Router extends RouteController
         foreach (self::$routes as $route) {
             [$pattern, $params] = $this->handleRoutePattern($route);
 
-            if (preg_match("/^" . $this->escape($pattern) . "$/u", $requestUri, $matchedParams)) {
+            if (preg_match('/^' . $this->escape($pattern) . '$/u', $requestUri, $matchedParams)) {
                 $route['uri'] = $uri;
                 $route['params'] = $this->routeParams($params, $matchedParams);
                 $route['pattern'] = $pattern;
@@ -216,7 +215,7 @@ class Router extends RouteController
                 $routeParams[] = [
                     'route_pattern' => $segment,
                     'pattern' => $segmentParam['pattern'],
-                    'name' => $segmentParam['name']
+                    'name' => $segmentParam['name'],
                 ];
 
                 $routePattern = $this->normalizePattern($routePattern, $segmentParam, $index, $lastIndex);
@@ -227,7 +226,7 @@ class Router extends RouteController
 
         return [
             $routePattern,
-            $routeParams
+            $routeParams,
         ];
     }
 
@@ -335,7 +334,7 @@ class Router extends RouteController
 
         return [
             'name' => $name,
-            'pattern' => $pattern
+            'pattern' => $pattern,
         ];
     }
 

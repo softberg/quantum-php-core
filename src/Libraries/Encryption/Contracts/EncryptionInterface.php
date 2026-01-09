@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Encryption\Contracts;
@@ -20,7 +20,6 @@ namespace Quantum\Libraries\Encryption\Contracts;
  */
 interface EncryptionInterface
 {
-
     /**
      * @param string $plain
      * @return string

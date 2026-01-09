@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Http\Enums;
@@ -20,7 +20,6 @@ namespace Quantum\Http\Enums;
  */
 final class ContentType
 {
-
     /**
      * HTML content type
      */
@@ -55,4 +54,4 @@ final class ContentType
      * Default content type for binary streams
      */
     public const OCTET_STREAM = 'application/octet-stream';
-} 
+}

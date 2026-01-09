@@ -7,7 +7,6 @@ use Quantum\Tests\Unit\AppTestCase;
 
 class MailTrapTest extends AppTestCase
 {
-
     private $mailTrap;
 
     private $filename;

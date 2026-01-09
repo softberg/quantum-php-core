@@ -9,7 +9,6 @@ use Throwable;
 
 class ResponseTest extends AppTestCase
 {
-
     public function setUp(): void
     {
         parent::setUp();

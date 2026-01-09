@@ -8,7 +8,6 @@ use Quantum\Tests\Unit\AppTestCase;
 
 class GoogleDriveAppTest extends AppTestCase
 {
-
     use GoogleDriveTokenServiceTestCase;
     use HttpClientTestCase;
 
@@ -20,7 +19,7 @@ class GoogleDriveAppTest extends AppTestCase
     /**
      * @var string
      */
-    private  $appKey = 'x0hwm8wy63rrynm';
+    private $appKey = 'x0hwm8wy63rrynm';
 
     /**
      * @var string
@@ -41,18 +40,18 @@ class GoogleDriveAppTest extends AppTestCase
      * @var array
      */
     private $tokensGrantResponse = [
-        "access_token" => "sl.BYEQ1_VadTz6nBU36WPBBVwokc3zWVMXGjcOKxV4Tadms8ZlEPM85aHVFa_k1sfjilCWOnl79RUncPZzJ3GhrqhLGIBFFRCH0rKMa_ZtcqkerJn-f5lu10Ki5PSw4fxYM80V4PL_",
-        "refresh_token" => "-3S067m3M5kAAAAAAAAAAcQF8zVqFUuhK-PFkFqiOfFTgiazWj5NyU-1EGWIh0ZS"
+        'access_token' => 'sl.BYEQ1_VadTz6nBU36WPBBVwokc3zWVMXGjcOKxV4Tadms8ZlEPM85aHVFa_k1sfjilCWOnl79RUncPZzJ3GhrqhLGIBFFRCH0rKMa_ZtcqkerJn-f5lu10Ki5PSw4fxYM80V4PL_',
+        'refresh_token' => '-3S067m3M5kAAAAAAAAAAcQF8zVqFUuhK-PFkFqiOfFTgiazWj5NyU-1EGWIh0ZS',
     ];
 
     /**
      * @var array
      */
     private $fileMetadataResponse = [
-        "id" => "file1",
-        "kind" => GoogleDriveApp::DRIVE_FILE_KIND,
-        "name" => "myFile",
-        "mimeType" => "text/plain"
+        'id' => 'file1',
+        'kind' => GoogleDriveApp::DRIVE_FILE_KIND,
+        'name' => 'myFile',
+        'mimeType' => 'text/plain',
     ];
 
     /**
@@ -133,7 +132,7 @@ class GoogleDriveAppTest extends AppTestCase
 
     public function testGoogleDriveRequestWithAccessTokenExpired()
     {
-        $this->currentErrors = ["code" => 401];
+        $this->currentErrors = ['code' => 401];
 
         $this->currentResponse = (object)$this->errorResponse;
 

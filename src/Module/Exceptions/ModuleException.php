@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 /**
  * Quantum PHP Framework
- * 
+ *
  * An open source software development framework for PHP
- * 
+ *
  * @package Quantum
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
@@ -24,7 +24,6 @@ use Quantum\Module\Enums\ExceptionMessages;
  */
 class ModuleException extends \Exception
 {
-
     /**
      * @param string $name
      * @return ModuleException

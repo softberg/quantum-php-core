@@ -8,7 +8,6 @@ use Quantum\Service\QtService;
 
 class AuthService extends QtService implements AuthServiceInterface
 {
-
     public function get(string $field, ?string $value): ?User
     {
         return new User();

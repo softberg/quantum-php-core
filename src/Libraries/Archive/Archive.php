@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Archive;
@@ -34,16 +34,15 @@ use Quantum\App\Exceptions\BaseException;
  */
 class Archive
 {
-
     /**
      * Phar
      */
-    const PHAR = 'phar';
+    public const PHAR = 'phar';
 
     /**
      * Zip
      */
-    const ZIP = 'zip';
+    public const ZIP = 'zip';
 
     /**
      * @var ArchiveInterface

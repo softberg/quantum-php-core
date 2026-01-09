@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Captcha\Traits;
@@ -31,7 +31,6 @@ use Exception;
  */
 trait CaptchaTrait
 {
-
     /**
      * @var string
      */
@@ -140,7 +139,7 @@ trait CaptchaTrait
         $query = [
             'secret' => $this->secretKey,
             'response' => $code,
-            'remoteip' => get_user_ip()
+            'remoteip' => get_user_ip(),
         ];
 
         $response = $this->http
@@ -227,7 +226,7 @@ trait CaptchaTrait
     {
         $captchaTypes = [
             self::CAPTCHA_VISIBLE,
-            self::CAPTCHA_INVISIBLE
+            self::CAPTCHA_INVISIBLE,
         ];
 
         return in_array($type, $captchaTypes, true);

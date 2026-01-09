@@ -14,7 +14,7 @@ class TestEventModel extends QtModel
     public $fillable = [
         'title',
         'country',
-        'started_at'
+        'started_at',
     ];
 
     public function relations(): array
@@ -23,8 +23,8 @@ class TestEventModel extends QtModel
             TestUserEventModel::class => [
                 'type' => Relation::HAS_MANY,
                 'foreign_key' => 'event_id',
-                'local_key' => 'id'
-            ]
+                'local_key' => 'id',
+            ],
         ];
     }
 }

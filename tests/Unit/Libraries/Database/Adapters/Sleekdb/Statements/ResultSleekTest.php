@@ -7,7 +7,6 @@ use Quantum\Libraries\Database\Adapters\Sleekdb\SleekDbal;
 
 class ResultSleekTest extends SleekDbalTestCase
 {
-
     private $userProfileModel;
 
     public function setUp(): void

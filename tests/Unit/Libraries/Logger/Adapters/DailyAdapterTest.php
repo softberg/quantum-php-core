@@ -8,7 +8,6 @@ use Quantum\Tests\Unit\AppTestCase;
 
 class DailyAdapterTest extends AppTestCase
 {
-
     private $adapter;
 
     public function setUp(): void

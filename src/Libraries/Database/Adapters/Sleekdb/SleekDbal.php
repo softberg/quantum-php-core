@@ -35,7 +35,6 @@ use SleekDB\Store;
  */
 class SleekDbal implements DbalInterface
 {
-
     use Model;
     use Result;
     use Criteria;
@@ -170,8 +169,7 @@ class SleekDbal implements DbalInterface
         string $idColumn = 'id',
         array  $foreignKeys = [],
         array  $hidden = []
-    )
-    {
+    ) {
         $this->modelName = $modelName;
         $this->table = $table;
         $this->idColumn = $idColumn;

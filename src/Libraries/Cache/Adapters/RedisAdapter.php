@@ -27,7 +27,6 @@ use Redis;
  */
 class RedisAdapter implements CacheInterface
 {
-
     /**
      * @var int
      */

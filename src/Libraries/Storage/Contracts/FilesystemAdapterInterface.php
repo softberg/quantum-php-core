@@ -20,7 +20,6 @@ namespace Quantum\Libraries\Storage\Contracts;
  */
 interface FilesystemAdapterInterface
 {
-
     /**
      * Makes a new directory
      * @param string $dirname

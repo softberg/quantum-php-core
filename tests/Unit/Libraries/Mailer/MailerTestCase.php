@@ -22,7 +22,7 @@ abstract class MailerTestCase extends AppTestCase
 
         $emailFile = base_dir() . DS . 'shared' . DS . 'emails' . DS . $this->adapter->getMessageId() . '.eml';
 
-        if($this->fs->exists($emailFile)) {
+        if ($this->fs->exists($emailFile)) {
             $this->fs->remove($emailFile);
         }
 

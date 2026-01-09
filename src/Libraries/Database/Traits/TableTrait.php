@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Database\Traits;
@@ -23,7 +23,6 @@ use Quantum\Libraries\Database\Enums\Key;
  */
 trait TableTrait
 {
-
     /**
      * Generates create table statement
      * @return string
@@ -221,7 +220,7 @@ trait TableTrait
             $this->indexKeysSql(Key::INDEX),
             $this->indexKeysSql(Key::UNIQUE),
             $this->indexKeysSql(Key::FULLTEXT),
-            $this->indexKeysSql(Key::SPATIAL)
+            $this->indexKeysSql(Key::SPATIAL),
         ];
 
         return implode(', ', array_filter($indexes));

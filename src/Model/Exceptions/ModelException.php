@@ -25,7 +25,6 @@ use Quantum\App\Exceptions\BaseException;
  */
 class ModelException extends BaseException
 {
-
     /**
      * @param string $name
      * @return ModelException

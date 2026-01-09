@@ -6,13 +6,12 @@ use Quantum\Model\QtModel;
 
 class TestUserProfessionModel extends QtModel
 {
-
     public $table = 'user_professions';
 
     public $primaryKey = 'id';
 
     public $fillable = [
         'user_id',
-        'title'
+        'title',
     ];
 }

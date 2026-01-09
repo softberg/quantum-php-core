@@ -25,7 +25,6 @@ use Quantum\App\Exceptions\BaseException;
  */
 class JwtException extends BaseException
 {
-
     /**
      * @return JwtException
      */

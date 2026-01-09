@@ -7,7 +7,6 @@ use Quantum\Http\Request;
 
 class HttpRequestUrlTest extends AppTestCase
 {
-
     public function setUp(): void
     {
         parent::setUp();
@@ -69,7 +68,6 @@ class HttpRequestUrlTest extends AppTestCase
 
         $this->assertEquals('post/edit/12', $request->getUri());
     }
-
 
     public function testGetSegments()
     {

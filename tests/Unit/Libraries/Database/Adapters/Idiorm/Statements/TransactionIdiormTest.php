@@ -11,7 +11,6 @@ use Quantum\Libraries\Database\Adapters\Idiorm\IdiormDbal;
  */
 class TransactionIdiormTest extends IdiormDbalTestCase
 {
-
     public function testBeginTransactionAndRollback()
     {
         IdiormDbal::beginTransaction();
@@ -21,7 +20,7 @@ class TransactionIdiormTest extends IdiormDbalTestCase
             'firstname' => 'Alice',
             'lastname' => 'Smith',
             'age' => 30,
-            'country' => 'Canada'
+            'country' => 'Canada',
         ]);
 
         IdiormDbal::rollback();
@@ -40,7 +39,7 @@ class TransactionIdiormTest extends IdiormDbalTestCase
             'firstname' => 'Bob',
             'lastname' => 'Marley',
             'age' => 42,
-            'country' => 'Jamaica'
+            'country' => 'Jamaica',
         ]);
 
         IdiormDbal::commit();

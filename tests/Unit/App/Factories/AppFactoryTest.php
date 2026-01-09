@@ -10,10 +10,8 @@ use Quantum\App\Factories\AppFactory;
 use PHPUnit\Framework\TestCase;
 use Quantum\App\App;
 
-
 class AppFactoryTest extends TestCase
 {
-
     public function setUp(): void
     {
         parent::setUp();

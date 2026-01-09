@@ -31,7 +31,10 @@ class AssetException extends \Exception
      */
     public static function positionInUse(int $position, string $name): AssetException
     {
-        return new self(_message(ExceptionMessages::POSITION_IN_USE, [$position, $name]), E_WARNING);
+        return new self(
+            _message(ExceptionMessages::POSITION_IN_USE, [$position, $name]),
+            E_WARNING
+        );
     }
 
     /**
@@ -40,6 +43,9 @@ class AssetException extends \Exception
      */
     public static function nameInUse(?string $name): AssetException
     {
-        return new self(_message(ExceptionMessages::NAME_IN_USE, [$name]), E_WARNING);
+        return new self(
+            _message(ExceptionMessages::NAME_IN_USE, [$name]),
+            E_WARNING
+        );
     }
 }

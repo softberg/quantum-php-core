@@ -25,7 +25,6 @@ use Quantum\App\Exceptions\BaseException;
  */
 class CryptorException extends BaseException
 {
-
     /**
      * @return CryptorException
      */

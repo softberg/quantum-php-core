@@ -28,7 +28,6 @@ use Symfony\Component\Console\Command\Command;
  */
 abstract class QtCommand extends Command implements CommandInterface
 {
-
     /**
      * Console command name
      * @var string

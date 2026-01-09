@@ -26,7 +26,6 @@ use Quantum\Model\QtModel;
  */
 class ModelFactory
 {
-
     /**
      * Gets the Model
      * @param string $modelClass
@@ -74,9 +73,8 @@ class ModelFactory
         string $idColumn = 'id',
         array  $foreignKeys = [],
         array  $hidden = []
-    ): QtModel
-    {
-        $model = new class extends QtModel {};
+    ): QtModel {
+        $model = new class () extends QtModel {};
 
         $ormInstance = self::createOrmInstance($table, $modelName, $idColumn, $foreignKeys, $hidden);
 
@@ -99,8 +97,7 @@ class ModelFactory
         string $idColumn,
         array  $foreignKeys = [],
         array  $hidden = []
-    ): DbalInterface
-    {
+    ): DbalInterface {
         $ormClass = Database::getInstance()->getOrmClass();
 
         return new $ormClass($table, $modelName, $idColumn, $foreignKeys, $hidden);

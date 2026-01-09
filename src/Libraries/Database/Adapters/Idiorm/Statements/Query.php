@@ -23,7 +23,6 @@ use PDOException;
  */
 trait Query
 {
-
     /**
      * @inheritDoc
      * @throws DatabaseException

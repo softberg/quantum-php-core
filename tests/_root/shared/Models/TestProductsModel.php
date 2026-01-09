@@ -7,7 +7,6 @@ use Quantum\Model\QtModel;
 
 class TestProductsModel extends QtModel
 {
-
     use SoftDeletes;
 
     public $idColumn = 'id';

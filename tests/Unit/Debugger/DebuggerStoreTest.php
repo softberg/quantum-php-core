@@ -7,7 +7,6 @@ use Quantum\Tests\Unit\AppTestCase;
 
 class DebuggerStoreTest extends AppTestCase
 {
-
     private $debuggerStore;
 
     public function setUp(): void
@@ -59,7 +58,6 @@ class DebuggerStoreTest extends AppTestCase
         $this->assertEquals([['level1' => 'data']], $this->debuggerStore->get('key1'));
         $this->assertCount(1, $this->debuggerStore->get('key1'));
 
-
         $this->debuggerStore->set('key1', ['level2' => 'more data']);
 
         $this->assertEquals([['level1' => 'data'], ['level2' => 'more data']], $this->debuggerStore->get('key1'));
@@ -90,4 +88,3 @@ class DebuggerStoreTest extends AppTestCase
         $this->assertEmpty($debuggerStore->get('key2'));
     }
 }
-

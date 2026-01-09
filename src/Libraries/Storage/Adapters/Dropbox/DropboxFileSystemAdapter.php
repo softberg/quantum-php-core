@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Storage\Adapters\Dropbox;
@@ -23,7 +23,6 @@ use Exception;
  */
 class DropboxFileSystemAdapter implements FilesystemAdapterInterface
 {
-
     /**
      * @var DropboxApp
      */
@@ -81,8 +80,11 @@ class DropboxFileSystemAdapter implements FilesystemAdapterInterface
     public function put(string $filename, string $content, ?string $parentId = null)
     {
         try {
-            $response = $this->dropboxApp->contentRequest(DropboxApp::ENDPOINT_UPLOAD_FILE,
-                ['path' => '/' . $filename, 'mode' => 'overwrite'], $content);
+            $response = $this->dropboxApp->contentRequest(
+                DropboxApp::ENDPOINT_UPLOAD_FILE,
+                ['path' => '/' . $filename, 'mode' => 'overwrite'],
+                $content
+            );
 
             return $response->size;
 
@@ -109,7 +111,7 @@ class DropboxFileSystemAdapter implements FilesystemAdapterInterface
         try {
             $this->dropboxApp->rpcRequest(DropboxApp::ENDPOINT_MOVE_FILE, [
                 'from_path' => $this->dropboxApp->path($oldName),
-                'to_path' => $this->dropboxApp->path($newName)
+                'to_path' => $this->dropboxApp->path($newName),
             ]);
 
             return true;

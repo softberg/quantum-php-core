@@ -13,7 +13,6 @@ use Quantum\Debugger\Debugger;
 
 class LoggerHelperFunctionsTest extends AppTestCase
 {
-
     private $debugger;
 
     public function setUp(): void

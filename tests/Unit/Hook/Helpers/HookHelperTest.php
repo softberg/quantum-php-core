@@ -8,7 +8,6 @@ use Quantum\Hook\HookManager;
 
 class HookHelperTest extends AppTestCase
 {
-
     public function setUp(): void
     {
         parent::setUp();

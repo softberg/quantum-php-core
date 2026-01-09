@@ -12,7 +12,6 @@ use Quantum\Tests\Unit\AppTestCase;
 
 class CryptorFactoryTest extends AppTestCase
 {
-
     public function setUp(): void
     {
         parent::setUp();

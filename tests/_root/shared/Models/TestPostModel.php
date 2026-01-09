@@ -6,7 +6,6 @@ use Quantum\Model\QtModel;
 
 class TestPostModel extends QtModel
 {
-
     public $idColumn = 'id';
 
     public $table = 'posts';
@@ -16,6 +15,6 @@ class TestPostModel extends QtModel
         'content',
         'author',
         'published_at',
-        'created_at'
+        'created_at',
     ];
 }

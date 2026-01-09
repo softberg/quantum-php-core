@@ -24,7 +24,6 @@ use Quantum\App\Enums\ExceptionMessages;
  */
 class StopExecutionException extends BaseException
 {
-
     /**
      * @param int|null $code
      * @return StopExecutionException

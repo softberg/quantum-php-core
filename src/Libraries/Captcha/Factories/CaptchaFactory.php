@@ -31,11 +31,10 @@ use ReflectionException;
  */
 class CaptchaFactory
 {
-
     /**
      * Supported adapters
      */
-    const ADAPTERS = [
+    public const ADAPTERS = [
         Captcha::HCAPTCHA => HcaptchaAdapter::class,
         Captcha::RECAPTCHA => RecaptchaAdapter::class,
     ];

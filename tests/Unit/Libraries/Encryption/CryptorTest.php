@@ -11,7 +11,6 @@ use Quantum\Tests\Unit\AppTestCase;
 
 class CryptorTest extends AppTestCase
 {
-
     public function setUp(): void
     {
         parent::setUp();
@@ -60,7 +59,7 @@ class CryptorTest extends AppTestCase
 
         $this->expectException(CryptorException::class);
 
-        $this->expectExceptionMessage('The method `callingInvalidMethod` is not supported for `'. SymmetricEncryptionAdapter::class .'`');
+        $this->expectExceptionMessage('The method `callingInvalidMethod` is not supported for `' . SymmetricEncryptionAdapter::class . '`');
 
         $cryptor->callingInvalidMethod();
     }

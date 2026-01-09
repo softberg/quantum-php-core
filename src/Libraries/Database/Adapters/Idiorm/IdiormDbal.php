@@ -35,7 +35,6 @@ use PDO;
  */
 class IdiormDbal implements DbalInterface, RelationalInterface
 {
-
     use Transaction;
     use Model;
     use Result;
@@ -47,22 +46,22 @@ class IdiormDbal implements DbalInterface, RelationalInterface
     /**
      * SQLite driver
      */
-    const DRIVER_SQLITE = 'sqlite';
+    public const DRIVER_SQLITE = 'sqlite';
 
     /**
      * MySQL driver
      */
-    const DRIVER_MYSQL = 'mysql';
+    public const DRIVER_MYSQL = 'mysql';
 
     /**
      * PostgresSQL driver
      */
-    const DRIVER_PGSQL = 'pgsql';
+    public const DRIVER_PGSQL = 'pgsql';
 
     /**
      * Default charset
      */
-    const DEFAULT_CHARSET = 'utf8';
+    public const DEFAULT_CHARSET = 'utf8';
 
     /**
      * Associated model name
@@ -151,8 +150,7 @@ class IdiormDbal implements DbalInterface, RelationalInterface
         string $idColumn = 'id',
         array $foreignKeys = [],
         array $hidden = []
-    )
-    {
+    ) {
         $this->modelName = $modelName;
         $this->table = $table;
         $this->idColumn = $idColumn;

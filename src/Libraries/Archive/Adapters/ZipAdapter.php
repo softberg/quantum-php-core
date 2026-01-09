@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Archive\Adapters;
@@ -28,7 +28,6 @@ use Exception;
  */
 class ZipAdapter implements ArchiveInterface
 {
-
     /**
      * @var FileSystem
      */
@@ -48,7 +47,6 @@ class ZipAdapter implements ArchiveInterface
      * @var bool
      */
     private $requiresReopen = true;
-
 
     /**
      * @throws BaseException

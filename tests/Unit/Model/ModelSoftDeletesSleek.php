@@ -12,7 +12,6 @@ use Quantum\Loader\Setup;
 
 class ModelSoftDeletesSleek extends AppTestCase
 {
-
     private $model;
 
     public function setUp(): void

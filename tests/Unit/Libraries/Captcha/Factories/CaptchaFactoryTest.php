@@ -11,7 +11,6 @@ use Quantum\Tests\Unit\AppTestCase;
 
 class CaptchaFactoryTest extends AppTestCase
 {
-
     public function setUp(): void
     {
         parent::setUp();

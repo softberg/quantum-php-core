@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Quantum\Tests\Unit\Model;
 
 use Quantum\Libraries\Database\Adapters\Idiorm\IdiormDbal;
@@ -14,7 +13,6 @@ use Quantum\Model\QtModel;
 
 class QtModelTest extends AppTestCase
 {
-
     private $model;
 
     public function setUp(): void
@@ -32,7 +30,7 @@ class QtModelTest extends AppTestCase
 
     public function tearDown(): void
     {
-        IdiormDbal::execute("DROP TABLE profiles");
+        IdiormDbal::execute('DROP TABLE profiles');
     }
 
     public function testQtModelInstance()
@@ -103,7 +101,7 @@ class QtModelTest extends AppTestCase
         $this->model->fillObjectProps([
             'firstname' => 'Jane',
             'lastname' => 'Due',
-            'age' => 35
+            'age' => 35,
         ]);
 
         $this->assertEquals('Jane', $this->model->firstname);
@@ -214,13 +212,13 @@ class QtModelTest extends AppTestCase
     public function testQtModelGetModelProperties()
     {
         $expected = [
-            "id" => "1",
-            "user_id" => "1",
-            "firstname" => "John",
-            "lastname" => "Doe",
-            "age" => "45",
-            "country" => "Ireland",
-            "created_at" => "2025-12-17 19:27:46"
+            'id' => '1',
+            'user_id' => '1',
+            'firstname' => 'John',
+            'lastname' => 'Doe',
+            'age' => '45',
+            'country' => 'Ireland',
+            'created_at' => '2025-12-17 19:27:46',
         ];
 
         $profileModel = ModelFactory::get(TestProfileModel::class);
@@ -234,7 +232,7 @@ class QtModelTest extends AppTestCase
 
     private function _createProfileTableWithData()
     {
-        IdiormDbal::execute("CREATE TABLE IF NOT EXISTS profiles (
+        IdiormDbal::execute('CREATE TABLE IF NOT EXISTS profiles (
                         id INTEGER PRIMARY KEY,
                         user_id INTEGER(11),
                         firstname VARCHAR(255),
@@ -242,7 +240,7 @@ class QtModelTest extends AppTestCase
                         age INTEGER(11),
                         country VARCHAR(255),
                         created_at DATETIME
-                    )");
+                    )');
 
         IdiormDbal::execute("
                     INSERT INTO profiles

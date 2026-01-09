@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Auth\Contracts;
@@ -22,7 +22,6 @@ use Quantum\Libraries\Auth\User;
  */
 interface AuthServiceInterface
 {
-
     /**
      * Get
      * @param string $field
@@ -31,11 +30,11 @@ interface AuthServiceInterface
      */
     public function get(string $field, ?string $value): ?User;
 
-     /**
-     * Add
-     * @param array $data
-     * @return User
-     */
+    /**
+    * Add
+    * @param array $data
+    * @return User
+    */
     public function add(array $data): User;
 
     /**

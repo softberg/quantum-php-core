@@ -11,7 +11,6 @@ use Quantum\Loader\Setup;
 
 class MailerTest extends AppTestCase
 {
-
     public function setUp(): void
     {
         parent::setUp();
@@ -45,7 +44,7 @@ class MailerTest extends AppTestCase
 
         $this->expectException(MailerException::class);
 
-        $this->expectExceptionMessage('The method `callingInvalidMethod` is not supported for `'. SmtpAdapter::class .'`');
+        $this->expectExceptionMessage('The method `callingInvalidMethod` is not supported for `' . SmtpAdapter::class . '`');
 
         $mailer->callingInvalidMethod();
     }

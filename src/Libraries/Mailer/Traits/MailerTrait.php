@@ -29,7 +29,6 @@ use Exception;
  */
 trait MailerTrait
 {
-
     /**
      * From address and name
      * @var array
@@ -137,7 +136,7 @@ trait MailerTrait
     {
         $this->addresses[] = [
             'email' => $email,
-            'name' => $name
+            'name' => $name,
         ];
 
         return $this;

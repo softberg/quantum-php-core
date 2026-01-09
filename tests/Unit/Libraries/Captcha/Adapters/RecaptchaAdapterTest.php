@@ -25,7 +25,6 @@ class RecaptchaAdapterTest extends AppTestCase
         config()->set('captcha.recaptcha.secret_key', $this->secretKey);
         config()->set('captcha.recaptcha.site_key', $this->siteKey);
 
-
         $this->httpClientMock = Mockery::mock(HttpClient::class);
 
         $this->adapter = new RecaptchaAdapter(config()->get('captcha.recaptcha'), $this->httpClientMock);
@@ -69,27 +68,35 @@ class RecaptchaAdapterTest extends AppTestCase
 
         $this->assertEquals(
             '<div class="g-recaptcha" data-sitekey="' . $this->siteKey . '" ></div>',
-            $this->adapter->addToForm('signUpForm'));
+            $this->adapter->addToForm('signUpForm')
+        );
     }
 
     public function testRecaptchaInvisibleAddToForm()
     {
         $this->adapter->setType(CaptchaInterface::CAPTCHA_INVISIBLE);
 
-        $this->assertEquals(
-            '<script>
+        $formId = 'signUpForm';
+
+        $actual = $this->adapter->addToForm($formId);
+
+        $expected = '<script>
                  document.addEventListener("DOMContentLoaded", function() {
                      const form = document.getElementById("signUpForm");
                      const submitButton = form.querySelector("button[type=submit]");
-                     submitButton.setAttribute("data-sitekey", "' . $this->siteKey . '");
+                     submitButton.setAttribute("data-sitekey", "0x0000000000000000000000000000000000000000");
                      submitButton.setAttribute("data-callback", "onSubmit");
                      submitButton.classList.add("g-recaptcha");
                  })
                 function onSubmit (){
                     document.getElementById("signUpForm").submit();
                 }
-            </script>',
-            $this->adapter->addToForm('signUpForm'));
+            </script>';
+
+        $expected = str_replace("\r\n", "\n", $expected);
+        $actual = str_replace("\r\n", "\n", $actual);
+
+        $this->assertSame($expected, $actual);
     }
 
     public function testRecaptchaVerifySuccess()
@@ -112,9 +119,8 @@ class RecaptchaAdapterTest extends AppTestCase
         $this->httpClientMock
             ->shouldReceive('getResponseBody')
             ->andReturn((object)[
-                'success' => true
+                'success' => true,
             ]);
-
 
         $result = $this->adapter->verify('valid_code');
 
@@ -136,12 +142,11 @@ class RecaptchaAdapterTest extends AppTestCase
             ->shouldReceive('start')
             ->andReturnSelf();
 
-
         $this->httpClientMock
             ->shouldReceive('getResponseBody')
             ->andReturn((object)[
                 'success' => false,
-                'error-codes' => ['invalid-input-response']
+                'error-codes' => ['invalid-input-response'],
             ]);
 
         $result = $this->adapter->verify('invalid_code');

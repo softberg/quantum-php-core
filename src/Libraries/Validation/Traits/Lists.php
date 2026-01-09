@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.8
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Validation\Traits;
@@ -20,7 +20,6 @@ namespace Quantum\Libraries\Validation\Traits;
  */
 trait Lists
 {
-
     /**
      * Validates that the field value is contained within a given string.
      * @param string $value
@@ -45,7 +44,7 @@ trait Lists
     {
         $value = trim(strtolower($value));
 
-        $list = array_map(fn($item) => trim(strtolower($item)), $list);
+        $list = array_map(fn ($item) => trim(strtolower($item)), $list);
 
         return in_array($value, $list);
     }
@@ -60,7 +59,7 @@ trait Lists
     {
         $value = trim(strtolower($value));
 
-        $list = array_map(fn($item) => trim(strtolower($item)), $list);
+        $list = array_map(fn ($item) => trim(strtolower($item)), $list);
 
         return !in_array($value, $list);
     }

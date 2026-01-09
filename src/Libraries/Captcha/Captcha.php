@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Captcha;
@@ -30,16 +30,15 @@ use Quantum\App\Exceptions\BaseException;
  */
 class Captcha
 {
-
     /**
      * HCaptcha adapter
      */
-    const HCAPTCHA = 'hcaptcha';
+    public const HCAPTCHA = 'hcaptcha';
 
     /**
      * ReCaptcha adapter
      */
-    const RECAPTCHA = 'recaptcha';
+    public const RECAPTCHA = 'recaptcha';
 
     /**
      * @var CaptchaInterface

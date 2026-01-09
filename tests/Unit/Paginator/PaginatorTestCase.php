@@ -7,7 +7,6 @@ use Quantum\Tests\Unit\AppTestCase;
 
 class PaginatorTestCase extends AppTestCase
 {
-
     public function setUp(): void
     {
         parent::setUp();
@@ -19,19 +18,19 @@ class PaginatorTestCase extends AppTestCase
 
     public function tearDown(): void
     {
-        IdiormDbal::execute("DROP TABLE IF EXISTS posts");
+        IdiormDbal::execute('DROP TABLE IF EXISTS posts');
     }
 
     private function _createPostTableWithData()
     {
-        IdiormDbal::execute("CREATE TABLE IF NOT EXISTS posts (
+        IdiormDbal::execute('CREATE TABLE IF NOT EXISTS posts (
                         id INTEGER PRIMARY KEY,
                         title VARCHAR(255),
                         content VARCHAR(255),
                         author VARCHAR(255),
                         published_at DATETIME,
                         created_at DATETIME
-                    )");
+                    )');
 
         IdiormDbal::execute("INSERT INTO
             posts

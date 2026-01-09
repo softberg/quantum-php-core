@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Auth;
@@ -28,16 +28,15 @@ use Quantum\App\Exceptions\BaseException;
  */
 class Auth
 {
-
     /**
      * Web
      */
-    const SESSION = 'session';
+    public const SESSION = 'session';
 
     /**
      * Api
      */
-    const JWT = 'jwt';
+    public const JWT = 'jwt';
 
     /**
      * @var AuthenticatableInterface

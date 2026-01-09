@@ -9,7 +9,6 @@ use Mockery;
 
 class DropboxFileSystemAdapterTest extends AppTestCase
 {
-
     /**
      * @var DropboxFileSystemAdapter
      */
@@ -60,7 +59,7 @@ class DropboxFileSystemAdapterTest extends AppTestCase
 
         $dropboxAppMock
             ->shouldReceive('path')
-            ->andReturnUsing(fn($path) => ['path' => '/' . trim($path, '/')]);
+            ->andReturnUsing(fn ($path) => ['path' => '/' . trim($path, '/')]);
 
         $this->fs = new DropboxFileSystemAdapter($dropboxAppMock);
     }
@@ -189,38 +188,38 @@ class DropboxFileSystemAdapterTest extends AppTestCase
     {
         self::$response['entries'] = [
             [
-                ".tag" => "folder",
-                "name" => "empty",
-                "path_lower" => "/test/empty",
-                "path_display" => "/test/empty",
-                "id" => "id:SziOaBdnr3oAAAAAAAAAWQ",
+                '.tag' => 'folder',
+                'name' => 'empty',
+                'path_lower' => '/test/empty',
+                'path_display' => '/test/empty',
+                'id' => 'id:SziOaBdnr3oAAAAAAAAAWQ',
             ],
             [
-                ".tag" => "file",
-                "name" => "logo.png",
-                "path_lower" => "/test/logo.png",
-                "path_display" => "/test/logo.png",
-                "id" => "id:SziOaBdnr3oAAAAAAAAAVQ",
-                "client_modified" => "2023-02-24T15:34:43Z",
-                "server_modified" => "2023-02-24T15:34:44Z",
-                "rev" => "5f573de5b0b13c07503b1",
-                "size" => 3455,
-                "is_downloadable" => true,
-                "content_hash" => "4be946abd21ac3fbe9e363192dbb7efe18a2071f5e287fef0f9580bf67141c55",
+                '.tag' => 'file',
+                'name' => 'logo.png',
+                'path_lower' => '/test/logo.png',
+                'path_display' => '/test/logo.png',
+                'id' => 'id:SziOaBdnr3oAAAAAAAAAVQ',
+                'client_modified' => '2023-02-24T15:34:43Z',
+                'server_modified' => '2023-02-24T15:34:44Z',
+                'rev' => '5f573de5b0b13c07503b1',
+                'size' => 3455,
+                'is_downloadable' => true,
+                'content_hash' => '4be946abd21ac3fbe9e363192dbb7efe18a2071f5e287fef0f9580bf67141c55',
             ],
             [
-                ".tag" => "file",
-                "name" => "Image 19.jpg",
-                "path_lower" => "/test/image 19.jpg",
-                "path_display" => "/test/Image 19.jpg",
-                "id" => "id:SziOaBdnr3oAAAAAAAAAVw",
-                "client_modified" => "2023-03-01T17:12:58Z",
-                "server_modified" => "2023-03-01T17:12:58Z",
-                "rev" => "5f5d9d2e5217cc07503b1",
-                "size" => 2083432,
-                "is_downloadable" => true,
-                "content_hash" => "52e9a39cad88c0a5518e40d02c5e66f13634d102211923f3cbf919fe52c652b7",
-            ]
+                '.tag' => 'file',
+                'name' => 'Image 19.jpg',
+                'path_lower' => '/test/image 19.jpg',
+                'path_display' => '/test/Image 19.jpg',
+                'id' => 'id:SziOaBdnr3oAAAAAAAAAVw',
+                'client_modified' => '2023-03-01T17:12:58Z',
+                'server_modified' => '2023-03-01T17:12:58Z',
+                'rev' => '5f5d9d2e5217cc07503b1',
+                'size' => 2083432,
+                'is_downloadable' => true,
+                'content_hash' => '52e9a39cad88c0a5518e40d02c5e66f13634d102211923f3cbf919fe52c652b7',
+            ],
         ];
 
         $entries = $this->fs->listDirectory('test');

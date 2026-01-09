@@ -8,7 +8,6 @@ use Quantum\Http\Request;
 
 class RequestTest extends AppTestCase
 {
-
     public function setUp(): void
     {
         parent::setUp();

@@ -25,7 +25,6 @@ use Quantum\App\Exceptions\BaseException;
  */
 class PaginatorException extends BaseException
 {
-
     /**
      * @param string $type
      * @param $missingParam
@@ -38,4 +37,4 @@ class PaginatorException extends BaseException
             E_WARNING
         );
     }
-} 
+}

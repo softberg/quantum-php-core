@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Mailer;
@@ -35,31 +35,30 @@ use Quantum\App\Exceptions\BaseException;
  */
 class Mailer
 {
-
     /**
      * SMTP adapter
      */
-    const SMTP = 'smtp';
+    public const SMTP = 'smtp';
 
     /**
      * Mailgun adapter
      */
-    const MAILGUN = 'mailgun';
+    public const MAILGUN = 'mailgun';
 
     /**
      * Mandrill adapter
      */
-    const MANDRILL = 'mandrill';
+    public const MANDRILL = 'mandrill';
 
     /**
      * Sendgrid adapter
      */
-    const SENDGRID = 'sendgrid';
+    public const SENDGRID = 'sendgrid';
 
     /**
      * Sendinblue adapter
      */
-    const SENDINBLUE = 'sendinblue';
+    public const SENDINBLUE = 'sendinblue';
 
     /**
      * @var MailerInterface

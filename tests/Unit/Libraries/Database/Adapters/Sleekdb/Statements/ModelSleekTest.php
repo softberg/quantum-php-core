@@ -7,7 +7,6 @@ use Quantum\Libraries\Database\Adapters\Sleekdb\SleekDbal;
 
 class ModelSleekTest extends SleekDbalTestCase
 {
-
     public function testSleekCreateNewRecord()
     {
         $eventsModel = new SleekDbal('events');

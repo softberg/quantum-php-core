@@ -26,7 +26,7 @@ class TestProfileModel extends QtModel
             TestUserModel::class => [
                 'type' => Relation::BELONGS_TO,
                 'foreign_key' => 'user_id',
-                'local_key' => 'id'
+                'local_key' => 'id',
             ],
         ];
     }

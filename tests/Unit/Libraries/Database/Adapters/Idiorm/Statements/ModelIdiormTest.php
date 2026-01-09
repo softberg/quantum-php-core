@@ -7,7 +7,6 @@ use Quantum\Libraries\Database\Adapters\Idiorm\IdiormDbal;
 
 class ModelIdiormTest extends IdiormDbalTestCase
 {
-
     public function testIdiormCreateNewRecord()
     {
         $eventsModel = new IdiormDbal('events');

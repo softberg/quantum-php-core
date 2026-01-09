@@ -25,7 +25,6 @@ use Exception;
  */
 class SendinblueAdapter implements MailerInterface
 {
-
     use MailerTrait;
 
     /**
@@ -83,7 +82,7 @@ class SendinblueAdapter implements MailerInterface
                 $body = is_array($this->message) ? implode('', $this->message) : $this->message;
             }
 
-            $this->data['htmlContent'] = trim(str_replace("\n", "", $body));
+            $this->data['htmlContent'] = trim(str_replace("\n", '', $body));
         }
     }
 
@@ -99,7 +98,7 @@ class SendinblueAdapter implements MailerInterface
                 ->setHeaders([
                     'Accept' => 'application/json',
                     'Content-type' => 'application/json',
-                    'api-key' => $this->apiKey
+                    'api-key' => $this->apiKey,
                 ])
                 ->setData(json_encode($this->data))
                 ->start();

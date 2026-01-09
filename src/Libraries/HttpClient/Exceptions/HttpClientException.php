@@ -25,7 +25,6 @@ use Quantum\App\Exceptions\BaseException;
  */
 class HttpClientException extends BaseException
 {
-
     /**
      * @return HttpClientException
      */

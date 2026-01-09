@@ -15,7 +15,6 @@ use Quantum\Loader\Setup;
 
 class MailerFactoryTest extends AppTestCase
 {
-
     public function setUp(): void
     {
         parent::setUp();

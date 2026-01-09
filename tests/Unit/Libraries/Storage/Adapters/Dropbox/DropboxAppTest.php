@@ -8,7 +8,6 @@ use Quantum\Tests\Unit\AppTestCase;
 
 class DropboxAppTest extends AppTestCase
 {
-
     use DropboxTokenServiceTestCase;
     use HttpClientTestCase;
 
@@ -41,42 +40,42 @@ class DropboxAppTest extends AppTestCase
      * @var array
      */
     private $tokensGrantResponse = [
-        "access_token" => "sl.BYEQ1_VadTz6nBU36WPBBVwokc3zWVMXGjcOKxV4Tadms8ZlEPM85aHVFa_k1sfjilCWOnl79RUncPZzJ3GhrqhLGIBFFRCH0rKMa_ZtcqkerJn-f5lu10Ki5PSw4fxYM80V4PL_",
-        "token_type" => "bearer",
-        "expires_in" => 14400,
-        "refresh_token" => "-3S067m3M5kAAAAAAAAAAcQF8zVqFUuhK-PFkFqiOfFTgiazWj5NyU-1EGWIh0ZS",
-        "scope" => "account_info.read files.content.read files.content.write files.metadata.read files.metadata.write sharing.read sharing.write",
-        "uid" => "64129261",
-        "account_id" => "dbid:AAC9tDKbzTQlyNms0ZcB_iH3wLv7yNn-iyE"
+        'access_token' => 'sl.BYEQ1_VadTz6nBU36WPBBVwokc3zWVMXGjcOKxV4Tadms8ZlEPM85aHVFa_k1sfjilCWOnl79RUncPZzJ3GhrqhLGIBFFRCH0rKMa_ZtcqkerJn-f5lu10Ki5PSw4fxYM80V4PL_',
+        'token_type' => 'bearer',
+        'expires_in' => 14400,
+        'refresh_token' => '-3S067m3M5kAAAAAAAAAAcQF8zVqFUuhK-PFkFqiOfFTgiazWj5NyU-1EGWIh0ZS',
+        'scope' => 'account_info.read files.content.read files.content.write files.metadata.read files.metadata.write sharing.read sharing.write',
+        'uid' => '64129261',
+        'account_id' => 'dbid:AAC9tDKbzTQlyNms0ZcB_iH3wLv7yNn-iyE',
     ];
 
     /**
      * @var array
      */
     private $profileDataResponse = [
-        "account_id" => "dbid:AAH4f99T0taONIb-OurWxbNQ6ywGRopQngc",
-        "disabled" => false,
-        "email" => "franz@dropbox.com",
-        "email_verified" => true,
-        "is_teammate" => false,
-        "name" => [
-            "abbreviated_name" => "FF",
-            "display_name" => "Franz Ferdinand (Personal)",
-            "familiar_name" => "Franz",
-            "given_name" => "Franz",
-            "surname" => "Ferdinand"
+        'account_id' => 'dbid:AAH4f99T0taONIb-OurWxbNQ6ywGRopQngc',
+        'disabled' => false,
+        'email' => 'franz@dropbox.com',
+        'email_verified' => true,
+        'is_teammate' => false,
+        'name' => [
+            'abbreviated_name' => 'FF',
+            'display_name' => 'Franz Ferdinand (Personal)',
+            'familiar_name' => 'Franz',
+            'given_name' => 'Franz',
+            'surname' => 'Ferdinand',
         ],
-        "profile_photo_url" => "https://dl-web.dropbox.com/account_photo/get/69330102&size=128x128"
+        'profile_photo_url' => 'https://dl-web.dropbox.com/account_photo/get/69330102&size=128x128',
     ];
 
     /**
      * @var array
      */
     private $errorResponse = [
-        "error" => [
-            ".tag" => "no_account"
+        'error' => [
+            '.tag' => 'no_account',
         ],
-        "error_summary" => "no_account/..."
+        'error_summary' => 'no_account/...',
     ];
 
     /**
@@ -156,7 +155,7 @@ class DropboxAppTest extends AppTestCase
 
     public function testDropboxRequestWithAccessTokenExpired()
     {
-        $this->currentErrors = ["code" => 401];
+        $this->currentErrors = ['code' => 401];
 
         $this->currentResponse = (object)$this->errorResponse;
 

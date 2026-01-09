@@ -28,7 +28,6 @@ use Phar;
  */
 class PharAdapter implements ArchiveInterface
 {
-
     /**
      * @var FileSystem
      */

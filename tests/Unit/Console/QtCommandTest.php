@@ -10,7 +10,6 @@ use Quantum\Tests\Unit\AppTestCase;
 
 class QtCommandTest extends AppTestCase
 {
-
     private $command;
 
     private $tester;
@@ -49,7 +48,7 @@ class QtCommandTest extends AppTestCase
     {
         $this->tester->execute([
             'uuid' => '12345',
-            '--force' => true
+            '--force' => true,
         ]);
 
         $this->assertEquals('12345', $this->command->getArgument('uuid'));
@@ -71,13 +70,13 @@ class QtCommandTest extends AppTestCase
 
         $display = $this->tester->getDisplay();
 
-        $this->assertStringContainsString("plain message", $display);
+        $this->assertStringContainsString('plain message', $display);
 
-        $this->assertStringContainsString("info message", $display);
+        $this->assertStringContainsString('info message', $display);
 
-        $this->assertStringContainsString("comment message", $display);
+        $this->assertStringContainsString('comment message', $display);
 
-        $this->assertStringContainsString("error message", $display);
+        $this->assertStringContainsString('error message', $display);
     }
 
     public function testQuestionOutput(): void

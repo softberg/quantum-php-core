@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Archive\Enums;
@@ -22,7 +22,7 @@ use Quantum\App\Enums\ExceptionMessages as BaseExceptionMessages;
  */
 final class ExceptionMessages extends BaseExceptionMessages
 {
-    const CANT_OPEN = 'The archive `{%1}` can not be opened';
+    public const CANT_OPEN = 'The archive `{%1}` can not be opened';
 
-    const NAME_NOT_SET = 'Archive name is not set';
+    public const NAME_NOT_SET = 'Archive name is not set';
 }

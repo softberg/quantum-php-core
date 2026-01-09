@@ -63,7 +63,7 @@ namespace Quantum\Tests\Unit\Libraries\Auth {
             'refresh_token' => '',
             'otp' => '',
             'otp_expiry_in' => '',
-            'otp_token' => ''
+            'otp_token' => '',
         ];
         protected $guestUser = [
             'email' => 'guest@qt.com',

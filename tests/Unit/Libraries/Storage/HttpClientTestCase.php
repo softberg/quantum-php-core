@@ -7,7 +7,6 @@ use Mockery;
 
 trait HttpClientTestCase
 {
-
     protected $url;
 
     protected $response;
@@ -43,11 +42,11 @@ trait HttpClientTestCase
             return $httpClientMock;
         });
 
-        $httpClientMock->shouldReceive('getErrors')->andReturnUsing(fn() => (array)$this->response[$this->url]['errors']);
+        $httpClientMock->shouldReceive('getErrors')->andReturnUsing(fn () => (array)$this->response[$this->url]['errors']);
 
-        $httpClientMock->shouldReceive('getResponseBody')->andReturnUsing(fn() => $this->response[$this->url]['body']);
+        $httpClientMock->shouldReceive('getResponseBody')->andReturnUsing(fn () => $this->response[$this->url]['body']);
 
-        $httpClientMock->shouldReceive('url')->andReturnUsing(fn() => $this->url);
+        $httpClientMock->shouldReceive('url')->andReturnUsing(fn () => $this->url);
 
         return $httpClientMock;
     }

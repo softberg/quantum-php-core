@@ -20,7 +20,6 @@ namespace Quantum\Http\Traits\Request;
  */
 trait Query
 {
-
     /**
      * Query string
      * @var string|null
@@ -55,7 +54,7 @@ trait Query
         if (self::$__query === null) {
             return null;
         }
-        
+
         $query = explode('&', self::$__query);
 
         foreach ($query as $items) {

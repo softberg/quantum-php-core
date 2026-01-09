@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 3.0.0
  */
 
 namespace Quantum\Console\Commands;
@@ -29,7 +29,6 @@ use Quantum\Console\QtCommand;
  */
 class MigrationMigrateCommand extends QtCommand
 {
-
     /**
      * The console command name.
      * @var string
@@ -71,7 +70,7 @@ class MigrationMigrateCommand extends QtCommand
 
         $direction = $this->getArgument('direction') ?: MigrationManager::UPGRADE;
 
-        if ($direction == 'down' && !$this->confirm("This operation will revert all the database changes, including the data. Continue?")) {
+        if ($direction == 'down' && !$this->confirm('This operation will revert all the database changes, including the data. Continue?')) {
             $this->info('Operation was canceled!');
             return;
         }

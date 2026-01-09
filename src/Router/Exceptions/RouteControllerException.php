@@ -25,7 +25,6 @@ use Quantum\App\Exceptions\BaseException;
  */
 class RouteControllerException extends BaseException
 {
-
     /**
      * @param string|null $name
      * @return RouteControllerException

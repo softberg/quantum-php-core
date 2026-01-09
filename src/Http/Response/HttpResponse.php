@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.8
+ * @since 3.0.0
  */
 
 namespace Quantum\Http\Response;
@@ -28,7 +28,6 @@ use Exception;
  */
 abstract class HttpResponse
 {
-
     use Header;
     use Body;
     use Status;

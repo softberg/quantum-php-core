@@ -24,8 +24,8 @@ class TestUserEventModel extends QtModel
             TestEventModel::class => [
                 'type' => Relation::BELONGS_TO,
                 'foreign_key' => 'event_id',
-                'local_key' => 'id'
-            ]
+                'local_key' => 'id',
+            ],
         ];
     }
 }

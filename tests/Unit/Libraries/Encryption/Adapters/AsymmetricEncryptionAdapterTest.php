@@ -10,7 +10,6 @@ use ReflectionClass;
 
 class AsymmetricEncryptionAdapterTest extends AppTestCase
 {
-
     protected $adapter;
     protected $plainText = 'The early bird gets the worm, but the second mouse gets the cheese.';
 
@@ -51,7 +50,7 @@ class AsymmetricEncryptionAdapterTest extends AppTestCase
         $this->expectException(CryptorException::class);
         $this->expectExceptionMessage(ExceptionMessages::PUBLIC_KEY_MISSING);
 
-        $adapterInstance->encrypt("Some text");
+        $adapterInstance->encrypt('Some text');
     }
 
     public function testAsymmetricEncryptionAdapterDecryptWithoutPrivateKey()
@@ -66,6 +65,6 @@ class AsymmetricEncryptionAdapterTest extends AppTestCase
         $this->expectException(CryptorException::class);
         $this->expectExceptionMessage(ExceptionMessages::PRIVATE_KEY_MISSING);
 
-        $adapterInstance->decrypt("Some encrypted text");
+        $adapterInstance->decrypt('Some encrypted text');
     }
 }

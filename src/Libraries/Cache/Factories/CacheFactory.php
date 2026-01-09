@@ -32,11 +32,10 @@ use ReflectionException;
  */
 class CacheFactory
 {
-
     /**
      * Supported adapters
      */
-    const ADAPTERS = [
+    public const ADAPTERS = [
         Cache::FILE => FileAdapter::class,
         Cache::DATABASE => DatabaseAdapter::class,
         Cache::MEMCACHED => MemcachedAdapter::class,

@@ -8,7 +8,6 @@ use Quantum\Tests\Unit\AppTestCase;
 
 class ValidatorTest extends AppTestCase
 {
-
     private $validator;
 
     public function setUp(): void
@@ -52,7 +51,7 @@ class ValidatorTest extends AppTestCase
         $this->validator->setRule('text', [
             Rule::minLen(7),
             Rule::maxLen(20),
-            Rule::email()
+            Rule::email(),
         ]);
 
         $this->assertTrue($this->validator->isValid(['text' => 'someone@gmail.com']));
@@ -81,11 +80,11 @@ class ValidatorTest extends AppTestCase
         $this->validator->setRules([
             'name' => [
                 Rule::required(),
-                Rule::maxLen(30)
+                Rule::maxLen(30),
             ],
             'email' => [
                 Rule::required(),
-                Rule::email()
+                Rule::email(),
             ],
             'age' => [
                 Rule::required(),
@@ -96,7 +95,7 @@ class ValidatorTest extends AppTestCase
         $data = [
             'name' => 'John',
             'email' => 'john@gmail.com',
-            'age' => 36
+            'age' => 36,
         ];
 
         $this->assertTrue($this->validator->isValid($data));
@@ -104,7 +103,7 @@ class ValidatorTest extends AppTestCase
         $data = [
             'name' => 'Junior',
             'email' => 'johny@gc.com',
-            'age' => 12
+            'age' => 12,
         ];
 
         $this->assertFalse($this->validator->isValid($data));
@@ -114,7 +113,7 @@ class ValidatorTest extends AppTestCase
         $data = [
             'name' => '',
             'email' => 'john@gmail.com',
-            'age' => 0
+            'age' => 0,
         ];
 
         $this->assertTrue($this->validator->isValid($data));
@@ -123,7 +122,7 @@ class ValidatorTest extends AppTestCase
             'phone' => [
                 Rule::required(),
                 Rule::minLen(8),
-            ]
+            ],
         ]);
 
         $data = [
@@ -139,11 +138,11 @@ class ValidatorTest extends AppTestCase
     {
         $this->validator->setRules([
             'name' => [
-                Rule::maxLen(30)
+                Rule::maxLen(30),
             ],
             'email' => [
                 Rule::required(),
-                Rule::email()
+                Rule::email(),
             ],
             'age' => [
                 Rule::required(),
@@ -169,12 +168,12 @@ class ValidatorTest extends AppTestCase
 
     public function testCustomValidator()
     {
-        $this->validator->addRule('checkName', fn($value, $param = null) => $value == $param);
+        $this->validator->addRule('checkName', fn ($value, $param = null) => $value == $param);
 
         $this->validator->setRules([
             'name' => [
                 Rule::checkName('Wayne'),
-            ]
+            ],
         ]);
 
         $this->assertTrue($this->validator->isValid(['name' => 'Wayne']));

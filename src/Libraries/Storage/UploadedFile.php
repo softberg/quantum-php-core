@@ -38,7 +38,6 @@ use finfo;
  */
 class UploadedFile extends SplFileInfo
 {
-
     /**
      * Local File System
      * @var LocalFilesystemAdapterInterface
@@ -98,7 +97,7 @@ class UploadedFile extends SplFileInfo
         4 => 'No file was uploaded',
         6 => 'Missing a temporary folder',
         7 => 'Failed to write file to disk',
-        8 => 'A PHP extension stopped the file upload'
+        8 => 'A PHP extension stopped the file upload',
     ];
 
     /**
@@ -264,7 +263,7 @@ class UploadedFile extends SplFileInfo
 
         return [
             'width' => $width,
-            'height' => $height
+            'height' => $height,
         ];
     }
 

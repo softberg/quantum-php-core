@@ -7,7 +7,6 @@ namespace Quantum\Services {
 
     class TestService extends QtService
     {
-
         public static $count = 0;
 
         public $model;
@@ -32,7 +31,6 @@ namespace Quantum\Models {
 
     class TestModel extends QtModel
     {
-
     }
 }
 
@@ -47,7 +45,6 @@ namespace Quantum\Tests\Unit\Service\Factories {
 
     class ServiceFactoryTest extends AppTestCase
     {
-
         public function setUp(): void
         {
             parent::setUp();

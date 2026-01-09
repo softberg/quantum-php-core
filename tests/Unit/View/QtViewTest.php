@@ -8,10 +8,8 @@ use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Router\Router;
 use Quantum\View\RawParam;
 
-
 class QtViewTest extends AppTestCase
 {
-
     private $view;
 
     public function setUp(): void
@@ -19,11 +17,11 @@ class QtViewTest extends AppTestCase
         parent::setUp();
 
         Router::setCurrentRoute([
-            "route" => "test",
-            "method" => "GET",
-            "controller" => "SomeController",
-            "action" => "test",
-            "module" => "Test"
+            'route' => 'test',
+            'method' => 'GET',
+            'controller' => 'SomeController',
+            'action' => 'test',
+            'module' => 'Test',
         ]);
 
         $this->view = ViewFactory::get();

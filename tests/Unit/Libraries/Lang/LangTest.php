@@ -9,7 +9,6 @@ use Quantum\Libraries\Lang\Lang;
 
 class LangTest extends AppTestCase
 {
-
     private $lang;
 
     public function setUp(): void
@@ -20,11 +19,11 @@ class LangTest extends AppTestCase
         $this->lang = new Lang('en', true, $translator);
 
         RouteController::setCurrentRoute([
-            "route" => "api-signin",
-            "method" => "POST",
-            "controller" => "SomeController",
-            "action" => "signin",
-            "module" => "Test",
+            'route' => 'api-signin',
+            'method' => 'POST',
+            'controller' => 'SomeController',
+            'action' => 'signin',
+            'module' => 'Test',
         ]);
     }
 
@@ -45,7 +44,6 @@ class LangTest extends AppTestCase
 
         $this->assertFalse($langDisabled->isEnabled());
     }
-
 
     public function testLangLoadAndGetTranslation(): void
     {

@@ -12,7 +12,6 @@ use Quantum\Loader\Setup;
 
 class SessionTest extends AppTestCase
 {
-
     public function setUp(): void
     {
         parent::setUp();

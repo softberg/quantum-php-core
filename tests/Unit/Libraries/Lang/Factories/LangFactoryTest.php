@@ -9,7 +9,6 @@ use Quantum\Libraries\Lang\Lang;
 
 class LangFactoryTest extends AppTestCase
 {
-
     public function setUp(): void
     {
         parent::setUp();
@@ -79,7 +78,7 @@ class LangFactoryTest extends AppTestCase
             'enabled' => true,
             'default' => 'en',
             'supported' => ['en', 'es'],
-            'url_segment' => 1
+            'url_segment' => 1,
         ]);
 
         $this->testRequest('http://127.0.0.1/fr/api/rest');
@@ -111,7 +110,7 @@ class LangFactoryTest extends AppTestCase
             'enabled' => true,
             'default' => null,
             'supported' => ['en', 'es'],
-            'url_segment' => 1
+            'url_segment' => 1,
         ]);
 
         $this->testRequest('http://127.0.0.1/fr/api/rest');

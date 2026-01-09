@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\HttpClient\Enums;
@@ -22,5 +22,5 @@ use Quantum\App\Enums\ExceptionMessages as BaseExceptionMessages;
  */
 final class ExceptionMessages extends BaseExceptionMessages
 {
-    const REQUEST_NOT_CREATED = 'Request is not created.';
+    public const REQUEST_NOT_CREATED = 'Request is not created.';
 }

@@ -17,7 +17,6 @@ use Quantum\Model\Factories\ModelFactory;
 use Quantum\Model\ModelCollection;
 use Quantum\Model\QtModel;
 
-
 class BrokenProfileMissingTypeModel extends QtModel
 {
     public $table = 'profiles';
@@ -28,7 +27,7 @@ class BrokenProfileMissingTypeModel extends QtModel
             TestUserModel::class => [
                 // 'type' intentionally missing
                 'foreign_key' => 'user_id',
-                'local_key'  => 'id',
+                'local_key' => 'id',
             ],
         ];
     }
@@ -44,7 +43,7 @@ class BrokenProfileUnsupportedRelationModel extends QtModel
             TestUserModel::class => [
                 'type' => 'SIDEWAYS',
                 'foreign_key' => 'user_id',
-                'local_key'  => 'id',
+                'local_key' => 'id',
             ],
         ];
     }
@@ -52,7 +51,6 @@ class BrokenProfileUnsupportedRelationModel extends QtModel
 
 class JoinIdiormTest extends IdiormDbalTestCase
 {
-
     public function testIdiormJoinAndInnerJoin()
     {
         $userModel = new IdiormDbal('users');
@@ -142,9 +140,9 @@ class JoinIdiormTest extends IdiormDbalTestCase
 
         $this->assertArrayHasKey('country', $user);
 
-        $expectedQuery = "SELECT * 
+        $expectedQuery = 'SELECT * 
                             FROM `users` 
-                                JOIN `profiles` ON `profiles`.`user_id` = `users`.`id`";
+                                JOIN `profiles` ON `profiles`.`user_id` = `users`.`id`';
 
         $expectedQuery = preg_replace('/[\s\t]+/', ' ', preg_replace('/' . PHP_EOL . '+/', '', $expectedQuery));
 
@@ -174,9 +172,9 @@ class JoinIdiormTest extends IdiormDbalTestCase
 
         $this->assertArrayHasKey('country', $user);
 
-        $expectedQuery = "SELECT * 
+        $expectedQuery = 'SELECT * 
                             FROM `profiles` 
-                                JOIN `users` ON `users`.`id` = `profiles`.`user_id`";
+                                JOIN `users` ON `users`.`id` = `profiles`.`user_id`';
 
         $expectedQuery = preg_replace('/[\s\t]+/', ' ', preg_replace('/' . PHP_EOL . '+/', '', $expectedQuery));
 
@@ -210,10 +208,10 @@ class JoinIdiormTest extends IdiormDbalTestCase
 
         $this->assertInstanceOf(ModelCollection::class, $users);
 
-        $expectedQuery = "SELECT * 
+        $expectedQuery = 'SELECT * 
                         FROM `users` 
                             JOIN `user_professions` ON `user_professions`.`user_id` = `users`.`id` 
-                            JOIN `user_meetings` ON `user_meetings`.`user_id` = `users`.`id`";
+                            JOIN `user_meetings` ON `user_meetings`.`user_id` = `users`.`id`';
 
         $expectedQuery = preg_replace('/[\s\t]+/', ' ', preg_replace('/' . PHP_EOL . '+/', '', $expectedQuery));
 
@@ -256,12 +254,12 @@ class JoinIdiormTest extends IdiormDbalTestCase
 
         $this->assertArrayHasKey('note', $user);
 
-        $expectedQuery = "SELECT * 
+        $expectedQuery = 'SELECT * 
                     FROM `users` 
                         JOIN `user_meetings` ON `user_meetings`.`user_id` = `users`.`id` 
                         JOIN `tickets` ON `tickets`.`meeting_id` = `user_meetings`.`id`
                         JOIN `notes` ON `notes`.`ticket_id` = `tickets`.`id`
-                    GROUP BY `users`.`id`";
+                    GROUP BY `users`.`id`';
 
         $expectedQuery = preg_replace('/[\s\t]+/', ' ', preg_replace('/' . PHP_EOL . '+/', '', $expectedQuery));
 
@@ -301,10 +299,10 @@ class JoinIdiormTest extends IdiormDbalTestCase
 
         $this->assertArrayHasKey('started_at', $userRecord);
 
-        $expectedQuery = "SELECT * 
+        $expectedQuery = 'SELECT * 
                             FROM `users`
                                 JOIN `user_events` ON `user_events`.`user_id` = `users`.`id` 
-                                JOIN `events` ON `events`.`id` = `user_events`.`event_id`";
+                                JOIN `events` ON `events`.`id` = `user_events`.`event_id`';
 
         $expectedQuery = preg_replace('/[\s\t]+/', ' ', preg_replace('/' . PHP_EOL . '+/', '', $expectedQuery));
 
@@ -370,7 +368,7 @@ class JoinIdiormTest extends IdiormDbalTestCase
 
         $this->assertEquals('Writer', $users->first()->prop('profession'));
 
-        $expectedQuery = "SELECT 
+        $expectedQuery = 'SELECT 
                             `firstname`, 
                             `lastname`, 
                             `age`, 
@@ -379,7 +377,7 @@ class JoinIdiormTest extends IdiormDbalTestCase
                         FROM `users` 
                             JOIN `profiles` ON `profiles`.`user_id` = `users`.`id` 
                             JOIN `user_professions` ON `user_professions`.`user_id` = `users`.`id` 
-                        ORDER BY `age` DESC";
+                        ORDER BY `age` DESC';
 
         $expectedQuery = preg_replace('/[\s\t]+/', ' ', preg_replace('/' . PHP_EOL . '+/', '', $expectedQuery));
 
@@ -402,7 +400,7 @@ class JoinIdiormTest extends IdiormDbalTestCase
     public function testIdiormJoinThrowsExceptionWhenRelationKeysMissing()
     {
         $this->expectException(ModelException::class);
-        $this->expectExceptionMessage('Relation type is missing for model `'  . BrokenProfileMissingTypeModel::class .'`');
+        $this->expectExceptionMessage('Relation type is missing for model `' . BrokenProfileMissingTypeModel::class . '`');
 
         ModelFactory::get(BrokenProfileMissingTypeModel::class)
             ->joinTo(ModelFactory::get(TestUserModel::class))

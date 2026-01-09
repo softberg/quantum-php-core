@@ -8,7 +8,6 @@ use Quantum\Tests\Unit\AppTestCase;
 
 class ResourceRuleTest extends AppTestCase
 {
-
     public $validator;
     private $request;
 
@@ -23,7 +22,7 @@ class ResourceRuleTest extends AppTestCase
     public function testRuleUrl()
     {
         $this->validator->setRule('text', [
-            Rule::url()
+            Rule::url(),
         ]);
 
         $this->assertTrue($this->validator->isValid(['text' => 'http://something.com']));
@@ -44,7 +43,7 @@ class ResourceRuleTest extends AppTestCase
     public function testRuleUrlExists()
     {
         $this->validator->setRule('text', [
-            Rule::urlExists()
+            Rule::urlExists(),
         ]);
 
         $this->assertTrue($this->validator->isValid(['text' => 'http://google.com']));
@@ -95,7 +94,7 @@ class ResourceRuleTest extends AppTestCase
     public function testRuleIpV6()
     {
         $this->validator->setRule('text', [
-            Rule::ipv6()
+            Rule::ipv6(),
         ]);
 
         $this->assertTrue($this->validator->isValid(['text' => '2001:0000:3238:DFE1:0063:0000:0000:FEFB']));

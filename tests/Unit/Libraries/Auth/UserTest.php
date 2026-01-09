@@ -7,7 +7,6 @@ use PHPUnit\Framework\TestCase;
 
 class UserTest extends TestCase
 {
-
     private $user;
 
     private $fields = [
@@ -16,7 +15,7 @@ class UserTest extends TestCase
         'lastname' => ['name' => 'lastname', 'visible' => true],
         'role' => ['name' => 'role', 'visible' => true],
         'username' => ['name' => 'email', 'visible' => true],
-        'password' => ['name' => 'password', 'visible' => false]
+        'password' => ['name' => 'password', 'visible' => false],
     ];
 
     public function setUp(): void

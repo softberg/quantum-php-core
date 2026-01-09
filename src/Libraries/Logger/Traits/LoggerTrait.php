@@ -9,9 +9,8 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 3.0.0
  */
-
 
 namespace Quantum\Libraries\Logger\Traits;
 
@@ -24,7 +23,6 @@ use Quantum\Libraries\Storage\FileSystem;
  */
 trait LoggerTrait
 {
-
     /**
      * @var FileSystem
      */
@@ -64,7 +62,7 @@ trait LoggerTrait
     protected function formatMessage(string $level, $message, ?array $context = []): string
     {
         return sprintf(
-            "[%s] %s: %s%s",
+            '[%s] %s: %s%s',
             date('Y-m-d H:i:s'),
             ucfirst($level),
             is_array($message) ? json_encode($message, JSON_PRETTY_PRINT) : $message,

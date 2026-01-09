@@ -9,7 +9,6 @@ use Quantum\Tests\Unit\AppTestCase;
 
 class CaptchaHelperFunctionsTest extends AppTestCase
 {
-
     public function testCaptchaHelperGetDefaultCaptchaAdapter()
     {
         $this->assertInstanceOf(Captcha::class, captcha());

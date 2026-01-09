@@ -15,7 +15,6 @@ use Quantum\Loader\Setup;
 
 class SessionFactoryTest extends AppTestCase
 {
-
     use TestCaseHelper;
 
     public function setUp(): void

@@ -64,4 +64,4 @@ class ModelHelperFunctionsTest extends AppTestCase
 
         wrapToModel($dbal, \stdClass::class);
     }
-} 
+}

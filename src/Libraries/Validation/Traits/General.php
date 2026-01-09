@@ -29,7 +29,6 @@ use DateTime;
  */
 trait General
 {
-
     /**
      * Checks Field Required
      * @param string $value

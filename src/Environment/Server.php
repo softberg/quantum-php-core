@@ -20,12 +20,10 @@ namespace Quantum\Environment;
  */
 class Server
 {
-
     /**
      * @var array
      */
     private $server;
-
 
     private static $instance = null;
 
@@ -188,7 +186,7 @@ class Server
     /**
      * @return array
      */
-    function getAllHeaders(): array
+    public function getAllHeaders(): array
     {
         $data = $this->all();
 

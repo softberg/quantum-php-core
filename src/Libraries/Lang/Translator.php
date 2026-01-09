@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Lang;
@@ -30,9 +30,8 @@ use Quantum\Di\Di;
  */
 class Translator
 {
-
     protected $lang;
-    
+
     /**
      * @var Data|null
      */
@@ -62,11 +61,11 @@ class Translator
         }
 
         $langDir = modules_dir() . DS . current_module() . DS . 'resources' . DS . 'lang' . DS . $this->lang;
-        $files = fs()->glob($langDir . DS . "*.php");
+        $files = fs()->glob($langDir . DS . '*.php');
 
         if (is_array($files) && !count($files)) {
             $langDir = base_dir() . DS . 'shared' . DS . 'resources' . DS . 'lang' . DS . $this->lang;
-            $files = fs()->glob($langDir . DS . "*.php");
+            $files = fs()->glob($langDir . DS . '*.php');
 
             if (is_array($files) && !count($files)) {
                 throw LangException::translationsNotFound();

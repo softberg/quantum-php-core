@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Quantum\Tests\Unit\Libraries\Transformer;
 
 use Quantum\Libraries\Transformer\Transformer;
@@ -19,8 +18,8 @@ class TransformerTest extends TestCase
                 'firstname' => 'Bob',
                 'lastname' => 'Jonson',
                 'email' => 'bob@jonson.com',
-                'created_at' => '2021-01-12 11:05:00'
-            ]
+                'created_at' => '2021-01-12 11:05:00',
+            ],
         ],
         [
             'id' => 2,
@@ -32,8 +31,8 @@ class TransformerTest extends TestCase
                 'firstname' => 'Ken',
                 'lastname' => 'Watson',
                 'email' => 'ken@watson.com',
-                'created_at' => '2021-02-11 12:15:00'
-            ]
+                'created_at' => '2021-02-11 12:15:00',
+            ],
         ],
     ];
     public $expected = [
@@ -42,15 +41,15 @@ class TransformerTest extends TestCase
             'title' => 'Post one title',
             'content' => 'Post one content',
             'updated' => '2022-06-29 19:57:00',
-            'author' => 'Bob Jonson'
+            'author' => 'Bob Jonson',
         ],
         [
             'id' => 2,
             'title' => 'Post two title',
             'content' => 'Post two content',
             'updated' => '2022-07-21 15:33:00',
-            'author' => 'Ken Watson'
-        ]
+            'author' => 'Ken Watson',
+        ],
     ];
 
     public function testDataTransforming()

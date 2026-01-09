@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Storage\Adapters\GoogleDrive;
@@ -29,48 +29,47 @@ use Exception;
  */
 class GoogleDriveApp implements CloudAppInterface
 {
-
     use CloudAppTrait;
 
     /**
      * Authorization URL
      */
-    const AUTH_URL = 'https://accounts.google.com/o/oauth2/v2/auth';
+    public const AUTH_URL = 'https://accounts.google.com/o/oauth2/v2/auth';
 
     /**
      * Authorization scope
      */
-    const AUTH_SCOPE = 'https://www.googleapis.com/auth/drive';
+    public const AUTH_SCOPE = 'https://www.googleapis.com/auth/drive';
 
     /**
      * Token URL
      */
-    const AUTH_TOKEN_URL = 'https://oauth2.googleapis.com/token';
+    public const AUTH_TOKEN_URL = 'https://oauth2.googleapis.com/token';
 
     /**
      * URL for file metadata operations
      */
-    const FILE_METADATA_URL = 'https://www.googleapis.com/drive/v3/files';
+    public const FILE_METADATA_URL = 'https://www.googleapis.com/drive/v3/files';
 
     /**
      * URL for file media operations
      */
-    const FILE_MEDIA_URL = 'https://www.googleapis.com/upload/drive/v3/files';
+    public const FILE_MEDIA_URL = 'https://www.googleapis.com/upload/drive/v3/files';
 
     /**
      * Folder mimetype
      */
-    const FOLDER_MIMETYPE = 'application/vnd.google-apps.folder';
+    public const FOLDER_MIMETYPE = 'application/vnd.google-apps.folder';
 
     /**
      * Kind/Type  of drive file
      */
-    const DRIVE_FILE_KIND = 'drive#file';
+    public const DRIVE_FILE_KIND = 'drive#file';
 
     /**
      * Error code for invalid token
      */
-    const INVALID_TOKEN_ERROR_CODE = 401;
+    public const INVALID_TOKEN_ERROR_CODE = 401;
 
     /**
      * @var HttpClient
@@ -116,7 +115,7 @@ class GoogleDriveApp implements CloudAppInterface
      * @throws CryptorException
      * @throws DatabaseException
      */
-    public function getAuthUrl(string $redirectUrl, string $accessType = "offline"): string
+    public function getAuthUrl(string $redirectUrl, string $accessType = 'offline'): string
     {
         $params = [
             'client_id' => $this->appKey,
@@ -144,7 +143,7 @@ class GoogleDriveApp implements CloudAppInterface
             'grant_type' => 'authorization_code',
             'client_id' => $this->appKey,
             'client_secret' => $this->appSecret,
-            'redirect_uri' => $redirectUrl
+            'redirect_uri' => $redirectUrl,
         ];
 
         $response = $this->sendRequest(self::AUTH_TOKEN_URL, $params);
@@ -166,7 +165,7 @@ class GoogleDriveApp implements CloudAppInterface
             'refresh_token' => $refreshToken,
             'grant_type' => 'refresh_token',
             'client_id' => $this->appKey,
-            'client_secret' => $this->appSecret
+            'client_secret' => $this->appSecret,
         ];
 
         $response = $this->sendRequest(self::AUTH_TOKEN_URL, $params);
@@ -190,10 +189,10 @@ class GoogleDriveApp implements CloudAppInterface
         try {
             $headers = [
                 'Authorization' => 'Bearer ' . $this->tokenService->getAccessToken(),
-                'Content-Type' => $contentType
+                'Content-Type' => $contentType,
             ];
             return $this->sendRequest($url, $params, $headers, $method);
-        }catch (Exception $e){
+        } catch (Exception $e) {
             throw new Exception($e->getMessage(), (int)$e->getCode(), $e);
         }
     }
@@ -206,7 +205,8 @@ class GoogleDriveApp implements CloudAppInterface
      * @return mixed|null
      * @throws Exception
      */
-    public function getFileInfo(string $fileId, bool $media = false, array $params = []){
+    public function getFileInfo(string $fileId, bool $media = false, array $params = [])
+    {
         $queryParam = $media ? '?alt=media' : '?fields=*';
         return $this->rpcRequest(GoogleDriveApp::FILE_METADATA_URL . '/' . $fileId . $queryParam, $params, 'GET');
     }

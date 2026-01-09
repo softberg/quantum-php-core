@@ -7,7 +7,6 @@ use Quantum\Tests\Unit\AppTestCase;
 
 class NativeSessionAdapterTest extends AppTestCase
 {
-
     private $session;
 
     public function setUp(): void

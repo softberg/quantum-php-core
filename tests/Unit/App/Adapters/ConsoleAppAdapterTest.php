@@ -2,8 +2,6 @@
 
 namespace Quantum\Tests\Unit\App\Adapters;
 
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Input\InputInterface;
 use Quantum\App\Adapters\ConsoleAppAdapter;
 use Symfony\Component\Console\Application;
 use PHPUnit\Framework\TestCase;
@@ -13,7 +11,6 @@ use Mockery;
 
 class ConsoleAppAdapterTest extends TestCase
 {
-
     private $consoleAppAdapter;
 
     public function setUp(): void

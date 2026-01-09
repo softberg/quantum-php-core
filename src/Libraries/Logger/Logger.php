@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.6
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Logger;
@@ -24,22 +24,20 @@ use Psr\Log\LogLevel;
  */
 class Logger implements LoggerInterface
 {
-
     /**
      * Single logger adapter
      */
-    const SINGLE = 'single';
-
+    public const SINGLE = 'single';
 
     /**
      * Daily logger adapter
      */
-    const DAILY = 'daily';
+    public const DAILY = 'daily';
 
     /**
      * Message logger adapter
      */
-    const MESSAGE = 'message';
+    public const MESSAGE = 'message';
 
     /**
      * @var ReportableInterface

@@ -11,7 +11,6 @@ use Quantum\Libraries\Auth\Auth;
 
 class AuthFactoryTest extends AppTestCase
 {
-
     public function setUp(): void
     {
         parent::setUp();

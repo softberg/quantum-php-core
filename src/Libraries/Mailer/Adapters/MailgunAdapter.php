@@ -25,7 +25,6 @@ use Exception;
  */
 class MailgunAdapter implements MailerInterface
 {
-
     use MailerTrait;
 
     /**
@@ -70,7 +69,7 @@ class MailgunAdapter implements MailerInterface
      */
     private function prepare()
     {
-        $this->data['from'] = $this->from['name'] . " " . $this->from['email'];
+        $this->data['from'] = $this->from['name'] . ' ' . $this->from['email'];
 
         $to = [];
         foreach ($this->addresses as $address) {
@@ -90,7 +89,7 @@ class MailgunAdapter implements MailerInterface
                 $body = is_array($this->message) ? implode('', $this->message) : $this->message;
             }
 
-            $this->data['html'] = trim(str_replace("\n", "", $body));
+            $this->data['html'] = trim(str_replace("\n", '', $body));
         }
     }
 
@@ -105,7 +104,7 @@ class MailgunAdapter implements MailerInterface
                 ->setMethod('POST')
                 ->setHeaders([
                     'Authorization' => 'Basic ' . base64_encode('api:' . $this->apiKey),
-                    'Content-Type' => 'application/x-www-form-urlencoded'
+                    'Content-Type' => 'application/x-www-form-urlencoded',
                 ])
                 ->setData(json_encode($this->data))
                 ->start();

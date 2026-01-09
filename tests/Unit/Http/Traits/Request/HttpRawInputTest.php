@@ -9,7 +9,6 @@ use Quantum\Http\Request;
 
 class HttpRawInputTest extends AppTestCase
 {
-
     public function setUp(): void
     {
         parent::setUp();

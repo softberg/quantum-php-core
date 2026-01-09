@@ -30,11 +30,10 @@ use ReflectionException;
  */
 class RendererFactory
 {
-
     /**
      * Supported adapters
      */
-    const ADAPTERS = [
+    public const ADAPTERS = [
         Renderer::HTML => HtmlAdapter::class,
         Renderer::TWIG => TwigAdapter::class,
     ];

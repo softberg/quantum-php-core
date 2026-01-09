@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.8
+ * @since 3.0.0
  */
 
 namespace Quantum\App\Adapters;
@@ -19,7 +19,6 @@ use Quantum\App\Contracts\AppInterface;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\App\Traits\AppTrait;
 use ReflectionException;
-use Quantum\Di\Di;
 
 /**
  * Class AppAdapter
@@ -27,7 +26,6 @@ use Quantum\Di\Di;
  */
 abstract class AppAdapter implements AppInterface
 {
-
     use AppTrait;
 
     /**

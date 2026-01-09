@@ -6,7 +6,6 @@ use Quantum\Libraries\Database\Adapters\Sleekdb\SleekDbal;
 
 class SleekDbalTest extends SleekDbalTestCase
 {
-
     public function testSleekConstructor()
     {
         $userModel = new SleekDbal('users');

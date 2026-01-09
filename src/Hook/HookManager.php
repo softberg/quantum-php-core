@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 3.0.0
  */
 
 namespace Quantum\Hook;
@@ -26,11 +26,10 @@ use ReflectionException;
  */
 class HookManager
 {
-
     /**
-     * Core hooks 
+     * Core hooks
      */
-    const CORE_HOOKS = [];
+    public const CORE_HOOKS = [];
 
     /**
      * Registered hooks store
@@ -118,7 +117,7 @@ class HookManager
     }
 
     /**
-     * Registers new hook 
+     * Registers new hook
      * @param string $name
      * @throws HookException
      */

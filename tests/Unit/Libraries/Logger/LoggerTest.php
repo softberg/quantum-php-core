@@ -11,7 +11,6 @@ use Quantum\Tests\Unit\AppTestCase;
 
 class LoggerTest extends AppTestCase
 {
-
     private $logger;
     private $adapter;
     private $debugger;

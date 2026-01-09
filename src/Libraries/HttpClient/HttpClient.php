@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\HttpClient;
@@ -33,26 +33,25 @@ use Curl\Curl;
  */
 class HttpClient
 {
-
     /**
      * Available methods
      */
-    const METHODS = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
+    public const METHODS = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
 
     /**
      * Response headers section
      */
-    const RESPONSE_HEADERS = 'headers';
+    public const RESPONSE_HEADERS = 'headers';
 
     /**
      * Response cookies section
      */
-    const RESPONSE_COOKIES = 'cookies';
+    public const RESPONSE_COOKIES = 'cookies';
 
     /**
      * Response body section
      */
-    const RESPONSE_BODY = 'body';
+    public const RESPONSE_BODY = 'body';
 
     /**
      * @var MultiCurl|Curl
@@ -360,14 +359,14 @@ class HttpClient
         if ($instance->isError()) {
             $this->errors[$instance->getId()] = [
                 'code' => $instance->getErrorCode(),
-                'message' => $instance->getErrorMessage()
+                'message' => $instance->getErrorMessage(),
             ];
         }
 
         $this->response[$instance->getId()] = [
             self::RESPONSE_HEADERS => $this->formatHeaders($instance->getResponseHeaders()),
             self::RESPONSE_COOKIES => $instance->getResponseCookies(),
-            self::RESPONSE_BODY => $instance->getResponse()
+            self::RESPONSE_BODY => $instance->getResponse(),
         ];
     }
 

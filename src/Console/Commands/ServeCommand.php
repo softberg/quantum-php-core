@@ -23,21 +23,20 @@ use Quantum\Console\QtCommand;
  */
 class ServeCommand extends QtCommand
 {
-
     /**
      * Platform Windows
      */
-    const PLATFORM_WINDOWS = 'WINNT';
+    public const PLATFORM_WINDOWS = 'WINNT';
 
     /**
      * Platform Linux
      */
-    const PLATFORM_LINUX = 'Linux';
+    public const PLATFORM_LINUX = 'Linux';
 
     /**
      * Platform Mac
      */
-    const PLATFORM_MAC = 'Darwin';
+    public const PLATFORM_MAC = 'Darwin';
 
     /**
      * The console command name.

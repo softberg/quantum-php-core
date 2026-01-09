@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Archive\Factories;
@@ -26,11 +26,10 @@ use Quantum\Libraries\Archive\Archive;
  */
 class ArchiveFactory
 {
-
     /**
      * Supported adapters
      */
-    const ADAPTERS = [
+    public const ADAPTERS = [
         Archive::PHAR => PharAdapter::class,
         Archive::ZIP => ZipAdapter::class,
     ];
@@ -67,6 +66,6 @@ class ArchiveFactory
 
         $adapterClass = self::ADAPTERS[$type];
 
-        return new Archive(new $adapterClass);
+        return new Archive(new $adapterClass());
     }
 }

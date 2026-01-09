@@ -30,31 +30,30 @@ use DebugBar\DebugBar;
  */
 class Debugger
 {
-
     /**
      * Messages tab
      */
-    const MESSAGES = 'messages';
+    public const MESSAGES = 'messages';
 
     /**
      * Queries tab
      */
-    const QUERIES = 'queries';
+    public const QUERIES = 'queries';
 
     /**
      * Routes tab
      */
-    const ROUTES = 'routes';
+    public const ROUTES = 'routes';
 
     /**
      * Hooks tab
      */
-    const HOOKS = 'hooks';
+    public const HOOKS = 'hooks';
 
     /**
      * Mails tab
      */
-    const MAILS = 'mails';
+    public const MAILS = 'mails';
 
     /**
      * Store
@@ -141,7 +140,7 @@ class Debugger
             Debugger::QUERIES,
             Debugger::ROUTES,
             Debugger::HOOKS,
-            Debugger::MAILS
+            Debugger::MAILS,
         ]);
     }
 

@@ -8,7 +8,6 @@ use Quantum\Router\Route;
 
 class RouteTest extends AppTestCase
 {
-
     private $route;
 
     public function setUp(): void
@@ -18,8 +17,8 @@ class RouteTest extends AppTestCase
         $module = [
             'Test' => [
                 'prefix' => '',
-                'endabled' => true
-            ]
+                'endabled' => true,
+            ],
         ];
 
         $this->route = new Route($module);
@@ -167,13 +166,13 @@ class RouteTest extends AppTestCase
         $this->assertCount(2, $this->route->getVirtualRoutes()['auth']);
     }
 
-	public function testCacheable()
-	{
-		$this->route->post('posts', 'PostsController', 'posts')->cacheable(true, 100);
+    public function testCacheable()
+    {
+        $this->route->post('posts', 'PostsController', 'posts')->cacheable(true, 100);
 
-		$this->assertTrue($this->route->getRuntimeRoutes()[0]['cache_settings']['shouldCache']);
-		$this->assertEquals(100, $this->route->getRuntimeRoutes()[0]['cache_settings']['ttl']);
-	}
+        $this->assertTrue($this->route->getRuntimeRoutes()[0]['cache_settings']['shouldCache']);
+        $this->assertEquals(100, $this->route->getRuntimeRoutes()[0]['cache_settings']['ttl']);
+    }
 
     public function testMiddlewares()
     {

@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Http\Traits\Request;
@@ -23,7 +23,6 @@ use InvalidArgumentException;
  */
 trait Body
 {
-
     /**
      * Request body
      * @var array
@@ -49,7 +48,7 @@ trait Body
      */
     public static function get(string $key, ?string $default = null, bool $raw = false)
     {
-        if(!self::has($key)) {
+        if (!self::has($key)) {
             return $default;
         }
 

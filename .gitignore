@@ -1,6 +1,28 @@
-/vendor
-/.idea
-/nbproject/*
-/tests/_root/shared/store/*
+# =========================
+# Dependencies (Composer)
+# =========================
+/vendor/
 composer.lock
-.phpunit.result.cache
+
+# =========================
+# IDE / Editor files
+# =========================
+/.idea/
+/nbproject/
+.DS_Store
+Thumbs.db
+
+# =========================
+# Test & Runtime artifacts
+# =========================
+/tests/_root/shared/store/*
+/coverage/
+*.log
+
+# =========================
+# Tooling cache files
+# =========================
+/.php-cs-fixer.cache
+/.phpunit.result.cache
+/.phpunit.cache
+/.cache/

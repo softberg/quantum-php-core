@@ -1,4 +1,5 @@
 <?php
+
 return [
     'default' => 'html',
 
@@ -7,9 +8,9 @@ return [
     ],
 
     'twig' => [
-        'autoescape' => FALSE,
+        'autoescape' => false,
         'charset' => 'UTF-8',
         'debug' => false,
         'cache' => false,
-    ]
+    ],
 ];

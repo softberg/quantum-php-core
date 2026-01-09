@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Http\Request;
@@ -36,7 +36,6 @@ use ReflectionException;
  */
 abstract class HttpRequest
 {
-
     use Header;
     use Body;
     use Url;
@@ -49,17 +48,17 @@ abstract class HttpRequest
     /**
      * Available methods
      */
-    const METHODS = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
+    public const METHODS = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'];
 
     /**
      * Default port for HTTP
      */
-    const DEFAULT_HTTP_PORT = 80;
+    public const DEFAULT_HTTP_PORT = 80;
 
     /**
      * Default port for HTTPS
      */
-    const DEFAULT_HTTPS_PORT = 443;
+    public const DEFAULT_HTTPS_PORT = 443;
 
     /**
      * Request method
@@ -106,7 +105,6 @@ abstract class HttpRequest
 
         self::$initialized = true;
     }
-
 
     /**
      * Flushes the request header , body and files

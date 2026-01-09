@@ -25,7 +25,6 @@ use Exception;
  */
 class MandrillAdapter implements MailerInterface
 {
-
     use MailerTrait;
 
     /**
@@ -85,7 +84,7 @@ class MandrillAdapter implements MailerInterface
                 $body = is_array($this->message) ? implode('', $this->message) : $this->message;
             }
 
-            $message['html'] = trim(str_replace("\n", "", $body));
+            $message['html'] = trim(str_replace("\n", '', $body));
         }
 
         $this->data['message'] = $message;

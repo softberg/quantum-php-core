@@ -7,7 +7,6 @@ use Quantum\Libraries\Database\Adapters\Idiorm\IdiormDbal;
 
 class ResultIdiormTest extends IdiormDbalTestCase
 {
-
     public function testIdiormGet()
     {
         $userProfileModel = new IdiormDbal('profiles');

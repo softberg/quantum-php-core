@@ -27,7 +27,6 @@ use Closure;
  */
 class Route
 {
-
     /**
      * Current module name
      * @var string

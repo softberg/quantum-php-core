@@ -11,7 +11,6 @@ use Exception;
 
 class WebAppAdapterTest extends TestCase
 {
-
     private $webAppAdapter;
 
     public function setUp(): void

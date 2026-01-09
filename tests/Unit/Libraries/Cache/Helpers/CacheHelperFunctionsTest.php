@@ -11,7 +11,6 @@ use Quantum\Libraries\Cache\Cache;
 
 class CacheHelperFunctionsTest extends AppTestCase
 {
-
     public function testCacheHelperGetDefaultCache()
     {
         $this->assertInstanceOf(Cache::class, cache());

@@ -10,7 +10,6 @@ use Quantum\Tests\Unit\AppTestCase;
 
 class FileSystemHelperFunctionsTest extends AppTestCase
 {
-
     public function testFileSystemHelperGetDefaultFileSystem()
     {
         $this->assertInstanceOf(FileSystem::class, fs());

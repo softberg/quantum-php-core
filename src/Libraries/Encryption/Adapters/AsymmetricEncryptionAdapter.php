@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Encryption\Adapters;
@@ -24,16 +24,15 @@ use Quantum\App\Exceptions\BaseException;
  */
 class AsymmetricEncryptionAdapter implements EncryptionInterface
 {
-
     /**
      * Digest algorithm
      */
-    const DIGEST_ALGO = 'SHA512';
+    public const DIGEST_ALGO = 'SHA512';
 
     /**
      * Key bits
      */
-    const KEY_BITS = 1024;
+    public const KEY_BITS = 1024;
 
     /**
      * @var string
@@ -64,7 +63,7 @@ class AsymmetricEncryptionAdapter implements EncryptionInterface
      */
     public function encrypt(string $plain): string
     {
-        if(!$this->publicKey) {
+        if (!$this->publicKey) {
             throw CryptorException::publicKeyNotProvided();
         }
 
@@ -96,7 +95,7 @@ class AsymmetricEncryptionAdapter implements EncryptionInterface
     private function generateKeyPair(): array
     {
         $resource = openssl_pkey_new([
-            "private_key_type" => OPENSSL_KEYTYPE_RSA,
+            'private_key_type' => OPENSSL_KEYTYPE_RSA,
             'private_key_bits' => self::KEY_BITS,
             'digest_alg' => self::DIGEST_ALGO,
         ]);
@@ -110,7 +109,7 @@ class AsymmetricEncryptionAdapter implements EncryptionInterface
 
         return [
             'private' => $privateKey,
-            'public' => $publicKey
+            'public' => $publicKey,
         ];
     }
 }

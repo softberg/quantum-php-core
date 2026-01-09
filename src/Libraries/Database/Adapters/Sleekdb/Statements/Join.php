@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Database\Adapters\Sleekdb\Statements;
@@ -28,7 +28,6 @@ use SleekDB\QueryBuilder;
  */
 trait Join
 {
-
     /**
      * @inheritDoc
      */
@@ -136,7 +135,7 @@ trait Join
         $queryBuilder->where([
             $relation['foreign_key'],
             '=',
-            $currentItem[$relation['local_key']]
+            $currentItem[$relation['local_key']],
         ]);
     }
 
@@ -158,7 +157,7 @@ trait Join
         $queryBuilder->where([
             $relation['local_key'],
             '=',
-            $currentItem[$relation['foreign_key']]
+            $currentItem[$relation['foreign_key']],
         ]);
     }
 

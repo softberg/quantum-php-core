@@ -15,7 +15,6 @@ use Quantum\Model\QtModel;
  */
 class ModelFactoryTest extends AppTestCase
 {
-
     public function setUp(): void
     {
         parent::setUp();

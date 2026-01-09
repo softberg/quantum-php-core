@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Database\Enums;
@@ -20,90 +20,89 @@ namespace Quantum\Libraries\Database\Enums;
  */
 class Type
 {
-
     /**
      * Type integer
      */
-    const INT = 'int';
+    public const INT = 'int';
 
     /**
      * Type tiny integer
      */
-    const TINYINT = 'tinyint';
+    public const TINYINT = 'tinyint';
 
     /**
      * Type float
      */
-    const FLOAT = 'float';
+    public const FLOAT = 'float';
 
     /**
      * Type double
      */
-    const DOUBLE = 'double';
+    public const DOUBLE = 'double';
 
     /**
      * Type decimal
      */
-    const DECIMAL = 'decimal';
+    public const DECIMAL = 'decimal';
 
     /**
      * Type boolean
      */
-    const BOOL = 'bool';
+    public const BOOL = 'bool';
 
     /**
      * Type char
      */
-    const CHAR = 'char';
+    public const CHAR = 'char';
 
     /**
      * Type varchar
      */
-    const VARCHAR = 'varchar';
+    public const VARCHAR = 'varchar';
 
     /**
      * Type text
      */
-    const TEXT = 'text';
+    public const TEXT = 'text';
 
     /**
      * Type binary
      */
-    const BINARY = 'binary';
+    public const BINARY = 'binary';
 
     /**
      * Type blob
      */
-    const BLOB = 'blob';
+    public const BLOB = 'blob';
 
     /**
      * Type enum
      */
-    const ENUM = 'enum';
+    public const ENUM = 'enum';
 
     /**
      * Type date
      */
-    const DATE = 'date';
+    public const DATE = 'date';
 
     /**
      * Type datetime
      */
-    const DATETIME = 'datetime';
+    public const DATETIME = 'datetime';
 
     /**
      * Type timestamp
      */
-    const TIMESTAMP = 'timestamp';
+    public const TIMESTAMP = 'timestamp';
 
     /**
      * Type json
      */
-    const JSON = 'json';
+    public const JSON = 'json';
 
     /**
      * Type geometry
      */
-    const GEOMETRY = 'geometry';
+    public const GEOMETRY = 'geometry';
 
 }

@@ -12,7 +12,6 @@ use Quantum\Paginator\Paginator;
 
 class PaginatorTest extends PaginatorTestCase
 {
-
     private $model;
 
     public function setUp(): void

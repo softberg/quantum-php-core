@@ -22,7 +22,6 @@ use Quantum\Libraries\HttpClient\HttpClient;
  */
 interface CloudAppInterface
 {
-
     /**
      * @param string $appKey
      * @param string $appSecret

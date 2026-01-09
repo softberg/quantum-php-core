@@ -7,7 +7,6 @@ use Quantum\Tests\Unit\AppTestCase;
 
 class HasherTest extends AppTestCase
 {
-
     private $hasher;
     private $password = 'plaintext';
     private $otherPassword = 'other';

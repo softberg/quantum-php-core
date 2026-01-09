@@ -7,7 +7,6 @@ use Quantum\Environment\Server;
 
 class ServerTest extends AppTestCase
 {
-
     public function setUp(): void
     {
         parent::setUp();

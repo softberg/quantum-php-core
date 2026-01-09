@@ -27,7 +27,6 @@ use Exception;
  */
 class SmtpAdapter implements MailerInterface
 {
-
     use MailerTrait;
 
     /**
@@ -101,7 +100,7 @@ class SmtpAdapter implements MailerInterface
     {
         $this->replyToAddresses[] = [
             'email' => $email,
-            'name' => $name
+            'name' => $name,
         ];
 
         return $this;
@@ -126,7 +125,7 @@ class SmtpAdapter implements MailerInterface
     {
         $this->ccAddresses[] = [
             'email' => $email,
-            'name' => $name
+            'name' => $name,
         ];
 
         return $this;
@@ -151,7 +150,7 @@ class SmtpAdapter implements MailerInterface
     {
         $this->bccAddresses[] = [
             'email' => $email,
-            'name' => $name
+            'name' => $name,
         ];
 
         return $this;
@@ -173,7 +172,8 @@ class SmtpAdapter implements MailerInterface
      */
     public function setAttachment(string $attachment): SmtpAdapter
     {
-        $this->attachments[] = $attachment;;
+        $this->attachments[] = $attachment;
+        ;
         return $this;
     }
 
@@ -196,7 +196,7 @@ class SmtpAdapter implements MailerInterface
     {
         $this->stringAttachments[] = [
             'content' => $content,
-            'filename' => $filename
+            'filename' => $filename,
         ];
 
         return $this;
@@ -245,7 +245,7 @@ class SmtpAdapter implements MailerInterface
                 $body = is_array($this->message) ? implode('', $this->message) : $this->message;
             }
 
-            $this->mailer->Body = trim(str_replace("\n", "", $body));
+            $this->mailer->Body = trim(str_replace("\n", '', $body));
         }
 
         $this->fillProperties('addAddress', $this->addresses);

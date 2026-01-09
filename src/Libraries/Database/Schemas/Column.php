@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Database\Schemas;
@@ -22,101 +22,100 @@ use Quantum\Libraries\Database\Enums\Key;
  */
 class Column
 {
-
     /**
      * Action add
      */
-    const ADD = 'ADD';
+    public const ADD = 'ADD';
 
     /**
      * Action modify
      */
-    const MODIFY = 'MODIFY';
+    public const MODIFY = 'MODIFY';
 
     /**
      * Action rename
      */
-    const RENAME = 'RENAME';
+    public const RENAME = 'RENAME';
 
     /**
      * Action drop
      */
-    const DROP = 'DROP';
+    public const DROP = 'DROP';
 
     /**
      * Action add index
      */
-    const ADD_INDEX = 'ADD_INDEX';
+    public const ADD_INDEX = 'ADD_INDEX';
 
     /**
      * Action drop index
      */
-    const DROP_INDEX = 'DROP_INDEX';
+    public const DROP_INDEX = 'DROP_INDEX';
 
     /**
      * Name property
      */
-    const NAME = 'name';
+    public const NAME = 'name';
 
     /**
      * New Name property
      */
-    const NEW_NAME = 'newName';
+    public const NEW_NAME = 'newName';
 
     /**
      * Type property
      */
-    const TYPE = 'type';
+    public const TYPE = 'type';
 
     /**
      * Constraint property
      */
-    const CONSTRAINT = 'constraint';
+    public const CONSTRAINT = 'constraint';
 
     /**
      * Attribute property
      */
-    const ATTRIBUTE = 'attribute';
+    public const ATTRIBUTE = 'attribute';
 
     /**
      * Nullable property
      */
-    const NULLABLE = 'nullable';
+    public const NULLABLE = 'nullable';
 
     /**
      * Default property
      */
-    const DEFAULT = 'default';
+    public const DEFAULT = 'default';
 
     /**
      * After column property
      */
-    const AFTER = 'afterColumn';
+    public const AFTER = 'afterColumn';
 
     /**
      * Comment property
      */
-    const COMMENT = 'comment';
+    public const COMMENT = 'comment';
 
     /**
      * Auto increment property
      */
-    const AUTO_INCREMENT = 'autoincrement';
+    public const AUTO_INCREMENT = 'autoincrement';
 
     /**
      * Attribute binary
      */
-    const ATTR_BINARY = 'BINARY';
+    public const ATTR_BINARY = 'BINARY';
 
     /**
      * Attribute unsigned
      */
-    const ATTR_UNSIGNED = 'UNSIGNED';
+    public const ATTR_UNSIGNED = 'UNSIGNED';
 
     /**
      * Attribute zero fill
      */
-    const ATTR_ZEROFILL = 'UNSIGNED ZEROFILL';
+    public const ATTR_ZEROFILL = 'UNSIGNED ZEROFILL';
 
     /**
      * @var string
@@ -300,7 +299,6 @@ class Column
             $this->indexName = $name;
         }
     }
-
 
     /**
      * Adds or removes nullable property

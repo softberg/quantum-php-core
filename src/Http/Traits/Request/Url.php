@@ -20,7 +20,6 @@ namespace Quantum\Http\Traits\Request;
  */
 trait Url
 {
-
     /**
      * Scheme
      * @var string|null
@@ -117,7 +116,6 @@ trait Url
         self::$__uri = ltrim($uri, '/');
     }
 
-
     /**
      * Returns the URI segment at the specified index.
      * @param int $index
@@ -139,7 +137,7 @@ trait Url
         if (self::$__uri === null) {
             return ['zero_segment'];
         }
-        
+
         $segments = explode('/', trim(parse_url(self::$__uri)['path'], '/'));
         array_unshift($segments, 'zero_segment');
         return $segments;

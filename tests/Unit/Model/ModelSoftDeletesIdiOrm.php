@@ -11,7 +11,6 @@ use Quantum\Paginator\Paginator;
 
 class ModelSoftDeletesIdiOrm extends AppTestCase
 {
-
     private $model;
 
     public function setUp(): void
@@ -29,7 +28,7 @@ class ModelSoftDeletesIdiOrm extends AppTestCase
 
     public function tearDown(): void
     {
-        IdiormDbal::execute("DROP TABLE products ");
+        IdiormDbal::execute('DROP TABLE products ');
     }
 
     public function testDeleteSetsDeletedAt()
@@ -165,14 +164,14 @@ class ModelSoftDeletesIdiOrm extends AppTestCase
 
     private function _createProductsTableWithData()
     {
-        IdiormDbal::execute("CREATE TABLE IF NOT EXISTS products (
+        IdiormDbal::execute('CREATE TABLE IF NOT EXISTS products (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     title VARCHAR(255),
                     description TEXT,
                     price REAL,
                     created_at DATETIME,
                     deleted_at DATETIME DEFAULT NULL
-        )");
+        )');
 
         IdiormDbal::execute("INSERT INTO 
                     products 

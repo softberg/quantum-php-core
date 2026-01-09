@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Console\Commands;
@@ -28,7 +28,6 @@ use Quantum\App\App;
  */
 class EnvCommand extends QtCommand
 {
-
     /**
      * Command name
      * @var string
@@ -52,7 +51,7 @@ class EnvCommand extends QtCommand
      * @var array
      */
     protected $options = [
-        ['yes', 'y', 'none', 'Acceptance of the confirmation']
+        ['yes', 'y', 'none', 'Acceptance of the confirmation'],
     ];
 
     /**
@@ -70,7 +69,7 @@ class EnvCommand extends QtCommand
             $this->error('.env.example file not found');
         }
 
-        if ($fs->exists('.env') && !$this->getOption('yes') && !$this->confirm("The operation will overwrite values of the existing .env and will create new one from .env.example. Continue?")) {
+        if ($fs->exists('.env') && !$this->getOption('yes') && !$this->confirm('The operation will overwrite values of the existing .env and will create new one from .env.example. Continue?')) {
             $this->info('Operation was canceled!');
             return;
         }

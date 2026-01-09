@@ -11,7 +11,6 @@ use Quantum\Tests\Unit\AppTestCase;
 
 class CaptchaTest extends AppTestCase
 {
-
     public function setUp(): void
     {
         parent::setUp();
@@ -22,7 +21,7 @@ class CaptchaTest extends AppTestCase
         $params = [
             'type' => 'visible',
             'secret_key' => '0xE1a02fB374Bf2',
-            'site_key' => '07737dfc-abfa-66ac44365d0c'
+            'site_key' => '07737dfc-abfa-66ac44365d0c',
         ];
 
         $captcha = new Captcha(new RecaptchaAdapter($params, new HttpClient()));
@@ -37,7 +36,7 @@ class CaptchaTest extends AppTestCase
         $params = [
             'type' => 'visible',
             'secret_key' => '0xE1a02fB374Bf2',
-            'site_key' => '07737dfc-abfa-66ac44365d0c'
+            'site_key' => '07737dfc-abfa-66ac44365d0c',
         ];
 
         $captcha = new Captcha(new RecaptchaAdapter($params, new HttpClient()));
@@ -50,7 +49,7 @@ class CaptchaTest extends AppTestCase
         $params = [
             'type' => 'visible',
             'secret_key' => '0xE1a02fB374Bf2',
-            'site_key' => '07737dfc-abfa-66ac44365d0c'
+            'site_key' => '07737dfc-abfa-66ac44365d0c',
         ];
 
         $captcha = new Captcha(new RecaptchaAdapter($params, new HttpClient()));

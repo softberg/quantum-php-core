@@ -8,7 +8,6 @@ use Quantum\Http\Request;
 
 class HttpRequestHeaderTest extends AppTestCase
 {
-
     public function setUp(): void
     {
         parent::setUp();
@@ -75,8 +74,8 @@ class HttpRequestHeaderTest extends AppTestCase
         $server = Server::getInstance();
 
         $credentials = [
-            'username' => "testGlobalUsername",
-            'password' => "testGlobalPassword",
+            'username' => 'testGlobalUsername',
+            'password' => 'testGlobalPassword',
         ];
 
         $this->assertNull($request->getBasicAuthCredentials());

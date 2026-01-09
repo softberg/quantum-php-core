@@ -4,7 +4,7 @@ return [
     'default' => 'session',
 
     'session' => [
-        'service' => Quantum\Tests\_root\modules\Test\Services\AuthService::class
+        'service' => Quantum\Tests\_root\modules\Test\Services\AuthService::class,
     ],
 
     'jwt' => [
@@ -15,8 +15,8 @@ return [
             'aud' => 'audience',
             'iat' => time(),
             'nbf' => time() + 1,
-            'exp' => time() + 3600 // 1 hour
-        ]
+            'exp' => time() + 3600, // 1 hour
+        ],
     ],
 
     'two_fa' => env('TWO_FA', true),

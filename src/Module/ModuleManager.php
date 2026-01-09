@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 3.0.0
  */
 
 namespace Quantum\Module;
@@ -29,8 +29,7 @@ use Exception;
  */
 class ModuleManager
 {
-
-    const DEFAULT_TEMPLATE = 'DemoWeb';
+    public const DEFAULT_TEMPLATE = 'DemoWeb';
 
     /**
      * @var mixed
@@ -144,10 +143,10 @@ class ModuleManager
             $this->fs->makeDirectory(modules_dir());
         }
 
-        $copiedTemplates = $this->copyDirectoryWithTemplates($this->templatePath . DS . "src", $this->modulePath);
+        $copiedTemplates = $this->copyDirectoryWithTemplates($this->templatePath . DS . 'src', $this->modulePath);
 
         if ($this->withAssets) {
-            $copiedAssets = $this->copyAssets($this->templatePath . DS . "assets", $this->assetsPath);
+            $copiedAssets = $this->copyAssets($this->templatePath . DS . 'assets', $this->assetsPath);
         }
 
         if (!$this->verifyModuleFilesCreated(array_merge($copiedTemplates, $copiedAssets ?? []))) {
@@ -206,8 +205,7 @@ class ModuleManager
             } else {
                 if ($processTemplates) {
                     $this->processTemplates($srcPath, $dstPath);
-                }
-                else {
+                } else {
                     $this->fs->copy($srcPath, $dstPath);
                 }
                 $copiedFiles[] = $dstPath;
@@ -221,7 +219,8 @@ class ModuleManager
      * @param string $srcPath
      * @param string $dstPath
      */
-    private function processTemplates(string $srcPath, string &$dstPath){
+    private function processTemplates(string $srcPath, string &$dstPath)
+    {
         $dstPath = str_replace('.php.tpl', '.php', $dstPath);
         $content = $this->fs->get($srcPath);
         $processedContent = $this->replacePlaceholders($content);
@@ -235,7 +234,7 @@ class ModuleManager
     private function replacePlaceholders(string $content): string
     {
         $placeholders = [
-            '{{MODULE_NAMESPACE}}' => module_base_namespace() .'\\' . $this->getModuleName(),
+            '{{MODULE_NAMESPACE}}' => module_base_namespace() . '\\' . $this->getModuleName(),
             '{{MODULE_NAME}}' => $this->getModuleName(),
         ];
 
@@ -249,7 +248,7 @@ class ModuleManager
     private function getModuleOptions(string $module): array
     {
         return [
-            'prefix' => $this->template == self::DEFAULT_TEMPLATE ? "" : strtolower($module),
+            'prefix' => $this->template == self::DEFAULT_TEMPLATE ? '' : strtolower($module),
             'enabled' => $this->optionEnabled,
         ];
     }
