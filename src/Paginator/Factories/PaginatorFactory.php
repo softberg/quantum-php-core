@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Paginator\Factories;
@@ -26,11 +26,10 @@ use Quantum\Paginator\Paginator;
  */
 class PaginatorFactory
 {
-
     /**
      * Supported adapters
      */
-    const ADAPTERS = [
+    public const ADAPTERS = [
         Paginator::ARRAY => ArrayPaginator::class,
         Paginator::MODEL => ModelPaginator::class,
     ];
@@ -38,7 +37,7 @@ class PaginatorFactory
     /**
      * Required parameters for each adapter type.
      */
-    const REQUIRED_PARAMS = [
+    public const REQUIRED_PARAMS = [
         Paginator::ARRAY => ['items'],
         Paginator::MODEL => ['model'],
     ];
@@ -46,7 +45,7 @@ class PaginatorFactory
     /**
      * Default parameters applied to all adapters.
      */
-    const DEFAULT_PARAMS = [
+    public const DEFAULT_PARAMS = [
         'perPage' => 10,
         'page' => 1,
     ];

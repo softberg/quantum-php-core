@@ -26,7 +26,6 @@ use Firebase\JWT\Key;
  */
 class JwtToken extends JWT
 {
-
     /**
      * JWT secret key
      * @var string

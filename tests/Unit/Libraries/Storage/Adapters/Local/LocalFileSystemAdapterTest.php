@@ -7,7 +7,6 @@ use Quantum\Tests\Unit\AppTestCase;
 
 class LocalFileSystemAdapterTest extends AppTestCase
 {
-
     /**
      * @var LocalFileSystemAdapter
      */

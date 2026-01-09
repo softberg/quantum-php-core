@@ -2,12 +2,10 @@
 
 namespace Quantum\Services {
 
-
     use Quantum\Service\QtService;
 
     class TestingService extends QtService
     {
-        
     }
 }
 
@@ -25,7 +23,6 @@ namespace Quantum\Tests\Unit\Service {
      */
     class QtServiceTest extends AppTestCase
     {
-
         public function setUp(): void
         {
             parent::setUp();
@@ -37,7 +34,7 @@ namespace Quantum\Tests\Unit\Service {
 
             $this->expectExceptionMessage('The method `undefinedMethod` is not supported for `' . QtService::class . '`');
 
-            $service = (new ServiceFactory)->get(TestingService::class);
+            $service = (new ServiceFactory())->get(TestingService::class);
 
             $service->undefinedMethod();
         }

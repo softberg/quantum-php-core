@@ -15,7 +15,6 @@ use Mockery;
 
 class FileSystemTest extends AppTestCase
 {
-
     public $googleDriveAppMock;
     private $dropboxAppMock;
 
@@ -36,13 +35,11 @@ class FileSystemTest extends AppTestCase
 
         $this->assertInstanceOf(FilesystemAdapterInterface::class, $localFs->getAdapter());
 
-
         $dropboxFs = new FileSystem(new DropboxFileSystemAdapter($this->dropboxAppMock));
 
         $this->assertInstanceOf(DropboxFileSystemAdapter::class, $dropboxFs->getAdapter());
 
         $this->assertInstanceOf(FilesystemAdapterInterface::class, $dropboxFs->getAdapter());
-
 
         $googleDriveFs = new FileSystem(new GoogleDriveFileSystemAdapter($this->googleDriveAppMock));
 

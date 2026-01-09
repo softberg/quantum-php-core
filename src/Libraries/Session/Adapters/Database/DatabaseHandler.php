@@ -23,7 +23,6 @@ use SessionHandlerInterface;
  */
 class DatabaseHandler implements SessionHandlerInterface
 {
-
     /**
      * @var DbalInterface
      */

@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Database\Adapters\Idiorm\Statements;
@@ -25,7 +25,6 @@ use RecursiveArrayIterator;
  */
 trait Reducer
 {
-
     /**
      * @inheritDoc
      * @throws DatabaseException

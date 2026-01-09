@@ -9,7 +9,6 @@ use Quantum\Loader\Setup;
 
 class DatabaseAdapterTest extends AppTestCase
 {
-
     private $databaseCache;
 
     public function setUp(): void
@@ -27,7 +26,7 @@ class DatabaseAdapterTest extends AppTestCase
         $params = [
             'prefix' => 'test',
             'table' => 'cache',
-            'ttl' => 60
+            'ttl' => 60,
         ];
 
         $this->databaseCache = new DatabaseAdapter($params);
@@ -152,7 +151,7 @@ class DatabaseAdapterTest extends AppTestCase
         $params = [
             'prefix' => 'test',
             'table' => 'cache',
-            'ttl' => -1
+            'ttl' => -1,
         ];
 
         $databaseCache = new DatabaseAdapter($params);

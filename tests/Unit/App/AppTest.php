@@ -17,7 +17,6 @@ use Quantum\Di\Di;
  */
 class AppTest extends TestCase
 {
-
     public function setUp(): void
     {
         parent::setUp();
@@ -63,7 +62,7 @@ class AppTest extends TestCase
 
         $this->expectException(AppException::class);
 
-        $this->expectExceptionMessage('The method `callingInvalidMethod` is not supported for `'. WebAppAdapter::class .'`');
+        $this->expectExceptionMessage('The method `callingInvalidMethod` is not supported for `' . WebAppAdapter::class . '`');
 
         $app->callingInvalidMethod();
     }

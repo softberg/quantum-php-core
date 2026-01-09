@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\View\Enums;
@@ -22,7 +22,7 @@ use Quantum\App\Enums\ExceptionMessages as BaseExceptionMessages;
  */
 final class ExceptionMessages extends BaseExceptionMessages
 {
-    const LAYOUT_NOT_SET = 'Layout is not set.';
+    public const LAYOUT_NOT_SET = 'Layout is not set.';
 
-    const VIEW_NOT_RENDERED_YET = 'View not rendered yet.';
+    public const VIEW_NOT_RENDERED_YET = 'View not rendered yet.';
 }

@@ -13,7 +13,6 @@ use Quantum\Libraries\Cache\Cache;
 
 class CacheFactoryTest extends AppTestCase
 {
-
     public function setUp(): void
     {
         parent::setUp();

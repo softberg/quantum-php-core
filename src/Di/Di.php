@@ -28,7 +28,6 @@ use Closure;
  */
 class Di
 {
-
     /**
      * @var array
      */
@@ -137,7 +136,7 @@ class Di
     {
         if ($entry instanceof Closure) {
             $reflection = new ReflectionFunction($entry);
-        } elseif(is_array($entry)) {
+        } elseif (is_array($entry)) {
             [$target, $method] = $entry;
             $reflection = new ReflectionMethod($target, $method);
         } else {

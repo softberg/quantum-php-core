@@ -39,12 +39,12 @@ class ErrorHandler
     /**
      * Number of lines to be returned
      */
-    const NUM_LINES = 10;
+    public const NUM_LINES = 10;
 
     /**
      * @var array<int, string>
      */
-    const ERROR_TYPES = [
+    public const ERROR_TYPES = [
         E_ERROR => 'error',
         E_WARNING => 'warning',
         E_PARSE => 'error',
@@ -145,7 +145,7 @@ class ErrorHandler
     private function handleCliException(Throwable $throwable): void
     {
         $output = new ConsoleOutput();
-        $output->writeln("<error>" . $throwable->getMessage() . "</error>");
+        $output->writeln('<error>' . $throwable->getMessage() . '</error>');
     }
 
     /**
@@ -176,7 +176,6 @@ class ErrorHandler
         Response::html($errorPage);
         Response::send();
     }
-
 
     /**
      * @param Throwable $e

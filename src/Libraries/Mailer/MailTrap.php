@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.8
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Mailer;
@@ -31,7 +31,6 @@ use ReflectionException;
  */
 class MailTrap
 {
-
     /**
      * @var FileSystem
      */
@@ -258,7 +257,7 @@ class MailTrap
             $attachments[] = [
                 'filename' => $parsedAttachment->getHeaderAttribute('content-disposition', 'filename'),
                 'content-type' => $parsedAttachment->getHeaderValue('content-type'),
-                'content' => $parsedAttachment->getContents()
+                'content' => $parsedAttachment->getContents(),
             ];
         }
 

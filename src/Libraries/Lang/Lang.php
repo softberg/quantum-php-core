@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Lang;
@@ -25,19 +25,18 @@ use ReflectionException;
  */
 class Lang
 {
-
     /**
-     * @var string|null 
+     * @var string|null
      */
     private $currentLang = null;
 
     /**
-     * @var Translator 
+     * @var Translator
      */
     private $translator;
 
     /**
-     * @var bool 
+     * @var bool
      */
     private $isEnabled;
 

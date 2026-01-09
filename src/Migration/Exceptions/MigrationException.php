@@ -27,7 +27,6 @@ use Quantum\App\Exceptions\BaseException;
  */
 class MigrationException extends BaseException
 {
-
     /**
      * @return MigrationException
      */

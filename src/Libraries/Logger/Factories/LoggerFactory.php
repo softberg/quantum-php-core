@@ -32,11 +32,10 @@ use ReflectionException;
  */
 class LoggerFactory
 {
-
     /**
      * Supported adapters
      */
-    const ADAPTERS = [
+    public const ADAPTERS = [
         Logger::SINGLE => SingleAdapter::class,
         Logger::DAILY => DailyAdapter::class,
         Logger::MESSAGE => MessageAdapter::class,

@@ -9,7 +9,6 @@ use Quantum\Http\Request;
 
 class RouterHelperTest extends AppTestCase
 {
-
     private $router;
     private $request;
 
@@ -26,24 +25,24 @@ class RouterHelperTest extends AppTestCase
     {
         Router::setRoutes([
             [
-                "route" => "signin",
-                "method" => "POST",
-                "controller" => "SomeController",
-                "action" => "signin",
-                "module" => "Test",
-                "middlewares" => ["guest", "anonymous"],
-                'prefix' => 'api'
+                'route' => 'signin',
+                'method' => 'POST',
+                'controller' => 'SomeController',
+                'action' => 'signin',
+                'module' => 'Test',
+                'middlewares' => ['guest', 'anonymous'],
+                'prefix' => 'api',
             ],
             [
-                "route" => "user/[id=:num]",
-                "method" => "GET",
-                "controller" => "SomeController",
-                "action" => "signout",
-                "module" => "Test",
-                "middlewares" => ["user"],
+                'route' => 'user/[id=:num]',
+                'method' => 'GET',
+                'controller' => 'SomeController',
+                'action' => 'signout',
+                'module' => 'Test',
+                'middlewares' => ['user'],
                 'name' => 'user',
-                'prefix' => 'api'
-            ]
+                'prefix' => 'api',
+            ],
         ]);
 
         $this->request->create('POST', 'http://testdomain.com/signin');
@@ -93,11 +92,11 @@ class RouterHelperTest extends AppTestCase
     {
         Router::setRoutes([
             [
-                "route" => "home",
-                "method" => "GET",
-                "callback" => function (Response $response) {},
-                "module" => "Test",
-            ]
+                'route' => 'home',
+                'method' => 'GET',
+                'callback' => function (Response $response) {},
+                'module' => 'Test',
+            ],
         ]);
 
         $this->request->create('GET', '/home');
@@ -113,14 +112,14 @@ class RouterHelperTest extends AppTestCase
 
         Router::setRoutes([
             [
-                "route" => "api-user/[id=:num]",
-                "method" => "GET",
-                "controller" => "SomeController",
-                "action" => "signout",
-                "module" => "Test",
-                "middlewares" => ["user"],
-                "name" => "user"
-            ]
+                'route' => 'api-user/[id=:num]',
+                'method' => 'GET',
+                'controller' => 'SomeController',
+                'action' => 'signout',
+                'module' => 'Test',
+                'middlewares' => ['user'],
+                'name' => 'user',
+            ],
         ]);
 
         $this->assertNotNull(find_route_by_name('user', 'Test'));
@@ -134,15 +133,15 @@ class RouterHelperTest extends AppTestCase
 
         Router::setRoutes([
             [
-                "route" => "api-user/[id=:num]",
-                "method" => "GET",
-                "controller" => "SomeController",
-                "action" => "signout",
-                "module" => "Test",
-                "middlewares" => ["user"],
+                'route' => 'api-user/[id=:num]',
+                'method' => 'GET',
+                'controller' => 'SomeController',
+                'action' => 'signout',
+                'module' => 'Test',
+                'middlewares' => ['user'],
                 'group' => 'guest',
-                "name" => "user"
-            ]
+                'name' => 'user',
+            ],
         ]);
 
         $this->assertTrue(route_group_exists('guest', 'Test'));

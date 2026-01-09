@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Database\Schemas;
@@ -38,28 +38,27 @@ use Quantum\Libraries\Database\Database;
  */
 class Table
 {
-
     use TableTrait;
 
     /**
      * Action create
      */
-    const CREATE = 1;
+    public const CREATE = 1;
 
     /**
      * Action alter
      */
-    const ALTER = 2;
+    public const ALTER = 2;
 
     /**
      * Action drop
      */
-    const DROP = 3;
+    public const DROP = 3;
 
     /**
      * Action rename
      */
-    const RENAME = 4;
+    public const RENAME = 4;
 
     /**
      * @var string
@@ -150,7 +149,7 @@ class Table
     {
         $this->columns[] = [
             'column' => new Column($name, $type, $constraint),
-            'action' => $this->action == self::ALTER ? Column::ADD : null
+            'action' => $this->action == self::ALTER ? Column::ADD : null,
         ];
 
         return $this;
@@ -168,7 +167,7 @@ class Table
         if ($this->action == self::ALTER) {
             $this->columns[] = [
                 'column' => new Column($name, $type, $constraint),
-                'action' => Column::MODIFY
+                'action' => Column::MODIFY,
             ];
         }
 
@@ -185,7 +184,7 @@ class Table
         if ($this->action == self::ALTER) {
             $this->columns[] = [
                 'column' => (new Column($oldName))->renameTo($newName),
-                'action' => Column::RENAME
+                'action' => Column::RENAME,
             ];
         }
     }
@@ -199,7 +198,7 @@ class Table
         if ($this->action == self::ALTER) {
             $this->columns[] = [
                 'column' => new Column($name),
-                'action' => Column::DROP
+                'action' => Column::DROP,
             ];
         }
     }
@@ -215,7 +214,7 @@ class Table
         if ($this->action == self::ALTER) {
             $this->columns[] = [
                 'column' => new Column($columnName),
-                'action' => Column::ADD_INDEX
+                'action' => Column::ADD_INDEX,
             ];
 
             $this->$indexType($indexName);
@@ -231,7 +230,7 @@ class Table
         if ($this->action == self::ALTER) {
             $this->columns[] = [
                 'column' => (new Column('dummy'))->indexDrop($indexName),
-                'action' => Column::DROP_INDEX
+                'action' => Column::DROP_INDEX,
             ];
         }
     }

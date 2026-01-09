@@ -22,16 +22,15 @@ use Quantum\App\Enums\ExceptionMessages as BaseExceptionMessages;
  */
 final class ExceptionMessages extends BaseExceptionMessages
 {
+    public const DEPENDENCY_NOT_REGISTERED = 'The dependency `{%1}` is not registered.';
 
-    const DEPENDENCY_NOT_REGISTERED = 'The dependency `{%1}` is not registered.';
+    public const DEPENDENCY_ALREADY_REGISTERED = 'The dependency `{%1}` is already registered.';
 
-    const DEPENDENCY_ALREADY_REGISTERED = 'The dependency `{%1}` is already registered.';
+    public const DEPENDENCY_NOT_INSTANTIABLE = 'The dependency `{%1}` is not instantiable.';
 
-    const DEPENDENCY_NOT_INSTANTIABLE = 'The dependency `{%1}` is not instantiable.';
+    public const INVALID_ABSTRACT_DEPENDENCY = 'The dependency `{%1}` is not valid abstract class.';
 
-    const INVALID_ABSTRACT_DEPENDENCY = 'The dependency `{%1}` is not valid abstract class.';
+    public const CIRCULAR_DEPENDENCY = 'Circular dependency detected: `{%1}`';
 
-    const CIRCULAR_DEPENDENCY = 'Circular dependency detected: `{%1}`';
-
-    const INVALID_CALLABLE = 'Invalid callable provided: expected Closure or array-style callable `{%1}`';
+    public const INVALID_CALLABLE = 'Invalid callable provided: expected Closure or array-style callable `{%1}`';
 }

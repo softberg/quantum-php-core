@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Database\Enums;
@@ -20,30 +20,29 @@ namespace Quantum\Libraries\Database\Enums;
  */
 class Key
 {
-
     /**
      * Primary key definition
      */
-    const PRIMARY = 'primary';
+    public const PRIMARY = 'primary';
 
     /**
      * Index key definition
      */
-    const INDEX = 'index';
+    public const INDEX = 'index';
 
     /**
      * Unique key definition
      */
-    const UNIQUE = 'unique';
+    public const UNIQUE = 'unique';
 
     /**
      * Full-text key definition
      */
-    const FULLTEXT = 'fulltext';
+    public const FULLTEXT = 'fulltext';
 
     /**
      * Spatial key definition
      */
-    const SPATIAL = 'spatial';
+    public const SPATIAL = 'spatial';
 
 }

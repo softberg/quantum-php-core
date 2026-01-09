@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Captcha\Contracts;
@@ -23,17 +23,17 @@ interface CaptchaInterface
     /**
      * Max time difference
      */
-    const MAX_TIME_DIFF = 60;
+    public const MAX_TIME_DIFF = 60;
 
     /**
      * Captcha visible
      */
-    const CAPTCHA_VISIBLE = 'visible';
+    public const CAPTCHA_VISIBLE = 'visible';
 
     /**
      * Captcha invisible
      */
-    const CAPTCHA_INVISIBLE = 'invisible';
+    public const CAPTCHA_INVISIBLE = 'invisible';
 
     /**
      * @return string

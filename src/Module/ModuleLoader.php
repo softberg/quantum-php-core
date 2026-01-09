@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.8
+ * @since 3.0.0
  */
 
 namespace Quantum\Module;
@@ -32,7 +32,6 @@ use Closure;
  */
 class ModuleLoader
 {
-
     /**
      * @var array
      */
@@ -197,7 +196,7 @@ class ModuleLoader
             throw ModuleException::moduleRoutesNotFound($module);
         }
 
-        if(empty(self::$moduleRoutes[$module])) {
+        if (empty(self::$moduleRoutes[$module])) {
             self::$moduleRoutes[$module] = $this->fs->require($moduleRoutes, true);
         }
 

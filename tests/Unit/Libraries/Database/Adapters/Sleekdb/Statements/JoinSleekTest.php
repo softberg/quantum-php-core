@@ -26,7 +26,7 @@ class BrokenProfileMissingTypeModel extends QtModel
             TestUserModel::class => [
                 // 'type' intentionally missing
                 'foreign_key' => 'user_id',
-                'local_key'  => 'id',
+                'local_key' => 'id',
             ],
         ];
     }
@@ -42,7 +42,7 @@ class BrokenProfileUnsupportedRelationModel extends QtModel
             TestUserModel::class => [
                 'type' => 'SIDEWAYS',
                 'foreign_key' => 'user_id',
-                'local_key'  => 'id',
+                'local_key' => 'id',
             ],
         ];
     }
@@ -50,7 +50,6 @@ class BrokenProfileUnsupportedRelationModel extends QtModel
 
 class JoinSleekTest extends SleekDbalTestCase
 {
-
     public function testSleekJoinToHasOne()
     {
         $userModel = ModelFactory::get(TestUserModel::class);
@@ -277,7 +276,7 @@ class JoinSleekTest extends SleekDbalTestCase
     public function testSleekJoinThrowsExceptionWhenRelationKeysMissing()
     {
         $this->expectException(ModelException::class);
-        $this->expectExceptionMessage('Relation type is missing for model `'  . BrokenProfileMissingTypeModel::class .'`');
+        $this->expectExceptionMessage('Relation type is missing for model `' . BrokenProfileMissingTypeModel::class . '`');
 
         ModelFactory::get(BrokenProfileMissingTypeModel::class)
             ->joinTo(ModelFactory::get(TestUserModel::class))

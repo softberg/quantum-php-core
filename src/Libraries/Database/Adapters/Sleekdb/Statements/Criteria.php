@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Database\Adapters\Sleekdb\Statements;
@@ -23,7 +23,6 @@ use Quantum\Libraries\Database\Contracts\DbalInterface;
  */
 trait Criteria
 {
-
     /**
      * @inheritDoc
      * @throws DatabaseException
@@ -125,11 +124,11 @@ trait Criteria
             ']' => '\]',
             '{' => '\{',
             '}' => '\}',
-            '|' => '\|'
+            '|' => '\|',
         ];
 
         if (is_array($value)) {
-            return array_map(fn($v) => is_string($v) ? strtr($v, $escapeMap) : $v, $value);
+            return array_map(fn ($v) => is_string($v) ? strtr($v, $escapeMap) : $v, $value);
         }
 
         return is_string($value) ? strtr($value, $escapeMap) : $value;

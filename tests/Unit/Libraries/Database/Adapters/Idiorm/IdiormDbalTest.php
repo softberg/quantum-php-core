@@ -20,4 +20,3 @@ class IdiormDbalTest extends IdiormDbalTestCase
         $this->assertEquals('users', $userModel->getTable());
     }
 }
-

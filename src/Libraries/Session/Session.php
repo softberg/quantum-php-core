@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Session;
@@ -34,16 +34,15 @@ use Quantum\App\Exceptions\BaseException;
  */
 class Session
 {
-
     /**
      * Native session adapter
      */
-    const NATIVE = 'native';
+    public const NATIVE = 'native';
 
     /**
      * Database session adapter
      */
-    const DATABASE = 'database';
+    public const DATABASE = 'database';
 
     /**
      * @var SessionStorageInterface

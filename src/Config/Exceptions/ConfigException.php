@@ -25,7 +25,6 @@ use Quantum\App\Exceptions\BaseException;
  */
 class ConfigException extends BaseException
 {
-
     /**
      * @param string $name
      * @return ConfigException

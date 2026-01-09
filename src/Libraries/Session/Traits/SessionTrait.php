@@ -22,7 +22,6 @@ use Quantum\Libraries\Session\Exceptions\SessionException;
  */
 trait SessionTrait
 {
-
     /**
      * @inheritDoc
      */

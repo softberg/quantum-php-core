@@ -15,7 +15,6 @@ use Quantum\Di\Di;
 
 abstract class AppTestCase extends TestCase
 {
-
     protected $fs;
 
     public function setUp(): void
@@ -69,18 +68,17 @@ abstract class AppTestCase extends TestCase
         string $method = 'GET',
         array $body = [],
         array $headers = []
-    )
-    {
+    ) {
         $request = new Request();
 
         $request->create($method, $uri, $body, $headers);
 
         RouteController::setCurrentRoute([
-            "route" => "test",
-            "method" => $method,
-            "controller" => 'TestController',
-            "action" => 'testAction',
-            "module" => 'Test',
+            'route' => 'test',
+            'method' => $method,
+            'controller' => 'TestController',
+            'action' => 'testAction',
+            'module' => 'Test',
         ]);
     }
 }

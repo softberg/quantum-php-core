@@ -10,7 +10,6 @@ use Quantum\Http\Request;
 
 class HttpRequestInternalTest extends AppTestCase
 {
-
     public function setUp(): void
     {
         parent::setUp();
@@ -41,7 +40,7 @@ class HttpRequestInternalTest extends AppTestCase
                 'tmp_name' => '/tmp/php123',
                 'error' => 0,
                 'size' => 100,
-            ]
+            ],
         ];
 
         Request::create('POST', 'http://localhost/upload', [], [], $files);
@@ -81,7 +80,7 @@ class HttpRequestInternalTest extends AppTestCase
                 'tmp_name' => '/tmp/php456',
                 'error' => 0,
                 'size' => 456,
-            ]
+            ],
         ];
 
         $request = new Request();

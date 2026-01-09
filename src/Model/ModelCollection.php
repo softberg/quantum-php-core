@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Model;
@@ -26,7 +26,6 @@ use Generator;
  */
 class ModelCollection implements Countable, IteratorAggregate
 {
-
     /**
      * @var QtModel[]
      */
@@ -86,7 +85,7 @@ class ModelCollection implements Countable, IteratorAggregate
     {
         $this->processModels();
 
-        $this->models = array_filter($this->models, fn($m) => $m !== $model);
+        $this->models = array_filter($this->models, fn ($m) => $m !== $model);
 
         $this->originalModels = $this->models;
 

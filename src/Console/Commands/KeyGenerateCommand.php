@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 3.0.0
  */
 
 namespace Quantum\Console\Commands;
@@ -25,7 +25,6 @@ use Exception;
  */
 class KeyGenerateCommand extends QtCommand
 {
-
     /**
      * Command name
      * @var string
@@ -50,7 +49,7 @@ class KeyGenerateCommand extends QtCommand
      */
     protected $options = [
         ['length', 'l', 'required', 'Length of the key', 32],
-        ['yes', 'y', 'none', 'Acceptance of the confirmation']
+        ['yes', 'y', 'none', 'Acceptance of the confirmation'],
     ];
 
     /**
@@ -60,8 +59,8 @@ class KeyGenerateCommand extends QtCommand
      */
     public function exec()
     {
-        if (Environment::getInstance()->hasKey('APP_KEY') && env('APP_KEY') !== "" && !$this->getOption('yes')) {
-            if (!$this->confirm("The operation will remove the existing key and will create new one. Continue?")) {
+        if (Environment::getInstance()->hasKey('APP_KEY') && env('APP_KEY') !== '' && !$this->getOption('yes')) {
+            if (!$this->confirm('The operation will remove the existing key and will create new one. Continue?')) {
                 $this->info('Operation was canceled!');
                 return;
             }

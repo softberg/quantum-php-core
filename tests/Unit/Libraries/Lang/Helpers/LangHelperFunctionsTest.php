@@ -7,7 +7,6 @@ use Quantum\Tests\Unit\AppTestCase;
 
 class LangHelperFunctionsTest extends AppTestCase
 {
-
     private $lang;
 
     public function setUp(): void

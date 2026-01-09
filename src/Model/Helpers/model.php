@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 use Quantum\Libraries\Database\Contracts\DbalInterface;
@@ -45,8 +45,7 @@ function dynamicModel(
     string $idColumn = 'id',
     array  $foreignKeys = [],
     array  $hidden = []
-): QtModel
-{
+): QtModel {
     return ModelFactory::createDynamicModel($table, $modelName, $idColumn, $foreignKeys, $hidden);
 }
 

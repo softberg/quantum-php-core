@@ -8,7 +8,6 @@ use Quantum\Tests\Unit\AppTestCase;
 
 class ViewHelperTest extends AppTestCase
 {
-
     private $view;
 
     public function setUp(): void
@@ -25,11 +24,11 @@ class ViewHelperTest extends AppTestCase
     public function testView()
     {
         RouteController::setCurrentRoute([
-            "route" => "test",
-            "method" => "POST",
-            "controller" => "TestController",
-            "action" => "testAction",
-            "module" => "Test",
+            'route' => 'test',
+            'method' => 'POST',
+            'controller' => 'TestController',
+            'action' => 'testAction',
+            'module' => 'Test',
         ]);
 
         $this->view->setLayout('layout');
@@ -46,10 +45,9 @@ class ViewHelperTest extends AppTestCase
         $this->assertEquals('<p>Hello John, this is rendered partial html view</p>', partial('partial', ['name' => 'John']));
     }
 
-
     public function testMarkdownToHtml(): void
     {
-        $markdown = "**bold** text";
+        $markdown = '**bold** text';
         $html = trim(markdown_to_html($markdown, true));
 
         $this->assertEquals('<p><strong>bold</strong> text</p>', $html);

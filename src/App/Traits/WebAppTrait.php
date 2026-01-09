@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.8
+ * @since 3.0.0
  */
 
 namespace Quantum\App\Traits;
@@ -39,7 +39,6 @@ use Quantum\Di\Di;
  */
 trait WebAppTrait
 {
-
     /**
      * @param Request $request
      * @param Response $response

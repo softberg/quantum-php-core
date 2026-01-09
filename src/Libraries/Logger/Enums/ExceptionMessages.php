@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Logger\Enums;
@@ -22,7 +22,7 @@ use Quantum\App\Enums\ExceptionMessages as BaseExceptionMessages;
  */
 final class ExceptionMessages extends BaseExceptionMessages
 {
-    const LOG_PATH_NOT_DIRECTORY = 'Log path is not point to a directory.';
+    public const LOG_PATH_NOT_DIRECTORY = 'Log path is not point to a directory.';
 
-    const LOG_PATH_NOT_FILE = 'Log path is not point to a file.';
+    public const LOG_PATH_NOT_FILE = 'Log path is not point to a file.';
 }

@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Console\Commands;
@@ -53,11 +53,11 @@ class InstallToolkitCommand extends QtCommand
      * @var string
      */
     protected $help = 'The command will install Toolkit and its assets into your project';
-    
+
     /**
      * Command name to generate modules
      */
-    const COMMAND_CREATE_MODULE = 'module:generate';
+    public const COMMAND_CREATE_MODULE = 'module:generate';
 
     /**
      * Executes the command
@@ -67,22 +67,22 @@ class InstallToolkitCommand extends QtCommand
     public function exec()
     {
         $name = $this->getArgument('username');
-        
+
         $password = $this->getArgument('password');
-        
+
         $env = Environment::getInstance();
 
         $env->setMutable(true);
 
         $env->updateRow('BASIC_AUTH_NAME', $name);
-        
+
         $env->updateRow('BASIC_AUTH_PWD', $password);
 
         $this->runExternalCommand(self::COMMAND_CREATE_MODULE, [
-            "module" => "Toolkit",
-            "--yes" => true,
-            "--template" => "Toolkit",
-            "--with-assets" => true
+            'module' => 'Toolkit',
+            '--yes' => true,
+            '--template' => 'Toolkit',
+            '--with-assets' => true,
         ]);
 
         $this->info('Toolkit installed successfully');
@@ -97,6 +97,6 @@ class InstallToolkitCommand extends QtCommand
     protected function runExternalCommand(string $commandName, array $arguments)
     {
         $command = $this->getApplication()->find($commandName);
-        $command->run(new ArrayInput($arguments), new NullOutput);
+        $command->run(new ArrayInput($arguments), new NullOutput());
     }
 }

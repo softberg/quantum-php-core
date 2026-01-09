@@ -10,7 +10,7 @@ return [
         'secure' => 'ssl',
         'port' => '80',
         'username' => 'test',
-        'password' => 'test'
+        'password' => 'test',
     ],
 
     'sendinblue' => [
@@ -22,7 +22,7 @@ return [
     ],
 
     'mandrill' => [
-        'api_key' => 'mandrill_api_key'
+        'api_key' => 'mandrill_api_key',
     ],
 
     'mailgun' => [

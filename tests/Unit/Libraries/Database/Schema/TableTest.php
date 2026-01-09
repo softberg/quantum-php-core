@@ -15,7 +15,6 @@ use Mockery;
  */
 class TableTest extends TestCase
 {
-
     public function setUp(): void
     {
         $db = Mockery::mock('overload:Quantum\Libraries\Database\Database');

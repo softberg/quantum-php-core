@@ -7,7 +7,6 @@ use Quantum\Http\Request;
 
 class HttpRequestBodyTest extends AppTestCase
 {
-
     public function setUp(): void
     {
         parent::setUp();

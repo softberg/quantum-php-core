@@ -7,7 +7,6 @@ use Quantum\Tests\Unit\AppTestCase;
 
 class RedisAdapterTest extends AppTestCase
 {
-
     private $redis;
 
     public function setUp(): void
@@ -18,7 +17,7 @@ class RedisAdapterTest extends AppTestCase
             'prefix' => 'test',
             'host' => '127.0.0.1',
             'port' => 6379,
-            'ttl' => 60
+            'ttl' => 60,
         ];
 
         $this->redis = new RedisAdapter($params);
@@ -142,7 +141,7 @@ class RedisAdapterTest extends AppTestCase
             'prefix' => 'test',
             'host' => '127.0.0.1',
             'port' => 6379,
-            'ttl' => 1
+            'ttl' => 1,
         ];
 
         $redis = new RedisAdapter($params);

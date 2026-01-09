@@ -13,11 +13,11 @@ class TwigAdapterTest extends AppTestCase
         parent::setUp();
 
         Router::setCurrentRoute([
-            "route" => "test",
-            "method" => "GET",
-            "controller" => "SomeController",
-            "action" => "test",
-            "module" => "Test"
+            'route' => 'test',
+            'method' => 'GET',
+            'controller' => 'SomeController',
+            'action' => 'test',
+            'module' => 'Test',
         ]);
     }
 

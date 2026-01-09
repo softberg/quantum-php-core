@@ -33,11 +33,10 @@ use ReflectionException;
  */
 class MailerFactory
 {
-
     /**
      * Supported adapters
      */
-    const ADAPTERS = [
+    public const ADAPTERS = [
         Mailer::SMTP => SmtpAdapter::class,
         Mailer::MAILGUN => MailgunAdapter::class,
         Mailer::MANDRILL => MandrillAdapter::class,

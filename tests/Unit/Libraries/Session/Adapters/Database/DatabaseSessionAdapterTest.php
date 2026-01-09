@@ -10,7 +10,6 @@ use Quantum\Tests\Unit\AppTestCase;
 
 class DatabaseSessionAdapterTest extends AppTestCase
 {
-
     use TestCaseHelper;
 
     private $session;

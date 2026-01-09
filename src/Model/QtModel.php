@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Model;
@@ -48,7 +48,6 @@ use Quantum\Paginator\Paginator;
  */
 abstract class QtModel
 {
-
     /**
      * The database table associated with model
      * @var string
@@ -118,7 +117,7 @@ abstract class QtModel
      */
     public function get(): ModelCollection
     {
-        $models = array_map(fn($item) => wrapToModel($item, static::class), $this->ormInstance->get());
+        $models = array_map(fn ($item) => wrapToModel($item, static::class), $this->ormInstance->get());
 
         return new ModelCollection($models);
     }
@@ -135,7 +134,7 @@ abstract class QtModel
         return PaginatorFactory::create(Paginator::MODEL, [
             'model' => $this,
             'perPage' => $perPage,
-            'page' => $currentPage
+            'page' => $currentPage,
         ]);
     }
 
@@ -165,11 +164,10 @@ abstract class QtModel
     /**
      * @return bool
      */
-    public function isEmpty() : bool
+    public function isEmpty(): bool
     {
         return empty($this->asArray());
     }
-
 
     /**
      * Sets or gets the model property
@@ -232,7 +230,7 @@ abstract class QtModel
         return [
             'table',
             'idColumn',
-            'hidden'
+            'hidden',
         ];
     }
 }

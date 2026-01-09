@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Hook\Enums;
@@ -22,7 +22,7 @@ use Quantum\App\Enums\ExceptionMessages as BaseExceptionMessages;
  */
 final class ExceptionMessages extends BaseExceptionMessages
 {
-    const DUPLICATE_HOOK_NAME = 'The Hook `{%1}` already registered.';
+    public const DUPLICATE_HOOK_NAME = 'The Hook `{%1}` already registered.';
 
-    const UNREGISTERED_HOOK_NAME = 'The Hook `{%1}` was not registered.';
+    public const UNREGISTERED_HOOK_NAME = 'The Hook `{%1}` was not registered.';
 }

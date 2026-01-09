@@ -9,11 +9,10 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Http\Traits\Request;
-
 
 use Quantum\Config\Exceptions\ConfigException;
 use Quantum\App\Exceptions\BaseException;
@@ -27,7 +26,6 @@ use ReflectionException;
  */
 trait Params
 {
-
     /**
      * Request content type
      * @var string|null

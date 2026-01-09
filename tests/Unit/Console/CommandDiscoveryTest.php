@@ -8,7 +8,6 @@ use Quantum\Console\QtCommand;
 
 class CommandDiscoveryTest extends AppTestCase
 {
-
     public function testDiscoverCoreCommands()
     {
         $commandsDirectory = base_dir()

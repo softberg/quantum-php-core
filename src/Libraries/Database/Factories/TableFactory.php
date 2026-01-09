@@ -24,7 +24,6 @@ use Quantum\Libraries\Database\Database;
  */
 class TableFactory
 {
-
     /**
      * Creates new table
      * @param string $name

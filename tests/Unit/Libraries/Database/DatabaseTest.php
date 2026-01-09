@@ -9,7 +9,6 @@ use Quantum\Loader\Setup;
 
 class DatabaseTest extends AppTestCase
 {
-
     public function setUp(): void
     {
         parent::setUp();
@@ -24,19 +23,19 @@ class DatabaseTest extends AppTestCase
 
         $this->setPrivateProperty(Database::class, 'instance', null);
 
-        Database::execute("CREATE TABLE IF NOT EXISTS profiles (
+        Database::execute('CREATE TABLE IF NOT EXISTS profiles (
                         id INTEGER PRIMARY KEY,
                         firstname VARCHAR(255),
                         lastname VARCHAR(255),
                         age INTEGER(11),
                         country VARCHAR(255),
                         created_at DATETIME
-                    )");
+                    )');
     }
 
     public function tearDown(): void
     {
-        Database::execute("DROP TABLE IF EXISTS profiles");
+        Database::execute('DROP TABLE IF EXISTS profiles');
     }
 
     public function testDatabaseInstance()
@@ -68,9 +67,11 @@ class DatabaseTest extends AppTestCase
 
         $this->assertEmpty($result);
 
-        Database::execute('INSERT INTO profiles (firstname, lastname, age, country)
+        Database::execute(
+            'INSERT INTO profiles (firstname, lastname, age, country)
                                      VALUES (:firstname, :lastname, :age, :country)',
-                ['firstname' => 'John', 'lastname' => 'Doe', 'age' => '56', 'country' => 'Spain']);
+            ['firstname' => 'John', 'lastname' => 'Doe', 'age' => '56', 'country' => 'Spain']
+        );
 
         $result = Database::query('SELECT * FROM profiles WHERE id=:id', ['id' => 1]);
 
@@ -94,7 +95,7 @@ class DatabaseTest extends AppTestCase
             'firstname' => 'Alice',
             'lastname' => 'Smith',
             'age' => 30,
-            'country' => 'Canada'
+            'country' => 'Canada',
         ]);
 
         Database::rollback();
@@ -110,7 +111,7 @@ class DatabaseTest extends AppTestCase
             'firstname' => 'Bob',
             'lastname' => 'Marley',
             'age' => 42,
-            'country' => 'Jamaica'
+            'country' => 'Jamaica',
         ]);
 
         Database::commit();
@@ -130,7 +131,7 @@ class DatabaseTest extends AppTestCase
                 'firstname' => 'Charlie',
                 'lastname' => 'Brown',
                 'age' => 28,
-                'country' => 'USA'
+                'country' => 'USA',
             ]);
 
             return 'committed';
@@ -154,7 +155,7 @@ class DatabaseTest extends AppTestCase
                     'firstname' => 'Eve',
                     'lastname' => 'Hacker',
                     'age' => 999,
-                    'country' => 'Matrix'
+                    'country' => 'Matrix',
                 ]);
 
                 throw new \Exception('Something went wrong!');

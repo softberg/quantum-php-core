@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Loader;
@@ -23,7 +23,6 @@ use Quantum\App\App;
  */
 class Loader
 {
-
     /**
      * Current module
      * @var string
@@ -88,7 +87,7 @@ class Loader
      */
     public function loadDir(string $dir)
     {
-        foreach (glob($dir . DS . "*.php") as $filename) {
+        foreach (glob($dir . DS . '*.php') as $filename) {
             require_once $filename;
         }
     }

@@ -29,7 +29,6 @@ use ReflectionException;
  */
 trait RawInput
 {
-
     /**
      * Parses raw input data and returns parsed parameters and files
      * @param string $rawInput
@@ -245,7 +244,7 @@ trait RawInput
             $name,
             $filename,
             $contentType,
-            $content
+            $content,
         ];
     }
 

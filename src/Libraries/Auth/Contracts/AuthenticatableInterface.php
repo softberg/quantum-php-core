@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Auth\Contracts;
@@ -22,11 +22,10 @@ use Quantum\Libraries\Auth\User;
  */
 interface AuthenticatableInterface
 {
-
     /**
      * Auth user key
      */
-    const AUTH_USER = 'auth_user';
+    public const AUTH_USER = 'auth_user';
 
     /**
      * Sign In

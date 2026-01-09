@@ -25,7 +25,6 @@ use Quantum\App\Exceptions\BaseException;
  */
 class HasherException extends BaseException
 {
-
     /**
      *
      * @param string $algorithm

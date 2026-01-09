@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Environment;
@@ -32,7 +32,6 @@ use Quantum\Di\Di;
  */
 class Environment
 {
-
     /**
      * Environment file
      * @var string
@@ -100,7 +99,7 @@ class Environment
 
         $appEnv = $envConfig['app_env'] ?? Env::PRODUCTION;
 
-        $this->envFile = ".env" . ($appEnv !== Env::PRODUCTION ? ".$appEnv" : '');
+        $this->envFile = '.env' . ($appEnv !== Env::PRODUCTION ? ".$appEnv" : '');
 
         if (!file_exists(App::getBaseDir() . DS . $this->envFile)) {
             throw EnvException::fileNotFound($this->envFile);
@@ -188,10 +187,10 @@ class Environment
 
         if ($row) {
             $envFileContent = file_get_contents($envFilePath);
-            $envFileContent = preg_replace('/^' . preg_quote($row, '/') . '/m', $key . "=" . $value, $envFileContent);
+            $envFileContent = preg_replace('/^' . preg_quote($row, '/') . '/m', $key . '=' . $value, $envFileContent);
             file_put_contents($envFilePath, $envFileContent);
         } else {
-            file_put_contents($envFilePath, PHP_EOL . $key . "=" . $value . PHP_EOL, FILE_APPEND);
+            file_put_contents($envFilePath, PHP_EOL . $key . '=' . $value . PHP_EOL, FILE_APPEND);
         }
 
         $this->envContent = Dotenv::createMutable(App::getBaseDir(), $this->envFile)->load();

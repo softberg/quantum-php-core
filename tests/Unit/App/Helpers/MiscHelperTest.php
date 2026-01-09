@@ -6,7 +6,6 @@ use Quantum\Tests\Unit\AppTestCase;
 
 class MiscHelperTest extends AppTestCase
 {
-
     public function setUp(): void
     {
         parent::setUp();

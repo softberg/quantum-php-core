@@ -7,7 +7,6 @@ use Quantum\Libraries\Database\Adapters\Sleekdb\SleekDbal;
 
 class CriteriaSleekTest extends SleekDbalTestCase
 {
-
     public $userProfileModel;
     public function testSleekCriteriaEquals()
     {
@@ -134,7 +133,7 @@ class CriteriaSleekTest extends SleekDbalTestCase
 
         $events = $eventsModel->criterias(
             ['title', '=', 'Music'],
-            ['started_at', '>=', new \DateTime("2020-12-01")]
+            ['started_at', '>=', new \DateTime('2020-12-01')]
         )->get();
 
         $this->assertIsArray($events);
@@ -152,7 +151,7 @@ class CriteriaSleekTest extends SleekDbalTestCase
         $events = $eventsModel->criterias([
             ['title', '=', 'Music'],
             ['title', '=', 'Dance'],
-            ['title', '=', 'Art']
+            ['title', '=', 'Art'],
         ])->get();
 
         $this->assertIsArray($events);
@@ -166,7 +165,7 @@ class CriteriaSleekTest extends SleekDbalTestCase
 
         $events = $eventsModel->criterias([
             ['title', '=', 'Dance'],
-            ['title', '=', 'Art']
+            ['title', '=', 'Art'],
         ], ['country', '=', 'Ireland'])->get();
 
         $this->assertIsArray($events);

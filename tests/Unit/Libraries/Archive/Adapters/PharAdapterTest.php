@@ -7,7 +7,6 @@ use Quantum\Tests\Unit\AppTestCase;
 
 class PharAdapterTest extends AppTestCase
 {
-
     private $pharArchive;
     private $archiveName;
 
@@ -44,7 +43,8 @@ class PharAdapterTest extends AppTestCase
         $this->assertTrue(
             $this->pharArchive->addFile(
                 base_dir() . DS . 'shared' . DS . 'config' . DS . 'app.php',
-                'app.conf')
+                'app.conf'
+            )
         );
 
         $this->assertTrue($this->pharArchive->offsetExists('app.conf'));
@@ -65,7 +65,7 @@ class PharAdapterTest extends AppTestCase
     {
         $this->assertTrue($this->pharArchive->addMultipleFiles([
             'app.conf' => base_dir() . DS . 'shared' . DS . 'config' . DS . 'app.php',
-            'session.conf' => base_dir() . DS . 'shared' . DS . 'config' . DS . 'session.php'
+            'session.conf' => base_dir() . DS . 'shared' . DS . 'config' . DS . 'session.php',
         ]));
 
         $this->assertTrue($this->pharArchive->offsetExists('app.conf'));
@@ -77,7 +77,7 @@ class PharAdapterTest extends AppTestCase
     {
         $this->assertTrue($this->pharArchive->addMultipleFiles([
             'app.conf' => base_dir() . DS . 'shared' . DS . 'config' . DS . 'app.php',
-            'session.conf' => base_dir() . DS . 'shared' . DS . 'config' . DS . 'session.php'
+            'session.conf' => base_dir() . DS . 'shared' . DS . 'config' . DS . 'session.php',
         ]));
 
         $this->assertEquals(2, $this->pharArchive->count());
@@ -98,12 +98,11 @@ class PharAdapterTest extends AppTestCase
         $this->fs->remove(base_dir() . DS . 'sample.txt');
     }
 
-
     public function testDeleteFileFromPhar()
     {
         $this->pharArchive->addMultipleFiles([
             'app.conf' => base_dir() . DS . 'shared' . DS . 'config' . DS . 'app.php',
-            'session.conf' => base_dir() . DS . 'shared' . DS . 'config' . DS . 'session.php'
+            'session.conf' => base_dir() . DS . 'shared' . DS . 'config' . DS . 'session.php',
         ]);
 
         $this->assertEquals(2, $this->pharArchive->count());
@@ -123,7 +122,7 @@ class PharAdapterTest extends AppTestCase
     {
         $this->pharArchive->addMultipleFiles([
             'app.conf' => base_dir() . DS . 'shared' . DS . 'config' . DS . 'app.php',
-            'directoryOne/session.conf' => base_dir() . DS . 'shared' . DS . 'config' . DS . 'session.php'
+            'directoryOne/session.conf' => base_dir() . DS . 'shared' . DS . 'config' . DS . 'session.php',
         ]);
 
         $this->assertEquals(2, $this->pharArchive->count());

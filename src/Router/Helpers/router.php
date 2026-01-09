@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 3.0.0
  */
 
 use Quantum\Environment\Environment;
@@ -132,7 +132,7 @@ function route_uri(): string
  */
 function route_cache_settings(): ?array
 {
-	return RouteController::getCurrentRoute()['cache_settings'] ?? null;
+    return RouteController::getCurrentRoute()['cache_settings'] ?? null;
 }
 
 /**
@@ -165,7 +165,7 @@ function find_route_by_name(string $name, string $module): ?array
         if (isset($route['name']) &&
                 strtolower($route['name']) === strtolower($name) &&
                 strtolower($route['module']) === strtolower($module)) {
-            
+
             return $route;
         }
     }
@@ -200,6 +200,6 @@ function route_group_exists(string $name, string $module): bool
 function module_base_namespace(): string
 {
     return Environment::getInstance()->getAppEnv() === 'testing'
-        ? "Quantum\\Tests\\_root\\modules"
-        : "Modules";
+        ? 'Quantum\\Tests\\_root\\modules'
+        : 'Modules';
 }

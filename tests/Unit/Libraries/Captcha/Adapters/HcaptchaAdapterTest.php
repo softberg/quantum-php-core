@@ -24,7 +24,6 @@ class HcaptchaAdapterTest extends AppTestCase
         config()->set('captcha.hcaptcha.secret_key', $this->secretKey);
         config()->set('captcha.hcaptcha.site_key', $this->siteKey);
 
-
         $this->httpClientMock = Mockery::mock(HttpClient::class);
 
         $this->adapter = new HcaptchaAdapter(config()->get('captcha.hcaptcha'), $this->httpClientMock);
@@ -68,27 +67,35 @@ class HcaptchaAdapterTest extends AppTestCase
 
         $this->assertEquals(
             '<div class="h-captcha" data-sitekey="' . $this->siteKey . '" ></div>',
-            $this->adapter->addToForm('signUpForm'));
+            $this->adapter->addToForm('signUpForm')
+        );
     }
 
     public function testHcaptchaInvisibleAddToForm()
     {
         $this->adapter->setType(CaptchaInterface::CAPTCHA_INVISIBLE);
 
-        $this->assertEquals(
-            '<script>
+        $formId = 'signUpForm';
+
+        $actual = $this->adapter->addToForm($formId);
+
+        $expected = '<script>
                  document.addEventListener("DOMContentLoaded", function() {
                      const form = document.getElementById("signUpForm");
                      const submitButton = form.querySelector("button[type=submit]");
-                     submitButton.setAttribute("data-sitekey", "' . $this->siteKey . '");
+                     submitButton.setAttribute("data-sitekey", "0x0000000000000000000000000000000000000000");
                      submitButton.setAttribute("data-callback", "onSubmit");
                      submitButton.classList.add("h-captcha");
                  })
                 function onSubmit (){
                     document.getElementById("signUpForm").submit();
                 }
-            </script>',
-            $this->adapter->addToForm('signUpForm'));
+            </script>';
+
+        $expected = str_replace("\r\n", "\n", $expected);
+        $actual   = str_replace("\r\n", "\n", $actual);
+
+        $this->assertSame($expected, $actual);
     }
 
     public function testHcaptchaVerifySuccess()
@@ -111,9 +118,8 @@ class HcaptchaAdapterTest extends AppTestCase
         $this->httpClientMock
             ->shouldReceive('getResponseBody')
             ->andReturn((object)[
-                'success' => true
+                'success' => true,
             ]);
-
 
         $result = $this->adapter->verify('valid_code');
 
@@ -135,12 +141,11 @@ class HcaptchaAdapterTest extends AppTestCase
             ->shouldReceive('start')
             ->andReturnSelf();
 
-
         $this->httpClientMock
             ->shouldReceive('getResponseBody')
             ->andReturn((object)[
                 'success' => false,
-                'error-codes' => ['invalid-input-response']
+                'error-codes' => ['invalid-input-response'],
             ]);
 
         $result = $this->adapter->verify('invalid_code');

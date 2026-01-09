@@ -23,7 +23,6 @@ use Throwable;
  */
 class LocalFileSystemAdapter implements LocalFilesystemAdapterInterface
 {
-
     /**
      * @param string $dirname
      * @param string|null $parentId
@@ -207,7 +206,7 @@ class LocalFileSystemAdapter implements LocalFilesystemAdapterInterface
     {
         $lines = file($filename, FILE_IGNORE_NEW_LINES);
 
-        if(!$lines) {
+        if (!$lines) {
             return [];
         }
 

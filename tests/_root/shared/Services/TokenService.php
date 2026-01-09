@@ -7,7 +7,6 @@ use Quantum\Service\QtService;
 
 class TokenService extends QtService implements TokenServiceInterface
 {
-
     public function getAccessToken(): string
     {
         return 'xxxyyyzz';

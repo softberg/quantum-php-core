@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Encryption\Factories;
@@ -26,11 +26,10 @@ use Quantum\Libraries\Encryption\Cryptor;
  */
 class CryptorFactory
 {
-
     /**
      * Supported adapters
      */
-    const ADAPTERS = [
+    public const ADAPTERS = [
         Cryptor::SYMMETRIC => SymmetricEncryptionAdapter::class,
         Cryptor::ASYMMETRIC => AsymmetricEncryptionAdapter::class,
     ];
@@ -67,6 +66,6 @@ class CryptorFactory
 
         $adapterClass = self::ADAPTERS[$type];
 
-        return new Cryptor(new $adapterClass);
+        return new Cryptor(new $adapterClass());
     }
 }

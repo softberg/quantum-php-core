@@ -10,7 +10,6 @@ use Quantum\Http\Request;
 
 class CsrfTest extends AppTestCase
 {
-
     private $csrf;
     private $request;
     private $key = '#321dMd3QS15%';
@@ -44,7 +43,7 @@ class CsrfTest extends AppTestCase
         $this->request->create('POST', '/submit', [
             'firstname' => 'Josn',
             'lastname' => 'Doe',
-            'csrf-token' => $token
+            'csrf-token' => $token,
         ]);
 
         $this->assertTrue($this->csrf->checkToken($this->request));
@@ -70,7 +69,7 @@ class CsrfTest extends AppTestCase
         $this->request->create('POST', '/submit', [
             'firstname' => 'Josn',
             'lastname' => 'Doe',
-            'csrf-token' => 'wrong-csrf-token'
+            'csrf-token' => 'wrong-csrf-token',
         ]);
 
         $this->expectException(CsrfException::class);

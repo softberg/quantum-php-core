@@ -8,14 +8,12 @@ use Quantum\Tests\Unit\AppTestCase;
 
 class LengthRuleTest extends AppTestCase
 {
-
     public $validator;
     private $request;
 
     public function setUp(): void
     {
         parent::setUp();
-
 
         $this->validator = new Validator();
 
@@ -24,7 +22,7 @@ class LengthRuleTest extends AppTestCase
     public function testRuleMinLen()
     {
         $this->validator->setRule('text', [
-            Rule::minLen(3)
+            Rule::minLen(3),
         ]);
 
         $this->assertTrue($this->validator->isValid(['text' => 'something']));
@@ -41,7 +39,7 @@ class LengthRuleTest extends AppTestCase
     public function testRuleMaxLen()
     {
         $this->validator->setRule('text', [
-            Rule::maxLen(5)
+            Rule::maxLen(5),
         ]);
 
         $this->assertTrue($this->validator->isValid(['text' => 'some']));
@@ -58,7 +56,7 @@ class LengthRuleTest extends AppTestCase
     public function testRuleExactLen()
     {
         $this->validator->setRule('text', [
-            Rule::exactLen(4)
+            Rule::exactLen(4),
         ]);
 
         $this->assertTrue($this->validator->isValid(['text' => 'some']));

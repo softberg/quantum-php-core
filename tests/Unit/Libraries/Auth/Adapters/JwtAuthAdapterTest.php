@@ -12,7 +12,6 @@ use Quantum\Libraries\Auth\User;
 
 class JwtAuthAdapterTest extends AuthTestCase
 {
-
     private $jwtAuth;
 
     public function setUp(): void
@@ -28,11 +27,10 @@ class JwtAuthAdapterTest extends AuthTestCase
                 'aud' => 'audience',
                 'iat' => time(),
                 'nbf' => time() + 1,
-                'exp' => time() + 60
+                'exp' => time() + 60,
             ]);
 
-        $this->jwtAuth = new JwtAuthAdapter($this->authService, $this->mailer, new Hasher, $jwt);
-
+        $this->jwtAuth = new JwtAuthAdapter($this->authService, $this->mailer, new Hasher(), $jwt);
 
         $admin = $this->jwtAuth->signup($this->adminUser);
 

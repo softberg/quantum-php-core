@@ -25,7 +25,6 @@ use Quantum\App\Exceptions\BaseException;
  */
 class LoggerException extends BaseException
 {
-
     /**
      * @param string $name
      * @return LoggerException

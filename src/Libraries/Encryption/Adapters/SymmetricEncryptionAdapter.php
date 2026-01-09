@@ -25,11 +25,10 @@ use Quantum\App\Exceptions\AppException;
  */
 class SymmetricEncryptionAdapter implements EncryptionInterface
 {
-
     /**
      * Cipher method
      */
-    const CIPHER_METHOD = 'aes-256-cbc';
+    public const CIPHER_METHOD = 'aes-256-cbc';
 
     /**
      * @var string

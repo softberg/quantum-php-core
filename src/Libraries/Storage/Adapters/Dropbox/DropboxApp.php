@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Storage\Adapters\Dropbox;
@@ -31,78 +31,77 @@ use Exception;
  */
 class DropboxApp implements CloudAppInterface
 {
-
     use CloudAppTrait;
 
     /**
      * Authorization URL
      */
-    const AUTH_URL = 'https://dropbox.com/oauth2/authorize';
+    public const AUTH_URL = 'https://dropbox.com/oauth2/authorize';
 
     /**
      * Token URL
      */
-    const AUTH_TOKEN_URL = 'https://api.dropboxapi.com/oauth2/token';
+    public const AUTH_TOKEN_URL = 'https://api.dropboxapi.com/oauth2/token';
 
     /**
      * URL for remote procedure call endpoints
      */
-    const RPC_API_URL = 'https://api.dropboxapi.com/2';
+    public const RPC_API_URL = 'https://api.dropboxapi.com/2';
 
     /**
      * URL for content endpoints
      */
-    const CONTENT_API_URL = 'https://content.dropboxapi.com/2';
+    public const CONTENT_API_URL = 'https://content.dropboxapi.com/2';
 
     /**
      * Create folder endpoint
      */
-    const ENDPOINT_CREATE_FOLDER = 'files/create_folder_v2';
+    public const ENDPOINT_CREATE_FOLDER = 'files/create_folder_v2';
 
     /**
      * Delete file endpoint
      */
-    const ENDPOINT_DELETE_FILE = 'files/delete_v2';
+    public const ENDPOINT_DELETE_FILE = 'files/delete_v2';
 
     /**
      * Download file endpoint
      */
-    const ENDPOINT_DOWNLOAD_FILE = 'files/download';
+    public const ENDPOINT_DOWNLOAD_FILE = 'files/download';
 
     /**
      * Upload file endpoint
      */
-    const ENDPOINT_UPLOAD_FILE = 'files/upload';
+    public const ENDPOINT_UPLOAD_FILE = 'files/upload';
 
     /**
      * Move file endpoint
      */
-    const ENDPOINT_MOVE_FILE = 'files/move_v2';
+    public const ENDPOINT_MOVE_FILE = 'files/move_v2';
 
     /**
      * Copy file endpoint
      */
-    const ENDPOINT_COPY_FILE = 'files/copy_v2';
+    public const ENDPOINT_COPY_FILE = 'files/copy_v2';
 
     /**
      * Get metadata for file endpoint
      */
-    const ENDPOINT_FILE_METADATA = 'files/get_metadata';
+    public const ENDPOINT_FILE_METADATA = 'files/get_metadata';
 
     /**
      * List folder endpoint
      */
-    const ENDPOINT_LIST_FOLDER = 'files/list_folder';
+    public const ENDPOINT_LIST_FOLDER = 'files/list_folder';
 
     /**
      * Access token status indicating it needs refresh
      */
-    const ACCESS_TOKEN_STATUS = ['invalid_access_token', 'expired_access_token'];
+    public const ACCESS_TOKEN_STATUS = ['invalid_access_token', 'expired_access_token'];
 
     /**
      * Error code for invalid token
      */
-    const INVALID_TOKEN_ERROR_CODE = 401;
+    public const INVALID_TOKEN_ERROR_CODE = 401;
 
     /**
      * @var HttpClient
@@ -203,7 +202,7 @@ class DropboxApp implements CloudAppInterface
             'refresh_token' => $refreshToken,
             'grant_type' => 'refresh_token',
             'client_id' => $this->appKey,
-            'client_secret' => $this->appSecret
+            'client_secret' => $this->appSecret,
         ];
 
         $tokenUrl = self::AUTH_TOKEN_URL . '?' . http_build_query($params, '', '&');
@@ -226,7 +225,7 @@ class DropboxApp implements CloudAppInterface
     {
         $headers = [
             'Authorization' => 'Bearer ' . $this->tokenService->getAccessToken(),
-            'Content-Type' => 'application/json'
+            'Content-Type' => 'application/json',
         ];
 
         return $this->sendRequest(self::RPC_API_URL . '/' . $endpoint, $params, $headers);
@@ -245,7 +244,7 @@ class DropboxApp implements CloudAppInterface
         $headers = [
             'Authorization' => 'Bearer ' . $this->tokenService->getAccessToken(),
             'Dropbox-API-Arg' => json_encode($params),
-            'Content-Type' => 'application/octet-stream'
+            'Content-Type' => 'application/octet-stream',
         ];
 
         return $this->sendRequest(self::CONTENT_API_URL . '/' . $endpoint, $content, $headers);
@@ -273,7 +272,7 @@ class DropboxApp implements CloudAppInterface
             return false;
         }
 
-        if(isset($message->error)) {
+        if (isset($message->error)) {
             $error = (array)$message->error;
 
             if (!isset($error['.tag']) && !in_array($error['.tag'], self::ACCESS_TOKEN_STATUS)) {

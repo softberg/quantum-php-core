@@ -8,7 +8,6 @@ use Quantum\Libraries\Asset\Asset;
 
 class AssetManagerTest extends AppTestCase
 {
-
     private $assetManager;
 
     public function setUp(): void
@@ -24,17 +23,17 @@ class AssetManagerTest extends AppTestCase
     {
         $this->assetManager->register([
             new Asset(Asset::CSS, 'css/style.css'),
-            new Asset(Asset::CSS, 'css/responsive.css')
+            new Asset(Asset::CSS, 'css/responsive.css'),
         ]);
 
         $this->assetManager->register([
             new Asset(Asset::JS, 'js/bootstrap.js', '', 1),
-            new Asset(Asset::JS, 'js/bootstrap-datepicker.min.js', '', 2)
+            new Asset(Asset::JS, 'js/bootstrap-datepicker.min.js', '', 2),
         ]);
 
         $this->assetManager->register([
             new Asset(Asset::CSS, 'css/reset.css', '', 0),
-            new Asset(Asset::CSS, 'css/media.css', '', 2)
+            new Asset(Asset::CSS, 'css/media.css', '', 2),
         ]);
 
         $this->assetManager->register([
@@ -63,7 +62,6 @@ class AssetManagerTest extends AppTestCase
             '<script src="http://mydomain.com/assets/js/custom.js" async defer></script>' . PHP_EOL;
         '<script src="https://code.jquery.com/jquery-3.2.1.min.js" ></script>' . PHP_EOL;
 
-
         $this->assetManager->dump(AssetManager::STORES['js']);
 
         $this->assertStringContainsString($expectedOutput, ob_get_contents());
@@ -77,22 +75,26 @@ class AssetManagerTest extends AppTestCase
 
         $this->assertEquals(
             '<script src="http://mydomain.com/assets/js/jquery.js" ></script>' . PHP_EOL,
-            $this->assetManager->get('jQuery')->tag());
+            $this->assetManager->get('jQuery')->tag()
+        );
     }
 
     public function testAssetUrl()
     {
         $this->assertEquals(
             'http://mydomain.com/assets/icons/person.png',
-            $this->assetManager->url('icons/person.png'));
+            $this->assetManager->url('icons/person.png')
+        );
 
         $this->assertEquals(
             'http://mydomain.com/assets/fonts/arial.ttf',
-            $this->assetManager->url('fonts/arial.ttf'));
+            $this->assetManager->url('fonts/arial.ttf')
+        );
 
         $this->assertEquals(
             'https://code.jquery.com/jquery-3.2.1.min.js',
-            $this->assetManager->url('https://code.jquery.com/jquery-3.2.1.min.js'));
+            $this->assetManager->url('https://code.jquery.com/jquery-3.2.1.min.js')
+        );
     }
 
 }

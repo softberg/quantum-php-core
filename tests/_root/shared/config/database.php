@@ -23,9 +23,9 @@ return [
                 'min_length' => 2,
                 'mode' => 'or',
                 'score_key' => 'scoreKey',
-                'algorithm' => 1
+                'algorithm' => 1,
             ],
         ],
         'database_dir' => base_dir() . DS . 'shared' . DS . 'store',
-    ]
+    ],
 ];

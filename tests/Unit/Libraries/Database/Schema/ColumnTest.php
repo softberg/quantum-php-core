@@ -8,7 +8,6 @@ use PHPUnit\Framework\TestCase;
 
 class ColumnTest extends TestCase
 {
-
     public function testColumnConstructor()
     {
         $this->assertInstanceOf(Column::class, new Column('test'));

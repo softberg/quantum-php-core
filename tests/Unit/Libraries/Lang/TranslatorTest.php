@@ -7,7 +7,6 @@ use Quantum\Tests\Unit\AppTestCase;
 
 class TranslatorTest extends AppTestCase
 {
-
     public function testTranslatorConstruct(): void
     {
         $translator = new Translator('en');

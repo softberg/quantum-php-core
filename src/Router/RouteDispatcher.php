@@ -24,7 +24,6 @@ use Quantum\Di\Di;
 
 class RouteDispatcher
 {
-
     /**
      * Handles the incoming HTTP request.
      * @param Request $request

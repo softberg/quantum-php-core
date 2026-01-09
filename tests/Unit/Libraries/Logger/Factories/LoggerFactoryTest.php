@@ -13,7 +13,6 @@ use Quantum\Tests\Unit\AppTestCase;
 
 class LoggerFactoryTest extends AppTestCase
 {
-
     public function setUp(): void
     {
         parent::setUp();

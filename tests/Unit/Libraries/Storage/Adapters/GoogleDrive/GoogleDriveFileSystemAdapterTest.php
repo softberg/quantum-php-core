@@ -9,7 +9,6 @@ use Mockery;
 
 class GoogleDriveFileSystemAdapterTest extends AppTestCase
 {
-
     /**
      * @var GoogleDriveFileSystemAdapter
      */
@@ -47,7 +46,7 @@ class GoogleDriveFileSystemAdapterTest extends AppTestCase
         $googleDrive = Mockery::mock(GoogleDriveApp::class)->makePartial();
 
         $googleDrive->shouldReceive('rpcRequest')->andReturnUsing(function ($endpoint, $params) {
-            if(str_contains($endpoint, '?alt=media')){
+            if (str_contains($endpoint, '?alt=media')) {
                 return self::$response[array_key_last(self::$response)];
             }
 
@@ -184,27 +183,27 @@ class GoogleDriveFileSystemAdapterTest extends AppTestCase
     {
         self::$response['files'] = [
             [
-                "kind" => GoogleDriveApp::DRIVE_FILE_KIND,
-                "mimeType" => 'application/vnd.google-apps.folder',
-                "name" => "empty",
-                "id" => "SziOaBdnr3oAAAAAAAAAWQ",
+                'kind' => GoogleDriveApp::DRIVE_FILE_KIND,
+                'mimeType' => 'application/vnd.google-apps.folder',
+                'name' => 'empty',
+                'id' => 'SziOaBdnr3oAAAAAAAAAWQ',
             ],
             [
-                "kind" => GoogleDriveApp::DRIVE_FILE_KIND,
-                "mimeType" => 'image/png',
-                "name" => "logo.png",
-                "id" => "SziOaBdnr3oAAAAAAAAAVQ",
-                "modifiedTime" => "2023-02-24T15:34:44Z",
-                "size" => 3455,
+                'kind' => GoogleDriveApp::DRIVE_FILE_KIND,
+                'mimeType' => 'image/png',
+                'name' => 'logo.png',
+                'id' => 'SziOaBdnr3oAAAAAAAAAVQ',
+                'modifiedTime' => '2023-02-24T15:34:44Z',
+                'size' => 3455,
             ],
             [
-                "kind" => GoogleDriveApp::DRIVE_FILE_KIND,
-                "mimeType" => 'image/jpeg',
-                "name" => "Image 19.jpg",
-                "id" => "SziOaBdnr3oAAAAAAAAAVw",
-                "modifiedTime" => "2023-03-01T17:12:58Z",
-                "size" => 2083432,
-            ]
+                'kind' => GoogleDriveApp::DRIVE_FILE_KIND,
+                'mimeType' => 'image/jpeg',
+                'name' => 'Image 19.jpg',
+                'id' => 'SziOaBdnr3oAAAAAAAAAVw',
+                'modifiedTime' => '2023-03-01T17:12:58Z',
+                'size' => 2083432,
+            ],
         ];
 
         $entries = $this->fs->listDirectory('test');

@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.8.0
+ * @since 3.0.0
  */
 
 namespace Quantum\Contracts;
@@ -20,7 +20,6 @@ namespace Quantum\Contracts;
  */
 interface StorageInterface
 {
-
     /**
      * Gets whole storage data
      */

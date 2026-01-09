@@ -14,7 +14,6 @@ use Mockery;
 
 class DebuggerTest extends AppTestCase
 {
-
     private $debugger;
 
     private $debugBarMock;

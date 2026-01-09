@@ -34,7 +34,6 @@ use Closure;
  */
 class Validator
 {
-
     use General;
     use Type;
     use File;

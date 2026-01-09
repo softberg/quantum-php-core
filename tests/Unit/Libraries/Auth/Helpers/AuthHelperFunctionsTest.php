@@ -9,7 +9,6 @@ use Quantum\Libraries\Auth\Auth;
 
 class AuthHelperFunctionsTest extends AppTestCase
 {
-
     public function testAuthHelperGetDefaultAuth()
     {
         $this->assertInstanceOf(Auth::class, auth());

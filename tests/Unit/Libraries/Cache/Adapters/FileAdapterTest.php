@@ -7,7 +7,6 @@ use Quantum\Tests\Unit\AppTestCase;
 
 class FileAdapterTest extends AppTestCase
 {
-
     private $fileCache;
 
     public function setUp(): void
@@ -17,7 +16,7 @@ class FileAdapterTest extends AppTestCase
         $params = [
             'prefix' => 'test',
             'path' => base_dir() . DS . 'cache' . DS . 'data',
-            'ttl' => 60
+            'ttl' => 60,
         ];
 
         $this->fileCache = new FileAdapter($params);
@@ -129,7 +128,7 @@ class FileAdapterTest extends AppTestCase
         $params = [
             'prefix' => 'test',
             'path' => base_dir() . DS . 'cache' . DS . 'data',
-            'ttl' => -1
+            'ttl' => -1,
         ];
 
         $fileCache = new FileAdapter($params);

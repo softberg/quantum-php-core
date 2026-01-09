@@ -24,11 +24,12 @@ namespace Quantum\Controllers {
 
 namespace Quantum\Service {
 
-    interface DummyServiceInterface {}
+    interface DummyServiceInterface
+    {
+    }
 
     class DummyService extends QtService implements DummyServiceInterface
     {
-
     }
 
     class CircularDependencyA
@@ -65,7 +66,6 @@ namespace Quantum\Tests\Unit\Di {
 
     class DiTest extends AppTestCase
     {
-
         public function setUp(): void
         {
             parent::setUp();
@@ -186,7 +186,7 @@ namespace Quantum\Tests\Unit\Di {
 
         public function testDiAutowire()
         {
-            $params = Di::autowire([new TestDiController, 'index']);
+            $params = Di::autowire([new TestDiController(), 'index']);
 
             $this->assertInstanceOf(Request::class, $params[0]);
 

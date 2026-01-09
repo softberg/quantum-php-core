@@ -25,7 +25,6 @@ use Exception;
  */
 class SendgridAdapter implements MailerInterface
 {
-
     use MailerTrait;
 
     /**
@@ -72,7 +71,7 @@ class SendgridAdapter implements MailerInterface
         $this->data['from'] = $this->from;
 
         $this->data['personalizations'] = [
-            ['to' => $this->addresses]
+            ['to' => $this->addresses],
         ];
 
         if ($this->subject) {
@@ -89,8 +88,8 @@ class SendgridAdapter implements MailerInterface
             $this->data['content'] = [
                 [
                     'type' => 'text/html',
-                    'value' => trim(str_replace("\n", "", $body))
-                ]
+                    'value' => trim(str_replace("\n", '', $body)),
+                ],
             ];
         }
     }
@@ -106,7 +105,7 @@ class SendgridAdapter implements MailerInterface
                 ->setMethod('POST')
                 ->setHeaders([
                     'Authorization' => 'Bearer ' . $this->apiKey,
-                    'Content-Type' => 'application/json'
+                    'Content-Type' => 'application/json',
                 ])
                 ->setData(json_encode($this->data))
                 ->start();

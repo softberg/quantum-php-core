@@ -26,7 +26,6 @@ use Quantum\App\Exceptions\BaseException;
  */
 class FileUploadException extends BaseException
 {
-
     /**
      * @param string $name
      * @return FileUploadException

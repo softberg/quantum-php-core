@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.0
+ * @since 3.0.0
  *
  */
 
@@ -21,16 +21,15 @@ namespace Quantum\Libraries\Asset;
  */
 class Asset
 {
-
     /**
      * Type CSS
      */
-    const CSS = 1;
+    public const CSS = 1;
 
     /**
      * Type JS
      */
-    const JS = 2;
+    public const JS = 2;
 
     /**
      * @var int
@@ -148,8 +147,8 @@ class Asset
     public function tag(): string
     {
         return _message(
-                $this->templates[$this->type],
-                [$this->url(), implode(' ', $this->attributes)]
-            ) . PHP_EOL;
+            $this->templates[$this->type],
+            [$this->url(), implode(' ', $this->attributes)]
+        ) . PHP_EOL;
     }
 }

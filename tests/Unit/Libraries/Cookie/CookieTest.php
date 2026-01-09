@@ -7,7 +7,6 @@ use Quantum\Tests\Unit\AppTestCase;
 
 class CookieTest extends AppTestCase
 {
-
     private $cookie;
 
     private $storage = [];

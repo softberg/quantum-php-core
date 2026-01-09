@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Storage;
@@ -46,21 +46,20 @@ use Quantum\App\Exceptions\BaseException;
  */
 class FileSystem
 {
-
     /**
      * Local adapter
      */
-    const LOCAL = 'local';
+    public const LOCAL = 'local';
 
     /**
      * Dropbox adapter
      */
-    const DROPBOX = 'dropbox';
+    public const DROPBOX = 'dropbox';
 
     /**
      * GoogleDrive adapter
      */
-    const GDRIVE = 'gdrive';
+    public const GDRIVE = 'gdrive';
 
     /**
      * @var FilesystemAdapterInterface

@@ -11,7 +11,6 @@ use Quantum\Libraries\Auth\User;
 
 class SessionAuthAdapterTest extends AuthTestCase
 {
-
     private $sessionAuth;
 
     public function setUp(): void
@@ -20,7 +19,7 @@ class SessionAuthAdapterTest extends AuthTestCase
 
         config()->set('auth.two_fa', false);
 
-        $this->sessionAuth = new SessionAuthAdapter($this->authService, $this->mailer, new Hasher);
+        $this->sessionAuth = new SessionAuthAdapter($this->authService, $this->mailer, new Hasher());
 
         $admin = $this->sessionAuth->signup($this->adminUser);
 

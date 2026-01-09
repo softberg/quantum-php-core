@@ -24,12 +24,11 @@ use Quantum\Libraries\HttpClient\HttpClient;
  */
 class RecaptchaAdapter implements CaptchaInterface
 {
-
     use CaptchaTrait;
 
-    const VERIFY_URL = 'https://www.google.com/recaptcha/api/siteverify';
+    public const VERIFY_URL = 'https://www.google.com/recaptcha/api/siteverify';
 
-    const CLIENT_API = 'https://www.google.com/recaptcha/api.js';
+    public const CLIENT_API = 'https://www.google.com/recaptcha/api.js';
 
     /**
      * @var string

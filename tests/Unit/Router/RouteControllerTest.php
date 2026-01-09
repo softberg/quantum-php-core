@@ -22,7 +22,6 @@ namespace Quantum\Tests\Unit\Router {
      */
     class RouteControllerTest extends AppTestCase
     {
-
         public function setUp(): void
         {
             parent::setUp();

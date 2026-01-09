@@ -27,7 +27,6 @@ use Quantum\Model\QtModel;
  */
 trait Join
 {
-
     /**
      * @inheritDoc
      * @throws BaseException
@@ -120,7 +119,7 @@ trait Join
             [
                 $relatedModel->table . '.' . $relation['foreign_key'],
                 '=',
-                $this->table . '.' . $relation['local_key']
+                $this->table . '.' . $relation['local_key'],
             ]
         );
     }
@@ -138,7 +137,7 @@ trait Join
             [
                 $relatedModel->table . '.' . $relation['local_key'],
                 '=',
-                $this->table . '.' . $relation['foreign_key']
+                $this->table . '.' . $relation['foreign_key'],
             ]
         );
     }

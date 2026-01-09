@@ -8,7 +8,6 @@ use Quantum\Libraries\Asset\Asset;
 
 class AssetHelperFunctionsTest extends AppTestCase
 {
-
     public function setUp(): void
     {
         parent::setUp();
@@ -36,13 +35,13 @@ class AssetHelperFunctionsTest extends AppTestCase
 
         asset()->register([
             new Asset(Asset::CSS, 'css/style.css'),
-            new Asset(Asset::CSS, 'css/responsive.css')
+            new Asset(Asset::CSS, 'css/responsive.css'),
         ]);
 
         asset()->register([
             new Asset(Asset::JS, 'js/bootstrap.js'),
             new Asset(Asset::JS, 'js/bootstrap-datepicker.min.js'),
-            new Asset(Asset::JS, 'js/jQuery.js', 'jQuery', 0)
+            new Asset(Asset::JS, 'js/jQuery.js', 'jQuery', 0),
         ]);
 
         $expectedOutput = '<link rel="stylesheet" type="text/css" href="' . asset()->url('css/style.css') . '">' . PHP_EOL .

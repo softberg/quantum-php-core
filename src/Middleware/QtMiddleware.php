@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.0.0
+ * @since 3.0.0
  */
 
 namespace Quantum\Middleware;
@@ -24,7 +24,6 @@ use Closure;
  */
 abstract class QtMiddleware
 {
-
     /**
      * Apply
      *

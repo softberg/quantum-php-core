@@ -37,7 +37,6 @@ use DateTime;
  */
 trait AuthTrait
 {
-
     /**
      * @var Mailer
      */
@@ -103,7 +102,7 @@ trait AuthTrait
 
         $body = [
             'user' => $user,
-            'activationToken' => $activationToken
+            'activationToken' => $activationToken,
         ];
 
         if ($customData) {
@@ -154,7 +153,7 @@ trait AuthTrait
 
         $body = [
             'user' => $user,
-            'resetToken' => $resetToken
+            'resetToken' => $resetToken,
         ];
 
         $this->mailer->setSubject(t('common.reset_password'));
@@ -184,7 +183,7 @@ trait AuthTrait
                 $token,
                 [
                     $this->keyFields[AuthKeys::PASSWORD] => $this->hasher->hash($password),
-                    $this->keyFields[AuthKeys::RESET_TOKEN] => ''
+                    $this->keyFields[AuthKeys::RESET_TOKEN] => '',
                 ]
             );
         }
@@ -263,7 +262,7 @@ trait AuthTrait
 
         $body = [
             'user' => $user,
-            'code' => $otp
+            'code' => $otp,
         ];
 
         $this->mailer->setSubject(t('common.otp'));

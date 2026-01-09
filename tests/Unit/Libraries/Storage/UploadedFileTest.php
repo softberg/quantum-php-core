@@ -12,7 +12,6 @@ use Mockery;
 
 class UploadedDouble extends UploadedFile
 {
-
     public function isUploaded(): bool
     {
         return file_exists($this->getPathname());
@@ -27,7 +26,6 @@ class UploadedDouble extends UploadedFile
 
 class UploadedFileTest extends AppTestCase
 {
-
     private $fileMeta;
 
     public function setUp(): void

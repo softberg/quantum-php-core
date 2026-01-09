@@ -35,11 +35,10 @@ use ReflectionException;
  */
 class AuthFactory
 {
-
     /**
      * Supported adapters
      */
-    const ADAPTERS = [
+    public const ADAPTERS = [
         Auth::SESSION => SessionAuthAdapter::class,
         Auth::JWT => JwtAuthAdapter::class,
     ];

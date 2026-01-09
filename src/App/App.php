@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 3.0.0
  */
 
 namespace Quantum\App;
@@ -24,16 +24,15 @@ use Quantum\App\Contracts\AppInterface;
  */
 class App
 {
-
     /**
      * Web app adapter
      */
-    const WEB = 'web';
+    public const WEB = 'web';
 
     /**
      * Console app adapter
      */
-    const CONSOLE = 'console';
+    public const CONSOLE = 'console';
 
     /**
      * @var string

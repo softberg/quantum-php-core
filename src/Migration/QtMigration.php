@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.7.0
+ * @since 3.0.0
  */
 
 namespace Quantum\Migration;
@@ -22,7 +22,6 @@ use Quantum\Libraries\Database\Factories\TableFactory;
  */
 abstract class QtMigration
 {
-
     /**
      * Upgrades with the specified migration class
      * @param TableFactory|null $tableFactory

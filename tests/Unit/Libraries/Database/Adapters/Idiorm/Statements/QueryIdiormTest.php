@@ -11,7 +11,6 @@ use Quantum\Libraries\Database\Adapters\Idiorm\IdiormDbal;
  */
 class QueryIdiormTest extends IdiormDbalTestCase
 {
-
     public function testIdiormExecute()
     {
         $eventModel = new IdiormDbal('events');
@@ -29,10 +28,11 @@ class QueryIdiormTest extends IdiormDbalTestCase
 
     public function testIdiormQuery()
     {
-        $events = IdiormDbal::query('SELECT * FROM events WHERE started_at BETWEEN :date_from AND :date_to ORDER BY started_at DESC',
+        $events = IdiormDbal::query(
+            'SELECT * FROM events WHERE started_at BETWEEN :date_from AND :date_to ORDER BY started_at DESC',
             [
                 'date_from' => '2035-02-14 10:15:12',
-                'date_to' => '2045-02-14 10:15:12'
+                'date_to' => '2045-02-14 10:15:12',
             ]
         );
 
@@ -63,7 +63,7 @@ class QueryIdiormTest extends IdiormDbalTestCase
 
         $eventModel->criteria('country', '=', 'Ireland')->get();
 
-        $this->assertEquals("SELECT * FROM `events` WHERE `country` = ?", $eventModel::lastStatement()->queryString);
+        $this->assertEquals('SELECT * FROM `events` WHERE `country` = ?', $eventModel::lastStatement()->queryString);
     }
 
     public function testIdiormQueryLog()

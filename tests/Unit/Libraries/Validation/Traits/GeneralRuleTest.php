@@ -12,7 +12,6 @@ use Quantum\Loader\Setup;
 
 class GeneralRuleTest extends AppTestCase
 {
-
     public $validator;
     public function setUp(): void
     {
@@ -31,13 +30,13 @@ class GeneralRuleTest extends AppTestCase
 
     public function tearDown(): void
     {
-        Database::execute("DROP TABLE IF EXISTS users");
+        Database::execute('DROP TABLE IF EXISTS users');
     }
 
     public function testRuleRequired()
     {
         $this->validator->setRule('text', [
-            Rule::required()
+            Rule::required(),
         ]);
 
         $this->assertTrue($this->validator->isValid(['text' => 'something']));
@@ -56,7 +55,7 @@ class GeneralRuleTest extends AppTestCase
     public function testRuleEmail()
     {
         $this->validator->setRule('text', [
-            Rule::email()
+            Rule::email(),
         ]);
 
         $this->assertTrue($this->validator->isValid(['text' => 'something@mail.com']));
@@ -73,7 +72,7 @@ class GeneralRuleTest extends AppTestCase
     public function testRuleCreditCard()
     {
         $this->validator->setRule('text', [
-            Rule::creditCard()
+            Rule::creditCard(),
         ]);
 
         $this->assertTrue($this->validator->isValid(['text' => '4111111111111111']));
@@ -90,7 +89,7 @@ class GeneralRuleTest extends AppTestCase
     public function testRuleIban()
     {
         $this->validator->setRule('text', [
-            Rule::iban()
+            Rule::iban(),
         ]);
 
         $this->assertTrue($this->validator->isValid(['text' => 'DE75512108001245126199']));
@@ -109,7 +108,7 @@ class GeneralRuleTest extends AppTestCase
     public function testRuleName()
     {
         $this->validator->setRule('text', [
-            Rule::name()
+            Rule::name(),
         ]);
 
         $this->assertTrue($this->validator->isValid(['text' => 'John']));
@@ -130,7 +129,7 @@ class GeneralRuleTest extends AppTestCase
     public function testRuleStreetAddress()
     {
         $this->validator->setRule('text', [
-            Rule::streetAddress()
+            Rule::streetAddress(),
         ]);
 
         $this->assertTrue($this->validator->isValid(['text' => 'Barbara ave. 12']));
@@ -151,7 +150,7 @@ class GeneralRuleTest extends AppTestCase
     public function testRulePhoneNumber()
     {
         $this->validator->setRule('text', [
-            Rule::phoneNumber()
+            Rule::phoneNumber(),
         ]);
 
         $this->assertTrue($this->validator->isValid(['text' => '1-555-555-5555']));
@@ -180,7 +179,7 @@ class GeneralRuleTest extends AppTestCase
     public function testRuleDate()
     {
         $this->validator->setRule('text', [
-            Rule::date()
+            Rule::date(),
         ]);
 
         $this->assertTrue($this->validator->isValid(['text' => '2020-05-09']));
@@ -188,13 +187,13 @@ class GeneralRuleTest extends AppTestCase
         $this->assertTrue($this->validator->isValid(['text' => '2020-05-09 01:58:00']));
 
         $this->validator->setRule('text', [
-            Rule::date('m/d/Y')
+            Rule::date('m/d/Y'),
         ]);
 
         $this->assertTrue($this->validator->isValid(['text' => '05/09/2020']));
 
         $this->validator->setRule('text', [
-            Rule::date('m/d/Y H:i:s')
+            Rule::date('m/d/Y H:i:s'),
         ]);
 
         $this->assertTrue($this->validator->isValid(['text' => '05/09/2020 01:59:00']));
@@ -211,13 +210,13 @@ class GeneralRuleTest extends AppTestCase
     public function testRuleStarts()
     {
         $this->validator->setRule('text', [
-            Rule::starts('b')
+            Rule::starts('b'),
         ]);
 
         $this->assertTrue($this->validator->isValid(['text' => 'bike']));
 
         $this->validator->setRule('text', [
-            Rule::starts('br')
+            Rule::starts('br'),
         ]);
 
         $this->assertTrue($this->validator->isValid(['text' => 'break']));
@@ -234,13 +233,13 @@ class GeneralRuleTest extends AppTestCase
     public function testRuleRegex()
     {
         $this->validator->setRule('text', [
-            Rule::regex('/^[1-9]+$/')
+            Rule::regex('/^[1-9]+$/'),
         ]);
 
         $this->assertTrue($this->validator->isValid(['text' => 123]));
 
         $this->validator->setRule('text', [
-            Rule::regex('/^[a-zA-Z]+$/')
+            Rule::regex('/^[a-zA-Z]+$/'),
         ]);
 
         $this->assertTrue($this->validator->isValid(['text' => 'Hello']));
@@ -259,7 +258,7 @@ class GeneralRuleTest extends AppTestCase
     public function testRuleJsonString()
     {
         $this->validator->setRule('text', [
-            Rule::jsonString()
+            Rule::jsonString(),
         ]);
 
         $this->assertTrue($this->validator->isValid(['text' => '{"widget": {"debug": "on", "version": "1.0"}}']));
@@ -276,7 +275,7 @@ class GeneralRuleTest extends AppTestCase
     public function testRuleSame()
     {
         $this->validator->setRule('password', [
-            Rule::same('confirm_password')
+            Rule::same('confirm_password'),
         ]);
 
         $this->assertTrue($this->validator->isValid(['password' => 'qwerty', 'confirm_password' => 'qwerty']));
@@ -292,15 +291,15 @@ class GeneralRuleTest extends AppTestCase
 
     public function testRuleUnique()
     {
-       $this->createUsersTable();
+        $this->createUsersTable();
 
         $this->validator->setRule('username', [
-            Rule::unique(TestUserModel::class, 'username')
+            Rule::unique(TestUserModel::class, 'username'),
         ]);
 
         $this->assertTrue($this->validator->isValid(['username' => 'john@doe']));
 
-       $this->insertTestUser();
+        $this->insertTestUser();
 
         $this->assertFalse($this->validator->isValid(['username' => 'john@doe']));
 
@@ -316,7 +315,7 @@ class GeneralRuleTest extends AppTestCase
         $this->createUsersTable();
 
         $this->validator->setRule('username', [
-            Rule::exists(TestUserModel::class, 'username')
+            Rule::exists(TestUserModel::class, 'username'),
         ]);
 
         $this->assertFalse($this->validator->isValid(['username' => 'john@doe']));
@@ -335,14 +334,14 @@ class GeneralRuleTest extends AppTestCase
 
     protected function createUsersTable(): void
     {
-        Database::execute("
+        Database::execute('
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             username VARCHAR(255),
             password VARCHAR(255),
             created_at DATETIME
         )
-    ");
+    ');
     }
 
     protected function insertTestUser(string $username = 'john@doe', string $password = '123456'): void

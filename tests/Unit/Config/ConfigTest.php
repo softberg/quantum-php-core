@@ -11,11 +11,10 @@ use Quantum\Loader\Setup;
 
 class ConfigTest extends AppTestCase
 {
-
     public function setUp(): void
     {
         parent::setUp();
-        
+
         config()->flush();
     }
 

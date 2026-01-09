@@ -7,7 +7,6 @@ use Quantum\Tests\Unit\AppTestCase;
 
 class ZipAdapterTest extends AppTestCase
 {
-
     private $zipArchive;
     private $archiveName;
 
@@ -45,7 +44,8 @@ class ZipAdapterTest extends AppTestCase
         $this->assertTrue(
             $this->zipArchive->addFile(
                 base_dir() . DS . 'shared' . DS . 'config' . DS . 'app.php',
-                'app.conf')
+                'app.conf'
+            )
         );
 
         $this->assertTrue($this->zipArchive->offsetExists('app.conf'));
@@ -62,7 +62,7 @@ class ZipAdapterTest extends AppTestCase
     {
         $this->assertTrue($this->zipArchive->addMultipleFiles([
             'app.conf' => base_dir() . DS . 'shared' . DS . 'config' . DS . 'app.php',
-            'session.conf' => base_dir() . DS . 'shared' . DS . 'config' . DS . 'session.php'
+            'session.conf' => base_dir() . DS . 'shared' . DS . 'config' . DS . 'session.php',
         ]));
 
         $this->assertTrue($this->zipArchive->offsetExists('app.conf'));
@@ -74,7 +74,7 @@ class ZipAdapterTest extends AppTestCase
     {
         $this->assertTrue($this->zipArchive->addMultipleFiles([
             'app.conf' => base_dir() . DS . 'shared' . DS . 'config' . DS . 'app.php',
-            'session.conf' => base_dir() . DS . 'shared' . DS . 'config' . DS . 'session.php'
+            'session.conf' => base_dir() . DS . 'shared' . DS . 'config' . DS . 'session.php',
         ]));
 
         $this->assertEquals(2, $this->zipArchive->count());
@@ -99,7 +99,7 @@ class ZipAdapterTest extends AppTestCase
     {
         $this->zipArchive->addMultipleFiles([
             'app.conf' => base_dir() . DS . 'shared' . DS . 'config' . DS . 'app.php',
-            'session.conf' => base_dir() . DS . 'shared' . DS . 'config' . DS . 'session.php'
+            'session.conf' => base_dir() . DS . 'shared' . DS . 'config' . DS . 'session.php',
         ]);
 
         $this->assertEquals(2, $this->zipArchive->count());
@@ -119,7 +119,7 @@ class ZipAdapterTest extends AppTestCase
     {
         $this->zipArchive->addMultipleFiles([
             'app.conf' => base_dir() . DS . 'shared' . DS . 'config' . DS . 'app.php',
-            'directoryOne/session.conf' => base_dir() . DS . 'shared' . DS . 'config' . DS . 'session.php'
+            'directoryOne/session.conf' => base_dir() . DS . 'shared' . DS . 'config' . DS . 'session.php',
         ]);
 
         $this->assertEquals(2, $this->zipArchive->count());

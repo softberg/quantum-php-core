@@ -7,7 +7,6 @@ use Quantum\Libraries\Database\Adapters\Sleekdb\SleekDbal;
 
 class ReducerSleekTest extends SleekDbalTestCase
 {
-
     public function testSleekSelect()
     {
         $userProfileModel = new SleekDbal('profiles');

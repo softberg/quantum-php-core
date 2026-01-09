@@ -11,7 +11,6 @@ use Quantum\Http\Request;
 
 class HttpHelperTest extends AppTestCase
 {
-
     public $session;
     private $request;
     private $response;
@@ -49,13 +48,13 @@ class HttpHelperTest extends AppTestCase
 
         Router::setRoutes([
             [
-                "route" => "signin",
-                "method" => "GET",
-                "controller" => "AdminController",
-                "action" => "signin",
-                "module" => "admin",
-                'prefix' => 'admin'
-            ]
+                'route' => 'signin',
+                'method' => 'GET',
+                'controller' => 'AdminController',
+                'action' => 'signin',
+                'module' => 'admin',
+                'prefix' => 'admin',
+            ],
         ]);
 
         $this->request->create('GET', 'https://testdomain.com/signin');

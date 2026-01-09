@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Service\Factories;
@@ -27,7 +27,6 @@ use Quantum\Di\Di;
  */
 class ServiceFactory
 {
-
     /**
      * Creates and initiates the service once
      * @param string $serviceClass

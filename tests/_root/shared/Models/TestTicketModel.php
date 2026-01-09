@@ -23,8 +23,8 @@ class TestTicketModel extends QtModel
             TestNotesModel::class => [
                 'type' => Relation::HAS_MANY,
                 'foreign_key' => 'ticket_id',
-                'local_key' => 'id'
-            ]
+                'local_key' => 'id',
+            ],
         ];
     }
 }

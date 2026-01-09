@@ -8,7 +8,6 @@ use Quantum\Tests\Unit\AppTestCase;
 
 class HttpClientTest extends AppTestCase
 {
-
     private $httpClient;
 
     private $restServer = 'https://api.thedogapi.com/v1';
@@ -129,7 +128,7 @@ class HttpClientTest extends AppTestCase
                 'x-api-key' => $this->restServerApiKey,
                 'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
                 'Accept-Language' => 'ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3',
-                'User-Agent' => 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'
+                'User-Agent' => 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
             ])
             ->start();
 
@@ -229,8 +228,8 @@ class HttpClientTest extends AppTestCase
             ->setHeader('Content-Type', 'application/json')
             ->setMethod('POST')
             ->setData([
-                "image_id" => $imageId,
-                "value"=> 1,
+                'image_id' => $imageId,
+                'value' => 1,
             ])
             ->start();
 
@@ -303,7 +302,6 @@ class HttpClientTest extends AppTestCase
             ->start();
 
         $this->assertIsString($this->httpClient->url());
-
 
         $this->assertEquals('https://api.thedogapi.com/v1/breeds', $this->httpClient->url());
     }

@@ -22,7 +22,6 @@ use Quantum\Router\Exceptions\RouteControllerException;
  */
 abstract class RouteController
 {
-
     /**
      * List of routes
      * @var array

@@ -8,7 +8,6 @@ use Quantum\Loader\Setup;
 
 class LoaderTest extends AppTestCase
 {
-
     private $loader;
 
     public function setUp(): void

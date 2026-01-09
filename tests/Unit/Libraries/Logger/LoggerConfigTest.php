@@ -2,7 +2,6 @@
 
 namespace Quantum\Tests\Unit\Libraries\Logger;
 
-use Quantum\Libraries\Logger\Factories\LoggerFactory;
 use Quantum\Libraries\Logger\LoggerConfig;
 use Quantum\Tests\Unit\AppTestCase;
 

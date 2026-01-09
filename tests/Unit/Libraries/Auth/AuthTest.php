@@ -12,7 +12,6 @@ use Quantum\Libraries\Auth\Auth;
 
 class AuthTest extends AuthTestCase
 {
-
     private $jwt;
 
     public function setUp(): void
@@ -27,24 +26,24 @@ class AuthTest extends AuthTestCase
                 'aud' => 'audience',
                 'iat' => time(),
                 'nbf' => time() + 1,
-                'exp' => time() + 60
+                'exp' => time() + 60,
             ]);
     }
 
     public function testAuthGetAdapter()
     {
-        $auth = new Auth(new SessionAuthAdapter($this->authService, $this->mailer, new Hasher));
+        $auth = new Auth(new SessionAuthAdapter($this->authService, $this->mailer, new Hasher()));
 
         $this->assertInstanceOf(AuthenticatableInterface::class, $auth->getAdapter());
 
-        $auth = new Auth(new JwtAuthAdapter($this->authService, $this->mailer, new Hasher, $this->jwt));
+        $auth = new Auth(new JwtAuthAdapter($this->authService, $this->mailer, new Hasher(), $this->jwt));
 
         $this->assertInstanceOf(AuthenticatableInterface::class, $auth->getAdapter());
     }
 
     public function testAuthCallingValidMethod()
     {
-        $auth = new Auth(new JwtAuthAdapter($this->authService, $this->mailer, new Hasher, $this->jwt));
+        $auth = new Auth(new JwtAuthAdapter($this->authService, $this->mailer, new Hasher(), $this->jwt));
 
         $user = $auth->getAdapter()->signup($this->adminUser);
 
@@ -59,7 +58,7 @@ class AuthTest extends AuthTestCase
 
     public function testAuthCallingInvalidMethod()
     {
-        $auth = new Auth(new JwtAuthAdapter($this->authService, $this->mailer, new Hasher, $this->jwt));
+        $auth = new Auth(new JwtAuthAdapter($this->authService, $this->mailer, new Hasher(), $this->jwt));
 
         $this->expectException(AuthException::class);
 

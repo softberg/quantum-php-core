@@ -8,13 +8,12 @@ use Quantum\View\QtView;
 
 class ViewFactoryTest extends AppTestCase
 {
-
     private $viewFactory;
 
     public function setUp(): void
     {
         parent::setUp();
-        
+
         $this->viewFactory = new ViewFactory();
     }
 

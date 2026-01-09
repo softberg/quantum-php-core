@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Asset;
@@ -23,11 +23,10 @@ use Quantum\Libraries\Lang\Exceptions\LangException;
  */
 class AssetManager
 {
-
     /**
      * Assets store types
      */
-    const STORES = [
+    public const STORES = [
         'css' => Asset::CSS,
         'js' => Asset::JS,
     ];

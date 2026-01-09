@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Logger;
@@ -23,7 +23,7 @@ class LoggerConfig
     /**
      * Log levels mapped to integer values.
      */
-    const LOG_LEVELS = [
+    public const LOG_LEVELS = [
         'debug' => 100,
         'info' => 200,
         'notice' => 250,
@@ -37,7 +37,7 @@ class LoggerConfig
     /**
      * Default log level.
      */
-    const DEFAULT_LOG_LEVEL = 'error';
+    public const DEFAULT_LOG_LEVEL = 'error';
 
     /**
      * @var string

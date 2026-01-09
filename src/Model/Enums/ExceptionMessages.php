@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Model\Enums;
@@ -22,15 +22,15 @@ use Quantum\App\Enums\ExceptionMessages as BaseExceptionMessages;
  */
 final class ExceptionMessages extends BaseExceptionMessages
 {
-    const INAPPROPRIATE_MODEL_PROPERTY = 'Inappropriate property `{%1}` for fillable object';
+    public const INAPPROPRIATE_MODEL_PROPERTY = 'Inappropriate property `{%1}` for fillable object';
 
-    const WRONG_RELATION = 'The model `{%1}` does not define relation with `{%2}`';
+    public const WRONG_RELATION = 'The model `{%1}` does not define relation with `{%2}`';
 
-    const RELATION_TYPE_MISSING = 'Relation type is missing for model `{%1}` with related model `{%2}`';
+    public const RELATION_TYPE_MISSING = 'Relation type is missing for model `{%1}` with related model `{%2}`';
 
-    const MISSING_RELATION_KEYS = 'Relation keys `foreign_key` or `local_key` are missing for model `{%1}` with related model `{%2}`';
+    public const MISSING_RELATION_KEYS = 'Relation keys `foreign_key` or `local_key` are missing for model `{%1}` with related model `{%2}`';
 
-    const MISSING_FOREIGN_KEY = 'Foreign key `{%1}` is missing in model `{%2}`';
+    public const MISSING_FOREIGN_KEY = 'Foreign key `{%1}` is missing in model `{%2}`';
 
-    const UNSUPPORTED_RELATION = 'Relation type `{%1}` is not supported';
+    public const UNSUPPORTED_RELATION = 'Relation type `{%1}` is not supported';
 }

@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 3.0.0
  */
 
 namespace Quantum\Migration;
@@ -34,26 +34,25 @@ use ReflectionException;
  */
 class MigrationManager
 {
-
     /**
      * Migration direction for upgrade
      */
-    const UPGRADE = 'up';
+    public const UPGRADE = 'up';
 
     /**
      * Migration direction for downgrade
      */
-    const DOWNGRADE = 'down';
+    public const DOWNGRADE = 'down';
 
     /**
      * Available actions
      */
-    const ACTIONS = ['create', 'alter', 'rename', 'drop'];
+    public const ACTIONS = ['create', 'alter', 'rename', 'drop'];
 
     /**
      * Supported drivers
      */
-    const DRIVERS = ['mysql', 'pgsql', 'sqlite'];
+    public const DRIVERS = ['mysql', 'pgsql', 'sqlite'];
 
     /**
      * @var array
@@ -320,7 +319,7 @@ class MigrationManager
      */
     private function getMigratedEntries(): array
     {
-        return Database::query("SELECT * FROM " . MigrationTable::TABLE);
+        return Database::query('SELECT * FROM ' . MigrationTable::TABLE);
     }
 
     /**

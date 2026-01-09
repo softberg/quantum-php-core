@@ -8,14 +8,12 @@ use Quantum\Tests\Unit\AppTestCase;
 
 class ListRuleTest extends AppTestCase
 {
-
     public $validator;
     private $request;
 
     public function setUp(): void
     {
         parent::setUp();
-
 
         $this->validator = new Validator();
 
@@ -24,7 +22,7 @@ class ListRuleTest extends AppTestCase
     public function testRuleContains()
     {
         $this->validator->setRule('text', [
-            Rule::contains('Fisherman goes out')
+            Rule::contains('Fisherman goes out'),
         ]);
 
         $this->assertTrue($this->validator->isValid(['text' => 'Fisherman']));
@@ -45,7 +43,7 @@ class ListRuleTest extends AppTestCase
     public function testRuleContainsList()
     {
         $this->validator->setRule('text', [
-            Rule::containsList('male', 'female')
+            Rule::containsList('male', 'female'),
         ]);
 
         $this->assertTrue($this->validator->isValid(['text' => 'male']));
@@ -64,7 +62,7 @@ class ListRuleTest extends AppTestCase
     public function testRuleDoesntContainsList()
     {
         $this->validator->setRule('text', [
-            Rule::doesntContainsList('male', 'famale')
+            Rule::doesntContainsList('male', 'famale'),
         ]);
 
         $this->assertTrue($this->validator->isValid(['text' => 'elephant']));

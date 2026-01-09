@@ -9,7 +9,6 @@ use Quantum\Http\Request;
 
 class FileRuleTest extends AppTestCase
 {
-
     public $validator;
     private $request;
 
@@ -55,13 +54,13 @@ class FileRuleTest extends AppTestCase
         $this->request->create('POST', '/upload', [], [], $file);
 
         $this->validator->setRule('image', [
-            Rule::fileSize(1000)
+            Rule::fileSize(1000),
         ]);
 
         $this->assertTrue($this->validator->isValid($this->request->all()));
 
         $this->validator->setRule('image', [
-            Rule::fileSize(9000, 500)
+            Rule::fileSize(9000, 500),
         ]);
 
         $this->assertFalse($this->validator->isValid($this->request->all()));
@@ -88,19 +87,19 @@ class FileRuleTest extends AppTestCase
         $this->request->create('POST', '/upload', [], [], $file);
 
         $this->validator->setRule('image', [
-            Rule::fileMimeType('image/png')
+            Rule::fileMimeType('image/png'),
         ]);
 
         $this->assertTrue($this->validator->isValid($this->request->all()));
 
         $this->validator->setRule('image', [
-            Rule::fileMimeType('image/jpg', 'image/jpeg', 'image/png')
+            Rule::fileMimeType('image/jpg', 'image/jpeg', 'image/png'),
         ]);
 
         $this->assertTrue($this->validator->isValid($this->request->all()));
 
         $this->validator->setRule('image', [
-            Rule::fileMimeType('image/gif', 'image/jpg')
+            Rule::fileMimeType('image/gif', 'image/jpg'),
         ]);
 
         $this->assertFalse($this->validator->isValid($this->request->all()));
@@ -127,19 +126,19 @@ class FileRuleTest extends AppTestCase
         $this->request->create('POST', '/upload', [], [], $file);
 
         $this->validator->setRule('image', [
-            Rule::fileExtension('jpg')
+            Rule::fileExtension('jpg'),
         ]);
 
         $this->assertTrue($this->validator->isValid($this->request->all()));
 
         $this->validator->setRule('image', [
-            Rule::fileExtension('png', 'jpg', 'gif')
+            Rule::fileExtension('png', 'jpg', 'gif'),
         ]);
 
         $this->assertTrue($this->validator->isValid($this->request->all()));
 
         $this->validator->setRule('image', [
-            Rule::fileExtension('exe', 'bmp')
+            Rule::fileExtension('exe', 'bmp'),
         ]);
 
         $this->assertFalse($this->validator->isValid($this->request->all()));
@@ -166,13 +165,13 @@ class FileRuleTest extends AppTestCase
         $this->request->create('POST', '/upload', [], [], $file);
 
         $this->validator->setRule('image', [
-            Rule::imageDimensions(28, 18)
+            Rule::imageDimensions(28, 18),
         ]);
 
         $this->assertTrue($this->validator->isValid($this->request->all()));
 
         $this->validator->setRule('image', [
-            Rule::imageDimensions(300, 500)
+            Rule::imageDimensions(300, 500),
         ]);
 
         $this->assertFalse($this->validator->isValid($this->request->all()));

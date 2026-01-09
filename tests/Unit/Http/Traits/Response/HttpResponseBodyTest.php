@@ -7,7 +7,6 @@ use Quantum\Http\Response;
 
 class HttpResponseBodyTest extends AppTestCase
 {
-
     public function setUp(): void
     {
         parent::setUp();
@@ -61,7 +60,7 @@ class HttpResponseBodyTest extends AppTestCase
 
         $response->json([
             'gender' => 'male',
-            'role' => 'user'
+            'role' => 'user',
         ]);
 
         $this->assertEquals('{"firstname":"John","lastname":"Doe","age":25,"gender":"male","role":"user"}', $response->getContent());
@@ -113,7 +112,7 @@ class HttpResponseBodyTest extends AppTestCase
 
         $response->xml([
             'gender' => 'male',
-            'role' => 'user'
+            'role' => 'user',
         ]);
 
         $xml = "<?xml version=\"1.0\"?>\n" .
@@ -135,8 +134,8 @@ class HttpResponseBodyTest extends AppTestCase
         $response->xml([
             'article' => [
                 'title' => 'Todays news',
-                'description' => 'News content'
-            ]
+                'description' => 'News content',
+            ],
         ]);
 
         $xml = "<?xml version=\"1.0\"?>\n" .
@@ -157,8 +156,8 @@ class HttpResponseBodyTest extends AppTestCase
         $response->xml([
             'article@{"type":"post"}' => [
                 'title' => 'Todays news',
-                'description@{"content":"html"}' => 'News content'
-            ]
+                'description@{"content":"html"}' => 'News content',
+            ],
         ]);
 
         $xml = "<?xml version=\"1.0\"?>\n" .
@@ -179,8 +178,8 @@ class HttpResponseBodyTest extends AppTestCase
         $response->xml([
             'article@{"type":"post"}' => [
                 'title' => 'Todays news',
-                'description@{"content":"html"}' => 'News content'
-            ]
+                'description@{"content":"html"}' => 'News content',
+            ],
         ], '<custom></custom>', 200);
 
         $xml = "<?xml version=\"1.0\"?>\n" .

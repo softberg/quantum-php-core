@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Middleware\Enums;
@@ -22,5 +22,5 @@ use Quantum\App\Enums\ExceptionMessages as BaseExceptionMessages;
  */
 final class ExceptionMessages extends BaseExceptionMessages
 {
-    const MIDDLEWARE_NOT_FOUND = 'Middleware class `{%1}` not found.';
+    public const MIDDLEWARE_NOT_FOUND = 'Middleware class `{%1}` not found.';
 }

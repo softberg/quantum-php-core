@@ -23,7 +23,6 @@ use Quantum\Libraries\Storage\UploadedFile;
  */
 trait File
 {
-
     /**
      * Validates file size
      * @param UploadedFile $file

@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Storage\Factories;
@@ -38,11 +38,10 @@ use ReflectionException;
  */
 class FileSystemFactory
 {
-
     /**
      * Supported adapters
      */
-    const ADAPTERS = [
+    public const ADAPTERS = [
         FileSystem::LOCAL => LocalFileSystemAdapter::class,
         FileSystem::DROPBOX => DropboxFileSystemAdapter::class,
         FileSystem::GDRIVE => GoogleDriveFileSystemAdapter::class,
@@ -51,7 +50,7 @@ class FileSystemFactory
     /**
      * Supported apps
      */
-    const APPS = [
+    public const APPS = [
         FileSystem::DROPBOX => DropboxApp::class,
         FileSystem::GDRIVE => GoogleDriveApp::class,
     ];

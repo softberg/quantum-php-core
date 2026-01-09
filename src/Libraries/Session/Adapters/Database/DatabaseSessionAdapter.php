@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.8
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Session\Adapters\Database;
@@ -25,13 +25,12 @@ use Quantum\Model\Factories\ModelFactory;
  */
 class DatabaseSessionAdapter implements SessionStorageInterface
 {
-
     use SessionTrait;
 
     /**
      * Session default table
      */
-    const SESSION_TABLE = 'sessions';
+    public const SESSION_TABLE = 'sessions';
 
     /**
      * Session params

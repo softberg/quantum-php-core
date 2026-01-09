@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.5
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Storage\Adapters\GoogleDrive;
@@ -23,7 +23,6 @@ use Exception;
  */
 class GoogleDriveFileSystemAdapter implements FilesystemAdapterInterface
 {
-
     /**
      * @var GoogleDriveApp
      */
@@ -42,11 +41,11 @@ class GoogleDriveFileSystemAdapter implements FilesystemAdapterInterface
      */
     public function makeDirectory(string $dirname, ?string $parentId = null): bool
     {
-        try{
+        try {
             $data = [
                 'name' => $dirname,
                 'mimeType' => GoogleDriveApp::FOLDER_MIMETYPE,
-                'parents' => $parentId ? [$parentId] : ['root']
+                'parents' => $parentId ? [$parentId] : ['root'],
             ];
 
             $this->googleDriveApp->rpcRequest(GoogleDriveApp::FILE_METADATA_URL, $data);
@@ -86,7 +85,7 @@ class GoogleDriveFileSystemAdapter implements FilesystemAdapterInterface
                 $fileId = $filename;
             } else {
                 $data = [
-                    'name'    => $filename,
+                    'name' => $filename,
                     'parents' => $parentId ? [$parentId] : ['root'],
                 ];
 
@@ -131,7 +130,7 @@ class GoogleDriveFileSystemAdapter implements FilesystemAdapterInterface
     {
         try {
             $data = [
-                'name' => $newName
+                'name' => $newName,
             ];
 
             $this->googleDriveApp->rpcRequest(GoogleDriveApp::FILE_METADATA_URL . '/' . $oldName, $data, 'PATCH');
@@ -148,7 +147,7 @@ class GoogleDriveFileSystemAdapter implements FilesystemAdapterInterface
     {
         try {
             $data = [
-                'parents' => [$dest]
+                'parents' => [$dest],
             ];
 
             $this->googleDriveApp->rpcRequest(GoogleDriveApp::FILE_METADATA_URL . '/' . $source . '/copy', $data);
@@ -243,10 +242,10 @@ class GoogleDriveFileSystemAdapter implements FilesystemAdapterInterface
         try {
             $params = [
                 'q' => "'$dirname' in parents and trashed = false",
-                'fields' => '*'
+                'fields' => '*',
             ];
             $response = (array)$this->googleDriveApp->rpcRequest(GoogleDriveApp::FILE_METADATA_URL . '?' . http_build_query($params), [], 'GET');
-            return $response["files"];
+            return $response['files'];
         } catch (Exception $e) {
             return false;
         }

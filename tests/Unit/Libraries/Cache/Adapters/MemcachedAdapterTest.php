@@ -7,7 +7,6 @@ use Quantum\Tests\Unit\AppTestCase;
 
 class MemcachedAdapterTest extends AppTestCase
 {
-
     private $memCached;
 
     public function setUp(): void
@@ -18,7 +17,7 @@ class MemcachedAdapterTest extends AppTestCase
             'prefix' => 'test',
             'host' => '127.0.0.1',
             'port' => 11211,
-            'ttl' => 60
+            'ttl' => 60,
         ];
 
         $this->memCached = new MemcachedAdapter($params);
@@ -142,7 +141,7 @@ class MemcachedAdapterTest extends AppTestCase
             'prefix' => 'test',
             'host' => '127.0.0.1',
             'port' => 11211,
-            'ttl' => 1
+            'ttl' => 1,
         ];
 
         $memCached = new MemcachedAdapter($params);

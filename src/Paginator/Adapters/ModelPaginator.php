@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.8
+ * @since 3.0.0
  */
 
 namespace Quantum\Paginator\Adapters;
@@ -25,7 +25,6 @@ use Quantum\Model\QtModel;
  */
 class ModelPaginator implements PaginatorInterface
 {
-
     use PaginatorTrait;
 
     /**
@@ -62,8 +61,8 @@ class ModelPaginator implements PaginatorInterface
             ->offset($this->perPage * ($this->page - 1))
             ->get();
 
-        if($this->modelClass != '@anonymous') {
-            $result = array_map(fn($item) => wrapToModel($item->getOrmInstance(), $this->modelClass), iterator_to_array($result));
+        if ($this->modelClass != '@anonymous') {
+            $result = array_map(fn ($item) => wrapToModel($item->getOrmInstance(), $this->modelClass), iterator_to_array($result));
         }
 
         return new ModelCollection($result);
@@ -96,4 +95,4 @@ class ModelPaginator implements PaginatorInterface
 
         return $data->last();
     }
-} 
+}

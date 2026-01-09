@@ -9,7 +9,6 @@ use Quantum\Loader\Setup;
 
 class MailerAdapterTraitTest extends AppTestCase
 {
-
     private $adapter;
 
     public function setUp(): void

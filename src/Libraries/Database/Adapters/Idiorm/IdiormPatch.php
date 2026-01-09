@@ -22,7 +22,6 @@ use ORM;
  */
 class IdiormPatch extends ORM
 {
-
     /**
      * @var object
      */
@@ -66,7 +65,7 @@ class IdiormPatch extends ORM
      */
     public function leftJoin(string $table, array $constraint, string $table_alias = null): object
     {
-        return $this->addJoin("LEFT", $table, $constraint, $table_alias);
+        return $this->addJoin('LEFT', $table, $constraint, $table_alias);
     }
 
     /**
@@ -78,7 +77,7 @@ class IdiormPatch extends ORM
      */
     public function rightJoin(string $table, array $constraint, string $table_alias = null): object
     {
-        return $this->addJoin("RIGHT", $table, $constraint, $table_alias);
+        return $this->addJoin('RIGHT', $table, $constraint, $table_alias);
     }
 
     /**

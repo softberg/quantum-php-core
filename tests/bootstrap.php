@@ -7,7 +7,7 @@ if (!defined('DS')) {
 }
 
 if (!defined('PROJECT_ROOT')) {
-    define("PROJECT_ROOT", __DIR__ . DS . '_root');
+    define('PROJECT_ROOT', __DIR__ . DS . '_root');
 }
 
 require_once dirname(__DIR__) . DS . 'vendor' . DS . 'autoload.php';

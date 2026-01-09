@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.8
+ * @since 3.0.0
  */
 
 namespace Quantum\Paginator\Adapters;
@@ -17,14 +17,12 @@ namespace Quantum\Paginator\Adapters;
 use Quantum\Paginator\Contracts\PaginatorInterface;
 use Quantum\Paginator\Traits\PaginatorTrait;
 
-
 /**
  * Class ArrayPaginator
  * @package Quantum\Paginator
  */
 class ArrayPaginator implements PaginatorInterface
 {
-
     use PaginatorTrait;
 
     /**
@@ -84,4 +82,4 @@ class ArrayPaginator implements PaginatorInterface
 
         return end($data);
     }
-} 
+}

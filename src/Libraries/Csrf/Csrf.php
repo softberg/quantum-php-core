@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.7
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Csrf;
@@ -32,12 +32,12 @@ class Csrf
     /**
      * Request methods to validate against
      */
-    const METHODS = ['POST', 'PUT', 'PATCH', 'DELETE'];
+    public const METHODS = ['POST', 'PUT', 'PATCH', 'DELETE'];
 
     /**
      * Csrf token key
      */
-    const TOKEN_KEY = 'csrf-token';
+    public const TOKEN_KEY = 'csrf-token';
 
     /**
      * @var Csrf

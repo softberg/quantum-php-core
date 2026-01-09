@@ -12,17 +12,16 @@ use Quantum\Router\Router;
 
 class RendererTest extends AppTestCase
 {
-
     public function setUp(): void
     {
         parent::setUp();
 
         Router::setCurrentRoute([
-            "route" => "test",
-            "method" => "GET",
-            "controller" => "SomeController",
-            "action" => "test",
-            "module" => "Test"
+            'route' => 'test',
+            'method' => 'GET',
+            'controller' => 'SomeController',
+            'action' => 'test',
+            'module' => 'Test',
         ]);
     }
 

@@ -25,7 +25,6 @@ use ReflectionException;
  */
 trait File
 {
-
     /**
      * Files
      * @var array

@@ -30,11 +30,10 @@ use ReflectionException;
  */
 class SessionFactory
 {
-
     /**
      * Supported adapters
      */
-    const ADAPTERS = [
+    public const ADAPTERS = [
         Session::NATIVE => NativeSessionAdapter::class,
         Session::DATABASE => DatabaseSessionAdapter::class,
     ];

@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Quantum\Libraries\Auth\Adapters;
@@ -34,7 +34,6 @@ use Exception;
  */
 class JwtAuthAdapter implements AuthenticatableInterface
 {
-
     use AuthTrait;
 
     /**
@@ -120,7 +119,7 @@ class JwtAuthAdapter implements AuthenticatableInterface
     {
         $user = $this->authService->get('uuid', $uuid);
 
-        if(!$user) {
+        if (!$user) {
             return false;
         }
 
@@ -153,7 +152,7 @@ class JwtAuthAdapter implements AuthenticatableInterface
     {
         return [
             $this->keyFields[AuthKeys::REFRESH_TOKEN] => $this->generateToken(),
-            $this->keyFields[AuthKeys::ACCESS_TOKEN] => base64_encode($this->jwt->setData($this->getVisibleFields($user))->compose())
+            $this->keyFields[AuthKeys::ACCESS_TOKEN] => base64_encode($this->jwt->setData($this->getVisibleFields($user))->compose()),
         ];
     }
 

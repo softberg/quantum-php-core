@@ -11,7 +11,6 @@ use Quantum\Http\Request;
 
 class RouterTest extends AppTestCase
 {
-
     private $request;
     private $router;
 
@@ -38,19 +37,19 @@ class RouterTest extends AppTestCase
     {
         Router::setRoutes([
             [
-                "route" => "[:alpha:2]?",
-                "method" => "GET",
-                "controller" => "MainController",
-                "action" => "index",
-                "module" => "Web"
+                'route' => '[:alpha:2]?',
+                'method' => 'GET',
+                'controller' => 'MainController',
+                'action' => 'index',
+                'module' => 'Web',
             ],
             [
-                "route" => "[:alpha:2]?/about",
-                "method" => "GET",
-                "controller" => "MainController",
-                "action" => "about",
-                "module" => "Web"
-            ]
+                'route' => '[:alpha:2]?/about',
+                'method' => 'GET',
+                'controller' => 'MainController',
+                'action' => 'about',
+                'module' => 'Web',
+            ],
         ]);
 
         $this->assertNotEmpty(Router::getRoutes());
@@ -64,22 +63,22 @@ class RouterTest extends AppTestCase
 
         Router::setRoutes([
             [
-                "route" => "auth/api-signin",
-                "method" => "POST",
-                "controller" => "AuthController",
-                "action" => "signin",
-                "module" => "Api",
+                'route' => 'auth/api-signin',
+                'method' => 'POST',
+                'controller' => 'AuthController',
+                'action' => 'signin',
+                'module' => 'Api',
             ],
             [
-                "route" => "auth/api-signout-test",
-                "method" => "GET",
-                "controller" => "AuthController",
-                "action" => "signout",
-                "module" => "Api",
-                "middlewares" => [
-                    0 => "guest"
-                ]
-            ]
+                'route' => 'auth/api-signout-test',
+                'method' => 'GET',
+                'controller' => 'AuthController',
+                'action' => 'signout',
+                'module' => 'Api',
+                'middlewares' => [
+                    0 => 'guest',
+                ],
+            ],
         ]);
 
         $this->request->create('POST', 'http://testdomain.com/auth/api-signin');
@@ -99,12 +98,12 @@ class RouterTest extends AppTestCase
     {
         Router::setRoutes([
             [
-                "route" => "[:alpha:2]/my-posts/amend/[:any]",
-                "method" => "POST",
-                "controller" => "PostController",
-                "action" => "amendPost",
-                "module" => "Web",
-            ]
+                'route' => '[:alpha:2]/my-posts/amend/[:any]',
+                'method' => 'POST',
+                'controller' => 'PostController',
+                'action' => 'amendPost',
+                'module' => 'Web',
+            ],
         ]);
 
         $this->request->create('POST', 'http://testdomain.com/en/my-posts/amend/5e538098-1095-3976-b05f-29a0bb2a799f');
@@ -124,12 +123,12 @@ class RouterTest extends AppTestCase
     {
         Router::setRoutes([
             [
-                "route" => "[:any]?/my-posts/amend/[:any]/[:num]?",
-                "method" => "POST",
-                "controller" => "PostController",
-                "action" => "amendPost",
-                "module" => "Web",
-            ]
+                'route' => '[:any]?/my-posts/amend/[:any]/[:num]?',
+                'method' => 'POST',
+                'controller' => 'PostController',
+                'action' => 'amendPost',
+                'module' => 'Web',
+            ],
         ]);
 
         $this->request->create('POST', 'http://testdomain.com/my-posts/amend/5e538098-1095-3976-b05f-29a0bb2a799f');
@@ -149,12 +148,12 @@ class RouterTest extends AppTestCase
     {
         Router::setRoutes([
             [
-                "route" => "[lang=:alpha:2]?/my-posts/amend/[postId=:any]/[ref=:num]?",
-                "method" => "POST",
-                "controller" => "PostController",
-                "action" => "amendPost",
-                "module" => "Web",
-            ]
+                'route' => '[lang=:alpha:2]?/my-posts/amend/[postId=:any]/[ref=:num]?',
+                'method' => 'POST',
+                'controller' => 'PostController',
+                'action' => 'amendPost',
+                'module' => 'Web',
+            ],
         ]);
 
         $this->request->create('POST', 'http://testdomain.com/my-posts/amend/5e538098-1095-3976-b05f-29a0bb2a799f/523');
@@ -172,19 +171,19 @@ class RouterTest extends AppTestCase
     {
         Router::setRoutes([
             [
-                "route" => "api-task",
-                "method" => "POST",
-                "controller" => "TaskController",
-                "action" => "create",
-                "module" => "Api",
+                'route' => 'api-task',
+                'method' => 'POST',
+                'controller' => 'TaskController',
+                'action' => 'create',
+                'module' => 'Api',
             ],
             [
-                "route" => "api-task",
-                "method" => "GET",
-                "controller" => "TaskController",
-                "action" => "show",
-                "module" => "Api",
-            ]
+                'route' => 'api-task',
+                'method' => 'GET',
+                'controller' => 'TaskController',
+                'action' => 'show',
+                'module' => 'Api',
+            ],
         ]);
 
         $this->request->create('GET', 'http://testdomain.com/api-task');
@@ -212,12 +211,12 @@ class RouterTest extends AppTestCase
     {
         Router::setRoutes([
             [
-                "route" => "api-signin",
-                "method" => "POST",
-                "controller" => "AuthController",
-                "action" => "signin",
-                "module" => "Api",
-            ]
+                'route' => 'api-signin',
+                'method' => 'POST',
+                'controller' => 'AuthController',
+                'action' => 'signin',
+                'module' => 'Api',
+            ],
         ]);
 
         $this->request->create('GET', 'http://testdomain.com/api-signin');
@@ -233,19 +232,19 @@ class RouterTest extends AppTestCase
     {
         Router::setRoutes([
             [
-                "route" => "api-signin",
-                "method" => "POST",
-                "controller" => "AuthController",
-                "action" => "signin",
-                "module" => "Api",
+                'route' => 'api-signin',
+                'method' => 'POST',
+                'controller' => 'AuthController',
+                'action' => 'signin',
+                'module' => 'Api',
             ],
             [
-                "route" => "api-signin",
-                "method" => "POST",
-                "controller" => "AuthController",
-                "action" => "signin",
-                "module" => "Api",
-            ]
+                'route' => 'api-signin',
+                'method' => 'POST',
+                'controller' => 'AuthController',
+                'action' => 'signin',
+                'module' => 'Api',
+            ],
         ]);
 
         $this->request->create('POST', 'http://testdomain.com/api-signin');
@@ -261,19 +260,19 @@ class RouterTest extends AppTestCase
     {
         Router::setRoutes([
             [
-                "route" => "api-signin",
-                "method" => "POST",
-                "controller" => "AuthController",
-                "action" => "signin",
-                "module" => "Api",
+                'route' => 'api-signin',
+                'method' => 'POST',
+                'controller' => 'AuthController',
+                'action' => 'signin',
+                'module' => 'Api',
             ],
             [
-                "route" => "api-signin",
-                "method" => "PUT",
-                "controller" => "AuthController",
-                "action" => "signin",
-                "module" => "Web",
-            ]
+                'route' => 'api-signin',
+                'method' => 'PUT',
+                'controller' => 'AuthController',
+                'action' => 'signin',
+                'module' => 'Web',
+            ],
         ]);
 
         $this->request->create('POST', 'http://testdomain.com/api-signin');

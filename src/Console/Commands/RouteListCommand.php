@@ -62,7 +62,7 @@ class RouteListCommand extends QtCommand
             $module = $this->getOption('module');
 
             if ($module) {
-                $routes = array_filter($routes, fn($route) => strtolower($route['module']) === strtolower($module));
+                $routes = array_filter($routes, fn ($route) => strtolower($route['module']) === strtolower($module));
 
                 if ($routes === []) {
                     $this->error('The module is not found');

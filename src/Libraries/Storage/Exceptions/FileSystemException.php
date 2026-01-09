@@ -25,7 +25,6 @@ use Quantum\App\Exceptions\BaseException;
  */
 class FileSystemException extends BaseException
 {
-
     /**
      * @param string $name
      * @return FileSystemException

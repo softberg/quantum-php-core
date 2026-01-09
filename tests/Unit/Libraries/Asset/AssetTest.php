@@ -7,7 +7,6 @@ use Quantum\Libraries\Asset\Asset;
 
 class AssetTest extends AppTestCase
 {
-
     private $asset;
 
     public function setUp(): void
@@ -51,14 +50,16 @@ class AssetTest extends AppTestCase
     {
         $this->assertEquals(
             'http://mydomain.com/assets/scripts/jquery.js',
-            $this->asset->url());
+            $this->asset->url()
+        );
     }
 
     public function testAssetTag()
     {
         $this->assertEquals(
             '<script src="http://mydomain.com/assets/scripts/jquery.js" ></script>' . PHP_EOL,
-            $this->asset->tag());
+            $this->asset->tag()
+        );
     }
 
 }

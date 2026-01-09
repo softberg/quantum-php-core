@@ -10,7 +10,6 @@ use Quantum\Libraries\Cache\Cache;
 
 class CacheTest extends AppTestCase
 {
-
     public function setUp(): void
     {
         parent::setUp();
@@ -21,7 +20,7 @@ class CacheTest extends AppTestCase
         $params = [
             'prefix' => 'test',
             'path' => base_dir() . DS . 'cache' . DS . 'data',
-            'ttl' => 60
+            'ttl' => 60,
         ];
 
         $cache = new Cache(new FileAdapter($params));
@@ -36,7 +35,7 @@ class CacheTest extends AppTestCase
         $params = [
             'prefix' => 'test',
             'path' => base_dir() . DS . 'cache' . DS . 'data',
-            'ttl' => 60
+            'ttl' => 60,
         ];
 
         $cache = new Cache(new FileAdapter($params));
@@ -51,7 +50,7 @@ class CacheTest extends AppTestCase
         $params = [
             'prefix' => 'test',
             'path' => base_dir() . DS . 'cache' . DS . 'data',
-            'ttl' => 60
+            'ttl' => 60,
         ];
 
         $cache = new Cache(new FileAdapter($params));

@@ -12,7 +12,6 @@ use Quantum\Renderer\Renderer;
 
 class RendererFactoryTest extends AppTestCase
 {
-
     public function setUp(): void
     {
         parent::setUp();

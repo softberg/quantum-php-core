@@ -6,7 +6,6 @@ use Quantum\Router\RouteController;
 
 class TestController extends RouteController
 {
-
     public function tests()
     {
         //
