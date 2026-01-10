@@ -278,16 +278,16 @@ class SleekDbal implements DbalInterface
     }
 
     /**
-     * Deletes the table and the data
-     * @throws BaseException
-     * @throws DatabaseException
-     * @throws IOException
-     * @throws InvalidArgumentException
-     * @throws InvalidConfigurationException
+     * @inheritdoc
      */
-    public function deleteTable()
+    public function truncate(): bool
     {
-        $this->getOrmModel()->deleteStore();
+        try {
+            $this->getOrmModel()->deleteStore();
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 
     /**
