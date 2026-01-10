@@ -134,7 +134,7 @@ class AuthService extends QtService implements AuthServiceInterface
      */
     public function deleteAllUsers()
     {
-        $this->model->deleteTable();
+        $this->model->truncate();
     }
 
     /**

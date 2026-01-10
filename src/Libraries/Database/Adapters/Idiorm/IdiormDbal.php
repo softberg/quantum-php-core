@@ -235,6 +235,19 @@ class IdiormDbal implements DbalInterface, RelationalInterface
     }
 
     /**
+     * @inheritDoc
+     */
+    public function truncate(): bool
+    {
+        try {
+            $this->getOrmModel()->raw_execute("DELETE FROM {$this->table}");
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    /**
      * @param ORM $ormModel
      */
     protected function updateOrmModel(ORM $ormModel)

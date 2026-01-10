@@ -206,7 +206,7 @@ class PostService extends QtService
      */
     public function deleteAllPosts()
     {
-        $this->model->deleteTable();
+        $this->model->truncate();
     }
 
     /**

@@ -51,7 +51,7 @@ abstract class SleekDbalTestCase extends AppTestCase
     {
         foreach ($this->tables as $table) {
             $model = new SleekDbal($table);
-            $model->deleteTable();
+            $model->truncate();
         }
     }
 }
