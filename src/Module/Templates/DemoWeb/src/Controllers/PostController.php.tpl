@@ -68,11 +68,15 @@ class PostController extends BaseController
 
         $paginatedPosts = $this->postService->getPosts($perPage, $currentPage, $search);
 
-        $this->view->setParams([
+        $params = [
             'title' => t('common.posts') . ' | ' . config()->get('app.name'),
             'posts' => $this->postService->transformData($paginatedPosts->data()->all()),
             'pagination' => $paginatedPosts
-        ]);
+        ];
+
+        $params = $this->addFromParam($params, true);
+
+        $this->view->setParams($params);
 
         $response->html($this->view->render('post/post'));
     }
@@ -101,13 +105,36 @@ class PostController extends BaseController
 
         $comments = $commentService->transformData($comments->all());
 
-        $this->view->setParams([
+        $params = [
             'title' => $post->title . ' | ' . config()->get('app.name'),
             'post' => new RawParam(current($this->postService->transformData([$post]))),
             'comments' => $comments,
             'referer' => $ref,
-        ]);
+        ];
+
+        $params = $this->addFromParam($params);
+
+        $this->view->setParams($params);
 
         $response->html($this->view->render('post/single'));
+    }
+
+    private function addFromParam($params, $encode = false)
+    {
+        if (!empty($_GET)) {
+            if ($encode) {
+                $json = json_encode($_GET);
+                $base64 = base64_encode($json);
+
+                $params['from'] = $base64;
+            } else {
+                $base64 = base64_decode($_GET['from']);
+                $json = json_decode($base64, true);
+
+                $params['from'] = http_build_query($json);
+            }
+        }
+
+        return $params;
     }
 }

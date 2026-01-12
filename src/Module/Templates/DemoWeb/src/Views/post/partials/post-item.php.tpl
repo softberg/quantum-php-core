@@ -1,6 +1,6 @@
 <div class="col s12 m3 post-item">
     <div class="card post-card hoverable">
-        <a href="<?php echo base_url(true) . '/' . current_lang() . '/post/' . $post['uuid'] ?>" class="post-item-link">
+        <a href="<?php echo base_url(true) . '/' . current_lang() . '/post/' . $post['uuid'] . (!empty($from) ? '?from=' . $from : '') ?>" class="post-item-link">
             <div class="card-image card-image-box">
                 <?php if ($post['image']) : ?>
                     <img src="<?php echo base_url() . '/uploads/' . $post['image'] ?>" class="content_img">
