@@ -6,9 +6,9 @@ Thanks for your interest in contributing to Quantum PHP Framework 💡 Whether y
 
 ## Before You Start
 
-Familiarize yourself with the codebase: Quantum PHP Framework is modular — most features live under `/src` (core logic) and `/modules` (demo templates and optional components). Start by reviewing the `Router`, `Controller`, and `QtModel` classes to understand the framework flow. 
-Check existing issues and milestones: look for tickets labeled `good first issue`, `help wanted`, or assigned to an upcoming version. 
-Don’t hesitate to open a new issue if you find something worth improving.
+- Familiarize yourself with the codebase: Quantum PHP Framework is modular — most features live under `/src` (core logic) and `/modules` (demo templates and optional components). Start by reviewing the `Router`, `Controller`, and `QtModel` classes to understand the framework flow. 
+- Check existing issues and milestones: look for tickets labeled `good first issue`, `help wanted`, or assigned to an upcoming version. 
+- Don’t hesitate to open a new issue if you find something worth improving.
 
 ---
 
@@ -60,26 +60,39 @@ git checkout -b feature/your-feature-name
 vendor/bin/phpunit --stderr
 ```
 
-4. Commit and push your branch:
+4. Run Static Analysis:
+
+```bash
+vendor/bin/phpstan analyse --memory-limit=-1 
+```
+
+5. Run Code Style Checks
+
+```bash
+vendor/bin/php-cs-fixer check
+```
+
+6. Commit and push your branch:
 
 ```bash
 git commit -m "Add: SoftDeletes trait for models"
 git push origin feature/your-feature-name
 ```
 
-5. Open a Pull Request from your fork → `softberg/quantum-php-core`. Describe **what** you changed, **why**, and **how** to test it. Reference any related issues. Always work in a branch, never directly on `main` of your fork.
+7. Open a Pull Request from your fork → `softberg/quantum-php-core`. Describe **what** you changed, **why**, and **how** to test it. Reference any related issues. Always work in a branch, never directly on `main` of your fork.
 
 ---
 
 ## Testing
 
 Quantum uses **PHPUnit** for tests. If you add new features, make sure they include unit tests — especially for database or HTTP-related components. For in-memory testing, use SQLite in-memory databases (for example, in tests using IdiormDbal).
+All contributions must also pass **PHPStan** (static analysis) and **PHP-CS-Fixer** (code style) checks.
 
 ---
 
 ## Code Guidelines
 
-- PHP 7.3+ compatibility is required.  
+- PHP 7.4+ compatibility is required.  
 - Keep class responsibilities clear — avoid bloated classes.  
 - Follow the existing directory structure
 - Always document public methods.  
