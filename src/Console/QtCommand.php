@@ -77,9 +77,13 @@ abstract class QtCommand extends Command implements CommandInterface
     {
         parent::__construct($this->name);
 
-        $this->setDescription($this->description);
+        if ($this->description !== null) {
+            $this->setDescription($this->description);
+        }
 
-        $this->setHelp($this->help);
+        if ($this->help !== null) {
+            $this->setHelp($this->help);
+        }
     }
 
     /**
