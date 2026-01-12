@@ -59,7 +59,7 @@ trait Criteria
      * @inheritDoc
      * @throws DatabaseException
      */
-    public function having(string $column, string $operator, string $value = null): DbalInterface
+    public function having(string $column, string $operator, ?string $value = null): DbalInterface
     {
         if (!in_array($operator, $this->operators)) {
             throw DatabaseException::operatorNotSupported($operator);
