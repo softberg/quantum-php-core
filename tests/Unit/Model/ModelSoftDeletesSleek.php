@@ -31,7 +31,7 @@ class ModelSoftDeletesSleek extends AppTestCase
 
     public function tearDown(): void
     {
-        ModelFactory::get(TestProductsModel::class)->deleteTable();
+        ModelFactory::get(TestProductsModel::class)->truncate();
     }
 
     public function testSleekDeleteSetsDeletedAt()

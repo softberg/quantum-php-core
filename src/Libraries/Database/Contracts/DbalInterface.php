@@ -96,7 +96,7 @@ interface DbalInterface
      * @param string|null $value
      * @return DbalInterface
      */
-    public function having(string $column, string $operator, string $value = null): DbalInterface;
+    public function having(string $column, string $operator, ?string $value = null): DbalInterface;
 
     /**
      * Groups the result by given column
@@ -170,6 +170,12 @@ interface DbalInterface
      * @return bool
      */
     public function delete(): bool;
+
+    /**
+     * Deletes all records from the table
+     * @return bool
+     */
+    public function truncate(): bool;
 
     /**
      * Deletes many records by previously applied criteria

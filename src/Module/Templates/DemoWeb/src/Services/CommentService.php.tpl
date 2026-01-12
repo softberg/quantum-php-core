@@ -119,7 +119,7 @@ class CommentService extends QtService
      */
     public function deleteAllComments()
     {
-        $this->model->deleteTable();
+        $this->model->truncate();
     }
 
     /**
