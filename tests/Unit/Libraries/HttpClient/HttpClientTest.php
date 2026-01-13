@@ -109,7 +109,7 @@ class HttpClientTest extends AppTestCase
                 function ($instance) {
                     $this->assertTrue($instance->isError());
 
-                    $this->assertEquals(405, $instance->getErrorCode());
+                    $this->assertEquals(404, $instance->getErrorCode());
                 }
             )
             ->setOpt(CURLOPT_SSL_VERIFYPEER, false)
