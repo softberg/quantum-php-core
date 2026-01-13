@@ -77,9 +77,13 @@ abstract class QtCommand extends Command implements CommandInterface
     {
         parent::__construct($this->name);
 
-        $this->setDescription($this->description);
+        if ($this->description !== null) {
+            $this->setDescription($this->description);
+        }
 
-        $this->setHelp($this->help);
+        if ($this->help !== null) {
+            $this->setHelp($this->help);
+        }
     }
 
     /**
@@ -87,7 +91,7 @@ abstract class QtCommand extends Command implements CommandInterface
      * @param string|null $key
      * @return mixed|string
      */
-    public function getArgument(string $key = null)
+    public function getArgument(?string $key = null)
     {
         return $this->input->getArgument($key) ?? '';
     }
@@ -97,7 +101,7 @@ abstract class QtCommand extends Command implements CommandInterface
      * @param string|null $key
      * @return mixed|string
      */
-    public function getOption(string $key = null)
+    public function getOption(?string $key = null)
     {
         return $this->input->getOption($key) ?? '';
     }

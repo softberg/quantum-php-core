@@ -209,7 +209,7 @@ class HttpClient
      * @return mixed|null
      * @throws BaseException
      */
-    public function getRequestHeaders(string $header = null)
+    public function getRequestHeaders(?string $header = null)
     {
         $this->ensureSingleRequest();
 
@@ -226,7 +226,7 @@ class HttpClient
      * @return mixed|null
      * @throws BaseException
      */
-    public function getResponseHeaders(string $header = null)
+    public function getResponseHeaders(?string $header = null)
     {
         $this->ensureSingleRequest();
 
@@ -245,7 +245,7 @@ class HttpClient
      * @return mixed|null
      * @throws BaseException
      */
-    public function getResponseCookies(string $cookie = null)
+    public function getResponseCookies(?string $cookie = null)
     {
         $this->ensureSingleRequest();
 
@@ -294,7 +294,7 @@ class HttpClient
      * @return mixed
      * @throws BaseException
      */
-    public function info(int $option = null)
+    public function info(?int $option = null)
     {
         $this->ensureSingleRequest();
 

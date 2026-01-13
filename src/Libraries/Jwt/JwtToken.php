@@ -54,7 +54,7 @@ class JwtToken extends JWT
      * @param string|null $key
      * @throws EnvException
      */
-    public function __construct(string $key = null)
+    public function __construct(?string $key = null)
     {
         $this->key = $key ?? env('APP_KEY');
     }
@@ -124,7 +124,7 @@ class JwtToken extends JWT
      * @return string
      * @throws JwtException
      */
-    public function compose($keyId = null, array $head = null): string
+    public function compose($keyId = null, ?array $head = null): string
     {
         if (empty($this->payload)) {
             throw JwtException::payloadNotFound();

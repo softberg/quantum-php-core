@@ -193,7 +193,7 @@ class Column
      * @param string|null $type
      * @param mixed $constraint
      */
-    public function __construct(string $name, string $type = null, $constraint = null)
+    public function __construct(string $name, ?string $type = null, $constraint = null)
     {
         $this->name = $name;
 
@@ -226,7 +226,7 @@ class Column
      * @param string|null $action
      * @return mixed
      */
-    public function get(string $property, string $action = null)
+    public function get(string $property, ?string $action = null)
     {
         return (isset($this->$property) && $action != self::RENAME && $action != self::DROP) ? $this->$property : null;
     }
@@ -252,7 +252,7 @@ class Column
      * Adds an index key to the column
      * @param string|null $name
      */
-    public function index(string $name = null)
+    public function index(?string $name = null)
     {
         $this->indexKey = Key::INDEX;
 
@@ -265,7 +265,7 @@ class Column
      * Adds unique key to the column
      * @param string|null $name
      */
-    public function unique(string $name = null)
+    public function unique(?string $name = null)
     {
         $this->indexKey = Key::UNIQUE;
 
@@ -278,7 +278,7 @@ class Column
      * Adds a fulltext key the column
      * @param string|null $name
      */
-    public function fulltext(string $name = null)
+    public function fulltext(?string $name = null)
     {
         $this->indexKey = Key::FULLTEXT;
 
@@ -291,7 +291,7 @@ class Column
      * Adds a spatial key the column
      * @param string|null $name
      */
-    public function spatial(string $name = null)
+    public function spatial(?string $name = null)
     {
         $this->indexKey = Key::SPATIAL;
 
