@@ -98,7 +98,7 @@ class ZipAdapter implements ArchiveInterface
      * @inheritDoc
      * @throws BaseException
      */
-    public function addFile(string $filePath, string $entryName = null): bool
+    public function addFile(string $filePath, ?string $entryName = null): bool
     {
         $this->ensureArchiveOpen();
 

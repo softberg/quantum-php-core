@@ -209,7 +209,7 @@ class Table
      * @param string $indexType
      * @param string|null $indexName
      */
-    public function addIndex(string $columnName, string $indexType, string $indexName = null)
+    public function addIndex(string $columnName, string $indexType, ?string $indexName = null)
     {
         if ($this->action == self::ALTER) {
             $this->columns[] = [

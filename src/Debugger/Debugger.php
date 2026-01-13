@@ -108,7 +108,7 @@ class Debugger
      * @return Debugger
      * @throws DebugBarException
      */
-    public static function getInstance(DebuggerStore $store = null, DebugBar $debugBar = null, ?array $collectors = []): Debugger
+    public static function getInstance(?DebuggerStore $store = null, ?DebugBar $debugBar = null, ?array $collectors = []): Debugger
     {
         if (self::$instance === null) {
             $debugBar ??= new DebugBar();

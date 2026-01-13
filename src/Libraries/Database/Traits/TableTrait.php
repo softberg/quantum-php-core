@@ -124,7 +124,7 @@ trait TableTrait
      * @param string|null $action
      * @return string
      */
-    protected function composeColumn(Column $column, string $action = null): string
+    protected function composeColumn(Column $column, ?string $action = null): string
     {
         return
             $this->columnAttrSql($column->get(Column::NAME), '`', '`') .
