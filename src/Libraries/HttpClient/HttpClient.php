@@ -86,22 +86,24 @@ class HttpClient
     /**
      * Creates request
      * @param string $url
+     * @param Curl|null $client
      * @return HttpClient
      */
-    public function createRequest(string $url): HttpClient
+    public function createRequest(string $url, ?Curl $client = null): HttpClient
     {
-        $this->client = new Curl();
+        $this->client = $client ?: new Curl();
         $this->client->setUrl($url);
         return $this;
     }
 
     /**
      * Creates multi request
+     * @param MultiCurl|null $client
      * @return HttpClient
      */
-    public function createMultiRequest(): HttpClient
+    public function createMultiRequest(?MultiCurl $client = null): HttpClient
     {
-        $this->client = new MultiCurl();
+        $this->client = $client ?: new MultiCurl();
 
         $this->client->complete(function (Curl $instance) {
             $this->handleResponse($instance);
@@ -114,11 +116,12 @@ class HttpClient
      * Creates async multi request
      * @param callable $success
      * @param callable $error
+     * @param MultiCurl|null $client
      * @return HttpClient
      */
-    public function createAsyncMultiRequest(callable $success, callable $error): HttpClient
+    public function createAsyncMultiRequest(callable $success, callable $error, ?MultiCurl $client = null): HttpClient
     {
-        $this->client = new MultiCurl();
+        $this->client = $client ?: new MultiCurl();
 
         $this->client->success($success);
         $this->client->error($error);
