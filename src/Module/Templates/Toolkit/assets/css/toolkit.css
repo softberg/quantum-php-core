@@ -1,4 +1,4 @@
-#toolkit-content{
+#toolkit-content {
     padding-top: 15px;
 }
 
@@ -10,7 +10,7 @@
     box-sizing: content-box;
 }
 
-.sidenav li:not(:last-child){
+.sidenav li:not(:last-child) {
     border-bottom: 1px solid rgba(0, 0, 0, 0.2);
 }
 
@@ -18,50 +18,56 @@
     line-height: inherit;
 }
 
-iframe{
+iframe {
     width: 100%;
     border: none;
 }
 
-.email-iframe{
+.email-iframe {
     height: 400px;
 }
 
-.logs-iframe, .table-iframe{
+.logs-iframe,
+.table-iframe {
     height: 85vh;
 }
 
-.collapsible-header .delete-email i{
+.collapsible-header .delete-email i {
     width: inherit;
 }
 
-.collapsible-header > .chevron > i {
+.collapsible-header>.chevron>i {
     transition: transform 0.2s ease;
 }
 
-.active > .collapsible-header > .chevron > i {
+.active>.collapsible-header>.chevron>i {
     transform: rotate(90deg);
 }
 
-#log-collapsible{
+#log-collapsible {
     text-align: left;
 }
 
-.logFiles, .tables{
+.logFiles,
+.tables {
     padding-left: 0 !important;
 }
 
-.logFile-item, .table-item, .table-header{
+.logFile-item,
+.table-item,
+.table-header {
     cursor: pointer;
     display: block !important;
 }
 
-.logFile-item:hover, .table-item:hover, .table-header:hover{
+.logFile-item:hover,
+.table-item:hover,
+.table-header:hover {
     background-color: #26a69a !important;
     color: #eafaf9;
 }
 
-.highlight{
+.highlight {
     table-layout: fixed;
     width: 100%;
 }
@@ -73,11 +79,12 @@ iframe{
     background-color: white;
 }
 
-.table-body{
+.table-body {
     max-width: 100%;
 }
 
-.table-body tr td,.table-body tr th{
+.table-body tr td,
+.table-body tr th {
     width: 13%;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -85,35 +92,35 @@ iframe{
     padding: 15px 10px;
 }
 
-.table-body .actions-column{
+.table-body .actions-column {
     width: 5%;
 }
 
-#jsoneditor{
+#jsoneditor {
     padding: 0;
 }
 
-.modal-footer{
+.modal-footer {
     padding: 4px 25px !important;
 }
 
-.jsoneditor{
+.jsoneditor {
     border: none !important;
 }
 
-div.jsoneditor-field{
+div.jsoneditor-field {
     word-break: normal;
 }
 
-div.jsoneditor-tree button.jsoneditor-invisible{
+div.jsoneditor-tree button.jsoneditor-invisible {
     display: none !important;
 }
 
-.jsoneditor-menu{
+.jsoneditor-menu {
     background-color: #26a69a !important;
 }
 
-#rowEditModal{
+#rowEditModal {
     width: 50% !important;
 }
 
@@ -133,4 +140,8 @@ div.jsoneditor-tree button.jsoneditor-invisible{
     .has-fixed-sidenav main {
         padding: 0 20px;
     }
+}
+
+.toast-left {
+    left: 100px !important;
 }
