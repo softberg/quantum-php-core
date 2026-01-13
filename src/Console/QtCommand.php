@@ -91,7 +91,7 @@ abstract class QtCommand extends Command implements CommandInterface
      * @param string|null $key
      * @return mixed|string
      */
-    public function getArgument(string $key = null)
+    public function getArgument(?string $key = null)
     {
         return $this->input->getArgument($key) ?? '';
     }
@@ -101,7 +101,7 @@ abstract class QtCommand extends Command implements CommandInterface
      * @param string|null $key
      * @return mixed|string
      */
-    public function getOption(string $key = null)
+    public function getOption(?string $key = null)
     {
         return $this->input->getOption($key) ?? '';
     }

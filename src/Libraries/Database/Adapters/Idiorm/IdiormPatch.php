@@ -63,7 +63,7 @@ class IdiormPatch extends ORM
      * @param string|null $table_alias
      * @return object
      */
-    public function leftJoin(string $table, array $constraint, string $table_alias = null): object
+    public function leftJoin(string $table, array $constraint, ?string $table_alias = null): object
     {
         return $this->addJoin('LEFT', $table, $constraint, $table_alias);
     }
@@ -75,7 +75,7 @@ class IdiormPatch extends ORM
      * @param string|null $table_alias
      * @return object
      */
-    public function rightJoin(string $table, array $constraint, string $table_alias = null): object
+    public function rightJoin(string $table, array $constraint, ?string $table_alias = null): object
     {
         return $this->addJoin('RIGHT', $table, $constraint, $table_alias);
     }
@@ -88,7 +88,7 @@ class IdiormPatch extends ORM
      * @param string|null $table_alias
      * @return object
      */
-    public function addJoin(string $operator, string $table, array $constraint, string $table_alias = null): object
+    public function addJoin(string $operator, string $table, array $constraint, ?string $table_alias = null): object
     {
         return $this->ormModel->_add_join_source($operator, $table, $constraint, $table_alias);
     }

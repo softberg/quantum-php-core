@@ -122,5 +122,5 @@ interface PaginatorInterface
      * @param int|null $pageItemsCount
      * @return string|null
      */
-    public function getPagination(bool $withBaseUrl = false, int $pageItemsCount = null): ?string;
+    public function getPagination(bool $withBaseUrl = false, ?int $pageItemsCount = null): ?string;
 }
