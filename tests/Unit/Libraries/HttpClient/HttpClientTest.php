@@ -226,7 +226,7 @@ class HttpClientTest extends AppTestCase
     public function testHttpClientCreateAsyncMultiRequestRegistersCallbacks()
     {
         $success = fn () => null;
-        $error   = fn () => null;
+        $error = fn () => null;
 
         $multi = Mockery::mock(MultiCurl::class);
         $multi->shouldReceive('success')->once()->with($success)->andReturnSelf();
