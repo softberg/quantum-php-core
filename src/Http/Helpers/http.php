@@ -133,3 +133,26 @@ function page_not_found()
         );
     }
 }
+
+/**
+ * Encodes current query string to URL-safe base64.
+ *
+ * @return string
+ */
+function nav_ref_encode(): string
+{
+    $q = Request::getQuery();
+    return $q ? rtrim(strtr(base64_encode($q), '+/', '-_'), '=') : '';
+}
+
+/**
+ * Decodes a URL-safe base64 reference back to query string.
+ *
+ * @param string|null $ref
+ * @return string|null
+ */
+function nav_ref_decode(?string $ref): ?string
+{
+    if (!$ref) return null;
+    return base64_decode(strtr($ref, '-_', '+/')) ?: null;
+}

@@ -68,15 +68,12 @@ class PostController extends BaseController
 
         $paginatedPosts = $this->postService->getPosts($perPage, $currentPage, $search);
 
-        $params = [
+        $this->view->setParams([
             'title' => t('common.posts') . ' | ' . config()->get('app.name'),
             'posts' => $this->postService->transformData($paginatedPosts->data()->all()),
-            'pagination' => $paginatedPosts
-        ];
-
-        $params = $this->addFromParam($params, true);
-
-        $this->view->setParams($params);
+            'pagination' => $paginatedPosts,
+            'referer' => nav_ref_encode()
+        ]);
 
         $response->html($this->view->render('post/post'));
     }
@@ -105,36 +102,18 @@ class PostController extends BaseController
 
         $comments = $commentService->transformData($comments->all());
 
-        $params = [
+        $ref = $request->get('ref');
+        $query = nav_ref_decode($ref);
+
+        $referer = '/posts' . ($query ? '?' . $query : '');
+
+        $this->view->setParams([
             'title' => $post->title . ' | ' . config()->get('app.name'),
             'post' => new RawParam(current($this->postService->transformData([$post]))),
             'comments' => $comments,
-            'referer' => $ref,
-        ];
-
-        $params = $this->addFromParam($params);
-
-        $this->view->setParams($params);
+            'referer' => $ref == 'my-posts' ? '/my-posts' : $referer,
+        ]);
 
         $response->html($this->view->render('post/single'));
-    }
-
-    private function addFromParam($params, $encode = false)
-    {
-        if (!empty($_GET)) {
-            if ($encode) {
-                $json = json_encode($_GET);
-                $base64 = base64_encode($json);
-
-                $params['from'] = $base64;
-            } else {
-                $base64 = base64_decode($_GET['from']);
-                $json = json_decode($base64, true);
-
-                $params['from'] = http_build_query($json);
-            }
-        }
-
-        return $params;
     }
 }
