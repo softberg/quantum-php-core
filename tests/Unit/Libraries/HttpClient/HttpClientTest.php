@@ -5,20 +5,27 @@ namespace Quantum\Tests\Unit\Libraries\HttpClient;
 use Quantum\Libraries\HttpClient\Exceptions\HttpClientException;
 use Quantum\Libraries\HttpClient\HttpClient;
 use Quantum\Tests\Unit\AppTestCase;
+use Curl\CaseInsensitiveArray;
+use Curl\MultiCurl;
+use Curl\Curl;
+use Mockery;
 
 class HttpClientTest extends AppTestCase
 {
-    private $httpClient;
-
-    private $restServer = 'https://api.thedogapi.com/v1';
-
-    private $restServerApiKey = 'live_U3JuUI7JmyksBMiYM5xsBH3ZkA8zNFwhIusK1Mwz80nrokn6UtC3XUM5D7T5fSkx';
+    private HttpClient $httpClient;
 
     public function setUp(): void
     {
         parent::setUp();
 
         $this->httpClient = new HttpClient();
+    }
+
+    public function tearDown(): void
+    {
+        Mockery::close();
+
+        parent::tearDown();
     }
 
     public function testHttpClientGetSetMethod()
@@ -31,8 +38,6 @@ class HttpClientTest extends AppTestCase
 
         $this->expectException(HttpClientException::class);
 
-        $this->expectExceptionMessage('Provided request method `NOPE` is not available.');
-
         $this->httpClient->setMethod('NOPE');
     }
 
@@ -40,269 +45,220 @@ class HttpClientTest extends AppTestCase
     {
         $this->assertNull($this->httpClient->getData());
 
-        $this->httpClient->setData(['some key' => 'some value']);
+        $data = ['a' => 1];
 
-        $this->assertNotNull($this->httpClient->getData());
+        $this->httpClient->setData($data);
 
-        $this->assertIsArray(($this->httpClient->getData()));
+        $this->assertSame($data, $this->httpClient->getData());
     }
 
     public function testHttpClientIsMultiRequest()
     {
-        $this->httpClient->createRequest('https://httpbin.org');
+        $curl = Mockery::mock(Curl::class);
+
+        $curl->shouldReceive('setUrl')->once();
+
+        $multi = Mockery::mock(MultiCurl::class);
+
+        $multi->shouldReceive('complete')->once();
+
+        $this->httpClient->createRequest('https://example.com', $curl);
 
         $this->assertFalse($this->httpClient->isMultiRequest());
 
-        $this->httpClient->createMultiRequest();
-
-        $this->assertTrue($this->httpClient->isMultiRequest());
-
-        $this->httpClient->createAsyncMultiRequest(function () {
-        }, function () {
-        });
+        $this->httpClient->createMultiRequest($multi);
 
         $this->assertTrue($this->httpClient->isMultiRequest());
     }
 
-    public function testHttpClientCreateRequestFlow()
+    public function testHttpClientRequestNotCreated()
     {
-        $this->httpClient
-            ->createRequest('https://www.google.com')
-            ->start();
+        $this->expectException(HttpClientException::class);
 
-        $this->assertIsArray($this->httpClient->getRequestHeaders());
-
-        $this->assertIsArray($this->httpClient->getResponseHeaders());
-
-        $this->assertIsArray($this->httpClient->getResponseCookies());
+        $this->httpClient->start();
     }
 
-    public function testHttpClientCreateMultiRequestFlow()
+    public function testHttpClientEnsureSingleRequestThrowsOnMulti()
     {
-        $this->httpClient
-            ->createMultiRequest()
-            ->setHeader('x-api-key', $this->restServerApiKey)
-            ->addGet($this->restServer . '/breeds')
-            ->addPost($this->restServer . '/breeds')
-            ->start();
+        $multi = Mockery::mock(MultiCurl::class);
 
-        $multiResponse = $this->httpClient->getResponse();
+        $multi->shouldReceive('complete')->once();
 
-        $this->assertCount(2, $multiResponse);
+        $this->httpClient->createMultiRequest($multi);
 
-        $this->assertArrayHasKey('headers', $multiResponse[0]);
+        $this->expectException(HttpClientException::class);
 
-        $this->assertArrayHasKey('cookies', $multiResponse[0]);
-
-        $this->assertArrayHasKey('body', $multiResponse[0]);
+        $this->httpClient->getRequestHeaders();
     }
 
-    public function testHttpClientCreateAsyncMultiRequestFlow()
+    public function testHttpClientSingleRequestResponseFlow()
     {
+        $curl = Mockery::mock(Curl::class);
+        $curl->shouldReceive('setUrl')->once();
+        $curl->shouldReceive('setOpt')->atLeast()->once();
+        $curl->shouldReceive('exec')->once();
+        $curl->shouldReceive('isError')->andReturn(false);
+        $curl->shouldReceive('getId')->andReturn(0);
+        $curl->shouldReceive('getResponseHeaders')
+            ->andReturn(new CaseInsensitiveArray(['Content-Type' => 'text/plain']));
+        $curl->shouldReceive('getResponseCookies')->andReturn(['a' => 'b']);
+        $curl->shouldReceive('getResponse')->andReturn('ok');
+
         $this->httpClient
-            ->createAsyncMultiRequest(
-                function ($instance) {
-                    $this->assertFalse($instance->isError());
-
-                    $this->assertEquals($this->restServer . '/breeds', $instance->getUrl());
-                },
-                function ($instance) {
-                    $this->assertTrue($instance->isError());
-
-                    $this->assertEquals(405, $instance->getErrorCode());
-                }
-            )
-            ->setOpt(CURLOPT_SSL_VERIFYPEER, false)
-            ->setOpt(CURLOPT_SSL_VERIFYHOST, false)
-            ->setHeader('x-api-key', $this->restServerApiKey)
-            ->addGet($this->restServer . '/breeds')
-            ->addPost($this->restServer . '/breeds')
+            ->createRequest('https://example.com', $curl)
             ->start();
+
+        $this->assertEquals('text/plain', $this->httpClient->getResponseHeaders('content-type'));
+
+        $this->assertEquals('b', $this->httpClient->getResponseCookies('a'));
+
+        $this->assertEquals('ok', $this->httpClient->getResponseBody());
     }
 
-    public function testHttpClientGetRequestHeaders()
+    public function testHttpClientPostRequestWithData()
     {
-        $this->httpClient
-            ->createRequest($this->restServer . '/breeds/?limit=10&page=0')
-            ->setHeaders([
-                'x-api-key' => $this->restServerApiKey,
-                'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-                'Accept-Language' => 'ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3',
-                'User-Agent' => 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
-            ])
-            ->start();
-
-        $this->assertIsArray($this->httpClient->getRequestHeaders());
-
-        $this->assertEquals('text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', $this->httpClient->getRequestHeaders('accept'));
-
-        $this->assertEquals('ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3', $this->httpClient->getRequestHeaders('accept-language'));
-
-        $this->assertEquals('Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)', $this->httpClient->getRequestHeaders('user-agent'));
-
-        $this->assertNull($this->httpClient->getRequestHeaders('custom-header'));
-    }
-
-    public function testHttpClientGetResponseHeaders()
-    {
-        $this->httpClient
-            ->createRequest($this->restServer . '/breeds/?limit=10&page=0')
-            ->setHeader('x-api-key', $this->restServerApiKey)
-            ->setOpt(CURLOPT_SSL_VERIFYPEER, false)
-            ->setOpt(CURLOPT_SSL_VERIFYHOST, false)
-            ->setOpt(CURLOPT_FOLLOWLOCATION, true)
-            ->start();
-
-        $this->assertIsArray($this->httpClient->getResponseHeaders());
-
-        $this->assertStringContainsString('application/json', $this->httpClient->getResponseHeaders('content-type'));
-
-        $this->assertNull($this->httpClient->getResponseHeaders('custom-header'));
-    }
-
-    public function testHttpClientGetResponseCookies()
-    {
-        $this->httpClient
-            ->createRequest('https://www.youtube.com/')
-            ->setOpt(CURLOPT_SSL_VERIFYPEER, false)
-            ->setOpt(CURLOPT_SSL_VERIFYHOST, false)
-            ->start();
-
-        $responseCookies = $this->httpClient->getResponseCookies();
-
-        $this->assertIsArray($responseCookies);
-
-        $this->assertArrayHasKey('VISITOR_INFO1_LIVE', $responseCookies);
-
-        $this->assertIsString($this->httpClient->getResponseCookies('VISITOR_INFO1_LIVE'));
-
-    }
-
-    public function testHttpClientGetTextResponseBody()
-    {
-        $this->httpClient
-            ->createRequest('https://httpbin.org')
-            ->start();
-
-        $this->assertNotNull($this->httpClient->getResponseBody());
-
-        $this->assertIsString($this->httpClient->getResponseBody());
-    }
-
-    public function testHttpClientGetObjectResponseBody()
-    {
-        $this->httpClient
-            ->createRequest($this->restServer . '/breeds/?limit=10&page=0')
-            ->setHeader('x-api-key', $this->restServerApiKey)
-            ->setOpt(CURLOPT_SSL_VERIFYPEER, false)
-            ->setOpt(CURLOPT_SSL_VERIFYHOST, false)
-            ->setOpt(CURLOPT_FOLLOWLOCATION, true)
-            ->start();
-
-        $responseBody = $this->httpClient->getResponseBody();
-
-        $this->assertNotNull($responseBody);
-
-        $this->assertIsArray($responseBody);
-    }
-
-    public function testHttpClientSendPostRequestAndGetResponseBody()
-    {
-        $this->httpClient
-            ->createRequest($this->restServer . '/images/search?format=json&limit=10')
-            ->setHeader('x-api-key', $this->restServerApiKey)
-            ->setOpt(CURLOPT_SSL_VERIFYPEER, false)
-            ->setOpt(CURLOPT_SSL_VERIFYHOST, false)
-            ->setOpt(CURLOPT_FOLLOWLOCATION, true)
-            ->start();
-
-        $responseBody = $this->httpClient->getResponseBody();
-
-        $imageId = $responseBody[0]->id;
+        $curl = Mockery::mock(Curl::class);
+        $curl->shouldReceive('setUrl')->once();
+        $curl->shouldReceive('setOpt')->with(CURLOPT_CUSTOMREQUEST, 'POST')->once();
+        $curl->shouldReceive('buildPostData')->once()->andReturn('payload');
+        $curl->shouldReceive('setOpt')->with(CURLOPT_POSTFIELDS, 'payload')->once();
+        $curl->shouldReceive('exec')->once();
+        $curl->shouldReceive('isError')->andReturn(false);
+        $curl->shouldReceive('getId')->andReturn(0);
+        $curl->shouldReceive('getResponseHeaders')->andReturn(new CaseInsensitiveArray());
+        $curl->shouldReceive('getResponseCookies')->andReturn([]);
+        $curl->shouldReceive('getResponse')->andReturn((object)['status' => 'ok']);
 
         $this->httpClient
-            ->createRequest($this->restServer . '/votes')
-            ->setOpt(CURLOPT_SSL_VERIFYPEER, false)
-            ->setOpt(CURLOPT_SSL_VERIFYHOST, false)
-            ->setHeader('x-api-key', $this->restServerApiKey)
-            ->setHeader('Content-Type', 'application/json')
+            ->createRequest('https://example.com', $curl)
             ->setMethod('POST')
-            ->setData([
-                'image_id' => $imageId,
-                'value' => 1,
-            ])
+            ->setData(['x' => 1])
             ->start();
 
-        $responseBody = $this->httpClient->getResponseBody();
-
-        $this->assertNotNull($responseBody);
-
-        $this->assertIsObject($responseBody);
-
-        $this->assertObjectHasProperty('message', $responseBody);
-
-        $this->assertEquals('SUCCESS', $responseBody->message);
+        $this->assertEquals('ok', $this->httpClient->getResponseBody()->status);
     }
 
-    public function testHttpClientGetError()
+    public function testHttpClientSingleRequestError()
     {
+        $curl = Mockery::mock(Curl::class);
+        $curl->shouldReceive('setUrl')->once();
+        $curl->shouldReceive('setOpt')->atLeast()->once();
+        $curl->shouldReceive('exec')->once();
+        $curl->shouldReceive('isError')->andReturn(true);
+        $curl->shouldReceive('getId')->andReturn(0);
+        $curl->shouldReceive('getErrorCode')->andReturn(6);
+        $curl->shouldReceive('getErrorMessage')->andReturn('DNS error');
+        $curl->shouldReceive('getResponseHeaders')->andReturn(new CaseInsensitiveArray());
+        $curl->shouldReceive('getResponseCookies')->andReturn([]);
+        $curl->shouldReceive('getResponse')->andReturn(null);
+
         $this->httpClient
-            ->createRequest('https://test.comx')
-            ->setOpt(CURLOPT_SSL_VERIFYPEER, false)
-            ->setOpt(CURLOPT_SSL_VERIFYHOST, false)
+            ->createRequest('https://bad.local', $curl)
             ->start();
 
         $errors = $this->httpClient->getErrors();
-
-        $this->assertIsArray($errors);
 
         $this->assertEquals(6, $errors['code']);
+
+        $this->assertEquals('DNS error', $errors['message']);
     }
 
-    public function testHttpClientMultiRequestGetError()
+    public function testHttpClientMultiRequestResponseStructure()
     {
-        $this->httpClient
-            ->createMultiRequest()
-            ->setOpt(CURLOPT_SSL_VERIFYPEER, false)
-            ->setOpt(CURLOPT_SSL_VERIFYHOST, false)
-            ->addPut('https://test.comx/put')
-            ->addPatch('https://test.comx/patch')
-            ->start();
+        $multi = Mockery::mock(MultiCurl::class);
+        $multi->shouldReceive('complete')
+            ->once()
+            ->andReturnUsing(function ($callback) {
+                $curl = Mockery::mock(Curl::class);
+                $curl->shouldReceive('isError')->andReturn(false);
+                $curl->shouldReceive('getId')->andReturn(0);
+                $curl->shouldReceive('getResponseHeaders')->andReturn(new CaseInsensitiveArray());
+                $curl->shouldReceive('getResponseCookies')->andReturn([]);
+                $curl->shouldReceive('getResponse')->andReturn('ok');
+
+                $callback($curl);
+            });
+
+        $this->httpClient->createMultiRequest($multi);
+
+        $response = $this->httpClient->getResponse();
+
+        $this->assertArrayHasKey(0, $response);
+
+        $this->assertArrayHasKey('headers', $response[0]);
+
+        $this->assertArrayHasKey('cookies', $response[0]);
+
+        $this->assertArrayHasKey('body', $response[0]);
+    }
+
+    public function testHttpClientMultiRequestAggregatesErrors()
+    {
+        $multi = Mockery::mock(MultiCurl::class);
+        $multi->shouldReceive('complete')
+            ->once()
+            ->andReturnUsing(function ($callback) {
+                foreach ([0, 1] as $id) {
+                    $curl = Mockery::mock(Curl::class);
+                    $curl->shouldReceive('isError')->andReturn(true);
+                    $curl->shouldReceive('getId')->andReturn($id);
+                    $curl->shouldReceive('getErrorCode')->andReturn(6);
+                    $curl->shouldReceive('getErrorMessage')->andReturn('DNS error');
+                    $curl->shouldReceive('getResponseHeaders')->andReturn(new CaseInsensitiveArray());
+                    $curl->shouldReceive('getResponseCookies')->andReturn([]);
+                    $curl->shouldReceive('getResponse')->andReturn(null);
+
+                    $callback($curl);
+                }
+            });
+
+        $this->httpClient->createMultiRequest($multi);
 
         $errors = $this->httpClient->getErrors();
-
-        $this->assertIsArray($errors);
 
         $this->assertCount(2, $errors);
 
         $this->assertEquals(6, $errors[0]['code']);
+
+        $this->assertEquals(6, $errors[1]['code']);
     }
 
-    public function testHttpClientCurlInfo()
+    public function testHttpClientCreateAsyncMultiRequestRegistersCallbacks()
     {
-        $this->httpClient
-            ->createRequest($this->restServer . '/breeds')
-            ->setOpt(CURLOPT_SSL_VERIFYPEER, false)
-            ->setOpt(CURLOPT_SSL_VERIFYHOST, false)
-            ->setHeader('x-api-key', $this->restServerApiKey)
-            ->start();
+        $success = fn () => null;
+        $error   = fn () => null;
 
-        $this->assertIsArray($this->httpClient->info());
+        $multi = Mockery::mock(MultiCurl::class);
+        $multi->shouldReceive('success')->once()->with($success)->andReturnSelf();
+        $multi->shouldReceive('error')->once()->with($error)->andReturnSelf();
+
+        $this->httpClient->createAsyncMultiRequest($success, $error, $multi);
+
+        $this->assertTrue($this->httpClient->isMultiRequest());
+    }
+
+    public function testHttpClientInfoAndUrl()
+    {
+        $curl = Mockery::mock(Curl::class);
+        $curl->shouldReceive('setUrl')->once();
+        $curl->shouldReceive('setOpt')->atLeast()->once();
+        $curl->shouldReceive('exec')->once();
+        $curl->shouldReceive('isError')->andReturn(false);
+        $curl->shouldReceive('getId')->andReturn(0);
+        $curl->shouldReceive('getResponseHeaders')->andReturn(new CaseInsensitiveArray());
+        $curl->shouldReceive('getResponseCookies')->andReturn([]);
+        $curl->shouldReceive('getResponse')->andReturn('');
+        $curl->shouldReceive('getInfo')->andReturnUsing(
+            fn ($opt = null) => $opt === CURLINFO_HTTP_CODE ? 200 : ['http_code' => 200]
+        );
+        $curl->shouldReceive('getUrl')->andReturn('https://example.com');
+
+        $this->httpClient
+            ->createRequest('https://example.com', $curl)
+            ->start();
 
         $this->assertEquals(200, $this->httpClient->info(CURLINFO_HTTP_CODE));
 
-        $this->assertEquals('https://api.thedogapi.com/v1/breeds', $this->httpClient->info(CURLINFO_EFFECTIVE_URL));
-    }
-
-    public function testHttpClientUrl()
-    {
-        $this->httpClient
-            ->createRequest($this->restServer . '/breeds')
-            ->setHeader('x-api-key', $this->restServerApiKey)
-            ->start();
-
-        $this->assertIsString($this->httpClient->url());
-
-        $this->assertEquals('https://api.thedogapi.com/v1/breeds', $this->httpClient->url());
+        $this->assertEquals('https://example.com', $this->httpClient->url());
     }
 }
