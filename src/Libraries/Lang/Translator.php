@@ -19,10 +19,7 @@ use Quantum\Config\Exceptions\ConfigException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
 use Dflydev\DotAccessData\Data;
-use Quantum\Loader\Loader;
-use Quantum\Loader\Setup;
 use ReflectionException;
-use Quantum\Di\Di;
 
 /**
  * Class Translator
@@ -46,7 +43,7 @@ class Translator
     }
 
     /**
-     * Load translation file
+     * Load translation files
      * @throws BaseException
      * @throws ConfigException
      * @throws DiException
@@ -55,38 +52,51 @@ class Translator
      */
     public function loadTranslations(): void
     {
-
         if ($this->translations !== null) {
             return;
         }
 
-        $langDir = modules_dir() . DS . current_module() . DS . 'resources' . DS . 'lang' . DS . $this->lang;
-        $files = fs()->glob($langDir . DS . '*.php');
+        $this->translations = new Data();
+        $loaded = false;
 
-        if (is_array($files) && !count($files)) {
-            $langDir = base_dir() . DS . 'shared' . DS . 'resources' . DS . 'lang' . DS . $this->lang;
-            $files = fs()->glob($langDir . DS . '*.php');
+        $sharedDir = base_dir() . DS . 'shared' . DS . 'resources' . DS . 'lang' . DS . $this->lang;
+        $sharedFiles = fs()->glob($sharedDir . DS . '*.php');
 
-            if (is_array($files) && !count($files)) {
-                throw LangException::translationsNotFound();
-            }
+        if (is_array($sharedFiles) && count($sharedFiles)) {
+            $this->loadFiles($sharedFiles);
+            $loaded = true;
         }
 
-        $translations = [];
+        $moduleDir = modules_dir() . DS . current_module() . DS . 'resources' . DS . 'lang' . DS . $this->lang;
+        $moduleFiles = fs()->glob($moduleDir . DS . '*.php');
 
+        if (is_array($moduleFiles) && count($moduleFiles)) {
+            $this->loadFiles($moduleFiles);
+            $loaded = true;
+        }
+
+        if (!$loaded) {
+            throw LangException::translationsNotFound();
+        }
+    }
+
+    /**
+     * Load translations
+     * @param array $files
+     * @throws BaseException
+     * @throws ConfigException
+     * @throws DiException
+     * @throws ReflectionException
+     */
+    private function loadFiles(array $files): void
+    {
         foreach ($files as $file) {
             $fileName = fs()->fileName($file);
 
-            $setup = new Setup();
-            $setup->setPathPrefix('resources' . DS . 'lang' . DS . $this->lang);
-            $setup->setFilename($fileName);
-            $setup->setHierarchy(true);
-
-            $translations[$fileName] = Di::get(Loader::class)->setup($setup)->load();
+            $this->translations->import([
+                $fileName => fs()->require($file),
+            ]);
         }
-
-        $this->translations = new Data();
-        $this->translations->import($translations);
     }
 
     /**
