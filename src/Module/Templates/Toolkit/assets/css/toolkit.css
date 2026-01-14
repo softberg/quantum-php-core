@@ -134,3 +134,7 @@ div.jsoneditor-tree button.jsoneditor-invisible{
         padding: 0 20px;
     }
 }
+
+.toast-left {
+    left: 100px !important;
+}
