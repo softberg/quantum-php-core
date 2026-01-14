@@ -14,8 +14,8 @@
 
 namespace Quantum\Console\Commands;
 
-use Quantum\Di\Exceptions\DiException;
 use Quantum\Console\QtCommand;
+use RuntimeException;
 
 /**
  * Class ServeCommand
@@ -63,10 +63,10 @@ class ServeCommand extends QtCommand
     protected $defaultPort = 8000;
 
     /**
-     * The current port offset.
+     * Max ports to scan
      * @var int
      */
-    protected $portOffset = 0;
+    protected $maxPortScan = 50;
 
     /**
      * Command arguments
@@ -75,100 +75,241 @@ class ServeCommand extends QtCommand
     protected $options = [
         ['host', null, 'optional', 'Host', '127.0.0.1'],
         ['port', null, 'optional', 'Port', '8000'],
+        ['open', 'o', 'none', 'Open browser'],
     ];
 
     /**
      * Executes the command
-     * @throws DiException
      */
     public function exec()
     {
-        if (!$this->portAvailable()) {
-            $this->portOffset += 1;
-            $this->exec();
-        } elseif (!$this->openBrowserCommand()) {
-            $this->info('Starting development server at: ' . $this->host() . ':' . $this->port());
-            exec($this->runServerCommand(), $out);
-        } else {
-            $this->info('Starting development server at: ' . $this->host() . ':' . $this->port());
-            exec($this->openBrowserCommand() . ' && ' . $this->runServerCommand(), $out);
+        $endpoint = $this->resolveEndpoint();
+
+        $this->info("Starting development server at: {$endpoint['url']}");
+
+        $process = $this->startPhpServer($endpoint['host'], $endpoint['port']);
+        $this->waitUntilServerIsReady($endpoint['host'], $endpoint['port'], $process);
+
+        if ($this->shouldOpenBrowser()) {
+            $this->openBrowser($endpoint['url']);
         }
+
+        $this->waitForProcess($process);
+    }
+
+    /**
+     * Resolves the endpoint
+     * @return array
+     */
+    protected function resolveEndpoint(): array
+    {
+        $host = $this->host();
+        $port = $this->findAvailablePort($host, $this->port());
+
+        return [
+            'host' => $host,
+            'port' => $port,
+            'url' => "http://{$host}:{$port}",
+        ];
     }
 
     /**
      * Starts the php development server
-     * @return string
+     * @param string $host
+     * @param int $port
+     * @return resource
      */
-    protected function runServerCommand(): string
+    protected function startPhpServer(string $host, int $port)
     {
-        return 'php -S ' . $this->host() . ':' . $this->port() . ' -t public';
-    }
+        $cmd = [
+            PHP_BINARY,
+            '-S',
+            "{$host}:{$port}",
+            '-t',
+            'public',
+        ];
 
-    /**
-     * Tries to open the default browser
-     * @return string|null
-     */
-    protected function openBrowserCommand(): ?string
-    {
-        $platformCommand = $this->detectPlatformCommand();
+        $descriptors = [
+            0 => STDIN,
+            1 => STDOUT,
+            2 => STDERR,
+        ];
 
-        if (!$platformCommand) {
-            return null;
+        $process = proc_open($cmd, $descriptors, $pipes);
+
+        if (!is_resource($process)) {
+            throw new RuntimeException('Unable to start PHP development server.');
         }
 
-        return $platformCommand . ' http://' . $this->host() . ':' . $this->port();
+        return $process;
     }
 
     /**
-     * Checks the available port
+     * Wait until the PHP server is ready to accept connections.
+     * @param string $host
+     * @param int $port
+     * @param $process
+     * @return void
+     */
+    protected function waitUntilServerIsReady(string $host, int $port, $process): void
+    {
+        $start = time();
+
+        while (true) {
+            $status = proc_get_status($process);
+            if ($status === false || !$status['running']) {
+                throw new RuntimeException('PHP server process died unexpectedly.');
+            }
+
+            $fp = @fsockopen($host, $port, $e, $s, 0.5);
+            if ($fp) {
+                fclose($fp);
+                return;
+            }
+
+            if (time() - $start > 10) {
+                throw new RuntimeException('Server failed to start within 10 seconds.');
+            }
+
+            usleep(200_000);
+        }
+    }
+
+    /**
+     * Wait until the PHP server is ready to accept connections.
+     * @param $process
+     * @return void
+     */
+    protected function waitForProcess($process): void
+    {
+        try {
+            while (true) {
+                $status = proc_get_status($process);
+                if ($status === false || !$status['running']) {
+                    break;
+                }
+
+                usleep(200_000);
+            }
+        } finally {
+            proc_close($process);
+        }
+    }
+
+    /**
+     * Block until the PHP server process exits.
+     * @param string $host
+     * @param int $startPort
+     * @return int
+     */
+    protected function findAvailablePort(string $host, int $startPort): int
+    {
+        for ($i = 0; $i < $this->maxPortScan; $i++) {
+            $port = $startPort + $i;
+            if ($this->canBind($host, $port)) {
+                return $port;
+            }
+        }
+
+        throw new RuntimeException("No available ports found starting from {$startPort}");
+    }
+
+    /**
+     * Check whether the given host and port can be bound.
+     * @param string $host
+     * @param int $port
      * @return bool
      */
-    protected function portAvailable(): bool
+    protected function canBind(string $host, int $port): bool
     {
-        $connection = @fsockopen($this->host(), $this->port(), $errno, $err, 30);
+        $socket = @stream_socket_server(
+            "tcp://{$host}:{$port}",
+            $errno,
+            $errstr,
+            STREAM_SERVER_BIND | STREAM_SERVER_LISTEN
+        );
 
-        if (!is_resource($connection)) {
-            return true;
-        } else {
-            fclose($connection);
+        if ($socket === false) {
             return false;
+        }
+
+        fclose($socket);
+        return true;
+    }
+
+    /**
+     * Determine whether the browser should be opened.
+     * @return bool
+     */
+    protected function shouldOpenBrowser(): bool
+    {
+        return $this->getOption('open');
+    }
+
+    /**
+     * Open the default system browser for the given URL.
+     * @param string $url
+     * @return void
+     */
+    protected function openBrowser(string $url): void
+    {
+        $cmd = $this->browserCommand($url);
+        if (!$cmd) {
+            return;
+        }
+
+        $descriptors = [
+            0 => STDIN,
+            1 => STDOUT,
+            2 => STDERR,
+        ];
+
+        $proc = proc_open($cmd, $descriptors, $pipes);
+        if (is_resource($proc)) {
+            proc_close($proc);
         }
     }
 
     /**
-     * Detects the platform
-     * @return string|null
+     * Resolve the platform-specific command used to open a URL.
+     * @param string $url
+     * @return string[]|null
      */
-    protected function detectPlatformCommand(): ?string
+    protected function browserCommand(string $url): ?array
     {
         switch (PHP_OS) {
-            case self::PLATFORM_LINUX:
-                return 'xdg-open';
             case self::PLATFORM_WINDOWS:
-                return 'start';
+                return ['explorer.exe', $url];
+            case self::PLATFORM_LINUX:
+                return ['xdg-open', $url];
             case self::PLATFORM_MAC:
-                return 'open';
+                return ['open', $url];
             default:
                 return null;
         }
     }
 
     /**
-     * Gets the host
-     * @return mixed|string
+     * Resolve the platform-specific command used to open a URL.
+     * @return string
      */
-    protected function host()
+    protected function host(): string
     {
-        return $this->getOption('host') ?: $this->defaultHost;
+        return (string) ($this->getOption('host') ?: $this->defaultHost);
     }
 
     /**
-     * Gets the port
-     * @return int|mixed|string
+     * Get and validate the port option.
+     * @return int
      */
-    protected function port()
+    protected function port(): int
     {
-        $port = $this->getOption('port') ?: $this->defaultPort;
-        return $port + $this->portOffset;
+        $port = (int) ($this->getOption('port') ?: $this->defaultPort);
+
+        if ($port < 1 || $port > 65535) {
+            throw new RuntimeException("Port must be between 1 and 65535, got: {$port}");
+        }
+
+        return $port;
     }
 }
