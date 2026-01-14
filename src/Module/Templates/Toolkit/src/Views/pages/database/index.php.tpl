@@ -1,5 +1,10 @@
 <div id="database">
     <div class="row">
+
+        <?php if (session()->has('error')): ?>
+            <?php echo partial('partials/messages/error') ?>
+        <?php endif; ?>
+
         <div class="tables col s2">
             <ul class="collection with-header">
                 <li class="collection-header table-header add-table waves-effect create-table">
