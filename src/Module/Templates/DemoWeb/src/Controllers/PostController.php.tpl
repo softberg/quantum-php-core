@@ -102,16 +102,11 @@ class PostController extends BaseController
 
         $comments = $commentService->transformData($comments->all());
 
-        $ref = $request->get('ref');
-        $query = nav_ref_decode($ref);
-
-        $referer = '/posts' . ($query ? '?' . $query : '');
-
         $this->view->setParams([
             'title' => $post->title . ' | ' . config()->get('app.name'),
             'post' => new RawParam(current($this->postService->transformData([$post]))),
             'comments' => $comments,
-            'referer' => $ref == 'my-posts' ? '/my-posts' : $referer,
+            'referer' => nav_ref_decode($ref),
         ]);
 
         $response->html($this->view->render('post/single'));

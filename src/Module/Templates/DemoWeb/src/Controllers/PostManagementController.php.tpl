@@ -120,7 +120,7 @@ class PostManagementController extends BaseController
         $this->view->setParams([
             'title' => $post->title . ' | ' . config()->get('app.name'),
             'post' => $post->asArray(),
-            'referer' => '/' . $ref
+            'referer' => nav_ref_decode($ref)
         ]);
 
         $response->html($this->view->render('post/form'));
