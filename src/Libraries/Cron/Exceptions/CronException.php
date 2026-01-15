@@ -29,7 +29,7 @@ class CronException extends \Exception
      */
     public static function taskNotFound(string $taskName): CronException
     {
-        return new self(sprintf(ExceptionMessages::TASK_NOT_FOUND->value, $taskName));
+        return new self(sprintf(ExceptionMessages::TASK_NOT_FOUND, $taskName));
     }
 
     /**
@@ -39,7 +39,7 @@ class CronException extends \Exception
      */
     public static function invalidExpression(string $expression): CronException
     {
-        return new self(sprintf(ExceptionMessages::INVALID_EXPRESSION->value, $expression));
+        return new self(sprintf(ExceptionMessages::INVALID_EXPRESSION, $expression));
     }
 
     /**
@@ -49,7 +49,7 @@ class CronException extends \Exception
      */
     public static function lockAcquireFailed(string $taskName): CronException
     {
-        return new self(sprintf(ExceptionMessages::LOCK_ACQUIRE_FAILED->value, $taskName));
+        return new self(sprintf(ExceptionMessages::LOCK_ACQUIRE_FAILED, $taskName));
     }
 
     /**
@@ -60,7 +60,7 @@ class CronException extends \Exception
      */
     public static function taskExecutionFailed(string $taskName, string $error): CronException
     {
-        return new self(sprintf(ExceptionMessages::TASK_EXECUTION_FAILED->value, $taskName, $error));
+        return new self(sprintf(ExceptionMessages::TASK_EXECUTION_FAILED, $taskName, $error));
     }
 
     /**
@@ -70,7 +70,7 @@ class CronException extends \Exception
      */
     public static function invalidTaskFile(string $file): CronException
     {
-        return new self(sprintf(ExceptionMessages::INVALID_TASK_FILE->value, $file));
+        return new self(sprintf(ExceptionMessages::INVALID_TASK_FILE, $file));
     }
 
     /**
@@ -80,7 +80,7 @@ class CronException extends \Exception
      */
     public static function cronDirectoryNotFound(string $directory): CronException
     {
-        return new self(sprintf(ExceptionMessages::CRON_DIRECTORY_NOT_FOUND->value, $directory));
+        return new self(sprintf(ExceptionMessages::CRON_DIRECTORY_NOT_FOUND, $directory));
     }
 
     /**
@@ -90,6 +90,6 @@ class CronException extends \Exception
      */
     public static function lockDirectoryNotWritable(string $directory): CronException
     {
-        return new self(sprintf(ExceptionMessages::LOCK_DIRECTORY_NOT_WRITABLE->value, $directory));
+        return new self(sprintf(ExceptionMessages::LOCK_DIRECTORY_NOT_WRITABLE, $directory));
     }
 }

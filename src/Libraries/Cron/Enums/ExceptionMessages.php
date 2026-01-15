@@ -18,13 +18,13 @@ namespace Quantum\Libraries\Cron\Enums;
  * Enum ExceptionMessages
  * @package Quantum\Libraries\Cron
  */
-enum ExceptionMessages: string
+final class ExceptionMessages
 {
-    case TASK_NOT_FOUND = 'Cron task "%s" not found';
-    case INVALID_EXPRESSION = 'Invalid cron expression: %s';
-    case LOCK_ACQUIRE_FAILED = 'Failed to acquire lock for task "%s"';
-    case TASK_EXECUTION_FAILED = 'Task "%s" execution failed: %s';
-    case INVALID_TASK_FILE = 'Invalid task file "%s": must return array or CronTask instance';
-    case CRON_DIRECTORY_NOT_FOUND = 'Cron directory not found: %s';
-    case LOCK_DIRECTORY_NOT_WRITABLE = 'Lock directory is not writable: %s';
+    public const TASK_NOT_FOUND = 'Cron task "%s" not found';
+    public const INVALID_EXPRESSION = 'Invalid cron expression: %s';
+    public const LOCK_ACQUIRE_FAILED = 'Failed to acquire lock for task "%s"';
+    public const TASK_EXECUTION_FAILED = 'Task "%s" execution failed: %s';
+    public const INVALID_TASK_FILE = 'Invalid task file "%s": must return array or CronTask instance';
+    public const CRON_DIRECTORY_NOT_FOUND = 'Cron directory not found: %s';
+    public const LOCK_DIRECTORY_NOT_WRITABLE = 'Lock directory is not writable: %s';
 }

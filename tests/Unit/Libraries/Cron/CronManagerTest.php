@@ -3,7 +3,6 @@
 namespace Quantum\Tests\Unit\Libraries\Cron;
 
 use Quantum\Libraries\Cron\CronManager;
-use Quantum\Libraries\Cron\CronTask;
 use Quantum\Libraries\Cron\Exceptions\CronException;
 use PHPUnit\Framework\TestCase;
 use org\bovigo\vfs\vfsStream;
@@ -102,13 +101,13 @@ class CronManagerTest extends TestCase
         $this->createTaskFile('due-task.php', [
             'name' => 'due-task',
             'expression' => '* * * * *', // Always due
-            'body' => "\\Quantum\\Tests\\Unit\\Libraries\\Cron\\CronManagerTest::recordExecution('due-task');"
+            'body' => "\\Quantum\\Tests\\Unit\\Libraries\\Cron\\CronManagerTest::recordExecution('due-task');",
         ]);
 
         $this->createTaskFile('not-due-task.php', [
             'name' => 'not-due-task',
             'expression' => '0 0 1 1 *', // Once a year (Jan 1st)
-            'body' => "\\Quantum\\Tests\\Unit\\Libraries\\Cron\\CronManagerTest::recordExecution('not-due-task');"
+            'body' => "\\Quantum\\Tests\\Unit\\Libraries\\Cron\\CronManagerTest::recordExecution('not-due-task');",
         ]);
 
         $manager = new CronManager($this->cronDirectory);
@@ -125,7 +124,7 @@ class CronManagerTest extends TestCase
         $this->createTaskFile('specific-task.php', [
             'name' => 'specific-task',
             'expression' => '* * * * *',
-            'body' => "\\Quantum\\Tests\\Unit\\Libraries\\Cron\\CronManagerTest::recordExecution('specific-task');"
+            'body' => "\\Quantum\\Tests\\Unit\\Libraries\\Cron\\CronManagerTest::recordExecution('specific-task');",
         ]);
 
         $manager = new CronManager($this->cronDirectory);
@@ -148,7 +147,7 @@ class CronManagerTest extends TestCase
         $this->createTaskFile('locked-task.php', [
             'name' => 'locked-task',
             'expression' => '* * * * *',
-            'body' => "\\Quantum\\Tests\\Unit\\Libraries\\Cron\\CronManagerTest::recordExecution('locked-task');"
+            'body' => "\\Quantum\\Tests\\Unit\\Libraries\\Cron\\CronManagerTest::recordExecution('locked-task');",
         ]);
 
         $manager = new CronManager($this->cronDirectory);
@@ -168,7 +167,7 @@ class CronManagerTest extends TestCase
         $this->createTaskFile('failing-task.php', [
             'name' => 'failing-task',
             'expression' => '* * * * *',
-            'body' => "throw new \\Exception('Task failed');"
+            'body' => "throw new \\Exception('Task failed');",
         ]);
 
         $manager = new CronManager($this->cronDirectory);

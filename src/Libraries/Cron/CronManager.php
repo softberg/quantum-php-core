@@ -45,7 +45,7 @@ class CronManager
         'executed' => 0,
         'skipped' => 0,
         'failed' => 0,
-        'locked' => 0
+        'locked' => 0,
     ];
 
     /**
@@ -196,7 +196,7 @@ class CronManager
             $this->log('error', "Task \"{$task->getName()}\" failed: " . $e->getMessage(), [
                 'exception' => get_class($e),
                 'file' => $e->getFile(),
-                'line' => $e->getLine()
+                'line' => $e->getLine(),
             ]);
         } finally {
             if (!$force) {
@@ -243,7 +243,7 @@ class CronManager
     {
         try {
             $logger = LoggerFactory::get();
-            $logger->log($level, "[CRON] " . $message, $context);
+            $logger->log($level, '[CRON] ' . $message, $context);
         } catch (\Throwable $exception) {
             error_log(sprintf('[CRON] [%s] %s', strtoupper($level), $message));
         }

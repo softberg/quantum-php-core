@@ -92,7 +92,7 @@ class CronLock
         fwrite($this->lockHandle, json_encode([
             'task' => $this->taskName,
             'started_at' => time(),
-            'pid' => getmypid()
+            'pid' => getmypid(),
         ]));
 
         fflush($this->lockHandle);

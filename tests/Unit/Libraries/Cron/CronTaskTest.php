@@ -38,7 +38,7 @@ class CronTaskTest extends TestCase
     public function testShouldNotRunFutureTask()
     {
         // Task scheduled for next year
-        $task = new CronTask('test-task', "0 0 1 1 *", function () {});
+        $task = new CronTask('test-task', '0 0 1 1 *', function () {});
 
         $this->assertFalse($task->shouldRun());
     }

@@ -43,7 +43,7 @@ class CronRunCommandTest extends TestCase
         $this->createTaskFile('test-task.php', [
             'name' => 'test-task',
             'expression' => '* * * * *',
-            'callback' => function () {}
+            'callback' => function () {},
         ]);
 
         $command = new CronRunCommand();
@@ -77,7 +77,7 @@ class CronRunCommandTest extends TestCase
         $this->createTaskFile('specific-task.php', [
             'name' => 'specific-task',
             'expression' => '* * * * *',
-            'callback' => function () {}
+            'callback' => function () {},
         ]);
 
         $command = new CronRunCommand();
@@ -85,7 +85,7 @@ class CronRunCommandTest extends TestCase
 
         $tester->execute([
             '--path' => $this->cronDirectory,
-            '--task' => 'specific-task'
+            '--task' => 'specific-task',
         ]);
 
         $output = $tester->getDisplay();
@@ -98,7 +98,7 @@ class CronRunCommandTest extends TestCase
         $this->createTaskFile('force-task.php', [
             'name' => 'force-task',
             'expression' => '* * * * *',
-            'callback' => function () {}
+            'callback' => function () {},
         ]);
 
         $command = new CronRunCommand();
@@ -106,7 +106,7 @@ class CronRunCommandTest extends TestCase
 
         $tester->execute([
             '--path' => $this->cronDirectory,
-            '--force' => true
+            '--force' => true,
         ]);
 
         $this->assertEquals(0, $tester->getStatusCode());
@@ -119,7 +119,7 @@ class CronRunCommandTest extends TestCase
 
         $tester->execute([
             '--path' => $this->cronDirectory,
-            '--task' => 'non-existent'
+            '--task' => 'non-existent',
         ]);
 
         $output = $tester->getDisplay();
@@ -132,13 +132,13 @@ class CronRunCommandTest extends TestCase
         $this->createTaskFile('task1.php', [
             'name' => 'task-1',
             'expression' => '* * * * *',
-            'callback' => function () {}
+            'callback' => function () {},
         ]);
 
         $this->createTaskFile('task2.php', [
             'name' => 'task-2',
             'expression' => '0 0 1 1 *',
-            'callback' => function () {}
+            'callback' => function () {},
         ]);
 
         $command = new CronRunCommand();
@@ -158,7 +158,7 @@ class CronRunCommandTest extends TestCase
         $this->createTaskFile('failing-task.php', [
             'name' => 'failing-task',
             'expression' => '* * * * *',
-            'body' => "throw new \\Exception('Task failed');"
+            'body' => "throw new \\Exception('Task failed');",
         ]);
 
         $command = new CronRunCommand();
@@ -176,7 +176,7 @@ class CronRunCommandTest extends TestCase
         $this->createTaskFile('short-option-task.php', [
             'name' => 'short-option-task',
             'expression' => '* * * * *',
-            'callback' => function () {}
+            'callback' => function () {},
         ]);
 
         $command = new CronRunCommand();
@@ -184,7 +184,7 @@ class CronRunCommandTest extends TestCase
 
         $tester->execute([
             '--path' => $this->cronDirectory,
-            '-t' => 'short-option-task'
+            '-t' => 'short-option-task',
         ]);
 
         $output = $tester->getDisplay();
