@@ -16,6 +16,7 @@ namespace Quantum\Console\Commands;
 
 use Quantum\Console\QtCommand;
 use RuntimeException;
+use Throwable;
 
 /**
  * Class ServeCommand
@@ -26,7 +27,7 @@ class ServeCommand extends QtCommand
     /**
      * Platform Windows
      */
-    public const PLATFORM_WINDOWS = 'WINNT';
+    public const PLATFORM_WINDOWS = 'Windows';
 
     /**
      * Platform Linux
@@ -79,42 +80,97 @@ class ServeCommand extends QtCommand
     ];
 
     /**
-     * Executes the command
+     * Execute the command.
      */
     public function exec()
     {
-        $endpoint = $this->resolveEndpoint();
+        $host = $this->host();
+        $startPort = $this->port();
 
-        $this->info("Starting development server at: {$endpoint['url']}");
+        $serverProcess = $this->startServerOnAvailablePort($host, $startPort);
 
-        $process = $this->startPhpServer($endpoint['host'], $endpoint['port']);
-        $this->waitUntilServerIsReady($endpoint['host'], $endpoint['port'], $process);
+        $this->handleServerExecution($serverProcess);
+    }
 
-        if ($this->shouldOpenBrowser()) {
-            $this->openBrowser($endpoint['url']);
+    /**
+     * Start server on first available port.
+     * @param string $host
+     * @param int $startPort
+     * @return array
+     * @throws RuntimeException
+     */
+    protected function startServerOnAvailablePort(string $host, int $startPort): array
+    {
+        for ($i = 0; $i < $this->maxPortScan && $startPort + $i <= 65535; $i++) {
+            $port = $startPort + $i;
+
+            if ($this->isPortInUse($host, $port)) {
+                continue;
+            }
+
+            $url = "http://{$host}:{$port}";
+            $this->info("Starting development server at: {$url}");
+
+            $process = $this->startPhpServer($host, $port);
+
+            try {
+                $this->waitUntilServerIsReady($host, $port, $process);
+
+                return [
+                    'process' => $process,
+                    'port' => $port,
+                    'url' => $url,
+                ];
+            } catch (Throwable $e) {
+                $this->cleanupProcess($process);
+            }
         }
 
-        $this->waitForProcess($process);
+        throw new RuntimeException('Unable to start PHP server on any available port.');
     }
 
     /**
-     * Resolves the endpoint
-     * @return array
+     * Handle server execution (browser opening and process monitoring).
+     * @param array $serverData
      */
-    protected function resolveEndpoint(): array
+    protected function handleServerExecution(array $serverData): void
     {
-        $host = $this->host();
-        $port = $this->findAvailablePort($host, $this->port());
+        if ($this->shouldOpenBrowser()) {
+            $this->openBrowser($serverData['url']);
+        }
 
-        return [
-            'host' => $host,
-            'port' => $port,
-            'url' => "http://{$host}:{$port}",
-        ];
+        $this->waitForProcess($serverData['process']);
     }
 
     /**
-     * Starts the php development server
+     * Clean up process resource.
+     * @param resource $process
+     */
+    protected function cleanupProcess($process): void
+    {
+        if (is_resource($process)) {
+            proc_close($process);
+        }
+    }
+
+    /**
+     * Check if port is already in use by another process.
+     * @param string $host
+     * @param int $port
+     * @return bool
+     */
+    protected function isPortInUse(string $host, int $port): bool
+    {
+        $fp = @fsockopen($host, $port, $errno, $errstr, 0.1);
+        if ($fp) {
+            fclose($fp);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Start PHP built-in server.
      * @param string $host
      * @param int $port
      * @return resource
@@ -148,8 +204,7 @@ class ServeCommand extends QtCommand
      * Wait until the PHP server is ready to accept connections.
      * @param string $host
      * @param int $port
-     * @param $process
-     * @return void
+     * @param resource $process
      */
     protected function waitUntilServerIsReady(string $host, int $port, $process): void
     {
@@ -176,65 +231,16 @@ class ServeCommand extends QtCommand
     }
 
     /**
-     * Wait until the PHP server is ready to accept connections.
-     * @param $process
-     * @return void
+     * Block until the PHP server process exits.
+     * @param resource $process
      */
     protected function waitForProcess($process): void
     {
-        try {
-            while (true) {
-                $status = proc_get_status($process);
-                if ($status === false || !$status['running']) {
-                    break;
-                }
-
-                usleep(200_000);
-            }
-        } finally {
-            proc_close($process);
-        }
-    }
-
-    /**
-     * Block until the PHP server process exits.
-     * @param string $host
-     * @param int $startPort
-     * @return int
-     */
-    protected function findAvailablePort(string $host, int $startPort): int
-    {
-        for ($i = 0; $i < $this->maxPortScan; $i++) {
-            $port = $startPort + $i;
-            if ($this->canBind($host, $port)) {
-                return $port;
-            }
+        while (proc_get_status($process)['running']) {
+            usleep(200_000);
         }
 
-        throw new RuntimeException("No available ports found starting from {$startPort}");
-    }
-
-    /**
-     * Check whether the given host and port can be bound.
-     * @param string $host
-     * @param int $port
-     * @return bool
-     */
-    protected function canBind(string $host, int $port): bool
-    {
-        $socket = @stream_socket_server(
-            "tcp://{$host}:{$port}",
-            $errno,
-            $errstr,
-            STREAM_SERVER_BIND | STREAM_SERVER_LISTEN
-        );
-
-        if ($socket === false) {
-            return false;
-        }
-
-        fclose($socket);
-        return true;
+        proc_close($process);
     }
 
     /**
@@ -243,13 +249,12 @@ class ServeCommand extends QtCommand
      */
     protected function shouldOpenBrowser(): bool
     {
-        return $this->getOption('open');
+        return (bool) $this->getOption('open');
     }
 
     /**
-     * Open the default system browser for the given URL.
+     * Open the default browser.
      * @param string $url
-     * @return void
      */
     protected function openBrowser(string $url): void
     {
@@ -271,13 +276,13 @@ class ServeCommand extends QtCommand
     }
 
     /**
-     * Resolve the platform-specific command used to open a URL.
+     * Resolve platform-specific browser command.
      * @param string $url
-     * @return string[]|null
+     * @return array|null
      */
     protected function browserCommand(string $url): ?array
     {
-        switch (PHP_OS) {
+        switch (PHP_OS_FAMILY) {
             case self::PLATFORM_WINDOWS:
                 return ['explorer.exe', $url];
             case self::PLATFORM_LINUX:
@@ -290,7 +295,7 @@ class ServeCommand extends QtCommand
     }
 
     /**
-     * Resolve the platform-specific command used to open a URL.
+     * Get host option.
      * @return string
      */
     protected function host(): string
@@ -299,7 +304,7 @@ class ServeCommand extends QtCommand
     }
 
     /**
-     * Get and validate the port option.
+     * Get and validate port option.
      * @return int
      */
     protected function port(): int
