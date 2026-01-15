@@ -1,0 +1,233 @@
+<?php
+
+namespace Quantum\Tests\Unit\Libraries\Cron;
+
+use Quantum\Libraries\Cron\CronManager;
+use Quantum\Libraries\Cron\CronTask;
+use Quantum\Libraries\Cron\Exceptions\CronException;
+use PHPUnit\Framework\TestCase;
+use org\bovigo\vfs\vfsStream;
+
+/**
+ * Class CronManagerTest
+ * @package Quantum\Tests\Unit\Libraries\Cron
+ */
+class CronManagerTest extends TestCase
+{
+    private $vfsRoot;
+    private $cronDirectory;
+    private static $executedTasks = [];
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        // Create virtual filesystem
+        $this->vfsRoot = vfsStream::setup('project');
+        $this->cronDirectory = vfsStream::url('project/cron');
+        mkdir($this->cronDirectory);
+        self::$executedTasks = [];
+
+        // Setup logging config to avoid Loader dependency
+        if (!config()->has('logging')) {
+            config()->set('logging', [
+                'default' => 'single',
+                'single' => [
+                    'driver' => 'single',
+                    'path' => base_dir() . '/logs',
+                    'level' => 'debug',
+                ],
+            ]);
+        }
+    }
+
+    public function testLoadTasksFromDirectory()
+    {
+        $this->createTaskFile('task1.php', [
+            'name' => 'task-1',
+            'expression' => '* * * * *',
+        ]);
+
+        $this->createTaskFile('task2.php', [
+            'name' => 'task-2',
+            'expression' => '0 * * * *',
+        ]);
+
+        $manager = new CronManager($this->cronDirectory);
+        $manager->loadTasks();
+
+        $tasks = $manager->getTasks();
+
+        $this->assertCount(2, $tasks);
+        $this->assertArrayHasKey('task-1', $tasks);
+        $this->assertArrayHasKey('task-2', $tasks);
+    }
+
+    public function testLoadTasksWithObjectFormat()
+    {
+        $taskContent = '<?php
+            use Quantum\Libraries\Cron\CronTask;
+            return new CronTask("object-task", "* * * * *", function() {});
+        ';
+
+        file_put_contents($this->cronDirectory . '/object-task.php', $taskContent);
+
+        $manager = new CronManager($this->cronDirectory);
+        $manager->loadTasks();
+
+        $tasks = $manager->getTasks();
+
+        $this->assertCount(1, $tasks);
+        $this->assertArrayHasKey('object-task', $tasks);
+    }
+
+    public function testLoadTasksWithEmptyDirectory()
+    {
+        $manager = new CronManager($this->cronDirectory);
+        $manager->loadTasks();
+
+        $this->assertCount(0, $manager->getTasks());
+    }
+
+    public function testLoadTasksWithNonExistentDirectory()
+    {
+        $manager = new CronManager(vfsStream::url('project/nonexistent'));
+        $manager->loadTasks();
+
+        $this->assertCount(0, $manager->getTasks());
+    }
+
+    public function testRunDueTasksExecutesOnlyDueTasks()
+    {
+        $this->createTaskFile('due-task.php', [
+            'name' => 'due-task',
+            'expression' => '* * * * *', // Always due
+            'body' => "\\Quantum\\Tests\\Unit\\Libraries\\Cron\\CronManagerTest::recordExecution('due-task');"
+        ]);
+
+        $this->createTaskFile('not-due-task.php', [
+            'name' => 'not-due-task',
+            'expression' => '0 0 1 1 *', // Once a year (Jan 1st)
+            'body' => "\\Quantum\\Tests\\Unit\\Libraries\\Cron\\CronManagerTest::recordExecution('not-due-task');"
+        ]);
+
+        $manager = new CronManager($this->cronDirectory);
+        $stats = $manager->runDueTasks();
+
+        $this->assertContains('due-task', self::$executedTasks);
+        $this->assertNotContains('not-due-task', self::$executedTasks);
+        $this->assertEquals(1, $stats['executed']);
+        $this->assertEquals(1, $stats['skipped']);
+    }
+
+    public function testRunTaskByName()
+    {
+        $this->createTaskFile('specific-task.php', [
+            'name' => 'specific-task',
+            'expression' => '* * * * *',
+            'body' => "\\Quantum\\Tests\\Unit\\Libraries\\Cron\\CronManagerTest::recordExecution('specific-task');"
+        ]);
+
+        $manager = new CronManager($this->cronDirectory);
+        $manager->runTaskByName('specific-task');
+
+        $this->assertContains('specific-task', self::$executedTasks);
+    }
+
+    public function testRunTaskByNameThrowsExceptionForNonExistentTask()
+    {
+        $this->expectException(CronException::class);
+        $this->expectExceptionMessage('not found');
+
+        $manager = new CronManager($this->cronDirectory);
+        $manager->runTaskByName('non-existent-task');
+    }
+
+    public function testRunDueTasksWithForceIgnoresLocks()
+    {
+        $this->createTaskFile('locked-task.php', [
+            'name' => 'locked-task',
+            'expression' => '* * * * *',
+            'body' => "\\Quantum\\Tests\\Unit\\Libraries\\Cron\\CronManagerTest::recordExecution('locked-task');"
+        ]);
+
+        $manager = new CronManager($this->cronDirectory);
+
+        // Run twice with force - should execute both times
+        $manager->runDueTasks(true);
+        $manager->runDueTasks(true);
+
+        $occurrences = array_filter(self::$executedTasks, function ($task) {
+            return $task === 'locked-task';
+        });
+        $this->assertCount(2, $occurrences);
+    }
+
+    public function testTaskExecutionFailureIsHandled()
+    {
+        $this->createTaskFile('failing-task.php', [
+            'name' => 'failing-task',
+            'expression' => '* * * * *',
+            'body' => "throw new \\Exception('Task failed');"
+        ]);
+
+        $manager = new CronManager($this->cronDirectory);
+        $stats = $manager->runDueTasks();
+
+        $this->assertEquals(0, $stats['executed']);
+        $this->assertEquals(1, $stats['failed']);
+    }
+
+    public function testGetStatsReturnsCorrectStatistics()
+    {
+        $this->createTaskFile('task1.php', [
+            'name' => 'task-1',
+            'expression' => '* * * * *',
+        ]);
+
+        $this->createTaskFile('task2.php', [
+            'name' => 'task-2',
+            'expression' => '0 0 1 1 *',
+        ]);
+
+        $manager = new CronManager($this->cronDirectory);
+        $stats = $manager->runDueTasks();
+
+        $this->assertEquals(2, $stats['total']);
+        $this->assertEquals(1, $stats['executed']);
+        $this->assertEquals(1, $stats['skipped']);
+        $this->assertEquals(0, $stats['failed']);
+        $this->assertEquals(0, $stats['locked']);
+    }
+
+    public function testInvalidTaskFileThrowsException()
+    {
+        $this->expectException(CronException::class);
+        $this->expectExceptionMessage('Invalid task file');
+
+        file_put_contents($this->cronDirectory . '/invalid.php', '<?php return "invalid";');
+
+        $manager = new CronManager($this->cronDirectory);
+        $manager->loadTasks();
+    }
+
+    private function createTaskFile(string $filename, array $definition): void
+    {
+        $body = $definition['body'] ?? "\\Quantum\\Tests\\Unit\\Libraries\\Cron\\CronManagerTest::recordExecution('{$definition['name']}');";
+
+        $content = "<?php\n\nreturn [\n";
+        $content .= "    'name' => '{$definition['name']}',\n";
+        $content .= "    'expression' => '{$definition['expression']}',\n";
+        $content .= "    'callback' => function () {\n";
+        $content .= "        {$body}\n";
+        $content .= "    }\n";
+        $content .= "];\n";
+
+        file_put_contents($this->cronDirectory . '/' . $filename, $content);
+    }
+
+    public static function recordExecution(string $taskName): void
+    {
+        self::$executedTasks[] = $taskName;
+    }
+}

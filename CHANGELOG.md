@@ -33,6 +33,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Rector as dev dependency for automated code refactoring
 - Additional PHP extensions required in CI: `bcmath`, `gd`, `zip`
 - PHPUnit strict testing flags: `--fail-on-warning`, `--fail-on-risky`
+- **Cron Scheduler**: New CLI command `php qt cron:run` for running scheduled tasks
+  - Task definition via PHP files in `cron/` directory
+  - Cron expression parsing using `dragonmantank/cron-expression` library
+  - File-based task locking to prevent concurrent execution
+  - Comprehensive logging of task execution and errors
+  - Support for force mode and specific task execution
+  - Automatic cleanup of stale locks (older than 24 hours)
+  - Full documentation in `docs/cron-scheduler.md`
 
 ### Removed
 - Support for PHP 7.3 and earlier versions
