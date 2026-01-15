@@ -123,7 +123,7 @@ function page_not_found()
 
     if ($isJson) {
         Response::json(
-            ['status' => 'error', 'message' => 'Page not found'],
+            ['status' => 'error', 'message' => 'Page not found',],
             StatusCode::NOT_FOUND
         );
     } else {

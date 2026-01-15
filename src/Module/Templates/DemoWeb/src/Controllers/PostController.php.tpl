@@ -71,7 +71,8 @@ class PostController extends BaseController
         $this->view->setParams([
             'title' => t('common.posts') . ' | ' . config()->get('app.name'),
             'posts' => $this->postService->transformData($paginatedPosts->data()->all()),
-            'pagination' => $paginatedPosts
+            'pagination' => $paginatedPosts,
+            'referer' => nav_ref_encode(Request::getQuery())
         ]);
 
         $response->html($this->view->render('post/post'));
@@ -105,7 +106,7 @@ class PostController extends BaseController
             'title' => $post->title . ' | ' . config()->get('app.name'),
             'post' => new RawParam(current($this->postService->transformData([$post]))),
             'comments' => $comments,
-            'referer' => $ref,
+            'referer' => nav_ref_decode($ref),
         ]);
 
         $response->html($this->view->render('post/single'));
