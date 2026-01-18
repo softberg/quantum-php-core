@@ -70,13 +70,14 @@ class Route
     private $virtualRoutes = [];
 
     /**
-     * @param array $module
+     * @param string $moduleName
+     * @param array $moduleOptions
      */
-    public function __construct(array $module)
+    public function __construct(string $moduleName, array $moduleOptions)
     {
         $this->virtualRoutes['*'] = [];
-        $this->moduleName = key($module);
-        $this->moduleOptions = $module[$this->moduleName];
+        $this->moduleName = $moduleName;
+        $this->moduleOptions = $moduleOptions;
     }
 
     /**
@@ -95,7 +96,7 @@ class Route
         ];
 
         if (isset($this->moduleOptions['cacheable'])) {
-            $this->currentRoute['cache_settings']['shouldCache'] = (bool)$this->moduleOptions['cacheable'];
+            $this->currentRoute['cache_settings']['shouldCache'] = (bool) $this->moduleOptions['cacheable'];
         }
 
         if (is_callable($params[0])) {

@@ -17,12 +17,13 @@ namespace Quantum\Console\Commands;
 use Quantum\Module\Exceptions\ModuleException;
 use Quantum\Router\Exceptions\RouteException;
 use Symfony\Component\Console\Helper\Table;
+use Quantum\Router\RouteBuilder;
 use Quantum\Module\ModuleLoader;
 use Quantum\Console\QtCommand;
 use Quantum\Router\Router;
 
 /**
- * Class ServeCommand
+ * Class RouteListCommand
  * @package Quantum\Console
  */
 class RouteListCommand extends QtCommand
@@ -53,9 +54,12 @@ class RouteListCommand extends QtCommand
     public function exec()
     {
         try {
-            $modulesRoutes = ModuleLoader::getInstance()->loadModulesRoutes();
+            $moduleLoader = ModuleLoader::getInstance();
 
-            Router::setRoutes($modulesRoutes);
+            $builder = new RouteBuilder();
+            $allRoutes = $builder->build($moduleLoader->loadModulesRoutes(), $moduleLoader->getModuleConfigs());
+
+            Router::setRoutes($allRoutes);
 
             $routes = Router::getRoutes();
 

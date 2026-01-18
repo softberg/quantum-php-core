@@ -4,7 +4,7 @@ namespace Module;
 
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Module\ModuleLoader;
-use Quantum\Router\Router;
+use Closure;
 
 class ModuleLoaderTest extends AppTestCase
 {
@@ -32,13 +32,13 @@ class ModuleLoaderTest extends AppTestCase
     {
         $modulesRoutes = $this->moduleLoader->loadModulesRoutes();
 
-        Router::setRoutes($modulesRoutes);
+        $this->assertNotEmpty($modulesRoutes);
 
-        $this->assertNotEmpty(Router::getRoutes());
+        $this->assertIsArray($modulesRoutes);
 
-        $this->assertIsArray(Router::getRoutes());
+        $this->assertArrayHasKey('Test', $modulesRoutes);
 
-        $this->assertCount(2, Router::getRoutes());
+        $this->assertInstanceOf(Closure::class, $modulesRoutes['Test']);
     }
 
     public function testLoadModulesDependencies()
