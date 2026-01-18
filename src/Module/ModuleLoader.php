@@ -21,7 +21,6 @@ use Quantum\Router\Exceptions\RouteException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Di\Exceptions\DiException;
-use Quantum\Router\Route;
 use ReflectionException;
 use Quantum\App\App;
 use Closure;
@@ -42,10 +41,8 @@ class ModuleLoader
      */
     private static $moduleConfigs = [];
 
-    /**
-     * @var array<Closure>
-     */
-    private static $moduleRoutes = [];
+    /** @var array<string, Closure> */
+    private static $moduleRouteClosures = [];
 
     /**
      * @var FileSystem
@@ -80,12 +77,6 @@ class ModuleLoader
         return self::$instance;
     }
 
-    /**
-     * Load modules routes
-     * @return array
-     * @throws ModuleException
-     * @throws RouteException
-     */
     public function loadModulesRoutes(): array
     {
         if (empty(self::$moduleConfigs)) {
@@ -99,10 +90,31 @@ class ModuleLoader
                 continue;
             }
 
-            $modulesRoutes = array_merge($modulesRoutes, $this->getModuleRoutes($module, new Route([$module => $options])));
+            $modulesRoutes[$module] = $this->getModuleRouteDefinitions($module);
         }
 
         return $modulesRoutes;
+    }
+
+    private function getModuleRouteDefinitions(string $module): Closure
+    {
+        if (isset(self::$moduleRouteClosures[$module])) {
+            return self::$moduleRouteClosures[$module];
+        }
+
+        $moduleRoutesPath = modules_dir() . DS . $module . DS . 'routes' . DS . 'routes.php';
+
+        if (!$this->fs->exists($moduleRoutesPath)) {
+            throw ModuleException::moduleRoutesNotFound($module);
+        }
+
+        $closure = $this->fs->require($moduleRoutesPath, true);
+
+        if (!$closure instanceof Closure) {
+            throw RouteException::notClosure();
+        }
+
+        return self::$moduleRouteClosures[$module] = $closure;
     }
 
     /**
@@ -146,19 +158,6 @@ class ModuleLoader
     }
 
     /**
-     * @return array
-     * @throws ModuleException
-     */
-    public function getModuleConfigs(): array
-    {
-        if (empty(self::$moduleConfigs)) {
-            $this->loadModuleConfig();
-        }
-
-        return self::$moduleConfigs;
-    }
-
-    /**
      * @throws ModuleException
      */
     private function loadModuleConfig()
@@ -173,39 +172,24 @@ class ModuleLoader
     }
 
     /**
+     * @return array
+     * @throws ModuleException
+     */
+    public function getModuleConfigs(): array
+    {
+        if (empty(self::$moduleConfigs)) {
+            $this->loadModuleConfig();
+        }
+
+        return self::$moduleConfigs;
+    }
+
+    /**
      * @param array $options
      * @return bool
      */
     private function isModuleEnabled(array $options): bool
     {
-        return $options['enabled'] ?? false;
-    }
-
-    /**
-     * @param string $module
-     * @param Route $route
-     * @return array
-     * @throws ModuleException
-     * @throws RouteException
-     */
-    private function getModuleRoutes(string $module, Route $route): array
-    {
-        $moduleRoutes = modules_dir() . DS . $module . DS . 'routes' . DS . 'routes.php';
-
-        if (!$this->fs->exists($moduleRoutes)) {
-            throw ModuleException::moduleRoutesNotFound($module);
-        }
-
-        if (empty(self::$moduleRoutes[$module])) {
-            self::$moduleRoutes[$module] = $this->fs->require($moduleRoutes, true);
-        }
-
-        if (!self::$moduleRoutes[$module] instanceof Closure) {
-            throw RouteException::notClosure();
-        }
-
-        self::$moduleRoutes[$module]($route);
-
-        return $route->getRuntimeRoutes();
+        return (bool) ($options['enabled'] ?? false);
     }
 }

@@ -22,6 +22,7 @@ use Quantum\App\Exceptions\BaseException;
 use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Module\ModuleLoader;
+use Quantum\Router\RouteBuilder;
 use Quantum\Console\QtCommand;
 use Quantum\Router\Router;
 use ReflectionException;
@@ -100,9 +101,12 @@ class OpenApiCommand extends QtCommand
      */
     public function exec()
     {
-        $modulesRoutes = ModuleLoader::getInstance()->loadModulesRoutes();
+        $moduleLoader = ModuleLoader::getInstance();
 
-        Router::setRoutes($modulesRoutes);
+        $builder = new RouteBuilder();
+        $allRoutes = $builder->build($moduleLoader->loadModulesRoutes(), $moduleLoader->getModuleConfigs());
+
+        Router::setRoutes($allRoutes);
 
         $this->fs = FileSystemFactory::get();
 

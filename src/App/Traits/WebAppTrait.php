@@ -23,6 +23,7 @@ use Quantum\Http\Exceptions\HttpException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Module\ModuleLoader;
+use Quantum\Router\RouteBuilder;
 use DebugBar\DebugBarException;
 use Quantum\Environment\Server;
 use Quantum\Debugger\Debugger;
@@ -65,7 +66,6 @@ trait WebAppTrait
     /**
      * Load modules
      * @throws ModuleException
-     * @throws RouteException
      */
     private function loadModules()
     {
@@ -74,8 +74,10 @@ trait WebAppTrait
         $modulesDependencies = $moduleLoader->loadModulesDependencies();
         Di::registerDependencies($modulesDependencies);
 
-        $modulesRoutes = $moduleLoader->loadModulesRoutes();
-        Router::setRoutes($modulesRoutes);
+        $builder = new RouteBuilder();
+        $allRoutes = $builder->build($moduleLoader->loadModulesRoutes(), $moduleLoader->getModuleConfigs());
+
+        Router::setRoutes($allRoutes);
     }
 
     /**

@@ -14,14 +14,7 @@ class RouteTest extends AppTestCase
     {
         parent::setUp();
 
-        $module = [
-            'Test' => [
-                'prefix' => '',
-                'endabled' => true,
-            ],
-        ];
-
-        $this->route = new Route($module);
+        $this->route = new Route('Test', ['prefix' => '', 'endabled' => true]);
     }
 
     public function testCallbackRoute()
