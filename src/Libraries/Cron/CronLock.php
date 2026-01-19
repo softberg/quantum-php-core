@@ -41,7 +41,7 @@ class CronLock
 
     public function acquire(): bool
     {
-        $this->lockHandle = @fopen($this->lockFile, 'c+');
+        $this->lockHandle = fopen($this->lockFile, 'c+');
         if ($this->lockHandle === false) {
             $this->lockHandle = null;
             $this->ownsLock = false;
@@ -55,7 +55,13 @@ class CronLock
             return false;
         }
 
-        $this->writeTimestampToHandle($this->lockHandle);
+        if (!$this->writeTimestampToHandle($this->lockHandle)) {
+            flock($this->lockHandle, LOCK_UN);
+            fclose($this->lockHandle);
+            $this->lockHandle = null;
+            $this->ownsLock = false;
+            return false;
+        }
         $this->ownsLock = true;
 
         return true;
@@ -70,8 +76,7 @@ class CronLock
             return false;
         }
 
-        $this->writeTimestampToHandle($this->lockHandle);
-        return true;
+        return $this->writeTimestampToHandle($this->lockHandle);
     }
 
     public function release(): bool
@@ -80,15 +85,18 @@ class CronLock
             return true;
         }
 
-        flock($this->lockHandle, LOCK_UN);
-        fclose($this->lockHandle);
+        $unlocked = flock($this->lockHandle, LOCK_UN);
+        $closed = fclose($this->lockHandle);
 
         $this->lockHandle = null;
         $this->ownsLock = false;
 
-        @fs()->remove($this->lockFile);
+        $removed = true;
+        if (fs()->exists($this->lockFile)) {
+            $removed = fs()->remove($this->lockFile);
+        }
 
-        return true;
+        return $unlocked && $closed && $removed;
     }
 
     /**
@@ -100,7 +108,7 @@ class CronLock
             return false;
         }
 
-        $handle = @fopen($this->lockFile, 'c+');
+        $handle = fopen($this->lockFile, 'c+');
         if ($handle === false) {
             return true;
         }
@@ -185,7 +193,7 @@ class CronLock
         $now = time();
 
         foreach ($files as $file) {
-            $handle = @fopen($file, 'c+');
+            $handle = fopen($file, 'c+');
             if ($handle === false) {
                 continue;
             }
@@ -199,28 +207,40 @@ class CronLock
             $timestamp = $this->readTimestampFromHandle($handle);
 
             if ($timestamp !== null && ($now - $timestamp) > $this->maxLockAge) {
-                @flock($handle, LOCK_UN);
-                @fclose($handle);
-                @fs()->remove($file);
+                flock($handle, LOCK_UN);
+                fclose($handle);
+                fs()->remove($file);
                 continue;
             }
 
-            @flock($handle, LOCK_UN);
-            @fclose($handle);
+            flock($handle, LOCK_UN);
+            fclose($handle);
         }
     }
 
-    private function writeTimestampToHandle($handle): void
+    private function writeTimestampToHandle($handle): bool
     {
-        @ftruncate($handle, 0);
-        @rewind($handle);
-        @fwrite($handle, (string) time());
-        @fflush($handle);
+        if (ftruncate($handle, 0) === false) {
+            return false;
+        }
+        if (rewind($handle) === false) {
+            return false;
+        }
+        if (fwrite($handle, (string) time()) === false) {
+            return false;
+        }
+        if (fflush($handle) === false) {
+            return false;
+        }
+
+        return true;
     }
 
     private function readTimestampFromHandle($handle): ?int
     {
-        @rewind($handle);
+        if (rewind($handle) === false) {
+            return null;
+        }
         $content = stream_get_contents($handle);
         if ($content === false) {
             return null;
