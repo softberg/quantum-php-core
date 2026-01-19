@@ -7,6 +7,7 @@ use Quantum\App\Factories\AppFactory;
 use Quantum\Environment\Environment;
 use Quantum\Router\RouteController;
 use PHPUnit\Framework\TestCase;
+use Quantum\Debugger\Debugger;
 use Quantum\Http\Request;
 use Quantum\Loader\Setup;
 use ReflectionClass;
@@ -32,6 +33,7 @@ abstract class AppTestCase extends TestCase
     {
         AppFactory::destroy(App::WEB);
         config()->flush();
+        Debugger::getInstance()->resetStore();
         Di::reset();
     }
 
