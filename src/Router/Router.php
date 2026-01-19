@@ -204,7 +204,7 @@ class Router extends RouteController
         $routePattern = '(\/)?';
         $routeParams = [];
 
-        $lastIndex = (int)array_key_last($routeSegments);
+        $lastIndex = (int) array_key_last($routeSegments);
 
         foreach ($routeSegments as $index => $segment) {
             $segmentParam = $this->getSegmentParam($segment, $index, $lastIndex);
