@@ -14,8 +14,8 @@
 
 namespace Quantum\Console\Commands;
 
-use Quantum\Libraries\Cron\CronManager;
 use Quantum\Libraries\Cron\Exceptions\CronException;
+use Quantum\Libraries\Cron\CronManager;
 use Quantum\Console\QtCommand;
 
 /**
@@ -59,7 +59,7 @@ class CronRunCommand extends QtCommand
     {
         $force = (bool) $this->getOption('force');
         $taskName = $this->getOption('task');
-        $cronPath = $this->getOption('path') ?: getenv('QT_CRON_PATH') ?: null;
+        $cronPath = $this->getOption('path') ?: cron_config('path');
 
         try {
             $manager = new CronManager($cronPath);

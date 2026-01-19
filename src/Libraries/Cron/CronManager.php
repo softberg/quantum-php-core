@@ -15,8 +15,8 @@
 namespace Quantum\Libraries\Cron;
 
 use Quantum\Libraries\Cron\Contracts\CronTaskInterface;
-use Quantum\Libraries\Cron\Exceptions\CronException;
 use Quantum\Libraries\Logger\Factories\LoggerFactory;
+use Quantum\Libraries\Cron\Exceptions\CronException;
 
 /**
  * Class CronManager
@@ -54,7 +54,8 @@ class CronManager
      */
     public function __construct(?string $cronDirectory = null)
     {
-        $this->cronDirectory = $cronDirectory ?? $this->getDefaultCronDirectory();
+        $configuredPath = $cronDirectory ?? cron_config('path');
+        $this->cronDirectory = $configuredPath ?: $this->getDefaultCronDirectory();
     }
 
     /**
@@ -64,20 +65,17 @@ class CronManager
      */
     public function loadTasks(): void
     {
-        if (!is_dir($this->cronDirectory)) {
+        if (!fs()->isDirectory($this->cronDirectory)) {
+            if ($this->cronDirectory !== $this->getDefaultCronDirectory()) {
+                throw CronException::cronDirectoryNotFound($this->cronDirectory);
+            }
             return;
         }
 
-        $files = scandir($this->cronDirectory);
+        $files = fs()->glob($this->cronDirectory . DS . '*.php') ?: [];
 
         foreach ($files as $file) {
-            if ($file === '.' || $file === '..') {
-                continue;
-            }
-
-            if (pathinfo($file, PATHINFO_EXTENSION) === 'php') {
-                $this->loadTaskFromFile($this->cronDirectory . DIRECTORY_SEPARATOR . $file);
-            }
+            $this->loadTaskFromFile($file);
         }
 
         $this->stats['total'] = count($this->tasks);
@@ -91,7 +89,7 @@ class CronManager
      */
     private function loadTaskFromFile(string $file): void
     {
-        $task = require $file;
+        $task = fs()->require($file);
 
         if (is_array($task)) {
             $task = $this->createTaskFromArray($task);
@@ -171,15 +169,9 @@ class CronManager
     {
         $lock = new CronLock($task->getName());
 
-        if (!$force && $lock->isLocked()) {
-            $this->stats['locked']++;
-            $this->log('warning', "Task \"{$task->getName()}\" skipped: locked");
-            return;
-        }
-
         if (!$force && !$lock->acquire()) {
             $this->stats['locked']++;
-            $this->log('warning', "Task \"{$task->getName()}\" skipped: failed to acquire lock");
+            $this->log('warning', "Task \"{$task->getName()}\" skipped: locked");
             return;
         }
 
@@ -229,7 +221,7 @@ class CronManager
      */
     private function getDefaultCronDirectory(): string
     {
-        return base_dir() . DIRECTORY_SEPARATOR . 'cron';
+        return base_dir() . DS . 'cron';
     }
 
     /**

@@ -2,29 +2,26 @@
 
 namespace Quantum\Tests\Unit\Libraries\Cron;
 
+use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Libraries\Cron\CronManager;
 use Quantum\Libraries\Cron\Exceptions\CronException;
-use PHPUnit\Framework\TestCase;
-use org\bovigo\vfs\vfsStream;
 
 /**
  * Class CronManagerTest
  * @package Quantum\Tests\Unit\Libraries\Cron
  */
-class CronManagerTest extends TestCase
+class CronManagerTest extends AppTestCase
 {
-    private $vfsRoot;
     private $cronDirectory;
     private static $executedTasks = [];
 
-    protected function setUp(): void
+    public function setUp(): void
     {
         parent::setUp();
 
-        // Create virtual filesystem
-        $this->vfsRoot = vfsStream::setup('project');
-        $this->cronDirectory = vfsStream::url('project/cron');
-        mkdir($this->cronDirectory);
+        $this->cronDirectory = base_dir() . DS . 'cron-tests';
+        $this->cleanupDirectory($this->cronDirectory);
+        mkdir($this->cronDirectory, 0777, true);
         self::$executedTasks = [];
 
         // Setup logging config to avoid Loader dependency
@@ -38,6 +35,12 @@ class CronManagerTest extends TestCase
                 ],
             ]);
         }
+
+        config()->set('cron', [
+            'path' => null,
+            'lock_path' => null,
+            'max_lock_age' => 86400,
+        ]);
     }
 
     public function testLoadTasksFromDirectory()
@@ -83,14 +86,6 @@ class CronManagerTest extends TestCase
     public function testLoadTasksWithEmptyDirectory()
     {
         $manager = new CronManager($this->cronDirectory);
-        $manager->loadTasks();
-
-        $this->assertCount(0, $manager->getTasks());
-    }
-
-    public function testLoadTasksWithNonExistentDirectory()
-    {
-        $manager = new CronManager(vfsStream::url('project/nonexistent'));
         $manager->loadTasks();
 
         $this->assertCount(0, $manager->getTasks());
@@ -210,8 +205,57 @@ class CronManagerTest extends TestCase
         $manager->loadTasks();
     }
 
-    private function createTaskFile(string $filename, array $definition): void
+    public function testCronDirectoryCanBeConfigured()
     {
+        $configuredDir = base_dir() . DS . 'cron-configured';
+        $this->cleanupDirectory($configuredDir);
+        mkdir($configuredDir, 0777, true);
+
+        $this->createTaskFile('configured-task.php', [
+            'name' => 'configured-task',
+            'expression' => '* * * * *',
+        ], $configuredDir);
+
+        config()->set('cron', [
+            'path' => $configuredDir,
+            'lock_path' => null,
+            'max_lock_age' => 86400,
+        ]);
+
+        $manager = new CronManager();
+        $manager->loadTasks();
+
+        $this->assertArrayHasKey('configured-task', $manager->getTasks());
+
+        $this->cleanupDirectory($configuredDir);
+    }
+
+    public function testCronDirectoryNotFoundThrowsException()
+    {
+        $this->expectException(CronException::class);
+        $this->expectExceptionMessage('not found');
+
+        $manager = new CronManager($this->cronDirectory . '/non-existent');
+        $manager->loadTasks();
+    }
+
+    public function testTaskExecutionFailureIsRecorded()
+    {
+        $this->createTaskFile('failing-task.php', [
+            'name' => 'failing-task',
+            'expression' => '* * * * *',
+            'body' => 'throw new \Exception("Execution failed");',
+        ]);
+
+        $manager = new CronManager($this->cronDirectory);
+        $stats = $manager->runDueTasks(true);
+
+        $this->assertEquals(1, $stats['failed']);
+    }
+
+    private function createTaskFile(string $filename, array $definition, ?string $directory = null): void
+    {
+        $directory = $directory ?? $this->cronDirectory;
         $body = $definition['body'] ?? "\\Quantum\\Tests\\Unit\\Libraries\\Cron\\CronManagerTest::recordExecution('{$definition['name']}');";
 
         $content = "<?php\n\nreturn [\n";
@@ -222,11 +266,36 @@ class CronManagerTest extends TestCase
         $content .= "    }\n";
         $content .= "];\n";
 
-        file_put_contents($this->cronDirectory . '/' . $filename, $content);
+        file_put_contents($directory . DS . $filename, $content);
     }
 
     public static function recordExecution(string $taskName): void
     {
         self::$executedTasks[] = $taskName;
+    }
+
+    private function cleanupDirectory(string $directory): void
+    {
+        if (!is_dir($directory)) {
+            return;
+        }
+
+        $items = scandir($directory);
+
+        foreach ($items as $item) {
+            if (in_array($item, ['.', '..'], true)) {
+                continue;
+            }
+
+            $path = $directory . DS . $item;
+
+            if (is_dir($path)) {
+                $this->cleanupDirectory($path);
+            } elseif (file_exists($path)) {
+                @unlink($path);
+            }
+        }
+
+        @rmdir($directory);
     }
 }

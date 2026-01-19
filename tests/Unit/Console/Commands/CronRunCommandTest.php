@@ -2,28 +2,25 @@
 
 namespace Quantum\Tests\Unit\Console\Commands;
 
+use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Console\Commands\CronRunCommand;
 use Symfony\Component\Console\Tester\CommandTester;
-use PHPUnit\Framework\TestCase;
-use org\bovigo\vfs\vfsStream;
 
 /**
  * Class CronRunCommandTest
  * @package Quantum\Tests\Unit\Console\Commands
  */
-class CronRunCommandTest extends TestCase
+class CronRunCommandTest extends AppTestCase
 {
-    private $vfsRoot;
     private $cronDirectory;
 
-    protected function setUp(): void
+    public function setUp(): void
     {
         parent::setUp();
 
-        // Create virtual filesystem
-        $this->vfsRoot = vfsStream::setup('project');
-        $this->cronDirectory = vfsStream::url('project/cron');
-        mkdir($this->cronDirectory);
+        $this->cronDirectory = base_dir() . DS . 'cron-command-tests';
+        $this->cleanupDirectory($this->cronDirectory);
+        mkdir($this->cronDirectory, 0777, true);
 
         // Setup logging config to avoid Loader dependency
         if (!config()->has('logging')) {
@@ -36,6 +33,18 @@ class CronRunCommandTest extends TestCase
                 ],
             ]);
         }
+        config()->set('cron', [
+            'path' => null,
+            'lock_path' => null,
+            'max_lock_age' => 86400,
+        ]);
+    }
+
+    public function tearDown(): void
+    {
+        parent::tearDown();
+
+        $this->cleanupDirectory($this->cronDirectory);
     }
 
     public function testCommandExecutesSuccessfully()
@@ -59,8 +68,9 @@ class CronRunCommandTest extends TestCase
 
     public function testCommandWithNoTasks()
     {
-        $emptyDir = vfsStream::url('project/cron-empty');
-        mkdir($emptyDir);
+        $emptyDir = $this->cronDirectory . '-empty';
+        $this->cleanupDirectory($emptyDir);
+        mkdir($emptyDir, 0777, true);
 
         $command = new CronRunCommand();
         $tester = new CommandTester($command);
@@ -168,7 +178,7 @@ class CronRunCommandTest extends TestCase
 
         $output = $tester->getDisplay();
 
-        $this->assertStringContainsString('Failed:', $output);
+        $this->assertStringContainsString('Failed: 1', $output);
     }
 
     public function testCommandShortOptions()
@@ -192,6 +202,62 @@ class CronRunCommandTest extends TestCase
         $this->assertStringContainsString('short-option-task', $output);
     }
 
+    public function testCommandUsesConfiguredPath()
+    {
+        $this->createTaskFile('config-task.php', [
+            'name' => 'config-task',
+            'expression' => '* * * * *',
+            'callback' => function () {},
+        ]);
+
+        config()->set('cron', [
+            'path' => $this->cronDirectory,
+            'lock_path' => null,
+            'max_lock_age' => 86400,
+        ]);
+
+        $command = new CronRunCommand();
+        $tester = new CommandTester($command);
+
+        $tester->execute([]);
+
+        $output = $tester->getDisplay();
+
+        $this->assertStringContainsString('Execution Summary', $output);
+    }
+
+    public function testCommandReportsLockedTasks()
+    {
+        $this->createTaskFile('locked-task.php', [
+            'name' => 'locked-task',
+            'expression' => '* * * * *',
+        ]);
+
+        $lock = new \Quantum\Libraries\Cron\CronLock('locked-task', $this->runtimeDirectory . DS . 'locks');
+        $lock->acquire(); // Hold the lock
+
+        $command = new CronRunCommand();
+        $tester = new CommandTester($command);
+
+        $tester->execute(['--path' => $this->cronDirectory]);
+
+        $output = $tester->getDisplay();
+        $this->assertStringContainsString('Locked: 1', $output);
+
+        $lock->release();
+    }
+
+    public function testCommandHandlesUnexpectedError()
+    {
+        $command = new CronRunCommand();
+        $tester = new CommandTester($command);
+
+        $tester->execute(['--path' => []]);
+
+        $output = $tester->getDisplay();
+        $this->assertStringContainsString('Unexpected error', $output);
+    }
+
     private function createTaskFile(string $filename, array $definition): void
     {
         $body = $definition['body'] ?? "echo 'Test task executed';";
@@ -204,6 +270,31 @@ class CronRunCommandTest extends TestCase
         $content .= "    }\n";
         $content .= "];\n";
 
-        file_put_contents($this->cronDirectory . '/' . $filename, $content);
+        file_put_contents($this->cronDirectory . DS . $filename, $content);
+    }
+
+    private function cleanupDirectory(string $directory): void
+    {
+        if (!is_dir($directory)) {
+            return;
+        }
+
+        $items = scandir($directory);
+
+        foreach ($items as $item) {
+            if (in_array($item, ['.', '..'], true)) {
+                continue;
+            }
+
+            $path = $directory . DS . $item;
+
+            if (is_dir($path)) {
+                $this->cleanupDirectory($path);
+            } elseif (file_exists($path)) {
+                @unlink($path);
+            }
+        }
+
+        @rmdir($directory);
     }
 }

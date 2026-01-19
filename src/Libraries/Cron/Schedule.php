@@ -179,6 +179,8 @@ class Schedule
     public function dailyAt(string $time): self
     {
         [$hour, $minute] = explode(':', $time);
+        $hour = (int) $hour;
+        $minute = (int) $minute;
         $this->expression = "{$minute} {$hour} * * *";
         return $this;
     }
@@ -214,6 +216,8 @@ class Schedule
     public function weeklyOn(int $dayOfWeek, string $time = '0:00'): self
     {
         [$hour, $minute] = explode(':', $time);
+        $hour = (int) $hour;
+        $minute = (int) $minute;
         $this->expression = "{$minute} {$hour} * * {$dayOfWeek}";
         return $this;
     }
@@ -237,6 +241,8 @@ class Schedule
     public function monthlyOn(int $dayOfMonth = 1, string $time = '0:00'): self
     {
         [$hour, $minute] = explode(':', $time);
+        $hour = (int) $hour;
+        $minute = (int) $minute;
         $this->expression = "{$minute} {$hour} {$dayOfMonth} * *";
         return $this;
     }
@@ -251,6 +257,8 @@ class Schedule
     public function twiceMonthly(int $firstDay = 1, int $secondDay = 16, string $time = '0:00'): self
     {
         [$hour, $minute] = explode(':', $time);
+        $hour = (int) $hour;
+        $minute = (int) $minute;
         $this->expression = "{$minute} {$hour} {$firstDay},{$secondDay} * *";
         return $this;
     }
@@ -378,11 +386,13 @@ class Schedule
     public function at(string $time): self
     {
         [$hour, $minute] = explode(':', $time);
+        $hour = (int) $hour;
+        $minute = (int) $minute;
 
         // Replace hour and minute in existing expression
         $parts = explode(' ', $this->expression);
-        $parts[0] = $minute;
-        $parts[1] = $hour;
+        $parts[0] = (string) $minute;
+        $parts[1] = (string) $hour;
         $this->expression = implode(' ', $parts);
 
         return $this;

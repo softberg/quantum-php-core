@@ -1,207 +1,232 @@
 <?php
 
-/**
- * Quantum PHP Framework
- *
- * An open source software development framework for PHP
- *
- * @package Quantum
- * @author Arman Ag. <arman.ag@softberg.org>
- * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
- * @link http://quantum.softberg.org/
- * @since 3.0.0
- */
-
 namespace Quantum\Libraries\Cron;
 
 use Quantum\Libraries\Cron\Exceptions\CronException;
 
 /**
- * Class CronLock
- * @package Quantum\Libraries\Cron
+ * CronLock - file based lock with flock()
+ *
+ * Changes vs original:
+ * - taskName sanitized for safe filename
+ * - release() removes lock file
+ * - stale cleanup reads timestamp from locked handle (no extra fs()->get)
+ * - isLocked() is non-destructive (does NOT delete files); cleanup handles stale deletion
+ * - optional refresh() to update timestamp while running
  */
 class CronLock
 {
-    /**
-     * Lock directory path
-     * @var string
-     */
-    private $lockDirectory;
+    private string $lockDirectory;
+    private string $taskName;
+    private string $lockFile;
 
-    /**
-     * Task name
-     * @var string
-     */
-    private $taskName;
-
-    /**
-     * Lock file path
-     * @var string|null
-     */
-    private $lockFile = null;
-
-    /**
-     * Lock file handle
-     * @var resource|null
-     */
+    /** @var resource|null */
     private $lockHandle = null;
 
-    /**
-     * Maximum lock age in seconds (24 hours)
-     */
-    private const MAX_LOCK_AGE = 86400;
+    private bool $ownsLock = false;
+    private int $maxLockAge;
 
-    /**
-     * CronLock constructor
-     * @param string $taskName
-     * @param string|null $lockDirectory
-     * @throws CronException
-     */
-    public function __construct(string $taskName, ?string $lockDirectory = null)
+    private const DEFAULT_MAX_LOCK_AGE = 86400;
+
+    public function __construct(string $taskName, ?string $lockDirectory = null, ?int $maxLockAge = null)
     {
-        $this->taskName = $taskName;
-        $this->lockDirectory = $lockDirectory ?? $this->getDefaultLockDirectory();
-        $this->lockFile = $this->lockDirectory . DIRECTORY_SEPARATOR . $this->taskName . '.lock';
+        $this->taskName = $this->sanitizeTaskName($taskName);
+        $this->lockDirectory = $this->resolveLockDirectory($lockDirectory);
+        $this->lockFile = $this->lockDirectory . DS . $this->taskName . '.lock';
+        $this->maxLockAge = $maxLockAge ?? (int) cron_config('max_lock_age', self::DEFAULT_MAX_LOCK_AGE);
 
         $this->ensureLockDirectoryExists();
         $this->cleanupStaleLocks();
     }
 
-    /**
-     * Acquire lock for the task
-     * @return bool
-     */
     public function acquire(): bool
     {
-        if ($this->isLocked()) {
-            return false;
-        }
-
-        $this->lockHandle = fopen($this->lockFile, 'w');
-
+        $this->lockHandle = @fopen($this->lockFile, 'c+');
         if ($this->lockHandle === false) {
+            $this->lockHandle = null;
+            $this->ownsLock = false;
             return false;
         }
 
         if (!flock($this->lockHandle, LOCK_EX | LOCK_NB)) {
             fclose($this->lockHandle);
             $this->lockHandle = null;
+            $this->ownsLock = false;
             return false;
         }
 
-        fwrite($this->lockHandle, json_encode([
-            'task' => $this->taskName,
-            'started_at' => time(),
-            'pid' => getmypid(),
-        ]));
-
-        fflush($this->lockHandle);
+        $this->writeTimestampToHandle($this->lockHandle);
+        $this->ownsLock = true;
 
         return true;
     }
 
     /**
-     * Release the lock
-     * @return bool
+     * Update lock timestamp (useful for long-running jobs)
      */
+    public function refresh(): bool
+    {
+        if (!$this->ownsLock || $this->lockHandle === null) {
+            return false;
+        }
+
+        $this->writeTimestampToHandle($this->lockHandle);
+        return true;
+    }
+
     public function release(): bool
     {
-        if ($this->lockHandle !== null) {
-            flock($this->lockHandle, LOCK_UN);
-            fclose($this->lockHandle);
-            $this->lockHandle = null;
+        if (!$this->ownsLock || $this->lockHandle === null) {
+            return true;
         }
 
-        if (file_exists($this->lockFile)) {
-            return unlink($this->lockFile);
-        }
+        flock($this->lockHandle, LOCK_UN);
+        fclose($this->lockHandle);
+
+        $this->lockHandle = null;
+        $this->ownsLock = false;
+
+        @fs()->remove($this->lockFile);
 
         return true;
     }
 
     /**
-     * Check if task is locked
-     * @return bool
+     * Check if another process currently holds the lock.
      */
     public function isLocked(): bool
     {
-        if (!file_exists($this->lockFile)) {
+        if (!fs()->exists($this->lockFile)) {
             return false;
         }
 
-        // Check if lock is stale
-        if (time() - filemtime($this->lockFile) > self::MAX_LOCK_AGE) {
-            unlink($this->lockFile);
-            return false;
-        }
-
-        // Try to open the file to check if it's actually locked
-        $handle = @fopen($this->lockFile, 'r');
+        $handle = @fopen($this->lockFile, 'c+');
         if ($handle === false) {
             return true;
         }
 
-        $locked = !flock($handle, LOCK_EX | LOCK_NB);
-
-        if (!$locked) {
-            flock($handle, LOCK_UN);
+        if (!flock($handle, LOCK_EX | LOCK_NB)) {
+            fclose($handle);
+            return true;
         }
 
+        flock($handle, LOCK_UN);
         fclose($handle);
 
-        return $locked;
+        return false;
     }
 
-    /**
-     * Get default lock directory
-     * @return string
-     */
-    private function getDefaultLockDirectory(): string
+    private function sanitizeTaskName(string $taskName): string
     {
-        $baseDir = base_dir() . DIRECTORY_SEPARATOR . 'runtime';
-        return $baseDir . DIRECTORY_SEPARATOR . 'cron' . DIRECTORY_SEPARATOR . 'locks';
-    }
-
-    /**
-     * Ensure lock directory exists
-     * @throws CronException
-     */
-    private function ensureLockDirectoryExists(): void
-    {
-        if (!is_dir($this->lockDirectory)) {
-            if (!mkdir($this->lockDirectory, 0755, true)) {
-                throw CronException::lockDirectoryNotWritable($this->lockDirectory);
-            }
+        $taskName = trim($taskName);
+        if ($taskName === '') {
+            return 'default';
         }
 
-        if (!is_writable($this->lockDirectory)) {
+        // Keep safe filename chars only
+        $taskName = preg_replace('/[^a-zA-Z0-9._-]+/', '_', $taskName) ?? 'default';
+        $taskName = trim($taskName, '._-');
+
+        return $taskName !== '' ? $taskName : 'default';
+    }
+
+    private function resolveLockDirectory(?string $lockDirectory): string
+    {
+        $path = $lockDirectory ?? cron_config('lock_path');
+        return $path === null ? $this->getDefaultLockDirectory() : $path;
+    }
+
+    private function getDefaultLockDirectory(): string
+    {
+        return base_dir() . DS . 'runtime' . DS . 'cron' . DS . 'locks';
+    }
+
+    private function ensureLockDirectoryExists(): void
+    {
+        if ($this->lockDirectory === '') {
+            throw CronException::lockDirectoryNotWritable('');
+        }
+
+        $this->createDirectory($this->lockDirectory);
+
+        if (!fs()->isWritable($this->lockDirectory)) {
             throw CronException::lockDirectoryNotWritable($this->lockDirectory);
         }
     }
 
-    /**
-     * Cleanup stale locks
-     */
-    private function cleanupStaleLocks(): void
+    private function createDirectory(string $directory): void
     {
-        if (!is_dir($this->lockDirectory)) {
+        if (fs()->isDirectory($directory)) {
             return;
         }
 
-        $files = glob($this->lockDirectory . DIRECTORY_SEPARATOR . '*.lock');
+        $parent = dirname($directory);
+        if ($parent && $parent !== $directory) {
+            $this->createDirectory($parent);
+        }
 
-        foreach ($files as $file) {
-            if (time() - filemtime($file) > self::MAX_LOCK_AGE) {
-                @unlink($file);
-            }
+        // @phpstan-ignore-next-line
+        if (!fs()->makeDirectory($directory) && !fs()->isDirectory($directory)) {
+            throw CronException::lockDirectoryNotWritable($directory);
         }
     }
 
     /**
-     * Destructor - ensure lock is released
+     * Removes stale lock files that are NOT currently locked by any process.
+     * Safe because we take LOCK_EX before removing.
      */
-    public function __destruct()
+    private function cleanupStaleLocks(): void
     {
-        $this->release();
+        if (!fs()->isDirectory($this->lockDirectory)) {
+            return;
+        }
+
+        $files = fs()->glob($this->lockDirectory . DS . '*.lock') ?: [];
+        $now = time();
+
+        foreach ($files as $file) {
+            $handle = @fopen($file, 'c+');
+            if ($handle === false) {
+                continue;
+            }
+
+            // If someone holds it, skip
+            if (!flock($handle, LOCK_EX | LOCK_NB)) {
+                fclose($handle);
+                continue;
+            }
+
+            $timestamp = $this->readTimestampFromHandle($handle);
+
+            if ($timestamp !== null && ($now - $timestamp) > $this->maxLockAge) {
+                @flock($handle, LOCK_UN);
+                @fclose($handle);
+                @fs()->remove($file);
+                continue;
+            }
+
+            @flock($handle, LOCK_UN);
+            @fclose($handle);
+        }
+    }
+
+    private function writeTimestampToHandle($handle): void
+    {
+        @ftruncate($handle, 0);
+        @rewind($handle);
+        @fwrite($handle, (string) time());
+        @fflush($handle);
+    }
+
+    private function readTimestampFromHandle($handle): ?int
+    {
+        @rewind($handle);
+        $content = stream_get_contents($handle);
+        if ($content === false) {
+            return null;
+        }
+
+        $timestamp = (int) trim((string) $content);
+        return $timestamp > 0 ? $timestamp : null;
     }
 }

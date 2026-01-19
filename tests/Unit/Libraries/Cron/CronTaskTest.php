@@ -2,15 +2,15 @@
 
 namespace Quantum\Tests\Unit\Libraries\Cron;
 
+use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Libraries\Cron\CronTask;
 use Quantum\Libraries\Cron\Exceptions\CronException;
-use PHPUnit\Framework\TestCase;
 
 /**
  * Class CronTaskTest
  * @package Quantum\Tests\Unit\Libraries\Cron
  */
-class CronTaskTest extends TestCase
+class CronTaskTest extends AppTestCase
 {
     public function testConstructorWithValidExpression()
     {
