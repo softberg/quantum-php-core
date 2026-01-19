@@ -235,8 +235,7 @@ class CronManager
     private function log(string $level, string $message, array $context = []): void
     {
         try {
-            $defaultAdapter = config()->get('logging.default', Logger::SINGLE);
-            $logger = LoggerFactory::get($defaultAdapter);
+            $logger = LoggerFactory::get(Logger::SINGLE);
             $logger->log($level, '[CRON] ' . $message, $context);
         } catch (\Throwable $exception) {
             error_log(sprintf('[CRON] [%s] %s', strtoupper($level), $message));
