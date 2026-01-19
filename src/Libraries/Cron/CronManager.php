@@ -17,6 +17,7 @@ namespace Quantum\Libraries\Cron;
 use Quantum\Libraries\Cron\Contracts\CronTaskInterface;
 use Quantum\Libraries\Logger\Factories\LoggerFactory;
 use Quantum\Libraries\Cron\Exceptions\CronException;
+use Quantum\Libraries\Logger\Logger;
 
 /**
  * Class CronManager
@@ -234,7 +235,8 @@ class CronManager
     private function log(string $level, string $message, array $context = []): void
     {
         try {
-            $logger = LoggerFactory::get();
+            $defaultAdapter = config()->get('logging.default', Logger::SINGLE);
+            $logger = LoggerFactory::get($defaultAdapter);
             $logger->log($level, '[CRON] ' . $message, $context);
         } catch (\Throwable $exception) {
             error_log(sprintf('[CRON] [%s] %s', strtoupper($level), $message));
