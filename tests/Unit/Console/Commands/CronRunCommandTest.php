@@ -13,29 +13,31 @@ use Symfony\Component\Console\Tester\CommandTester;
 class CronRunCommandTest extends AppTestCase
 {
     private $cronDirectory;
+    private $lockDirectory;
 
     public function setUp(): void
     {
         parent::setUp();
 
         $this->cronDirectory = base_dir() . DS . 'cron-command-tests';
+        $this->lockDirectory = base_dir() . DS . 'cron-command-locks';
         $this->cleanupDirectory($this->cronDirectory);
+        $this->cleanupDirectory($this->lockDirectory);
         mkdir($this->cronDirectory, 0777, true);
+        mkdir($this->lockDirectory, 0777, true);
 
-        // Setup logging config to avoid Loader dependency
-        if (!config()->has('logging')) {
-            config()->set('logging', [
-                'default' => 'single',
-                'single' => [
-                    'driver' => 'single',
-                    'path' => base_dir() . '/logs',
-                    'level' => 'debug',
-                ],
-            ]);
-        }
+        config()->set('logging', [
+            'default' => 'single',
+            'single' => [
+                'driver' => 'single',
+                'path' => base_dir() . '/logs',
+                'level' => 'debug',
+            ],
+        ]);
+
         config()->set('cron', [
             'path' => null,
-            'lock_path' => null,
+            'lock_path' => $this->lockDirectory,
             'max_lock_age' => 86400,
         ]);
     }
@@ -45,6 +47,7 @@ class CronRunCommandTest extends AppTestCase
         parent::tearDown();
 
         $this->cleanupDirectory($this->cronDirectory);
+        $this->cleanupDirectory($this->lockDirectory);
     }
 
     public function testCommandExecutesSuccessfully()
@@ -231,10 +234,11 @@ class CronRunCommandTest extends AppTestCase
         $this->createTaskFile('locked-task.php', [
             'name' => 'locked-task',
             'expression' => '* * * * *',
+            'callback' => function () {},
         ]);
 
-        $lock = new \Quantum\Libraries\Cron\CronLock('locked-task', $this->runtimeDirectory . DS . 'locks');
-        $lock->acquire(); // Hold the lock
+        $lock = new \Quantum\Libraries\Cron\CronLock('locked-task', $this->lockDirectory);
+        $lock->acquire();
 
         $command = new CronRunCommand();
         $tester = new CommandTester($command);
@@ -249,10 +253,13 @@ class CronRunCommandTest extends AppTestCase
 
     public function testCommandHandlesUnexpectedError()
     {
+        $invalidTask = $this->cronDirectory . DS . 'invalid-task.php';
+        file_put_contents($invalidTask, "<?php\nreturn [;\n");
+
         $command = new CronRunCommand();
         $tester = new CommandTester($command);
 
-        $tester->execute(['--path' => []]);
+        $tester->execute(['--path' => $this->cronDirectory]);
 
         $output = $tester->getDisplay();
         $this->assertStringContainsString('Unexpected error', $output);
