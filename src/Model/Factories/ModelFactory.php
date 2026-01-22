@@ -16,9 +16,9 @@ namespace Quantum\Model\Factories;
 
 use Quantum\Libraries\Database\Contracts\DbalInterface;
 use Quantum\Model\Exceptions\ModelException;
-use Quantum\App\Exceptions\BaseException;
 use Quantum\Libraries\Database\Database;
-use Quantum\Model\QtModel;
+use Quantum\Model\DbModel;
+use Quantum\Model\Model;
 
 /**
  * Class ModelFactory
@@ -29,11 +29,10 @@ class ModelFactory
     /**
      * Gets the Model
      * @param string $modelClass
-     * @return QtModel
+     * @return Model
      * @throws ModelException
-     * @throws BaseException
      */
-    public static function get(string $modelClass): QtModel
+    public static function get(string $modelClass): Model
     {
         if (!class_exists($modelClass)) {
             throw ModelException::notFound('Model', $modelClass);
@@ -41,19 +40,21 @@ class ModelFactory
 
         $model = new $modelClass();
 
-        if (!$model instanceof QtModel) {
-            throw ModelException::notInstanceOf($modelClass, QtModel::class);
+        if (!$model instanceof Model) {
+            throw ModelException::notInstanceOf($modelClass, Model::class);
         }
 
-        $ormInstance = self::createOrmInstance(
-            $model->table,
-            $modelClass,
-            $model->idColumn,
-            $model->relations(),
-            $model->hidden
-        );
+        if ($model instanceof DbModel) {
+            $ormInstance = self::createOrmInstance(
+                $model->table,
+                $modelClass,
+                $model->idColumn,
+                $model->relations(),
+                $model->hidden ?? []
+            );
 
-        $model->setOrmInstance($ormInstance);
+            $model->setOrmInstance($ormInstance);
+        }
 
         return $model;
     }
@@ -65,7 +66,7 @@ class ModelFactory
      * @param string $idColumn
      * @param array $foreignKeys
      * @param array $hidden
-     * @return QtModel
+     * @return DbModel
      */
     public static function createDynamicModel(
         string $table,
@@ -73,10 +74,16 @@ class ModelFactory
         string $idColumn = 'id',
         array  $foreignKeys = [],
         array  $hidden = []
-    ): QtModel {
-        $model = new class () extends QtModel {};
+    ): DbModel {
+        $model = new class () extends DbModel {};
 
-        $ormInstance = self::createOrmInstance($table, $modelName, $idColumn, $foreignKeys, $hidden);
+        $ormInstance = self::createOrmInstance(
+            $table,
+            $modelName,
+            $idColumn,
+            $foreignKeys,
+            $hidden
+        );
 
         $model->setOrmInstance($ormInstance);
 
@@ -100,6 +107,12 @@ class ModelFactory
     ): DbalInterface {
         $ormClass = Database::getInstance()->getOrmClass();
 
-        return new $ormClass($table, $modelName, $idColumn, $foreignKeys, $hidden);
+        return new $ormClass(
+            $table,
+            $modelName,
+            $idColumn,
+            $foreignKeys,
+            $hidden
+        );
     }
 }

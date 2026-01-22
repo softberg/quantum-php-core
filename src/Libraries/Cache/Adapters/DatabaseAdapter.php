@@ -18,7 +18,7 @@ use Quantum\Libraries\Cache\Enums\ExceptionMessages;
 use Quantum\Model\Factories\ModelFactory;
 use Psr\SimpleCache\CacheInterface;
 use InvalidArgumentException;
-use Quantum\Model\QtModel;
+use Quantum\Model\DbModel;
 use Exception;
 
 /**
@@ -38,9 +38,9 @@ class DatabaseAdapter implements CacheInterface
     private $prefix;
 
     /**
-     * @var QtModel
+     * @var DbModel
      */
-    private $cacheModel;
+    private DbModel $cacheModel;
 
     /**
      * @param array $params
@@ -154,7 +154,7 @@ class DatabaseAdapter implements CacheInterface
         $cacheItem = $this->cacheModel->findOneBy('key', $this->keyHash($key));
 
         if (!empty($cacheItem->asArray())) {
-            return $this->cacheModel->delete();
+            return $cacheItem->delete();
         }
 
         return false;

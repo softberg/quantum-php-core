@@ -25,22 +25,22 @@ trait PaginatorTrait
     /**
      * @var string
      */
-    protected $baseUrl;
+    protected string $baseUrl;
 
     /**
      * @var int
      */
-    protected $total;
+    protected int $total;
 
     /**
      * @var int
      */
-    protected $perPage;
+    protected int $perPage;
 
     /**
      * @var int
      */
-    protected $page;
+    protected int $page;
 
     /**
      * @param int $perPage
@@ -111,7 +111,7 @@ trait PaginatorTrait
      */
     public function lastPageNumber(): int
     {
-        return (int)ceil($this->total() / $this->perPage);
+        return (int) ceil($this->total() / $this->perPage);
     }
 
     /**

@@ -7,7 +7,7 @@ use Quantum\Tests\Unit\Paginator\PaginatorTestCase;
 use Quantum\Paginator\Adapters\ModelPaginator;
 use Quantum\Model\Factories\ModelFactory;
 use Quantum\Model\ModelCollection;
-use Quantum\Model\QtModel;
+use Quantum\Model\DbModel;
 
 class ModelPaginatorTest extends PaginatorTestCase
 {
@@ -43,7 +43,7 @@ class ModelPaginatorTest extends PaginatorTestCase
 
         $record = $data->first();
 
-        $this->assertInstanceOf(QtModel::class, $record);
+        $this->assertInstanceOf(DbModel::class, $record);
 
         $this->assertInstanceOf(TestPostModel::class, $record);
 
@@ -68,7 +68,7 @@ class ModelPaginatorTest extends PaginatorTestCase
 
         $record = $data->first();
 
-        $this->assertInstanceOf(QtModel::class, $record);
+        $this->assertInstanceOf(DbModel::class, $record);
 
         $this->assertStringContainsString('@anonymous', get_class($record));
 

@@ -19,7 +19,7 @@ use Quantum\Libraries\Database\Contracts\DbalInterface;
 use SleekDB\Exceptions\InvalidArgumentException;
 use Quantum\Libraries\Database\Enums\Relation;
 use Quantum\Model\Exceptions\ModelException;
-use Quantum\Model\QtModel;
+use Quantum\Model\DbModel;
 use SleekDB\QueryBuilder;
 
 /**
@@ -31,7 +31,7 @@ trait Join
     /**
      * @inheritDoc
      */
-    public function joinTo(QtModel $model, bool $switch = true): DbalInterface
+    public function joinTo(DbModel $model, bool $switch = true): DbalInterface
     {
         $this->joins[] = [
             'model' => serialize($model),
@@ -97,14 +97,14 @@ trait Join
     /**
      * Apply join condition for JOINTO type
      * @param QueryBuilder $queryBuilder
-     * @param QtModel $relatedModel
+     * @param DbModel $relatedModel
      * @param SleekDbal $currentModel
      * @param array $currentItem
      * @return void
      * @throws InvalidArgumentException
      * @throws ModelException
      */
-    private function applyJoinTo(QueryBuilder $queryBuilder, QtModel $relatedModel, SleekDbal $currentModel, array $currentItem): void
+    private function applyJoinTo(QueryBuilder $queryBuilder, DbModel $relatedModel, SleekDbal $currentModel, array $currentItem): void
     {
         $relation = $this->getValidatedRelation($currentModel, $relatedModel);
 
@@ -163,11 +163,11 @@ trait Join
 
     /**
      * @param SleekDbal $currentModel
-     * @param QtModel $relatedModel
+     * @param DbModel $relatedModel
      * @return array
      * @throws ModelException
      */
-    private function getValidatedRelation(SleekDbal $currentModel, QtModel $relatedModel): array
+    private function getValidatedRelation(SleekDbal $currentModel, DbModel $relatedModel): array
     {
         $relations = $currentModel->getForeignKeys();
         $relatedModelName = get_class($relatedModel);

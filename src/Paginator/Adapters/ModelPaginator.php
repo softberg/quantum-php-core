@@ -16,8 +16,9 @@ namespace Quantum\Paginator\Adapters;
 
 use Quantum\Paginator\Contracts\PaginatorInterface;
 use Quantum\Paginator\Traits\PaginatorTrait;
+use Quantum\App\Exceptions\BaseException;
 use Quantum\Model\ModelCollection;
-use Quantum\Model\QtModel;
+use Quantum\Model\DbModel;
 
 /**
  * Class ModelPaginator
@@ -30,19 +31,19 @@ class ModelPaginator implements PaginatorInterface
     /**
      * @var string
      */
-    private $modelClass;
+    private string $modelClass;
 
     /**
-     * @var QtModel
+     * @var DbModel
      */
-    private $model;
+    private DbModel $model;
 
     /**
-     * @param QtModel $model
+     * @param DbModel $model
      * @param int $perPage
      * @param int $page
      */
-    public function __construct(QtModel $model, int $perPage, int $page = 1)
+    public function __construct(DbModel $model, int $perPage, int $page = 1)
     {
         $this->initialize($perPage, $page);
 
@@ -53,6 +54,7 @@ class ModelPaginator implements PaginatorInterface
 
     /**
      * @inheritDoc
+     * @throws BaseException
      */
     public function data(): ModelCollection
     {
@@ -70,6 +72,7 @@ class ModelPaginator implements PaginatorInterface
 
     /**
      * @inheritDoc
+     * @throws BaseException
      */
     public function firstItem()
     {
@@ -84,6 +87,7 @@ class ModelPaginator implements PaginatorInterface
 
     /**
      * @inheritDoc
+     * @throws BaseException
      */
     public function lastItem()
     {

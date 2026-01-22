@@ -63,22 +63,22 @@ class Table
     /**
      * @var string
      */
-    private $name;
+    private string $name;
 
     /**
      * @var string
      */
-    private $newName;
+    private string $newName = '';
 
     /**
-     * @var int
+     * @var int|null
      */
-    private $action = null;
+    private ?int $action = null;
 
     /**
      * @var array
      */
-    private $columns = [];
+    private array $columns = [];
 
     /**
      * @var array
@@ -330,6 +330,6 @@ class Table
      */
     private function columnKey(): int
     {
-        return (int)array_key_last($this->columns);
+        return (int) array_key_last($this->columns);
     }
 }

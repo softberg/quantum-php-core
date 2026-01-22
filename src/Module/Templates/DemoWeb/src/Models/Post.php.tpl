@@ -9,20 +9,20 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace {{MODULE_NAMESPACE}}\Models;
 
 use Quantum\Libraries\Database\Enums\Relation;
 use Quantum\Model\Traits\SoftDeletes;
-use Quantum\Model\QtModel;
+use Quantum\Model\DbModel;
 
 /**
  * Class Post
  * @package Modules\{{MODULE_NAME}}
  */
-class Post extends QtModel
+class Post extends DbModel
 {
 
     use SoftDeletes;
@@ -31,19 +31,19 @@ class Post extends QtModel
      * ID column of table
      * @var string
      */
-    public $idColumn = 'id';
+    public string $idColumn = 'id';
 
     /**
      * The table name
      * @var string
      */
-    public $table = 'posts';
+    public string $table = 'posts';
 
     /**
      * Fillable properties
      * @var array
      */
-    public $fillable = [
+    public array $fillable = [
         'uuid',
         'user_uuid',
         'title',

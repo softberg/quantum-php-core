@@ -3,15 +3,15 @@
 namespace Quantum\Tests\_root\shared\Models;
 
 use Quantum\Libraries\Database\Enums\Relation;
-use Quantum\Model\QtModel;
+use Quantum\Model\DbModel;
 
-class TestUserMeetingModel extends QtModel
+class TestUserMeetingModel extends DbModel
 {
-    public $table = 'user_meetings';
+    public string $table = 'user_meetings';
 
-    public $idColumn = 'id';
+    public string $idColumn = 'id';
 
-    public $fillable = [
+    public array $fillable = [
         'user_id',
         'title',
         'start_date',

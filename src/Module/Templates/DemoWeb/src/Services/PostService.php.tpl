@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace {{MODULE_NAMESPACE}}\Services;
@@ -22,16 +22,12 @@ use {{MODULE_NAMESPACE}}\Transformers\PostTransformer;
 use Quantum\Model\Exceptions\ModelException;
 use Quantum\Libraries\Storage\UploadedFile;
 use Quantum\App\Exceptions\BaseException;
-use Quantum\Model\Factories\ModelFactory;
 use {{MODULE_NAMESPACE}}\Models\User;
 use {{MODULE_NAMESPACE}}\Models\Post;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Model\ModelCollection;
 use Gumlet\ImageResizeException;
-use Quantum\Paginator\Paginator;
 use Quantum\Service\QtService;
-use Quantum\Model\QtModel;
-use ReflectionException;
 
 /**
  * Class PostService
@@ -41,18 +37,17 @@ class PostService extends QtService
 {
 
     /**
-     * @var QtModel
+     * @var Post
      */
-    private $model;
+    private Post $model;
 
     /**
      * @var PostTransformer
      */
-    private $transformer;
+    private PostTransformer $transformer;
 
     /**
      * @param PostTransformer $transformer
-     * @throws BaseException
      * @throws ModelException
      */
     public function __construct(PostTransformer $transformer)
@@ -164,7 +159,7 @@ class PostService extends QtService
         $data['created_at'] = date('Y-m-d H:i:s');
 
         $post = $this->model->create();
-        $post->fillObjectProps($data);
+        $post->fill($data);
         $post->save();
 
         return $this->getPost($post->uuid);
@@ -183,7 +178,7 @@ class PostService extends QtService
         $data['updated_at'] = date('Y-m-d H:i:s');
 
         $post = $this->model->findOneBy('uuid', $uuid);
-        $post->fillObjectProps($data);
+        $post->fill($data);
         $post->save();
 
         return $this->getPost($post->uuid);
@@ -193,7 +188,6 @@ class PostService extends QtService
      * Deletes post
      * @param string $uuid
      * @return bool
-     * @throws ModelException
      */
     public function deletePost(string $uuid): bool
     {

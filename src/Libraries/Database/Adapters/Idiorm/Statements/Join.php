@@ -19,7 +19,7 @@ use Quantum\Libraries\Database\Contracts\DbalInterface;
 use Quantum\Libraries\Database\Enums\Relation;
 use Quantum\Model\Exceptions\ModelException;
 use Quantum\App\Exceptions\BaseException;
-use Quantum\Model\QtModel;
+use Quantum\Model\DbModel;
 
 /**
  * Trait Join
@@ -78,7 +78,7 @@ trait Join
      * @throws BaseException
      * @throws ModelException
      */
-    public function joinTo(QtModel $relatedModel, bool $switch = true): DbalInterface
+    public function joinTo(DbModel $relatedModel, bool $switch = true): DbalInterface
     {
         $relation = $this->getValidatedRelation($relatedModel);
 
@@ -107,12 +107,12 @@ trait Join
     }
 
     /**
-     * @param QtModel $relatedModel
+     * @param DbModel $relatedModel
      * @param array $relation
      * @return void
      * @throws BaseException
      */
-    protected function applyHasRelation(QtModel $relatedModel, array $relation): void
+    protected function applyHasRelation(DbModel $relatedModel, array $relation): void
     {
         $this->getOrmModel()->join(
             $relatedModel->table,
@@ -125,12 +125,12 @@ trait Join
     }
 
     /**
-     * @param QtModel $relatedModel
+     * @param DbModel $relatedModel
      * @param array $relation
      * @return void
      * @throws BaseException
      */
-    protected function applyBelongsTo(QtModel $relatedModel, array $relation): void
+    protected function applyBelongsTo(DbModel $relatedModel, array $relation): void
     {
         $this->getOrmModel()->join(
             $relatedModel->table,
@@ -143,11 +143,11 @@ trait Join
     }
 
     /**
-     * @param QtModel $modelToJoin
+     * @param DbModel $modelToJoin
      * @return array
      * @throws ModelException
      */
-    private function getValidatedRelation(QtModel $modelToJoin): array
+    private function getValidatedRelation(DbModel $modelToJoin): array
     {
         $relations = $this->getForeignKeys();
         $relatedModelName = get_class($modelToJoin);

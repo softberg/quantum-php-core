@@ -3,20 +3,20 @@
 namespace Quantum\Tests\_root\shared\Models;
 
 use Quantum\Libraries\Database\Enums\Relation;
-use Quantum\Model\QtModel;
+use Quantum\Model\DbModel;
 
-class TestUserModel extends QtModel
+class TestUserModel extends DbModel
 {
-    public $idColumn = 'id';
+    public string $idColumn = 'id';
 
-    public $table = 'users';
+    public string $table = 'users';
 
-    public $fillable = [
+    public array $fillable = [
         'email',
         'password',
     ];
 
-    public $hidden = [
+    public array $hidden = [
         'password',
     ];
 

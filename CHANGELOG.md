@@ -21,6 +21,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated CI pipeline to test against PHP 7.4, 8.0, and 8.1
 - CI now fails on PHP warnings and deprecations for stricter quality control
 - Added `declare(strict_types=1)` to all Exception classes for improved type safety
+- **BREAKING:** Refactored model architecture:
+  - Introduced a base Model class for non-database models
+  - Refactored QtModel into DbModel with persistence-only responsibilities
+  - Database fetch methods (first(), findOne(), findOneBy(), get()) now return new model instances instead of mutating existing ones
+  - Calling create() resets model state to ensure clean inserts
+  - Database-generated primary keys are now synced into the model after save()
+  - Models are hydrated only on fetch operations, not implicitly via getters
 
 ### Fixed
 - PHP 8.1 compatibility: Fixed null parameter deprecations in `explode()`, `parse_url()`, and `str_replace()`

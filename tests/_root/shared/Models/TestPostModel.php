@@ -2,15 +2,15 @@
 
 namespace Quantum\Tests\_root\shared\Models;
 
-use Quantum\Model\QtModel;
+use Quantum\Model\DbModel;
 
-class TestPostModel extends QtModel
+class TestPostModel extends DbModel
 {
-    public $idColumn = 'id';
+    public string $idColumn = 'id';
 
-    public $table = 'posts';
+    public string $table = 'posts';
 
-    public $fillable = [
+    public array $fillable = [
         'title',
         'content',
         'author',

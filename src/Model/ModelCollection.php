@@ -27,19 +27,19 @@ use Generator;
 class ModelCollection implements Countable, IteratorAggregate
 {
     /**
-     * @var QtModel[]
+     * @var Model[]
      */
-    private $models = [];
+    private array $models = [];
 
     /**
      * @var iterable
      */
-    private $originalModels;
+    private iterable $originalModels;
 
     /**
      * @var bool
      */
-    private $modelsProcessed = false;
+    private bool $modelsProcessed = false;
 
     /**
      * @param iterable $models
@@ -56,11 +56,11 @@ class ModelCollection implements Countable, IteratorAggregate
 
     /**
      * Add a model to the collection
-     * @param QtModel $model
+     * @param Model $model
      * @return self
      * @throws BaseException
      */
-    public function add(QtModel $model): self
+    public function add(Model $model): self
     {
         $this->processModels();
 
@@ -77,11 +77,11 @@ class ModelCollection implements Countable, IteratorAggregate
 
     /**
      * Remove a model from the collection
-     * @param QtModel $model
+     * @param Model $model
      * @return self
      * @throws BaseException
      */
-    public function remove(QtModel $model): self
+    public function remove(Model $model): self
     {
         $this->processModels();
 
@@ -94,7 +94,7 @@ class ModelCollection implements Countable, IteratorAggregate
 
     /**
      * Get all models as an array
-     * @return QtModel[]
+     * @return Model[]
      * @throws BaseException
      */
     public function all(): array
@@ -116,10 +116,10 @@ class ModelCollection implements Countable, IteratorAggregate
 
     /**
      * Get the first model in the collection
-     * @return QtModel|null
+     * @return Model|null
      * @throws BaseException
      */
-    public function first(): ?QtModel
+    public function first(): ?Model
     {
         foreach ($this->getIterator() as $model) {
             return $model;
@@ -130,10 +130,10 @@ class ModelCollection implements Countable, IteratorAggregate
 
     /**
      * Get the last model in the collection
-     * @return QtModel|null
+     * @return Model|null
      * @throws BaseException
      */
-    public function last(): ?QtModel
+    public function last(): ?Model
     {
         $this->processModels();
         return empty($this->models) ? null : end($this->models);
@@ -142,10 +142,11 @@ class ModelCollection implements Countable, IteratorAggregate
     /**
      * Check if the collection is empty
      * @return bool
+     * @throws BaseException
      */
     public function isEmpty(): bool
     {
-        return !$this->first() instanceof \Quantum\Model\QtModel;
+        return !$this->first() instanceof \Quantum\Model\Model;
     }
 
     /**
@@ -188,15 +189,15 @@ class ModelCollection implements Countable, IteratorAggregate
     }
 
     /**
-     * Validate that an item is a QtModel instance
+     * Validate that an item is a Model instance
      * @param $model
      * @return void
      * @throws BaseException
      */
     private function validateModel($model): void
     {
-        if (!$model instanceof QtModel) {
-            throw ModelException::notInstanceOf(get_class($model), QtModel::class);
+        if (!$model instanceof Model) {
+            throw ModelException::notInstanceOf(get_class($model), Model::class);
         }
     }
 }
