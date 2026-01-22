@@ -71,7 +71,7 @@ class LangFactory
 
         return [
             filter_var(config()->get('lang.enabled'), FILTER_VALIDATE_BOOLEAN),
-            (array)config()->get('lang.supported'),
+            (array) config()->get('lang.supported'),
             config()->get('lang.default'),
         ];
     }
@@ -122,7 +122,7 @@ class LangFactory
      */
     private static function getLangFromUrlSegment(array $supported): ?string
     {
-        $segmentIndex = (int)config()->get('lang.url_segment');
+        $segmentIndex = (int) config()->get('lang.url_segment');
 
         if (!in_array(route_prefix(), [null, '', '0'], true) && $segmentIndex === 1) {
             $segmentIndex++;

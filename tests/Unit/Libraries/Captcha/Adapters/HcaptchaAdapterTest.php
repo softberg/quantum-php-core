@@ -117,7 +117,7 @@ class HcaptchaAdapterTest extends AppTestCase
 
         $this->httpClientMock
             ->shouldReceive('getResponseBody')
-            ->andReturn((object)[
+            ->andReturn((object) [
                 'success' => true,
             ]);
 
@@ -143,7 +143,7 @@ class HcaptchaAdapterTest extends AppTestCase
 
         $this->httpClientMock
             ->shouldReceive('getResponseBody')
-            ->andReturn((object)[
+            ->andReturn((object) [
                 'success' => false,
                 'error-codes' => ['invalid-input-response'],
             ]);

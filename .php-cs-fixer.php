@@ -17,6 +17,7 @@ return (new Config())
         // Syntax & consistency
         'array_syntax' => ['syntax' => 'short'],
         'binary_operator_spaces' => ['default' => 'single_space'],
+        'cast_spaces' => ['space' => 'single'],
         'concat_space' => ['spacing' => 'one'],
         'single_quote' => true,
         'trailing_comma_in_multiline' => true,

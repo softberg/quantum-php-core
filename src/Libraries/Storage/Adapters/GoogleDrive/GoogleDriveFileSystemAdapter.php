@@ -69,7 +69,7 @@ class GoogleDriveFileSystemAdapter implements FilesystemAdapterInterface
     public function get(string $filename)
     {
         try {
-            return (string)$this->googleDriveApp->getFileInfo($filename, true);
+            return (string) $this->googleDriveApp->getFileInfo($filename, true);
         } catch (Exception $e) {
             return false;
         }
@@ -171,7 +171,7 @@ class GoogleDriveFileSystemAdapter implements FilesystemAdapterInterface
     public function size(string $filename)
     {
         try {
-            $meta = (array)$this->googleDriveApp->getFileInfo($filename);
+            $meta = (array) $this->googleDriveApp->getFileInfo($filename);
             return $meta['size'];
         } catch (Exception $e) {
             return false;
@@ -184,7 +184,7 @@ class GoogleDriveFileSystemAdapter implements FilesystemAdapterInterface
     public function lastModified(string $filename)
     {
         try {
-            $meta = (array)$this->googleDriveApp->getFileInfo($filename);
+            $meta = (array) $this->googleDriveApp->getFileInfo($filename);
             return empty($meta['modifiedTime']) ? false : strtotime($meta['modifiedTime']);
         } catch (Exception $e) {
             return false;
@@ -212,7 +212,7 @@ class GoogleDriveFileSystemAdapter implements FilesystemAdapterInterface
     public function isFile(string $filename): bool
     {
         try {
-            $meta = (array)$this->googleDriveApp->getFileInfo($filename);
+            $meta = (array) $this->googleDriveApp->getFileInfo($filename);
 
             return $meta['kind'] === GoogleDriveApp::DRIVE_FILE_KIND && $meta['mimeType'] != GoogleDriveApp::FOLDER_MIMETYPE;
         } catch (Exception $e) {
@@ -226,7 +226,7 @@ class GoogleDriveFileSystemAdapter implements FilesystemAdapterInterface
     public function isDirectory(string $dirname): bool
     {
         try {
-            $meta = (array)$this->googleDriveApp->getFileInfo($dirname);
+            $meta = (array) $this->googleDriveApp->getFileInfo($dirname);
 
             return $meta['kind'] === GoogleDriveApp::DRIVE_FILE_KIND && $meta['mimeType'] === GoogleDriveApp::FOLDER_MIMETYPE;
         } catch (Exception $e) {
@@ -244,7 +244,7 @@ class GoogleDriveFileSystemAdapter implements FilesystemAdapterInterface
                 'q' => "'$dirname' in parents and trashed = false",
                 'fields' => '*',
             ];
-            $response = (array)$this->googleDriveApp->rpcRequest(GoogleDriveApp::FILE_METADATA_URL . '?' . http_build_query($params), [], 'GET');
+            $response = (array) $this->googleDriveApp->rpcRequest(GoogleDriveApp::FILE_METADATA_URL . '?' . http_build_query($params), [], 'GET');
             return $response['files'];
         } catch (Exception $e) {
             return false;

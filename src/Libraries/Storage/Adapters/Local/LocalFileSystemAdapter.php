@@ -222,7 +222,7 @@ class LocalFileSystemAdapter implements LocalFilesystemAdapterInterface
      */
     public function fileNameWithExtension(string $path): string
     {
-        return (string)pathinfo($path, PATHINFO_BASENAME);
+        return (string) pathinfo($path, PATHINFO_BASENAME);
     }
 
     /**
@@ -230,7 +230,7 @@ class LocalFileSystemAdapter implements LocalFilesystemAdapterInterface
      */
     public function fileName(string $path): string
     {
-        return (string)pathinfo($path, PATHINFO_FILENAME);
+        return (string) pathinfo($path, PATHINFO_FILENAME);
     }
 
     /**
@@ -238,7 +238,7 @@ class LocalFileSystemAdapter implements LocalFilesystemAdapterInterface
      */
     public function extension(string $path): string
     {
-        return (string)pathinfo($path, PATHINFO_EXTENSION);
+        return (string) pathinfo($path, PATHINFO_EXTENSION);
     }
 
     /**

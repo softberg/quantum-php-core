@@ -91,7 +91,7 @@ class GoogleDriveAppTest extends AppTestCase
 
     public function testGoogleDriveFetchTokens()
     {
-        $this->currentResponse = (object)$this->tokensGrantResponse;
+        $this->currentResponse = (object) $this->tokensGrantResponse;
 
         $response = $this->googleDriveApp->fetchTokens($this->authCode, $this->redirectUrl);
 
@@ -104,7 +104,7 @@ class GoogleDriveAppTest extends AppTestCase
 
     public function testGoogleDriveRpcRequest()
     {
-        $this->currentResponse = (object)$this->fileMetadataResponse;
+        $this->currentResponse = (object) $this->fileMetadataResponse;
 
         $response = $this->googleDriveApp->rpcRequest(GoogleDriveApp::FILE_METADATA_URL . '/' . $this->fileMetadataResponse['id']);
 
@@ -134,13 +134,13 @@ class GoogleDriveAppTest extends AppTestCase
     {
         $this->currentErrors = ['code' => 401];
 
-        $this->currentResponse = (object)$this->errorResponse;
+        $this->currentResponse = (object) $this->errorResponse;
 
         $response = $this->googleDriveApp->sendRequest(GoogleDriveApp::FILE_METADATA_URL . '/' . $this->fileMetadataResponse['id']);
 
         $this->assertIsObject($response);
 
-        $this->assertEquals((object)$this->fileMetadataResponse, $response);
+        $this->assertEquals((object) $this->fileMetadataResponse, $response);
     }
 
 }

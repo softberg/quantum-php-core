@@ -127,7 +127,7 @@ class HttpClientTest extends AppTestCase
         $curl->shouldReceive('getId')->andReturn(0);
         $curl->shouldReceive('getResponseHeaders')->andReturn(new CaseInsensitiveArray());
         $curl->shouldReceive('getResponseCookies')->andReturn([]);
-        $curl->shouldReceive('getResponse')->andReturn((object)['status' => 'ok']);
+        $curl->shouldReceive('getResponse')->andReturn((object) ['status' => 'ok']);
 
         $this->httpClient
             ->createRequest('https://example.com', $curl)

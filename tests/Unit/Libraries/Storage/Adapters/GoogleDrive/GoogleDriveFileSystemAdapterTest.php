@@ -50,9 +50,9 @@ class GoogleDriveFileSystemAdapterTest extends AppTestCase
                 return self::$response[array_key_last(self::$response)];
             }
 
-            self::$response = array_merge(self::$response, (array)$params);
+            self::$response = array_merge(self::$response, (array) $params);
 
-            return (object)self::$response;
+            return (object) self::$response;
         });
 
         $this->fs = new GoogleDriveFileSystemAdapter($googleDrive);

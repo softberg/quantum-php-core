@@ -131,6 +131,6 @@ class JWTokenTest extends AppTestCase
 
         $this->assertIsObject($jwtToken->fetchPayload());
 
-        $this->assertEquals($claims, (array)$jwtToken->fetchPayload());
+        $this->assertEquals($claims, (array) $jwtToken->fetchPayload());
     }
 }

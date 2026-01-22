@@ -68,7 +68,7 @@ class DropboxFileSystemAdapter implements FilesystemAdapterInterface
     public function get(string $filename)
     {
         try {
-            return (string)$this->dropboxApp->contentRequest(DropboxApp::ENDPOINT_DOWNLOAD_FILE, $this->dropboxApp->path($filename));
+            return (string) $this->dropboxApp->contentRequest(DropboxApp::ENDPOINT_DOWNLOAD_FILE, $this->dropboxApp->path($filename));
         } catch (Exception $e) {
             return false;
         }
@@ -151,7 +151,7 @@ class DropboxFileSystemAdapter implements FilesystemAdapterInterface
     public function size(string $filename)
     {
         try {
-            $meta = (array)$this->dropboxApp->rpcRequest(DropboxApp::ENDPOINT_FILE_METADATA, $this->dropboxApp->path($filename));
+            $meta = (array) $this->dropboxApp->rpcRequest(DropboxApp::ENDPOINT_FILE_METADATA, $this->dropboxApp->path($filename));
             return $meta['size'];
         } catch (Exception $e) {
             return false;
@@ -164,7 +164,7 @@ class DropboxFileSystemAdapter implements FilesystemAdapterInterface
     public function lastModified(string $filename)
     {
         try {
-            $meta = (array)$this->dropboxApp->rpcRequest(DropboxApp::ENDPOINT_FILE_METADATA, $this->dropboxApp->path($filename));
+            $meta = (array) $this->dropboxApp->rpcRequest(DropboxApp::ENDPOINT_FILE_METADATA, $this->dropboxApp->path($filename));
             return isset($meta['server_modified']) ? strtotime($meta['server_modified']) : false;
         } catch (Exception $e) {
             return false;
@@ -192,7 +192,7 @@ class DropboxFileSystemAdapter implements FilesystemAdapterInterface
     public function isFile(string $filename): bool
     {
         try {
-            $meta = (array)$this->dropboxApp->rpcRequest(DropboxApp::ENDPOINT_FILE_METADATA, $this->dropboxApp->path($filename));
+            $meta = (array) $this->dropboxApp->rpcRequest(DropboxApp::ENDPOINT_FILE_METADATA, $this->dropboxApp->path($filename));
             return $meta['.tag'] == 'file';
         } catch (Exception $e) {
             return false;
@@ -206,7 +206,7 @@ class DropboxFileSystemAdapter implements FilesystemAdapterInterface
     public function isDirectory(string $dirname): bool
     {
         try {
-            $meta = (array)$this->dropboxApp->rpcRequest(DropboxApp::ENDPOINT_FILE_METADATA, $this->dropboxApp->path($dirname));
+            $meta = (array) $this->dropboxApp->rpcRequest(DropboxApp::ENDPOINT_FILE_METADATA, $this->dropboxApp->path($dirname));
             return $meta['.tag'] == 'folder';
         } catch (Exception $e) {
             return false;
@@ -219,7 +219,7 @@ class DropboxFileSystemAdapter implements FilesystemAdapterInterface
     public function listDirectory(string $dirname)
     {
         try {
-            $response = (array)$this->dropboxApp->rpcRequest(DropboxApp::ENDPOINT_LIST_FOLDER, $this->dropboxApp->path($dirname));
+            $response = (array) $this->dropboxApp->rpcRequest(DropboxApp::ENDPOINT_LIST_FOLDER, $this->dropboxApp->path($dirname));
             return $response['entries'];
         } catch (Exception $e) {
             return false;

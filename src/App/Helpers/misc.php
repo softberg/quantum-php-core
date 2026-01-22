@@ -59,7 +59,7 @@ function random_number(int $length = 10): int
     for ($i = 0; $i < $length; $i++) {
         $randomString .= random_int(0, 9);
     }
-    return (int)$randomString;
+    return (int) $randomString;
 }
 
 /**

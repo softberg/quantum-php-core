@@ -42,7 +42,7 @@ trait HttpClientTestCase
             return $httpClientMock;
         });
 
-        $httpClientMock->shouldReceive('getErrors')->andReturnUsing(fn () => (array)$this->response[$this->url]['errors']);
+        $httpClientMock->shouldReceive('getErrors')->andReturnUsing(fn () => (array) $this->response[$this->url]['errors']);
 
         $httpClientMock->shouldReceive('getResponseBody')->andReturnUsing(fn () => $this->response[$this->url]['body']);
 

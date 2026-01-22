@@ -195,7 +195,7 @@ abstract class HttpRequest
         $csrfToken = null;
 
         if (self::has(Csrf::TOKEN_KEY)) {
-            $csrfToken = (string)self::get(Csrf::TOKEN_KEY);
+            $csrfToken = (string) self::get(Csrf::TOKEN_KEY);
         } elseif (self::hasHeader('X-' . Csrf::TOKEN_KEY)) {
             $csrfToken = self::getHeader('X-' . Csrf::TOKEN_KEY);
         }
@@ -275,6 +275,6 @@ abstract class HttpRequest
      */
     private static function setRequestHeaders()
     {
-        self::$__headers = array_change_key_case((array)getallheaders());
+        self::$__headers = array_change_key_case((array) getallheaders());
     }
 }
