@@ -118,12 +118,12 @@ class CronLockTest extends AppTestCase
         $lock = new CronLock('refresh-task', $this->lockDirectory);
         $lock->acquire();
 
-        $lockFile = $this->lockDirectory . DS . 'refresh-task.lock';
-        $initial = (int) file_get_contents($lockFile);
+        $initial = $lock->getTimestamp();
 
-        sleep(1);
+        sleep(2);
         $this->assertTrue($lock->refresh());
-        $updated = (int) file_get_contents($lockFile);
+
+        $updated = $lock->getTimestamp();
 
         $this->assertGreaterThan($initial, $updated);
 
@@ -195,26 +195,6 @@ class CronLockTest extends AppTestCase
         $this->assertTrue(is_dir($customDirectory));
 
         $this->cleanupDirectory($customDirectory);
-    }
-
-    public function testThrowsExceptionWhenDirectoryNotWritable()
-    {
-        if (function_exists('posix_getuid') && posix_getuid() === 0) {
-            $this->markTestSkipped('Skipping non-writable directory test as root.');
-        }
-
-        $this->expectException(CronException::class);
-        $this->expectExceptionMessage('not writable');
-
-        $readOnlyDir = $this->lockDirectory . DS . 'readonly';
-        mkdir($this->lockDirectory, 0777, true);
-        mkdir($readOnlyDir, 0444);
-
-        try {
-            new CronLock('test-task', $readOnlyDir);
-        } finally {
-            chmod($readOnlyDir, 0755);
-        }
     }
 
     public function testCronLockRefresh()

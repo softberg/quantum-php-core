@@ -79,6 +79,16 @@ class CronLock
         return $this->writeTimestampToHandle($this->lockHandle);
     }
 
+    public function getTimestamp(): int
+    {
+        if ($this->lockHandle === null) {
+            return 0;
+        }
+
+        $timestamp = $this->readTimestampFromHandle($this->lockHandle);
+        return $timestamp ?? 0;
+    }
+
     public function release(): bool
     {
         if (!$this->ownsLock || $this->lockHandle === null) {
@@ -226,9 +236,14 @@ class CronLock
         if (rewind($handle) === false) {
             return false;
         }
-        if (fwrite($handle, (string) time()) === false) {
+
+        $timestamp = (string) time();
+        $bytes = fwrite($handle, $timestamp);
+
+        if ($bytes === false) {
             return false;
         }
+
         if (fflush($handle) === false) {
             return false;
         }
