@@ -170,13 +170,6 @@ class Environment
     }
 
     /**
-     *
-     * @param string $key
-     * @param string|null $value
-     * @throws EnvException
-     */
-
-    /**
      * Creates or updates the row in .env
      * @param string $key
      * @param string|null $value
