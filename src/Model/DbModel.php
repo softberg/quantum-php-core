@@ -27,19 +27,18 @@ use Quantum\Paginator\Paginator;
  *
  * @method string getTable()
  * @method string getModelName()
- * @method static select(...$columns)
- * @method static criteria(string $column, string $operator, $value = null)
- * @method static criterias(...$criterias)
- * @method static having(string $column, string $operator, string $value = null)
- * @method static orderBy(string $column, string $direction)
- * @method static offset(int $offset)
- * @method static limit(int $limit)
+ * @method self select(...$columns)
+ * @method self criteria(string $column, string $operator, $value = null)
+ * @method self criterias(...$criterias)
+ * @method self having(string $column, string $operator, string $value = null)
+ * @method self orderBy(string $column, string $direction)
+ * @method self offset(int $offset)
+ * @method self limit(int $limit)
  * @method int count()
  * @method bool deleteMany()
- * @method static joinTo(DbModel $model, bool $switch = true)
- * @method static isNull(string $column)
- * @method static isNotNull(string $column)
- * /
+ * @method self joinTo(DbModel $model, bool $switch = true)
+ * @method self isNull(string $column)
+ * @method self isNotNull(string $column)
  */
 abstract class DbModel extends Model
 {
@@ -101,7 +100,7 @@ abstract class DbModel extends Model
      */
     public function findOne(int $id): ?DbModel
     {
-        $orm = $this->ormInstance->findOne($id);
+        $orm = $this->getOrmInstance()->findOne($id);
 
         return wrapToModel($orm, static::class);
     }
@@ -115,7 +114,7 @@ abstract class DbModel extends Model
      */
     public function findOneBy(string $column, $value): ?DbModel
     {
-        $orm = $this->ormInstance->findOneBy($column, $value);
+        $orm = $this->getOrmInstance()->findOneBy($column, $value);
 
         return wrapToModel($orm, static::class);
     }
@@ -127,7 +126,7 @@ abstract class DbModel extends Model
      */
     public function first(): ?DbModel
     {
-        $orm = $this->ormInstance->first();
+        $orm = $this->getOrmInstance()->first();
 
         return wrapToModel($orm, static::class);
     }
@@ -141,7 +140,7 @@ abstract class DbModel extends Model
     {
         $models = array_map(
             fn ($item) => wrapToModel($item, static::class),
-            $this->ormInstance->get()
+            $this->getOrmInstance()->get()
         );
 
         return new ModelCollection($models);
@@ -167,23 +166,25 @@ abstract class DbModel extends Model
     /**
      * Creates a new record
      * @return $this
+     * @throws ModelException
      */
     public function create(): self
     {
         $this->attributes = [];
-        $this->ormInstance->create();
+        $this->getOrmInstance()->create();
         return $this;
     }
 
     /**
      * Save model
      * @return bool
+     * @throws ModelException
      */
     public function save(): bool
     {
         $this->syncAttributesToOrm();
 
-        $result = $this->ormInstance->save();
+        $result = $this->getOrmInstance()->save();
 
         $this->syncPrimaryKeyFromOrm();
 
@@ -193,17 +194,18 @@ abstract class DbModel extends Model
     /**
      * Delete model
      * @return bool
+     * @throws ModelException
      */
     public function delete(): bool
     {
-        return $this->ormInstance->delete();
+        return $this->getOrmInstance()->delete();
     }
 
     /**
      * @param array $data
      * @return $this
      */
-    public function hydrateFromOrm(array $data): DbModel
+    public function hydrateFromOrm(array $data): self
     {
         $this->attributes = $data;
         return $this;
@@ -211,20 +213,22 @@ abstract class DbModel extends Model
 
     /**
      * @param string $method
-     * @param $args
-     * @return $this|DbModel
+     * @param array $args
+     * @return mixed
      * @throws ModelException
      */
-    public function __call(string $method, $args = null)
+    public function __call(string $method, array $args = [])
     {
-        if (!method_exists($this->ormInstance, $method)) {
+        $orm = $this->getOrmInstance();
+
+        if (!method_exists($orm, $method)) {
             throw ModelException::methodNotSupported(
                 $method,
-                get_class($this->ormInstance)
+                get_class($orm)
             );
         }
 
-        $result = $this->ormInstance->{$method}(...$args);
+        $result = $orm->{$method}(...$args);
 
         return $result instanceof DbalInterface ? $this : $result;
     }
@@ -238,17 +242,25 @@ abstract class DbModel extends Model
             'table',
             'idColumn',
             'hidden',
+            'attributes',
         ];
     }
 
     /**
      * Sync model attributes into ORM
      * @return void
+     * @throws ModelException
      */
     protected function syncAttributesToOrm(): void
     {
+        $orm = $this->getOrmInstance();
+
         foreach ($this->attributes as $key => $value) {
-            $this->ormInstance->prop($key, $value);
+            if ($key === $this->idColumn) {
+                continue;
+            }
+
+            $orm->prop($key, $value);
         }
     }
 
@@ -268,10 +280,11 @@ abstract class DbModel extends Model
     /**
      * Syncs primary key from ORM to model attributes
      * @return void
+     * @throws ModelException
      */
     private function syncPrimaryKeyFromOrm(): void
     {
-        $id = $this->ormInstance->prop($this->idColumn);
+        $id = $this->getOrmInstance()->prop($this->idColumn);
 
         if ($id !== null) {
             $this->attributes[$this->idColumn] = $id;

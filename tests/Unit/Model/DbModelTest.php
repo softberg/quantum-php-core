@@ -190,6 +190,21 @@ class DbModelTest extends AppTestCase
         $this->assertEquals(35, $userModel->age);
     }
 
+    public function testDbModelPropUnknownColumnThrowsPdoExceptionOnSave()
+    {
+        $userModel = $this->model->create();
+
+        $userModel->firstname = 'Bypass';
+        $userModel->lastname = 'Test';
+        $userModel->age = 20;
+
+        $userModel->currency = 'USD';
+
+        $this->expectException(\PDOException::class);
+
+        $userModel->save();
+    }
+
     public function testDbModelCallingModelWithCriterias()
     {
         $profileModel = ModelFactory::get(TestProfileModel::class);

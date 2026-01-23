@@ -14,7 +14,6 @@
 
 use Quantum\Libraries\Database\Contracts\DbalInterface;
 use Quantum\Model\Exceptions\ModelException;
-use Quantum\App\Exceptions\BaseException;
 use Quantum\Model\Factories\ModelFactory;
 use Quantum\Model\DbModel;
 use Quantum\Model\Model;
@@ -58,13 +57,17 @@ function dynamicModel(
 
 /**
  * Wraps the orm instance into model
- * @param DbalInterface $ormInstance
+ * @param DbalInterface|null $ormInstance
  * @param string $modelClass
- * @return DbModel
- * @throws BaseException
+ * @return DbModel|null
+ * @throws ModelException
  */
-function wrapToModel(DbalInterface $ormInstance, string $modelClass): DbModel
+function wrapToModel(?DbalInterface $ormInstance, string $modelClass): ?DbModel
 {
+    if ($ormInstance === null) {
+        return null;
+    }
+
     if (!class_exists($modelClass)) {
         throw ModelException::notFound('Model class', $modelClass);
     }
