@@ -12,14 +12,14 @@ trait GoogleDriveTokenServiceTestCase
         $tokenServiceMock = Mockery::mock(TokenServiceInterface::class);
 
         $tokenServiceMock->shouldReceive('getRefreshToken')->andReturnUsing(function () {
-            $this->currentResponse = (object)$this->tokensGrantResponse;
+            $this->currentResponse = (object) $this->tokensGrantResponse;
             return 'ref_tok_1234';
         });
 
         $tokenServiceMock->shouldReceive('getAccessToken')->andReturn('acc_tok_1234');
 
         $tokenServiceMock->shouldReceive('saveTokens')->andReturnUsing(function ($tokens) {
-            $this->currentResponse = (object)$this->fileMetadataResponse;
+            $this->currentResponse = (object) $this->fileMetadataResponse;
             return true;
         });
 

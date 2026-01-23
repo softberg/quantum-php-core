@@ -14,18 +14,18 @@
 
 use Quantum\Libraries\Database\Contracts\DbalInterface;
 use Quantum\Model\Exceptions\ModelException;
-use Quantum\App\Exceptions\BaseException;
 use Quantum\Model\Factories\ModelFactory;
-use Quantum\Model\QtModel;
+use Quantum\Model\DbModel;
+use Quantum\Model\Model;
 
 /**
  * Gets the model instance
- * @param string $modelClass
- * @return QtModel
+ * @template T of Model
+ * @param class-string<T> $modelClass
+ * @return T
  * @throws ModelException
- * @throws BaseException
  */
-function model(string $modelClass): QtModel
+function model(string $modelClass): Model
 {
     return ModelFactory::get($modelClass);
 }
@@ -37,7 +37,7 @@ function model(string $modelClass): QtModel
  * @param string $idColumn
  * @param array $foreignKeys
  * @param array $hidden
- * @return QtModel
+ * @return DbModel
  */
 function dynamicModel(
     string $table,
@@ -45,30 +45,41 @@ function dynamicModel(
     string $idColumn = 'id',
     array  $foreignKeys = [],
     array  $hidden = []
-): QtModel {
-    return ModelFactory::createDynamicModel($table, $modelName, $idColumn, $foreignKeys, $hidden);
+): DbModel {
+    return ModelFactory::createDynamicModel(
+        $table,
+        $modelName,
+        $idColumn,
+        $foreignKeys,
+        $hidden
+    );
 }
 
 /**
  * Wraps the orm instance into model
- * @param DbalInterface $ormInstance
+ * @param DbalInterface|null $ormInstance
  * @param string $modelClass
- * @return QtModel
- * @throws BaseException
+ * @return DbModel|null
+ * @throws ModelException
  */
-function wrapToModel(DbalInterface $ormInstance, string $modelClass): QtModel
+function wrapToModel(?DbalInterface $ormInstance, string $modelClass): ?DbModel
 {
+    if ($ormInstance === null) {
+        return null;
+    }
+
     if (!class_exists($modelClass)) {
         throw ModelException::notFound('Model class', $modelClass);
     }
 
     $model = new $modelClass();
 
-    if (!$model instanceof QtModel) {
-        throw ModelException::notInstanceOf($modelClass, QtModel::class);
+    if (!$model instanceof DbModel) {
+        throw ModelException::notInstanceOf($modelClass, DbModel::class);
     }
 
     $model->setOrmInstance($ormInstance);
+    $model->hydrateFromOrm($ormInstance->asArray());
 
     return $model;
 }

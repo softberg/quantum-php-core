@@ -9,13 +9,14 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace {{MODULE_NAMESPACE}}\Services;
 
 use {{MODULE_NAMESPACE}}\Transformers\CommentTransformer;
-use Quantum\App\Exceptions\BaseException;use Quantum\Model\Exceptions\ModelException;
+use Quantum\Model\Exceptions\ModelException;
+use Quantum\App\Exceptions\BaseException;
 use Quantum\Service\QtService;
 use {{MODULE_NAMESPACE}}\Models\Comment;
 use {{MODULE_NAMESPACE}}\Models\User;
@@ -30,17 +31,16 @@ class CommentService extends QtService
     /**
      * @var Comment
      */
-    private $model;
+    private Comment $model;
 
     /**
      * @var CommentTransformer
      */
-    private $transformer;
+    private CommentTransformer $transformer;
 
     /**
      * @param CommentTransformer $transformer
      * @throws ModelException
-     * @throws BaseException
      */
     public function __construct(CommentTransformer $transformer)
     {
@@ -96,7 +96,7 @@ class CommentService extends QtService
         $data['created_at'] = date('Y-m-d H:i:s');
 
         $comment = $this->model->create();
-        $comment->fillObjectProps($data);
+        $comment->fill($data);
         $comment->save();
 
         return $data;

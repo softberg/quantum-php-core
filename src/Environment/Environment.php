@@ -15,6 +15,7 @@
 namespace Quantum\Environment;
 
 use Quantum\Environment\Exceptions\EnvException;
+use Quantum\Config\Exceptions\ConfigException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Environment\Enums\Env;
@@ -36,26 +37,34 @@ class Environment
      * Environment file
      * @var string
      */
-    private $envFile = '.env';
+    private string $envFile = '.env';
 
     /**
      * @var bool
      */
-    private $isMutable = false;
+    private bool $isMutable = false;
 
     /**
      * Loaded env content
      * @var array
      */
-    private $envContent = [];
+    private array $envContent = [];
 
-    private static $appEnv = Env::PRODUCTION;
+    /**
+     * @var bool
+     */
+    private bool $loaded = false;
+
+    /**
+     * @var string
+     */
+    private static string $appEnv = Env::PRODUCTION;
 
     /**
      * Instance of Environment
-     * @var Environment
+     * @var Environment|null
      */
-    private static $instance = null;
+    private static ?Environment $instance = null;
 
     /**
      * GetInstance
@@ -91,7 +100,7 @@ class Environment
      */
     public function load(Setup $setup)
     {
-        if (!empty($this->envContent)) {
+        if ($this->loaded) {
             return;
         }
 
@@ -101,16 +110,13 @@ class Environment
 
         $this->envFile = '.env' . ($appEnv !== Env::PRODUCTION ? ".$appEnv" : '');
 
-        if (!file_exists(App::getBaseDir() . DS . $this->envFile)) {
+        if (!fs()->exists($this->getEnvFilePath())) {
             throw EnvException::fileNotFound($this->envFile);
         }
 
-        $dotenv = $this->isMutable
-            ? Dotenv::createMutable(App::getBaseDir(), $this->envFile)
-            : Dotenv::createImmutable(App::getBaseDir(), $this->envFile);
+        $this->envContent = $this->loadDotenvFile();
 
-        $this->envContent = $dotenv->load();
-
+        $this->loaded = true;
         self::$appEnv = $appEnv;
     }
 
@@ -132,7 +138,7 @@ class Environment
      */
     public function getValue(string $key, $default = null)
     {
-        if (empty($this->envContent)) {
+        if (!$this->loaded) {
             throw EnvException::environmentNotLoaded();
         }
 
@@ -140,9 +146,7 @@ class Environment
             return $this->envContent[$key];
         }
 
-        $val = getenv($key);
-
-        return $val !== false ? $val : $default;
+        return $default;
     }
 
     /**
@@ -169,7 +173,12 @@ class Environment
      * Creates or updates the row in .env
      * @param string $key
      * @param string|null $value
+     * @return void
+     * @throws BaseException
+     * @throws DiException
      * @throws EnvException
+     * @throws ReflectionException
+     * @throws ConfigException
      */
     public function updateRow(string $key, ?string $value)
     {
@@ -177,23 +186,23 @@ class Environment
             throw EnvException::environmentImmutable();
         }
 
-        if (empty($this->envContent)) {
+        if (!$this->loaded) {
             throw EnvException::environmentNotLoaded();
         }
 
+        $envFilePath = $this->getEnvFilePath();
         $row = $this->getRow($key);
 
-        $envFilePath = App::getBaseDir() . DS . $this->envFile;
-
         if ($row) {
-            $envFileContent = file_get_contents($envFilePath);
+            $envFileContent = fs()->get($envFilePath);
             $envFileContent = preg_replace('/^' . preg_quote($row, '/') . '/m', $key . '=' . $value, $envFileContent);
-            file_put_contents($envFilePath, $envFileContent);
+
+            fs()->put($envFilePath, $envFileContent);
         } else {
-            file_put_contents($envFilePath, PHP_EOL . $key . '=' . $value . PHP_EOL, FILE_APPEND);
+            fs()->append($envFilePath, PHP_EOL . $key . '=' . $value . PHP_EOL);
         }
 
-        $this->envContent = Dotenv::createMutable(App::getBaseDir(), $this->envFile)->load();
+        $this->envContent = $this->loadDotenvFile(true);
     }
 
     /**
@@ -210,5 +219,30 @@ class Environment
         }
 
         return null;
+    }
+
+    /**
+     * @param bool $forceMutableReload
+     * @return array
+     */
+    private function loadDotenvFile(bool $forceMutableReload = false): array
+    {
+        $baseDir = App::getBaseDir();
+
+        $dotenv = ($forceMutableReload || $this->isMutable)
+            ? Dotenv::createMutable($baseDir, $this->envFile)
+            : Dotenv::createImmutable($baseDir, $this->envFile);
+
+        $loadedVars = $dotenv->load();
+
+        return is_array($loadedVars) ? $loadedVars : [];
+    }
+
+    /**
+     * @return string
+     */
+    private function getEnvFilePath(): string
+    {
+        return App::getBaseDir() . DS . $this->envFile;
     }
 }

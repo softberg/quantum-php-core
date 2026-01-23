@@ -3,15 +3,15 @@
 namespace Quantum\Tests\_root\shared\Models;
 
 use Quantum\Libraries\Database\Enums\Relation;
-use Quantum\Model\QtModel;
+use Quantum\Model\DbModel;
 
-class TestProfileModel extends QtModel
+class TestProfileModel extends DbModel
 {
-    public $table = 'profiles';
+    public string $table = 'profiles';
 
-    public $idColumn = 'id';
+    public string $idColumn = 'id';
 
-    protected $fillable = [
+    protected array $fillable = [
         'user_id',
         'firstname',
         'lastname',

@@ -137,6 +137,6 @@ class AuthFactory
      */
     private static function createJwtInstance(string $adapter): ?JwtToken
     {
-        return $adapter === Auth::JWT ? (new JwtToken())->setLeeway(1)->setClaims((array)config()->get('auth.claims')) : null;
+        return $adapter === Auth::JWT ? (new JwtToken())->setLeeway(1)->setClaims((array) config()->get('auth.claims')) : null;
     }
 }

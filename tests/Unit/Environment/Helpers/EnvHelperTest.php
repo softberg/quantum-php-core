@@ -8,10 +8,10 @@ class EnvHelperTest extends AppTestCase
 {
     public function testGetEnvValue()
     {
-        $this->assertNull(env('NEW_ENV_KEY'));
+        $this->assertNotNull(env('APP_KEY'));
 
-        putenv('NEW_ENV_KEY=New value');
+        $this->assertNotNull(env('DEBUG'));
 
-        $this->assertEquals('New value', env('NEW_ENV_KEY'));
+        $this->assertEquals('TRUE', env('DEBUG'));
     }
 }

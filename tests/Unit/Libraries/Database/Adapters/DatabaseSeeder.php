@@ -51,7 +51,7 @@ class DatabaseSeeder
 
         foreach (TestData::users() as $userData) {
             $this->userModel->create();
-            $this->userModel->fillObjectProps($userData);
+            $this->userModel->fill($userData);
             $this->userModel->save();
         }
     }
@@ -60,7 +60,7 @@ class DatabaseSeeder
     {
         foreach (TestData::profiles() as $profileData) {
             $this->profileModel->create();
-            $this->profileModel->fillObjectProps($profileData);
+            $this->profileModel->fill($profileData);
             $this->profileModel->save();
         }
     }
@@ -69,7 +69,7 @@ class DatabaseSeeder
     {
         foreach (TestData::userProfessions() as $professionData) {
             $this->userProfessionModel->create();
-            $this->userProfessionModel->fillObjectProps($professionData);
+            $this->userProfessionModel->fill($professionData);
             $this->userProfessionModel->save();
         }
     }
@@ -78,7 +78,7 @@ class DatabaseSeeder
     {
         foreach (TestData::events() as $eventData) {
             $this->eventModel->create();
-            $this->eventModel->fillObjectProps($eventData);
+            $this->eventModel->fill($eventData);
             $this->eventModel->save();
         }
     }
@@ -87,7 +87,7 @@ class DatabaseSeeder
     {
         foreach (TestData::userEvents() as $userEventData) {
             $this->userEventModel->create();
-            $this->userEventModel->fillObjectProps($userEventData);
+            $this->userEventModel->fill($userEventData);
             $this->userEventModel->save();
         }
     }
@@ -96,7 +96,7 @@ class DatabaseSeeder
     {
         foreach (TestData::userMeetings() as $meetingData) {
             $this->userMeetingModel->create();
-            $this->userMeetingModel->fillObjectProps($meetingData);
+            $this->userMeetingModel->fill($meetingData);
             $this->userMeetingModel->save();
         }
     }
@@ -105,7 +105,7 @@ class DatabaseSeeder
     {
         foreach (TestData::tickets() as $ticketData) {
             $this->ticketModel->create();
-            $this->ticketModel->fillObjectProps($ticketData);
+            $this->ticketModel->fill($ticketData);
             $this->ticketModel->save();
         }
     }
@@ -114,7 +114,7 @@ class DatabaseSeeder
     {
         foreach (TestData::notes() as $noteData) {
             $this->noteModel->create();
-            $this->noteModel->fillObjectProps($noteData);
+            $this->noteModel->fill($noteData);
             $this->noteModel->save();
         }
     }

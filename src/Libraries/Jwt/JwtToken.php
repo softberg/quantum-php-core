@@ -159,7 +159,7 @@ class JwtToken extends JWT
      */
     public function fetchData(): ?array
     {
-        return isset($this->fetchedPayload->data) ? (array)$this->fetchedPayload->data : null;
+        return isset($this->fetchedPayload->data) ? (array) $this->fetchedPayload->data : null;
     }
 
     /**

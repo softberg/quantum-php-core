@@ -91,7 +91,7 @@ trait Header
     {
         $bearerToken = null;
 
-        $authorization = (string)self::getHeader('Authorization');
+        $authorization = (string) self::getHeader('Authorization');
 
         if (self::hasHeader('Authorization') && preg_match('/Bearer\s(\S+)/', $authorization, $matches)) {
             $bearerToken = $matches[1];
@@ -117,7 +117,7 @@ trait Header
             return null;
         }
 
-        $authorization = (string)self::getHeader('Authorization');
+        $authorization = (string) self::getHeader('Authorization');
 
         if (preg_match('/Basic\s(\S+)/', $authorization, $matches)) {
             $decoded = base64_decode($matches[1], true);

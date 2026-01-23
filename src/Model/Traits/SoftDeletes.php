@@ -15,9 +15,11 @@
 namespace Quantum\Model\Traits;
 
 use Quantum\Paginator\Exceptions\PaginatorException;
+use Quantum\Model\Exceptions\ModelException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Model\ModelCollection;
 use Quantum\Paginator\Paginator;
+use Quantum\Model\DbModel;
 
 /**
  * Trait SoftDeletes
@@ -28,11 +30,12 @@ trait SoftDeletes
     /**
      * @var bool
      */
-    protected $includeTrashed = false;
+    protected bool $includeTrashed = false;
 
     /**
      * Soft delete the model by setting the deleted_at timestamp.
      * @return bool
+     * @throws ModelException
      */
     public function delete(): bool
     {
@@ -44,6 +47,7 @@ trait SoftDeletes
     /**
      * Restore a soft deleted model.
      * @return bool
+     * @throws ModelException
      */
     public function restore(): bool
     {
@@ -54,6 +58,7 @@ trait SoftDeletes
     /**
      * Force delete the model from the database.
      * @return bool
+     * @throws ModelException
      */
     public function forceDelete(): bool
     {
@@ -74,12 +79,13 @@ trait SoftDeletes
     /**
      * Return only soft deleted records.
      * @return static
+     * @throws ModelException
      */
     public function onlyTrashed(): self
     {
         $this->includeTrashed = true;
 
-        $this->ormInstance->isNotNull($this->getDeleteAtColumn());
+        $this->getOrmInstance()->isNotNull($this->getDeleteAtColumn());
 
         return $this;
     }
@@ -87,6 +93,7 @@ trait SoftDeletes
     /**
      * Get all non-deleted records unless withTrashed is called.
      * @return ModelCollection
+     * @throws BaseException
      */
     public function get(): ModelCollection
     {
@@ -113,6 +120,7 @@ trait SoftDeletes
     /**
      * Count all non-deleted records unless withTrashed() is called.
      * @return int
+     * @throws ModelException
      */
     public function count(): int
     {
@@ -124,52 +132,50 @@ trait SoftDeletes
     /**
      * Find one record by its ID, excluding soft deleted unless withTrashed() is called.
      * @param int $id
-     * @return static
+     * @return DbModel|null
+     * @throws BaseException
      */
-    public function findOne(int $id): self
+    public function findOne(int $id): ?DbModel
     {
         $this->applySoftDeleteScope();
 
-        parent::findOne($id);
-
-        return $this;
+        return parent::findOne($id);
     }
 
     /**
      * Find one record by column and value, excluding soft deleted unless withTrashed() is called.
      * @param string $column
      * @param $value
-     * @return static
+     * @return DbModel|null
+     * @throws BaseException
      */
-    public function findOneBy(string $column, $value): self
+    public function findOneBy(string $column, $value): ?DbModel
     {
         $this->applySoftDeleteScope();
 
-        parent::findOneBy($column, $value);
-
-        return $this;
+        return parent::findOneBy($column, $value);
     }
 
     /**
      * Get the first record, excluding soft deleted unless withTrashed() is called.
-     * @return static
+     * @return DbModel|null
+     * @throws BaseException
      */
-    public function first(): self
+    public function first(): ?DbModel
     {
         $this->applySoftDeleteScope();
 
-        parent::first();
-
-        return $this;
+        return parent::first();
     }
 
     /**
      * Apply soft delete scope to the current query if not including trashed.
+     * @throws ModelException
      */
     protected function applySoftDeleteScope(): void
     {
         if (!$this->includeTrashed) {
-            $this->ormInstance->isNull($this->getDeleteAtColumn());
+            $this->getOrmInstance()->isNull($this->getDeleteAtColumn());
         }
     }
 

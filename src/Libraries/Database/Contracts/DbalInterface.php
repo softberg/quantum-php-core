@@ -14,7 +14,7 @@
 
 namespace Quantum\Libraries\Database\Contracts;
 
-use Quantum\Model\QtModel;
+use Quantum\Model\DbModel;
 
 /**
  * Database Abstract Layer interface
@@ -185,11 +185,11 @@ interface DbalInterface
 
     /**
      * Joins two models
-     * @param QtModel $model
+     * @param DbModel $model
      * @param bool $switch
      * @return DbalInterface
      */
-    public function joinTo(QtModel $model, bool $switch = true): DbalInterface;
+    public function joinTo(DbModel $model, bool $switch = true): DbalInterface;
 
     /**
      * Checks if the given column is NULL

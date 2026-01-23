@@ -17,11 +17,9 @@ namespace Quantum\App\Traits;
 use Quantum\Libraries\Logger\Factories\LoggerFactory;
 use Quantum\Libraries\Lang\Exceptions\LangException;
 use Quantum\Libraries\Lang\Factories\LangFactory;
-use Quantum\Environment\Exceptions\EnvException;
 use Quantum\Config\Exceptions\ConfigException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
-use Quantum\Environment\Environment;
 use Quantum\Tracer\ErrorHandler;
 use Quantum\Loader\Loader;
 use Quantum\Config\Config;
@@ -123,18 +121,6 @@ trait AppTrait
     {
         $loader = Di::get(Loader::class);
         $loader->loadDir(App::getBaseDir() . DS . 'modules' . DS . '*' . DS . 'helpers');
-    }
-
-    /**
-     * @return void
-     * @throws DiException
-     * @throws ReflectionException
-     * @throws EnvException
-     * @throws BaseException
-     */
-    protected function loadEnvironment()
-    {
-        Environment::getInstance()->load(new Setup('config', 'env'));
     }
 
     /**

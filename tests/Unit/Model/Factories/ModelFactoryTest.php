@@ -7,7 +7,7 @@ use Quantum\Tests\_root\shared\Models\TestUserModel;
 use Quantum\Model\Exceptions\ModelException;
 use Quantum\Model\Factories\ModelFactory;
 use Quantum\Tests\Unit\AppTestCase;
-use Quantum\Model\QtModel;
+use Quantum\Model\DbModel;
 
 /**
  * @runTestsInSeparateProcesses
@@ -24,7 +24,7 @@ class ModelFactoryTest extends AppTestCase
     {
         $userModel = ModelFactory::get(TestUserModel::class);
 
-        $this->assertInstanceOf(QtModel::class, $userModel);
+        $this->assertInstanceOf(DbModel::class, $userModel);
 
         $this->assertInstanceOf(TestUserModel::class, $userModel);
     }
@@ -38,11 +38,11 @@ class ModelFactoryTest extends AppTestCase
         ModelFactory::get(\NonExistentClass::class);
     }
 
-    public function testModelFactoryModelNotInstanceOfQtModel()
+    public function testModelFactoryModelNotInstanceOfDbModel()
     {
         $this->expectException(ModelException::class);
 
-        $this->expectExceptionMessage('The `Mockery\Undefined` is not instance of `Quantum\Model\QtModel`');
+        $this->expectExceptionMessage('The `Mockery\Undefined` is not instance of `Quantum\Model\Model`');
 
         ModelFactory::get(\Mockery\Undefined::class);
     }
@@ -51,7 +51,7 @@ class ModelFactoryTest extends AppTestCase
     {
         $dynamicModel = ModelFactory::createDynamicModel('test_table', TestUserModel::class);
 
-        $this->assertInstanceOf(QtModel::class, $dynamicModel);
+        $this->assertInstanceOf(DbModel::class, $dynamicModel);
 
         $this->assertStringContainsString('@anonymous', get_class($dynamicModel));
 

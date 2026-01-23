@@ -20,6 +20,7 @@ use Quantum\Model\Exceptions\ModelException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Model\Factories\ModelFactory;
 use Quantum\Di\Exceptions\DiException;
+use Quantum\Model\DbModel;
 use ReflectionException;
 use DateTime;
 
@@ -211,15 +212,17 @@ trait General
     }
 
     /**
-     *  Validates uniqueness
+     * Validates uniqueness
      * @param $value
      * @param string $className
      * @param string $columnName
      * @return bool
+     * @throws BaseException
      * @throws ModelException
      */
     protected function unique($value, string $className, string $columnName): bool
     {
+        /** @var DbModel $model */
         $model = ModelFactory::get(ucfirst($className));
 
         $record = $model->findOneBy($columnName, $value);
@@ -233,10 +236,12 @@ trait General
      * @param string $className
      * @param string $columnName
      * @return bool
+     * @throws BaseException
      * @throws ModelException
      */
     protected function exists($value, string $className, string $columnName): bool
     {
+        /** @var DbModel $model */
         $model = ModelFactory::get(ucfirst($className));
 
         $record = $model->findOneBy($columnName, $value);

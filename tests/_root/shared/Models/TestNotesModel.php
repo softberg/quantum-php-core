@@ -2,15 +2,15 @@
 
 namespace Quantum\Tests\_root\shared\Models;
 
-use Quantum\Model\QtModel;
+use Quantum\Model\DbModel;
 
-class TestNotesModel extends QtModel
+class TestNotesModel extends DbModel
 {
-    public $table = 'notes';
+    public string $table = 'notes';
 
-    public $idColumn = 'id';
+    public string $idColumn = 'id';
 
-    public $fillable = [
+    public array $fillable = [
         'ticket_id',
         'note',
     ];

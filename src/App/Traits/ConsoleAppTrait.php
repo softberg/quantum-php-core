@@ -14,8 +14,13 @@
 
 namespace Quantum\App\Traits;
 
+use Quantum\Environment\Exceptions\EnvException;
 use Symfony\Component\Console\Application;
+use Quantum\App\Exceptions\BaseException;
+use Quantum\Di\Exceptions\DiException;
 use Quantum\Console\CommandDiscovery;
+use Quantum\Environment\Environment;
+use Quantum\Loader\Setup;
 use ReflectionException;
 use Exception;
 
@@ -25,6 +30,19 @@ use Exception;
  */
 trait ConsoleAppTrait
 {
+    /**
+     * @throws DiException
+     * @throws ReflectionException
+     * @throws EnvException
+     * @throws BaseException
+     */
+    protected function loadEnvironment()
+    {
+        Environment::getInstance()
+            ->setMutable(true)
+            ->load(new Setup('config', 'env'));
+    }
+
     /**
      * @param string $name
      * @param string $version

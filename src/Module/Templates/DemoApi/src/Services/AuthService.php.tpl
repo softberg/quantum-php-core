@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace {{MODULE_NAMESPACE}}\Services;
@@ -23,8 +23,6 @@ use Quantum\Di\Exceptions\DiException;
 use Quantum\Model\ModelCollection;
 use Quantum\Service\QtService;
 use {{MODULE_NAMESPACE}}\Models\User;
-use Quantum\Model\QtModel;
-use ReflectionException;
 
 /**
  * Class AuthService
@@ -34,12 +32,11 @@ class AuthService extends QtService implements AuthServiceInterface
 {
 
     /**
-     * @var QtModel
+     * @var User
      */
-    private $model;
+    private User $model;
 
     /**
-     * @throws BaseException
      * @throws ModelException
      */
     public function __construct()
@@ -50,6 +47,7 @@ class AuthService extends QtService implements AuthServiceInterface
     /**
      * Get users
      * @return ModelCollection
+     * @throws BaseException
      */
     public function getAll(): ModelCollection
     {
@@ -60,6 +58,7 @@ class AuthService extends QtService implements AuthServiceInterface
      * Get user
      * @param string $uuid
      * @return User
+     * @throws BaseException
      */
     public function getUserByUuid(string $uuid): User
     {
@@ -71,6 +70,7 @@ class AuthService extends QtService implements AuthServiceInterface
      * @param string $field
      * @param $value
      * @return AuthUser|null
+     * @throws BaseException
      */
     public function get(string $field, $value): ?AuthUser
     {
@@ -100,7 +100,7 @@ class AuthService extends QtService implements AuthServiceInterface
         $this->createUserDirectory($data['uuid']);
 
         $user = $this->model->create();
-        $user->fillObjectProps($data);
+        $user->fill($data);
         $user->save();
 
         return (new AuthUser())->setData($data);
@@ -112,6 +112,8 @@ class AuthService extends QtService implements AuthServiceInterface
      * @param string|null $value
      * @param array $data
      * @return AuthUser|null
+     * @throws BaseException
+     * @throws ModelException
      */
     public function update(string $field, ?string $value, array $data): ?AuthUser
     {
@@ -123,7 +125,7 @@ class AuthService extends QtService implements AuthServiceInterface
 
         $data['updated_at'] = date('Y-m-d H:i:s');
 
-        $user->fillObjectProps($data);
+        $user->fill($data);
         $user->save();
 
         return (new AuthUser())->setData($this->model->findOneBy($field, $value)->asArray());

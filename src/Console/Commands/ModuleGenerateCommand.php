@@ -84,6 +84,7 @@ class ModuleGenerateCommand extends QtCommand
             $this->info($moduleName . ' module successfully created');
         } catch (Exception $e) {
             $this->error($e->getMessage());
+            exit(1);
         }
     }
 }

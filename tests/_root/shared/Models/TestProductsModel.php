@@ -3,17 +3,17 @@
 namespace Quantum\Tests\_root\shared\Models;
 
 use Quantum\Model\Traits\SoftDeletes;
-use Quantum\Model\QtModel;
+use Quantum\Model\DbModel;
 
-class TestProductsModel extends QtModel
+class TestProductsModel extends DbModel
 {
     use SoftDeletes;
 
-    public $idColumn = 'id';
+    public string $idColumn = 'id';
 
-    public $table = 'products';
+    public string $table = 'products';
 
-    public $fillable = [
+    public array $fillable = [
         'title',
         'description',
         'price',

@@ -15,6 +15,7 @@
 namespace Quantum\App\Traits;
 
 use Quantum\App\Exceptions\StopExecutionException;
+use Quantum\Environment\Exceptions\EnvException;
 use Quantum\Libraries\ResourceCache\ViewCache;
 use Quantum\Module\Exceptions\ModuleException;
 use Quantum\Config\Exceptions\ConfigException;
@@ -22,6 +23,7 @@ use Quantum\Router\Exceptions\RouteException;
 use Quantum\Http\Exceptions\HttpException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
+use Quantum\Environment\Environment;
 use Quantum\Module\ModuleLoader;
 use Quantum\Router\RouteBuilder;
 use DebugBar\DebugBarException;
@@ -40,6 +42,17 @@ use Quantum\Di\Di;
  */
 trait WebAppTrait
 {
+    /**
+     * @throws DiException
+     * @throws ReflectionException
+     * @throws EnvException
+     * @throws BaseException
+     */
+    protected function loadEnvironment()
+    {
+        Environment::getInstance()->load(new Setup('config', 'env'));
+    }
+
     /**
      * @param Request $request
      * @param Response $response

@@ -6,7 +6,8 @@ Thanks for your interest in contributing to Quantum PHP Framework 💡 Whether y
 
 ## Before You Start
 
-- Familiarize yourself with the codebase: Quantum PHP Framework is modular — most features live under `/src` (core logic) and `/modules` (demo templates and optional components). Start by reviewing the `Router`, `Controller`, and `QtModel` classes to understand the framework flow. 
+- Familiarize yourself with the codebase: Quantum PHP Framework is modular — most features live under `/src` (core logic) and `/modules` (demo templates and optional components). 
+- Start by reviewing the `Router`, `Controller`, and `Model` classes to understand the framework flow. 
 - Check existing issues and milestones: look for tickets labeled `good first issue`, `help wanted`, or assigned to an upcoming version. 
 - Don’t hesitate to open a new issue if you find something worth improving.
 

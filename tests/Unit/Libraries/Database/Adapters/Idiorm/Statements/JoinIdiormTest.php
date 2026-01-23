@@ -15,11 +15,11 @@ use Quantum\Tests\_root\shared\Models\TestUserModel;
 use Quantum\Model\Exceptions\ModelException;
 use Quantum\Model\Factories\ModelFactory;
 use Quantum\Model\ModelCollection;
-use Quantum\Model\QtModel;
+use Quantum\Model\DbModel;
 
-class BrokenProfileMissingTypeModel extends QtModel
+class BrokenProfileMissingTypeModel extends DbModel
 {
-    public $table = 'profiles';
+    public string $table = 'profiles';
 
     public function relations(): array
     {
@@ -33,9 +33,9 @@ class BrokenProfileMissingTypeModel extends QtModel
     }
 }
 
-class BrokenProfileUnsupportedRelationModel extends QtModel
+class BrokenProfileUnsupportedRelationModel extends DbModel
 {
-    public $table = 'profiles';
+    public string $table = 'profiles';
 
     public function relations(): array
     {

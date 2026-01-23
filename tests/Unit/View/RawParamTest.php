@@ -28,7 +28,7 @@ class RawParamTest extends AppTestCase
 
     public function testStoresAndReturnsObject()
     {
-        $value = (object)['foo' => 'bar'];
+        $value = (object) ['foo' => 'bar'];
         $raw = new RawParam($value);
         $this->assertSame($value, $raw->getValue());
     }

@@ -107,7 +107,7 @@ class DropboxAppTest extends AppTestCase
 
     public function testDropboxFetchTokens()
     {
-        $this->currentResponse = (object)$this->tokensGrantResponse;
+        $this->currentResponse = (object) $this->tokensGrantResponse;
 
         $response = $this->dropboxApp->fetchTokens($this->authCode, $this->redirectUrl);
 
@@ -120,7 +120,7 @@ class DropboxAppTest extends AppTestCase
 
     public function testDropboxRpcRequest()
     {
-        $this->currentResponse = (object)$this->profileDataResponse;
+        $this->currentResponse = (object) $this->profileDataResponse;
 
         $response = $this->dropboxApp->rpcRequest('/users/get_account');
 
@@ -144,26 +144,26 @@ class DropboxAppTest extends AppTestCase
 
     public function testDropboxSendRequest()
     {
-        $this->currentResponse = (object)$this->profileDataResponse;
+        $this->currentResponse = (object) $this->profileDataResponse;
 
         $response = $this->dropboxApp->sendRequest('https://api.dropboxapi.com/2/users/get_account');
 
         $this->assertIsObject($response);
 
-        $this->assertEquals((object)$this->profileDataResponse, $response);
+        $this->assertEquals((object) $this->profileDataResponse, $response);
     }
 
     public function testDropboxRequestWithAccessTokenExpired()
     {
         $this->currentErrors = ['code' => 401];
 
-        $this->currentResponse = (object)$this->errorResponse;
+        $this->currentResponse = (object) $this->errorResponse;
 
         $response = $this->dropboxApp->sendRequest('https://api.dropboxapi.com/2/users/get_account2');
 
         $this->assertIsObject($response);
 
-        $this->assertEquals((object)$this->profileDataResponse, $response);
+        $this->assertEquals((object) $this->profileDataResponse, $response);
     }
 
     public function testDropboxPathNormalizer()

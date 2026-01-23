@@ -100,4 +100,15 @@ class ModelException extends BaseException
             E_ERROR
         );
     }
+
+    /**
+     * @return ModelException
+     */
+    public static function ormIsNotSet(): self
+    {
+        return new self(
+            ExceptionMessages::ORM_IS_NOT_SET,
+            E_ERROR
+        );
+    }
 }

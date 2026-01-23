@@ -75,7 +75,7 @@ class MigrationMigrateCommand extends QtCommand
             return;
         }
 
-        $step = (int)$this->getOption('step') ?: null;
+        $step = (int) $this->getOption('step') ?: null;
 
         $migrationManager = new MigrationManager();
 

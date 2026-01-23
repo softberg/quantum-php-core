@@ -9,37 +9,37 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace {{MODULE_NAMESPACE}}\Models;
 
-use Quantum\Model\QtModel;
+use Quantum\Model\DbModel;
 
 /**
  * Class User
  * @package Modules\{{MODULE_NAME}}
  */
-class User extends QtModel
+class User extends DbModel
 {
 
     /**
      * ID column of table
      * @var string
      */
-    public $idColumn = 'id';
+    public string $idColumn = 'id';
 
     /**
      * The table name
      * @var string
      */
-    public $table = 'users';
+    public string $table = 'users';
 
     /**
      * Fillable properties
      * @var array
      */
-    public $fillable = [
+    public array $fillable = [
         'uuid',
         'firstname',
         'lastname',

@@ -267,7 +267,7 @@ class CronRunCommandTest extends AppTestCase
 
     private function createTaskFile(string $filename, array $definition): void
     {
-        $body = $definition['body'] ?? "echo 'Test task executed';";
+        $body = $definition['body'] ?? 'return true;';
 
         $content = "<?php\n\nreturn [\n";
         $content .= "    'name' => '{$definition['name']}',\n";

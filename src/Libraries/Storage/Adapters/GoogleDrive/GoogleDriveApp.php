@@ -193,7 +193,7 @@ class GoogleDriveApp implements CloudAppInterface
             ];
             return $this->sendRequest($url, $params, $headers, $method);
         } catch (Exception $e) {
-            throw new Exception($e->getMessage(), (int)$e->getCode(), $e);
+            throw new Exception($e->getMessage(), (int) $e->getCode(), $e);
         }
     }
 

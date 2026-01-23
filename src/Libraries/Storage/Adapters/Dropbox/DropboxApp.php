@@ -273,7 +273,7 @@ class DropboxApp implements CloudAppInterface
         }
 
         if (isset($message->error)) {
-            $error = (array)$message->error;
+            $error = (array) $message->error;
 
             if (!isset($error['.tag']) && !in_array($error['.tag'], self::ACCESS_TOKEN_STATUS)) {
                 return false;

@@ -9,9 +9,9 @@ use Quantum\Model\Factories\ModelFactory;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Model\ModelCollection;
 use Quantum\Paginator\Paginator;
-use Quantum\Model\QtModel;
+use Quantum\Model\DbModel;
 
-class QtModelTest extends AppTestCase
+class DbModelTest extends AppTestCase
 {
     private $model;
 
@@ -33,12 +33,12 @@ class QtModelTest extends AppTestCase
         IdiormDbal::execute('DROP TABLE profiles');
     }
 
-    public function testQtModelInstance()
+    public function testDbModelInstance()
     {
-        $this->assertInstanceOf(QtModel::class, $this->model);
+        $this->assertInstanceOf(DbModel::class, $this->model);
     }
 
-    public function testQtModelSetAndGetOrmInstance()
+    public function testDbModelSetAndGetOrmInstance()
     {
         $ormInstance = new IdiormDbal('profiles');
 
@@ -47,14 +47,14 @@ class QtModelTest extends AppTestCase
         $this->assertSame($ormInstance, $this->model->getOrmInstance());
     }
 
-    public function testQtModelRelationsReturnsArray()
+    public function testDbModelRelationsReturnsArray()
     {
         $relations = $this->model->relations();
 
         $this->assertIsArray($relations);
     }
 
-    public function testQtModelGetReturnsModelCollection()
+    public function testDbModelGetReturnsModelCollection()
     {
         $collection = $this->model->get();
 
@@ -65,7 +65,7 @@ class QtModelTest extends AppTestCase
         $this->assertInstanceOf(TestProfileModel::class, $collection->first());
     }
 
-    public function testQtModelPaginateReturnsPaginator()
+    public function testDbModelPaginateReturnsPaginator()
     {
         $paginator = $this->model->paginate(1);
 
@@ -80,14 +80,14 @@ class QtModelTest extends AppTestCase
         $this->assertInstanceOf(TestProfileModel::class, $collection->first());
     }
 
-    public function testQtModelIsEmptyReturnsFalse()
+    public function testDbModelIsEmptyReturnsFalse()
     {
         $record = $this->model->first();
 
         $this->assertFalse($record->isEmpty());
     }
 
-    public function testQtModelIsEmptyReturnsTrue()
+    public function testDbModelIsEmptyReturnsTrue()
     {
         $this->model->deleteMany();
 
@@ -96,9 +96,9 @@ class QtModelTest extends AppTestCase
         $this->assertTrue($record->isEmpty());
     }
 
-    public function testQtModelFillObjectProps()
+    public function testDbModelFill()
     {
-        $this->model->fillObjectProps([
+        $this->model->fill([
             'firstname' => 'Jane',
             'lastname' => 'Due',
             'age' => 35,
@@ -111,16 +111,16 @@ class QtModelTest extends AppTestCase
         $this->assertEquals(35, $this->model->age);
     }
 
-    public function testQtModelFillObjectPropsWithUndefinedFillable()
+    public function testDbModelFillWithUndefinedFillable()
     {
         $this->expectException(ModelException::class);
 
         $this->expectExceptionMessage('Inappropriate property `currency` for fillable object');
 
-        $this->model->fillObjectProps(['currency' => 'Ireland']);
+        $this->model->fill(['currency' => 'Ireland']);
     }
 
-    public function testQtModelSetterAndGetter()
+    public function testDbModelSetterAndGetter()
     {
         $this->assertNull($this->model->undefinedProperty);
 
@@ -129,7 +129,7 @@ class QtModelTest extends AppTestCase
         $this->assertEquals('Something', $this->model->undefinedProperty);
     }
 
-    public function testQtModelCallingUndefinedModelMethod()
+    public function testDbModelCallingUndefinedModelMethod()
     {
         $this->expectException(ModelException::class);
 
@@ -138,7 +138,7 @@ class QtModelTest extends AppTestCase
         $this->model->undefinedMethod();
     }
 
-    public function testQtModelCreateNewRecordByCallingOrmMethod()
+    public function testDbModelCreateNewRecordByCallingOrmMethod()
     {
         $userModel = $this->model->create();
 
@@ -163,7 +163,7 @@ class QtModelTest extends AppTestCase
         $this->assertEquals('Smith', $userData['lastname']);
     }
 
-    public function testQtModelUpdatingExistingRecordByCallingOrmMethod()
+    public function testDbModelUpdatingExistingRecordByCallingOrmMethod()
     {
         $userModel = $this->model->findOne(1);
 
@@ -190,7 +190,22 @@ class QtModelTest extends AppTestCase
         $this->assertEquals(35, $userModel->age);
     }
 
-    public function testQtModelCallingModelWithCriterias()
+    public function testDbModelPropUnknownColumnThrowsPdoExceptionOnSave()
+    {
+        $userModel = $this->model->create();
+
+        $userModel->firstname = 'Bypass';
+        $userModel->lastname = 'Test';
+        $userModel->age = 20;
+
+        $userModel->currency = 'USD';
+
+        $this->expectException(\PDOException::class);
+
+        $userModel->save();
+    }
+
+    public function testDbModelCallingModelWithCriterias()
     {
         $profileModel = ModelFactory::get(TestProfileModel::class);
 
@@ -209,7 +224,7 @@ class QtModelTest extends AppTestCase
         $this->assertEquals('Jane', $userData['firstname']);
     }
 
-    public function testQtModelGetModelProperties()
+    public function tesDbModelGetModelProperties()
     {
         $expected = [
             'id' => '1',

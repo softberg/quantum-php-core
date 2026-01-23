@@ -33,4 +33,6 @@ final class ExceptionMessages extends BaseExceptionMessages
     public const MISSING_FOREIGN_KEY = 'Foreign key `{%1}` is missing in model `{%2}`';
 
     public const UNSUPPORTED_RELATION = 'Relation type `{%1}` is not supported';
+
+    public const ORM_IS_NOT_SET = 'ORM instance not initialized';
 }
