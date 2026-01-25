@@ -216,7 +216,8 @@ class ScheduleTest extends TestCase
 
     public function testBuildSetsTask()
     {
-        $callback = function () {};
+        $callback = function () {
+        };
         $task = $this->schedule->everyMinute()->call($callback)->build();
 
         $this->assertInstanceOf(CronTask::class, $task);
@@ -233,7 +234,8 @@ class ScheduleTest extends TestCase
 
     public function testBuildThrowsExceptionWhenScheduleMissing()
     {
-        $callback = function () {};
+        $callback = function () {
+        };
         $this->expectException(CronException::class);
         $this->expectExceptionMessage("Task 'test-task' must have a schedule. Use methods like daily(), hourly(), etc.");
         $this->schedule->call($callback)->build();

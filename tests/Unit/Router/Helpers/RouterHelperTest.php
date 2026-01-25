@@ -94,7 +94,8 @@ class RouterHelperTest extends AppTestCase
             [
                 'route' => 'home',
                 'method' => 'GET',
-                'callback' => function (Response $response) {},
+                'callback' => function (Response $response) {
+                },
                 'module' => 'Test',
             ],
         ]);

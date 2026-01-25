@@ -81,7 +81,8 @@ class HookManagerTest extends AppTestCase
         $this->expectException(HookException::class);
         $this->expectExceptionMessage('The Hook `INVALID` was not registered.');
 
-        hook()->on('INVALID', function () {});
+        hook()->on('INVALID', function () {
+        });
     }
 
     public function testUnregisteredHookThrowsOnFire()
@@ -94,7 +95,8 @@ class HookManagerTest extends AppTestCase
 
     public function testGetRegisteredReturnsHookStore()
     {
-        hook()->on('SAVE', function () {});
+        hook()->on('SAVE', function () {
+        });
 
         $store = HookManager::getRegistered();
 
