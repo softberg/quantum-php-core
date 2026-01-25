@@ -20,10 +20,10 @@ use Quantum\Model\Model;
 
 /**
  * Gets the model instance
- * @template T of Model
  * @param class-string<T> $modelClass
  * @return T
  * @throws ModelException
+ * @template T of Model
  */
 function model(string $modelClass): Model
 {

@@ -182,6 +182,10 @@ abstract class DbModel extends Model
      */
     public function save(): bool
     {
+        if (method_exists($this, 'touchTimestamps')) {
+            $this->touchTimestamps();
+        }
+
         $this->syncAttributesToOrm();
 
         $result = $this->getOrmInstance()->save();

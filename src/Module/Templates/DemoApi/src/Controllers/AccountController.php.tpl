@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace {{MODULE_NAMESPACE}}\Controllers;
@@ -30,10 +30,18 @@ class AccountController extends BaseController
      * Auth service
      * @var AuthService
      */
-    public $authService;
+    public AuthService $authService;
     
     /**
      * Works before an action
+     */
+
+    /**
+     * @return void
+     * @throws ReflectionException
+     * @throws \Quantum\App\Exceptions\BaseException
+     * @throws \Quantum\Di\Exceptions\DiException
+     * @throws \Quantum\Service\Exceptions\ServiceException
      */
     public function __before()
     {

@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace {{MODULE_NAMESPACE}}\Controllers;
@@ -27,7 +27,7 @@ class CommentController extends BaseController
     /**
      * @var CommentService
      */
-    public $commentService;
+    public CommentService $commentService;
 
     public function __before()
     {

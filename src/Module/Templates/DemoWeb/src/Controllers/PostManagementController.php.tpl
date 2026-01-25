@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace {{MODULE_NAMESPACE}}\Controllers;
@@ -28,13 +28,13 @@ class PostManagementController extends BaseController
     /**
      * Main layout
      */
-    const LAYOUT = 'layouts/main';
+    protected const LAYOUT = 'layouts/main';
     
     /**
      * Post service
      * @var PostService
      */
-    public $postService;
+    public PostService $postService;
 
     public function __before()
     {
@@ -195,7 +195,6 @@ class PostManagementController extends BaseController
             'title' => $post->title,
             'content' => $post->content,
             'image' => '',
-            'updated_at' => date('Y-m-d H:i:s'),
         ]);
 
         redirect(base_url(true) . '/' . current_lang() . '/my-posts');

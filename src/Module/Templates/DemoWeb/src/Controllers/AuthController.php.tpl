@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace {{MODULE_NAMESPACE}}\Controllers;
@@ -29,32 +29,32 @@ class AuthController extends BaseController
     /**
      * Main layout
      */
-    const LAYOUT = 'layouts/main';
+    protected const LAYOUT = 'layouts/main';
 
     /**
      * Signin view page
      */
-    const VIEW_SIGNIN = 'auth/signin';
+    protected const VIEW_SIGNIN = 'auth/signin';
 
     /**
      * Signup view page
      */
-    const VIEW_SIGNUP = 'auth/signup';
+    protected const VIEW_SIGNUP = 'auth/signup';
 
     /**
      * Forget view page
      */
-    const VIEW_FORGET = 'auth/forget';
+    protected const VIEW_FORGET = 'auth/forget';
 
     /**
      * Reset view page
      */
-    const VIEW_RESET = 'auth/reset';
+    protected const VIEW_RESET = 'auth/reset';
 
     /**
      * Verify view page
      */
-    const VIEW_VERIFY = 'auth/verify';
+    protected const VIEW_VERIFY = 'auth/verify';
 
     /**
      * Action - sign in
@@ -104,7 +104,7 @@ class AuthController extends BaseController
         if ($request->isMethod('post')) {
             $userData = $request->all();
 
-            $userData['uuid'] =  uuid_ordered();
+            $userData['uuid'] = uuid_ordered();
             $userData['role'] = Role::EDITOR;
 
             auth()->signup($userData);

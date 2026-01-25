@@ -15,6 +15,7 @@
 namespace {{MODULE_NAMESPACE}}\Models;
 
 use Quantum\Libraries\Database\Enums\Relation;
+use Quantum\Model\Traits\HasTimestamps;
 use Quantum\Model\Traits\SoftDeletes;
 use Quantum\Model\DbModel;
 
@@ -25,6 +26,7 @@ use Quantum\Model\DbModel;
 class Comment extends DbModel
 {
 
+    use HasTimestamps;
     use SoftDeletes;
 
     /**
@@ -48,8 +50,6 @@ class Comment extends DbModel
         'post_uuid',
         'user_uuid',
         'content',
-        'created_at',
-        'updated_at'
     ];
 
     /**

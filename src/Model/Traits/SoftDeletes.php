@@ -39,9 +39,8 @@ trait SoftDeletes
      */
     public function delete(): bool
     {
-        $this->prop($this->getDeleteAtColumn(), date('Y-m-d H:i:s'));
+        $this->prop($this->getDeletedAtColumn(), $this->getSoftDeleteTimestampValue());
         return $this->save();
-
     }
 
     /**
@@ -51,7 +50,7 @@ trait SoftDeletes
      */
     public function restore(): bool
     {
-        $this->prop($this->getDeleteAtColumn(), null);
+        $this->prop($this->getDeletedAtColumn(), null);
         return $this->save();
     }
 
@@ -85,7 +84,7 @@ trait SoftDeletes
     {
         $this->includeTrashed = true;
 
-        $this->getOrmInstance()->isNotNull($this->getDeleteAtColumn());
+        $this->getOrmInstance()->isNotNull($this->getDeletedAtColumn());
 
         return $this;
     }
@@ -175,15 +174,28 @@ trait SoftDeletes
     protected function applySoftDeleteScope(): void
     {
         if (!$this->includeTrashed) {
-            $this->getOrmInstance()->isNull($this->getDeleteAtColumn());
+            $this->getOrmInstance()->isNull($this->getDeletedAtColumn());
         }
+    }
+
+    /**
+     * Returns timestamp value for soft delete based on model timestamp config (if available).
+     * @return int|string
+     */
+    protected function getSoftDeleteTimestampValue()
+    {
+        if (method_exists($this, 'nowTimestampValue')) {
+            return $this->nowTimestampValue();
+        }
+
+        return date('Y-m-d H:i:s');
     }
 
     /**
      * Get the column name used for soft deletes.
      * @return string
      */
-    protected function getDeleteAtColumn(): string
+    protected function getDeletedAtColumn(): string
     {
         if (defined(static::class . '::DELETED_AT')) {
             return static::DELETED_AT;

@@ -9,11 +9,12 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Modules\Toolkit\Controllers;
 
+use Quantum\App\Exceptions\BaseException;
 use Quantum\Service\Exceptions\ServiceException;
 use Modules\Toolkit\Services\EmailService;
 use Quantum\Di\Exceptions\DiException;
@@ -27,17 +28,13 @@ use ReflectionException;
  */
 class EmailsController extends BaseController
 {
-
     /**
-     * Email service
      * @var EmailService
      */
-    public $emailService;
+    public EmailService $emailService;
 
     /**
-     * @throws DiException
-     * @throws ServiceException
-     * @throws ReflectionException
+     * Works before an action
      */
     public function __before()
     {

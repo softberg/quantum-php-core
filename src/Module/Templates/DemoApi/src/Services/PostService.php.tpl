@@ -100,11 +100,11 @@ class PostService extends QtService
     /**
      * Get post
      * @param string $uuid
-     * @return Post
+     * @return Post|null
      * @throws BaseException
      * @throws ModelException
      */
-    public function getPost(string $uuid): Post
+    public function getPost(string $uuid): ?Post
     {
         return $this->model
             ->joinTo(model(User::class))
@@ -158,7 +158,6 @@ class PostService extends QtService
     public function addPost(array $data): Post
     {
         $data['uuid'] = $data['uuid'] ?? uuid_ordered();
-        $data['created_at'] = date('Y-m-d H:i:s');
 
         $post = $this->model->create();
         $post->fill($data);
@@ -177,8 +176,6 @@ class PostService extends QtService
      */
     public function updatePost(string $uuid, array $data): Post
     {
-        $data['updated_at'] = date('Y-m-d H:i:s');
-
         $post = $this->model->findOneBy('uuid', $uuid);
         $post->fill($data);
         $post->save();

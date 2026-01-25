@@ -14,6 +14,7 @@
 
 namespace {{MODULE_NAMESPACE}}\Models;
 
+use Quantum\Model\Traits\HasTimestamps;
 use Quantum\Model\DbModel;
 
 /**
@@ -22,6 +23,8 @@ use Quantum\Model\DbModel;
  */
 class User extends DbModel
 {
+
+    use HasTimestamps;
 
     /**
      * ID column of table
@@ -55,7 +58,5 @@ class User extends DbModel
         'otp',
         'otp_expires',
         'otp_token',
-        'created_at',
-        'updated_at',
     ];
 }

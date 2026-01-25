@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.8
+ * @since 3.0.0
  */
 
 namespace Modules\Toolkit\Controllers;
@@ -25,26 +25,25 @@ use Quantum\View\QtView;
  */
 class BaseController extends RouteController
 {
-
     /**
      * Main layout
      */
-    const LAYOUT = 'layouts/main';
+    protected const LAYOUT = 'layouts/main';
 
     /**
      * Items per page
      */
-    const ITEMS_PER_PAGE = 20;
+    protected const ITEMS_PER_PAGE = 20;
 
     /**
      * Current page
      */
-    const CURRENT_PAGE = 1;
+    protected const CURRENT_PAGE = 1;
 
     /**
      * @var QtView
      */
-    protected $view;
+    protected QtView $view;
 
     /**
      * Works before an action

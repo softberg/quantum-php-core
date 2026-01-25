@@ -57,12 +57,12 @@ class AuthService extends QtService implements AuthServiceInterface
     /**
      * Get user
      * @param string $uuid
-     * @return User
+     * @return User|null
      * @throws BaseException
      */
-    public function getUserByUuid(string $uuid): User
+    public function getUserByUuid(string $uuid): ?User
     {
-        return$this->model->findOneBy('uuid', $uuid);
+        return $this->model->findOneBy('uuid', $uuid);
     }
 
     /**
@@ -95,7 +95,6 @@ class AuthService extends QtService implements AuthServiceInterface
     public function add(array $data): AuthUser
     {
         $data['uuid'] = $data['uuid'] ?? uuid_ordered();
-        $data['created_at'] = date('Y-m-d H:i:s');
 
         $this->createUserDirectory($data['uuid']);
 
@@ -122,8 +121,6 @@ class AuthService extends QtService implements AuthServiceInterface
         if ($user->isEmpty()) {
             return null;
         }
-
-        $data['updated_at'] = date('Y-m-d H:i:s');
 
         $user->fill($data);
         $user->save();
