@@ -35,7 +35,8 @@ class CronHelperTest extends AppTestCase
 
     public function testCronTaskHelper()
     {
-        $task = cron_task('my-task', '* * * * *', function () {});
+        $task = cron_task('my-task', '* * * * *', function () {
+        });
         $this->assertInstanceOf(CronTask::class, $task);
         $this->assertEquals('my-task', $task->getName());
     }

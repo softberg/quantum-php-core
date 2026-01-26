@@ -78,6 +78,7 @@ class CommentService extends QtService
      * Get comment
      * @param string $uuid
      * @return Comment
+     * @throws BaseException
      */
     public function getComment(string $uuid): Comment
     {
@@ -93,7 +94,6 @@ class CommentService extends QtService
     public function addComment(array $data): array
     {
         $data['uuid'] = $data['uuid'] ?? uuid_ordered();
-        $data['created_at'] = date('Y-m-d H:i:s');
 
         $comment = $this->model->create();
         $comment->fill($data);
@@ -106,6 +106,8 @@ class CommentService extends QtService
      * Delete a comment
      * @param string $uuid
      * @return bool
+     * @throws BaseException
+     * @throws ModelException
      */
     public function deleteComment(string $uuid): bool
     {

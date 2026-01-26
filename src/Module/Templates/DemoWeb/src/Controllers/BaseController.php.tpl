@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace {{MODULE_NAMESPACE}}\Controllers;
@@ -30,7 +30,7 @@ abstract class BaseController extends RouteController
     /**
     * @var QtView
     */
-    protected $view;
+    protected QtView $view;
 
     /**
      * Works before an action

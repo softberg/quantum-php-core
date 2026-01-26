@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace {{MODULE_NAMESPACE}}\Controllers;
@@ -31,23 +31,23 @@ class PostController extends BaseController
     /**
      * Posts per page
      */
-    const POSTS_PER_PAGE = 8;
+    protected const POSTS_PER_PAGE = 8;
 
     /**
      * Current page
      */
-    const CURRENT_PAGE = 1;
+    protected const CURRENT_PAGE = 1;
     
     /**
      * Main layout
      */
-    const LAYOUT = 'layouts/main';
+    protected const LAYOUT = 'layouts/main';
     
     /**
      * Post service
      * @var PostService
      */
-    public $postService;
+    public PostService $postService;
 
     public function __before()
     {

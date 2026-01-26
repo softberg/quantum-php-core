@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Modules\Toolkit\Services;
@@ -28,11 +28,10 @@ use ReflectionException;
  */
 class DatabaseService extends QtService
 {
-
     /**
      * @var string
      */
-    protected $storeDirectory;
+    protected string $storeDirectory;
 
     public function __construct()
     {

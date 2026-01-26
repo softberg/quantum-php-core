@@ -55,7 +55,8 @@ class CronRunCommandTest extends AppTestCase
         $this->createTaskFile('test-task.php', [
             'name' => 'test-task',
             'expression' => '* * * * *',
-            'callback' => function () {},
+            'callback' => function () {
+            },
         ]);
 
         $command = new CronRunCommand();
@@ -90,7 +91,8 @@ class CronRunCommandTest extends AppTestCase
         $this->createTaskFile('specific-task.php', [
             'name' => 'specific-task',
             'expression' => '* * * * *',
-            'callback' => function () {},
+            'callback' => function () {
+            },
         ]);
 
         $command = new CronRunCommand();
@@ -111,7 +113,8 @@ class CronRunCommandTest extends AppTestCase
         $this->createTaskFile('force-task.php', [
             'name' => 'force-task',
             'expression' => '* * * * *',
-            'callback' => function () {},
+            'callback' => function () {
+            },
         ]);
 
         $command = new CronRunCommand();
@@ -145,13 +148,15 @@ class CronRunCommandTest extends AppTestCase
         $this->createTaskFile('task1.php', [
             'name' => 'task-1',
             'expression' => '* * * * *',
-            'callback' => function () {},
+            'callback' => function () {
+            },
         ]);
 
         $this->createTaskFile('task2.php', [
             'name' => 'task-2',
             'expression' => '0 0 1 1 *',
-            'callback' => function () {},
+            'callback' => function () {
+            },
         ]);
 
         $command = new CronRunCommand();
@@ -189,7 +194,8 @@ class CronRunCommandTest extends AppTestCase
         $this->createTaskFile('short-option-task.php', [
             'name' => 'short-option-task',
             'expression' => '* * * * *',
-            'callback' => function () {},
+            'callback' => function () {
+            },
         ]);
 
         $command = new CronRunCommand();
@@ -210,7 +216,8 @@ class CronRunCommandTest extends AppTestCase
         $this->createTaskFile('config-task.php', [
             'name' => 'config-task',
             'expression' => '* * * * *',
-            'callback' => function () {},
+            'callback' => function () {
+            },
         ]);
 
         config()->set('cron', [
@@ -234,7 +241,8 @@ class CronRunCommandTest extends AppTestCase
         $this->createTaskFile('locked-task.php', [
             'name' => 'locked-task',
             'expression' => '* * * * *',
-            'callback' => function () {},
+            'callback' => function () {
+            },
         ]);
 
         $lock = new \Quantum\Libraries\Cron\CronLock('locked-task', $this->lockDirectory);

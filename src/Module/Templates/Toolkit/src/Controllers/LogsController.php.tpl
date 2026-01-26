@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Modules\Toolkit\Controllers;
@@ -28,18 +28,13 @@ use ReflectionException;
  */
 class LogsController extends BaseController
 {
-
     /**
-     * Logs service
      * @var LogsService
      */
-    public $logsService;
+    public LogsService $logsService;
 
     /**
-     * @throws DiException
-     * @throws ReflectionException
-     * @throws ServiceException
-     * @throws BaseException
+     * Works before an action
      */
     public function __before()
     {
@@ -51,7 +46,8 @@ class LogsController extends BaseController
     /**
      * @param Response $response
      */
-    public function list(Response $response){
+    public function list(Response $response)
+    {
         $filteredLogFiles = $this->logsService->getLogFiles();
 
         $this->view->setParams([
@@ -66,7 +62,8 @@ class LogsController extends BaseController
      * @param Request $request
      * @param Response $response
      */
-    public function single(Request $request, Response $response){
+    public function single(Request $request, Response $response)
+    {
         $logFile = $request->get('logFile');
         $perPage = $request->get('per_page', self::ITEMS_PER_PAGE);
         $currentPage = $request->get('page', self::CURRENT_PAGE);

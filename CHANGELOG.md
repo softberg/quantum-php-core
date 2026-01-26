@@ -28,6 +28,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Calling create() resets model state to ensure clean inserts
   - Database-generated primary keys are now synced into the model after save()
   - Models are hydrated only on fetch operations, not implicitly via getters
+- `DbModel::save()` now automatically applies timestamps when the model uses the `HasTimestamps` trait
+- `SoftDeletes` now uses model timestamp format when available (datetime/unix) for `deleted_at`
 
 ### Fixed
 - PHP 8.1 compatibility: Fixed null parameter deprecations in `explode()`, `parse_url()`, and `str_replace()`
@@ -48,6 +50,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Support for force mode and specific task execution
   - Automatic cleanup of stale locks (older than 24 hours)
   - Full documentation in `docs/cron-scheduler.md`
+- **Opt-in Model Timestamps**: Introduced `HasTimestamps` trait for `DbModel`:
+  - Automatically sets `created_at` on insert 
+  - Automatically sets `updated_at` on insert and update
+  - Supports custom timestamp column names via model constants (`CREATED_AT`, `UPDATED_AT`)
+  - Supports datetime and unix timestamp formats via `TIMESTAMP_TYPE`
 
 ### Removed
 - Support for PHP 7.3 and earlier versions

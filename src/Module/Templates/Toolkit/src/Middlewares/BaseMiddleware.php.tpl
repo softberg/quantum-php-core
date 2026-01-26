@@ -9,7 +9,7 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace Modules\Toolkit\Middlewares;
@@ -25,11 +25,10 @@ use Quantum\Http\Request;
  */
 abstract class BaseMiddleware extends QtMiddleware
 {
-
     /**
      * @var Validator
      */
-    protected $validator;
+    protected Validator $validator;
 
     /**
      * Initialize Validator and define rules.

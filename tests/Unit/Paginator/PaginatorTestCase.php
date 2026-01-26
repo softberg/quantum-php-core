@@ -3,6 +3,7 @@
 namespace Quantum\Tests\Unit\Paginator;
 
 use Quantum\Libraries\Database\Adapters\Idiorm\IdiormDbal;
+use Quantum\Libraries\Database\Database;
 use Quantum\Tests\Unit\AppTestCase;
 
 class PaginatorTestCase extends AppTestCase
@@ -10,6 +11,8 @@ class PaginatorTestCase extends AppTestCase
     public function setUp(): void
     {
         parent::setUp();
+
+        $this->setPrivateProperty(Database::class, 'instance', null);
 
         IdiormDbal::connect(['driver' => 'sqlite', 'database' => ':memory:']);
 

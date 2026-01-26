@@ -14,7 +14,8 @@ class CronTaskTest extends AppTestCase
 {
     public function testConstructorWithValidExpression()
     {
-        $task = new CronTask('test-task', '* * * * *', function () {});
+        $task = new CronTask('test-task', '* * * * *', function () {
+        });
 
         $this->assertEquals('test-task', $task->getName());
         $this->assertEquals('* * * * *', $task->getExpression());
@@ -25,12 +26,14 @@ class CronTaskTest extends AppTestCase
         $this->expectException(CronException::class);
         $this->expectExceptionMessage('Invalid cron expression');
 
-        new CronTask('test-task', 'invalid', function () {});
+        new CronTask('test-task', 'invalid', function () {
+        });
     }
 
     public function testShouldRunEveryMinute()
     {
-        $task = new CronTask('test-task', '* * * * *', function () {});
+        $task = new CronTask('test-task', '* * * * *', function () {
+        });
 
         $this->assertTrue($task->shouldRun());
     }
@@ -38,7 +41,8 @@ class CronTaskTest extends AppTestCase
     public function testShouldNotRunFutureTask()
     {
         // Task scheduled for next year
-        $task = new CronTask('test-task', '0 0 1 1 *', function () {});
+        $task = new CronTask('test-task', '0 0 1 1 *', function () {
+        });
 
         $this->assertFalse($task->shouldRun());
     }
@@ -71,7 +75,8 @@ class CronTaskTest extends AppTestCase
 
     public function testGetNextRunDate()
     {
-        $task = new CronTask('test-task', '0 0 * * *', function () {});
+        $task = new CronTask('test-task', '0 0 * * *', function () {
+        });
 
         $nextRun = $task->getNextRunDate();
 
@@ -81,7 +86,8 @@ class CronTaskTest extends AppTestCase
 
     public function testGetPreviousRunDate()
     {
-        $task = new CronTask('test-task', '0 0 * * *', function () {});
+        $task = new CronTask('test-task', '0 0 * * *', function () {
+        });
 
         $previousRun = $task->getPreviousRunDate();
 
@@ -92,7 +98,8 @@ class CronTaskTest extends AppTestCase
     public function testComplexCronExpression()
     {
         // Every 5 minutes
-        $task = new CronTask('test-task', '*/5 * * * *', function () {});
+        $task = new CronTask('test-task', '*/5 * * * *', function () {
+        });
 
         $this->assertEquals('*/5 * * * *', $task->getExpression());
     }
@@ -100,7 +107,8 @@ class CronTaskTest extends AppTestCase
     public function testWeeklyCronExpression()
     {
         // Every Monday at 9 AM
-        $task = new CronTask('test-task', '0 9 * * 1', function () {});
+        $task = new CronTask('test-task', '0 9 * * 1', function () {
+        });
 
         $this->assertEquals('0 9 * * 1', $task->getExpression());
     }
