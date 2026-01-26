@@ -9,7 +9,7 @@ use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Model\ModelCollection;
 use Quantum\Paginator\Paginator;
 
-class ModelSoftDeletesIdiOrm extends AppTestCase
+class ModelSoftDeletesIdiOrmTest extends AppTestCase
 {
     private $model;
 
