@@ -48,7 +48,7 @@ trait HasTimestamps
     {
         $id = $this->attributes[$this->idColumn] ?? null;
 
-        return empty($id);
+        return $id === null || $id === '';
     }
 
     /**
@@ -88,7 +88,7 @@ trait HasTimestamps
             return static::CREATED_AT;
         }
 
-        return 'created_at';
+        return $this->createdAt;
     }
 
     /**
@@ -101,7 +101,7 @@ trait HasTimestamps
             return static::UPDATED_AT;
         }
 
-        return 'updated_at';
+        return $this->updatedAt;
     }
 
     /**
