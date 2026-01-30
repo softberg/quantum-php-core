@@ -122,6 +122,65 @@ namespace Quantum\Tests\Unit\Di {
             $this->assertInstanceOf(DummyService::class, $instance);
         }
 
+        public function testDiSetBindsInstanceToAbstract(): void
+        {
+            $instance = new DummyService();
+
+            Di::set(DummyServiceInterface::class, $instance);
+
+            $resolved = Di::get(DummyServiceInterface::class);
+
+            $this->assertSame($instance, $resolved);
+            $this->assertInstanceOf(DummyService::class, $resolved);
+        }
+
+        public function testDiSetWorksWithoutPriorRegister(): void
+        {
+            $instance = new DummyService();
+
+            $this->assertFalse(Di::isRegistered(DummyServiceInterface::class));
+
+            Di::set(DummyServiceInterface::class, $instance);
+
+            $this->assertTrue(Di::isRegistered(DummyServiceInterface::class));
+
+            $this->assertSame($instance, Di::get(DummyServiceInterface::class));
+        }
+
+        public function testDiSetRejectsWrongInstanceType(): void
+        {
+            $this->expectException(DiException::class);
+            $this->expectExceptionMessage(
+                'The dependency `' . DummyServiceInterface::class . '` is not valid abstract class.'
+            );
+
+            Di::set(DummyServiceInterface::class, new \stdClass());
+        }
+
+        public function testDiSetRejectsInvalidAbstract(): void
+        {
+            $this->expectException(DiException::class);
+            $this->expectExceptionMessage(
+                'The dependency `NonExistentInterface` is not valid abstract class.'
+            );
+
+            Di::set('NonExistentInterface', new DummyService());
+        }
+
+        public function testDiSetRejectsWhenAlreadyResolved(): void
+        {
+            Di::register(DummyService::class);
+
+            Di::get(DummyService::class); // resolve singleton first
+
+            $this->expectException(DiException::class);
+            $this->expectExceptionMessage(
+                'The dependency `' . DummyService::class . '` is already registered.'
+            );
+
+            Di::set(DummyService::class, new DummyService());
+        }
+
         public function testDiGetCoreDependencies()
         {
             $this->assertInstanceOf(Loader::class, Di::get(Loader::class));
