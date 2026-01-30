@@ -91,6 +91,34 @@ class Di
     }
 
     /**
+     * Sets an instance into container
+     * @param string $abstract
+     * @param object $instance
+     * @return void
+     * @throws DiException
+     */
+    public static function set(string $abstract, object $instance): void
+    {
+        if (!class_exists($abstract) && !interface_exists($abstract)) {
+            throw DiException::invalidAbstractDependency($abstract);
+        }
+
+        if (!is_a($instance, $abstract)) {
+            throw DiException::invalidAbstractDependency($abstract);
+        }
+
+        if (isset(self::$container[$abstract])) {
+            throw DiException::dependencyAlreadyRegistered($abstract);
+        }
+
+        if (!isset(self::$dependencies[$abstract])) {
+            self::$dependencies[$abstract] = get_class($instance);
+        }
+
+        self::$container[$abstract] = $instance;
+    }
+
+    /**
      * Retrieves a shared instance of the given dependency.
      * @param string $dependency
      * @param array $args
