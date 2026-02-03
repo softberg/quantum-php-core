@@ -36,13 +36,6 @@ class AccountController extends BaseController
      * Works before an action
      */
 
-    /**
-     * @return void
-     * @throws ReflectionException
-     * @throws \Quantum\App\Exceptions\BaseException
-     * @throws \Quantum\Di\Exceptions\DiException
-     * @throws \Quantum\Service\Exceptions\ServiceException
-     */
     public function __before()
     {
         $this->authService = service(AuthService::class);

@@ -9,19 +9,18 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.8
+ * @since 3.0.0
  */
 
 namespace {{MODULE_NAMESPACE}}\Controllers;
 
-use Quantum\Router\RouteController;
 use Quantum\Http\Response;
 
 /**
  * Class MainController
  * @package Modules\Api
  */
-class MainController extends RouteController
+class MainController
 {
     /**
      * Status error
@@ -37,7 +36,7 @@ class MainController extends RouteController
      * CSRF verification
      * @var bool
      */
-    public $csrfVerification = false;
+    public bool $csrfVerification = false;
     
     /**
      * Action - success response

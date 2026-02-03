@@ -14,10 +14,7 @@
 
 namespace {{MODULE_NAMESPACE}}\Controllers;
 
-use Quantum\Service\Exceptions\ServiceException;
-use Quantum\App\Exceptions\BaseException;
 use {{MODULE_NAMESPACE}}\Services\CommentService;
-use Quantum\Di\Exceptions\DiException;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 
@@ -33,9 +30,6 @@ class CommentController extends BaseController
      */
     public CommentService $commentService;
 
-    /**
-     * Works before an action
-     */
     public function __before()
     {
         $this->commentService = service(CommentService::class);

@@ -9,18 +9,16 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.8
+ * @since 3.0.0
  */
 
 namespace {{MODULE_NAMESPACE}}\Controllers;
-
-use Quantum\Router\RouteController;
 
 /**
  * Class BaseController
  * @package Modules\{{MODULE_NAME}}
  */
-abstract class BaseController extends RouteController
+abstract class BaseController
 {
 
     /**
@@ -37,5 +35,5 @@ abstract class BaseController extends RouteController
      * CSRF verification
      * @var bool
      */
-    public $csrfVerification = false;
+    public bool $csrfVerification = false;
 }

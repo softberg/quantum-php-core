@@ -9,13 +9,12 @@
  * @author Arman Ag. <arman.ag@softberg.org>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
- * @since 2.9.9
+ * @since 3.0.0
  */
 
 namespace {{MODULE_NAMESPACE}}\Controllers;
 
 use Quantum\View\Factories\ViewFactory;
-use Quantum\Router\RouteController;
 use Quantum\Libraries\Asset\Asset;
 use Quantum\Http\Response;
 
@@ -23,7 +22,7 @@ use Quantum\Http\Response;
  * Class MainController
  * @package Modules\Web
  */
-class MainController extends RouteController
+class MainController
 {
 
     /**

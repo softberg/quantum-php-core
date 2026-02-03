@@ -15,7 +15,6 @@
 namespace Modules\Toolkit\Controllers;
 
 use Quantum\View\Factories\ViewFactory;
-use Quantum\Router\RouteController;
 use Quantum\Libraries\Asset\Asset;
 use Quantum\View\QtView;
 
@@ -23,7 +22,7 @@ use Quantum\View\QtView;
  * Class BaseController
  * @package Modules\Toolkit
  */
-class BaseController extends RouteController
+class BaseController
 {
     /**
      * Main layout

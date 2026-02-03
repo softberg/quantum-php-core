@@ -36,9 +36,6 @@ class AccountController extends BaseController
      */
     public AuthService $authService;
 
-    /**
-     * Works before an action
-     */
     public function __before()
     {
         $this->authService = service(AuthService::class);
