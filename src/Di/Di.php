@@ -29,24 +29,27 @@ use Closure;
 class Di
 {
     /**
-     * @var array
+     * @var array<class-string, class-string>
      */
-    private static $dependencies = [];
+    private static array $dependencies = [];
 
     /**
-     * @var array
+     * @var array<class-string, object>
      */
-    private static $container = [];
+    private static array $container = [];
 
     /**
-     * @var array
+     * @var array<class-string, bool>
      */
-    private static $resolving = [];
+    private static array $resolving = [];
 
     /**
      * Register dependencies
+     * @param array $dependencies
+     * @return void
+     * @throws DiException
      */
-    public static function registerDependencies(array $dependencies)
+    public static function registerDependencies(array $dependencies): void
     {
         foreach ($dependencies as $abstract => $concrete) {
             if (!self::isRegistered($abstract)) {
@@ -59,9 +62,10 @@ class Di
      * Registers new dependency
      * @param string $concrete
      * @param string|null $abstract
+     * @return void
      * @throws DiException
      */
-    public static function register(string $concrete, ?string $abstract = null)
+    public static function register(string $concrete, ?string $abstract = null): void
     {
         $key = $abstract ?? $concrete;
 
@@ -92,12 +96,13 @@ class Di
 
     /**
      * Sets an instance into container
-     * @param string $abstract
-     * @param object $instance
-     * @return void
+     * @template T of object
+     * @param class-string<T> $abstract
+     * @param T $instance
+     * @param bool $override
      * @throws DiException
      */
-    public static function set(string $abstract, object $instance): void
+    public static function set(string $abstract, object $instance, bool $override = true): void
     {
         if (!class_exists($abstract) && !interface_exists($abstract)) {
             throw DiException::invalidAbstractDependency($abstract);
@@ -111,6 +116,10 @@ class Di
             throw DiException::dependencyAlreadyRegistered($abstract);
         }
 
+        if (!$override && isset(self::$dependencies[$abstract])) {
+            throw DiException::dependencyAlreadyRegistered($abstract);
+        }
+
         if (!isset(self::$dependencies[$abstract])) {
             self::$dependencies[$abstract] = get_class($instance);
         }
@@ -120,11 +129,10 @@ class Di
 
     /**
      * Retrieves a shared instance of the given dependency.
-     * @param string $dependency
-     * @param array $args
-     * @return mixed
-     * @throws DiException
-     * @throws ReflectionException
+     * @template T of object
+     * @param class-string<T> $dependency
+     * @return T
+     * @throws DiException|ReflectionException
      */
     public static function get(string $dependency, array $args = [])
     {
@@ -137,11 +145,10 @@ class Di
 
     /**
      * Creates new instance of the given dependency.
-     * @param string $dependency
-     * @param array $args
-     * @return mixed
-     * @throws DiException
-     * @throws ReflectionException
+     * @template T of object
+     * @param class-string<T> $dependency
+     * @return T
+     * @throws DiException|ReflectionException
      */
     public static function create(string $dependency, array $args = [])
     {
@@ -153,10 +160,10 @@ class Di
     }
 
     /**
-     * Automatically resolves and injects parameters for a callable.
+     * Autowire callable parameters
      * @param callable $entry
      * @param array $args
-     * @return array
+     * @return list<mixed>
      * @throws DiException
      * @throws ReflectionException
      */
@@ -189,14 +196,12 @@ class Di
      * @param string $abstract
      * @param array $args
      * @param bool $singleton
-     * @return mixed
-     * @throws DiException
-     * @throws ReflectionException
+     * @return mixed|object
+     * @throws DiException|ReflectionException
      */
     private static function resolve(string $abstract, array $args = [], bool $singleton = true)
     {
         self::checkCircularDependency($abstract);
-
         self::$resolving[$abstract] = true;
 
         try {
@@ -210,6 +215,7 @@ class Di
             }
 
             return self::instantiate($concrete, $args);
+
         } finally {
             unset(self::$resolving[$abstract]);
         }
@@ -220,27 +226,26 @@ class Di
      * @param string $concrete
      * @param array $args
      * @return mixed
-     * @throws DiException
-     * @throws ReflectionException
+     * @throws ReflectionException|DiException
      */
     private static function instantiate(string $concrete, array $args = [])
     {
         $class = new ReflectionClass($concrete);
-
         $constructor = $class->getConstructor();
 
-        $params = $constructor ? self::resolveParameters($constructor->getParameters(), $args) : [];
+        $params = $constructor
+            ? self::resolveParameters($constructor->getParameters(), $args)
+            : [];
 
         return new $concrete(...$params);
     }
 
     /**
-     * Resolves all parameters
+     * Resolve parameter list
      * @param array $parameters
      * @param array $args
      * @return array
      * @throws DiException
-     * @throws ReflectionException
      */
     private static function resolveParameters(array $parameters, array &$args = []): array
     {
@@ -254,12 +259,11 @@ class Di
     }
 
     /**
-     * Resolves the parameter
+     * Resolve single parameter
      * @param ReflectionParameter $param
      * @param array $args
-     * @return array|mixed|null
-     * @throws DiException
-     * @throws ReflectionException
+     * @return array|mixed|object|null
+     * @throws DiException|ReflectionException
      */
     private static function resolveParameter(ReflectionParameter $param, array &$args = [])
     {
@@ -269,21 +273,29 @@ class Di
             $type = $param->getType()->getName();
         }
 
-        $concrete = self::$dependencies[$type] ?? $type;
-
-        if ($concrete && self::instantiable($concrete)) {
-            return self::create($concrete);
+        // prefer registered dependency
+        if ($type !== null && isset(self::$dependencies[$type])) {
+            return self::get($type);
         }
 
+        // fallback instantiable class
+        if ($type !== null && self::instantiable($type)) {
+            return self::create($type);
+        }
+
+        // array param receives remaining args
         if ($type === 'array') {
             return $args;
         }
 
+        // positional args fallback
         if ($args !== []) {
             return array_shift($args);
         }
 
-        return $param->isDefaultValueAvailable() ? $param->getDefaultValue() : null;
+        return $param->isDefaultValueAvailable()
+            ? $param->getDefaultValue()
+            : null;
     }
 
     /**
@@ -293,7 +305,8 @@ class Di
      */
     protected static function instantiable(string $class): bool
     {
-        return class_exists($class) && (new ReflectionClass($class))->isInstantiable();
+        return class_exists($class)
+            && (new ReflectionClass($class))->isInstantiable();
     }
 
     /**

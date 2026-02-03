@@ -14,123 +14,129 @@
 
 namespace Quantum\Router;
 
-use Quantum\Router\Exceptions\RouteControllerException;
 use Quantum\Libraries\Csrf\Exceptions\CsrfException;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Libraries\Csrf\Csrf;
+use Quantum\Http\Response;
 use Quantum\Http\Request;
 use ReflectionException;
+use RuntimeException;
+use LogicException;
 use Quantum\Di\Di;
 
-class RouteDispatcher
+/**
+ * Class RouteDispatcher
+ * @package Quantum\Router
+ */
+final class RouteDispatcher
 {
     /**
-     * Handles the incoming HTTP request.
+     * Dispatch a matched route.
+     * @param MatchedRoute $matched
      * @param Request $request
+     * @param Response $response
      * @return void
-     * @throws RouteControllerException
-     * @throws CsrfException
      * @throws DiException
-     * @throws ReflectionException
+     * @throws ReflectionException|CsrfException
      */
-    public static function handle(Request $request): void
+    public function dispatch(MatchedRoute $matched, Request $request, Response $response): void
     {
-        $callback = route_callback();
+        $route = $matched->getRoute();
+        $params = $matched->getParams();
 
-        if ($callback instanceof \Closure) {
-            self::callControllerMethod($callback);
+        if ($route->isClosure()) {
+            $closure = $route->getClosure();
+
+            if ($closure === null) {
+                throw new LogicException('Closure route missing closure.');
+            }
+
+            $this->invoke($closure, $params);
             return;
         }
 
-        $controller = self::resolveController();
-        $action = self::resolveAction($controller);
+        $callable = $this->resolveControllerCallable($route);
+        [$controller] = $callable;
 
-        self::verifyCsrf($controller, $request);
+        $this->verifyCsrf($controller, $request);
 
-        self::callControllerHook($controller, '__before');
-        self::callControllerMethod([$controller, $action]);
-        self::callControllerHook($controller, '__after');
+        $this->callHook($controller, '__before', $params);
+
+        $this->invoke($callable, $params);
+
+        $this->callHook($controller, '__after', $params);
     }
 
     /**
-     * Loads and gets the current route's controller instance.
-     * @return RouteController
-     * @throws RouteControllerException
-     */
-    private static function resolveController(): RouteController
-    {
-        $controllerClass = module_base_namespace() . '\\' . current_module() . '\\Controllers\\' . current_controller();
-
-        if (!class_exists($controllerClass)) {
-            throw RouteControllerException::controllerNotDefined($controllerClass);
-        }
-
-        return new $controllerClass();
-    }
-
-    /**
-     * Retrieves the current route's action for the controller.
-     * @param RouteController $controller
-     * @return string
-     * @throws RouteControllerException
-     */
-    private static function resolveAction(RouteController $controller): string
-    {
-        $action = current_action();
-
-        if (!$action || !method_exists($controller, $action)) {
-            throw RouteControllerException::actionNotDefined($action);
-        }
-
-        return $action;
-    }
-
-    /**
-     * Calls controller method
-     * @param callable $callable
-     * @return void
-     * @throws DiException
-     * @throws ReflectionException
-     */
-    private static function callControllerMethod(callable $callable)
-    {
-        call_user_func_array($callable, Di::autowire($callable, self::getRouteParams()));
-    }
-
-    /**
-     * Calls controller lifecycle method if it exists.
-     * @param object $controller
-     * @param string $method
-     * @return void
-     * @throws DiException
-     * @throws ReflectionException
-     */
-    private static function callControllerHook(object $controller, string $method): void
-    {
-        if (method_exists($controller, $method)) {
-            self::callControllerMethod([$controller, $method]);
-        }
-    }
-
-    /**
-     * Retrieves the route parameters from the current route.
+     * Resolve controller callable from the route definition.
+     * @param Route $route
      * @return array
      */
-    private static function getRouteParams(): array
+    private function resolveControllerCallable(Route $route): array
     {
-        return array_column(route_params(), 'value');
+        $controllerClass = $route->getController();
+        $action = $route->getAction();
+
+        if ($controllerClass === null || $action === null) {
+            throw new LogicException('Non-closure route must define controller and action.');
+        }
+
+        $controller = new $controllerClass();
+
+        if (!method_exists($controller, $action)) {
+            throw new RuntimeException("Action {$action} not found on controller {$controllerClass}");
+        }
+
+        return [$controller, $action];
     }
 
     /**
-     * Verifies CSRF token if required
-     * @param RouteController $controller
+     * Invoke a callable with parameters resolved via DI autowiring.
+     * @param callable $callable
+     * @param array $params
+     * @return void
+     * @throws DiException
+     * @throws ReflectionException
+     */
+    private function invoke(callable $callable, array $params): void
+    {
+        call_user_func_array(
+            $callable,
+            Di::autowire($callable, $params)
+        );
+    }
+
+    /**
+     * Invoke a controller lifecycle hook if it exists.
+     * @param object $controller
+     * @param string $hook
+     * @param array $params
+     * @return void
+     * @throws DiException
+     * @throws ReflectionException
+     */
+    private function callHook(object $controller, string $hook, array $params): void
+    {
+        if (method_exists($controller, $hook)) {
+            $this->invoke([$controller, $hook], $params);
+        }
+    }
+
+    /**
+     * Verify CSRF token if controller requires it and request method applies.
+     * @param object|null $controller
      * @param Request $request
      * @return void
      * @throws CsrfException
      */
-    private static function verifyCsrf(RouteController $controller, Request $request): void
+    private function verifyCsrf(?object $controller, Request $request): void
     {
-        if ($controller->csrfVerification && in_array($request->getMethod(), Csrf::METHODS, true)) {
+        if (
+            $controller !== null &&
+            property_exists($controller, 'csrfVerification') &&
+            $controller->csrfVerification === true &&
+            in_array($request->getMethod(), Csrf::METHODS, true)
+        ) {
             csrf()->checkToken($request);
         }
     }

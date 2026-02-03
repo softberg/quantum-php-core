@@ -23,6 +23,7 @@ use Quantum\Http\Traits\Request\Header;
 use Quantum\Http\Traits\Request\Params;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Http\Traits\Request\Query;
+use Quantum\Http\Traits\Request\Route;
 use Quantum\Http\Traits\Request\Body;
 use Quantum\Http\Traits\Request\File;
 use Quantum\Http\Traits\Request\Url;
@@ -36,6 +37,7 @@ use ReflectionException;
  */
 abstract class HttpRequest
 {
+    use Route;
     use Header;
     use Body;
     use Url;
@@ -62,19 +64,19 @@ abstract class HttpRequest
 
     /**
      * Request method
-     * @var string
+     * @var string|null
      */
-    private static $__method = null;
+    private static ?string $__method = null;
 
     /**
      * @var Server
      */
-    protected static $server;
+    protected static Server $server;
 
     /**
      * @var bool
      */
-    private static $initialized = false;
+    private static bool $initialized = false;
 
     /**
      * Initializes the request static properties using the server instance.
@@ -207,6 +209,7 @@ abstract class HttpRequest
      * Gets the base url
      * @param bool $withModulePrefix
      * @return string
+     * @throws DiException|ReflectionException
      */
     public static function getBaseUrl(bool $withModulePrefix = false): string
     {

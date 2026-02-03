@@ -15,6 +15,7 @@
 namespace Quantum\Middleware;
 
 use Quantum\Middleware\Exceptions\MiddlewareException;
+use Quantum\Router\MatchedRoute;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 
@@ -28,21 +29,23 @@ class MiddlewareManager
      * Middlewares queue
      * @var array
      */
-    private $middlewares = [];
+    private array $middlewares = [];
 
     /**
      * Current module
-     * @var string
+     * @var string|null
      */
-    private $module;
+    private ?string $module;
 
     /**
-     * MiddlewareManager constructor.
+     * @param MatchedRoute $matchedRoute
      */
-    public function __construct()
+    public function __construct(MatchedRoute $matchedRoute)
     {
-        $this->middlewares = current_middlewares();
-        $this->module = current_module();
+        $route = $matchedRoute->getRoute();
+
+        $this->middlewares = array_values($route->getMiddlewares());
+        $this->module = $route->getModule();
     }
 
     /**
@@ -83,6 +86,12 @@ class MiddlewareManager
             throw MiddlewareException::middlewareNotFound($middlewareClass);
         }
 
-        return new $middlewareClass($request, $response);
+        $middleware = new $middlewareClass($request, $response);
+
+        if (!$middleware instanceof QtMiddleware) {
+            throw MiddlewareException::notInstanceOf($middlewareClass, QtMiddleware::class);
+        }
+
+        return $middleware;
     }
 }

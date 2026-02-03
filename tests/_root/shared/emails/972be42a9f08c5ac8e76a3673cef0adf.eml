@@ -1,0 +1,29 @@
+Date: Wed, 5 Apr 2023 19:15:37 +0300
+To: Jane Due <jane@gmail.com>
+From: John Doe <john@hotmail.com>
+Cc: Kevin <kevin@gmail.com>, Bill <bill@outlook.com>
+Bcc: Dan <dan@hotmail.com>
+Reply-To: Sam <sam@gmail.com>
+Subject: Lorem
+Message-ID: <2YILSA4zZk61tDdYEfGMw7lNznlhAQakjwNGr0QCq44@WIN-PO1MOI973IP>
+X-Mailer: PHPMailer 6.8.0 (https://github.com/PHPMailer/PHPMailer)
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+ boundary="b1=_2YILSA4zZk61tDdYEfGMw7lNznlhAQakjwNGr0QCq44"
+Content-Transfer-Encoding: 8bit
+
+--b1=_2YILSA4zZk61tDdYEfGMw7lNznlhAQakjwNGr0QCq44
+Content-Type: text/plain; charset=us-ascii
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+Vestibulum lobortis leo velit, et facilisis justo sollicitudin ultricies. 
+Praesent quis commodo diam. Duis lacinia ut quam ut finibus.
+
+--b1=_2YILSA4zZk61tDdYEfGMw7lNznlhAQakjwNGr0QCq44
+Content-Type: text/plain; name=document.txt
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename=document.txt
+
+Y29udGVudCBvZiB0aGUgZG9jdW1lbnQ=
+
+--b1=_2YILSA4zZk61tDdYEfGMw7lNznlhAQakjwNGr0QCq44--

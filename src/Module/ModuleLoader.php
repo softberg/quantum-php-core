@@ -23,6 +23,7 @@ use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Di\Exceptions\DiException;
 use ReflectionException;
 use Quantum\App\App;
+use Quantum\Di\Di;
 use Closure;
 
 /**
@@ -34,35 +35,36 @@ class ModuleLoader
     /**
      * @var array
      */
-    private static $moduleDependencies = [];
+    private static array $moduleDependencies = [];
 
     /**
      * @var array
      */
-    private static $moduleConfigs = [];
+    private static array $moduleConfigs = [];
 
     /** @var array<string, Closure> */
-    private static $moduleRouteClosures = [];
+    private static array $moduleRouteClosures = [];
 
     /**
      * @var FileSystem
      */
-    private $fs;
+    private FileSystem $fs;
 
     /**
      * @var ModuleLoader|null
      */
-    private static $instance = null;
+    private static ?ModuleLoader $instance = null;
 
     /**
      * @throws BaseException
      * @throws DiException
      * @throws ConfigException
-     * @throws ReflectionException
+     * @throws ReflectionException|ModuleException
      */
     private function __construct()
     {
         $this->fs = FileSystemFactory::get();
+        Di::registerDependencies($this->loadModulesDependencies());
     }
 
     /**
@@ -77,6 +79,11 @@ class ModuleLoader
         return self::$instance;
     }
 
+    /**
+     * @return array
+     * @throws ModuleException
+     * @throws RouteException
+     */
     public function loadModulesRoutes(): array
     {
         if (empty(self::$moduleConfigs)) {
@@ -96,6 +103,12 @@ class ModuleLoader
         return $modulesRoutes;
     }
 
+    /**
+     * @param string $module
+     * @return Closure
+     * @throws ModuleException
+     * @throws RouteException
+     */
     private function getModuleRouteDefinitions(string $module): Closure
     {
         if (isset(self::$moduleRouteClosures[$module])) {

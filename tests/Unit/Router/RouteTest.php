@@ -2,284 +2,170 @@
 
 namespace Quantum\Tests\Unit\Router;
 
-use Quantum\Router\Exceptions\RouteException;
 use Quantum\Tests\Unit\AppTestCase;
+use InvalidArgumentException;
 use Quantum\Router\Route;
 
 class RouteTest extends AppTestCase
 {
-    private $route;
-
-    public function setUp(): void
+    public function testRouteControllerRouteConstruction()
     {
-        parent::setUp();
+        $route = new Route(
+            ['get', 'post'],
+            'users',
+            'UserController',
+            'listAction'
+        );
 
-        $this->route = new Route('Test', ['prefix' => '', 'endabled' => true]);
+        $this->assertSame(['GET', 'POST'], $route->getMethods());
+
+        $this->assertSame('users', $route->getPattern());
+
+        $this->assertSame('UserController', $route->getController());
+
+        $this->assertSame('listAction', $route->getAction());
+
+        $this->assertFalse($route->isClosure());
     }
 
-    public function testCallbackRoute()
+    public function testRouteClosureRouteConstruction()
     {
-        $this->assertEmpty($this->route->getRuntimeRoutes());
+        $handler = function () {
+        };
 
-        $this->assertEmpty($this->route->getVirtualRoutes()['*']);
+        $route = new Route(
+            ['GET'],
+            'health',
+            null,
+            null,
+            $handler
+        );
 
-        $this->route->post('userinfo', function () {
-            info('Save user info');
-        });
+        $this->assertTrue($route->isClosure());
 
-        $this->route->get('userinfo', function () {
-            info('Get user info');
-        });
+        $this->assertSame($handler, $route->getClosure());
 
-        $this->route->add('userinfo/add', 'GET', function () {
-            info('Add detail to user');
-        });
+        $this->assertNull($route->getController());
 
-        $this->assertIsArray($this->route->getRuntimeRoutes());
-
-        $this->assertIsArray($this->route->getVirtualRoutes());
-
-        $this->assertCount(3, $this->route->getRuntimeRoutes());
-
-        $this->assertCount(3, $this->route->getVirtualRoutes()['*']);
-
-        $virtualRoutes = $this->route->getVirtualRoutes()['*'];
-
-        $this->assertEquals('POST', $virtualRoutes[0]['method']);
-
-        $this->assertEquals('GET', $virtualRoutes[1]['method']);
-
-        $this->assertEquals('GET', $virtualRoutes[2]['method']);
-
-        $this->assertTrue(is_callable($virtualRoutes[0]['callback']));
-
-        $this->assertTrue(is_callable($virtualRoutes[1]['callback']));
-
-        $this->assertTrue(is_callable($virtualRoutes[2]['callback']));
+        $this->assertNull($route->getAction());
     }
 
-    public function testAddRoute()
+    public function testRouteConstructorRejectsEmptyMethods()
     {
-        $this->assertEmpty($this->route->getRuntimeRoutes());
+        $this->expectException(InvalidArgumentException::class);
 
-        $this->assertEmpty($this->route->getVirtualRoutes()['*']);
-
-        $this->route->add('signin', 'GET', 'AuthController', 'signin');
-
-        $this->assertIsArray($this->route->getRuntimeRoutes());
-
-        $this->assertIsArray($this->route->getVirtualRoutes());
-
-        $this->assertCount(1, $this->route->getRuntimeRoutes());
-
-        $this->assertCount(1, $this->route->getVirtualRoutes()['*']);
+        new Route([], 'users', 'UserController', 'listAction');
     }
 
-    public function testGetRoute()
+    public function testRouteClosureRouteCannotDefineControllerOrAction()
     {
-        $this->assertEmpty($this->route->getRuntimeRoutes());
+        $this->expectException(InvalidArgumentException::class);
 
-        $this->assertEmpty($this->route->getVirtualRoutes()['*']);
-
-        $this->route->get('signin', 'AuthController', 'signin');
-
-        $this->assertIsArray($this->route->getRuntimeRoutes());
-
-        $this->assertIsArray($this->route->getVirtualRoutes());
-
-        $this->assertCount(1, $this->route->getRuntimeRoutes());
-
-        $this->assertCount(1, $this->route->getVirtualRoutes()['*']);
+        new Route(
+            ['GET'],
+            'health',
+            'HealthController',
+            'checkAction',
+            function () {
+            }
+        );
     }
 
-    public function testPostRoute()
+    public function testRouteControllerRouteRequiresControllerAndAction()
     {
-        $this->assertEmpty($this->route->getRuntimeRoutes());
+        $this->expectException(InvalidArgumentException::class);
 
-        $this->assertEmpty($this->route->getVirtualRoutes()['*']);
-
-        $this->route->post('signin', 'AuthController', 'signin');
-
-        $this->assertIsArray($this->route->getRuntimeRoutes());
-
-        $this->assertIsArray($this->route->getVirtualRoutes());
-
-        $this->assertCount(1, $this->route->getRuntimeRoutes());
-
-        $this->assertCount(1, $this->route->getVirtualRoutes()['*']);
+        new Route(['GET'], 'users', null, null);
     }
 
-    public function testPutRoute()
+    public function testRouteAllowsMethodIsCaseInsensitive()
     {
-        $this->assertEmpty($this->route->getRuntimeRoutes());
+        $route = new Route(
+            ['GET'],
+            'users',
+            'UserController',
+            'listAction'
+        );
 
-        $this->assertEmpty($this->route->getVirtualRoutes()['*']);
+        $this->assertTrue($route->allowsMethod('get'));
 
-        $this->route->put('update', 'PostsController', 'update');
+        $this->assertTrue($route->allowsMethod('GET'));
 
-        $this->assertIsArray($this->route->getRuntimeRoutes());
-
-        $this->assertIsArray($this->route->getVirtualRoutes());
-
-        $this->assertCount(1, $this->route->getRuntimeRoutes());
-
-        $this->assertCount(1, $this->route->getVirtualRoutes()['*']);
+        $this->assertFalse($route->allowsMethod('POST'));
     }
 
-    public function testDeleteRoute()
+    public function testRouteCacheConfigurationIsStored()
     {
-        $this->assertEmpty($this->route->getRuntimeRoutes());
+        $route = new Route(
+            ['GET'],
+            'reports',
+            'ReportController',
+            'indexAction'
+        );
 
-        $this->assertEmpty($this->route->getVirtualRoutes()['*']);
+        $route->cache(true, 120);
 
-        $this->route->delete('delete', 'PostsController', 'delete');
-
-        $this->assertIsArray($this->route->getRuntimeRoutes());
-
-        $this->assertIsArray($this->route->getVirtualRoutes());
-
-        $this->assertCount(1, $this->route->getRuntimeRoutes());
-
-        $this->assertCount(1, $this->route->getVirtualRoutes()['*']);
+        $this->assertSame(
+            ['enabled' => true, 'ttl' => 120],
+            $route->getCache()
+        );
     }
 
-    public function testGroupRoute()
+    public function testRouteCompiledPatternCanBeStored()
     {
-        $this->route->group('auth', function ($route) {
-            $route->add('dashboard', 'GET', 'AuthController', 'dashboard');
-            $route->add('users', 'GET', 'AuthController', 'users');
-        });
+        $route = new Route(
+            ['GET'],
+            'users',
+            'UserController',
+            'listAction'
+        );
 
-        $this->assertCount(2, $this->route->getRuntimeRoutes());
+        $route->setCompiledPattern('^users$');
 
-        $this->assertEquals('auth', $this->route->getRuntimeRoutes()[0]['group']);
-
-        $this->assertEquals('auth', $this->route->getRuntimeRoutes()[1]['group']);
-
-        $this->assertCount(2, $this->route->getVirtualRoutes()['auth']);
+        $this->assertSame('^users$', $route->getCompiledPattern());
     }
 
-    public function testCacheable()
+    public function testRouteMiddlewareStackingOrder()
     {
-        $this->route->post('posts', 'PostsController', 'posts')->cacheable(true, 100);
+        $route = new Route(
+            ['GET'],
+            'users',
+            'UserController',
+            'listAction'
+        );
 
-        $this->assertTrue($this->route->getRuntimeRoutes()[0]['cache_settings']['shouldCache']);
-        $this->assertEquals(100, $this->route->getRuntimeRoutes()[0]['cache_settings']['ttl']);
+        $route->addMiddlewares(['auth', 'log']);
+        $route->addMiddlewares(['csrf', 'throttle']);
+
+        $this->assertSame(
+            ['csrf', 'throttle', 'auth', 'log'],
+            $route->getMiddlewares()
+        );
     }
 
-    public function testMiddlewares()
+    public function testRouteToArrayExportsRouteState()
     {
-        $this->route->add('signup', 'POST', 'AuthController', 'signup')->middlewares(['signup', 'csrf']);
+        $route = new Route(
+            ['GET'],
+            'users',
+            'UserController',
+            'listAction'
+        );
 
-        $route = current($this->route->getVirtualRoutes()['*']);
+        $route->cache(true, 60);
 
-        $this->assertCount(2, $route['middlewares']);
+        $data = $route->toArray();
 
-        $this->assertEquals('signup', $route['middlewares'][0]);
+        $this->assertIsArray($data);
 
-        $this->assertEquals('csrf', $route['middlewares'][1]);
-    }
+        $this->assertSame(['GET'], $data['methods']);
 
-    public function testGroupMiddlewares()
-    {
-        $this->route->group('auth', function ($route) {
-            $route->add('dashboard', 'GET', 'AuthController', 'dashboard');
-            $route->add('user', 'POST', 'AuthController', 'add')->middlewares(['csrf', 'ddos']);
-        })->middlewares(['auth', 'owner']);
+        $this->assertSame('users', $data['route']);
 
-        $authGroupRoutes = $this->route->getVirtualRoutes()['auth'];
+        $this->assertSame('UserController', $data['controller']);
 
-        $this->assertCount(2, $authGroupRoutes[0]['middlewares']);
+        $this->assertSame('listAction', $data['action']);
 
-        $this->assertEquals('auth', $authGroupRoutes[0]['middlewares'][0]);
-
-        $this->assertEquals('owner', $authGroupRoutes[0]['middlewares'][1]);
-
-        $this->assertCount(4, $authGroupRoutes[1]['middlewares']);
-
-        $this->assertEquals('auth', $authGroupRoutes[1]['middlewares'][0]);
-
-        $this->assertEquals('owner', $authGroupRoutes[1]['middlewares'][1]);
-
-        $this->assertEquals('csrf', $authGroupRoutes[1]['middlewares'][2]);
-
-        $this->assertEquals('ddos', $authGroupRoutes[1]['middlewares'][3]);
-    }
-
-    public function testRoutesWithNames()
-    {
-        $this->route->post('post/1', function () {
-            info('Getting the first post');
-        })->name('first');
-
-        $this->assertIsArray($this->route->getRuntimeRoutes());
-
-        $this->assertEquals('first', $this->route->getRuntimeRoutes()[0]['name']);
-    }
-
-    public function testNamingRouteBeforeDefinition()
-    {
-        $this->expectException(RouteException::class);
-
-        $this->expectExceptionMessage('Names can not be set before route definition');
-
-        $this->route->name('myposts')->get('my-posts', 'PostController', 'myPosts');
-    }
-
-    public function testDuplicateNamesOnRoutes()
-    {
-        $this->expectException(RouteException::class);
-
-        $this->expectExceptionMessage('Route names should be unique');
-
-        $this->route->post('post/1', 'PostController', 'getPost')->name('post');
-
-        $this->route->post('post/2', 'PostController', 'getPost')->name('post');
-    }
-
-    public function testNameOnGroup()
-    {
-        $this->expectException(RouteException::class);
-
-        $this->expectExceptionMessage('Name can not be set on route groups');
-
-        $this->route->group('auth', function ($route) {
-            $route->add('dashboard', 'GET', 'AuthController', 'dashboard');
-        })->name('authGroup');
-    }
-
-    public function testNamedRoutesWithGroupRoutes()
-    {
-        $route = $this->route;
-
-        $this->route->group('auth', function ($route) {
-            $route->add('dashboard', 'GET', 'AuthController', 'dashboard');
-        });
-
-        $route->add('landing', 'GET', 'MainController', 'landing')->name('landing');
-
-        $this->assertArrayHasKey('name', $this->route->getRuntimeRoutes()[0]);
-
-        $this->assertArrayNotHasKey('group', $this->route->getRuntimeRoutes()[0]);
-
-        $this->assertArrayNotHasKey('name', $this->route->getRuntimeRoutes()[1]);
-
-        $this->assertArrayHasKey('group', $this->route->getRuntimeRoutes()[1]);
-    }
-
-    public function testNamedRoutesInGroup()
-    {
-        $this->route->group('auth', function ($route) {
-            $route->add('reports', 'GET', 'MainController', 'landing')->name('reports');
-            $route->add('dashboard', 'GET', 'MainController', 'dashboard')->name('dash');
-        });
-
-        $this->assertEquals('auth', $this->route->getRuntimeRoutes()[0]['group']);
-
-        $this->assertEquals('reports', $this->route->getRuntimeRoutes()[0]['name']);
-
-        $this->assertEquals('auth', $this->route->getRuntimeRoutes()[1]['group']);
-
-        $this->assertEquals('dash', $this->route->getRuntimeRoutes()[1]['name']);
+        $this->assertSame(['enabled' => true, 'ttl' => 60], $data['cache']);
     }
 }

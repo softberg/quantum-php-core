@@ -23,6 +23,7 @@ class WebAppAdapterTest extends TestCase
     public function tearDown(): void
     {
         config()->flush();
+        Di::reset();
     }
 
     public function testWebAppAdapterStartSuccessfully()
@@ -40,8 +41,18 @@ class WebAppAdapterTest extends TestCase
         $request = Di::get(Request::class);
         $request->create('POST', '');
 
-        $this->expectException(Exception::class);
+        $result = $this->webAppAdapter->start();
 
-        $this->webAppAdapter->start();
+        $this->assertSame(0, $result);
+    }
+
+    public function testWebAppAdapterHandlesPageNotFoundGracefully()
+    {
+        $request = Di::get(Request::class);
+        $request->create('GET', '/non-existing-uri');
+
+        $result = $this->webAppAdapter->start();
+
+        $this->assertSame(0, $result);
     }
 }

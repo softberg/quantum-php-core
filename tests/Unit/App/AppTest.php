@@ -21,6 +21,8 @@ class AppTest extends TestCase
     {
         parent::setUp();
 
+        Di::reset();
+
         App::setBaseDir(PROJECT_ROOT);
     }
 
