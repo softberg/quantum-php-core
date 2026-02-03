@@ -7,7 +7,6 @@ use PHPUnit\Framework\TestCase;
 use Quantum\Http\Request;
 use Quantum\App\App;
 use Quantum\Di\Di;
-use Exception;
 
 class WebAppAdapterTest extends TestCase
 {
