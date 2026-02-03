@@ -3,7 +3,10 @@
 namespace Quantum\Tests\Unit\View\Helpers;
 
 use Quantum\View\Factories\ViewFactory;
-use Quantum\Router\RouteController;
+use Quantum\Router\MatchedRoute;
+use Quantum\Router\Route;
+use Quantum\Http\Request;
+use Quantum\Di\Di;
 use Quantum\Tests\Unit\AppTestCase;
 
 class ViewHelperTest extends AppTestCase
@@ -14,6 +17,22 @@ class ViewHelperTest extends AppTestCase
     {
         parent::setUp();
 
+        $route = new Route(
+            ['GET', 'POST'],
+            '/test',
+            'TestController',
+            'testAction',
+            null
+        );
+        $route->module('Test');
+
+        $matchedRoute = new MatchedRoute($route, []);
+        Request::setMatchedRoute($matchedRoute);
+
+        $request = Di::get(Request::class);
+        $request->create('POST', '/test');
+        Request::setMatchedRoute($matchedRoute);
+
         $this->view = ViewFactory::get();
     }
     public function tearDown(): void
@@ -23,14 +42,6 @@ class ViewHelperTest extends AppTestCase
 
     public function testView()
     {
-        RouteController::setCurrentRoute([
-            'route' => 'test',
-            'method' => 'POST',
-            'controller' => 'TestController',
-            'action' => 'testAction',
-            'module' => 'Test',
-        ]);
-
         $this->view->setLayout('layout');
 
         $this->view->render('index');

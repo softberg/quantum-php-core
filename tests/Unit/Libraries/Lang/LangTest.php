@@ -3,7 +3,10 @@
 namespace Quantum\Tests\Unit\Libraries\Lang;
 
 use Quantum\Libraries\Lang\Translator;
-use Quantum\Router\RouteController;
+use Quantum\Router\MatchedRoute;
+use Quantum\Router\Route;
+use Quantum\Http\Request;
+use Quantum\Di\Di;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Libraries\Lang\Lang;
 
@@ -18,13 +21,23 @@ class LangTest extends AppTestCase
         $translator = new Translator('en');
         $this->lang = new Lang('en', true, $translator);
 
-        RouteController::setCurrentRoute([
-            'route' => 'api-signin',
-            'method' => 'POST',
-            'controller' => 'SomeController',
-            'action' => 'signin',
-            'module' => 'Test',
-        ]);
+        $route = new Route(
+            ['POST'],
+            '/api-signin',
+            'SomeController',
+            'signin',
+            null
+        );
+        $route->module('Test');
+
+        $matchedRoute = new MatchedRoute($route, []);
+        Request::setMatchedRoute($matchedRoute);
+
+        if (!Di::isRegistered(Request::class)) {
+            $request = new Request();
+            $request->create('POST', '/api-signin');
+            Di::set(Request::class, $request);
+        }
     }
 
     public function testLangGetSet()

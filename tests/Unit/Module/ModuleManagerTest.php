@@ -2,7 +2,6 @@
 
 namespace Quantum\Tests\Unit\Module;
 
-use Quantum\Router\RouteController;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Module\ModuleManager;
 use Quantum\Http\Response;
@@ -30,7 +29,6 @@ class ModuleManagerTest extends AppTestCase
         $moduleManager->addModuleConfig();
 
         $modules = $this->fs->require($this->modulesConfigPath);
-        ;
 
         $this->assertEquals('Api', $moduleManager->getModuleName());
 
@@ -39,8 +37,6 @@ class ModuleManagerTest extends AppTestCase
         $this->assertEquals('api', $modules['Api']['prefix']);
 
         $mainController = new \Quantum\Tests\_root\modules\Api\Controllers\MainController();
-
-        $this->assertInstanceOf(RouteController::class, $mainController);
 
         $response = new Response();
 
