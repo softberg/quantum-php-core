@@ -1,5 +1,6 @@
 build:
   environment:
+    distribution: focal
     php:
       version: 7.4
   dependencies:
