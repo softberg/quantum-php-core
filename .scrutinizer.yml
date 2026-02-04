@@ -1,8 +1,7 @@
 build:
   environment:
-    distribution: focal
     php:
-      version: 7.4
+      version: 8.0
   dependencies:
     before:
       - curl -sS https://getcomposer.org/installer | php -- --2
