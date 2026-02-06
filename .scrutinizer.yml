@@ -1,12 +1,17 @@
 build:
-  environment:
-    php:
-      version: 8.0
-  dependencies:
-    before:
-      - curl -sS https://getcomposer.org/installer | php -- --2
-      - mv composer.phar composer
-      - export PATH="$PWD:$PATH"
-  tests:
-    override:
-      - php-scrutinizer-run
+  image: default-bionic
+
+  nodes:
+    analysis:
+      environment:
+        php:
+          version: 8.0
+      dependencies:
+        before:
+          - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer --2
+
+          - php -v
+          - composer --version
+      tests:
+        override:
+          - php-scrutinizer-run
