@@ -7,9 +7,8 @@ build:
           version: 8.1
       dependencies:
         before:
-          - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer --2
-          - php -v
-          - composer --version
+          - curl -sS https://getcomposer.org/installer | php -- --install-dir=$HOME --filename=composer --2
+          - $HOME/composer --version
       tests:
         override:
           - php-scrutinizer-run
