@@ -132,4 +132,29 @@ class ArrayPaginatorTest extends AppTestCase
     {
         $this->assertEquals(2, $this->paginator->perPage());
     }
+
+    public function testArrayPaginatorGetPaginationRendersCurrentAndLastPage()
+    {
+        $html = $this->paginator->getPagination();
+
+        $this->assertStringContainsString('>1<', $html);
+        $this->assertStringContainsString('>3<', $html);
+    }
+
+    public function testArrayPaginatorGetPaginationRendersEllipsisForHiddenPages()
+    {
+        $html = $this->paginator->getPagination();
+
+        $this->assertStringContainsString('<span>...</span>', $html);
+    }
+
+    public function testArrayPaginatorGetPaginationRendersMiddlePageWhenCurrentPageIsTwo()
+    {
+        $paginator = new ArrayPaginator($this->items, 2, 2);
+
+        $html = $paginator->getPagination();
+
+        $this->assertStringContainsString('>2<', $html);
+    }
+
 }

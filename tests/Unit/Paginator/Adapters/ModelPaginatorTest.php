@@ -160,4 +160,31 @@ class ModelPaginatorTest extends PaginatorTestCase
     {
         $this->assertEquals(2, $this->paginator->perPage());
     }
+
+    public function testModelPaginatorGetPaginationRendersCurrentAndLastPage()
+    {
+        $html = $this->paginator->getPagination();
+
+        $this->assertStringContainsString('>1<', $html);
+        $this->assertStringContainsString('>3<', $html);
+    }
+
+    public function testModelPaginatorGetPaginationRendersEllipsisForHiddenPages()
+    {
+        $html = $this->paginator->getPagination();
+
+        $this->assertStringContainsString('<span>...</span>', $html);
+    }
+
+    public function testModelPaginatorGetPaginationRendersMiddlePageWhenCurrentPageIsTwo()
+    {
+        $postModel = ModelFactory::createDynamicModel('posts', TestPostModel::class);
+
+        $paginator = new ModelPaginator($postModel, 2, 2);
+
+        $html = $paginator->getPagination();
+
+        $this->assertStringContainsString('>2<', $html);
+    }
+
 }
