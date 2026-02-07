@@ -14,35 +14,391 @@
 
 namespace Quantum\Router;
 
+use Quantum\Router\Exceptions\RouteException;
 use Closure;
 
 /**
  * Class RouteBuilder
+ * @internal Fluent DSL interpreter and route composition engine.
  * @package Quantum\Router
  */
-class RouteBuilder
+final class RouteBuilder
 {
     /**
-     * @param array<string, Closure> $moduleClosures moduleName => closure(Route $collector): void
-     * @param array<string, array>   $moduleConfigs  moduleName => config options
-     * @return array
+     * @var RouteCollection
      */
-    public function build(array $moduleClosures, array $moduleConfigs = []): array
-    {
-        $allRoutes = [];
+    private RouteCollection $collection;
 
-        foreach ($moduleClosures as $module => $closure) {
+    /**
+     * @var PatternCompiler
+     */
+    private PatternCompiler $patternCompiler;
+
+    /**
+     * @var Route|null
+     */
+    private ?Route $currentRoute = null;
+
+    /**
+     * @var string|null
+     */
+    private ?string $currentModule = null;
+
+    /**
+     * @var string|null
+     */
+    private ?string $currentPrefix = null;
+
+    /**
+     * @var bool
+     */
+    private bool $inGroup = false;
+
+    /**
+     * @var string|null
+     */
+    private ?string $currentGroupName = null;
+
+    /**
+     * @var array
+     */
+    private array $groupRoutes = [];
+
+    /**
+     * @var array
+     */
+    private array $groupMiddlewares = [];
+
+    /**
+     * @var Route[]|null
+     */
+    private ?array $lastGroupRoutes = null;
+
+    public function __construct()
+    {
+        $this->patternCompiler = new PatternCompiler();
+
+        $this->collection = new RouteCollection();
+    }
+
+    /**
+     * Execute DSL and return final RouteCollection
+     * @param array $moduleRouteClosures
+     * @param array $moduleConfigs
+     * @return RouteCollection
+     * @throws RouteException
+     */
+    public function build(array $moduleRouteClosures, array $moduleConfigs): RouteCollection
+    {
+        foreach ($moduleRouteClosures as $module => $closure) {
+            if (!$closure instanceof Closure) {
+                throw RouteException::moduleRoutesNotClosure($module);
+            }
+
             $options = $moduleConfigs[$module] ?? [];
 
-            $routeCollector = new Route($module, $options);
+            $this->currentModule = $module;
+            $this->currentPrefix = trim((string) ($options['prefix'] ?? ''), '/');
 
-            $closure($routeCollector);
+            $closure($this);
 
-            foreach ($routeCollector->getRuntimeRoutes() as $runtimeRoute) {
-                $allRoutes[] = $runtimeRoute;
+            $this->currentModule = null;
+            $this->currentPrefix = null;
+            $this->currentRoute = null;
+        }
+
+        return $this->collection;
+    }
+
+    /**
+     * Define a route with multiple HTTP methods.
+     * @param string $path
+     * @param string $methods
+     * @param $handler
+     * @param string|null $action
+     * @return self
+     * @throws RouteException
+     */
+    public function add(string $path, string $methods, $handler, string $action = null): self
+    {
+        $methodList = array_filter(
+            array_map('trim', explode('|', $methods)),
+            static fn ($m) => $m !== ''
+        );
+
+        return $this->addRoute($methodList, $path, $handler, $action);
+    }
+
+    /**
+     * Define a GET route.
+     * @param string $path
+     * @param $handler
+     * @param string|null $action
+     * @return self
+     * @throws RouteException
+     */
+    public function get(string $path, $handler, string $action = null): self
+    {
+        return $this->addRoute(['GET'], $path, $handler, $action);
+    }
+
+    /**
+     * Define a POST route.
+     * @param string $path
+     * @param $handler
+     * @param string|null $action
+     * @return self
+     * @throws RouteException
+     */
+    public function post(string $path, $handler, string $action = null): self
+    {
+        return $this->addRoute(['POST'], $path, $handler, $action);
+    }
+
+    /**
+     * Define a PUT route.
+     * @param string $path
+     * @param $handler
+     * @param string|null $action
+     * @return self
+     * @throws RouteException
+     */
+    public function put(string $path, $handler, string $action = null): self
+    {
+        return $this->addRoute(['PUT'], $path, $handler, $action);
+    }
+
+    /**
+     * Define a DELETE route.
+     * @param string $path
+     * @param $handler
+     * @param string|null $action
+     * @return self
+     * @throws RouteException
+     */
+    public function delete(string $path, $handler, string $action = null): self
+    {
+        return $this->addRoute(['DELETE'], $path, $handler, $action);
+    }
+
+    /**
+     * Group routes under a shared name and configuration.
+     * @param string $name
+     * @param callable $callback
+     * @return $this
+     * @throws RouteException
+     */
+    public function group(string $name, callable $callback): self
+    {
+        if ($this->inGroup) {
+            throw RouteException::nestedGroups();
+        }
+
+        $this->currentGroupName = $name;
+        $this->inGroup = true;
+        $this->groupRoutes = [];
+        $this->groupMiddlewares = [];
+
+        $callback($this);
+
+        /** @phpstan-ignore-next-line */
+        foreach ($this->groupRoutes as $route) {
+            $route->addMiddlewares($this->groupMiddlewares);
+        }
+
+        $this->lastGroupRoutes = $this->groupRoutes;
+
+        $this->inGroup = false;
+        $this->groupRoutes = [];
+        $this->groupMiddlewares = [];
+        $this->currentGroupName = null;
+        $this->currentRoute = null;
+
+        return $this;
+    }
+
+    /**
+     * Apply middlewares to the current route or group.
+     * @param array $middlewares
+     * @return $this
+     * @throws RouteException
+     */
+    public function middlewares(array $middlewares): self
+    {
+        if ($this->currentRoute !== null) {
+            $this->currentRoute->addMiddlewares($middlewares);
+            return $this;
+        }
+
+        if ($this->inGroup) {
+            $this->groupMiddlewares = array_merge(
+                $this->groupMiddlewares,
+                $middlewares
+            );
+
+            return $this;
+        }
+
+        if ($this->lastGroupRoutes !== null) {
+            foreach ($this->lastGroupRoutes as $route) {
+                $route->addMiddlewares($middlewares);
+            }
+
+            $this->lastGroupRoutes = null;
+            return $this;
+        }
+
+        throw RouteException::middlewaresOutsideRoute();
+    }
+
+    /**
+     * Assign a unique name to the current route.
+     * @param string $name
+     * @return $this
+     * @throws RouteException
+     */
+    public function name(string $name): self
+    {
+        if ($this->currentRoute === null) {
+            throw RouteException::nameBeforeDefinition();
+        }
+        $currentModule = $this->currentModule;
+
+        foreach ($this->collection->all() as $route) {
+            if ($route->getName() === null) {
+                continue;
+            }
+
+            if ($route->getName() === $name && $route->getModule() === $currentModule) {
+                throw RouteException::nonUniqueNameInModule($name);
             }
         }
 
-        return $allRoutes;
+        $this->currentRoute->name($name);
+        return $this;
+    }
+
+    /**
+     * Enable or disable caching for the current route or group.
+     * @param bool $enabled
+     * @param int|null $ttl
+     * @return $this
+     * @throws RouteException
+     */
+    public function cacheable(bool $enabled, ?int $ttl = null): self
+    {
+        if ($this->inGroup) {
+            foreach ($this->groupRoutes as $route) {
+                $route->cache($enabled, $ttl);
+            }
+
+            return $this;
+        }
+
+        if ($this->lastGroupRoutes !== null) {
+            foreach ($this->lastGroupRoutes as $route) {
+                $route->cache($enabled, $ttl);
+            }
+
+            $this->lastGroupRoutes = null;
+            return $this;
+        }
+
+        if ($this->currentRoute !== null) {
+            $this->currentRoute->cache($enabled, $ttl);
+            return $this;
+        }
+
+        throw RouteException::cacheableOutsideRoute();
+    }
+
+    /**
+     * Create and register a Route instance.
+     * @param array $methods
+     * @param string $path
+     * @param $handler
+     * @param string|null $action
+     * @return self
+     * @throws RouteException
+     */
+    private function addRoute(
+        array $methods,
+        string $path,
+        $handler,
+        ?string $action
+    ): self {
+        if ($methods === []) {
+            throw RouteException::noHttpMethods();
+        }
+
+        $pattern = $this->resolvePath($path);
+
+        if ($handler instanceof Closure) {
+            $route = new Route(
+                $methods,
+                $pattern,
+                null,
+                null,
+                $handler
+            );
+        } else {
+            if (!is_string($handler) || $action === null) {
+                throw RouteException::incompleteControllerRoute();
+            }
+
+            if (strpos($handler, '\\') === false) {
+                if ($this->currentModule === null) {
+                    throw RouteException::controllerWithoutModule();
+                }
+
+                $handler =
+                    module_base_namespace()
+                    . '\\'
+                    . $this->currentModule
+                    . '\\Controllers\\'
+                    . $handler;
+            }
+
+            $route = new Route(
+                $methods,
+                $pattern,
+                $handler,
+                $action,
+                null
+            );
+        }
+
+        [$compiled, $params] = $this->patternCompiler->compile($route);
+
+        $route
+            ->module($this->currentModule)
+            ->prefix($this->currentPrefix)
+            ->group($this->currentGroupName)
+            ->setCompiledPattern($compiled);
+
+        $this->collection->add($route);
+        $this->currentRoute = $route;
+
+        if ($this->inGroup) {
+            $this->groupRoutes[] = $route;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Resolve path using the current prefix.
+     * @param string $path
+     * @return string
+     */
+    private function resolvePath(string $path): string
+    {
+        $path = '/' . ltrim($path, '/');
+
+        if ($this->currentPrefix === null || $this->currentPrefix === '') {
+            return $path;
+        }
+
+        return '/' . trim($this->currentPrefix . $path, '/');
     }
 }

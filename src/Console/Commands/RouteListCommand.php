@@ -17,10 +17,13 @@ namespace Quantum\Console\Commands;
 use Quantum\Module\Exceptions\ModuleException;
 use Quantum\Router\Exceptions\RouteException;
 use Symfony\Component\Console\Helper\Table;
+use Quantum\Di\Exceptions\DiException;
+use Quantum\Router\RouteCollection;
 use Quantum\Router\RouteBuilder;
 use Quantum\Module\ModuleLoader;
 use Quantum\Console\QtCommand;
-use Quantum\Router\Router;
+use Quantum\Router\Route;
+use Quantum\Di\Di;
 
 /**
  * Class RouteListCommand
@@ -50,6 +53,7 @@ class RouteListCommand extends QtCommand
 
     /**
      * Executes the command
+     * @throws DiException
      */
     public function exec()
     {
@@ -57,16 +61,25 @@ class RouteListCommand extends QtCommand
             $moduleLoader = ModuleLoader::getInstance();
 
             $builder = new RouteBuilder();
-            $allRoutes = $builder->build($moduleLoader->loadModulesRoutes(), $moduleLoader->getModuleConfigs());
+            $routeCollection = $builder->build(
+                $moduleLoader->loadModulesRoutes(),
+                $moduleLoader->getModuleConfigs()
+            );
 
-            Router::setRoutes($allRoutes);
+            Di::set(RouteCollection::class, $routeCollection);
 
-            $routes = Router::getRoutes();
+            $routes = $routeCollection->all();
 
             $module = $this->getOption('module');
 
             if ($module) {
-                $routes = array_filter($routes, fn ($route) => strtolower($route['module']) === strtolower($module));
+                $routes = array_filter(
+                    $routes,
+                    static function (Route $route) use ($module): bool {
+                        $routeModule = $route->getModule();
+                        return $routeModule !== null && strtolower($routeModule) === strtolower($module);
+                    }
+                );
 
                 if ($routes === []) {
                     $this->error('The module is not found');
@@ -93,32 +106,36 @@ class RouteListCommand extends QtCommand
 
     /**
      * Composes a table row
-     * @param array $route
+     * @param Route $route
      * @param int $maxContentLength
      * @return array
      */
-    private function composeTableRow(array $route, int $maxContentLength = 25): array
+    private function composeTableRow(Route $route, int $maxContentLength = 25): array
     {
-        $action = $route['action']
-            . '\\'
-            . $route['controller']
-            . '@'
-            . $route['action'];
+        $controller = $route->getController();
+        $actionName = $route->getAction();
+
+        if ($controller !== null && $actionName !== null) {
+            $action = $controller . '@' . $actionName;
+        } else {
+            $action = 'Closure';
+        }
 
         if (mb_strlen($action) > $maxContentLength) {
             $action = mb_substr($action, 0, $maxContentLength) . '...';
         }
 
-        $middlewares = isset($route['middlewares'])
-            ? implode(',', $route['middlewares'])
+        $middlewares = $route->getMiddlewares();
+        $middlewaresString = $middlewares !== []
+            ? implode(',', $middlewares)
             : '-';
 
         return [
-            $route['module'] ?? '',
-            $route['method'] ?? '',
-            $route['route'] ?? '',
+            $route->getModule() ?? '',
+            implode('|', $route->getMethods()),
+            $route->getPattern(),
             $action,
-            $middlewares,
+            $middlewaresString,
         ];
     }
 }

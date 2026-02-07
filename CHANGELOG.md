@@ -1,12 +1,3 @@
-# Changelog
-
-All notable changes to this project will be documented in this file.
-
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-
-## [Unreleased]
-
 ## [3.0.0] - TBD
 
 ### Changed
@@ -21,6 +12,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated CI pipeline to test against PHP 7.4, 8.0, and 8.1
 - CI now fails on PHP warnings and deprecations for stricter quality control
 - Added `declare(strict_types=1)` to all Exception classes for improved type safety
+
+- **BREAKING:** Refactored routing system internals:
+  - Routes are now represented as first-class objects (`Route`, `RouteCollection`, `MatchedRoute`)
+  - Introduced `RouteBuilder` as a fluent DSL interpreter and route composition engine
+  - Introduced `PatternCompiler` for centralized route pattern compilation
+  - Introduced `RouteDispatcher` for explicit controller / closure dispatching
+  - Route matching now produces a `MatchedRoute` object containing the route and extracted parameters
+  - Routing is executed once per request; matched route is stored on the `Request`
+  - Global route helper functions (`current_*`, `route_*`) now rely on `MatchedRoute` instead of legacy static route state
+  - Middleware ordering is strictly prepend-based (later middleware wraps earlier)
+  - Nested route groups are no longer supported
+  - Route name uniqueness is now enforced at build time
+
+- **BREAKING:** Controller resolution behavior changed:
+  - Routes no longer implicitly resolve controller class names via legacy `RouteController` logic
+  - Controllers are now instantiated directly based on the handler defined in the route
+  - Projects relying on legacy controller resolution or `RouteController` static state must update accordingly
+
 - **BREAKING:** Refactored model architecture:
   - Introduced a base Model class for non-database models
   - Refactored QtModel into DbModel with persistence-only responsibilities
@@ -42,6 +51,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Rector as dev dependency for automated code refactoring
 - Additional PHP extensions required in CI: `bcmath`, `gd`, `zip`
 - PHPUnit strict testing flags: `--fail-on-warning`, `--fail-on-risky`
+
+- **Routing test coverage**:
+  - Comprehensive unit tests for route building, grouping, middleware ordering, caching, and naming
+  - Unit tests for route helpers and request–route integration
+  - Unit tests for dispatcher behavior with controller and closure routes
+
 - **Cron Scheduler**: New CLI command `php qt cron:run` for running scheduled tasks
   - Task definition via PHP files in `cron/` directory
   - Cron expression parsing using `dragonmantank/cron-expression` library
@@ -50,17 +65,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Support for force mode and specific task execution
   - Automatic cleanup of stale locks (older than 24 hours)
   - Full documentation in `docs/cron-scheduler.md`
+
 - **Opt-in Model Timestamps**: Introduced `HasTimestamps` trait for `DbModel`:
-  - Automatically sets `created_at` on insert 
+  - Automatically sets `created_at` on insert
   - Automatically sets `updated_at` on insert and update
   - Supports custom timestamp column names via model constants (`CREATED_AT`, `UPDATED_AT`)
   - Supports datetime and unix timestamp formats via `TIMESTAMP_TYPE`
 
 ### Removed
 - Support for PHP 7.3 and earlier versions
-
----
-
-## [2.x.x] - Previous versions
-
-See Git history for changes in earlier versions.
+- Legacy routing static state and implicit controller resolution via `RouteController`

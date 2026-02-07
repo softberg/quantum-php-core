@@ -15,17 +15,16 @@
 namespace Quantum\Console\Commands;
 
 use Quantum\Libraries\Storage\Factories\FileSystemFactory;
-use Quantum\Config\Exceptions\ConfigException;
 use Quantum\Module\Exceptions\ModuleException;
 use Quantum\Router\Exceptions\RouteException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Di\Exceptions\DiException;
+use Quantum\Router\RouteCollection;
 use Quantum\Module\ModuleLoader;
 use Quantum\Router\RouteBuilder;
 use Quantum\Console\QtCommand;
-use Quantum\Router\Router;
-use ReflectionException;
+use Quantum\Di\Di;
 use OpenApi\Generator;
 
 /**
@@ -38,7 +37,14 @@ class OpenApiCommand extends QtCommand
      * File System
      * @var FileSystem
      */
-    protected $fs;
+    protected FileSystem $fs;
+
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->fs = FileSystemFactory::get();
+    }
 
     /**
      * Command name
@@ -70,45 +76,39 @@ class OpenApiCommand extends QtCommand
      * Path to public debug bar resources
      * @var string
      */
-    private $publicOpenApiFolderPath = 'public/assets/OpenApiUi';
+    private string $publicOpenApiFolderPath = 'public/assets/OpenApiUi';
 
     /**
      * Path to vendor debug bar resources
      * @var string
      */
-    private $vendorOpenApiFolderPath = 'vendor/swagger-api/swagger-ui/dist';
+    private string $vendorOpenApiFolderPath = 'vendor/swagger-api/swagger-ui/dist';
 
     /**
      * Exclude File Names
      * @var array
      */
-    private $excludeFileNames = ['index.html', 'swagger-initializer.js', 'favicon-16x16.png', 'favicon-32x32.png'];
+    private array $excludeFileNames = ['index.html', 'swagger-initializer.js', 'favicon-16x16.png', 'favicon-32x32.png'];
 
     /**
      * Executes the command and generate Open API specifications
-     * @throws ModuleException
-     * @throws RouteException
-     * @throws BaseException
-     */
-
-    /**
      * @throws BaseException
      * @throws ModuleException
      * @throws RouteException
      * @throws DiException
-     * @throws ConfigException
-     * @throws ReflectionException
      */
     public function exec()
     {
         $moduleLoader = ModuleLoader::getInstance();
 
         $builder = new RouteBuilder();
-        $allRoutes = $builder->build($moduleLoader->loadModulesRoutes(), $moduleLoader->getModuleConfigs());
 
-        Router::setRoutes($allRoutes);
+        $routeCollection = $builder->build(
+            $moduleLoader->loadModulesRoutes(),
+            $moduleLoader->getModuleConfigs()
+        );
 
-        $this->fs = FileSystemFactory::get();
+        Di::set(RouteCollection::class, $routeCollection);
 
         $module = $this->getArgument('module');
 

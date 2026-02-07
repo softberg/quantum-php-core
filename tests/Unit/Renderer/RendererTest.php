@@ -6,9 +6,12 @@ use Quantum\Renderer\Contracts\TemplateRendererInterface;
 use Quantum\Renderer\Exceptions\RendererException;
 use Quantum\Renderer\Adapters\TwigAdapter;
 use Quantum\Renderer\Adapters\HtmlAdapter;
-use Quantum\Renderer\Renderer;
 use Quantum\Tests\Unit\AppTestCase;
-use Quantum\Router\Router;
+use Quantum\Router\MatchedRoute;
+use Quantum\Renderer\Renderer;
+use Quantum\Router\Route;
+use Quantum\Http\Request;
+use Quantum\Di\Di;
 
 class RendererTest extends AppTestCase
 {
@@ -16,13 +19,23 @@ class RendererTest extends AppTestCase
     {
         parent::setUp();
 
-        Router::setCurrentRoute([
-            'route' => 'test',
-            'method' => 'GET',
-            'controller' => 'SomeController',
-            'action' => 'test',
-            'module' => 'Test',
-        ]);
+        $route = new Route(
+            ['GET'],
+            '/test',
+            'SomeController',
+            'test',
+            null
+        );
+        $route->module('Test');
+
+        $matchedRoute = new MatchedRoute($route, []);
+        Request::setMatchedRoute($matchedRoute);
+
+        if (!Di::isRegistered(Request::class)) {
+            $request = new Request();
+            $request->create('GET', '/test');
+            Di::set(Request::class, $request);
+        }
     }
 
     public function testRendererGetHtmlAdapter()

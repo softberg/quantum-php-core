@@ -14,305 +14,348 @@
 
 namespace Quantum\Router;
 
-use Quantum\Config\Exceptions\ConfigException;
 use Quantum\Router\Exceptions\RouteException;
-use Quantum\App\Exceptions\BaseException;
-use Quantum\Di\Exceptions\DiException;
-use ReflectionException;
 use Closure;
 
 /**
- * Route Class
+ * Class Route
+ * @internal Framework routing descriptor.
  * @package Quantum\Router
  */
-class Route
+final class Route
 {
     /**
-     * Current module name
+     * @var array
+     */
+    protected array $methods;
+
+    /**
      * @var string
      */
-    private $moduleName;
+    protected string $pattern;
 
     /**
-     * Module options
-     * @var array
-     */
-    private $moduleOptions;
-
-    /**
-     * Identifies the group middleware
-     * @var bool
-     */
-    private $isGroupMiddlewares;
-
-    /**
-     * Identifies the group
-     * @var boolean
-     */
-    private $isGroup = false;
-
-    /**
-     * Current group name
      * @var string|null
      */
-    private $currentGroupName = null;
+    protected ?string $controller;
 
     /**
-     * Current route
+     * @var string|null
+     */
+    protected ?string $action;
+
+    /**
+     * @var Closure|null
+     */
+    protected ?Closure $closure;
+
+    /**
+     * @var string|null
+     */
+    protected ?string $name = null;
+
+    /**
+     * @var string|null
+     */
+    protected ?string $module = null;
+
+    /**
      * @var array
      */
-    private $currentRoute = [];
+    protected array $middlewares = [];
 
     /**
-     * Virtual routes
-     * @var array
+     * @var string|null
      */
-    private $virtualRoutes = [];
+    protected ?string $group = null;
 
     /**
-     * @param string $moduleName
-     * @param array $moduleOptions
+     * @var string|null
      */
-    public function __construct(string $moduleName, array $moduleOptions)
-    {
-        $this->virtualRoutes['*'] = [];
-        $this->moduleName = $moduleName;
-        $this->moduleOptions = $moduleOptions;
-    }
+    protected ?string $prefix = null;
 
     /**
-     * @param string $route
-     * @param string $method
-     * @param ...$params
-     * @return $this
+     * @var array|null
      */
-    public function add(string $route, string $method, ...$params): Route
-    {
-        $this->currentRoute = [
-            'route' => empty($this->moduleOptions['prefix']) ? $route : $this->moduleOptions['prefix'] . '/' . $route,
-            'prefix' => $this->moduleOptions['prefix'] ?? '',
-            'method' => $method,
-            'module' => $this->moduleName,
-        ];
-
-        if (isset($this->moduleOptions['cacheable'])) {
-            $this->currentRoute['cache_settings']['shouldCache'] = (bool) $this->moduleOptions['cacheable'];
-        }
-
-        if (is_callable($params[0])) {
-            $this->currentRoute['callback'] = $params[0];
-        } else {
-            $this->currentRoute['controller'] = $params[0];
-            $this->currentRoute['action'] = $params[1];
-        }
-
-        if ($this->currentGroupName) {
-            $this->currentRoute['group'] = $this->currentGroupName;
-            $this->virtualRoutes[$this->currentGroupName][] = $this->currentRoute;
-        } else {
-            $this->isGroup = false;
-            $this->isGroupMiddlewares = false;
-            $this->virtualRoutes['*'][] = $this->currentRoute;
-        }
-
-        return $this;
-    }
+    protected ?array $cache = null;
 
     /**
-     * @param string $route
-     * @param ...$params
-     * @return $this
+     * @var string|null
      */
-    public function get(string $route, ...$params): Route
-    {
-        return $this->add($route, 'GET', ...$params);
-    }
+    protected ?string $compiledPattern = null;
 
     /**
-     * @param string $route
-     * @param ...$params
-     * @return $this
-     */
-    public function post(string $route, ...$params): Route
-    {
-        return $this->add($route, 'POST', ...$params);
-    }
-
-    /**
-     * @param string $route
-     * @param ...$params
-     * @return $this
-     */
-    public function put(string $route, ...$params): Route
-    {
-        return $this->add($route, 'PUT', ...$params);
-    }
-
-    /**
-     * @param string $route
-     * @param ...$params
-     * @return $this
-     */
-    public function delete(string $route, ...$params): Route
-    {
-        return $this->add($route, 'DELETE', ...$params);
-    }
-
-    /**
-     * Starts a named group of routes
-     * @param string $groupName
-     * @param Closure $callback
-     * @return Route
-     */
-    public function group(string $groupName, Closure $callback): Route
-    {
-        $this->currentGroupName = $groupName;
-
-        $this->isGroup = true;
-        $this->isGroupMiddlewares = false;
-        $callback($this);
-        $this->isGroupMiddlewares = true;
-        $this->currentGroupName = null;
-
-        return $this;
-    }
-
-    /**
-     * Adds middlewares to routes and route groups
-     * @param array $middlewares
-     * @return Route
-     */
-    public function middlewares(array $middlewares = []): Route
-    {
-        if (!$this->isGroup) {
-            $lastKey = array_key_last($this->virtualRoutes['*']);
-            $this->assignMiddlewaresToRoute($this->virtualRoutes['*'][$lastKey], $middlewares);
-            return $this;
-        }
-        $lastKeyOfFirstRound = array_key_last($this->virtualRoutes);
-
-        if (!$this->isGroupMiddlewares) {
-            $lastKeyOfSecondRound = array_key_last($this->virtualRoutes[$lastKeyOfFirstRound]);
-            $this->assignMiddlewaresToRoute($this->virtualRoutes[$lastKeyOfFirstRound][$lastKeyOfSecondRound], $middlewares);
-            return $this;
-        }
-
-        foreach ($this->virtualRoutes[$lastKeyOfFirstRound] as &$route) {
-            $this->assignMiddlewaresToRoute($route, $middlewares);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param bool $shouldCache
-     * @param int|null $ttl
-     * @return $this
-     * @throws ConfigException
-     * @throws DiException
-     * @throws ReflectionException
-     * @throws BaseException
-     */
-    public function cacheable(bool $shouldCache, ?int $ttl = null): Route
-    {
-        if (empty(session()->getId())) {
-            return $this;
-        }
-
-        if (!$this->isGroup) {
-            $lastKey = array_key_last($this->virtualRoutes['*']);
-
-            $this->virtualRoutes['*'][$lastKey]['cache_settings']['shouldCache'] = $shouldCache;
-
-            if ($shouldCache && $ttl) {
-                $this->virtualRoutes['*'][$lastKey]['cache_settings']['ttl'] = $ttl;
-            }
-
-            return $this;
-        }
-        $lastKeyOfFirstRound = array_key_last($this->virtualRoutes);
-
-        foreach ($this->virtualRoutes[$lastKeyOfFirstRound] as &$route) {
-            $route['cache_settings']['shouldCache'] = $shouldCache;
-
-            if ($shouldCache && $ttl) {
-                $route['cache_settings']['ttl'] = $ttl;
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * Sets a unique name for a route
-     * @param string $name
-     * @return Route
+     * @param array $methods
+     * @param string $pattern
+     * @param string|null $controller
+     * @param string|null $action
+     * @param Closure|null $closure
      * @throws RouteException
      */
-    public function name(string $name): Route
-    {
-        if ($this->currentRoute === []) {
-            throw RouteException::nameBeforeDefinition();
+    public function __construct(
+        array $methods,
+        string $pattern,
+        ?string $controller,
+        ?string $action,
+        Closure $closure = null
+    ) {
+        if ($methods === []) {
+            throw RouteException::noHttpMethods();
         }
 
-        if ($this->isGroupMiddlewares) {
-            throw RouteException::nameOnGroup();
-        }
+        $this->methods = array_map('strtoupper', $methods);
+        $this->pattern = $pattern;
 
-        foreach ($this->virtualRoutes as &$virtualRoute) {
-            foreach ($virtualRoute as &$route) {
-                if (isset($route['name']) && $route['name'] == $name) {
-                    throw RouteException::nonUniqueName();
-                }
-
-                if ($route['route'] == $this->currentRoute['route']) {
-                    $route['name'] = $name;
-                }
+        if ($closure !== null) {
+            if ($controller !== null || $action !== null) {
+                throw RouteException::closureWithController();
+            }
+        } else {
+            if ($controller === null || $action === null || $action === '') {
+                throw RouteException::incompleteControllerRoute();
             }
         }
+
+        $this->controller = $controller;
+        $this->action = $action;
+        $this->closure = $closure;
+
+    }
+
+    /**
+     * Check whether this route is handled by a closure.
+     * @return bool
+     */
+    public function isClosure(): bool
+    {
+        return $this->closure !== null;
+    }
+
+    /**
+     * Configure response caching settings for this route.
+     * @param bool $enabled
+     * @param int|null $ttl
+     * @return $this
+     */
+    public function cache(bool $enabled, ?int $ttl = null): self
+    {
+        $this->cache = [
+            'enabled' => $enabled,
+            'ttl' => $ttl,
+        ];
 
         return $this;
     }
 
     /**
-     * Gets the run-time routes
-     * @return array
+     * Return caching configuration for this route.
+     * @return array|null
      */
-    public function getRuntimeRoutes(): array
+    public function getCache(): ?array
     {
-        $runtimeRoutes = [];
-        foreach ($this->virtualRoutes as $virtualRoute) {
-            foreach ($virtualRoute as $route) {
-                $runtimeRoutes[] = $route;
-            }
-        }
-        return $runtimeRoutes;
+        return $this->cache;
     }
 
     /**
-     * Gets the virtual routes
-     * @return array
+     * Store compiled regex pattern for this route.
+     * @param string $pattern
+     * @return $this
      */
-    public function getVirtualRoutes(): array
+    public function setCompiledPattern(string $pattern): self
     {
-        return $this->virtualRoutes;
+        $this->compiledPattern = $pattern;
+        return $this;
     }
 
     /**
-     * Assigns middlewares to the route
-     * @param array $route
+     * Return compiled regex pattern if set.
+     * @return string|null
+     */
+    public function getCompiledPattern(): ?string
+    {
+        return $this->compiledPattern;
+    }
+
+    /**
+     * Assign group name to this route.
+     * @param string|null $group
+     * @return $this
+     */
+    public function group(?string $group): self
+    {
+        $this->group = $group;
+        return $this;
+    }
+
+    /**
+     * Return group name.
+     * @return string|null
+     */
+    public function getGroup(): ?string
+    {
+        return $this->group;
+    }
+
+    /**
+     * Return URL prefix.
+     * @param string|null $prefix
+     * @return $this
+     */
+    public function prefix(?string $prefix): self
+    {
+        $this->prefix = $prefix !== '' ? trim($prefix, '/') : null;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPrefix(): ?string
+    {
+        return $this->prefix;
+    }
+
+    /**
+     * Assign unique route name.
+     * @param string $name
+     * @return $this
+     */
+    public function name(string $name): self
+    {
+        $this->name = $name;
+        return $this;
+    }
+
+    /**
+     * Add middleware(s) with group-aware stacking order.
      * @param array $middlewares
+     * @return $this
      */
-    private function assignMiddlewaresToRoute(array &$route, array $middlewares)
+    public function addMiddlewares(array $middlewares): self
     {
-        if (!array_key_exists('middlewares', $route)) {
-            $route['middlewares'] = $middlewares;
+        if (empty($this->middlewares)) {
+            $this->middlewares = $middlewares;
         } else {
             $middlewares = array_reverse($middlewares);
 
             foreach ($middlewares as $middleware) {
-                array_unshift($route['middlewares'], $middleware);
+                array_unshift($this->middlewares, $middleware);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * Assign module name to this route.
+     * @param string|null $module
+     * @return $this
+     */
+    public function module(?string $module): self
+    {
+        $this->module = $module;
+        return $this;
+    }
+
+    /**
+     * Check whether HTTP method is allowed for this route.
+     * @param string $method
+     * @return bool
+     */
+    public function allowsMethod(string $method): bool
+    {
+        return in_array(strtoupper($method), $this->methods, true);
+    }
+
+    /**
+     * Return allowed HTTP methods.
+     * @return array
+     */
+    public function getMethods(): array
+    {
+        return $this->methods;
+    }
+
+    /**
+     * Return route pattern string.
+     * @return string
+     */
+    public function getPattern(): string
+    {
+        return $this->pattern;
+    }
+
+    /**
+     * Return route closure handler if defined.
+     * @return Closure|null
+     */
+    public function getClosure(): ?Closure
+    {
+        return $this->closure;
+    }
+
+    /**
+     * Return controller class name.
+     * @return string|null
+     */
+    public function getController(): ?string
+    {
+        return $this->controller;
+    }
+
+    /**
+     * Return controller action name.
+     * @return string|null
+     */
+    public function getAction(): ?string
+    {
+        return $this->action;
+    }
+
+    /**
+     * Return route name.
+     * @return string|null
+     */
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    /**
+     * Return middleware list.
+     * @return array
+     */
+    public function getMiddlewares(): array
+    {
+        return $this->middlewares;
+    }
+
+    /**
+     * Return middleware list.
+     * @return string|null
+     */
+    public function getModule(): ?string
+    {
+        return $this->module;
+    }
+
+    /**
+     * Export route definition as array.
+     * @return array
+     */
+    public function toArray(): array
+    {
+        return [
+            'methods' => $this->methods,
+            'route' => $this->pattern,
+            'controller' => $this->controller,
+            'action' => $this->action,
+            'middlewares' => $this->middlewares,
+            'name' => $this->name,
+            'module' => $this->module,
+            'group' => $this->group,
+            'prefix' => $this->prefix,
+            'cache' => $this->cache,
+        ];
     }
 }

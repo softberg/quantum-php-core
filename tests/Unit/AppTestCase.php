@@ -5,9 +5,10 @@ namespace Quantum\Tests\Unit;
 use Quantum\Libraries\Storage\Factories\FileSystemFactory;
 use Quantum\App\Factories\AppFactory;
 use Quantum\Environment\Environment;
-use Quantum\Router\RouteController;
+use Quantum\Router\MatchedRoute;
 use PHPUnit\Framework\TestCase;
 use Quantum\Debugger\Debugger;
+use Quantum\Router\Route;
 use Quantum\Http\Request;
 use Quantum\Loader\Setup;
 use ReflectionClass;
@@ -31,6 +32,9 @@ abstract class AppTestCase extends TestCase
 
     public function tearDown(): void
     {
+        Request::setMatchedRoute(null);
+        Request::flush();
+
         AppFactory::destroy(App::WEB);
         config()->flush();
         Debugger::getInstance()->resetStore();
@@ -75,12 +79,20 @@ abstract class AppTestCase extends TestCase
 
         $request->create($method, $uri, $body, $headers);
 
-        RouteController::setCurrentRoute([
-            'route' => 'test',
-            'method' => $method,
-            'controller' => 'TestController',
-            'action' => 'testAction',
-            'module' => 'Test',
-        ]);
+        $route = new Route(
+            [$method],
+            $uri,
+            'TestController',
+            'testAction',
+            null
+        );
+        $route->module('Test');
+
+        $matchedRoute = new MatchedRoute($route, []);
+        Request::setMatchedRoute($matchedRoute);
+
+        if (!Di::isRegistered(Request::class)) {
+            Di::set(Request::class, $request);
+        }
     }
 }

@@ -4,7 +4,10 @@ namespace Quantum\Tests\Unit\Renderer\Adapters;
 
 use Quantum\Renderer\Adapters\TwigAdapter;
 use Quantum\Tests\Unit\AppTestCase;
-use Quantum\Router\Router;
+use Quantum\Router\MatchedRoute;
+use Quantum\Router\Route;
+use Quantum\Http\Request;
+use Quantum\Di\Di;
 
 class TwigAdapterTest extends AppTestCase
 {
@@ -12,13 +15,21 @@ class TwigAdapterTest extends AppTestCase
     {
         parent::setUp();
 
-        Router::setCurrentRoute([
-            'route' => 'test',
-            'method' => 'GET',
-            'controller' => 'SomeController',
-            'action' => 'test',
-            'module' => 'Test',
-        ]);
+        $route = new Route(
+            ['GET'],
+            '/test',
+            'SomeController',
+            'test',
+            null
+        );
+        $route->module('Test');
+
+        $matchedRoute = new MatchedRoute($route, []);
+        Request::setMatchedRoute($matchedRoute);
+
+        $request = Di::get(Request::class);
+        $request->create('GET', '/test');
+        Request::setMatchedRoute($matchedRoute);
     }
 
     public function testHtmlAdapterRenderView(): void

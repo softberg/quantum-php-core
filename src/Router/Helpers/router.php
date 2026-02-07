@@ -12,160 +12,211 @@
  * @since 3.0.0
  */
 
+use Quantum\Di\Exceptions\DiException;
 use Quantum\Environment\Environment;
-use Quantum\Router\RouteController;
-use Quantum\Router\Router;
+use Quantum\Router\RouteCollection;
+use Quantum\Router\Route;
+use Quantum\Http\Request;
+use Quantum\Di\Di;
 
 /**
- * Gets current middlewares
+ * Gets current route middlewares
  * @return array|null
+ * @throws DiException|ReflectionException
  */
 function current_middlewares(): ?array
 {
-    return RouteController::getCurrentRoute()['middlewares'] ?? null;
+    $request = Di::get(Request::class);
+    $matchedRoute = $request->getMatchedRoute();
+
+    return $matchedRoute ? $matchedRoute->getRoute()->getMiddlewares() : null;
 }
 
 /**
- * Gets current module
+ * Gets current route module
  * @return string|null
+ * @throws DiException|ReflectionException
  */
 function current_module(): ?string
 {
-    return RouteController::getCurrentRoute()['module'] ?? null;
+    $request = Di::get(Request::class);
+    $matchedRoute = $request->getMatchedRoute();
+
+    return $matchedRoute ? $matchedRoute->getRoute()->getModule() : null;
 }
 
 /**
- * Get current controller
+ * Gets current route controller
  * @return string|null
+ * @throws DiException|ReflectionException
  */
 function current_controller(): ?string
 {
-    return RouteController::getCurrentRoute()['controller'] ?? null;
+    $request = Di::get(Request::class);
+    $matchedRoute = $request->getMatchedRoute();
+
+    return $matchedRoute ? $matchedRoute->getRoute()->getController() : null;
 }
 
 /**
- * Gets current action
+ * Gets current route action
  * @return string|null
+ * @throws DiException|ReflectionException
  */
 function current_action(): ?string
 {
-    return RouteController::getCurrentRoute()['action'] ?? null;
+    $request = Di::get(Request::class);
+    $matchedRoute = $request->getMatchedRoute();
+
+    return $matchedRoute ? $matchedRoute->getRoute()->getAction() : null;
 }
 
 /**
- * Get current callback
- * @return Closure $callback|null
+ * Gets current route callback
+ * @return Closure|null
+ * @throws DiException|ReflectionException
  */
 function route_callback(): ?Closure
 {
-    return RouteController::getCurrentRoute()['callback'] ?? null;
+    $request = Di::get(Request::class);
+    $matchedRoute = $request->getMatchedRoute();
+
+    return $matchedRoute ? $matchedRoute->getRoute()->getClosure() : null;
 }
 
 /**
- * Gets current route
+ * Gets current route DSL pattern
  * @return string|null
+ * @throws DiException|ReflectionException
  */
 function current_route(): ?string
 {
-    return RouteController::getCurrentRoute()['route'] ?? null;
+    $request = Di::get(Request::class);
+    $matchedRoute = $request->getMatchedRoute();
+
+    return $matchedRoute ? $matchedRoute->getRoute()->getPattern() : null;
+}
+
+/**
+ * Gets current route complied pattern
+ * @return string
+ * @throws DiException|ReflectionException
+ */
+function route_pattern(): string
+{
+    $request = Di::get(Request::class);
+    $matchedRoute = $request->getMatchedRoute();
+
+    return $matchedRoute ? $matchedRoute->getRoute()->getCompiledPattern() : '';
 }
 
 /**
  * Gets current route parameters
  * @return array
+ * @throws DiException|ReflectionException
  */
 function route_params(): array
 {
-    return RouteController::getCurrentRoute()['params'] ?? [];
+    $request = Di::get(Request::class);
+    $matchedRoute = $request->getMatchedRoute();
+
+    return $matchedRoute ? $matchedRoute->getParams() : [];
 }
 
 /**
  * Gets route parameter by name
  * @param string $name
- * @return mixed
+ * @return mixed|null
+ * @throws DiException|ReflectionException
  */
 function route_param(string $name)
 {
-    $params = RouteController::getCurrentRoute()['params'];
-
-    if ($params) {
-        foreach ($params as $param) {
-            if ($param['name'] == $name) {
-                return $param['value'];
-            }
-        }
-    }
-
-    return null;
-}
-
-/**
- * Gets current route pattern
- * @return string
- */
-function route_pattern(): string
-{
-    return RouteController::getCurrentRoute()['pattern'] ?? '';
+    $params = route_params();
+    return $params[$name] ?? null;
 }
 
 /**
  * Gets current route method
  * @return string
+ * @throws DiException|ReflectionException
  */
 function route_method(): string
 {
-    return RouteController::getCurrentRoute()['method'] ?? '';
+    $request = Di::get(Request::class);
+    return $request->getMethod();
 }
 
 /**
  * Gets the current route uri
- * @return string
+ * @return string|null
+ * @throws DiException|ReflectionException
  */
-function route_uri(): string
+function route_uri(): ?string
 {
-    return RouteController::getCurrentRoute()['uri'] ?? '';
+    $request = Di::get(Request::class);
+    return $request->getUri();
 }
 
 /**
  * Gets the current route cache settings
  * @return array|null
+ * @throws DiException|ReflectionException
  */
 function route_cache_settings(): ?array
 {
-    return RouteController::getCurrentRoute()['cache_settings'] ?? null;
+    $request = Di::get(Request::class);
+    $matchedRoute = $request->getMatchedRoute();
+
+    return $matchedRoute ? $matchedRoute->getRoute()->getCache() : null;
 }
 
 /**
  * Gets the current route name
  * @return string|null
+ * @throws DiException|ReflectionException
  */
 function route_name(): ?string
 {
-    return RouteController::getCurrentRoute()['name'] ?? null;
+    $request = Di::get(Request::class);
+    $matchedRoute = $request->getMatchedRoute();
+
+    return $matchedRoute ? $matchedRoute->getRoute()->getName() : null;
 }
 
 /**
  * Gets the current route name
  * @return string|null
+ * @throws DiException|ReflectionException
  */
 function route_prefix(): ?string
 {
-    return RouteController::getCurrentRoute()['prefix'] ?? null;
+    $request = Di::get(Request::class);
+    $matchedRoute = $request->getMatchedRoute();
+
+    return $matchedRoute ? $matchedRoute->getRoute()->getPrefix() : null;
 }
 
 /**
  * Finds the route by name in given module scope
  * @param string $name
  * @param string $module
- * @return array|null
+ * @return Route|null
+ * @throws DiException|ReflectionException
  */
-function find_route_by_name(string $name, string $module): ?array
+function find_route_by_name(string $name, string $module): ?Route
 {
-    foreach (Router::getRoutes() as $route) {
-        if (isset($route['name']) &&
-                strtolower($route['name']) === strtolower($name) &&
-                strtolower($route['module']) === strtolower($module)) {
+    if (!Di::isRegistered(RouteCollection::class)) {
+        return null;
+    }
 
+    $collection = Di::get(RouteCollection::class);
+
+    foreach ($collection->all() as $route) {
+        if (
+            $route->getName() !== null &&
+            strcasecmp($route->getName(), $name) === 0 &&
+            strcasecmp((string) $route->getModule(), $module) === 0
+        ) {
             return $route;
         }
     }
@@ -178,14 +229,22 @@ function find_route_by_name(string $name, string $module): ?array
  * @param string $name
  * @param string $module
  * @return bool
+ * @throws DiException|ReflectionException
  */
 function route_group_exists(string $name, string $module): bool
 {
-    foreach (Router::getRoutes() as $route) {
-        if (isset($route['group']) &&
-                strtolower($route['group']) === strtolower($name) &&
-                strtolower($route['module']) === strtolower($module)) {
+    if (!Di::isRegistered(RouteCollection::class)) {
+        return false;
+    }
 
+    $collection = Di::get(RouteCollection::class);
+
+    foreach ($collection->all() as $route) {
+        if (
+            $route->getGroup() !== null &&
+            strcasecmp($route->getGroup(), $name) === 0 &&
+            strcasecmp((string) $route->getModule(), $module) === 0
+        ) {
             return true;
         }
     }

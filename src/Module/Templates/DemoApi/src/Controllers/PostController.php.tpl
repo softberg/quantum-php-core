@@ -45,9 +45,6 @@ class PostController extends BaseController
      */
     public PostService $postService;
 
-    /**
-     * Works before an action
-     */
     public function __before()
     {
         $this->postService = service(PostService::class);

@@ -27,53 +27,57 @@ class HookManagerTest extends AppTestCase
 
     public function testOnAndFireOutputsCorrectly()
     {
-        hook()->on('SAVE', function () {
-            echo 'Saved!';
+        $output = '';
+        hook()->on('SAVE', function () use (&$output) {
+            $output .= 'Saved!';
         });
 
         hook()->fire('SAVE');
 
-        $this->expectOutputString('Saved!');
+        $this->assertSame('Saved!', $output);
     }
 
     public function testFireWithArguments()
     {
         config()->set('hooks', ['NOTIFY']);
 
-        hook()->on('NOTIFY', function ($args) {
-            echo 'Notified ' . $args['user'];
+        $output = '';
+        hook()->on('NOTIFY', function ($args) use (&$output) {
+            $output .= 'Notified ' . $args['user'];
         });
 
         hook()->fire('NOTIFY', ['user' => 'John']);
 
-        $this->expectOutputString('Notified John');
+        $this->assertSame('Notified John', $output);
     }
 
     public function testMultipleListeners()
     {
-        hook()->on('SAVE', function () {
-            echo 'A';
+        $output = '';
+        hook()->on('SAVE', function () use (&$output) {
+            $output .= 'A';
         });
 
-        hook()->on('SAVE', function () {
-            echo 'B';
+        hook()->on('SAVE', function () use (&$output) {
+            $output .= 'B';
         });
 
         hook()->fire('SAVE');
 
-        $this->expectOutputString('AB');
+        $this->assertSame('AB', $output);
     }
 
     public function testHookIsFiredOnlyOncePerListener()
     {
-        hook()->on('SAVE', function () {
-            echo 'Once';
+        $output = '';
+        hook()->on('SAVE', function () use (&$output) {
+            $output .= 'Once';
         });
 
         hook()->fire('SAVE');
         hook()->fire('SAVE');
 
-        $this->expectOutputString('Once');
+        $this->assertSame('Once', $output);
     }
 
     public function testUnregisteredHookThrowsOnOn()

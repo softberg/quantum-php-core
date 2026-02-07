@@ -4,11 +4,10 @@ namespace Quantum\Controllers {
 
     use Quantum\Service\DummyServiceInterface;
     use Quantum\View\Factories\ViewFactory;
-    use Quantum\Router\RouteController;
     use Quantum\Http\Request;
     use Quantum\Http\Response;
 
-    class TestDiController extends RouteController
+    class TestDiController
     {
         public function index(Request $request, Response $response, ViewFactory $view)
         {
@@ -171,7 +170,7 @@ namespace Quantum\Tests\Unit\Di {
         {
             Di::register(DummyService::class);
 
-            Di::get(DummyService::class); // resolve singleton first
+            Di::get(DummyService::class);
 
             $this->expectException(DiException::class);
             $this->expectExceptionMessage(
@@ -179,6 +178,19 @@ namespace Quantum\Tests\Unit\Di {
             );
 
             Di::set(DummyService::class, new DummyService());
+        }
+
+        public function testDiSetOverridesRegisteredButNotResolved(): void
+        {
+            Di::register(DummyService::class, DummyServiceInterface::class);
+
+            $instance = new DummyService();
+
+            Di::set(DummyServiceInterface::class, $instance);
+
+            $resolved = Di::get(DummyServiceInterface::class);
+
+            $this->assertSame($instance, $resolved);
         }
 
         public function testDiGetCoreDependencies()

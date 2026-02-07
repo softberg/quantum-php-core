@@ -14,27 +14,20 @@
 
 namespace Quantum\App\Traits;
 
-use Quantum\App\Exceptions\StopExecutionException;
 use Quantum\Environment\Exceptions\EnvException;
 use Quantum\Libraries\ResourceCache\ViewCache;
-use Quantum\Module\Exceptions\ModuleException;
 use Quantum\Config\Exceptions\ConfigException;
-use Quantum\Router\Exceptions\RouteException;
 use Quantum\Http\Exceptions\HttpException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Environment\Environment;
-use Quantum\Module\ModuleLoader;
-use Quantum\Router\RouteBuilder;
 use DebugBar\DebugBarException;
 use Quantum\Environment\Server;
 use Quantum\Debugger\Debugger;
 use Quantum\Http\Response;
-use Quantum\Router\Router;
 use Quantum\Http\Request;
 use Quantum\Loader\Setup;
 use ReflectionException;
-use Quantum\Di\Di;
 
 /**
  * Trait WebAppTrait
@@ -77,23 +70,6 @@ trait WebAppTrait
     }
 
     /**
-     * Load modules
-     * @throws ModuleException
-     */
-    private function loadModules()
-    {
-        $moduleLoader = ModuleLoader::getInstance();
-
-        $modulesDependencies = $moduleLoader->loadModulesDependencies();
-        Di::registerDependencies($modulesDependencies);
-
-        $builder = new RouteBuilder();
-        $allRoutes = $builder->build($moduleLoader->loadModulesRoutes(), $moduleLoader->getModuleConfigs());
-
-        Router::setRoutes($allRoutes);
-    }
-
-    /**
      * @return ViewCache
      * @throws ConfigException
      * @throws DiException
@@ -108,22 +84,6 @@ trait WebAppTrait
         }
 
         return $viewCache;
-    }
-
-    /**
-     * @param $request
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws DebugBarException
-     * @throws DiException
-     * @throws ReflectionException
-     * @throws RouteException
-     * @throws StopExecutionException
-     */
-    private function initializeRouter($request)
-    {
-        $router = new Router($request);
-        $router->findRoute();
     }
 
     /**

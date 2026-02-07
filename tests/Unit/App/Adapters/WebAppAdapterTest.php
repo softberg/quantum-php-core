@@ -7,7 +7,6 @@ use PHPUnit\Framework\TestCase;
 use Quantum\Http\Request;
 use Quantum\App\App;
 use Quantum\Di\Di;
-use Exception;
 
 class WebAppAdapterTest extends TestCase
 {
@@ -23,6 +22,7 @@ class WebAppAdapterTest extends TestCase
     public function tearDown(): void
     {
         config()->flush();
+        Di::reset();
     }
 
     public function testWebAppAdapterStartSuccessfully()
@@ -30,7 +30,9 @@ class WebAppAdapterTest extends TestCase
         $request = Di::get(Request::class);
         $request->create('GET', '/test/am/tests');
 
+        ob_start();
         $result = $this->webAppAdapter->start();
+        ob_end_clean();
 
         $this->assertEquals(0, $result);
     }
@@ -40,8 +42,22 @@ class WebAppAdapterTest extends TestCase
         $request = Di::get(Request::class);
         $request->create('POST', '');
 
-        $this->expectException(Exception::class);
+        ob_start();
+        $result = $this->webAppAdapter->start();
+        ob_end_clean();
 
-        $this->webAppAdapter->start();
+        $this->assertSame(0, $result);
+    }
+
+    public function testWebAppAdapterHandlesPageNotFoundGracefully()
+    {
+        $request = Di::get(Request::class);
+        $request->create('GET', '/non-existing-uri');
+
+        ob_start();
+        $result = $this->webAppAdapter->start();
+        ob_end_clean();
+
+        $this->assertSame(0, $result);
     }
 }

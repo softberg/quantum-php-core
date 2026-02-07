@@ -29,6 +29,13 @@ class CommentController extends BaseController
      */
     public CommentService $commentService;
 
+    /**
+     * @return void
+     * @throws ReflectionException
+     * @throws \Quantum\App\Exceptions\BaseException
+     * @throws \Quantum\Di\Exceptions\DiException
+     * @throws \Quantum\Service\Exceptions\ServiceException
+     */
     public function __before()
     {
         $this->commentService = service(CommentService::class);

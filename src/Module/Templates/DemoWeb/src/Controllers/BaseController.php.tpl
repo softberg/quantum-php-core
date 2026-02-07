@@ -15,7 +15,6 @@
 namespace {{MODULE_NAMESPACE}}\Controllers;
 
 use Quantum\View\Factories\ViewFactory;
-use Quantum\Router\RouteController;
 use Quantum\Libraries\Asset\Asset;
 use Quantum\Http\Request;
 use Quantum\View\QtView;
@@ -24,7 +23,7 @@ use Quantum\View\QtView;
  * Class BaseController
  * @package Modules\{{MODULE_NAME}}
  */
-abstract class BaseController extends RouteController
+abstract class BaseController
 {
 
     /**
@@ -32,9 +31,6 @@ abstract class BaseController extends RouteController
     */
     protected QtView $view;
 
-    /**
-     * Works before an action
-     */
     public function __before()
     {
         if (Request::isMethod('get')) {

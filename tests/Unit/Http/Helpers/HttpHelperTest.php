@@ -5,9 +5,12 @@ namespace Quantum\Tests\Unit\Http\Helpers;
 use Quantum\Libraries\Session\Factories\SessionFactory;
 use Quantum\App\Exceptions\StopExecutionException;
 use Quantum\Tests\Unit\AppTestCase;
-use Quantum\Router\Router;
+use Quantum\Router\RouteCollection;
+use Quantum\Router\RouteFinder;
+use Quantum\Router\Route;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
+use Quantum\Di\Di;
 
 class HttpHelperTest extends AppTestCase
 {
@@ -44,22 +47,35 @@ class HttpHelperTest extends AppTestCase
     {
         config()->set('app.base_url', null);
 
-        $router = new Router($this->request);
+        $routeCollection = new RouteCollection();
 
-        Router::setRoutes([
-            [
-                'route' => 'signin',
-                'method' => 'GET',
-                'controller' => 'AdminController',
-                'action' => 'signin',
-                'module' => 'admin',
-                'prefix' => 'admin',
-            ],
-        ]);
+        $route = new Route(
+            ['GET'],
+            '/signin',
+            'AdminController',
+            'signin',
+            null
+        );
+        $route->module('admin')->prefix('admin');
+
+        $routeCollection->add($route);
+
+        // Register route collection in DI
+        Di::set(RouteCollection::class, $routeCollection);
+
+        // Create route finder and find the route
+        $router = new RouteFinder($routeCollection);
 
         $this->request->create('GET', 'https://testdomain.com/signin');
 
-        $router->findRoute();
+        // Register request in DI for route finding (only if not already registered)
+        if (!Di::isRegistered(Request::class)) {
+            Di::set(Request::class, $this->request);
+        }
+
+        $matchedRoute = $router->find($this->request);
+
+        Request::setMatchedRoute($matchedRoute);
 
         $baseUrl = base_url(true);
 
