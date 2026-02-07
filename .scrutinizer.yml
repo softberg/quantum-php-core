@@ -1,15 +1,13 @@
 build:
-  image: default-bionic
-
+  image: default-jammy
   nodes:
     analysis:
       environment:
         php:
-          version: 8.0
+          version: 8.1
       dependencies:
         before:
           - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer --2
-
           - php -v
           - composer --version
       tests:
