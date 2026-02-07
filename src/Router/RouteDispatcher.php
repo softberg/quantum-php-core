@@ -15,13 +15,12 @@
 namespace Quantum\Router;
 
 use Quantum\Libraries\Csrf\Exceptions\CsrfException;
+use Quantum\Router\Exceptions\RouteException;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Libraries\Csrf\Csrf;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 use ReflectionException;
-use RuntimeException;
-use LogicException;
 use Quantum\Di\Di;
 
 /**
@@ -36,8 +35,7 @@ final class RouteDispatcher
      * @param Request $request
      * @param Response $response
      * @return void
-     * @throws DiException
-     * @throws ReflectionException|CsrfException
+     * @throws ReflectionException|CsrfException|DiException
      */
     public function dispatch(MatchedRoute $matched, Request $request, Response $response): void
     {
@@ -48,7 +46,7 @@ final class RouteDispatcher
             $closure = $route->getClosure();
 
             if ($closure === null) {
-                throw new LogicException('Closure route missing closure.');
+                throw RouteException::closureHandlerMissing();
             }
 
             $this->invoke($closure, $params);
@@ -78,13 +76,13 @@ final class RouteDispatcher
         $action = $route->getAction();
 
         if ($controllerClass === null || $action === null) {
-            throw new LogicException('Non-closure route must define controller and action.');
+            throw RouteException::incompleteControllerRoute();
         }
 
         $controller = new $controllerClass();
 
         if (!method_exists($controller, $action)) {
-            throw new RuntimeException("Action {$action} not found on controller {$controllerClass}");
+            throw RouteException::actionNotFound($controllerClass, $action);
         }
 
         return [$controller, $action];
@@ -95,8 +93,7 @@ final class RouteDispatcher
      * @param callable $callable
      * @param array $params
      * @return void
-     * @throws DiException
-     * @throws ReflectionException
+     * @throws DiException|ReflectionException
      */
     private function invoke(callable $callable, array $params): void
     {
@@ -112,8 +109,7 @@ final class RouteDispatcher
      * @param string $hook
      * @param array $params
      * @return void
-     * @throws DiException
-     * @throws ReflectionException
+     * @throws DiException|ReflectionException
      */
     private function callHook(object $controller, string $hook, array $params): void
     {

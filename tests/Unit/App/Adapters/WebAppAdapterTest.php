@@ -30,7 +30,9 @@ class WebAppAdapterTest extends TestCase
         $request = Di::get(Request::class);
         $request->create('GET', '/test/am/tests');
 
+        ob_start();
         $result = $this->webAppAdapter->start();
+        ob_end_clean();
 
         $this->assertEquals(0, $result);
     }
@@ -40,7 +42,9 @@ class WebAppAdapterTest extends TestCase
         $request = Di::get(Request::class);
         $request->create('POST', '');
 
+        ob_start();
         $result = $this->webAppAdapter->start();
+        ob_end_clean();
 
         $this->assertSame(0, $result);
     }
@@ -50,7 +54,9 @@ class WebAppAdapterTest extends TestCase
         $request = Di::get(Request::class);
         $request->create('GET', '/non-existing-uri');
 
+        ob_start();
         $result = $this->webAppAdapter->start();
+        ob_end_clean();
 
         $this->assertSame(0, $result);
     }

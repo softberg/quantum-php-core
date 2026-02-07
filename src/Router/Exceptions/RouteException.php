@@ -26,12 +26,129 @@ use Quantum\App\Exceptions\BaseException;
 class RouteException extends BaseException
 {
     /**
-     * @return RouteException
+     * @return self
      */
-    public static function routeNotFound(): self
+    public static function noHttpMethods(): self
     {
         return new self(
-            ExceptionMessages::ROUTE_NOT_FOUND,
+            ExceptionMessages::ROUTE_METHODS_EMPTY,
+            E_ERROR
+        );
+    }
+
+    /**
+     * @return self
+     */
+    public static function closureWithController(): self
+    {
+        return new self(
+            ExceptionMessages::CLOSURE_ROUTE_WITH_CONTROLLER,
+            E_WARNING
+        );
+    }
+
+    /**
+     * @return self
+     */
+    public static function incompleteControllerRoute(): self
+    {
+        return new self(
+            ExceptionMessages::CONTROLLER_ROUTE_INCOMPLETE,
+            E_ERROR
+        );
+    }
+
+    /**
+     * @param string $module
+     * @return self
+     */
+    public static function moduleRoutesNotClosure(string $module): self
+    {
+        return new self(
+            _message(ExceptionMessages::MODULE_ROUTES_NOT_CLOSURE, [$module]),
+            E_ERROR
+        );
+    }
+
+    /**
+     * @return self
+     */
+    public static function nestedGroups(): self
+    {
+        return new self(
+            ExceptionMessages::NESTED_ROUTE_GROUPS_NOT_SUPPORTED,
+            E_WARNING
+        );
+    }
+
+    /**
+     * @return self
+     */
+    public static function middlewaresOutsideRoute(): self
+    {
+        return new self(
+            ExceptionMessages::MIDDLEWARES_OUTSIDE_ROUTE,
+            E_WARNING
+        );
+    }
+
+    /**
+     * @param string $name
+     * @return self
+     */
+    public static function nonUniqueNameInModule(string $name): self
+    {
+        return new self(
+            _message(ExceptionMessages::NAME_NOT_UNIQUE_IN_MODULE, [$name]),
+            E_WARNING
+        );
+    }
+
+    /**
+     * @return self
+     */
+    public static function controllerWithoutModule(): self
+    {
+        return new self(
+            ExceptionMessages::CONTROLLER_WITHOUT_MODULE,
+            E_ERROR
+        );
+    }
+
+    /**
+     * @return self
+     */
+    public static function cacheableOutsideRoute(): self
+    {
+        return new self(
+            ExceptionMessages::CACHEABLE_OUTSIDE_ROUTE,
+            E_WARNING
+        );
+    }
+
+    /**
+     * @return self
+     */
+    public static function closureHandlerMissing(): self
+    {
+        return new self(
+            ExceptionMessages::CLOSURE_ROUTE_MISSING_HANDLER,
+            E_ERROR
+        );
+    }
+
+    /**
+     * @param string $action
+     * @param string $controller
+     * @return self
+     */
+    public static function actionNotFound(string $action, string $controller): self
+    {
+        return new self(
+            _message(
+                ExceptionMessages::ACTION_NOT_FOUND_ON_CONTROLLER,
+                [$action, $controller]
+            ),
             E_ERROR
         );
     }
@@ -48,69 +165,12 @@ class RouteException extends BaseException
     }
 
     /**
-     * @param string $name
-     * @return RouteException
-     */
-    public static function repetitiveRouteSameMethod(string $name): self
-    {
-        return new self(
-            _message(ExceptionMessages::REPETITIVE_ROUTE_WITH_SAME_NAME, [$name]),
-            E_WARNING
-        );
-    }
-
-    /**
-     * @return RouteException
-     */
-    public static function repetitiveRouteDifferentModules(): self
-    {
-        return new self(
-            ExceptionMessages::REPETITIVE_ROUTE_IN_DIFFERENT_MODULES,
-            E_WARNING
-        );
-    }
-
-    /**
-     * @param string|null $name
-     * @return RouteException
-     */
-    public static function incorrectMethod(?string $name): self
-    {
-        return new self(
-            _message(ExceptionMessages::INCORRECT_METHOD, [$name]),
-            E_WARNING
-        );
-    }
-
-    /**
      * @return RouteException
      */
     public static function nameBeforeDefinition(): self
     {
         return new self(
             ExceptionMessages::NAME_BEFORE_ROUTE_DEFINITION,
-            E_WARNING
-        );
-    }
-
-    /**
-     * @return RouteException
-     */
-    public static function nameOnGroup(): self
-    {
-        return new self(
-            ExceptionMessages::NAME_ON_ROUTE_GROUP,
-            E_WARNING
-        );
-    }
-
-    /**
-     * @return RouteException
-     */
-    public static function nonUniqueName(): self
-    {
-        return new self(
-            ExceptionMessages::NAME_NOT_UNIQUE,
             E_WARNING
         );
     }

@@ -55,7 +55,9 @@ class AppTest extends TestCase
         $request = Di::get(Request::class);
         $request->create('GET', '/test/am/tests');
 
+        ob_start();
         $this->assertEquals(0, $app->start());
+        ob_end_clean();
     }
 
     public function testAppCallingInvalidMethod()

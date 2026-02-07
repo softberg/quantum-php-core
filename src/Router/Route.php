@@ -14,6 +14,7 @@
 
 namespace Quantum\Router;
 
+use Quantum\Router\Exceptions\RouteException;
 use Closure;
 
 /**
@@ -89,6 +90,7 @@ final class Route
      * @param string|null $controller
      * @param string|null $action
      * @param Closure|null $closure
+     * @throws RouteException
      */
     public function __construct(
         array $methods,
@@ -98,7 +100,7 @@ final class Route
         Closure $closure = null
     ) {
         if ($methods === []) {
-            throw new \InvalidArgumentException('Route must define at least one HTTP method.');
+            throw RouteException::noHttpMethods();
         }
 
         $this->methods = array_map('strtoupper', $methods);
@@ -106,15 +108,11 @@ final class Route
 
         if ($closure !== null) {
             if ($controller !== null || $action !== null) {
-                throw new \InvalidArgumentException(
-                    'Closure route cannot define controller or action.'
-                );
+                throw RouteException::closureWithController();
             }
         } else {
             if ($controller === null || $action === null || $action === '') {
-                throw new \InvalidArgumentException(
-                    'Controller route must define non-empty controller and action.'
-                );
+                throw RouteException::incompleteControllerRoute();
             }
         }
 

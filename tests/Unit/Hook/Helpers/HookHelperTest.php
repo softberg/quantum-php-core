@@ -20,39 +20,42 @@ class HookHelperTest extends AppTestCase
 
     public function testHookOnAndFire()
     {
-        hook()->on('SAVE', function () {
-            echo 'Data successfully saved';
+        $output = '';
+        hook()->on('SAVE', function () use (&$output) {
+            $output .= 'Data successfully saved';
         });
 
         hook()->fire('SAVE');
 
-        $this->expectOutputString('Data successfully saved');
+        $this->assertSame('Data successfully saved', $output);
     }
 
     public function testHookFireWithArgument()
     {
-        hook()->on('SAVE', function ($data) {
-            echo 'The file ' . $data['filename'] . ' was successfully saved';
+        $output = '';
+        hook()->on('SAVE', function ($data) use (&$output) {
+            $output .= 'The file ' . $data['filename'] . ' was successfully saved';
         });
 
         hook()->fire('SAVE', ['filename' => 'doc.pdf']);
 
-        $this->expectOutputString('The file doc.pdf was successfully saved');
+        $this->assertSame('The file doc.pdf was successfully saved', $output);
     }
 
     public function testHookMultipleListeners()
     {
-        hook()->on('SAVE', function ($data) {
-            echo 'The file ' . $data['filename'] . ' was successfully saved' . PHP_EOL;
+        $output = '';
+        hook()->on('SAVE', function ($data) use (&$output) {
+            $output .= 'The file ' . $data['filename'] . ' was successfully saved' . PHP_EOL;
         });
 
-        hook()->on('SAVE', function () {
-            echo 'The email was successfully sent';
+        hook()->on('SAVE', function () use (&$output) {
+            $output .= 'The email was successfully sent';
         });
 
         hook()->fire('SAVE', ['filename' => 'doc.pdf']);
 
-        $this->expectOutputString('The file doc.pdf was successfully saved' . PHP_EOL . 'The email was successfully sent');
+        $this->assertSame('The file doc.pdf was successfully saved' . PHP_EOL . 'The email was successfully sent', $output);
     }
 
     public function testUnregisteredHookAtOn()
@@ -62,7 +65,7 @@ class HookHelperTest extends AppTestCase
         $this->expectExceptionMessage('The Hook `SOME_EVENT` was not registered.');
 
         hook()->on('SOME_EVENT', function () {
-            echo 'Do someting';
+            // No output needed
         });
     }
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Quantum PHP Framework
  *
@@ -22,25 +24,31 @@ use Quantum\App\Enums\ExceptionMessages as BaseExceptionMessages;
  */
 final class ExceptionMessages extends BaseExceptionMessages
 {
-    public const CONTROLLER_NOT_FOUND = 'Controller class `{%1}` not found.';
+    public const ROUTE_METHODS_EMPTY = 'Route must define at least one HTTP method';
 
-    public const ACTION_NOT_DEFINED = 'Action `{%1}` not defined"';
+    public const CLOSURE_ROUTE_WITH_CONTROLLER = 'Closure route cannot define controller or action';
 
-    public const ROUTE_NOT_FOUND = 'Route not found';
+    public const CONTROLLER_ROUTE_INCOMPLETE = 'Controller route must define non-empty controller and action';
+
+    public const MODULE_ROUTES_NOT_CLOSURE = 'Routes for module `{%1}` must return a Closure';
+
+    public const NESTED_ROUTE_GROUPS_NOT_SUPPORTED = 'Nested route groups are not supported';
+
+    public const MIDDLEWARES_OUTSIDE_ROUTE = 'middlewares() must be called inside a group or after a route definition';
+
+    public const NAME_NOT_UNIQUE_IN_MODULE = 'Route name `{%1}` must be unique within module';
+
+    public const CONTROLLER_WITHOUT_MODULE = 'Cannot resolve controller without module context';
+
+    public const CACHEABLE_OUTSIDE_ROUTE = 'cacheable() must be called inside a group or after a route definition';
+
+    public const CLOSURE_ROUTE_MISSING_HANDLER = 'Closure route is missing its closure handler';
+
+    public const ACTION_NOT_FOUND_ON_CONTROLLER = 'Action `{%1}` not found on controller `{%2}`';
 
     public const ROUTE_NOT_CLOSURE = 'Route is not a closure';
 
-    public const REPETITIVE_ROUTE_WITH_SAME_NAME = 'Repetitive Routes with same method `{%1}`';
-
-    public const REPETITIVE_ROUTE_IN_DIFFERENT_MODULES = 'Repetitive Routes in different modules';
-
-    public const INCORRECT_METHOD = 'Incorrect route method `{%1}`';
-
     public const NAME_BEFORE_ROUTE_DEFINITION = 'Names can not be set before route definition';
-
-    public const NAME_ON_ROUTE_GROUP = 'Name can not be set on route groups';
-
-    public const NAME_NOT_UNIQUE = 'Route names should be unique';
 
     public const ROUTE_PARAM_NAME_IN_USE = 'Route param name `{%1}` already in use';
 

@@ -3,6 +3,7 @@
 namespace Quantum\Tests\Unit\Router;
 
 use Quantum\Libraries\Csrf\Exceptions\CsrfException;
+use Quantum\Router\Exceptions\RouteException;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Router\RouteDispatcher;
 use Quantum\Libraries\Csrf\Csrf;
@@ -50,7 +51,7 @@ class RouteDispatcherTest extends AppTestCase
 
     public function testDispatchThrowsWhenClosureRouteHasNoClosure()
     {
-        $this->expectException(\LogicException::class);
+        $this->expectException(RouteException::class);
 
         $route = new Route(['GET'], '/broken', null, null, null);
 
@@ -140,7 +141,7 @@ class RouteDispatcherTest extends AppTestCase
 
     public function testDispatchThrowsWhenControllerActionDoesNotExist()
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RouteException::class);
 
         $controllerClass = new class () {
             // Intentionally no action method

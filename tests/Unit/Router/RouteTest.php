@@ -2,8 +2,8 @@
 
 namespace Quantum\Tests\Unit\Router;
 
+use Quantum\Router\Exceptions\RouteException;
 use Quantum\Tests\Unit\AppTestCase;
-use InvalidArgumentException;
 use Quantum\Router\Route;
 
 class RouteTest extends AppTestCase
@@ -52,14 +52,14 @@ class RouteTest extends AppTestCase
 
     public function testRouteConstructorRejectsEmptyMethods()
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(RouteException::class);
 
         new Route([], 'users', 'UserController', 'listAction');
     }
 
     public function testRouteClosureRouteCannotDefineControllerOrAction()
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(RouteException::class);
 
         new Route(
             ['GET'],
@@ -73,7 +73,7 @@ class RouteTest extends AppTestCase
 
     public function testRouteControllerRouteRequiresControllerAndAction()
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(RouteException::class);
 
         new Route(['GET'], 'users', null, null);
     }

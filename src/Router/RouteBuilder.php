@@ -15,8 +15,6 @@
 namespace Quantum\Router;
 
 use Quantum\Router\Exceptions\RouteException;
-use InvalidArgumentException;
-use LogicException;
 use Closure;
 
 /**
@@ -88,14 +86,13 @@ final class RouteBuilder
      * @param array $moduleRouteClosures
      * @param array $moduleConfigs
      * @return RouteCollection
+     * @throws RouteException
      */
     public function build(array $moduleRouteClosures, array $moduleConfigs): RouteCollection
     {
         foreach ($moduleRouteClosures as $module => $closure) {
             if (!$closure instanceof Closure) {
-                throw new InvalidArgumentException(
-                    "Routes for module {$module} must return a Closure"
-                );
+                throw RouteException::moduleRoutesNotClosure($module);
             }
 
             $options = $moduleConfigs[$module] ?? [];
@@ -124,7 +121,10 @@ final class RouteBuilder
      */
     public function add(string $path, string $methods, $handler, string $action = null): self
     {
-        $methodList = array_map('trim', explode('|', $methods));
+        $methodList = array_filter(
+            array_map('trim', explode('|', $methods)),
+            static fn ($m) => $m !== ''
+        );
 
         return $this->addRoute($methodList, $path, $handler, $action);
     }
@@ -186,11 +186,12 @@ final class RouteBuilder
      * @param string $name
      * @param callable $callback
      * @return $this
+     * @throws RouteException
      */
     public function group(string $name, callable $callback): self
     {
         if ($this->inGroup) {
-            throw new LogicException('Nested route groups are not supported.');
+            throw RouteException::nestedGroups();
         }
 
         $this->currentGroupName = $name;
@@ -220,6 +221,7 @@ final class RouteBuilder
      * Apply middlewares to the current route or group.
      * @param array $middlewares
      * @return $this
+     * @throws RouteException
      */
     public function middlewares(array $middlewares): self
     {
@@ -246,20 +248,19 @@ final class RouteBuilder
             return $this;
         }
 
-        throw new LogicException(
-            'middlewares() must be called inside a group or after a route definition.'
-        );
+        throw RouteException::middlewaresOutsideRoute();
     }
 
     /**
      * Assign a unique name to the current route.
      * @param string $name
      * @return $this
+     * @throws RouteException
      */
     public function name(string $name): self
     {
         if ($this->currentRoute === null) {
-            throw new LogicException('No route defined to name.');
+            throw RouteException::nameBeforeDefinition();
         }
         $currentModule = $this->currentModule;
 
@@ -268,9 +269,8 @@ final class RouteBuilder
                 continue;
             }
 
-            // Enforce uniqueness only within the same module context.
             if ($route->getName() === $name && $route->getModule() === $currentModule) {
-                throw new LogicException("Route name '{$name}' must be unique within module.");
+                throw RouteException::nonUniqueNameInModule($name);
             }
         }
 
@@ -283,6 +283,7 @@ final class RouteBuilder
      * @param bool $enabled
      * @param int|null $ttl
      * @return $this
+     * @throws RouteException
      */
     public function cacheable(bool $enabled, ?int $ttl = null): self
     {
@@ -308,9 +309,7 @@ final class RouteBuilder
             return $this;
         }
 
-        throw new LogicException(
-            'cacheable() must be called inside a group or after a route definition.'
-        );
+        throw RouteException::cacheableOutsideRoute();
     }
 
     /**
@@ -320,7 +319,7 @@ final class RouteBuilder
      * @param $handler
      * @param string|null $action
      * @return self
-     * @throws Exceptions\RouteException
+     * @throws RouteException
      */
     private function addRoute(
         array $methods,
@@ -329,7 +328,7 @@ final class RouteBuilder
         ?string $action
     ): self {
         if ($methods === []) {
-            throw new InvalidArgumentException('At least one HTTP method is required.');
+            throw RouteException::noHttpMethods();
         }
 
         $pattern = $this->resolvePath($path);
@@ -344,16 +343,12 @@ final class RouteBuilder
             );
         } else {
             if (!is_string($handler) || $action === null) {
-                throw new InvalidArgumentException(
-                    'Controller routes require controller class and action name.'
-                );
+                throw RouteException::incompleteControllerRoute();
             }
 
             if (strpos($handler, '\\') === false) {
                 if ($this->currentModule === null) {
-                    throw new LogicException(
-                        'Cannot resolve controller without module context.'
-                    );
+                    throw RouteException::controllerWithoutModule();
                 }
 
                 $handler =
@@ -406,5 +401,4 @@ final class RouteBuilder
 
         return '/' . trim($this->currentPrefix . $path, '/');
     }
-
 }

@@ -51,11 +51,6 @@ final class MatchedRoute
     }
 
     /**
-     * Runtime values extracted from URI
-     * e.g. ['id' => '42']
-     */
-
-    /**
      * Return parameters extracted from the URI at match time.
      * @return array
      */
