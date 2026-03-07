@@ -30,7 +30,7 @@ class EnvironmentTest extends AppTestCase
 
         $this->assertEquals('TRUE', $this->env->getValue('DEBUG'));
 
-        $this->assertEquals('XYZ1234567890', $this->env->getValue('APP_KEY'));
+        $this->assertEquals('XYZ1234567890ABCDEFG123456789HIGKLMN', $this->env->getValue('APP_KEY'));
     }
 
     public function testEnvironmentHasKey()
@@ -44,7 +44,7 @@ class EnvironmentTest extends AppTestCase
     {
         $this->assertNull($this->env->getRow('NON_EXISTING_KEY'));
 
-        $this->assertEquals('APP_KEY=XYZ1234567890', $this->env->getRow('APP_KEY'));
+        $this->assertEquals('APP_KEY=XYZ1234567890ABCDEFG123456789HIGKLMN', $this->env->getRow('APP_KEY'));
     }
 
     public function testEnvironmentAddAndUpdateRow()

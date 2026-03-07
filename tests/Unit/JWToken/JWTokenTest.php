@@ -21,6 +21,8 @@ class JWTokenTest extends AppTestCase
     {
         parent::setUp();
 
+        $this->key = config()->get('app.key');
+
         $claims = [
             'jti' => uniqid(),
             'iss' => 'issuer',
