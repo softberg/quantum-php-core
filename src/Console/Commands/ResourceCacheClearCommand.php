@@ -84,9 +84,9 @@ class ResourceCacheClearCommand extends QtCommand
     protected string $cacheDir = '';
 
     /**
-     * @var FileSystem
+     * @var FileSystem|null
      */
-    protected FileSystem $fs;
+    protected ?FileSystem $fs = null;
 
     /**
      * @throws BaseException|ReflectionException

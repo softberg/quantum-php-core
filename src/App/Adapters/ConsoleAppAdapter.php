@@ -49,9 +49,9 @@ class ConsoleAppAdapter extends AppAdapter
     protected ConsoleOutput $output;
 
     /**
-     * @var Application
+     * @var Application|null
      */
-    protected Application $application;
+    protected ?Application $application = null;
 
     public function __construct()
     {

@@ -62,9 +62,9 @@ class QtView
 
     /**
      * Rendered view
-     * @var string
+     * @var string|null
      */
-    private string $viewContent;
+    private ?string $viewContent = null;
 
     /**
      * Assets to be included

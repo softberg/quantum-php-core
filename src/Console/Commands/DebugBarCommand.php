@@ -31,9 +31,9 @@ class DebugBarCommand extends QtCommand
 {
     /**
      * File System
-     * @var FileSystem
+     * @var FileSystem|null
      */
-    protected FileSystem $fs;
+    protected ?FileSystem $fs = null;
 
     /**
      * Command name
