@@ -15,8 +15,8 @@
 namespace {{MODULE_NAMESPACE}}\Controllers;
 
 use Quantum\View\Factories\ViewFactory;
-use Quantum\Libraries\Asset\Asset;
 use Quantum\Http\Response;
+use Quantum\Asset\Asset;
 
 /**
  * Class MainController

@@ -14,13 +14,13 @@
 
 namespace Quantum\App\Adapters;
 
-use Quantum\Libraries\Lang\Exceptions\LangException;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Quantum\App\Exceptions\StopExecutionException;
 use Quantum\Environment\Exceptions\EnvException;
 use Symfony\Component\Console\Input\ArgvInput;
 use Quantum\Config\Exceptions\ConfigException;
 use Symfony\Component\Console\Application;
+use Quantum\Lang\Exceptions\LangException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\App\Traits\ConsoleAppTrait;
 use Quantum\Di\Exceptions\DiException;
@@ -41,17 +41,17 @@ class ConsoleAppAdapter extends AppAdapter
     /**
      * @var ArgvInput
      */
-    protected $input;
+    protected ArgvInput $input;
 
     /**
      * @var ConsoleOutput
      */
-    protected $output;
+    protected ConsoleOutput $output;
 
     /**
      * @var Application
      */
-    protected $application;
+    protected Application $application;
 
     public function __construct()
     {

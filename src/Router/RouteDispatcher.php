@@ -14,13 +14,13 @@
 
 namespace Quantum\Router;
 
-use Quantum\Libraries\Csrf\Exceptions\CsrfException;
 use Quantum\Router\Exceptions\RouteException;
+use Quantum\Csrf\Exceptions\CsrfException;
 use Quantum\Di\Exceptions\DiException;
-use Quantum\Libraries\Csrf\Csrf;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 use ReflectionException;
+use Quantum\Csrf\Csrf;
 use Quantum\Di\Di;
 
 /**
@@ -35,7 +35,7 @@ final class RouteDispatcher
      * @param Request $request
      * @param Response $response
      * @return void
-     * @throws ReflectionException|CsrfException|DiException
+     * @throws ReflectionException|CsrfException|DiException|RouteException
      */
     public function dispatch(MatchedRoute $matched, Request $request, Response $response): void
     {
@@ -69,6 +69,7 @@ final class RouteDispatcher
      * Resolve controller callable from the route definition.
      * @param Route $route
      * @return array
+     * @throws RouteException
      */
     private function resolveControllerCallable(Route $route): array
     {

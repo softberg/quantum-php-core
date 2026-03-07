@@ -14,9 +14,9 @@
 
 namespace Quantum\Http\Traits\Request;
 
-use Quantum\Libraries\Storage\Exceptions\FileUploadException;
-use Quantum\Libraries\Storage\UploadedFile;
+use Quantum\Storage\Exceptions\FileUploadException;
 use Quantum\App\Exceptions\BaseException;
+use Quantum\Storage\UploadedFile;
 use ReflectionException;
 
 /**
@@ -29,7 +29,7 @@ trait File
      * Files
      * @var array
      */
-    private static $__files = [];
+    private static array $__files = [];
 
     /**
      * Checks to see if request contains file

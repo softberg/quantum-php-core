@@ -31,7 +31,7 @@ abstract class AppAdapter implements AppInterface
     /**
      * @var string
      */
-    private static $baseDir;
+    private static string $baseDir;
 
     /**
      * @throws BaseException
@@ -42,7 +42,6 @@ abstract class AppAdapter implements AppInterface
     {
         $this->loadCoreDependencies();
         $this->loadComponentHelperFunctions();
-        $this->loadLibraryHelperFunctions();
         $this->loadAppHelperFunctions();
         $this->loadModuleHelperFunctions();
     }

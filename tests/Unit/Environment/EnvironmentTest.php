@@ -49,6 +49,9 @@ class EnvironmentTest extends AppTestCase
 
     public function testEnvironmentAddAndUpdateRow()
     {
+        $envFilePath = App::getBaseDir() . DS . '.env.testing';
+        $originalContent = $this->fs->get($envFilePath);
+
         $this->assertNull($this->env->getValue('SOMETHING'));
 
         $this->env->updateRow('SOMETHING', 'Something');
@@ -59,6 +62,6 @@ class EnvironmentTest extends AppTestCase
 
         $this->assertEquals('Something_else', $this->env->getValue('SOMETHING'));
 
-        $this->fs->remove(App::getBaseDir() . DS . '.env.testing');
+        $this->fs->put($envFilePath, $originalContent);
     }
 }

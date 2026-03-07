@@ -14,12 +14,12 @@
 
 namespace Quantum\Console\Commands;
 
-use Quantum\Libraries\Storage\Exceptions\FileSystemException;
-use Quantum\Libraries\Storage\Factories\FileSystemFactory;
+use Quantum\Storage\Exceptions\FileSystemException;
+use Quantum\Storage\Factories\FileSystemFactory;
 use Quantum\Config\Exceptions\ConfigException;
 use Quantum\App\Exceptions\BaseException;
-use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Di\Exceptions\DiException;
+use Quantum\Storage\FileSystem;
 use Quantum\Console\QtCommand;
 use ReflectionException;
 
@@ -33,7 +33,7 @@ class DebugBarCommand extends QtCommand
      * File System
      * @var FileSystem
      */
-    protected $fs;
+    protected FileSystem $fs;
 
     /**
      * Command name
@@ -57,13 +57,13 @@ class DebugBarCommand extends QtCommand
      * Path to public debug bar resources
      * @var string
      */
-    private $publicDebugBarFolderPath = 'public/assets/DebugBar/Resources';
+    private string $publicDebugBarFolderPath = 'public/assets/DebugBar/Resources';
 
     /**
      * Path to vendor debug bar resources
      * @var string
      */
-    private $vendorDebugBarFolderPath = 'vendor/php-debugbar/php-debugbar/src/DebugBar/Resources';
+    private string $vendorDebugBarFolderPath = 'vendor/php-debugbar/php-debugbar/src/DebugBar/Resources';
 
     /**
      * Executes the command and publishes the debug bar assets

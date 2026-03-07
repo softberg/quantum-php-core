@@ -14,7 +14,7 @@
 
 namespace {{MODULE_NAMESPACE}}\Controllers;
 
-use Quantum\Libraries\Auth\Exceptions\AuthException;
+use Quantum\Auth\Exceptions\AuthException;
 use Quantum\Http\Enums\StatusCode;
 use {{MODULE_NAMESPACE}}\Enums\Role;
 use Quantum\Http\Response;

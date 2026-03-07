@@ -14,7 +14,7 @@
 
 namespace Modules\Toolkit\Controllers;
 
-use Quantum\Libraries\Database\Exceptions\DatabaseException;
+use Quantum\Database\Exceptions\DatabaseException;
 use Modules\Toolkit\Services\DatabaseService;
 use Quantum\Http\Response;
 use Quantum\Http\Request;

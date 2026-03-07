@@ -14,10 +14,11 @@
 
 namespace Quantum\Console\Commands;
 
-use Quantum\Libraries\Storage\Factories\FileSystemFactory;
+use Quantum\Storage\Factories\FileSystemFactory;
 use Quantum\Config\Exceptions\ConfigException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
+use Quantum\Storage\FileSystem;
 use Quantum\Console\QtCommand;
 use Quantum\Loader\Setup;
 use ReflectionException;
@@ -60,35 +61,35 @@ class ResourceCacheClearCommand extends QtCommand
     /**
      * @var array
      */
-    protected $types = ['views', 'asserts'];
+    protected array $types = ['views', 'asserts'];
 
     /**
      * @var array
      */
-    protected $modules;
+    protected array $modules = [];
 
     /**
      * @var string|null
      */
-    protected $type = null;
+    protected ?string $type = null;
 
     /**
      * @var string|null
      */
-    protected $module = null;
+    protected ?string $module = null;
 
     /**
      * @var string
      */
-    protected $cacheDir;
+    protected string $cacheDir = '';
 
     /**
-     * @var object
+     * @var FileSystem
      */
-    protected $fs;
+    protected FileSystem $fs;
 
     /**
-     * @throws BaseException
+     * @throws BaseException|ReflectionException
      */
     public function exec()
     {

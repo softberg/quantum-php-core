@@ -14,10 +14,10 @@
 
 namespace Quantum\Console\Commands;
 
-use Quantum\Libraries\Database\Exceptions\DatabaseException;
-use Quantum\Libraries\Lang\Exceptions\LangException;
 use Quantum\Migration\Exceptions\MigrationException;
+use Quantum\Database\Exceptions\DatabaseException;
 use Quantum\Config\Exceptions\ConfigException;
+use Quantum\Lang\Exceptions\LangException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Migration\MigrationManager;
 use Quantum\Di\Exceptions\DiException;

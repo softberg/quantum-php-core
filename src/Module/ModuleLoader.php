@@ -14,13 +14,13 @@
 
 namespace Quantum\Module;
 
-use Quantum\Libraries\Storage\Factories\FileSystemFactory;
+use Quantum\Storage\Factories\FileSystemFactory;
 use Quantum\Config\Exceptions\ConfigException;
 use Quantum\Module\Exceptions\ModuleException;
 use Quantum\Router\Exceptions\RouteException;
 use Quantum\App\Exceptions\BaseException;
-use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Di\Exceptions\DiException;
+use Quantum\Storage\FileSystem;
 use ReflectionException;
 use Quantum\App\App;
 use Quantum\Di\Di;

@@ -2,9 +2,10 @@
 
 namespace Quantum\Tests\Unit\Console\Commands;
 
-use Quantum\Tests\Unit\AppTestCase;
-use Quantum\Console\Commands\CronRunCommand;
 use Symfony\Component\Console\Tester\CommandTester;
+use Quantum\Console\Commands\CronRunCommand;
+use Quantum\Tests\Unit\AppTestCase;
+use Quantum\Cron\CronLock;
 
 /**
  * Class CronRunCommandTest
@@ -245,7 +246,7 @@ class CronRunCommandTest extends AppTestCase
             },
         ]);
 
-        $lock = new \Quantum\Libraries\Cron\CronLock('locked-task', $this->lockDirectory);
+        $lock = new CronLock('locked-task', $this->lockDirectory);
         $lock->acquire();
 
         $command = new CronRunCommand();

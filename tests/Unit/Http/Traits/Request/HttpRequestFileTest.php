@@ -2,9 +2,9 @@
 
 namespace Http\Traits\Request;
 
-use Quantum\Libraries\Storage\Exceptions\FileUploadException;
-use Quantum\Libraries\Storage\UploadedFile;
+use Quantum\Storage\Exceptions\FileUploadException;
 use Quantum\Tests\Unit\AppTestCase;
+use Quantum\Storage\UploadedFile;
 use Quantum\Http\Request;
 
 class HttpRequestFileTest extends AppTestCase

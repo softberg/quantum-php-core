@@ -1,0 +1,52 @@
+<?php
+
+/**
+ * Quantum PHP Framework
+ *
+ * An open source software development framework for PHP
+ *
+ * @package Quantum
+ * @author Arman Ag. <arman.ag@softberg.org>
+ * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
+ * @link http://quantum.softberg.org/
+ * @since 3.0.0
+ */
+
+namespace Quantum\Storage\Contracts;
+
+use Quantum\HttpClient\HttpClient;
+
+/**
+ * Interface CloudAppInterface
+ * @package Quantum\Storage
+ */
+interface CloudAppInterface
+{
+    /**
+     * @param string $appKey
+     * @param string $appSecret
+     * @param TokenServiceInterface $tokenService
+     * @param HttpClient $httpClient
+     */
+    public function __construct(
+        string $appKey,
+        string $appSecret,
+        TokenServiceInterface $tokenService,
+        HttpClient $httpClient
+    );
+
+    /**
+     * Send request
+     * @param string $url
+     * @param array|string|null $data
+     * @param array $headers
+     * @param string $method
+     * @return mixed
+     */
+    public function sendRequest(
+        string $url,
+        $data = null,
+        array $headers = [],
+        string $method = 'POST'
+    );
+}

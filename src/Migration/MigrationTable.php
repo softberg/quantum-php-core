@@ -14,9 +14,9 @@
 
 namespace Quantum\Migration;
 
-use Quantum\Libraries\Database\Exceptions\DatabaseException;
-use Quantum\Libraries\Database\Factories\TableFactory;
-use Quantum\Libraries\Database\Enums\Type;
+use Quantum\Database\Exceptions\DatabaseException;
+use Quantum\Database\Factories\TableFactory;
+use Quantum\Database\Enums\Type;
 
 /**
  * Class MigrationTable

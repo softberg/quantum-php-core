@@ -14,16 +14,16 @@
 
 namespace Quantum\View;
 
-use Quantum\Libraries\Database\Exceptions\DatabaseException;
-use Quantum\Libraries\Session\Exceptions\SessionException;
-use Quantum\Libraries\Asset\Exceptions\AssetException;
-use Quantum\Libraries\ResourceCache\ViewCache;
+use Quantum\Database\Exceptions\DatabaseException;
+use Quantum\Session\Exceptions\SessionException;
 use Quantum\Config\Exceptions\ConfigException;
+use Quantum\Asset\Exceptions\AssetException;
 use Quantum\View\Exceptions\ViewException;
 use Quantum\App\Exceptions\BaseException;
-use Quantum\Libraries\Asset\AssetManager;
 use Quantum\Di\Exceptions\DiException;
+use Quantum\ResourceCache\ViewCache;
 use Quantum\Renderer\Renderer;
+use Quantum\Asset\AssetManager;
 use Quantum\Debugger\Debugger;
 use ReflectionException;
 use Psr\Log\LogLevel;
@@ -37,46 +37,46 @@ class QtView
     /**
      * @var Renderer
      */
-    private $renderer;
+    private Renderer $renderer;
 
     /**
      * @var AssetManager
      */
-    private $assetManager;
+    private AssetManager $assetManager;
 
     /**
      * @var Debugger
      */
-    private $debugger;
+    private Debugger $debugger;
 
     /**
      * @var ViewCache
      */
-    private $viewCache;
+    private ViewCache $viewCache;
 
     /**
      * Layout file
-     * @var string
+     * @var string|null
      */
-    private $layoutFile = null;
+    private ?string $layoutFile = null;
 
     /**
      * Rendered view
      * @var string
      */
-    private $viewContent;
+    private string $viewContent;
 
     /**
      * Assets to be included
      * @var array
      */
-    private $assets = [];
+    private array $assets = [];
 
     /**
      * View params
      * @var array
      */
-    private $params = [];
+    private array $params = [];
 
     /**
      * @param Renderer $renderer
@@ -172,11 +172,10 @@ class QtView
      */
     public function getParams(): array
     {
-        $params = [];
 
-        foreach ($this->params as $key => $param) {
-            $params[$key] = ($param instanceof RawParam) ? $param->getValue() : $param;
-        }
+        $params = array_map(function ($param) {
+            return ($param instanceof RawParam) ? $param->getValue() : $param;
+        }, $this->params);
 
         return $params;
     }

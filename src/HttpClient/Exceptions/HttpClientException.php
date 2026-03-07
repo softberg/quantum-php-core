@@ -1,0 +1,39 @@
+<?php
+
+declare(strict_types=1);
+
+/**
+ * Quantum PHP Framework
+ *
+ * An open source software development framework for PHP
+ *
+ * @package Quantum
+ * @author Arman Ag. <arman.ag@softberg.org>
+ * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
+ * @link http://quantum.softberg.org/
+ * @since 3.0.0
+ */
+
+namespace Quantum\HttpClient\Exceptions;
+
+use Quantum\HttpClient\Enums\ExceptionMessages;
+use Quantum\App\Exceptions\BaseException;
+
+/**
+ * Class HasherException
+ * @package Quantum\Hasher
+ */
+class HttpClientException extends BaseException
+{
+    /**
+     * @return HttpClientException
+     */
+
+    public static function requestNotCreated(): self
+    {
+        return new self(
+            ExceptionMessages::REQUEST_NOT_CREATED,
+            E_WARNING
+        );
+    }
+}

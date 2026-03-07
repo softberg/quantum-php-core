@@ -14,18 +14,18 @@
 
 namespace Quantum\Migration;
 
-use Quantum\Libraries\Storage\Exceptions\FileSystemException;
-use Quantum\Libraries\Database\Exceptions\DatabaseException;
-use Quantum\Libraries\Storage\Factories\FileSystemFactory;
-use Quantum\Libraries\Database\Factories\TableFactory;
-use Quantum\Libraries\Lang\Exceptions\LangException;
 use Quantum\Migration\Exceptions\MigrationException;
+use Quantum\Storage\Exceptions\FileSystemException;
 use Quantum\Migration\Templates\MigrationTemplate;
+use Quantum\Database\Exceptions\DatabaseException;
+use Quantum\Storage\Factories\FileSystemFactory;
 use Quantum\Config\Exceptions\ConfigException;
+use Quantum\Database\Factories\TableFactory;
+use Quantum\Lang\Exceptions\LangException;
 use Quantum\App\Exceptions\BaseException;
-use Quantum\Libraries\Storage\FileSystem;
-use Quantum\Libraries\Database\Database;
 use Quantum\Di\Exceptions\DiException;
+use Quantum\Storage\FileSystem;
+use Quantum\Database\Database;
 use ReflectionException;
 
 /**
@@ -57,27 +57,27 @@ class MigrationManager
     /**
      * @var array
      */
-    private $migrations = [];
+    private array $migrations = [];
 
     /**
      * @var TableFactory
      */
-    private $tableFactory;
+    private TableFactory $tableFactory;
 
     /**
      * @var string
      */
-    private $migrationFolder;
+    private string $migrationFolder;
 
     /**
      * @var FileSystem
      */
-    private $fs;
+    private FileSystem $fs;
 
     /**
      * @var Database
      */
-    private $db;
+    private Database $db;
 
     /**
      * @throws BaseException

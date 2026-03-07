@@ -14,9 +14,9 @@
 
 namespace Quantum\Model\Factories;
 
-use Quantum\Libraries\Database\Contracts\DbalInterface;
+use Quantum\Database\Contracts\DbalInterface;
 use Quantum\Model\Exceptions\ModelException;
-use Quantum\Libraries\Database\Database;
+use Quantum\Database\Database;
 use Quantum\Model\DbModel;
 use Quantum\Model\Model;
 

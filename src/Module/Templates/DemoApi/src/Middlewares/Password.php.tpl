@@ -14,8 +14,8 @@
 
 namespace {{MODULE_NAMESPACE}}\Middlewares;
 
-use Quantum\Libraries\Validation\Rule;
-use Quantum\Libraries\Hasher\Hasher;
+use Quantum\Validation\Rule;
+use Quantum\Hasher\Hasher;
 use {{MODULE_NAMESPACE}}\Models\User;
 use Quantum\Http\Response;
 use Quantum\Http\Request;

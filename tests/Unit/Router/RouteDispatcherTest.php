@@ -2,15 +2,15 @@
 
 namespace Quantum\Tests\Unit\Router;
 
-use Quantum\Libraries\Csrf\Exceptions\CsrfException;
 use Quantum\Router\Exceptions\RouteException;
+use Quantum\Csrf\Exceptions\CsrfException;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Router\RouteDispatcher;
-use Quantum\Libraries\Csrf\Csrf;
 use Quantum\Router\MatchedRoute;
 use Quantum\Http\Response;
 use Quantum\Router\Route;
 use Quantum\Http\Request;
+use Quantum\Csrf\Csrf;
 use Mockery;
 
 class RouteDispatcherTest extends AppTestCase

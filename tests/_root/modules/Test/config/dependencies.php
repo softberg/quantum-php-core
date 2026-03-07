@@ -1,9 +1,9 @@
 <?php
 
 use Quantum\Tests\_root\modules\Test\Transformers\PostTransformer;
-use Quantum\Libraries\Transformer\Contracts\TransformerInterface;
-use Quantum\Libraries\Storage\Contracts\TokenServiceInterface;
+use Quantum\Transformer\Contracts\TransformerInterface;
 use Quantum\Tests\_root\shared\Services\TokenService;
+use Quantum\Storage\Contracts\TokenServiceInterface;
 
 return [
     TransformerInterface::class => PostTransformer::class,
