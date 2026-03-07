@@ -2,8 +2,8 @@
 
 namespace Quantum\Tests\Unit\Model;
 
-use Quantum\Libraries\Database\Adapters\Idiorm\IdiormDbal;
 use Quantum\Tests\_root\shared\Models\TestProductsModel;
+use Quantum\Database\Adapters\Idiorm\IdiormDbal;
 use Quantum\Model\Factories\ModelFactory;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Model\ModelCollection;

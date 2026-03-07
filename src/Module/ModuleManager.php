@@ -15,11 +15,12 @@
 namespace Quantum\Module;
 
 use Symfony\Component\VarExporter\Exception\ExceptionInterface;
-use Quantum\Libraries\Storage\Factories\FileSystemFactory;
+use Quantum\Storage\Factories\FileSystemFactory;
 use Quantum\Config\Exceptions\ConfigException;
 use Quantum\Module\Exceptions\ModuleException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
+use Quantum\Storage\FileSystem;
 use ReflectionException;
 use Exception;
 
@@ -32,49 +33,49 @@ class ModuleManager
     public const DEFAULT_TEMPLATE = 'DemoWeb';
 
     /**
-     * @var mixed
+     * @var FileSystem
      */
-    protected $fs;
+    protected FileSystem $fs;
 
     /**
      * @var bool
      */
-    protected $optionEnabled;
+    protected bool $optionEnabled;
 
     /**
      * @var string
      */
-    private $moduleName;
+    private string $moduleName;
 
     /**
      * @var string
      */
-    private $template;
+    private string $template;
 
     /**
      * @var string
      */
-    private $modulePath;
+    private string $modulePath;
 
     /**
      * @var string
      */
-    private $assetsPath;
+    private string $assetsPath;
 
     /**
      * @var string
      */
-    private $templatePath;
+    private string $templatePath;
 
     /**
      * @var bool
      */
-    private $withAssets;
+    private bool $withAssets;
 
     /**
      * @var string
      */
-    private $modulesConfigPath;
+    private string $modulesConfigPath;
 
     /**
      * @param string $moduleName

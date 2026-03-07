@@ -14,9 +14,9 @@
 
 namespace {{MODULE_NAMESPACE}}\Controllers;
 
-use Quantum\Libraries\Auth\Exceptions\AuthException;
+use Quantum\Auth\Exceptions\AuthException;
 use {{MODULE_NAMESPACE}}\Services\AuthService;
-use Quantum\Libraries\Hasher\Hasher;
+use Quantum\Hasher\Hasher;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 

@@ -5,8 +5,8 @@ namespace Quantum\Tests\Unit\Model;
 use Quantum\Tests\_root\shared\Models\TestPostCustomTimestampModel;
 use Quantum\Tests\_root\shared\Models\TestPostUnixTimestampModel;
 use Quantum\Tests\_root\shared\Models\TestPostTimestampModel;
-use Quantum\Libraries\Database\Adapters\Idiorm\IdiormDbal;
 use Quantum\Tests\_root\shared\Models\TestPostModel;
+use Quantum\Database\Adapters\Idiorm\IdiormDbal;
 use Quantum\Model\Factories\ModelFactory;
 use Quantum\Tests\Unit\AppTestCase;
 

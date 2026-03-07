@@ -2,8 +2,8 @@
 
 namespace Quantum\Tests\Unit\Http\Helpers;
 
-use Quantum\Libraries\Session\Factories\SessionFactory;
 use Quantum\App\Exceptions\StopExecutionException;
+use Quantum\Session\Factories\SessionFactory;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Router\RouteCollection;
 use Quantum\Router\RouteFinder;

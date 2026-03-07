@@ -30,7 +30,7 @@ class MigrationTemplate
     {
         return '<?php
 
-use Quantum\Libraries\Database\Factories\TableFactory;
+use Quantum\Database\Factories\TableFactory;
 
 
 class ' . ucfirst($className) . ' extends QtMigration
@@ -60,7 +60,7 @@ class ' . ucfirst($className) . ' extends QtMigration
     {
         return '<?php
 
-use Quantum\Libraries\Database\Factories\TableFactory;
+use Quantum\Database\Factories\TableFactory;
 
 class ' . ucfirst($className) . ' extends QtMigration
 {
@@ -89,7 +89,7 @@ class ' . ucfirst($className) . ' extends QtMigration
     {
         return '<?php
 
-use Quantum\Libraries\Database\Factories\TableFactory;
+use Quantum\Database\Factories\TableFactory;
 
 class ' . ucfirst($className) . ' extends QtMigration
 {
@@ -118,7 +118,7 @@ class ' . ucfirst($className) . ' extends QtMigration
     {
         return '<?php
 
-use Quantum\Libraries\Database\Factories\TableFactory;
+use Quantum\Database\Factories\TableFactory;
 
 class ' . ucfirst($className) . ' extends QtMigration
 {

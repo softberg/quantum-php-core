@@ -15,7 +15,7 @@
 namespace Modules\Toolkit\Controllers;
 
 use Quantum\View\Factories\ViewFactory;
-use Quantum\Libraries\Asset\Asset;
+use Quantum\Asset\Asset;
 use Quantum\View\QtView;
 
 /**

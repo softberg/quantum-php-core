@@ -2,7 +2,7 @@
 
 namespace Quantum\Tests\_root\shared\Models;
 
-use Quantum\Libraries\Database\Enums\Relation;
+use Quantum\Database\Enums\Relation;
 use Quantum\Model\DbModel;
 
 class TestProfileModel extends DbModel

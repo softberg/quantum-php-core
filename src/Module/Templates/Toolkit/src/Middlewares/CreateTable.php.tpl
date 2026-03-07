@@ -16,7 +16,7 @@ namespace Modules\Toolkit\Middlewares;
 
 use Modules\Toolkit\Services\DatabaseService;
 use Quantum\Service\Factories\ServiceFactory;
-use Quantum\Libraries\Validation\Rule;
+use Quantum\Validation\Rule;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 use Closure;

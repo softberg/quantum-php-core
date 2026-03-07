@@ -14,12 +14,13 @@
 
 namespace Quantum\Renderer\Adapters;
 
-use Quantum\Libraries\Storage\Factories\FileSystemFactory;
 use Quantum\Renderer\Contracts\TemplateRendererInterface;
 use Quantum\Renderer\Exceptions\RendererException;
+use Quantum\Storage\Factories\FileSystemFactory;
+use Quantum\Config\Exceptions\ConfigException;
 use Quantum\App\Exceptions\BaseException;
-use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Di\Exceptions\DiException;
+use Quantum\Storage\FileSystem;
 use ReflectionException;
 
 /**
@@ -31,17 +32,19 @@ class HtmlAdapter implements TemplateRendererInterface
     /**
      * @var FileSystem
      */
-    protected $fs;
+    protected FileSystem $fs;
 
     /**
      * @var array|null
      */
-    protected $configs;
+    protected ?array $configs;
 
     /**
      * @param array|null $configs
+     * @throws BaseException
      * @throws DiException
      * @throws ReflectionException
+     * @throws ConfigException
      */
     public function __construct(?array $configs = [])
     {
@@ -80,6 +83,8 @@ class HtmlAdapter implements TemplateRendererInterface
     /**
      * @param string $view
      * @return string
+     * @throws DiException
+     * @throws ReflectionException
      */
     private function getViewFilePath(string $view): string
     {

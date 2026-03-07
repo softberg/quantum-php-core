@@ -14,9 +14,9 @@
 
 namespace Quantum\Model;
 
-use Quantum\Libraries\Database\Contracts\DbalInterface;
 use Quantum\Paginator\Exceptions\PaginatorException;
 use Quantum\Paginator\Factories\PaginatorFactory;
+use Quantum\Database\Contracts\DbalInterface;
 use Quantum\Model\Exceptions\ModelException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Paginator\Paginator;

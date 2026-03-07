@@ -14,11 +14,11 @@
 
 namespace Quantum\App\Traits;
 
-use Quantum\Libraries\Logger\Factories\LoggerFactory;
-use Quantum\Libraries\Lang\Exceptions\LangException;
-use Quantum\Libraries\Lang\Factories\LangFactory;
 use Quantum\Config\Exceptions\ConfigException;
+use Quantum\Logger\Factories\LoggerFactory;
+use Quantum\Lang\Exceptions\LangException;
 use Quantum\App\Exceptions\BaseException;
+use Quantum\Lang\Factories\LangFactory;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Tracer\ErrorHandler;
 use Quantum\Loader\Loader;
@@ -52,6 +52,9 @@ trait AppTrait
         return self::$baseDir;
     }
 
+    /**
+     * @throws DiException
+     */
     protected function loadCoreDependencies()
     {
         $file = dirname(__DIR__) . DS . 'Config' . DS . 'dependencies.php';
@@ -70,35 +73,14 @@ trait AppTrait
     {
         $loader = Di::get(Loader::class);
 
-        $components = [
-            'Environment',
-            'Config',
-            'Router',
-            'Service',
-            'Model',
-            'Hook',
-            'Http',
-            'View',
-            'App',
-        ];
+        $srcDir = dirname(__DIR__, 2);
 
-        foreach ($components as $component) {
-            $componentHelperPath = dirname(__DIR__, 2) . DS . $component . DS . 'Helpers';
-            if (is_dir($componentHelperPath)) {
-                $loader->loadDir($componentHelperPath);
+        foreach (glob($srcDir . DS . '*', GLOB_ONLYDIR) as $componentDir) {
+            $helperPath = $componentDir . DS . 'Helpers';
+            if (is_dir($helperPath)) {
+                $loader->loadDir($helperPath);
             }
         }
-    }
-
-    /**
-     * Loads library helper functions
-     * @throws DiException
-     * @throws ReflectionException
-     */
-    protected function loadLibraryHelperFunctions()
-    {
-        $loader = Di::get(Loader::class);
-        $loader->loadDir(dirname(__DIR__, 2) . DS . 'Libraries' . DS . '*' . DS . 'Helpers');
     }
 
     /**

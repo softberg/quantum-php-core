@@ -2,7 +2,7 @@
 
 namespace Quantum\Tests\Unit;
 
-use Quantum\Libraries\Storage\Factories\FileSystemFactory;
+use Quantum\Storage\Factories\FileSystemFactory;
 use Quantum\App\Factories\AppFactory;
 use Quantum\Environment\Environment;
 use Quantum\Router\MatchedRoute;
@@ -46,7 +46,7 @@ abstract class AppTestCase extends TestCase
         $reflection = new ReflectionClass($object);
         $property = $reflection->getProperty($property);
         $property->setAccessible(true);
-        $property->setValue($value);
+        $property->setValue($object, $value);
     }
 
     protected function getPrivateProperty($object, $property)

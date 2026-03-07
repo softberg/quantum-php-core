@@ -14,7 +14,7 @@
 
 namespace {{MODULE_NAMESPACE}}\Transformers;
 
-use Quantum\Libraries\Transformer\Contracts\TransformerInterface;
+use Quantum\Transformer\Contracts\TransformerInterface;
 
 /**
  * Class PostTransformer

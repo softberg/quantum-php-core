@@ -15,11 +15,11 @@
 namespace Quantum\App\Traits;
 
 use Quantum\Environment\Exceptions\EnvException;
-use Quantum\Libraries\ResourceCache\ViewCache;
 use Quantum\Config\Exceptions\ConfigException;
 use Quantum\Http\Exceptions\HttpException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
+use Quantum\ResourceCache\ViewCache;
 use Quantum\Environment\Environment;
 use DebugBar\DebugBarException;
 use Quantum\Environment\Server;

@@ -14,7 +14,7 @@
 
 namespace Modules\Toolkit\Services;
 
-use Quantum\Libraries\Storage\Exceptions\FileSystemException;
+use Quantum\Storage\Exceptions\FileSystemException;
 use Quantum\Config\Exceptions\ConfigException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;

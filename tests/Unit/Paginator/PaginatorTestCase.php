@@ -2,9 +2,9 @@
 
 namespace Quantum\Tests\Unit\Paginator;
 
-use Quantum\Libraries\Database\Adapters\Idiorm\IdiormDbal;
-use Quantum\Libraries\Database\Database;
+use Quantum\Database\Adapters\Idiorm\IdiormDbal;
 use Quantum\Tests\Unit\AppTestCase;
+use Quantum\Database\Database;
 
 class PaginatorTestCase extends AppTestCase
 {

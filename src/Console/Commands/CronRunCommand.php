@@ -14,9 +14,9 @@
 
 namespace Quantum\Console\Commands;
 
-use Quantum\Libraries\Cron\Exceptions\CronException;
-use Quantum\Libraries\Cron\CronManager;
+use Quantum\Cron\Exceptions\CronException;
 use Quantum\Console\QtCommand;
+use Quantum\Cron\CronManager;
 
 /**
  * Class CronRunCommand

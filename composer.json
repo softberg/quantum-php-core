@@ -28,7 +28,7 @@
         "ext-openssl": "*",
         "ext-bcmath": "*",
         "j4mie/paris": "^1.5",
-        "firebase/php-jwt": "^6.0",
+        "firebase/php-jwt": "^6.0 || ^7.0",
         "gumlet/php-image-resize": "^2.0",
         "symfony/var-dumper": "^5.4",
         "symfony/var-exporter": "^5.2",
@@ -84,5 +84,12 @@
         "test": "vendor/bin/phpunit --stderr --testdox --coverage-clover coverage.xml"
     },
     "minimum-stability": "stable",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "config": {
+        "audit": {
+            "ignore": [
+                "CVE-2025-45769"
+            ]
+        }
+    }
 }

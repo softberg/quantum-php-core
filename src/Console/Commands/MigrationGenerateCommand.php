@@ -14,8 +14,8 @@
 
 namespace Quantum\Console\Commands;
 
-use Quantum\Libraries\Lang\Exceptions\LangException;
 use Quantum\Migration\Exceptions\MigrationException;
+use Quantum\Lang\Exceptions\LangException;
 use Quantum\Migration\MigrationManager;
 use Quantum\Console\QtCommand;
 

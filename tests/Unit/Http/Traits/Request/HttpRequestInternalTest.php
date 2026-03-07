@@ -2,9 +2,9 @@
 
 namespace Http\Traits\Request;
 
-use Quantum\Libraries\Storage\UploadedFile;
 use Quantum\Http\Request\HttpRequest;
 use Quantum\Tests\Unit\AppTestCase;
+use Quantum\Storage\UploadedFile;
 use Quantum\Environment\Server;
 use Quantum\Http\Request;
 

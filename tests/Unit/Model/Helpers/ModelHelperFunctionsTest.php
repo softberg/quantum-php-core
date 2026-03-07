@@ -2,8 +2,8 @@
 
 namespace Quantum\Tests\Unit\Model\Helpers;
 
-use Quantum\Libraries\Database\Contracts\DbalInterface;
 use Quantum\Tests\_root\shared\Models\TestUserModel;
+use Quantum\Database\Contracts\DbalInterface;
 use Quantum\Model\Exceptions\ModelException;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Model\DbModel;

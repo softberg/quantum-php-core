@@ -15,7 +15,7 @@
 namespace {{MODULE_NAMESPACE}}\Controllers;
 
 use Quantum\View\Factories\ViewFactory;
-use Quantum\Libraries\Asset\Asset;
+use Quantum\Asset\Asset;
 use Quantum\Http\Request;
 use Quantum\View\QtView;
 

@@ -8,3 +8,22 @@
 *.sh    text eol=lf
 *.js    text eol=lf
 *.css   text eol=lf
+
+# Export ignore - exclude development and test files
+tests/ export-ignore
+.git/ export-ignore
+.github/ export-ignore
+.idea/ export-ignore
+nbproject/ export-ignore
+vendor/ export-ignore
+.php-cs-fixer.cache export-ignore
+.php-cs-fixer.php export-ignore
+.phpunit.result.cache export-ignore
+coverage.xml export-ignore
+test-teamcity.log export-ignore
+phpstan.neon.dist export-ignore
+phpunit.xml export-ignore
+rector.php export-ignore
+.scrutinizer.yml export-ignore
+composer.lock export-ignore
+_config.yml export-ignore
