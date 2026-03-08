@@ -12,7 +12,7 @@
  * @since 3.0.0
  */
 
-use Quantum\Libraries\Database\Contracts\DbalInterface;
+use Quantum\Database\Contracts\DbalInterface;
 use Quantum\Model\Exceptions\ModelException;
 use Quantum\Model\Factories\ModelFactory;
 use Quantum\Model\DbModel;

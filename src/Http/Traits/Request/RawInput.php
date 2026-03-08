@@ -14,12 +14,12 @@
 
 namespace Quantum\Http\Traits\Request;
 
-use Quantum\Libraries\Storage\Factories\FileSystemFactory;
+use Quantum\Storage\Factories\FileSystemFactory;
 use Quantum\Config\Exceptions\ConfigException;
-use Quantum\Libraries\Storage\UploadedFile;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Http\Enums\ContentType;
+use Quantum\Storage\UploadedFile;
 use Quantum\Environment\Server;
 use ReflectionException;
 

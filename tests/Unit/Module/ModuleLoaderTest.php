@@ -1,6 +1,6 @@
 <?php
 
-namespace Module;
+namespace Quantum\Tests\Unit\Module;
 
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Module\ModuleLoader;
@@ -47,11 +47,11 @@ class ModuleLoaderTest extends AppTestCase
 
         $this->assertIsArray($deps);
 
-        $this->assertArrayHasKey(\Quantum\Libraries\Transformer\Contracts\TransformerInterface::class, $deps);
-        $this->assertSame(\Quantum\Tests\_root\modules\Test\Transformers\PostTransformer::class, $deps[\Quantum\Libraries\Transformer\Contracts\TransformerInterface::class]);
+        $this->assertArrayHasKey(\Quantum\Transformer\Contracts\TransformerInterface::class, $deps);
+        $this->assertSame(\Quantum\Tests\_root\modules\Test\Transformers\PostTransformer::class, $deps[\Quantum\Transformer\Contracts\TransformerInterface::class]);
 
-        $this->assertArrayHasKey(\Quantum\Libraries\Storage\Contracts\TokenServiceInterface::class, $deps);
-        $this->assertSame(\Quantum\Tests\_root\shared\Services\TokenService::class, $deps[\Quantum\Libraries\Storage\Contracts\TokenServiceInterface::class]);
+        $this->assertArrayHasKey(\Quantum\Storage\Contracts\TokenServiceInterface::class, $deps);
+        $this->assertSame(\Quantum\Tests\_root\shared\Services\TokenService::class, $deps[\Quantum\Storage\Contracts\TokenServiceInterface::class]);
     }
 
     public function testGetModuleConfigs()

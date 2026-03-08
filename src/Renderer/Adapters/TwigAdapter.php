@@ -14,15 +14,18 @@
 
 namespace Quantum\Renderer\Adapters;
 
-use Quantum\Libraries\Storage\Factories\FileSystemFactory;
 use Quantum\Renderer\Contracts\TemplateRendererInterface;
 use Quantum\Renderer\Exceptions\RendererException;
+use Quantum\Storage\Factories\FileSystemFactory;
+use Quantum\Config\Exceptions\ConfigException;
 use Quantum\App\Exceptions\BaseException;
-use Quantum\Libraries\Storage\FileSystem;
+use Quantum\Di\Exceptions\DiException;
 use Twig\Loader\FilesystemLoader;
+use Quantum\Storage\FileSystem;
 use Twig\Error\RuntimeError;
 use Twig\Error\LoaderError;
 use Twig\Error\SyntaxError;
+use ReflectionException;
 use Twig\TwigFunction;
 use Twig\Environment;
 
@@ -35,16 +38,19 @@ class TwigAdapter implements TemplateRendererInterface
     /**
      * @var FileSystem
      */
-    protected $fs;
+    protected FileSystem $fs;
 
     /**
      * @var array|null
      */
-    protected $configs;
+    protected ?array $configs;
 
     /**
      * @param array|null $configs
      * @throws BaseException
+     * @throws DiException
+     * @throws ReflectionException
+     * @throws ConfigException
      */
     public function __construct(?array $configs = [])
     {
@@ -58,8 +64,10 @@ class TwigAdapter implements TemplateRendererInterface
      * @param string $view
      * @param array $params
      * @return string
-     * @throws BaseException
+     * @throws DiException
      * @throws LoaderError
+     * @throws ReflectionException
+     * @throws RendererException
      * @throws RuntimeError
      * @throws SyntaxError
      */
@@ -77,7 +85,9 @@ class TwigAdapter implements TemplateRendererInterface
     /**
      * @param string $view
      * @return FilesystemLoader
-     * @throws BaseException
+     * @throws RendererException
+     * @throws DiException
+     * @throws ReflectionException
      */
     private function getLoader(string $view): FilesystemLoader
     {

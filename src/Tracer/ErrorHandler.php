@@ -14,15 +14,15 @@
 
 namespace Quantum\Tracer;
 
-use Quantum\Libraries\Storage\Contracts\LocalFilesystemAdapterInterface;
+use Quantum\Storage\Contracts\LocalFilesystemAdapterInterface;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Quantum\Renderer\Exceptions\RendererException;
 use Quantum\Config\Exceptions\ConfigException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\View\Factories\ViewFactory;
 use Quantum\Di\Exceptions\DiException;
-use Quantum\Libraries\Logger\Logger;
 use DebugBar\DebugBarException;
+use Quantum\Logger\Logger;
 use Quantum\Http\Response;
 use ReflectionException;
 use Psr\Log\LogLevel;
@@ -68,7 +68,7 @@ class ErrorHandler
     /**
      * @var ErrorHandler|null
      */
-    private static $instance = null;
+    private static ?ErrorHandler $instance = null;
 
     private function __construct()
     {

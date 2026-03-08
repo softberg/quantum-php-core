@@ -1,0 +1,118 @@
+<?php
+
+/**
+ * Quantum PHP Framework
+ *
+ * An open source software development framework for PHP
+ *
+ * @package Quantum
+ * @author Arman Ag. <arman.ag@softberg.org>
+ * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
+ * @link http://quantum.softberg.org/
+ * @since 3.0.0
+ */
+
+namespace Quantum\Csrf;
+
+use Quantum\Config\Exceptions\ConfigException;
+use Quantum\Csrf\Exceptions\CsrfException;
+use Quantum\App\Exceptions\BaseException;
+use Quantum\Di\Exceptions\DiException;
+use Quantum\Session\Session;
+use Quantum\Hasher\Hasher;
+use Quantum\Http\Request;
+use ReflectionException;
+
+/**
+ * Class Csrf
+ * @package Quantum\Csrf
+ */
+class Csrf
+{
+    /**
+     * Request methods to validate against
+     */
+    public const METHODS = ['POST', 'PUT', 'PATCH', 'DELETE'];
+
+    /**
+     * Csrf token key
+     */
+    public const TOKEN_KEY = 'csrf-token';
+
+    /**
+     * @var Csrf|null
+     */
+    private static ?Csrf $instance = null;
+
+    /**
+     * @var Session
+     */
+    private Session $storage;
+
+    /**
+     * @var Hasher
+     */
+    private Hasher $hasher;
+
+    /**
+     * @throws ConfigException
+     * @throws DiException
+     * @throws ReflectionException
+     * @throws BaseException
+     */
+    private function __construct()
+    {
+        $this->storage = session();
+        $this->hasher = new Hasher();
+    }
+
+    /**
+     * Csrf instance
+     * @return Csrf
+     */
+    public static function getInstance(): Csrf
+    {
+        if (self::$instance === null) {
+            self::$instance = new self();
+        }
+
+        return self::$instance;
+    }
+
+    /**
+     * Generates the CSRF token or returns the previously generated one
+     * @param string $key
+     * @return string|null
+     */
+    public function generateToken(string $key): ?string
+    {
+        if (!$this->storage->has(self::TOKEN_KEY)) {
+            $this->storage->set(self::TOKEN_KEY, $this->hasher->hash($key));
+        }
+
+        return $this->storage->get(self::TOKEN_KEY);
+    }
+
+    /**
+     * Checks the token
+     * @param Request|null $request
+     * @return bool
+     * @throws CsrfException
+     */
+    public function checkToken(?Request $request): bool
+    {
+        if (!$request->has(self::TOKEN_KEY)) {
+            throw CsrfException::tokenNotFound();
+        }
+
+        if ($this->storage->get(self::TOKEN_KEY) !== $request->getCsrfToken()) {
+            throw CsrfException::tokenNotMatched();
+        }
+
+        $this->storage->delete(self::TOKEN_KEY);
+        $request->delete(self::TOKEN_KEY);
+        $request->deleteHeader('X-' . self::TOKEN_KEY);
+
+        return true;
+    }
+}

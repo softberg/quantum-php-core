@@ -14,18 +14,18 @@
 
 namespace Quantum\Console\Commands;
 
-use Quantum\Libraries\Storage\Factories\FileSystemFactory;
+use Quantum\Storage\Factories\FileSystemFactory;
 use Quantum\Module\Exceptions\ModuleException;
 use Quantum\Router\Exceptions\RouteException;
 use Quantum\App\Exceptions\BaseException;
-use Quantum\Libraries\Storage\FileSystem;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Router\RouteCollection;
 use Quantum\Module\ModuleLoader;
 use Quantum\Router\RouteBuilder;
+use Quantum\Storage\FileSystem;
 use Quantum\Console\QtCommand;
-use Quantum\Di\Di;
 use OpenApi\Generator;
+use Quantum\Di\Di;
 
 /**
  * Class OpenApiUiAssetsCommand
@@ -191,7 +191,7 @@ class OpenApiCommand extends QtCommand
         });
 
         $route->get("spec", function (Quantum\Http\Response $response) {
-            $fs = Quantum\Libraries\Storage\Factories\FileSystemFactory::get();
+            $fs = Quantum\Storage\Factories\FileSystemFactory::get();
             $response->json($fs->getJson(modules_dir() . "' . DS . $module . DS . 'resources' . DS . 'openapi' . DS . 'spec.json"));
         });
     });' . PHP_EOL;

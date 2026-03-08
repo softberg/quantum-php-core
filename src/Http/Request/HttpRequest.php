@@ -27,9 +27,9 @@ use Quantum\Http\Traits\Request\Route;
 use Quantum\Http\Traits\Request\Body;
 use Quantum\Http\Traits\Request\File;
 use Quantum\Http\Traits\Request\Url;
-use Quantum\Libraries\Csrf\Csrf;
 use Quantum\Environment\Server;
 use ReflectionException;
+use Quantum\Csrf\Csrf;
 
 /**
  * Class HttpRequest

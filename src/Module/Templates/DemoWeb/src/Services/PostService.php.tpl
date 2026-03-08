@@ -14,13 +14,13 @@
 
 namespace {{MODULE_NAMESPACE}}\Services;
 
-use Quantum\Libraries\Storage\Exceptions\FileUploadException;
-use Quantum\Libraries\Storage\Exceptions\FileSystemException;
+use Quantum\Storage\Exceptions\FileUploadException;
+use Quantum\Storage\Exceptions\FileSystemException;
 use Quantum\Environment\Exceptions\EnvException;
 use Quantum\Config\Exceptions\ConfigException;
 use {{MODULE_NAMESPACE}}\Transformers\PostTransformer;
 use Quantum\Model\Exceptions\ModelException;
-use Quantum\Libraries\Storage\UploadedFile;
+use Quantum\Storage\UploadedFile;
 use Quantum\App\Exceptions\BaseException;
 use {{MODULE_NAMESPACE}}\Models\User;
 use {{MODULE_NAMESPACE}}\Models\Post;

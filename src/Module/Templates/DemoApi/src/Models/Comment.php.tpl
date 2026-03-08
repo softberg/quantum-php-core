@@ -14,7 +14,7 @@
 
 namespace {{MODULE_NAMESPACE}}\Models;
 
-use Quantum\Libraries\Database\Enums\Relation;
+use Quantum\Database\Enums\Relation;
 use Quantum\Model\Traits\HasTimestamps;
 use Quantum\Model\Traits\SoftDeletes;
 use Quantum\Model\DbModel;

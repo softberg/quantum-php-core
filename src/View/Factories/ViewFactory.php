@@ -15,12 +15,12 @@
 namespace Quantum\View\Factories;
 
 use Quantum\Renderer\Factories\RendererFactory;
-use Quantum\Libraries\ResourceCache\ViewCache;
+use Quantum\ResourceCache\ViewCache;
 use Quantum\Config\Exceptions\ConfigException;
-use Quantum\Libraries\Asset\AssetManager;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
 use DebugBar\DebugBarException;
+use Quantum\Asset\AssetManager;
 use Quantum\Debugger\Debugger;
 use Quantum\View\QtView;
 use ReflectionException;
@@ -36,7 +36,7 @@ class ViewFactory
      * Instance of QtView
      * @var QtView|null
      */
-    private static $instance = null;
+    private static ?QtView $instance = null;
 
     /**
      * QtView instance

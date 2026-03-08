@@ -14,10 +14,10 @@
 
 namespace {{MODULE_NAMESPACE}}\Services;
 
-use Quantum\Libraries\Auth\Contracts\AuthServiceInterface;
+use Quantum\Auth\Contracts\AuthServiceInterface;
 use Quantum\Config\Exceptions\ConfigException;
 use Quantum\Model\Exceptions\ModelException;
-use Quantum\Libraries\Auth\User as AuthUser;
+use Quantum\Auth\User as AuthUser;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Model\ModelCollection;

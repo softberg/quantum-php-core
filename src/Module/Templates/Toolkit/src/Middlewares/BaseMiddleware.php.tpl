@@ -14,7 +14,7 @@
 
 namespace Modules\Toolkit\Middlewares;
 
-use Quantum\Libraries\Validation\Validator;
+use Quantum\Validation\Validator;
 use Quantum\Middleware\QtMiddleware;
 use Quantum\Http\Response;
 use Quantum\Http\Request;

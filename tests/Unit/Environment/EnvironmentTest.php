@@ -30,7 +30,7 @@ class EnvironmentTest extends AppTestCase
 
         $this->assertEquals('TRUE', $this->env->getValue('DEBUG'));
 
-        $this->assertEquals('XYZ1234567890', $this->env->getValue('APP_KEY'));
+        $this->assertEquals('XYZ1234567890ABCDEFG123456789HIGKLMNOPQRSTUVWXYZ0123456789abcdefgh', $this->env->getValue('APP_KEY'));
     }
 
     public function testEnvironmentHasKey()
@@ -44,11 +44,14 @@ class EnvironmentTest extends AppTestCase
     {
         $this->assertNull($this->env->getRow('NON_EXISTING_KEY'));
 
-        $this->assertEquals('APP_KEY=XYZ1234567890', $this->env->getRow('APP_KEY'));
+        $this->assertEquals('APP_KEY=XYZ1234567890ABCDEFG123456789HIGKLMNOPQRSTUVWXYZ0123456789abcdefgh', $this->env->getRow('APP_KEY'));
     }
 
     public function testEnvironmentAddAndUpdateRow()
     {
+        $envFilePath = App::getBaseDir() . DS . '.env.testing';
+        $originalContent = $this->fs->get($envFilePath);
+
         $this->assertNull($this->env->getValue('SOMETHING'));
 
         $this->env->updateRow('SOMETHING', 'Something');
@@ -59,6 +62,6 @@ class EnvironmentTest extends AppTestCase
 
         $this->assertEquals('Something_else', $this->env->getValue('SOMETHING'));
 
-        $this->fs->remove(App::getBaseDir() . DS . '.env.testing');
+        $this->fs->put($envFilePath, $originalContent);
     }
 }

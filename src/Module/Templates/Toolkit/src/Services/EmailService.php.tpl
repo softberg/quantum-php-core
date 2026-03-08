@@ -14,11 +14,11 @@
 
 namespace Modules\Toolkit\Services;
 
-use Quantum\Libraries\Storage\Exceptions\FileSystemException;
+use Quantum\Storage\Exceptions\FileSystemException;
 use Quantum\Paginator\Exceptions\PaginatorException;
 use Quantum\Paginator\Factories\PaginatorFactory;
 use Quantum\App\Exceptions\BaseException;
-use Quantum\Libraries\Mailer\MailTrap;
+use Quantum\Mailer\MailTrap;
 use Quantum\Paginator\Paginator;
 use Quantum\Service\QtService;
 use ReflectionException;

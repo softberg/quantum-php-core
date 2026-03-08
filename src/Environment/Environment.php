@@ -202,7 +202,7 @@ class Environment
             fs()->append($envFilePath, PHP_EOL . $key . '=' . $value . PHP_EOL);
         }
 
-        $this->envContent = $this->loadDotenvFile(true);
+        $this->envContent[$key] = $value;
     }
 
     /**

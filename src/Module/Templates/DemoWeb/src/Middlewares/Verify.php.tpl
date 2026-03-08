@@ -15,7 +15,7 @@
 namespace {{MODULE_NAMESPACE}}\Middlewares;
 
 use Quantum\Http\Enums\StatusCode;
-use Quantum\Libraries\Validation\Rule;
+use Quantum\Validation\Rule;
 use {{MODULE_NAMESPACE}}\Models\User;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
