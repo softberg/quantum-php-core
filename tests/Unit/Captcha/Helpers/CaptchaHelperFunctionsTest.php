@@ -4,8 +4,8 @@ namespace Quantum\Tests\Unit\Captcha\Helpers;
 
 use Quantum\Captcha\Adapters\RecaptchaAdapter;
 use Quantum\Captcha\Adapters\HcaptchaAdapter;
-use Quantum\Captcha\Captcha;
 use Quantum\Tests\Unit\AppTestCase;
+use Quantum\Captcha\Captcha;
 
 class CaptchaHelperFunctionsTest extends AppTestCase
 {

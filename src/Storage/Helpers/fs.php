@@ -15,8 +15,8 @@
 use Quantum\Storage\Factories\FileSystemFactory;
 use Quantum\Config\Exceptions\ConfigException;
 use Quantum\App\Exceptions\BaseException;
-use Quantum\Storage\FileSystem;
 use Quantum\Di\Exceptions\DiException;
+use Quantum\Storage\FileSystem;
 
 /**
  * Gets the FileSystem handler

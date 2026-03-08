@@ -6,8 +6,8 @@ use Quantum\Archive\Exceptions\ArchiveException;
 use Quantum\Archive\Contracts\ArchiveInterface;
 use Quantum\Archive\Adapters\PharAdapter;
 use Quantum\Archive\Adapters\ZipAdapter;
-use Quantum\Archive\Archive;
 use Quantum\Tests\Unit\AppTestCase;
+use Quantum\Archive\Archive;
 
 class ArchiveTest extends AppTestCase
 {

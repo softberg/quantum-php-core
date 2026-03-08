@@ -25,10 +25,10 @@ use Quantum\Storage\Contracts\CloudAppInterface;
 use Quantum\Service\Exceptions\ServiceException;
 use Quantum\Config\Exceptions\ConfigException;
 use Quantum\Service\Factories\ServiceFactory;
-use Quantum\HttpClient\HttpClient;
 use Quantum\App\Exceptions\BaseException;
-use Quantum\Storage\FileSystem;
 use Quantum\Di\Exceptions\DiException;
+use Quantum\HttpClient\HttpClient;
+use Quantum\Storage\FileSystem;
 use Quantum\Loader\Setup;
 use ReflectionException;
 
@@ -58,7 +58,7 @@ class FileSystemFactory
     /**
      * @var array
      */
-    private static $instances = [];
+    private static array $instances = [];
 
     /**
      * @param string|null $adapter

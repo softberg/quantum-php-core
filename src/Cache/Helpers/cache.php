@@ -12,8 +12,8 @@
  * @since 3.0.0
  */
 
-use Quantum\Cache\Factories\CacheFactory;
 use Quantum\Config\Exceptions\ConfigException;
+use Quantum\Cache\Factories\CacheFactory;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Cache\Cache;

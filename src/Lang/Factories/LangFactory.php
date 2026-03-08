@@ -14,14 +14,14 @@
 
 namespace Quantum\Lang\Factories;
 
-use Quantum\Lang\Exceptions\LangException;
 use Quantum\Config\Exceptions\ConfigException;
+use Quantum\Lang\Exceptions\LangException;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Lang\Translator;
-use Quantum\Lang\Lang;
 use Quantum\Http\Request;
 use Quantum\Loader\Setup;
 use ReflectionException;
+use Quantum\Lang\Lang;
 
 /**
  * Class LangFactory
@@ -32,7 +32,7 @@ class LangFactory
     /**
      * @var Lang|null Cached Lang instance
      */
-    private static $instance = null;
+    private static ?Lang $instance = null;
 
     /**
      * @return Lang

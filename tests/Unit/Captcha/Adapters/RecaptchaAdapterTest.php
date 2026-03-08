@@ -4,9 +4,9 @@ namespace Quantum\Tests\Unit\Captcha\Adapters;
 
 use Quantum\Captcha\Contracts\CaptchaInterface;
 use Quantum\Captcha\Adapters\RecaptchaAdapter;
+use Quantum\Tests\Unit\AppTestCase;
 use Quantum\HttpClient\HttpClient;
 use Quantum\Asset\AssetManager;
-use Quantum\Tests\Unit\AppTestCase;
 use Exception;
 use Mockery;
 

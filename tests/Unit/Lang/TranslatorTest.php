@@ -2,8 +2,8 @@
 
 namespace Quantum\Tests\Unit\Lang;
 
-use Quantum\Lang\Translator;
 use Quantum\Tests\Unit\AppTestCase;
+use Quantum\Lang\Translator;
 
 class TranslatorTest extends AppTestCase
 {

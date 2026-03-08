@@ -15,10 +15,10 @@
 namespace Quantum\Database\Adapters\Sleekdb\Statements;
 
 use Quantum\Database\Adapters\Sleekdb\SleekDbal;
-use Quantum\Database\Contracts\DbalInterface;
 use SleekDB\Exceptions\InvalidArgumentException;
-use Quantum\Database\Enums\Relation;
+use Quantum\Database\Contracts\DbalInterface;
 use Quantum\Model\Exceptions\ModelException;
+use Quantum\Database\Enums\Relation;
 use Quantum\Model\DbModel;
 use SleekDB\QueryBuilder;
 

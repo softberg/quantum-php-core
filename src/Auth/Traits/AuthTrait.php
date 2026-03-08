@@ -15,17 +15,17 @@
 namespace Quantum\Auth\Traits;
 
 use Quantum\Auth\Contracts\AuthServiceInterface;
-use Quantum\Auth\Exceptions\AuthException;
-use Quantum\Jwt\Exceptions\JwtException;
 use Quantum\Config\Exceptions\ConfigException;
-use Quantum\Auth\Enums\AuthKeys;
+use Quantum\Auth\Exceptions\AuthException;
 use Quantum\App\Exceptions\BaseException;
+use Quantum\Jwt\Exceptions\JwtException;
 use Quantum\Di\Exceptions\DiException;
+use Quantum\Auth\Enums\AuthKeys;
 use Quantum\Mailer\Mailer;
 use Quantum\Hasher\Hasher;
 use Quantum\Jwt\JwtToken;
-use Quantum\Auth\User;
 use ReflectionException;
+use Quantum\Auth\User;
 use ReflectionClass;
 use DateInterval;
 use Exception;

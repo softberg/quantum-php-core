@@ -14,10 +14,10 @@
 
 namespace Quantum\Database\Schemas;
 
-use Quantum\Database\Exceptions\DatabaseException;
 use Quantum\Migration\Exceptions\MigrationException;
-use Quantum\Database\Traits\TableTrait;
+use Quantum\Database\Exceptions\DatabaseException;
 use Quantum\App\Exceptions\BaseException;
+use Quantum\Database\Traits\TableTrait;
 use Quantum\Database\Database;
 
 /**

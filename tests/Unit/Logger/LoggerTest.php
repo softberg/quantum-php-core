@@ -4,10 +4,10 @@ namespace Quantum\Tests\Unit\Logger;
 
 use Quantum\Logger\Contracts\ReportableInterface;
 use Quantum\Logger\Adapters\MessageAdapter;
-use Quantum\Logger\Logger;
 use Quantum\Debugger\DebuggerStore;
-use Quantum\Debugger\Debugger;
 use Quantum\Tests\Unit\AppTestCase;
+use Quantum\Debugger\Debugger;
+use Quantum\Logger\Logger;
 
 class LoggerTest extends AppTestCase
 {

@@ -2,13 +2,13 @@
 
 namespace Quantum\Tests\Unit\Lang;
 
-use Quantum\Lang\Translator;
+use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Router\MatchedRoute;
+use Quantum\Lang\Translator;
 use Quantum\Router\Route;
 use Quantum\Http\Request;
-use Quantum\Di\Di;
-use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Lang\Lang;
+use Quantum\Di\Di;
 
 class LangTest extends AppTestCase
 {

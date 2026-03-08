@@ -9,8 +9,8 @@ use Quantum\Session\Exceptions\SessionException;
 use Quantum\Tests\Unit\Session\TestCaseHelper;
 use Quantum\Session\Factories\SessionFactory;
 use Quantum\Model\Factories\ModelFactory;
-use Quantum\Session\Session;
 use Quantum\Tests\Unit\AppTestCase;
+use Quantum\Session\Session;
 use Quantum\Loader\Setup;
 
 class SessionFactoryTest extends AppTestCase

@@ -14,15 +14,15 @@
 
 namespace Quantum\Validation;
 
+use Quantum\Config\Exceptions\ConfigException;
 use Quantum\Lang\Exceptions\LangException;
 use Quantum\Validation\Traits\Resource;
+use Quantum\Di\Exceptions\DiException;
 use Quantum\Validation\Traits\General;
 use Quantum\Validation\Traits\Length;
 use Quantum\Validation\Traits\Lists;
-use Quantum\Config\Exceptions\ConfigException;
 use Quantum\Validation\Traits\Type;
 use Quantum\Validation\Traits\File;
-use Quantum\Di\Exceptions\DiException;
 use BadMethodCallException;
 use ReflectionException;
 use RuntimeException;
@@ -45,25 +45,25 @@ class Validator
      * Rules
      * @var array
      */
-    private $rules = [];
+    private array $rules = [];
 
     /**
      * Validation Errors
      * @var array
      */
-    private $errors = [];
+    private array $errors = [];
 
     /**
      * Request data
      * @var array
      */
-    private $data = [];
+    private array $data = [];
 
     /**
      * Custom validation callbacks
      * @var Closure[]
      */
-    private $customRules = [];
+    private array $customRules = [];
 
     /**
      * Add rules for a single field

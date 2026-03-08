@@ -20,9 +20,9 @@ use Quantum\Database\Exceptions\DatabaseException;
 use Quantum\Storage\Contracts\CloudAppInterface;
 use Quantum\Lang\Exceptions\LangException;
 use Quantum\Storage\Traits\CloudAppTrait;
-use Quantum\HttpClient\HttpClient;
 use Quantum\Http\Exceptions\HttpException;
 use Quantum\App\Exceptions\BaseException;
+use Quantum\HttpClient\HttpClient;
 use Exception;
 
 /**

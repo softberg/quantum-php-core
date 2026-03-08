@@ -14,8 +14,8 @@
 
 namespace Quantum\Lang;
 
-use Quantum\Lang\Exceptions\LangException;
 use Quantum\Config\Exceptions\ConfigException;
+use Quantum\Lang\Exceptions\LangException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
 use Dflydev\DotAccessData\Data;
@@ -27,12 +27,12 @@ use ReflectionException;
  */
 class Translator
 {
-    protected $lang;
+    protected string $lang;
 
     /**
      * @var Data|null
      */
-    private $translations = null;
+    private ?Data $translations = null;
 
     /**
      * @param string $lang

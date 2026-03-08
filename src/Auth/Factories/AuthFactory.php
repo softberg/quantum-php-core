@@ -15,19 +15,19 @@
 namespace Quantum\Auth\Factories;
 
 use Quantum\Auth\Contracts\AuthServiceInterface;
-use Quantum\Auth\Adapters\SessionAuthAdapter;
-use Quantum\Auth\Exceptions\AuthException;
-use Quantum\Auth\Adapters\JwtAuthAdapter;
 use Quantum\Service\Exceptions\ServiceException;
 use Quantum\Config\Exceptions\ConfigException;
 use Quantum\Service\Factories\ServiceFactory;
+use Quantum\Auth\Adapters\SessionAuthAdapter;
+use Quantum\Auth\Exceptions\AuthException;
+use Quantum\Auth\Adapters\JwtAuthAdapter;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Hasher\Hasher;
 use Quantum\Jwt\JwtToken;
-use Quantum\Auth\Auth;
 use Quantum\Loader\Setup;
 use ReflectionException;
+use Quantum\Auth\Auth;
 
 /**
  * Class AuthFactory

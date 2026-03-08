@@ -26,7 +26,7 @@ class DatabaseHandler implements SessionHandlerInterface
     /**
      * @var DbalInterface
      */
-    private $sessionModel;
+    private DbalInterface $sessionModel;
 
     /**
      * DatabaseHandler constructor.

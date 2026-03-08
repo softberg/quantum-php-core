@@ -12,9 +12,9 @@
  * @since 3.0.0
  */
 
+use Quantum\Config\Exceptions\ConfigException;
 use Quantum\Lang\Exceptions\LangException;
 use Quantum\Lang\Factories\LangFactory;
-use Quantum\Config\Exceptions\ConfigException;
 use Quantum\Di\Exceptions\DiException;
 
 /**

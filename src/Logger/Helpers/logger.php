@@ -12,8 +12,8 @@
  * @since 3.0.0
  */
 
-use Quantum\Logger\Factories\LoggerFactory;
 use Quantum\Config\Exceptions\ConfigException;
+use Quantum\Logger\Factories\LoggerFactory;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Logger\Logger;

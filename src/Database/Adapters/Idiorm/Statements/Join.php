@@ -16,9 +16,9 @@ namespace Quantum\Database\Adapters\Idiorm\Statements;
 
 use Quantum\Database\Adapters\Idiorm\IdiormPatch;
 use Quantum\Database\Contracts\DbalInterface;
-use Quantum\Database\Enums\Relation;
 use Quantum\Model\Exceptions\ModelException;
 use Quantum\App\Exceptions\BaseException;
+use Quantum\Database\Enums\Relation;
 use Quantum\Model\DbModel;
 
 /**

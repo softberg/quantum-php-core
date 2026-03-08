@@ -2,8 +2,8 @@
 
 namespace Quantum\Tests\Unit\JWToken;
 
-use Quantum\Jwt\JwtToken;
 use Quantum\Tests\Unit\AppTestCase;
+use Quantum\Jwt\JwtToken;
 
 class JWTokenTest extends AppTestCase
 {

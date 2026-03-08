@@ -6,8 +6,8 @@ use Quantum\Encryption\Adapters\AsymmetricEncryptionAdapter;
 use Quantum\Encryption\Adapters\SymmetricEncryptionAdapter;
 use Quantum\Encryption\Contracts\EncryptionInterface;
 use Quantum\Encryption\Exceptions\CryptorException;
-use Quantum\Encryption\Cryptor;
 use Quantum\Tests\Unit\AppTestCase;
+use Quantum\Encryption\Cryptor;
 
 class CryptorTest extends AppTestCase
 {

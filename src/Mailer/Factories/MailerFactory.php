@@ -16,12 +16,12 @@ namespace Quantum\Mailer\Factories;
 
 use Quantum\Mailer\Adapters\SendinblueAdapter;
 use Quantum\Mailer\Exceptions\MailerException;
+use Quantum\Config\Exceptions\ConfigException;
 use Quantum\Mailer\Adapters\MandrillAdapter;
 use Quantum\Mailer\Adapters\SendgridAdapter;
 use Quantum\Mailer\Adapters\MailgunAdapter;
-use Quantum\Mailer\Adapters\SmtpAdapter;
-use Quantum\Config\Exceptions\ConfigException;
 use Quantum\App\Exceptions\BaseException;
+use Quantum\Mailer\Adapters\SmtpAdapter;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Mailer\Mailer;
 use Quantum\Loader\Setup;

@@ -15,12 +15,12 @@
 namespace Quantum\Cache\Adapters;
 
 use Quantum\Storage\Factories\FileSystemFactory;
-use Quantum\Cache\Enums\ExceptionMessages;
 use Quantum\Config\Exceptions\ConfigException;
+use Quantum\Cache\Enums\ExceptionMessages;
 use Quantum\App\Exceptions\BaseException;
-use Quantum\Storage\FileSystem;
 use Quantum\Di\Exceptions\DiException;
 use Psr\SimpleCache\CacheInterface;
+use Quantum\Storage\FileSystem;
 use InvalidArgumentException;
 use ReflectionException;
 

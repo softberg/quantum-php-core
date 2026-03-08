@@ -2,9 +2,9 @@
 
 namespace Quantum\Tests\Unit\Validation;
 
+use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Validation\Validator;
 use Quantum\Validation\Rule;
-use Quantum\Tests\Unit\AppTestCase;
 
 class ValidatorTest extends AppTestCase
 {

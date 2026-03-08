@@ -9,8 +9,8 @@ use Quantum\Mailer\Adapters\SendgridAdapter;
 use Quantum\Mailer\Adapters\MailgunAdapter;
 use Quantum\Mailer\Factories\MailerFactory;
 use Quantum\Mailer\Adapters\SmtpAdapter;
-use Quantum\Mailer\Mailer;
 use Quantum\Tests\Unit\AppTestCase;
+use Quantum\Mailer\Mailer;
 use Quantum\Loader\Setup;
 
 class MailerFactoryTest extends AppTestCase

@@ -5,8 +5,8 @@ namespace Quantum\Tests\Unit\Csrf;
 use Quantum\Csrf\Exceptions\CsrfException;
 use Quantum\Csrf\Enums\ExceptionMessages;
 use Quantum\Tests\Unit\AppTestCase;
-use Quantum\Csrf\Csrf;
 use Quantum\Http\Request;
+use Quantum\Csrf\Csrf;
 
 class CsrfTest extends AppTestCase
 {

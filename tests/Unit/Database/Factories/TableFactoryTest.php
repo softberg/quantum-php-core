@@ -5,8 +5,8 @@ namespace Quantum\Tests\Unit\Database\Factories;
 use Quantum\Database\Exceptions\DatabaseException;
 use Quantum\Database\Factories\TableFactory;
 use Quantum\Database\Schemas\Table;
-use Quantum\Database\Database;
 use Quantum\Tests\Unit\AppTestCase;
+use Quantum\Database\Database;
 use Quantum\Loader\Setup;
 use Mockery;
 

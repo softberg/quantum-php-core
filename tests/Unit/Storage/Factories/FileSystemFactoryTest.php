@@ -7,8 +7,8 @@ use Quantum\Storage\Adapters\Dropbox\DropboxFileSystemAdapter;
 use Quantum\Storage\Adapters\Local\LocalFileSystemAdapter;
 use Quantum\Storage\Exceptions\FileSystemException;
 use Quantum\Storage\Factories\FileSystemFactory;
-use Quantum\Storage\FileSystem;
 use Quantum\Tests\Unit\AppTestCase;
+use Quantum\Storage\FileSystem;
 
 class FileSystemFactoryTest extends AppTestCase
 {

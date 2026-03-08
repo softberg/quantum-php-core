@@ -2,9 +2,9 @@
 
 namespace Quantum\Tests\Unit\Cron;
 
+use Quantum\Cron\Exceptions\CronException;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Cron\CronLock;
-use Quantum\Cron\Exceptions\CronException;
 
 /**
  * Class CronLockTest

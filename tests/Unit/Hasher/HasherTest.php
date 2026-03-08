@@ -2,8 +2,8 @@
 
 namespace Quantum\Tests\Unit\Hasher;
 
-use Quantum\Hasher\Hasher;
 use Quantum\Tests\Unit\AppTestCase;
+use Quantum\Hasher\Hasher;
 
 class HasherTest extends AppTestCase
 {

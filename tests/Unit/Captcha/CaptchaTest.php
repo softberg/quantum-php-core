@@ -5,9 +5,9 @@ namespace Quantum\Tests\Unit\Captcha;
 use Quantum\Captcha\Exceptions\CaptchaException;
 use Quantum\Captcha\Contracts\CaptchaInterface;
 use Quantum\Captcha\Adapters\RecaptchaAdapter;
+use Quantum\Tests\Unit\AppTestCase;
 use Quantum\HttpClient\HttpClient;
 use Quantum\Captcha\Captcha;
-use Quantum\Tests\Unit\AppTestCase;
 
 class CaptchaTest extends AppTestCase
 {

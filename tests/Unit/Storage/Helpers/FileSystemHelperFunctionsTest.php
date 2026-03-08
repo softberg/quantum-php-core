@@ -5,8 +5,8 @@ namespace Libraries\Storage\Helpers;
 use Quantum\Storage\Adapters\GoogleDrive\GoogleDriveFileSystemAdapter;
 use Quantum\Storage\Adapters\Dropbox\DropboxFileSystemAdapter;
 use Quantum\Storage\Adapters\Local\LocalFileSystemAdapter;
-use Quantum\Storage\FileSystem;
 use Quantum\Tests\Unit\AppTestCase;
+use Quantum\Storage\FileSystem;
 
 class FileSystemHelperFunctionsTest extends AppTestCase
 {

@@ -8,8 +8,8 @@ use Quantum\Logger\Adapters\MessageAdapter;
 use Quantum\Logger\Factories\LoggerFactory;
 use Quantum\Logger\Adapters\SingleAdapter;
 use Quantum\Logger\Adapters\DailyAdapter;
-use Quantum\Logger\Logger;
 use Quantum\Tests\Unit\AppTestCase;
+use Quantum\Logger\Logger;
 
 class LoggerFactoryTest extends AppTestCase
 {

@@ -2,8 +2,8 @@
 
 namespace Quantum\Tests\Unit\Auth;
 
-use Quantum\Auth\User;
 use PHPUnit\Framework\TestCase;
+use Quantum\Auth\User;
 
 class UserTest extends TestCase
 {

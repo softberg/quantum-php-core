@@ -12,10 +12,10 @@ namespace Quantum\Tests\Unit\Auth {
 
     use Quantum\Database\Adapters\Sleekdb\SleekDbal;
     use Quantum\Environment\Environment;
-    use Quantum\Mailer\Mailer;
     use Quantum\Tests\Unit\AppTestCase;
-    use Quantum\Auth\User;
+    use Quantum\Mailer\Mailer;
     use Quantum\Loader\Setup;
+    use Quantum\Auth\User;
     use Mockery;
 
     function auto_increment(array $collection, string $field)

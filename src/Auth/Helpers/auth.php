@@ -12,11 +12,11 @@
  * @since 3.0.0
  */
 
-use Quantum\Auth\Exceptions\AuthException;
-use Quantum\Auth\Factories\AuthFactory;
 use Quantum\Service\Exceptions\ServiceException;
 use Quantum\Config\Exceptions\ConfigException;
+use Quantum\Auth\Exceptions\AuthException;
 use Quantum\App\Exceptions\BaseException;
+use Quantum\Auth\Factories\AuthFactory;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Auth\Auth;
 

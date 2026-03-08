@@ -12,8 +12,8 @@
  * @since 3.0.0
  */
 
-use Quantum\Captcha\Factories\CaptchaFactory;
 use Quantum\Config\Exceptions\ConfigException;
+use Quantum\Captcha\Factories\CaptchaFactory;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Captcha\Captcha;

@@ -6,8 +6,8 @@ use Quantum\Captcha\Exceptions\CaptchaException;
 use Quantum\Captcha\Adapters\RecaptchaAdapter;
 use Quantum\Captcha\Adapters\HcaptchaAdapter;
 use Quantum\Captcha\Factories\CaptchaFactory;
-use Quantum\Captcha\Captcha;
 use Quantum\Tests\Unit\AppTestCase;
+use Quantum\Captcha\Captcha;
 
 class CaptchaFactoryTest extends AppTestCase
 {

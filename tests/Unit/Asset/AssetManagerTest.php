@@ -2,8 +2,8 @@
 
 namespace Quantum\Tests\Unit\Asset;
 
-use Quantum\Asset\AssetManager;
 use Quantum\Tests\Unit\AppTestCase;
+use Quantum\Asset\AssetManager;
 use Quantum\Asset\Asset;
 
 class AssetManagerTest extends AppTestCase

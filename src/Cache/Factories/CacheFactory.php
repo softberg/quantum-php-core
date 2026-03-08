@@ -14,17 +14,17 @@
 
 namespace Quantum\Cache\Factories;
 
+use Quantum\Config\Exceptions\ConfigException;
 use Quantum\Cache\Exceptions\CacheException;
 use Quantum\Cache\Adapters\MemcachedAdapter;
 use Quantum\Cache\Adapters\DatabaseAdapter;
+use Quantum\App\Exceptions\BaseException;
 use Quantum\Cache\Adapters\RedisAdapter;
 use Quantum\Cache\Adapters\FileAdapter;
-use Quantum\Config\Exceptions\ConfigException;
-use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
-use Quantum\Cache\Cache;
 use Quantum\Loader\Setup;
 use ReflectionException;
+use Quantum\Cache\Cache;
 
 /**
  * Class CacheFactory

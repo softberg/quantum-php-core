@@ -15,11 +15,11 @@
 namespace Quantum\Mailer\Traits;
 
 use Quantum\Mailer\Contracts\MailerInterface;
-use Quantum\HttpClient\HttpClient;
 use Quantum\Di\Exceptions\DiException;
-use Quantum\Mailer\MailTrap;
+use Quantum\HttpClient\HttpClient;
 use PHPMailer\PHPMailer\PHPMailer;
 use Quantum\Debugger\Debugger;
+use Quantum\Mailer\MailTrap;
 use ReflectionException;
 use Exception;
 

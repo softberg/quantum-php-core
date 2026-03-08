@@ -3,11 +3,11 @@
 namespace Libraries\Validation\Traits;
 
 use Quantum\Tests\_root\shared\Models\TestUserModel;
-use Quantum\Validation\Validator;
 use Quantum\Model\Factories\ModelFactory;
+use Quantum\Tests\Unit\AppTestCase;
+use Quantum\Validation\Validator;
 use Quantum\Database\Database;
 use Quantum\Validation\Rule;
-use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Loader\Setup;
 
 class GeneralRuleTest extends AppTestCase

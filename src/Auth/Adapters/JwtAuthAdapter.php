@@ -22,10 +22,10 @@ use Quantum\Auth\Traits\AuthTrait;
 use Quantum\Auth\Enums\AuthKeys;
 use Quantum\Mailer\Mailer;
 use Quantum\Hasher\Hasher;
-use Quantum\Jwt\JwtToken;
-use Quantum\Auth\User;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
+use Quantum\Jwt\JwtToken;
+use Quantum\Auth\User;
 use Exception;
 
 /**
@@ -221,7 +221,7 @@ class JwtAuthAdapter implements AuthenticatableInterface
 
         $user = $this->checkRefreshToken();
 
-        if ($user instanceof \Quantum\Auth\User) {
+        if ($user instanceof User) {
             $this->setUpdatedTokens($user);
             return $this->user();
         }

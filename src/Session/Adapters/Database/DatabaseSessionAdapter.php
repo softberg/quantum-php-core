@@ -16,8 +16,8 @@ namespace Quantum\Session\Adapters\Database;
 
 use Quantum\Session\Contracts\SessionStorageInterface;
 use Quantum\Session\Exceptions\SessionException;
-use Quantum\Session\Traits\SessionTrait;
 use Quantum\Model\Factories\ModelFactory;
+use Quantum\Session\Traits\SessionTrait;
 
 /**
  * Class Session

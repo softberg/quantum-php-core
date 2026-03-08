@@ -4,8 +4,8 @@ namespace Quantum\Tests\Unit\Database\Adapters\Sleekdb;
 
 use Quantum\Tests\Unit\Database\Adapters\DatabaseSeeder;
 use Quantum\Database\Adapters\Sleekdb\SleekDbal;
-use Quantum\Database\Database;
 use Quantum\Tests\Unit\AppTestCase;
+use Quantum\Database\Database;
 use Quantum\Loader\Setup;
 
 abstract class SleekDbalTestCase extends AppTestCase

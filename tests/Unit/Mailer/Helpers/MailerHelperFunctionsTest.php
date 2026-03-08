@@ -7,8 +7,8 @@ use Quantum\Mailer\Adapters\SendgridAdapter;
 use Quantum\Mailer\Adapters\MandrillAdapter;
 use Quantum\Mailer\Adapters\MailgunAdapter;
 use Quantum\Mailer\Adapters\SmtpAdapter;
-use Quantum\Mailer\Mailer;
 use Quantum\Tests\Unit\AppTestCase;
+use Quantum\Mailer\Mailer;
 
 class MailerHelperFunctionsTest extends AppTestCase
 {

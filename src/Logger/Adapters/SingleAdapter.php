@@ -17,9 +17,9 @@ namespace Quantum\Logger\Adapters;
 use Quantum\Logger\Contracts\ReportableInterface;
 use Quantum\Storage\Factories\FileSystemFactory;
 use Quantum\Logger\Exceptions\LoggerException;
-use Quantum\Logger\Traits\LoggerTrait;
 use Quantum\Config\Exceptions\ConfigException;
 use Quantum\App\Exceptions\BaseException;
+use Quantum\Logger\Traits\LoggerTrait;
 use Quantum\Di\Exceptions\DiException;
 use ReflectionException;
 

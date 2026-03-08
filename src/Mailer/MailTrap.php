@@ -19,9 +19,9 @@ use Quantum\Storage\Factories\FileSystemFactory;
 use Quantum\Config\Exceptions\ConfigException;
 use Phemail\Message\MessagePartInterface;
 use Quantum\App\Exceptions\BaseException;
-use Quantum\Storage\FileSystem;
 use Quantum\Di\Exceptions\DiException;
 use Phemail\Message\MessagePart;
+use Quantum\Storage\FileSystem;
 use Phemail\MessageParser;
 use ReflectionException;
 
@@ -34,12 +34,12 @@ class MailTrap
     /**
      * @var FileSystem
      */
-    private $fs;
+    private FileSystem $fs;
 
     /**
      * @var MessageParser
      */
-    private $parser;
+    private MessageParser $parser;
 
     /**
      * @var MessagePart|MessagePartInterface
@@ -49,12 +49,12 @@ class MailTrap
     /**
      * @var MailTrap|null
      */
-    private static $instance = null;
+    private static ?MailTrap $instance = null;
 
     /**
      * @var string
      */
-    private $emailsDirectory;
+    private string $emailsDirectory;
 
     /**
      * @throws BaseException

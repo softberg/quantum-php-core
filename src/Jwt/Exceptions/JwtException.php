@@ -16,8 +16,8 @@ declare(strict_types=1);
 
 namespace Quantum\Jwt\Exceptions;
 
-use Quantum\Jwt\Enums\ExceptionMessages;
 use Quantum\App\Exceptions\BaseException;
+use Quantum\Jwt\Enums\ExceptionMessages;
 
 /**
  * Class JwtException

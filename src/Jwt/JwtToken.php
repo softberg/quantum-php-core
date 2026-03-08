@@ -14,8 +14,8 @@
 
 namespace Quantum\Jwt;
 
-use Quantum\Jwt\Exceptions\JwtException;
 use Quantum\Environment\Exceptions\EnvException;
+use Quantum\Jwt\Exceptions\JwtException;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
@@ -30,24 +30,24 @@ class JwtToken extends JWT
      * JWT secret key
      * @var string
      */
-    private $key;
+    private string $key;
 
     /**
      * Encryption algorithm
      * @var string
      */
-    private $algorithm = 'HS256';
+    private string $algorithm = 'HS256';
 
     /**
      * Payload data
      * @var array
      */
-    private $payload = [];
+    private array $payload = [];
 
     /**
      * @var object|null
      */
-    private $fetchedPayload = null;
+    private ?object $fetchedPayload = null;
 
     /**
      * JwtToken constructor.

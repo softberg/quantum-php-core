@@ -4,8 +4,8 @@ namespace Quantum\Tests\Unit\Database\Adapters\Idiorm;
 
 use Quantum\Tests\Unit\Database\Adapters\DatabaseSeeder;
 use Quantum\Database\Adapters\Idiorm\IdiormDbal;
-use Quantum\Database\Database;
 use Quantum\Tests\Unit\AppTestCase;
+use Quantum\Database\Database;
 
 abstract class IdiormDbalTestCase extends AppTestCase
 {

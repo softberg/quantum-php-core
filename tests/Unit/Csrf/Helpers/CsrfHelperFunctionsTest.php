@@ -3,8 +3,8 @@
 namespace Quantum\Tests\Unit\Csrf\Helpers;
 
 use Quantum\Tests\Unit\AppTestCase;
-use Quantum\Csrf\Csrf;
 use Quantum\Http\Request;
+use Quantum\Csrf\Csrf;
 
 class CsrfHelperFunctionsTest extends AppTestCase
 {

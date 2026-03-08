@@ -18,9 +18,9 @@ use Quantum\Storage\Contracts\LocalFilesystemAdapterInterface;
 use Quantum\Storage\Contracts\FilesystemAdapterInterface;
 use Quantum\Storage\Exceptions\FileSystemException;
 use Quantum\Storage\Exceptions\FileUploadException;
-use Quantum\Lang\Exceptions\LangException;
 use Quantum\Environment\Exceptions\EnvException;
 use Quantum\Config\Exceptions\ConfigException;
+use Quantum\Lang\Exceptions\LangException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
 use Gumlet\ImageResizeException;
@@ -42,55 +42,55 @@ class UploadedFile extends SplFileInfo
      * Local File System
      * @var LocalFilesystemAdapterInterface
      */
-    protected $localFileSystem;
+    protected LocalFilesystemAdapterInterface $localFileSystem;
 
     /**
      * Remove File System
-     * @var FilesystemAdapterInterface
+     * @var FilesystemAdapterInterface|null
      */
-    protected $remoteFileSystem = null;
+    protected ?FilesystemAdapterInterface $remoteFileSystem = null;
 
     /**
      * Original file name provided by client
-     * @var string
+     * @var string|null
      */
-    protected $originalName = null;
+    protected ?string $originalName = null;
 
     /**
      * File name (without extension)
-     * @var string
+     * @var string|null
      */
-    protected $name = null;
+    protected ?string $name = null;
 
     /**
      * File extension
-     * @var string
+     * @var string|null
      */
-    protected $extension = null;
+    protected ?string $extension = null;
 
     /**
      * File mime type
-     * @var string
+     * @var string|null
      */
-    protected $mimetype = null;
+    protected ?string $mimetype = null;
 
     /**
      * ImageResize function name
-     * @var string
+     * @var string|null
      */
-    protected $imageModifierFuncName = null;
+    protected ?string $imageModifierFuncName = null;
 
     /**
      * ImageResize function arguments
      * @var array
      */
-    protected $params = [];
+    protected array $params = [];
 
     /**
      * Upload error code messages
      * @var array
      */
-    protected $errorMessages = [
+    protected array $errorMessages = [
         1 => 'The uploaded file exceeds the upload_max_filesize directive in php.ini',
         2 => 'The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form',
         3 => 'The uploaded file was only partially uploaded',
@@ -104,7 +104,7 @@ class UploadedFile extends SplFileInfo
      * Allowed mime types => allowed extensions map
      * @var array
      */
-    protected $allowedMimeTypes = [
+    protected array $allowedMimeTypes = [
         'image/jpeg' => ['jpg', 'jpeg'],
         'image/png' => ['png'],
         'application/pdf' => ['pdf'],
@@ -114,7 +114,7 @@ class UploadedFile extends SplFileInfo
      * Upload error code
      * @var int
      */
-    protected $errorCode;
+    protected int $errorCode;
 
     /**
      * @param array $meta

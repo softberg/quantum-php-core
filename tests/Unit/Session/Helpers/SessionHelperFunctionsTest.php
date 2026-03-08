@@ -4,8 +4,8 @@ namespace Quantum\Tests\Unit\Session\Helpers;
 
 use Quantum\Session\Adapters\Database\DatabaseSessionAdapter;
 use Quantum\Session\Adapters\Native\NativeSessionAdapter;
-use Quantum\Session\Session;
 use Quantum\Tests\Unit\AppTestCase;
+use Quantum\Session\Session;
 
 class SessionHelperFunctionsTest extends AppTestCase
 {

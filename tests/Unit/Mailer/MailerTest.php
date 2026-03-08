@@ -5,8 +5,8 @@ namespace Quantum\Tests\Unit\Mailer;
 use Quantum\Mailer\Exceptions\MailerException;
 use Quantum\Mailer\Contracts\MailerInterface;
 use Quantum\Mailer\Adapters\SmtpAdapter;
-use Quantum\Mailer\Mailer;
 use Quantum\Tests\Unit\AppTestCase;
+use Quantum\Mailer\Mailer;
 use Quantum\Loader\Setup;
 
 class MailerTest extends AppTestCase

@@ -2,10 +2,10 @@
 
 namespace Quantum\Tests\Unit\Cron;
 
-use Quantum\Cron\Schedule;
-use Quantum\Cron\CronTask;
 use Quantum\Cron\Exceptions\CronException;
 use PHPUnit\Framework\TestCase;
+use Quantum\Cron\Schedule;
+use Quantum\Cron\CronTask;
 
 class ScheduleTest extends TestCase
 {

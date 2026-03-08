@@ -19,8 +19,8 @@ use Quantum\Encryption\Exceptions\CryptorException;
 use Quantum\Database\Exceptions\DatabaseException;
 use Quantum\Storage\Contracts\CloudAppInterface;
 use Quantum\Storage\Traits\CloudAppTrait;
-use Quantum\HttpClient\HttpClient;
 use Quantum\App\Exceptions\BaseException;
+use Quantum\HttpClient\HttpClient;
 use Exception;
 
 /**

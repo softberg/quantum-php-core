@@ -2,8 +2,8 @@
 
 namespace Quantum\Tests\Unit\Cookie\Helpers;
 
-use Quantum\Cookie\Cookie;
 use Quantum\Tests\Unit\AppTestCase;
+use Quantum\Cookie\Cookie;
 
 class CookieHelperFunctionsTest extends AppTestCase
 {

@@ -6,10 +6,10 @@ use Quantum\Logger\Exceptions\LoggerException;
 use Quantum\Logger\Adapters\MessageAdapter;
 use Quantum\Logger\Adapters\SingleAdapter;
 use Quantum\Logger\Adapters\DailyAdapter;
-use Quantum\Logger\Logger;
 use Quantum\Debugger\DebuggerStore;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Debugger\Debugger;
+use Quantum\Logger\Logger;
 
 class LoggerHelperFunctionsTest extends AppTestCase
 {

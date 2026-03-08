@@ -14,8 +14,8 @@
 
 namespace Quantum\Csrf;
 
-use Quantum\Csrf\Exceptions\CsrfException;
 use Quantum\Config\Exceptions\ConfigException;
+use Quantum\Csrf\Exceptions\CsrfException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Session\Session;
@@ -40,19 +40,19 @@ class Csrf
     public const TOKEN_KEY = 'csrf-token';
 
     /**
-     * @var Csrf
+     * @var Csrf|null
      */
-    private static $instance;
+    private static ?Csrf $instance = null;
 
     /**
      * @var Session
      */
-    private $storage;
+    private Session $storage;
 
     /**
      * @var Hasher
      */
-    private $hasher;
+    private Hasher $hasher;
 
     /**
      * @throws ConfigException

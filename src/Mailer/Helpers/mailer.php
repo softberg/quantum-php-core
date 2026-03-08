@@ -12,8 +12,8 @@
  * @since 3.0.0
  */
 
-use Quantum\Mailer\Factories\MailerFactory;
 use Quantum\Config\Exceptions\ConfigException;
+use Quantum\Mailer\Factories\MailerFactory;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Mailer\Mailer;

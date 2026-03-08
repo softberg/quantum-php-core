@@ -18,16 +18,16 @@ use Quantum\Auth\Contracts\AuthenticatableInterface;
 use Quantum\Database\Exceptions\DatabaseException;
 use Quantum\Auth\Contracts\AuthServiceInterface;
 use Quantum\Session\Exceptions\SessionException;
-use Quantum\Auth\Exceptions\AuthException;
 use Quantum\Config\Exceptions\ConfigException;
-use Quantum\Auth\Traits\AuthTrait;
-use Quantum\Auth\Enums\AuthKeys;
+use Quantum\Auth\Exceptions\AuthException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
+use Quantum\Auth\Traits\AuthTrait;
+use Quantum\Auth\Enums\AuthKeys;
 use Quantum\Hasher\Hasher;
 use Quantum\Mailer\Mailer;
-use Quantum\Auth\User;
 use ReflectionException;
+use Quantum\Auth\User;
 use Exception;
 
 /**

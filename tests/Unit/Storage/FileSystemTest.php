@@ -9,8 +9,8 @@ use Quantum\Storage\Contracts\FilesystemAdapterInterface;
 use Quantum\Storage\Adapters\GoogleDrive\GoogleDriveApp;
 use Quantum\Storage\Exceptions\FileSystemException;
 use Quantum\Storage\Adapters\Dropbox\DropboxApp;
-use Quantum\Storage\FileSystem;
 use Quantum\Tests\Unit\AppTestCase;
+use Quantum\Storage\FileSystem;
 use Mockery;
 
 class FileSystemTest extends AppTestCase

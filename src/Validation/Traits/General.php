@@ -14,8 +14,8 @@
 
 namespace Quantum\Validation\Traits;
 
-use Quantum\Captcha\Factories\CaptchaFactory;
 use Quantum\Config\Exceptions\ConfigException;
+use Quantum\Captcha\Factories\CaptchaFactory;
 use Quantum\Model\Exceptions\ModelException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Model\Factories\ModelFactory;

@@ -6,8 +6,8 @@ use Quantum\Storage\Adapters\Dropbox\DropboxFileSystemAdapter;
 use Quantum\Storage\Exceptions\FileSystemException;
 use Quantum\Storage\Exceptions\FileUploadException;
 use Quantum\Storage\Adapters\Dropbox\DropboxApp;
-use Quantum\Storage\UploadedFile;
 use Quantum\Tests\Unit\AppTestCase;
+use Quantum\Storage\UploadedFile;
 use Mockery;
 
 class UploadedDouble extends UploadedFile

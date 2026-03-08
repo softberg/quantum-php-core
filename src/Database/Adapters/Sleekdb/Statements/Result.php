@@ -14,10 +14,10 @@
 
 namespace Quantum\Database\Adapters\Sleekdb\Statements;
 
-use Quantum\Database\Exceptions\DatabaseException;
-use Quantum\Database\Contracts\DbalInterface;
 use SleekDB\Exceptions\InvalidConfigurationException;
+use Quantum\Database\Exceptions\DatabaseException;
 use SleekDB\Exceptions\InvalidArgumentException;
+use Quantum\Database\Contracts\DbalInterface;
 use Quantum\Model\Exceptions\ModelException;
 use Quantum\App\Exceptions\BaseException;
 use SleekDB\Exceptions\IOException;

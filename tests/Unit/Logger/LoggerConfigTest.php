@@ -2,8 +2,8 @@
 
 namespace Quantum\Tests\Unit\Logger;
 
-use Quantum\Logger\LoggerConfig;
 use Quantum\Tests\Unit\AppTestCase;
+use Quantum\Logger\LoggerConfig;
 
 class LoggerConfigTest extends AppTestCase
 {

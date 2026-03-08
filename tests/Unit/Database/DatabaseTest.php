@@ -3,8 +3,8 @@
 namespace Quantum\Tests\Unit\Database;
 
 use Quantum\Database\Adapters\Idiorm\IdiormDbal;
-use Quantum\Database\Database;
 use Quantum\Tests\Unit\AppTestCase;
+use Quantum\Database\Database;
 use Quantum\Loader\Setup;
 
 class DatabaseTest extends AppTestCase

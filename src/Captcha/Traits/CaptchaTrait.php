@@ -17,9 +17,9 @@ namespace Quantum\Captcha\Traits;
 use Quantum\Captcha\Contracts\CaptchaInterface;
 use Quantum\Asset\Exceptions\AssetException;
 use Quantum\Lang\Exceptions\LangException;
-use Quantum\HttpClient\HttpClient;
 use Quantum\Http\Exceptions\HttpException;
 use Quantum\App\Exceptions\BaseException;
+use Quantum\HttpClient\HttpClient;
 use Quantum\Asset\AssetManager;
 use Quantum\Asset\Asset;
 use ErrorException;
@@ -32,19 +32,19 @@ use Exception;
 trait CaptchaTrait
 {
     /**
-     * @var string
+     * @var string|null
      */
-    protected $siteKey;
+    protected ?string $siteKey;
 
     /**
-     * @var string
+     * @var string|null
      */
-    protected $secretKey;
+    protected ?string $secretKey;
 
     /**
      * @var HttpClient
      */
-    protected $http;
+    protected HttpClient $http;
 
     /**
      * @var mixed|null
@@ -54,12 +54,12 @@ trait CaptchaTrait
     /**
      * @var array
      */
-    protected $errorCodes = [];
+    protected array $errorCodes = [];
 
     /**
      * @var array
      */
-    protected $elementAttributes = [];
+    protected array $elementAttributes = [];
 
     /**
      * @return string|null

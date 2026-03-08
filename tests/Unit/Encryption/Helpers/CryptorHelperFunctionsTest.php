@@ -2,8 +2,8 @@
 
 namespace Quantum\Tests\Unit\Encryption\Helpers;
 
-use Quantum\Encryption\Cryptor;
 use Quantum\Tests\Unit\AppTestCase;
+use Quantum\Encryption\Cryptor;
 use stdClass;
 
 class CryptorHelperFunctionsTest extends AppTestCase

@@ -15,13 +15,13 @@
 namespace Quantum\Logger\Factories;
 
 use Quantum\Logger\Exceptions\LoggerException;
+use Quantum\Config\Exceptions\ConfigException;
 use Quantum\Logger\Adapters\MessageAdapter;
 use Quantum\Logger\Adapters\SingleAdapter;
 use Quantum\Logger\Adapters\DailyAdapter;
-use Quantum\Config\Exceptions\ConfigException;
-use Quantum\Logger\LoggerConfig;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
+use Quantum\Logger\LoggerConfig;
 use Quantum\Logger\Logger;
 use Quantum\Loader\Setup;
 use ReflectionException;
