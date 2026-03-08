@@ -1,6 +1,6 @@
 <?php
 
-namespace Http\Traits\Request;
+namespace Quantum\Tests\Unit\Http\Traits\Request;
 
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Environment\Server;

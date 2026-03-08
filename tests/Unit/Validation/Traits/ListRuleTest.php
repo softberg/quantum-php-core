@@ -1,6 +1,6 @@
 <?php
 
-namespace Libraries\Validation\Traits;
+namespace Quantum\Tests\Unit\Validation\Traits;
 
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Validation\Validator;

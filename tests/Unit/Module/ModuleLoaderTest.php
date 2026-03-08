@@ -1,6 +1,6 @@
 <?php
 
-namespace Module;
+namespace Quantum\Tests\Unit\Module;
 
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Module\ModuleLoader;

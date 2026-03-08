@@ -1,6 +1,6 @@
 <?php
 
-namespace Libraries\Validation\Traits;
+namespace Quantum\Tests\Unit\Validation\Traits;
 
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Validation\Validator;
@@ -9,7 +9,6 @@ use Quantum\Validation\Rule;
 class LengthRuleTest extends AppTestCase
 {
     public $validator;
-    private $request;
 
     public function setUp(): void
     {
