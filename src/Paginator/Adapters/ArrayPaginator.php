@@ -27,11 +27,6 @@ class ArrayPaginator implements PaginatorInterface
 
     private array $items;
 
-    /**
-     * @param array $items
-     * @param int $perPage
-     * @param int $page
-     */
     public function __construct(array $items, int $perPage, int $page = 1)
     {
         $this->initialize($perPage, $page);

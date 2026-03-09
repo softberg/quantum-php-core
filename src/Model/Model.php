@@ -24,25 +24,21 @@ abstract class Model
 {
     /**
      * Internal attributes
-     * @var array
      */
     protected array $attributes = [];
 
     /**
      * Models fillable properties
-     * @var array
      */
     protected array $fillable = [];
 
     /**
      * Models hidden properties
      * Used by DBAL and plain models
-     * @var array
      */
     public array $hidden = [];
 
     /**
-     * @param string $key
      * @param $value
      * @return $this|mixed|null
      */
@@ -58,7 +54,6 @@ abstract class Model
 
     /**
      * Fill object properties
-     * @param array $props
      * @return $this
      * @throws ModelException
      */
@@ -77,7 +72,6 @@ abstract class Model
 
     /**
      * Converts to array
-     * @return array
      */
     public function asArray(): array
     {
@@ -93,7 +87,6 @@ abstract class Model
 
     /**
      * Checks if model is empty
-     * @return bool
      */
     public function isEmpty(): bool
     {
@@ -101,7 +94,6 @@ abstract class Model
     }
 
     /**
-     * @param string $key
      * @return $this|mixed|null
      */
     public function __get(string $key)
@@ -110,37 +102,23 @@ abstract class Model
     }
 
     /**
-     * @param string $key
      * @param $value
-     * @return void
      */
     public function __set(string $key, $value): void
     {
         $this->prop($key, $value);
     }
 
-    /**
-     * @param string $key
-     * @return bool
-     */
     public function __isset(string $key): bool
     {
         return isset($this->attributes[$key]);
     }
 
-    /**
-     * @param string $key
-     * @return void
-     */
     public function __unset(string $key): void
     {
         unset($this->attributes[$key]);
     }
 
-    /**
-     * @param string $key
-     * @return bool
-     */
     protected function shouldFill(string $key): bool
     {
         return in_array($key, $this->fillable, true);

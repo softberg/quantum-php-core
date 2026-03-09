@@ -39,19 +39,10 @@ class Csrf
      */
     public const TOKEN_KEY = 'csrf-token';
 
-    /**
-     * @var Csrf|null
-     */
     private static ?Csrf $instance = null;
 
-    /**
-     * @var Session
-     */
     private Session $storage;
 
-    /**
-     * @var Hasher
-     */
     private Hasher $hasher;
 
     /**
@@ -68,7 +59,6 @@ class Csrf
 
     /**
      * Csrf instance
-     * @return Csrf
      */
     public static function getInstance(): Csrf
     {
@@ -81,8 +71,6 @@ class Csrf
 
     /**
      * Generates the CSRF token or returns the previously generated one
-     * @param string $key
-     * @return string|null
      */
     public function generateToken(string $key): ?string
     {
@@ -95,8 +83,6 @@ class Csrf
 
     /**
      * Checks the token
-     * @param Request|null $request
-     * @return bool
      * @throws CsrfException
      */
     public function checkToken(?Request $request): bool

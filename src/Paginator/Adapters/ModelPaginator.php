@@ -29,21 +29,10 @@ class ModelPaginator implements PaginatorInterface
 {
     use PaginatorTrait;
 
-    /**
-     * @var string
-     */
     private string $modelClass;
 
-    /**
-     * @var DbModel
-     */
     private DbModel $model;
 
-    /**
-     * @param DbModel $model
-     * @param int $perPage
-     * @param int $page
-     */
     public function __construct(DbModel $model, int $perPage, int $page = 1)
     {
         $this->initialize($perPage, $page);

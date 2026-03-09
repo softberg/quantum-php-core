@@ -20,40 +20,22 @@ use ReflectionException;
  */
 class CronLock
 {
-    /**
-     * @var string
-     */
     private string $lockDirectory;
 
-    /**
-     * @var string
-     */
     private string $taskName;
 
-    /**
-     * @var string
-     */
     private string $lockFile;
 
     /** @var resource|null */
-    private $lockHandle = null;
+    private $lockHandle;
 
-    /**
-     * @var bool
-     */
     private bool $ownsLock = false;
 
-    /**
-     * @var int
-     */
     private int $maxLockAge;
 
     private const DEFAULT_MAX_LOCK_AGE = 86400;
 
     /**
-     * @param string $taskName
-     * @param string|null $lockDirectory
-     * @param int|null $maxLockAge
      * @throws BaseException|ConfigException|CronException|DiException|ReflectionException
      */
     public function __construct(string $taskName, ?string $lockDirectory = null, ?int $maxLockAge = null)
@@ -97,7 +79,6 @@ class CronLock
 
     /**
      * Update the lock timestamp (useful for long-running jobs)
-     * @return bool
      */
     public function refresh(): bool
     {
@@ -108,9 +89,6 @@ class CronLock
         return $this->writeTimestampToHandle($this->lockHandle);
     }
 
-    /**
-     * @return int
-     */
     public function getTimestamp(): int
     {
         if ($this->lockHandle === null) {
@@ -122,7 +100,6 @@ class CronLock
     }
 
     /**
-     * @return bool
      * @throws BaseException
      * @throws ConfigException
      * @throws DiException
@@ -150,7 +127,6 @@ class CronLock
 
     /**
      * Check if another process currently holds the lock.
-     * @return bool
      * @throws BaseException
      * @throws ConfigException
      * @throws DiException
@@ -178,10 +154,6 @@ class CronLock
         return false;
     }
 
-    /**
-     * @param string $taskName
-     * @return string
-     */
     private function sanitizeTaskName(string $taskName): string
     {
         $taskName = trim($taskName);
@@ -196,26 +168,18 @@ class CronLock
         return $taskName !== '' ? $taskName : 'default';
     }
 
-    /**
-     * @param string|null $lockDirectory
-     * @return string
-     */
     private function resolveLockDirectory(?string $lockDirectory): string
     {
         $path = $lockDirectory ?? cron_config('lock_path');
         return $path ?? $this->getDefaultLockDirectory();
     }
 
-    /**
-     * @return string
-     */
     private function getDefaultLockDirectory(): string
     {
         return base_dir() . DS . 'runtime' . DS . 'cron' . DS . 'locks';
     }
 
     /**
-     * @return void
      * @throws BaseException
      * @throws ConfigException
      * @throws CronException
@@ -236,8 +200,6 @@ class CronLock
     }
 
     /**
-     * @param string $directory
-     * @return void
      * @throws BaseException
      * @throws ConfigException
      * @throws CronException
@@ -262,7 +224,6 @@ class CronLock
     }
 
     /**
-     * @return void
      * @throws BaseException
      * @throws ConfigException
      * @throws DiException
@@ -305,7 +266,6 @@ class CronLock
 
     /**
      * @param $handle
-     * @return bool
      */
     private function writeTimestampToHandle($handle): bool
     {
@@ -332,7 +292,6 @@ class CronLock
 
     /**
      * @param $handle
-     * @return int|null
      */
     private function readTimestampFromHandle($handle): ?int
     {
@@ -344,7 +303,7 @@ class CronLock
             return null;
         }
 
-        $timestamp = (int) trim((string) $content);
+        $timestamp = (int) trim($content);
         return $timestamp > 0 ? $timestamp : null;
     }
 }

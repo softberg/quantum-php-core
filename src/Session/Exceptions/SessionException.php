@@ -25,9 +25,6 @@ use Quantum\App\Exceptions\BaseException;
  */
 class SessionException extends BaseException
 {
-    /**
-     * @return SessionException
-     */
     public static function sessionNotStarted(): self
     {
         return new self(
@@ -36,9 +33,6 @@ class SessionException extends BaseException
         );
     }
 
-    /**
-     * @return SessionException
-     */
     public static function sessionNotDestroyed(): self
     {
         return new self(

@@ -83,8 +83,7 @@ abstract class AppTestCase extends TestCase
             [$method],
             $uri,
             'TestController',
-            'testAction',
-            null
+            'testAction'
         );
         $route->module('Test');
 

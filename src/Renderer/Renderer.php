@@ -37,25 +37,17 @@ class Renderer
 
     private TemplateRendererInterface $adapter;
 
-    /**
-     * @param TemplateRendererInterface $adapter
-     */
     public function __construct(TemplateRendererInterface $adapter)
     {
         $this->adapter = $adapter;
     }
 
-    /**
-     * @return TemplateRendererInterface
-     */
     public function getAdapter(): TemplateRendererInterface
     {
         return $this->adapter;
     }
 
     /**
-     * @param string $method
-     * @param array|null $arguments
      * @return mixed
      * @throws BaseException
      */

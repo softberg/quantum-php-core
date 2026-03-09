@@ -22,12 +22,6 @@ use Quantum\HttpClient\HttpClient;
  */
 interface CloudAppInterface
 {
-    /**
-     * @param string $appKey
-     * @param string $appSecret
-     * @param TokenServiceInterface $tokenService
-     * @param HttpClient $httpClient
-     */
     public function __construct(
         string $appKey,
         string $appSecret,
@@ -37,10 +31,7 @@ interface CloudAppInterface
 
     /**
      * Send request
-     * @param string $url
      * @param array|string|null $data
-     * @param array $headers
-     * @param string $method
      * @return mixed
      */
     public function sendRequest(

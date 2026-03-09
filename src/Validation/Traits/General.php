@@ -32,8 +32,6 @@ trait General
 {
     /**
      * Checks Field Required
-     * @param string $value
-     * @return bool
      */
     protected function required(string $value): bool
     {
@@ -42,8 +40,6 @@ trait General
 
     /**
      * Checks Email
-     * @param string $value
-     * @return bool
      */
     protected function email(string $value): bool
     {
@@ -52,8 +48,6 @@ trait General
 
     /**
      * Checks for a valid credit card number
-     * @param string $value
-     * @return bool
      */
     protected function creditCard(string $value): bool
     {
@@ -86,8 +80,6 @@ trait General
 
     /**
      * Checks for a valid IBAN
-     * @param string $value
-     * @return bool
      */
     protected function iban(string $value): bool
     {
@@ -112,8 +104,6 @@ trait General
 
     /**
      * Checks for a valid format human name
-     * @param string $value
-     * @return bool
      */
     protected function name(string $value): bool
     {
@@ -122,8 +112,6 @@ trait General
 
     /**
      * Checks that the provided string is a likely street address.
-     * @param string $value
-     * @return bool
      */
     protected function streetAddress(string $value): bool
     {
@@ -136,8 +124,6 @@ trait General
 
     /**
      * Validates the phone number // 555-555-5555 , 5555425555, 555 555 5555, 1(519) 555-4444, 1 (519) 555-4422, +1-555-555-5555
-     * @param string $value
-     * @return bool
      */
     protected function phoneNumber(string $value): bool
     {
@@ -148,9 +134,6 @@ trait General
 
     /**
      * Determines if the provided input is a valid date
-     * @param string $value
-     * @param string|null $format
-     * @return bool
      */
     protected function date(string $value, ?string $format = null): bool
     {
@@ -168,9 +151,6 @@ trait General
 
     /**
      * Ensures the value starts with a certain character / set of character
-     * @param string $value
-     * @param string|null $text
-     * @return bool
      */
     protected function starts(string $value, ?string $text = null): bool
     {
@@ -179,9 +159,6 @@ trait General
 
     /**
      * Custom regex validator
-     * @param string $value
-     * @param string $pattern
-     * @return bool
      */
     protected function regex(string $value, string $pattern): bool
     {
@@ -190,8 +167,6 @@ trait General
 
     /**
      * Validates JSON string
-     * @param string $value
-     * @return bool
      */
     protected function jsonString(string $value): bool
     {
@@ -202,9 +177,6 @@ trait General
 
     /**
      * Validates same value for both fields
-     * @param string $value
-     * @param string $otherField
-     * @return bool
      */
     protected function same(string $value, string $otherField): bool
     {
@@ -214,9 +186,6 @@ trait General
     /**
      * Validates uniqueness
      * @param $value
-     * @param string $className
-     * @param string $columnName
-     * @return bool
      * @throws BaseException
      * @throws ModelException
      */
@@ -233,9 +202,6 @@ trait General
     /**
      * Validates record existence
      * @param $value
-     * @param string $className
-     * @param string $columnName
-     * @return bool
      * @throws BaseException
      * @throws ModelException
      */
@@ -251,8 +217,6 @@ trait General
 
     /**
      * Check Captcha
-     * @param string $value
-     * @return bool
      * @throws BaseException
      * @throws ConfigException
      * @throws DiException

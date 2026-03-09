@@ -19,8 +19,6 @@ use Quantum\Di\Exceptions\DiException;
 use Quantum\Session\Session;
 
 /**
- * @param string|null $adapter
- * @return Session
  * @throws BaseException
  * @throws ConfigException
  * @throws DiException

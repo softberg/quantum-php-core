@@ -24,9 +24,6 @@ use Quantum\App\Enums\ExceptionMessages;
  */
 class AppException extends BaseException
 {
-    /**
-     * @return AppException
-     */
     public static function missingAppKey(): self
     {
         return new self(

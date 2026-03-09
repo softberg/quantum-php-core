@@ -19,8 +19,6 @@ use Quantum\Di\Exceptions\DiException;
 use Quantum\Logger\Logger;
 
 /**
- * @param string|null $adapter
- * @return Logger
  * @throws BaseException
  * @throws ConfigException
  * @throws DiException
@@ -34,8 +32,6 @@ function logger(?string $adapter = null): Logger
 /**
  * Reports error
  * @param $var
- * @param array $context
- * @return void
  * @throws ConfigException
  * @throws DiException
  * @throws ReflectionException
@@ -49,8 +45,6 @@ function error($var, array $context = []): void
 /**
  * Reports warning
  * @param $var
- * @param array $context
- * @return void
  * @throws BaseException
  * @throws ConfigException
  * @throws DiException
@@ -64,8 +58,6 @@ function warning($var, array $context = []): void
 /**
  * Reports notice
  * @param $var
- * @param array $context
- * @return void
  * @throws BaseException
  * @throws ConfigException
  * @throws DiException
@@ -79,8 +71,6 @@ function notice($var, array $context = []): void
 /**
  * Reports info
  * @param $var
- * @param array $context
- * @return void
  * @throws BaseException
  * @throws ConfigException
  * @throws DiException
@@ -94,8 +84,6 @@ function info($var, array $context = []): void
 /**
  * Reports debug
  * @param $var
- * @param array $context
- * @return void
  * @throws BaseException
  * @throws ConfigException
  * @throws DiException

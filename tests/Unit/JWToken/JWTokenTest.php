@@ -58,7 +58,7 @@ class JWTokenTest extends AppTestCase
 
         $this->assertNotEmpty($this->jwtToken->fetchPayload());
 
-        $jwtEncoded = $this->jwtToken->setAlgorithm('HS512')->compose();
+        $this->jwtToken->setAlgorithm('HS512')->compose();
     }
 
     public function testRetrieveFetchPayload(): void

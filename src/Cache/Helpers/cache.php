@@ -19,8 +19,6 @@ use Quantum\Di\Exceptions\DiException;
 use Quantum\Cache\Cache;
 
 /**
- * @param string|null $adapter
- * @return Cache
  * @throws BaseException
  * @throws ConfigException
  * @throws DiException

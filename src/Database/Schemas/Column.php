@@ -117,19 +117,10 @@ class Column
      */
     public const ATTR_ZEROFILL = 'UNSIGNED ZEROFILL';
 
-    /**
-     * @var string
-     */
     private string $name;
 
-    /**
-     * @var string|null
-     */
     private ?string $newName = null;
 
-    /**
-     * @var string|null
-     */
     private ?string $type = null;
 
     /**
@@ -137,14 +128,8 @@ class Column
      */
     private $constraint;
 
-    /**
-     * @var string
-     */
     private ?string $attribute = null;
 
-    /**
-     * @var string
-     */
     private string $nullable = 'NOT NULL';
 
     /**
@@ -152,45 +137,22 @@ class Column
      */
     private $default;
 
-    /**
-     * @var bool
-     */
     private bool $defaultQuoted = true;
 
-    /**
-     * @var string|null
-     */
     private ?string $autoincrement = null;
 
-    /**
-     * @var string|null
-     */
     private ?string $indexKey = null;
 
-    /**
-     * @var string|null
-     */
     private ?string $indexName = null;
 
-    /**
-     * @var string|null
-     */
     private ?string $indexDrop = null;
 
-    /**
-     * @var string|null
-     */
     private ?string $comment = null;
 
-    /**
-     * @var string|null
-     */
     private ?string $afterColumn = null;
 
     /**
      * Column constructor.
-     * @param string $name
-     * @param string|null $type
      * @param mixed $constraint
      */
     public function __construct(string $name, ?string $type = null, $constraint = null)
@@ -205,8 +167,6 @@ class Column
 
     /**
      * Renames the column
-     * @param string $newName
-     * @return $this
      */
     public function renameTo(string $newName): Column
     {
@@ -222,8 +182,6 @@ class Column
 
     /**
      * Gets the column property
-     * @param string $property
-     * @param string|null $action
      * @return mixed
      */
     public function get(string $property, ?string $action = null)
@@ -250,7 +208,6 @@ class Column
 
     /**
      * Adds an index key to the column
-     * @param string|null $name
      */
     public function index(?string $name = null): void
     {
@@ -263,7 +220,6 @@ class Column
 
     /**
      * Adds unique key to the column
-     * @param string|null $name
      */
     public function unique(?string $name = null): void
     {
@@ -276,7 +232,6 @@ class Column
 
     /**
      * Adds a fulltext key the column
-     * @param string|null $name
      */
     public function fulltext(?string $name = null): void
     {
@@ -289,7 +244,6 @@ class Column
 
     /**
      * Adds a spatial key the column
-     * @param string|null $name
      */
     public function spatial(?string $name = null): void
     {
@@ -302,7 +256,6 @@ class Column
 
     /**
      * Adds or removes nullable property
-     * @param bool $indeed
      */
     public function nullable(bool $indeed = true): void
     {
@@ -312,7 +265,6 @@ class Column
     /**
      * Adds default value to the column
      * @param mixed $value
-     * @param bool $quoted
      */
     public function default($value, bool $quoted = true): void
     {
@@ -322,7 +274,6 @@ class Column
 
     /**
      * Adds or removes attribute to the column
-     * @param string|null $value
      */
     public function attribute(?string $value): void
     {
@@ -331,7 +282,6 @@ class Column
 
     /**
      * Adds or removes comment to the column
-     * @param string|null $comment
      */
     public function comment(?string $comment): void
     {
@@ -340,7 +290,6 @@ class Column
 
     /**
      * Adds column after a given column
-     * @param string $columnName
      */
     public function after(string $columnName): void
     {
@@ -349,7 +298,6 @@ class Column
 
     /**
      * Adds quotes on default value
-     * @return bool
      */
     public function defaultQuoted(): bool
     {

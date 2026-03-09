@@ -16,7 +16,6 @@ use Quantum\Cookie\Cookie;
 
 /**
  * Gets cookie handler
- * @return Cookie
  */
 function cookie(): Cookie
 {

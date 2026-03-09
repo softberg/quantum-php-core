@@ -22,8 +22,7 @@ class ViewHelperTest extends AppTestCase
             ['GET', 'POST'],
             '/test',
             'TestController',
-            'testAction',
-            null
+            'testAction'
         );
         $route->module('Test');
 

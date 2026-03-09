@@ -31,14 +31,8 @@ use ReflectionException;
  */
 class MailTrap
 {
-    /**
-     * @var FileSystem
-     */
     private FileSystem $fs;
 
-    /**
-     * @var MessageParser
-     */
     private MessageParser $parser;
 
     /**
@@ -46,14 +40,8 @@ class MailTrap
      */
     private $message;
 
-    /**
-     * @var MailTrap|null
-     */
     private static ?MailTrap $instance = null;
 
-    /**
-     * @var string
-     */
     private string $emailsDirectory;
 
     /**
@@ -71,7 +59,6 @@ class MailTrap
 
     /**
      * Get Instance
-     * @return MailTrap
      */
     public static function getInstance(): MailTrap
     {
@@ -84,9 +71,6 @@ class MailTrap
 
     /**
      * Saves the message on the local file
-     * @param string $filename
-     * @param string $content
-     * @return bool
      */
     public function saveMessage(string $filename, string $content): bool
     {
@@ -99,8 +83,6 @@ class MailTrap
 
     /**
      * Gets the parsed email
-     * @param string $filename
-     * @return $this
      * @throws BaseException
      */
     public function parseMessage(string $filename): MailTrap
@@ -117,7 +99,6 @@ class MailTrap
 
     /**
      * Gets the parsed message ID
-     * @return string|null
      */
     public function getParsedMessageId(): ?string
     {
@@ -126,7 +107,6 @@ class MailTrap
 
     /**
      * Gets the parsed X Mailer
-     * @return string|null
      */
     public function getParsedXMailer(): ?string
     {
@@ -135,7 +115,6 @@ class MailTrap
 
     /**
      * Gets the parsed mime version
-     * @return string|null
      */
     public function getParsedMimeVersion(): ?string
     {
@@ -144,7 +123,6 @@ class MailTrap
 
     /**
      * Gets the parsed content type of the email
-     * @return string|null
      */
     public function getParsedContentType(): ?string
     {
@@ -153,7 +131,6 @@ class MailTrap
 
     /**
      * Gets the parsed date
-     * @return string|null
      */
     public function getParsedDate(): ?string
     {
@@ -162,7 +139,6 @@ class MailTrap
 
     /**
      * Gets the parsed 'To' addresses
-     * @return array
      */
     public function getParsedToAddresses(): array
     {
@@ -172,7 +148,6 @@ class MailTrap
 
     /**
      * Gets the parsed 'From' address
-     * @return string|null
      */
     public function getParsedFromAddress(): ?string
     {
@@ -181,7 +156,6 @@ class MailTrap
 
     /**
      * Gets the parsed 'CC' addresses
-     * @return array
      */
     public function getParsedCcAddresses(): array
     {
@@ -191,7 +165,6 @@ class MailTrap
 
     /**
      * Gets the parsed 'BCC' addresses
-     * @return array
      */
     public function getParsedBccAddresses(): array
     {
@@ -201,7 +174,6 @@ class MailTrap
 
     /**
      * Gets the 'Reply To' addresses
-     * @return array
      */
     public function getParsedReplyToAddresses(): array
     {
@@ -211,7 +183,6 @@ class MailTrap
 
     /**
      * Gets the parsed subject
-     * @return string|null
      */
     public function getParsedSubject(): ?string
     {
@@ -220,7 +191,6 @@ class MailTrap
 
     /**
      * Gets the parsed body
-     * @return string
      */
     public function getParsedBody(): string
     {
@@ -241,7 +211,6 @@ class MailTrap
 
     /**
      * Gets the parsed attachments
-     * @return array|null
      */
     public function getParsedAttachments(): ?array
     {

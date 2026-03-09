@@ -60,24 +60,12 @@ class Table
      */
     public const RENAME = 4;
 
-    /**
-     * @var string
-     */
     private string $name;
 
-    /**
-     * @var string
-     */
     private string $newName = '';
 
-    /**
-     * @var int|null
-     */
     private ?int $action = null;
 
-    /**
-     * @var array
-     */
     private array $columns = [];
 
     /**
@@ -92,7 +80,6 @@ class Table
 
     /**
      * Table constructor.
-     * @param string $name
      */
     public function __construct(string $name)
     {
@@ -111,8 +98,6 @@ class Table
 
     /**
      * Renames the table
-     * @param string $newName
-     * @return Table
      */
     public function renameTo(string $newName): Table
     {
@@ -122,9 +107,6 @@ class Table
 
     /**
      * Sets an action on a table to be performed
-     * @param int $action
-     * @param array|null $data
-     * @return Table
      */
     public function setAction(int $action, ?array $data = null): Table
     {
@@ -140,10 +122,7 @@ class Table
 
     /**
      * Adds column to the table
-     * @param string $name
-     * @param string $type
      * @param mixed $constraint
-     * @return Table
      */
     public function addColumn(string $name, string $type, $constraint = null): Table
     {
@@ -157,10 +136,7 @@ class Table
 
     /**
      * Modifies the column
-     * @param string $name
-     * @param string $type
      * @param mixed $constraint
-     * @return Table
      */
     public function modifyColumn(string $name, string $type, $constraint = null): Table
     {
@@ -176,8 +152,6 @@ class Table
 
     /**
      * Renames the column name
-     * @param string $oldName
-     * @param string $newName
      */
     public function renameColumn(string $oldName, string $newName): void
     {
@@ -191,7 +165,6 @@ class Table
 
     /**
      * Drops the column
-     * @param string $name
      */
     public function dropColumn(string $name): void
     {
@@ -205,9 +178,6 @@ class Table
 
     /**
      * Adds new index to column
-     * @param string $columnName
-     * @param string $indexType
-     * @param string|null $indexName
      */
     public function addIndex(string $columnName, string $indexType, ?string $indexName = null): void
     {
@@ -223,7 +193,6 @@ class Table
 
     /**
      * Drops the column index
-     * @param string $indexName
      */
     public function dropIndex(string $indexName): void
     {
@@ -237,8 +206,6 @@ class Table
 
     /**
      * Adds columns after specified one
-     * @param string $columnName
-     * @return $this
      */
     public function after(string $columnName): Table
     {
@@ -248,7 +215,6 @@ class Table
 
     /**
      * Gets the generated query
-     * @return string
      */
     public function getSql(): string
     {
@@ -274,8 +240,6 @@ class Table
 
     /**
      * Allows to call methods of Column class
-     * @param string $method
-     * @param array|null $arguments
      * @return $this
      * @throws BaseException
      */
@@ -304,8 +268,6 @@ class Table
 
     /**
      * Checks if column exists on a table
-     * @param string $columnName
-     * @return bool
      * @throws DatabaseException
      */
     private function checkColumnExists(string $columnName): bool
@@ -326,7 +288,6 @@ class Table
 
     /**
      * Gets the column key
-     * @return int
      */
     private function columnKey(): int
     {

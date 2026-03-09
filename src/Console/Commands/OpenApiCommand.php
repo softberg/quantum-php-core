@@ -36,7 +36,6 @@ class OpenApiCommand extends QtCommand
 {
     /**
      * File System
-     * @var FileSystem
      */
     protected FileSystem $fs;
 
@@ -49,13 +48,11 @@ class OpenApiCommand extends QtCommand
 
     /**
      * Command name
-     * @var string|null
      */
     protected ?string $name = 'install:openapi';
 
     /**
      * Command description
-     * @var string|null
      */
     protected ?string $description = 'Generates files for OpenApi UI';
 
@@ -69,25 +66,21 @@ class OpenApiCommand extends QtCommand
 
     /**
      * Command help text
-     * @var string|null
      */
     protected ?string $help = 'The command will publish OpenApi UI resources';
 
     /**
      * Path to public debug bar resources
-     * @var string
      */
     private string $publicOpenApiFolderPath = 'public/assets/OpenApiUi';
 
     /**
      * Path to vendor debug bar resources
-     * @var string
      */
     private string $vendorOpenApiFolderPath = 'vendor/swagger-api/swagger-ui/dist';
 
     /**
      * Exclude File Names
-     * @var array
      */
     private array $excludeFileNames = ['index.html', 'swagger-initializer.js', 'favicon-16x16.png', 'favicon-32x32.png'];
 
@@ -164,7 +157,6 @@ class OpenApiCommand extends QtCommand
 
     /**
      * Generates file with OpenApi specifications
-     * @param string $module
      */
     private function generateOpenapiSpecification(string $module): void
     {
@@ -181,8 +173,6 @@ class OpenApiCommand extends QtCommand
 
     /**
      * Gets the OpenApi routes
-     * @param string $module
-     * @return string
      */
     private function openapiRoutes(string $module): string
     {

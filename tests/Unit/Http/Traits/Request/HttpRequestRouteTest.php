@@ -35,8 +35,7 @@ class HttpRequestRouteTest extends AppTestCase
             ['GET'],
             '/test',
             'TestController',
-            'tests',
-            null
+            'tests'
         );
 
         $matched = new MatchedRoute($route, ['id' => 1]);
@@ -52,8 +51,7 @@ class HttpRequestRouteTest extends AppTestCase
             ['GET'],
             '/test',
             'TestController',
-            'tests',
-            null
+            'tests'
         );
 
         $matched = new MatchedRoute($route, []);

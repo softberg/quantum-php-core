@@ -41,14 +41,8 @@ class SleekDbal implements DbalInterface
     use Reducer;
     use Join;
 
-    /**
-     * @var bool
-     */
     protected bool $isNew = false;
 
-    /**
-     * @var array
-     */
     protected array $data = [];
 
     /**
@@ -56,14 +50,8 @@ class SleekDbal implements DbalInterface
      */
     protected $modifiedFields = [];
 
-    /**
-     * @var array
-     */
     protected array $criterias = [];
 
-    /**
-     * @var array
-     */
     protected array $havings = [];
 
     /**
@@ -124,7 +112,6 @@ class SleekDbal implements DbalInterface
 
     /**
      * ORM Model
-     * @var Store|null
      */
     private ?Store $ormModel = null;
 
@@ -148,13 +135,6 @@ class SleekDbal implements DbalInterface
         'BETWEEN', 'NOT BETWEEN',
     ];
 
-    /**
-     * @param string $table
-     * @param string|null $modelName
-     * @param string $idColumn
-     * @param array $foreignKeys
-     * @param array $hidden
-     */
     public function __construct(
         string $table,
         ?string $modelName = null,
@@ -189,17 +169,12 @@ class SleekDbal implements DbalInterface
 
     /**
      * @param $modifiedFields
-     * @return void
      */
     public function setModifiedFields($modifiedFields): void
     {
         $this->modifiedFields = $modifiedFields;
     }
 
-    /**
-     * @param bool $isNew
-     * @return void
-     */
     public function setIsNew(bool $isNew): void
     {
         $this->isNew = $isNew;
@@ -231,7 +206,6 @@ class SleekDbal implements DbalInterface
 
     /**
      * Gets the ORM model
-     * @return Store
      * @throws DatabaseException
      * @throws IOException
      * @throws InvalidArgumentException
@@ -259,9 +233,6 @@ class SleekDbal implements DbalInterface
         return $this->ormModel;
     }
 
-    /**
-     * @param array|null $modelData
-     */
     public function updateOrmModel(?array $modelData): void
     {
         $this->data = $modelData;
@@ -284,7 +255,6 @@ class SleekDbal implements DbalInterface
 
     /**
      * Gets the query builder object
-     * @return QueryBuilder
      * @throws BaseException
      * @throws DatabaseException
      * @throws IOException
@@ -335,7 +305,6 @@ class SleekDbal implements DbalInterface
 
     /**
      * Gets foreign keys
-     * @return array
      */
     public function getForeignKeys(): array
     {
@@ -344,7 +313,6 @@ class SleekDbal implements DbalInterface
 
     /**
      * Gets the associated model name
-     * @return string
      */
     public function getModelName(): string
     {

@@ -47,8 +47,6 @@ trait WebAppTrait
     }
 
     /**
-     * @param Request $request
-     * @param Response $response
      * @throws BaseException
      * @throws DiException
      * @throws ReflectionException
@@ -70,10 +68,9 @@ trait WebAppTrait
     }
 
     /**
-     * @return ViewCache
      * @throws ConfigException
      * @throws DiException
-     * @throws ReflectionException
+     * @throws ReflectionException|\Quantum\Loader\Exceptions\LoaderException
      */
     private function setupViewCache(): ViewCache
     {
@@ -87,7 +84,6 @@ trait WebAppTrait
     }
 
     /**
-     * @param Response $response
      * @throws ConfigException
      * @throws DiException
      * @throws ReflectionException

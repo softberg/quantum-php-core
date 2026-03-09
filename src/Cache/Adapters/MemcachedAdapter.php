@@ -41,7 +41,6 @@ class MemcachedAdapter implements CacheInterface
     private Memcached $memcached;
 
     /**
-     * @param array $params
      * @throws BaseException
      */
     public function __construct(array $params)
@@ -168,8 +167,6 @@ class MemcachedAdapter implements CacheInterface
 
     /**
      * Gets the hashed key
-     * @param string $key
-     * @return string
      */
     private function keyHash(string $key): string
     {

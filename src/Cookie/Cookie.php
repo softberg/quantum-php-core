@@ -43,8 +43,6 @@ class Cookie implements CookieStorageInterface
 
     /**
      *  Gets the cookie instance
-     * @param array $storage
-     * @return Cookie
      */
     public static function getInstance(array &$storage): Cookie
     {

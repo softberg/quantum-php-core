@@ -26,19 +26,16 @@ class CronRunCommand extends QtCommand
 {
     /**
      * The console command name.
-     * @var string|null
      */
     protected ?string $name = 'cron:run';
 
     /**
      * The console command description.
-     * @var string|null
      */
     protected ?string $description = 'Run scheduled cron tasks';
 
     /**
      * Command help text.
-     * @var string|null
      */
     protected ?string $help = 'Executes scheduled tasks defined in the cron directory. Use --task to run a single task or --force to bypass locks.';
 
@@ -78,9 +75,6 @@ class CronRunCommand extends QtCommand
 
     /**
      * Run all due tasks
-     * @param CronManager $manager
-     * @param bool $force
-     * @return void
      */
     private function runAllDueTasks(CronManager $manager, bool $force): void
     {
@@ -115,10 +109,6 @@ class CronRunCommand extends QtCommand
 
     /**
      * Run a specific task
-     * @param CronManager $manager
-     * @param string $taskName
-     * @param bool $force
-     * @return void
      * @throws CronException
      */
     private function runSpecificTask(CronManager $manager, string $taskName, bool $force): void

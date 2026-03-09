@@ -41,17 +41,11 @@ class Logger implements LoggerInterface
 
     private ReportableInterface $adapter;
 
-    /**
-     * @param ReportableInterface $adapter
-     */
     public function __construct(ReportableInterface $adapter)
     {
         $this->adapter = $adapter;
     }
 
-    /**
-     * @return ReportableInterface
-     */
     public function getAdapter(): ReportableInterface
     {
         return $this->adapter;

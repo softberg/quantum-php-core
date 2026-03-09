@@ -22,9 +22,6 @@ class MigrationTemplate
 {
     /**
      * Create migration template
-     * @param string $className
-     * @param string $tableName
-     * @return string
      */
     public static function create(string $className, string $tableName): string
     {
@@ -52,9 +49,6 @@ class ' . ucfirst($className) . ' extends QtMigration
 
     /**
      * Alter migration template
-     * @param string $className
-     * @param string $tableName
-     * @return string
      */
     public static function alter(string $className, string $tableName): string
     {
@@ -81,9 +75,6 @@ class ' . ucfirst($className) . ' extends QtMigration
 
     /**
      * Rename migration template
-     * @param string $className
-     * @param string $tableName
-     * @return string
      */
     public static function rename(string $className, string $tableName): string
     {
@@ -110,9 +101,6 @@ class ' . ucfirst($className) . ' extends QtMigration
 
     /**
      * Drop migration template
-     * @param string $className
-     * @param string $tableName
-     * @return string
      */
     public static function drop(string $className, string $tableName): string
     {

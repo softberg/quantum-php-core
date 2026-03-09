@@ -25,9 +25,6 @@ use Quantum\Jwt\Enums\ExceptionMessages;
  */
 class JwtException extends BaseException
 {
-    /**
-     * @return JwtException
-     */
     public static function payloadNotFound(): self
     {
         return new self(

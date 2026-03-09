@@ -35,40 +35,27 @@ class Environment
 {
     /**
      * Environment file
-     * @var string
      */
     private string $envFile = '.env';
 
-    /**
-     * @var bool
-     */
     private bool $isMutable = false;
 
     /**
      * Loaded env content
-     * @var array
      */
     private array $envContent = [];
 
-    /**
-     * @var bool
-     */
     private bool $loaded = false;
 
-    /**
-     * @var string
-     */
     private static string $appEnv = Env::PRODUCTION;
 
     /**
      * Instance of Environment
-     * @var Environment|null
      */
     private static ?Environment $instance = null;
 
     /**
      * GetInstance
-     * @return Environment
      */
     public static function getInstance(): Environment
     {
@@ -79,10 +66,6 @@ class Environment
         return self::$instance;
     }
 
-    /**
-     * @param bool $isMutable
-     * @return Environment
-     */
     public function setMutable(bool $isMutable): Environment
     {
         $this->isMutable = $isMutable;
@@ -91,8 +74,6 @@ class Environment
 
     /**
      * Loads environment variables from file
-     * @param Setup $setup
-     * @return void
      * @throws BaseException
      * @throws EnvException
      * @throws DiException
@@ -122,7 +103,6 @@ class Environment
 
     /**
      * Gets the app current environment
-     * @return string
      */
     public function getAppEnv(): string
     {
@@ -131,7 +111,6 @@ class Environment
 
     /**
      * Gets the environment variable value
-     * @param string $key
      * @param null|mixed $default
      * @return mixed
      * @throws EnvException
@@ -151,8 +130,6 @@ class Environment
 
     /**
      * Checks if there is a such key
-     * @param string $key
-     * @return bool
      */
     public function hasKey(string $key): bool
     {
@@ -161,8 +138,6 @@ class Environment
 
     /**
      * Gets the row of .env file by given key
-     * @param string $key
-     * @return string|null
      */
     public function getRow(string $key): ?string
     {
@@ -171,9 +146,6 @@ class Environment
 
     /**
      * Creates or updates the row in .env
-     * @param string $key
-     * @param string|null $value
-     * @return void
      * @throws BaseException
      * @throws DiException
      * @throws EnvException
@@ -207,8 +179,6 @@ class Environment
 
     /**
      * Finds the row by provided key
-     * @param string $key
-     * @return string|null
      */
     private function findKeyRow(string $key): ?string
     {
@@ -221,10 +191,6 @@ class Environment
         return null;
     }
 
-    /**
-     * @param bool $forceMutableReload
-     * @return array
-     */
     private function loadDotenvFile(bool $forceMutableReload = false): array
     {
         $baseDir = App::getBaseDir();
@@ -238,9 +204,6 @@ class Environment
         return is_array($loadedVars) ? $loadedVars : [];
     }
 
-    /**
-     * @return string
-     */
     private function getEnvFilePath(): string
     {
         return App::getBaseDir() . DS . $this->envFile;

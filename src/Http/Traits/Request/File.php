@@ -27,14 +27,11 @@ trait File
 {
     /**
      * Files
-     * @var array
      */
     private static array $__files = [];
 
     /**
      * Checks to see if request contains file
-     * @param string $key
-     * @return bool
      */
     public static function hasFile(string $key): bool
     {
@@ -60,7 +57,6 @@ trait File
 
     /**
      * Gets the file or array of file objects
-     * @param string $key
      * @return mixed
      * @throws BaseException
      */
@@ -75,7 +71,6 @@ trait File
 
     /**
      * Handle files
-     * @param array $files
      * @return array<string, UploadedFile|array<UploadedFile>>
      * @throws BaseException
      * @throws ReflectionException

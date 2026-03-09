@@ -20,9 +20,6 @@ class DropboxFileSystemAdapterTest extends AppTestCase
 
     private string $content = 'This file was created via dropbox api';
 
-    /**
-     * @var array
-     */
     private static array $response = [];
 
     public function setUp(): void

@@ -22,9 +22,6 @@ interface TemplateRendererInterface
 {
     /**
      * Renders the template
-     * @param string $view
-     * @param array $params
-     * @return string
      */
     public function render(string $view, array $params = []): string;
 }

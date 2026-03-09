@@ -31,8 +31,6 @@ class MigrationTable extends QtMigration
 
     /**
      * Creates the migrations table
-     * @param TableFactory|null $tableFactory
-     * @return void
      * @throws DatabaseException
      */
     public function up(?TableFactory $tableFactory): void
@@ -45,8 +43,6 @@ class MigrationTable extends QtMigration
 
     /**
      * Drops the migrations table
-     * @param TableFactory|null $tableFactory
-     * @return void
      * @throws DatabaseException
      */
     public function down(?TableFactory $tableFactory): void

@@ -27,13 +27,11 @@ class MigrationGenerateCommand extends QtCommand
 {
     /**
      * The console command name.
-     * @var string|null
      */
     protected ?string $name = 'migration:generate';
 
     /**
      * The console command description.
-     * @var string|null
      */
     protected ?string $description = 'Generates new migration file';
 

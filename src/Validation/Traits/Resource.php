@@ -22,8 +22,6 @@ trait Resource
 {
     /**
      * Checks for valid URL or subdomain
-     * @param string $value
-     * @return bool
      */
     protected function url(string $value): bool
     {
@@ -32,8 +30,6 @@ trait Resource
 
     /**
      * Checks to see if the url exists
-     * @param string $value
-     * @return bool
      */
     protected function urlExists(string $value): bool
     {
@@ -56,8 +52,6 @@ trait Resource
 
     /**
      * Checks for valid IP address
-     * @param string $value
-     * @return bool
      */
     protected function ip(string $value): bool
     {
@@ -66,8 +60,6 @@ trait Resource
 
     /**
      * Checks for valid IPv4 address
-     * @param string $value
-     * @return bool
      */
     protected function ipv4(string $value): bool
     {
@@ -76,8 +68,6 @@ trait Resource
 
     /**
      * Checks for valid IPv6 address
-     * @param string $value
-     * @return bool
      */
     protected function ipv6(string $value): bool
     {

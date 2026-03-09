@@ -36,7 +36,6 @@ trait AppTrait
 {
     /**
      * Sets the app base directory
-     * @param string $baseDir
      */
     public static function setBaseDir(string $baseDir): void
     {
@@ -45,7 +44,6 @@ trait AppTrait
 
     /**
      * Gets the app base directory
-     * @return string
      */
     public static function getBaseDir(): string
     {

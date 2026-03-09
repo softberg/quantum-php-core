@@ -30,11 +30,10 @@ trait Params
      * Request content type
      * @var string|null
      */
-    private static $__contentType = null;
+    private static $__contentType;
 
     /**
      * Gets the GET params.
-     * @return array
      */
     private static function getParams(): array
     {
@@ -47,7 +46,6 @@ trait Params
 
     /**
      * Gets the POST params.
-     * @return array
      */
     private static function postParams(): array
     {
@@ -60,7 +58,6 @@ trait Params
 
     /**
      * Parses and returns JSON payload parameters.
-     * @return array
      */
     private static function jsonPayloadParams(): array
     {
@@ -76,7 +73,6 @@ trait Params
 
     /**
      * Parses and returns URL-encoded parameters.
-     * @return array
      */
     private static function urlEncodedParams(): array
     {
@@ -114,7 +110,6 @@ trait Params
 
     /**
      * Retrieves the raw HTTP request body as a string.
-     * @return string
      */
     private static function getRawInput(): string
     {

@@ -31,18 +31,11 @@ class ModelCollection implements Countable, IteratorAggregate
      */
     private array $models = [];
 
-    /**
-     * @var iterable
-     */
     private iterable $originalModels;
 
-    /**
-     * @var bool
-     */
     private bool $modelsProcessed = false;
 
     /**
-     * @param iterable $models
      * @throws BaseException
      */
     public function __construct(iterable $models = [])
@@ -57,7 +50,6 @@ class ModelCollection implements Countable, IteratorAggregate
     /**
      * Add a model to the collection
      * @param Model $model
-     * @return self
      * @throws BaseException
      */
     public function add(Model $model): self
@@ -78,7 +70,6 @@ class ModelCollection implements Countable, IteratorAggregate
     /**
      * Remove a model from the collection
      * @param Model $model
-     * @return self
      * @throws BaseException
      */
     public function remove(Model $model): self
@@ -105,7 +96,6 @@ class ModelCollection implements Countable, IteratorAggregate
 
     /**
      * Get the count of models in the collection
-     * @return int
      * @throws BaseException
      */
     public function count(): int
@@ -141,7 +131,6 @@ class ModelCollection implements Countable, IteratorAggregate
 
     /**
      * Check if the collection is empty
-     * @return bool
      * @throws BaseException
      */
     public function isEmpty(): bool
@@ -151,7 +140,6 @@ class ModelCollection implements Countable, IteratorAggregate
 
     /**
      * Get an iterator for the collection
-     * @return Generator
      * @throws BaseException
      */
     public function getIterator(): Generator
@@ -191,7 +179,6 @@ class ModelCollection implements Countable, IteratorAggregate
     /**
      * Validate that an item is a Model instance
      * @param $model
-     * @return void
      * @throws BaseException
      */
     private function validateModel($model): void

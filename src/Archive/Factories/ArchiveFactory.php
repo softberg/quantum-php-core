@@ -37,8 +37,6 @@ class ArchiveFactory
     private static array $instances = [];
 
     /**
-     * @param string $type
-     * @return Archive
      * @throws BaseException
      */
     public static function get(string $type = Archive::PHAR): Archive
@@ -51,8 +49,6 @@ class ArchiveFactory
     }
 
     /**
-     * @param string $type
-     * @return Archive
      * @throws BaseException
      */
     private static function createInstance(string $type): Archive

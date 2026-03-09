@@ -183,7 +183,7 @@ class ModelSoftDeletesSleekTest extends AppTestCase
         $product->prop('description', 'High-quality product A');
         $product->prop('price', 19.99);
         $product->prop('created_at', '2025-05-01 10:00:00');
-        $product->prop('deleted_at', null);
+        $product->prop('deleted_at');
         $product->save();
 
         $product->create();
@@ -199,7 +199,7 @@ class ModelSoftDeletesSleekTest extends AppTestCase
         $product->prop('description', 'Popular product C');
         $product->prop('price', 39.99);
         $product->prop('created_at', '2025-05-01 10:00:00');
-        $product->prop('deleted_at', null);
+        $product->prop('deleted_at');
         $product->save();
 
         $product->create();
@@ -207,7 +207,7 @@ class ModelSoftDeletesSleekTest extends AppTestCase
         $product->prop('description', 'Limited edition product D');
         $product->prop('price', 49.99);
         $product->prop('created_at', '2025-05-01 10:00:00');
-        $product->prop('deleted_at', null);
+        $product->prop('deleted_at');
         $product->save();
 
         $product->create();
@@ -223,7 +223,7 @@ class ModelSoftDeletesSleekTest extends AppTestCase
         $product->prop('description', 'Premium product F');
         $product->prop('price', 69.99);
         $product->prop('created_at', '2025-05-01 10:00:00');
-        $product->prop('deleted_at', null);
+        $product->prop('deleted_at');
         $product->save();
     }
 }

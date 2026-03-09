@@ -42,19 +42,10 @@ class ViewCache
      */
     private $ttl = 300;
 
-    /**
-     * @var bool
-     */
     private bool $isEnabled;
 
-    /**
-     * @var bool
-     */
     private bool $minification = false;
 
-    /**
-     * @var FileSystem
-     */
     private FileSystem $fs;
 
     private static ?ViewCache $instance = null;
@@ -80,7 +71,6 @@ class ViewCache
     }
 
     /**
-     * @return void
      * @throws ConfigException|DiException|LoaderException|ReflectionException
      */
     public function setup(): void
@@ -101,9 +91,6 @@ class ViewCache
     }
 
     /**
-     * @param string $uri
-     * @param Response $response
-     * @return bool
      * @throws BaseException
      * @throws ConfigException
      * @throws DatabaseException
@@ -122,9 +109,6 @@ class ViewCache
     }
 
     /**
-     * @param string $key
-     * @param string $content
-     * @return $this
      * @throws BaseException
      * @throws ConfigException
      * @throws DiException
@@ -142,8 +126,6 @@ class ViewCache
     }
 
     /**
-     * @param string $key
-     * @return string|null
      * @throws BaseException
      * @throws ConfigException
      * @throws DatabaseException
@@ -161,8 +143,6 @@ class ViewCache
     }
 
     /**
-     * @param string $key
-     * @return void
      * @throws BaseException
      * @throws ConfigException
      * @throws DiException
@@ -178,8 +158,6 @@ class ViewCache
     }
 
     /**
-     * @param string $key
-     * @return bool
      * @throws BaseException
      * @throws ConfigException
      * @throws DiException
@@ -191,36 +169,21 @@ class ViewCache
         return $this->fs->exists($cacheFile) && !$this->isExpired($cacheFile);
     }
 
-    /**
-     * @return bool
-     */
     public function isEnabled(): bool
     {
         return $this->isEnabled;
     }
 
-    /**
-     * @param bool $state
-     * @return void
-     */
     public function enableCaching(bool $state): void
     {
         $this->isEnabled = $state;
     }
 
-    /**
-     * @param int $ttl
-     * @return void
-     */
     public function setTtl(int $ttl): void
     {
         $this->ttl = $ttl;
     }
 
-    /**
-     * @param bool $state
-     * @return void
-     */
     public function enableMinification(bool $state): void
     {
         $this->minification = $state;
@@ -228,7 +191,6 @@ class ViewCache
 
     /**
      * @param $cacheFile
-     * @return bool
      */
     private function isExpired(string $cacheFile): bool
     {
@@ -240,9 +202,6 @@ class ViewCache
         return false;
     }
 
-    /**
-     * @return string
-     */
     private function getCacheDir(): string
     {
         $configCacheDir = config()->get('view_cache.cache_dir', 'cache');
@@ -257,8 +216,6 @@ class ViewCache
     }
 
     /**
-     * @param string $key
-     * @return string
      * @throws ConfigException
      * @throws DiException
      * @throws ReflectionException
@@ -270,8 +227,6 @@ class ViewCache
     }
 
     /**
-     * @param string $content
-     * @return string
      * @throws BaseException
      */
     private function minify(string $content): string
@@ -283,9 +238,6 @@ class ViewCache
         return (new HtmlMin())->minify($content);
     }
 
-    /**
-     * @return bool
-     */
     protected function htmlMinifierExists(): bool
     {
         return class_exists(HtmlMin::class);

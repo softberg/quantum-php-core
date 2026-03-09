@@ -46,25 +46,17 @@ class Archive
 
     private ArchiveInterface $adapter;
 
-    /**
-     * @param ArchiveInterface $adapter
-     */
     public function __construct(ArchiveInterface $adapter)
     {
         $this->adapter = $adapter;
     }
 
-    /**
-     * @return ArchiveInterface
-     */
     public function getAdapter(): ArchiveInterface
     {
         return $this->adapter;
     }
 
     /**
-     * @param string $method
-     * @param array|null $arguments
      * @return mixed
      * @throws BaseException
      */

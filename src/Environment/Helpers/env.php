@@ -17,7 +17,6 @@ use Quantum\Environment\Environment;
 
 /**
  * Gets environment variable
- * @param string $var
  * @param $default
  * @return mixed
  * @throws EnvException

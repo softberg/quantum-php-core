@@ -27,9 +27,6 @@ class MailgunAdapter implements MailerInterface
 {
     use MailerTrait;
 
-    /**
-     * @var string
-     */
     public string $name = 'Mailgun';
 
     /**
@@ -37,19 +34,12 @@ class MailgunAdapter implements MailerInterface
      */
     private $apiKey;
 
-    /**
-     * @var string
-     */
     private string $apiUrl = 'https://api.mailgun.net/v3/';
 
-    /**
-     * @var array
-     */
     private array $data = [];
 
     /**
      * MailgunAdapter constructor
-     * @param array $params
      */
     public function __construct(array $params)
     {
@@ -88,9 +78,6 @@ class MailgunAdapter implements MailerInterface
         }
     }
 
-    /**
-     * @return bool
-     */
     private function sendEmail(): bool
     {
         try {

@@ -57,7 +57,6 @@ class AssetManager
 
     /**
      * AssetManager instance
-     * @return AssetManager
      */
     public static function getInstance(): AssetManager
     {
@@ -70,8 +69,6 @@ class AssetManager
 
     /**
      * Gets the asset by name
-     * @param string $name
-     * @return Asset|null
      */
     public function get(string $name): ?Asset
     {
@@ -86,8 +83,6 @@ class AssetManager
 
     /**
      * Asset url
-     * @param string $path
-     * @return string
      */
     public function url(string $path): string
     {
@@ -112,7 +107,6 @@ class AssetManager
 
     /**
      * Register single asset
-     * @param Asset $asset
      * @throws AssetException
      */
     public function registerAsset(Asset $asset): void
@@ -124,9 +118,6 @@ class AssetManager
         $this->store[] = $asset;
     }
 
-    /**
-     * @return void
-     */
     public function flush(): void
     {
         $this->store = [];
@@ -135,7 +126,6 @@ class AssetManager
 
     /**
      * Dumps the assets
-     * @param int $type
      * @throws AssetException
      * @throws LangException
      */
@@ -201,8 +191,6 @@ class AssetManager
 
     /**
      * Sets the Position
-     * @param Asset $asset
-     * @param int $index
      */
     private function setPosition(Asset $asset, int $index): void
     {

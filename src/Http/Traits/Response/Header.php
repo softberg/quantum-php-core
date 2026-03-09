@@ -25,14 +25,11 @@ trait Header
 {
     /**
      * Response headers
-     * @var array
      */
     private static array $__headers = [];
 
     /**
      * Checks the response header existence by given key
-     * @param string $key
-     * @return bool
      */
     public static function hasHeader(string $key): bool
     {
@@ -41,8 +38,6 @@ trait Header
 
     /**
      * Gets the response header by given key
-     * @param string $key
-     * @return string|null
      */
     public static function getHeader(string $key): ?string
     {
@@ -51,8 +46,6 @@ trait Header
 
     /**
      * Sets the response header
-     * @param string $key
-     * @param string $value
      */
     public static function setHeader(string $key, string $value): void
     {
@@ -61,7 +54,6 @@ trait Header
 
     /**
      * Get all response headers
-     * @return array
      */
     public static function allHeaders(): array
     {
@@ -70,7 +62,6 @@ trait Header
 
     /**
      * Deletes the header by given key
-     * @param string $key
      */
     public static function deleteHeader(string $key): void
     {
@@ -81,7 +72,6 @@ trait Header
 
     /**
      * Sets the content type
-     * @param string $contentType
      */
     public static function setContentType(string $contentType): void
     {
@@ -90,7 +80,6 @@ trait Header
 
     /**
      * Gets the content type
-     * @return string
      */
     public static function getContentType(): string
     {
@@ -99,8 +88,6 @@ trait Header
 
     /**
      * Redirect
-     * @param string $url
-     * @param int $code
      * @throws StopExecutionException
      */
     public static function redirect(string $url, int $code = 302): void

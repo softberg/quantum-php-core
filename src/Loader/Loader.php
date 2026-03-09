@@ -25,38 +25,31 @@ class Loader
 {
     /**
      * Current module
-     * @var string|null
      */
     private ?string $module = null;
 
     /**
      * Environment
-     * @var string|null
      */
     private ?string $pathPrefix = null;
 
     /**
      * File name
-     * @var string|null
      */
     private ?string $fileName = null;
 
     /**
      * Hierarchical
-     * @var bool
      */
     private bool $hierarchical = false;
 
     /**
      * Exception message
-     * @var string
      */
     private string $exceptionMessage = '';
 
     /**
      * Setups the loader
-     * @param Setup $setup
-     * @return $this
      */
     public function setup(Setup $setup): Loader
     {
@@ -71,9 +64,7 @@ class Loader
 
     /**
      * Sets new value
-     * @param string $property
      * @param mixed $value
-     * @return $this
      */
     public function set(string $property, $value): Loader
     {
@@ -83,7 +74,6 @@ class Loader
 
     /**
      * Loads .php files from given directory
-     * @param string $dir
      */
     public function loadDir(string $dir): void
     {
@@ -104,7 +94,6 @@ class Loader
 
     /**
      * Checks if the setup points to valid file
-     * @return bool
      */
     public function fileExists(): bool
     {
@@ -124,7 +113,6 @@ class Loader
 
     /**
      * Gets the file path
-     * @return string
      * @throws LoaderException
      */
     public function getFilePath(): string
@@ -146,9 +134,6 @@ class Loader
         return $filePath;
     }
 
-    /**
-     * @return string
-     */
     private function resolveFilePath(): string
     {
         $filePath = '';
@@ -161,8 +146,6 @@ class Loader
             $filePath .= $this->pathPrefix . DS;
         }
 
-        $filePath .= $this->fileName . '.php';
-
-        return $filePath;
+        return $filePath . ($this->fileName . '.php');
     }
 }

@@ -29,7 +29,6 @@ class IdiormPatch extends ORM
 
     /**
      * Get Instance
-     * @return IdiormPatch
      */
     public static function getInstance(): IdiormPatch
     {
@@ -42,8 +41,6 @@ class IdiormPatch extends ORM
 
     /**
      * Set ORM Object
-     * @param object $ormModel
-     * @return $this
      */
     public function use(object $ormModel): IdiormPatch
     {
@@ -53,10 +50,6 @@ class IdiormPatch extends ORM
 
     /**
      * Add an LEFT JOIN source to the query
-     * @param string $table
-     * @param array $constraint
-     * @param string|null $table_alias
-     * @return object
      */
     public function leftJoin(string $table, array $constraint, ?string $table_alias = null): object
     {
@@ -65,10 +58,6 @@ class IdiormPatch extends ORM
 
     /**
      * Add an RIGHT JOIN source to the query
-     * @param string $table
-     * @param array $constraint
-     * @param string|null $table_alias
-     * @return object
      */
     public function rightJoin(string $table, array $constraint, ?string $table_alias = null): object
     {
@@ -77,11 +66,6 @@ class IdiormPatch extends ORM
 
     /**
      * Add Join
-     * @param string $operator
-     * @param string $table
-     * @param array $constraint
-     * @param string|null $table_alias
-     * @return object
      */
     public function addJoin(string $operator, string $table, array $constraint, ?string $table_alias = null): object
     {

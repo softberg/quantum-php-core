@@ -64,23 +64,15 @@ abstract class HttpRequest
 
     /**
      * Request method
-     * @var string|null
      */
     private static ?string $__method = null;
 
-    /**
-     * @var Server
-     */
     protected static Server $server;
 
-    /**
-     * @var bool
-     */
     private static bool $initialized = false;
 
     /**
      * Initializes the request static properties using the server instance.
-     * @param Server $server
      * @throws BaseException
      * @throws ConfigException
      * @throws DiException
@@ -127,7 +119,6 @@ abstract class HttpRequest
 
     /**
      * Sets the merged request parameters
-     * @param array $params
      */
     public static function setRequestParams(array $params): void
     {
@@ -142,7 +133,6 @@ abstract class HttpRequest
 
     /**
      * Sets the uploaded files array merging handled $_FILES and parsed files
-     * @param array $files
      * @throws BaseException
      * @throws ReflectionException
      */
@@ -156,7 +146,6 @@ abstract class HttpRequest
 
     /**
      * Gets the request method
-     * @return string|null
      */
     public static function getMethod(): ?string
     {
@@ -165,8 +154,6 @@ abstract class HttpRequest
 
     /**
      * Sets the request method
-     * @param string $method
-     * @return void
      * @throws BaseException
      */
     public static function setMethod(string $method): void
@@ -180,8 +167,6 @@ abstract class HttpRequest
 
     /**
      * Checks if the current method matches the given method
-     * @param string $method
-     * @return bool
      */
     public static function isMethod(string $method): bool
     {
@@ -190,7 +175,6 @@ abstract class HttpRequest
 
     /**
      * Gets Cross Site Request Forgery Token
-     * @return string|null
      */
     public static function getCsrfToken(): ?string
     {
@@ -207,8 +191,6 @@ abstract class HttpRequest
 
     /**
      * Gets the base url
-     * @param bool $withModulePrefix
-     * @return string
      * @throws DiException|ReflectionException
      */
     public static function getBaseUrl(bool $withModulePrefix = false): string
@@ -227,7 +209,6 @@ abstract class HttpRequest
 
     /**
      * Gets the current url
-     * @return string
      */
     public static function getCurrentUrl(): string
     {
@@ -240,7 +221,6 @@ abstract class HttpRequest
 
     /**
      * Gets the protocol, host, and optional port part of the URL.
-     * @return string
      */
     private static function getHostPrefix(): string
     {
@@ -278,6 +258,6 @@ abstract class HttpRequest
      */
     private static function setRequestHeaders(): void
     {
-        self::$__headers = array_change_key_case((array) getallheaders());
+        self::$__headers = array_change_key_case(getallheaders());
     }
 }

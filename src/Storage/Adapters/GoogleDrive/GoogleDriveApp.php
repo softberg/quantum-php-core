@@ -71,32 +71,16 @@ class GoogleDriveApp implements CloudAppInterface
      */
     public const INVALID_TOKEN_ERROR_CODE = 401;
 
-    /**
-     * @var HttpClient
-     */
     private HttpClient $httpClient;
 
-    /**
-     * @var string
-     */
     private string $appKey;
 
-    /**
-     * @var string
-     */
     private string $appSecret;
 
-    /**
-     * @var TokenServiceInterface
-     */
     private TokenServiceInterface $tokenService;
 
     /**
      * GoogleDriveApp constructor
-     * @param string $appKey
-     * @param string $appSecret
-     * @param TokenServiceInterface $tokenService
-     * @param HttpClient $httpClient
      */
     public function __construct(string $appKey, string $appSecret, TokenServiceInterface $tokenService, HttpClient $httpClient)
     {
@@ -108,9 +92,6 @@ class GoogleDriveApp implements CloudAppInterface
 
     /**
      * Gets Auth URL
-     * @param string $redirectUrl
-     * @param string $accessType
-     * @return string
      * @throws BaseException
      * @throws CryptorException
      * @throws DatabaseException
@@ -131,9 +112,6 @@ class GoogleDriveApp implements CloudAppInterface
 
     /**
      * Fetch tokens
-     * @param string $code
-     * @param string $redirectUrl
-     * @return object|null
      * @throws Exception
      */
     public function fetchTokens(string $code, string $redirectUrl = ''): ?object
@@ -155,8 +133,6 @@ class GoogleDriveApp implements CloudAppInterface
 
     /**
      * Fetches the access token by refresh token
-     * @param string $refreshToken
-     * @return string
      * @throws Exception
      */
     private function fetchAccessTokenByRefreshToken(string $refreshToken): string
@@ -177,10 +153,7 @@ class GoogleDriveApp implements CloudAppInterface
 
     /**
      * Sends rpc request
-     * @param string $url
      * @param mixed $params
-     * @param string $method
-     * @param string $contentType
      * @return mixed|null
      * @throws Exception
      */
@@ -199,9 +172,6 @@ class GoogleDriveApp implements CloudAppInterface
 
     /**
      * Gets file information
-     * @param string $fileId
-     * @param bool $media
-     * @param array $params
      * @return mixed|null
      * @throws Exception
      */
@@ -213,11 +183,8 @@ class GoogleDriveApp implements CloudAppInterface
 
     /**
      * Checks if the access token need refresh
-     * @param int $code
-     * @param object|null $message
-     * @return bool
      */
-    private function accessTokenNeedsRefresh(int $code, ?object $message = null): bool
+    private function accessTokenNeedsRefresh(int $code): bool
     {
         return $code === self::INVALID_TOKEN_ERROR_CODE;
     }

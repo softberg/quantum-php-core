@@ -25,10 +25,7 @@ use Quantum\Debugger\Debugger;
 class MessageAdapter implements ReportableInterface
 {
     /**
-     * @param string $level
      * @param $message
-     * @param array|null $context
-     * @return void
      * @throws DebugBarException
      */
     public function report(string $level, $message, ?array $context = []): void

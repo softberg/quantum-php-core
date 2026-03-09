@@ -24,10 +24,6 @@ class DebuggerStore implements StorageInterface
 {
     private static array $store = [];
 
-    /**
-     * @param array $keys
-     * @return void
-     */
     public function init(array $keys): void
     {
         foreach ($keys as $key) {
@@ -45,28 +41,18 @@ class DebuggerStore implements StorageInterface
         return self::$store;
     }
 
-    /**
-     * @param string $key
-     * @return bool
-     */
     public function has(string $key): bool
     {
         return isset(self::$store[$key]);
     }
 
-    /**
-     * @param string $key
-     * @return array
-     */
     public function get(string $key): array
     {
         return self::$store[$key] ?? [];
     }
 
     /**
-     * @param string $key
      * @param mixed $value
-     * @return void
      */
     public function set(string $key, $value): void
     {
@@ -77,10 +63,6 @@ class DebuggerStore implements StorageInterface
         }
     }
 
-    /**
-     * @param string $key
-     * @return void
-     */
     public function delete(string $key): void
     {
         if ($this->has($key)) {
@@ -88,9 +70,6 @@ class DebuggerStore implements StorageInterface
         }
     }
 
-    /**
-     * @return void
-     */
     public function flush(): void
     {
         self::$store = [];

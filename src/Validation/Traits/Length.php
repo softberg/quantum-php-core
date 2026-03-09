@@ -22,9 +22,6 @@ trait Length
 {
     /**
      * Checks the min Length
-     * @param string $value
-     * @param int $minLength
-     * @return bool
      */
     protected function minLen(string $value, int $minLength): bool
     {
@@ -33,9 +30,6 @@ trait Length
 
     /**
      * Checks the max Length
-     * @param string $value
-     * @param int $maxLength
-     * @return bool
      */
     protected function maxLen(string $value, int $maxLength): bool
     {
@@ -44,9 +38,6 @@ trait Length
 
     /**
      * Checks the exact length
-     * @param string $value
-     * @param int $exactLength
-     * @return bool
      */
     protected function exactLen(string $value, int $exactLength): bool
     {

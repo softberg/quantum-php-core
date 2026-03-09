@@ -48,7 +48,6 @@ class FileAdapter implements CacheInterface
     private $cacheDir;
 
     /**
-     * @param array $params
      * @throws BaseException
      * @throws ConfigException
      * @throws DiException
@@ -207,8 +206,6 @@ class FileAdapter implements CacheInterface
 
     /**
      * Gets the path for given cache key
-     * @param string $key
-     * @return string
      */
     private function getPath(string $key): string
     {

@@ -35,7 +35,6 @@ class LangFactory
     private static ?Lang $instance = null;
 
     /**
-     * @return Lang
      * @throws ConfigException
      * @throws LangException
      * @throws DiException
@@ -58,7 +57,6 @@ class LangFactory
     }
 
     /**
-     * @return array
      * @throws ConfigException
      * @throws DiException
      * @throws ReflectionException
@@ -77,9 +75,6 @@ class LangFactory
     }
 
     /**
-     * @param array $supported
-     * @param string|null $default
-     * @return string
      * @throws LangException
      */
     private static function detectLanguage(array $supported, ?string $default): string
@@ -105,10 +100,6 @@ class LangFactory
         return $lang;
     }
 
-    /**
-     * @param array $supported
-     * @return string|null
-     */
     private static function getLangFromQuery(array $supported): ?string
     {
         $queryLang = Request::getQueryParam('lang');
@@ -116,10 +107,6 @@ class LangFactory
         return $queryLang && in_array($queryLang, $supported) ? $queryLang : null;
     }
 
-    /**
-     * @param array $supported
-     * @return string|null
-     */
     private static function getLangFromUrlSegment(array $supported): ?string
     {
         $segmentIndex = (int) config()->get('lang.url_segment');
@@ -133,10 +120,6 @@ class LangFactory
         return $segmentLang && in_array($segmentLang, $supported) ? $segmentLang : null;
     }
 
-    /**
-     * @param array $supported
-     * @return string|null
-     */
     private static function getLangFromHeader(array $supported): ?string
     {
         $acceptedLang = server()->acceptedLang();

@@ -139,7 +139,6 @@ trait Result
 
     /**
      * @param $result
-     * @return array
      */
     public function setHidden($result): array
     {

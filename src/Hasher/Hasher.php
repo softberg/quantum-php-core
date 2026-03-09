@@ -42,14 +42,8 @@ class Hasher
      */
     private int $cost = self::DEFAULT_COST;
 
-    public function __construct()
-    {
-    }
-
     /**
      * Sets the algorithm
-     * @param string $algorithm
-     * @return $this
      */
     public function setAlgorithm(string $algorithm): Hasher
     {
@@ -59,7 +53,6 @@ class Hasher
 
     /**
      * Gets the current algorithm
-     * @return string
      */
     public function getAlgorithm(): string
     {
@@ -68,8 +61,6 @@ class Hasher
 
     /**
      * Sets the cost
-     * @param int $cost
-     * @return $this
      * @throws HasherException
      */
     public function setCost(int $cost): Hasher
@@ -84,7 +75,6 @@ class Hasher
 
     /**
      * Gets the current cost
-     * @return int
      */
     public function getCost(): int
     {
@@ -93,8 +83,6 @@ class Hasher
 
     /**
      * Hashes the given string
-     * @param string $password
-     * @return string|null
      */
     public function hash(string $password): ?string
     {
@@ -103,8 +91,6 @@ class Hasher
 
     /**
      * Checks if re-hash needed
-     * @param string $hash
-     * @return bool
      */
     public function needsRehash(string $hash): bool
     {
@@ -113,9 +99,6 @@ class Hasher
 
     /**
      * Checks the given string against the hash
-     * @param string $password
-     * @param string $hash
-     * @return bool
      */
     public function check(string $password, string $hash): bool
     {
@@ -124,8 +107,6 @@ class Hasher
 
     /**
      * Gets an info of given hash
-     * @param string $hash
-     * @return array|null
      */
     public function info(string $hash): ?array
     {

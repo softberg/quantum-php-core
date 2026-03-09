@@ -24,8 +24,7 @@ class QtViewTest extends AppTestCase
             ['GET'],
             '/test',
             'SomeController',
-            'test',
-            null
+            'test'
         );
         $route->module('Test');
 

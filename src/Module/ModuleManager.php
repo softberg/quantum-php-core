@@ -32,56 +32,25 @@ class ModuleManager
 {
     public const DEFAULT_TEMPLATE = 'DemoWeb';
 
-    /**
-     * @var FileSystem
-     */
     protected FileSystem $fs;
 
-    /**
-     * @var bool
-     */
     protected bool $optionEnabled;
 
-    /**
-     * @var string
-     */
     private string $moduleName;
 
-    /**
-     * @var string
-     */
     private string $template;
 
-    /**
-     * @var string
-     */
     private string $modulePath;
 
-    /**
-     * @var string
-     */
     private string $assetsPath;
 
-    /**
-     * @var string
-     */
     private string $templatePath;
 
-    /**
-     * @var bool
-     */
     private bool $withAssets;
 
-    /**
-     * @var string
-     */
     private string $modulesConfigPath;
 
     /**
-     * @param string $moduleName
-     * @param string $template
-     * @param bool $enabled
-     * @param bool $withAssets
      * @throws BaseException
      * @throws DiException
      * @throws ConfigException
@@ -103,9 +72,6 @@ class ModuleManager
         $this->modulesConfigPath = base_dir() . DS . 'shared' . DS . 'config' . DS . 'modules.php';
     }
 
-    /**
-     * @return string
-     */
     public function getModuleName(): string
     {
         return $this->moduleName;
@@ -156,9 +122,6 @@ class ModuleManager
     }
 
     /**
-     * @param string $src
-     * @param string $dst
-     * @return array
      * @throws Exception
      */
     private function copyDirectoryWithTemplates(string $src, string $dst): array
@@ -167,9 +130,6 @@ class ModuleManager
     }
 
     /**
-     * @param string $src
-     * @param string $dst
-     * @return array
      * @throws Exception
      */
     private function copyAssets(string $src, string $dst): array
@@ -178,11 +138,6 @@ class ModuleManager
     }
 
     /**
-     * @param string $src
-     * @param string $dst
-     * @param bool $processTemplates
-     * @param array $copiedFiles
-     * @return array
      * @throws Exception
      */
     private function copyDirectory(string $src, string $dst, bool $processTemplates, array $copiedFiles = []): array
@@ -216,10 +171,6 @@ class ModuleManager
         return $copiedFiles;
     }
 
-    /**
-     * @param string $srcPath
-     * @param string $dstPath
-     */
     private function processTemplates(string $srcPath, string &$dstPath): void
     {
         $dstPath = str_replace('.php.tpl', '.php', $dstPath);
@@ -228,10 +179,6 @@ class ModuleManager
         $this->fs->put($dstPath, $processedContent);
     }
 
-    /**
-     * @param string $content
-     * @return string
-     */
     private function replacePlaceholders(string $content): string
     {
         $placeholders = [
@@ -242,10 +189,6 @@ class ModuleManager
         return str_replace(array_keys($placeholders), array_values($placeholders), $content);
     }
 
-    /**
-     * @param string $module
-     * @return array
-     */
     private function getModuleOptions(string $module): array
     {
         return [
@@ -255,8 +198,6 @@ class ModuleManager
     }
 
     /**
-     * @param array $moduleConfigs
-     * @return void
      * @throws ExceptionInterface
      */
     private function updateModuleConfigFile(array $moduleConfigs): void
@@ -267,10 +208,6 @@ class ModuleManager
         );
     }
 
-    /**
-     * @param array $copiedFiles
-     * @return bool
-     */
     protected function verifyModuleFilesCreated(array $copiedFiles): bool
     {
         foreach ($copiedFiles as $file) {

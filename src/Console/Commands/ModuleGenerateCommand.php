@@ -27,13 +27,11 @@ class ModuleGenerateCommand extends QtCommand
 {
     /**
      * Command name
-     * @var string|null
      */
     protected ?string $name = 'module:generate';
 
     /**
      * Command description
-     * @var string|null
      */
     protected ?string $description = 'Generate new module';
 
@@ -47,13 +45,11 @@ class ModuleGenerateCommand extends QtCommand
 
     /**
      * Command help text
-     * @var string|null
      */
     protected ?string $help = 'The command will create files for new module';
 
     /**
      * Command options
-     * @var array
      */
     protected array $options = [
         ['yes', 'y', 'none', 'Module enabled status'],

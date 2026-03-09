@@ -53,8 +53,7 @@ class HttpHelperTest extends AppTestCase
             ['GET'],
             '/signin',
             'AdminController',
-            'signin',
-            null
+            'signin'
         );
         $route->module('admin')->prefix('admin');
 

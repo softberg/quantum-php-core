@@ -94,19 +94,16 @@ class IdiormDbal implements DbalInterface, RelationalInterface
 
     /**
      * Idiorm Patch object
-     * @var IdiormPatch
      */
     private ?IdiormPatch $ormPatch = null;
 
     /**
      * ORM Model
-     * @var ORM|null
      */
     private ?ORM $ormModel = null;
 
     /**
      * Active connection
-     * @var array|null
      */
     private static ?array $connection = null;
 
@@ -135,13 +132,6 @@ class IdiormDbal implements DbalInterface, RelationalInterface
      */
     private static string $ormClass = ORM::class;
 
-    /**
-     * @param string $table
-     * @param string|null $modelName
-     * @param string $idColumn
-     * @param array $foreignKeys
-     * @param array $hidden
-     */
     public function __construct(
         string $table,
         ?string $modelName = null,
@@ -198,7 +188,6 @@ class IdiormDbal implements DbalInterface, RelationalInterface
 
     /**
      * Gets the ORM model
-     * @return ORM
      * @throws BaseException
      */
     public function getOrmModel(): ORM
@@ -216,7 +205,6 @@ class IdiormDbal implements DbalInterface, RelationalInterface
 
     /**
      * Gets foreign keys
-     * @return array
      */
     public function getForeignKeys(): array
     {
@@ -225,7 +213,6 @@ class IdiormDbal implements DbalInterface, RelationalInterface
 
     /**
      * Gets the associated model name
-     * @return string
      */
     public function getModelName(): string
     {
@@ -245,19 +232,11 @@ class IdiormDbal implements DbalInterface, RelationalInterface
         }
     }
 
-    /**
-     * @param ORM $ormModel
-     */
     protected function updateOrmModel(ORM $ormModel)
     {
         $this->ormModel = $ormModel;
     }
 
-    /**
-     * @param string $driver
-     * @param array $config
-     * @return array
-     */
     protected static function getBaseConfig(string $driver, array $config): array
     {
         return [
@@ -267,12 +246,6 @@ class IdiormDbal implements DbalInterface, RelationalInterface
         ];
     }
 
-    /**
-     * @param string $driver
-     * @param array $config
-     * @param string $charset
-     * @return array
-     */
     protected static function getDriverConfig(string $driver, array $config, string $charset): array
     {
         if ($driver === self::DRIVER_MYSQL || $driver === self::DRIVER_PGSQL) {
@@ -292,9 +265,6 @@ class IdiormDbal implements DbalInterface, RelationalInterface
 
     /**
      * Builds connection string
-     * @param string $driver
-     * @param array $config
-     * @return string
      */
     protected static function buildConnectionString(string $driver, array $config): string
     {

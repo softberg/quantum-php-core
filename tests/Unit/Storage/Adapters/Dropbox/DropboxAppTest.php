@@ -11,9 +11,6 @@ class DropboxAppTest extends AppTestCase
     use DropboxTokenServiceTestCase;
     use HttpClientTestCase;
 
-    /**
-     * @var DropboxApp
-     */
     private DropboxApp $dropboxApp;
 
     private string $appKey = 'x0hwm8wy63rrynm';

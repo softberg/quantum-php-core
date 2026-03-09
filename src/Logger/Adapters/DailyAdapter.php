@@ -32,7 +32,6 @@ class DailyAdapter implements ReportableInterface
     use LoggerTrait;
 
     /**
-     * @param array $params
      * @throws BaseException
      * @throws LoggerException
      * @throws DiException
@@ -47,8 +46,6 @@ class DailyAdapter implements ReportableInterface
 
     /**
      * Initialize the adapter for Daily logs
-     * @param array $params
-     * @return void
      * @throws LoggerException
      */
     protected function initialize(array $params): void

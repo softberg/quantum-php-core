@@ -25,10 +25,6 @@ use Quantum\App\Exceptions\BaseException;
  */
 class ConfigException extends BaseException
 {
-    /**
-     * @param string $name
-     * @return ConfigException
-     */
     public static function configCollision(string $name): self
     {
         return new self(

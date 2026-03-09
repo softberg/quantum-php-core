@@ -37,14 +37,8 @@ class DatabaseAdapter implements CacheInterface
      */
     private $prefix;
 
-    /**
-     * @var DbModel
-     */
     private DbModel $cacheModel;
 
-    /**
-     * @param array $params
-     */
     public function __construct(array $params)
     {
         $this->ttl = $params['ttl'];
@@ -189,8 +183,6 @@ class DatabaseAdapter implements CacheInterface
 
     /**
      * Gets the hashed key
-     * @param string $key
-     * @return string
      */
     private function keyHash(string $key): string
     {

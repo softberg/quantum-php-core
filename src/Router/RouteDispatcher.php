@@ -17,7 +17,6 @@ namespace Quantum\Router;
 use Quantum\Router\Exceptions\RouteException;
 use Quantum\Csrf\Exceptions\CsrfException;
 use Quantum\Di\Exceptions\DiException;
-use Quantum\Http\Response;
 use Quantum\Http\Request;
 use ReflectionException;
 use Quantum\Csrf\Csrf;
@@ -31,13 +30,9 @@ final class RouteDispatcher
 {
     /**
      * Dispatch a matched route.
-     * @param MatchedRoute $matched
-     * @param Request $request
-     * @param Response $response
-     * @return void
      * @throws ReflectionException|CsrfException|DiException|RouteException
      */
-    public function dispatch(MatchedRoute $matched, Request $request, Response $response): void
+    public function dispatch(MatchedRoute $matched, Request $request): void
     {
         $route = $matched->getRoute();
         $params = $matched->getParams();
@@ -67,8 +62,6 @@ final class RouteDispatcher
 
     /**
      * Resolve controller callable from the route definition.
-     * @param Route $route
-     * @return array
      * @throws RouteException
      */
     private function resolveControllerCallable(Route $route): array
@@ -91,9 +84,6 @@ final class RouteDispatcher
 
     /**
      * Invoke a callable with parameters resolved via DI autowiring.
-     * @param callable $callable
-     * @param array $params
-     * @return void
      * @throws DiException|ReflectionException
      */
     private function invoke(callable $callable, array $params): void
@@ -106,10 +96,6 @@ final class RouteDispatcher
 
     /**
      * Invoke a controller lifecycle hook if it exists.
-     * @param object $controller
-     * @param string $hook
-     * @param array $params
-     * @return void
      * @throws DiException|ReflectionException
      */
     private function callHook(object $controller, string $hook, array $params): void
@@ -121,9 +107,6 @@ final class RouteDispatcher
 
     /**
      * Verify CSRF token if controller requires it and request method applies.
-     * @param object|null $controller
-     * @param Request $request
-     * @return void
      * @throws CsrfException
      */
     private function verifyCsrf(?object $controller, Request $request): void

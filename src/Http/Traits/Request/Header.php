@@ -22,14 +22,11 @@ trait Header
 {
     /**
      * Request headers
-     * @var array
      */
     private static array $__headers = [];
 
     /**
      * Checks the request header existence by given key
-     * @param string $key
-     * @return bool
      */
     public static function hasHeader(string $key): bool
     {
@@ -40,8 +37,6 @@ trait Header
 
     /**
      * Gets the request header by given key
-     * @param string $key
-     * @return string|null
      */
     public static function getHeader(string $key): ?string
     {
@@ -55,7 +50,6 @@ trait Header
 
     /**
      * Sets the request header
-     * @param string $key
      * @param mixed $value
      */
     public static function setHeader(string $key, $value): void
@@ -65,7 +59,6 @@ trait Header
 
     /**
      * Gets all request headers
-     * @return array
      */
     public static function allHeaders(): array
     {
@@ -74,7 +67,6 @@ trait Header
 
     /**
      * Deletes the header by given key
-     * @param string $key
      */
     public static function deleteHeader(string $key): void
     {
@@ -85,7 +77,6 @@ trait Header
 
     /**
      * Gets Authorization Bearer token
-     * @return string|null
      */
     public static function getAuthorizationBearer(): ?string
     {
@@ -102,7 +93,6 @@ trait Header
 
     /**
      * Gets Basic Auth Credentials
-     * @return array|null
      */
     public static function getBasicAuthCredentials(): ?array
     {
@@ -133,7 +123,6 @@ trait Header
 
     /**
      * Checks to see if request was AJAX request
-     * @return bool
      */
     public static function isAjax(): bool
     {
@@ -142,17 +131,12 @@ trait Header
 
     /**
      * Gets the referrer
-     * @return string|null
      */
     public static function getReferrer(): ?string
     {
         return self::$server->referrer();
     }
 
-    /**
-     * @param string $key
-     * @return array
-     */
     private static function normalizeHeaderKey(string $key): array
     {
         $keyWithHyphens = str_replace('_', '-', strtolower($key));

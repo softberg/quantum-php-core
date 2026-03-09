@@ -26,10 +26,6 @@ use Quantum\App\Exceptions\BaseException;
  */
 class FileUploadException extends BaseException
 {
-    /**
-     * @param string $name
-     * @return FileUploadException
-     */
     public static function fileTypeNotAllowed(string $name): self
     {
         return new self(
@@ -38,10 +34,6 @@ class FileUploadException extends BaseException
         );
     }
 
-    /**
-     * @param string $name
-     * @return FileUploadException
-     */
     public static function incorrectMimeTypesConfig(string $name): self
     {
         return new self(

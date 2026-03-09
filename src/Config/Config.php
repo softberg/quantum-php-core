@@ -15,10 +15,10 @@
 namespace Quantum\Config;
 
 use Quantum\Config\Exceptions\ConfigException;
+use Quantum\Loader\Exceptions\LoaderException;
 use Quantum\Contracts\StorageInterface;
 use Quantum\Di\Exceptions\DiException;
 use Dflydev\DotAccessData\Data;
-use Quantum\Loader\Exceptions\LoaderException;
 use Quantum\Loader\Loader;
 use Quantum\Loader\Setup;
 use ReflectionException;
@@ -30,19 +30,12 @@ use Quantum\Di\Di;
  */
 class Config implements StorageInterface
 {
-    /**
-     * @var Data|null
-     */
     private static ?Data $configs = null;
 
-    /**
-     * @var Config|null
-     */
     private static ?Config $instance = null;
 
     /**
      * GetInstance
-     * @return Config
      */
     public static function getInstance(): Config
     {
@@ -55,7 +48,6 @@ class Config implements StorageInterface
 
     /**
      * Loads configuration
-     * @param Setup $setup
      * @throws ConfigException
      * @throws DiException
      * @throws ReflectionException
@@ -71,7 +63,6 @@ class Config implements StorageInterface
 
     /**
      * Imports new config file
-     * @param Setup $setup
      * @throws ConfigException
      * @throws DiException
      * @throws ReflectionException|LoaderException
@@ -93,7 +84,6 @@ class Config implements StorageInterface
 
     /**
      * Gets the config item by given key
-     * @param string $key
      * @param mixed $default
      * @return mixed|null
      */
@@ -108,7 +98,6 @@ class Config implements StorageInterface
 
     /**
      * Get all configs
-     * @return Data|null
      */
     public function all(): ?Data
     {
@@ -117,8 +106,6 @@ class Config implements StorageInterface
 
     /**
      * Checks config data
-     * @param string $key
-     * @return bool
      */
     public function has(string $key): bool
     {
@@ -127,9 +114,7 @@ class Config implements StorageInterface
 
     /**
      * Sets new value
-     * @param string $key
      * @param mixed $value
-     * @return void
      */
     public function set(string $key, $value): void
     {
@@ -142,7 +127,6 @@ class Config implements StorageInterface
 
     /**
      * Removes the data from config
-     * @param string $key
      */
     public function delete(string $key): void
     {

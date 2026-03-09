@@ -25,9 +25,6 @@ use Quantum\App\Exceptions\BaseException;
  */
 class EnvException extends BaseException
 {
-    /**
-     * @return EnvException
-     */
     public static function environmentImmutable(): self
     {
         return new self(
@@ -36,9 +33,6 @@ class EnvException extends BaseException
         );
     }
 
-    /**
-     * @return EnvException
-     */
     public static function environmentNotLoaded(): self
     {
         return new self(

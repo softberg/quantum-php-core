@@ -24,8 +24,6 @@ use Throwable;
 class LocalFileSystemAdapter implements LocalFilesystemAdapterInterface
 {
     /**
-     * @param string $dirname
-     * @param string|null $parentId
      * @inheritDoc
      */
     public function makeDirectory(string $dirname, ?string $parentId = null): bool
@@ -55,7 +53,6 @@ class LocalFileSystemAdapter implements LocalFilesystemAdapterInterface
 
     /**
      * Reads and returns the content of a file as JSON.
-     * @param string $filename
      * @return false|mixed
      */
     public function getJson(string $filename)
@@ -72,9 +69,6 @@ class LocalFileSystemAdapter implements LocalFilesystemAdapterInterface
     }
 
     /**
-     * @param string $filename
-     * @param string $content
-     * @param string|null $parentId
      * @inheritDoc
      */
     public function put(string $filename, string $content, ?string $parentId = null)
@@ -222,7 +216,7 @@ class LocalFileSystemAdapter implements LocalFilesystemAdapterInterface
      */
     public function fileNameWithExtension(string $path): string
     {
-        return (string) pathinfo($path, PATHINFO_BASENAME);
+        return pathinfo($path, PATHINFO_BASENAME);
     }
 
     /**
@@ -230,7 +224,7 @@ class LocalFileSystemAdapter implements LocalFilesystemAdapterInterface
      */
     public function fileName(string $path): string
     {
-        return (string) pathinfo($path, PATHINFO_FILENAME);
+        return pathinfo($path, PATHINFO_FILENAME);
     }
 
     /**
@@ -238,7 +232,7 @@ class LocalFileSystemAdapter implements LocalFilesystemAdapterInterface
      */
     public function extension(string $path): string
     {
-        return (string) pathinfo($path, PATHINFO_EXTENSION);
+        return pathinfo($path, PATHINFO_EXTENSION);
     }
 
     /**

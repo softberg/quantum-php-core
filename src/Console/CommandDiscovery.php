@@ -24,9 +24,6 @@ use ReflectionClass;
 class CommandDiscovery
 {
     /**
-     * @param string $directory
-     * @param string $namespace
-     * @return array
      * @throws ReflectionException
      */
     public static function discover(string $directory, string $namespace): array

@@ -35,17 +35,13 @@ trait LoggerTrait
 
     /**
      * Initialize the logger
-     * @param array $params
      * @throws LoggerException
      */
     abstract protected function initialize(array $params): void;
 
     /**
      * Reports a log message
-     * @param string $level
      * @param $message
-     * @param array|null $context
-     * @return void
      */
     public function report(string $level, $message, ?array $context = []): void
     {
@@ -54,10 +50,7 @@ trait LoggerTrait
 
     /**
      * Formats the log message
-     * @param string $level
      * @param $message
-     * @param array|null $context
-     * @return string
      */
     protected function formatMessage(string $level, $message, ?array $context = []): string
     {

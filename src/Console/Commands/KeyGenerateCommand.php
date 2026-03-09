@@ -27,25 +27,21 @@ class KeyGenerateCommand extends QtCommand
 {
     /**
      * Command name
-     * @var string|null
      */
     protected ?string $name = 'core:key';
 
     /**
      * Command description
-     * @var string|null
      */
     protected ?string $description = 'Generates and stores the application key';
 
     /**
      * Command help text
-     * @var string|null
      */
     protected ?string $help = 'The command will generate APP_KEY and store in .env file';
 
     /**
      * Command options
-     * @var array
      */
     protected array $options = [
         ['length', 'l', 'required', 'Length of the key', 32],
@@ -75,7 +71,6 @@ class KeyGenerateCommand extends QtCommand
 
     /**
      * Generates random string
-     * @return string
      * @throws Exception
      */
     private function generateRandomKey(): string

@@ -37,9 +37,6 @@ class AppFactory
     private static array $instances = [];
 
     /**
-     * @param string $type
-     * @param string $baseDir
-     * @return App
      * @throws BaseException
      */
     public static function create(string $type, string $baseDir): App
@@ -52,19 +49,12 @@ class AppFactory
         return self::$instances[$type];
     }
 
-    /**
-     * @param string $type
-     * @return void
-     */
     public static function destroy(string $type): void
     {
         unset(self::$instances[$type]);
     }
 
     /**
-     * @param string $type
-     * @param string $baseDir
-     * @return App
      * @throws BaseException
      */
     private static function createInstance(string $type, string $baseDir): App

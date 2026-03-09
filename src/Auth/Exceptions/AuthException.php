@@ -25,9 +25,6 @@ use Quantum\App\Exceptions\BaseException;
  */
 class AuthException extends BaseException
 {
-    /**
-     * @return AuthException
-     */
     public static function incorrectCredentials(): self
     {
         return new self(
@@ -36,9 +33,6 @@ class AuthException extends BaseException
         );
     }
 
-    /**
-     * @return AuthException
-     */
     public static function inactiveAccount(): self
     {
         return new self(
@@ -47,9 +41,6 @@ class AuthException extends BaseException
         );
     }
 
-    /**
-     * @return AuthException
-     */
     public static function incorrectVerificationCode(): self
     {
         return new self(
@@ -58,9 +49,6 @@ class AuthException extends BaseException
         );
     }
 
-    /**
-     * @return AuthException
-     */
     public static function verificationCodeExpired(): self
     {
         return new self(
@@ -69,9 +57,6 @@ class AuthException extends BaseException
         );
     }
 
-    /**
-     * @return AuthException
-     */
     public static function incorrectUserSchema(): self
     {
         return new self(

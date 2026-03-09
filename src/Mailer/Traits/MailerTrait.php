@@ -31,19 +31,16 @@ trait MailerTrait
 {
     /**
      * From address and name
-     * @var array
      */
     private array $from = [];
 
     /**
      * To addresses
-     * @var array
      */
     private array $addresses = [];
 
     /**
      * Email subject
-     * @var string|null
      */
     private ?string $subject = null;
 
@@ -51,64 +48,46 @@ trait MailerTrait
      * Email body
      * @var string|array|null
      */
-    private $message = null;
+    private $message;
 
-    /**
-     * @var string|null
-     */
     private static ?string $messageId = null;
 
     /**
      * Template path
-     * @var string|null
      */
     private ?string $templatePath = null;
 
-    /**
-     * @var HttpClient|null
-     */
     protected ?HttpClient $httpClient = null;
 
-    /**
-     * @var PHPMailer|null
-     */
     protected ?PHPMailer $mailer = null;
 
     /**
      * Reply To addresses
-     * @var array
      */
     protected array $replyToAddresses = [];
 
     /**
      * CC addresses
-     * @var array
      */
     protected array $ccAddresses = [];
 
     /**
      * BCC addresses
-     * @var array
      */
     protected array $bccAddresses = [];
 
     /**
      * Email attachments
-     * @var array
      */
     protected array $attachments = [];
 
     /**
      * Email attachments created from string
-     * @var array
      */
     protected array $stringAttachments = [];
 
     /**
      * Sets the 'From' email and the name
-     * @param string $email
-     * @param string|null $name
-     * @return MailerInterface
      */
     public function setFrom(string $email, ?string $name = null): MailerInterface
     {
@@ -119,7 +98,6 @@ trait MailerTrait
 
     /**
      * Gets 'From' email and the "name"
-     * @return array
      */
     public function getFrom(): array
     {
@@ -128,9 +106,6 @@ trait MailerTrait
 
     /**
      * Sets 'To' addresses
-     * @param string $email
-     * @param string|null $name
-     * @return MailerInterface
      */
     public function setAddress(string $email, ?string $name = null): MailerInterface
     {
@@ -144,7 +119,6 @@ trait MailerTrait
 
     /**
      * Gets 'To' addresses
-     * @return array
      */
     public function getAddresses(): array
     {
@@ -153,8 +127,6 @@ trait MailerTrait
 
     /**
      * Sets the subject
-     * @param string|null $subject
-     * @return MailerInterface
      */
     public function setSubject(?string $subject): MailerInterface
     {
@@ -173,8 +145,6 @@ trait MailerTrait
 
     /**
      * Sets the template
-     * @param string $templatePath
-     * @return MailerInterface
      */
     public function setTemplate(string $templatePath): MailerInterface
     {
@@ -184,7 +154,6 @@ trait MailerTrait
 
     /**
      * Gets the template
-     * @return string|null
      */
     public function getTemplate(): ?string
     {
@@ -194,7 +163,6 @@ trait MailerTrait
     /**
      * Sets the body
      * @param string|array $message
-     * @return MailerInterface
      */
     public function setBody($message): MailerInterface
     {
@@ -234,7 +202,6 @@ trait MailerTrait
 
     /**
      * Gets the message ID
-     * @return string|null
      * @throws Exception
      */
     public function getMessageId(): ?string
@@ -254,7 +221,6 @@ trait MailerTrait
     }
 
     /**
-     * @return bool
      * @throws \PHPMailer\PHPMailer\Exception
      * @throws Exception
      */
@@ -269,7 +235,6 @@ trait MailerTrait
 
     /**
      * Create message body from email template
-     * @return string
      */
     private function createFromTemplate(): string
     {
@@ -287,7 +252,6 @@ trait MailerTrait
 
     /**
      * Gets the complete message
-     * @return string
      * @throws Exception
      */
     private function getMessageContent(): string
@@ -301,7 +265,6 @@ trait MailerTrait
 
     /**
      * Generates the message content
-     * @return string
      * @throws Exception
      */
     private function generateMessage(): string
@@ -326,9 +289,7 @@ trait MailerTrait
 
         $message .= 'Content-Type: text/html; charset=UTF-8' . PHP_EOL . PHP_EOL;
 
-        $message .= $this->message . PHP_EOL;
-
-        return $message;
+        return $message . ($this->message . PHP_EOL);
     }
 
     /**

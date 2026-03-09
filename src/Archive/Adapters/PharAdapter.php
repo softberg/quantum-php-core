@@ -51,7 +51,6 @@ class PharAdapter implements ArchiveInterface
     }
 
     /**
-     * @return bool
      * @throws ArchiveException
      */
     public function removeArchive(): bool

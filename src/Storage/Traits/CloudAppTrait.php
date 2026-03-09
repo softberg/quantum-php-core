@@ -45,7 +45,7 @@ trait CloudAppTrait
         if ($errors) {
             $code = $errors['code'];
 
-            if ($this->accessTokenNeedsRefresh($code, $responseBody)) {
+            if ($this->accessTokenNeedsRefresh($code)) {
                 $prevUrl = $this->httpClient->url();
                 $prevData = $this->httpClient->getData();
                 $prevHeaders = $this->httpClient->getRequestHeaders();

@@ -54,7 +54,6 @@ class CronManager
 
     /**
      * CronManager constructor
-     * @param string|null $cronDirectory
      */
     public function __construct(?string $cronDirectory = null)
     {
@@ -67,9 +66,7 @@ class CronManager
      * @return void
      * @throws CronException
      */
-
     /**
-     * @return void
      * @throws CronException|BaseException|ConfigException|DiException|ReflectionException
      */
     public function loadTasks(): void
@@ -91,8 +88,6 @@ class CronManager
     }
 
     /**
-     * @param string $file
-     * @return void
      * @throws BaseException|ConfigException|CronException|DiException|ReflectionException
      */
     private function loadTaskFromFile(string $file): void
@@ -112,8 +107,6 @@ class CronManager
 
     /**
      * Create a task from array definition
-     * @param array $definition
-     * @return CronTask
      * @throws CronException
      */
     private function createTaskFromArray(array $definition): CronTask
@@ -134,9 +127,7 @@ class CronManager
      * @param bool $force Ignore locks
      * @return array Statistics
      */
-
     /**
-     * @param bool $force
      * @return array|int[]
      * @throws BaseException|ConfigException|CronException|DiException|ReflectionException
      */
@@ -157,9 +148,6 @@ class CronManager
 
     /**
      * Run a specific task by name
-     * @param string $taskName
-     * @param bool $force
-     * @return void
      * @throws BaseException|ConfigException|CronException|DiException|ReflectionException
      */
     public function runTaskByName(string $taskName, bool $force = false): void
@@ -175,9 +163,6 @@ class CronManager
 
     /**
      * Run a single task
-     * @param CronTaskInterface $task
-     * @param bool $force
-     * @return void
      * @throws BaseException|ConfigException|CronException|DiException|ReflectionException
      */
     private function runTask(CronTaskInterface $task, bool $force = false): void
@@ -223,7 +208,6 @@ class CronManager
 
     /**
      * Get execution statistics
-     * @return array
      */
     public function getStats(): array
     {
@@ -232,7 +216,6 @@ class CronManager
 
     /**
      * Get default cron directory
-     * @return string
      */
     private function getDefaultCronDirectory(): string
     {
@@ -241,10 +224,6 @@ class CronManager
 
     /**
      * Log a message
-     * @param string $level
-     * @param string $message
-     * @param array $context
-     * @return void
      */
     private function log(string $level, string $message, array $context = []): void
     {

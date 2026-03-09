@@ -12,6 +12,7 @@
  * @since 3.0.0
  */
 
+use League\CommonMark\Exception\CommonMarkException;
 use Quantum\Config\Exceptions\ConfigException;
 use Quantum\View\Exceptions\ViewException;
 use League\CommonMark\CommonMarkConverter;
@@ -24,7 +25,6 @@ use Quantum\View\RawParam;
 
 /**
  * Rendered view
- * @return string|null
  * @throws BaseException
  * @throws ConfigException
  * @throws DebugBarException
@@ -39,9 +39,6 @@ function view(): ?string
 
 /**
  * Rendered partial
- * @param string $partial
- * @param array $args
- * @return string
  * @throws BaseException
  * @throws ConfigException
  * @throws DebugBarException
@@ -55,7 +52,6 @@ function partial(string $partial, array $args = []): string
 
 /**
  * Gets the param passed to view
- * @param string $key
  * @return mixed|null
  * @throws BaseException
  * @throws ConfigException
@@ -71,7 +67,6 @@ function view_param(string $key)
 /**
  * Creates a raw param
  * @param $value
- * @return RawParam
  */
 function raw_param($value): RawParam
 {
@@ -80,7 +75,6 @@ function raw_param($value): RawParam
 
 /**
  * Rendered debug bar
- * @return string|null
  * @throws DebugBarException
  */
 function debugbar(): ?string
@@ -95,9 +89,7 @@ function debugbar(): ?string
 }
 
 /**
- * @param string $content
- * @param bool $sanitize
- * @return string
+ * @throws CommonMarkException
  */
 function markdown_to_html(string $content, bool $sanitize = false): string
 {
@@ -111,7 +103,7 @@ function markdown_to_html(string $content, bool $sanitize = false): string
 
     $html = $converter->convertToHtml($content);
 
-    if ($purifier instanceof \HTMLPurifier) {
+    if ($purifier instanceof HTMLPurifier) {
         return $purifier->purify($html);
     }
 

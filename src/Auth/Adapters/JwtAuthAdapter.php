@@ -37,10 +37,6 @@ class JwtAuthAdapter implements AuthenticatableInterface
     use AuthTrait;
 
     /**
-     * @param AuthServiceInterface $authService
-     * @param Mailer $mailer
-     * @param Hasher $hasher
-     * @param JwtToken|null $jwt
      * @throws AuthException
      */
     public function __construct(AuthServiceInterface $authService, Mailer $mailer, Hasher $hasher, ?JwtToken $jwt = null)
@@ -111,8 +107,6 @@ class JwtAuthAdapter implements AuthenticatableInterface
 
     /**
      * Refresh user data
-     * @param string $uuid
-     * @return bool
      * @throws JwtException
      */
     public function refreshUser(string $uuid): bool
@@ -130,9 +124,6 @@ class JwtAuthAdapter implements AuthenticatableInterface
 
     /**
      * Verify OTP
-     * @param int $otp
-     * @param string $otpToken
-     * @return array
      * @throws AuthException
      * @throws JwtException
      */
@@ -144,8 +135,6 @@ class JwtAuthAdapter implements AuthenticatableInterface
 
     /**
      * Get Updated Tokens
-     * @param User $user
-     * @return array
      * @throws JwtException
      */
     protected function getUpdatedTokens(User $user): array
@@ -158,8 +147,6 @@ class JwtAuthAdapter implements AuthenticatableInterface
 
     /**
      * Set Updated Tokens
-     * @param User $user
-     * @return array
      * @throws JwtException
      */
     protected function setUpdatedTokens(User $user): array
@@ -181,7 +168,6 @@ class JwtAuthAdapter implements AuthenticatableInterface
 
     /**
      * Check Refresh Token
-     * @return User|null
      */
     protected function checkRefreshToken(): ?User
     {
@@ -191,9 +177,6 @@ class JwtAuthAdapter implements AuthenticatableInterface
         );
     }
 
-    /**
-     * @return User|null
-     */
     private function getUserFromAccessToken(): ?User
     {
         $authorizationBearer = Request::getAuthorizationBearer();
@@ -210,7 +193,6 @@ class JwtAuthAdapter implements AuthenticatableInterface
     }
 
     /**
-     * @return User|null
      * @throws JwtException
      */
     private function getUserFromRefreshToken(): ?User

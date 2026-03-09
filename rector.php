@@ -10,11 +10,11 @@ use Rector\Config\RectorConfig;
 return RectorConfig::configure()
     ->withPaths([
         __DIR__ . '/src',
-        __DIR__ . '/tests',
     ])
     ->withSets([
         LevelSetList::UP_TO_PHP_80,
         SetList::TYPE_DECLARATION,
+        SetList::DEAD_CODE,
     ])
     ->withSkip([
         StrictStringParamConcatRector::class => [

@@ -20,7 +20,6 @@ use Quantum\Loader\Setup;
 if (!function_exists('cron_config')) {
     /**
      * Resolve cron configuration value
-     * @param string $key
      * @param mixed $default
      * @return mixed|null
      */
@@ -47,8 +46,6 @@ if (!function_exists('cron_config')) {
 if (!function_exists('cron_manager')) {
     /**
      * Get CronManager instance
-     * @param string|null $cronDirectory
-     * @return CronManager
      */
     function cron_manager(?string $cronDirectory = null): CronManager
     {
@@ -59,10 +56,6 @@ if (!function_exists('cron_manager')) {
 if (!function_exists('cron_task')) {
     /**
      * Create a new cron task
-     * @param string $name
-     * @param string $expression
-     * @param callable $callback
-     * @return CronTask
      * @throws \Quantum\Cron\Exceptions\CronException
      */
     function cron_task(string $name, string $expression, callable $callback): CronTask
@@ -74,8 +67,6 @@ if (!function_exists('cron_task')) {
 if (!function_exists('schedule')) {
     /**
      * Create a new schedule with fluent API
-     * @param string $name
-     * @return Schedule
      */
     function schedule(string $name): Schedule
     {

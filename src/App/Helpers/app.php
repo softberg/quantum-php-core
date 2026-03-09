@@ -16,8 +16,6 @@ use Quantum\App\Exceptions\StopExecutionException;
 
 /**
  * Stops the app execution
- * @param Closure|null $closure
- * @param int|null $code
  * @return never
  * @throws StopExecutionException
  */

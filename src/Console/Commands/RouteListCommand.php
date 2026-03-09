@@ -33,13 +33,11 @@ class RouteListCommand extends QtCommand
 {
     /**
      * The console command name.
-     * @var string|null
      */
     protected ?string $name = 'route:list';
 
     /**
      * The console command description.
-     * @var string|null
      */
     protected ?string $description = 'Display all registered routes';
 
@@ -106,9 +104,6 @@ class RouteListCommand extends QtCommand
 
     /**
      * Composes a table row
-     * @param Route $route
-     * @param int $maxContentLength
-     * @return array
      */
     private function composeTableRow(Route $route, int $maxContentLength = 25): array
     {

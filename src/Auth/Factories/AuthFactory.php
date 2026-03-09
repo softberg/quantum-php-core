@@ -49,8 +49,6 @@ class AuthFactory
     private static array $instances = [];
 
     /**
-     * @param string|null $adapter
-     * @return Auth
      * @throws AuthException
      * @throws BaseException
      * @throws ConfigException
@@ -76,9 +74,6 @@ class AuthFactory
     }
 
     /**
-     * @param string $adapterClass
-     * @param string $adapter
-     * @return Auth
      * @throws AuthException
      * @throws BaseException
      * @throws ConfigException
@@ -97,8 +92,6 @@ class AuthFactory
     }
 
     /**
-     * @param string $adapter
-     * @return string
      * @throws BaseException
      */
     private static function getAdapterClass(string $adapter): string
@@ -111,8 +104,6 @@ class AuthFactory
     }
 
     /**
-     * @param string $adapter
-     * @return AuthServiceInterface
      * @throws BaseException
      * @throws DiException
      * @throws ReflectionException
@@ -131,10 +122,6 @@ class AuthFactory
         return $authService;
     }
 
-    /**
-     * @param string $adapter
-     * @return JwtToken|null
-     */
     private static function createJwtInstance(string $adapter): ?JwtToken
     {
         return $adapter === Auth::JWT ? (new JwtToken())->setLeeway(1)->setClaims((array) config()->get('auth.claims')) : null;

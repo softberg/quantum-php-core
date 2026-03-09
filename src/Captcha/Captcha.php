@@ -42,25 +42,17 @@ class Captcha
 
     private CaptchaInterface $adapter;
 
-    /**
-     * @param CaptchaInterface $adapter
-     */
     public function __construct(CaptchaInterface $adapter)
     {
         $this->adapter = $adapter;
     }
 
-    /**
-     * @return CaptchaInterface
-     */
     public function getAdapter(): CaptchaInterface
     {
         return $this->adapter;
     }
 
     /**
-     * @param string $method
-     * @param array|null $arguments
      * @return mixed
      * @throws BaseException
      */

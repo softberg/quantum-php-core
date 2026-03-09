@@ -38,19 +38,10 @@ class ConsoleAppAdapter extends AppAdapter
 {
     use ConsoleAppTrait;
 
-    /**
-     * @var ArgvInput
-     */
     protected ArgvInput $input;
 
-    /**
-     * @var ConsoleOutput
-     */
     protected ConsoleOutput $output;
 
-    /**
-     * @var Application|null
-     */
     protected ?Application $application = null;
 
     public function __construct()
@@ -69,7 +60,6 @@ class ConsoleAppAdapter extends AppAdapter
     }
 
     /**
-     * @return int|null
      * @throws DiException
      * @throws EnvException
      * @throws BaseException

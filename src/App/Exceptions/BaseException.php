@@ -25,18 +25,12 @@ use Exception;
  */
 abstract class BaseException extends Exception
 {
-    /**
-     * @param string $message
-     * @param int $code
-     */
     final public function __construct(string $message = '', int $code = 0)
     {
         parent::__construct($message, $code);
     }
 
     /**
-     * @param string $methodName
-     * @param string $className
      * @return static
      */
     public static function methodNotSupported(string $methodName, string $className)
@@ -48,7 +42,6 @@ abstract class BaseException extends Exception
     }
 
     /**
-     * @param string $name
      * @return static
      */
     public static function adapterNotSupported(string $name)
@@ -60,7 +53,6 @@ abstract class BaseException extends Exception
     }
 
     /**
-     * @param string $name
      * @return static
      */
     public static function driverNotSupported(string $name)
@@ -72,7 +64,6 @@ abstract class BaseException extends Exception
     }
 
     /**
-     * @param string $name
      * @return static
      */
     public static function fileNotFound(string $name)
@@ -84,8 +75,6 @@ abstract class BaseException extends Exception
     }
 
     /**
-     * @param string $subject
-     * @param string $name
      * @return static
      */
     public static function notFound(string $subject, string $name)
@@ -97,8 +86,6 @@ abstract class BaseException extends Exception
     }
 
     /**
-     * @param string $instance
-     * @param string $name
      * @return static
      */
     public static function notInstanceOf(string $instance, string $name)
@@ -110,7 +97,6 @@ abstract class BaseException extends Exception
     }
 
     /**
-     * @param string $name
      * @return static
      */
     public static function cantConnect(string $name)
@@ -122,10 +108,8 @@ abstract class BaseException extends Exception
     }
 
     /**
-     * @param string $name
      * @return static
      */
-
     public static function missingConfig(string $name)
     {
         return new static(
@@ -135,7 +119,6 @@ abstract class BaseException extends Exception
     }
 
     /**
-     * @param string $name
      * @return static
      */
     public static function requestMethodNotAvailable(string $name)

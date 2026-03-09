@@ -31,37 +31,31 @@ class DebugBarCommand extends QtCommand
 {
     /**
      * File System
-     * @var FileSystem|null
      */
     protected ?FileSystem $fs = null;
 
     /**
      * Command name
-     * @var string|null
      */
     protected ?string $name = 'install:debugbar';
 
     /**
      * Command description
-     * @var string|null
      */
     protected ?string $description = 'Publishes debugbar assets';
 
     /**
      * Command help text
-     * @var string|null
      */
     protected ?string $help = 'The command will publish debugbar assets';
 
     /**
      * Path to public debug bar resources
-     * @var string
      */
     private string $publicDebugBarFolderPath = 'public/assets/DebugBar/Resources';
 
     /**
      * Path to vendor debug bar resources
-     * @var string
      */
     private string $vendorDebugBarFolderPath = 'vendor/php-debugbar/php-debugbar/src/DebugBar/Resources';
 
@@ -89,9 +83,6 @@ class DebugBarCommand extends QtCommand
 
     /**
      * Recursively copies the debug bar assets
-     * @param string $src
-     * @param string $dst
-     * @return void
      * @throws FileSystemException
      */
     private function copyResources(string $src, string $dst): void

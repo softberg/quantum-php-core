@@ -44,26 +44,21 @@ abstract class DbModel extends Model
 {
     /**
      * Database table
-     * @var string
      */
     public string $table = '';
 
     /**
      * Primary key column
-     * @var string
      */
     public string $idColumn = 'id';
 
     /**
      * ORM instance (Idiorm or SleekDB)
-     * @var DbalInterface|null
      */
     protected ?DbalInterface $ormInstance = null;
 
     /**
      * Set ORM instance
-     * @param DbalInterface $ormInstance
-     * @return void
      */
     public function setOrmInstance(DbalInterface $ormInstance): void
     {
@@ -72,7 +67,6 @@ abstract class DbModel extends Model
 
     /**
      * Get ORM instance
-     * @return DbalInterface
      * @throws ModelException
      */
     public function getOrmInstance(): DbalInterface
@@ -84,9 +78,6 @@ abstract class DbModel extends Model
         return $this->ormInstance;
     }
 
-    /**
-     * @return array
-     */
     public function relations(): array
     {
         return [];
@@ -94,8 +85,6 @@ abstract class DbModel extends Model
 
     /**
      * Finds the record by primary key and returns a new model instance
-     * @param int $id
-     * @return DbModel|null
      * @throws BaseException
      */
     public function findOne(int $id): ?DbModel
@@ -107,9 +96,7 @@ abstract class DbModel extends Model
 
     /**
      * Finds the record by given column and value and returns a new model instance
-     * @param string $column
      * @param mixed $value
-     * @return DbModel|null
      * @throws BaseException
      */
     public function findOneBy(string $column, $value): ?DbModel
@@ -121,7 +108,6 @@ abstract class DbModel extends Model
 
     /**
      * Gets the first record and returns a new model instance
-     * @return DbModel|null
      * @throws BaseException
      */
     public function first(): ?DbModel
@@ -133,7 +119,6 @@ abstract class DbModel extends Model
 
     /**
      * Fetch multiple results
-     * @return ModelCollection
      * @throws BaseException
      */
     public function get(): ModelCollection
@@ -148,9 +133,6 @@ abstract class DbModel extends Model
 
     /**
      * Paginates the result
-     * @param int $perPage
-     * @param int $currentPage
-     * @return Paginator
      * @throws BaseException
      * @throws PaginatorException
      */
@@ -177,7 +159,6 @@ abstract class DbModel extends Model
 
     /**
      * Save model
-     * @return bool
      * @throws ModelException
      */
     public function save(): bool
@@ -197,7 +178,6 @@ abstract class DbModel extends Model
 
     /**
      * Delete model
-     * @return bool
      * @throws ModelException
      */
     public function delete(): bool
@@ -206,7 +186,6 @@ abstract class DbModel extends Model
     }
 
     /**
-     * @param array $data
      * @return $this
      */
     public function hydrateFromOrm(array $data): self
@@ -216,8 +195,6 @@ abstract class DbModel extends Model
     }
 
     /**
-     * @param string $method
-     * @param array $args
      * @return mixed
      * @throws ModelException
      */
@@ -252,7 +229,6 @@ abstract class DbModel extends Model
 
     /**
      * Sync model attributes into ORM
-     * @return void
      * @throws ModelException
      */
     protected function syncAttributesToOrm(): void
@@ -268,10 +244,6 @@ abstract class DbModel extends Model
         }
     }
 
-    /**
-     * @param string $key
-     * @return bool
-     */
     protected function shouldFill(string $key): bool
     {
         if ($key === $this->idColumn) {
@@ -283,7 +255,6 @@ abstract class DbModel extends Model
 
     /**
      * Syncs primary key from ORM to model attributes
-     * @return void
      * @throws ModelException
      */
     private function syncPrimaryKeyFromOrm(): void

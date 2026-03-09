@@ -20,8 +20,6 @@ use Quantum\Storage\FileSystem;
 
 /**
  * Gets the FileSystem handler
- * @param string|null $adapter
- * @return FileSystem
  * @throws BaseException
  * @throws ConfigException
  * @throws DiException

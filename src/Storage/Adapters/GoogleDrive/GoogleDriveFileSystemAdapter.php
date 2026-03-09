@@ -25,9 +25,6 @@ class GoogleDriveFileSystemAdapter implements FilesystemAdapterInterface
 {
     private GoogleDriveApp $googleDriveApp;
 
-    /**
-     * @param GoogleDriveApp $googleDriveApp
-     */
     public function __construct(GoogleDriveApp $googleDriveApp)
     {
         $this->googleDriveApp = $googleDriveApp;

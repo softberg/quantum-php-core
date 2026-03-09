@@ -55,14 +55,9 @@ class FileSystemFactory
         FileSystem::GDRIVE => GoogleDriveApp::class,
     ];
 
-    /**
-     * @var array
-     */
     private static array $instances = [];
 
     /**
-     * @param string|null $adapter
-     * @return FileSystem
      * @throws BaseException
      * @throws DiException
      * @throws ReflectionException
@@ -86,9 +81,6 @@ class FileSystemFactory
     }
 
     /**
-     * @param string $adapterClass
-     * @param string $adapter
-     * @return FileSystem
      * @throws BaseException
      * @throws DiException
      * @throws ReflectionException
@@ -102,8 +94,6 @@ class FileSystemFactory
     }
 
     /**
-     * @param string $adapter
-     * @return string
      * @throws BaseException
      */
     private static function getAdapterClass(string $adapter): string
@@ -116,8 +106,6 @@ class FileSystemFactory
     }
 
     /**
-     * @param string $adapter
-     * @return CloudAppInterface|null
      * @throws BaseException
      * @throws DiException
      * @throws ReflectionException
@@ -140,8 +128,6 @@ class FileSystemFactory
     }
 
     /**
-     * @param string $adapter
-     * @return TokenServiceInterface
      * @throws BaseException
      * @throws DiException
      * @throws ReflectionException

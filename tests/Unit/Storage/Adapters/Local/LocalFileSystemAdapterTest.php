@@ -12,14 +12,8 @@ class LocalFileSystemAdapterTest extends AppTestCase
      */
     protected $fs;
 
-    /**
-     * @var string
-     */
     private string $dirname;
 
-    /**
-     * @var string
-     */
     private string $filename;
 
     private string $content = 'Hello world';

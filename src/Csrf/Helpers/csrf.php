@@ -18,7 +18,6 @@ use Quantum\Csrf\Csrf;
 
 /**
  * Gets the Csrf instance
- * @return Csrf
  */
 function csrf(): Csrf
 {
@@ -27,7 +26,6 @@ function csrf(): Csrf
 
 /**
  * Generates the CSRF token
- * @return string|null
  * @throws BaseException
  */
 function csrf_token(): ?string

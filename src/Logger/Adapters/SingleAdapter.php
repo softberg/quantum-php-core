@@ -32,7 +32,6 @@ class SingleAdapter implements ReportableInterface
     use LoggerTrait;
 
     /**
-     * @param array $params
      * @throws BaseException
      * @throws LoggerException
      * @throws DiException
@@ -47,8 +46,6 @@ class SingleAdapter implements ReportableInterface
 
     /**
      * Initialize the adapter for Single log file
-     * @param array $params
-     * @return void
      * @throws LoggerException
      */
     protected function initialize(array $params): void

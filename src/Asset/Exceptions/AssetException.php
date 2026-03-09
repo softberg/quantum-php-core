@@ -24,11 +24,6 @@ use Quantum\Asset\Enums\ExceptionMessages;
  */
 class AssetException extends \Exception
 {
-    /**
-     * @param int $position
-     * @param string $name
-     * @return AssetException
-     */
     public static function positionInUse(int $position, string $name): AssetException
     {
         return new self(
@@ -37,10 +32,6 @@ class AssetException extends \Exception
         );
     }
 
-    /**
-     * @param string|null $name
-     * @return AssetException
-     */
     public static function nameInUse(?string $name): AssetException
     {
         return new self(

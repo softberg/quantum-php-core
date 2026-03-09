@@ -25,9 +25,6 @@ use Quantum\App\Exceptions\BaseException;
  */
 class LangException extends BaseException
 {
-    /**
-     * @return LangException
-     */
     public static function translationsNotFound(): self
     {
         return new self(
@@ -36,9 +33,6 @@ class LangException extends BaseException
         );
     }
 
-    /**
-     * @return LangException
-     */
     public static function misconfiguredDefaultConfig(): self
     {
         return new self(

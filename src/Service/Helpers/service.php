@@ -21,7 +21,6 @@ use Quantum\Service\QtService;
 /**
  * Gets or creates service instance
  * @param class-string<T> $serviceClass
- * @param bool $singleton
  * @return T
  * @throws BaseException
  * @throws DiException
@@ -29,7 +28,6 @@ use Quantum\Service\QtService;
  * @throws ServiceException
  * @template T of QtService
  */
-
 function service(string $serviceClass, bool $singleton = false): QtService
 {
     return $singleton ? ServiceFactory::get($serviceClass) : ServiceFactory::create($serviceClass);

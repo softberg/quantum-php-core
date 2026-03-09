@@ -25,10 +25,6 @@ use Quantum\App\Exceptions\BaseException;
  */
 class DiException extends BaseException
 {
-    /**
-     * @param string $name
-     * @return DiException
-     */
     public static function dependencyNotRegistered(string $name): DiException
     {
         return new self(
@@ -37,10 +33,6 @@ class DiException extends BaseException
         );
     }
 
-    /**
-     * @param string $name
-     * @return DiException
-     */
     public static function dependencyAlreadyRegistered(string $name): DiException
     {
         return new self(
@@ -49,10 +41,6 @@ class DiException extends BaseException
         );
     }
 
-    /**
-     * @param string $name
-     * @return DiException
-     */
     public static function dependencyNotInstantiable(string $name): DiException
     {
         return new self(
@@ -61,10 +49,6 @@ class DiException extends BaseException
         );
     }
 
-    /**
-     * @param string $name
-     * @return DiException
-     */
     public static function invalidAbstractDependency(string $name): DiException
     {
         return new self(
@@ -73,10 +57,6 @@ class DiException extends BaseException
         );
     }
 
-    /**
-     * @param string $chain
-     * @return DiException
-     */
     public static function circularDependency(string $chain): DiException
     {
         return new self(
@@ -85,10 +65,6 @@ class DiException extends BaseException
         );
     }
 
-    /**
-     * @param string|null $entry
-     * @return DiException
-     */
     public static function invalidCallable(?string $entry = null): DiException
     {
         return new self(

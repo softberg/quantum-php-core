@@ -25,9 +25,6 @@ use Quantum\App\Exceptions\BaseException;
  */
 class RouteException extends BaseException
 {
-    /**
-     * @return self
-     */
     public static function noHttpMethods(): self
     {
         return new self(
@@ -36,9 +33,6 @@ class RouteException extends BaseException
         );
     }
 
-    /**
-     * @return self
-     */
     public static function closureWithController(): self
     {
         return new self(
@@ -47,9 +41,6 @@ class RouteException extends BaseException
         );
     }
 
-    /**
-     * @return self
-     */
     public static function incompleteControllerRoute(): self
     {
         return new self(
@@ -58,10 +49,6 @@ class RouteException extends BaseException
         );
     }
 
-    /**
-     * @param string $module
-     * @return self
-     */
     public static function moduleRoutesNotClosure(string $module): self
     {
         return new self(
@@ -70,9 +57,6 @@ class RouteException extends BaseException
         );
     }
 
-    /**
-     * @return self
-     */
     public static function nestedGroups(): self
     {
         return new self(
@@ -81,9 +65,6 @@ class RouteException extends BaseException
         );
     }
 
-    /**
-     * @return self
-     */
     public static function middlewaresOutsideRoute(): self
     {
         return new self(
@@ -92,10 +73,6 @@ class RouteException extends BaseException
         );
     }
 
-    /**
-     * @param string $name
-     * @return self
-     */
     public static function nonUniqueNameInModule(string $name): self
     {
         return new self(
@@ -104,9 +81,6 @@ class RouteException extends BaseException
         );
     }
 
-    /**
-     * @return self
-     */
     public static function controllerWithoutModule(): self
     {
         return new self(
@@ -115,9 +89,6 @@ class RouteException extends BaseException
         );
     }
 
-    /**
-     * @return self
-     */
     public static function cacheableOutsideRoute(): self
     {
         return new self(
@@ -126,9 +97,6 @@ class RouteException extends BaseException
         );
     }
 
-    /**
-     * @return self
-     */
     public static function closureHandlerMissing(): self
     {
         return new self(
@@ -137,11 +105,6 @@ class RouteException extends BaseException
         );
     }
 
-    /**
-     * @param string $action
-     * @param string $controller
-     * @return self
-     */
     public static function actionNotFound(string $action, string $controller): self
     {
         return new self(
@@ -153,9 +116,6 @@ class RouteException extends BaseException
         );
     }
 
-    /**
-     * @return RouteException
-     */
     public static function notClosure(): self
     {
         return new self(
@@ -164,9 +124,6 @@ class RouteException extends BaseException
         );
     }
 
-    /**
-     * @return RouteException
-     */
     public static function nameBeforeDefinition(): self
     {
         return new self(
@@ -175,10 +132,6 @@ class RouteException extends BaseException
         );
     }
 
-    /**
-     * @param string $name
-     * @return RouteException
-     */
     public static function paramNameNotAvailable(string $name): self
     {
         return new self(
@@ -187,9 +140,6 @@ class RouteException extends BaseException
         );
     }
 
-    /**
-     * @return RouteException
-     */
     public static function paramNameNotValid(): self
     {
         return new self(

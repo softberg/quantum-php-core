@@ -45,9 +45,6 @@ class ZipAdapter implements ArchiveInterface
         $this->fs = FileSystemFactory::get();
     }
 
-    /**
-     * @param string $archiveName
-     */
     public function setName(string $archiveName): void
     {
         $this->archiveName = $archiveName;

@@ -57,8 +57,6 @@ class AsymmetricEncryptionAdapter implements EncryptionInterface
 
     /**
      * Encrypts the string
-     * @param string $plain
-     * @return string
      * @throws CryptorException
      */
     public function encrypt(string $plain): string
@@ -73,8 +71,6 @@ class AsymmetricEncryptionAdapter implements EncryptionInterface
 
     /**
      * Decrypts the string
-     * @param string $encrypted
-     * @return string
      * @throws CryptorException
      */
     public function decrypt(string $encrypted): string
@@ -89,7 +85,6 @@ class AsymmetricEncryptionAdapter implements EncryptionInterface
 
     /**
      * Generate key pairs
-     * @return array
      * @throws BaseException
      */
     private function generateKeyPair(): array

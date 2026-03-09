@@ -34,14 +34,9 @@ class CryptorFactory
         Cryptor::ASYMMETRIC => AsymmetricEncryptionAdapter::class,
     ];
 
-    /**
-     * @var array
-     */
     private static array $instances = [];
 
     /**
-     * @param string $type
-     * @return Cryptor
      * @throws BaseException
      */
     public static function get(string $type = Cryptor::SYMMETRIC): Cryptor
@@ -54,8 +49,6 @@ class CryptorFactory
     }
 
     /**
-     * @param string $type
-     * @return Cryptor
      * @throws BaseException
      */
     private static function createInstance(string $type): Cryptor

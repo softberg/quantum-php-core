@@ -30,44 +30,33 @@ abstract class QtCommand extends Command implements CommandInterface
 {
     /**
      * Console command name
-     * @var string|null
      */
     protected ?string $name = null;
 
     /**
      * Console command description.
-     * @var string|null
      */
     protected ?string $description = null;
 
     /**
      * Console command help text
-     * @var string|null
      */
     protected ?string $help = null;
 
     /**
      * Console command input arguments
-     * @var array
      * @example ['name', 'type', 'description']
      */
     protected array $args = [];
 
     /**
      * Console command options
-     * @var array
      * @example ['name', 'shortcut', 'type', 'description', 'default']
      */
     protected array $options = [];
 
-    /**
-     * @var InputInterface|null
-     */
     protected ?InputInterface $input = null;
 
-    /**
-     * @var OutputInterface|null
-     */
     protected ?OutputInterface $output = null;
 
     /**
@@ -88,7 +77,6 @@ abstract class QtCommand extends Command implements CommandInterface
 
     /**
      * Returns the argument value for a given argument name.
-     * @param string|null $key
      * @return mixed|string
      */
     public function getArgument(?string $key = null)
@@ -98,7 +86,6 @@ abstract class QtCommand extends Command implements CommandInterface
 
     /**
      * Returns the option value for a given option name.
-     * @param string|null $key
      * @return mixed|string
      */
     public function getOption(?string $key = null)
@@ -108,7 +95,6 @@ abstract class QtCommand extends Command implements CommandInterface
 
     /**
      * Outputs the string to console
-     * @param string $message
      */
     public function output(string $message): void
     {
@@ -117,7 +103,6 @@ abstract class QtCommand extends Command implements CommandInterface
 
     /**
      * Outputs the string to the console as info
-     * @param string $message
      */
     public function info(string $message): void
     {
@@ -126,7 +111,6 @@ abstract class QtCommand extends Command implements CommandInterface
 
     /**
      * Outputs the string to console as comment
-     * @param string $message
      */
     public function comment(string $message): void
     {
@@ -135,7 +119,6 @@ abstract class QtCommand extends Command implements CommandInterface
 
     /**
      * Outputs the string to console as question
-     * @param string $message
      */
     public function question(string $message): void
     {
@@ -144,8 +127,6 @@ abstract class QtCommand extends Command implements CommandInterface
 
     /**
      * Asks confirmation
-     * @param string $message
-     * @return bool
      */
     public function confirm(string $message): bool
     {
@@ -158,7 +139,6 @@ abstract class QtCommand extends Command implements CommandInterface
 
     /**
      * Outputs the string to the console as an error
-     * @param string $message
      */
     public function error(string $message): void
     {
@@ -176,9 +156,6 @@ abstract class QtCommand extends Command implements CommandInterface
 
     /**
      * Executes the current command.
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {

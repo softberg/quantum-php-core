@@ -23,38 +23,18 @@ use ReflectionException;
  */
 class Setup
 {
-    /**
-     * @var bool
-     */
     protected bool $hierarchical;
 
-    /**
-     * @var string|null
-     */
     protected ?string $module;
 
-    /**
-     * @var string|null
-     */
     protected ?string $pathPrefix;
 
-    /**
-     * @var string|null
-     */
     protected ?string $fileName;
 
-    /**
-     * @var string
-     */
     protected string $exceptionMessage;
 
     /**
      * Setup constructor.
-     * @param string|null $pathPrefix
-     * @param string|null $fileName
-     * @param bool $hierarchical
-     * @param string|null $module
-     * @param string|null $exceptionMessage
      * @throws DiException|ReflectionException
      */
     public function __construct(?string $pathPrefix = null, ?string $fileName = null, bool $hierarchical = true, ?string $module = null, ?string $exceptionMessage = null)
@@ -68,8 +48,6 @@ class Setup
 
     /**
      * Sets the path prefix
-     * @param string $pathPrefix
-     * @return $this
      */
     public function setPathPrefix(string $pathPrefix): Setup
     {
@@ -79,7 +57,6 @@ class Setup
 
     /**
      * Gets the path prefix
-     * @return string|null
      */
     public function getPathPrefix(): ?string
     {
@@ -88,8 +65,6 @@ class Setup
 
     /**
      * Set the filename
-     * @param string $fileName
-     * @return $this
      */
     public function setFilename(string $fileName): Setup
     {
@@ -99,7 +74,6 @@ class Setup
 
     /**
      * Gets the filename
-     * @return string|null
      */
     public function getFilename(): ?string
     {
@@ -108,8 +82,6 @@ class Setup
 
     /**
      * Sets the module
-     * @param string $module
-     * @return $this
      */
     public function setModule(string $module): Setup
     {
@@ -119,7 +91,6 @@ class Setup
 
     /**
      * Gets the module
-     * @return string|null
      */
     public function getModule(): ?string
     {
@@ -128,8 +99,6 @@ class Setup
 
     /**
      * Sets the exception message
-     * @param string $exceptionMessage
-     * @return $this
      */
     public function setExceptionMessage(string $exceptionMessage): Setup
     {
@@ -139,7 +108,6 @@ class Setup
 
     /**
      * Gets the exception message
-     * @return string
      */
     public function getExceptionMessage(): string
     {
@@ -148,8 +116,6 @@ class Setup
 
     /**
      * Set the hierarchy
-     * @param bool $hierarchy
-     * @return $this
      */
     public function setHierarchy(bool $hierarchy): Setup
     {
@@ -159,7 +125,6 @@ class Setup
 
     /**
      * Gets the hierarchy
-     * @return bool
      */
     public function getHierarchy(): bool
     {

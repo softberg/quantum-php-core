@@ -25,10 +25,6 @@ use Quantum\App\Exceptions\BaseException;
  */
 class ArchiveException extends BaseException
 {
-    /**
-     * @param string $name
-     * @return ArchiveException
-     */
     public static function cantOpen(string $name): self
     {
         return new self(
@@ -37,9 +33,6 @@ class ArchiveException extends BaseException
         );
     }
 
-    /**
-     * @return ArchiveException
-     */
     public static function missingArchiveName(): self
     {
         return new self(

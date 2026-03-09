@@ -31,19 +31,16 @@ class VersionCommand extends QtCommand
 {
     /**
      * Command name
-     * @var string|null
      */
     protected ?string $name = 'core:version';
 
     /**
      * Command description
-     * @var string|null
      */
     protected ?string $description = 'Core version';
 
     /**
      * Command help text
-     * @var string|null
      */
     protected ?string $help = 'Printing the current version of the framework into the terminal';
 

@@ -87,9 +87,6 @@ trait AuthTrait
 
     /**
      * Sign Up
-     * @param array $userData
-     * @param array|null $customData
-     * @return User
      */
     public function signup(array $userData, ?array $customData = null): User
     {
@@ -119,7 +116,6 @@ trait AuthTrait
 
     /**
      * Activate
-     * @param string $token
      */
     public function activate(string $token): void
     {
@@ -132,8 +128,6 @@ trait AuthTrait
 
     /**
      * Forget
-     * @param string $username
-     * @return string|null
      */
     public function forget(string $username): ?string
     {
@@ -166,8 +160,6 @@ trait AuthTrait
 
     /**
      * Reset
-     * @param string $token
-     * @param string $password
      */
     public function reset(string $token, string $password): void
     {
@@ -191,8 +183,6 @@ trait AuthTrait
 
     /**
      * Resend OTP
-     * @param string $otpToken
-     * @return string
      * @throws AuthException
      * @throws Exception
      */
@@ -210,9 +200,6 @@ trait AuthTrait
 
     /**
      * Gets the user by username and password
-     * @param string $username
-     * @param string $password
-     * @return User
      * @throws AuthException
      */
     protected function getUser(string $username, string $password): User
@@ -236,8 +223,6 @@ trait AuthTrait
 
     /**
      * Two-Step Verification
-     * @param User $user
-     * @return string
      * @throws Exception
      */
     protected function twoStepVerification(User $user): string
@@ -275,9 +260,6 @@ trait AuthTrait
 
     /**
      * Verify and update OTP
-     * @param int $otp
-     * @param string $otpToken
-     * @return User
      * @throws AuthException
      * @throws Exception
      */
@@ -308,8 +290,6 @@ trait AuthTrait
 
     /**
      * Filters and gets the visible fields
-     * @param User $user
-     * @return array
      */
     protected function getVisibleFields(User $user): array
     {
@@ -328,8 +308,6 @@ trait AuthTrait
 
     /**
      * Is user account activated
-     * @param User $user
-     * @return bool
      */
     protected function isActivated(User $user): bool
     {
@@ -338,8 +316,6 @@ trait AuthTrait
 
     /**
      * Generate Token
-     * @param string|null $val
-     * @return string
      */
     protected function generateToken(?string $val = null): string
     {
@@ -348,8 +324,6 @@ trait AuthTrait
 
     /**
      * Send email
-     * @param User $user
-     * @param array $body
      */
     protected function sendMail(User $user, array $body)
     {
@@ -366,7 +340,6 @@ trait AuthTrait
 
     /**
      * Verify user schema
-     * @param array $schema
      * @throws AuthException
      */
     protected function verifySchema(array $schema)
@@ -388,9 +361,6 @@ trait AuthTrait
         }
     }
 
-    /**
-     * @return bool
-     */
     protected function isTwoFactorEnabled(): bool
     {
         return filter_var(config()->get('auth.two_fa'), FILTER_VALIDATE_BOOLEAN);

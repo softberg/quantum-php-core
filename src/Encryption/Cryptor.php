@@ -37,38 +37,24 @@ class Cryptor
      */
     public const ASYMMETRIC = 'asymmetric';
 
-    /**
-     * @var EncryptionInterface
-     */
     private EncryptionInterface $adapter;
 
-    /**
-     * @param EncryptionInterface $adapter
-     */
     public function __construct(EncryptionInterface $adapter)
     {
         $this->adapter = $adapter;
     }
 
-    /**
-     * @return EncryptionInterface
-     */
     public function getAdapter(): EncryptionInterface
     {
         return $this->adapter;
     }
 
-    /**
-     * @return bool
-     */
     public function isAsymmetric(): bool
     {
         return $this->adapter instanceof AsymmetricEncryptionAdapter;
     }
 
     /**
-     * @param string $method
-     * @param array|null $arguments
      * @return mixed
      * @throws BaseException
      */

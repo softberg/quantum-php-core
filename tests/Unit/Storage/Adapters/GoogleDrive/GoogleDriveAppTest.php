@@ -11,9 +11,6 @@ class GoogleDriveAppTest extends AppTestCase
     use GoogleDriveTokenServiceTestCase;
     use HttpClientTestCase;
 
-    /**
-     * @var GoogleDriveApp
-     */
     private GoogleDriveApp $googleDriveApp;
 
     private string $appKey = 'x0hwm8wy63rrynm';

@@ -25,7 +25,6 @@ trait Status
 {
     /**
      * Status code
-     * @var int
      */
     private static int $__statusCode = StatusCode::OK;
 
@@ -104,8 +103,6 @@ trait Status
 
     /**
      * Gets the reason phrase for a given HTTP status code.
-     * @param int $code
-     * @return string
      */
     public static function getText(int $code): string
     {
@@ -118,7 +115,6 @@ trait Status
 
     /**
      * Sets the status code
-     * @param int $code
      */
     public static function setStatusCode(int $code): void
     {
@@ -131,7 +127,6 @@ trait Status
 
     /**
      * Gets the status code
-     * @return int
      */
     public static function getStatusCode(): int
     {
@@ -140,7 +135,6 @@ trait Status
 
     /**
      * Gets the status text
-     * @return string
      */
     public static function getStatusText(): string
     {

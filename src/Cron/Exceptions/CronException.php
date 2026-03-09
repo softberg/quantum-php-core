@@ -24,8 +24,6 @@ class CronException extends \Exception
 {
     /**
      * Task not found exception
-     * @param string $taskName
-     * @return CronException
      */
     public static function taskNotFound(string $taskName): CronException
     {
@@ -34,8 +32,6 @@ class CronException extends \Exception
 
     /**
      * Invalid cron expression exception
-     * @param string $expression
-     * @return CronException
      */
     public static function invalidExpression(string $expression): CronException
     {
@@ -44,8 +40,6 @@ class CronException extends \Exception
 
     /**
      * Lock acquire failed exception
-     * @param string $taskName
-     * @return CronException
      */
     public static function lockAcquireFailed(string $taskName): CronException
     {
@@ -54,9 +48,6 @@ class CronException extends \Exception
 
     /**
      * Task execution failed exception
-     * @param string $taskName
-     * @param string $error
-     * @return CronException
      */
     public static function taskExecutionFailed(string $taskName, string $error): CronException
     {
@@ -65,8 +56,6 @@ class CronException extends \Exception
 
     /**
      * Invalid task file exception
-     * @param string $file
-     * @return CronException
      */
     public static function invalidTaskFile(string $file): CronException
     {
@@ -75,8 +64,6 @@ class CronException extends \Exception
 
     /**
      * Cron directory not found exception
-     * @param string $directory
-     * @return CronException
      */
     public static function cronDirectoryNotFound(string $directory): CronException
     {
@@ -85,8 +72,6 @@ class CronException extends \Exception
 
     /**
      * Lock directory not writable exception
-     * @param string $directory
-     * @return CronException
      */
     public static function lockDirectoryNotWritable(string $directory): CronException
     {

@@ -45,8 +45,6 @@ class CaptchaFactory
     private static array $instances = [];
 
     /**
-     * @param string|null $adapter
-     * @return Captcha
      * @throws BaseException
      * @throws ConfigException
      * @throws DiException
@@ -69,19 +67,12 @@ class CaptchaFactory
         return self::$instances[$adapter];
     }
 
-    /**
-     * @param string $adapterClass
-     * @param string $adapter
-     * @return Captcha
-     */
     private static function createInstance(string $adapterClass, string $adapter): Captcha
     {
         return new Captcha(new $adapterClass(config()->get('captcha.' . $adapter), new HttpClient()));
     }
 
     /**
-     * @param string $adapter
-     * @return string
      * @throws BaseException
      */
     private static function getAdapterClass(string $adapter): string

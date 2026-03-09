@@ -29,11 +29,6 @@ trait Internal
 {
     /**
      * Creates an internal request for testing purposes
-     * @param string $method
-     * @param string $url
-     * @param array $params
-     * @param array $headers
-     * @param array $files
      * @throws BaseException
      * @throws ReflectionException
      * @throws ConfigException
@@ -82,10 +77,8 @@ trait Internal
 
         self::detectAndSetContentType($server, $params, $files);
 
-        if ($headers !== []) {
-            foreach ($headers as $name => $value) {
-                $server->set('HTTP_' . strtoupper(str_replace('-', '_', $name)), $value);
-            }
+        foreach ($headers as $name => $value) {
+            $server->set('HTTP_' . strtoupper(str_replace('-', '_', $name)), $value);
         }
 
         self::flush();
@@ -104,9 +97,6 @@ trait Internal
     /**
      * Detects the content type
      * @param $server
-     * @param array|null $data
-     * @param array|null $files
-     * @return void
      */
     protected static function detectAndSetContentType($server, ?array $data = null, ?array $files = null): void
     {

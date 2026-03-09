@@ -28,8 +28,6 @@ final class RouteCollection
 
     /**
      * Add a route to the collection.
-     * @param Route $route
-     * @return void
      */
     public function add(Route $route): void
     {
@@ -47,7 +45,6 @@ final class RouteCollection
 
     /**
      * Return total number of routes.
-     * @return int
      */
     public function count(): int
     {

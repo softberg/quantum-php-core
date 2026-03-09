@@ -29,27 +29,22 @@ interface AuthenticatableInterface
 
     /**
      * Sign In
-     * @param string $username
-     * @param string $password
      * @return mixed
      */
     public function signin(string $username, string $password);
 
     /**
      * Sign Out
-     * @return bool
      */
     public function signout(): bool;
 
     /**
      * Check
-     * @return bool
      */
     public function check(): bool;
 
     /**
      * User
-     * @return User|null
      */
     public function user(): ?User;
 }

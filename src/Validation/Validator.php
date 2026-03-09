@@ -43,19 +43,16 @@ class Validator
 
     /**
      * Rules
-     * @var array
      */
     private array $rules = [];
 
     /**
      * Validation Errors
-     * @var array
      */
     private array $errors = [];
 
     /**
      * Request data
-     * @var array
      */
     private array $data = [];
 
@@ -67,7 +64,6 @@ class Validator
 
     /**
      * Add rules for a single field
-     * @param string $field
      * @param array $rules Format: [['ruleName' => param], ...]
      */
     public function setRule(string $field, array $rules): void
@@ -92,7 +88,6 @@ class Validator
 
     /**
      * Update a single rule for a field if exists
-     * @param string $field
      * @param array $rule Format: ['ruleName' => param]
      */
     public function updateRule(string $field, array $rule): void
@@ -104,9 +99,7 @@ class Validator
 
     /**
      * Delete a rule or all rules for a given field
-     * @param string $field
      * @param string|null $rule Specific rule to delete; if null deletes all rules for field
-     * @return void
      */
     public function deleteRule(string $field, ?string $rule = null): void
     {
@@ -127,7 +120,6 @@ class Validator
 
     /**
      * Flush all rules and errors
-     * @return void
      */
     public function flushRules(): void
     {
@@ -137,7 +129,6 @@ class Validator
 
     /**
      * Validate given data against defined rules
-     * @param array $data
      * @return bool True if valid, false otherwise
      */
     public function isValid(array $data): bool
@@ -184,7 +175,6 @@ class Validator
      * Add a custom validation rule
      * @param string $rule Rule name
      * @param Closure $function Callback function with signature function($value, $param): bool
-     * @return void
      */
     public function addRule(string $rule, Closure $function): void
     {
@@ -197,7 +187,6 @@ class Validator
 
     /**
      * Gets validation errors with translations
-     * @return array
      * @throws ConfigException
      * @throws DiException
      * @throws LangException
@@ -227,10 +216,7 @@ class Validator
 
     /**
      * Adds an error for a field and rule
-     * @param string $field
-     * @param string $rule
      * @param mixed|null $param
-     * @return void
      */
     protected function addError(string $field, string $rule, $param = null): void
     {
@@ -243,7 +229,6 @@ class Validator
 
     /**
      * Flush all errors
-     * @return void
      */
     public function flushErrors(): void
     {
@@ -252,10 +237,8 @@ class Validator
 
     /**
      * Executes user defined rule
-     * @param string $rule
      * @param $value
      * @param mixed ...$params
-     * @return bool
      */
     protected function executeCustomRule(string $rule, $value, ...$params): bool
     {
@@ -269,8 +252,6 @@ class Validator
     }
 
     /**
-     * @param string $field
-     * @param string $ruleName
      * @param $ruleParam
      */
     private function setOrUpdateRule(string $field, string $ruleName, $ruleParam): void

@@ -34,13 +34,11 @@ class ViewFactory
 {
     /**
      * Instance of QtView
-     * @var QtView|null
      */
     private static ?QtView $instance = null;
 
     /**
      * QtView instance
-     * @return QtView
      * @throws DebugBarException
      * @throws DiException
      * @throws BaseException

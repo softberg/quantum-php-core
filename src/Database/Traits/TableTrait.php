@@ -25,7 +25,6 @@ trait TableTrait
 {
     /**
      * Generates create table statement
-     * @return string
      */
     protected function createTableSql(): string
     {
@@ -43,7 +42,6 @@ trait TableTrait
 
     /**
      * Generates alter table statement
-     * @return string
      */
     protected function alterTableSql(): string
     {
@@ -61,7 +59,6 @@ trait TableTrait
 
     /**
      * Prepares rename table statement
-     * @return string
      */
     protected function renameTableSql(): string
     {
@@ -70,7 +67,6 @@ trait TableTrait
 
     /**
      * Prepares drop table statement
-     * @return string
      */
     protected function dropTableSql(): string
     {
@@ -79,7 +75,6 @@ trait TableTrait
 
     /**
      * Prepares columns statements for table
-     * @return string
      */
     protected function columnsSql(): string
     {
@@ -120,9 +115,6 @@ trait TableTrait
 
     /**
      * Composes the column
-     * @param Column $column
-     * @param string|null $action
-     * @return string
      */
     protected function composeColumn(Column $column, ?string $action = null): string
     {
@@ -142,9 +134,6 @@ trait TableTrait
     /**
      * Prepares column attributes
      * @param mixed $definition
-     * @param string $before
-     * @param string $after
-     * @return string
      */
     protected function columnAttrSql($definition, string $before = '', string $after = ''): string
     {
@@ -160,7 +149,6 @@ trait TableTrait
 
     /**
      * Prepares statement for primary key
-     * @return string
      */
     protected function primaryKeysSql(): string
     {
@@ -184,8 +172,6 @@ trait TableTrait
 
     /**
      * Prepares statement for index keys
-     * @param string $type
-     * @return string
      */
     protected function indexKeysSql(string $type): string
     {
@@ -211,7 +197,6 @@ trait TableTrait
 
     /**
      * Builds a complete statement for index keys
-     * @return string
      */
     protected function indexesSql(): string
     {
@@ -228,7 +213,6 @@ trait TableTrait
 
     /**
      * Builds a statement for drop indexes
-     * @return string
      */
     protected function dropIndexesSql(): string
     {

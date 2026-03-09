@@ -44,8 +44,6 @@ class SessionFactory
     private static array $instances = [];
 
     /**
-     * @param string|null $adapter
-     * @return Session
      * @throws BaseException
      * @throws ConfigException
      * @throws DiException
@@ -68,19 +66,12 @@ class SessionFactory
         return self::$instances[$adapter];
     }
 
-    /**
-     * @param string $adapterClass
-     * @param string $adapter
-     * @return Session
-     */
     private static function createInstance(string $adapterClass, string $adapter): Session
     {
         return new Session(new $adapterClass(config()->get('session.' . $adapter)));
     }
 
     /**
-     * @param string $adapter
-     * @return string
      * @throws BaseException
      */
     private static function getAdapterClass(string $adapter): string

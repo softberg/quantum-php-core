@@ -24,13 +24,11 @@ abstract class QtMigration
 {
     /**
      * Upgrades with the specified migration class
-     * @param TableFactory|null $tableFactory
      */
     abstract public function up(?TableFactory $tableFactory);
 
     /**
      * Downgrades with the specified migration class
-     * @param TableFactory|null $tableFactory
      */
     abstract public function down(?TableFactory $tableFactory);
 }

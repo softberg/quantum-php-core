@@ -43,18 +43,12 @@ trait ConsoleAppTrait
             ->load(new Setup('config', 'env'));
     }
 
-    /**
-     * @param string $name
-     * @param string $version
-     * @return Application
-     */
     public function createApplication(string $name, string $version): Application
     {
         return new Application($name, $version);
     }
 
     /**
-     * @return void
      * @throws ReflectionException
      */
     private function registerCoreCommands(): void
@@ -66,7 +60,6 @@ trait ConsoleAppTrait
     }
 
     /**
-     * @return void
      * @throws ReflectionException
      */
     private function registerAppCommands(): void
@@ -78,8 +71,6 @@ trait ConsoleAppTrait
     }
 
     /**
-     * @param string $directory
-     * @param string $namespace
      * @throws ReflectionException
      */
     private function registerCommands(string $directory, string $namespace): void

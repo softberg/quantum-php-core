@@ -54,29 +54,14 @@ class MigrationManager
      */
     public const DRIVERS = ['mysql', 'pgsql', 'sqlite'];
 
-    /**
-     * @var array
-     */
     private array $migrations = [];
 
-    /**
-     * @var TableFactory
-     */
     private TableFactory $tableFactory;
 
-    /**
-     * @var string
-     */
     private string $migrationFolder;
 
-    /**
-     * @var FileSystem
-     */
     private FileSystem $fs;
 
-    /**
-     * @var Database
-     */
     private Database $db;
 
     /**
@@ -103,9 +88,6 @@ class MigrationManager
 
     /**
      * Generates new migration file
-     * @param string $table
-     * @param string $action
-     * @return string
      * @throws MigrationException
      * @throws LangException
      */
@@ -126,9 +108,6 @@ class MigrationManager
 
     /**
      * Applies migrations
-     * @param string $direction
-     * @param int|null $step
-     * @return int|null
      * @throws BaseException
      * @throws ConfigException
      * @throws DatabaseException
@@ -146,7 +125,7 @@ class MigrationManager
 
         switch ($direction) {
             case self::UPGRADE:
-                $migrated = $this->upgrade($step);
+                $migrated = $this->upgrade();
                 break;
             case self::DOWNGRADE:
                 $migrated = $this->downgrade($step);
@@ -160,27 +139,21 @@ class MigrationManager
 
     /**
      * Runs up migrations
-     * @param int|null $step
-     * @return int
      * @throws DatabaseException
      * @throws LangException
      * @throws MigrationException
      */
-    private function upgrade(?int $step = null): int
+    private function upgrade(): int
     {
         if (!$this->tableFactory->checkTableExists(MigrationTable::TABLE)) {
             $migrationTable = new MigrationTable();
             $migrationTable->up($this->tableFactory);
         }
-
-        $this->prepareUpMigrations($step);
-
+        $this->prepareUpMigrations();
         if (empty($this->migrations)) {
             throw MigrationException::nothingToMigrate();
         }
-
         $migratedEntries = [];
-
         foreach ($this->migrations as $migrationFile) {
             $this->fs->require($migrationFile, true);
 
@@ -192,16 +165,12 @@ class MigrationManager
 
             $migratedEntries[] = $migrationClassName;
         }
-
         $this->addMigratedEntries($migratedEntries);
-
         return count($migratedEntries);
     }
 
     /**
      * Runs down migrations
-     * @param int|null $step
-     * @return int
      * @throws DatabaseException
      * @throws LangException
      * @throws MigrationException
@@ -239,20 +208,17 @@ class MigrationManager
 
     /**
      * Prepares up migrations
-     * @param int|null $step
      * @throws MigrationException
      * @throws DatabaseException
      *
      */
-    private function prepareUpMigrations(?int $step = null): void
+    private function prepareUpMigrations(): void
     {
         $migratedEntries = $this->getMigratedEntries();
         $migrationFiles = $this->getMigrationFiles();
-
         if ($migratedEntries === [] && $migrationFiles === []) {
             throw MigrationException::nothingToMigrate();
         }
-
         foreach ($migrationFiles as $timestamp => $migrationFile) {
             foreach ($migratedEntries as $migratedEntry) {
                 if (pathinfo($migrationFile, PATHINFO_FILENAME) == $migratedEntry['migration']) {
@@ -262,13 +228,11 @@ class MigrationManager
 
             $this->migrations[$timestamp] = $migrationFile;
         }
-
         ksort($this->migrations);
     }
 
     /**
      * Prepares down migrations
-     * @param int|null $step
      * @throws DatabaseException
      * @throws MigrationException
      */
@@ -294,7 +258,6 @@ class MigrationManager
 
     /**
      * Gets migration files
-     * @return array
      */
     private function getMigrationFiles(): array
     {
@@ -314,7 +277,6 @@ class MigrationManager
 
     /**
      * Gets migrated entries from migrations table
-     * @return array
      * @throws DatabaseException
      */
     private function getMigratedEntries(): array
@@ -324,7 +286,6 @@ class MigrationManager
 
     /**
      * Adds migrated entries to migrations table
-     * @param array $entries
      * @throws DatabaseException
      */
     private function addMigratedEntries(array $entries): void
@@ -336,7 +297,6 @@ class MigrationManager
 
     /**
      * Removes migrated entries from migrations table
-     * @param array $entries
      * @throws DatabaseException
      */
     private function removeMigratedEntries(array $entries): void

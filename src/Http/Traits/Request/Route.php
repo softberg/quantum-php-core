@@ -22,23 +22,13 @@ use Quantum\Router\MatchedRoute;
  */
 trait Route
 {
-    /**
-     * @var MatchedRoute|null
-     */
     private static ?MatchedRoute $route = null;
 
-    /**
-     * @param MatchedRoute|null $route
-     * @return void
-     */
     public static function setMatchedRoute(?MatchedRoute $route): void
     {
         self::$route = $route;
     }
 
-    /**
-     * @return MatchedRoute|null
-     */
     public static function getMatchedRoute(): ?MatchedRoute
     {
         return self::$route;

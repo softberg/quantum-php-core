@@ -25,8 +25,7 @@ class LangTest extends AppTestCase
             ['POST'],
             '/api-signin',
             'SomeController',
-            'signin',
-            null
+            'signin'
         );
         $route->module('Test');
 

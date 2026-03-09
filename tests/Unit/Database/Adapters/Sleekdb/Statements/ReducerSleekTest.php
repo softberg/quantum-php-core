@@ -15,7 +15,7 @@ class ReducerSleekTest extends SleekDbalTestCase
 
         $this->assertCount(2, $user->asArray());
 
-        $userModel = new SleekDbal('users');
+        new SleekDbal('users');
 
         $user = $userProfileModel
             ->select('id', ['firstname' => 'name'], ['lastname' => 'surname'], 'age')

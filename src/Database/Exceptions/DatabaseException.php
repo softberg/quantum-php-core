@@ -25,9 +25,6 @@ use Quantum\App\Exceptions\BaseException;
  */
 class DatabaseException extends BaseException
 {
-    /**
-     * @return DatabaseException
-     */
     public static function incorrectConfig(): self
     {
         return new self(
@@ -36,10 +33,6 @@ class DatabaseException extends BaseException
         );
     }
 
-    /**
-     * @param string $operator
-     * @return DatabaseException
-     */
     public static function operatorNotSupported(string $operator): self
     {
         return new self(
@@ -48,10 +41,6 @@ class DatabaseException extends BaseException
         );
     }
 
-    /**
-     * @param string $name
-     * @return DatabaseException
-     */
     public static function tableAlreadyExists(string $name): self
     {
         return new self(
@@ -60,10 +49,6 @@ class DatabaseException extends BaseException
         );
     }
 
-    /**
-     * @param string $name
-     * @return DatabaseException
-     */
     public static function tableDoesNotExists(string $name): self
     {
         return new self(

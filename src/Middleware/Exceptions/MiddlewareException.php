@@ -25,10 +25,6 @@ use Quantum\App\Exceptions\BaseException;
  */
 class MiddlewareException extends BaseException
 {
-    /**
-     * @param string $name
-     * @return MiddlewareException
-     */
     public static function middlewareNotFound(string $name): self
     {
         return new self(

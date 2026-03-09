@@ -27,9 +27,6 @@ class SendgridAdapter implements MailerInterface
 {
     use MailerTrait;
 
-    /**
-     * @var string
-     */
     public string $name = 'Sendgrid';
 
     /**
@@ -39,14 +36,10 @@ class SendgridAdapter implements MailerInterface
 
     private string $apiUrl = 'https://api.sendgrid.com/v3/mail/send';
 
-    /**
-     * @var array
-     */
     private array $data = [];
 
     /**
      * SendgridAdapter constructor
-     * @param array $params
      */
     public function __construct(array $params)
     {
@@ -86,9 +79,6 @@ class SendgridAdapter implements MailerInterface
         }
     }
 
-    /**
-     * @return bool
-     */
     private function sendEmail(): bool
     {
         try {

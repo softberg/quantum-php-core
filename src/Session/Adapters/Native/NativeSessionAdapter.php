@@ -38,12 +38,10 @@ class NativeSessionAdapter implements SessionStorageInterface
 
     /**
      * Session storage
-     * @var array $storage
      */
     private static array $storage = [];
 
     /**
-     * @param array|null $params
      * @throws SessionException
      */
     public function __construct(?array $params = null)
@@ -52,8 +50,6 @@ class NativeSessionAdapter implements SessionStorageInterface
     }
 
     /**
-     * @param array|null $params
-     * @return void
      * @throws SessionException
      */
     protected function initializeSession(?array $params = null): void

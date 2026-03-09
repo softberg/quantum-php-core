@@ -22,25 +22,21 @@ interface CronTaskInterface
 {
     /**
      * Get the cron expression
-     * @return string
      */
     public function getExpression(): string;
 
     /**
      * Get the task name
-     * @return string
      */
     public function getName(): string;
 
     /**
      * Check if the task should run at the current time
-     * @return bool
      */
     public function shouldRun(): bool;
 
     /**
      * Execute the task
-     * @return void
      */
     public function handle(): void;
 }

@@ -24,8 +24,6 @@ use Quantum\Http\Request;
 
 /**
  * Gets the base url
- * @param bool $withModulePrefix
- * @return string
  * @throws DiException
  * @throws ReflectionException
  */
@@ -36,7 +34,6 @@ function base_url(bool $withModulePrefix = false): string
 
 /**
  * Gets the current url
- * @return string
  */
 function current_url(): string
 {
@@ -45,8 +42,6 @@ function current_url(): string
 
 /**
  * Redirect
- * @param string $url
- * @param int $code
  */
 function redirect(string $url, int $code = StatusCode::FOUND): void
 {
@@ -55,10 +50,6 @@ function redirect(string $url, int $code = StatusCode::FOUND): void
 
 /**
  * Redirect with data
- * @param string $url
- * @param array $data
- * @param int $code
- * @return void
  * @throws BaseException
  * @throws ConfigException
  * @throws DiException
@@ -72,7 +63,6 @@ function redirectWith(string $url, array $data, int $code = StatusCode::FOUND): 
 
 /**
  * Gets old input values after redirect
- * @param string $key
  * @return mixed|null
  * @throws ConfigException
  * @throws DiException
@@ -101,7 +91,6 @@ function old(string $key)
 
 /**
  * Gets the referrer
- * @return string|null
  */
 function get_referrer(): ?string
 {
@@ -110,7 +99,6 @@ function get_referrer(): ?string
 
 /**
  * Handles page not found
- * @return void
  * @throws BaseException
  * @throws ConfigException
  * @throws DiException

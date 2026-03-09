@@ -30,25 +30,21 @@ class EnvCommand extends QtCommand
 {
     /**
      * Command name
-     * @var string|null
      */
     protected ?string $name = 'core:env';
 
     /**
      * Command description
-     * @var string|null
      */
     protected ?string $description = 'Generates new .env file';
 
     /**
      * Command help text
-     * @var string|null
      */
     protected ?string $help = 'The command will generate new .env file from .env.example';
 
     /**
      * Command options
-     * @var array
      */
     protected array $options = [
         ['yes', 'y', 'none', 'Acceptance of the confirmation'],

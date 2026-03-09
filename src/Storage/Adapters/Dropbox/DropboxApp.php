@@ -103,32 +103,16 @@ class DropboxApp implements CloudAppInterface
      */
     public const INVALID_TOKEN_ERROR_CODE = 401;
 
-    /**
-     * @var HttpClient
-     */
     private HttpClient $httpClient;
 
-    /**
-     * @var string
-     */
     private string $appKey;
 
-    /**
-     * @var string
-     */
     private string $appSecret;
 
-    /**
-     * @var TokenServiceInterface
-     */
     private TokenServiceInterface $tokenService;
 
     /**
      * DropboxApp constructor
-     * @param string $appKey
-     * @param string $appSecret
-     * @param TokenServiceInterface $tokenService
-     * @param HttpClient $httpClient
      */
     public function __construct(string $appKey, string $appSecret, TokenServiceInterface $tokenService, HttpClient $httpClient)
     {
@@ -140,9 +124,6 @@ class DropboxApp implements CloudAppInterface
 
     /**
      * Gets the auth URL
-     * @param string $redirectUrl
-     * @param string $tokenAccessType
-     * @return string
      * @throws BaseException
      * @throws CryptorException
      * @throws DatabaseException
@@ -162,9 +143,6 @@ class DropboxApp implements CloudAppInterface
 
     /**
      * Fetch tokens
-     * @param string $code
-     * @param string $redirectUrl
-     * @return object|null
      * @throws BaseException
      * @throws HttpException
      * @throws LangException
@@ -190,8 +168,6 @@ class DropboxApp implements CloudAppInterface
 
     /**
      * Fetches the access token by refresh token
-     * @param string $refreshToken
-     * @return string
      * @throws BaseException
      * @throws HttpException
      * @throws LangException
@@ -216,8 +192,6 @@ class DropboxApp implements CloudAppInterface
 
     /**
      * Sends rpc request
-     * @param string $endpoint
-     * @param array|null $params
      * @return mixed|null
      * @throws Exception
      */
@@ -233,9 +207,6 @@ class DropboxApp implements CloudAppInterface
 
     /**
      * Sends content request
-     * @param string $endpoint
-     * @param array $params
-     * @param string $content
      * @return mixed|null
      * @throws Exception
      */
@@ -252,8 +223,6 @@ class DropboxApp implements CloudAppInterface
 
     /**
      * Gets the normalized path
-     * @param string $name
-     * @return array
      */
     public function path(string $name): array
     {
@@ -262,9 +231,6 @@ class DropboxApp implements CloudAppInterface
 
     /**
      * Checks if the access token need refresh
-     * @param int $code
-     * @param object|null $message
-     * @return bool
      */
     private function accessTokenNeedsRefresh(int $code, ?object $message = null): bool
     {

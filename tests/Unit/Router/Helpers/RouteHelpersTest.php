@@ -47,8 +47,7 @@ class RouteHelpersTest extends AppTestCase
             ['GET'],
             '[:alpha:2]?/post/[uuid=:any]',
             'PostController',
-            'show',
-            null
+            'show'
         );
 
         $route
@@ -108,8 +107,7 @@ class RouteHelpersTest extends AppTestCase
             ['GET'],
             'dashboard',
             'DashboardController',
-            'index',
-            null
+            'index'
         );
 
         $route->name('Dashboard')->module('Admin');
@@ -131,8 +129,7 @@ class RouteHelpersTest extends AppTestCase
             ['GET'],
             'profile',
             'ProfileController',
-            'show',
-            null
+            'show'
         );
 
         $route->group('auth')->module('Web');
@@ -176,8 +173,7 @@ class RouteHelpersTest extends AppTestCase
             ['GET'],
             'dashboard',
             'DashboardController',
-            'index',
-            null
+            'index'
         );
 
         $route->name('dashboard')->module('admin');
@@ -209,8 +205,7 @@ class RouteHelpersTest extends AppTestCase
             ['GET'],
             'profile',
             'ProfileController',
-            'show',
-            null
+            'show'
         );
 
         $route->group('auth')->module('web');

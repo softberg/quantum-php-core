@@ -27,9 +27,6 @@ use Quantum\App\Exceptions\BaseException;
  */
 class MigrationException extends BaseException
 {
-    /**
-     * @return MigrationException
-     */
     public static function wrongDirection(): self
     {
         return new self(
@@ -38,10 +35,6 @@ class MigrationException extends BaseException
         );
     }
 
-    /**
-     * @param string $action
-     * @return MigrationException
-     */
     public static function unsupportedAction(string $action): self
     {
         return new self(
@@ -50,9 +43,6 @@ class MigrationException extends BaseException
         );
     }
 
-    /**
-     * @return MigrationException
-     */
     public static function nothingToMigrate(): self
     {
         return new self(

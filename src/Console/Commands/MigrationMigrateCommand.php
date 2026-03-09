@@ -31,13 +31,11 @@ class MigrationMigrateCommand extends QtCommand
 {
     /**
      * The console command name.
-     * @var string|null
      */
     protected ?string $name = 'migration:migrate';
 
     /**
      * The console command description.
-     * @var string|null
      */
     protected ?string $description = 'Migrates the migrations';
 

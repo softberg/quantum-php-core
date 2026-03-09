@@ -34,56 +34,34 @@ use Psr\Log\LogLevel;
  */
 class QtView
 {
-    /**
-     * @var Renderer
-     */
     private Renderer $renderer;
 
-    /**
-     * @var AssetManager
-     */
     private AssetManager $assetManager;
 
-    /**
-     * @var Debugger
-     */
     private Debugger $debugger;
 
-    /**
-     * @var ViewCache
-     */
     private ViewCache $viewCache;
 
     /**
      * Layout file
-     * @var string|null
      */
     private ?string $layoutFile = null;
 
     /**
      * Rendered view
-     * @var string|null
      */
     private ?string $viewContent = null;
 
     /**
      * Assets to be included
-     * @var array
      */
     private array $assets = [];
 
     /**
      * View params
-     * @var array
      */
     private array $params = [];
 
-    /**
-     * @param Renderer $renderer
-     * @param AssetManager $assetManager
-     * @param Debugger $debugger
-     * @param ViewCache $viewCache
-     */
     public function __construct(
         Renderer $renderer,
         AssetManager $assetManager,
@@ -98,8 +76,6 @@ class QtView
 
     /**
      * Sets a layout
-     * @param string|null $layoutFile
-     * @param array $assets
      */
     public function setLayout(?string $layoutFile, array $assets = []): void
     {
@@ -112,7 +88,6 @@ class QtView
 
     /**
      * Gets the layout
-     * @return string|null
      */
     public function getLayout(): ?string
     {
@@ -121,7 +96,6 @@ class QtView
 
     /**
      * Sets view parameter
-     * @param string $key
      * @param mixed $value
      */
     public function setParam(string $key, $value): void
@@ -130,9 +104,7 @@ class QtView
     }
 
     /**
-     * @param string $key
      * @param $value
-     * @return void
      */
     public function setRawParam(string $key, $value): void
     {
@@ -141,7 +113,6 @@ class QtView
 
     /**
      * Gets the view parameter
-     * @param string $key
      * @return mixed|null
      */
     public function getParam(string $key)
@@ -157,7 +128,6 @@ class QtView
 
     /**
      * Sets multiple view parameters
-     * @param array $params
      */
     public function setParams(array $params): void
     {
@@ -168,14 +138,10 @@ class QtView
 
     /**
      * Gets all view parameters
-     * @return array
      */
     public function getParams(): array
     {
-
-        $params = array_map(fn ($param) => ($param instanceof RawParam) ? $param->getValue() : $param, $this->params);
-
-        return $params;
+        return array_map(fn ($param) => ($param instanceof RawParam) ? $param->getValue() : $param, $this->params);
     }
 
     /**
@@ -188,9 +154,6 @@ class QtView
 
     /**
      * Renders the view.
-     * @param string $viewFile
-     * @param array $params
-     * @return string|null
      * @throws AssetException
      * @throws BaseException
      * @throws ConfigException
@@ -233,9 +196,6 @@ class QtView
 
     /**
      * Renders partial view.
-     * @param string $viewFile
-     * @param array $params
-     * @return string
      */
     public function renderPartial(string $viewFile, array $params = []): string
     {
@@ -248,7 +208,6 @@ class QtView
 
     /**
      * Gets the rendered view.
-     * @return string|null
      * @throws ViewException
      */
     public function getView(): ?string
@@ -262,8 +221,6 @@ class QtView
 
     /**
      * Renders the view
-     * @param string $viewFile
-     * @return string
      */
     private function renderFile(string $viewFile): string
     {
@@ -306,19 +263,11 @@ class QtView
         return $params;
     }
 
-    /**
-     * @param string $value
-     * @return string
-     */
     private function sanitizeHtml(string $value): string
     {
         return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
     }
 
-    /**
-     * @param string $viewFile
-     * @return void
-     */
     private function updateDebugger(string $viewFile): void
     {
         $routesCell = $this->debugger->getStoreCell(Debugger::ROUTES);

@@ -21,20 +21,10 @@ namespace Quantum\Router;
  */
 final class MatchedRoute
 {
-    /**
-     * @var Route
-     */
     private Route $route;
 
-    /**
-     * @var array
-     */
     private array $params;
 
-    /**
-     * @param Route $route
-     * @param array $params
-     */
     public function __construct(Route $route, array $params)
     {
         $this->route = $route;
@@ -43,7 +33,6 @@ final class MatchedRoute
 
     /**
      * Return the original route definition.
-     * @return Route
      */
     public function getRoute(): Route
     {
@@ -52,7 +41,6 @@ final class MatchedRoute
 
     /**
      * Return parameters extracted from the URI at match time.
-     * @return array
      */
     public function getParams(): array
     {
