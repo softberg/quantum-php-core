@@ -14,30 +14,15 @@ class GoogleDriveFileSystemAdapterTest extends AppTestCase
      */
     protected $fs;
 
-    /**
-     * @var string
-     */
-    private $dirname = 'common';
+    private string $dirname = 'common';
 
-    /**
-     * @var string
-     */
-    private $filename = 'sample.txt';
+    private string $filename = 'sample.txt';
 
-    /**
-     * @var string
-     */
-    private $newFilename = 'new_name.txt';
+    private string $newFilename = 'new_name.txt';
 
-    /**
-     * @var string
-     */
-    private $content = 'This file was created via gdrive api';
+    private string $content = 'This file was created via gdrive api';
 
-    /**
-     * @var array
-     */
-    private static $response = [];
+    private static array $response = [];
 
     public function setUp(): void
     {
@@ -63,7 +48,7 @@ class GoogleDriveFileSystemAdapterTest extends AppTestCase
         self::$response = [];
     }
 
-    public function testGoogleDriveMakeCheckRemoveDirectory()
+    public function testGoogleDriveMakeCheckRemoveDirectory(): void
     {
         $this->assertFalse($this->fs->isDirectory($this->dirname));
 
@@ -80,7 +65,7 @@ class GoogleDriveFileSystemAdapterTest extends AppTestCase
         $this->assertFalse($this->fs->isDirectory($this->dirname));
     }
 
-    public function testGoogleDriveCreateGetCheckRemoveFile()
+    public function testGoogleDriveCreateGetCheckRemoveFile(): void
     {
         $this->assertFalse($this->fs->isFile($this->filename));
 
@@ -102,7 +87,7 @@ class GoogleDriveFileSystemAdapterTest extends AppTestCase
         $this->assertFalse($this->fs->exists($this->filename));
     }
 
-    public function testGoogleDriveFileAppend()
+    public function testGoogleDriveFileAppend(): void
     {
         self::$response['kind'] = GoogleDriveApp::DRIVE_FILE_KIND;
         self::$response['mimeType'] = 'text/plain';
@@ -118,7 +103,7 @@ class GoogleDriveFileSystemAdapterTest extends AppTestCase
         $this->assertEquals($this->content . $moreContent, $this->fs->get($this->filename));
     }
 
-    public function testGoogleDriveFileRename()
+    public function testGoogleDriveFileRename(): void
     {
         $this->fs->put($this->filename, $this->content);
 
@@ -134,7 +119,7 @@ class GoogleDriveFileSystemAdapterTest extends AppTestCase
         $this->fs->remove($this->newFilename);
     }
 
-    public function testGoogleDriveFileCopy()
+    public function testGoogleDriveFileCopy(): void
     {
         $this->fs->makeDirectory($this->dirname);
 
@@ -154,7 +139,7 @@ class GoogleDriveFileSystemAdapterTest extends AppTestCase
         $this->fs->removeDirectory($this->dirname);
     }
 
-    public function testGoogleDriveFileSize()
+    public function testGoogleDriveFileSize(): void
     {
         $text = 'some bytes';
 
@@ -165,7 +150,7 @@ class GoogleDriveFileSystemAdapterTest extends AppTestCase
         $this->assertEquals(strlen($text), $this->fs->size($this->filename));
     }
 
-    public function testGoogleDriveFileLastModified()
+    public function testGoogleDriveFileLastModified(): void
     {
         $modified = '2023-02-12T15:50:38Z';
 
@@ -179,7 +164,7 @@ class GoogleDriveFileSystemAdapterTest extends AppTestCase
         $this->assertEquals(strtotime($modified), $result);
     }
 
-    public function testGoogleDriveListDirectory()
+    public function testGoogleDriveListDirectory(): void
     {
         self::$response['files'] = [
             [

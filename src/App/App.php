@@ -34,15 +34,9 @@ class App
      */
     public const CONSOLE = 'console';
 
-    /**
-     * @var string
-     */
-    private static $baseDir;
+    private static ?string $baseDir = null;
 
-    /**
-     * @var AppInterface
-     */
-    private $adapter;
+    private AppInterface $adapter;
 
     /**
      * @param AppInterface $adapter
@@ -55,7 +49,7 @@ class App
     /**
      * @param string $baseDir
      */
-    public static function setBaseDir(string $baseDir)
+    public static function setBaseDir(string $baseDir): void
     {
         self::$baseDir = $baseDir;
     }

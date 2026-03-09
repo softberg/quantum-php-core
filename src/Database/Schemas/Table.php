@@ -179,7 +179,7 @@ class Table
      * @param string $oldName
      * @param string $newName
      */
-    public function renameColumn(string $oldName, string $newName)
+    public function renameColumn(string $oldName, string $newName): void
     {
         if ($this->action == self::ALTER) {
             $this->columns[] = [
@@ -193,7 +193,7 @@ class Table
      * Drops the column
      * @param string $name
      */
-    public function dropColumn(string $name)
+    public function dropColumn(string $name): void
     {
         if ($this->action == self::ALTER) {
             $this->columns[] = [
@@ -209,7 +209,7 @@ class Table
      * @param string $indexType
      * @param string|null $indexName
      */
-    public function addIndex(string $columnName, string $indexType, ?string $indexName = null)
+    public function addIndex(string $columnName, string $indexType, ?string $indexName = null): void
     {
         if ($this->action == self::ALTER) {
             $this->columns[] = [
@@ -225,7 +225,7 @@ class Table
      * Drops the column index
      * @param string $indexName
      */
-    public function dropIndex(string $indexName)
+    public function dropIndex(string $indexName): void
     {
         if ($this->action == self::ALTER) {
             $this->columns[] = [
@@ -293,7 +293,7 @@ class Table
      * Saves the query
      * @throws DatabaseException
      */
-    private function save()
+    private function save(): void
     {
         $sql = $this->getSql();
 

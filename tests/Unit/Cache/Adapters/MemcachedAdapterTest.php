@@ -7,7 +7,7 @@ use Quantum\Tests\Unit\AppTestCase;
 
 class MemcachedAdapterTest extends AppTestCase
 {
-    private $memCached;
+    private MemcachedAdapter $memCached;
 
     public function setUp(): void
     {
@@ -28,7 +28,7 @@ class MemcachedAdapterTest extends AppTestCase
         $this->memCached->clear();
     }
 
-    public function testMemcachedAdapterSetGetDelete()
+    public function testMemcachedAdapterSetGetDelete(): void
     {
 
         $this->assertNull($this->memCached->get('test'));
@@ -48,7 +48,7 @@ class MemcachedAdapterTest extends AppTestCase
         $this->assertNull($this->memCached->get('test'));
     }
 
-    public function testMemcachedAdapterHas()
+    public function testMemcachedAdapterHas(): void
     {
         $this->assertFalse($this->memCached->has('test'));
 
@@ -57,7 +57,7 @@ class MemcachedAdapterTest extends AppTestCase
         $this->assertTrue($this->memCached->has('test'));
     }
 
-    public function testMemcachedAdapterGetMultiple()
+    public function testMemcachedAdapterGetMultiple(): void
     {
         $cacheItems = $this->memCached->getMultiple(['test1', 'test2']);
 
@@ -88,7 +88,7 @@ class MemcachedAdapterTest extends AppTestCase
         $this->assertEquals('Test one', $cacheItems['test1']);
     }
 
-    public function testMemcachedAdapterSetMultiple()
+    public function testMemcachedAdapterSetMultiple(): void
     {
         $this->assertFalse($this->memCached->has('test1'));
 
@@ -105,7 +105,7 @@ class MemcachedAdapterTest extends AppTestCase
         $this->assertEquals('Test value two', $this->memCached->get('test2'));
     }
 
-    public function testMemcachedAdapterDeleteMultiple()
+    public function testMemcachedAdapterDeleteMultiple(): void
     {
         $this->memCached->setMultiple(['test1' => 'Test value one', 'test2' => 'Test value two']);
 
@@ -120,7 +120,7 @@ class MemcachedAdapterTest extends AppTestCase
         $this->assertFalse($this->memCached->has('test2'));
     }
 
-    public function testMemcachedAdapterClear()
+    public function testMemcachedAdapterClear(): void
     {
         $this->memCached->setMultiple(['test1' => 'Test value one', 'test2' => 'Test value two']);
 
@@ -135,7 +135,7 @@ class MemcachedAdapterTest extends AppTestCase
         $this->assertFalse($this->memCached->has('test2'));
     }
 
-    public function testMemcachedAdapterExpired()
+    public function testMemcachedAdapterExpired(): void
     {
         $params = [
             'prefix' => 'test',

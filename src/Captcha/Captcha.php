@@ -40,10 +40,7 @@ class Captcha
      */
     public const RECAPTCHA = 'recaptcha';
 
-    /**
-     * @var CaptchaInterface
-     */
-    private $adapter;
+    private CaptchaInterface $adapter;
 
     /**
      * @param CaptchaInterface $adapter

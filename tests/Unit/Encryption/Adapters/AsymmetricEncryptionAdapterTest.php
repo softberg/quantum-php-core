@@ -20,12 +20,12 @@ class AsymmetricEncryptionAdapterTest extends AppTestCase
         $this->adapter = new AsymmetricEncryptionAdapter();
     }
 
-    public function testAsymmetricEncryptionAdapterGetInstance()
+    public function testAsymmetricEncryptionAdapterGetInstance(): void
     {
         $this->assertInstanceOf(AsymmetricEncryptionAdapter::class, $this->adapter);
     }
 
-    public function testAsymmetricEncryptionAdapterEncryptAndDecrypt()
+    public function testAsymmetricEncryptionAdapterEncryptAndDecrypt(): void
     {
         $encrypted = $this->adapter->encrypt($this->plainText);
 
@@ -38,7 +38,7 @@ class AsymmetricEncryptionAdapterTest extends AppTestCase
         $this->assertEquals($this->plainText, $decrypted);
     }
 
-    public function testAsymmetricEncryptionAdapterWithoutPublicKey()
+    public function testAsymmetricEncryptionAdapterWithoutPublicKey(): void
     {
         $reflection = new ReflectionClass(AsymmetricEncryptionAdapter::class);
         $instanceProperty = $reflection->getProperty('publicKey');
@@ -53,7 +53,7 @@ class AsymmetricEncryptionAdapterTest extends AppTestCase
         $adapterInstance->encrypt('Some text');
     }
 
-    public function testAsymmetricEncryptionAdapterDecryptWithoutPrivateKey()
+    public function testAsymmetricEncryptionAdapterDecryptWithoutPrivateKey(): void
     {
         $reflection = new ReflectionClass(AsymmetricEncryptionAdapter::class);
         $instanceProperty = $reflection->getProperty('privateKey');

@@ -40,7 +40,7 @@ class Cryptor
     /**
      * @var EncryptionInterface
      */
-    private $adapter;
+    private EncryptionInterface $adapter;
 
     /**
      * @param EncryptionInterface $adapter

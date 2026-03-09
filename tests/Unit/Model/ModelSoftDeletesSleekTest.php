@@ -2,6 +2,7 @@
 
 namespace Quantum\Tests\Unit\Model;
 
+use Quantum\Model\Model;
 use Quantum\Tests\_root\shared\Models\TestProductsModel;
 use Quantum\Database\Adapters\Sleekdb\SleekDbal;
 use Quantum\Model\Factories\ModelFactory;
@@ -13,7 +14,7 @@ use Quantum\Loader\Setup;
 
 class ModelSoftDeletesSleekTest extends AppTestCase
 {
-    private $model;
+    private Model $model;
 
     public function setUp(): void
     {
@@ -39,7 +40,7 @@ class ModelSoftDeletesSleekTest extends AppTestCase
         ModelFactory::get(TestProductsModel::class)->truncate();
     }
 
-    public function testSleekDeleteSetsDeletedAt()
+    public function testSleekDeleteSetsDeletedAt(): void
     {
         $this->assertEquals(4, $this->model->count());
 
@@ -54,7 +55,7 @@ class ModelSoftDeletesSleekTest extends AppTestCase
         $this->assertEquals(3, $this->model->count());
     }
 
-    public function testSleekRestoreSetsDeletedAtToNull()
+    public function testSleekRestoreSetsDeletedAtToNull(): void
     {
         $this->assertEquals(4, $this->model->count());
 
@@ -73,7 +74,7 @@ class ModelSoftDeletesSleekTest extends AppTestCase
         $this->assertEquals(4, $this->model->count());
     }
 
-    public function testSleekForceDeleteActuallyDeletes()
+    public function testSleekForceDeleteActuallyDeletes(): void
     {
         $this->assertEquals(6, $this->model->withTrashed()->count());
 
@@ -90,7 +91,7 @@ class ModelSoftDeletesSleekTest extends AppTestCase
         $this->assertTrue($product->isEmpty());
     }
 
-    public function testSleekGetReturnsOnlyNonDeletedRecords()
+    public function testSleekGetReturnsOnlyNonDeletedRecords(): void
     {
         $result = $this->model->get();
 
@@ -99,7 +100,7 @@ class ModelSoftDeletesSleekTest extends AppTestCase
         $this->assertCount(4, $result);
     }
 
-    public function testSleekGetWithTrashedReturnsAllRecords()
+    public function testSleekGetWithTrashedReturnsAllRecords(): void
     {
         $result = $this->model->withTrashed()->get();
 
@@ -108,7 +109,7 @@ class ModelSoftDeletesSleekTest extends AppTestCase
         $this->assertCount(6, $result);
     }
 
-    public function testSleekGetOnlyTrashedReturnsOnlySoftDeletedRecords()
+    public function testSleekGetOnlyTrashedReturnsOnlySoftDeletedRecords(): void
     {
         $result = $this->model->onlyTrashed()->get();
 
@@ -117,7 +118,7 @@ class ModelSoftDeletesSleekTest extends AppTestCase
         $this->assertCount(2, $result);
     }
 
-    public function testSleekPaginateExcludesDeleted()
+    public function testSleekPaginateExcludesDeleted(): void
     {
         $paginator = $this->model->paginate(3);
 
@@ -129,14 +130,14 @@ class ModelSoftDeletesSleekTest extends AppTestCase
         }
     }
 
-    public function testSleekCountExcludesDeleted()
+    public function testSleekCountExcludesDeleted(): void
     {
         $this->assertEquals(4, $this->model->count());
 
         $this->assertEquals(6, ModelFactory::get(TestProductsModel::class)->withTrashed()->count());
     }
 
-    public function testSleekFindOneRespectsSoftDelete()
+    public function testSleekFindOneRespectsSoftDelete(): void
     {
         $product = $this->model->findOne(2);
 
@@ -149,7 +150,7 @@ class ModelSoftDeletesSleekTest extends AppTestCase
         $this->assertEquals('Product B', $product->prop('title'));
     }
 
-    public function testSleekFindOneByRespectsSoftDelete()
+    public function testSleekFindOneByRespectsSoftDelete(): void
     {
         $product = $this->model->findOneBy('title', 'Product B');
 
@@ -160,7 +161,7 @@ class ModelSoftDeletesSleekTest extends AppTestCase
         $this->assertFalse($product->isEmpty());
     }
 
-    public function testSleekFirstRespectsSoftDelete()
+    public function testSleekFirstRespectsSoftDelete(): void
     {
         $product = $this->model->criteria('title', '=', 'Product B')->first();
 
@@ -173,7 +174,7 @@ class ModelSoftDeletesSleekTest extends AppTestCase
         $this->assertFalse($product->isEmpty());
     }
 
-    private function _createProductsTableWithData()
+    private function _createProductsTableWithData(): void
     {
         $product = new SleekDbal('products');
 

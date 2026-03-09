@@ -22,7 +22,7 @@ class TableTest extends TestCase
         $db->shouldReceive('execute')->andReturn(true);
     }
 
-    public function testSetActionAndGetQuery()
+    public function testSetActionAndGetQuery(): void
     {
         $table = new Table('test');
         $table->setAction(Table::RENAME, ['newName' => 'general']);
@@ -32,12 +32,12 @@ class TableTest extends TestCase
         $this->assertEquals($expectedSql, $table->getSql());
     }
 
-    public function testTableConstructor()
+    public function testTableConstructor(): void
     {
         $this->assertInstanceOf(Table::class, new Table('test'));
     }
 
-    public function testAddColumn()
+    public function testAddColumn(): void
     {
         $table = new Table('test');
         $table->setAction(Table::CREATE);
@@ -48,7 +48,7 @@ class TableTest extends TestCase
         $this->assertEquals($expectedSql, $table->getSql());
     }
 
-    public function testAddColumnWithAttributes()
+    public function testAddColumnWithAttributes(): void
     {
         $table = new Table('test');
         $table->setAction(Table::CREATE);
@@ -59,7 +59,7 @@ class TableTest extends TestCase
         $this->assertEquals($expectedSql, $table->getSql());
     }
 
-    public function testAddColumnWithIndexs()
+    public function testAddColumnWithIndexs(): void
     {
         $table = new Table('test');
         $table->setAction(Table::CREATE);
@@ -72,7 +72,7 @@ class TableTest extends TestCase
         $this->assertEquals($expectedSql, $table->getSql());
     }
 
-    public function testModifyColumn()
+    public function testModifyColumn(): void
     {
         $table = new Table('test');
         $table->setAction(Table::ALTER);
@@ -83,7 +83,7 @@ class TableTest extends TestCase
         $this->assertEquals($expectedSql, $table->getSql());
     }
 
-    public function testModifyColumnWithAttributes()
+    public function testModifyColumnWithAttributes(): void
     {
         $table = new Table('test');
         $table->setAction(Table::ALTER);
@@ -94,7 +94,7 @@ class TableTest extends TestCase
         $this->assertEquals($expectedSql, $table->getSql());
     }
 
-    public function testAddColumnAndModifyColumn()
+    public function testAddColumnAndModifyColumn(): void
     {
         $table = new Table('test');
         $table->setAction(Table::ALTER);
@@ -106,7 +106,7 @@ class TableTest extends TestCase
         $this->assertEquals($expectedSql, $table->getSql());
     }
 
-    public function testRenameColumn()
+    public function testRenameColumn(): void
     {
         $table = new Table('test');
         $table->setAction(Table::ALTER);
@@ -117,7 +117,7 @@ class TableTest extends TestCase
         $this->assertEquals($expectedSql, $table->getSql());
     }
 
-    public function testDropColumn()
+    public function testDropColumn(): void
     {
         $table = new Table('test');
         $table->setAction(Table::ALTER);
@@ -128,7 +128,7 @@ class TableTest extends TestCase
         $this->assertEquals($expectedSql, $table->getSql());
     }
 
-    public function testAddIndex()
+    public function testAddIndex(): void
     {
         $table = new Table('test');
         $table->setAction(Table::ALTER);
@@ -139,7 +139,7 @@ class TableTest extends TestCase
         $this->assertEquals($expectedSql, $table->getSql());
     }
 
-    public function testAddIndexWithName()
+    public function testAddIndexWithName(): void
     {
         $table = new Table('test');
         $table->setAction(Table::ALTER);
@@ -150,7 +150,7 @@ class TableTest extends TestCase
         $this->assertEquals($expectedSql, $table->getSql());
     }
 
-    public function testAddingMultipleIndexes()
+    public function testAddingMultipleIndexes(): void
     {
         $table = new Table('test');
         $table->setAction(Table::ALTER);
@@ -162,7 +162,7 @@ class TableTest extends TestCase
         $this->assertEquals($expectedSql, $table->getSql());
     }
 
-    public function testDropIndex()
+    public function testDropIndex(): void
     {
         $table = new Table('test');
         $table->setAction(Table::ALTER);
@@ -173,7 +173,7 @@ class TableTest extends TestCase
         $this->assertEquals($expectedSql, $table->getSql());
     }
 
-    public function testAfterColumn()
+    public function testAfterColumn(): void
     {
         $table = new Table('test');
         $table->setAction(Table::ALTER);

@@ -8,10 +8,11 @@ use Quantum\Router\Route;
 use Quantum\Http\Request;
 use Quantum\Di\Di;
 use Quantum\Tests\Unit\AppTestCase;
+use Quantum\View\QtView;
 
 class ViewHelperTest extends AppTestCase
 {
-    private $view;
+    private QtView $view;
 
     public function setUp(): void
     {
@@ -40,7 +41,7 @@ class ViewHelperTest extends AppTestCase
         $this->view->setLayout(null);
     }
 
-    public function testView()
+    public function testView(): void
     {
         $this->view->setLayout('layout');
 
@@ -49,7 +50,7 @@ class ViewHelperTest extends AppTestCase
         $this->assertEquals('<p>Hello World, this is rendered html view</p>', view());
     }
 
-    public function testPartial()
+    public function testPartial(): void
     {
         $this->assertEquals('<p>Hello World, this is rendered partial html view</p>', partial('partial'));
 

@@ -16,7 +16,7 @@ class CaptchaTest extends AppTestCase
         parent::setUp();
     }
 
-    public function testCaptchaGetAdapter()
+    public function testCaptchaGetAdapter(): void
     {
         $params = [
             'type' => 'visible',
@@ -31,7 +31,7 @@ class CaptchaTest extends AppTestCase
         $this->assertInstanceOf(CaptchaInterface::class, $captcha->getAdapter());
     }
 
-    public function testCaptchaCallingValidMethod()
+    public function testCaptchaCallingValidMethod(): void
     {
         $params = [
             'type' => 'visible',
@@ -44,7 +44,7 @@ class CaptchaTest extends AppTestCase
         $this->assertEquals('visible', $captcha->getType());
     }
 
-    public function testCacheCallingInvalidMethod()
+    public function testCacheCallingInvalidMethod(): void
     {
         $params = [
             'type' => 'visible',

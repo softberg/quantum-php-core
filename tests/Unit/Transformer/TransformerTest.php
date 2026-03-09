@@ -52,7 +52,7 @@ class TransformerTest extends TestCase
         ],
     ];
 
-    public function testDataTransforming()
+    public function testDataTransforming(): void
     {
         $transformed = Transformer::transform($this->posts, new PostTransformer());
 

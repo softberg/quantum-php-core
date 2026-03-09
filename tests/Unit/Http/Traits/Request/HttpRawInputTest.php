@@ -19,7 +19,7 @@ class HttpRawInputTest extends AppTestCase
         parent::tearDown();
     }
 
-    public function testParseReturnsEmptyWhenNoBoundary()
+    public function testParseReturnsEmptyWhenNoBoundary(): void
     {
         Server::getInstance()->set('CONTENT_TYPE', null);
 
@@ -28,7 +28,7 @@ class HttpRawInputTest extends AppTestCase
         $this->assertEquals(['params' => [], 'files' => []], $result);
     }
 
-    public function testParseWithParameterBlock()
+    public function testParseWithParameterBlock(): void
     {
         $boundary = '----BoundaryTestParam';
         $rawInput = "--$boundary\r\n"
@@ -46,7 +46,7 @@ class HttpRawInputTest extends AppTestCase
         $this->assertEquals('JohnDoe', $result['params']['username']);
     }
 
-    public function testParseWithStreamBlock()
+    public function testParseWithStreamBlock(): void
     {
         $boundary = '----BoundaryStreamTest';
 
@@ -66,7 +66,7 @@ class HttpRawInputTest extends AppTestCase
         $this->assertEquals('stream-data', $result['params']['payload']);
     }
 
-    public function testParseWithFileBlock()
+    public function testParseWithFileBlock(): void
     {
         $boundary = '----BoundaryFileTest';
         $fileContent = 'file-content';

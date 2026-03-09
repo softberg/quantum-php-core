@@ -12,8 +12,8 @@ use Quantum\Cron\CronManager;
  */
 class CronManagerTest extends AppTestCase
 {
-    private $cronDirectory;
-    private static $executedTasks = [];
+    private string $cronDirectory;
+    private static array $executedTasks = [];
 
     public function setUp(): void
     {
@@ -43,7 +43,7 @@ class CronManagerTest extends AppTestCase
         ]);
     }
 
-    public function testLoadTasksFromDirectory()
+    public function testLoadTasksFromDirectory(): void
     {
         $this->createTaskFile('task1.php', [
             'name' => 'task-1',
@@ -65,7 +65,7 @@ class CronManagerTest extends AppTestCase
         $this->assertArrayHasKey('task-2', $tasks);
     }
 
-    public function testLoadTasksWithObjectFormat()
+    public function testLoadTasksWithObjectFormat(): void
     {
         $taskContent = '<?php
             use Quantum\Cron\CronTask;
@@ -83,7 +83,7 @@ class CronManagerTest extends AppTestCase
         $this->assertArrayHasKey('object-task', $tasks);
     }
 
-    public function testLoadTasksWithEmptyDirectory()
+    public function testLoadTasksWithEmptyDirectory(): void
     {
         $manager = new CronManager($this->cronDirectory);
         $manager->loadTasks();
@@ -91,7 +91,7 @@ class CronManagerTest extends AppTestCase
         $this->assertCount(0, $manager->getTasks());
     }
 
-    public function testRunDueTasksExecutesOnlyDueTasks()
+    public function testRunDueTasksExecutesOnlyDueTasks(): void
     {
         $this->createTaskFile('due-task.php', [
             'name' => 'due-task',
@@ -114,7 +114,7 @@ class CronManagerTest extends AppTestCase
         $this->assertEquals(1, $stats['skipped']);
     }
 
-    public function testRunTaskByName()
+    public function testRunTaskByName(): void
     {
         $this->createTaskFile('specific-task.php', [
             'name' => 'specific-task',
@@ -128,7 +128,7 @@ class CronManagerTest extends AppTestCase
         $this->assertContains('specific-task', self::$executedTasks);
     }
 
-    public function testRunTaskByNameThrowsExceptionForNonExistentTask()
+    public function testRunTaskByNameThrowsExceptionForNonExistentTask(): void
     {
         $this->expectException(CronException::class);
         $this->expectExceptionMessage('not found');
@@ -137,7 +137,7 @@ class CronManagerTest extends AppTestCase
         $manager->runTaskByName('non-existent-task');
     }
 
-    public function testRunDueTasksWithForceIgnoresLocks()
+    public function testRunDueTasksWithForceIgnoresLocks(): void
     {
         $this->createTaskFile('locked-task.php', [
             'name' => 'locked-task',
@@ -151,13 +151,11 @@ class CronManagerTest extends AppTestCase
         $manager->runDueTasks(true);
         $manager->runDueTasks(true);
 
-        $occurrences = array_filter(self::$executedTasks, function ($task) {
-            return $task === 'locked-task';
-        });
+        $occurrences = array_filter(self::$executedTasks, fn ($task): bool => $task === 'locked-task');
         $this->assertCount(2, $occurrences);
     }
 
-    public function testTaskExecutionFailureIsHandled()
+    public function testTaskExecutionFailureIsHandled(): void
     {
         $this->createTaskFile('failing-task.php', [
             'name' => 'failing-task',
@@ -172,7 +170,7 @@ class CronManagerTest extends AppTestCase
         $this->assertEquals(1, $stats['failed']);
     }
 
-    public function testGetStatsReturnsCorrectStatistics()
+    public function testGetStatsReturnsCorrectStatistics(): void
     {
         $this->createTaskFile('task1.php', [
             'name' => 'task-1',
@@ -194,7 +192,7 @@ class CronManagerTest extends AppTestCase
         $this->assertEquals(0, $stats['locked']);
     }
 
-    public function testInvalidTaskFileThrowsException()
+    public function testInvalidTaskFileThrowsException(): void
     {
         $this->expectException(CronException::class);
         $this->expectExceptionMessage('Invalid task file');
@@ -205,7 +203,7 @@ class CronManagerTest extends AppTestCase
         $manager->loadTasks();
     }
 
-    public function testCronDirectoryCanBeConfigured()
+    public function testCronDirectoryCanBeConfigured(): void
     {
         $configuredDir = base_dir() . DS . 'cron-configured';
         $this->cleanupDirectory($configuredDir);
@@ -230,7 +228,7 @@ class CronManagerTest extends AppTestCase
         $this->cleanupDirectory($configuredDir);
     }
 
-    public function testCronDirectoryNotFoundThrowsException()
+    public function testCronDirectoryNotFoundThrowsException(): void
     {
         $this->expectException(CronException::class);
         $this->expectExceptionMessage('not found');
@@ -239,7 +237,7 @@ class CronManagerTest extends AppTestCase
         $manager->loadTasks();
     }
 
-    public function testTaskExecutionFailureIsRecorded()
+    public function testTaskExecutionFailureIsRecorded(): void
     {
         $this->createTaskFile('failing-task.php', [
             'name' => 'failing-task',
@@ -255,7 +253,7 @@ class CronManagerTest extends AppTestCase
 
     private function createTaskFile(string $filename, array $definition, ?string $directory = null): void
     {
-        $directory = $directory ?? $this->cronDirectory;
+        $directory ??= $this->cronDirectory;
         $body = $definition['body'] ?? "\\Quantum\\Tests\\Unit\\Cron\\CronManagerTest::recordExecution('{$definition['name']}');";
 
         $content = "<?php\n\nreturn [\n";

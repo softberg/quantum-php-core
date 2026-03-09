@@ -45,7 +45,7 @@ class CacheFactory
     /**
      * @var array<string, Cache>
      */
-    private static $instances = [];
+    private static array $instances = [];
 
     /**
      * @param string|null $adapter

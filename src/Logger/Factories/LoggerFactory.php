@@ -44,7 +44,7 @@ class LoggerFactory
     /**
      * @var array<string, Logger>
      */
-    private static $instances = [];
+    private static array $instances = [];
 
     /**
      * @param string|null $adapter

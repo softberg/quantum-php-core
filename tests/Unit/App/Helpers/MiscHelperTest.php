@@ -11,14 +11,14 @@ class MiscHelperTest extends AppTestCase
         parent::setUp();
     }
 
-    public function testMessageHelper()
+    public function testMessageHelper(): void
     {
         $this->assertEquals('Hello John', _message('Hello {%1}', 'John'));
 
         $this->assertEquals('Hello John, greetings from Jenny', _message('Hello {%1}, greetings from {%2}', ['John', 'Jenny']));
     }
 
-    public function testValidBase64()
+    public function testValidBase64(): void
     {
         $validBase64String = base64_encode('test');
 
@@ -29,14 +29,14 @@ class MiscHelperTest extends AppTestCase
         $this->assertFalse(valid_base64($invalidBase64String));
     }
 
-    public function testRandomNumber()
+    public function testRandomNumber(): void
     {
         $this->assertIsInt(random_number());
 
         $this->assertIsInt(random_number(5));
     }
 
-    public function testSlugify()
+    public function testSlugify(): void
     {
         $this->assertEquals('text-with-spaces', slugify('Text with spaces'));
 

@@ -1,6 +1,6 @@
 <?php
 
-function createEnvFile()
+function createEnvFile(): void
 {
     if (!file_exists(PROJECT_ROOT . DS . '.env.testing')) {
         copy(
@@ -10,7 +10,7 @@ function createEnvFile()
     }
 }
 
-function removeEnvFile()
+function removeEnvFile(): void
 {
     if (file_exists(PROJECT_ROOT . DS . '.env.testing')) {
         unlink(PROJECT_ROOT . DS . '.env.testing');

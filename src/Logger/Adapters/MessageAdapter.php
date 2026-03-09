@@ -31,7 +31,7 @@ class MessageAdapter implements ReportableInterface
      * @return void
      * @throws DebugBarException
      */
-    public function report(string $level, $message, ?array $context = [])
+    public function report(string $level, $message, ?array $context = []): void
     {
         $tab = $context['tab'] ?? Debugger::MESSAGES;
 

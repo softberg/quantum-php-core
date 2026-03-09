@@ -25,10 +25,7 @@ class ArrayPaginator implements PaginatorInterface
 {
     use PaginatorTrait;
 
-    /**
-     * @var array
-     */
-    private $items;
+    private array $items;
 
     /**
      * @param array $items

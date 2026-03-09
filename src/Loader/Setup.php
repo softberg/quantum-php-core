@@ -14,6 +14,9 @@
 
 namespace Quantum\Loader;
 
+use Quantum\Di\Exceptions\DiException;
+use ReflectionException;
+
 /**
  * Class Setup
  * @package Quantum\Loader
@@ -23,27 +26,27 @@ class Setup
     /**
      * @var bool
      */
-    protected $hierarchical = false;
+    protected bool $hierarchical;
 
     /**
      * @var string|null
      */
-    protected $module;
+    protected ?string $module;
 
     /**
      * @var string|null
      */
-    protected $pathPrefix;
+    protected ?string $pathPrefix;
 
     /**
      * @var string|null
      */
-    protected $fileName;
+    protected ?string $fileName;
 
     /**
      * @var string
      */
-    protected $exceptionMessage;
+    protected string $exceptionMessage;
 
     /**
      * Setup constructor.
@@ -52,6 +55,7 @@ class Setup
      * @param bool $hierarchical
      * @param string|null $module
      * @param string|null $exceptionMessage
+     * @throws DiException|ReflectionException
      */
     public function __construct(?string $pathPrefix = null, ?string $fileName = null, bool $hierarchical = true, ?string $module = null, ?string $exceptionMessage = null)
     {

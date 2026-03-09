@@ -86,7 +86,7 @@ abstract class HttpRequest
      * @throws DiException
      * @throws ReflectionException
      */
-    public static function init(Server $server)
+    public static function init(Server $server): void
     {
         if (self::$initialized) {
             return;
@@ -111,7 +111,7 @@ abstract class HttpRequest
     /**
      * Flushes the request header , body and files
      */
-    public static function flush()
+    public static function flush(): void
     {
         self::$__headers = [];
         self::$__request = [];
@@ -129,7 +129,7 @@ abstract class HttpRequest
      * Sets the merged request parameters
      * @param array $params
      */
-    public static function setRequestParams(array $params)
+    public static function setRequestParams(array $params): void
     {
         self::$__request = array_merge(
             self::getParams(),
@@ -146,7 +146,7 @@ abstract class HttpRequest
      * @throws BaseException
      * @throws ReflectionException
      */
-    public static function setUploadedFiles(array $files)
+    public static function setUploadedFiles(array $files): void
     {
         self::$__files = array_merge(
             self::handleFiles($_FILES),
@@ -169,7 +169,7 @@ abstract class HttpRequest
      * @return void
      * @throws BaseException
      */
-    public static function setMethod(string $method)
+    public static function setMethod(string $method): void
     {
         if (!in_array(strtoupper($method), self::METHODS)) {
             throw HttpException::requestMethodNotAvailable($method);
@@ -258,7 +258,7 @@ abstract class HttpRequest
     /**
      * Sets server data (method, protocol, host, port, uri, query).
      */
-    private static function setServerInfo()
+    private static function setServerInfo(): void
     {
         foreach (['method', 'protocol', 'host', 'port', 'uri', 'query'] as $name) {
             self::${"__{$name}"} = self::$server->$name();
@@ -268,7 +268,7 @@ abstract class HttpRequest
     /**
      * Sets the normalized request content type.
      */
-    private static function setContentType()
+    private static function setContentType(): void
     {
         self::$__contentType = self::$server->contentType(true);
     }
@@ -276,7 +276,7 @@ abstract class HttpRequest
     /**
      * Sets request headers, normalizing keys to lowercase.
      */
-    private static function setRequestHeaders()
+    private static function setRequestHeaders(): void
     {
         self::$__headers = array_change_key_case((array) getallheaders());
     }

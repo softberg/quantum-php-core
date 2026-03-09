@@ -44,12 +44,12 @@ class SleekDbal implements DbalInterface
     /**
      * @var bool
      */
-    protected $isNew = false;
+    protected bool $isNew = false;
 
     /**
      * @var array
      */
-    protected $data = [];
+    protected array $data = [];
 
     /**
      * @var array
@@ -59,12 +59,12 @@ class SleekDbal implements DbalInterface
     /**
      * @var array
      */
-    protected $criterias = [];
+    protected array $criterias = [];
 
     /**
      * @var array
      */
-    protected $havings = [];
+    protected array $havings = [];
 
     /**
      * @var array
@@ -98,27 +98,23 @@ class SleekDbal implements DbalInterface
 
     /**
      * Associated model name
-     * @var string
      */
-    private $modelName;
+    private ?string $modelName;
 
     /**
      * The database table associated with model
-     * @var string
      */
-    private $table;
+    private string $table;
 
     /**
      * ID column of table
-     * @var string
      */
-    private $idColumn;
+    private string $idColumn;
 
     /**
      * Foreign keys
-     * @var array
      */
-    private $foreignKeys;
+    private array $foreignKeys;
 
     /**
      * Hidden fields
@@ -128,26 +124,22 @@ class SleekDbal implements DbalInterface
 
     /**
      * ORM Model
-     * @var object|null
+     * @var Store|null
      */
-    private $ormModel = null;
+    private ?Store $ormModel = null;
 
-    /**
-     * @var QueryBuilder|null
-     */
-    private $queryBuilder;
+    private ?QueryBuilder $queryBuilder = null;
 
     /**
      * Active connection
-     * @var array|null
      */
-    private static $connection = null;
+    private static ?array $connection = null;
 
     /**
      * Operators map
      * @var string[]
      */
-    private $operators = [
+    private array $operators = [
         '=', '!=',
         '>', '>=',
         '<', '<=',
@@ -185,12 +177,12 @@ class SleekDbal implements DbalInterface
     /**
      * @inheritDoc
      */
-    public static function connect(array $config)
+    public static function connect(array $config): void
     {
         self::$connection = $config;
     }
 
-    public function setData(array $data)
+    public function setData(array $data): void
     {
         $this->data = $data;
     }
@@ -199,7 +191,7 @@ class SleekDbal implements DbalInterface
      * @param $modifiedFields
      * @return void
      */
-    public function setModifiedFields($modifiedFields)
+    public function setModifiedFields($modifiedFields): void
     {
         $this->modifiedFields = $modifiedFields;
     }
@@ -208,7 +200,7 @@ class SleekDbal implements DbalInterface
      * @param bool $isNew
      * @return void
      */
-    public function setIsNew(bool $isNew)
+    public function setIsNew(bool $isNew): void
     {
         $this->isNew = $isNew;
     }
@@ -224,7 +216,7 @@ class SleekDbal implements DbalInterface
     /**
      * @inheritDoc
      */
-    public static function disconnect()
+    public static function disconnect(): void
     {
         self::$connection = null;
     }
@@ -270,7 +262,7 @@ class SleekDbal implements DbalInterface
     /**
      * @param array|null $modelData
      */
-    public function updateOrmModel(?array $modelData)
+    public function updateOrmModel(?array $modelData): void
     {
         $this->data = $modelData;
         $this->modifiedFields = $modelData;

@@ -14,7 +14,7 @@ class ServerHelperTest extends AppTestCase
         $this->setPrivateProperty(Server::class, 'instance', null);
     }
 
-    public function testGetUserIpFromClientIp()
+    public function testGetUserIpFromClientIp(): void
     {
         $_SERVER['HTTP_CLIENT_IP'] = '192.168.1.1';
         $_SERVER['HTTP_X_FORWARDED_FOR'] = null;
@@ -23,7 +23,7 @@ class ServerHelperTest extends AppTestCase
         $this->assertEquals('192.168.1.1', get_user_ip());
     }
 
-    public function testGetUserIpFromXForwardedFor()
+    public function testGetUserIpFromXForwardedFor(): void
     {
         $_SERVER['HTTP_CLIENT_IP'] = null;
         $_SERVER['HTTP_X_FORWARDED_FOR'] = '203.0.113.5';
@@ -32,7 +32,7 @@ class ServerHelperTest extends AppTestCase
         $this->assertEquals('203.0.113.5', get_user_ip());
     }
 
-    public function testGetUserIpFromRemoteAddr()
+    public function testGetUserIpFromRemoteAddr(): void
     {
         $_SERVER['HTTP_CLIENT_IP'] = null;
         $_SERVER['HTTP_X_FORWARDED_FOR'] = null;
@@ -41,7 +41,7 @@ class ServerHelperTest extends AppTestCase
         $this->assertEquals('198.51.100.1', get_user_ip());
     }
 
-    public function testGetAllHeaders()
+    public function testGetAllHeaders(): void
     {
         $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0';
         $_SERVER['HTTP_ACCEPT'] = 'text/html';

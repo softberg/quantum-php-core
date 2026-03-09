@@ -29,7 +29,7 @@ trait Reducer
      */
     public function select(...$columns): DbalInterface
     {
-        array_walk($columns, function (&$column) {
+        array_walk($columns, function (&$column): void {
             if (is_array($column)) {
                 $column = array_flip($column);
             }

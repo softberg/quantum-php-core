@@ -39,35 +39,35 @@ class SessionFactoryTest extends AppTestCase
         ModelFactory::createDynamicModel('sessions')->deleteMany();
     }
 
-    public function testSessionFactoryInstance()
+    public function testSessionFactoryInstance(): void
     {
         $session = SessionFactory::get();
 
         $this->assertInstanceOf(Session::class, $session);
     }
 
-    public function testSessionFactoryGetDefaultSessionAdapter()
+    public function testSessionFactoryGetDefaultSessionAdapter(): void
     {
         $session = SessionFactory::get();
 
         $this->assertInstanceOf(NativeSessionAdapter::class, $session->getAdapter());
     }
 
-    public function testSessionFactoryGetNativeSessionAdapter()
+    public function testSessionFactoryGetNativeSessionAdapter(): void
     {
         $session = SessionFactory::get(Session::NATIVE);
 
         $this->assertInstanceOf(NativeSessionAdapter::class, $session->getAdapter());
     }
 
-    public function testSessionFactoryGetDatabaseAdapter()
+    public function testSessionFactoryGetDatabaseAdapter(): void
     {
         $session = SessionFactory::get(Session::DATABASE);
 
         $this->assertInstanceOf(DatabaseSessionAdapter::class, $session->getAdapter());
     }
 
-    public function testSessionSubsequentRequests()
+    public function testSessionSubsequentRequests(): void
     {
         config()->set('session.default', 'database');
 
@@ -102,7 +102,7 @@ class SessionFactoryTest extends AppTestCase
         $this->assertEquals('Data saved in persistent storage', $session->get('data'));
     }
 
-    public function testSessionFactoryInvalidTypeAdapter()
+    public function testSessionFactoryInvalidTypeAdapter(): void
     {
         $this->expectException(SessionException::class);
 
@@ -111,7 +111,7 @@ class SessionFactoryTest extends AppTestCase
         SessionFactory::get('invalid_type');
     }
 
-    public function testMailerFactoryReturnsSameInstance()
+    public function testMailerFactoryReturnsSameInstance(): void
     {
         $session1 = SessionFactory::get(Session::NATIVE);
         $session2 = SessionFactory::get(Session::NATIVE);

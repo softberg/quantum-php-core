@@ -196,8 +196,9 @@ class SessionAuthAdapter implements AuthenticatableInterface
     /**
      * Set Remember Token
      * @param User $user
+     * @throws BaseException
      */
-    private function setRememberToken(User $user)
+    private function setRememberToken(User $user): void
     {
         $rememberToken = $this->generateToken();
 
@@ -213,7 +214,7 @@ class SessionAuthAdapter implements AuthenticatableInterface
     /**
      * Remove Remember token
      */
-    private function removeRememberToken()
+    private function removeRememberToken(): void
     {
         if (cookie()->has($this->keyFields[AuthKeys::REMEMBER_TOKEN])) {
             $user = $this->authService->get(

@@ -15,6 +15,7 @@
 namespace Quantum\Hook;
 
 use Quantum\Config\Exceptions\ConfigException;
+use Quantum\Loader\Exceptions\LoaderException;
 use Quantum\Hook\Exceptions\HookException;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Loader\Setup;
@@ -33,20 +34,19 @@ class HookManager
 
     /**
      * Registered hooks store
-     * @var array
      */
-    private static $store = [];
+    private static array $store = [];
 
     /**
      * @var HookManager|null
      */
-    private static $instance = null;
+    private static ?HookManager $instance = null;
 
     /**
      * @throws HookException
      * @throws ConfigException
      * @throws DiException
-     * @throws ReflectionException
+     * @throws ReflectionException|LoaderException
      */
     private function __construct()
     {
@@ -75,12 +75,12 @@ class HookManager
     }
 
     /**
-     * Adds new listener for given hook
+     * Adds a new listener for a given hook
      * @param string $name
      * @param callable $function
      * @throws HookException
      */
-    public function on(string $name, callable $function)
+    public function on(string $name, callable $function): void
     {
         if (!$this->exists($name)) {
             throw HookException::unregisteredHookName($name);
@@ -95,7 +95,7 @@ class HookManager
      * @param array|null $args
      * @throws HookException
      */
-    public function fire(string $name, ?array $args = null)
+    public function fire(string $name, ?array $args = null): void
     {
         if (!$this->exists($name)) {
             throw HookException::unregisteredHookName($name);

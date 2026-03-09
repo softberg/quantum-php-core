@@ -30,27 +30,19 @@ class SendgridAdapter implements MailerInterface
     /**
      * @var string
      */
-    public $name = 'Sendgrid';
-
-    /**
-     * @var HttpClient
-     */
-    protected $httpClient;
+    public string $name = 'Sendgrid';
 
     /**
      * @var string
      */
     private $apiKey;
 
-    /**
-     * @var string
-     */
-    private $apiUrl = 'https://api.sendgrid.com/v3/mail/send';
+    private string $apiUrl = 'https://api.sendgrid.com/v3/mail/send';
 
     /**
      * @var array
      */
-    private $data = [];
+    private array $data = [];
 
     /**
      * SendgridAdapter constructor
@@ -66,7 +58,7 @@ class SendgridAdapter implements MailerInterface
     /**
      * Prepares the data
      */
-    public function prepare()
+    public function prepare(): void
     {
         $this->data['from'] = $this->from;
 

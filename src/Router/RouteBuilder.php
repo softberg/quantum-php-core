@@ -123,7 +123,7 @@ final class RouteBuilder
     {
         $methodList = array_filter(
             array_map('trim', explode('|', $methods)),
-            static fn ($m) => $m !== ''
+            static fn ($m): bool => $m !== ''
         );
 
         return $this->addRoute($methodList, $path, $handler, $action);

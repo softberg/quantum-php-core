@@ -47,7 +47,7 @@ class MailerFactory
     /**
      * @var array<string, Mailer>
      */
-    private static $instances = [];
+    private static array $instances = [];
 
     /**
      * @param string|null $adapter

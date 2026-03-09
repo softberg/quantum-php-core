@@ -12,7 +12,7 @@ use Quantum\Loader\Setup;
 
 class GeneralRuleTest extends AppTestCase
 {
-    public $validator;
+    public Validator $validator;
     public function setUp(): void
     {
         parent::setUp();
@@ -33,7 +33,7 @@ class GeneralRuleTest extends AppTestCase
         Database::execute('DROP TABLE IF EXISTS users');
     }
 
-    public function testRuleRequired()
+    public function testRuleRequired(): void
     {
         $this->validator->setRule('text', [
             Rule::required(),
@@ -52,7 +52,7 @@ class GeneralRuleTest extends AppTestCase
         $this->assertEquals('validation.required', $errors['text'][0]);
     }
 
-    public function testRuleEmail()
+    public function testRuleEmail(): void
     {
         $this->validator->setRule('text', [
             Rule::email(),
@@ -69,7 +69,7 @@ class GeneralRuleTest extends AppTestCase
         $this->assertEquals('validation.email', $errors['text'][0]);
     }
 
-    public function testRuleCreditCard()
+    public function testRuleCreditCard(): void
     {
         $this->validator->setRule('text', [
             Rule::creditCard(),
@@ -86,7 +86,7 @@ class GeneralRuleTest extends AppTestCase
         $this->assertEquals('validation.creditCard', $errors['text'][0]);
     }
 
-    public function testRuleIban()
+    public function testRuleIban(): void
     {
         $this->validator->setRule('text', [
             Rule::iban(),
@@ -105,7 +105,7 @@ class GeneralRuleTest extends AppTestCase
         $this->assertEquals('validation.iban', $errors['text'][0]);
     }
 
-    public function testRuleName()
+    public function testRuleName(): void
     {
         $this->validator->setRule('text', [
             Rule::name(),
@@ -126,7 +126,7 @@ class GeneralRuleTest extends AppTestCase
         $this->assertEquals('validation.name', $errors['text'][0]);
     }
 
-    public function testRuleStreetAddress()
+    public function testRuleStreetAddress(): void
     {
         $this->validator->setRule('text', [
             Rule::streetAddress(),
@@ -147,7 +147,7 @@ class GeneralRuleTest extends AppTestCase
         $this->assertEquals('validation.streetAddress', $errors['text'][0]);
     }
 
-    public function testRulePhoneNumber()
+    public function testRulePhoneNumber(): void
     {
         $this->validator->setRule('text', [
             Rule::phoneNumber(),
@@ -176,7 +176,7 @@ class GeneralRuleTest extends AppTestCase
         $this->assertEquals('validation.phoneNumber', $errors['text'][0]);
     }
 
-    public function testRuleDate()
+    public function testRuleDate(): void
     {
         $this->validator->setRule('text', [
             Rule::date(),
@@ -207,7 +207,7 @@ class GeneralRuleTest extends AppTestCase
         $this->assertEquals('validation.date', $errors['text'][0]);
     }
 
-    public function testRuleStarts()
+    public function testRuleStarts(): void
     {
         $this->validator->setRule('text', [
             Rule::starts('b'),
@@ -230,7 +230,7 @@ class GeneralRuleTest extends AppTestCase
         $this->assertEquals('validation.starts', $errors['text'][0]);
     }
 
-    public function testRuleRegex()
+    public function testRuleRegex(): void
     {
         $this->validator->setRule('text', [
             Rule::regex('/^[1-9]+$/'),
@@ -255,7 +255,7 @@ class GeneralRuleTest extends AppTestCase
         $this->assertEquals('validation.regex', $errors['text'][0]);
     }
 
-    public function testRuleJsonString()
+    public function testRuleJsonString(): void
     {
         $this->validator->setRule('text', [
             Rule::jsonString(),
@@ -272,7 +272,7 @@ class GeneralRuleTest extends AppTestCase
         $this->assertEquals('validation.jsonString', $errors['text'][0]);
     }
 
-    public function testRuleSame()
+    public function testRuleSame(): void
     {
         $this->validator->setRule('password', [
             Rule::same('confirm_password'),
@@ -289,7 +289,7 @@ class GeneralRuleTest extends AppTestCase
         $this->assertEquals('validation.same', $errors['password'][0]);
     }
 
-    public function testRuleUnique()
+    public function testRuleUnique(): void
     {
         $this->createUsersTable();
 
@@ -310,7 +310,7 @@ class GeneralRuleTest extends AppTestCase
         $this->assertEquals('validation.unique', $errors['username'][0]);
     }
 
-    public function testRuleExists()
+    public function testRuleExists(): void
     {
         $this->createUsersTable();
 

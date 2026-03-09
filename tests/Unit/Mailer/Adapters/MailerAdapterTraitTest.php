@@ -9,7 +9,7 @@ use Quantum\Loader\Setup;
 
 class MailerAdapterTraitTest extends AppTestCase
 {
-    private $adapter;
+    private SmtpAdapter $adapter;
 
     public function setUp(): void
     {
@@ -22,7 +22,7 @@ class MailerAdapterTraitTest extends AppTestCase
         $this->adapter = new SmtpAdapter(config()->get('mailer.smtp'));
     }
 
-    public function testMailerTraitSetGetFrom()
+    public function testMailerTraitSetGetFrom(): void
     {
         $this->adapter->setFrom('johndoe@gmail.com', 'John Doe');
 
@@ -35,7 +35,7 @@ class MailerAdapterTraitTest extends AppTestCase
         $this->assertEquals('John Doe', $from['name']);
     }
 
-    public function testMailerTraitSetGetAddresses()
+    public function testMailerTraitSetGetAddresses(): void
     {
         $this->adapter->setAddress('johndoe@gmail.com', 'John Doe');
 
@@ -50,7 +50,7 @@ class MailerAdapterTraitTest extends AppTestCase
         $this->assertEquals('John Doe', $addresses[0]['name']);
     }
 
-    public function testMailerTraitSetGetSubject()
+    public function testMailerTraitSetGetSubject(): void
     {
         $this->adapter->setSubject('Lorem ipsum');
 
@@ -59,7 +59,7 @@ class MailerAdapterTraitTest extends AppTestCase
         $this->assertEquals('Lorem ipsum', $this->adapter->getSubject());
     }
 
-    public function testMailerTraitSetGetTemplate()
+    public function testMailerTraitSetGetTemplate(): void
     {
 
         $templatePath = base_dir() . DS . 'shared' . DS . 'views' . DS . 'email' . DS . 'template';
@@ -71,7 +71,7 @@ class MailerAdapterTraitTest extends AppTestCase
         $this->assertEquals($templatePath, $this->adapter->getTemplate());
     }
 
-    public function testSetGetBody()
+    public function testSetGetBody(): void
     {
         $this->adapter->setBody('Lorem ipsum dolor sit amet');
 
@@ -86,7 +86,7 @@ class MailerAdapterTraitTest extends AppTestCase
         $this->assertEquals('Lorem ipsum', $this->adapter->getBody()[0]);
     }
 
-    public function testMailerTraitGetMessageId()
+    public function testMailerTraitGetMessageId(): void
     {
         $adapter = new SendinblueAdapter(['api_key' => 'xxx11122233']);
 

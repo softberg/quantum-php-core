@@ -31,21 +31,21 @@ class VersionCommand extends QtCommand
 {
     /**
      * Command name
-     * @var string
+     * @var string|null
      */
-    protected $name = 'core:version';
+    protected ?string $name = 'core:version';
 
     /**
      * Command description
-     * @var string
+     * @var string|null
      */
-    protected $description = 'Core version';
+    protected ?string $description = 'Core version';
 
     /**
      * Command help text
-     * @var string
+     * @var string|null
      */
-    protected $help = 'Printing the current version of the framework into the terminal';
+    protected ?string $help = 'Printing the current version of the framework into the terminal';
 
     /**
      * Executes the command and prints greetings into the terminal
@@ -54,7 +54,7 @@ class VersionCommand extends QtCommand
      * @throws BaseException
      * @throws ReflectionException
      */
-    public function exec()
+    public function exec(): void
     {
         Environment::getInstance()->load(new Setup('config', 'env'));
 

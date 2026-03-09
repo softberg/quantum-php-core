@@ -35,7 +35,7 @@ class ConsoleAppAdapterTest extends TestCase
         config()->flush();
     }
 
-    public function testConsoleAppAdapterStartSuccessfully()
+    public function testConsoleAppAdapterStartSuccessfully(): void
     {
         $_SERVER['argv'] = ['qt', 'list', '--quiet'];
 
@@ -46,7 +46,7 @@ class ConsoleAppAdapterTest extends TestCase
         $this->assertEquals(0, $result);
     }
 
-    public function testConsoleAppAdapterStartFails()
+    public function testConsoleAppAdapterStartFails(): void
     {
         $_SERVER['argv'] = ['qt', 'unknown', '--quiet'];
 

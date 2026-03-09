@@ -7,7 +7,7 @@ use Quantum\Database\Adapters\Sleekdb\SleekDbal;
 
 class ModelSleekTest extends SleekDbalTestCase
 {
-    public function testSleekCreateNewRecord()
+    public function testSleekCreateNewRecord(): void
     {
         $eventsModel = new SleekDbal('events');
 
@@ -35,7 +35,7 @@ class ModelSleekTest extends SleekDbalTestCase
 
     }
 
-    public function testSleekUpdateExistingRecord()
+    public function testSleekUpdateExistingRecord(): void
     {
         $eventsModel = new SleekDbal('events');
 
@@ -54,7 +54,7 @@ class ModelSleekTest extends SleekDbalTestCase
         $this->assertEquals('Climbing', $event->prop('title'));
     }
 
-    public function testSleekDeleteRecord()
+    public function testSleekDeleteRecord(): void
     {
         $eventModel = new SleekDbal('events');
 
@@ -73,7 +73,7 @@ class ModelSleekTest extends SleekDbalTestCase
         $this->assertNull($event->prop('title'));
     }
 
-    public function testSleekDeleteMany()
+    public function testSleekDeleteMany(): void
     {
         $eventsModel = new SleekDbal('events');
 

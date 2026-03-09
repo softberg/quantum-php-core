@@ -20,7 +20,7 @@ class MailerTest extends AppTestCase
         }
     }
 
-    public function testMailerGetAdapter()
+    public function testMailerGetAdapter(): void
     {
         $mailer = new Mailer(new SmtpAdapter(config()->get('mailer.smtp')));
 
@@ -29,7 +29,7 @@ class MailerTest extends AppTestCase
         $this->assertInstanceOf(MailerInterface::class, $mailer->getAdapter());
     }
 
-    public function testMailerCallingValidMethod()
+    public function testMailerCallingValidMethod(): void
     {
         $mailer = new Mailer(new SmtpAdapter(config()->get('mailer.smtp')));
 
@@ -38,7 +38,7 @@ class MailerTest extends AppTestCase
         $this->assertEquals('Welcome', $mailer->getSubject());
     }
 
-    public function testMailerCallingInvalidMethod()
+    public function testMailerCallingInvalidMethod(): void
     {
         $mailer = new Mailer(new SmtpAdapter(config()->get('mailer.smtp')));
 

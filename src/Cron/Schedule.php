@@ -25,15 +25,13 @@ class Schedule
 {
     /**
      * Task name
-     * @var string
      */
-    private $name;
+    private string $name;
 
     /**
      * Cron expression
-     * @var string
      */
-    private $expression;
+    private ?string $expression = null;
 
     /**
      * Task callback

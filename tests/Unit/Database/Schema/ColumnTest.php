@@ -8,12 +8,12 @@ use PHPUnit\Framework\TestCase;
 
 class ColumnTest extends TestCase
 {
-    public function testColumnConstructor()
+    public function testColumnConstructor(): void
     {
         $this->assertInstanceOf(Column::class, new Column('test'));
     }
 
-    public function testColumnRename()
+    public function testColumnRename(): void
     {
         $column = new Column('test', Type::INT, 11);
 
@@ -22,7 +22,7 @@ class ColumnTest extends TestCase
         $this->assertEquals('new_test', $column->get('newName'));
     }
 
-    public function testColumnGet()
+    public function testColumnGet(): void
     {
         $column = new Column('test', Type::INT, 11);
 
@@ -33,7 +33,7 @@ class ColumnTest extends TestCase
         $this->assertEquals(11, $column->get(Column::CONSTRAINT));
     }
 
-    public function testColumnAutoIncrement()
+    public function testColumnAutoIncrement(): void
     {
         $column = new Column('test', Type::INT, 11);
 
@@ -44,7 +44,7 @@ class ColumnTest extends TestCase
         $this->assertEquals('primary', $column->get('indexKey'));
     }
 
-    public function testColumnPrimaryKey()
+    public function testColumnPrimaryKey(): void
     {
         $column = new Column('test', Type::INT, 11);
 
@@ -53,7 +53,7 @@ class ColumnTest extends TestCase
         $this->assertEquals('primary', $column->get('indexKey'));
     }
 
-    public function testColumnIndexKey()
+    public function testColumnIndexKey(): void
     {
         $column = new Column('test', Type::INT, 11);
 
@@ -64,7 +64,7 @@ class ColumnTest extends TestCase
         $this->assertEquals('idx_name', $column->get('indexName'));
     }
 
-    public function testColumnUniqueKey()
+    public function testColumnUniqueKey(): void
     {
         $column = new Column('test', Type::INT, 11);
 
@@ -75,7 +75,7 @@ class ColumnTest extends TestCase
         $this->assertEquals('idx_unique_name', $column->get('indexName'));
     }
 
-    public function testColumnFulltextKey()
+    public function testColumnFulltextKey(): void
     {
         $column = new Column('test', Type::INT, 11);
 
@@ -86,7 +86,7 @@ class ColumnTest extends TestCase
         $this->assertEquals('idx_fulltext_name', $column->get('indexName'));
     }
 
-    public function testColumnSpatialKey()
+    public function testColumnSpatialKey(): void
     {
         $column = new Column('test', Type::INT, 11);
 
@@ -97,7 +97,7 @@ class ColumnTest extends TestCase
         $this->assertEquals('idx_spatial_name', $column->get('indexName'));
     }
 
-    public function testAddOrRemoveColumnNullableProperty()
+    public function testAddOrRemoveColumnNullableProperty(): void
     {
         $column = new Column('test', Type::VARCHAR, 255);
 
@@ -112,7 +112,7 @@ class ColumnTest extends TestCase
         $this->assertEquals('NOT NULL', $column->get(Column::NULLABLE));
     }
 
-    public function testAddOrRemoveColumnDefaultValue()
+    public function testAddOrRemoveColumnDefaultValue(): void
     {
         $column = new Column('test', Type::INT, 11);
 
@@ -127,7 +127,7 @@ class ColumnTest extends TestCase
         $this->assertNull($column->get(Column::DEFAULT));
     }
 
-    public function testAddOrRemoveColumnAttribute()
+    public function testAddOrRemoveColumnAttribute(): void
     {
         $column = new Column('test', Type::INT, 11);
 
@@ -146,7 +146,7 @@ class ColumnTest extends TestCase
         $this->assertNull($column->get(Column::ATTRIBUTE));
     }
 
-    public function testAddOrRemoveColumnComment()
+    public function testAddOrRemoveColumnComment(): void
     {
         $column = new Column('test', Type::INT, 11);
 
@@ -161,7 +161,7 @@ class ColumnTest extends TestCase
         $this->assertNull($column->get(Column::COMMENT));
     }
 
-    public function testAfterColumn()
+    public function testAfterColumn(): void
     {
         $column = new Column('test', Type::INT, 11);
 

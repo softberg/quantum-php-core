@@ -120,17 +120,17 @@ class Column
     /**
      * @var string
      */
-    private $name;
+    private string $name;
 
     /**
-     * @var string
+     * @var string|null
      */
-    private $newName;
+    private ?string $newName = null;
 
     /**
-     * @var string
+     * @var string|null
      */
-    private $type;
+    private ?string $type = null;
 
     /**
      * @var mixed
@@ -140,12 +140,12 @@ class Column
     /**
      * @var string
      */
-    private $attribute = null;
+    private ?string $attribute = null;
 
     /**
      * @var string
      */
-    private $nullable = 'NOT NULL';
+    private string $nullable = 'NOT NULL';
 
     /**
      * @var mixed
@@ -155,37 +155,37 @@ class Column
     /**
      * @var bool
      */
-    private $defaultQuoted = true;
+    private bool $defaultQuoted = true;
 
     /**
-     * @var string
+     * @var string|null
      */
-    private $autoincrement = null;
+    private ?string $autoincrement = null;
 
     /**
-     * @var string
+     * @var string|null
      */
-    private $indexKey = null;
+    private ?string $indexKey = null;
 
     /**
-     * @var string
+     * @var string|null
      */
-    private $indexName = null;
+    private ?string $indexName = null;
 
     /**
-     * @var string
+     * @var string|null
      */
-    private $indexDrop = null;
+    private ?string $indexDrop = null;
 
     /**
-     * @var string
+     * @var string|null
      */
-    private $comment;
+    private ?string $comment = null;
 
     /**
-     * @var string
+     * @var string|null
      */
-    private $afterColumn;
+    private ?string $afterColumn = null;
 
     /**
      * Column constructor.
@@ -234,7 +234,7 @@ class Column
     /**
      * Makes the column auto incremental
      */
-    public function autoIncrement()
+    public function autoIncrement(): void
     {
         $this->autoincrement = 'AUTO_INCREMENT';
         $this->primary();
@@ -243,7 +243,7 @@ class Column
     /**
      * Adds a primary key the column
      */
-    public function primary()
+    public function primary(): void
     {
         $this->indexKey = Key::PRIMARY;
     }
@@ -252,7 +252,7 @@ class Column
      * Adds an index key to the column
      * @param string|null $name
      */
-    public function index(?string $name = null)
+    public function index(?string $name = null): void
     {
         $this->indexKey = Key::INDEX;
 
@@ -265,7 +265,7 @@ class Column
      * Adds unique key to the column
      * @param string|null $name
      */
-    public function unique(?string $name = null)
+    public function unique(?string $name = null): void
     {
         $this->indexKey = Key::UNIQUE;
 
@@ -278,7 +278,7 @@ class Column
      * Adds a fulltext key the column
      * @param string|null $name
      */
-    public function fulltext(?string $name = null)
+    public function fulltext(?string $name = null): void
     {
         $this->indexKey = Key::FULLTEXT;
 
@@ -291,7 +291,7 @@ class Column
      * Adds a spatial key the column
      * @param string|null $name
      */
-    public function spatial(?string $name = null)
+    public function spatial(?string $name = null): void
     {
         $this->indexKey = Key::SPATIAL;
 
@@ -304,7 +304,7 @@ class Column
      * Adds or removes nullable property
      * @param bool $indeed
      */
-    public function nullable(bool $indeed = true)
+    public function nullable(bool $indeed = true): void
     {
         $this->nullable = ($indeed ? '' : 'NOT ') . 'NULL';
     }
@@ -314,7 +314,7 @@ class Column
      * @param mixed $value
      * @param bool $quoted
      */
-    public function default($value, bool $quoted = true)
+    public function default($value, bool $quoted = true): void
     {
         $this->default = $value;
         $this->defaultQuoted = $quoted;
@@ -324,7 +324,7 @@ class Column
      * Adds or removes attribute to the column
      * @param string|null $value
      */
-    public function attribute(?string $value)
+    public function attribute(?string $value): void
     {
         $this->attribute = $value ? strtoupper($value) : null;
     }
@@ -333,7 +333,7 @@ class Column
      * Adds or removes comment to the column
      * @param string|null $comment
      */
-    public function comment(?string $comment)
+    public function comment(?string $comment): void
     {
         $this->comment = $comment;
     }
@@ -342,7 +342,7 @@ class Column
      * Adds column after a given column
      * @param string $columnName
      */
-    public function after(string $columnName)
+    public function after(string $columnName): void
     {
         $this->afterColumn = $columnName;
     }

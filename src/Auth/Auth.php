@@ -38,10 +38,7 @@ class Auth
      */
     public const JWT = 'jwt';
 
-    /**
-     * @var AuthenticatableInterface
-     */
-    private $adapter;
+    private AuthenticatableInterface $adapter;
 
     /**
      * @param AuthenticatableInterface $adapter

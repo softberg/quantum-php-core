@@ -19,14 +19,14 @@ class RendererFactoryTest extends AppTestCase
         $this->setPrivateProperty(RendererFactory::class, 'instances', []);
     }
 
-    public function testRendererFactoryInstance()
+    public function testRendererFactoryInstance(): void
     {
         $renderer = RendererFactory::get();
 
         $this->assertInstanceOf(Renderer::class, $renderer);
     }
 
-    public function testRendererFactoryGetDefaultAdapter()
+    public function testRendererFactoryGetDefaultAdapter(): void
     {
         $renderer = RendererFactory::get();
 
@@ -35,7 +35,7 @@ class RendererFactoryTest extends AppTestCase
         $this->assertInstanceOf(HtmlAdapter::class, $renderer->getAdapter());
     }
 
-    public function testRendererFactoryGetHtmlAdapter()
+    public function testRendererFactoryGetHtmlAdapter(): void
     {
         $renderer = RendererFactory::get(Renderer::HTML);
 
@@ -44,7 +44,7 @@ class RendererFactoryTest extends AppTestCase
         $this->assertInstanceOf(HtmlAdapter::class, $renderer->getAdapter());
     }
 
-    public function testRendererFactoryTwigAdapter()
+    public function testRendererFactoryTwigAdapter(): void
     {
         $renderer = RendererFactory::get(Renderer::TWIG);
 
@@ -53,7 +53,7 @@ class RendererFactoryTest extends AppTestCase
         $this->assertInstanceOf(TwigAdapter::class, $renderer->getAdapter());
     }
 
-    public function testRendererFactoryInvalidTypeAdapter()
+    public function testRendererFactoryInvalidTypeAdapter(): void
     {
         $this->expectException(RendererException::class);
 
@@ -62,7 +62,7 @@ class RendererFactoryTest extends AppTestCase
         RendererFactory::get('invalid_type');
     }
 
-    public function testRendererFactoryReturnsSameInstance()
+    public function testRendererFactoryReturnsSameInstance(): void
     {
         $renderer1 = RendererFactory::get(Renderer::HTML);
         $renderer2 = RendererFactory::get(Renderer::HTML);

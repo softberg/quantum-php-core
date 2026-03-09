@@ -32,42 +32,7 @@ class SmtpAdapter implements MailerInterface
     /**
      * @var string
      */
-    public $name = 'SMTP';
-
-    /**
-     * @var PHPMailer
-     */
-    protected $mailer;
-
-    /**
-     * Reply To addresses
-     * @var array
-     */
-    protected $replyToAddresses = [];
-
-    /**
-     * CC addresses
-     * @var array
-     */
-    protected $ccAddresses = [];
-
-    /**
-     * BCC addresses
-     * @var array
-     */
-    protected $bccAddresses = [];
-
-    /**
-     * Email attachments
-     * @var array
-     */
-    protected $attachments = [];
-
-    /**
-     * Email attachments created from string
-     * @var array
-     */
-    protected $stringAttachments = [];
+    public string $name = 'SMTP';
 
     /**
      * SmtpAdapter constructor
@@ -84,7 +49,7 @@ class SmtpAdapter implements MailerInterface
         if (config()->get('debug')) {
             $this->mailer->SMTPDebug = SMTP::DEBUG_SERVER;
 
-            $this->mailer->Debugoutput = function ($message) {
+            $this->mailer->Debugoutput = function ($message): void {
                 warning($message, ['tab' => Debugger::MAILS]);
             };
         }
@@ -215,7 +180,7 @@ class SmtpAdapter implements MailerInterface
      * Setups the SMTP
      * @param array $params
      */
-    private function setupSmtp(array $params)
+    private function setupSmtp(array $params): void
     {
         $this->mailer->isSMTP();
         $this->mailer->SMTPAuth = true;
@@ -230,7 +195,7 @@ class SmtpAdapter implements MailerInterface
      * Prepares the data
      * @throws Exception
      */
-    private function prepare()
+    private function prepare(): void
     {
         $this->mailer->setFrom($this->from['email'], $this->from['name']);
 
@@ -261,7 +226,7 @@ class SmtpAdapter implements MailerInterface
      * @param string $method
      * @param array $fields
      */
-    private function fillProperties(string $method, array $fields = [])
+    private function fillProperties(string $method, array $fields = []): void
     {
         if ($fields !== []) {
             foreach ($fields as $field) {

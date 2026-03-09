@@ -49,14 +49,13 @@ class Database
 
     /**
      * Database instance
-     * @var Database|null
      */
-    private static $instance = null;
+    private static ?Database $instance = null;
 
     /**
      * @var string
      */
-    private $ormClass;
+    private string $ormClass;
 
     /**
      * @throws BaseException

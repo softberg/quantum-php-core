@@ -17,7 +17,7 @@ class AppFactoryTest extends TestCase
         parent::setUp();
     }
 
-    public function testAppFactoryInstance()
+    public function testAppFactoryInstance(): void
     {
         $app = AppFactory::create(App::WEB, PROJECT_ROOT);
 
@@ -29,7 +29,7 @@ class AppFactoryTest extends TestCase
         config()->flush();
     }
 
-    public function testAppFactoryConsoleAdapter()
+    public function testAppFactoryConsoleAdapter(): void
     {
         $app = AppFactory::create(App::CONSOLE, PROJECT_ROOT);
 
@@ -38,7 +38,7 @@ class AppFactoryTest extends TestCase
         $this->assertInstanceOf(AppInterface::class, $app->getAdapter());
     }
 
-    public function testAppFactoryWebAdapter()
+    public function testAppFactoryWebAdapter(): void
     {
         $app = AppFactory::create(App::WEB, PROJECT_ROOT);
 
@@ -47,7 +47,7 @@ class AppFactoryTest extends TestCase
         $this->assertInstanceOf(AppInterface::class, $app->getAdapter());
     }
 
-    public function testAppFactoryInvalidAdapter()
+    public function testAppFactoryInvalidAdapter(): void
     {
         $this->expectException(AppException::class);
 
@@ -56,7 +56,7 @@ class AppFactoryTest extends TestCase
         AppFactory::create('invalid_type', PROJECT_ROOT);
     }
 
-    public function testAppFactoryReturnsSameInstance()
+    public function testAppFactoryReturnsSameInstance(): void
     {
         $app1 = AppFactory::create(App::WEB, PROJECT_ROOT);
         $app2 = AppFactory::create(App::WEB, PROJECT_ROOT);
@@ -64,7 +64,7 @@ class AppFactoryTest extends TestCase
         $this->assertSame($app1, $app2);
     }
 
-    public function testAppFactoryDestroy()
+    public function testAppFactoryDestroy(): void
     {
         $app1 = AppFactory::create(App::WEB, PROJECT_ROOT);
 

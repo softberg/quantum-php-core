@@ -12,7 +12,7 @@ use Quantum\Auth\User;
 
 class JwtAuthAdapterTest extends AuthTestCase
 {
-    private $jwtAuth;
+    private JwtAuthAdapter $jwtAuth;
 
     public function setUp(): void
     {
@@ -44,12 +44,12 @@ class JwtAuthAdapterTest extends AuthTestCase
         $this->jwtAuth->signout();
     }
 
-    public function testApiAdapterConstructor()
+    public function testApiAdapterConstructor(): void
     {
         $this->assertInstanceOf(JwtAuthAdapter::class, $this->jwtAuth);
     }
 
-    public function testApiSigninIncorrectCredentials()
+    public function testApiSigninIncorrectCredentials(): void
     {
         $this->expectException(AuthException::class);
 
@@ -58,7 +58,7 @@ class JwtAuthAdapterTest extends AuthTestCase
         $this->jwtAuth->signin('admin@qt.com', '111111');
     }
 
-    public function testApiSigninCorrectCredentials()
+    public function testApiSigninCorrectCredentials(): void
     {
         config()->set('TWO_FA', false);
 
@@ -69,7 +69,7 @@ class JwtAuthAdapterTest extends AuthTestCase
         $this->assertArrayHasKey('refresh_token', $this->jwtAuth->signin('admin@qt.com', 'qwerty'));
     }
 
-    public function testApiSignOut()
+    public function testApiSignOut(): void
     {
         $this->jwtAuth->signin('admin@qt.com', 'qwerty');
 
@@ -80,7 +80,7 @@ class JwtAuthAdapterTest extends AuthTestCase
         $this->assertFalse($this->jwtAuth->check());
     }
 
-    public function testApiUser()
+    public function testApiUser(): void
     {
         $this->jwtAuth->signin('admin@qt.com', 'qwerty');
 
@@ -95,7 +95,7 @@ class JwtAuthAdapterTest extends AuthTestCase
         $this->assertNull($this->jwtAuth->user());
     }
 
-    public function testApiCheck()
+    public function testApiCheck(): void
     {
         $this->assertFalse($this->jwtAuth->check());
 
@@ -108,7 +108,7 @@ class JwtAuthAdapterTest extends AuthTestCase
         $this->assertFalse($this->jwtAuth->check());
     }
 
-    public function testApiSignupAndSigninWithoutActivation()
+    public function testApiSignupAndSigninWithoutActivation(): void
     {
         $this->expectException(AuthException::class);
 
@@ -119,7 +119,7 @@ class JwtAuthAdapterTest extends AuthTestCase
         $this->assertTrue($this->jwtAuth->signin('guest@qt.com', '123456'));
     }
 
-    public function testApiSignupAndActivateAccount()
+    public function testApiSignupAndActivateAccount(): void
     {
         $user = $this->jwtAuth->signup($this->guestUser);
 
@@ -132,9 +132,9 @@ class JwtAuthAdapterTest extends AuthTestCase
         $this->assertArrayHasKey('refresh_token', $this->jwtAuth->signin('guest@qt.com', '123456'));
     }
 
-    public function testApiForgetReset()
+    public function testApiForgetReset(): void
     {
-        $resetToken = $this->jwtAuth->forget('admin@qt.com', 'tpl');
+        $resetToken = $this->jwtAuth->forget('admin@qt.com');
 
         $this->jwtAuth->reset($resetToken, '123456789');
 
@@ -145,7 +145,7 @@ class JwtAuthAdapterTest extends AuthTestCase
         $this->assertArrayHasKey('refresh_token', $this->jwtAuth->signin('admin@qt.com', '123456789'));
     }
 
-    public function testApiVerifyOtp()
+    public function testApiVerifyOtp(): void
     {
         config()->set('auth.two_fa', true);
 
@@ -160,7 +160,7 @@ class JwtAuthAdapterTest extends AuthTestCase
         $this->assertArrayHasKey('refresh_token', $tokens);
     }
 
-    public function testApiSigninWithoutVerification()
+    public function testApiSigninWithoutVerification(): void
     {
         config()->set('auth.two_fa', false);
 
@@ -171,7 +171,7 @@ class JwtAuthAdapterTest extends AuthTestCase
         $this->assertArrayHasKey('refresh_token', $this->jwtAuth->signin('admin@qt.com', 'qwerty'));
     }
 
-    public function testApiSigninWithVerification()
+    public function testApiSigninWithVerification(): void
     {
         config()->set('auth.two_fa', true);
 
@@ -180,7 +180,7 @@ class JwtAuthAdapterTest extends AuthTestCase
         $this->assertIsString($this->jwtAuth->signin('admin@qt.com', 'qwerty'));
     }
 
-    public function testApiResendOtp()
+    public function testApiResendOtp(): void
     {
         config()->set('auth.two_fa', true);
 
@@ -191,7 +191,7 @@ class JwtAuthAdapterTest extends AuthTestCase
         $this->assertIsString($this->jwtAuth->resendOtp($otp_token));
     }
 
-    public function testApiRefreshUser()
+    public function testApiRefreshUser(): void
     {
         $this->jwtAuth->signin('admin@qt.com', 'qwerty');
 

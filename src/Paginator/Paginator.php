@@ -50,10 +50,7 @@ class Paginator
      */
     public const MODEL = 'model';
 
-    /**
-     * @var PaginatorInterface
-     */
-    private $adapter;
+    private PaginatorInterface $adapter;
 
     /**
      * @param PaginatorInterface $adapter

@@ -54,7 +54,7 @@ trait WebAppTrait
      * @throws ReflectionException
      * @throws HttpException
      */
-    private function initializeRequestResponse(Request $request, Response $response)
+    private function initializeRequestResponse(Request $request, Response $response): void
     {
         $request->init(Server::getInstance());
         $response->init();
@@ -63,7 +63,7 @@ trait WebAppTrait
     /**
      * @throws DebugBarException
      */
-    private function initializeDebugger()
+    private function initializeDebugger(): void
     {
         $debugger = Debugger::getInstance();
         $debugger->initStore();
@@ -92,7 +92,7 @@ trait WebAppTrait
      * @throws DiException
      * @throws ReflectionException
      */
-    private function handleCors(Response $response)
+    private function handleCors(Response $response): void
     {
         if (!config()->has('cors')) {
             config()->import(new Setup('config', 'cors'));

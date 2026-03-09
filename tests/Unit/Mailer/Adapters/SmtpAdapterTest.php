@@ -20,14 +20,14 @@ class SmtpAdapterTest extends MailerTestCase
         $this->adapter = new SmtpAdapter(config()->get('mailer.smtp'));
     }
 
-    public function testSmtpAdapterInstance()
+    public function testSmtpAdapterInstance(): void
     {
         $this->assertInstanceOf(SmtpAdapter::class, $this->adapter);
 
         $this->assertInstanceOf(MailerInterface::class, $this->adapter);
     }
 
-    public function testSmtpAdapterSetGetReplays()
+    public function testSmtpAdapterSetGetReplays(): void
     {
         $this->adapter->setReplay('jonny@hotmail.com', 'Jonny')
             ->setReplay('jane@gmail.com');
@@ -45,7 +45,7 @@ class SmtpAdapterTest extends MailerTestCase
         $this->assertNull($replays[1]['name']);
     }
 
-    public function testSmtpAdapterSetGetCCs()
+    public function testSmtpAdapterSetGetCCs(): void
     {
         $this->adapter->setCC('jonny@hotmail.com', 'Jonny')->setCC('jane@gmail.com');
 
@@ -61,7 +61,7 @@ class SmtpAdapterTest extends MailerTestCase
 
     }
 
-    public function testSmtpAdapterSetGetBCCs()
+    public function testSmtpAdapterSetGetBCCs(): void
     {
         $this->adapter->setBCC('jonny@hotmail.com', 'Jonny')->setBCC('jane@gmail.com');
 
@@ -76,7 +76,7 @@ class SmtpAdapterTest extends MailerTestCase
         $this->assertEquals('Jonny', $BCCs[0]['name']);
     }
 
-    public function testSmtpAdapterSetGetAttachments()
+    public function testSmtpAdapterSetGetAttachments(): void
     {
         $this->adapter->setAttachment(base_dir() . DS . 'php8fe1.tmp');
 
@@ -87,7 +87,7 @@ class SmtpAdapterTest extends MailerTestCase
         $this->assertEquals(base_dir() . DS . 'php8fe1.tmp', current($attachments));
     }
 
-    public function testSmtpAdapterSetGetStringAttachments()
+    public function testSmtpAdapterSetGetStringAttachments(): void
     {
         $this->adapter->setStringAttachment('content of the document', 'document.txt');
 
@@ -100,7 +100,7 @@ class SmtpAdapterTest extends MailerTestCase
         $this->assertEquals('document.txt', current($attachments)['filename']);
     }
 
-    public function testSmtpAdapterSend()
+    public function testSmtpAdapterSend(): void
     {
         $this->adapter->setFrom('john@hotmail.com', 'John Doe');
 

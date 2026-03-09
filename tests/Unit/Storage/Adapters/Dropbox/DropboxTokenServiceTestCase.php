@@ -13,7 +13,7 @@ trait DropboxTokenServiceTestCase
 
         $tokenServiceMock
             ->shouldReceive('getRefreshToken')
-            ->andReturnUsing(function () {
+            ->andReturnUsing(function (): string {
                 $this->currentResponse = (object) $this->tokensGrantResponse;
                 return 'ref_tok_1234';
             });
@@ -24,7 +24,7 @@ trait DropboxTokenServiceTestCase
 
         $tokenServiceMock
             ->shouldReceive('saveTokens')
-            ->andReturnUsing(function ($tokens) {
+            ->andReturnUsing(function ($tokens): bool {
                 $this->currentResponse = (object) $this->profileDataResponse;
                 return true;
             });

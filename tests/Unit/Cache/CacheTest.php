@@ -15,7 +15,7 @@ class CacheTest extends AppTestCase
         parent::setUp();
     }
 
-    public function testCacheGetAdapter()
+    public function testCacheGetAdapter(): void
     {
         $params = [
             'prefix' => 'test',
@@ -30,7 +30,7 @@ class CacheTest extends AppTestCase
         $this->assertInstanceOf(CacheInterface::class, $cache->getAdapter());
     }
 
-    public function testCacheCallingValidMethod()
+    public function testCacheCallingValidMethod(): void
     {
         $params = [
             'prefix' => 'test',
@@ -45,7 +45,7 @@ class CacheTest extends AppTestCase
         $this->assertNull($cache->get('test'));
     }
 
-    public function testCacheCallingInvalidMethod()
+    public function testCacheCallingInvalidMethod(): void
     {
         $params = [
             'prefix' => 'test',

@@ -121,7 +121,7 @@ trait AuthTrait
      * Activate
      * @param string $token
      */
-    public function activate(string $token)
+    public function activate(string $token): void
     {
         $this->authService->update(
             $this->keyFields[AuthKeys::ACTIVATION_TOKEN],
@@ -169,7 +169,7 @@ trait AuthTrait
      * @param string $token
      * @param string $password
      */
-    public function reset(string $token, string $password)
+    public function reset(string $token, string $password): void
     {
         $user = $this->authService->get($this->keyFields[AuthKeys::RESET_TOKEN], $token);
 

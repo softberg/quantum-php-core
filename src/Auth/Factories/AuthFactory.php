@@ -46,7 +46,7 @@ class AuthFactory
     /**
      * @var array<string, Auth>
      */
-    private static $instances = [];
+    private static array $instances = [];
 
     /**
      * @param string|null $adapter

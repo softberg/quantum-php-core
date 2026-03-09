@@ -90,7 +90,7 @@ namespace Quantum\Tests\Unit\Auth {
 
             $this->authService->shouldReceive('userSchema')->andReturn($this->userSchema);
 
-            $this->authService->shouldReceive('get')->andReturnUsing(function ($field, $value) {
+            $this->authService->shouldReceive('get')->andReturnUsing(function ($field, $value): ?\Quantum\Auth\User {
                 foreach (self::$users as $userData) {
                     if (in_array($value, $userData)) {
                         return (new User())->setData($userData);
@@ -123,7 +123,7 @@ namespace Quantum\Tests\Unit\Auth {
                 return $user;
             });
 
-            $this->authService->shouldReceive('add')->andReturnUsing(function ($data) {
+            $this->authService->shouldReceive('add')->andReturnUsing(function ($data): \Quantum\Auth\User {
 
                 $user = new User();
 

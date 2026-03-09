@@ -11,7 +11,7 @@ use Quantum\Database\Adapters\Idiorm\IdiormDbal;
  */
 class QueryIdiormTest extends IdiormDbalTestCase
 {
-    public function testIdiormExecute()
+    public function testIdiormExecute(): void
     {
         $eventModel = new IdiormDbal('events');
 
@@ -26,7 +26,7 @@ class QueryIdiormTest extends IdiormDbalTestCase
         $this->assertEquals('Singing', $event->prop('title'));
     }
 
-    public function testIdiormQuery()
+    public function testIdiormQuery(): void
     {
         $events = IdiormDbal::query(
             'SELECT * FROM events WHERE started_at BETWEEN :date_from AND :date_to ORDER BY started_at DESC',
@@ -44,7 +44,7 @@ class QueryIdiormTest extends IdiormDbalTestCase
     }
 
     /** Works only if debug set to true */
-    public function testIdiormLastQuery()
+    public function testIdiormLastQuery(): void
     {
         IdiormDbal::connect(['driver' => 'sqlite', 'database' => ':memory:']);
 
@@ -55,7 +55,7 @@ class QueryIdiormTest extends IdiormDbalTestCase
         $this->assertEquals("SELECT * FROM `events` WHERE `country` = 'Ireland'", IdiormDbal::lastQuery());
     }
 
-    public function testIdiormLastStatement()
+    public function testIdiormLastStatement(): void
     {
         IdiormDbal::connect(['driver' => 'sqlite', 'database' => ':memory:']);
 
@@ -66,7 +66,7 @@ class QueryIdiormTest extends IdiormDbalTestCase
         $this->assertEquals('SELECT * FROM `events` WHERE `country` = ?', $eventModel::lastStatement()->queryString);
     }
 
-    public function testIdiormQueryLog()
+    public function testIdiormQueryLog(): void
     {
         $eventModel = new IdiormDbal('events');
 

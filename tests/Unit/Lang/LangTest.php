@@ -12,7 +12,7 @@ use Quantum\Di\Di;
 
 class LangTest extends AppTestCase
 {
-    private $lang;
+    private Lang $lang;
 
     public function setUp(): void
     {
@@ -40,7 +40,7 @@ class LangTest extends AppTestCase
         }
     }
 
-    public function testLangGetSet()
+    public function testLangGetSet(): void
     {
         $this->assertEquals('en', $this->lang->getLang());
 

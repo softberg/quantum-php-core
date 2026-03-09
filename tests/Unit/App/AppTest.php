@@ -31,7 +31,7 @@ class AppTest extends TestCase
         config()->flush();
     }
 
-    public function testAppGetAdapter()
+    public function testAppGetAdapter(): void
     {
         $app = new App(new WebAppAdapter());
 
@@ -48,7 +48,7 @@ class AppTest extends TestCase
         $this->assertInstanceOf(AppInterface::class, $app->getAdapter());
     }
 
-    public function testAppCallingValidMethod()
+    public function testAppCallingValidMethod(): void
     {
         $app = new App(new WebAppAdapter());
 
@@ -60,7 +60,7 @@ class AppTest extends TestCase
         ob_end_clean();
     }
 
-    public function testAppCallingInvalidMethod()
+    public function testAppCallingInvalidMethod(): void
     {
         $app = new App(new WebAppAdapter());
 

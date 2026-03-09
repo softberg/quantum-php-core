@@ -8,7 +8,7 @@ use stdClass;
 
 class CryptorHelperFunctionsTest extends AppTestCase
 {
-    public function testCryptoEncodeAndDecodeWithSymmetricEncryption()
+    public function testCryptoEncodeAndDecodeWithSymmetricEncryption(): void
     {
         $stringValue = 'simple string';
 
@@ -49,7 +49,7 @@ class CryptorHelperFunctionsTest extends AppTestCase
 
     }
 
-    public function testCryptoEncodeAndDecodeWithAsymmetricEncryption()
+    public function testCryptoEncodeAndDecodeWithAsymmetricEncryption(): void
     {
         $stringValue = 'simple string';
 

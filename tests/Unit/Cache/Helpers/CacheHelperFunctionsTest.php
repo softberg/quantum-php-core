@@ -11,35 +11,35 @@ use Quantum\Cache\Cache;
 
 class CacheHelperFunctionsTest extends AppTestCase
 {
-    public function testCacheHelperGetDefaultCache()
+    public function testCacheHelperGetDefaultCache(): void
     {
         $this->assertInstanceOf(Cache::class, cache());
 
         $this->assertInstanceOf(FileAdapter::class, cache()->getAdapter());
     }
 
-    public function testCacheHelperGetFileCache()
+    public function testCacheHelperGetFileCache(): void
     {
         $this->assertInstanceOf(Cache::class, cache(Cache::FILE));
 
         $this->assertInstanceOf(FileAdapter::class, cache(Cache::FILE)->getAdapter());
     }
 
-    public function testCacheHelperGetDatabaseCache()
+    public function testCacheHelperGetDatabaseCache(): void
     {
         $this->assertInstanceOf(Cache::class, cache(Cache::DATABASE));
 
         $this->assertInstanceOf(DatabaseAdapter::class, cache(Cache::DATABASE)->getAdapter());
     }
 
-    public function testCacheHelperGetMemcachedCache()
+    public function testCacheHelperGetMemcachedCache(): void
     {
         $this->assertInstanceOf(Cache::class, cache(Cache::MEMCACHED));
 
         $this->assertInstanceOf(MemcachedAdapter::class, cache(Cache::MEMCACHED)->getAdapter());
     }
 
-    public function testCacheHelperGetRedisCache()
+    public function testCacheHelperGetRedisCache(): void
     {
         $this->assertInstanceOf(Cache::class, cache(Cache::REDIS));
 

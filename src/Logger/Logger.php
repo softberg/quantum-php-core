@@ -39,10 +39,7 @@ class Logger implements LoggerInterface
      */
     public const MESSAGE = 'message';
 
-    /**
-     * @var ReportableInterface
-     */
-    private $adapter;
+    private ReportableInterface $adapter;
 
     /**
      * @param ReportableInterface $adapter
@@ -63,7 +60,7 @@ class Logger implements LoggerInterface
     /**
      * @inheritDoc
      */
-    public function emergency($message, array $context = [])
+    public function emergency($message, array $context = []): void
     {
         $this->log(LogLevel::EMERGENCY, $message, $context);
     }
@@ -71,7 +68,7 @@ class Logger implements LoggerInterface
     /**
      * @inheritDoc
      */
-    public function alert($message, array $context = [])
+    public function alert($message, array $context = []): void
     {
         $this->log(LogLevel::ALERT, $message, $context);
     }
@@ -79,7 +76,7 @@ class Logger implements LoggerInterface
     /**
      * @inheritDoc
      */
-    public function critical($message, array $context = [])
+    public function critical($message, array $context = []): void
     {
         $this->log(LogLevel::CRITICAL, $message, $context);
     }
@@ -87,7 +84,7 @@ class Logger implements LoggerInterface
     /**
      * @inheritDoc
      */
-    public function error($message, array $context = [])
+    public function error($message, array $context = []): void
     {
         $this->log(LogLevel::ERROR, $message, $context);
     }
@@ -95,7 +92,7 @@ class Logger implements LoggerInterface
     /**
      * @inheritDoc
      */
-    public function warning($message, array $context = [])
+    public function warning($message, array $context = []): void
     {
         $this->log(LogLevel::WARNING, $message, $context);
     }
@@ -103,7 +100,7 @@ class Logger implements LoggerInterface
     /**
      * @inheritDoc
      */
-    public function notice($message, array $context = [])
+    public function notice($message, array $context = []): void
     {
         $this->log(LogLevel::NOTICE, $message, $context);
     }
@@ -111,7 +108,7 @@ class Logger implements LoggerInterface
     /**
      * @inheritDoc
      */
-    public function info($message, array $context = [])
+    public function info($message, array $context = []): void
     {
         $this->log(LogLevel::INFO, $message, $context);
     }
@@ -119,7 +116,7 @@ class Logger implements LoggerInterface
     /**
      * @inheritDoc
      */
-    public function debug($message, array $context = [])
+    public function debug($message, array $context = []): void
     {
         $this->log(LogLevel::DEBUG, $message, $context);
     }
@@ -127,7 +124,7 @@ class Logger implements LoggerInterface
     /**
      * @inheritDoc
      */
-    public function log($level, $message, array $context = [])
+    public function log($level, $message, array $context = []): void
     {
         if (is_debug_mode() || LoggerConfig::getLogLevel($level) >= LoggerConfig::getAppLogLevel()) {
             $this->adapter->report($level, $message, $context);

@@ -24,7 +24,7 @@ class PaginatorTestCase extends AppTestCase
         IdiormDbal::execute('DROP TABLE IF EXISTS posts');
     }
 
-    private function _createPostTableWithData()
+    private function _createPostTableWithData(): void
     {
         IdiormDbal::execute('CREATE TABLE IF NOT EXISTS posts (
                         id INTEGER PRIMARY KEY,

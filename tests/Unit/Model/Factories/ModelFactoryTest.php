@@ -20,7 +20,7 @@ class ModelFactoryTest extends AppTestCase
         parent::setUp();
     }
 
-    public function testModelFactoryGet()
+    public function testModelFactoryGet(): void
     {
         $userModel = ModelFactory::get(TestUserModel::class);
 
@@ -29,7 +29,7 @@ class ModelFactoryTest extends AppTestCase
         $this->assertInstanceOf(TestUserModel::class, $userModel);
     }
 
-    public function testModelFactoryGetNonExistingModel()
+    public function testModelFactoryGetNonExistingModel(): void
     {
         $this->expectException(ModelException::class);
 
@@ -38,7 +38,7 @@ class ModelFactoryTest extends AppTestCase
         ModelFactory::get(\NonExistentClass::class);
     }
 
-    public function testModelFactoryModelNotInstanceOfDbModel()
+    public function testModelFactoryModelNotInstanceOfDbModel(): void
     {
         $this->expectException(ModelException::class);
 
@@ -47,7 +47,7 @@ class ModelFactoryTest extends AppTestCase
         ModelFactory::get(\Mockery\Undefined::class);
     }
 
-    public function testModelFactoryCreateDynamicModel()
+    public function testModelFactoryCreateDynamicModel(): void
     {
         $dynamicModel = ModelFactory::createDynamicModel('test_table', TestUserModel::class);
 

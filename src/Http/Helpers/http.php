@@ -26,6 +26,8 @@ use Quantum\Http\Request;
  * Gets the base url
  * @param bool $withModulePrefix
  * @return string
+ * @throws DiException
+ * @throws ReflectionException
  */
 function base_url(bool $withModulePrefix = false): string
 {
@@ -46,7 +48,7 @@ function current_url(): string
  * @param string $url
  * @param int $code
  */
-function redirect(string $url, int $code = StatusCode::FOUND)
+function redirect(string $url, int $code = StatusCode::FOUND): void
 {
     Response::redirect($url, $code);
 }
@@ -62,7 +64,7 @@ function redirect(string $url, int $code = StatusCode::FOUND)
  * @throws DiException
  * @throws ReflectionException
  */
-function redirectWith(string $url, array $data, int $code = StatusCode::FOUND)
+function redirectWith(string $url, array $data, int $code = StatusCode::FOUND): void
 {
     session()->set(ReservedKeys::PREV_REQUEST, $data);
     Response::redirect($url, $code);
@@ -115,7 +117,7 @@ function get_referrer(): ?string
  * @throws ReflectionException
  * @throws DebugBarException
  */
-function page_not_found()
+function page_not_found(): void
 {
     $acceptHeader = Response::getHeader('Accept');
 

@@ -106,22 +106,22 @@ class DropboxApp implements CloudAppInterface
     /**
      * @var HttpClient
      */
-    private $httpClient;
+    private HttpClient $httpClient;
 
     /**
      * @var string
      */
-    private $appKey;
+    private string $appKey;
 
     /**
      * @var string
      */
-    private $appSecret;
+    private string $appSecret;
 
     /**
      * @var TokenServiceInterface
      */
-    private $tokenService;
+    private TokenServiceInterface $tokenService;
 
     /**
      * DropboxApp constructor

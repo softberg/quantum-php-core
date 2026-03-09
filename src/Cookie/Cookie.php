@@ -25,22 +25,20 @@ class Cookie implements CookieStorageInterface
 {
     /**
      * Cookie storage
-     * @var array $storage
      */
-    private static $storage = [];
+    private static array $storage = [];
 
     /**
      * Cookie instance
-     * @var Cookie|null
      */
-    private static $instance = null;
+    private static ?Cookie $instance = null;
 
     /**
      * Cookie constructor.
      */
     private function __construct()
     {
-        // Preventing to create new object through constructor
+        // Preventing to create a new object through constructor
     }
 
     /**
@@ -95,7 +93,7 @@ class Cookie implements CookieStorageInterface
      * @inheritDoc
      * @throws BaseException
      */
-    public function set(string $key, $value = '', int $time = 0, string $path = '/', string $domain = '', bool $secure = false, bool $httponly = false)
+    public function set(string $key, $value = '', int $time = 0, string $path = '/', string $domain = '', bool $secure = false, bool $httponly = false): void
     {
         self::$storage[$key] = crypto_encode($value);
         setcookie($key, crypto_encode($value), ['expires' => $time !== 0 ? time() + $time : $time, 'path' => $path, 'domain' => $domain, 'secure' => $secure, 'httponly' => $httponly]);
@@ -104,7 +102,7 @@ class Cookie implements CookieStorageInterface
     /**
      * @inheritDoc
      */
-    public function delete(string $key, string $path = '/')
+    public function delete(string $key, string $path = '/'): void
     {
         if ($this->has($key)) {
             unset(self::$storage[$key]);
@@ -115,7 +113,7 @@ class Cookie implements CookieStorageInterface
     /**
      * @inheritDoc
      */
-    public function flush()
+    public function flush(): void
     {
         if (count(self::$storage)) {
             foreach (array_keys(self::$storage) as $key) {

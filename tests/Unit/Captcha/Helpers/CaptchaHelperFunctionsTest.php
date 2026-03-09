@@ -9,21 +9,21 @@ use Quantum\Captcha\Captcha;
 
 class CaptchaHelperFunctionsTest extends AppTestCase
 {
-    public function testCaptchaHelperGetDefaultCaptchaAdapter()
+    public function testCaptchaHelperGetDefaultCaptchaAdapter(): void
     {
         $this->assertInstanceOf(Captcha::class, captcha());
 
         $this->assertInstanceOf(RecaptchaAdapter::class, captcha()->getAdapter());
     }
 
-    public function testCaptchaHelperGetRecaptchaAdapter()
+    public function testCaptchaHelperGetRecaptchaAdapter(): void
     {
         $this->assertInstanceOf(Captcha::class, captcha(Captcha::RECAPTCHA));
 
         $this->assertInstanceOf(RecaptchaAdapter::class, captcha(Captcha::RECAPTCHA)->getAdapter());
     }
 
-    public function testCaptchaHelperGetHcaptchaAdapter()
+    public function testCaptchaHelperGetHcaptchaAdapter(): void
     {
         $this->assertInstanceOf(Captcha::class, captcha(Captcha::HCAPTCHA));
 

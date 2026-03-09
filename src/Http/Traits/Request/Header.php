@@ -24,7 +24,7 @@ trait Header
      * Request headers
      * @var array
      */
-    private static $__headers = [];
+    private static array $__headers = [];
 
     /**
      * Checks the request header existence by given key
@@ -58,7 +58,7 @@ trait Header
      * @param string $key
      * @param mixed $value
      */
-    public static function setHeader(string $key, $value)
+    public static function setHeader(string $key, $value): void
     {
         self::$__headers[strtolower($key)] = $value;
     }
@@ -76,7 +76,7 @@ trait Header
      * Deletes the header by given key
      * @param string $key
      */
-    public static function deleteHeader(string $key)
+    public static function deleteHeader(string $key): void
     {
         if (self::hasHeader($key)) {
             unset(self::$__headers[strtolower($key)]);

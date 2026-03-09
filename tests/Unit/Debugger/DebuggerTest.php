@@ -14,11 +14,11 @@ use Mockery;
 
 class DebuggerTest extends AppTestCase
 {
-    private $debugger;
+    private Debugger $debugger;
 
     private $debugBarMock;
 
-    private $debuggerStore;
+    private DebuggerStore $debuggerStore;
 
     public function setUp(): void
     {
@@ -45,7 +45,7 @@ class DebuggerTest extends AppTestCase
         $this->debugger = Debugger::getInstance($this->debuggerStore, $this->debugBarMock, $collectors);
     }
 
-    public function testDebuggerIsEnabled()
+    public function testDebuggerIsEnabled(): void
     {
         config()->set('app.debug', true);
         $this->assertTrue($this->debugger->isEnabled());
@@ -54,7 +54,7 @@ class DebuggerTest extends AppTestCase
         $this->assertFalse($this->debugger->isEnabled());
     }
 
-    public function testDebuggerInitStore()
+    public function testDebuggerInitStore(): void
     {
         $this->debugger->initStore();
 
@@ -65,7 +65,7 @@ class DebuggerTest extends AppTestCase
         $this->assertTrue($this->debuggerStore->has(Debugger::MAILS));
     }
 
-    public function testDebuggerAddToStoreCell()
+    public function testDebuggerAddToStoreCell(): void
     {
         $this->debugger->addToStoreCell(Debugger::MESSAGES, LogLevel::INFO, 'Test message');
 
@@ -74,7 +74,7 @@ class DebuggerTest extends AppTestCase
         $this->assertEquals(['info' => 'Test message'], $storedData[0]);
     }
 
-    public function testDebuggerGetStoreCell()
+    public function testDebuggerGetStoreCell(): void
     {
         $this->debugger->addToStoreCell(Debugger::MESSAGES, LogLevel::INFO, 'Test message');
 
@@ -83,7 +83,7 @@ class DebuggerTest extends AppTestCase
         $this->assertEquals(['info' => 'Test message'], $storedData[0]);
     }
 
-    public function testDebuggerClearStoreCell()
+    public function testDebuggerClearStoreCell(): void
     {
         $this->debugger->addToStoreCell(Debugger::MESSAGES, LogLevel::INFO, 'Test message');
         $this->debugger->clearStoreCell(Debugger::MESSAGES);
@@ -93,7 +93,7 @@ class DebuggerTest extends AppTestCase
         $this->assertEmpty($storedData);
     }
 
-    public function testDebuggerResetStore()
+    public function testDebuggerResetStore(): void
     {
         $this->debugger->initStore();
 
@@ -104,7 +104,7 @@ class DebuggerTest extends AppTestCase
         $this->assertEmpty($this->debuggerStore->all());
     }
 
-    public function testDebugbarRender()
+    public function testDebugbarRender(): void
     {
         $this->debugger->initStore();
 

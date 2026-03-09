@@ -64,7 +64,7 @@ class FileSystem
     /**
      * @var FilesystemAdapterInterface
      */
-    private $adapter;
+    private FilesystemAdapterInterface $adapter;
 
     /**
      * @param FilesystemAdapterInterface $adapter

@@ -31,21 +31,21 @@ class MigrationMigrateCommand extends QtCommand
 {
     /**
      * The console command name.
-     * @var string
+     * @var string|null
      */
-    protected $name = 'migration:migrate';
+    protected ?string $name = 'migration:migrate';
 
     /**
      * The console command description.
-     * @var string
+     * @var string|null
      */
-    protected $description = 'Migrates the migrations';
+    protected ?string $description = 'Migrates the migrations';
 
     /**
      * Command arguments
      * @var string[][]
      */
-    protected $args = [
+    protected array $args = [
         ['direction', 'optional', '[up] for upgrade, [down] for downgrade'],
     ];
 
@@ -53,7 +53,7 @@ class MigrationMigrateCommand extends QtCommand
      * Command options
      * @var string[][]
      */
-    protected $options = [
+    protected array $options = [
         ['step', 's', 'optional', 'Number of migrations to apply'],
     ];
 
@@ -65,7 +65,7 @@ class MigrationMigrateCommand extends QtCommand
      * @throws DiException
      * @throws LangException
      */
-    public function exec()
+    public function exec(): void
     {
 
         $direction = $this->getArgument('direction') ?: MigrationManager::UPGRADE;

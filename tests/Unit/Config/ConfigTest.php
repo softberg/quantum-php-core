@@ -18,7 +18,7 @@ class ConfigTest extends AppTestCase
         config()->flush();
     }
 
-    public function testConfigLoad()
+    public function testConfigLoad(): void
     {
         $config = Config::getInstance();
 
@@ -31,7 +31,7 @@ class ConfigTest extends AppTestCase
         $this->assertInstanceOf(Data::class, $config->all());
     }
 
-    public function testConfigImport()
+    public function testConfigImport(): void
     {
         $config = Config::getInstance();
 
@@ -46,7 +46,7 @@ class ConfigTest extends AppTestCase
         $this->assertEquals('sqlite', $config->get('database.default'));
     }
 
-    public function testImportingNonExistingConfigFile()
+    public function testImportingNonExistingConfigFile(): void
     {
         $this->expectException(LoaderException::class);
 
@@ -55,7 +55,7 @@ class ConfigTest extends AppTestCase
         Config::getInstance()->import(new Setup('config', 'somefile'));
     }
 
-    public function testCollisionAtImporting()
+    public function testCollisionAtImporting(): void
     {
         $config = Config::getInstance();
 
@@ -68,7 +68,7 @@ class ConfigTest extends AppTestCase
         $config->import(new Setup('config', 'app'));
     }
 
-    public function testConfigHas()
+    public function testConfigHas(): void
     {
         $config = Config::getInstance();
 
@@ -81,7 +81,7 @@ class ConfigTest extends AppTestCase
         $this->assertFalse($config->has('app.none'));
     }
 
-    public function testConfigGet()
+    public function testConfigGet(): void
     {
         $config = Config::getInstance();
 
@@ -94,7 +94,7 @@ class ConfigTest extends AppTestCase
         $this->assertNull($config->get('not-exists'));
     }
 
-    public function testConfigSet()
+    public function testConfigSet(): void
     {
         $config = Config::getInstance();
 
@@ -113,7 +113,7 @@ class ConfigTest extends AppTestCase
         $this->assertEquals('Nested Value', $config->get('other.nested'));
     }
 
-    public function testConfigDelete()
+    public function testConfigDelete(): void
     {
         $config = Config::getInstance();
 
@@ -128,7 +128,7 @@ class ConfigTest extends AppTestCase
         $this->assertNull($config->get('app.test'));
     }
 
-    public function testConfigFlush()
+    public function testConfigFlush(): void
     {
         $config = Config::getInstance();
 

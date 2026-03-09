@@ -9,6 +9,9 @@ namespace Quantum\Services {
     {
         public static $count = 0;
 
+        /**
+         * @var TestModel
+         */
         public $model;
 
         public function __construct(TestModel $model)
@@ -18,7 +21,7 @@ namespace Quantum\Services {
             $this->model = $model;
         }
 
-        public function hello()
+        public function hello(): string
         {
             return 'Hello';
         }
@@ -55,7 +58,7 @@ namespace Quantum\Tests\Unit\Service\Factories {
             TestService::$count = 0;
         }
 
-        public function testServiceFactoryGetInstance()
+        public function testServiceFactoryGetInstance(): void
         {
             $service = ServiceFactory::get(TestService::class);
 
@@ -64,7 +67,7 @@ namespace Quantum\Tests\Unit\Service\Factories {
             $this->assertInstanceOf(TestService::class, $service);
         }
 
-        public function testServiceFactoryVerifySingletonInstance()
+        public function testServiceFactoryVerifySingletonInstance(): void
         {
             $testServiceOne = ServiceFactory::get(TestService::class);
 
@@ -77,7 +80,7 @@ namespace Quantum\Tests\Unit\Service\Factories {
             $this->assertSame($testServiceOne, $testServiceTwo);
         }
 
-        public function testServiceFactoryCreateInstance()
+        public function testServiceFactoryCreateInstance(): void
         {
             $service = ServiceFactory::create(TestService::class);
 
@@ -86,7 +89,7 @@ namespace Quantum\Tests\Unit\Service\Factories {
             $this->assertInstanceOf(TestService::class, $service);
         }
 
-        public function testServiceFactoryVerifyFreshInstance()
+        public function testServiceFactoryVerifyFreshInstance(): void
         {
             $testServiceOne = ServiceFactory::create(TestService::class);
 
@@ -99,21 +102,21 @@ namespace Quantum\Tests\Unit\Service\Factories {
             $this->assertNotSame($testServiceOne, $testServiceTwo);
         }
 
-        public function testServiceFactoryVerifyConstructorDependencyResolved()
+        public function testServiceFactoryVerifyConstructorDependencyResolved(): void
         {
             $testService = ServiceFactory::get(TestService::class);
 
             $this->assertInstanceOf(DbModel::class, $testService->model);
         }
 
-        public function testServiceFactoryServiceMethodCall()
+        public function testServiceFactoryServiceMethodCall(): void
         {
             $this->assertEquals('Hello', ServiceFactory::get(TestService::class)->hello());
 
             $this->assertEquals('Hello', ServiceFactory::create(TestService::class)->hello());
         }
 
-        public function testServiceFactoryServiceNotFound()
+        public function testServiceFactoryServiceNotFound(): void
         {
             $this->expectException(ServiceException::class);
 

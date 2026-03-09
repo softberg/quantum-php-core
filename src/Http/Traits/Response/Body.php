@@ -31,12 +31,12 @@ trait Body
      * Response
      * @var array
      */
-    private static $__response = [];
+    private static array $__response = [];
 
     /**
      * @var string[]
      */
-    private static $formatters = [
+    private static array $formatters = [
         ContentType::HTML => 'formatHtml',
         ContentType::XML => 'formatXml',
         ContentType::JSON => 'formatJson',
@@ -69,7 +69,7 @@ trait Body
      * @param string $key
      * @param mixed $value
      */
-    public static function set(string $key, $value)
+    public static function set(string $key, $value): void
     {
         self::$__response[$key] = $value;
     }
@@ -87,7 +87,7 @@ trait Body
      * Deletes the element from response by given key
      * @param string $key
      */
-    public static function delete(string $key)
+    public static function delete(string $key): void
     {
         if (self::has($key)) {
             unset(self::$__response[$key]);
@@ -99,7 +99,7 @@ trait Body
      * @param array|null $data
      * @param int|null $code
      */
-    public static function json(?array $data = null, ?int $code = null)
+    public static function json(?array $data = null, ?int $code = null): void
     {
         self::setContentType(ContentType::JSON);
 
@@ -118,7 +118,7 @@ trait Body
      * @param array|null $data
      * @param int|null $code
      */
-    public static function jsonp(string $callback, ?array $data = null, ?int $code = null)
+    public static function jsonp(string $callback, ?array $data = null, ?int $code = null): void
     {
         self::setContentType(ContentType::JSONP);
 
@@ -148,7 +148,7 @@ trait Body
      * @param array|null $data
      * @param int|null $code
      */
-    public static function xml(?array $data = null, $root = '<data></data>', ?int $code = null)
+    public static function xml(?array $data = null, $root = '<data></data>', ?int $code = null): void
     {
         self::setContentType(ContentType::XML);
 
@@ -168,7 +168,7 @@ trait Body
      * @param string $html
      * @param int|null $code
      */
-    public static function html(string $html, ?int $code = null)
+    public static function html(string $html, ?int $code = null): void
     {
         self::setContentType(ContentType::HTML);
 
@@ -219,7 +219,7 @@ trait Body
      * @param array $arr
      * @param SimpleXMLElement $simpleXML
      */
-    private static function composeXML(array $arr, SimpleXMLElement &$simpleXML)
+    private static function composeXML(array $arr, SimpleXMLElement &$simpleXML): void
     {
         foreach ($arr as $key => $value) {
             if (is_numeric($key)) {

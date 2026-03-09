@@ -20,12 +20,9 @@ namespace Quantum\Environment;
  */
 class Server
 {
-    /**
-     * @var array
-     */
-    private $server;
+    private array $server;
 
-    private static $instance = null;
+    private static ?Server $instance = null;
 
     /**
      * Server constructor.
@@ -51,7 +48,7 @@ class Server
     /**
      * Flushes the server params
      */
-    public function flush()
+    public function flush(): void
     {
         $this->server = [];
     }
@@ -86,7 +83,7 @@ class Server
      * @param $key
      * @param $value
      */
-    public function set($key, $value)
+    public function set($key, $value): void
     {
         $this->server[$key] = $value;
     }
@@ -194,7 +191,7 @@ class Server
             return [];
         }
 
-        return array_reduce(array_keys($data), function ($headers, $key) use ($data) {
+        return array_reduce(array_keys($data), function (array $headers, $key) use ($data): array {
             if (strpos($key, 'HTTP_') === 0) {
                 $formattedKey = strtolower(str_replace('_', '-', substr($key, 5)));
                 $headers[$formattedKey] = $data[$key];

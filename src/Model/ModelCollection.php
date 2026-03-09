@@ -85,7 +85,7 @@ class ModelCollection implements Countable, IteratorAggregate
     {
         $this->processModels();
 
-        $this->models = array_filter($this->models, fn ($m) => $m !== $model);
+        $this->models = array_filter($this->models, fn (Model $m): bool => $m !== $model);
 
         $this->originalModels = $this->models;
 
@@ -172,7 +172,7 @@ class ModelCollection implements Countable, IteratorAggregate
      * Process models from original source into the internal array
      * @throws BaseException
      */
-    private function processModels()
+    private function processModels(): void
     {
         if ($this->modelsProcessed) {
             return;

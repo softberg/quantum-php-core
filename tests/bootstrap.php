@@ -16,6 +16,6 @@ require_once __DIR__ . DS . 'Helpers' . DS . 'functions.php';
 
 createEnvFile();
 
-register_shutdown_function(function () {
+register_shutdown_function(function (): void {
     removeEnvFile();
 });

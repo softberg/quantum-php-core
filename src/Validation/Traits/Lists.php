@@ -44,7 +44,7 @@ trait Lists
     {
         $value = trim(strtolower($value));
 
-        $list = array_map(fn ($item) => trim(strtolower($item)), $list);
+        $list = array_map(fn (string $item) => trim(strtolower($item)), $list);
 
         return in_array($value, $list);
     }
@@ -59,7 +59,7 @@ trait Lists
     {
         $value = trim(strtolower($value));
 
-        $list = array_map(fn ($item) => trim(strtolower($item)), $list);
+        $list = array_map(fn (string $item) => trim(strtolower($item)), $list);
 
         return !in_array($value, $list);
     }

@@ -26,27 +26,27 @@ class CronRunCommand extends QtCommand
 {
     /**
      * The console command name.
-     * @var string
+     * @var string|null
      */
-    protected $name = 'cron:run';
+    protected ?string $name = 'cron:run';
 
     /**
      * The console command description.
-     * @var string
+     * @var string|null
      */
-    protected $description = 'Run scheduled cron tasks';
+    protected ?string $description = 'Run scheduled cron tasks';
 
     /**
      * Command help text.
-     * @var string
+     * @var string|null
      */
-    protected $help = 'Executes scheduled tasks defined in the cron directory. Use --task to run a single task or --force to bypass locks.';
+    protected ?string $help = 'Executes scheduled tasks defined in the cron directory. Use --task to run a single task or --force to bypass locks.';
 
     /**
      * Command options
      * @var array<int, list<string|null>>
      */
-    protected $options = [
+    protected array $options = [
         ['force', 'f', 'none', 'Force run tasks ignoring locks'],
         ['task', 't', 'optional', 'Run a specific task by name'],
         ['path', 'p', 'optional', 'Custom cron directory path'],
@@ -55,7 +55,7 @@ class CronRunCommand extends QtCommand
     /**
      * Executes the command
      */
-    public function exec()
+    public function exec(): void
     {
         $force = (bool) $this->getOption('force');
         $taskName = $this->getOption('task');

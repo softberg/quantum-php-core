@@ -41,39 +41,39 @@ class ServeCommand extends QtCommand
 
     /**
      * The console command name.
-     * @var string
+     * @var string|null
      */
-    protected $name = 'serve';
+    protected ?string $name = 'serve';
 
     /**
      * The console command description.
-     * @var string
+     * @var string|null
      */
-    protected $description = 'Serves the application on the PHP development server';
+    protected ?string $description = 'Serves the application on the PHP development server';
 
     /**
      * Default host
      * @var string
      */
-    protected $defaultHost = '127.0.0.1';
+    protected string $defaultHost = '127.0.0.1';
 
     /**
      * Default port
      * @var int
      */
-    protected $defaultPort = 8000;
+    protected int $defaultPort = 8000;
 
     /**
      * Max ports to scan
      * @var int
      */
-    protected $maxPortScan = 50;
+    protected int $maxPortScan = 50;
 
     /**
      * Command arguments
      * @var array<int, list<string|null>>
      */
-    protected $options = [
+    protected array $options = [
         ['host', null, 'optional', 'Host', '127.0.0.1'],
         ['port', null, 'optional', 'Port', '8000'],
         ['open', 'o', 'none', 'Open browser'],
@@ -82,7 +82,7 @@ class ServeCommand extends QtCommand
     /**
      * Execute the command.
      */
-    public function exec()
+    public function exec(): void
     {
         $host = $this->host();
         $startPort = $this->port();
@@ -93,7 +93,7 @@ class ServeCommand extends QtCommand
     }
 
     /**
-     * Start server on first available port.
+     * Start the server on the first available port.
      * @param string $host
      * @param int $startPort
      * @return array

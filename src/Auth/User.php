@@ -20,10 +20,7 @@ namespace Quantum\Auth;
  */
 class User
 {
-    /**
-     * @var array
-     */
-    private $data = [];
+    private array $data = [];
 
     /**
      * Set Data

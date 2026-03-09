@@ -37,7 +37,7 @@ class CryptorFactory
     /**
      * @var array
      */
-    private static $instances = [];
+    private static array $instances = [];
 
     /**
      * @param string $type

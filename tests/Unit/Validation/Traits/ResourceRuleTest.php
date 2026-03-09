@@ -8,7 +8,7 @@ use Quantum\Validation\Rule;
 
 class ResourceRuleTest extends AppTestCase
 {
-    public $validator;
+    public Validator $validator;
 
     public function setUp(): void
     {
@@ -18,7 +18,7 @@ class ResourceRuleTest extends AppTestCase
 
     }
 
-    public function testRuleUrl()
+    public function testRuleUrl(): void
     {
         $this->validator->setRule('text', [
             Rule::url(),
@@ -39,7 +39,7 @@ class ResourceRuleTest extends AppTestCase
         $this->assertEquals('validation.url', $errors['text'][0]);
     }
 
-    public function testRuleUrlExists()
+    public function testRuleUrlExists(): void
     {
         $this->validator->setRule('text', [
             Rule::urlExists(),
@@ -56,7 +56,7 @@ class ResourceRuleTest extends AppTestCase
         $this->assertEquals('validation.urlExists', $errors['text'][0]);
     }
 
-    public function testRuleIp()
+    public function testRuleIp(): void
     {
         $this->validator->setRule('text', [
             Rule::ip(),
@@ -73,7 +73,7 @@ class ResourceRuleTest extends AppTestCase
         $this->assertEquals('validation.ip', $errors['text'][0]);
     }
 
-    public function testRuleIpV4()
+    public function testRuleIpV4(): void
     {
         $this->validator->setRule('text', [
             Rule::ipv4(),
@@ -90,7 +90,7 @@ class ResourceRuleTest extends AppTestCase
         $this->assertEquals('validation.ipv4', $errors['text'][0]);
     }
 
-    public function testRuleIpV6()
+    public function testRuleIpV6(): void
     {
         $this->validator->setRule('text', [
             Rule::ipv6(),

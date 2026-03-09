@@ -28,17 +28,17 @@ class Lang
     /**
      * @var string|null
      */
-    private $currentLang = null;
+    private ?string $currentLang = null;
 
     /**
      * @var Translator
      */
-    private $translator;
+    private Translator $translator;
 
     /**
      * @var bool
      */
-    private $isEnabled;
+    private bool $isEnabled;
 
     /**
      * @param string $lang
@@ -53,7 +53,7 @@ class Lang
     }
 
     /**
-     * Set current language
+     * Set the current language
      * @param string $lang
      * @return $this
      */

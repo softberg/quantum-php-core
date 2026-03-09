@@ -11,7 +11,7 @@ class UuidHelperTest extends AppTestCase
         parent::setUp();
     }
 
-    public function testUuidRandomGeneratesValidUuidV4()
+    public function testUuidRandomGeneratesValidUuidV4(): void
     {
         $this->assertMatchesRegularExpression(
             '/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i',
@@ -20,7 +20,7 @@ class UuidHelperTest extends AppTestCase
         );
     }
 
-    public function testUuidOrderedGeneratesValidUuidV1()
+    public function testUuidOrderedGeneratesValidUuidV1(): void
     {
         $this->assertMatchesRegularExpression(
             '/^[0-9a-f]{8}-[0-9a-f]{4}-1[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i',
@@ -29,12 +29,12 @@ class UuidHelperTest extends AppTestCase
         );
     }
 
-    public function testUuidRandomIsUnique()
+    public function testUuidRandomIsUnique(): void
     {
         $this->assertNotEquals(uuid_random(), uuid_random(), 'Two random UUIDs should be different');
     }
 
-    public function testUuidOrderedIsChronologicallyIncreasing()
+    public function testUuidOrderedIsChronologicallyIncreasing(): void
     {
         $uuid1 = uuid_ordered();
         usleep(10);

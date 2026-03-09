@@ -11,9 +11,9 @@ use Quantum\Logger\Logger;
 
 class LoggerTest extends AppTestCase
 {
-    private $logger;
-    private $adapter;
-    private $debugger;
+    private Logger $logger;
+    private MessageAdapter $adapter;
+    private Debugger $debugger;
 
     public function setUp(): void
     {
@@ -30,7 +30,7 @@ class LoggerTest extends AppTestCase
         $this->logger = new Logger($this->adapter);
     }
 
-    public function testLoggerGetAdapter()
+    public function testLoggerGetAdapter(): void
     {
         $this->assertEquals($this->adapter, $this->logger->getAdapter());
 
@@ -39,7 +39,7 @@ class LoggerTest extends AppTestCase
         $this->assertInstanceOf(ReportableInterface::class, $this->logger->getAdapter());
     }
 
-    public function testLoggerLogAddsMessageToDebuggerStore()
+    public function testLoggerLogAddsMessageToDebuggerStore(): void
     {
         $levelInfo = 'info';
         $messageInfo = 'Test message';

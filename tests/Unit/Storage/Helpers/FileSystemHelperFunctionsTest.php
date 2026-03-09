@@ -10,28 +10,28 @@ use Quantum\Storage\FileSystem;
 
 class FileSystemHelperFunctionsTest extends AppTestCase
 {
-    public function testFileSystemHelperGetDefaultFileSystem()
+    public function testFileSystemHelperGetDefaultFileSystem(): void
     {
         $this->assertInstanceOf(FileSystem::class, fs());
 
         $this->assertInstanceOf(LocalFileSystemAdapter::class, fs()->getAdapter());
     }
 
-    public function testFileSystemHelperGetLocalFileSystem()
+    public function testFileSystemHelperGetLocalFileSystem(): void
     {
         $this->assertInstanceOf(FileSystem::class, fs(FileSystem::LOCAL));
 
         $this->assertInstanceOf(LocalFileSystemAdapter::class, fs(FileSystem::LOCAL)->getAdapter());
     }
 
-    public function testFileSystemHelperGetDropboxFileSystem()
+    public function testFileSystemHelperGetDropboxFileSystem(): void
     {
         $this->assertInstanceOf(FileSystem::class, fs(FileSystem::DROPBOX));
 
         $this->assertInstanceOf(DropboxFileSystemAdapter::class, fs(FileSystem::DROPBOX)->getAdapter());
     }
 
-    public function testFileSystemHelperGetGoogleDriveFileSystem()
+    public function testFileSystemHelperGetGoogleDriveFileSystem(): void
     {
         $this->assertInstanceOf(FileSystem::class, fs(FileSystem::GDRIVE));
 

@@ -41,7 +41,7 @@ class RendererFactory
     /**
      * @var array<string, Renderer>
      */
-    private static $instances = [];
+    private static array $instances = [];
 
     /**
      * @param string|null $adapter

@@ -15,6 +15,7 @@
 namespace Quantum\Database\Adapters\Idiorm;
 
 use ORM;
+use RuntimeException;
 
 /**
  * Class IdiormPatch
@@ -22,21 +23,15 @@ use ORM;
  */
 class IdiormPatch extends ORM
 {
-    /**
-     * @var object
-     */
-    private $ormModel;
+    private ?object $ormModel = null;
 
-    /**
-     * @var object
-     */
-    private static $instance = null;
+    private static ?IdiormPatch $instance = null;
 
     /**
      * Get Instance
-     * @return IdiormPatch|object
+     * @return IdiormPatch
      */
-    public static function getInstance()
+    public static function getInstance(): IdiormPatch
     {
         if (self::$instance == null) {
             self::$instance = new self('dummy');
@@ -90,6 +85,9 @@ class IdiormPatch extends ORM
      */
     public function addJoin(string $operator, string $table, array $constraint, ?string $table_alias = null): object
     {
+        if ($this->ormModel === null) {
+            throw new RuntimeException('ORM model is not set. Call use() method first.');
+        }
         return $this->ormModel->_add_join_source($operator, $table, $constraint, $table_alias);
     }
 }

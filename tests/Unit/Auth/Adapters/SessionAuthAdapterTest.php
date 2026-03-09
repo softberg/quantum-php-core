@@ -11,7 +11,7 @@ use Quantum\Auth\User;
 
 class SessionAuthAdapterTest extends AuthTestCase
 {
-    private $sessionAuth;
+    private SessionAuthAdapter $sessionAuth;
 
     public function setUp(): void
     {
@@ -33,12 +33,12 @@ class SessionAuthAdapterTest extends AuthTestCase
         $this->sessionAuth->signout();
     }
 
-    public function testWebAdapterConstructor()
+    public function testWebAdapterConstructor(): void
     {
         $this->assertInstanceOf(SessionAuthAdapter::class, $this->sessionAuth);
     }
 
-    public function testWebSigninIncorrectCredentials()
+    public function testWebSigninIncorrectCredentials(): void
     {
         $this->expectException(AuthException::class);
 
@@ -47,14 +47,14 @@ class SessionAuthAdapterTest extends AuthTestCase
         $this->sessionAuth->signin('admin@qt.com', '111111');
     }
 
-    public function testWebSigninCorrectCredentials()
+    public function testWebSigninCorrectCredentials(): void
     {
         $this->assertTrue($this->sessionAuth->signin('admin@qt.com', 'qwerty'));
 
         $this->assertTrue($this->sessionAuth->signin('admin@qt.com', 'qwerty', true));
     }
 
-    public function testWebSigninWithRemember()
+    public function testWebSigninWithRemember(): void
     {
         $this->sessionAuth->signin('admin@qt.com', 'qwerty', true);
 
@@ -63,7 +63,7 @@ class SessionAuthAdapterTest extends AuthTestCase
         $this->assertTrue($this->sessionAuth->check());
     }
 
-    public function testWebSignout()
+    public function testWebSignout(): void
     {
         $this->assertFalse($this->sessionAuth->check());
 
@@ -76,7 +76,7 @@ class SessionAuthAdapterTest extends AuthTestCase
         $this->assertFalse($this->sessionAuth->check());
     }
 
-    public function testWebUser()
+    public function testWebUser(): void
     {
         $this->sessionAuth->signin('admin@qt.com', 'qwerty');
 
@@ -87,7 +87,7 @@ class SessionAuthAdapterTest extends AuthTestCase
         $this->assertEquals('admin', $this->sessionAuth->user()->getFieldValue('role'));
     }
 
-    public function testWebCheck()
+    public function testWebCheck(): void
     {
         $this->assertFalse($this->sessionAuth->check());
 
@@ -96,7 +96,7 @@ class SessionAuthAdapterTest extends AuthTestCase
         $this->assertTrue($this->sessionAuth->check());
     }
 
-    public function testWebSignupAndSigninWithoutActivation()
+    public function testWebSignupAndSigninWithoutActivation(): void
     {
 
         $this->expectException(AuthException::class);
@@ -108,7 +108,7 @@ class SessionAuthAdapterTest extends AuthTestCase
         $this->assertTrue($this->sessionAuth->signin('guest@qt.com', '123456'));
     }
 
-    public function testWebSignupAndActivateAccount()
+    public function testWebSignupAndActivateAccount(): void
     {
         $user = $this->sessionAuth->signup($this->guestUser);
 
@@ -117,7 +117,7 @@ class SessionAuthAdapterTest extends AuthTestCase
         $this->assertTrue($this->sessionAuth->signin('guest@qt.com', '123456'));
     }
 
-    public function testWebForgetReset()
+    public function testWebForgetReset(): void
     {
         $resetToken = $this->sessionAuth->forget('admin@qt.com');
 
@@ -126,7 +126,7 @@ class SessionAuthAdapterTest extends AuthTestCase
         $this->assertTrue($this->sessionAuth->signin('admin@qt.com', '123456789'));
     }
 
-    public function testWebVerifyOtp()
+    public function testWebVerifyOtp(): void
     {
         config()->set('auth.two_fa', true);
 
@@ -137,7 +137,7 @@ class SessionAuthAdapterTest extends AuthTestCase
         $this->assertTrue($this->sessionAuth->verifyOtp(123456789, $otp_token));
     }
 
-    public function testWebSigninWithoutVerification()
+    public function testWebSigninWithoutVerification(): void
     {
         config()->set('auth.two_fa', false);
 
@@ -146,7 +146,7 @@ class SessionAuthAdapterTest extends AuthTestCase
         $this->assertTrue($this->sessionAuth->signin('admin@qt.com', 'qwerty'));
     }
 
-    public function testWebSigninWithVerification()
+    public function testWebSigninWithVerification(): void
     {
         config()->set('auth.two_fa', true);
 
@@ -155,7 +155,7 @@ class SessionAuthAdapterTest extends AuthTestCase
         $this->assertIsString($this->sessionAuth->signin('admin@qt.com', 'qwerty'));
     }
 
-    public function testWebResendOtp()
+    public function testWebResendOtp(): void
     {
         config()->set('auth.two_fa', true);
 
@@ -166,7 +166,7 @@ class SessionAuthAdapterTest extends AuthTestCase
         $this->assertIsString($this->sessionAuth->resendOtp($otp_token));
     }
 
-    public function testWebRefreshUser()
+    public function testWebRefreshUser(): void
     {
         $this->sessionAuth->signin('admin@qt.com', 'qwerty');
 

@@ -14,10 +14,14 @@
 
 namespace Quantum\Cron;
 
+use Quantum\Config\Exceptions\ConfigException;
 use Quantum\Cron\Contracts\CronTaskInterface;
 use Quantum\Logger\Factories\LoggerFactory;
 use Quantum\Cron\Exceptions\CronException;
+use Quantum\App\Exceptions\BaseException;
+use Quantum\Di\Exceptions\DiException;
 use Quantum\Logger\Logger;
+use ReflectionException;
 
 /**
  * Class CronManager
@@ -29,7 +33,7 @@ class CronManager
      * Loaded tasks
      * @var array<string, CronTaskInterface>
      */
-    private $tasks = [];
+    private array $tasks = [];
 
     /**
      * Cron directory path
@@ -39,9 +43,8 @@ class CronManager
 
     /**
      * Execution statistics
-     * @var array
      */
-    private $stats = [
+    private array $stats = [
         'total' => 0,
         'executed' => 0,
         'skipped' => 0,
@@ -60,9 +63,14 @@ class CronManager
     }
 
     /**
-     * Load tasks from cron directory
+     * Load tasks from the cron directory
      * @return void
      * @throws CronException
+     */
+
+    /**
+     * @return void
+     * @throws CronException|BaseException|ConfigException|DiException|ReflectionException
      */
     public function loadTasks(): void
     {
@@ -83,10 +91,9 @@ class CronManager
     }
 
     /**
-     * Load a single task from file
      * @param string $file
      * @return void
-     * @throws CronException
+     * @throws BaseException|ConfigException|CronException|DiException|ReflectionException
      */
     private function loadTaskFromFile(string $file): void
     {
@@ -104,7 +111,7 @@ class CronManager
     }
 
     /**
-     * Create task from array definition
+     * Create a task from array definition
      * @param array $definition
      * @return CronTask
      * @throws CronException
@@ -127,6 +134,12 @@ class CronManager
      * @param bool $force Ignore locks
      * @return array Statistics
      */
+
+    /**
+     * @param bool $force
+     * @return array|int[]
+     * @throws BaseException|ConfigException|CronException|DiException|ReflectionException
+     */
     public function runDueTasks(bool $force = false): array
     {
         $this->loadTasks();
@@ -145,9 +158,9 @@ class CronManager
     /**
      * Run a specific task by name
      * @param string $taskName
-     * @param bool $force Ignore locks
+     * @param bool $force
      * @return void
-     * @throws CronException
+     * @throws BaseException|ConfigException|CronException|DiException|ReflectionException
      */
     public function runTaskByName(string $taskName, bool $force = false): void
     {
@@ -163,8 +176,9 @@ class CronManager
     /**
      * Run a single task
      * @param CronTaskInterface $task
-     * @param bool $force Ignore locks
+     * @param bool $force
      * @return void
+     * @throws BaseException|ConfigException|CronException|DiException|ReflectionException
      */
     private function runTask(CronTaskInterface $task, bool $force = false): void
     {

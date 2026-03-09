@@ -16,7 +16,7 @@ class ArchiveTest extends AppTestCase
         parent::setUp();
     }
 
-    public function testArchiveGetAdapter()
+    public function testArchiveGetAdapter(): void
     {
         $archive = new Archive(new PharAdapter());
 
@@ -31,7 +31,7 @@ class ArchiveTest extends AppTestCase
         $this->assertInstanceOf(ArchiveInterface::class, $archive->getAdapter());
     }
 
-    public function testArchiveCallingValidMethod()
+    public function testArchiveCallingValidMethod(): void
     {
         $pharAdapter = new PharAdapter();
         $pharAdapter->setName('test.phar');
@@ -43,7 +43,7 @@ class ArchiveTest extends AppTestCase
         $this->assertEquals(0, $archive->count());
     }
 
-    public function testArchiveCallingInvalidMethod()
+    public function testArchiveCallingInvalidMethod(): void
     {
         $pharAdapter = new PharAdapter();
         $pharAdapter->setName('test.phar');

@@ -18,12 +18,12 @@ class SymmetricEncryptionAdapterTest extends AppTestCase
         $this->adapter = new SymmetricEncryptionAdapter();
     }
 
-    public function testSymmetricEncryptionAdapterGetInstance()
+    public function testSymmetricEncryptionAdapterGetInstance(): void
     {
         $this->assertInstanceOf(SymmetricEncryptionAdapter::class, $this->adapter);
     }
 
-    public function testSymmetricEncryptionAdapterEncryptAndDecrypt()
+    public function testSymmetricEncryptionAdapterEncryptAndDecrypt(): void
     {
         $encrypted = $this->adapter->encrypt($this->plainText);
 
@@ -36,7 +36,7 @@ class SymmetricEncryptionAdapterTest extends AppTestCase
         $this->assertEquals($this->plainText, $decrypted);
     }
 
-    public function testSymmetricEncryptionDecryptThrowsExceptionOnInvalidData()
+    public function testSymmetricEncryptionDecryptThrowsExceptionOnInvalidData(): void
     {
         $this->expectException(CryptorException::class);
 

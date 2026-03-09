@@ -64,12 +64,7 @@ class TwigAdapter implements TemplateRendererInterface
      * @param string $view
      * @param array $params
      * @return string
-     * @throws DiException
-     * @throws LoaderError
-     * @throws ReflectionException
-     * @throws RendererException
-     * @throws RuntimeError
-     * @throws SyntaxError
+     * @throws DiException|LoaderError|ReflectionException|RendererException|RuntimeError|SyntaxError
      */
     public function render(string $view, array $params = []): string
     {
@@ -85,9 +80,7 @@ class TwigAdapter implements TemplateRendererInterface
     /**
      * @param string $view
      * @return FilesystemLoader
-     * @throws RendererException
-     * @throws DiException
-     * @throws ReflectionException
+     * @throws RendererException|DiException|ReflectionException
      */
     private function getLoader(string $view): FilesystemLoader
     {
@@ -107,8 +100,9 @@ class TwigAdapter implements TemplateRendererInterface
 
     /**
      * @param Environment $twig
+     * @return void
      */
-    private function addFunctionsToTwig(Environment $twig)
+    private function addFunctionsToTwig(Environment $twig): void
     {
         $definedFunctions = get_defined_functions();
         $allDefinedFunctions = array_merge($definedFunctions['internal'], $definedFunctions['user']);

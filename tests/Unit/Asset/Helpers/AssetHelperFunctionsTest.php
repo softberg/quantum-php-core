@@ -15,12 +15,12 @@ class AssetHelperFunctionsTest extends AppTestCase
         $this->setPrivateProperty(AssetManager::class, 'instance', null);
     }
 
-    public function testAssetHelper()
+    public function testAssetHelper(): void
     {
         $this->assertInstanceOf(AssetManager::class, asset());
     }
 
-    public function testAssetUrl()
+    public function testAssetUrl(): void
     {
         config()->set('app.base_url', 'http://mydomain.com');
 
@@ -29,7 +29,7 @@ class AssetHelperFunctionsTest extends AppTestCase
         $this->assertSame('http://mydomain.com/assets/js/script.js', asset()->url('js/script.js'));
     }
 
-    public function testPublishedAssets()
+    public function testPublishedAssets(): void
     {
         config()->set('base_url', 'http://mydomain.com');
 

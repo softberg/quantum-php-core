@@ -9,8 +9,8 @@ use Quantum\Debugger\Debugger;
 
 class MessageAdapterTest extends AppTestCase
 {
-    private $adapter;
-    private $debugger;
+    private MessageAdapter $adapter;
+    private Debugger $debugger;
 
     public function setUp(): void
     {
@@ -25,7 +25,7 @@ class MessageAdapterTest extends AppTestCase
         $this->adapter = new MessageAdapter();
     }
 
-    public function testReportAddsMessageToDebuggerStore()
+    public function testReportAddsMessageToDebuggerStore(): void
     {
         $level = 'info';
         $message = 'Test message';

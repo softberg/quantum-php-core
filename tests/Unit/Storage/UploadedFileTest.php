@@ -26,7 +26,7 @@ class UploadedDouble extends UploadedFile
 
 class UploadedFileTest extends AppTestCase
 {
-    private $fileMeta;
+    private array $fileMeta;
 
     public function setUp(): void
     {
@@ -52,14 +52,14 @@ class UploadedFileTest extends AppTestCase
         }
     }
 
-    public function testUploadedFileConstructor()
+    public function testUploadedFileConstructor(): void
     {
         $uploadedFile = new UploadedFile($this->fileMeta);
 
         $this->assertInstanceOf(UploadedFile::class, $uploadedFile);
     }
 
-    public function testUploadedFileGetSetName()
+    public function testUploadedFileGetSetName(): void
     {
         $uploadedFile = new UploadedFile($this->fileMeta);
 
@@ -70,7 +70,7 @@ class UploadedFileTest extends AppTestCase
         $this->assertEquals('bar', $uploadedFile->getName());
     }
 
-    public function testUploadedFileSetGetRemoteFileSystem()
+    public function testUploadedFileSetGetRemoteFileSystem(): void
     {
         $dropboxAppMock = Mockery::mock(DropboxApp::class);
 
@@ -81,35 +81,35 @@ class UploadedFileTest extends AppTestCase
 
     }
 
-    public function testUploadedFileGetExtension()
+    public function testUploadedFileGetExtension(): void
     {
         $uploadedFile = new UploadedFile($this->fileMeta);
 
         $this->assertEquals('jpg', $uploadedFile->getExtension());
     }
 
-    public function testUploadedFileGetNameWithExtension()
+    public function testUploadedFileGetNameWithExtension(): void
     {
         $uploadedFile = new UploadedFile($this->fileMeta);
 
         $this->assertEquals('foo.jpg', $uploadedFile->getNameWithExtension());
     }
 
-    public function testUploadedFileGetMimeType()
+    public function testUploadedFileGetMimeType(): void
     {
         $uploadedFile = new UploadedFile($this->fileMeta);
 
         $this->assertSame('image/jpeg', $uploadedFile->getMimeType());
     }
 
-    public function testUploadedFileGetMd5()
+    public function testUploadedFileGetMd5(): void
     {
         $uploadedFile = new UploadedFile($this->fileMeta);
 
         $this->assertIsString($uploadedFile->getMd5());
     }
 
-    public function testUploadedFileGetDimensions()
+    public function testUploadedFileGetDimensions(): void
     {
         $uploadedFile = new UploadedFile($this->fileMeta);
 
@@ -118,7 +118,7 @@ class UploadedFileTest extends AppTestCase
         $this->assertEquals(300, $uploadedFile->getDimensions()['height']);
     }
 
-    public function testUploadedFileUploadWithoutFileSent()
+    public function testUploadedFileUploadWithoutFileSent(): void
     {
         $fileMeta = [
             'size' => 500,
@@ -137,7 +137,7 @@ class UploadedFileTest extends AppTestCase
         $this->assertFalse($uploadedFile->save(base_dir()));
     }
 
-    public function testUploadedFileUploadAndSave()
+    public function testUploadedFileUploadAndSave(): void
     {
         $uploadedFile = new UploadedDouble($this->fileMeta);
 
@@ -148,7 +148,7 @@ class UploadedFileTest extends AppTestCase
         $this->assertTrue(file_exists(base_dir() . DS . $uploadedFile->getNameWithExtension()));
     }
 
-    public function testUploadedFileUploadNotAllowedExtensionForMimeType()
+    public function testUploadedFileUploadNotAllowedExtensionForMimeType(): void
     {
         $fileMeta = $this->fileMeta;
         $fileMeta['name'] = 'foo.php';
@@ -161,7 +161,7 @@ class UploadedFileTest extends AppTestCase
         $uploadedFile->save(base_dir());
     }
 
-    public function testUploadedFileUploadNotAllowedMimeType()
+    public function testUploadedFileUploadNotAllowedMimeType(): void
     {
         $fileMeta = $this->fileMeta;
         $fileMeta['name'] = 'foo.jpg';
@@ -175,7 +175,7 @@ class UploadedFileTest extends AppTestCase
         $uploadedFile->save(base_dir());
     }
 
-    public function testUploadedFileUploadAllowedAfterSetterOverride()
+    public function testUploadedFileUploadAllowedAfterSetterOverride(): void
     {
         $fileMeta = $this->fileMeta;
         $fileMeta['name'] = 'foo.txt';
@@ -191,7 +191,7 @@ class UploadedFileTest extends AppTestCase
         $this->assertTrue(file_exists(base_dir() . DS . $uploadedFile->getNameWithExtension()));
     }
 
-    public function testUploadedFileSaveAndTryOverwrite()
+    public function testUploadedFileSaveAndTryOverwrite(): void
     {
         $uploadedFile = new UploadedDouble($this->fileMeta);
 
@@ -208,7 +208,7 @@ class UploadedFileTest extends AppTestCase
         $uploadedFile->save(base_dir());
     }
 
-    public function testUploadedFileSaveAndOverwrite()
+    public function testUploadedFileSaveAndOverwrite(): void
     {
         $uploadedFile = new UploadedDouble($this->fileMeta);
 
@@ -219,7 +219,7 @@ class UploadedFileTest extends AppTestCase
         $this->assertTrue($uploadedFile->save(base_dir(), true));
     }
 
-    public function testUploadedFileModifyAndSave()
+    public function testUploadedFileModifyAndSave(): void
     {
         $uploadedFile = new UploadedDouble($this->fileMeta);
 
@@ -234,7 +234,7 @@ class UploadedFileTest extends AppTestCase
         $this->assertEquals(100, $img[1]);
     }
 
-    public function testUploadedFileGetErrorCodeAndMessage()
+    public function testUploadedFileGetErrorCodeAndMessage(): void
     {
         $fileMeta = [
             'size' => 500,

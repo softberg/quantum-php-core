@@ -16,7 +16,7 @@ class LangFactoryTest extends AppTestCase
         $this->setPrivateProperty(LangFactory::class, 'instance', null);
     }
 
-    public function testLangFactoryGetLangInstance()
+    public function testLangFactoryGetLangInstance(): void
     {
         $lang = LangFactory::get();
 
@@ -27,7 +27,7 @@ class LangFactoryTest extends AppTestCase
         $this->assertTrue($lang->isEnabled());
     }
 
-    public function testLangFactoryGetReturnsSameInstance()
+    public function testLangFactoryGetReturnsSameInstance(): void
     {
         $first = LangFactory::get();
 
@@ -36,7 +36,7 @@ class LangFactoryTest extends AppTestCase
         $this->assertSame($first, $second);
     }
 
-    public function testLangFactoryDetectedFromRouteParameter()
+    public function testLangFactoryDetectedFromRouteParameter(): void
     {
         $this->testRequest('http://127.0.0.1/es/api/rest');
 
@@ -45,7 +45,7 @@ class LangFactoryTest extends AppTestCase
         $this->assertEquals('es', $lang->getLang());
     }
 
-    public function testLangFactoryDetectedFromQueryParameter()
+    public function testLangFactoryDetectedFromQueryParameter(): void
     {
         $this->testRequest('http://127.0.0.1/api/rest?lang=es');
 
@@ -54,7 +54,7 @@ class LangFactoryTest extends AppTestCase
         $this->assertEquals('es', $lang->getLang());
     }
 
-    public function testLangFactoryDetectedFromAcceptedLangParameter()
+    public function testLangFactoryDetectedFromAcceptedLangParameter(): void
     {
         $this->testRequest('http://127.0.0.1/api/rest', 'GET', [], ['Accept-Language' => 'es, en;q=0.8, fr;q=0.6']);
 
@@ -63,7 +63,7 @@ class LangFactoryTest extends AppTestCase
         $this->assertEquals('es', $lang->getLang());
     }
 
-    public function testLangFactoryFallsBackToDefaultIfNoLangDetected()
+    public function testLangFactoryFallsBackToDefaultIfNoLangDetected(): void
     {
         $this->testRequest('http://127.0.0.1/api/rest');
 
@@ -72,7 +72,7 @@ class LangFactoryTest extends AppTestCase
         $this->assertEquals('en', $lang->getLang());
     }
 
-    public function testLangFactoryFallsBackToDefaultIfProvidedLangIsNotSupported()
+    public function testLangFactoryFallsBackToDefaultIfProvidedLangIsNotSupported(): void
     {
         config()->set('lang', [
             'enabled' => true,
@@ -104,7 +104,7 @@ class LangFactoryTest extends AppTestCase
         $this->assertEquals('en', $lang->getLang());
     }
 
-    public function testLangFactoryThrowsErrorIfNoDefaultLangFound()
+    public function testLangFactoryThrowsErrorIfNoDefaultLangFound(): void
     {
         config()->set('lang', [
             'enabled' => true,

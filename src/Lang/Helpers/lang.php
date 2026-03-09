@@ -55,7 +55,7 @@ function t(string $key, $params = null): ?string
  * @throws LangException
  * @throws ReflectionException
  */
-function _t(string $key, $params = null)
+function _t(string $key, $params = null): void
 {
     echo t($key, $params);
 }

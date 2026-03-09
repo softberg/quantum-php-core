@@ -27,7 +27,7 @@ class FileSystemTest extends AppTestCase
         $this->googleDriveAppMock = Mockery::mock(GoogleDriveApp::class);
     }
 
-    public function testFileSystemGetAdapter()
+    public function testFileSystemGetAdapter(): void
     {
         $localFs = new FileSystem(new LocalFileSystemAdapter());
 
@@ -48,14 +48,14 @@ class FileSystemTest extends AppTestCase
         $this->assertInstanceOf(FilesystemAdapterInterface::class, $googleDriveFs->getAdapter());
     }
 
-    public function testFileSystemCallingValidMethod()
+    public function testFileSystemCallingValidMethod(): void
     {
         $fs = new FileSystem(new LocalFileSystemAdapter());
 
         $this->assertFalse($fs->exists('test.txt'));
     }
 
-    public function testMailerCallingInvalidMethod()
+    public function testMailerCallingInvalidMethod(): void
     {
         $mailer = new FileSystem(new LocalFileSystemAdapter());
 

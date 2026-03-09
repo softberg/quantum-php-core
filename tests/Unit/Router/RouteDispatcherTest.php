@@ -21,12 +21,12 @@ class RouteDispatcherTest extends AppTestCase
         parent::tearDown();
     }
 
-    public function testDispatchExecutesClosureRoute()
+    public function testDispatchExecutesClosureRoute(): void
     {
         $called = false;
         $receivedParam = null;
 
-        $closure = function (string $id) use (&$called, &$receivedParam) {
+        $closure = function (string $id) use (&$called, &$receivedParam): void {
             $called = true;
             $receivedParam = $id;
         };
@@ -49,7 +49,7 @@ class RouteDispatcherTest extends AppTestCase
         $this->assertSame('123', $receivedParam);
     }
 
-    public function testDispatchThrowsWhenClosureRouteHasNoClosure()
+    public function testDispatchThrowsWhenClosureRouteHasNoClosure(): void
     {
         $this->expectException(RouteException::class);
 
@@ -65,7 +65,7 @@ class RouteDispatcherTest extends AppTestCase
         $dispatcher->dispatch($matched, $request, $response);
     }
 
-    public function testDispatchExecutesControllerActionWithParams()
+    public function testDispatchExecutesControllerActionWithParams(): void
     {
         $controllerClass = new class () {
             public static ?string $received = null;
@@ -94,7 +94,7 @@ class RouteDispatcherTest extends AppTestCase
         );
     }
 
-    public function testDispatchCallsControllerHooksInCorrectOrder()
+    public function testDispatchCallsControllerHooksInCorrectOrder(): void
     {
         $controllerClass = new class () {
             public static array $calls = [];
@@ -139,7 +139,7 @@ class RouteDispatcherTest extends AppTestCase
         );
     }
 
-    public function testDispatchThrowsWhenControllerActionDoesNotExist()
+    public function testDispatchThrowsWhenControllerActionDoesNotExist(): void
     {
         $this->expectException(RouteException::class);
 
@@ -159,7 +159,7 @@ class RouteDispatcherTest extends AppTestCase
         $dispatcher->dispatch($matched, $request, $response);
     }
 
-    public function testDispatchFailsWhenCsrfIsEnabledAndTokenIsMissing()
+    public function testDispatchFailsWhenCsrfIsEnabledAndTokenIsMissing(): void
     {
         $this->expectException(CsrfException::class);
 

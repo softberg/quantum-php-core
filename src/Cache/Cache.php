@@ -55,7 +55,7 @@ class Cache
     /**
      * @var CacheInterface
      */
-    private $adapter;
+    private CacheInterface $adapter;
 
     /**
      * Cache constructor

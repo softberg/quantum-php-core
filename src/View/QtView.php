@@ -22,9 +22,9 @@ use Quantum\View\Exceptions\ViewException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\ResourceCache\ViewCache;
-use Quantum\Renderer\Renderer;
 use Quantum\Asset\AssetManager;
 use Quantum\Debugger\Debugger;
+use Quantum\Renderer\Renderer;
 use ReflectionException;
 use Psr\Log\LogLevel;
 
@@ -101,7 +101,7 @@ class QtView
      * @param string|null $layoutFile
      * @param array $assets
      */
-    public function setLayout(?string $layoutFile, array $assets = [])
+    public function setLayout(?string $layoutFile, array $assets = []): void
     {
         $this->layoutFile = $layoutFile;
 
@@ -124,7 +124,7 @@ class QtView
      * @param string $key
      * @param mixed $value
      */
-    public function setParam(string $key, $value)
+    public function setParam(string $key, $value): void
     {
         $this->params[$key] = $value;
     }
@@ -134,7 +134,7 @@ class QtView
      * @param $value
      * @return void
      */
-    public function setRawParam(string $key, $value)
+    public function setRawParam(string $key, $value): void
     {
         $this->params[$key] = new RawParam($value);
     }
@@ -159,7 +159,7 @@ class QtView
      * Sets multiple view parameters
      * @param array $params
      */
-    public function setParams(array $params)
+    public function setParams(array $params): void
     {
         foreach ($params as $key => $value) {
             $this->setParam($key, $value);
@@ -173,9 +173,7 @@ class QtView
     public function getParams(): array
     {
 
-        $params = array_map(function ($param) {
-            return ($param instanceof RawParam) ? $param->getValue() : $param;
-        }, $this->params);
+        $params = array_map(fn ($param) => ($param instanceof RawParam) ? $param->getValue() : $param, $this->params);
 
         return $params;
     }
@@ -183,7 +181,7 @@ class QtView
     /**
      * Flushes the view params
      */
-    public function flushParams()
+    public function flushParams(): void
     {
         $this->params = [];
     }
@@ -321,7 +319,7 @@ class QtView
      * @param string $viewFile
      * @return void
      */
-    private function updateDebugger(string $viewFile)
+    private function updateDebugger(string $viewFile): void
     {
         $routesCell = $this->debugger->getStoreCell(Debugger::ROUTES);
         $currentData = current($routesCell)[LogLevel::INFO] ?? [];

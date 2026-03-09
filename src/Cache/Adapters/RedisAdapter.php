@@ -37,10 +37,7 @@ class RedisAdapter implements CacheInterface
      */
     private $prefix;
 
-    /**
-     * @var Redis
-     */
-    private $redis;
+    private Redis $redis;
 
     /**
      * @param array $params

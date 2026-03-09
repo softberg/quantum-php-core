@@ -33,19 +33,14 @@ class MandrillAdapter implements MailerInterface
     public $name = 'Mandrill';
 
     /**
-     * @var HttpClient
-     */
-    protected $httpClient;
-
-    /**
      * @var string
      */
-    private $apiUrl = 'https://mandrillapp.com/api/1.0/messages/send.json';
+    private string $apiUrl = 'https://mandrillapp.com/api/1.0/messages/send.json';
 
     /**
      * @var array
      */
-    private $data = [];
+    private array $data = [];
 
     /**
      * MandrillAdapter constructor
@@ -61,7 +56,7 @@ class MandrillAdapter implements MailerInterface
     /**
      * Prepares the data
      */
-    private function prepare()
+    private function prepare(): void
     {
         $message = [];
 

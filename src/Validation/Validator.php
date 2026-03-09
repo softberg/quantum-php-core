@@ -70,7 +70,7 @@ class Validator
      * @param string $field
      * @param array $rules Format: [['ruleName' => param], ...]
      */
-    public function setRule(string $field, array $rules)
+    public function setRule(string $field, array $rules): void
     {
         foreach ($rules as $rule) {
             $ruleName = key($rule);
@@ -95,7 +95,7 @@ class Validator
      * @param string $field
      * @param array $rule Format: ['ruleName' => param]
      */
-    public function updateRule(string $field, array $rule)
+    public function updateRule(string $field, array $rule): void
     {
         $ruleName = key($rule);
         $ruleParam = current($rule);

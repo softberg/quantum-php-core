@@ -44,15 +44,12 @@ abstract class HttpResponse
      */
     private static $callbackFunction = '';
 
-    /**
-     * @var bool
-     */
-    private static $initialized = false;
+    private static bool $initialized = false;
 
     /**
      * Initialize the Response
      */
-    public static function init()
+    public static function init(): void
     {
         if (self::$initialized) {
             return;
@@ -66,7 +63,7 @@ abstract class HttpResponse
     /**
      * Flushes the response header and body
      */
-    public static function flush()
+    public static function flush(): void
     {
         self::$__statusCode = StatusCode::OK;
         self::$__headers = [];
@@ -80,7 +77,7 @@ abstract class HttpResponse
      * Sends all response data to the client and finishes the request.
      * @throws Exception
      */
-    public static function send()
+    public static function send(): void
     {
         if (Environment::getInstance()->getAppEnv() !== Env::TESTING) {
             while (ob_get_level() > 0) {

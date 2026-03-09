@@ -10,9 +10,9 @@ use Quantum\Tests\Unit\AppTestCase;
 
 class QtCommandTest extends AppTestCase
 {
-    private $command;
+    private TestCommand $command;
 
-    private $tester;
+    private CommandTester $tester;
 
     public function setUp(): void
     {
@@ -26,7 +26,7 @@ class QtCommandTest extends AppTestCase
         $this->tester = new CommandTester($this->command);
     }
 
-    public function testQtCommandMetadataIsConfigured()
+    public function testQtCommandMetadataIsConfigured(): void
     {
         $this->assertSame('test:dummy', $this->command->getName());
 
@@ -35,7 +35,7 @@ class QtCommandTest extends AppTestCase
         $this->assertSame('Used only for core command discovery tests', $this->command->getHelp());
     }
 
-    public function testQtCommandArgumentsAndOptionsAreRegistered()
+    public function testQtCommandArgumentsAndOptionsAreRegistered(): void
     {
         $definition = $this->command->getDefinition();
 
@@ -44,7 +44,7 @@ class QtCommandTest extends AppTestCase
         $this->assertTrue($definition->hasOption('force'));
     }
 
-    public function testGetArgumentAndOption()
+    public function testGetArgumentAndOption(): void
     {
         $this->tester->execute([
             'uuid' => '12345',

@@ -45,7 +45,7 @@ trait Internal
         array  $params = [],
         array  $headers = [],
         array  $files = []
-    ) {
+    ): void {
         $parsed = parse_url($url);
 
         $server = Server::getInstance();

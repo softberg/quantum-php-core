@@ -34,10 +34,7 @@ class AppFactory
         App::CONSOLE => ConsoleAppAdapter::class,
     ];
 
-    /**
-     * @var array
-     */
-    private static $instances = [];
+    private static array $instances = [];
 
     /**
      * @param string $type
@@ -59,7 +56,7 @@ class AppFactory
      * @param string $type
      * @return void
      */
-    public static function destroy(string $type)
+    public static function destroy(string $type): void
     {
         unset(self::$instances[$type]);
     }

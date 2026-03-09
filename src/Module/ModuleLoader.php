@@ -173,7 +173,7 @@ class ModuleLoader
     /**
      * @throws ModuleException
      */
-    private function loadModuleConfig()
+    private function loadModuleConfig(): void
     {
         $configPath = App::getBaseDir() . DS . 'shared' . DS . 'config' . DS . 'modules.php';
 

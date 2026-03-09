@@ -9,7 +9,7 @@ use Quantum\Http\Response;
 
 class ViewCacheDouble extends ViewCache
 {
-    private $forceMissingHtmlMin = false;
+    private bool $forceMissingHtmlMin = false;
 
     public function simulateMissingHtmlMin(bool $state): void
     {
@@ -29,11 +29,11 @@ class ViewCacheDouble extends ViewCache
 
 class ViewCacheTest extends AppTestCase
 {
-    private $viewCache;
+    private \Quantum\ResourceCache\ViewCache $viewCache;
 
-    private $route = '/current-route';
+    private string $route = '/current-route';
 
-    private $content = <<<HEREDOC
+    private string $content = <<<HEREDOC
     <div>
         <span>Test html content</span>span>
     </div>
@@ -53,7 +53,7 @@ HEREDOC;
         $this->viewCache->enableCaching(false);
     }
 
-    public function testServeCachedView()
+    public function testServeCachedView(): void
     {
         $this->viewCache->enableCaching(true);
 
@@ -68,7 +68,7 @@ HEREDOC;
         $this->assertEquals($this->content, $response->getContent());
     }
 
-    public function testSetAndGetViewCache()
+    public function testSetAndGetViewCache(): void
     {
         $this->viewCache->set($this->route, $this->content);
 
@@ -77,7 +77,7 @@ HEREDOC;
         $this->assertEquals($this->content, $viewCache);
     }
 
-    public function testViewCacheContentMinification()
+    public function testViewCacheContentMinification(): void
     {
         $this->viewCache->enableMinification(true);
 
@@ -90,7 +90,7 @@ HEREDOC;
         $this->assertEquals($minifiedContent, $content);
     }
 
-    public function testViewCacheMinificationMissingDependency()
+    public function testViewCacheMinificationMissingDependency(): void
     {
         $viewCache = new ViewCacheDouble();
         $viewCache->enableMinification(true);
@@ -101,14 +101,14 @@ HEREDOC;
         $viewCache->set($this->route, '<div>test</div>');
     }
 
-    public function testExistsViewCache()
+    public function testExistsViewCache(): void
     {
         $this->viewCache->set($this->route, $this->content);
 
         $this->assertTrue($this->viewCache->exists($this->route));
     }
 
-    public function testDeleteViewCache()
+    public function testDeleteViewCache(): void
     {
         $this->viewCache->set($this->route, $this->content);
 
@@ -119,14 +119,14 @@ HEREDOC;
         $this->assertFalse($this->viewCache->exists($this->route));
     }
 
-    public function testGetNonExistentViewCache()
+    public function testGetNonExistentViewCache(): void
     {
         $viewCache = $this->viewCache->get('/non-existent-route');
 
         $this->assertNull($viewCache);
     }
 
-    public function testViewCacheIsExpired()
+    public function testViewCacheIsExpired(): void
     {
         $this->viewCache->setTtl(1);
 
@@ -139,7 +139,7 @@ HEREDOC;
         $this->assertNull($viewCache);
     }
 
-    public function testEnableDisableViewCache()
+    public function testEnableDisableViewCache(): void
     {
         $this->assertFalse($this->viewCache->isEnabled());
 

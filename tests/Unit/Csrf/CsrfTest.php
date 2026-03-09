@@ -10,9 +10,9 @@ use Quantum\Csrf\Csrf;
 
 class CsrfTest extends AppTestCase
 {
-    private $csrf;
-    private $request;
-    private $key = '#321dMd3QS15%';
+    private Csrf $csrf;
+    private Request $request;
+    private string $key = '#321dMd3QS15%';
 
     public function setUp(): void
     {
@@ -23,7 +23,7 @@ class CsrfTest extends AppTestCase
         $this->csrf = Csrf::getInstance();
     }
 
-    public function testGenerateToken()
+    public function testGenerateToken(): void
     {
         $token = $this->csrf->generateToken($this->key);
 
@@ -36,7 +36,7 @@ class CsrfTest extends AppTestCase
         $this->assertEquals($token, session()->has(Csrf::TOKEN_KEY));
     }
 
-    public function testCheckTokenSuccess()
+    public function testCheckTokenSuccess(): void
     {
         $token = $this->csrf->generateToken($this->key);
 
@@ -49,7 +49,7 @@ class CsrfTest extends AppTestCase
         $this->assertTrue($this->csrf->checkToken($this->request));
     }
 
-    public function testCheckTokenMissing()
+    public function testCheckTokenMissing(): void
     {
         $this->csrf->generateToken($this->key);
 
@@ -62,7 +62,7 @@ class CsrfTest extends AppTestCase
         $this->assertTrue($this->csrf->checkToken($this->request));
     }
 
-    public function testCheckTokenMismatch()
+    public function testCheckTokenMismatch(): void
     {
         $this->csrf->generateToken($this->key);
 

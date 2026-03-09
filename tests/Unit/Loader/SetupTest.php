@@ -7,7 +7,7 @@ use Quantum\Loader\Setup;
 
 class SetupTest extends AppTestCase
 {
-    private $setup;
+    private Setup $setup;
 
     public function setUp(): void
     {
@@ -21,7 +21,7 @@ class SetupTest extends AppTestCase
         unset($this->setup);
     }
 
-    public function testSetupConstructor()
+    public function testSetupConstructor(): void
     {
         $setup = new Setup('config', 'database');
 
@@ -34,35 +34,35 @@ class SetupTest extends AppTestCase
         $this->assertEquals('File `' . $setup->getPathPrefix() . DS . $setup->getFilename() . '` not found!', $setup->getExceptionMessage());
     }
 
-    public function testSetGetPathPrefix()
+    public function testSetGetPathPrefix(): void
     {
         $this->setup->setPathPrefix('config');
 
         $this->assertEquals('config', $this->setup->getPathPrefix());
     }
 
-    public function testSetGetFilename()
+    public function testSetGetFilename(): void
     {
         $this->setup->setFilename('users');
 
         $this->assertEquals('users', $this->setup->getFilename());
     }
 
-    public function testSetGetHierarchy()
+    public function testSetGetHierarchy(): void
     {
         $this->setup->setHierarchy(true);
 
         $this->assertTrue($this->setup->getHierarchy());
     }
 
-    public function testSetGetModule()
+    public function testSetGetModule(): void
     {
         $this->setup->setModule('admin');
 
         $this->assertEquals('admin', $this->setup->getModule());
     }
 
-    public function testSetGetExceptionMessage()
+    public function testSetGetExceptionMessage(): void
     {
         $this->setup->setExceptionMessage('Action not allowed');
 

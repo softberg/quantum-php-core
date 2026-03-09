@@ -8,7 +8,7 @@ use Quantum\Loader\Setup;
 
 class LoaderTest extends AppTestCase
 {
-    private $loader;
+    private Loader $loader;
 
     public function setUp(): void
     {
@@ -17,7 +17,7 @@ class LoaderTest extends AppTestCase
         $this->loader = new Loader();
     }
 
-    public function testLoaderFileExists()
+    public function testLoaderFileExists(): void
     {
         $this->loader->setup(new Setup('config', 'app'));
 
@@ -28,7 +28,7 @@ class LoaderTest extends AppTestCase
         $this->assertFalse($this->loader->fileExists());
     }
 
-    public function testLoaderSetupAndLoad()
+    public function testLoaderSetupAndLoad(): void
     {
         $this->loader->setup(new Setup('config', 'app'));
 

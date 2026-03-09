@@ -58,10 +58,7 @@ class HttpClient
      */
     private $client = null;
 
-    /**
-     * @var string
-     */
-    private $method = 'GET';
+    private string $method = 'GET';
 
     /**
      * @var mixed|null
@@ -76,12 +73,12 @@ class HttpClient
     /**
      * @var array
      */
-    private $response = [];
+    private array $response = [];
 
     /**
      * @var array
      */
-    private $errors = [];
+    private array $errors = [];
 
     /**
      * Creates request
@@ -105,7 +102,7 @@ class HttpClient
     {
         $this->client = $client ?: new MultiCurl();
 
-        $this->client->complete(function (Curl $instance) {
+        $this->client->complete(function (Curl $instance): void {
             $this->handleResponse($instance);
         });
 
@@ -357,7 +354,7 @@ class HttpClient
      * Handles the response
      * @param Curl $instance
      */
-    private function handleResponse(Curl $instance)
+    private function handleResponse(Curl $instance): void
     {
         if ($instance->isError()) {
             $this->errors[$instance->getId()] = [

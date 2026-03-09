@@ -57,32 +57,28 @@ class Debugger
 
     /**
      * Store
-     * @var DebuggerStore
      */
-    private $store;
+    private DebuggerStore $store;
 
     /**
-     * @var Debugger
+     * @var Debugger|null
      */
-    private static $instance;
+    private static ?Debugger $instance = null;
 
     /**
      * DebugBar instance
-     * @var DebugBar
      */
-    private $debugBar;
+    private DebugBar $debugBar;
 
     /**
      * Assets url
-     * @var string
      */
-    private $assetsUrl = '/assets/DebugBar/Resources';
+    private string $assetsUrl = '/assets/DebugBar/Resources';
 
     /**
      * Custom CSS
-     * @var string
      */
-    private $customCss = 'custom_debugbar.css';
+    private string $customCss = 'custom_debugbar.css';
 
     /**
      * Debugger constructor.
@@ -133,7 +129,7 @@ class Debugger
     /**
      * @return void
      */
-    public function initStore()
+    public function initStore(): void
     {
         $this->store->init([
             Debugger::MESSAGES,
@@ -150,7 +146,7 @@ class Debugger
      * @param string $level
      * @param mixed $data
      */
-    public function addToStoreCell(string $cell, string $level, $data)
+    public function addToStoreCell(string $cell, string $level, $data): void
     {
         if (!empty($data)) {
             $this->store->set($cell, [$level => $data]);
@@ -170,7 +166,7 @@ class Debugger
      * Clears the store cell
      * @param string $cell
      */
-    public function clearStoreCell(string $cell)
+    public function clearStoreCell(string $cell): void
     {
         $this->store->delete($cell);
     }
@@ -178,7 +174,7 @@ class Debugger
     /**
      * @return void
      */
-    public function resetStore()
+    public function resetStore(): void
     {
         $this->store->flush();
     }

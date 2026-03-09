@@ -44,10 +44,7 @@ class Archive
      */
     public const ZIP = 'zip';
 
-    /**
-     * @var ArchiveInterface
-     */
-    private $adapter;
+    private ArchiveInterface $adapter;
 
     /**
      * @param ArchiveInterface $adapter

@@ -27,7 +27,7 @@ trait Body
      * Request body
      * @var array
      */
-    private static $__request = [];
+    private static array $__request = [];
 
     /**
      * Checks if request contains a data by given key
@@ -68,7 +68,7 @@ trait Body
      * @param string $key
      * @param mixed $value
      */
-    public static function set(string $key, $value)
+    public static function set(string $key, $value): void
     {
         if ($key === ReservedKeys::RENDERED_VIEW) {
             throw new InvalidArgumentException("Cannot set reserved key: `$key`");
@@ -90,7 +90,7 @@ trait Body
      * Deletes the element from request by given key
      * @param string $key
      */
-    public static function delete(string $key)
+    public static function delete(string $key): void
     {
         if (self::has($key)) {
             unset(self::$__request[$key]);

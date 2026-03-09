@@ -28,7 +28,7 @@ namespace Quantum\Tests\Unit\Service {
             parent::setUp();
         }
 
-        public function testMissingMethods()
+        public function testMissingMethods(): void
         {
             $this->expectException(ServiceException::class);
 

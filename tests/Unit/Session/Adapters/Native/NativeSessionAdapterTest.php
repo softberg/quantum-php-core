@@ -7,7 +7,7 @@ use Quantum\Tests\Unit\AppTestCase;
 
 class NativeSessionAdapterTest extends AppTestCase
 {
-    private $session;
+    private NativeSessionAdapter $session;
 
     public function setUp(): void
     {
@@ -18,12 +18,12 @@ class NativeSessionAdapterTest extends AppTestCase
         $this->session->delete('LAST_ACTIVITY');
     }
 
-    public function testNativeSessionConstructor()
+    public function testNativeSessionConstructor(): void
     {
         $this->assertInstanceOf(NativeSessionAdapter::class, $this->session);
     }
 
-    public function testNativeSessionSessionAll()
+    public function testNativeSessionSessionAll(): void
     {
         $this->assertEmpty($this->session->all());
 
@@ -40,7 +40,7 @@ class NativeSessionAdapterTest extends AppTestCase
         $this->assertEquals('Test data', $this->session->all()['test']);
     }
 
-    public function testNativeSessionGetSetHasDelete()
+    public function testNativeSessionGetSetHasDelete(): void
     {
         $this->assertNull($this->session->get('auth'));
 
@@ -59,7 +59,7 @@ class NativeSessionAdapterTest extends AppTestCase
         $this->assertNull($this->session->get('auth'));
     }
 
-    public function testNativeSessionGetSetFlash()
+    public function testNativeSessionGetSetFlash(): void
     {
         $this->session->setFlash('message', 'Flash message');
 
@@ -68,7 +68,7 @@ class NativeSessionAdapterTest extends AppTestCase
         $this->assertNull($this->session->getFlash('message'));
     }
 
-    public function testNativeSessionFlush()
+    public function testNativeSessionFlush(): void
     {
         $this->session->set('test', 'Test data');
 
@@ -81,12 +81,12 @@ class NativeSessionAdapterTest extends AppTestCase
         session_start();
     }
 
-    public function testNativeSessionGetSessionId()
+    public function testNativeSessionGetSessionId(): void
     {
         $this->assertEquals(session_id(), $this->session->getId());
     }
 
-    public function testNativeSessionRegenerateSessionId()
+    public function testNativeSessionRegenerateSessionId(): void
     {
         $sessionId = $this->session->getId();
 

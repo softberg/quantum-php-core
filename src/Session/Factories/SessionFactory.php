@@ -41,7 +41,7 @@ class SessionFactory
     /**
      * @var array<string, Session>
      */
-    private static $instances = [];
+    private static array $instances = [];
 
     /**
      * @param string|null $adapter

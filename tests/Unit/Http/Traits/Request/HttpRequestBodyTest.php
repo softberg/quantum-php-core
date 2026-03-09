@@ -17,7 +17,7 @@ class HttpRequestBodyTest extends AppTestCase
         Request::flush();
     }
 
-    public function testRequestSetHasGetDelete()
+    public function testRequestSetHasGetDelete(): void
     {
         $request = new Request();
 
@@ -50,7 +50,7 @@ class HttpRequestBodyTest extends AppTestCase
         $this->assertEquals('<h1>Big text</h1>', $content['message']);
     }
 
-    public function testRequestAll()
+    public function testRequestAll(): void
     {
         $request = new Request();
 

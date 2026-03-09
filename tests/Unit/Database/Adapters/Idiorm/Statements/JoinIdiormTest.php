@@ -51,7 +51,7 @@ class BrokenProfileUnsupportedRelationModel extends DbModel
 
 class JoinIdiormTest extends IdiormDbalTestCase
 {
-    public function testIdiormJoinAndInnerJoin()
+    public function testIdiormJoinAndInnerJoin(): void
     {
         $userModel = new IdiormDbal('users');
 
@@ -70,7 +70,7 @@ class JoinIdiormTest extends IdiormDbalTestCase
         $this->assertEquals(1, $events[0]->prop('event_id'));
     }
 
-    public function testIdiormMultipleJoins()
+    public function testIdiormMultipleJoins(): void
     {
         $userModel = new IdiormDbal('users');
 
@@ -84,7 +84,7 @@ class JoinIdiormTest extends IdiormDbalTestCase
         $this->assertEquals('Dance', $result[0]->prop('title'));
     }
 
-    public function testIdiormJoinWithCondition()
+    public function testIdiormJoinWithCondition(): void
     {
         $userModel = new IdiormDbal('users');
 
@@ -98,7 +98,7 @@ class JoinIdiormTest extends IdiormDbalTestCase
     }
 
     /** Right join can not be tested this time because the sqlite does not support it */
-    public function testIdiormLeftJoinAndRightJoin()
+    public function testIdiormLeftJoinAndRightJoin(): void
     {
         $userModel = new IdiormDbal('user_events');
 
@@ -115,7 +115,7 @@ class JoinIdiormTest extends IdiormDbalTestCase
         $this->assertNull($events[count($events) - 1]->prop('id'));
     }
 
-    public function testIdiormJoinToHasOne()
+    public function testIdiormJoinToHasOne(): void
     {
         $userModel = ModelFactory::get(TestUserModel::class);
         $profileModel = ModelFactory::get(TestProfileModel::class);
@@ -149,7 +149,7 @@ class JoinIdiormTest extends IdiormDbalTestCase
         $this->assertEquals($expectedQuery, IdiormDbal::lastQuery());
     }
 
-    public function testIdiormJoinToBelongsTo()
+    public function testIdiormJoinToBelongsTo(): void
     {
         $userModel = ModelFactory::get(TestUserModel::class);
         $profileModel = ModelFactory::get(TestProfileModel::class);
@@ -183,7 +183,7 @@ class JoinIdiormTest extends IdiormDbalTestCase
         $this->assertIsArray($user);
     }
 
-    public function testIdiormJoinToFromSameTable()
+    public function testIdiormJoinToFromSameTable(): void
     {
         $userModel = ModelFactory::get(TestUserModel::class);
         $userProfessionModel = ModelFactory::get(TestUserProfessionModel::class);
@@ -218,7 +218,7 @@ class JoinIdiormTest extends IdiormDbalTestCase
         $this->assertEquals($expectedQuery, IdiormDbal::lastQuery());
     }
 
-    public function testIdiormJoinToWithTableSwitch()
+    public function testIdiormJoinToWithTableSwitch(): void
     {
         $userModel = ModelFactory::get(TestUserModel::class);
         $meetingModel = ModelFactory::get(TestUserMeetingModel::class);
@@ -266,7 +266,7 @@ class JoinIdiormTest extends IdiormDbalTestCase
         $this->assertEquals($expectedQuery, IdiormDbal::lastQuery());
     }
 
-    public function testIdiormJoiningViaPivotModel()
+    public function testIdiormJoiningViaPivotModel(): void
     {
         $userModel = ModelFactory::get(TestUserModel::class);
         $userEventModel = ModelFactory::get(TestUserEventModel::class);
@@ -309,7 +309,7 @@ class JoinIdiormTest extends IdiormDbalTestCase
         $this->assertEquals($expectedQuery, IdiormDbal::lastQuery());
     }
 
-    public function testIdiormJoinToWithCriteria()
+    public function testIdiormJoinToWithCriteria(): void
     {
         $userModel = ModelFactory::get(TestUserModel::class);
         $profileModel = ModelFactory::get(TestProfileModel::class);
@@ -345,7 +345,7 @@ class JoinIdiormTest extends IdiormDbalTestCase
         $this->assertEquals($expectedQuery, IdiormDbal::lastQuery());
     }
 
-    public function testIdiormSelectFieldsAtJoin()
+    public function testIdiormSelectFieldsAtJoin(): void
     {
         $userModel = ModelFactory::get(TestUserModel::class);
         $profileModel = ModelFactory::get(TestProfileModel::class);
@@ -384,7 +384,7 @@ class JoinIdiormTest extends IdiormDbalTestCase
         $this->assertEquals($expectedQuery, IdiormDbal::lastQuery());
     }
 
-    public function testIdiormThrowsExceptionForWrongRelation()
+    public function testIdiormThrowsExceptionForWrongRelation(): void
     {
         $this->expectException(ModelException::class);
 
@@ -397,7 +397,7 @@ class JoinIdiormTest extends IdiormDbalTestCase
         $eventModel->joinTo($ticketModel)->get();
     }
 
-    public function testIdiormJoinThrowsExceptionWhenRelationKeysMissing()
+    public function testIdiormJoinThrowsExceptionWhenRelationKeysMissing(): void
     {
         $this->expectException(ModelException::class);
         $this->expectExceptionMessage('Relation type is missing for model `' . BrokenProfileMissingTypeModel::class . '`');
@@ -407,7 +407,7 @@ class JoinIdiormTest extends IdiormDbalTestCase
             ->get();
     }
 
-    public function testIdiormJoinThrowsExceptionForUnsupportedRelationType()
+    public function testIdiormJoinThrowsExceptionForUnsupportedRelationType(): void
     {
         $this->expectException(ModelException::class);
         $this->expectExceptionMessage('Relation type `SIDEWAYS` is not supported');

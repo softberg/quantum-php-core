@@ -32,27 +32,27 @@ class ResourceCacheClearCommand extends QtCommand
 {
     /**
      * Command name
-     * @var string
+     * @var string|null
      */
-    protected $name = 'cache:clear';
+    protected ?string $name = 'cache:clear';
 
     /**
      * Command description
-     * @var string
+     * @var string|null
      */
-    protected $description = 'Clears resource cache';
+    protected ?string $description = 'Clears resource cache';
 
     /**
      * Command help text
-     * @var string
+     * @var string|null
      */
-    protected $help = 'The command will clear the resource cache';
+    protected ?string $help = 'The command will clear the resource cache';
 
     /**
      * Command options
      * @var array
      */
-    protected $options = [
+    protected array $options = [
         ['all', 'all', 'none', ''],
         ['type', 't', 'required', ''],
         ['module', 'm', 'required', ''],
@@ -91,7 +91,7 @@ class ResourceCacheClearCommand extends QtCommand
     /**
      * @throws BaseException|ReflectionException
      */
-    public function exec()
+    public function exec(): void
     {
         try {
             $this->importConfig();
@@ -124,7 +124,7 @@ class ResourceCacheClearCommand extends QtCommand
     /**
      * @return void
      */
-    private function importModules()
+    private function importModules(): void
     {
         try {
             if (!config()->has('modules')) {

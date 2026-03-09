@@ -22,13 +22,13 @@ use Quantum\Contracts\StorageInterface;
  */
 class DebuggerStore implements StorageInterface
 {
-    private static $store = [];
+    private static array $store = [];
 
     /**
      * @param array $keys
      * @return void
      */
-    public function init(array $keys)
+    public function init(array $keys): void
     {
         foreach ($keys as $key) {
             if (!isset(self::$store[$key])) {
@@ -68,7 +68,7 @@ class DebuggerStore implements StorageInterface
      * @param mixed $value
      * @return void
      */
-    public function set(string $key, $value)
+    public function set(string $key, $value): void
     {
         if (is_array($value)) {
             foreach ($value as $level => $data) {
@@ -81,7 +81,7 @@ class DebuggerStore implements StorageInterface
      * @param string $key
      * @return void
      */
-    public function delete(string $key)
+    public function delete(string $key): void
     {
         if ($this->has($key)) {
             self::$store[$key] = [];
@@ -91,7 +91,7 @@ class DebuggerStore implements StorageInterface
     /**
      * @return void
      */
-    public function flush()
+    public function flush(): void
     {
         self::$store = [];
     }

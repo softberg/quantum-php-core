@@ -38,7 +38,7 @@ trait AppTrait
      * Sets the app base directory
      * @param string $baseDir
      */
-    public static function setBaseDir(string $baseDir)
+    public static function setBaseDir(string $baseDir): void
     {
         self::$baseDir = $baseDir;
     }

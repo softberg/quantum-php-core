@@ -15,6 +15,7 @@
 namespace Quantum\Session\Traits;
 
 use Quantum\Session\Exceptions\SessionException;
+use Quantum\Model\Exceptions\ModelException;
 
 /**
  * Traits SessionTrait
@@ -55,7 +56,7 @@ trait SessionTrait
     /**
      * @inheritDoc
      */
-    public function set(string $key, $value)
+    public function set(string $key, $value): void
     {
         self::$storage[$key] = crypto_encode($value);
     }
@@ -87,7 +88,7 @@ trait SessionTrait
     /**
      * @inheritDoc
      */
-    public function delete(string $key)
+    public function delete(string $key): void
     {
         if ($this->has($key)) {
             unset(self::$storage[$key]);
@@ -97,7 +98,7 @@ trait SessionTrait
     /**
      * @inheritDoc
      */
-    public function flush()
+    public function flush(): void
     {
         self::$storage = [];
         session_destroy();
@@ -113,7 +114,7 @@ trait SessionTrait
 
     /**
      * @inheritDoc
-     * @throws SessionException
+     * @throws SessionException|ModelException
      */
     public function regenerateId(): bool
     {

@@ -14,6 +14,7 @@
 
 namespace Quantum\ResourceCache;
 
+use Quantum\Loader\Exceptions\LoaderException;
 use Quantum\ResourceCache\Exceptions\ResourceCacheException;
 use Quantum\Database\Exceptions\DatabaseException;
 use Quantum\Session\Exceptions\SessionException;
@@ -21,6 +22,7 @@ use Quantum\Storage\Factories\FileSystemFactory;
 use Quantum\Config\Exceptions\ConfigException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
+use Quantum\Storage\FileSystem;
 use Quantum\Http\Response;
 use Quantum\Loader\Setup;
 use ReflectionException;
@@ -33,10 +35,7 @@ use Exception;
  */
 class ViewCache
 {
-    /**
-     * @var string
-     */
-    private $cacheDir;
+    private ?string $cacheDir = null;
 
     /**
      * @var int
@@ -46,22 +45,19 @@ class ViewCache
     /**
      * @var bool
      */
-    private $isEnabled;
+    private bool $isEnabled;
 
     /**
      * @var bool
      */
-    private $minification = false;
+    private bool $minification = false;
 
     /**
-     * @var object
+     * @var FileSystem
      */
-    private $fs;
+    private FileSystem $fs;
 
-    /**
-     * @var ViewCache
-     */
-    private static $instance = null;
+    private static ?ViewCache $instance = null;
 
     public static function getInstance(): ViewCache
     {
@@ -84,11 +80,10 @@ class ViewCache
     }
 
     /**
-     * @throws ReflectionException
-     * @throws ConfigException
-     * @throws DiException
+     * @return void
+     * @throws ConfigException|DiException|LoaderException|ReflectionException
      */
-    public function setup()
+    public function setup(): void
     {
         if (!config()->has('view_cache')) {
             config()->import(new Setup('config', 'view_cache'));
@@ -235,7 +230,7 @@ class ViewCache
      * @param $cacheFile
      * @return bool
      */
-    private function isExpired($cacheFile): bool
+    private function isExpired(string $cacheFile): bool
     {
         if (time() > ($this->fs->lastModified($cacheFile) + $this->ttl)) {
             $this->fs->remove($cacheFile);

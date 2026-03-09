@@ -42,7 +42,7 @@ class LoggerConfig
     /**
      * @var string
      */
-    private static $logLevel = self::DEFAULT_LOG_LEVEL;
+    private static string $logLevel = self::DEFAULT_LOG_LEVEL;
 
     /**
      * Set the application's log level.

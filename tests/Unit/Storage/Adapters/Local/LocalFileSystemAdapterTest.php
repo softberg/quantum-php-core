@@ -15,17 +15,14 @@ class LocalFileSystemAdapterTest extends AppTestCase
     /**
      * @var string
      */
-    private $dirname;
+    private string $dirname;
 
     /**
      * @var string
      */
-    private $filename;
+    private string $filename;
 
-    /**
-     * @var string
-     */
-    private $content = 'Hello world';
+    private string $content = 'Hello world';
 
     public function setUp(): void
     {
@@ -47,7 +44,7 @@ class LocalFileSystemAdapterTest extends AppTestCase
         }
     }
 
-    public function testLocalMakeRemoveDirectory()
+    public function testLocalMakeRemoveDirectory(): void
     {
         $this->assertDirectoryDoesNotExist($this->dirname);
 
@@ -60,7 +57,7 @@ class LocalFileSystemAdapterTest extends AppTestCase
         $this->assertDirectoryDoesNotExist($this->dirname);
     }
 
-    public function testLocalFileGetPut()
+    public function testLocalFileGetPut(): void
     {
         $this->fs->put($this->filename, $this->content);
 
@@ -69,7 +66,7 @@ class LocalFileSystemAdapterTest extends AppTestCase
         $this->assertEquals($this->content, $this->fs->get($this->filename));
     }
 
-    public function testLocalFileAppend()
+    public function testLocalFileAppend(): void
     {
         $this->fs->put($this->filename, $this->content);
 
@@ -82,7 +79,7 @@ class LocalFileSystemAdapterTest extends AppTestCase
         $this->assertEquals($this->content . $moreContent, $this->fs->get($this->filename));
     }
 
-    public function tesLocalFileRename()
+    public function tesLocalFileRename(): void
     {
         $this->fs->put($this->filename, $this->content);
 
@@ -97,7 +94,7 @@ class LocalFileSystemAdapterTest extends AppTestCase
         $this->fs->remove($newFilename);
     }
 
-    public function testLocalFileCopy()
+    public function testLocalFileCopy(): void
     {
         $this->fs->makeDirectory($this->dirname);
 
@@ -114,7 +111,7 @@ class LocalFileSystemAdapterTest extends AppTestCase
         $this->fs->removeDirectory($this->dirname);
     }
 
-    public function testLocalFileExists()
+    public function testLocalFileExists(): void
     {
         $newFilename = base_dir() . DS . 'new_name.txt';
 
@@ -127,21 +124,21 @@ class LocalFileSystemAdapterTest extends AppTestCase
         $this->fs->remove($newFilename);
     }
 
-    public function testLocalFileSize()
+    public function testLocalFileSize(): void
     {
         $this->fs->put($this->filename, 'some bytes');
 
         $this->assertEquals(10, $this->fs->size($this->filename));
     }
 
-    public function testLocalFileLastModified()
+    public function testLocalFileLastModified(): void
     {
         $this->fs->put($this->filename, $this->content);
 
         $this->assertIsInt($this->fs->lastModified($this->filename));
     }
 
-    public function testLocalFileRemove()
+    public function testLocalFileRemove(): void
     {
         $this->fs->put($this->filename, $this->content);
 
@@ -152,21 +149,21 @@ class LocalFileSystemAdapterTest extends AppTestCase
         $this->assertFileDoesNotExist($this->filename);
     }
 
-    public function testLocalIsFile()
+    public function testLocalIsFile(): void
     {
         $this->assertTrue($this->fs->isFile(__FILE__));
 
         $this->assertFalse($this->fs->isFile(__DIR__));
     }
 
-    public function testLocalIsDirectory()
+    public function testLocalIsDirectory(): void
     {
         $this->assertTrue($this->fs->isDirectory(__DIR__));
 
         $this->assertFalse($this->fs->isDirectory(__FILE__));
     }
 
-    public function testLocalListDirectory()
+    public function testLocalListDirectory(): void
     {
         $entries = $this->fs->listDirectory(base_dir());
 
@@ -177,7 +174,7 @@ class LocalFileSystemAdapterTest extends AppTestCase
         $this->assertEmpty($this->fs->listDirectory('nowhere'));
     }
 
-    public function testLocalGlob()
+    public function testLocalGlob(): void
     {
         $entries = $this->fs->glob(base_dir() . DS . '*.log');
 
@@ -186,7 +183,7 @@ class LocalFileSystemAdapterTest extends AppTestCase
         $this->assertIsString(current($entries));
     }
 
-    public function testLocalFileIsReadableWritable()
+    public function testLocalFileIsReadableWritable(): void
     {
         $this->fs->put($this->filename, '');
 
@@ -201,7 +198,7 @@ class LocalFileSystemAdapterTest extends AppTestCase
         $this->assertFalse($this->fs->isWritable($this->filename));
     }
 
-    public function testLocalFileGetLines()
+    public function testLocalFileGetLines(): void
     {
         $lineOne = 'It\'s was started then ' . PHP_EOL;
         $lineTwo = 'something happens' . PHP_EOL;
@@ -227,19 +224,19 @@ class LocalFileSystemAdapterTest extends AppTestCase
         $this->assertCount(4, $lines);
     }
 
-    public function testLocalFileNameAndExtension()
+    public function testLocalFileNameAndExtension(): void
     {
         $this->assertEquals('test', $this->fs->fileName($this->filename));
 
         $this->assertEquals('txt', $this->fs->extension($this->filename));
     }
 
-    public function testLocalFileNameWithExtension()
+    public function testLocalFileNameWithExtension(): void
     {
         $this->assertEquals('test.txt', $this->fs->fileNameWithExtension($this->filename));
     }
 
-    public function testLocalRequireOutput()
+    public function testLocalRequireOutput(): void
     {
         $this->fs->put($this->filename, $this->content);
 
@@ -252,7 +249,7 @@ class LocalFileSystemAdapterTest extends AppTestCase
         $this->assertSame($this->content, $output);
     }
 
-    public function testLocalRequireReturn()
+    public function testLocalRequireReturn(): void
     {
         $this->fs->put($this->filename, "<?php return ['key' => 'abc'];");
 
@@ -265,7 +262,7 @@ class LocalFileSystemAdapterTest extends AppTestCase
         $this->assertEquals($result['key'], 'abc');
     }
 
-    public function testLocalRequireBehavior()
+    public function testLocalRequireBehavior(): void
     {
         $this->fs->put($this->filename, '<?php return $GLOBALS["include_count"]++;');
 
@@ -276,7 +273,7 @@ class LocalFileSystemAdapterTest extends AppTestCase
         $this->assertEquals(3, $GLOBALS['include_count']);
     }
 
-    public function testLocalRequireOnceBehavior()
+    public function testLocalRequireOnceBehavior(): void
     {
         $file = base_dir() . DS . 'track1.txt';
 
@@ -291,7 +288,7 @@ class LocalFileSystemAdapterTest extends AppTestCase
         $this->fs->remove($file);
     }
 
-    public function testLocalIncludeOutput()
+    public function testLocalIncludeOutput(): void
     {
         $this->fs->put($this->filename, $this->content);
 
@@ -304,7 +301,7 @@ class LocalFileSystemAdapterTest extends AppTestCase
         $this->assertSame($this->content, $output);
     }
 
-    public function testLocalIncludeReturn()
+    public function testLocalIncludeReturn(): void
     {
         $this->fs->put($this->filename, "<?php return ['key' => 'abc'];");
 
@@ -317,7 +314,7 @@ class LocalFileSystemAdapterTest extends AppTestCase
         $this->assertEquals($result['key'], 'abc');
     }
 
-    public function testLocalIncludeBehavior()
+    public function testLocalIncludeBehavior(): void
     {
         $this->fs->put($this->filename, '<?php return $GLOBALS["include_count"]++;');
 
@@ -328,7 +325,7 @@ class LocalFileSystemAdapterTest extends AppTestCase
         $this->assertEquals(3, $GLOBALS['include_count']);
     }
 
-    public function testLocalIncludeOnceBehavior()
+    public function testLocalIncludeOnceBehavior(): void
     {
         $file = base_dir() . DS . 'track2.txt';
 

@@ -244,7 +244,7 @@ class MigrationManager
      * @throws DatabaseException
      *
      */
-    private function prepareUpMigrations(?int $step = null)
+    private function prepareUpMigrations(?int $step = null): void
     {
         $migratedEntries = $this->getMigratedEntries();
         $migrationFiles = $this->getMigrationFiles();
@@ -272,7 +272,7 @@ class MigrationManager
      * @throws DatabaseException
      * @throws MigrationException
      */
-    private function prepareDownMigrations(?int $step = null)
+    private function prepareDownMigrations(?int $step = null): void
     {
         $migratedEntries = $this->getMigratedEntries();
 
@@ -327,7 +327,7 @@ class MigrationManager
      * @param array $entries
      * @throws DatabaseException
      */
-    private function addMigratedEntries(array $entries)
+    private function addMigratedEntries(array $entries): void
     {
         foreach ($entries as $entry) {
             Database::execute('INSERT INTO ' . MigrationTable::TABLE . '(migration) VALUES(:migration)', ['migration' => $entry]);
@@ -339,7 +339,7 @@ class MigrationManager
      * @param array $entries
      * @throws DatabaseException
      */
-    private function removeMigratedEntries(array $entries)
+    private function removeMigratedEntries(array $entries): void
     {
         foreach ($entries as $entry) {
             Database::execute('DELETE FROM ' . MigrationTable::TABLE . ' WHERE migration=:migration', ['migration' => $entry]);

@@ -27,35 +27,35 @@ class ModuleGenerateCommand extends QtCommand
 {
     /**
      * Command name
-     * @var string
+     * @var string|null
      */
-    protected $name = 'module:generate';
+    protected ?string $name = 'module:generate';
 
     /**
      * Command description
-     * @var string
+     * @var string|null
      */
-    protected $description = 'Generate new module';
+    protected ?string $description = 'Generate new module';
 
     /**
      * Command arguments
      * @var string[][]
      */
-    protected $args = [
+    protected array $args = [
         ['module', 'required', 'The module name'],
     ];
 
     /**
      * Command help text
-     * @var string
+     * @var string|null
      */
-    protected $help = 'The command will create files for new module';
+    protected ?string $help = 'The command will create files for new module';
 
     /**
      * Command options
      * @var array
      */
-    protected $options = [
+    protected array $options = [
         ['yes', 'y', 'none', 'Module enabled status'],
         ['template', 't', 'optional', 'The module template', 'DefaultWeb'],
         ['with-assets', 'a', 'none', 'Install module will assets'],
@@ -65,7 +65,7 @@ class ModuleGenerateCommand extends QtCommand
      * Executes the command
      * @throws ExceptionInterface
      */
-    public function exec()
+    public function exec(): void
     {
         try {
             $moduleName = $this->getArgument('module');

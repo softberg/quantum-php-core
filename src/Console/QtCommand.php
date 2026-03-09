@@ -30,45 +30,45 @@ abstract class QtCommand extends Command implements CommandInterface
 {
     /**
      * Console command name
-     * @var string
+     * @var string|null
      */
-    protected $name;
+    protected ?string $name = null;
 
     /**
      * Console command description.
-     * @var string
+     * @var string|null
      */
-    protected $description;
+    protected ?string $description = null;
 
     /**
      * Console command help text
-     * @var string
+     * @var string|null
      */
-    protected $help;
+    protected ?string $help = null;
 
     /**
      * Console command input arguments
      * @var array
      * @example ['name', 'type', 'description']
      */
-    protected $args = [];
+    protected array $args = [];
 
     /**
      * Console command options
      * @var array
      * @example ['name', 'shortcut', 'type', 'description', 'default']
      */
-    protected $options = [];
+    protected array $options = [];
 
     /**
-     * @var InputInterface
+     * @var InputInterface|null
      */
-    protected $input;
+    protected ?InputInterface $input = null;
 
     /**
-     * @var OutputInterface
+     * @var OutputInterface|null
      */
-    protected $output;
+    protected ?OutputInterface $output = null;
 
     /**
      * QtCommand constructor.
@@ -110,16 +110,16 @@ abstract class QtCommand extends Command implements CommandInterface
      * Outputs the string to console
      * @param string $message
      */
-    public function output(string $message)
+    public function output(string $message): void
     {
         $this->output->writeln($message);
     }
 
     /**
-     * Outputs the string to console as info
+     * Outputs the string to the console as info
      * @param string $message
      */
-    public function info(string $message)
+    public function info(string $message): void
     {
         $this->output->writeln("<info>$message</info>");
     }
@@ -128,7 +128,7 @@ abstract class QtCommand extends Command implements CommandInterface
      * Outputs the string to console as comment
      * @param string $message
      */
-    public function comment(string $message)
+    public function comment(string $message): void
     {
         $this->output->writeln("<comment>$message</comment>");
     }
@@ -137,7 +137,7 @@ abstract class QtCommand extends Command implements CommandInterface
      * Outputs the string to console as question
      * @param string $message
      */
-    public function question(string $message)
+    public function question(string $message): void
     {
         $this->output->writeln("<question>$message</question>");
     }
@@ -157,10 +157,10 @@ abstract class QtCommand extends Command implements CommandInterface
     }
 
     /**
-     * Outputs the string to console as error
+     * Outputs the string to the console as an error
      * @param string $message
      */
-    public function error(string $message)
+    public function error(string $message): void
     {
         $this->output->writeln("<error>$message</error>");
     }
@@ -180,7 +180,7 @@ abstract class QtCommand extends Command implements CommandInterface
      * @param OutputInterface $output
      * @return int
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->input = $input;
         $this->output = $output;
@@ -192,7 +192,7 @@ abstract class QtCommand extends Command implements CommandInterface
     /**
      * Sets command arguments
      */
-    private function setArguments()
+    private function setArguments(): void
     {
         foreach ($this->args as $arg) {
             switch ($arg[1]) {
@@ -212,7 +212,7 @@ abstract class QtCommand extends Command implements CommandInterface
     /**
      * Sets command options
      */
-    private function setOptions()
+    private function setOptions(): void
     {
         foreach ($this->options as $option) {
             switch ($option[2]) {

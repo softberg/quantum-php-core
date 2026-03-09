@@ -11,7 +11,7 @@ use Mockery;
 
 class ModelHelperFunctionsTest extends AppTestCase
 {
-    public function testModelReturnsDbModelInstance()
+    public function testModelReturnsDbModelInstance(): void
     {
         $model = model(TestUserModel::class);
 
@@ -20,14 +20,14 @@ class ModelHelperFunctionsTest extends AppTestCase
         $this->assertInstanceOf(DbModel::class, $model);
     }
 
-    public function testModelThrowsOnInvalidClass()
+    public function testModelThrowsOnInvalidClass(): void
     {
         $this->expectException(ModelException::class);
 
         model('NonExistentModelClass');
     }
 
-    public function testDynamicModelReturnsAnonymousDbModel()
+    public function testDynamicModelReturnsAnonymousDbModel(): void
     {
         $dynamicModel = dynamicModel('test_table', TestUserModel::class);
 
@@ -38,7 +38,7 @@ class ModelHelperFunctionsTest extends AppTestCase
         $this->assertEquals(TestUserModel::class, $dynamicModel->getModelName());
     }
 
-    public function testWrapToModelReturnsModelInstance()
+    public function testWrapToModelReturnsModelInstance(): void
     {
         $dbal = Mockery::mock(DbalInterface::class);
 
@@ -49,7 +49,7 @@ class ModelHelperFunctionsTest extends AppTestCase
         $this->assertInstanceOf(DbModel::class, $model);
     }
 
-    public function testWrapToModelThrowsOnInvalidClass()
+    public function testWrapToModelThrowsOnInvalidClass(): void
     {
         $dbal = Mockery::mock(DbalInterface::class);
 
@@ -58,7 +58,7 @@ class ModelHelperFunctionsTest extends AppTestCase
         wrapToModel($dbal, 'NonExistentModelClass');
     }
 
-    public function testWrapToModelThrowsIfNotDbModel()
+    public function testWrapToModelThrowsIfNotDbModel(): void
     {
         $dbal = Mockery::mock(DbalInterface::class);
 

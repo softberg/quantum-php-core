@@ -10,7 +10,6 @@
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
  * @link http://quantum.softberg.org/
  * @since 3.0.0
- *
  */
 
 namespace Quantum\Asset;
@@ -34,33 +33,33 @@ class Asset
     /**
      * @var int
      */
-    private $type;
+    private int $type;
 
     /**
      * @var string
      */
-    private $path;
+    private string $path;
 
     /**
      * @var string|null
      */
-    private $name;
+    private ?string $name;
 
     /**
      * @var array|null
      */
-    private $attributes = [];
+    private ?array $attributes;
 
     /**
-     * @var int
+     * @var int|null
      */
-    private $position;
+    private ?int $position;
 
     /**
      * Asset templates
      * @var string[]
      */
-    private $templates = [
+    private array $templates = [
         self::CSS => '<link rel="stylesheet" type="text/css" href="{%1}">',
         self::JS => '<script src="{%1}" {%2}></script>',
     ];

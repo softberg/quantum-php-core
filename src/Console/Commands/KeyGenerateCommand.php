@@ -27,27 +27,27 @@ class KeyGenerateCommand extends QtCommand
 {
     /**
      * Command name
-     * @var string
+     * @var string|null
      */
-    protected $name = 'core:key';
+    protected ?string $name = 'core:key';
 
     /**
      * Command description
-     * @var string
+     * @var string|null
      */
-    protected $description = 'Generates and stores the application key';
+    protected ?string $description = 'Generates and stores the application key';
 
     /**
      * Command help text
-     * @var string
+     * @var string|null
      */
-    protected $help = 'The command will generate APP_KEY and store in .env file';
+    protected ?string $help = 'The command will generate APP_KEY and store in .env file';
 
     /**
      * Command options
      * @var array
      */
-    protected $options = [
+    protected array $options = [
         ['length', 'l', 'required', 'Length of the key', 32],
         ['yes', 'y', 'none', 'Acceptance of the confirmation'],
     ];
@@ -57,7 +57,7 @@ class KeyGenerateCommand extends QtCommand
      * @throws EnvException
      * @throws Exception
      */
-    public function exec()
+    public function exec(): void
     {
         if (Environment::getInstance()->hasKey('APP_KEY') && env('APP_KEY') !== '' && !$this->getOption('yes')) {
             if (!$this->confirm('The operation will remove the existing key and will create new one. Continue?')) {

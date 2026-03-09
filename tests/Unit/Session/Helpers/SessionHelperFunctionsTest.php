@@ -9,7 +9,7 @@ use Quantum\Session\Session;
 
 class SessionHelperFunctionsTest extends AppTestCase
 {
-    public function testSessionHelperGetDefaultSessionAdapter()
+    public function testSessionHelperGetDefaultSessionAdapter(): void
     {
         config()->delete('session');
 
@@ -20,7 +20,7 @@ class SessionHelperFunctionsTest extends AppTestCase
         $this->assertInstanceOf(NativeSessionAdapter::class, $session->getAdapter());
     }
 
-    public function testSessionHelperGetNativeSessionAdapter()
+    public function testSessionHelperGetNativeSessionAdapter(): void
     {
         $session = session(Session::NATIVE);
 
@@ -29,7 +29,7 @@ class SessionHelperFunctionsTest extends AppTestCase
         $this->assertInstanceOf(NativeSessionAdapter::class, $session->getAdapter());
     }
 
-    public function testSessionHelperGetDatabaseSessionAdapter()
+    public function testSessionHelperGetDatabaseSessionAdapter(): void
     {
         $session = session(Session::DATABASE);
 
@@ -38,7 +38,7 @@ class SessionHelperFunctionsTest extends AppTestCase
         $this->assertInstanceOf(DatabaseSessionAdapter::class, $session->getAdapter());
     }
 
-    public function testSessionMethodsViaHelper()
+    public function testSessionMethodsViaHelper(): void
     {
         $this->assertFalse(session()->has('test'));
 

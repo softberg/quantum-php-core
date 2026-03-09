@@ -19,6 +19,7 @@ use Quantum\Paginator\Traits\PaginatorTrait;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Model\ModelCollection;
 use Quantum\Model\DbModel;
+use Quantum\Model\Model;
 
 /**
  * Class ModelPaginator
@@ -64,7 +65,7 @@ class ModelPaginator implements PaginatorInterface
             ->get();
 
         if ($this->modelClass != '@anonymous') {
-            $result = array_map(fn ($item) => wrapToModel($item->getOrmInstance(), $this->modelClass), iterator_to_array($result));
+            $result = array_map(fn ($item): ?DbModel => wrapToModel($item->getOrmInstance(), $this->modelClass), iterator_to_array($result));
         }
 
         return new ModelCollection($result);
@@ -74,7 +75,7 @@ class ModelPaginator implements PaginatorInterface
      * @inheritDoc
      * @throws BaseException
      */
-    public function firstItem()
+    public function firstItem(): ?Model
     {
         $data = $this->data();
 
@@ -89,7 +90,7 @@ class ModelPaginator implements PaginatorInterface
      * @inheritDoc
      * @throws BaseException
      */
-    public function lastItem()
+    public function lastItem(): ?Model
     {
         $data = $this->data();
 

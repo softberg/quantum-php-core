@@ -98,7 +98,7 @@ class Environment
      * @throws DiException
      * @throws ReflectionException
      */
-    public function load(Setup $setup)
+    public function load(Setup $setup): void
     {
         if ($this->loaded) {
             return;
@@ -180,7 +180,7 @@ class Environment
      * @throws ReflectionException
      * @throws ConfigException
      */
-    public function updateRow(string $key, ?string $value)
+    public function updateRow(string $key, ?string $value): void
     {
         if (!$this->isMutable) {
             throw EnvException::environmentImmutable();

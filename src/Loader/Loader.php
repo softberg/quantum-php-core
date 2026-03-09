@@ -25,33 +25,33 @@ class Loader
 {
     /**
      * Current module
-     * @var string
+     * @var string|null
      */
-    private $module;
+    private ?string $module = null;
 
     /**
      * Environment
-     * @var string
+     * @var string|null
      */
-    private $pathPrefix;
+    private ?string $pathPrefix = null;
 
     /**
      * File name
-     * @var string
+     * @var string|null
      */
-    private $fileName;
+    private ?string $fileName = null;
 
     /**
      * Hierarchical
      * @var bool
      */
-    private $hierarchical;
+    private bool $hierarchical = false;
 
     /**
      * Exception message
      * @var string
      */
-    private $exceptionMessage;
+    private string $exceptionMessage = '';
 
     /**
      * Setups the loader
@@ -85,7 +85,7 @@ class Loader
      * Loads .php files from given directory
      * @param string $dir
      */
-    public function loadDir(string $dir)
+    public function loadDir(string $dir): void
     {
         foreach (glob($dir . DS . '*.php') as $filename) {
             require_once $filename;

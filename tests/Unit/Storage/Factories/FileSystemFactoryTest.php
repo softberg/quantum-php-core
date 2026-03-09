@@ -17,42 +17,42 @@ class FileSystemFactoryTest extends AppTestCase
         parent::setUp();
     }
 
-    public function testFileSystemFactoryInstance()
+    public function testFileSystemFactoryInstance(): void
     {
         $fs = FileSystemFactory::get();
 
         $this->assertInstanceOf(FileSystem::class, $fs);
     }
 
-    public function testFileSystemFactoryDefaultAdapter()
+    public function testFileSystemFactoryDefaultAdapter(): void
     {
         $fs = FileSystemFactory::get();
 
         $this->assertInstanceOf(LocalFileSystemAdapter::class, $fs->getAdapter());
     }
 
-    public function testFileSystemFactoryLocalAdapter()
+    public function testFileSystemFactoryLocalAdapter(): void
     {
         $fs = FileSystemFactory::get(FileSystem::LOCAL);
 
         $this->assertInstanceOf(LocalFileSystemAdapter::class, $fs->getAdapter());
     }
 
-    public function testFileSystemFactoryDropboxAdapter()
+    public function testFileSystemFactoryDropboxAdapter(): void
     {
         $fs = FileSystemFactory::get(FileSystem::DROPBOX);
 
         $this->assertInstanceOf(DropboxFileSystemAdapter::class, $fs->getAdapter());
     }
 
-    public function testFileSystemFactoryGoogleDriveAdapter()
+    public function testFileSystemFactoryGoogleDriveAdapter(): void
     {
         $fs = FileSystemFactory::get(FileSystem::GDRIVE);
 
         $this->assertInstanceOf(GoogleDriveFileSystemAdapter::class, $fs->getAdapter());
     }
 
-    public function testFileSystemFactoryInvalidTypeAdapter()
+    public function testFileSystemFactoryInvalidTypeAdapter(): void
     {
         $this->expectException(FileSystemException::class);
 
@@ -61,7 +61,7 @@ class FileSystemFactoryTest extends AppTestCase
         FileSystemFactory::get('invalid_type');
     }
 
-    public function testFileSystemFactoryReturnsSameInstance()
+    public function testFileSystemFactoryReturnsSameInstance(): void
     {
         $fs1 = FileSystemFactory::get(FileSystem::LOCAL);
         $fs2 = FileSystemFactory::get(FileSystem::LOCAL);

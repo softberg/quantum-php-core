@@ -38,10 +38,7 @@ class MemcachedAdapter implements CacheInterface
      */
     private $prefix;
 
-    /**
-     * @var Memcached
-     */
-    private $memcached;
+    private Memcached $memcached;
 
     /**
      * @param array $params

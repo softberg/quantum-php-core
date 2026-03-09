@@ -17,12 +17,12 @@ class ModelTest extends AppTestCase
         $this->model = new TestPlainModel();
     }
 
-    public function testModelInstance()
+    public function testModelInstance(): void
     {
         $this->assertInstanceOf(Model::class, $this->model);
     }
 
-    public function testModelPropSetterAndGetter()
+    public function testModelPropSetterAndGetter(): void
     {
         $this->assertNull($this->model->prop('firstname'));
 
@@ -31,14 +31,14 @@ class ModelTest extends AppTestCase
         $this->assertEquals('John', $this->model->prop('firstname'));
     }
 
-    public function testModelPropReturnsSelfWhenSettingValue()
+    public function testModelPropReturnsSelfWhenSettingValue(): void
     {
         $result = $this->model->prop('lastname', 'Doe');
 
         $this->assertSame($this->model, $result);
     }
 
-    public function testModelFill()
+    public function testModelFill(): void
     {
         $this->model->fill([
             'firstname' => 'Jane',
@@ -51,7 +51,7 @@ class ModelTest extends AppTestCase
         $this->assertEquals(35, $this->model->age);
     }
 
-    public function testModelFillWithUndefinedFillable()
+    public function testModelFillWithUndefinedFillable(): void
     {
         $this->expectException(ModelException::class);
 
@@ -62,7 +62,7 @@ class ModelTest extends AppTestCase
         ]);
     }
 
-    public function testModelAsArrayReturnsAttributes()
+    public function testModelAsArrayReturnsAttributes(): void
     {
         $this->model->prop('firstname', 'John');
         $this->model->prop('lastname', 'Doe');
@@ -77,7 +77,7 @@ class ModelTest extends AppTestCase
         $this->assertEquals(45, $data['age']);
     }
 
-    public function testModelAsArrayHidesHiddenFields()
+    public function testModelAsArrayHidesHiddenFields(): void
     {
         $this->model->prop('firstname', 'John');
         $this->model->prop('lastname', 'Doe');
@@ -95,19 +95,19 @@ class ModelTest extends AppTestCase
         $this->assertArrayNotHasKey('password', $data);
     }
 
-    public function testModelIsEmptyReturnsTrue()
+    public function testModelIsEmptyReturnsTrue(): void
     {
         $this->assertTrue($this->model->isEmpty());
     }
 
-    public function testModelIsEmptyReturnsFalse()
+    public function testModelIsEmptyReturnsFalse(): void
     {
         $this->model->prop('firstname', 'John');
 
         $this->assertFalse($this->model->isEmpty());
     }
 
-    public function testModelMagicGetterAndSetter()
+    public function testModelMagicGetterAndSetter(): void
     {
         $this->assertNull($this->model->undefinedProperty);
 
@@ -116,7 +116,7 @@ class ModelTest extends AppTestCase
         $this->assertEquals('Something', $this->model->undefinedProperty);
     }
 
-    public function testModelMagicIsset()
+    public function testModelMagicIsset(): void
     {
         $this->assertFalse(isset($this->model->firstname));
 
@@ -125,7 +125,7 @@ class ModelTest extends AppTestCase
         $this->assertTrue(isset($this->model->firstname));
     }
 
-    public function testModelMagicUnset()
+    public function testModelMagicUnset(): void
     {
         $this->model->firstname = 'John';
 

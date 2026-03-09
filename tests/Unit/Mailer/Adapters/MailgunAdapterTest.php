@@ -20,14 +20,14 @@ class MailgunAdapterTest extends MailerTestCase
         $this->adapter = new MailgunAdapter($config);
     }
 
-    public function testMailgunAdapterInstance()
+    public function testMailgunAdapterInstance(): void
     {
         $this->assertInstanceOf(MailgunAdapter::class, $this->adapter);
 
         $this->assertInstanceOf(MailerInterface::class, $this->adapter);
     }
 
-    public function testMailgunAdapterSend()
+    public function testMailgunAdapterSend(): void
     {
         $this->adapter->setFrom('john@hotmail.com', 'John Doe');
 

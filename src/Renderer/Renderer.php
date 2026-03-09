@@ -35,10 +35,7 @@ class Renderer
      */
     public const TWIG = 'twig';
 
-    /**
-     * @var TemplateRendererInterface
-     */
-    private $adapter;
+    private TemplateRendererInterface $adapter;
 
     /**
      * @param TemplateRendererInterface $adapter

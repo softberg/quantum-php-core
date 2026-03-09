@@ -45,7 +45,7 @@ trait Join
      * Starts to apply joins
      * @throws ModelException
      */
-    private function applyJoins()
+    private function applyJoins(): void
     {
         if (!empty($this->joins)) {
             $this->applyJoin($this->queryBuilder, $this, $this->joins[0]);

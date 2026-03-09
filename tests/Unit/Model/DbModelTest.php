@@ -2,6 +2,7 @@
 
 namespace Quantum\Tests\Unit\Model;
 
+use Quantum\Model\Model;
 use Quantum\Tests\_root\shared\Models\TestProfileModel;
 use Quantum\Database\Adapters\Idiorm\IdiormDbal;
 use Quantum\Model\Exceptions\ModelException;
@@ -13,7 +14,7 @@ use Quantum\Model\DbModel;
 
 class DbModelTest extends AppTestCase
 {
-    private $model;
+    private Model $model;
 
     public function setUp(): void
     {
@@ -33,12 +34,12 @@ class DbModelTest extends AppTestCase
         IdiormDbal::execute('DROP TABLE profiles');
     }
 
-    public function testDbModelInstance()
+    public function testDbModelInstance(): void
     {
         $this->assertInstanceOf(DbModel::class, $this->model);
     }
 
-    public function testDbModelSetAndGetOrmInstance()
+    public function testDbModelSetAndGetOrmInstance(): void
     {
         $ormInstance = new IdiormDbal('profiles');
 
@@ -47,14 +48,14 @@ class DbModelTest extends AppTestCase
         $this->assertSame($ormInstance, $this->model->getOrmInstance());
     }
 
-    public function testDbModelRelationsReturnsArray()
+    public function testDbModelRelationsReturnsArray(): void
     {
         $relations = $this->model->relations();
 
         $this->assertIsArray($relations);
     }
 
-    public function testDbModelGetReturnsModelCollection()
+    public function testDbModelGetReturnsModelCollection(): void
     {
         $collection = $this->model->get();
 
@@ -65,7 +66,7 @@ class DbModelTest extends AppTestCase
         $this->assertInstanceOf(TestProfileModel::class, $collection->first());
     }
 
-    public function testDbModelPaginateReturnsPaginator()
+    public function testDbModelPaginateReturnsPaginator(): void
     {
         $paginator = $this->model->paginate(1);
 
@@ -80,14 +81,14 @@ class DbModelTest extends AppTestCase
         $this->assertInstanceOf(TestProfileModel::class, $collection->first());
     }
 
-    public function testDbModelIsEmptyReturnsFalse()
+    public function testDbModelIsEmptyReturnsFalse(): void
     {
         $record = $this->model->first();
 
         $this->assertFalse($record->isEmpty());
     }
 
-    public function testDbModelIsEmptyReturnsTrue()
+    public function testDbModelIsEmptyReturnsTrue(): void
     {
         $this->model->deleteMany();
 
@@ -96,7 +97,7 @@ class DbModelTest extends AppTestCase
         $this->assertTrue($record->isEmpty());
     }
 
-    public function testDbModelFill()
+    public function testDbModelFill(): void
     {
         $this->model->fill([
             'firstname' => 'Jane',
@@ -111,7 +112,7 @@ class DbModelTest extends AppTestCase
         $this->assertEquals(35, $this->model->age);
     }
 
-    public function testDbModelFillWithUndefinedFillable()
+    public function testDbModelFillWithUndefinedFillable(): void
     {
         $this->expectException(ModelException::class);
 
@@ -120,7 +121,7 @@ class DbModelTest extends AppTestCase
         $this->model->fill(['currency' => 'Ireland']);
     }
 
-    public function testDbModelSetterAndGetter()
+    public function testDbModelSetterAndGetter(): void
     {
         $this->assertNull($this->model->undefinedProperty);
 
@@ -129,7 +130,7 @@ class DbModelTest extends AppTestCase
         $this->assertEquals('Something', $this->model->undefinedProperty);
     }
 
-    public function testDbModelCallingUndefinedModelMethod()
+    public function testDbModelCallingUndefinedModelMethod(): void
     {
         $this->expectException(ModelException::class);
 
@@ -138,7 +139,7 @@ class DbModelTest extends AppTestCase
         $this->model->undefinedMethod();
     }
 
-    public function testDbModelCreateNewRecordByCallingOrmMethod()
+    public function testDbModelCreateNewRecordByCallingOrmMethod(): void
     {
         $userModel = $this->model->create();
 
@@ -163,7 +164,7 @@ class DbModelTest extends AppTestCase
         $this->assertEquals('Smith', $userData['lastname']);
     }
 
-    public function testDbModelUpdatingExistingRecordByCallingOrmMethod()
+    public function testDbModelUpdatingExistingRecordByCallingOrmMethod(): void
     {
         $userModel = $this->model->findOne(1);
 
@@ -190,7 +191,7 @@ class DbModelTest extends AppTestCase
         $this->assertEquals(35, $userModel->age);
     }
 
-    public function testDbModelPropUnknownColumnThrowsPdoExceptionOnSave()
+    public function testDbModelPropUnknownColumnThrowsPdoExceptionOnSave(): void
     {
         $userModel = $this->model->create();
 
@@ -205,7 +206,7 @@ class DbModelTest extends AppTestCase
         $userModel->save();
     }
 
-    public function testDbModelCallingModelWithCriterias()
+    public function testDbModelCallingModelWithCriterias(): void
     {
         $profileModel = ModelFactory::get(TestProfileModel::class);
 
@@ -224,7 +225,7 @@ class DbModelTest extends AppTestCase
         $this->assertEquals('Jane', $userData['firstname']);
     }
 
-    public function tesDbModelGetModelProperties()
+    public function tesDbModelGetModelProperties(): void
     {
         $expected = [
             'id' => '1',
@@ -245,7 +246,7 @@ class DbModelTest extends AppTestCase
         $this->assertEquals($expected, $actual);
     }
 
-    private function _createProfileTableWithData()
+    private function _createProfileTableWithData(): void
     {
         IdiormDbal::execute('CREATE TABLE IF NOT EXISTS profiles (
                         id INTEGER PRIMARY KEY,

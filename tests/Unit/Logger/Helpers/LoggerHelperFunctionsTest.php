@@ -13,7 +13,7 @@ use Quantum\Logger\Logger;
 
 class LoggerHelperFunctionsTest extends AppTestCase
 {
-    private $debugger;
+    private Debugger $debugger;
 
     public function setUp(): void
     {
@@ -33,7 +33,7 @@ class LoggerHelperFunctionsTest extends AppTestCase
         $this->debugger->resetStore();
     }
 
-    public function testLoggerHelperGetDefaultLoggerAdapter()
+    public function testLoggerHelperGetDefaultLoggerAdapter(): void
     {
         config()->set('app.debug', false);
 
@@ -44,7 +44,7 @@ class LoggerHelperFunctionsTest extends AppTestCase
         $this->assertInstanceOf(SingleAdapter::class, $logger->getAdapter());
     }
 
-    public function testLoggerHelperGetSingleLoggerAdapter()
+    public function testLoggerHelperGetSingleLoggerAdapter(): void
     {
         config()->set('app.debug', false);
 
@@ -55,7 +55,7 @@ class LoggerHelperFunctionsTest extends AppTestCase
         $this->assertInstanceOf(SingleAdapter::class, $logger->getAdapter());
     }
 
-    public function testLoggerHelperGetDailyLoggerAdapter()
+    public function testLoggerHelperGetDailyLoggerAdapter(): void
     {
         config()->set('app.debug', false);
 
@@ -66,7 +66,7 @@ class LoggerHelperFunctionsTest extends AppTestCase
         $this->assertInstanceOf(DailyAdapter::class, $logger->getAdapter());
     }
 
-    public function testLoggerHelperGetMessageLoggerAdapter()
+    public function testLoggerHelperGetMessageLoggerAdapter(): void
     {
         $logger = logger();
 
@@ -75,7 +75,7 @@ class LoggerHelperFunctionsTest extends AppTestCase
         $this->assertInstanceOf(MessageAdapter::class, $logger->getAdapter());
     }
 
-    public function testLoggerHelperTryToGetMessageLoggerAdapterInNonDebugMode()
+    public function testLoggerHelperTryToGetMessageLoggerAdapterInNonDebugMode(): void
     {
         config()->set('app.debug', false);
 
@@ -86,7 +86,7 @@ class LoggerHelperFunctionsTest extends AppTestCase
         logger(Logger::MESSAGE);
     }
 
-    public function testErrorHelper()
+    public function testErrorHelper(): void
     {
         error('Fatal Error');
 
@@ -97,7 +97,7 @@ class LoggerHelperFunctionsTest extends AppTestCase
         $this->assertEquals('Fatal Error', $storedMessages[0]['error']);
     }
 
-    public function testWarningHelper()
+    public function testWarningHelper(): void
     {
         warning('Warning!!');
 
@@ -108,7 +108,7 @@ class LoggerHelperFunctionsTest extends AppTestCase
         $this->assertEquals('Warning!!', $storedMessages[0]['warning']);
     }
 
-    public function testNoticeHelper()
+    public function testNoticeHelper(): void
     {
         notice('Simple Notice');
 
@@ -119,7 +119,7 @@ class LoggerHelperFunctionsTest extends AppTestCase
         $this->assertEquals('Simple Notice', $storedMessages[0]['notice']);
     }
 
-    public function testInfoHelper()
+    public function testInfoHelper(): void
     {
         info('For your information');
 
@@ -130,7 +130,7 @@ class LoggerHelperFunctionsTest extends AppTestCase
         $this->assertEquals('For your information', $storedMessages[0]['info']);
     }
 
-    public function testDebugHelper()
+    public function testDebugHelper(): void
     {
         debug('Debugging!!');
 

@@ -33,15 +33,14 @@ class NativeSessionAdapter implements SessionStorageInterface
 
     /**
      * Session params
-     * @var array
      */
-    private static $params = [];
+    private static ?array $params = [];
 
     /**
      * Session storage
      * @var array $storage
      */
-    private static $storage = [];
+    private static array $storage = [];
 
     /**
      * @param array|null $params

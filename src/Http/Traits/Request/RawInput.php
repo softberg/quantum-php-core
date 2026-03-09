@@ -136,7 +136,7 @@ trait RawInput
      * @param string $nameParam
      * @param UploadedFile $file
      */
-    private static function addFileToCollection(array &$files, string $nameParam, UploadedFile $file)
+    private static function addFileToCollection(array &$files, string $nameParam, UploadedFile $file): void
     {
         $arrayParam = self::arrayParam($nameParam);
 
@@ -212,7 +212,7 @@ trait RawInput
             'size' => $fs->size($tempName),
         ]);
 
-        register_shutdown_function(function () use ($fs, $tempName) {
+        register_shutdown_function(function () use ($fs, $tempName): void {
             $fs->remove($tempName);
         });
 

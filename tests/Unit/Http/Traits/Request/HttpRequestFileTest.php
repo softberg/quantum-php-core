@@ -19,7 +19,7 @@ class HttpRequestFileTest extends AppTestCase
         Request::flush();
     }
 
-    public function testHasGetFile()
+    public function testHasGetFile(): void
     {
         $request = new Request();
 
@@ -60,7 +60,7 @@ class HttpRequestFileTest extends AppTestCase
         $request->getFile('image');
     }
 
-    public function testGetMultipleFiles()
+    public function testGetMultipleFiles(): void
     {
         $request = new Request();
 

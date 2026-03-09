@@ -17,7 +17,7 @@ class HttpResponseBodyTest extends AppTestCase
         Response::flush();
     }
 
-    public function testResponseSetHasGetAllDelete()
+    public function testResponseSetHasGetAllDelete(): void
     {
         $response = new Response();
 
@@ -42,7 +42,7 @@ class HttpResponseBodyTest extends AppTestCase
         $this->assertEquals('Jane', $response->get('name', 'Jane'));
     }
 
-    public function testResponseJsonContent()
+    public function testResponseJsonContent(): void
     {
         $response = new Response();
 
@@ -68,7 +68,7 @@ class HttpResponseBodyTest extends AppTestCase
         $this->assertEquals(200, $response->getStatusCode());
     }
 
-    public function testResponseJsonP()
+    public function testResponseJsonP(): void
     {
         $response = new Response();
 
@@ -81,7 +81,7 @@ class HttpResponseBodyTest extends AppTestCase
         $this->assertEquals('myfunc({"firstname":"John","lastname":"Doe"})', $response->getContent());
     }
 
-    public function testResponseXmlContent()
+    public function testResponseXmlContent(): void
     {
         $response = new Response();
 
@@ -127,7 +127,7 @@ class HttpResponseBodyTest extends AppTestCase
         $this->assertEquals($xml, $response->getContent());
     }
 
-    public function testResponseXmlWithNestedArray()
+    public function testResponseXmlWithNestedArray(): void
     {
         $response = new Response();
 
@@ -149,7 +149,7 @@ class HttpResponseBodyTest extends AppTestCase
         $this->assertEquals($xml, $response->getContent());
     }
 
-    public function testResponseXmlWithArguments()
+    public function testResponseXmlWithArguments(): void
     {
         $response = new Response();
 
@@ -171,7 +171,7 @@ class HttpResponseBodyTest extends AppTestCase
         $this->assertEquals($xml, $response->getContent());
     }
 
-    public function testResponseXmlWithCustomRoot()
+    public function testResponseXmlWithCustomRoot(): void
     {
         $response = new Response();
 
@@ -193,7 +193,7 @@ class HttpResponseBodyTest extends AppTestCase
         $this->assertEquals($xml, $response->getContent());
     }
 
-    public function testResponseHtmlContent()
+    public function testResponseHtmlContent(): void
     {
         $response = new Response();
 

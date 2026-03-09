@@ -33,19 +33,19 @@ trait MailerTrait
      * From address and name
      * @var array
      */
-    private $from = [];
+    private array $from = [];
 
     /**
      * To addresses
      * @var array
      */
-    private $addresses = [];
+    private array $addresses = [];
 
     /**
      * Email subject
      * @var string|null
      */
-    private $subject = null;
+    private ?string $subject = null;
 
     /**
      * Email body
@@ -54,55 +54,55 @@ trait MailerTrait
     private $message = null;
 
     /**
-     * @var string
+     * @var string|null
      */
-    private static $messageId = null;
+    private static ?string $messageId = null;
 
     /**
      * Template path
      * @var string|null
      */
-    private $templatePath = null;
+    private ?string $templatePath = null;
 
     /**
-     * @var HttpClient
+     * @var HttpClient|null
      */
-    protected $httpClient;
+    protected ?HttpClient $httpClient = null;
 
     /**
-     * @var PHPMailer
+     * @var PHPMailer|null
      */
-    protected $mailer;
+    protected ?PHPMailer $mailer = null;
 
     /**
      * Reply To addresses
      * @var array
      */
-    protected $replyToAddresses = [];
+    protected array $replyToAddresses = [];
 
     /**
      * CC addresses
      * @var array
      */
-    protected $ccAddresses = [];
+    protected array $ccAddresses = [];
 
     /**
      * BCC addresses
      * @var array
      */
-    protected $bccAddresses = [];
+    protected array $bccAddresses = [];
 
     /**
      * Email attachments
      * @var array
      */
-    protected $attachments = [];
+    protected array $attachments = [];
 
     /**
      * Email attachments created from string
      * @var array
      */
-    protected $stringAttachments = [];
+    protected array $stringAttachments = [];
 
     /**
      * Sets the 'From' email and the name
@@ -334,7 +334,7 @@ trait MailerTrait
     /**
      * Resets the fields
      */
-    private function resetFields()
+    private function resetFields(): void
     {
         $this->from = [];
         $this->addresses = [];

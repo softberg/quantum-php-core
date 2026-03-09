@@ -24,7 +24,7 @@ trait Query
      * Query string
      * @var string|null
      */
-    private static $__query = null;
+    private static ?string $__query = null;
 
     /**
      * Gets the query string
@@ -39,7 +39,7 @@ trait Query
      * Sets the query string
      * @param string $query
      */
-    public static function setQuery(string $query)
+    public static function setQuery(string $query): void
     {
         self::$__query = $query;
     }
@@ -72,7 +72,7 @@ trait Query
      * @param string $key
      * @param string $value
      */
-    public static function setQueryParam(string $key, string $value)
+    public static function setQueryParam(string $key, string $value): void
     {
         $queryParams = self::$__query ? explode('&', self::$__query) : [];
         $queryParams[] = $key . '=' . $value;

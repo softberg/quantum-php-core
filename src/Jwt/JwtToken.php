@@ -119,12 +119,12 @@ class JwtToken extends JWT
 
     /**
      * Composes and signs the JWT
-     * @param mixed|null $keyId
+     * @param string|null $keyId
      * @param array|null $head
      * @return string
      * @throws JwtException
      */
-    public function compose($keyId = null, ?array $head = null): string
+    public function compose(?string $keyId = null, ?array $head = null): string
     {
         if (empty($this->payload)) {
             throw JwtException::payloadNotFound();

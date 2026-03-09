@@ -61,9 +61,9 @@ class ErrorHandler
     ];
 
     /**
-     * @var Logger
+     * @var Logger|null
      */
-    private $logger;
+    private ?Logger $logger = null;
 
     /**
      * @var ErrorHandler|null
@@ -95,7 +95,7 @@ class ErrorHandler
     /**
      * @param Logger $logger
      */
-    public function setup(Logger $logger)
+    public function setup(Logger $logger): void
     {
         $this->logger = $logger;
 
@@ -104,16 +104,17 @@ class ErrorHandler
     }
 
     /**
-     * @param $severity
-     * @param $message
-     * @param $file
-     * @param $line
+     * @param int $severity
+     * @param string $message
+     * @param string $file
+     * @param int $line
+     * @return bool
      * @throws ErrorException
      */
-    public function handleError($severity, $message, $file, $line)
+    public function handleError(int $severity, string $message, string $file, int $line): bool
     {
         if ((error_reporting() & $severity) === 0) {
-            return;
+            return false;
         }
 
         throw new ErrorException($message, 0, $severity, $file, $line);

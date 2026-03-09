@@ -18,35 +18,35 @@ class CaptchaFactoryTest extends AppTestCase
         $this->setPrivateProperty(CaptchaFactory::class, 'instances', []);
     }
 
-    public function testCaptchaFactoryInstance()
+    public function testCaptchaFactoryInstance(): void
     {
         $captcha = CaptchaFactory::get();
 
         $this->assertInstanceOf(Captcha::class, $captcha);
     }
 
-    public function testCacheFactoryDefaultAdapter()
+    public function testCacheFactoryDefaultAdapter(): void
     {
         $captcha = CaptchaFactory::get();
 
         $this->assertInstanceOf(RecaptchaAdapter::class, $captcha->getAdapter());
     }
 
-    public function testCacheFactoryRecaptchaAdapter()
+    public function testCacheFactoryRecaptchaAdapter(): void
     {
         $captcha = CaptchaFactory::get(Captcha::RECAPTCHA);
 
         $this->assertInstanceOf(RecaptchaAdapter::class, $captcha->getAdapter());
     }
 
-    public function testCacheFactoryHcaptchaAdapter()
+    public function testCacheFactoryHcaptchaAdapter(): void
     {
         $captcha = CaptchaFactory::get(Captcha::HCAPTCHA);
 
         $this->assertInstanceOf(HcaptchaAdapter::class, $captcha->getAdapter());
     }
 
-    public function testCacheFactoryInvalidTypeAdapter()
+    public function testCacheFactoryInvalidTypeAdapter(): void
     {
         $this->expectException(CaptchaException::class);
 
@@ -55,7 +55,7 @@ class CaptchaFactoryTest extends AppTestCase
         CaptchaFactory::get('invalid_type');
     }
 
-    public function testAuthFactoryReturnsSameInstance()
+    public function testAuthFactoryReturnsSameInstance(): void
     {
         $captcha1 = CaptchaFactory::get(Captcha::RECAPTCHA);
         $captcha2 = CaptchaFactory::get(Captcha::RECAPTCHA);

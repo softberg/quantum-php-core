@@ -30,10 +30,7 @@ use ReflectionException;
  */
 class FileAdapter implements CacheInterface
 {
-    /**
-     * @var FileSystem
-     */
-    private $fs;
+    private FileSystem $fs;
 
     /**
      * @var int

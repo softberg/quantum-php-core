@@ -18,6 +18,7 @@ use Quantum\Config\Exceptions\ConfigException;
 use Quantum\Contracts\StorageInterface;
 use Quantum\Di\Exceptions\DiException;
 use Dflydev\DotAccessData\Data;
+use Quantum\Loader\Exceptions\LoaderException;
 use Quantum\Loader\Loader;
 use Quantum\Loader\Setup;
 use ReflectionException;
@@ -30,16 +31,14 @@ use Quantum\Di\Di;
 class Config implements StorageInterface
 {
     /**
-     * Configs
      * @var Data|null
      */
-    private static $configs = null;
+    private static ?Data $configs = null;
 
     /**
-     * Instance of Config
-     * @var Config
+     * @var Config|null
      */
-    private static $instance = null;
+    private static ?Config $instance = null;
 
     /**
      * GetInstance
@@ -61,7 +60,7 @@ class Config implements StorageInterface
      * @throws DiException
      * @throws ReflectionException
      */
-    public function load(Setup $setup)
+    public function load(Setup $setup): void
     {
         if (self::$configs !== null) {
             return;
@@ -75,9 +74,9 @@ class Config implements StorageInterface
      * @param Setup $setup
      * @throws ConfigException
      * @throws DiException
-     * @throws ReflectionException
+     * @throws ReflectionException|LoaderException
      */
-    public function import(Setup $setup)
+    public function import(Setup $setup): void
     {
         $fileName = $setup->getFilename();
 
@@ -132,7 +131,7 @@ class Config implements StorageInterface
      * @param mixed $value
      * @return void
      */
-    public function set(string $key, $value)
+    public function set(string $key, $value): void
     {
         if (!self::$configs) {
             self::$configs = new Data([$key => $value]);
@@ -145,7 +144,7 @@ class Config implements StorageInterface
      * Removes the data from config
      * @param string $key
      */
-    public function delete(string $key)
+    public function delete(string $key): void
     {
         self::$configs && self::$configs->remove($key);
     }
@@ -153,7 +152,7 @@ class Config implements StorageInterface
     /**
      * Deletes whole config data
      */
-    public function flush()
+    public function flush(): void
     {
         self::$configs = null;
     }

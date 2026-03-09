@@ -14,7 +14,11 @@
 
 namespace Quantum\Paginator\Traits;
 
+use Quantum\Config\Exceptions\ConfigException;
+use Quantum\Lang\Exceptions\LangException;
 use Quantum\Paginator\Enums\Pagination;
+use Quantum\Di\Exceptions\DiException;
+use ReflectionException;
 
 /**
  * Trait PaginatorTrait
@@ -45,6 +49,9 @@ trait PaginatorTrait
     /**
      * @param int $perPage
      * @param int $page
+     * @return void
+     * @throws DiException
+     * @throws ReflectionException
      */
     protected function initialize(int $perPage, int $page = 1): void
     {
@@ -54,7 +61,7 @@ trait PaginatorTrait
     }
 
     /**
-     * Get total number of items
+     * Get the total number of items
      * @return int
      */
     public function total(): int
@@ -63,7 +70,7 @@ trait PaginatorTrait
     }
 
     /**
-     * Get current page number
+     * Get the current page number
      * @return int
      */
     public function currentPageNumber(): int
@@ -115,7 +122,7 @@ trait PaginatorTrait
     }
 
     /**
-     * Get current page link
+     * Get the current page link
      * @param bool $withBaseUrl
      * @return string|null
      */
@@ -235,6 +242,7 @@ trait PaginatorTrait
      * Get the URI for pagination
      * @param bool $withBaseUrl
      * @return string
+     * @throws DiException|ReflectionException
      */
     protected function getUri(bool $withBaseUrl = false): string
     {
@@ -256,6 +264,7 @@ trait PaginatorTrait
      * @param int|null $pageNumber
      * @param bool $withBaseUrl
      * @return string|null
+     * @throws DiException|ReflectionException
      */
     protected function getPageLink(?int $pageNumber, bool $withBaseUrl = false): ?string
     {
@@ -270,6 +279,7 @@ trait PaginatorTrait
      * Get next page item HTML
      * @param string|null $nextPageLink
      * @return string
+     * @throws DiException|ReflectionException|ConfigException|LangException
      */
     protected function getNextPageItem(?string $nextPageLink): string
     {
@@ -283,9 +293,16 @@ trait PaginatorTrait
     }
 
     /**
+     *
+     * @param string|null $previousPageLink
+     * @return string
+     */
+
+    /**
      * Get previous page item HTML
      * @param string|null $previousPageLink
      * @return string
+     * @throws ConfigException|DiException|LangException|ReflectionException
      */
     protected function getPreviousPageItem(?string $previousPageLink): string
     {
@@ -308,7 +325,7 @@ trait PaginatorTrait
      */
     protected function getItemsLinks(int $startPage, int $endPage, int $currentPage, array $links): string
     {
-        $pagination = '';
+        $pagination = [];
 
         for ($i = $startPage; $i <= $endPage; $i++) {
             $active = $i === $currentPage ? 'class="' . Pagination::PAGINATION_CLASS_ACTIVE . '"' : '';

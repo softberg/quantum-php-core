@@ -116,7 +116,7 @@ class ModuleManager
      * @throws ExceptionInterface
      * @throws Exception
      */
-    public function addModuleConfig()
+    public function addModuleConfig(): void
     {
         if (!$this->fs->isDirectory($this->modulePath)) {
             throw ModuleException::missingModuleDirectory();
@@ -138,7 +138,7 @@ class ModuleManager
     /**
      * @throws Exception
      */
-    public function writeContents()
+    public function writeContents(): void
     {
         if (!$this->fs->isDirectory(modules_dir())) {
             $this->fs->makeDirectory(modules_dir());
@@ -220,7 +220,7 @@ class ModuleManager
      * @param string $srcPath
      * @param string $dstPath
      */
-    private function processTemplates(string $srcPath, string &$dstPath)
+    private function processTemplates(string $srcPath, string &$dstPath): void
     {
         $dstPath = str_replace('.php.tpl', '.php', $dstPath);
         $content = $this->fs->get($srcPath);

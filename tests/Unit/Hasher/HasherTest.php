@@ -7,9 +7,9 @@ use Quantum\Hasher\Hasher;
 
 class HasherTest extends AppTestCase
 {
-    private $hasher;
-    private $password = 'plaintext';
-    private $otherPassword = 'other';
+    private Hasher $hasher;
+    private string $password = 'plaintext';
+    private string $otherPassword = 'other';
 
     public function setUp(): void
     {
@@ -18,7 +18,7 @@ class HasherTest extends AppTestCase
         $this->hasher = new Hasher();
     }
 
-    public function testSetAndGetAlgorithm()
+    public function testSetAndGetAlgorithm(): void
     {
         $this->assertEquals(PASSWORD_BCRYPT, $this->hasher->getAlgorithm());
 
@@ -27,7 +27,7 @@ class HasherTest extends AppTestCase
         $this->assertEquals(PASSWORD_DEFAULT, $this->hasher->getAlgorithm());
     }
 
-    public function testSetAndGetCost()
+    public function testSetAndGetCost(): void
     {
         $this->assertEquals(12, $this->hasher->getCost());
 
@@ -36,7 +36,7 @@ class HasherTest extends AppTestCase
         $this->assertEquals(14, $this->hasher->getCost());
     }
 
-    public function testHashAndCheck()
+    public function testHashAndCheck(): void
     {
         $hashed = $this->hasher->hash($this->password);
 
@@ -45,7 +45,7 @@ class HasherTest extends AppTestCase
         $this->assertFalse($this->hasher->check($this->otherPassword, $hashed));
     }
 
-    public function testNeedsRehash()
+    public function testNeedsRehash(): void
     {
         $this->hasher->setCost(10);
 
@@ -62,7 +62,7 @@ class HasherTest extends AppTestCase
         $this->assertTrue($this->hasher->needsRehash($hashed));
     }
 
-    public function testInfo()
+    public function testInfo(): void
     {
         $hashed = $this->hasher->hash($this->password);
 

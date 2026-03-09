@@ -60,10 +60,7 @@ class Mailer
      */
     public const SENDINBLUE = 'sendinblue';
 
-    /**
-     * @var MailerInterface
-     */
-    private $adapter;
+    private MailerInterface $adapter;
 
     /**
      * @param MailerInterface $adapter

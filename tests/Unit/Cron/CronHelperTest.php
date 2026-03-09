@@ -21,27 +21,27 @@ class CronHelperTest extends AppTestCase
         }
     }
 
-    public function testCronConfig()
+    public function testCronConfig(): void
     {
         $this->assertEquals('/default/path', cron_config('path'));
         $this->assertEquals('default-val', cron_config('non-existent', 'default-val'));
     }
 
-    public function testCronManagerHelper()
+    public function testCronManagerHelper(): void
     {
         $manager = cron_manager('/custom/path');
         $this->assertInstanceOf(CronManager::class, $manager);
     }
 
-    public function testCronTaskHelper()
+    public function testCronTaskHelper(): void
     {
-        $task = cron_task('my-task', '* * * * *', function () {
+        $task = cron_task('my-task', '* * * * *', function (): void {
         });
         $this->assertInstanceOf(CronTask::class, $task);
         $this->assertEquals('my-task', $task->getName());
     }
 
-    public function testScheduleHelper()
+    public function testScheduleHelper(): void
     {
         $schedule = schedule('my-task');
         $this->assertInstanceOf(Schedule::class, $schedule);

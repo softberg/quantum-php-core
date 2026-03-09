@@ -11,7 +11,7 @@ use Quantum\Model\DbModel;
 
 class ModelPaginatorTest extends PaginatorTestCase
 {
-    private $paginator;
+    private ModelPaginator $paginator;
 
     public function setUp(): void
     {
@@ -24,12 +24,12 @@ class ModelPaginatorTest extends PaginatorTestCase
         $this->paginator = new ModelPaginator($postModel, 2, 1);
     }
 
-    public function testModelPaginatorConstructor()
+    public function testModelPaginatorConstructor(): void
     {
         $this->assertInstanceOf(ModelPaginator::class, $this->paginator);
     }
 
-    public function testModelPaginatorData()
+    public function testModelPaginatorData(): void
     {
         $data = $this->paginator->data();
 
@@ -52,7 +52,7 @@ class ModelPaginatorTest extends PaginatorTestCase
         $this->assertEquals('First post!', $record->content);
     }
 
-    public function testModelPaginatorDataWithAnonymousModel()
+    public function testModelPaginatorDataWithAnonymousModel(): void
     {
         $dynamicModel = ModelFactory::createDynamicModel('posts');
 
@@ -77,7 +77,7 @@ class ModelPaginatorTest extends PaginatorTestCase
         $this->assertEquals('First post!', $record->content);
     }
 
-    public function testModelPaginatorFirstItem()
+    public function testModelPaginatorFirstItem(): void
     {
         $firstItem = $this->paginator->firstItem();
 
@@ -88,7 +88,7 @@ class ModelPaginatorTest extends PaginatorTestCase
         $this->assertEquals('First post!', $firstItem->content);
     }
 
-    public function testModelPaginatorLastItem()
+    public function testModelPaginatorLastItem(): void
     {
         $lastItem = $this->paginator->lastItem();
         $this->assertInstanceOf(TestPostModel::class, $lastItem);
@@ -96,72 +96,72 @@ class ModelPaginatorTest extends PaginatorTestCase
         $this->assertEquals('Hello world', $lastItem->content);
     }
 
-    public function testModelPaginatorTotal()
+    public function testModelPaginatorTotal(): void
     {
         $this->assertEquals(5, $this->paginator->total());
     }
 
-    public function testModelPaginatorCurrentPageNumber()
+    public function testModelPaginatorCurrentPageNumber(): void
     {
         $this->assertEquals(1, $this->paginator->currentPageNumber());
     }
 
-    public function testModelPaginatorPreviousPageNumber()
+    public function testModelPaginatorPreviousPageNumber(): void
     {
         $this->assertEquals(1, $this->paginator->previousPageNumber());
     }
 
-    public function testModelPaginatorNextPageNumber()
+    public function testModelPaginatorNextPageNumber(): void
     {
         $this->assertEquals(2, $this->paginator->nextPageNumber());
     }
 
-    public function testModelPaginatorLastPageNumber()
+    public function testModelPaginatorLastPageNumber(): void
     {
         $this->assertEquals(3, $this->paginator->lastPageNumber());
     }
 
-    public function testModelPaginatorCurrentPageLink()
+    public function testModelPaginatorCurrentPageLink(): void
     {
         $this->assertEquals('?per_page=2&page=1', $this->paginator->currentPageLink());
 
         $this->assertEquals('http://localhost?per_page=2&page=1', $this->paginator->currentPageLink(true));
     }
 
-    public function testModelPaginatorFirstPageLink()
+    public function testModelPaginatorFirstPageLink(): void
     {
         $this->assertEquals('?per_page=2&page=1', $this->paginator->firstPageLink());
 
         $this->assertEquals('http://localhost?per_page=2&page=1', $this->paginator->firstPageLink(true));
     }
 
-    public function testModelPaginatorPreviousPageLink()
+    public function testModelPaginatorPreviousPageLink(): void
     {
         $this->assertEquals('?per_page=2&page=1', $this->paginator->previousPageLink());
 
         $this->assertEquals('http://localhost?per_page=2&page=1', $this->paginator->previousPageLink(true));
     }
 
-    public function testModelPaginatorNextPageLink()
+    public function testModelPaginatorNextPageLink(): void
     {
         $this->assertEquals('?per_page=2&page=2', $this->paginator->nextPageLink());
 
         $this->assertEquals('http://localhost?per_page=2&page=2', $this->paginator->nextPageLink(true));
     }
 
-    public function testModelPaginatorLastPageLink()
+    public function testModelPaginatorLastPageLink(): void
     {
         $this->assertEquals('?per_page=2&page=3', $this->paginator->lastPageLink());
 
         $this->assertEquals('http://localhost?per_page=2&page=3', $this->paginator->lastPageLink(true));
     }
 
-    public function testModelPaginatorPerPage()
+    public function testModelPaginatorPerPage(): void
     {
         $this->assertEquals(2, $this->paginator->perPage());
     }
 
-    public function testModelPaginatorGetPaginationRendersCurrentAndLastPage()
+    public function testModelPaginatorGetPaginationRendersCurrentAndLastPage(): void
     {
         $html = $this->paginator->getPagination();
 
@@ -169,14 +169,14 @@ class ModelPaginatorTest extends PaginatorTestCase
         $this->assertStringContainsString('>3<', $html);
     }
 
-    public function testModelPaginatorGetPaginationRendersEllipsisForHiddenPages()
+    public function testModelPaginatorGetPaginationRendersEllipsisForHiddenPages(): void
     {
         $html = $this->paginator->getPagination();
 
         $this->assertStringContainsString('<span>...</span>', $html);
     }
 
-    public function testModelPaginatorGetPaginationRendersMiddlePageWhenCurrentPageIsTwo()
+    public function testModelPaginatorGetPaginationRendersMiddlePageWhenCurrentPageIsTwo(): void
     {
         $postModel = ModelFactory::createDynamicModel('posts', TestPostModel::class);
 

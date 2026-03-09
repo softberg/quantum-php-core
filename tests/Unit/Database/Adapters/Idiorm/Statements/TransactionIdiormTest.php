@@ -11,7 +11,7 @@ use Quantum\Database\Adapters\Idiorm\IdiormDbal;
  */
 class TransactionIdiormTest extends IdiormDbalTestCase
 {
-    public function testBeginTransactionAndRollback()
+    public function testBeginTransactionAndRollback(): void
     {
         IdiormDbal::beginTransaction();
 
@@ -30,7 +30,7 @@ class TransactionIdiormTest extends IdiormDbalTestCase
         $this->assertEmpty($result);
     }
 
-    public function testBeginTransactionAndCommit()
+    public function testBeginTransactionAndCommit(): void
     {
         IdiormDbal::beginTransaction();
 

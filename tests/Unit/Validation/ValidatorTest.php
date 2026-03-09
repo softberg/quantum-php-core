@@ -8,7 +8,7 @@ use Quantum\Validation\Rule;
 
 class ValidatorTest extends AppTestCase
 {
-    private $validator;
+    private Validator $validator;
 
     public function setUp(): void
     {
@@ -17,12 +17,12 @@ class ValidatorTest extends AppTestCase
         $this->validator = new Validator();
     }
 
-    public function testValidatorConstructor()
+    public function testValidatorConstructor(): void
     {
         $this->assertInstanceOf(Validator::class, $this->validator);
     }
 
-    public function testAddUpdateDeleteRule()
+    public function testAddUpdateDeleteRule(): void
     {
         $this->validator->setRule('text', [
             Rule::minLen(5),
@@ -46,7 +46,7 @@ class ValidatorTest extends AppTestCase
         $this->assertTrue($this->validator->isValid(['text' => 'some long text goes']));
     }
 
-    public function testMultipleRules()
+    public function testMultipleRules(): void
     {
         $this->validator->setRule('text', [
             Rule::minLen(7),
@@ -75,7 +75,7 @@ class ValidatorTest extends AppTestCase
         $this->assertEquals('validation.maxLen', $errors['text'][0]);
     }
 
-    public function testMultipleFields()
+    public function testMultipleFields(): void
     {
         $this->validator->setRules([
             'name' => [
@@ -134,7 +134,7 @@ class ValidatorTest extends AppTestCase
         $this->assertFalse($this->validator->isValid($data));
     }
 
-    public function testDifferentMultipleFields()
+    public function testDifferentMultipleFields(): void
     {
         $this->validator->setRules([
             'name' => [
@@ -166,9 +166,9 @@ class ValidatorTest extends AppTestCase
         $this->assertTrue($this->validator->isValid($data));
     }
 
-    public function testCustomValidator()
+    public function testCustomValidator(): void
     {
-        $this->validator->addRule('checkName', fn ($value, $param = null) => $value == $param);
+        $this->validator->addRule('checkName', fn ($value, $param = null): bool => $value == $param);
 
         $this->validator->setRules([
             'name' => [

@@ -7,13 +7,13 @@ use Quantum\Tests\Unit\AppTestCase;
 
 class MailTrapTest extends AppTestCase
 {
-    private $mailTrap;
+    private MailTrap $mailTrap;
 
-    private $filename;
+    private string $filename;
 
-    private $content;
+    private string $content;
 
-    private $path;
+    private string $path;
 
     public function setUp(): void
     {
@@ -64,12 +64,12 @@ Y29udGVudCBvZiB0aGUgZG9jdW1lbnQ=
         $this->fs->remove($this->path . DS . $this->filename . '.eml');
     }
 
-    public function testMailTrapInstance()
+    public function testMailTrapInstance(): void
     {
         $this->assertInstanceOf(MailTrap::class, $this->mailTrap);
     }
 
-    public function testMailTrapSaveMessage()
+    public function testMailTrapSaveMessage(): void
     {
         $filename = bin2hex(random_bytes(16));
 
@@ -82,7 +82,7 @@ Y29udGVudCBvZiB0aGUgZG9jdW1lbnQ=
         $this->fs->remove($this->path . DS . $filename . '.eml');
     }
 
-    public function testMailTrapGetParsedMessageId()
+    public function testMailTrapGetParsedMessageId(): void
     {
         $message = $this->mailTrap->parseMessage($this->filename);
 
@@ -93,7 +93,7 @@ Y29udGVudCBvZiB0aGUgZG9jdW1lbnQ=
         $this->assertStringContainsString($this->filename, $parsedMessagedId);
     }
 
-    public function testMailTrapGetParsedXMailer()
+    public function testMailTrapGetParsedXMailer(): void
     {
         $message = $this->mailTrap->parseMessage($this->filename);
 
@@ -104,7 +104,7 @@ Y29udGVudCBvZiB0aGUgZG9jdW1lbnQ=
         $this->assertStringContainsStringIgnoringCase('PHPMailer 6.8.0', $parsedXMailer);
     }
 
-    public function testMailTrapGetParsedMimeVersion()
+    public function testMailTrapGetParsedMimeVersion(): void
     {
         $message = $this->mailTrap->parseMessage($this->filename);
 
@@ -115,7 +115,7 @@ Y29udGVudCBvZiB0aGUgZG9jdW1lbnQ=
         $this->assertEquals('1.0', $parsedMimeVersion);
     }
 
-    public function testMailTrapGetParsedContentType()
+    public function testMailTrapGetParsedContentType(): void
     {
         $message = $this->mailTrap->parseMessage($this->filename);
 
@@ -126,7 +126,7 @@ Y29udGVudCBvZiB0aGUgZG9jdW1lbnQ=
         $this->assertEquals('multipart/mixed', $parsedContentType);
     }
 
-    public function testMailTrapGetParsedDate()
+    public function testMailTrapGetParsedDate(): void
     {
         $message = $this->mailTrap->parseMessage($this->filename);
 
@@ -137,7 +137,7 @@ Y29udGVudCBvZiB0aGUgZG9jdW1lbnQ=
         $this->assertEquals('Wed, 5 Apr 2023 19:15:37 +0300', $parsedDate);
     }
 
-    public function testMailTrapGetParsedFromAddress()
+    public function testMailTrapGetParsedFromAddress(): void
     {
         $message = $this->mailTrap->parseMessage($this->filename);
 
@@ -148,7 +148,7 @@ Y29udGVudCBvZiB0aGUgZG9jdW1lbnQ=
         $this->assertEquals('John Doe <john@hotmail.com>', $parsedFromAddress);
     }
 
-    public function testMailTrapGetParsedToAddresses()
+    public function testMailTrapGetParsedToAddresses(): void
     {
         $message = $this->mailTrap->parseMessage($this->filename);
 
@@ -159,7 +159,7 @@ Y29udGVudCBvZiB0aGUgZG9jdW1lbnQ=
         $this->assertEquals('Jane Due <jane@gmail.com>', $parsedToAddresses[0]);
     }
 
-    public function testMailTrapGetParsedCcAddresses()
+    public function testMailTrapGetParsedCcAddresses(): void
     {
         $message = $this->mailTrap->parseMessage($this->filename);
 
@@ -172,7 +172,7 @@ Y29udGVudCBvZiB0aGUgZG9jdW1lbnQ=
         $this->assertEquals('Bill <bill@outlook.com>', $parsedCcAddress[1]);
     }
 
-    public function testMailTrapGetParsedBccAddresses()
+    public function testMailTrapGetParsedBccAddresses(): void
     {
         $message = $this->mailTrap->parseMessage($this->filename);
 
@@ -183,7 +183,7 @@ Y29udGVudCBvZiB0aGUgZG9jdW1lbnQ=
         $this->assertEquals('Dan <dan@hotmail.com>', $parsedBccAddress[0]);
     }
 
-    public function testMailTrapGetParsedReplyToAddresses()
+    public function testMailTrapGetParsedReplyToAddresses(): void
     {
         $message = $this->mailTrap->parseMessage($this->filename);
 
@@ -194,7 +194,7 @@ Y29udGVudCBvZiB0aGUgZG9jdW1lbnQ=
         $this->assertEquals('Sam <sam@gmail.com>', $parsedReplyToAddress[0]);
     }
 
-    public function testMailTrapGetParsedSubject()
+    public function testMailTrapGetParsedSubject(): void
     {
         $message = $this->mailTrap->parseMessage($this->filename);
 
@@ -205,7 +205,7 @@ Y29udGVudCBvZiB0aGUgZG9jdW1lbnQ=
         $this->assertEquals('Lorem', $parsedSubject);
     }
 
-    public function testMailTrapGetParsedBody()
+    public function testMailTrapGetParsedBody(): void
     {
         $message = $this->mailTrap->parseMessage($this->filename);
 
@@ -216,7 +216,7 @@ Y29udGVudCBvZiB0aGUgZG9jdW1lbnQ=
         $this->assertStringContainsString('Lorem ipsum dolor sit amet', $parsedBody);
     }
 
-    public function testMailTrapGetParsedAttachments()
+    public function testMailTrapGetParsedAttachments(): void
     {
         $message = $this->mailTrap->parseMessage($this->filename);
 

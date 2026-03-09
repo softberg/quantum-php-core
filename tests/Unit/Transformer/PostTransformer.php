@@ -6,7 +6,7 @@ use Quantum\Transformer\Contracts\TransformerInterface;
 
 class PostTransformer implements TransformerInterface
 {
-    public function transform($item)
+    public function transform($item): array
     {
         return [
             'id' => $item['id'],

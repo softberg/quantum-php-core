@@ -36,7 +36,7 @@ trait Result
     public function get(): array
     {
         try {
-            return array_map(function ($element) {
+            return array_map(function ($element): object {
                 $item = clone $this;
                 $item->updateOrmModel($element);
                 return $item;

@@ -26,15 +26,13 @@ class CronTask implements CronTaskInterface
 {
     /**
      * Cron expression instance
-     * @var CronExpression
      */
-    private $cronExpression;
+    private ?CronExpression $cronExpression = null;
 
     /**
      * Task name
-     * @var string
      */
-    private $name;
+    private string $name;
 
     /**
      * Task callback

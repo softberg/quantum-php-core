@@ -44,10 +44,7 @@ class Session
      */
     public const DATABASE = 'database';
 
-    /**
-     * @var SessionStorageInterface
-     */
-    private $adapter;
+    private SessionStorageInterface $adapter;
 
     /**
      * @param SessionStorageInterface $adapter
