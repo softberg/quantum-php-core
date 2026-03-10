@@ -16,6 +16,7 @@ namespace Quantum\App\Traits;
 
 use Quantum\Environment\Exceptions\EnvException;
 use Quantum\Config\Exceptions\ConfigException;
+use Quantum\Loader\Exceptions\LoaderException;
 use Quantum\Http\Exceptions\HttpException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
@@ -70,7 +71,7 @@ trait WebAppTrait
     /**
      * @throws ConfigException
      * @throws DiException
-     * @throws ReflectionException|\Quantum\Loader\Exceptions\LoaderException
+     * @throws ReflectionException|LoaderException
      */
     private function setupViewCache(): ViewCache
     {

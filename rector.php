@@ -14,7 +14,6 @@ return RectorConfig::configure()
     ->withSets([
         LevelSetList::UP_TO_PHP_80,
         SetList::TYPE_DECLARATION,
-        SetList::DEAD_CODE,
     ])
     ->withSkip([
         StrictStringParamConcatRector::class => [
