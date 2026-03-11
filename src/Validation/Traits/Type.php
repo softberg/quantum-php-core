@@ -22,8 +22,6 @@ trait Type
 {
     /**
      * Checks the alpha characters
-     * @param string $value
-     * @return bool
      */
     protected function alpha(string $value): bool
     {
@@ -32,8 +30,6 @@ trait Type
 
     /**
      * Checks the alpha and numeric characters
-     * @param string $value
-     * @return bool
      */
     protected function alphaNumeric(string $value): bool
     {
@@ -42,8 +38,6 @@ trait Type
 
     /**
      * Checks the alpha and dash characters
-     * @param string $value
-     * @return bool
      */
     protected function alphaDash(string $value): bool
     {
@@ -52,8 +46,6 @@ trait Type
 
     /**
      * Checks the alphanumeric and space characters
-     * @param string $value
-     * @return bool
      */
     protected function alphaSpace(string $value): bool
     {
@@ -62,8 +54,6 @@ trait Type
 
     /**
      * Checks the numeric value
-     * @param string $value
-     * @return bool
      */
     protected function numeric(string $value): bool
     {
@@ -72,8 +62,6 @@ trait Type
 
     /**
      * Checks the integer value
-     * @param string $value
-     * @return bool
      */
     protected function integer(string $value): bool
     {
@@ -82,8 +70,6 @@ trait Type
 
     /**
      * Checks the float value
-     * @param string $value
-     * @return bool
      */
     protected function float(string $value): bool
     {
@@ -93,7 +79,6 @@ trait Type
     /**
      * Checks the boolean value
      * @param $value
-     * @return bool
      */
     protected function boolean($value): bool
     {
@@ -104,9 +89,7 @@ trait Type
 
     /**
      * Determines if the provided numeric value is lower to a specific value
-     * @param string $value
      * @param $minValue
-     * @return bool
      */
     protected function minNumeric(string $value, $minValue): bool
     {
@@ -115,9 +98,7 @@ trait Type
 
     /**
      * Determines if the provided numeric value is higher to a specific value
-     * @param string $value
      * @param $maxValue
-     * @return bool
      */
     protected function maxNumeric(string $value, $maxValue): bool
     {

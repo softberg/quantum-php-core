@@ -8,8 +8,7 @@ use Quantum\Validation\Rule;
 
 class ListRuleTest extends AppTestCase
 {
-    public $validator;
-    private $request;
+    public Validator $validator;
 
     public function setUp(): void
     {
@@ -19,7 +18,7 @@ class ListRuleTest extends AppTestCase
 
     }
 
-    public function testRuleContains()
+    public function testRuleContains(): void
     {
         $this->validator->setRule('text', [
             Rule::contains('Fisherman goes out'),
@@ -40,7 +39,7 @@ class ListRuleTest extends AppTestCase
         $this->assertEquals('validation.contains', $errors['text'][0]);
     }
 
-    public function testRuleContainsList()
+    public function testRuleContainsList(): void
     {
         $this->validator->setRule('text', [
             Rule::containsList('male', 'female'),
@@ -59,7 +58,7 @@ class ListRuleTest extends AppTestCase
         $this->assertEquals('validation.containsList', $errors['text'][0]);
     }
 
-    public function testRuleDoesntContainsList()
+    public function testRuleDoesntContainsList(): void
     {
         $this->validator->setRule('text', [
             Rule::doesntContainsList('male', 'famale'),

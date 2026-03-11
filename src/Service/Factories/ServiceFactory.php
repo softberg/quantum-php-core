@@ -29,9 +29,6 @@ class ServiceFactory
 {
     /**
      * Creates and initiates the service once
-     * @param string $serviceClass
-     * @param array $args
-     * @return QtService
      * @throws BaseException
      * @throws DiException
      * @throws ReflectionException
@@ -50,9 +47,6 @@ class ServiceFactory
 
     /**
      * Creates new service instance
-     * @param string $serviceClass
-     * @param array $args
-     * @return QtService
      * @throws BaseException
      * @throws DiException
      * @throws ReflectionException
@@ -67,8 +61,6 @@ class ServiceFactory
 
     /**
      * Validates the service class
-     * @param string $serviceClass
-     * @return void
      * @throws ServiceException
      * @throws BaseException
      */

@@ -23,14 +23,8 @@ use Exception;
  */
 class GoogleDriveFileSystemAdapter implements FilesystemAdapterInterface
 {
-    /**
-     * @var GoogleDriveApp
-     */
-    private $googleDriveApp;
+    private GoogleDriveApp $googleDriveApp;
 
-    /**
-     * @param GoogleDriveApp $googleDriveApp
-     */
     public function __construct(GoogleDriveApp $googleDriveApp)
     {
         $this->googleDriveApp = $googleDriveApp;

@@ -22,8 +22,6 @@ use Quantum\Auth\Auth;
 
 /**
  * Gets the Auth handler
- * @param string|null $adapter
- * @return Auth
  * @throws AuthException
  * @throws BaseException
  * @throws ConfigException

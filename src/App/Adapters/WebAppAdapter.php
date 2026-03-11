@@ -80,7 +80,6 @@ class WebAppAdapter extends AppAdapter
 
     /**
      * Starts the web app
-     * @return int|null
      * @throws BaseException
      * @throws ConfigException
      * @throws CsrfException
@@ -147,7 +146,7 @@ class WebAppAdapter extends AppAdapter
             }
 
             $dispatcher = new RouteDispatcher();
-            $dispatcher->dispatch($matchedRoute, $this->request, $this->response);
+            $dispatcher->dispatch($matchedRoute, $this->request);
             stop();
         } catch (StopExecutionException $exception) {
             $this->handleCors($this->response);

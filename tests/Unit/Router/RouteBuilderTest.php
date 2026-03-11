@@ -10,12 +10,12 @@ use ReflectionClass;
 
 class RouteBuilderTest extends AppTestCase
 {
-    public function testRouteBuilderBuildReturnsRouteCollection()
+    public function testRouteBuilderBuildReturnsRouteCollection(): void
     {
         $builder = new RouteBuilder();
 
         $routes = $builder->build([
-            'Web' => function (RouteBuilder $route) {
+            'Web' => function (RouteBuilder $route): void {
                 $route->get('users', 'UserController', 'index');
             },
         ], []);
@@ -25,16 +25,16 @@ class RouteBuilderTest extends AppTestCase
         $this->assertSame(1, $routes->count());
     }
 
-    public function testRouteBuilderBuildCollectsRoutesFromMultipleModules()
+    public function testRouteBuilderBuildCollectsRoutesFromMultipleModules(): void
     {
         $builder = new RouteBuilder();
 
         $closures = [
-            'Api' => function (RouteBuilder $route) {
+            'Api' => function (RouteBuilder $route): void {
                 $route->get('users', 'UsersController', 'index');
                 $route->post('login', 'AuthController', 'login');
             },
-            'Web' => function (RouteBuilder $route) {
+            'Web' => function (RouteBuilder $route): void {
                 $route->get('', 'HomeController', 'index');
             },
         ];
@@ -69,13 +69,13 @@ class RouteBuilderTest extends AppTestCase
         $this->assertTrue($all[2]->allowsMethod('GET'));
     }
 
-    public function testRouteBuilderMissingModuleConfigFallsBackSafely()
+    public function testRouteBuilderMissingModuleConfigFallsBackSafely(): void
     {
         $builder = new RouteBuilder();
 
         $routes = $builder->build(
             [
-                'Test' => function (RouteBuilder $route) {
+                'Test' => function (RouteBuilder $route): void {
                     $route->get('ping', 'PingController', 'index');
                 },
             ],
@@ -91,13 +91,13 @@ class RouteBuilderTest extends AppTestCase
         $this->assertSame('/ping', $route->getPattern());
     }
 
-    public function testRouteBuilderPrefixIsAppliedToRoutes()
+    public function testRouteBuilderPrefixIsAppliedToRoutes(): void
     {
         $builder = new RouteBuilder();
 
         $routes = $builder->build(
             [
-                'Api' => function (RouteBuilder $route) {
+                'Api' => function (RouteBuilder $route): void {
                     $route->get('status', 'StatusController', 'index');
                 },
             ],
@@ -113,14 +113,14 @@ class RouteBuilderTest extends AppTestCase
         $this->assertSame('Api', $route->getModule());
     }
 
-    public function testRouteBuilderGroupAssignsGroupNameToRoutes()
+    public function testRouteBuilderGroupAssignsGroupNameToRoutes(): void
     {
         $builder = new RouteBuilder();
 
         $routes = $builder->build(
             [
-                'Web' => function (RouteBuilder $route) {
-                    $route->group('auth', function (RouteBuilder $route) {
+                'Web' => function (RouteBuilder $route): void {
+                    $route->group('auth', function (RouteBuilder $route): void {
                         $route->get('dashboard', 'DashboardController', 'index');
                     });
                 },
@@ -133,7 +133,7 @@ class RouteBuilderTest extends AppTestCase
         $this->assertSame('auth', $route->getGroup());
     }
 
-    public function testRouteBuilderNestedGroupsAreNotAllowed()
+    public function testRouteBuilderNestedGroupsAreNotAllowed(): void
     {
         $this->expectException(RouteException::class);
 
@@ -141,9 +141,9 @@ class RouteBuilderTest extends AppTestCase
 
         $builder->build(
             [
-                'Web' => function (RouteBuilder $route) {
-                    $route->group('one', function (RouteBuilder $route) {
-                        $route->group('two', function () {
+                'Web' => function (RouteBuilder $route): void {
+                    $route->group('one', function (RouteBuilder $route): void {
+                        $route->group('two', function (): void {
                         });
                     });
                 },
@@ -152,14 +152,14 @@ class RouteBuilderTest extends AppTestCase
         );
     }
 
-    public function testRouteBuilderGroupMiddlewaresAreAppliedToRoutes()
+    public function testRouteBuilderGroupMiddlewaresAreAppliedToRoutes(): void
     {
         $builder = new RouteBuilder();
 
         $routes = $builder->build(
             [
-                'Web' => function (RouteBuilder $route) {
-                    $route->group('auth', function (RouteBuilder $route) {
+                'Web' => function (RouteBuilder $route): void {
+                    $route->group('auth', function (RouteBuilder $route): void {
                         $route->get('profile', 'ProfileController', 'show');
                     })->middlewares(['Auth']);
                 },
@@ -172,14 +172,14 @@ class RouteBuilderTest extends AppTestCase
         $this->assertSame(['Auth'], $route->getMiddlewares());
     }
 
-    public function testRouteBuilderRouteMiddlewaresPrependToGroupMiddlewares()
+    public function testRouteBuilderRouteMiddlewaresPrependToGroupMiddlewares(): void
     {
         $builder = new RouteBuilder();
 
         $routes = $builder->build(
             [
-                'Web' => function (RouteBuilder $route) {
-                    $route->group('auth', function (RouteBuilder $route) {
+                'Web' => function (RouteBuilder $route): void {
+                    $route->group('auth', function (RouteBuilder $route): void {
                         $route
                             ->get('profile', 'ProfileController', 'show')
                             ->middlewares(['Editor']);
@@ -197,7 +197,7 @@ class RouteBuilderTest extends AppTestCase
         );
     }
 
-    public function testRouteBuilderMiddlewaresMustBeCalledAfterRouteOrInsideGroup()
+    public function testRouteBuilderMiddlewaresMustBeCalledAfterRouteOrInsideGroup(): void
     {
         $this->expectException(RouteException::class);
 
@@ -205,7 +205,7 @@ class RouteBuilderTest extends AppTestCase
 
         $builder->build(
             [
-                'Web' => function (RouteBuilder $route) {
+                'Web' => function (RouteBuilder $route): void {
                     $route->middlewares(['Invalid']);
                 },
             ],
@@ -213,14 +213,14 @@ class RouteBuilderTest extends AppTestCase
         );
     }
 
-    public function testRouteBuilderMiddlewareOrderAcrossModulesGroupsAndStandaloneRoutes()
+    public function testRouteBuilderMiddlewareOrderAcrossModulesGroupsAndStandaloneRoutes(): void
     {
         $builder = new RouteBuilder();
 
         $routes = $builder->build(
             [
-                'Web' => function (RouteBuilder $route) {
-                    $route->group('auth', function (RouteBuilder $route) {
+                'Web' => function (RouteBuilder $route): void {
+                    $route->group('auth', function (RouteBuilder $route): void {
                         $route->get('profile', 'ProfileController', 'show')->middlewares(['ProfileMw']);
                         $route->get('settings', 'SettingsController', 'show')->middlewares(['SettingsMw']);
                     })->middlewares(['AuthMw']);
@@ -228,8 +228,8 @@ class RouteBuilderTest extends AppTestCase
                     $route->get('home', 'HomeController', 'index')->middlewares(['HomeMw']);
                 },
 
-                'Api' => function (RouteBuilder $route) {
-                    $route->group('api-auth', function (RouteBuilder $route) {
+                'Api' => function (RouteBuilder $route): void {
+                    $route->group('api-auth', function (RouteBuilder $route): void {
                         $route->get('users', 'UsersController', 'index')->middlewares(['UsersMw1', 'UsersMw2']);
                         $route->post('login', 'AuthController', 'login')->middlewares(['LoginMw']);
                     })->middlewares(['ApiAuthMw']);
@@ -255,13 +255,13 @@ class RouteBuilderTest extends AppTestCase
         $this->assertSame(['StatusMw'], $all[5]->getMiddlewares());
     }
 
-    public function testRouteBuilderRouteNameIsAssigned()
+    public function testRouteBuilderRouteNameIsAssigned(): void
     {
         $builder = new RouteBuilder();
 
         $routes = $builder->build(
             [
-                'Web' => function (RouteBuilder $route) {
+                'Web' => function (RouteBuilder $route): void {
                     $route->get('home', 'HomeController', 'index')
                         ->name('home');
                 },
@@ -272,7 +272,7 @@ class RouteBuilderTest extends AppTestCase
         $this->assertSame('home', $routes->all()[0]->getName());
     }
 
-    public function testRouteBuilderRouteNamesMustBeUnique()
+    public function testRouteBuilderRouteNamesMustBeUnique(): void
     {
         $this->expectException(RouteException::class);
 
@@ -280,7 +280,7 @@ class RouteBuilderTest extends AppTestCase
 
         $builder->build(
             [
-                'Web' => function (RouteBuilder $route) {
+                'Web' => function (RouteBuilder $route): void {
                     $route->get('a', 'AController', 'a')->name('dup');
                     $route->get('b', 'BController', 'b')->name('dup');
                 },
@@ -289,16 +289,16 @@ class RouteBuilderTest extends AppTestCase
         );
     }
 
-    public function testRouteBuilderRouteNamesCanRepeatAcrossModules()
+    public function testRouteBuilderRouteNamesCanRepeatAcrossModules(): void
     {
         $builder = new RouteBuilder();
 
         $routes = $builder->build(
             [
-                'Api' => function (RouteBuilder $route) {
+                'Api' => function (RouteBuilder $route): void {
                     $route->get('posts', 'ApiPostController', 'index')->name('posts');
                 },
-                'Web' => function (RouteBuilder $route) {
+                'Web' => function (RouteBuilder $route): void {
                     $route->get('posts', 'WebPostController', 'index')->name('posts');
                 },
             ],
@@ -317,7 +317,7 @@ class RouteBuilderTest extends AppTestCase
         $this->assertSame('Web', $all[1]->getModule());
     }
 
-    public function testRouteBuilderNameMustBeCalledAfterRouteDefinition()
+    public function testRouteBuilderNameMustBeCalledAfterRouteDefinition(): void
     {
         $this->expectException(RouteException::class);
 
@@ -325,7 +325,7 @@ class RouteBuilderTest extends AppTestCase
 
         $builder->build(
             [
-                'Web' => function (RouteBuilder $route) {
+                'Web' => function (RouteBuilder $route): void {
                     $route->name('invalid');
                 },
             ],
@@ -333,13 +333,13 @@ class RouteBuilderTest extends AppTestCase
         );
     }
 
-    public function testRouteBuilderCacheableAppliesToSingleRoute()
+    public function testRouteBuilderCacheableAppliesToSingleRoute(): void
     {
         $builder = new RouteBuilder();
 
         $routes = $builder->build(
             [
-                'Web' => function (RouteBuilder $route) {
+                'Web' => function (RouteBuilder $route): void {
                     $route->get('page', 'PageController', 'show')
                         ->cacheable(true, 60);
                 },
@@ -353,14 +353,14 @@ class RouteBuilderTest extends AppTestCase
         $this->assertSame(60, $cache['ttl']);
     }
 
-    public function testRouteBuilderCacheableAppliesToGroupRoutes()
+    public function testRouteBuilderCacheableAppliesToGroupRoutes(): void
     {
         $builder = new RouteBuilder();
 
         $routes = $builder->build(
             [
-                'Web' => function (RouteBuilder $route) {
-                    $route->group('cached', function (RouteBuilder $route) {
+                'Web' => function (RouteBuilder $route): void {
+                    $route->group('cached', function (RouteBuilder $route): void {
                         $route->get('a', 'AController', 'a');
                         $route->get('b', 'BController', 'b');
                     })->cacheable(true, 120);
@@ -376,7 +376,7 @@ class RouteBuilderTest extends AppTestCase
         }
     }
 
-    public function testRouteBuilderAddRouteRequiresControllerAndAction()
+    public function testRouteBuilderAddRouteRequiresControllerAndAction(): void
     {
         $this->expectException(RouteException::class);
 
@@ -384,7 +384,7 @@ class RouteBuilderTest extends AppTestCase
 
         $builder->build(
             [
-                'Web' => function (RouteBuilder $route) {
+                'Web' => function (RouteBuilder $route): void {
                     $route->get('broken', 'OnlyController');
                 },
             ],
@@ -392,13 +392,13 @@ class RouteBuilderTest extends AppTestCase
         );
     }
 
-    public function testRouteBuilderResolvesShortControllerNameToFqcn()
+    public function testRouteBuilderResolvesShortControllerNameToFqcn(): void
     {
         $builder = new RouteBuilder();
 
         $routes = $builder->build(
             [
-                'Test' => function (RouteBuilder $route) {
+                'Test' => function (RouteBuilder $route): void {
                     $route->get('tests', 'TestController', 'tests');
                 },
             ],
@@ -407,22 +407,22 @@ class RouteBuilderTest extends AppTestCase
 
         $route = $routes->all()[0];
 
-        $expected = 'Quantum\\Tests\\_root\\modules\\Test\\Controllers\\TestController';
+        $expected = \Quantum\Tests\_root\modules\Test\Controllers\TestController::class;
 
         $this->assertTrue(class_exists($expected), 'Expected test controller class to exist');
 
         $this->assertSame($expected, $route->getController());
     }
 
-    public function testRouteBuilderDoesNotModifyExplicitFqcnController()
+    public function testRouteBuilderDoesNotModifyExplicitFqcnController(): void
     {
         $builder = new RouteBuilder();
 
-        $fqcn = 'Quantum\\Tests\\_root\\modules\\Test\\Controllers\\TestController';
+        $fqcn = \Quantum\Tests\_root\modules\Test\Controllers\TestController::class;
 
         $routes = $builder->build(
             [
-                'Test' => function (RouteBuilder $route) use ($fqcn) {
+                'Test' => function (RouteBuilder $route) use ($fqcn): void {
                     $route->get('tests', $fqcn, 'tests');
                 },
             ],
@@ -436,19 +436,19 @@ class RouteBuilderTest extends AppTestCase
         $this->assertSame($fqcn, $route->getController());
     }
 
-    public function testRouteBuilderAddRouteRejectsEmptyMethods()
+    public function testRouteBuilderAddRouteRejectsEmptyMethods(): void
     {
         $this->expectException(RouteException::class);
 
         $builder = new RouteBuilder();
         $builder->build([
-            'Web' => function (RouteBuilder $route) {
+            'Web' => function (RouteBuilder $route): void {
                 $route->add('test', '', 'TestController', 'index');
             },
         ], []);
     }
 
-    public function testRouteBuilderShortControllerWithoutModuleThrows()
+    public function testRouteBuilderShortControllerWithoutModuleThrows(): void
     {
         $this->expectException(RouteException::class);
 
@@ -467,10 +467,10 @@ class RouteBuilderTest extends AppTestCase
         );
     }
 
-    public function testRouteBuilderMiddlewaresAppliedDirectlyToRoute()
+    public function testRouteBuilderMiddlewaresAppliedDirectlyToRoute(): void
     {
         $routes = (new RouteBuilder())->build([
-            'Web' => function (RouteBuilder $route) {
+            'Web' => function (RouteBuilder $route): void {
                 $route->get('a', 'AController', 'a');
                 $route->middlewares(['Direct']);
             },
@@ -479,22 +479,22 @@ class RouteBuilderTest extends AppTestCase
         $this->assertSame(['Direct'], $routes->all()[0]->getMiddlewares());
     }
 
-    public function testRouteBuilderCacheableMustFollowRouteOrGroup()
+    public function testRouteBuilderCacheableMustFollowRouteOrGroup(): void
     {
         $this->expectException(RouteException::class);
 
         (new RouteBuilder())->build([
-            'Web' => function (RouteBuilder $route) {
+            'Web' => function (RouteBuilder $route): void {
                 $route->cacheable(true);
             },
         ], []);
     }
 
-    public function testRouteBuilderResolvePathTrimsSlashesCorrectly()
+    public function testRouteBuilderResolvePathTrimsSlashesCorrectly(): void
     {
         $routes = (new RouteBuilder())->build(
             [
-                'Api' => function (RouteBuilder $route) {
+                'Api' => function (RouteBuilder $route): void {
                     $route->get('/users/', 'UserController', 'index');
                 },
             ],
@@ -506,13 +506,11 @@ class RouteBuilderTest extends AppTestCase
         $this->assertSame('/v1/users', $routes->all()[0]->getPattern());
     }
 
-    public function testRouteBuilderClosureBasedRouteIsSupported()
+    public function testRouteBuilderClosureBasedRouteIsSupported(): void
     {
         $routes = (new RouteBuilder())->build([
-            'Web' => function (RouteBuilder $route) {
-                $route->get('ping', function () {
-                    return 'pong';
-                });
+            'Web' => function (RouteBuilder $route): void {
+                $route->get('ping', fn (): string => 'pong');
             },
         ], []);
 
@@ -520,11 +518,11 @@ class RouteBuilderTest extends AppTestCase
         $this->assertNull($routes->all()[0]->getController());
     }
 
-    public function testRouteBuilderGroupedRoutesAreRegisteredIndividually()
+    public function testRouteBuilderGroupedRoutesAreRegisteredIndividually(): void
     {
         $routes = (new RouteBuilder())->build([
-            'Web' => function (RouteBuilder $route) {
-                $route->group('g', function (RouteBuilder $route) {
+            'Web' => function (RouteBuilder $route): void {
+                $route->group('g', function (RouteBuilder $route): void {
                     $route->get('a', 'AController', 'a');
                     $route->get('b', 'BController', 'b');
                 });

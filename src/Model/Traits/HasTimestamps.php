@@ -24,25 +24,21 @@ trait HasTimestamps
 {
     /**
      * Column name for created timestamp
-     * @var string
      */
     public string $createdAt = 'created_at';
 
     /**
      * Column name for updated timestamp
-     * @var string
      */
     public string $updatedAt = 'updated_at';
 
     /**
      * Timestamp storage type: datetime|unix
-     * @var string
      */
     public string $timestampType = 'datetime';
 
     /**
      * Determine whether the current model is new (insert) or existing (update).
-     * @return bool
      */
     protected function isNewRecord(): bool
     {
@@ -67,7 +63,6 @@ trait HasTimestamps
 
     /**
      * Get timestamp type.
-     * @return string
      */
     protected function getTimestampType(): string
     {
@@ -80,7 +75,6 @@ trait HasTimestamps
 
     /**
      * Get "created at" column name.
-     * @return string
      */
     protected function getCreatedAtColumn(): string
     {
@@ -93,7 +87,6 @@ trait HasTimestamps
 
     /**
      * Get "updated at" column name.
-     * @return string
      */
     protected function getUpdatedAtColumn(): string
     {
@@ -106,7 +99,6 @@ trait HasTimestamps
 
     /**
      * Touch timestamps on save
-     * @return void
      */
     protected function touchTimestamps(): void
     {

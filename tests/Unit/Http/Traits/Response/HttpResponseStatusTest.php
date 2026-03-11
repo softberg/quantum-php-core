@@ -12,7 +12,7 @@ class HttpResponseStatusTest extends AppTestCase
         parent::setUp();
     }
 
-    public function testResponseStatus()
+    public function testResponseStatus(): void
     {
         $response = new Response();
 
@@ -25,7 +25,7 @@ class HttpResponseStatusTest extends AppTestCase
         $this->assertEquals('Moved Permanently', $response->getStatusText());
     }
 
-    public function testHttpStatusGetText()
+    public function testHttpStatusGetText(): void
     {
         $response = new Response();
 

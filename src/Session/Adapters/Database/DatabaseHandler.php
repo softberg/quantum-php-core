@@ -23,14 +23,10 @@ use SessionHandlerInterface;
  */
 class DatabaseHandler implements SessionHandlerInterface
 {
-    /**
-     * @var DbalInterface
-     */
     private DbalInterface $sessionModel;
 
     /**
      * DatabaseHandler constructor.
-     * @param DbalInterface $sessionModel
      */
     public function __construct(DbalInterface $sessionModel)
     {

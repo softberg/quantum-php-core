@@ -44,30 +44,19 @@ class Session
      */
     public const DATABASE = 'database';
 
-    /**
-     * @var SessionStorageInterface
-     */
-    private $adapter;
+    private SessionStorageInterface $adapter;
 
-    /**
-     * @param SessionStorageInterface $adapter
-     */
     public function __construct(SessionStorageInterface $adapter)
     {
         $this->adapter = $adapter;
     }
 
-    /**
-     * @return SessionStorageInterface
-     */
     public function getAdapter(): SessionStorageInterface
     {
         return $this->adapter;
     }
 
     /**
-     * @param string $method
-     * @param array|null $arguments
      * @return mixed
      * @throws BaseException
      */

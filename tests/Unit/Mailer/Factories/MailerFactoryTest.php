@@ -26,56 +26,56 @@ class MailerFactoryTest extends AppTestCase
         }
     }
 
-    public function testMailerFactoryInstance()
+    public function testMailerFactoryInstance(): void
     {
         $mailer = MailerFactory::get();
 
         $this->assertInstanceOf(Mailer::class, $mailer);
     }
 
-    public function testMailerFactoryGetDefaultAdapter()
+    public function testMailerFactoryGetDefaultAdapter(): void
     {
         $mailer = MailerFactory::get();
 
         $this->assertInstanceOf(SmtpAdapter::class, $mailer->getAdapter());
     }
 
-    public function testMailerFactoryGetSmtpAdapter()
+    public function testMailerFactoryGetSmtpAdapter(): void
     {
         $mailer = MailerFactory::get(Mailer::SMTP);
 
         $this->assertInstanceOf(SmtpAdapter::class, $mailer->getAdapter());
     }
 
-    public function testMailerFactoryGetMailgunAdapter()
+    public function testMailerFactoryGetMailgunAdapter(): void
     {
         $mailer = MailerFactory::get(Mailer::MAILGUN);
 
         $this->assertInstanceOf(MailgunAdapter::class, $mailer->getAdapter());
     }
 
-    public function testMailerFactoryGetMandrillAdapter()
+    public function testMailerFactoryGetMandrillAdapter(): void
     {
         $mailer = MailerFactory::get(Mailer::MANDRILL);
 
         $this->assertInstanceOf(MandrillAdapter::class, $mailer->getAdapter());
     }
 
-    public function testMailerFactoryGetSendgridAdapter()
+    public function testMailerFactoryGetSendgridAdapter(): void
     {
         $mailer = MailerFactory::get(Mailer::SENDGRID);
 
         $this->assertInstanceOf(SendgridAdapter::class, $mailer->getAdapter());
     }
 
-    public function testMailerFactoryGetSendinblueAdapter()
+    public function testMailerFactoryGetSendinblueAdapter(): void
     {
         $mailer = MailerFactory::get(Mailer::SENDINBLUE);
 
         $this->assertInstanceOf(SendinblueAdapter::class, $mailer->getAdapter());
     }
 
-    public function testMailerFactoryGetInvalidTypeAdapter()
+    public function testMailerFactoryGetInvalidTypeAdapter(): void
     {
         $this->expectException(MailerException::class);
 
@@ -84,7 +84,7 @@ class MailerFactoryTest extends AppTestCase
         MailerFactory::get('invalid_type');
     }
 
-    public function testMailerFactoryReturnsSameInstance()
+    public function testMailerFactoryReturnsSameInstance(): void
     {
         $mailer1 = MailerFactory::get(Mailer::SMTP);
         $mailer2 = MailerFactory::get(Mailer::SMTP);

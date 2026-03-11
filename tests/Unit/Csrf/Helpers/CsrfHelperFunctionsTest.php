@@ -8,12 +8,12 @@ use Quantum\Csrf\Csrf;
 
 class CsrfHelperFunctionsTest extends AppTestCase
 {
-    public function testCsrfHelper()
+    public function testCsrfHelper(): void
     {
         $this->assertInstanceOf(Csrf::class, csrf());
     }
 
-    public function testCsrfToken()
+    public function testCsrfToken(): void
     {
         $request = new Request();
 

@@ -29,18 +29,11 @@ use ReflectionException;
  */
 class HtmlAdapter implements TemplateRendererInterface
 {
-    /**
-     * @var FileSystem
-     */
     protected FileSystem $fs;
 
-    /**
-     * @var array|null
-     */
     protected ?array $configs;
 
     /**
-     * @param array|null $configs
      * @throws BaseException
      * @throws DiException
      * @throws ReflectionException
@@ -55,9 +48,6 @@ class HtmlAdapter implements TemplateRendererInterface
 
     /**
      * Renders the view
-     * @param string $view
-     * @param array $params
-     * @return string
      * @throws BaseException
      */
     public function render(string $view, array $params = []): string
@@ -81,8 +71,6 @@ class HtmlAdapter implements TemplateRendererInterface
     }
 
     /**
-     * @param string $view
-     * @return string
      * @throws DiException
      * @throws ReflectionException
      */

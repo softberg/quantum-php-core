@@ -7,9 +7,9 @@ use Quantum\Cookie\Cookie;
 
 class CookieTest extends AppTestCase
 {
-    private $cookie;
+    private Cookie $cookie;
 
-    private $storage = [];
+    private array $storage = [];
 
     public function setUp(): void
     {
@@ -23,12 +23,12 @@ class CookieTest extends AppTestCase
         $this->cookie->flush();
     }
 
-    public function testCookieConstructor()
+    public function testCookieConstructor(): void
     {
         $this->assertInstanceOf(Cookie::class, $this->cookie);
     }
 
-    public function testCookieAll()
+    public function testCookieAll(): void
     {
         $this->assertEmpty($this->cookie->all());
 
@@ -43,7 +43,7 @@ class CookieTest extends AppTestCase
         $this->assertArrayHasKey('test', $this->cookie->all());
     }
 
-    public function testCookieGetSetHasDelete()
+    public function testCookieGetSetHasDelete(): void
     {
         $this->assertNull($this->cookie->get('auth'));
 
@@ -62,7 +62,7 @@ class CookieTest extends AppTestCase
         $this->assertNull($this->cookie->get('auth'));
     }
 
-    public function testCookieFlush()
+    public function testCookieFlush(): void
     {
         $this->cookie->set('test', 'Test data');
 

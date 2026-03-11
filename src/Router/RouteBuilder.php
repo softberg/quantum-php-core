@@ -24,49 +24,22 @@ use Closure;
  */
 final class RouteBuilder
 {
-    /**
-     * @var RouteCollection
-     */
     private RouteCollection $collection;
 
-    /**
-     * @var PatternCompiler
-     */
     private PatternCompiler $patternCompiler;
 
-    /**
-     * @var Route|null
-     */
     private ?Route $currentRoute = null;
 
-    /**
-     * @var string|null
-     */
     private ?string $currentModule = null;
 
-    /**
-     * @var string|null
-     */
     private ?string $currentPrefix = null;
 
-    /**
-     * @var bool
-     */
     private bool $inGroup = false;
 
-    /**
-     * @var string|null
-     */
     private ?string $currentGroupName = null;
 
-    /**
-     * @var array
-     */
     private array $groupRoutes = [];
 
-    /**
-     * @var array
-     */
     private array $groupMiddlewares = [];
 
     /**
@@ -83,9 +56,6 @@ final class RouteBuilder
 
     /**
      * Execute DSL and return final RouteCollection
-     * @param array $moduleRouteClosures
-     * @param array $moduleConfigs
-     * @return RouteCollection
      * @throws RouteException
      */
     public function build(array $moduleRouteClosures, array $moduleConfigs): RouteCollection
@@ -112,18 +82,15 @@ final class RouteBuilder
 
     /**
      * Define a route with multiple HTTP methods.
-     * @param string $path
-     * @param string $methods
      * @param $handler
      * @param string|null $action
-     * @return self
      * @throws RouteException
      */
     public function add(string $path, string $methods, $handler, string $action = null): self
     {
         $methodList = array_filter(
             array_map('trim', explode('|', $methods)),
-            static fn ($m) => $m !== ''
+            static fn ($m): bool => $m !== ''
         );
 
         return $this->addRoute($methodList, $path, $handler, $action);
@@ -131,10 +98,8 @@ final class RouteBuilder
 
     /**
      * Define a GET route.
-     * @param string $path
      * @param $handler
      * @param string|null $action
-     * @return self
      * @throws RouteException
      */
     public function get(string $path, $handler, string $action = null): self
@@ -144,10 +109,8 @@ final class RouteBuilder
 
     /**
      * Define a POST route.
-     * @param string $path
      * @param $handler
      * @param string|null $action
-     * @return self
      * @throws RouteException
      */
     public function post(string $path, $handler, string $action = null): self
@@ -157,10 +120,8 @@ final class RouteBuilder
 
     /**
      * Define a PUT route.
-     * @param string $path
      * @param $handler
      * @param string|null $action
-     * @return self
      * @throws RouteException
      */
     public function put(string $path, $handler, string $action = null): self
@@ -170,10 +131,8 @@ final class RouteBuilder
 
     /**
      * Define a DELETE route.
-     * @param string $path
      * @param $handler
      * @param string|null $action
-     * @return self
      * @throws RouteException
      */
     public function delete(string $path, $handler, string $action = null): self
@@ -183,8 +142,6 @@ final class RouteBuilder
 
     /**
      * Group routes under a shared name and configuration.
-     * @param string $name
-     * @param callable $callback
      * @return $this
      * @throws RouteException
      */
@@ -219,7 +176,6 @@ final class RouteBuilder
 
     /**
      * Apply middlewares to the current route or group.
-     * @param array $middlewares
      * @return $this
      * @throws RouteException
      */
@@ -253,7 +209,6 @@ final class RouteBuilder
 
     /**
      * Assign a unique name to the current route.
-     * @param string $name
      * @return $this
      * @throws RouteException
      */
@@ -280,8 +235,6 @@ final class RouteBuilder
 
     /**
      * Enable or disable caching for the current route or group.
-     * @param bool $enabled
-     * @param int|null $ttl
      * @return $this
      * @throws RouteException
      */
@@ -314,11 +267,7 @@ final class RouteBuilder
 
     /**
      * Create and register a Route instance.
-     * @param array $methods
-     * @param string $path
      * @param $handler
-     * @param string|null $action
-     * @return self
      * @throws RouteException
      */
     private function addRoute(
@@ -363,8 +312,7 @@ final class RouteBuilder
                 $methods,
                 $pattern,
                 $handler,
-                $action,
-                null
+                $action
             );
         }
 
@@ -388,8 +336,6 @@ final class RouteBuilder
 
     /**
      * Resolve path using the current prefix.
-     * @param string $path
-     * @return string
      */
     private function resolvePath(string $path): string
     {

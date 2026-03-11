@@ -14,17 +14,17 @@ class LoggerConfigTest extends AppTestCase
         $this->setPrivateProperty(LoggerConfig::class, 'logLevel', 'error');
     }
 
-    public function testDefaultLogLevel()
+    public function testDefaultLogLevel(): void
     {
         $this->assertEquals('error', LoggerConfig::DEFAULT_LOG_LEVEL);
     }
 
-    public function testGetAppLogLevelWithDefault()
+    public function testGetAppLogLevelWithDefault(): void
     {
         $this->assertEquals(400, LoggerConfig::getAppLogLevel());
     }
 
-    public function testSetGetAppLogLevel()
+    public function testSetGetAppLogLevel(): void
     {
         LoggerConfig::setAppLogLevel('debug');
 
@@ -39,7 +39,7 @@ class LoggerConfigTest extends AppTestCase
         $this->assertEquals(500, LoggerConfig::getAppLogLevel());
     }
 
-    public function testGetLogLevel()
+    public function testGetLogLevel(): void
     {
         $this->assertEquals(500, LoggerConfig::getLogLevel('critical'));
 
@@ -48,7 +48,7 @@ class LoggerConfigTest extends AppTestCase
         $this->assertEquals(600, LoggerConfig::getLogLevel('emergency'));
     }
 
-    public function testGetLogLevelWithInvalidErrorType()
+    public function testGetLogLevelWithInvalidErrorType(): void
     {
         $this->assertEquals(400, LoggerConfig::getLogLevel('non_existing_error'));
     }

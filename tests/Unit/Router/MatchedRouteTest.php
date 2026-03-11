@@ -8,7 +8,7 @@ use Quantum\Router\Route;
 
 class MatchedRouteTest extends AppTestCase
 {
-    public function testMatchedRouteStoresRouteAndParams()
+    public function testMatchedRouteStoresRouteAndParams(): void
     {
         $route = new Route(['GET'], 'users/[id=:num]', 'Ctrl', 'act');
         $params = ['id' => '42'];
@@ -19,7 +19,7 @@ class MatchedRouteTest extends AppTestCase
         $this->assertSame($params, $matched->getParams());
     }
 
-    public function testMatchedRouteSupportsEmptyParams()
+    public function testMatchedRouteSupportsEmptyParams(): void
     {
         $route = new Route(['GET'], 'users', 'Ctrl', 'act');
 
@@ -28,7 +28,7 @@ class MatchedRouteTest extends AppTestCase
         $this->assertSame([], $matched->getParams());
     }
 
-    public function testMatchedRouteParamsAreReturnedAsGiven()
+    public function testMatchedRouteParamsAreReturnedAsGiven(): void
     {
         $route = new Route(['GET'], 'x', 'Ctrl', 'act');
 
@@ -48,7 +48,7 @@ class MatchedRouteTest extends AppTestCase
         $this->assertSame('hello', $matched->getParams()['slug']);
     }
 
-    public function testMatchedRouteRouteInstanceIsExactSameObject()
+    public function testMatchedRouteRouteInstanceIsExactSameObject(): void
     {
         $route = new Route(['POST'], 'submit', 'Ctrl', 'act');
 

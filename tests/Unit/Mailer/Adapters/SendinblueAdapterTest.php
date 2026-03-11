@@ -15,14 +15,14 @@ class SendinblueAdapterTest extends MailerTestCase
         $this->adapter = new SendinblueAdapter(['api_key' => 'xxx111222333']);
     }
 
-    public function testSendinblueAdapterInstance()
+    public function testSendinblueAdapterInstance(): void
     {
         $this->assertInstanceOf(SendinblueAdapter::class, $this->adapter);
 
         $this->assertInstanceOf(MailerInterface::class, $this->adapter);
     }
 
-    public function testSendinblueAdapterSend()
+    public function testSendinblueAdapterSend(): void
     {
         $this->adapter->setFrom('john@hotmail.com', 'John Doe');
 

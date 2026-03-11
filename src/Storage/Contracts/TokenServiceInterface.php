@@ -20,21 +20,10 @@ namespace Quantum\Storage\Contracts;
  */
 interface TokenServiceInterface
 {
-    /**
-     * @return string
-     */
     public function getAccessToken(): string;
 
-    /**
-     * @return string
-     */
     public function getRefreshToken(): string;
 
-    /**
-     * @param string $accessToken
-     * @param string|null $refreshToken
-     * @return bool
-     */
     public function saveTokens(string $accessToken, ?string $refreshToken = null): bool;
 
 }

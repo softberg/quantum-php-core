@@ -28,7 +28,7 @@ class HttpClientTest extends AppTestCase
         parent::tearDown();
     }
 
-    public function testHttpClientGetSetMethod()
+    public function testHttpClientGetSetMethod(): void
     {
         $this->assertEquals('GET', $this->httpClient->getMethod());
 
@@ -41,7 +41,7 @@ class HttpClientTest extends AppTestCase
         $this->httpClient->setMethod('NOPE');
     }
 
-    public function testHttpClientGetSetData()
+    public function testHttpClientGetSetData(): void
     {
         $this->assertNull($this->httpClient->getData());
 
@@ -52,7 +52,7 @@ class HttpClientTest extends AppTestCase
         $this->assertSame($data, $this->httpClient->getData());
     }
 
-    public function testHttpClientIsMultiRequest()
+    public function testHttpClientIsMultiRequest(): void
     {
         $curl = Mockery::mock(Curl::class);
 
@@ -71,14 +71,14 @@ class HttpClientTest extends AppTestCase
         $this->assertTrue($this->httpClient->isMultiRequest());
     }
 
-    public function testHttpClientRequestNotCreated()
+    public function testHttpClientRequestNotCreated(): void
     {
         $this->expectException(HttpClientException::class);
 
         $this->httpClient->start();
     }
 
-    public function testHttpClientEnsureSingleRequestThrowsOnMulti()
+    public function testHttpClientEnsureSingleRequestThrowsOnMulti(): void
     {
         $multi = Mockery::mock(MultiCurl::class);
 
@@ -91,7 +91,7 @@ class HttpClientTest extends AppTestCase
         $this->httpClient->getRequestHeaders();
     }
 
-    public function testHttpClientSingleRequestResponseFlow()
+    public function testHttpClientSingleRequestResponseFlow(): void
     {
         $curl = Mockery::mock(Curl::class);
         $curl->shouldReceive('setUrl')->once();
@@ -115,7 +115,7 @@ class HttpClientTest extends AppTestCase
         $this->assertEquals('ok', $this->httpClient->getResponseBody());
     }
 
-    public function testHttpClientPostRequestWithData()
+    public function testHttpClientPostRequestWithData(): void
     {
         $curl = Mockery::mock(Curl::class);
         $curl->shouldReceive('setUrl')->once();
@@ -138,7 +138,7 @@ class HttpClientTest extends AppTestCase
         $this->assertEquals('ok', $this->httpClient->getResponseBody()->status);
     }
 
-    public function testHttpClientSingleRequestError()
+    public function testHttpClientSingleRequestError(): void
     {
         $curl = Mockery::mock(Curl::class);
         $curl->shouldReceive('setUrl')->once();
@@ -163,12 +163,12 @@ class HttpClientTest extends AppTestCase
         $this->assertEquals('DNS error', $errors['message']);
     }
 
-    public function testHttpClientMultiRequestResponseStructure()
+    public function testHttpClientMultiRequestResponseStructure(): void
     {
         $multi = Mockery::mock(MultiCurl::class);
         $multi->shouldReceive('complete')
             ->once()
-            ->andReturnUsing(function ($callback) {
+            ->andReturnUsing(function ($callback): void {
                 $curl = Mockery::mock(Curl::class);
                 $curl->shouldReceive('isError')->andReturn(false);
                 $curl->shouldReceive('getId')->andReturn(0);
@@ -192,12 +192,12 @@ class HttpClientTest extends AppTestCase
         $this->assertArrayHasKey('body', $response[0]);
     }
 
-    public function testHttpClientMultiRequestAggregatesErrors()
+    public function testHttpClientMultiRequestAggregatesErrors(): void
     {
         $multi = Mockery::mock(MultiCurl::class);
         $multi->shouldReceive('complete')
             ->once()
-            ->andReturnUsing(function ($callback) {
+            ->andReturnUsing(function ($callback): void {
                 foreach ([0, 1] as $id) {
                     $curl = Mockery::mock(Curl::class);
                     $curl->shouldReceive('isError')->andReturn(true);
@@ -223,7 +223,7 @@ class HttpClientTest extends AppTestCase
         $this->assertEquals(6, $errors[1]['code']);
     }
 
-    public function testHttpClientCreateAsyncMultiRequestRegistersCallbacks()
+    public function testHttpClientCreateAsyncMultiRequestRegistersCallbacks(): void
     {
         $success = fn () => null;
         $error = fn () => null;
@@ -237,7 +237,7 @@ class HttpClientTest extends AppTestCase
         $this->assertTrue($this->httpClient->isMultiRequest());
     }
 
-    public function testHttpClientInfoAndUrl()
+    public function testHttpClientInfoAndUrl(): void
     {
         $curl = Mockery::mock(Curl::class);
         $curl->shouldReceive('setUrl')->once();

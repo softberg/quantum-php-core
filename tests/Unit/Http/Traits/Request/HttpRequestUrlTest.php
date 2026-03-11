@@ -17,7 +17,7 @@ class HttpRequestUrlTest extends AppTestCase
         Request::flush();
     }
 
-    public function testSetGetProtocol()
+    public function testSetGetProtocol(): void
     {
         $request = new Request();
 
@@ -30,7 +30,7 @@ class HttpRequestUrlTest extends AppTestCase
         $this->assertEquals('http', $request->getProtocol());
     }
 
-    public function testSetGetHost()
+    public function testSetGetHost(): void
     {
         $request = new Request();
 
@@ -43,7 +43,7 @@ class HttpRequestUrlTest extends AppTestCase
         $this->assertEquals('tester.com', $request->getHost());
     }
 
-    public function testSetGetPort()
+    public function testSetGetPort(): void
     {
         $request = new Request();
 
@@ -56,7 +56,7 @@ class HttpRequestUrlTest extends AppTestCase
         $this->assertEquals('9000', $request->getPort());
     }
 
-    public function testSetGetUri()
+    public function testSetGetUri(): void
     {
         $request = new Request();
 
@@ -69,7 +69,7 @@ class HttpRequestUrlTest extends AppTestCase
         $this->assertEquals('post/edit/12', $request->getUri());
     }
 
-    public function testGetSegments()
+    public function testGetSegments(): void
     {
         $request = new Request();
 

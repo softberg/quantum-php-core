@@ -29,30 +29,26 @@ class InstallToolkitCommand extends QtCommand
 {
     /**
      * Command name
-     * @var string
      */
-    protected $name = 'install:toolkit';
+    protected ?string $name = 'install:toolkit';
 
     /**
      * Command description
-     * @var string
      */
-    protected $description = 'Installs toolkit';
+    protected ?string $description = 'Installs toolkit';
 
     /**
      * Command arguments
-     * @var array
      */
-    protected $args = [
+    protected array $args = [
         ['username', 'required', 'The username for basic auth'],
         ['password', 'required', 'The password for basic auth'],
     ];
 
     /**
      * Command help text
-     * @var string
      */
-    protected $help = 'The command will install Toolkit and its assets into your project';
+    protected ?string $help = 'The command will install Toolkit and its assets into your project';
 
     /**
      * Command name to generate modules
@@ -64,7 +60,7 @@ class InstallToolkitCommand extends QtCommand
      * @throws ExceptionInterface
      * @throws EnvException
      */
-    public function exec()
+    public function exec(): void
     {
         $name = $this->getArgument('username');
 
@@ -90,8 +86,6 @@ class InstallToolkitCommand extends QtCommand
 
     /**
      * Runs an external command
-     * @param string $commandName
-     * @param array $arguments
      * @throws ExceptionInterface
      */
     protected function runExternalCommand(string $commandName, array $arguments)

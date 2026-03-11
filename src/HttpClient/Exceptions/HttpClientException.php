@@ -25,10 +25,6 @@ use Quantum\App\Exceptions\BaseException;
  */
 class HttpClientException extends BaseException
 {
-    /**
-     * @return HttpClientException
-     */
-
     public static function requestNotCreated(): self
     {
         return new self(

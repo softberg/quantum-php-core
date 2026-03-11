@@ -32,27 +32,15 @@ use Closure;
  */
 class ModuleLoader
 {
-    /**
-     * @var array
-     */
     private static array $moduleDependencies = [];
 
-    /**
-     * @var array
-     */
     private static array $moduleConfigs = [];
 
     /** @var array<string, Closure> */
     private static array $moduleRouteClosures = [];
 
-    /**
-     * @var FileSystem
-     */
     private FileSystem $fs;
 
-    /**
-     * @var ModuleLoader|null
-     */
     private static ?ModuleLoader $instance = null;
 
     /**
@@ -67,9 +55,6 @@ class ModuleLoader
         Di::registerDependencies($this->loadModulesDependencies());
     }
 
-    /**
-     * @return ModuleLoader
-     */
     public static function getInstance(): ModuleLoader
     {
         if (self::$instance === null) {
@@ -80,7 +65,6 @@ class ModuleLoader
     }
 
     /**
-     * @return array
      * @throws ModuleException
      * @throws RouteException
      */
@@ -104,8 +88,6 @@ class ModuleLoader
     }
 
     /**
-     * @param string $module
-     * @return Closure
      * @throws ModuleException
      * @throws RouteException
      */
@@ -131,7 +113,6 @@ class ModuleLoader
     }
 
     /**
-     * @return array
      * @throws ModuleException
      */
     public function loadModulesDependencies(): array
@@ -149,10 +130,6 @@ class ModuleLoader
         return $modulesDependencies;
     }
 
-    /**
-     * @param string $module
-     * @return array
-     */
     public function getModuleDependencies(string $module): array
     {
         if (!isset(self::$moduleDependencies[$module])) {
@@ -173,7 +150,7 @@ class ModuleLoader
     /**
      * @throws ModuleException
      */
-    private function loadModuleConfig()
+    private function loadModuleConfig(): void
     {
         $configPath = App::getBaseDir() . DS . 'shared' . DS . 'config' . DS . 'modules.php';
 
@@ -185,7 +162,6 @@ class ModuleLoader
     }
 
     /**
-     * @return array
      * @throws ModuleException
      */
     public function getModuleConfigs(): array
@@ -197,10 +173,6 @@ class ModuleLoader
         return self::$moduleConfigs;
     }
 
-    /**
-     * @param array $options
-     * @return bool
-     */
     private function isModuleEnabled(array $options): bool
     {
         return (bool) ($options['enabled'] ?? false);

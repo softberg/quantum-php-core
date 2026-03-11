@@ -8,7 +8,7 @@ use Quantum\App\App;
 
 class EnvironmentTest extends AppTestCase
 {
-    private $env;
+    private Environment $env;
 
     public function setUp(): void
     {
@@ -17,12 +17,12 @@ class EnvironmentTest extends AppTestCase
         $this->env = Environment::getInstance();
     }
 
-    public function testEnvironmentGetAppEnv()
+    public function testEnvironmentGetAppEnv(): void
     {
         $this->assertEquals('testing', $this->env->getAppEnv());
     }
 
-    public function testEnvironmentGetValue()
+    public function testEnvironmentGetValue(): void
     {
         $this->assertNull($this->env->getValue('NON_EXISTING_KEY'));
 
@@ -33,21 +33,21 @@ class EnvironmentTest extends AppTestCase
         $this->assertEquals('XYZ1234567890ABCDEFG123456789HIGKLMNOPQRSTUVWXYZ0123456789abcdefgh', $this->env->getValue('APP_KEY'));
     }
 
-    public function testEnvironmentHasKey()
+    public function testEnvironmentHasKey(): void
     {
         $this->assertTrue($this->env->hasKey('APP_KEY'));
 
         $this->assertFalse($this->env->hasKey('NON_EXISTING_KEY'));
     }
 
-    public function testEnvironmentGetRow()
+    public function testEnvironmentGetRow(): void
     {
         $this->assertNull($this->env->getRow('NON_EXISTING_KEY'));
 
         $this->assertEquals('APP_KEY=XYZ1234567890ABCDEFG123456789HIGKLMNOPQRSTUVWXYZ0123456789abcdefgh', $this->env->getRow('APP_KEY'));
     }
 
-    public function testEnvironmentAddAndUpdateRow()
+    public function testEnvironmentAddAndUpdateRow(): void
     {
         $envFilePath = App::getBaseDir() . DS . '.env.testing';
         $originalContent = $this->fs->get($envFilePath);

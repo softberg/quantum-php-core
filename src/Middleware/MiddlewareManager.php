@@ -27,19 +27,14 @@ class MiddlewareManager
 {
     /**
      * Middlewares queue
-     * @var array
      */
     private array $middlewares = [];
 
     /**
      * Current module
-     * @var string|null
      */
     private ?string $module;
 
-    /**
-     * @param MatchedRoute $matchedRoute
-     */
     public function __construct(MatchedRoute $matchedRoute)
     {
         $route = $matchedRoute->getRoute();
@@ -50,9 +45,6 @@ class MiddlewareManager
 
     /**
      * Apply Middlewares
-     * @param Request $request
-     * @param Response $response
-     * @return array
      * @throws MiddlewareException
      */
     public function applyMiddlewares(Request $request, Response $response): array
@@ -63,7 +55,7 @@ class MiddlewareManager
 
         $currentMiddleware = $this->getMiddleware($request, $response);
 
-        [$request, $response] = $currentMiddleware->apply($request, $response, function ($request, $response) {
+        [$request, $response] = $currentMiddleware->apply($request, $response, function ($request, $response): array {
             next($this->middlewares);
             return [$request, $response];
         });
@@ -73,9 +65,6 @@ class MiddlewareManager
 
     /**
      * Loads and gets the current middleware instance
-     * @param Request $request
-     * @param Response $response
-     * @return QtMiddleware
      * @throws MiddlewareException
      */
     private function getMiddleware(Request $request, Response $response): QtMiddleware

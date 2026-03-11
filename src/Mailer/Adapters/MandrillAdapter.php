@@ -32,24 +32,12 @@ class MandrillAdapter implements MailerInterface
      */
     public $name = 'Mandrill';
 
-    /**
-     * @var HttpClient
-     */
-    protected $httpClient;
+    private string $apiUrl = 'https://mandrillapp.com/api/1.0/messages/send.json';
 
-    /**
-     * @var string
-     */
-    private $apiUrl = 'https://mandrillapp.com/api/1.0/messages/send.json';
-
-    /**
-     * @var array
-     */
-    private $data = [];
+    private array $data = [];
 
     /**
      * MandrillAdapter constructor
-     * @param array $params
      */
     public function __construct(array $params)
     {
@@ -61,7 +49,7 @@ class MandrillAdapter implements MailerInterface
     /**
      * Prepares the data
      */
-    private function prepare()
+    private function prepare(): void
     {
         $message = [];
 
@@ -90,9 +78,6 @@ class MandrillAdapter implements MailerInterface
         $this->data['message'] = $message;
     }
 
-    /**
-     * @return bool
-     */
     private function sendEmail(): bool
     {
         try {

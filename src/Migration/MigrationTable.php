@@ -31,11 +31,9 @@ class MigrationTable extends QtMigration
 
     /**
      * Creates the migrations table
-     * @param TableFactory|null $tableFactory
-     * @return void
      * @throws DatabaseException
      */
-    public function up(?TableFactory $tableFactory)
+    public function up(?TableFactory $tableFactory): void
     {
         $table = $tableFactory->create(self::TABLE);
         $table->addColumn('id', Type::INT, 11)->autoIncrement();
@@ -45,11 +43,9 @@ class MigrationTable extends QtMigration
 
     /**
      * Drops the migrations table
-     * @param TableFactory|null $tableFactory
-     * @return void
      * @throws DatabaseException
      */
-    public function down(?TableFactory $tableFactory)
+    public function down(?TableFactory $tableFactory): void
     {
         $tableFactory->drop(self::TABLE);
     }

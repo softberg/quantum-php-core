@@ -23,19 +23,10 @@ use Quantum\Http\Request;
  */
 final class RouteFinder
 {
-    /**
-     * @var PatternCompiler
-     */
     private PatternCompiler $patternCompiler;
 
-    /**
-     * @var RouteCollection
-     */
     private RouteCollection $routes;
 
-    /**
-     * @param RouteCollection $routes
-     */
     public function __construct(RouteCollection $routes)
     {
         $this->patternCompiler = new PatternCompiler();
@@ -44,8 +35,6 @@ final class RouteFinder
 
     /**
      * Find the first route that matches request method and URI.
-     * @param Request $request
-     * @return MatchedRoute|null
      * @throws Exceptions\RouteException
      */
     public function find(Request $request): ?MatchedRoute

@@ -16,7 +16,6 @@ use Quantum\Hook\HookManager;
 
 /**
  * Gets the HookManager instance
- * @return HookManager
  */
 function hook(): HookManager
 {

@@ -6,14 +6,14 @@ use Quantum\Database\Adapters\Sleekdb\SleekDbal;
 
 class SleekDbalTest extends SleekDbalTestCase
 {
-    public function testSleekConstructor()
+    public function testSleekConstructor(): void
     {
         $userModel = new SleekDbal('users');
 
         $this->assertInstanceOf(SleekDbal::class, $userModel);
     }
 
-    public function testSleekGetTable()
+    public function testSleekGetTable(): void
     {
         $userModel = new SleekDbal('users');
 

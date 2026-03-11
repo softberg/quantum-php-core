@@ -7,9 +7,9 @@ use Quantum\Auth\User;
 
 class UserTest extends TestCase
 {
-    private $user;
+    private User $user;
 
-    private $fields = [
+    private array $fields = [
         'id' => ['name' => 'id', 'visible' => false],
         'firstname' => ['name' => 'firstname', 'visible' => true],
         'lastname' => ['name' => 'lastname', 'visible' => true],
@@ -28,7 +28,7 @@ class UserTest extends TestCase
         unset($this->user);
     }
 
-    public function testSetGetData()
+    public function testSetGetData(): void
     {
         $userData = ['username' => 'johny@mail.com', 'firstname' => 'Johnny', 'lastname' => 'B'];
 
@@ -37,14 +37,14 @@ class UserTest extends TestCase
         $this->assertEquals($userData, $this->user->getData());
     }
 
-    public function testSetGetFields()
+    public function testSetGetFields(): void
     {
         $this->user->setFields($this->fields);
 
         $this->assertEquals(array_keys($this->user->getData()), $this->user->getFields());
     }
 
-    public function testGetFieldsFromSetData()
+    public function testGetFieldsFromSetData(): void
     {
         $userData = ['username' => 'johny@mail.com', 'firstname' => 'Johnny', 'lastname' => 'B'];
 
@@ -53,7 +53,7 @@ class UserTest extends TestCase
         $this->assertEquals(array_keys($userData), $this->user->getFields());
     }
 
-    public function testHasField()
+    public function testHasField(): void
     {
         $this->assertFalse($this->user->hasField('username'));
 
@@ -74,7 +74,7 @@ class UserTest extends TestCase
         $this->assertTrue($this->user->hasField('role'));
     }
 
-    public function testSetGetFieldValue()
+    public function testSetGetFieldValue(): void
     {
         $this->assertNull($this->user->getFieldValue('email'));
 

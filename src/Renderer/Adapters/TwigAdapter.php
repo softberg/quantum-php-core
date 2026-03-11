@@ -35,18 +35,11 @@ use Twig\Environment;
  */
 class TwigAdapter implements TemplateRendererInterface
 {
-    /**
-     * @var FileSystem
-     */
     protected FileSystem $fs;
 
-    /**
-     * @var array|null
-     */
     protected ?array $configs;
 
     /**
-     * @param array|null $configs
      * @throws BaseException
      * @throws DiException
      * @throws ReflectionException
@@ -61,15 +54,7 @@ class TwigAdapter implements TemplateRendererInterface
 
     /**
      * Renders the view
-     * @param string $view
-     * @param array $params
-     * @return string
-     * @throws DiException
-     * @throws LoaderError
-     * @throws ReflectionException
-     * @throws RendererException
-     * @throws RuntimeError
-     * @throws SyntaxError
+     * @throws DiException|LoaderError|ReflectionException|RendererException|RuntimeError|SyntaxError
      */
     public function render(string $view, array $params = []): string
     {
@@ -83,11 +68,7 @@ class TwigAdapter implements TemplateRendererInterface
     }
 
     /**
-     * @param string $view
-     * @return FilesystemLoader
-     * @throws RendererException
-     * @throws DiException
-     * @throws ReflectionException
+     * @throws RendererException|DiException|ReflectionException
      */
     private function getLoader(string $view): FilesystemLoader
     {
@@ -105,10 +86,7 @@ class TwigAdapter implements TemplateRendererInterface
         throw RendererException::fileNotFound($view);
     }
 
-    /**
-     * @param Environment $twig
-     */
-    private function addFunctionsToTwig(Environment $twig)
+    private function addFunctionsToTwig(Environment $twig): void
     {
         $definedFunctions = get_defined_functions();
         $allDefinedFunctions = array_merge($definedFunctions['internal'], $definedFunctions['user']);

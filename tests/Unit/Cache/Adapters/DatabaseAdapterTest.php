@@ -9,7 +9,7 @@ use Quantum\Loader\Setup;
 
 class DatabaseAdapterTest extends AppTestCase
 {
-    private $databaseCache;
+    private DatabaseAdapter $databaseCache;
 
     public function setUp(): void
     {
@@ -39,7 +39,7 @@ class DatabaseAdapterTest extends AppTestCase
         SleekDbal::disconnect();
     }
 
-    public function testDatabaseAdapterSetGetDelete()
+    public function testDatabaseAdapterSetGetDelete(): void
     {
 
         $this->assertNull($this->databaseCache->get('test'));
@@ -59,7 +59,7 @@ class DatabaseAdapterTest extends AppTestCase
         $this->assertNull($this->databaseCache->get('test'));
     }
 
-    public function testDatabaseAdapterHas()
+    public function testDatabaseAdapterHas(): void
     {
         $this->assertFalse($this->databaseCache->has('test'));
 
@@ -68,7 +68,7 @@ class DatabaseAdapterTest extends AppTestCase
         $this->assertTrue($this->databaseCache->has('test'));
     }
 
-    public function testDatabaseAdapterGetMultiple()
+    public function testDatabaseAdapterGetMultiple(): void
     {
         $cacheItems = $this->databaseCache->getMultiple(['test1', 'test2']);
 
@@ -99,7 +99,7 @@ class DatabaseAdapterTest extends AppTestCase
         $this->assertEquals('Test one', $cacheItems['test1']);
     }
 
-    public function testDatabaseAdapterSetMultiple()
+    public function testDatabaseAdapterSetMultiple(): void
     {
         $this->assertFalse($this->databaseCache->has('test1'));
 
@@ -116,7 +116,7 @@ class DatabaseAdapterTest extends AppTestCase
         $this->assertEquals('Test value two', $this->databaseCache->get('test2'));
     }
 
-    public function testDatabaseAdapterDeleteMultiple()
+    public function testDatabaseAdapterDeleteMultiple(): void
     {
         $this->databaseCache->setMultiple(['test1' => 'Test value one', 'test2' => 'Test value two']);
 
@@ -131,7 +131,7 @@ class DatabaseAdapterTest extends AppTestCase
         $this->assertFalse($this->databaseCache->has('test2'));
     }
 
-    public function testDatabaseAdapterClear()
+    public function testDatabaseAdapterClear(): void
     {
         $this->databaseCache->setMultiple(['test1' => 'Test value one', 'test2' => 'Test value two']);
 
@@ -146,7 +146,7 @@ class DatabaseAdapterTest extends AppTestCase
         $this->assertFalse($this->databaseCache->has('test2'));
     }
 
-    public function testDatabaseAdapterExpired()
+    public function testDatabaseAdapterExpired(): void
     {
         $params = [
             'prefix' => 'test',

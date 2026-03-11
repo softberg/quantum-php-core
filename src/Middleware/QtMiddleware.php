@@ -29,9 +29,6 @@ abstract class QtMiddleware
      *
      * Applies the middleware
      *
-     * @param Request $request
-     * @param Response $response
-     * @param Closure $next
      * @return mixed
      */
     abstract public function apply(Request $request, Response $response, Closure $next);

@@ -16,6 +16,7 @@ namespace Quantum\Database\Adapters\Idiorm\Statements;
 
 use Quantum\Database\Exceptions\DatabaseException;
 use Quantum\Database\Contracts\DbalInterface;
+use Quantum\App\Exceptions\BaseException;
 use RecursiveIteratorIterator;
 use RecursiveArrayIterator;
 
@@ -27,11 +28,11 @@ trait Reducer
 {
     /**
      * @inheritDoc
-     * @throws DatabaseException
+     * @throws DatabaseException|BaseException
      */
     public function select(...$columns): DbalInterface
     {
-        array_walk($columns, function (&$column) {
+        array_walk($columns, function (&$column): void {
             if (is_array($column)) {
                 $column = array_flip($column);
             }
@@ -46,7 +47,7 @@ trait Reducer
 
     /**
      * @inheritDoc
-     * @throws DatabaseException
+     * @throws DatabaseException|BaseException
      */
     public function groupBy(string $column): DbalInterface
     {
@@ -56,7 +57,7 @@ trait Reducer
 
     /**
      * @inheritDoc
-     * @throws DatabaseException
+     * @throws DatabaseException|BaseException
      */
     public function orderBy(string $column, string $direction): DbalInterface
     {
@@ -74,7 +75,7 @@ trait Reducer
 
     /**
      * @inheritDoc
-     * @throws DatabaseException
+     * @throws DatabaseException|BaseException
      */
     public function offset(int $offset): DbalInterface
     {
@@ -84,7 +85,7 @@ trait Reducer
 
     /**
      * @inheritDoc
-     * @throws DatabaseException
+     * @throws DatabaseException|BaseException
      */
     public function limit(int $limit): DbalInterface
     {

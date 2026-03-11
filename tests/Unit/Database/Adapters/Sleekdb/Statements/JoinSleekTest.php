@@ -50,7 +50,7 @@ class BrokenProfileUnsupportedRelationModel extends DbModel
 
 class JoinSleekTest extends SleekDbalTestCase
 {
-    public function testSleekJoinToHasOne()
+    public function testSleekJoinToHasOne(): void
     {
         $userModel = ModelFactory::get(TestUserModel::class);
         $profileModel = ModelFactory::get(TestProfileModel::class);
@@ -74,7 +74,7 @@ class JoinSleekTest extends SleekDbalTestCase
         $this->assertArrayHasKey('country', $profile);
     }
 
-    public function testSleekJoinToBelongsTo()
+    public function testSleekJoinToBelongsTo(): void
     {
         $userModel = ModelFactory::get(TestUserModel::class);
         $profileModel = ModelFactory::get(TestProfileModel::class);
@@ -99,7 +99,7 @@ class JoinSleekTest extends SleekDbalTestCase
         );
     }
 
-    public function testSleekSameLevelJoinToHasMany()
+    public function testSleekSameLevelJoinToHasMany(): void
     {
         $userModel = ModelFactory::get(TestUserModel::class);
 
@@ -119,7 +119,7 @@ class JoinSleekTest extends SleekDbalTestCase
         $this->assertIsArray($users->first()->prop('user_meetings'));
     }
 
-    public function testSleekNestedLevelJoinToHasMany()
+    public function testSleekNestedLevelJoinToHasMany(): void
     {
         $userModel = ModelFactory::get(TestUserModel::class);
 
@@ -148,7 +148,7 @@ class JoinSleekTest extends SleekDbalTestCase
         $this->assertArrayHasKey('notes', $users->first()->prop('user_meetings')[0]['tickets'][0]);
     }
 
-    public function testSleekJoiningViaPivotModel()
+    public function testSleekJoiningViaPivotModel(): void
     {
         $userModel = ModelFactory::get(TestUserModel::class);
         $userEventModel = ModelFactory::get(TestUserEventModel::class);
@@ -194,7 +194,7 @@ class JoinSleekTest extends SleekDbalTestCase
         $this->assertArrayHasKey('started_at', $eventRecord);
     }
 
-    public function testSleekMixedLevelJoinToWithCriteria()
+    public function testSleekMixedLevelJoinToWithCriteria(): void
     {
         $userModel = ModelFactory::get(TestUserModel::class);
         $profileModel = ModelFactory::get(TestProfileModel::class);
@@ -227,7 +227,7 @@ class JoinSleekTest extends SleekDbalTestCase
         $this->assertIsArray($users->first()->prop('user_meetings')[0]['tickets']);
     }
 
-    public function testSleekSelectFieldsAtJoin()
+    public function testSleekSelectFieldsAtJoin(): void
     {
         $userModel = ModelFactory::get(TestUserModel::class);
         $userProfessionModel = ModelFactory::get(TestUserProfessionModel::class);
@@ -240,7 +240,7 @@ class JoinSleekTest extends SleekDbalTestCase
         $this->assertEquals('Writer', $users->first()->profession);
     }
 
-    public function testSleekJoinThrowsExceptionForWrongRelation()
+    public function testSleekJoinThrowsExceptionForWrongRelation(): void
     {
         $this->expectException(ModelException::class);
 
@@ -253,7 +253,7 @@ class JoinSleekTest extends SleekDbalTestCase
         $eventModel->joinTo($noteModel)->get();
     }
 
-    public function testSleekJoinThrowsExceptionForMissingForeignKey()
+    public function testSleekJoinThrowsExceptionForMissingForeignKey(): void
     {
         $this->expectException(ModelException::class);
         $this->expectExceptionMessage('Foreign key `user_id` is missing in model `' . TestProfileModel::class . '`');
@@ -273,7 +273,7 @@ class JoinSleekTest extends SleekDbalTestCase
             ->get();
     }
 
-    public function testSleekJoinThrowsExceptionWhenRelationKeysMissing()
+    public function testSleekJoinThrowsExceptionWhenRelationKeysMissing(): void
     {
         $this->expectException(ModelException::class);
         $this->expectExceptionMessage('Relation type is missing for model `' . BrokenProfileMissingTypeModel::class . '`');
@@ -283,7 +283,7 @@ class JoinSleekTest extends SleekDbalTestCase
             ->get();
     }
 
-    public function testSleekJoinThrowsExceptionForUnsupportedRelationType()
+    public function testSleekJoinThrowsExceptionForUnsupportedRelationType(): void
     {
         $this->expectException(ModelException::class);
         $this->expectExceptionMessage('Relation type `SIDEWAYS` is not supported');

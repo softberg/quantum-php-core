@@ -15,6 +15,7 @@
 namespace Quantum\Database\Adapters\Idiorm;
 
 use ORM;
+use RuntimeException;
 
 /**
  * Class IdiormPatch
@@ -22,21 +23,14 @@ use ORM;
  */
 class IdiormPatch extends ORM
 {
-    /**
-     * @var object
-     */
-    private $ormModel;
+    private ?object $ormModel = null;
 
-    /**
-     * @var object
-     */
-    private static $instance = null;
+    private static ?IdiormPatch $instance = null;
 
     /**
      * Get Instance
-     * @return IdiormPatch|object
      */
-    public static function getInstance()
+    public static function getInstance(): IdiormPatch
     {
         if (self::$instance == null) {
             self::$instance = new self('dummy');
@@ -47,8 +41,6 @@ class IdiormPatch extends ORM
 
     /**
      * Set ORM Object
-     * @param object $ormModel
-     * @return $this
      */
     public function use(object $ormModel): IdiormPatch
     {
@@ -58,10 +50,6 @@ class IdiormPatch extends ORM
 
     /**
      * Add an LEFT JOIN source to the query
-     * @param string $table
-     * @param array $constraint
-     * @param string|null $table_alias
-     * @return object
      */
     public function leftJoin(string $table, array $constraint, ?string $table_alias = null): object
     {
@@ -70,10 +58,6 @@ class IdiormPatch extends ORM
 
     /**
      * Add an RIGHT JOIN source to the query
-     * @param string $table
-     * @param array $constraint
-     * @param string|null $table_alias
-     * @return object
      */
     public function rightJoin(string $table, array $constraint, ?string $table_alias = null): object
     {
@@ -82,14 +66,12 @@ class IdiormPatch extends ORM
 
     /**
      * Add Join
-     * @param string $operator
-     * @param string $table
-     * @param array $constraint
-     * @param string|null $table_alias
-     * @return object
      */
     public function addJoin(string $operator, string $table, array $constraint, ?string $table_alias = null): object
     {
+        if ($this->ormModel === null) {
+            throw new RuntimeException('ORM model is not set. Call use() method first.');
+        }
         return $this->ormModel->_add_join_source($operator, $table, $constraint, $table_alias);
     }
 }

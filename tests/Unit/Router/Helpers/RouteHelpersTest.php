@@ -25,7 +25,7 @@ class RouteHelpersTest extends AppTestCase
         parent::tearDown();
     }
 
-    public function testHelpersReturnDefaultsWhenNoRouteMatched()
+    public function testHelpersReturnDefaultsWhenNoRouteMatched(): void
     {
         $this->assertNull(current_middlewares());
         $this->assertNull(current_module());
@@ -41,14 +41,13 @@ class RouteHelpersTest extends AppTestCase
         $this->assertNull(route_prefix());
     }
 
-    public function testHelpersReturnValuesForMatchedControllerRoute()
+    public function testHelpersReturnValuesForMatchedControllerRoute(): void
     {
         $route = new Route(
             ['GET'],
             '[:alpha:2]?/post/[uuid=:any]',
             'PostController',
-            'show',
-            null
+            'show'
         );
 
         $route
@@ -80,9 +79,9 @@ class RouteHelpersTest extends AppTestCase
         $this->assertSame('api', route_prefix());
     }
 
-    public function testRouteCallbackReturnsClosureForClosureRoute()
+    public function testRouteCallbackReturnsClosureForClosureRoute(): void
     {
-        $closure = function () {
+        $closure = function (): void {
         };
 
         $route = new Route(
@@ -102,14 +101,13 @@ class RouteHelpersTest extends AppTestCase
         $this->assertNull(current_action());
     }
 
-    public function testFindRouteByNameReturnsRouteFromCollection()
+    public function testFindRouteByNameReturnsRouteFromCollection(): void
     {
         $route = new Route(
             ['GET'],
             'dashboard',
             'DashboardController',
-            'index',
-            null
+            'index'
         );
 
         $route->name('Dashboard')->module('Admin');
@@ -125,14 +123,13 @@ class RouteHelpersTest extends AppTestCase
         $this->assertSame('DashboardController', $found->getController());
     }
 
-    public function testRouteGroupExistsDetectsGroupInModule()
+    public function testRouteGroupExistsDetectsGroupInModule(): void
     {
         $route = new Route(
             ['GET'],
             'profile',
             'ProfileController',
-            'show',
-            null
+            'show'
         );
 
         $route->group('auth')->module('Web');
@@ -147,7 +144,7 @@ class RouteHelpersTest extends AppTestCase
         $this->assertFalse(route_group_exists('auth', 'api'));
     }
 
-    public function testRouteMethodAndUri()
+    public function testRouteMethodAndUri(): void
     {
         $request = new Request();
         $request->create('POST', 'http://example.com/api/test');
@@ -157,7 +154,7 @@ class RouteHelpersTest extends AppTestCase
         $this->assertSame('api/test', route_uri());
     }
 
-    public function testFindRouteByNameDependsOnCollectionRegistration()
+    public function testFindRouteByNameDependsOnCollectionRegistration(): void
     {
         $this->assertNull(
             find_route_by_name('dashboard', 'admin'),
@@ -176,8 +173,7 @@ class RouteHelpersTest extends AppTestCase
             ['GET'],
             'dashboard',
             'DashboardController',
-            'index',
-            null
+            'index'
         );
 
         $route->name('dashboard')->module('admin');
@@ -190,7 +186,7 @@ class RouteHelpersTest extends AppTestCase
         $this->assertSame('DashboardController', $found->getController());
     }
 
-    public function testRouteGroupExistsDependsOnCollectionRegistration()
+    public function testRouteGroupExistsDependsOnCollectionRegistration(): void
     {
         $this->assertFalse(
             route_group_exists('auth', 'web'),
@@ -209,8 +205,7 @@ class RouteHelpersTest extends AppTestCase
             ['GET'],
             'profile',
             'ProfileController',
-            'show',
-            null
+            'show'
         );
 
         $route->group('auth')->module('web');

@@ -90,7 +90,6 @@ trait Criteria
 
     /**
      * Adds one or more OR criteria in brackets
-     * @param array $orCriterias
      * @throws DatabaseException
      */
     protected function orCriteria(array $orCriterias)

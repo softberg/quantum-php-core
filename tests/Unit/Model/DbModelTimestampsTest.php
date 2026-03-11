@@ -29,7 +29,7 @@ class DbModelTimestampsTest extends AppTestCase
         IdiormDbal::execute('DROP TABLE posts_custom');
     }
 
-    public function testTimestampsAreNotAppliedWhenTraitIsNotUsed()
+    public function testTimestampsAreNotAppliedWhenTraitIsNotUsed(): void
     {
         /** @var TestPostModel $model */
         $model = ModelFactory::get(TestPostModel::class);
@@ -56,7 +56,7 @@ class DbModelTimestampsTest extends AppTestCase
         $this->assertNull($data['updated_at']);
     }
 
-    public function testTimestampsAreAppliedOnInsertWhenTraitIsUsed()
+    public function testTimestampsAreAppliedOnInsertWhenTraitIsUsed(): void
     {
         /** @var TestPostTimestampModel $model */
         $model = ModelFactory::get(TestPostTimestampModel::class);
@@ -78,7 +78,7 @@ class DbModelTimestampsTest extends AppTestCase
         $this->assertNotEmpty($saved->updated_at);
     }
 
-    public function testUpdatedAtChangesOnUpdateButCreatedAtStaysSame()
+    public function testUpdatedAtChangesOnUpdateButCreatedAtStaysSame(): void
     {
         /** @var TestPostTimestampModel $model */
         $model = ModelFactory::get(TestPostTimestampModel::class);
@@ -113,7 +113,7 @@ class DbModelTimestampsTest extends AppTestCase
         $this->assertNotEquals($updatedAt1, $saved2->updated_at);
     }
 
-    public function testUnixTimestampTypeStoresIntegers()
+    public function testUnixTimestampTypeStoresIntegers(): void
     {
         /** @var TestPostUnixTimestampModel $model */
         $model = ModelFactory::get(TestPostUnixTimestampModel::class);
@@ -135,7 +135,7 @@ class DbModelTimestampsTest extends AppTestCase
         $this->assertIsNumeric($saved->updated_at);
     }
 
-    public function testCustomTimestampColumnsAreApplied()
+    public function testCustomTimestampColumnsAreApplied(): void
     {
         /** @var TestPostCustomTimestampModel $model */
         $model = ModelFactory::get(TestPostCustomTimestampModel::class);

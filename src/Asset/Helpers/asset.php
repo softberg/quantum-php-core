@@ -18,7 +18,6 @@ use Quantum\Asset\AssetManager;
 
 /**
  * Gets the AssetFactory instance
- * @return AssetManager
  */
 function asset(): AssetManager
 {
@@ -27,8 +26,6 @@ function asset(): AssetManager
 
 /**
  * Dumps the assets
- * @param string $type
- * @return void
  * @throws AssetException
  * @throws LangException
  */

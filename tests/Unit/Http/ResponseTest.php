@@ -21,7 +21,7 @@ class ResponseTest extends AppTestCase
         Response::flush();
     }
 
-    public function testResponseContentType()
+    public function testResponseContentType(): void
     {
         $response = new Response();
 
@@ -32,7 +32,7 @@ class ResponseTest extends AppTestCase
         $this->assertEquals(ContentType::JSON, $response->getContentType());
     }
 
-    public function testResponseRedirect()
+    public function testResponseRedirect(): void
     {
         $response = new Response();
 

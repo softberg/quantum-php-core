@@ -24,6 +24,7 @@ use Quantum\Module\ModuleLoader;
 use Quantum\Router\RouteBuilder;
 use Quantum\Storage\FileSystem;
 use Quantum\Console\QtCommand;
+use ReflectionException;
 use OpenApi\Generator;
 use Quantum\Di\Di;
 
@@ -35,7 +36,6 @@ class OpenApiCommand extends QtCommand
 {
     /**
      * File System
-     * @var FileSystem
      */
     protected FileSystem $fs;
 
@@ -48,45 +48,39 @@ class OpenApiCommand extends QtCommand
 
     /**
      * Command name
-     * @var string
      */
-    protected $name = 'install:openapi';
+    protected ?string $name = 'install:openapi';
 
     /**
      * Command description
-     * @var string
      */
-    protected $description = 'Generates files for OpenApi UI';
+    protected ?string $description = 'Generates files for OpenApi UI';
 
     /**
      * Command arguments
      * @var string[][]
      */
-    protected $args = [
+    protected array $args = [
         ['module', 'required', 'The module name'],
     ];
 
     /**
      * Command help text
-     * @var string
      */
-    protected $help = 'The command will publish OpenApi UI resources';
+    protected ?string $help = 'The command will publish OpenApi UI resources';
 
     /**
      * Path to public debug bar resources
-     * @var string
      */
     private string $publicOpenApiFolderPath = 'public/assets/OpenApiUi';
 
     /**
      * Path to vendor debug bar resources
-     * @var string
      */
     private string $vendorOpenApiFolderPath = 'vendor/swagger-api/swagger-ui/dist';
 
     /**
      * Exclude File Names
-     * @var array
      */
     private array $excludeFileNames = ['index.html', 'swagger-initializer.js', 'favicon-16x16.png', 'favicon-32x32.png'];
 
@@ -96,8 +90,9 @@ class OpenApiCommand extends QtCommand
      * @throws ModuleException
      * @throws RouteException
      * @throws DiException
+     * @throws ReflectionException
      */
-    public function exec()
+    public function exec(): void
     {
         $moduleLoader = ModuleLoader::getInstance();
 
@@ -145,7 +140,7 @@ class OpenApiCommand extends QtCommand
     /**
      * Copies OpenApi resources
      */
-    private function copyResources()
+    private function copyResources(): void
     {
         $dir = opendir($this->vendorOpenApiFolderPath);
 
@@ -162,9 +157,8 @@ class OpenApiCommand extends QtCommand
 
     /**
      * Generates file with OpenApi specifications
-     * @param string $module
      */
-    private function generateOpenapiSpecification(string $module)
+    private function generateOpenapiSpecification(string $module): void
     {
         $annotationPath = modules_dir() . DS . $module . DS . 'Controllers' . DS . 'OpenApi' . DS;
 
@@ -179,8 +173,6 @@ class OpenApiCommand extends QtCommand
 
     /**
      * Gets the OpenApi routes
-     * @param string $module
-     * @return string
      */
     private function openapiRoutes(string $module): string
     {

@@ -22,7 +22,7 @@ class HttpRequestHeaderTest extends AppTestCase
         Server::getInstance()->flush();
     }
 
-    public function testRequestHeaderSetHasGetDelete()
+    public function testRequestHeaderSetHasGetDelete(): void
     {
         $request = new Request();
 
@@ -39,7 +39,7 @@ class HttpRequestHeaderTest extends AppTestCase
         $this->assertNotEquals('Custom', $request->get('X-CUSTOM'));
     }
 
-    public function testRequestHeaderAll()
+    public function testRequestHeaderAll(): void
     {
         $request = new Request();
 
@@ -52,7 +52,7 @@ class HttpRequestHeaderTest extends AppTestCase
         $this->assertIsArray($request->allHeaders());
     }
 
-    public function testGetAuthorizationBearer()
+    public function testGetAuthorizationBearer(): void
     {
         $request = new Request();
 
@@ -67,7 +67,7 @@ class HttpRequestHeaderTest extends AppTestCase
         $this->assertEquals($bearerToken, $request->getAuthorizationBearer());
     }
 
-    public function testGetBasicAuthCredentialsFromServer()
+    public function testGetBasicAuthCredentialsFromServer(): void
     {
         $request = new Request();
 
@@ -93,7 +93,7 @@ class HttpRequestHeaderTest extends AppTestCase
         unset($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']);
     }
 
-    public function testGetBasicAuthCredentialsFromHeader()
+    public function testGetBasicAuthCredentialsFromHeader(): void
     {
         $request = new Request();
 
@@ -116,7 +116,7 @@ class HttpRequestHeaderTest extends AppTestCase
         $this->assertEquals($password, $result['password']);
     }
 
-    public function testIsAjaxReturnsTrueWhenHeaderIsSet()
+    public function testIsAjaxReturnsTrueWhenHeaderIsSet(): void
     {
         $request = new Request();
 
@@ -127,7 +127,7 @@ class HttpRequestHeaderTest extends AppTestCase
         $this->assertTrue($request->isAjax());
     }
 
-    public function testIsAjaxReturnsTrueFromServerWhenHeaderIsMissing()
+    public function testIsAjaxReturnsTrueFromServerWhenHeaderIsMissing(): void
     {
         $request = new Request();
 
@@ -138,7 +138,7 @@ class HttpRequestHeaderTest extends AppTestCase
         $this->assertTrue($request->isAjax());
     }
 
-    public function testGetReferrer()
+    public function testGetReferrer(): void
     {
         $this->assertNull(Request::getReferrer());
 

@@ -20,14 +20,10 @@ namespace Quantum\Auth;
  */
 class User
 {
-    /**
-     * @var array
-     */
-    private $data = [];
+    private array $data = [];
 
     /**
      * Set Data
-     * @param array $data
      * @return $this
      */
     public function setData(array $data): self
@@ -38,7 +34,6 @@ class User
 
     /**
      * Get Data
-     * @return array
      */
     public function getData(): array
     {
@@ -47,7 +42,6 @@ class User
 
     /**
      * Get Fields
-     * @return array
      */
     public function getFields(): array
     {
@@ -56,7 +50,6 @@ class User
 
     /**
      * Set Fields
-     * @param array $schema
      * @return $this
      */
     public function setFields(array $schema): self
@@ -72,8 +65,6 @@ class User
 
     /**
      * Get Field Value
-     * @param string $field
-     * @return string|null
      */
     public function getFieldValue(string $field): ?string
     {
@@ -82,8 +73,6 @@ class User
 
     /**
      * Set Fields Value
-     * @param string $field
-     * @param string|null $value
      * @return $this
      */
     public function setFieldValue(string $field, ?string $value): self
@@ -94,8 +83,6 @@ class User
 
     /**
      * Has Field
-     * @param string $field
-     * @return bool
      */
     public function hasField(string $field): bool
     {
@@ -104,7 +91,6 @@ class User
 
     /**
      * Gets the user property
-     * @param string $property
      * @return string|null
      */
     public function __get(string $property)

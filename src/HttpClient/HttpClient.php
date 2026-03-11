@@ -56,38 +56,23 @@ class HttpClient
     /**
      * @var MultiCurl|Curl
      */
-    private $client = null;
+    private $client;
 
-    /**
-     * @var string
-     */
-    private $method = 'GET';
+    private string $method = 'GET';
 
     /**
      * @var mixed|null
      */
-    private $data = null;
+    private $data;
 
-    /**
-     * @var array
-     */
     private array $requestHeaders = [];
 
-    /**
-     * @var array
-     */
-    private $response = [];
+    private array $response = [];
 
-    /**
-     * @var array
-     */
-    private $errors = [];
+    private array $errors = [];
 
     /**
      * Creates request
-     * @param string $url
-     * @param Curl|null $client
-     * @return HttpClient
      */
     public function createRequest(string $url, ?Curl $client = null): HttpClient
     {
@@ -98,14 +83,12 @@ class HttpClient
 
     /**
      * Creates multi request
-     * @param MultiCurl|null $client
-     * @return HttpClient
      */
     public function createMultiRequest(?MultiCurl $client = null): HttpClient
     {
         $this->client = $client ?: new MultiCurl();
 
-        $this->client->complete(function (Curl $instance) {
+        $this->client->complete(function (Curl $instance): void {
             $this->handleResponse($instance);
         });
 
@@ -114,10 +97,6 @@ class HttpClient
 
     /**
      * Creates async multi request
-     * @param callable $success
-     * @param callable $error
-     * @param MultiCurl|null $client
-     * @return HttpClient
      */
     public function createAsyncMultiRequest(callable $success, callable $error, ?MultiCurl $client = null): HttpClient
     {
@@ -131,8 +110,6 @@ class HttpClient
 
     /**
      * Sets http method
-     * @param string $method
-     * @return $this
      * @throws BaseException
      */
     public function setMethod(string $method): HttpClient
@@ -147,7 +124,6 @@ class HttpClient
 
     /**
      * Gets the current http method
-     * @return string
      */
     public function getMethod(): string
     {
@@ -157,7 +133,6 @@ class HttpClient
     /**
      * Sets data
      * @param mixed $data
-     * @return HttpClient
      */
     public function setData($data): HttpClient
     {
@@ -176,7 +151,6 @@ class HttpClient
 
     /**
      * Checks if the request is multi cURL
-     * @return bool
      */
     public function isMultiRequest(): bool
     {
@@ -205,7 +179,6 @@ class HttpClient
 
     /**
      * Gets single or all request headers
-     * @param string|null $header
      * @return mixed|null
      * @throws BaseException
      */
@@ -222,7 +195,6 @@ class HttpClient
 
     /**
      * Gets the response headers
-     * @param string|null $header
      * @return mixed|null
      * @throws BaseException
      */
@@ -241,7 +213,6 @@ class HttpClient
 
     /**
      * Gets the response cookies
-     * @param string|null $cookie
      * @return mixed|null
      * @throws BaseException
      */
@@ -272,7 +243,6 @@ class HttpClient
 
     /**
      * Gets the entire response
-     * @return array
      */
     public function getResponse(): array
     {
@@ -281,7 +251,6 @@ class HttpClient
 
     /**
      * Returns the errors
-     * @return array
      */
     public function getErrors(): array
     {
@@ -290,7 +259,6 @@ class HttpClient
 
     /**
      * Gets the curl info
-     * @param int|null $option
      * @return mixed
      * @throws BaseException
      */
@@ -303,7 +271,6 @@ class HttpClient
 
     /**
      * Gets the current url being executed
-     * @return string|null
      * @throws BaseException
      */
     public function url(): ?string
@@ -314,9 +281,6 @@ class HttpClient
     }
 
     /**
-     * @param string $method
-     * @param array $arguments
-     * @return $this
      * @throws BaseException
      * @throws HttpClientException
      */
@@ -338,7 +302,6 @@ class HttpClient
     }
 
     /**
-     * @return void
      * @throws ErrorException
      */
     private function startSingleRequest(): void
@@ -355,9 +318,8 @@ class HttpClient
 
     /**
      * Handles the response
-     * @param Curl $instance
      */
-    private function handleResponse(Curl $instance)
+    private function handleResponse(Curl $instance): void
     {
         if ($instance->isError()) {
             $this->errors[$instance->getId()] = [
@@ -373,10 +335,6 @@ class HttpClient
         ];
     }
 
-    /**
-     * @param CaseInsensitiveArray $headers
-     * @return array
-     */
     private function formatHeaders(CaseInsensitiveArray $headers): array
     {
         $formatted = [];
@@ -389,7 +347,6 @@ class HttpClient
     }
 
     /**
-     * @return void
      * @throws BaseException
      */
     private function ensureSingleRequest(): void
@@ -399,11 +356,6 @@ class HttpClient
         }
     }
 
-    /**
-     * @param string $method
-     * @param array $arguments
-     * @return void
-     */
     private function interceptCall(string $method, array $arguments): void
     {
         switch ($method) {

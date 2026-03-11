@@ -16,6 +16,7 @@ namespace Quantum\Database\Adapters\Idiorm\Statements;
 
 use Quantum\Database\Exceptions\DatabaseException;
 use Quantum\Database\Contracts\DbalInterface;
+use Quantum\App\Exceptions\BaseException;
 
 /**
  * Trait Result
@@ -25,11 +26,11 @@ trait Result
 {
     /**
      * @inheritDoc
-     * @throws DatabaseException
+     * @throws DatabaseException|BaseException
      */
     public function get(): array
     {
-        return array_map(function ($element) {
+        return array_map(function ($element): object {
             $item = clone $this;
             $item->updateOrmModel($element);
             return $item;
@@ -38,7 +39,7 @@ trait Result
 
     /**
      * @inheritDoc
-     * @throws DatabaseException
+     * @throws DatabaseException|BaseException
      */
     public function findOne(int $id): DbalInterface
     {
@@ -53,7 +54,7 @@ trait Result
 
     /**
      * @inheritDoc
-     * @throws DatabaseException
+     * @throws DatabaseException|BaseException
      */
     public function findOneBy(string $column, $value): DbalInterface
     {
@@ -67,7 +68,7 @@ trait Result
 
     /**
      * @inheritDoc
-     * @throws DatabaseException
+     * @throws DatabaseException|BaseException
      */
     public function first(): DbalInterface
     {
@@ -81,7 +82,7 @@ trait Result
 
     /**
      * @inheritDoc
-     * @throws DatabaseException
+     * @throws DatabaseException|BaseException
      */
     public function count(): int
     {
@@ -90,7 +91,7 @@ trait Result
 
     /**
      * @inheritDoc
-     * @throws DatabaseException
+     * @throws DatabaseException|BaseException
      */
     public function asArray(): array
     {
@@ -105,7 +106,6 @@ trait Result
 
     /**
      * @param $result
-     * @return array
      */
     public function setHidden($result): array
     {

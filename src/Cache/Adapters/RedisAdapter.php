@@ -37,13 +37,9 @@ class RedisAdapter implements CacheInterface
      */
     private $prefix;
 
-    /**
-     * @var Redis
-     */
-    private $redis;
+    private Redis $redis;
 
     /**
-     * @param array $params
      * @throws RedisException
      */
     public function __construct(array $params)
@@ -169,8 +165,6 @@ class RedisAdapter implements CacheInterface
 
     /**
      * Gets the hashed key
-     * @param string $key
-     * @return string
      */
     private function keyHash(string $key): string
     {

@@ -23,12 +23,12 @@ class ModuleLoaderTest extends AppTestCase
         parent::tearDown();
     }
 
-    public function testGetInstance()
+    public function testGetInstance(): void
     {
         $this->assertInstanceOf(ModuleLoader::class, $this->moduleLoader);
     }
 
-    public function testLoadModulesRoutes()
+    public function testLoadModulesRoutes(): void
     {
         $modulesRoutes = $this->moduleLoader->loadModulesRoutes();
 
@@ -41,7 +41,7 @@ class ModuleLoaderTest extends AppTestCase
         $this->assertInstanceOf(Closure::class, $modulesRoutes['Test']);
     }
 
-    public function testLoadModulesDependencies()
+    public function testLoadModulesDependencies(): void
     {
         $deps = $this->moduleLoader->loadModulesDependencies();
 
@@ -54,7 +54,7 @@ class ModuleLoaderTest extends AppTestCase
         $this->assertSame(\Quantum\Tests\_root\shared\Services\TokenService::class, $deps[\Quantum\Storage\Contracts\TokenServiceInterface::class]);
     }
 
-    public function testGetModuleConfigs()
+    public function testGetModuleConfigs(): void
     {
         $configs = $this->moduleLoader->getModuleConfigs();
 

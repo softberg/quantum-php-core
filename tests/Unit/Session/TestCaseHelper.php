@@ -6,7 +6,7 @@ use Quantum\Database\Adapters\Idiorm\IdiormDbal;
 
 trait TestCaseHelper
 {
-    private function _createSessionsTable()
+    private function _createSessionsTable(): void
     {
         IdiormDbal::execute(
             'CREATE TABLE IF NOT EXISTS sessions (

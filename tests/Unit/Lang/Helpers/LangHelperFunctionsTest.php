@@ -3,11 +3,12 @@
 namespace Quantum\Tests\Unit\Lang\Helpers;
 
 use Quantum\Lang\Factories\LangFactory;
+use Quantum\Lang\Lang;
 use Quantum\Tests\Unit\AppTestCase;
 
 class LangHelperFunctionsTest extends AppTestCase
 {
-    private $lang;
+    private Lang $lang;
 
     public function setUp(): void
     {
@@ -20,7 +21,7 @@ class LangHelperFunctionsTest extends AppTestCase
         $this->lang->load();
     }
 
-    public function testLangHelperCurrentLang()
+    public function testLangHelperCurrentLang(): void
     {
         $this->assertEquals('en', current_lang());
 
@@ -29,14 +30,14 @@ class LangHelperFunctionsTest extends AppTestCase
         $this->assertEquals('am', current_lang());
     }
 
-    public function testLangHelperT()
+    public function testLangHelperT(): void
     {
         $this->assertEquals('Testing', t('custom.test'));
 
         $this->assertEquals('Information about the new feature', t('custom.info', ['new']));
     }
 
-    public function testLangHelperUnderscoreT()
+    public function testLangHelperUnderscoreT(): void
     {
         ob_start();
 
@@ -47,7 +48,7 @@ class LangHelperFunctionsTest extends AppTestCase
         $this->assertEquals('Testing', $output);
     }
 
-    public function testLangHelperTFail()
+    public function testLangHelperTFail(): void
     {
         $this->assertEquals('custom.non_existing_key', t('custom.non_existing_key'));
     }

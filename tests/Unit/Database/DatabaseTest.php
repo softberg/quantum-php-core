@@ -38,7 +38,7 @@ class DatabaseTest extends AppTestCase
         Database::execute('DROP TABLE IF EXISTS profiles');
     }
 
-    public function testDatabaseInstance()
+    public function testDatabaseInstance(): void
     {
         $db1 = Database::getInstance();
 
@@ -49,17 +49,17 @@ class DatabaseTest extends AppTestCase
         $this->assertSame($db1, $db2);
     }
 
-    public function testDatabaseGetConfigs()
+    public function testDatabaseGetConfigs(): void
     {
         $this->assertEquals(config()->get('database.sqlite'), Database::getInstance()->getConfigs());
     }
 
-    public function testDatabaseGetOrmClass()
+    public function testDatabaseGetOrmClass(): void
     {
         $this->assertEquals(IdiormDbal::class, Database::getInstance()->getOrmClass());
     }
 
-    public function testDatabaseRawQueries()
+    public function testDatabaseRawQueries(): void
     {
         $result = Database::query('SELECT * FROM profiles WHERE id=:id', ['id' => 1]);
 
@@ -86,7 +86,7 @@ class DatabaseTest extends AppTestCase
         $this->assertIsArray(Database::queryLog());
     }
 
-    public function testDatabaseTransactionMethods()
+    public function testDatabaseTransactionMethods(): void
     {
         Database::beginTransaction();
 
@@ -123,9 +123,9 @@ class DatabaseTest extends AppTestCase
         $this->assertEquals('Marley', $result[0]['lastname']);
     }
 
-    public function testDatabaseTransactionClosureSuccess()
+    public function testDatabaseTransactionClosureSuccess(): void
     {
-        $result = Database::transaction(function () {
+        $result = Database::transaction(function (): string {
             Database::execute('INSERT INTO profiles (firstname, lastname, age, country)
                                      VALUES (:firstname, :lastname, :age, :country)', [
                 'firstname' => 'Charlie',
@@ -146,10 +146,10 @@ class DatabaseTest extends AppTestCase
         $this->assertEquals('Brown', $rows[0]['lastname']);
     }
 
-    public function testDatabaseTransactionClosureFailure()
+    public function testDatabaseTransactionClosureFailure(): void
     {
         try {
-            Database::transaction(function () {
+            Database::transaction(function (): void {
                 Database::execute('INSERT INTO profiles (firstname, lastname, age, country)
                                          VALUES (:firstname, :lastname, :age, :country)', [
                     'firstname' => 'Eve',

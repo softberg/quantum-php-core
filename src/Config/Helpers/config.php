@@ -16,7 +16,6 @@ use Quantum\Config\Config;
 
 /**
  * Config facade
- * @return Config
  */
 function config(): Config
 {

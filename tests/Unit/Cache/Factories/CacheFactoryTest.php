@@ -20,49 +20,49 @@ class CacheFactoryTest extends AppTestCase
         $this->setPrivateProperty(CacheFactory::class, 'instances', []);
     }
 
-    public function testCacheFactoryInstance()
+    public function testCacheFactoryInstance(): void
     {
         $cache = CacheFactory::get();
 
         $this->assertInstanceOf(Cache::class, $cache);
     }
 
-    public function testCacheFactoryDefaultAdapter()
+    public function testCacheFactoryDefaultAdapter(): void
     {
         $cache = CacheFactory::get();
 
         $this->assertInstanceOf(FileAdapter::class, $cache->getAdapter());
     }
 
-    public function testCacheFactoryFileAdapter()
+    public function testCacheFactoryFileAdapter(): void
     {
         $cache = CacheFactory::get(Cache::FILE);
 
         $this->assertInstanceOf(FileAdapter::class, $cache->getAdapter());
     }
 
-    public function testCacheFactoryDatabaseAdapter()
+    public function testCacheFactoryDatabaseAdapter(): void
     {
         $cache = CacheFactory::get(Cache::DATABASE);
 
         $this->assertInstanceOf(DatabaseAdapter::class, $cache->getAdapter());
     }
 
-    public function testCacheFactoryMemcachedAdapter()
+    public function testCacheFactoryMemcachedAdapter(): void
     {
         $cache = CacheFactory::get(Cache::MEMCACHED);
 
         $this->assertInstanceOf(MemcachedAdapter::class, $cache->getAdapter());
     }
 
-    public function testCacheFactoryRedisAdapter()
+    public function testCacheFactoryRedisAdapter(): void
     {
         $cache = CacheFactory::get(Cache::REDIS);
 
         $this->assertInstanceOf(RedisAdapter::class, $cache->getAdapter());
     }
 
-    public function testCacheFactoryInvalidTypeAdapter()
+    public function testCacheFactoryInvalidTypeAdapter(): void
     {
         $this->expectException(CacheException::class);
 
@@ -71,7 +71,7 @@ class CacheFactoryTest extends AppTestCase
         CacheFactory::get('invalid_type');
     }
 
-    public function testCacheFactoryReturnsSameInstance()
+    public function testCacheFactoryReturnsSameInstance(): void
     {
         $cache1 = CacheFactory::get(Cache::FILE);
         $cache2 = CacheFactory::get(Cache::FILE);

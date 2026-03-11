@@ -14,7 +14,11 @@
 
 namespace Quantum\Paginator\Traits;
 
+use Quantum\Config\Exceptions\ConfigException;
+use Quantum\Lang\Exceptions\LangException;
 use Quantum\Paginator\Enums\Pagination;
+use Quantum\Di\Exceptions\DiException;
+use ReflectionException;
 
 /**
  * Trait PaginatorTrait
@@ -22,29 +26,17 @@ use Quantum\Paginator\Enums\Pagination;
  */
 trait PaginatorTrait
 {
-    /**
-     * @var string
-     */
     protected string $baseUrl;
 
-    /**
-     * @var int
-     */
     protected int $total;
 
-    /**
-     * @var int
-     */
     protected int $perPage;
 
-    /**
-     * @var int
-     */
     protected int $page;
 
     /**
-     * @param int $perPage
-     * @param int $page
+     * @throws DiException
+     * @throws ReflectionException
      */
     protected function initialize(int $perPage, int $page = 1): void
     {
@@ -54,8 +46,7 @@ trait PaginatorTrait
     }
 
     /**
-     * Get total number of items
-     * @return int
+     * Get the total number of items
      */
     public function total(): int
     {
@@ -63,8 +54,7 @@ trait PaginatorTrait
     }
 
     /**
-     * Get current page number
-     * @return int
+     * Get the current page number
      */
     public function currentPageNumber(): int
     {
@@ -73,7 +63,6 @@ trait PaginatorTrait
 
     /**
      * Get previous page number
-     * @return int|null
      */
     public function previousPageNumber(): ?int
     {
@@ -90,7 +79,6 @@ trait PaginatorTrait
 
     /**
      * Get next page number
-     * @return int|null
      */
     public function nextPageNumber(): ?int
     {
@@ -107,7 +95,6 @@ trait PaginatorTrait
 
     /**
      * Get last page number
-     * @return int
      */
     public function lastPageNumber(): int
     {
@@ -115,9 +102,7 @@ trait PaginatorTrait
     }
 
     /**
-     * Get current page link
-     * @param bool $withBaseUrl
-     * @return string|null
+     * Get the current page link
      */
     public function currentPageLink(bool $withBaseUrl = false): ?string
     {
@@ -126,8 +111,6 @@ trait PaginatorTrait
 
     /**
      * Get first page link
-     * @param bool $withBaseUrl
-     * @return string|null
      */
     public function firstPageLink(bool $withBaseUrl = false): ?string
     {
@@ -136,8 +119,6 @@ trait PaginatorTrait
 
     /**
      * Get previous page link
-     * @param bool $withBaseUrl
-     * @return string|null
      */
     public function previousPageLink(bool $withBaseUrl = false): ?string
     {
@@ -146,8 +127,6 @@ trait PaginatorTrait
 
     /**
      * Get next page link
-     * @param bool $withBaseUrl
-     * @return string|null
      */
     public function nextPageLink(bool $withBaseUrl = false): ?string
     {
@@ -156,8 +135,6 @@ trait PaginatorTrait
 
     /**
      * Get last page link
-     * @param bool $withBaseUrl
-     * @return string|null
      */
     public function lastPageLink(bool $withBaseUrl = false): ?string
     {
@@ -166,7 +143,6 @@ trait PaginatorTrait
 
     /**
      * Get items per page
-     * @return int
      */
     public function perPage(): int
     {
@@ -175,8 +151,6 @@ trait PaginatorTrait
 
     /**
      * Get all page links
-     * @param bool $withBaseUrl
-     * @return array
      */
     public function links(bool $withBaseUrl = false): array
     {
@@ -191,9 +165,7 @@ trait PaginatorTrait
 
     /**
      * Get pagination HTML
-     * @param bool $withBaseUrl
-     * @param int|null $pageItemsCount
-     * @return string|null
+     * @throws ConfigException|DiException|LangException|ReflectionException
      */
     public function getPagination(bool $withBaseUrl = false, ?int $pageItemsCount = null): ?string
     {
@@ -233,8 +205,7 @@ trait PaginatorTrait
 
     /**
      * Get the URI for pagination
-     * @param bool $withBaseUrl
-     * @return string
+     * @throws DiException|ReflectionException
      */
     protected function getUri(bool $withBaseUrl = false): string
     {
@@ -253,9 +224,7 @@ trait PaginatorTrait
 
     /**
      * Get page link
-     * @param int|null $pageNumber
-     * @param bool $withBaseUrl
-     * @return string|null
+     * @throws DiException|ReflectionException
      */
     protected function getPageLink(?int $pageNumber, bool $withBaseUrl = false): ?string
     {
@@ -268,62 +237,56 @@ trait PaginatorTrait
 
     /**
      * Get next page item HTML
-     * @param string|null $nextPageLink
-     * @return string
+     * @throws DiException|ReflectionException|ConfigException|LangException
      */
     protected function getNextPageItem(?string $nextPageLink): string
     {
-        $link = '';
+        $link = [];
 
         if (!in_array($nextPageLink, [null, '', '0'], true)) {
-            $link = '<li><a href="' . $nextPageLink . '">' . t('common.pagination.next') . '</a></li>';
+            $link[] = '<li><a href="' . $nextPageLink . '">' . t('common.pagination.next') . '</a></li>';
         }
 
-        return $link;
+        return implode('', $link);
     }
 
     /**
-     * Get previous page item HTML
+     *
      * @param string|null $previousPageLink
      * @return string
      */
+    /**
+     * Get previous page item HTML
+     * @throws ConfigException|DiException|LangException|ReflectionException
+     */
     protected function getPreviousPageItem(?string $previousPageLink): string
     {
-        $link = '';
+        $link = [];
 
         if (!in_array($previousPageLink, [null, '', '0'], true)) {
-            $link = '<li><a href="' . $previousPageLink . '">' . t('common.pagination.prev') . '</a></li>';
+            $link[] = '<li><a href="' . $previousPageLink . '">' . t('common.pagination.prev') . '</a></li>';
         }
 
-        return $link;
+        return implode('', $link);
     }
 
     /**
      * Get items links HTML
-     * @param int $startPage
-     * @param int $endPage
-     * @param int $currentPage
-     * @param array $links
-     * @return string
      */
     protected function getItemsLinks(int $startPage, int $endPage, int $currentPage, array $links): string
     {
-        $pagination = '';
+        $pagination = [];
 
         for ($i = $startPage; $i <= $endPage; $i++) {
             $active = $i === $currentPage ? 'class="' . Pagination::PAGINATION_CLASS_ACTIVE . '"' : '';
-            $pagination .= '<li ' . $active . '><a href="' . $links[$i - 1] . '">' . $i . '</a></li>';
+            $pagination[] = '<li ' . $active . '><a href="' . $links[$i - 1] . '">' . $i . '</a></li>';
         }
 
-        return $pagination;
+        return implode('', $pagination);
     }
 
     /**
      * Calculate start and end pages
-     * @param int $currentPage
-     * @param int $totalPages
-     * @param int $pageItemsCount
-     * @return array
      */
     protected function calculateStartEndPages(int $currentPage, int $totalPages, int $pageItemsCount): array
     {
@@ -335,41 +298,35 @@ trait PaginatorTrait
 
     /**
      * Add first page link HTML
-     * @param int $startPage
-     * @return string
      */
     protected function addFirstPageLink(int $startPage): string
     {
-        $pagination = '';
+        $pagination = [];
 
         if ($startPage > 1) {
-            $pagination .= '<li><a href="' . $this->firstPageLink() . '">' . Pagination::FIRST_PAGE_NUMBER . '</a></li>';
+            $pagination[] = '<li><a href="' . $this->firstPageLink() . '">' . Pagination::FIRST_PAGE_NUMBER . '</a></li>';
             if ($startPage > 2) {
-                $pagination .= '<li><span>...</span></li>';
+                $pagination[] = '<li><span>...</span></li>';
             }
         }
 
-        return $pagination;
+        return implode('', $pagination);
     }
 
     /**
      * Add last page link HTML
-     * @param int $endPage
-     * @param int $totalPages
-     * @param array $links
-     * @return string
      */
     protected function addLastPageLink(int $endPage, int $totalPages, array $links): string
     {
-        $pagination = '';
+        $pagination = [];
 
         if ($endPage < $totalPages) {
             if ($endPage < $totalPages - 1) {
-                $pagination .= '<li><span>...</span></li>';
+                $pagination[] = '<li><span>...</span></li>';
             }
-            $pagination .= '<li><a href="' . $links[$totalPages - 1] . '">' . $totalPages . '</a></li>';
+            $pagination[] = '<li><a href="' . $links[$totalPages - 1] . '">' . $totalPages . '</a></li>';
         }
 
-        return $pagination;
+        return implode('', $pagination);
     }
 }

@@ -91,10 +91,7 @@ trait Criteria
 
     /**
      * Adds Criteria
-     * @param string $column
-     * @param string $operator
      * @param mixed $value
-     * @param string|null $func
      * @throws DatabaseException
      */
     protected function addCriteria(string $column, string $operator, $value, ?string $func = null)
@@ -110,7 +107,6 @@ trait Criteria
 
     /**
      * Adds one or more OR criteria in brackets
-     * @param array $orCriterias
      * @throws DatabaseException
      */
     protected function orCriteria(array $orCriterias)

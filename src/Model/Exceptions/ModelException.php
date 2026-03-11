@@ -25,10 +25,6 @@ use Quantum\App\Exceptions\BaseException;
  */
 class ModelException extends BaseException
 {
-    /**
-     * @param string $name
-     * @return ModelException
-     */
     public static function inappropriateProperty(string $name): self
     {
         return new self(
@@ -37,11 +33,6 @@ class ModelException extends BaseException
         );
     }
 
-    /**
-     * @param string $modelName
-     * @param string $tableName
-     * @return ModelException
-     */
     public static function wrongRelation(string $modelName, string $tableName): self
     {
         return new self(
@@ -50,11 +41,6 @@ class ModelException extends BaseException
         );
     }
 
-    /**
-     * @param string $modelName
-     * @param string $relatedModelName
-     * @return ModelException
-     */
     public static function relationTypeMissing(string $modelName, string $relatedModelName): self
     {
         return new self(
@@ -63,11 +49,6 @@ class ModelException extends BaseException
         );
     }
 
-    /**
-     * @param string $modelName
-     * @param string $relatedModelName
-     * @return ModelException
-     */
     public static function missingRelationKeys(string $modelName, string $relatedModelName): self
     {
         return new self(
@@ -76,11 +57,6 @@ class ModelException extends BaseException
         );
     }
 
-    /**
-     * @param string $modelName
-     * @param string $foreignKey
-     * @return ModelException
-     */
     public static function missingForeignKeyValue(string $modelName, string $foreignKey): self
     {
         return new self(
@@ -89,10 +65,6 @@ class ModelException extends BaseException
         );
     }
 
-    /**
-     * @param string $relationType
-     * @return ModelException
-     */
     public static function unsupportedRelationType(string $relationType): self
     {
         return new self(
@@ -101,9 +73,6 @@ class ModelException extends BaseException
         );
     }
 
-    /**
-     * @return ModelException
-     */
     public static function ormIsNotSet(): self
     {
         return new self(

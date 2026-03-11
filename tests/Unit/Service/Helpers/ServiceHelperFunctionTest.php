@@ -9,7 +9,7 @@ use Quantum\Service\QtService;
 
 class ServiceHelperFunctionTest extends AppTestCase
 {
-    public function testServiceReturnsQtServiceInstance()
+    public function testServiceReturnsQtServiceInstance(): void
     {
         $service = service(TokenService::class);
 
@@ -18,7 +18,7 @@ class ServiceHelperFunctionTest extends AppTestCase
         $this->assertInstanceOf(QtService::class, $service);
     }
 
-    public function testModelThrowsOnInvalidClass()
+    public function testModelThrowsOnInvalidClass(): void
     {
         $this->expectException(ServiceException::class);
 

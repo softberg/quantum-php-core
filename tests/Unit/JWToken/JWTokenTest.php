@@ -7,11 +7,11 @@ use Quantum\Jwt\JwtToken;
 
 class JWTokenTest extends AppTestCase
 {
-    private $jwtToken;
+    private JwtToken $jwtToken;
 
     private $key = 'appkey';
 
-    private $userData = [
+    private array $userData = [
         'userId' => 'b08f86af-35da-48f2-8fab-cef3904660bd',
         'userFirstName' => 'John',
         'userLastName' => 'Doe',
@@ -39,12 +39,12 @@ class JWTokenTest extends AppTestCase
             ->setClaims($claims);
     }
 
-    public function testCompose()
+    public function testCompose(): void
     {
         $this->assertStringMatchesFormat('%s.%s.%s', $this->jwtToken->compose());
     }
 
-    public function testSetAlgorithm()
+    public function testSetAlgorithm(): void
     {
         $jwtEncoded = $this->jwtToken->setAlgorithm('HS512')->compose();
 
@@ -58,10 +58,10 @@ class JWTokenTest extends AppTestCase
 
         $this->assertNotEmpty($this->jwtToken->fetchPayload());
 
-        $jwtEncoded = $this->jwtToken->setAlgorithm('HS512')->compose();
+        $this->jwtToken->setAlgorithm('HS512')->compose();
     }
 
-    public function testRetrieveFetchPayload()
+    public function testRetrieveFetchPayload(): void
     {
         $this->assertEmpty($this->jwtToken->fetchPayload());
 
@@ -72,7 +72,7 @@ class JWTokenTest extends AppTestCase
         $this->assertNotEmpty($this->jwtToken->fetchPayload());
     }
 
-    public function testSetFetchData()
+    public function testSetFetchData(): void
     {
         $this->assertNull($this->jwtToken->fetchData());
 
@@ -86,7 +86,7 @@ class JWTokenTest extends AppTestCase
 
     }
 
-    public function testSetFetchClaim()
+    public function testSetFetchClaim(): void
     {
         $jwtEncoded = $this->jwtToken->setAlgorithm('HS256')->compose();
 
@@ -110,7 +110,7 @@ class JWTokenTest extends AppTestCase
 
     }
 
-    public function testSetClaims()
+    public function testSetClaims(): void
     {
         $jwtToken = new JwtToken($this->key);
 

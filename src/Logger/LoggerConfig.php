@@ -39,15 +39,10 @@ class LoggerConfig
      */
     public const DEFAULT_LOG_LEVEL = 'error';
 
-    /**
-     * @var string
-     */
-    private static $logLevel = self::DEFAULT_LOG_LEVEL;
+    private static string $logLevel = self::DEFAULT_LOG_LEVEL;
 
     /**
      * Set the application's log level.
-     * @param string $level
-     * @return void
      */
     public static function setAppLogLevel(string $level): void
     {
@@ -58,7 +53,6 @@ class LoggerConfig
 
     /**
      * Get the integer value of the application's log level.
-     * @return int
      */
     public static function getAppLogLevel(): int
     {
@@ -67,8 +61,6 @@ class LoggerConfig
 
     /**
      * Get the integer log level for a given error type.
-     * @param string $errorType
-     * @return int
      */
     public static function getLogLevel(string $errorType): int
     {

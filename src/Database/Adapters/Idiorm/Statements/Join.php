@@ -107,9 +107,6 @@ trait Join
     }
 
     /**
-     * @param DbModel $relatedModel
-     * @param array $relation
-     * @return void
      * @throws BaseException
      */
     protected function applyHasRelation(DbModel $relatedModel, array $relation): void
@@ -125,9 +122,6 @@ trait Join
     }
 
     /**
-     * @param DbModel $relatedModel
-     * @param array $relation
-     * @return void
      * @throws BaseException
      */
     protected function applyBelongsTo(DbModel $relatedModel, array $relation): void
@@ -143,8 +137,6 @@ trait Join
     }
 
     /**
-     * @param DbModel $modelToJoin
-     * @return array
      * @throws ModelException
      */
     private function getValidatedRelation(DbModel $modelToJoin): array

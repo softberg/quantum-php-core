@@ -24,72 +24,31 @@ use Closure;
  */
 final class Route
 {
-    /**
-     * @var array
-     */
     protected array $methods;
 
-    /**
-     * @var string
-     */
     protected string $pattern;
 
-    /**
-     * @var string|null
-     */
     protected ?string $controller;
 
-    /**
-     * @var string|null
-     */
     protected ?string $action;
 
-    /**
-     * @var Closure|null
-     */
     protected ?Closure $closure;
 
-    /**
-     * @var string|null
-     */
     protected ?string $name = null;
 
-    /**
-     * @var string|null
-     */
     protected ?string $module = null;
 
-    /**
-     * @var array
-     */
     protected array $middlewares = [];
 
-    /**
-     * @var string|null
-     */
     protected ?string $group = null;
 
-    /**
-     * @var string|null
-     */
     protected ?string $prefix = null;
 
-    /**
-     * @var array|null
-     */
     protected ?array $cache = null;
 
-    /**
-     * @var string|null
-     */
     protected ?string $compiledPattern = null;
 
     /**
-     * @param array $methods
-     * @param string $pattern
-     * @param string|null $controller
-     * @param string|null $action
-     * @param Closure|null $closure
      * @throws RouteException
      */
     public function __construct(
@@ -97,7 +56,7 @@ final class Route
         string $pattern,
         ?string $controller,
         ?string $action,
-        Closure $closure = null
+        ?Closure $closure = null
     ) {
         if ($methods === []) {
             throw RouteException::noHttpMethods();
@@ -124,7 +83,6 @@ final class Route
 
     /**
      * Check whether this route is handled by a closure.
-     * @return bool
      */
     public function isClosure(): bool
     {
@@ -133,8 +91,6 @@ final class Route
 
     /**
      * Configure response caching settings for this route.
-     * @param bool $enabled
-     * @param int|null $ttl
      * @return $this
      */
     public function cache(bool $enabled, ?int $ttl = null): self
@@ -149,7 +105,6 @@ final class Route
 
     /**
      * Return caching configuration for this route.
-     * @return array|null
      */
     public function getCache(): ?array
     {
@@ -158,7 +113,6 @@ final class Route
 
     /**
      * Store compiled regex pattern for this route.
-     * @param string $pattern
      * @return $this
      */
     public function setCompiledPattern(string $pattern): self
@@ -169,7 +123,6 @@ final class Route
 
     /**
      * Return compiled regex pattern if set.
-     * @return string|null
      */
     public function getCompiledPattern(): ?string
     {
@@ -178,7 +131,6 @@ final class Route
 
     /**
      * Assign group name to this route.
-     * @param string|null $group
      * @return $this
      */
     public function group(?string $group): self
@@ -189,7 +141,6 @@ final class Route
 
     /**
      * Return group name.
-     * @return string|null
      */
     public function getGroup(): ?string
     {
@@ -198,7 +149,6 @@ final class Route
 
     /**
      * Return URL prefix.
-     * @param string|null $prefix
      * @return $this
      */
     public function prefix(?string $prefix): self
@@ -207,9 +157,6 @@ final class Route
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getPrefix(): ?string
     {
         return $this->prefix;
@@ -217,7 +164,6 @@ final class Route
 
     /**
      * Assign unique route name.
-     * @param string $name
      * @return $this
      */
     public function name(string $name): self
@@ -228,7 +174,6 @@ final class Route
 
     /**
      * Add middleware(s) with group-aware stacking order.
-     * @param array $middlewares
      * @return $this
      */
     public function addMiddlewares(array $middlewares): self
@@ -248,7 +193,6 @@ final class Route
 
     /**
      * Assign module name to this route.
-     * @param string|null $module
      * @return $this
      */
     public function module(?string $module): self
@@ -259,8 +203,6 @@ final class Route
 
     /**
      * Check whether HTTP method is allowed for this route.
-     * @param string $method
-     * @return bool
      */
     public function allowsMethod(string $method): bool
     {
@@ -269,7 +211,6 @@ final class Route
 
     /**
      * Return allowed HTTP methods.
-     * @return array
      */
     public function getMethods(): array
     {
@@ -278,7 +219,6 @@ final class Route
 
     /**
      * Return route pattern string.
-     * @return string
      */
     public function getPattern(): string
     {
@@ -287,7 +227,6 @@ final class Route
 
     /**
      * Return route closure handler if defined.
-     * @return Closure|null
      */
     public function getClosure(): ?Closure
     {
@@ -296,7 +235,6 @@ final class Route
 
     /**
      * Return controller class name.
-     * @return string|null
      */
     public function getController(): ?string
     {
@@ -305,7 +243,6 @@ final class Route
 
     /**
      * Return controller action name.
-     * @return string|null
      */
     public function getAction(): ?string
     {
@@ -314,7 +251,6 @@ final class Route
 
     /**
      * Return route name.
-     * @return string|null
      */
     public function getName(): ?string
     {
@@ -323,7 +259,6 @@ final class Route
 
     /**
      * Return middleware list.
-     * @return array
      */
     public function getMiddlewares(): array
     {
@@ -332,7 +267,6 @@ final class Route
 
     /**
      * Return middleware list.
-     * @return string|null
      */
     public function getModule(): ?string
     {
@@ -341,7 +275,6 @@ final class Route
 
     /**
      * Export route definition as array.
-     * @return array
      */
     public function toArray(): array
     {

@@ -47,11 +47,9 @@ class MailerFactory
     /**
      * @var array<string, Mailer>
      */
-    private static $instances = [];
+    private static array $instances = [];
 
     /**
-     * @param string|null $adapter
-     * @return Mailer
      * @throws BaseException
      * @throws ConfigException
      * @throws DiException
@@ -74,19 +72,12 @@ class MailerFactory
         return self::$instances[$adapter];
     }
 
-    /**
-     * @param string $adapterClass
-     * @param string $adapter
-     * @return Mailer
-     */
     private static function createInstance(string $adapterClass, string $adapter): Mailer
     {
         return new Mailer(new $adapterClass(config()->get('mailer.' . $adapter)));
     }
 
     /**
-     * @param string $adapter
-     * @return string
      * @throws BaseException
      */
     private static function getAdapterClass(string $adapter): string

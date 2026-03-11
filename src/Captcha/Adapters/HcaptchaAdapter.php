@@ -42,8 +42,6 @@ class HcaptchaAdapter implements CaptchaInterface
 
     /**
      * Hcaptcha constructor
-     * @param array $params
-     * @param HttpClient $httpClient
      */
     public function __construct(array $params, HttpClient $httpClient)
     {

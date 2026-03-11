@@ -27,34 +27,19 @@ class SendinblueAdapter implements MailerInterface
 {
     use MailerTrait;
 
-    /**
-     * @var string
-     */
-    public $name = 'Sendinblue';
-
-    /**
-     * @var HttpClient
-     */
-    protected $httpClient;
+    public string $name = 'Sendinblue';
 
     /**
      * @var string
      */
     private $apiKey;
 
-    /**
-     * @var string
-     */
-    private $apiUrl = 'https://api.sendinblue.com/v3/smtp/email';
+    private string $apiUrl = 'https://api.sendinblue.com/v3/smtp/email';
 
-    /**
-     * @var array
-     */
-    private $data = [];
+    private array $data = [];
 
     /**
      * SendinblueAdapter constructor
-     * @param array $params
      */
     public function __construct(array $params)
     {
@@ -66,7 +51,7 @@ class SendinblueAdapter implements MailerInterface
     /**
      * Prepares the data
      */
-    private function prepare()
+    private function prepare(): void
     {
         $this->data['sender'] = $this->from;
         $this->data['to'] = $this->addresses;
@@ -86,9 +71,6 @@ class SendinblueAdapter implements MailerInterface
         }
     }
 
-    /**
-     * @return bool
-     */
     private function sendEmail(): bool
     {
         try {

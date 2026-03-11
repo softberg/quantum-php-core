@@ -2,7 +2,11 @@
 
 namespace Quantum\Cron;
 
+use Quantum\Config\Exceptions\ConfigException;
 use Quantum\Cron\Exceptions\CronException;
+use Quantum\App\Exceptions\BaseException;
+use Quantum\Di\Exceptions\DiException;
+use ReflectionException;
 
 /**
  * CronLock - file based lock with flock()
@@ -17,17 +21,23 @@ use Quantum\Cron\Exceptions\CronException;
 class CronLock
 {
     private string $lockDirectory;
+
     private string $taskName;
+
     private string $lockFile;
 
     /** @var resource|null */
-    private $lockHandle = null;
+    private $lockHandle;
 
     private bool $ownsLock = false;
+
     private int $maxLockAge;
 
     private const DEFAULT_MAX_LOCK_AGE = 86400;
 
+    /**
+     * @throws BaseException|ConfigException|CronException|DiException|ReflectionException
+     */
     public function __construct(string $taskName, ?string $lockDirectory = null, ?int $maxLockAge = null)
     {
         $this->taskName = $this->sanitizeTaskName($taskName);
@@ -68,7 +78,7 @@ class CronLock
     }
 
     /**
-     * Update lock timestamp (useful for long-running jobs)
+     * Update the lock timestamp (useful for long-running jobs)
      */
     public function refresh(): bool
     {
@@ -89,6 +99,12 @@ class CronLock
         return $timestamp ?? 0;
     }
 
+    /**
+     * @throws BaseException
+     * @throws ConfigException
+     * @throws DiException
+     * @throws ReflectionException
+     */
     public function release(): bool
     {
         if (!$this->ownsLock || $this->lockHandle === null) {
@@ -111,6 +127,10 @@ class CronLock
 
     /**
      * Check if another process currently holds the lock.
+     * @throws BaseException
+     * @throws ConfigException
+     * @throws DiException
+     * @throws ReflectionException
      */
     public function isLocked(): bool
     {
@@ -151,7 +171,7 @@ class CronLock
     private function resolveLockDirectory(?string $lockDirectory): string
     {
         $path = $lockDirectory ?? cron_config('lock_path');
-        return $path === null ? $this->getDefaultLockDirectory() : $path;
+        return $path ?? $this->getDefaultLockDirectory();
     }
 
     private function getDefaultLockDirectory(): string
@@ -159,6 +179,13 @@ class CronLock
         return base_dir() . DS . 'runtime' . DS . 'cron' . DS . 'locks';
     }
 
+    /**
+     * @throws BaseException
+     * @throws ConfigException
+     * @throws CronException
+     * @throws DiException
+     * @throws ReflectionException
+     */
     private function ensureLockDirectoryExists(): void
     {
         if ($this->lockDirectory === '') {
@@ -172,6 +199,13 @@ class CronLock
         }
     }
 
+    /**
+     * @throws BaseException
+     * @throws ConfigException
+     * @throws CronException
+     * @throws DiException
+     * @throws ReflectionException
+     */
     private function createDirectory(string $directory): void
     {
         if (fs()->isDirectory($directory)) {
@@ -190,8 +224,10 @@ class CronLock
     }
 
     /**
-     * Removes stale lock files that are NOT currently locked by any process.
-     * Safe because we take LOCK_EX before removing.
+     * @throws BaseException
+     * @throws ConfigException
+     * @throws DiException
+     * @throws ReflectionException
      */
     private function cleanupStaleLocks(): void
     {
@@ -228,6 +264,9 @@ class CronLock
         }
     }
 
+    /**
+     * @param $handle
+     */
     private function writeTimestampToHandle($handle): bool
     {
         if (ftruncate($handle, 0) === false) {
@@ -251,6 +290,9 @@ class CronLock
         return true;
     }
 
+    /**
+     * @param $handle
+     */
     private function readTimestampFromHandle($handle): ?int
     {
         if (rewind($handle) === false) {
@@ -261,7 +303,7 @@ class CronLock
             return null;
         }
 
-        $timestamp = (int) trim((string) $content);
+        $timestamp = (int) trim($content);
         return $timestamp > 0 ? $timestamp : null;
     }
 }

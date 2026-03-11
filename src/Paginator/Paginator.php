@@ -50,14 +50,8 @@ class Paginator
      */
     public const MODEL = 'model';
 
-    /**
-     * @var PaginatorInterface
-     */
-    private $adapter;
+    private PaginatorInterface $adapter;
 
-    /**
-     * @param PaginatorInterface $adapter
-     */
     public function __construct(PaginatorInterface $adapter)
     {
         $this->adapter = $adapter;
@@ -65,7 +59,6 @@ class Paginator
 
     /**
      * Get the adapter instance
-     * @return PaginatorInterface
      */
     public function getAdapter(): PaginatorInterface
     {
@@ -73,8 +66,6 @@ class Paginator
     }
 
     /**
-     * @param string $method
-     * @param array|null $arguments
      * @return mixed
      * @throws BaseException
      */

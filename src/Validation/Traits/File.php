@@ -25,10 +25,6 @@ trait File
 {
     /**
      * Validates file size
-     * @param UploadedFile $file
-     * @param int $maxSize
-     * @param int|null $minSize
-     * @return bool
      */
     public function fileSize(UploadedFile $file, int $maxSize, ?int $minSize = null): bool
     {
@@ -40,9 +36,6 @@ trait File
 
     /**
      * Validates file mime type
-     * @param UploadedFile $file
-     * @param string ...$mimeTypes
-     * @return bool
      */
     public function fileMimeType(UploadedFile $file, string ...$mimeTypes): bool
     {
@@ -51,9 +44,6 @@ trait File
 
     /**
      * Validates file extension
-     * @param UploadedFile $file
-     * @param string ...$extensions
-     * @return bool
      */
     public function fileExtension(UploadedFile $file, string ...$extensions): bool
     {
@@ -62,10 +52,6 @@ trait File
 
     /**
      * Validates image dimensions
-     * @param UploadedFile $file
-     * @param int|null $width
-     * @param int|null $height
-     * @return bool
      * @throws FileUploadException
      */
     public function imageDimensions(UploadedFile $file, ?int $width = null, ?int $height = null): bool

@@ -12,7 +12,7 @@ use Quantum\Cron\CronLock;
  */
 class CronLockTest extends AppTestCase
 {
-    private $lockDirectory;
+    private string $lockDirectory;
 
     public function setUp(): void
     {
@@ -35,7 +35,7 @@ class CronLockTest extends AppTestCase
         $this->cleanupDirectory($this->lockDirectory);
     }
 
-    public function testConstructorCreatesLockDirectory()
+    public function testConstructorCreatesLockDirectory(): void
     {
         $lock = new CronLock('test-task', $this->lockDirectory);
 
@@ -43,7 +43,7 @@ class CronLockTest extends AppTestCase
         $lock->release();
     }
 
-    public function testAcquireLock()
+    public function testAcquireLock(): void
     {
         $lock = new CronLock('test-task', $this->lockDirectory);
 
@@ -51,7 +51,7 @@ class CronLockTest extends AppTestCase
         $lock->release();
     }
 
-    public function testCannotAcquireLockedTask()
+    public function testCannotAcquireLockedTask(): void
     {
         $lock1 = new CronLock('test-task', $this->lockDirectory);
         $lock1->acquire();
@@ -63,7 +63,7 @@ class CronLockTest extends AppTestCase
         $lock1->release();
     }
 
-    public function testReleaseLock()
+    public function testReleaseLock(): void
     {
         $lock = new CronLock('test-task', $this->lockDirectory);
         $lock->acquire();
@@ -72,7 +72,7 @@ class CronLockTest extends AppTestCase
         $this->assertFalse($lock->isLocked());
     }
 
-    public function testReleaseWithoutAcquireDoesNotDeleteForeignLock()
+    public function testReleaseWithoutAcquireDoesNotDeleteForeignLock(): void
     {
         $lockPath = $this->lockDirectory . DS . 'foreign-task.lock';
         mkdir($this->lockDirectory, 0777, true);
@@ -85,7 +85,7 @@ class CronLockTest extends AppTestCase
         @unlink($lockPath);
     }
 
-    public function testIsLocked()
+    public function testIsLocked(): void
     {
         $lock1 = new CronLock('test-task', $this->lockDirectory);
 
@@ -101,7 +101,7 @@ class CronLockTest extends AppTestCase
         $this->assertFalse($lock2->isLocked());
     }
 
-    public function testMultipleTasksCanHaveSeparateLocks()
+    public function testMultipleTasksCanHaveSeparateLocks(): void
     {
         $lock1 = new CronLock('task-1', $this->lockDirectory);
         $lock2 = new CronLock('task-2', $this->lockDirectory);
@@ -113,7 +113,7 @@ class CronLockTest extends AppTestCase
         $lock2->release();
     }
 
-    public function testRefreshUpdatesTimestamp()
+    public function testRefreshUpdatesTimestamp(): void
     {
         $lock = new CronLock('refresh-task', $this->lockDirectory);
         $lock->acquire();
@@ -130,7 +130,7 @@ class CronLockTest extends AppTestCase
         $lock->release();
     }
 
-    public function testTaskNameIsSanitized()
+    public function testTaskNameIsSanitized(): void
     {
         $lock = new CronLock('../bad name', $this->lockDirectory);
         $this->assertTrue($lock->acquire());
@@ -142,7 +142,7 @@ class CronLockTest extends AppTestCase
         @unlink($expectedPath);
     }
 
-    public function testStaleLocksAreCleanedUp()
+    public function testStaleLocksAreCleanedUp(): void
     {
         $lockPath = $this->lockDirectory . DS . 'stale-task.lock';
         $this->cleanupDirectory($this->lockDirectory);
@@ -154,7 +154,7 @@ class CronLockTest extends AppTestCase
         $this->assertFalse(file_exists($lockPath));
     }
 
-    public function testCleanupSkipsActiveLocks()
+    public function testCleanupSkipsActiveLocks(): void
     {
         $lockPath = $this->lockDirectory . DS . 'active.lock';
         $this->cleanupDirectory($this->lockDirectory);
@@ -177,7 +177,7 @@ class CronLockTest extends AppTestCase
         $this->assertFileDoesNotExist($lockPath);
     }
 
-    public function testConfigurableLockDirectoryIsUsed()
+    public function testConfigurableLockDirectoryIsUsed(): void
     {
         $customDirectory = base_dir() . DS . 'runtime' . DS . 'cron-custom-locks';
         $this->cleanupDirectory($customDirectory);
@@ -197,7 +197,7 @@ class CronLockTest extends AppTestCase
         $this->cleanupDirectory($customDirectory);
     }
 
-    public function testCronLockRefresh()
+    public function testCronLockRefresh(): void
     {
         $lock = new CronLock('refresh-task', $this->lockDirectory);
         $this->assertFalse($lock->refresh()); // Not owned yet
@@ -207,7 +207,7 @@ class CronLockTest extends AppTestCase
         $lock->release();
     }
 
-    public function testCronLockSanitization()
+    public function testCronLockSanitization(): void
     {
         $lock = new CronLock('  Space Task / \\ ', $this->lockDirectory);
         $this->assertStringContainsString('Space_Task', $this->getPrivateProperty($lock, 'lockFile'));
@@ -216,7 +216,7 @@ class CronLockTest extends AppTestCase
         $this->assertStringContainsString('default.lock', $this->getPrivateProperty($lock2, 'lockFile'));
     }
 
-    public function testCronLockDirectoryRecursion()
+    public function testCronLockDirectoryRecursion(): void
     {
         $nestedDir = $this->lockDirectory . DS . 'a' . DS . 'b' . DS . 'c';
         $lock = new CronLock('nested-task', $nestedDir);
@@ -226,7 +226,7 @@ class CronLockTest extends AppTestCase
         $lock->release();
     }
 
-    public function testCronLockEmptyDirectoryThrowsException()
+    public function testCronLockEmptyDirectoryThrowsException(): void
     {
         $this->expectException(CronException::class);
         new CronLock('task', '');

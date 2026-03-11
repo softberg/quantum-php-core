@@ -25,26 +25,12 @@ use ReflectionException;
  */
 class Lang
 {
-    /**
-     * @var string|null
-     */
-    private $currentLang = null;
+    private ?string $currentLang = null;
 
-    /**
-     * @var Translator
-     */
-    private $translator;
+    private Translator $translator;
 
-    /**
-     * @var bool
-     */
-    private $isEnabled;
+    private bool $isEnabled;
 
-    /**
-     * @param string $lang
-     * @param bool $isEnabled
-     * @param Translator $translator
-     */
     public function __construct(string $lang, bool $isEnabled, Translator $translator)
     {
         $this->isEnabled = $isEnabled;
@@ -53,8 +39,7 @@ class Lang
     }
 
     /**
-     * Set current language
-     * @param string $lang
+     * Set the current language
      * @return $this
      */
     public function setLang(string $lang): self
@@ -65,7 +50,6 @@ class Lang
 
     /**
      * Get current language
-     * @return string|null
      */
     public function getLang(): ?string
     {
@@ -74,7 +58,6 @@ class Lang
 
     /**
      * Is multilang enabled
-     * @return bool
      */
     public function isEnabled(): bool
     {
@@ -96,9 +79,7 @@ class Lang
 
     /**
      * Get translation by key
-     * @param string $key
      * @param $params
-     * @return string|null
      */
     public function getTranslation(string $key, $params = null): ?string
     {

@@ -13,15 +13,15 @@ class HookHelperTest extends AppTestCase
         parent::setUp();
     }
 
-    public function testHookHelperInstance()
+    public function testHookHelperInstance(): void
     {
         $this->assertInstanceOf(HookManager::class, hook());
     }
 
-    public function testHookOnAndFire()
+    public function testHookOnAndFire(): void
     {
         $output = '';
-        hook()->on('SAVE', function () use (&$output) {
+        hook()->on('SAVE', function () use (&$output): void {
             $output .= 'Data successfully saved';
         });
 
@@ -30,10 +30,10 @@ class HookHelperTest extends AppTestCase
         $this->assertSame('Data successfully saved', $output);
     }
 
-    public function testHookFireWithArgument()
+    public function testHookFireWithArgument(): void
     {
         $output = '';
-        hook()->on('SAVE', function ($data) use (&$output) {
+        hook()->on('SAVE', function (array $data) use (&$output): void {
             $output .= 'The file ' . $data['filename'] . ' was successfully saved';
         });
 
@@ -42,14 +42,14 @@ class HookHelperTest extends AppTestCase
         $this->assertSame('The file doc.pdf was successfully saved', $output);
     }
 
-    public function testHookMultipleListeners()
+    public function testHookMultipleListeners(): void
     {
         $output = '';
-        hook()->on('SAVE', function ($data) use (&$output) {
+        hook()->on('SAVE', function (array $data) use (&$output): void {
             $output .= 'The file ' . $data['filename'] . ' was successfully saved' . PHP_EOL;
         });
 
-        hook()->on('SAVE', function () use (&$output) {
+        hook()->on('SAVE', function () use (&$output): void {
             $output .= 'The email was successfully sent';
         });
 
@@ -58,18 +58,18 @@ class HookHelperTest extends AppTestCase
         $this->assertSame('The file doc.pdf was successfully saved' . PHP_EOL . 'The email was successfully sent', $output);
     }
 
-    public function testUnregisteredHookAtOn()
+    public function testUnregisteredHookAtOn(): void
     {
         $this->expectException(HookException::class);
 
         $this->expectExceptionMessage('The Hook `SOME_EVENT` was not registered.');
 
-        hook()->on('SOME_EVENT', function () {
+        hook()->on('SOME_EVENT', function (): void {
             // No output needed
         });
     }
 
-    public function testUnregisteredHookAtFire()
+    public function testUnregisteredHookAtFire(): void
     {
         $this->expectException(HookException::class);
 

@@ -11,14 +11,14 @@ trait GoogleDriveTokenServiceTestCase
     {
         $tokenServiceMock = Mockery::mock(TokenServiceInterface::class);
 
-        $tokenServiceMock->shouldReceive('getRefreshToken')->andReturnUsing(function () {
+        $tokenServiceMock->shouldReceive('getRefreshToken')->andReturnUsing(function (): string {
             $this->currentResponse = (object) $this->tokensGrantResponse;
             return 'ref_tok_1234';
         });
 
         $tokenServiceMock->shouldReceive('getAccessToken')->andReturn('acc_tok_1234');
 
-        $tokenServiceMock->shouldReceive('saveTokens')->andReturnUsing(function ($tokens) {
+        $tokenServiceMock->shouldReceive('saveTokens')->andReturnUsing(function ($tokens): bool {
             $this->currentResponse = (object) $this->fileMetadataResponse;
             return true;
         });

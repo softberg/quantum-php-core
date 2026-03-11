@@ -8,7 +8,7 @@ use Quantum\Database\Adapters\Sleekdb\SleekDbal;
 class CriteriaSleekTest extends SleekDbalTestCase
 {
     public $userProfileModel;
-    public function testSleekCriteriaEquals()
+    public function testSleekCriteriaEquals(): void
     {
         $this->userProfileModel = new SleekDbal('profiles');
 
@@ -19,7 +19,7 @@ class CriteriaSleekTest extends SleekDbalTestCase
         $this->assertEquals('Doe', $user->prop('lastname'));
     }
 
-    public function testSleekCriteriaNotEquals()
+    public function testSleekCriteriaNotEquals(): void
     {
         $this->userProfileModel = new SleekDbal('profiles');
 
@@ -30,7 +30,7 @@ class CriteriaSleekTest extends SleekDbalTestCase
         $this->assertEquals('Du', $user->prop('lastname'));
     }
 
-    public function testSleekCriteriaGreaterAndGreaterOrEqual()
+    public function testSleekCriteriaGreaterAndGreaterOrEqual(): void
     {
         $this->userProfileModel = new SleekDbal('profiles');
 
@@ -45,7 +45,7 @@ class CriteriaSleekTest extends SleekDbalTestCase
         $this->assertCount(2, $users);
     }
 
-    public function testSleekCriteriaSmallerAndSmallerOrEqual()
+    public function testSleekCriteriaSmallerAndSmallerOrEqual(): void
     {
         $this->userProfileModel = new SleekDbal('profiles');
 
@@ -60,7 +60,7 @@ class CriteriaSleekTest extends SleekDbalTestCase
         $this->assertCount(1, $users);
     }
 
-    public function testSleekCriteriaInAndNotIn()
+    public function testSleekCriteriaInAndNotIn(): void
     {
         $this->userProfileModel = new SleekDbal('profiles');
 
@@ -81,7 +81,7 @@ class CriteriaSleekTest extends SleekDbalTestCase
         $this->assertEquals('Jane', $users[0]->firstname);
     }
 
-    public function testSleekCriteriaLikeAndNotLike()
+    public function testSleekCriteriaLikeAndNotLike(): void
     {
         $this->userProfileModel = new SleekDbal('profiles');
 
@@ -108,7 +108,7 @@ class CriteriaSleekTest extends SleekDbalTestCase
         $this->assertEquals('Jane', $users[0]->firstname);
     }
 
-    public function testSleekCriteriaBetweenAndNotBetween()
+    public function testSleekCriteriaBetweenAndNotBetween(): void
     {
         $this->userProfileModel = new SleekDbal('profiles');
 
@@ -127,7 +127,7 @@ class CriteriaSleekTest extends SleekDbalTestCase
         $this->assertEquals('John', $users[0]->firstname);
     }
 
-    public function testSleekMultipleAndCriterias()
+    public function testSleekMultipleAndCriterias(): void
     {
         $eventsModel = new SleekDbal('events');
 
@@ -144,7 +144,7 @@ class CriteriaSleekTest extends SleekDbalTestCase
 
     }
 
-    public function testSleekMultipleOrCriterias()
+    public function testSleekMultipleOrCriterias(): void
     {
         $eventsModel = new SleekDbal('events');
 
@@ -159,7 +159,7 @@ class CriteriaSleekTest extends SleekDbalTestCase
         $this->assertCount(5, $events);
     }
 
-    public function testSleekAndOrCriterias()
+    public function testSleekAndOrCriterias(): void
     {
         $eventsModel = new SleekDbal('events');
 
@@ -173,7 +173,7 @@ class CriteriaSleekTest extends SleekDbalTestCase
         $this->assertCount(1, $events);
     }
 
-    public function testSleekHaving()
+    public function testSleekHaving(): void
     {
         $eventsModel = new SleekDbal('events');
 
@@ -186,7 +186,7 @@ class CriteriaSleekTest extends SleekDbalTestCase
         $this->assertCount(1, $events);
     }
 
-    public function testSleekIsNull()
+    public function testSleekIsNull(): void
     {
         $eventsModel = new SleekDbal('events');
 
@@ -199,7 +199,7 @@ class CriteriaSleekTest extends SleekDbalTestCase
         $this->assertEquals('Music', $events[1]->prop('title'));
     }
 
-    public function testSleekIsNotNull()
+    public function testSleekIsNotNull(): void
     {
         $eventsModel = new SleekDbal('events');
 

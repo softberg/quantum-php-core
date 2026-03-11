@@ -7,7 +7,7 @@ use Quantum\Tests\Unit\AppTestCase;
 
 class RedisAdapterTest extends AppTestCase
 {
-    private $redis;
+    private RedisAdapter $redis;
 
     public function setUp(): void
     {
@@ -28,7 +28,7 @@ class RedisAdapterTest extends AppTestCase
         $this->redis->clear();
     }
 
-    public function testRedisAdapterSetGetDelete()
+    public function testRedisAdapterSetGetDelete(): void
     {
 
         $this->assertNull($this->redis->get('test'));
@@ -48,7 +48,7 @@ class RedisAdapterTest extends AppTestCase
         $this->assertNull($this->redis->get('test'));
     }
 
-    public function testRedisAdapterHas()
+    public function testRedisAdapterHas(): void
     {
         $this->assertFalse($this->redis->has('test'));
 
@@ -57,7 +57,7 @@ class RedisAdapterTest extends AppTestCase
         $this->assertTrue($this->redis->has('test'));
     }
 
-    public function testRedisAdapterGetMultiple()
+    public function testRedisAdapterGetMultiple(): void
     {
         $cacheItems = $this->redis->getMultiple(['test1', 'test2']);
 
@@ -88,7 +88,7 @@ class RedisAdapterTest extends AppTestCase
         $this->assertEquals('Test one', $cacheItems['test1']);
     }
 
-    public function testRedisAdapterSetMultiple()
+    public function testRedisAdapterSetMultiple(): void
     {
         $this->assertFalse($this->redis->has('test1'));
 
@@ -105,7 +105,7 @@ class RedisAdapterTest extends AppTestCase
         $this->assertEquals('Test value two', $this->redis->get('test2'));
     }
 
-    public function testRedisAdapterDeleteMultiple()
+    public function testRedisAdapterDeleteMultiple(): void
     {
         $this->redis->setMultiple(['test1' => 'Test value one', 'test2' => 'Test value two']);
 
@@ -120,7 +120,7 @@ class RedisAdapterTest extends AppTestCase
         $this->assertFalse($this->redis->has('test2'));
     }
 
-    public function testRedisAdapterClear()
+    public function testRedisAdapterClear(): void
     {
         $this->redis->setMultiple(['test1' => 'Test value one', 'test2' => 'Test value two']);
 
@@ -135,7 +135,7 @@ class RedisAdapterTest extends AppTestCase
         $this->assertFalse($this->redis->has('test2'));
     }
 
-    public function testRedisAdapterExpired()
+    public function testRedisAdapterExpired(): void
     {
         $params = [
             'prefix' => 'test',

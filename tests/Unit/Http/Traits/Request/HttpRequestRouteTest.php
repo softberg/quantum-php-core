@@ -24,19 +24,18 @@ class HttpRequestRouteTest extends AppTestCase
         parent::tearDown();
     }
 
-    public function testGetMatchedRouteReturnsNullByDefault()
+    public function testGetMatchedRouteReturnsNullByDefault(): void
     {
         $this->assertNull(Request::getMatchedRoute());
     }
 
-    public function testSetAndGetMatchedRoute()
+    public function testSetAndGetMatchedRoute(): void
     {
         $route = new Route(
             ['GET'],
             '/test',
             'TestController',
-            'tests',
-            null
+            'tests'
         );
 
         $matched = new MatchedRoute($route, ['id' => 1]);
@@ -46,14 +45,13 @@ class HttpRequestRouteTest extends AppTestCase
         $this->assertSame($matched, Request::getMatchedRoute());
     }
 
-    public function testSetMatchedRouteToNullResetsState()
+    public function testSetMatchedRouteToNullResetsState(): void
     {
         $route = new Route(
             ['GET'],
             '/test',
             'TestController',
-            'tests',
-            null
+            'tests'
         );
 
         $matched = new MatchedRoute($route, []);

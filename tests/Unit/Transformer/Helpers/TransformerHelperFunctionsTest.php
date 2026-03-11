@@ -51,7 +51,7 @@ class TransformerHelperFunctionsTest extends AppTestCase
             'author' => 'Ken Watson',
         ],
     ];
-    public function testTransformerHelper()
+    public function testTransformerHelper(): void
     {
         $transformed = transform($this->posts, new PostTransformer());
 

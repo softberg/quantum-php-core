@@ -30,27 +30,23 @@ class EnvCommand extends QtCommand
 {
     /**
      * Command name
-     * @var string
      */
-    protected $name = 'core:env';
+    protected ?string $name = 'core:env';
 
     /**
      * Command description
-     * @var string
      */
-    protected $description = 'Generates new .env file';
+    protected ?string $description = 'Generates new .env file';
 
     /**
      * Command help text
-     * @var string
      */
-    protected $help = 'The command will generate new .env file from .env.example';
+    protected ?string $help = 'The command will generate new .env file from .env.example';
 
     /**
      * Command options
-     * @var array
      */
-    protected $options = [
+    protected array $options = [
         ['yes', 'y', 'none', 'Acceptance of the confirmation'],
     ];
 
@@ -61,7 +57,7 @@ class EnvCommand extends QtCommand
      * @throws DiException
      * @throws ReflectionException
      */
-    public function exec()
+    public function exec(): void
     {
         $fs = FileSystemFactory::get();
 

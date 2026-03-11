@@ -44,11 +44,9 @@ class LoggerFactory
     /**
      * @var array<string, Logger>
      */
-    private static $instances = [];
+    private static array $instances = [];
 
     /**
-     * @param string|null $adapter
-     * @return Logger
      * @throws BaseException
      * @throws ConfigException
      * @throws DiException
@@ -81,11 +79,6 @@ class LoggerFactory
         return self::$instances[$adapter];
     }
 
-    /**
-     * @param string $adapterClass
-     * @param string $adapter
-     * @return Logger
-     */
     private static function createInstance(string $adapterClass, string $adapter): Logger
     {
         return $adapter === Logger::MESSAGE
@@ -94,8 +87,6 @@ class LoggerFactory
     }
 
     /**
-     * @param string $adapter
-     * @return string
      * @throws BaseException
      */
     private static function getAdapterClass(string $adapter): string

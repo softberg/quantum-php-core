@@ -9,21 +9,21 @@ use Quantum\Auth\Auth;
 
 class AuthHelperFunctionsTest extends AppTestCase
 {
-    public function testAuthHelperGetDefaultAuth()
+    public function testAuthHelperGetDefaultAuth(): void
     {
         $this->assertInstanceOf(Auth::class, auth());
 
         $this->assertInstanceOf(SessionAuthAdapter::class, auth()->getAdapter());
     }
 
-    public function testAuthHelperGetSessionAuth()
+    public function testAuthHelperGetSessionAuth(): void
     {
         $this->assertInstanceOf(Auth::class, auth(Auth::SESSION));
 
         $this->assertInstanceOf(SessionAuthAdapter::class, auth(Auth::SESSION)->getAdapter());
     }
 
-    public function testAuthHelperGetJwtAuth()
+    public function testAuthHelperGetJwtAuth(): void
     {
         $this->assertInstanceOf(Auth::class, auth(Auth::JWT));
 

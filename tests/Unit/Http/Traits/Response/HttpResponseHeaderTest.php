@@ -13,7 +13,7 @@ class HttpResponseHeaderTest extends AppTestCase
 
     }
 
-    public function testResponseHeaderSetHasGetAllDelete()
+    public function testResponseHeaderSetHasGetAllDelete(): void
     {
         $response = new Response();
 

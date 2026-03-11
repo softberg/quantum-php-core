@@ -16,8 +16,8 @@ namespace Quantum\Archive\Factories;
 
 use Quantum\Archive\Exceptions\ArchiveException;
 use Quantum\Archive\Adapters\PharAdapter;
-use Quantum\Archive\Adapters\ZipAdapter;
 use Quantum\App\Exceptions\BaseException;
+use Quantum\Archive\Adapters\ZipAdapter;
 use Quantum\Archive\Archive;
 
 /**
@@ -34,14 +34,9 @@ class ArchiveFactory
         Archive::ZIP => ZipAdapter::class,
     ];
 
-    /**
-     * @var array
-     */
-    private static $instances = [];
+    private static array $instances = [];
 
     /**
-     * @param string $type
-     * @return Archive
      * @throws BaseException
      */
     public static function get(string $type = Archive::PHAR): Archive
@@ -54,8 +49,6 @@ class ArchiveFactory
     }
 
     /**
-     * @param string $type
-     * @return Archive
      * @throws BaseException
      */
     private static function createInstance(string $type): Archive

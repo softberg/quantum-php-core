@@ -18,9 +18,9 @@ use Quantum\Captcha\Exceptions\CaptchaException;
 use Quantum\Captcha\Adapters\RecaptchaAdapter;
 use Quantum\Captcha\Adapters\HcaptchaAdapter;
 use Quantum\Config\Exceptions\ConfigException;
-use Quantum\HttpClient\HttpClient;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
+use Quantum\HttpClient\HttpClient;
 use Quantum\Captcha\Captcha;
 use Quantum\Loader\Setup;
 use ReflectionException;
@@ -42,11 +42,9 @@ class CaptchaFactory
     /**
      * @var array<string, Captcha>
      */
-    private static $instances = [];
+    private static array $instances = [];
 
     /**
-     * @param string|null $adapter
-     * @return Captcha
      * @throws BaseException
      * @throws ConfigException
      * @throws DiException
@@ -69,19 +67,12 @@ class CaptchaFactory
         return self::$instances[$adapter];
     }
 
-    /**
-     * @param string $adapterClass
-     * @param string $adapter
-     * @return Captcha
-     */
     private static function createInstance(string $adapterClass, string $adapter): Captcha
     {
         return new Captcha(new $adapterClass(config()->get('captcha.' . $adapter), new HttpClient()));
     }
 
     /**
-     * @param string $adapter
-     * @return string
      * @throws BaseException
      */
     private static function getAdapterClass(string $adapter): string

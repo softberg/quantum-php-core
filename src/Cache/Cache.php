@@ -52,14 +52,10 @@ class Cache
      */
     public const REDIS = 'redis';
 
-    /**
-     * @var CacheInterface
-     */
-    private $adapter;
+    private CacheInterface $adapter;
 
     /**
      * Cache constructor
-     * @param CacheInterface $cacheAdapter
      */
     public function __construct(CacheInterface $cacheAdapter)
     {
@@ -68,7 +64,6 @@ class Cache
 
     /**
      * Gets the current adapter
-     * @return CacheInterface
      */
     public function getAdapter(): CacheInterface
     {
@@ -76,8 +71,6 @@ class Cache
     }
 
     /**
-     * @param string $method
-     * @param array|null $arguments
      * @return mixed
      * @throws BaseException
      */

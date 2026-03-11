@@ -25,11 +25,6 @@ use Quantum\App\Exceptions\BaseException;
  */
 class HasherException extends BaseException
 {
-    /**
-     *
-     * @param string $algorithm
-     * @return self
-     */
     public static function algorithmNotSupported(string $algorithm): self
     {
         return new self(
@@ -38,10 +33,6 @@ class HasherException extends BaseException
         );
     }
 
-    /**
-     *
-     * @return self
-     */
     public static function invalidBcryptCost(): self
     {
         return new self(

@@ -14,6 +14,7 @@
 
 namespace Quantum\ResourceCache;
 
+use Quantum\Loader\Exceptions\LoaderException;
 use Quantum\ResourceCache\Exceptions\ResourceCacheException;
 use Quantum\Database\Exceptions\DatabaseException;
 use Quantum\Session\Exceptions\SessionException;
@@ -21,6 +22,7 @@ use Quantum\Storage\Factories\FileSystemFactory;
 use Quantum\Config\Exceptions\ConfigException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
+use Quantum\Storage\FileSystem;
 use Quantum\Http\Response;
 use Quantum\Loader\Setup;
 use ReflectionException;
@@ -33,35 +35,20 @@ use Exception;
  */
 class ViewCache
 {
-    /**
-     * @var string
-     */
-    private $cacheDir;
+    private ?string $cacheDir = null;
 
     /**
      * @var int
      */
     private $ttl = 300;
 
-    /**
-     * @var bool
-     */
-    private $isEnabled;
+    private bool $isEnabled;
 
-    /**
-     * @var bool
-     */
-    private $minification = false;
+    private bool $minification = false;
 
-    /**
-     * @var object
-     */
-    private $fs;
+    private FileSystem $fs;
 
-    /**
-     * @var ViewCache
-     */
-    private static $instance = null;
+    private static ?ViewCache $instance = null;
 
     public static function getInstance(): ViewCache
     {
@@ -84,11 +71,9 @@ class ViewCache
     }
 
     /**
-     * @throws ReflectionException
-     * @throws ConfigException
-     * @throws DiException
+     * @throws ConfigException|DiException|LoaderException|ReflectionException
      */
-    public function setup()
+    public function setup(): void
     {
         if (!config()->has('view_cache')) {
             config()->import(new Setup('config', 'view_cache'));
@@ -106,9 +91,6 @@ class ViewCache
     }
 
     /**
-     * @param string $uri
-     * @param Response $response
-     * @return bool
      * @throws BaseException
      * @throws ConfigException
      * @throws DatabaseException
@@ -127,9 +109,6 @@ class ViewCache
     }
 
     /**
-     * @param string $key
-     * @param string $content
-     * @return $this
      * @throws BaseException
      * @throws ConfigException
      * @throws DiException
@@ -147,8 +126,6 @@ class ViewCache
     }
 
     /**
-     * @param string $key
-     * @return string|null
      * @throws BaseException
      * @throws ConfigException
      * @throws DatabaseException
@@ -166,8 +143,6 @@ class ViewCache
     }
 
     /**
-     * @param string $key
-     * @return void
      * @throws BaseException
      * @throws ConfigException
      * @throws DiException
@@ -183,8 +158,6 @@ class ViewCache
     }
 
     /**
-     * @param string $key
-     * @return bool
      * @throws BaseException
      * @throws ConfigException
      * @throws DiException
@@ -196,36 +169,21 @@ class ViewCache
         return $this->fs->exists($cacheFile) && !$this->isExpired($cacheFile);
     }
 
-    /**
-     * @return bool
-     */
     public function isEnabled(): bool
     {
         return $this->isEnabled;
     }
 
-    /**
-     * @param bool $state
-     * @return void
-     */
     public function enableCaching(bool $state): void
     {
         $this->isEnabled = $state;
     }
 
-    /**
-     * @param int $ttl
-     * @return void
-     */
     public function setTtl(int $ttl): void
     {
         $this->ttl = $ttl;
     }
 
-    /**
-     * @param bool $state
-     * @return void
-     */
     public function enableMinification(bool $state): void
     {
         $this->minification = $state;
@@ -233,9 +191,8 @@ class ViewCache
 
     /**
      * @param $cacheFile
-     * @return bool
      */
-    private function isExpired($cacheFile): bool
+    private function isExpired(string $cacheFile): bool
     {
         if (time() > ($this->fs->lastModified($cacheFile) + $this->ttl)) {
             $this->fs->remove($cacheFile);
@@ -245,9 +202,6 @@ class ViewCache
         return false;
     }
 
-    /**
-     * @return string
-     */
     private function getCacheDir(): string
     {
         $configCacheDir = config()->get('view_cache.cache_dir', 'cache');
@@ -262,8 +216,6 @@ class ViewCache
     }
 
     /**
-     * @param string $key
-     * @return string
      * @throws ConfigException
      * @throws DiException
      * @throws ReflectionException
@@ -275,8 +227,6 @@ class ViewCache
     }
 
     /**
-     * @param string $content
-     * @return string
      * @throws BaseException
      */
     private function minify(string $content): string
@@ -288,9 +238,6 @@ class ViewCache
         return (new HtmlMin())->minify($content);
     }
 
-    /**
-     * @return bool
-     */
     protected function htmlMinifierExists(): bool
     {
         return class_exists(HtmlMin::class);

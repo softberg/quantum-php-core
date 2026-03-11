@@ -31,16 +31,10 @@ class PatternCompiler
         ':any' => '[^\/]',
     ];
 
-    /**
-     * @var array
-     */
     protected array $params = [];
 
     /**
      * Check whether the given URI matches the route pattern and store extracted params.
-     * @param Route $route
-     * @param string $uri
-     * @return bool
      * @throws RouteException
      */
     public function match(Route $route, string $uri): bool
@@ -61,8 +55,6 @@ class PatternCompiler
 
     /**
      * Compile route pattern into regex and param metadata.
-     * @param Route $route
-     * @return array
      * @throws RouteException
      */
     public function compile(Route $route): array
@@ -72,7 +64,7 @@ class PatternCompiler
         $pattern = '(\/)?';
         $params = [];
 
-        $lastIndex = (int) array_key_last($segments);
+        $lastIndex = array_key_last($segments);
 
         foreach ($segments as $index => $segment) {
             $segmentParam = $this->getSegmentParam($segment, $index, $lastIndex);
@@ -102,7 +94,6 @@ class PatternCompiler
 
     /**
      * Return parameters extracted from the last successful match.
-     * @return array
      */
     public function getParams(): array
     {
@@ -111,9 +102,6 @@ class PatternCompiler
 
     /**
      * Build the final named parameter map from regex matches and param metadata.
-     * @param array $params
-     * @param array $matches
-     * @return array
      */
     protected function extractParams(array $params, array $matches): array
     {
@@ -131,10 +119,6 @@ class PatternCompiler
 
     /**
      * Detect and build parameter definition for a single route segment if present.
-     * @param string $segment
-     * @param int $index
-     * @param int $lastIndex
-     * @return array
      * @throws RouteException
      */
     protected function getSegmentParam(string $segment, int $index, int $lastIndex): array
@@ -150,11 +134,6 @@ class PatternCompiler
 
     /**
      * Generate the regex pattern and name for a matched parameter segment.
-     * @param array $match
-     * @param string $expr
-     * @param int $index
-     * @param int $lastIndex
-     * @return array
      * @throws RouteException
      */
     protected function getParamPattern(array $match, string $expr, int $index, int $lastIndex): array
@@ -187,9 +166,6 @@ class PatternCompiler
 
     /**
      * Resolve and validate the parameter name from a segment match.
-     * @param array $match
-     * @param int $index
-     * @return string
      * @throws RouteException
      */
     protected function getParamName(array $match, int $index): string
@@ -209,9 +185,6 @@ class PatternCompiler
 
     /**
      * Ensure the parameter name is unique within the route pattern.
-     * @param array $params
-     * @param string $name
-     * @return void
      * @throws RouteException
      */
     protected function checkParamName(array $params, string $name): void
@@ -225,11 +198,6 @@ class PatternCompiler
 
     /**
      * Adjust the accumulated route regex before appending the last segment pattern.
-     * @param string $routePattern
-     * @param array $segmentParam
-     * @param int $index
-     * @param int $lastIndex
-     * @return string
      */
     protected function normalizePattern(
         string $routePattern,
@@ -250,8 +218,6 @@ class PatternCompiler
 
     /**
      * Escape forward slashes in a regex fragment safely.
-     * @param string $str
-     * @return string
      */
     protected function escape(string $str): string
     {

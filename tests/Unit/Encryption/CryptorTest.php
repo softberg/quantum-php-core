@@ -16,7 +16,7 @@ class CryptorTest extends AppTestCase
         parent::setUp();
     }
 
-    public function testCryptorGetAdapter()
+    public function testCryptorGetAdapter(): void
     {
         $cryptor = new Cryptor(new SymmetricEncryptionAdapter());
 
@@ -31,7 +31,7 @@ class CryptorTest extends AppTestCase
         $this->assertInstanceOf(EncryptionInterface::class, $cryptor->getAdapter());
     }
 
-    public function testIsAsymmetric()
+    public function testIsAsymmetric(): void
     {
         $cryptor = new Cryptor(new SymmetricEncryptionAdapter());
 
@@ -42,7 +42,7 @@ class CryptorTest extends AppTestCase
         $this->assertTrue($cryptor->isAsymmetric());
     }
 
-    public function testCryptorCallingValidMethod()
+    public function testCryptorCallingValidMethod(): void
     {
         $cryptor = new Cryptor(new SymmetricEncryptionAdapter());
 
@@ -53,7 +53,7 @@ class CryptorTest extends AppTestCase
         $this->assertEquals($plainText, $cryptor->decrypt($encrypted));
     }
 
-    public function testCryptorCallingInvalidMethod()
+    public function testCryptorCallingInvalidMethod(): void
     {
         $cryptor = new Cryptor(new SymmetricEncryptionAdapter());
 

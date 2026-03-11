@@ -8,7 +8,7 @@ use Quantum\Validation\Rule;
 
 class TypeRuleTest extends AppTestCase
 {
-    public $validator;
+    public Validator $validator;
     public function setUp(): void
     {
         parent::setUp();
@@ -16,7 +16,7 @@ class TypeRuleTest extends AppTestCase
         $this->validator = new Validator();
     }
 
-    public function testRuleAlpha()
+    public function testRuleAlpha(): void
     {
         $this->validator->setRule('text', [
             Rule::alpha(),
@@ -35,7 +35,7 @@ class TypeRuleTest extends AppTestCase
         $this->assertEquals('validation.alpha', $errors['text'][0]);
     }
 
-    public function testRuleAlphaNumeric()
+    public function testRuleAlphaNumeric(): void
     {
         $this->validator->setRule('text', [
             Rule::alphaNumeric(),
@@ -56,7 +56,7 @@ class TypeRuleTest extends AppTestCase
         $this->assertEquals('validation.alphaNumeric', $errors['text'][0]);
     }
 
-    public function testRuleAlphaDash()
+    public function testRuleAlphaDash(): void
     {
         $this->validator->setRule('text', [
             Rule::alphaDash(),
@@ -75,7 +75,7 @@ class TypeRuleTest extends AppTestCase
         $this->assertEquals('validation.alphaDash', $errors['text'][0]);
     }
 
-    public function testRuleAlphaSpace()
+    public function testRuleAlphaSpace(): void
     {
         $this->validator->setRule('text', [
             Rule::alphaSpace(),
@@ -96,7 +96,7 @@ class TypeRuleTest extends AppTestCase
         $this->assertEquals('validation.alphaSpace', $errors['text'][0]);
     }
 
-    public function testRuleNumeric()
+    public function testRuleNumeric(): void
     {
         $this->validator->setRule('text', [
             Rule::numeric(),
@@ -115,7 +115,7 @@ class TypeRuleTest extends AppTestCase
         $this->assertEquals('validation.numeric', $errors['text'][0]);
     }
 
-    public function testRuleInteger()
+    public function testRuleInteger(): void
     {
         $this->validator->setRule('text', [
             Rule::integer(),
@@ -134,7 +134,7 @@ class TypeRuleTest extends AppTestCase
         $this->assertEquals('validation.integer', $errors['text'][0]);
     }
 
-    public function testRuleFloat()
+    public function testRuleFloat(): void
     {
         $this->validator->setRule('text', [
             Rule::float(),
@@ -155,7 +155,7 @@ class TypeRuleTest extends AppTestCase
         $this->assertEquals('validation.float', $errors['text'][0]);
     }
 
-    public function testRuleBoolean()
+    public function testRuleBoolean(): void
     {
         $this->validator->setRule('text', [
             Rule::boolean(),
@@ -182,7 +182,7 @@ class TypeRuleTest extends AppTestCase
         $this->assertEquals('validation.boolean', $errors['text'][0]);
     }
 
-    public function testRuleMinNumeric()
+    public function testRuleMinNumeric(): void
     {
         $this->validator->setRule('text', [
             Rule::minNumeric(20),
@@ -199,7 +199,7 @@ class TypeRuleTest extends AppTestCase
         $this->assertEquals('validation.minNumeric', $errors['text'][0]);
     }
 
-    public function testRuleMaxNumeric()
+    public function testRuleMaxNumeric(): void
     {
         $this->validator->setRule('text', [
             Rule::maxNumeric(20),

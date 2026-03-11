@@ -9,8 +9,8 @@ use Quantum\Http\Request;
 
 class FileRuleTest extends AppTestCase
 {
-    public $validator;
-    private $request;
+    public Validator $validator;
+    private Request $request;
 
     public function setUp(): void
     {
@@ -39,7 +39,7 @@ class FileRuleTest extends AppTestCase
         unlink(base_dir() . DS . 'php8fe2.tmp');
     }
 
-    public function testRuleFileSize()
+    public function testRuleFileSize(): void
     {
         $file = [
             'image' => [
@@ -72,7 +72,7 @@ class FileRuleTest extends AppTestCase
         $this->assertEquals('validation.fileSize', $errors['image'][0]);
     }
 
-    public function testRuleFileMimeType()
+    public function testRuleFileMimeType(): void
     {
         $file = [
             'image' => [
@@ -111,7 +111,7 @@ class FileRuleTest extends AppTestCase
         $this->assertEquals('validation.fileMimeType', $errors['image'][0]);
     }
 
-    public function testRuleFileExtension()
+    public function testRuleFileExtension(): void
     {
         $file = [
             'image' => [
@@ -150,7 +150,7 @@ class FileRuleTest extends AppTestCase
         $this->assertEquals('validation.fileExtension', $errors['image'][0]);
     }
 
-    public function testRuleImageDimensions()
+    public function testRuleImageDimensions(): void
     {
         $file = [
             'image' => [

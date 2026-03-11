@@ -45,8 +45,6 @@ class Di
 
     /**
      * Register dependencies
-     * @param array $dependencies
-     * @return void
      * @throws DiException
      */
     public static function registerDependencies(array $dependencies): void
@@ -60,9 +58,6 @@ class Di
 
     /**
      * Registers new dependency
-     * @param string $concrete
-     * @param string|null $abstract
-     * @return void
      * @throws DiException
      */
     public static function register(string $concrete, ?string $abstract = null): void
@@ -86,8 +81,6 @@ class Di
 
     /**
      * Checks if a dependency registered
-     * @param string $abstract
-     * @return bool
      */
     public static function isRegistered(string $abstract): bool
     {
@@ -99,7 +92,6 @@ class Di
      * @template T of object
      * @param class-string<T> $abstract
      * @param T $instance
-     * @param bool $override
      * @throws DiException
      */
     public static function set(string $abstract, object $instance, bool $override = true): void
@@ -161,8 +153,6 @@ class Di
 
     /**
      * Autowire callable parameters
-     * @param callable $entry
-     * @param array $args
      * @return list<mixed>
      * @throws DiException
      * @throws ReflectionException
@@ -181,9 +171,6 @@ class Di
         return self::resolveParameters($reflection->getParameters(), $args);
     }
 
-    /**
-     * @return void
-     */
     public static function reset(): void
     {
         self::$dependencies = [];
@@ -193,9 +180,6 @@ class Di
 
     /**
      * Resolves the dependency
-     * @param string $abstract
-     * @param array $args
-     * @param bool $singleton
      * @return mixed|object
      * @throws DiException|ReflectionException
      */
@@ -223,8 +207,6 @@ class Di
 
     /**
      * Instantiates the dependency
-     * @param string $concrete
-     * @param array $args
      * @return mixed
      * @throws ReflectionException|DiException
      */
@@ -242,9 +224,6 @@ class Di
 
     /**
      * Resolve parameter list
-     * @param array $parameters
-     * @param array $args
-     * @return array
      * @throws DiException
      */
     private static function resolveParameters(array $parameters, array &$args = []): array
@@ -260,8 +239,6 @@ class Di
 
     /**
      * Resolve single parameter
-     * @param ReflectionParameter $param
-     * @param array $args
      * @return array|mixed|object|null
      * @throws DiException|ReflectionException
      */
@@ -300,8 +277,6 @@ class Di
 
     /**
      * Checks if the class is instantiable
-     * @param string $class
-     * @return bool
      */
     protected static function instantiable(string $class): bool
     {
@@ -310,8 +285,6 @@ class Di
     }
 
     /**
-     * @param string $abstract
-     * @return void
      * @throws DiException
      */
     private static function checkCircularDependency(string $abstract): void

@@ -33,21 +33,19 @@ class RouteListCommand extends QtCommand
 {
     /**
      * The console command name.
-     * @var string
      */
-    protected $name = 'route:list';
+    protected ?string $name = 'route:list';
 
     /**
      * The console command description.
-     * @var string
      */
-    protected $description = 'Display all registered routes';
+    protected ?string $description = 'Display all registered routes';
 
     /**
      * Command options
      * @var array<int, array<int, string>>
      */
-    protected $options = [
+    protected array $options = [
         ['module', 'm', 'optional', 'Filter by module name'],
     ];
 
@@ -55,7 +53,7 @@ class RouteListCommand extends QtCommand
      * Executes the command
      * @throws DiException
      */
-    public function exec()
+    public function exec(): void
     {
         try {
             $moduleLoader = ModuleLoader::getInstance();
@@ -106,9 +104,6 @@ class RouteListCommand extends QtCommand
 
     /**
      * Composes a table row
-     * @param Route $route
-     * @param int $maxContentLength
-     * @return array
      */
     private function composeTableRow(Route $route, int $maxContentLength = 25): array
     {

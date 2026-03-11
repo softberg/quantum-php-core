@@ -16,14 +16,12 @@ use Quantum\App\Exceptions\StopExecutionException;
 
 /**
  * Stops the app execution
- * @param Closure|null $closure
- * @param int|null $code
  * @return never
  * @throws StopExecutionException
  */
-function stop(?Closure $closure = null, ?int $code = 0)
+function stop(?Closure $closure = null, ?int $code = 0): void
 {
-    if ($closure instanceof \Closure) {
+    if ($closure instanceof Closure) {
         $closure();
     }
 

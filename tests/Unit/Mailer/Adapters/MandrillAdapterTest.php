@@ -15,14 +15,14 @@ class MandrillAdapterTest extends MailerTestCase
         $this->adapter = new MandrillAdapter(['api_key' => 'xxx111222333']);
     }
 
-    public function testMandrillAdapterInstance()
+    public function testMandrillAdapterInstance(): void
     {
         $this->assertInstanceOf(MandrillAdapter::class, $this->adapter);
 
         $this->assertInstanceOf(MailerInterface::class, $this->adapter);
     }
 
-    public function testMandrillAdapterSend()
+    public function testMandrillAdapterSend(): void
     {
         $this->adapter->setFrom('john@hotmail.com', 'John Doe');
 

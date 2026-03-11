@@ -7,8 +7,8 @@ use Quantum\Tests\Unit\AppTestCase;
 
 class PharAdapterTest extends AppTestCase
 {
-    private $pharArchive;
-    private $archiveName;
+    private PharAdapter $pharArchive;
+    private string $archiveName;
 
     public function setUp(): void
     {
@@ -27,7 +27,7 @@ class PharAdapterTest extends AppTestCase
         }
     }
 
-    public function testAddEmptyDirToPhar()
+    public function testAddEmptyDirToPhar(): void
     {
         $this->assertTrue($this->pharArchive->addEmptyDir('directoryOne'));
 
@@ -36,7 +36,7 @@ class PharAdapterTest extends AppTestCase
         $this->assertDirectoryExists("phar://{$this->archiveName}/directoryOne");
     }
 
-    public function testAddFileToPhar()
+    public function testAddFileToPhar(): void
     {
         $this->assertFalse($this->pharArchive->offsetExists('app.conf'));
 
@@ -52,7 +52,7 @@ class PharAdapterTest extends AppTestCase
         $this->assertFileExists("phar://{$this->archiveName}/app.conf");
     }
 
-    public function testAddFromStringToPhar()
+    public function testAddFromStringToPhar(): void
     {
         $this->assertTrue($this->pharArchive->addFromString('custom.text', 'Just a sample text'));
 
@@ -61,7 +61,7 @@ class PharAdapterTest extends AppTestCase
         $this->assertStringEqualsFile("phar://{$this->archiveName}/custom.text", 'Just a sample text');
     }
 
-    public function testAddMultipleFilesToPhar()
+    public function testAddMultipleFilesToPhar(): void
     {
         $this->assertTrue($this->pharArchive->addMultipleFiles([
             'app.conf' => base_dir() . DS . 'shared' . DS . 'config' . DS . 'app.php',
@@ -73,7 +73,7 @@ class PharAdapterTest extends AppTestCase
         $this->assertTrue($this->pharArchive->offsetExists('session.conf'));
     }
 
-    public function testPharCount()
+    public function testPharCount(): void
     {
         $this->assertTrue($this->pharArchive->addMultipleFiles([
             'app.conf' => base_dir() . DS . 'shared' . DS . 'config' . DS . 'app.php',
@@ -83,7 +83,7 @@ class PharAdapterTest extends AppTestCase
         $this->assertEquals(2, $this->pharArchive->count());
     }
 
-    public function testExtractToFromPhar()
+    public function testExtractToFromPhar(): void
     {
         $content = 'Just a sample text';
 
@@ -98,7 +98,7 @@ class PharAdapterTest extends AppTestCase
         $this->fs->remove(base_dir() . DS . 'sample.txt');
     }
 
-    public function testDeleteFileFromPhar()
+    public function testDeleteFileFromPhar(): void
     {
         $this->pharArchive->addMultipleFiles([
             'app.conf' => base_dir() . DS . 'shared' . DS . 'config' . DS . 'app.php',
@@ -118,7 +118,7 @@ class PharAdapterTest extends AppTestCase
         $this->assertEquals(2, $this->pharArchive->count());
     }
 
-    public function testDeleteMultipleFilesUsingNameFromPhar()
+    public function testDeleteMultipleFilesUsingNameFromPhar(): void
     {
         $this->pharArchive->addMultipleFiles([
             'app.conf' => base_dir() . DS . 'shared' . DS . 'config' . DS . 'app.php',

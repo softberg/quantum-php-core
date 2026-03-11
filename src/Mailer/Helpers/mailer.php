@@ -19,8 +19,6 @@ use Quantum\Di\Exceptions\DiException;
 use Quantum\Mailer\Mailer;
 
 /**
- * @param string|null $adapter
- * @return Mailer
  * @throws BaseException
  * @throws ConfigException
  * @throws DiException

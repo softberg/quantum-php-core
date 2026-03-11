@@ -43,21 +43,15 @@ trait ConsoleAppTrait
             ->load(new Setup('config', 'env'));
     }
 
-    /**
-     * @param string $name
-     * @param string $version
-     * @return Application
-     */
     public function createApplication(string $name, string $version): Application
     {
         return new Application($name, $version);
     }
 
     /**
-     * @return void
      * @throws ReflectionException
      */
-    private function registerCoreCommands()
+    private function registerCoreCommands(): void
     {
         $directory = framework_dir() . DS . 'Console' . DS . 'Commands';
         $namespace = '\\Quantum\\Console\\Commands\\';
@@ -66,10 +60,9 @@ trait ConsoleAppTrait
     }
 
     /**
-     * @return void
      * @throws ReflectionException
      */
-    private function registerAppCommands()
+    private function registerAppCommands(): void
     {
         $directory = base_dir() . DS . 'shared' . DS . 'Commands';
         $namespace = '\\Shared\\Commands\\';
@@ -78,11 +71,9 @@ trait ConsoleAppTrait
     }
 
     /**
-     * @param string $directory
-     * @param string $namespace
      * @throws ReflectionException
      */
-    private function registerCommands(string $directory, string $namespace)
+    private function registerCommands(string $directory, string $namespace): void
     {
         $commands = CommandDiscovery::discover($directory, $namespace);
 

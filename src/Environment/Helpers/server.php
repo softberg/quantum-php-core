@@ -16,7 +16,6 @@ use Quantum\Environment\Server;
 
 /**
  * Gets Server instance
- * @return Server
  */
 function server(): Server
 {
@@ -25,7 +24,6 @@ function server(): Server
 
 /**
  * Gets user IP
- * @return string|null
  */
 function get_user_ip(): ?string
 {
@@ -38,7 +36,6 @@ if (!function_exists('getallheaders')) {
      * Get all headers
      * Built-in PHP function synonym of apache_request_headers()
      * Declaring here for Nginx server
-     * @return array
      */
     function getallheaders(): array
     {

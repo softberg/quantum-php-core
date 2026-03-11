@@ -62,8 +62,6 @@ namespace Quantum\Validation;
 class Rule
 {
     /**
-     * @param string $name
-     * @param array $params
      * @return array[]
      */
     public static function __callStatic(string $name, array $params): array

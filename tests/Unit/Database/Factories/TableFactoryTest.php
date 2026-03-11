@@ -12,7 +12,7 @@ use Mockery;
 
 class TableFactoryTest extends AppTestCase
 {
-    private $tableFactory;
+    private TableFactory $tableFactory;
     private $table;
 
     public function setUp(): void
@@ -52,14 +52,14 @@ class TableFactoryTest extends AppTestCase
         Database::execute('DROP TABLE IF EXISTS profiles');
     }
 
-    public function testCreateTable()
+    public function testCreateTable(): void
     {
         $table = $this->tableFactory->create('profiles');
 
         $this->assertInstanceOf(Table::class, $table);
     }
 
-    public function testAttemptToCreateTableWhichAlreadyExists()
+    public function testAttemptToCreateTableWhichAlreadyExists(): void
     {
         Database::execute('CREATE TABLE profiles (
                         id INTEGER PRIMARY KEY,
@@ -77,7 +77,7 @@ class TableFactoryTest extends AppTestCase
         $this->tableFactory->create('profiles');
     }
 
-    public function testGetTable()
+    public function testGetTable(): void
     {
         Database::execute('CREATE TABLE IF NOT EXISTS profiles (
                         id INTEGER PRIMARY KEY,
@@ -93,7 +93,7 @@ class TableFactoryTest extends AppTestCase
         $this->assertInstanceOf(Table::class, $table);
     }
 
-    public function testAttemptToGetNonExistingTable()
+    public function testAttemptToGetNonExistingTable(): void
     {
         $this->expectException(DatabaseException::class);
 
@@ -102,7 +102,7 @@ class TableFactoryTest extends AppTestCase
         $table = $this->tableFactory->get('profiles');
     }
 
-    public function testRenameTable()
+    public function testRenameTable(): void
     {
         Database::execute('CREATE TABLE IF NOT EXISTS profiles (
                         id INTEGER PRIMARY KEY,
@@ -116,7 +116,7 @@ class TableFactoryTest extends AppTestCase
         $this->assertTrue($this->tableFactory->rename('profiles', 'system_users'));
     }
 
-    public function testAttemptToRenameNonExistingTable()
+    public function testAttemptToRenameNonExistingTable(): void
     {
         $this->expectException(DatabaseException::class);
 
@@ -125,7 +125,7 @@ class TableFactoryTest extends AppTestCase
         $this->tableFactory->rename('profiles', 'system_users');
     }
 
-    public function testDropTable()
+    public function testDropTable(): void
     {
         Database::execute('CREATE TABLE IF NOT EXISTS profiles (
                         id INTEGER PRIMARY KEY,
@@ -139,7 +139,7 @@ class TableFactoryTest extends AppTestCase
         $this->assertTrue($this->tableFactory->drop('profiles'));
     }
 
-    public function testAttemptToDropNonExistingTable()
+    public function testAttemptToDropNonExistingTable(): void
     {
         $this->expectException(DatabaseException::class);
 

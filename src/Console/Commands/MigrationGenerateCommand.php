@@ -27,21 +27,19 @@ class MigrationGenerateCommand extends QtCommand
 {
     /**
      * The console command name.
-     * @var string
      */
-    protected $name = 'migration:generate';
+    protected ?string $name = 'migration:generate';
 
     /**
      * The console command description.
-     * @var string
      */
-    protected $description = 'Generates new migration file';
+    protected ?string $description = 'Generates new migration file';
 
     /**
      * Command arguments
      * @var string[][]
      */
-    protected $args = [
+    protected array $args = [
         ['action', 'required', 'The action to perform. [create] for creating table, [alter] for altering table, [rename] for renaming table, [drop] for dropping table'],
         ['table', 'required', 'The table name'],
     ];
@@ -51,7 +49,7 @@ class MigrationGenerateCommand extends QtCommand
      * @throws LangException
      * @throws MigrationException
      */
-    public function exec()
+    public function exec(): void
     {
         $migrationManager = new MigrationManager();
 

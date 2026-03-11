@@ -24,20 +24,12 @@ interface CookieStorageInterface extends StorageInterface
 {
     /**
      * Sets data by given key
-     * @param string $key
      * @param mixed $value
-     * @param int $time
-     * @param string $path
-     * @param string $domain
-     * @param bool $secure
-     * @param bool $httponly
      */
     public function set(string $key, $value = '', int $time = 0, string $path = '/', string $domain = '', bool $secure = false, bool $httponly = false);
 
     /**
      * Deletes data by given key
-     * @param string $key
-     * @param string $path
      */
     public function delete(string $key, string $path = '/');
 }

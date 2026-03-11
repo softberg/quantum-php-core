@@ -6,19 +6,19 @@ use Quantum\Console\QtCommand;
 
 class TestCommand extends QtCommand
 {
-    protected $name = 'test:dummy';
-    protected $description = 'Dummy test command';
-    protected $help = 'Used only for core command discovery tests';
+    protected ?string $name = 'test:dummy';
+    protected ?string $description = 'Dummy test command';
+    protected ?string $help = 'Used only for core command discovery tests';
 
-    protected $args = [
+    protected array $args = [
         ['uuid', 'optional', 'User uuid'],
     ];
 
-    protected $options = [
+    protected array $options = [
         ['force', 'f', 'none', 'Force execution'],
     ];
 
-    public function exec()
+    public function exec(): void
     {
         // intentionally empty
     }

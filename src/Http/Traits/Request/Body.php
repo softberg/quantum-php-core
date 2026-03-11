@@ -25,14 +25,11 @@ trait Body
 {
     /**
      * Request body
-     * @var array
      */
-    private static $__request = [];
+    private static array $__request = [];
 
     /**
      * Checks if request contains a data by given key
-     * @param string $key
-     * @return bool
      */
     public static function has(string $key): bool
     {
@@ -41,9 +38,6 @@ trait Body
 
     /**
      * Retrieves data from request by given key
-     * @param string $key
-     * @param string|null $default
-     * @param bool $raw
      * @return mixed
      */
     public static function get(string $key, ?string $default = null, bool $raw = false)
@@ -65,10 +59,9 @@ trait Body
 
     /**
      * Sets new key/value pair into request
-     * @param string $key
      * @param mixed $value
      */
-    public static function set(string $key, $value)
+    public static function set(string $key, $value): void
     {
         if ($key === ReservedKeys::RENDERED_VIEW) {
             throw new InvalidArgumentException("Cannot set reserved key: `$key`");
@@ -79,7 +72,6 @@ trait Body
 
     /**
      * Gets all request parameters
-     * @return array
      */
     public static function all(): array
     {
@@ -88,9 +80,8 @@ trait Body
 
     /**
      * Deletes the element from request by given key
-     * @param string $key
      */
-    public static function delete(string $key)
+    public static function delete(string $key): void
     {
         if (self::has($key)) {
             unset(self::$__request[$key]);

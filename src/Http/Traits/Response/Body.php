@@ -29,14 +29,13 @@ trait Body
 {
     /**
      * Response
-     * @var array
      */
-    private static $__response = [];
+    private static array $__response = [];
 
     /**
      * @var string[]
      */
-    private static $formatters = [
+    private static array $formatters = [
         ContentType::HTML => 'formatHtml',
         ContentType::XML => 'formatXml',
         ContentType::JSON => 'formatJson',
@@ -45,8 +44,6 @@ trait Body
 
     /**
      * Checks if response contains a data by given key
-     * @param string $key
-     * @return bool
      */
     public static function has(string $key): bool
     {
@@ -55,8 +52,6 @@ trait Body
 
     /**
      * Gets the data from response by given key
-     * @param string $key
-     * @param string|null $default
      * @return mixed
      */
     public static function get(string $key, ?string $default = null)
@@ -66,17 +61,15 @@ trait Body
 
     /**
      * Sets new key/value pair into response
-     * @param string $key
      * @param mixed $value
      */
-    public static function set(string $key, $value)
+    public static function set(string $key, $value): void
     {
         self::$__response[$key] = $value;
     }
 
     /**
      * Gets all response parameters
-     * @return array
      */
     public static function all(): array
     {
@@ -85,9 +78,8 @@ trait Body
 
     /**
      * Deletes the element from response by given key
-     * @param string $key
      */
-    public static function delete(string $key)
+    public static function delete(string $key): void
     {
         if (self::has($key)) {
             unset(self::$__response[$key]);
@@ -96,10 +88,8 @@ trait Body
 
     /**
      * Prepares the JSON response
-     * @param array|null $data
-     * @param int|null $code
      */
-    public static function json(?array $data = null, ?int $code = null)
+    public static function json(?array $data = null, ?int $code = null): void
     {
         self::setContentType(ContentType::JSON);
 
@@ -114,11 +104,8 @@ trait Body
 
     /**
      * Prepares the JSONP response
-     * @param string $callback
-     * @param array|null $data
-     * @param int|null $code
      */
-    public static function jsonp(string $callback, ?array $data = null, ?int $code = null)
+    public static function jsonp(string $callback, ?array $data = null, ?int $code = null): void
     {
         self::setContentType(ContentType::JSONP);
 
@@ -135,8 +122,6 @@ trait Body
 
     /**
      * Returns response with function
-     * @param array $data
-     * @return string
      */
     public static function getJsonPData(array $data): string
     {
@@ -145,10 +130,8 @@ trait Body
 
     /**
      * Prepares the XML response
-     * @param array|null $data
-     * @param int|null $code
      */
-    public static function xml(?array $data = null, $root = '<data></data>', ?int $code = null)
+    public static function xml(?array $data = null, $root = '<data></data>', ?int $code = null): void
     {
         self::setContentType(ContentType::XML);
 
@@ -165,10 +148,8 @@ trait Body
 
     /**
      * Prepares the HTML content
-     * @param string $html
-     * @param int|null $code
      */
-    public static function html(string $html, ?int $code = null)
+    public static function html(string $html, ?int $code = null): void
     {
         self::setContentType(ContentType::HTML);
 
@@ -181,7 +162,6 @@ trait Body
 
     /**
      * Gets the response content
-     * @return string
      * @throws HttpException
      */
     public static function getContent(): string
@@ -199,8 +179,6 @@ trait Body
 
     /**
      * Transforms array to XML
-     * @param array $arr
-     * @return string
      * @throws Exception
      */
     private static function arrayToXML(array $arr): string
@@ -216,10 +194,8 @@ trait Body
 
     /**
      * Compose XML
-     * @param array $arr
-     * @param SimpleXMLElement $simpleXML
      */
-    private static function composeXML(array $arr, SimpleXMLElement &$simpleXML)
+    private static function composeXML(array $arr, SimpleXMLElement &$simpleXML): void
     {
         foreach ($arr as $key => $value) {
             if (is_numeric($key)) {
@@ -257,7 +233,6 @@ trait Body
 
     /**
      * Formats data as JSON
-     * @return string
      */
     private static function formatJson(): string
     {
@@ -266,7 +241,6 @@ trait Body
 
     /**
      * Formats data as XML
-     * @return string
      * @throws Exception
      */
     private static function formatXml(): string
@@ -276,7 +250,6 @@ trait Body
 
     /**
      * Formats data as HTML
-     * @return string
      */
     private static function formatHtml(): string
     {
@@ -285,7 +258,6 @@ trait Body
 
     /**
      * Formats data as JSONP
-     * @return string
      */
     private static function formatJsonp(): string
     {

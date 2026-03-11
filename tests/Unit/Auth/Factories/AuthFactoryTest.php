@@ -18,35 +18,35 @@ class AuthFactoryTest extends AppTestCase
         $this->setPrivateProperty(AuthFactory::class, 'instances', []);
     }
 
-    public function testAuthFactoryInstance()
+    public function testAuthFactoryInstance(): void
     {
         $auth = AuthFactory::get();
 
         $this->assertInstanceOf(Auth::class, $auth);
     }
 
-    public function testAuthFactoryDefaultAuthAdapter()
+    public function testAuthFactoryDefaultAuthAdapter(): void
     {
         $auth = AuthFactory::get();
 
         $this->assertInstanceOf(SessionAuthAdapter::class, $auth->getAdapter());
     }
 
-    public function testAuthFactorySessionAuthAdapter()
+    public function testAuthFactorySessionAuthAdapter(): void
     {
         $auth = AuthFactory::get(Auth::SESSION);
 
         $this->assertInstanceOf(SessionAuthAdapter::class, $auth->getAdapter());
     }
 
-    public function testAuthFactoryJwtAuthAdapter()
+    public function testAuthFactoryJwtAuthAdapter(): void
     {
         $auth = AuthFactory::get(Auth::JWT);
 
         $this->assertInstanceOf(JwtAuthAdapter::class, $auth->getAdapter());
     }
 
-    public function testAuthFactoryInvalidTypeAdapter()
+    public function testAuthFactoryInvalidTypeAdapter(): void
     {
         config()->set('auth.default', 'invalid');
 
@@ -57,7 +57,7 @@ class AuthFactoryTest extends AppTestCase
         AuthFactory::get();
     }
 
-    public function testAuthFactoryReturnsSameInstance()
+    public function testAuthFactoryReturnsSameInstance(): void
     {
         $auth1 = AuthFactory::get(Auth::SESSION);
         $auth2 = AuthFactory::get(Auth::SESSION);

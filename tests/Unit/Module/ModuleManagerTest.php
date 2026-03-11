@@ -11,7 +11,7 @@ use Mockery;
 
 class ModuleManagerTest extends AppTestCase
 {
-    private $modulesConfigPath;
+    private string $modulesConfigPath;
 
     public function setUp(): void
     {
@@ -20,7 +20,7 @@ class ModuleManagerTest extends AppTestCase
         $this->modulesConfigPath = App::getBaseDir() . DS . 'shared' . DS . 'config' . DS . 'modules.php';
     }
 
-    public function testCreateModule()
+    public function testCreateModule(): void
     {
         $moduleManager = new ModuleManager('Api', 'DefaultApi', 'yes', false);
 
@@ -49,7 +49,7 @@ class ModuleManagerTest extends AppTestCase
         $this->assertEquals('Api module.', $result->message);
     }
 
-    public function testAddModuleConfigWithoutModule()
+    public function testAddModuleConfigWithoutModule(): void
     {
         $moduleManager = new ModuleManager('Api', 'DefaultApi', 'yes', false);
 
@@ -60,7 +60,7 @@ class ModuleManagerTest extends AppTestCase
         $moduleManager->addModuleConfig();
     }
 
-    public function testIncompleteCopyTemplates()
+    public function testIncompleteCopyTemplates(): void
     {
         $moduleManager = Mockery::mock(ModuleManager::class, ['Api', 'DefaultApi', 'yes', false])->makePartial();
 
@@ -75,7 +75,7 @@ class ModuleManagerTest extends AppTestCase
         $moduleManager->writeContents();
     }
 
-    public function testInvalidTemplate()
+    public function testInvalidTemplate(): void
     {
         $moduleManager = new ModuleManager('NotExists', 'notExists', 'yes', false);
 

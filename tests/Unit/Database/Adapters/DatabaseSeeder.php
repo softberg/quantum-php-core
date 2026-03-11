@@ -10,17 +10,18 @@ use Quantum\Tests\_root\shared\Models\TestTicketModel;
 use Quantum\Tests\_root\shared\Models\TestEventModel;
 use Quantum\Tests\_root\shared\Models\TestNotesModel;
 use Quantum\Tests\_root\shared\Models\TestUserModel;
+use Quantum\Model\Model;
 
 class DatabaseSeeder
 {
-    private $userModel;
-    private $profileModel;
-    private $userProfessionModel;
-    private $eventModel;
-    private $userEventModel;
-    private $userMeetingModel;
-    private $ticketModel;
-    private $noteModel;
+    private Model $userModel;
+    private Model $profileModel;
+    private Model $userProfessionModel;
+    private Model $eventModel;
+    private Model $userEventModel;
+    private Model $userMeetingModel;
+    private Model $ticketModel;
+    private Model $noteModel;
 
     public function __construct()
     {

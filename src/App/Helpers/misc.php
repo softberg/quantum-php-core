@@ -17,9 +17,7 @@ use Symfony\Component\VarExporter\VarExporter;
 
 /**
  * Compose a message
- * @param string $subject
  * @param string|array $params
- * @return string
  */
 function _message(string $subject, $params): string
 {
@@ -34,8 +32,6 @@ function _message(string $subject, $params): string
 
 /**
  * Validates base64 string
- * @param string $string
- * @return boolean
  */
 function valid_base64(string $string): bool
 {
@@ -50,8 +46,6 @@ function valid_base64(string $string): bool
 
 /**
  * Generates random number sequence
- * @param int $length
- * @return int
  */
 function random_number(int $length = 10): int
 {
@@ -64,8 +58,6 @@ function random_number(int $length = 10): int
 
 /**
  * Slugify the string
- * @param string $text
- * @return string
  */
 function slugify(string $text): string
 {
@@ -84,7 +76,6 @@ function slugify(string $text): string
 
 /**
  * Checks the app debug mode
- * @return bool
  */
 function is_debug_mode(): bool
 {
@@ -93,8 +84,6 @@ function is_debug_mode(): bool
 
 /**
  * Gets the caller class
- * @param integer $index
- * @return string|null
  */
 function get_caller_class(int $index = 2): ?string
 {
@@ -106,8 +95,6 @@ function get_caller_class(int $index = 2): ?string
 
 /**
  * Gets the caller function
- * @param integer $index
- * @return string|null
  */
 function get_caller_function(int $index = 2): ?string
 {
@@ -123,7 +110,6 @@ function get_caller_function(int $index = 2): ?string
 /**
  * Exports the variable
  * @param $var
- * @return string
  * @throws ExceptionInterface
  */
 function export($var): string

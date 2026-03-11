@@ -25,8 +25,6 @@ class QtService
 {
     /**
      * Handles the missing methods of the service
-     * @param string $method
-     * @param array $arguments
      * @throws BaseException
      */
     public function __call(string $method, array $arguments)

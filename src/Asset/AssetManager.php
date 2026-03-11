@@ -32,22 +32,21 @@ class AssetManager
     ];
 
     /**
-     *  Asset store
+     * Asset store
      * @var Asset[]
      */
-    private $store = [];
+    private array $store = [];
 
     /**
      * Published assets
      * @var array[]
      */
-    private $published = [];
+    private array $published = [];
 
     /**
      * Asset instance
-     * @var AssetManager|null
      */
-    private static $instance = null;
+    private static ?AssetManager $instance = null;
 
     private function __construct()
     {
@@ -58,7 +57,6 @@ class AssetManager
 
     /**
      * AssetManager instance
-     * @return AssetManager
      */
     public static function getInstance(): AssetManager
     {
@@ -71,8 +69,6 @@ class AssetManager
 
     /**
      * Gets the asset by name
-     * @param string $name
-     * @return Asset|null
      */
     public function get(string $name): ?Asset
     {
@@ -87,8 +83,6 @@ class AssetManager
 
     /**
      * Asset url
-     * @param string $path
-     * @return string
      */
     public function url(string $path): string
     {
@@ -104,7 +98,7 @@ class AssetManager
      * @param Asset[] $assets
      * @throws AssetException
      */
-    public function register(array $assets)
+    public function register(array $assets): void
     {
         foreach ($assets as $asset) {
             $this->registerAsset($asset);
@@ -113,10 +107,9 @@ class AssetManager
 
     /**
      * Register single asset
-     * @param Asset $asset
      * @throws AssetException
      */
-    public function registerAsset(Asset $asset)
+    public function registerAsset(Asset $asset): void
     {
         if ($asset->getName() && $this->get($asset->getName())) {
             throw AssetException::nameInUse($asset->getName());
@@ -125,10 +118,7 @@ class AssetManager
         $this->store[] = $asset;
     }
 
-    /**
-     * @return void
-     */
-    public function flush()
+    public function flush(): void
     {
         $this->store = [];
         $this->published = [];
@@ -136,7 +126,6 @@ class AssetManager
 
     /**
      * Dumps the assets
-     * @param int $type
      * @throws AssetException
      * @throws LangException
      */
@@ -157,7 +146,7 @@ class AssetManager
      * Publishes assets
      * @throws AssetException
      */
-    private function publish()
+    private function publish(): void
     {
         if ($this->store !== []) {
             $this->setPriorityAssets();
@@ -172,7 +161,7 @@ class AssetManager
      * Sets assets with ordered position
      * @throws AssetException
      */
-    private function setPriorityAssets()
+    private function setPriorityAssets(): void
     {
         foreach ($this->store as $asset) {
             $position = $asset->getPosition();
@@ -191,7 +180,7 @@ class AssetManager
     /**
      * Sets assets without ordered position
      */
-    private function setRegularAssets()
+    private function setRegularAssets(): void
     {
         foreach ($this->store as $asset) {
             if ($asset->getPosition() == -1) {
@@ -202,10 +191,8 @@ class AssetManager
 
     /**
      * Sets the Position
-     * @param Asset $asset
-     * @param int $index
      */
-    private function setPosition(Asset $asset, int $index)
+    private function setPosition(Asset $asset, int $index): void
     {
         $type = $asset->getType();
 

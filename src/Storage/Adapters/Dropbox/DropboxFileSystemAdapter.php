@@ -23,14 +23,8 @@ use Exception;
  */
 class DropboxFileSystemAdapter implements FilesystemAdapterInterface
 {
-    /**
-     * @var DropboxApp
-     */
-    private $dropboxApp;
+    private DropboxApp $dropboxApp;
 
-    /**
-     * @param DropboxApp $dropboxApp
-     */
     public function __construct(DropboxApp $dropboxApp)
     {
         $this->dropboxApp = $dropboxApp;

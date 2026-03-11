@@ -32,66 +32,44 @@ class ResourceCacheClearCommand extends QtCommand
 {
     /**
      * Command name
-     * @var string
      */
-    protected $name = 'cache:clear';
+    protected ?string $name = 'cache:clear';
 
     /**
      * Command description
-     * @var string
      */
-    protected $description = 'Clears resource cache';
+    protected ?string $description = 'Clears resource cache';
 
     /**
      * Command help text
-     * @var string
      */
-    protected $help = 'The command will clear the resource cache';
+    protected ?string $help = 'The command will clear the resource cache';
 
     /**
      * Command options
-     * @var array
      */
-    protected $options = [
+    protected array $options = [
         ['all', 'all', 'none', ''],
         ['type', 't', 'required', ''],
         ['module', 'm', 'required', ''],
     ];
 
-    /**
-     * @var array
-     */
     protected array $types = ['views', 'asserts'];
 
-    /**
-     * @var array
-     */
     protected array $modules = [];
 
-    /**
-     * @var string|null
-     */
     protected ?string $type = null;
 
-    /**
-     * @var string|null
-     */
     protected ?string $module = null;
 
-    /**
-     * @var string
-     */
     protected string $cacheDir = '';
 
-    /**
-     * @var FileSystem|null
-     */
     protected ?FileSystem $fs = null;
 
     /**
      * @throws BaseException|ReflectionException
      */
-    public function exec()
+    public function exec(): void
     {
         try {
             $this->importConfig();
@@ -121,10 +99,7 @@ class ResourceCacheClearCommand extends QtCommand
         $this->info('Resource cache cleared successfully.');
     }
 
-    /**
-     * @return void
-     */
-    private function importModules()
+    private function importModules(): void
     {
         try {
             if (!config()->has('modules')) {
@@ -141,7 +116,6 @@ class ResourceCacheClearCommand extends QtCommand
     }
 
     /**
-     * @return void
      * @throws ConfigException
      * @throws DiException
      * @throws ReflectionException
@@ -156,8 +130,6 @@ class ResourceCacheClearCommand extends QtCommand
     }
 
     /**
-     * @param string|null $moduleOption
-     * @return void
      * @throws Exception
      */
     private function initModule(?string $moduleOption): void
@@ -175,8 +147,6 @@ class ResourceCacheClearCommand extends QtCommand
     }
 
     /**
-     * @param string|null $typeOption
-     * @return void
      * @throws Exception
      */
     private function initType(?string $typeOption): void
@@ -192,11 +162,6 @@ class ResourceCacheClearCommand extends QtCommand
         }
     }
 
-    /**
-     * @param string|null $moduleName
-     * @param string|null $type
-     * @return void
-     */
     private function clearResourceModuleAndType(?string $moduleName = null, ?string $type = null): void
     {
         $dir = $this->cacheDir;
@@ -216,10 +181,6 @@ class ResourceCacheClearCommand extends QtCommand
         $this->removeFilesFromDirectory($dir);
     }
 
-    /**
-     * @param string $dir
-     * @return void
-     */
     private function removeFilesFromDirectory(string $dir): void
     {
         $entries = $this->fs->glob($dir . DS . '*');

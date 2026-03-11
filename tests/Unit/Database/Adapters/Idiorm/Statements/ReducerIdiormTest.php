@@ -7,7 +7,7 @@ use Quantum\Database\Adapters\Idiorm\IdiormDbal;
 
 class ReducerIdiormTest extends IdiormDbalTestCase
 {
-    public function testIdiormSelect()
+    public function testIdiormSelect(): void
     {
         $userProfileModel = new IdiormDbal('profiles');
 
@@ -24,7 +24,7 @@ class ReducerIdiormTest extends IdiormDbalTestCase
         $this->assertEquals('Doe', $user->prop('surname'));
     }
 
-    public function testIdiormOrderBy()
+    public function testIdiormOrderBy(): void
     {
         $eventsModel = new IdiormDbal('events');
 
@@ -35,7 +35,7 @@ class ReducerIdiormTest extends IdiormDbalTestCase
         $this->assertEquals('Music', $events[count($events) - 1]->prop('title'));
     }
 
-    public function testIdiormGroupBy()
+    public function testIdiormGroupBy(): void
     {
         $eventsModel = new IdiormDbal('events');
 
@@ -50,7 +50,7 @@ class ReducerIdiormTest extends IdiormDbalTestCase
         $this->assertCount(5, $events);
     }
 
-    public function testIdiormLimitAndOffset()
+    public function testIdiormLimitAndOffset(): void
     {
         $eventsModel = new IdiormDbal('events');
 

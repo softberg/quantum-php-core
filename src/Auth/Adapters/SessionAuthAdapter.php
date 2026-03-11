@@ -39,9 +39,6 @@ class SessionAuthAdapter implements AuthenticatableInterface
     use AuthTrait;
 
     /**
-     * @param AuthServiceInterface $authService
-     * @param Mailer $mailer
-     * @param Hasher $hasher
      * @throws AuthException
      */
     public function __construct(AuthServiceInterface $authService, Mailer $mailer, Hasher $hasher)
@@ -128,8 +125,6 @@ class SessionAuthAdapter implements AuthenticatableInterface
 
     /**
      * Refresh user data
-     * @param string $uuid
-     * @return bool
      * @throws BaseException
      * @throws ConfigException
      * @throws DiException
@@ -153,9 +148,6 @@ class SessionAuthAdapter implements AuthenticatableInterface
 
     /**
      * Verify OTP
-     * @param int $otp
-     * @param string $otpToken
-     * @return bool
      * @throws AuthException
      * @throws BaseException
      * @throws ConfigException
@@ -195,9 +187,9 @@ class SessionAuthAdapter implements AuthenticatableInterface
 
     /**
      * Set Remember Token
-     * @param User $user
+     * @throws BaseException
      */
-    private function setRememberToken(User $user)
+    private function setRememberToken(User $user): void
     {
         $rememberToken = $this->generateToken();
 
@@ -213,7 +205,7 @@ class SessionAuthAdapter implements AuthenticatableInterface
     /**
      * Remove Remember token
      */
-    private function removeRememberToken()
+    private function removeRememberToken(): void
     {
         if (cookie()->has($this->keyFields[AuthKeys::REMEMBER_TOKEN])) {
             $user = $this->authService->get(

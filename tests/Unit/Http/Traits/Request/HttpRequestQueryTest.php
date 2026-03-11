@@ -17,7 +17,7 @@ class HttpRequestQueryTest extends AppTestCase
         Request::flush();
     }
 
-    public function testSetGetQuery()
+    public function testSetGetQuery(): void
     {
         $request = new Request();
 
@@ -34,7 +34,7 @@ class HttpRequestQueryTest extends AppTestCase
         $this->assertEquals('age=30&gender=male', $request->getQuery());
     }
 
-    public function testSetGetQueryParam()
+    public function testSetGetQueryParam(): void
     {
         $request = new Request();
 

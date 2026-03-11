@@ -41,39 +41,34 @@ class ServeCommand extends QtCommand
 
     /**
      * The console command name.
-     * @var string
      */
-    protected $name = 'serve';
+    protected ?string $name = 'serve';
 
     /**
      * The console command description.
-     * @var string
      */
-    protected $description = 'Serves the application on the PHP development server';
+    protected ?string $description = 'Serves the application on the PHP development server';
 
     /**
      * Default host
-     * @var string
      */
-    protected $defaultHost = '127.0.0.1';
+    protected string $defaultHost = '127.0.0.1';
 
     /**
      * Default port
-     * @var int
      */
-    protected $defaultPort = 8000;
+    protected int $defaultPort = 8000;
 
     /**
      * Max ports to scan
-     * @var int
      */
-    protected $maxPortScan = 50;
+    protected int $maxPortScan = 50;
 
     /**
      * Command arguments
      * @var array<int, list<string|null>>
      */
-    protected $options = [
+    protected array $options = [
         ['host', null, 'optional', 'Host', '127.0.0.1'],
         ['port', null, 'optional', 'Port', '8000'],
         ['open', 'o', 'none', 'Open browser'],
@@ -82,7 +77,7 @@ class ServeCommand extends QtCommand
     /**
      * Execute the command.
      */
-    public function exec()
+    public function exec(): void
     {
         $host = $this->host();
         $startPort = $this->port();
@@ -93,10 +88,7 @@ class ServeCommand extends QtCommand
     }
 
     /**
-     * Start server on first available port.
-     * @param string $host
-     * @param int $startPort
-     * @return array
+     * Start the server on the first available port.
      * @throws RuntimeException
      */
     protected function startServerOnAvailablePort(string $host, int $startPort): array
@@ -131,7 +123,6 @@ class ServeCommand extends QtCommand
 
     /**
      * Handle server execution (browser opening and process monitoring).
-     * @param array $serverData
      */
     protected function handleServerExecution(array $serverData): void
     {
@@ -155,9 +146,6 @@ class ServeCommand extends QtCommand
 
     /**
      * Check if port is already in use by another process.
-     * @param string $host
-     * @param int $port
-     * @return bool
      */
     protected function isPortInUse(string $host, int $port): bool
     {
@@ -171,8 +159,6 @@ class ServeCommand extends QtCommand
 
     /**
      * Start PHP built-in server.
-     * @param string $host
-     * @param int $port
      * @return resource
      */
     protected function startPhpServer(string $host, int $port)
@@ -202,8 +188,6 @@ class ServeCommand extends QtCommand
 
     /**
      * Wait until the PHP server is ready to accept connections.
-     * @param string $host
-     * @param int $port
      * @param resource $process
      */
     protected function waitUntilServerIsReady(string $host, int $port, $process): void
@@ -245,7 +229,6 @@ class ServeCommand extends QtCommand
 
     /**
      * Determine whether the browser should be opened.
-     * @return bool
      */
     protected function shouldOpenBrowser(): bool
     {
@@ -254,7 +237,6 @@ class ServeCommand extends QtCommand
 
     /**
      * Open the default browser.
-     * @param string $url
      */
     protected function openBrowser(string $url): void
     {
@@ -277,8 +259,6 @@ class ServeCommand extends QtCommand
 
     /**
      * Resolve platform-specific browser command.
-     * @param string $url
-     * @return array|null
      */
     protected function browserCommand(string $url): ?array
     {
@@ -296,7 +276,6 @@ class ServeCommand extends QtCommand
 
     /**
      * Get host option.
-     * @return string
      */
     protected function host(): string
     {
@@ -305,7 +284,6 @@ class ServeCommand extends QtCommand
 
     /**
      * Get and validate port option.
-     * @return int
      */
     protected function port(): int
     {

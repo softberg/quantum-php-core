@@ -7,7 +7,7 @@ use Quantum\Database\Adapters\Idiorm\IdiormDbal;
 
 class CriteriaIdiormTest extends IdiormDbalTestCase
 {
-    public function testIdiormCriteriaEquals()
+    public function testIdiormCriteriaEquals(): void
     {
         $userProfileModel = new IdiormDbal('profiles');
 
@@ -18,7 +18,7 @@ class CriteriaIdiormTest extends IdiormDbalTestCase
         $this->assertEquals('Doe', $user->prop('lastname'));
     }
 
-    public function testIdiormCriteriaNotEquals()
+    public function testIdiormCriteriaNotEquals(): void
     {
         $userProfileModel = new IdiormDbal('profiles');
 
@@ -27,7 +27,7 @@ class CriteriaIdiormTest extends IdiormDbalTestCase
         $this->assertEquals('Jane', $user->prop('firstname'));
     }
 
-    public function testIdiormCriteriaGreaterAndGreaterOrEqual()
+    public function testIdiormCriteriaGreaterAndGreaterOrEqual(): void
     {
         $userProfileModel = new IdiormDbal('profiles');
 
@@ -42,7 +42,7 @@ class CriteriaIdiormTest extends IdiormDbalTestCase
         $this->assertCount(2, $users);
     }
 
-    public function testIdiormCriteriaSmallerAndSmallerOrEqual()
+    public function testIdiormCriteriaSmallerAndSmallerOrEqual(): void
     {
         $userProfileModel = new IdiormDbal('profiles');
 
@@ -57,7 +57,7 @@ class CriteriaIdiormTest extends IdiormDbalTestCase
         $this->assertCount(1, $users);
     }
 
-    public function testIdiormCriteriaInAndNotIn()
+    public function testIdiormCriteriaInAndNotIn(): void
     {
         $userProfileModel = new IdiormDbal('profiles');
 
@@ -78,7 +78,7 @@ class CriteriaIdiormTest extends IdiormDbalTestCase
         $this->assertEquals('Jane', $users[0]->prop('firstname'));
     }
 
-    public function testIdiormCriteriaLikeAndNotLike()
+    public function testIdiormCriteriaLikeAndNotLike(): void
     {
         $userProfileModel = new IdiormDbal('profiles');
 
@@ -105,7 +105,7 @@ class CriteriaIdiormTest extends IdiormDbalTestCase
         $this->assertEquals('Jane', $users[0]->prop('firstname'));
     }
 
-    public function testIdiormCriteriaNullAndNotNull()
+    public function testIdiormCriteriaNullAndNotNull(): void
     {
         $userProfileModel = new IdiormDbal('profiles');
 
@@ -124,7 +124,7 @@ class CriteriaIdiormTest extends IdiormDbalTestCase
         $this->assertEquals('Jane', $users[1]->prop('firstname'));
     }
 
-    public function testIdiormCriteriaWithFunction()
+    public function testIdiormCriteriaWithFunction(): void
     {
         $now = '2035-01-01 00:00:00';
 
@@ -137,7 +137,7 @@ class CriteriaIdiormTest extends IdiormDbalTestCase
         $this->assertEquals('2040-02-14 10:15:12', $events[0]->prop('started_at'));
     }
 
-    public function testIdiormCriteriaColumnsEqual()
+    public function testIdiormCriteriaColumnsEqual(): void
     {
         $userProfileModel = new IdiormDbal('profiles');
 
@@ -151,7 +151,7 @@ class CriteriaIdiormTest extends IdiormDbalTestCase
         $this->assertEquals($expectedQuery, IdiormDbal::lastQuery());
     }
 
-    public function testIdiormMultipleAndCriterias()
+    public function testIdiormMultipleAndCriterias(): void
     {
         $eventsModel = new IdiormDbal('events');
 
@@ -166,7 +166,7 @@ class CriteriaIdiormTest extends IdiormDbalTestCase
         $this->assertEquals($expectedQuery, IdiormDbal::lastQuery());
     }
 
-    public function testIdiormMultipleOrCriterias()
+    public function testIdiormMultipleOrCriterias(): void
     {
         $eventsModel = new IdiormDbal('events');
 
@@ -181,7 +181,7 @@ class CriteriaIdiormTest extends IdiormDbalTestCase
         $this->assertEquals($expectedQuery, IdiormDbal::lastQuery());
     }
 
-    public function testIdiormAndOrCriterias()
+    public function testIdiormAndOrCriterias(): void
     {
         $eventsModel = new IdiormDbal('events');
 
@@ -195,7 +195,7 @@ class CriteriaIdiormTest extends IdiormDbalTestCase
         $this->assertEquals($expectedQuery, IdiormDbal::lastQuery());
     }
 
-    public function testIdiormHaving()
+    public function testIdiormHaving(): void
     {
         $eventsModel = new IdiormDbal('events');
 
@@ -213,7 +213,7 @@ class CriteriaIdiormTest extends IdiormDbalTestCase
         $this->assertEquals('Ireland', $events[0]->prop('country'));
     }
 
-    public function testIdiormIsNull()
+    public function testIdiormIsNull(): void
     {
         $eventsModel = new IdiormDbal('events');
 
@@ -226,7 +226,7 @@ class CriteriaIdiormTest extends IdiormDbalTestCase
         $this->assertEquals('Music', $events[1]->prop('title'));
     }
 
-    public function testIdiormIsNotNull()
+    public function testIdiormIsNotNull(): void
     {
         $eventsModel = new IdiormDbal('events');
 

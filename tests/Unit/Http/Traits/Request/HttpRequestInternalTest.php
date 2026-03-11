@@ -15,7 +15,7 @@ class HttpRequestInternalTest extends AppTestCase
         parent::setUp();
     }
 
-    public function testCreateRequestSetsBasicServerParams()
+    public function testCreateRequestSetsBasicServerParams(): void
     {
         Request::create('GET', 'https://example.com/test/path?foo=bar');
 
@@ -31,7 +31,7 @@ class HttpRequestInternalTest extends AppTestCase
         $this->assertEquals('foo=bar', $server->get('QUERY_STRING'));
     }
 
-    public function testContentTypeIsMultipartWhenFilesProvided()
+    public function testContentTypeIsMultipartWhenFilesProvided(): void
     {
         $files = [
             'file' => [
@@ -48,21 +48,21 @@ class HttpRequestInternalTest extends AppTestCase
         $this->assertEquals('multipart/form-data', Server::getInstance()->get('CONTENT_TYPE'));
     }
 
-    public function testContentTypeIsFormUrlencodedWhenDataProvided()
+    public function testContentTypeIsFormUrlencodedWhenDataProvided(): void
     {
         Request::create('POST', 'http://localhost/form', ['key' => 'value']);
 
         $this->assertEquals('application/x-www-form-urlencoded', Server::getInstance()->get('CONTENT_TYPE'));
     }
 
-    public function testContentTypeIsTextHtmlWhenNoDataOrFiles()
+    public function testContentTypeIsTextHtmlWhenNoDataOrFiles(): void
     {
         Request::create('GET', 'http://localhost');
 
         $this->assertEquals('text/html', Server::getInstance()->get('CONTENT_TYPE'));
     }
 
-    public function testRequestParamsAreSet()
+    public function testRequestParamsAreSet(): void
     {
         $data = ['foo' => 'bar'];
 
@@ -71,7 +71,7 @@ class HttpRequestInternalTest extends AppTestCase
         $this->assertEquals('bar', HttpRequest::get('foo'));
     }
 
-    public function testUploadedFilesAreSet()
+    public function testUploadedFilesAreSet(): void
     {
         $files = [
             'document' => [

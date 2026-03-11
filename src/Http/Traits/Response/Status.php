@@ -25,15 +25,14 @@ trait Status
 {
     /**
      * Status code
-     * @var int
      */
-    private static $__statusCode = StatusCode::OK;
+    private static int $__statusCode = StatusCode::OK;
 
     /**
      * Status texts
      * @var string[]
      */
-    private static $texts = [
+    private static array $texts = [
         StatusCode::CONTINUE => 'Continue',
         StatusCode::SWITCHING_PROTOCOLS => 'Switching Protocols',
         StatusCode::PROCESSING => 'Processing',
@@ -104,8 +103,6 @@ trait Status
 
     /**
      * Gets the reason phrase for a given HTTP status code.
-     * @param int $code
-     * @return string
      */
     public static function getText(int $code): string
     {
@@ -118,9 +115,8 @@ trait Status
 
     /**
      * Sets the status code
-     * @param int $code
      */
-    public static function setStatusCode(int $code)
+    public static function setStatusCode(int $code): void
     {
         if (!isset(self::$texts[$code])) {
             throw new InvalidArgumentException(sprintf('The HTTP status code "%s" is not valid.', $code));
@@ -131,7 +127,6 @@ trait Status
 
     /**
      * Gets the status code
-     * @return int
      */
     public static function getStatusCode(): int
     {
@@ -140,7 +135,6 @@ trait Status
 
     /**
      * Gets the status text
-     * @return string
      */
     public static function getStatusText(): string
     {

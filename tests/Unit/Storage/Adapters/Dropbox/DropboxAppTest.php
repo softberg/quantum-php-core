@@ -11,35 +11,17 @@ class DropboxAppTest extends AppTestCase
     use DropboxTokenServiceTestCase;
     use HttpClientTestCase;
 
-    /**
-     * @var DropboxApp
-     */
-    private $dropboxApp;
+    private DropboxApp $dropboxApp;
 
-    /**
-     * @var string
-     */
-    private $appKey = 'x0hwm8wy63rrynm';
+    private string $appKey = 'x0hwm8wy63rrynm';
 
-    /**
-     * @var string
-     */
-    private $appSecret = 'xxx123yyy';
+    private string $appSecret = 'xxx123yyy';
 
-    /**
-     * @var string
-     */
-    private $authCode = 'd4k29ovC7-UAAAAAAAA3Q45go2mLgjMhJSeJNBOo-EA';
+    private string $authCode = 'd4k29ovC7-UAAAAAAAA3Q45go2mLgjMhJSeJNBOo-EA';
 
-    /**
-     * @var string
-     */
-    private $redirectUrl = 'http://localhost/confirm';
+    private string $redirectUrl = 'http://localhost/confirm';
 
-    /**
-     * @var array
-     */
-    private $tokensGrantResponse = [
+    private array $tokensGrantResponse = [
         'access_token' => 'sl.BYEQ1_VadTz6nBU36WPBBVwokc3zWVMXGjcOKxV4Tadms8ZlEPM85aHVFa_k1sfjilCWOnl79RUncPZzJ3GhrqhLGIBFFRCH0rKMa_ZtcqkerJn-f5lu10Ki5PSw4fxYM80V4PL_',
         'token_type' => 'bearer',
         'expires_in' => 14400,
@@ -49,10 +31,7 @@ class DropboxAppTest extends AppTestCase
         'account_id' => 'dbid:AAC9tDKbzTQlyNms0ZcB_iH3wLv7yNn-iyE',
     ];
 
-    /**
-     * @var array
-     */
-    private $profileDataResponse = [
+    private array $profileDataResponse = [
         'account_id' => 'dbid:AAH4f99T0taONIb-OurWxbNQ6ywGRopQngc',
         'disabled' => false,
         'email' => 'franz@dropbox.com',
@@ -68,20 +47,14 @@ class DropboxAppTest extends AppTestCase
         'profile_photo_url' => 'https://dl-web.dropbox.com/account_photo/get/69330102&size=128x128',
     ];
 
-    /**
-     * @var array
-     */
-    private $errorResponse = [
+    private array $errorResponse = [
         'error' => [
             '.tag' => 'no_account',
         ],
         'error_summary' => 'no_account/...',
     ];
 
-    /**
-     * @var string
-     */
-    private $fileContentResponse = 'Some plain text!';
+    private string $fileContentResponse = 'Some plain text!';
 
     public function setUp(): void
     {
@@ -94,7 +67,7 @@ class DropboxAppTest extends AppTestCase
         $this->dropboxApp = new DropboxApp($this->appKey, $this->appSecret, $tokenServiceMock, $httpClientMock);
     }
 
-    public function testDropboxGetAuthUrl()
+    public function testDropboxGetAuthUrl(): void
     {
         $authUrl = $this->dropboxApp->getAuthUrl($this->redirectUrl);
 
@@ -105,7 +78,7 @@ class DropboxAppTest extends AppTestCase
         $this->assertStringContainsString('token_access_type', $authUrl);
     }
 
-    public function testDropboxFetchTokens()
+    public function testDropboxFetchTokens(): void
     {
         $this->currentResponse = (object) $this->tokensGrantResponse;
 
@@ -118,7 +91,7 @@ class DropboxAppTest extends AppTestCase
         $this->assertTrue(property_exists($response, 'refresh_token'));
     }
 
-    public function testDropboxRpcRequest()
+    public function testDropboxRpcRequest(): void
     {
         $this->currentResponse = (object) $this->profileDataResponse;
 
@@ -131,7 +104,7 @@ class DropboxAppTest extends AppTestCase
         $this->assertTrue(property_exists($response, 'name'));
     }
 
-    public function testDropboxContentRequest()
+    public function testDropboxContentRequest(): void
     {
         $this->currentResponse = $this->fileContentResponse;
 
@@ -142,7 +115,7 @@ class DropboxAppTest extends AppTestCase
         $this->assertEquals('Some plain text!', $response);
     }
 
-    public function testDropboxSendRequest()
+    public function testDropboxSendRequest(): void
     {
         $this->currentResponse = (object) $this->profileDataResponse;
 
@@ -153,7 +126,7 @@ class DropboxAppTest extends AppTestCase
         $this->assertEquals((object) $this->profileDataResponse, $response);
     }
 
-    public function testDropboxRequestWithAccessTokenExpired()
+    public function testDropboxRequestWithAccessTokenExpired(): void
     {
         $this->currentErrors = ['code' => 401];
 
@@ -166,7 +139,7 @@ class DropboxAppTest extends AppTestCase
         $this->assertEquals((object) $this->profileDataResponse, $response);
     }
 
-    public function testDropboxPathNormalizer()
+    public function testDropboxPathNormalizer(): void
     {
         $this->assertEquals(['path' => '/message.txt'], $this->dropboxApp->path('/message.txt'));
 

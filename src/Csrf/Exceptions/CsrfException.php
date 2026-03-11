@@ -25,9 +25,6 @@ use Quantum\App\Exceptions\BaseException;
  */
 class CsrfException extends BaseException
 {
-    /**
-     * @return CsrfException
-     */
     public static function tokenNotFound(): self
     {
         return new self(
@@ -36,9 +33,6 @@ class CsrfException extends BaseException
         );
     }
 
-    /**
-     * @return CsrfException
-     */
     public static function tokenNotMatched(): self
     {
         return new self(

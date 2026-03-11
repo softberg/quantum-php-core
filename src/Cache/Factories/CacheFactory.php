@@ -45,11 +45,9 @@ class CacheFactory
     /**
      * @var array<string, Cache>
      */
-    private static $instances = [];
+    private static array $instances = [];
 
     /**
-     * @param string|null $adapter
-     * @return Cache
      * @throws BaseException
      * @throws ConfigException
      * @throws DiException
@@ -72,19 +70,12 @@ class CacheFactory
         return self::$instances[$adapter];
     }
 
-    /**
-     * @param string $adapterClass
-     * @param string $adapter
-     * @return Cache
-     */
     private static function createInstance(string $adapterClass, string $adapter): Cache
     {
         return new Cache(new $adapterClass(config()->get('cache.' . $adapter)));
     }
 
     /**
-     * @param string $adapter
-     * @return string
      * @throws BaseException
      */
     private static function getAdapterClass(string $adapter): string

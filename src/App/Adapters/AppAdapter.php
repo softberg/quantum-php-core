@@ -28,9 +28,6 @@ abstract class AppAdapter implements AppInterface
 {
     use AppTrait;
 
-    /**
-     * @var string
-     */
     private static string $baseDir;
 
     /**

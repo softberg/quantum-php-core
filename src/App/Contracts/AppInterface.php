@@ -22,7 +22,6 @@ interface AppInterface
 {
     /**
      * Starts the app
-     * @return int|null
      */
     public function start(): ?int;
 }

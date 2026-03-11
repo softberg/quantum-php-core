@@ -10,7 +10,7 @@ use Quantum\Di\Di;
 
 class WebAppAdapterTest extends TestCase
 {
-    private $webAppAdapter;
+    private WebAppAdapter $webAppAdapter;
 
     public function setUp(): void
     {
@@ -25,7 +25,7 @@ class WebAppAdapterTest extends TestCase
         Di::reset();
     }
 
-    public function testWebAppAdapterStartSuccessfully()
+    public function testWebAppAdapterStartSuccessfully(): void
     {
         $request = Di::get(Request::class);
         $request->create('GET', '/test/am/tests');
@@ -37,7 +37,7 @@ class WebAppAdapterTest extends TestCase
         $this->assertEquals(0, $result);
     }
 
-    public function testWebAppAdapterStartFails()
+    public function testWebAppAdapterStartFails(): void
     {
         $request = Di::get(Request::class);
         $request->create('POST', '');
@@ -49,7 +49,7 @@ class WebAppAdapterTest extends TestCase
         $this->assertSame(0, $result);
     }
 
-    public function testWebAppAdapterHandlesPageNotFoundGracefully()
+    public function testWebAppAdapterHandlesPageNotFoundGracefully(): void
     {
         $request = Di::get(Request::class);
         $request->create('GET', '/non-existing-uri');

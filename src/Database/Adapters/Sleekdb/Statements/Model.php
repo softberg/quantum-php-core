@@ -14,12 +14,13 @@
 
 namespace Quantum\Database\Adapters\Sleekdb\Statements;
 
-use Quantum\Database\Exceptions\DatabaseException;
-use Quantum\Database\Contracts\DbalInterface;
 use SleekDB\Exceptions\InvalidConfigurationException;
+use Quantum\Database\Exceptions\DatabaseException;
 use SleekDB\Exceptions\InvalidArgumentException;
+use Quantum\Database\Contracts\DbalInterface;
 use SleekDB\Exceptions\IdNotAllowedException;
 use Quantum\Model\Exceptions\ModelException;
+use Quantum\App\Exceptions\BaseException;
 use SleekDB\Exceptions\JsonException;
 use SleekDB\Exceptions\IOException;
 
@@ -35,6 +36,7 @@ trait Model
     public function create(): DbalInterface
     {
         $this->isNew = true;
+        $this->modifiedFields = [];
         return $this;
     }
 
@@ -58,7 +60,7 @@ trait Model
      * @throws IdNotAllowedException
      * @throws InvalidArgumentException
      * @throws InvalidConfigurationException
-     * @throws JsonException
+     * @throws JsonException|BaseException
      */
     public function save(): bool
     {

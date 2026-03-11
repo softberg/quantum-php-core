@@ -15,14 +15,14 @@ class SendgridAdapterTest extends MailerTestCase
         $this->adapter = new SendgridAdapter(['api_key' => 'xxx111222333']);
     }
 
-    public function testSendgridAdapterInstance()
+    public function testSendgridAdapterInstance(): void
     {
         $this->assertInstanceOf(SendgridAdapter::class, $this->adapter);
 
         $this->assertInstanceOf(MailerInterface::class, $this->adapter);
     }
 
-    public function testSendgridAdapterSend()
+    public function testSendgridAdapterSend(): void
     {
         $this->adapter->setFrom('john@hotmail.com', 'John Doe');
 

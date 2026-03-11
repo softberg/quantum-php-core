@@ -16,6 +16,7 @@ namespace Quantum\App\Traits;
 
 use Quantum\Environment\Exceptions\EnvException;
 use Quantum\Config\Exceptions\ConfigException;
+use Quantum\Loader\Exceptions\LoaderException;
 use Quantum\Http\Exceptions\HttpException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
@@ -47,14 +48,12 @@ trait WebAppTrait
     }
 
     /**
-     * @param Request $request
-     * @param Response $response
      * @throws BaseException
      * @throws DiException
      * @throws ReflectionException
      * @throws HttpException
      */
-    private function initializeRequestResponse(Request $request, Response $response)
+    private function initializeRequestResponse(Request $request, Response $response): void
     {
         $request->init(Server::getInstance());
         $response->init();
@@ -63,17 +62,16 @@ trait WebAppTrait
     /**
      * @throws DebugBarException
      */
-    private function initializeDebugger()
+    private function initializeDebugger(): void
     {
         $debugger = Debugger::getInstance();
         $debugger->initStore();
     }
 
     /**
-     * @return ViewCache
      * @throws ConfigException
      * @throws DiException
-     * @throws ReflectionException
+     * @throws ReflectionException|LoaderException
      */
     private function setupViewCache(): ViewCache
     {
@@ -87,12 +85,11 @@ trait WebAppTrait
     }
 
     /**
-     * @param Response $response
      * @throws ConfigException
      * @throws DiException
      * @throws ReflectionException
      */
-    private function handleCors(Response $response)
+    private function handleCors(Response $response): void
     {
         if (!config()->has('cors')) {
             config()->import(new Setup('config', 'cors'));

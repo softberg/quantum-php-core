@@ -19,8 +19,6 @@ use Quantum\Di\Exceptions\DiException;
 use Quantum\Captcha\Captcha;
 
 /**
- * @param string|null $adapter
- * @return Captcha
  * @throws BaseException
  * @throws ConfigException
  * @throws DiException

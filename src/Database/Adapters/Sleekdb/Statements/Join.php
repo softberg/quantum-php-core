@@ -45,7 +45,7 @@ trait Join
      * Starts to apply joins
      * @throws ModelException
      */
-    private function applyJoins()
+    private function applyJoins(): void
     {
         if (!empty($this->joins)) {
             $this->applyJoin($this->queryBuilder, $this, $this->joins[0]);
@@ -54,11 +54,6 @@ trait Join
 
     /**
      * Apply the join to query builder
-     * @param QueryBuilder $queryBuilder
-     * @param SleekDbal $currentItem
-     * @param array $nextItem
-     * @param int $level
-     * @return QueryBuilder
      * @throws ModelException
      */
     private function applyJoin(QueryBuilder $queryBuilder, SleekDbal $currentItem, array $nextItem, int $level = 1): QueryBuilder
@@ -96,11 +91,6 @@ trait Join
 
     /**
      * Apply join condition for JOINTO type
-     * @param QueryBuilder $queryBuilder
-     * @param DbModel $relatedModel
-     * @param SleekDbal $currentModel
-     * @param array $currentItem
-     * @return void
      * @throws InvalidArgumentException
      * @throws ModelException
      */
@@ -124,10 +114,6 @@ trait Join
     }
 
     /**
-     * @param QueryBuilder $queryBuilder
-     * @param array $currentItem
-     * @param array $relation
-     * @return void
      * @throws InvalidArgumentException
      */
     private function applyHasRelation(QueryBuilder $queryBuilder, array $currentItem, array $relation): void
@@ -140,11 +126,6 @@ trait Join
     }
 
     /**
-     * @param QueryBuilder $queryBuilder
-     * @param array $currentItem
-     * @param array $relation
-     * @param SleekDbal $currentModel
-     * @return void
      * @throws InvalidArgumentException
      * @throws ModelException
      */
@@ -162,9 +143,6 @@ trait Join
     }
 
     /**
-     * @param SleekDbal $currentModel
-     * @param DbModel $relatedModel
-     * @return array
      * @throws ModelException
      */
     private function getValidatedRelation(SleekDbal $currentModel, DbModel $relatedModel): array

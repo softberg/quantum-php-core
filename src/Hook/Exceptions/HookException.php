@@ -25,10 +25,6 @@ use Quantum\App\Exceptions\BaseException;
  */
 class HookException extends BaseException
 {
-    /**
-     * @param string $name
-     * @return HookException
-     */
     public static function hookDuplicateName(string $name): self
     {
         return new self(
@@ -37,10 +33,6 @@ class HookException extends BaseException
         );
     }
 
-    /**
-     * @param string $name
-     * @return HookException
-     */
     public static function unregisteredHookName(string $name): self
     {
         return new self(

@@ -27,7 +27,7 @@ trait Transaction
      * Begins a transaction
      * @throws BaseException
      */
-    public static function beginTransaction()
+    public static function beginTransaction(): void
     {
         if (!self::getConnection()) {
             throw DatabaseException::missingConfig('database');

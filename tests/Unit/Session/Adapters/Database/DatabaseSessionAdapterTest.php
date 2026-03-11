@@ -12,7 +12,7 @@ class DatabaseSessionAdapterTest extends AppTestCase
 {
     use TestCaseHelper;
 
-    private $session;
+    private DatabaseSessionAdapter $session;
 
     public function setUp(): void
     {
@@ -32,12 +32,12 @@ class DatabaseSessionAdapterTest extends AppTestCase
         ModelFactory::createDynamicModel('sessions')->deleteMany();
     }
 
-    public function testDatabaseSessionConstructor()
+    public function testDatabaseSessionConstructor(): void
     {
         $this->assertInstanceOf(DatabaseSessionAdapter::class, $this->session);
     }
 
-    public function testDatabaseSessionAll()
+    public function testDatabaseSessionAll(): void
     {
         $this->assertEmpty($this->session->all());
 
@@ -54,7 +54,7 @@ class DatabaseSessionAdapterTest extends AppTestCase
         $this->assertEquals('Test data', $this->session->all()['test']);
     }
 
-    public function testDatabaseSessionGetSetHasDelete()
+    public function testDatabaseSessionGetSetHasDelete(): void
     {
         $this->assertNull($this->session->get('auth'));
 
@@ -73,7 +73,7 @@ class DatabaseSessionAdapterTest extends AppTestCase
         $this->assertNull($this->session->get('auth'));
     }
 
-    public function testDatabaseSessionGetSetFlash()
+    public function testDatabaseSessionGetSetFlash(): void
     {
         $this->session->setFlash('message', 'Flash message');
 
@@ -82,7 +82,7 @@ class DatabaseSessionAdapterTest extends AppTestCase
         $this->assertNull($this->session->getFlash('message'));
     }
 
-    public function testDatabaseSessionFlush()
+    public function testDatabaseSessionFlush(): void
     {
         $this->session->set('test', 'Test data');
 
@@ -93,12 +93,12 @@ class DatabaseSessionAdapterTest extends AppTestCase
         $this->assertEmpty($this->session->all());
     }
 
-    public function testDatabaseSessionGetSessionId()
+    public function testDatabaseSessionGetSessionId(): void
     {
         $this->assertEquals(session_id(), $this->session->getId());
     }
 
-    public function testDatabaseSessionRegenerateSessionId()
+    public function testDatabaseSessionRegenerateSessionId(): void
     {
         $sessionId = $this->session->getId();
 

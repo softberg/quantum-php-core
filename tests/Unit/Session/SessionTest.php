@@ -21,7 +21,7 @@ class SessionTest extends AppTestCase
         }
     }
 
-    public function testSessionGetAdapter()
+    public function testSessionGetAdapter(): void
     {
         $session = new Session(new NativeSessionAdapter());
 
@@ -36,7 +36,7 @@ class SessionTest extends AppTestCase
         $this->assertInstanceOf(SessionStorageInterface::class, $session->getAdapter());
     }
 
-    public function testSessionCallingValidMethod()
+    public function testSessionCallingValidMethod(): void
     {
         $session = new Session(new NativeSessionAdapter());
 
@@ -45,7 +45,7 @@ class SessionTest extends AppTestCase
         $this->assertEquals('Test data', $session->get('test'));
     }
 
-    public function testSessionCallingInvalidMethod()
+    public function testSessionCallingInvalidMethod(): void
     {
         $mailer = new Session(new NativeSessionAdapter());
 

@@ -24,9 +24,6 @@ class Transformer
 {
     /**
      * Applies the transformer on each item of the array
-     * @param array $data
-     * @param TransformerInterface $transformer
-     * @return array
      */
     public static function transform(array $data, TransformerInterface $transformer): array
     {

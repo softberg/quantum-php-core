@@ -24,31 +24,21 @@ interface AuthServiceInterface
 {
     /**
      * Get
-     * @param string $field
-     * @param string|null $value
-     * @return User|null
      */
     public function get(string $field, ?string $value): ?User;
 
     /**
-    * Add
-    * @param array $data
-    * @return User
-    */
+     * Add
+     */
     public function add(array $data): User;
 
     /**
      * Update
-     * @param string $field
-     * @param string|null $value
-     * @param array $data
-     * @return User|null
      */
     public function update(string $field, ?string $value, array $data): ?User;
 
     /**
      * User Schema
-     * @return array
      */
     public function userSchema(): array;
 }

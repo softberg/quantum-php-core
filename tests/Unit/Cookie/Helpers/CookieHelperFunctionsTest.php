@@ -7,12 +7,12 @@ use Quantum\Cookie\Cookie;
 
 class CookieHelperFunctionsTest extends AppTestCase
 {
-    public function testCookieHelper()
+    public function testCookieHelper(): void
     {
         $this->assertInstanceOf(Cookie::class, cookie());
     }
 
-    public function testCookieMethodsViaHelper()
+    public function testCookieMethodsViaHelper(): void
     {
         $this->assertFalse(cookie()->has('test'));
 

@@ -31,7 +31,6 @@ trait RawInput
 {
     /**
      * Parses raw input data and returns parsed parameters and files
-     * @param string $rawInput
      * @return array|array[]
      * @throws BaseException
      * @throws ConfigException
@@ -53,7 +52,6 @@ trait RawInput
 
     /**
      * Extracts boundary string from Content-Type header
-     * @return string|null
      */
     private static function getBoundary(): ?string
     {
@@ -70,9 +68,6 @@ trait RawInput
 
     /**
      * Splits raw input into multipart blocks
-     * @param string $boundary
-     * @param string $rawInput
-     * @return array
      */
     private static function getBlocks(string $boundary, string $rawInput): array
     {
@@ -84,8 +79,6 @@ trait RawInput
 
     /**
      * Processes multipart blocks and extracts parameters and files
-     * @param array $blocks
-     * @return array
      * @throws BaseException
      * @throws ConfigException
      * @throws DiException
@@ -132,11 +125,8 @@ trait RawInput
 
     /**
      * Adds a parsed file to the files collection
-     * @param array $files
-     * @param string $nameParam
-     * @param UploadedFile $file
      */
-    private static function addFileToCollection(array &$files, string $nameParam, UploadedFile $file)
+    private static function addFileToCollection(array &$files, string $nameParam, UploadedFile $file): void
     {
         $arrayParam = self::arrayParam($nameParam);
 
@@ -155,7 +145,6 @@ trait RawInput
 
     /**
      * Detects the block type as a string identifier.
-     * @param string $block
      * @return string One of 'file', 'stream', 'param'
      */
     private static function detectBlockType(string $block): string
@@ -173,8 +162,6 @@ trait RawInput
 
     /**
      * Gets the parsed param
-     * @param string $block
-     * @return array
      */
     private static function getParsedStream(string $block): array
     {
@@ -185,8 +172,6 @@ trait RawInput
 
     /**
      * Gets the parsed file
-     * @param string $block
-     * @return array|null
      * @throws BaseException
      * @throws ConfigException
      * @throws DiException
@@ -212,7 +197,7 @@ trait RawInput
             'size' => $fs->size($tempName),
         ]);
 
-        register_shutdown_function(function () use ($fs, $tempName) {
+        register_shutdown_function(function () use ($fs, $tempName): void {
             $fs->remove($tempName);
         });
 
@@ -221,7 +206,6 @@ trait RawInput
 
     /**
      * Parses a file block into metadata and binary content
-     * @param string $block
      * @return array{string, string, string, string}
      */
     private static function parseFileData(string $block): array
@@ -250,8 +234,6 @@ trait RawInput
 
     /**
      * Parses a block and extracts normal form parameters
-     * @param string $block
-     * @return array
      */
     private static function getParsedParameter(string $block): array
     {
@@ -272,7 +254,6 @@ trait RawInput
 
     /**
      * Extracts name, filename, and content type from header lines
-     * @param string $rawHeaders
      * @return array{string, string, string}
      */
     private static function parseHeaders(string $rawHeaders): array
@@ -305,7 +286,6 @@ trait RawInput
 
     /**
      * Parses array-like parameter names
-     * @param string $parameter
      * @return array|string
      */
     private static function arrayParam(string $parameter)

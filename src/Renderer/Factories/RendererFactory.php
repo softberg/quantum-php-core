@@ -41,11 +41,9 @@ class RendererFactory
     /**
      * @var array<string, Renderer>
      */
-    private static $instances = [];
+    private static array $instances = [];
 
     /**
-     * @param string|null $adapter
-     * @return Renderer
      * @throws BaseException
      * @throws ConfigException
      * @throws DiException
@@ -68,19 +66,12 @@ class RendererFactory
         return self::$instances[$adapter];
     }
 
-    /**
-     * @param string $adapterClass
-     * @param string $adapter
-     * @return Renderer
-     */
     private static function createInstance(string $adapterClass, string $adapter): Renderer
     {
         return new Renderer(new $adapterClass(config()->get('view.' . $adapter)));
     }
 
     /**
-     * @param string $adapter
-     * @return string
      * @throws BaseException
      */
     private static function getAdapterClass(string $adapter): string

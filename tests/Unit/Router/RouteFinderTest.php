@@ -22,7 +22,7 @@ class RouteFinderTest extends AppTestCase
         $this->finder = new RouteFinder($this->collection);
     }
 
-    public function testRouteFinderFindReturnsMatchedRouteForStaticMatch()
+    public function testRouteFinderFindReturnsMatchedRouteForStaticMatch(): void
     {
         $route = new Route(['GET'], 'users', 'Ctrl', 'act');
         $this->collection->add($route);
@@ -37,7 +37,7 @@ class RouteFinderTest extends AppTestCase
         $this->assertSame([], $result->getParams());
     }
 
-    public function testRouteFinderFindReturnsNullWhenNoMatch()
+    public function testRouteFinderFindReturnsNullWhenNoMatch(): void
     {
         $route = new Route(['GET'], 'users', 'Ctrl', 'act');
         $this->collection->add($route);
@@ -48,7 +48,7 @@ class RouteFinderTest extends AppTestCase
         $this->assertNull($this->finder->find($req));
     }
 
-    public function testRouteFinderFindSkipsWrongHttpMethod()
+    public function testRouteFinderFindSkipsWrongHttpMethod(): void
     {
         $route = new Route(['POST'], 'users', 'Ctrl', 'act');
         $this->collection->add($route);
@@ -59,7 +59,7 @@ class RouteFinderTest extends AppTestCase
         $this->assertNull($this->finder->find($req));
     }
 
-    public function testRouteFinderFindReturnsFirstMatchingRouteOnly()
+    public function testRouteFinderFindReturnsFirstMatchingRouteOnly(): void
     {
         $r1 = new Route(['GET'], 'users', 'C1', 'a1');
         $r2 = new Route(['GET'], 'users', 'C2', 'a2');
@@ -75,7 +75,7 @@ class RouteFinderTest extends AppTestCase
         $this->assertSame($r1, $result->getRoute());
     }
 
-    public function testRouteFinderFindPassesExtractedParams()
+    public function testRouteFinderFindPassesExtractedParams(): void
     {
         $route = new Route(['GET'], 'users/[id=:num]', 'Ctrl', 'act');
         $this->collection->add($route);
@@ -88,7 +88,7 @@ class RouteFinderTest extends AppTestCase
         $this->assertSame(['id' => '42'], $result->getParams());
     }
 
-    public function testRouteFinderFindWithMultipleRoutesOnlyOneMatches()
+    public function testRouteFinderFindWithMultipleRoutesOnlyOneMatches(): void
     {
         $r1 = new Route(['GET'], 'posts', 'Ctrl', 'act');
         $this->collection->add($r1);

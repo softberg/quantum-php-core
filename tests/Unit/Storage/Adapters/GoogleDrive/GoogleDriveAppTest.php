@@ -11,58 +11,34 @@ class GoogleDriveAppTest extends AppTestCase
     use GoogleDriveTokenServiceTestCase;
     use HttpClientTestCase;
 
-    /**
-     * @var GoogleDriveApp
-     */
-    private $googleDriveApp;
+    private GoogleDriveApp $googleDriveApp;
 
-    /**
-     * @var string
-     */
-    private $appKey = 'x0hwm8wy63rrynm';
+    private string $appKey = 'x0hwm8wy63rrynm';
 
-    /**
-     * @var string
-     */
-    private $appSecret = 'xxx123yyy';
+    private string $appSecret = 'xxx123yyy';
 
-    /**
-     * @var string
-     */
-    private $authCode = 'd4k29ovC7-UAAAAAAAA3Q45go2mLgjMhJSeJNBOo-EA';
+    private string $authCode = 'd4k29ovC7-UAAAAAAAA3Q45go2mLgjMhJSeJNBOo-EA';
 
-    /**
-     * @var string
-     */
-    private $redirectUrl = 'http://localhost/confirm';
+    private string $redirectUrl = 'http://localhost/confirm';
 
-    /**
-     * @var array
-     */
-    private $tokensGrantResponse = [
+    private array $tokensGrantResponse = [
         'access_token' => 'sl.BYEQ1_VadTz6nBU36WPBBVwokc3zWVMXGjcOKxV4Tadms8ZlEPM85aHVFa_k1sfjilCWOnl79RUncPZzJ3GhrqhLGIBFFRCH0rKMa_ZtcqkerJn-f5lu10Ki5PSw4fxYM80V4PL_',
         'refresh_token' => '-3S067m3M5kAAAAAAAAAAcQF8zVqFUuhK-PFkFqiOfFTgiazWj5NyU-1EGWIh0ZS',
     ];
 
-    /**
-     * @var array
-     */
-    private $fileMetadataResponse = [
+    private array $fileMetadataResponse = [
         'id' => 'file1',
         'kind' => GoogleDriveApp::DRIVE_FILE_KIND,
         'name' => 'myFile',
         'mimeType' => 'text/plain',
     ];
 
-    /**
-     * @var string
-     */
-    private $fileContentResponse = 'Some plain text!';
+    private string $fileContentResponse = 'Some plain text!';
 
     /**
      * @var string
      */
-    private $errorResponse = [
+    private array $errorResponse = [
         'code' => GoogleDriveApp::INVALID_TOKEN_ERROR_CODE,
         'message' => 'Invalid access token',
     ];
@@ -78,7 +54,7 @@ class GoogleDriveAppTest extends AppTestCase
         $this->googleDriveApp = new GoogleDriveApp($this->appKey, $this->appSecret, $tokenServiceMock, $httpClientMock);
     }
 
-    public function testGoogleDriveGetAuthUrl()
+    public function testGoogleDriveGetAuthUrl(): void
     {
         $authUrl = $this->googleDriveApp->getAuthUrl($this->redirectUrl);
 
@@ -89,7 +65,7 @@ class GoogleDriveAppTest extends AppTestCase
         $this->assertStringContainsString('access_type', $authUrl);
     }
 
-    public function testGoogleDriveFetchTokens()
+    public function testGoogleDriveFetchTokens(): void
     {
         $this->currentResponse = (object) $this->tokensGrantResponse;
 
@@ -102,7 +78,7 @@ class GoogleDriveAppTest extends AppTestCase
         $this->assertTrue(property_exists($response, 'refresh_token'));
     }
 
-    public function testGoogleDriveRpcRequest()
+    public function testGoogleDriveRpcRequest(): void
     {
         $this->currentResponse = (object) $this->fileMetadataResponse;
 
@@ -119,7 +95,7 @@ class GoogleDriveAppTest extends AppTestCase
         $this->assertTrue(property_exists($response, 'mimeType'));
     }
 
-    public function testGoogleDriveGetFileInfo()
+    public function testGoogleDriveGetFileInfo(): void
     {
         $this->currentResponse = $this->fileContentResponse;
 
@@ -130,7 +106,7 @@ class GoogleDriveAppTest extends AppTestCase
         $this->assertEquals('Some plain text!', $response);
     }
 
-    public function testGoogleDriveRequestWithAccessTokenExpired()
+    public function testGoogleDriveRequestWithAccessTokenExpired(): void
     {
         $this->currentErrors = ['code' => 401];
 

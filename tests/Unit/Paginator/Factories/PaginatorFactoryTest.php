@@ -2,6 +2,7 @@
 
 namespace Quantum\Tests\Unit\Paginator\Factories;
 
+use Quantum\Model\DbModel;
 use Quantum\Paginator\Exceptions\PaginatorException;
 use Quantum\Tests\_root\shared\Models\TestPostModel;
 use Quantum\Paginator\Contracts\PaginatorInterface;
@@ -14,7 +15,7 @@ use Quantum\Paginator\Paginator;
 
 class PaginatorFactoryTest extends PaginatorTestCase
 {
-    private $postModel;
+    private DbModel $postModel;
 
     public function setUp(): void
     {
@@ -23,7 +24,7 @@ class PaginatorFactoryTest extends PaginatorTestCase
         $this->postModel = ModelFactory::createDynamicModel('posts', TestPostModel::class);
     }
 
-    public function testPaginatorFactoryInstance()
+    public function testPaginatorFactoryInstance(): void
     {
         $paginator = PaginatorFactory::create(Paginator::ARRAY, [
             'items' => [],
@@ -34,7 +35,7 @@ class PaginatorFactoryTest extends PaginatorTestCase
         $this->assertInstanceOf(Paginator::class, $paginator);
     }
 
-    public function testPaginatorFactoryArrayAdapter()
+    public function testPaginatorFactoryArrayAdapter(): void
     {
         $paginator = PaginatorFactory::create(Paginator::ARRAY, [
             'items' => [],
@@ -47,7 +48,7 @@ class PaginatorFactoryTest extends PaginatorTestCase
         $this->assertInstanceOf(PaginatorInterface::class, $paginator->getAdapter());
     }
 
-    public function testPaginatorFactoryModelAdapter()
+    public function testPaginatorFactoryModelAdapter(): void
     {
         $paginator = PaginatorFactory::create(Paginator::MODEL, [
             'model' => $this->postModel,
@@ -60,7 +61,7 @@ class PaginatorFactoryTest extends PaginatorTestCase
         $this->assertInstanceOf(PaginatorInterface::class, $paginator->getAdapter());
     }
 
-    public function testPaginatorFactoryInvalidAdapter()
+    public function testPaginatorFactoryInvalidAdapter(): void
     {
         $this->expectException(PaginatorException::class);
 

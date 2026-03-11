@@ -8,7 +8,7 @@ use Quantum\Tests\Unit\AppTestCase;
 
 class DailyAdapterTest extends AppTestCase
 {
-    private $adapter;
+    private DailyAdapter $adapter;
 
     public function setUp(): void
     {
@@ -19,12 +19,12 @@ class DailyAdapterTest extends AppTestCase
         ]);
     }
 
-    public function testDailyAdapterInstance()
+    public function testDailyAdapterInstance(): void
     {
         $this->assertInstanceOf(DailyAdapter::class, $this->adapter);
     }
 
-    public function testDailyAdapterConstructorThrowsExceptionForInvalidPath()
+    public function testDailyAdapterConstructorThrowsExceptionForInvalidPath(): void
     {
         $this->expectException(LoggerException::class);
 
@@ -33,7 +33,7 @@ class DailyAdapterTest extends AppTestCase
         ]);
     }
 
-    public function testDailyAdapterReportWritesToFile()
+    public function testDailyAdapterReportWritesToFile(): void
     {
         $level = 'info';
         $message = 'Test log message';

@@ -10,7 +10,7 @@ use Quantum\Loader\Setup;
 
 abstract class SleekDbalTestCase extends AppTestCase
 {
-    private $tables = [
+    private array $tables = [
         'users',
         'profiles',
         'user_professions',

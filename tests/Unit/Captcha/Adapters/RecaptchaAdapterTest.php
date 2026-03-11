@@ -13,10 +13,10 @@ use Mockery;
 class RecaptchaAdapterTest extends AppTestCase
 {
     public $httpClientMock;
-    private $secretKey = '10000000-ffff-ffff-ffff-000000000001';
-    private $siteKey = '0x0000000000000000000000000000000000000000';
+    private string $secretKey = '10000000-ffff-ffff-ffff-000000000001';
+    private string $siteKey = '0x0000000000000000000000000000000000000000';
 
-    private $adapter;
+    private RecaptchaAdapter $adapter;
 
     public function setUp(): void
     {
@@ -36,14 +36,14 @@ class RecaptchaAdapterTest extends AppTestCase
         Mockery::close();
     }
 
-    public function testRecaptchaAdapterInstance()
+    public function testRecaptchaAdapterInstance(): void
     {
         $this->assertInstanceOf(CaptchaInterface::class, $this->adapter);
 
         $this->assertInstanceOf(RecaptchaAdapter::class, $this->adapter);
     }
 
-    public function testRecaptchaSetGetType()
+    public function testRecaptchaSetGetType(): void
     {
         $this->assertNull($this->adapter->getType());
 
@@ -62,7 +62,7 @@ class RecaptchaAdapterTest extends AppTestCase
         $this->adapter->setType('test');
     }
 
-    public function testRecaptchaVisibleAddToForm()
+    public function testRecaptchaVisibleAddToForm(): void
     {
         $this->adapter->setType(CaptchaInterface::CAPTCHA_VISIBLE);
 
@@ -72,7 +72,7 @@ class RecaptchaAdapterTest extends AppTestCase
         );
     }
 
-    public function testRecaptchaInvisibleAddToForm()
+    public function testRecaptchaInvisibleAddToForm(): void
     {
         $this->adapter->setType(CaptchaInterface::CAPTCHA_INVISIBLE);
 
@@ -99,7 +99,7 @@ class RecaptchaAdapterTest extends AppTestCase
         $this->assertSame($expected, $actual);
     }
 
-    public function testRecaptchaVerifySuccess()
+    public function testRecaptchaVerifySuccess(): void
     {
 
         $this->httpClientMock
@@ -127,7 +127,7 @@ class RecaptchaAdapterTest extends AppTestCase
         $this->assertTrue($result);
     }
 
-    public function testRecaptchaVerifyFailure()
+    public function testRecaptchaVerifyFailure(): void
     {
         $this->httpClientMock
             ->shouldReceive('createRequest')

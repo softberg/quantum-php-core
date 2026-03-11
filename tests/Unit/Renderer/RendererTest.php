@@ -23,8 +23,7 @@ class RendererTest extends AppTestCase
             ['GET'],
             '/test',
             'SomeController',
-            'test',
-            null
+            'test'
         );
         $route->module('Test');
 
@@ -38,7 +37,7 @@ class RendererTest extends AppTestCase
         }
     }
 
-    public function testRendererGetHtmlAdapter()
+    public function testRendererGetHtmlAdapter(): void
     {
         $renderer = new Renderer(new HtmlAdapter());
 
@@ -47,7 +46,7 @@ class RendererTest extends AppTestCase
         $this->assertInstanceOf(TemplateRendererInterface::class, $renderer->getAdapter());
     }
 
-    public function testRendererGetTwigAdapter()
+    public function testRendererGetTwigAdapter(): void
     {
         $renderer = new Renderer(new TwigAdapter());
 
@@ -56,7 +55,7 @@ class RendererTest extends AppTestCase
         $this->assertInstanceOf(TemplateRendererInterface::class, $renderer->getAdapter());
     }
 
-    public function testRendererCallingValidMethod()
+    public function testRendererCallingValidMethod(): void
     {
         $renderer = new Renderer(new HtmlAdapter());
 
@@ -67,7 +66,7 @@ class RendererTest extends AppTestCase
         $this->assertSame('<p>Hello Tester, this is rendered html view</p>', $output);
     }
 
-    public function testRendererCallingInvalidMethod()
+    public function testRendererCallingInvalidMethod(): void
     {
         $renderer = new Renderer(new HtmlAdapter());
 

@@ -17,14 +17,14 @@ class ArchiveFactoryTest extends AppTestCase
         parent::setUp();
     }
 
-    public function testArchiveFactoryInstance()
+    public function testArchiveFactoryInstance(): void
     {
         $archive = ArchiveFactory::get();
 
         $this->assertInstanceOf(Archive::class, $archive);
     }
 
-    public function testArchiveFactoryPharAdapter()
+    public function testArchiveFactoryPharAdapter(): void
     {
         $archive = ArchiveFactory::get();
 
@@ -33,7 +33,7 @@ class ArchiveFactoryTest extends AppTestCase
         $this->assertInstanceOf(ArchiveInterface::class, $archive->getAdapter());
     }
 
-    public function testArchiveFactoryZipAdapter()
+    public function testArchiveFactoryZipAdapter(): void
     {
         $archive = ArchiveFactory::get(Archive::ZIP);
 
@@ -42,7 +42,7 @@ class ArchiveFactoryTest extends AppTestCase
         $this->assertInstanceOf(ArchiveInterface::class, $archive->getAdapter());
     }
 
-    public function testArchiveFactoryInvalidAdapter()
+    public function testArchiveFactoryInvalidAdapter(): void
     {
         $this->expectException(ArchiveException::class);
 
@@ -51,7 +51,7 @@ class ArchiveFactoryTest extends AppTestCase
         ArchiveFactory::get('invalid_type');
     }
 
-    public function testArchiveFactoryReturnsSameInstance()
+    public function testArchiveFactoryReturnsSameInstance(): void
     {
         $archive1 = ArchiveFactory::get();
         $archive2 = ArchiveFactory::get();

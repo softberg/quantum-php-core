@@ -24,10 +24,6 @@ use Quantum\Module\Enums\ExceptionMessages;
  */
 class ModuleException extends \Exception
 {
-    /**
-     * @param string $name
-     * @return ModuleException
-     */
     public static function moduleRoutesNotFound(string $name): self
     {
         return new self(
@@ -36,9 +32,6 @@ class ModuleException extends \Exception
         );
     }
 
-    /**
-     * @return ModuleException
-     */
     public static function moduleConfigNotFound(): self
     {
         return new self(
@@ -47,9 +40,6 @@ class ModuleException extends \Exception
         );
     }
 
-    /**
-     * @return ModuleException
-     */
     public static function moduleCreationIncomplete(): self
     {
         return new self(
@@ -58,10 +48,6 @@ class ModuleException extends \Exception
         );
     }
 
-    /**
-     * @param string $name
-     * @return ModuleException
-     */
     public static function missingModuleTemplate(string $name): self
     {
         return new self(
@@ -70,9 +56,6 @@ class ModuleException extends \Exception
         );
     }
 
-    /**
-     * @return ModuleException
-     */
     public static function missingModuleDirectory(): self
     {
         return new self(
@@ -81,10 +64,6 @@ class ModuleException extends \Exception
         );
     }
 
-    /**
-     * @param string $name
-     * @return ModuleException
-     */
     public static function moduleAlreadyExists(string $name): self
     {
         return new self(

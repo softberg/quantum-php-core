@@ -19,6 +19,7 @@ use Quantum\Storage\Factories\FileSystemFactory;
 use Quantum\Archive\Contracts\ArchiveInterface;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Storage\FileSystem;
+use ReflectionException;
 use Exception;
 use Phar;
 
@@ -28,28 +29,16 @@ use Phar;
  */
 class PharAdapter implements ArchiveInterface
 {
-    /**
-     * @var FileSystem
-     */
-    private $fs;
+    private FileSystem $fs;
+
+    private ?string $archiveName = null;
+
+    private ?\Phar $archive = null;
+
+    private bool $requiresReopen = true;
 
     /**
-     * @var string
-     */
-    private $archiveName;
-
-    /**
-     * @var Phar|null
-     */
-    private $archive = null;
-
-    /**
-     * @var bool
-     */
-    private $requiresReopen = true;
-
-    /**
-     * @throws BaseException
+     * @throws BaseException|ReflectionException
      */
     public function __construct()
     {
@@ -62,7 +51,6 @@ class PharAdapter implements ArchiveInterface
     }
 
     /**
-     * @return bool
      * @throws ArchiveException
      */
     public function removeArchive(): bool

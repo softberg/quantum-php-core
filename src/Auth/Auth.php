@@ -38,30 +38,19 @@ class Auth
      */
     public const JWT = 'jwt';
 
-    /**
-     * @var AuthenticatableInterface
-     */
-    private $adapter;
+    private AuthenticatableInterface $adapter;
 
-    /**
-     * @param AuthenticatableInterface $adapter
-     */
     public function __construct(AuthenticatableInterface $adapter)
     {
         $this->adapter = $adapter;
     }
 
-    /**
-     * @return AuthenticatableInterface
-     */
     public function getAdapter(): AuthenticatableInterface
     {
         return $this->adapter;
     }
 
     /**
-     * @param string $method
-     * @param array|null $arguments
      * @return mixed
      * @throws BaseException
      */

@@ -8,7 +8,7 @@ use Quantum\View\QtView;
 
 class ViewFactoryTest extends AppTestCase
 {
-    private $viewFactory;
+    private ViewFactory $viewFactory;
 
     public function setUp(): void
     {
@@ -17,12 +17,12 @@ class ViewFactoryTest extends AppTestCase
         $this->viewFactory = new ViewFactory();
     }
 
-    public function testGetInstance()
+    public function testGetInstance(): void
     {
         $this->assertInstanceOf(QtView::class, $this->viewFactory->get());
     }
 
-    public function testProxyCalls()
+    public function testProxyCalls(): void
     {
         $view = $this->viewFactory->get();
 

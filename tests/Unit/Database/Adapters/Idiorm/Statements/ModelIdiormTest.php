@@ -7,7 +7,7 @@ use Quantum\Database\Adapters\Idiorm\IdiormDbal;
 
 class ModelIdiormTest extends IdiormDbalTestCase
 {
-    public function testIdiormCreateNewRecord()
+    public function testIdiormCreateNewRecord(): void
     {
         $eventsModel = new IdiormDbal('events');
 
@@ -35,7 +35,7 @@ class ModelIdiormTest extends IdiormDbalTestCase
 
     }
 
-    public function testIdiormUpdateExistingRecord()
+    public function testIdiormUpdateExistingRecord(): void
     {
         $eventsModel = new IdiormDbal('events');
 
@@ -54,7 +54,7 @@ class ModelIdiormTest extends IdiormDbalTestCase
         $this->assertEquals('Climbing', $event->prop('title'));
     }
 
-    public function testIdiormDeleteRecord()
+    public function testIdiormDeleteRecord(): void
     {
         $eventModel = new IdiormDbal('events');
 
@@ -73,7 +73,7 @@ class ModelIdiormTest extends IdiormDbalTestCase
         $this->assertNull($event->prop('title'));
     }
 
-    public function testIdiormDeleteMany()
+    public function testIdiormDeleteMany(): void
     {
         $eventsModel = new IdiormDbal('events');
 

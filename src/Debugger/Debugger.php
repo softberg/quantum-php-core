@@ -57,38 +57,28 @@ class Debugger
 
     /**
      * Store
-     * @var DebuggerStore
      */
-    private $store;
+    private DebuggerStore $store;
 
-    /**
-     * @var Debugger
-     */
-    private static $instance;
+    private static ?Debugger $instance = null;
 
     /**
      * DebugBar instance
-     * @var DebugBar
      */
-    private $debugBar;
+    private DebugBar $debugBar;
 
     /**
      * Assets url
-     * @var string
      */
-    private $assetsUrl = '/assets/DebugBar/Resources';
+    private string $assetsUrl = '/assets/DebugBar/Resources';
 
     /**
      * Custom CSS
-     * @var string
      */
-    private $customCss = 'custom_debugbar.css';
+    private string $customCss = 'custom_debugbar.css';
 
     /**
      * Debugger constructor.
-     * @param DebuggerStore $store
-     * @param DebugBar $debugBar
-     * @param array $collectors
      * @throws DebugBarException
      */
     public function __construct(DebuggerStore $store, DebugBar $debugBar, array $collectors = [])
@@ -102,10 +92,6 @@ class Debugger
     }
 
     /**
-     * @param DebuggerStore|null $store
-     * @param DebugBar|null $debugBar
-     * @param array|null $collectors
-     * @return Debugger
      * @throws DebugBarException
      */
     public static function getInstance(?DebuggerStore $store = null, ?DebugBar $debugBar = null, ?array $collectors = []): Debugger
@@ -123,17 +109,13 @@ class Debugger
 
     /**
      * Checks if debug bar enabled
-     * @return bool
      */
     public function isEnabled(): bool
     {
         return filter_var(config()->get('app.debug'), FILTER_VALIDATE_BOOLEAN);
     }
 
-    /**
-     * @return void
-     */
-    public function initStore()
+    public function initStore(): void
     {
         $this->store->init([
             Debugger::MESSAGES,
@@ -146,21 +128,15 @@ class Debugger
 
     /**
      * Adds data to the store cell
-     * @param string $cell
-     * @param string $level
      * @param mixed $data
      */
-    public function addToStoreCell(string $cell, string $level, $data)
+    public function addToStoreCell(string $cell, string $level, $data): void
     {
         if (!empty($data)) {
             $this->store->set($cell, [$level => $data]);
         }
     }
 
-    /**
-     * @param string $cell
-     * @return array
-     */
     public function getStoreCell(string $cell): array
     {
         return $this->store->get($cell);
@@ -168,24 +144,19 @@ class Debugger
 
     /**
      * Clears the store cell
-     * @param string $cell
      */
-    public function clearStoreCell(string $cell)
+    public function clearStoreCell(string $cell): void
     {
         $this->store->delete($cell);
     }
 
-    /**
-     * @return void
-     */
-    public function resetStore()
+    public function resetStore(): void
     {
         $this->store->flush();
     }
 
     /**
      * Renders the debug bar
-     * @return string
      * @throws DebugBarException
      */
     public function render(): string
@@ -201,7 +172,6 @@ class Debugger
 
     /**
      * Creates a tab
-     * @param string $type
      * @throws DebugBarException
      */
     protected function createTab(string $type)
@@ -212,17 +182,14 @@ class Debugger
 
         $messages = $this->store->get($type);
 
-        if (count($messages) > 0) {
-            foreach ($messages as $message) {
-                $fn = key($message);
-                $this->debugBar[$type]->$fn($message[$fn]);
-            }
+        foreach ($messages as $message) {
+            $fn = key($message);
+            $this->debugBar[$type]->$fn($message[$fn]);
         }
     }
 
     /**
      * Gets the renderer
-     * @return JavascriptRenderer
      */
     protected function getRenderer(): JavascriptRenderer
     {
@@ -232,9 +199,6 @@ class Debugger
             ->addAssets([$this->customCss], []);
     }
 
-    /**
-     * @return array
-     */
     protected static function getDefaultCollectors(): array
     {
         return [

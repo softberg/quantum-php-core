@@ -15,6 +15,7 @@
 namespace Quantum\Hook;
 
 use Quantum\Config\Exceptions\ConfigException;
+use Quantum\Loader\Exceptions\LoaderException;
 use Quantum\Hook\Exceptions\HookException;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Loader\Setup;
@@ -33,20 +34,16 @@ class HookManager
 
     /**
      * Registered hooks store
-     * @var array
      */
-    private static $store = [];
+    private static array $store = [];
 
-    /**
-     * @var HookManager|null
-     */
-    private static $instance = null;
+    private static ?HookManager $instance = null;
 
     /**
      * @throws HookException
      * @throws ConfigException
      * @throws DiException
-     * @throws ReflectionException
+     * @throws ReflectionException|LoaderException
      */
     private function __construct()
     {
@@ -63,7 +60,6 @@ class HookManager
 
     /**
      * HookManager instance
-     * @return HookManager
      */
     public static function getInstance(): HookManager
     {
@@ -75,12 +71,10 @@ class HookManager
     }
 
     /**
-     * Adds new listener for given hook
-     * @param string $name
-     * @param callable $function
+     * Adds a new listener for a given hook
      * @throws HookException
      */
-    public function on(string $name, callable $function)
+    public function on(string $name, callable $function): void
     {
         if (!$this->exists($name)) {
             throw HookException::unregisteredHookName($name);
@@ -91,11 +85,9 @@ class HookManager
 
     /**
      * Fires the hook
-     * @param string $name
-     * @param array|null $args
      * @throws HookException
      */
-    public function fire(string $name, ?array $args = null)
+    public function fire(string $name, ?array $args = null): void
     {
         if (!$this->exists($name)) {
             throw HookException::unregisteredHookName($name);
@@ -109,7 +101,6 @@ class HookManager
 
     /**
      * Gets all registered hooks
-     * @return array
      */
     public static function getRegistered(): array
     {
@@ -118,7 +109,6 @@ class HookManager
 
     /**
      * Registers new hook
-     * @param string $name
      * @throws HookException
      */
     protected function register(string $name)
@@ -132,8 +122,6 @@ class HookManager
 
     /**
      * Checks if hooks registered
-     * @param string $name
-     * @return bool
      */
     protected function exists(string $name): bool
     {

@@ -29,49 +29,10 @@ class SmtpAdapter implements MailerInterface
 {
     use MailerTrait;
 
-    /**
-     * @var string
-     */
-    public $name = 'SMTP';
-
-    /**
-     * @var PHPMailer
-     */
-    protected $mailer;
-
-    /**
-     * Reply To addresses
-     * @var array
-     */
-    protected $replyToAddresses = [];
-
-    /**
-     * CC addresses
-     * @var array
-     */
-    protected $ccAddresses = [];
-
-    /**
-     * BCC addresses
-     * @var array
-     */
-    protected $bccAddresses = [];
-
-    /**
-     * Email attachments
-     * @var array
-     */
-    protected $attachments = [];
-
-    /**
-     * Email attachments created from string
-     * @var array
-     */
-    protected $stringAttachments = [];
+    public string $name = 'SMTP';
 
     /**
      * SmtpAdapter constructor
-     * @param array $params
      */
     public function __construct(array $params)
     {
@@ -84,7 +45,7 @@ class SmtpAdapter implements MailerInterface
         if (config()->get('debug')) {
             $this->mailer->SMTPDebug = SMTP::DEBUG_SERVER;
 
-            $this->mailer->Debugoutput = function ($message) {
+            $this->mailer->Debugoutput = function ($message): void {
                 warning($message, ['tab' => Debugger::MAILS]);
             };
         }
@@ -92,9 +53,6 @@ class SmtpAdapter implements MailerInterface
 
     /**
      * Sets "Reply-To" address
-     * @param string $email
-     * @param string|null $name
-     * @return $this
      */
     public function setReplay(string $email, ?string $name = null): SmtpAdapter
     {
@@ -108,7 +66,6 @@ class SmtpAdapter implements MailerInterface
 
     /**
      * Gets "Reply-To" addresses
-     * @return array
      */
     public function getReplays(): array
     {
@@ -117,9 +74,6 @@ class SmtpAdapter implements MailerInterface
 
     /**
      * Sets "CC" address
-     * @param string $email
-     * @param string|null $name
-     * @return $this
      */
     public function setCC(string $email, ?string $name = null): SmtpAdapter
     {
@@ -133,7 +87,6 @@ class SmtpAdapter implements MailerInterface
 
     /**
      * Gets "CC" addresses
-     * @return array
      */
     public function getCCs(): array
     {
@@ -142,9 +95,6 @@ class SmtpAdapter implements MailerInterface
 
     /**
      * Sets "BCC" address
-     * @param string $email
-     * @param string|null $name
-     * @return $this
      */
     public function setBCC(string $email, ?string $name = null): SmtpAdapter
     {
@@ -158,7 +108,6 @@ class SmtpAdapter implements MailerInterface
 
     /**
      * Get "BCC" addresses
-     * @return array
      */
     public function getBCCs(): array
     {
@@ -167,8 +116,6 @@ class SmtpAdapter implements MailerInterface
 
     /**
      * Sets attachments from the path on the filesystem
-     * @param string $attachment
-     * @return $this
      */
     public function setAttachment(string $attachment): SmtpAdapter
     {
@@ -179,7 +126,6 @@ class SmtpAdapter implements MailerInterface
 
     /**
      * Gets the attachments
-     * @return array
      */
     public function getAttachments(): array
     {
@@ -188,9 +134,6 @@ class SmtpAdapter implements MailerInterface
 
     /**
      * Sets attachment from the string
-     * @param string $content
-     * @param string $filename
-     * @return $this
      */
     public function setStringAttachment(string $content, string $filename): SmtpAdapter
     {
@@ -204,7 +147,6 @@ class SmtpAdapter implements MailerInterface
 
     /**
      * Gets the string attachments
-     * @return array
      */
     public function getStringAttachments(): array
     {
@@ -213,9 +155,8 @@ class SmtpAdapter implements MailerInterface
 
     /**
      * Setups the SMTP
-     * @param array $params
      */
-    private function setupSmtp(array $params)
+    private function setupSmtp(array $params): void
     {
         $this->mailer->isSMTP();
         $this->mailer->SMTPAuth = true;
@@ -230,7 +171,7 @@ class SmtpAdapter implements MailerInterface
      * Prepares the data
      * @throws Exception
      */
-    private function prepare()
+    private function prepare(): void
     {
         $this->mailer->setFrom($this->from['email'], $this->from['name']);
 
@@ -258,28 +199,23 @@ class SmtpAdapter implements MailerInterface
 
     /**
      * Fills the php mailer properties
-     * @param string $method
-     * @param array $fields
      */
-    private function fillProperties(string $method, array $fields = [])
+    private function fillProperties(string $method, array $fields = []): void
     {
-        if ($fields !== []) {
-            foreach ($fields as $field) {
-                if (is_string($field)) {
-                    $this->mailer->$method($field);
-                } else {
-                    $valOne = current($field);
-                    next($field);
-                    $valTwo = current($field);
-                    $this->mailer->$method($valOne, $valTwo);
-                    reset($field);
-                }
+        foreach ($fields as $field) {
+            if (is_string($field)) {
+                $this->mailer->$method($field);
+            } else {
+                $valOne = current($field);
+                next($field);
+                $valTwo = current($field);
+                $this->mailer->$method($valOne, $valTwo);
+                reset($field);
             }
         }
     }
 
     /**
-     * @return bool
      * @throws \PHPMailer\PHPMailer\Exception
      */
     private function sendEmail(): bool

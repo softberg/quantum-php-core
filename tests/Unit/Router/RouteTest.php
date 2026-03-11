@@ -8,7 +8,7 @@ use Quantum\Router\Route;
 
 class RouteTest extends AppTestCase
 {
-    public function testRouteControllerRouteConstruction()
+    public function testRouteControllerRouteConstruction(): void
     {
         $route = new Route(
             ['get', 'post'],
@@ -28,9 +28,9 @@ class RouteTest extends AppTestCase
         $this->assertFalse($route->isClosure());
     }
 
-    public function testRouteClosureRouteConstruction()
+    public function testRouteClosureRouteConstruction(): void
     {
-        $handler = function () {
+        $handler = function (): void {
         };
 
         $route = new Route(
@@ -50,14 +50,14 @@ class RouteTest extends AppTestCase
         $this->assertNull($route->getAction());
     }
 
-    public function testRouteConstructorRejectsEmptyMethods()
+    public function testRouteConstructorRejectsEmptyMethods(): void
     {
         $this->expectException(RouteException::class);
 
         new Route([], 'users', 'UserController', 'listAction');
     }
 
-    public function testRouteClosureRouteCannotDefineControllerOrAction()
+    public function testRouteClosureRouteCannotDefineControllerOrAction(): void
     {
         $this->expectException(RouteException::class);
 
@@ -66,19 +66,19 @@ class RouteTest extends AppTestCase
             'health',
             'HealthController',
             'checkAction',
-            function () {
+            function (): void {
             }
         );
     }
 
-    public function testRouteControllerRouteRequiresControllerAndAction()
+    public function testRouteControllerRouteRequiresControllerAndAction(): void
     {
         $this->expectException(RouteException::class);
 
         new Route(['GET'], 'users', null, null);
     }
 
-    public function testRouteAllowsMethodIsCaseInsensitive()
+    public function testRouteAllowsMethodIsCaseInsensitive(): void
     {
         $route = new Route(
             ['GET'],
@@ -94,7 +94,7 @@ class RouteTest extends AppTestCase
         $this->assertFalse($route->allowsMethod('POST'));
     }
 
-    public function testRouteCacheConfigurationIsStored()
+    public function testRouteCacheConfigurationIsStored(): void
     {
         $route = new Route(
             ['GET'],
@@ -111,7 +111,7 @@ class RouteTest extends AppTestCase
         );
     }
 
-    public function testRouteCompiledPatternCanBeStored()
+    public function testRouteCompiledPatternCanBeStored(): void
     {
         $route = new Route(
             ['GET'],
@@ -125,7 +125,7 @@ class RouteTest extends AppTestCase
         $this->assertSame('^users$', $route->getCompiledPattern());
     }
 
-    public function testRouteMiddlewareStackingOrder()
+    public function testRouteMiddlewareStackingOrder(): void
     {
         $route = new Route(
             ['GET'],
@@ -143,7 +143,7 @@ class RouteTest extends AppTestCase
         );
     }
 
-    public function testRouteToArrayExportsRouteState()
+    public function testRouteToArrayExportsRouteState(): void
     {
         $route = new Route(
             ['GET'],

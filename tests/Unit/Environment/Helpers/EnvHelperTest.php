@@ -6,7 +6,7 @@ use Quantum\Tests\Unit\AppTestCase;
 
 class EnvHelperTest extends AppTestCase
 {
-    public function testGetEnvValue()
+    public function testGetEnvValue(): void
     {
         $this->assertNotNull(env('APP_KEY'));
 

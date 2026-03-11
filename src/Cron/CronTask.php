@@ -26,15 +26,13 @@ class CronTask implements CronTaskInterface
 {
     /**
      * Cron expression instance
-     * @var CronExpression
      */
-    private $cronExpression;
+    private ?CronExpression $cronExpression = null;
 
     /**
      * Task name
-     * @var string
      */
-    private $name;
+    private string $name;
 
     /**
      * Task callback
@@ -44,9 +42,6 @@ class CronTask implements CronTaskInterface
 
     /**
      * CronTask constructor
-     * @param string $name
-     * @param string $expression
-     * @param callable $callback
      * @throws CronException
      */
     public function __construct(string $name, string $expression, callable $callback)
@@ -95,7 +90,6 @@ class CronTask implements CronTaskInterface
 
     /**
      * Get the next run date
-     * @return \DateTime
      */
     public function getNextRunDate(): \DateTime
     {
@@ -104,7 +98,6 @@ class CronTask implements CronTaskInterface
 
     /**
      * Get the previous run date
-     * @return \DateTime
      */
     public function getPreviousRunDate(): \DateTime
     {

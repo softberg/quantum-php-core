@@ -49,14 +49,10 @@ class Database
 
     /**
      * Database instance
-     * @var Database|null
      */
-    private static $instance = null;
+    private static ?Database $instance = null;
 
-    /**
-     * @var string
-     */
-    private $ormClass;
+    private string $ormClass;
 
     /**
      * @throws BaseException
@@ -83,7 +79,6 @@ class Database
 
     /**
      * Get Instance
-     * @return Database
      */
     public static function getInstance(): Database
     {
@@ -96,7 +91,6 @@ class Database
 
     /**
      * Gets the ORM class
-     * @return string
      */
     public function getOrmClass(): string
     {
@@ -105,7 +99,6 @@ class Database
 
     /**
      * Gets the DB configurations
-     * @return array|null
      */
     public function getConfigs(): ?array
     {
@@ -113,8 +106,6 @@ class Database
     }
 
     /**
-     * @param string $adapter
-     * @return string
      * @throws BaseException
      */
     private function getAdapterClass(string $adapter): string

@@ -2,6 +2,7 @@
 
 namespace Quantum\Tests\Unit\Model;
 
+use Quantum\Model\Model;
 use Quantum\Tests\_root\shared\Models\TestProductsModel;
 use Quantum\Database\Adapters\Idiorm\IdiormDbal;
 use Quantum\Model\Factories\ModelFactory;
@@ -11,7 +12,7 @@ use Quantum\Paginator\Paginator;
 
 class ModelSoftDeletesIdiOrmTest extends AppTestCase
 {
-    private $model;
+    private Model $model;
 
     public function setUp(): void
     {
@@ -31,7 +32,7 @@ class ModelSoftDeletesIdiOrmTest extends AppTestCase
         IdiormDbal::execute('DROP TABLE products ');
     }
 
-    public function testDeleteSetsDeletedAt()
+    public function testDeleteSetsDeletedAt(): void
     {
         $this->assertEquals(4, $this->model->count());
 
@@ -46,7 +47,7 @@ class ModelSoftDeletesIdiOrmTest extends AppTestCase
         $this->assertEquals(3, $this->model->count());
     }
 
-    public function testRestoreSetsDeletedAtToNull()
+    public function testRestoreSetsDeletedAtToNull(): void
     {
         $this->assertEquals(4, $this->model->count());
 
@@ -65,7 +66,7 @@ class ModelSoftDeletesIdiOrmTest extends AppTestCase
         $this->assertEquals(4, $this->model->count());
     }
 
-    public function testForceDeleteActuallyDeletes()
+    public function testForceDeleteActuallyDeletes(): void
     {
         $this->assertEquals(6, $this->model->withTrashed()->count());
 
@@ -80,7 +81,7 @@ class ModelSoftDeletesIdiOrmTest extends AppTestCase
         $this->assertTrue($product->isEmpty());
     }
 
-    public function testGetReturnsOnlyNonDeletedRecords()
+    public function testGetReturnsOnlyNonDeletedRecords(): void
     {
         $result = $this->model->get();
 
@@ -89,7 +90,7 @@ class ModelSoftDeletesIdiOrmTest extends AppTestCase
         $this->assertCount(4, $result);
     }
 
-    public function testGetWithTrashedReturnsAllRecords()
+    public function testGetWithTrashedReturnsAllRecords(): void
     {
         $result = $this->model->withTrashed()->get();
 
@@ -98,7 +99,7 @@ class ModelSoftDeletesIdiOrmTest extends AppTestCase
         $this->assertCount(6, $result);
     }
 
-    public function testGetOnlyTrashedReturnsOnlySoftDeletedRecords()
+    public function testGetOnlyTrashedReturnsOnlySoftDeletedRecords(): void
     {
         $result = $this->model->onlyTrashed()->get();
 
@@ -107,7 +108,7 @@ class ModelSoftDeletesIdiOrmTest extends AppTestCase
         $this->assertCount(2, $result);
     }
 
-    public function testPaginateExcludesDeleted()
+    public function testPaginateExcludesDeleted(): void
     {
         $paginator = $this->model->paginate(3);
 
@@ -118,14 +119,14 @@ class ModelSoftDeletesIdiOrmTest extends AppTestCase
         }
     }
 
-    public function testCountExcludesDeleted()
+    public function testCountExcludesDeleted(): void
     {
         $this->assertEquals(4, $this->model->count());
 
         $this->assertEquals(6, ModelFactory::get(TestProductsModel::class)->withTrashed()->count());
     }
 
-    public function testFindOneRespectsSoftDelete()
+    public function testFindOneRespectsSoftDelete(): void
     {
         $product = $this->model->findOne(3);
 
@@ -138,7 +139,7 @@ class ModelSoftDeletesIdiOrmTest extends AppTestCase
         $this->assertEquals('Product C', $product->prop('title'));
     }
 
-    public function testFindOneByRespectsSoftDelete()
+    public function testFindOneByRespectsSoftDelete(): void
     {
         $product = $this->model->findOneBy('title', 'Product C');
 
@@ -149,7 +150,7 @@ class ModelSoftDeletesIdiOrmTest extends AppTestCase
         $this->assertFalse($product->isEmpty());
     }
 
-    public function testFirstExcludesDeleted()
+    public function testFirstExcludesDeleted(): void
     {
         $product = $this->model->criteria('title', '=', 'Product C')->first();
 
@@ -162,7 +163,7 @@ class ModelSoftDeletesIdiOrmTest extends AppTestCase
         $this->assertFalse($product->isEmpty());
     }
 
-    private function _createProductsTableWithData()
+    private function _createProductsTableWithData(): void
     {
         IdiormDbal::execute('CREATE TABLE IF NOT EXISTS products (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,

@@ -40,55 +40,46 @@ class UploadedFile extends SplFileInfo
 {
     /**
      * Local File System
-     * @var LocalFilesystemAdapterInterface
      */
     protected LocalFilesystemAdapterInterface $localFileSystem;
 
     /**
      * Remove File System
-     * @var FilesystemAdapterInterface|null
      */
     protected ?FilesystemAdapterInterface $remoteFileSystem = null;
 
     /**
      * Original file name provided by client
-     * @var string|null
      */
     protected ?string $originalName = null;
 
     /**
      * File name (without extension)
-     * @var string|null
      */
     protected ?string $name = null;
 
     /**
      * File extension
-     * @var string|null
      */
     protected ?string $extension = null;
 
     /**
      * File mime type
-     * @var string|null
      */
     protected ?string $mimetype = null;
 
     /**
      * ImageResize function name
-     * @var string|null
      */
     protected ?string $imageModifierFuncName = null;
 
     /**
      * ImageResize function arguments
-     * @var array
      */
     protected array $params = [];
 
     /**
      * Upload error code messages
-     * @var array
      */
     protected array $errorMessages = [
         1 => 'The uploaded file exceeds the upload_max_filesize directive in php.ini',
@@ -102,7 +93,6 @@ class UploadedFile extends SplFileInfo
 
     /**
      * Allowed mime types => allowed extensions map
-     * @var array
      */
     protected array $allowedMimeTypes = [
         'image/jpeg' => ['jpg', 'jpeg'],
@@ -112,12 +102,10 @@ class UploadedFile extends SplFileInfo
 
     /**
      * Upload error code
-     * @var int
      */
     protected int $errorCode;
 
     /**
-     * @param array $meta
      * @throws BaseException
      * @throws ConfigException
      * @throws DiException
@@ -146,9 +134,6 @@ class UploadedFile extends SplFileInfo
 
     /**
      * Sets the allowed mime types => extensions map
-     * @param array $allowedMimeTypes
-     * @param bool $merge
-     * @return $this
      */
     public function setAllowedMimeTypes(array $allowedMimeTypes, bool $merge = true): UploadedFile
     {
@@ -158,7 +143,6 @@ class UploadedFile extends SplFileInfo
 
     /**
      * Get name
-     * @return string
      */
     public function getName(): string
     {
@@ -171,8 +155,6 @@ class UploadedFile extends SplFileInfo
 
     /**
      * Set name (without extension)
-     * @param string $name
-     * @return $this
      */
     public function setName(string $name): UploadedFile
     {
@@ -182,8 +164,6 @@ class UploadedFile extends SplFileInfo
 
     /**
      * Sets the remote file system adapter
-     * @param FilesystemAdapterInterface $remoteFileSystem
-     * @return $this
      */
     public function setRemoteFileSystem(FilesystemAdapterInterface $remoteFileSystem): UploadedFile
     {
@@ -193,7 +173,6 @@ class UploadedFile extends SplFileInfo
 
     /**
      * Gets the remote file system adapter
-     * @return FilesystemAdapterInterface|null
      */
     public function getRemoteFileSystem(): ?FilesystemAdapterInterface
     {
@@ -202,7 +181,6 @@ class UploadedFile extends SplFileInfo
 
     /**
      * Get file extension (without leading dot)
-     * @return string
      */
     public function getExtension(): string
     {
@@ -215,7 +193,6 @@ class UploadedFile extends SplFileInfo
 
     /**
      * Get file name with extension
-     * @return string
      */
     public function getNameWithExtension(): string
     {
@@ -224,7 +201,6 @@ class UploadedFile extends SplFileInfo
 
     /**
      * Get mime type
-     * @return string
      */
     public function getMimeType(): string
     {
@@ -241,7 +217,6 @@ class UploadedFile extends SplFileInfo
 
     /**
      * Get md5
-     * @return string
      */
     public function getMd5(): string
     {
@@ -250,7 +225,6 @@ class UploadedFile extends SplFileInfo
 
     /**
      * Get image dimensions
-     * @return array
      * @throws FileUploadException
      */
     public function getDimensions(): array
@@ -269,9 +243,6 @@ class UploadedFile extends SplFileInfo
 
     /**
      * Save the uploaded file
-     * @param string $dest
-     * @param bool $overwrite
-     * @return bool
      * @throws BaseException
      * @throws FileSystemException
      * @throws FileUploadException
@@ -321,9 +292,6 @@ class UploadedFile extends SplFileInfo
 
     /**
      * Sets modification function on image
-     * @param string $funcName
-     * @param array $params
-     * @return $this
      * @throws BaseException
      * @throws FileUploadException
      * @throws LangException
@@ -346,7 +314,6 @@ class UploadedFile extends SplFileInfo
 
     /**
      * Gets the error code
-     * @return int
      */
     public function getErrorCode(): int
     {
@@ -355,7 +322,6 @@ class UploadedFile extends SplFileInfo
 
     /**
      * Gets the error message from code
-     * @return string
      */
     public function getErrorMessage(): string
     {
@@ -364,7 +330,6 @@ class UploadedFile extends SplFileInfo
 
     /**
      * Tells whether the file was uploaded
-     * @return bool
      */
     public function isUploaded(): bool
     {
@@ -374,7 +339,6 @@ class UploadedFile extends SplFileInfo
     /**
      * Checks if the given file is image
      * @param $filePath
-     * @return bool
      */
     public function isImage($filePath): bool
     {
@@ -383,8 +347,6 @@ class UploadedFile extends SplFileInfo
 
     /**
      * Moves an uploaded file to a new location
-     * @param string $filePath
-     * @return bool
      */
     protected function moveUploadedFile(string $filePath): bool
     {
@@ -399,9 +361,6 @@ class UploadedFile extends SplFileInfo
 
     /**
      * Validates upload against allowed mime types => extensions map
-     * @param string $extension
-     * @param string $mimeType
-     * @return bool
      */
     protected function allowed(string $extension, string $mimeType): bool
     {
@@ -446,9 +405,6 @@ class UploadedFile extends SplFileInfo
 
     /**
      * Sets the allowed mime types => extensions map
-     * @param array $allowedMimeTypes
-     * @param bool $merge
-     * @return void
      */
     protected function setAllowedMimeTypesMap(array $allowedMimeTypes, bool $merge = true): void
     {

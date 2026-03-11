@@ -26,8 +26,6 @@ class TableFactory
 {
     /**
      * Creates new table
-     * @param string $name
-     * @return Table
      * @throws DatabaseException
      */
     public function create(string $name): Table
@@ -41,8 +39,6 @@ class TableFactory
 
     /**
      * Get the table
-     * @param string $name
-     * @return Table
      * @throws DatabaseException
      */
     public function get(string $name): Table
@@ -56,9 +52,6 @@ class TableFactory
 
     /**
      * Renames the table
-     * @param string $oldName
-     * @param string $newName
-     * @return bool
      * @throws DatabaseException
      */
     public function rename(string $oldName, string $newName): bool
@@ -73,8 +66,6 @@ class TableFactory
 
     /**
      * Drops the table
-     * @param string $name
-     * @return bool
      * @throws DatabaseException
      */
     public function drop(string $name): bool
@@ -89,8 +80,6 @@ class TableFactory
 
     /**
      * Checks if the DB table exists
-     * @param string $name
-     * @return bool
      */
     public function checkTableExists(string $name): bool
     {
@@ -105,8 +94,6 @@ class TableFactory
 
     /**
      * Creates new Table instance
-     * @param string $name
-     * @return Table
      */
     private function createInstance(string $name): Table
     {

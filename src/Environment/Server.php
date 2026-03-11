@@ -20,12 +20,9 @@ namespace Quantum\Environment;
  */
 class Server
 {
-    /**
-     * @var array
-     */
-    private $server;
+    private array $server;
 
-    private static $instance = null;
+    private static ?Server $instance = null;
 
     /**
      * Server constructor.
@@ -37,7 +34,6 @@ class Server
 
     /**
      * Get Instance
-     * @return Server
      */
     public static function getInstance(): Server
     {
@@ -51,14 +47,11 @@ class Server
     /**
      * Flushes the server params
      */
-    public function flush()
+    public function flush(): void
     {
         $this->server = [];
     }
 
-    /**
-     * @return array
-     */
     public function all(): array
     {
         return $this->server;
@@ -75,7 +68,6 @@ class Server
 
     /**
      * @param $key
-     * @return bool
      */
     public function has($key): bool
     {
@@ -86,38 +78,26 @@ class Server
      * @param $key
      * @param $value
      */
-    public function set($key, $value)
+    public function set($key, $value): void
     {
         $this->server[$key] = $value;
     }
 
-    /**
-     * @return string|null
-     */
     public function uri(): ?string
     {
         return $this->get('REQUEST_URI');
     }
 
-    /**
-     * @return string|null
-     */
     public function query(): ?string
     {
         return $this->get('QUERY_STRING');
     }
 
-    /**
-     * @return string|null
-     */
     public function method(): ?string
     {
         return $this->get('REQUEST_METHOD');
     }
 
-    /**
-     * @return string|null
-     */
     public function protocol(): ?string
     {
         $https = $this->get('HTTPS');
@@ -126,26 +106,16 @@ class Server
         return (!empty($https) && strtolower($https) !== 'off') || $port == 443 ? 'https' : 'http';
     }
 
-    /**
-     * @return string|null
-     */
     public function host(): ?string
     {
         return $this->get('SERVER_NAME');
     }
 
-    /**
-     * @return string|null
-     */
     public function port(): ?string
     {
         return $this->get('SERVER_PORT');
     }
 
-    /**
-     * @param bool $exact
-     * @return string|null
-     */
     public function contentType(bool $exact = false): ?string
     {
         $contentType = $this->get('CONTENT_TYPE');
@@ -157,25 +127,16 @@ class Server
         return $contentType;
     }
 
-    /**
-     * @return string|null
-     */
     public function referrer(): ?string
     {
         return $this->get('HTTP_REFERER');
     }
 
-    /**
-     * @return bool
-     */
     public function ajax(): bool
     {
         return strtolower($this->get('HTTP_X_REQUESTED_WITH') ?? '') === 'xmlhttprequest';
     }
 
-    /**
-     * @return string|null
-     */
     public function ip(): ?string
     {
         return $this->get('HTTP_CLIENT_IP')
@@ -183,9 +144,6 @@ class Server
             ?? $this->get('REMOTE_ADDR');
     }
 
-    /**
-     * @return array
-     */
     public function getAllHeaders(): array
     {
         $data = $this->all();
@@ -194,7 +152,7 @@ class Server
             return [];
         }
 
-        return array_reduce(array_keys($data), function ($headers, $key) use ($data) {
+        return array_reduce(array_keys($data), function (array $headers, $key) use ($data): array {
             if (strpos($key, 'HTTP_') === 0) {
                 $formattedKey = strtolower(str_replace('_', '-', substr($key, 5)));
                 $headers[$formattedKey] = $data[$key];
@@ -203,9 +161,6 @@ class Server
         }, []);
     }
 
-    /**
-     * @return string|null
-     */
     public function acceptedLang(): ?string
     {
         $accept = $this->get('HTTP_ACCEPT_LANGUAGE');

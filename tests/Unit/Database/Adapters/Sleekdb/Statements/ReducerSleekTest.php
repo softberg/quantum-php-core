@@ -7,7 +7,7 @@ use Quantum\Database\Adapters\Sleekdb\SleekDbal;
 
 class ReducerSleekTest extends SleekDbalTestCase
 {
-    public function testSleekSelect()
+    public function testSleekSelect(): void
     {
         $userProfileModel = new SleekDbal('profiles');
 
@@ -15,7 +15,7 @@ class ReducerSleekTest extends SleekDbalTestCase
 
         $this->assertCount(2, $user->asArray());
 
-        $userModel = new SleekDbal('users');
+        new SleekDbal('users');
 
         $user = $userProfileModel
             ->select('id', ['firstname' => 'name'], ['lastname' => 'surname'], 'age')
@@ -27,7 +27,7 @@ class ReducerSleekTest extends SleekDbalTestCase
         $this->assertEquals('Doe', $user[0]->surname);
     }
 
-    public function testSleekGroupBy()
+    public function testSleekGroupBy(): void
     {
         $eventsModel = new SleekDbal('events');
 
@@ -42,7 +42,7 @@ class ReducerSleekTest extends SleekDbalTestCase
         $this->assertCount(5, $events);
     }
 
-    public function testSleekOrderBy()
+    public function testSleekOrderBy(): void
     {
         $eventsModel = new SleekDbal('events');
 
@@ -53,7 +53,7 @@ class ReducerSleekTest extends SleekDbalTestCase
         $this->assertEquals('Art', $events[count($events) - 1]->title);
     }
 
-    public function testSleekLimitAndOffset()
+    public function testSleekLimitAndOffset(): void
     {
         $eventsModel = new SleekDbal('events');
 

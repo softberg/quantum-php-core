@@ -27,14 +27,10 @@ use Quantum\Model\DbModel;
  */
 trait SoftDeletes
 {
-    /**
-     * @var bool
-     */
     protected bool $includeTrashed = false;
 
     /**
      * Soft delete the model by setting the deleted_at timestamp.
-     * @return bool
      * @throws ModelException
      */
     public function delete(): bool
@@ -45,7 +41,6 @@ trait SoftDeletes
 
     /**
      * Restore a soft deleted model.
-     * @return bool
      * @throws ModelException
      */
     public function restore(): bool
@@ -56,7 +51,6 @@ trait SoftDeletes
 
     /**
      * Force delete the model from the database.
-     * @return bool
      * @throws ModelException
      */
     public function forceDelete(): bool
@@ -91,7 +85,6 @@ trait SoftDeletes
 
     /**
      * Get all non-deleted records unless withTrashed is called.
-     * @return ModelCollection
      * @throws BaseException
      */
     public function get(): ModelCollection
@@ -103,9 +96,6 @@ trait SoftDeletes
 
     /**
      * Paginate non-deleted records unless withTrashed is called.
-     * @param int $perPage
-     * @param int $currentPage
-     * @return Paginator
      * @throws BaseException
      * @throws PaginatorException
      */
@@ -118,7 +108,6 @@ trait SoftDeletes
 
     /**
      * Count all non-deleted records unless withTrashed() is called.
-     * @return int
      * @throws ModelException
      */
     public function count(): int
@@ -130,8 +119,6 @@ trait SoftDeletes
 
     /**
      * Find one record by its ID, excluding soft deleted unless withTrashed() is called.
-     * @param int $id
-     * @return DbModel|null
      * @throws BaseException
      */
     public function findOne(int $id): ?DbModel
@@ -143,9 +130,7 @@ trait SoftDeletes
 
     /**
      * Find one record by column and value, excluding soft deleted unless withTrashed() is called.
-     * @param string $column
      * @param $value
-     * @return DbModel|null
      * @throws BaseException
      */
     public function findOneBy(string $column, $value): ?DbModel
@@ -157,7 +142,6 @@ trait SoftDeletes
 
     /**
      * Get the first record, excluding soft deleted unless withTrashed() is called.
-     * @return DbModel|null
      * @throws BaseException
      */
     public function first(): ?DbModel
@@ -193,7 +177,6 @@ trait SoftDeletes
 
     /**
      * Get the column name used for soft deletes.
-     * @return string
      */
     protected function getDeletedAtColumn(): string
     {

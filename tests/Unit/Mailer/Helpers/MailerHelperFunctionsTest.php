@@ -12,7 +12,7 @@ use Quantum\Mailer\Mailer;
 
 class MailerHelperFunctionsTest extends AppTestCase
 {
-    public function testMailerHelperGetDefaultAdapter()
+    public function testMailerHelperGetDefaultAdapter(): void
     {
         $mailer = mailer();
 
@@ -21,7 +21,7 @@ class MailerHelperFunctionsTest extends AppTestCase
         $this->assertInstanceOf(SmtpAdapter::class, $mailer->getAdapter());
     }
 
-    public function testMailerHelperGetSmtpAdapter()
+    public function testMailerHelperGetSmtpAdapter(): void
     {
         $mailer = mailer(Mailer::SMTP);
 
@@ -30,7 +30,7 @@ class MailerHelperFunctionsTest extends AppTestCase
         $this->assertInstanceOf(SmtpAdapter::class, $mailer->getAdapter());
     }
 
-    public function testMailerHelperGetMailgunAdapter()
+    public function testMailerHelperGetMailgunAdapter(): void
     {
         $mailer = mailer(Mailer::MAILGUN);
 
@@ -39,7 +39,7 @@ class MailerHelperFunctionsTest extends AppTestCase
         $this->assertInstanceOf(MailgunAdapter::class, $mailer->getAdapter());
     }
 
-    public function testMailerHelperGetMandrillAdapter()
+    public function testMailerHelperGetMandrillAdapter(): void
     {
         $mailer = mailer(Mailer::MANDRILL);
 
@@ -48,7 +48,7 @@ class MailerHelperFunctionsTest extends AppTestCase
         $this->assertInstanceOf(MandrillAdapter::class, $mailer->getAdapter());
     }
 
-    public function testMailerHelperGetSendgridAdapter()
+    public function testMailerHelperGetSendgridAdapter(): void
     {
         $mailer = mailer(Mailer::SENDGRID);
 
@@ -57,7 +57,7 @@ class MailerHelperFunctionsTest extends AppTestCase
         $this->assertInstanceOf(SendgridAdapter::class, $mailer->getAdapter());
     }
 
-    public function testMailerHelperGetSendinblueAdapter()
+    public function testMailerHelperGetSendinblueAdapter(): void
     {
         $mailer = mailer(Mailer::SENDINBLUE);
 

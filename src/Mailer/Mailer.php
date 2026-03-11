@@ -60,30 +60,19 @@ class Mailer
      */
     public const SENDINBLUE = 'sendinblue';
 
-    /**
-     * @var MailerInterface
-     */
-    private $adapter;
+    private MailerInterface $adapter;
 
-    /**
-     * @param MailerInterface $adapter
-     */
     public function __construct(MailerInterface $adapter)
     {
         $this->adapter = $adapter;
     }
 
-    /**
-     * @return MailerInterface
-     */
     public function getAdapter(): MailerInterface
     {
         return $this->adapter;
     }
 
     /**
-     * @param string $method
-     * @param array|null $arguments
      * @return mixed
      * @throws BaseException
      */

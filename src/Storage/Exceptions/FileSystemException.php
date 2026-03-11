@@ -25,10 +25,6 @@ use Quantum\App\Exceptions\BaseException;
  */
 class FileSystemException extends BaseException
 {
-    /**
-     * @param string $name
-     * @return FileSystemException
-     */
     public static function directoryNotExists(string $name): self
     {
         return new self(
@@ -37,10 +33,6 @@ class FileSystemException extends BaseException
         );
     }
 
-    /**
-     * @param string $name
-     * @return FileSystemException
-     */
     public static function directoryNotWritable(string $name): self
     {
         return new self(
@@ -49,10 +41,6 @@ class FileSystemException extends BaseException
         );
     }
 
-    /**
-     * @param string $path
-     * @return FileSystemException
-     */
     public static function fileAlreadyExists(string $path): self
     {
         return new self(

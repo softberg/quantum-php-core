@@ -28,8 +28,6 @@ class ModelFactory
 {
     /**
      * Gets the Model
-     * @param string $modelClass
-     * @return Model
      * @throws ModelException
      */
     public static function get(string $modelClass): Model
@@ -61,12 +59,6 @@ class ModelFactory
 
     /**
      * Creates anonymous dynamic model
-     * @param string $table
-     * @param string $modelName
-     * @param string $idColumn
-     * @param array $foreignKeys
-     * @param array $hidden
-     * @return DbModel
      */
     public static function createDynamicModel(
         string $table,
@@ -90,14 +82,6 @@ class ModelFactory
         return $model;
     }
 
-    /**
-     * @param string $table
-     * @param string $modelName
-     * @param string $idColumn
-     * @param array $foreignKeys
-     * @param array $hidden
-     * @return DbalInterface
-     */
     protected static function createOrmInstance(
         string $table,
         string $modelName,

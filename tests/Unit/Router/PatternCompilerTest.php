@@ -18,7 +18,7 @@ class PatternCompilerTest extends AppTestCase
         $this->compiler = new PatternCompiler();
     }
 
-    public function testPatternCompilerStaticRouteMatch()
+    public function testPatternCompilerStaticRouteMatch(): void
     {
         $this->route = new Route(['GET'], 'users', 'Ctrl', 'act');
 
@@ -31,7 +31,7 @@ class PatternCompilerTest extends AppTestCase
         $this->assertFalse($this->compiler->match($this->route, '/users/1'));
     }
 
-    public function testPatternCompilerNumericParamMatch()
+    public function testPatternCompilerNumericParamMatch(): void
     {
         $this->route = new Route(['GET'], 'users/[id=:num]', 'Ctrl', 'act');
 
@@ -44,7 +44,7 @@ class PatternCompilerTest extends AppTestCase
         $this->assertSame([], $this->compiler->getParams());
     }
 
-    public function testPatternCompilerAlphaParamMatch()
+    public function testPatternCompilerAlphaParamMatch(): void
     {
         $this->route = new Route(['GET'], 'tag/[name=:alpha]', 'Ctrl', 'act');
 
@@ -55,7 +55,7 @@ class PatternCompilerTest extends AppTestCase
         $this->assertFalse($this->compiler->match($this->route, '/tag/test1'));
     }
 
-    public function testPatternCompilerAnyParamMatch()
+    public function testPatternCompilerAnyParamMatch(): void
     {
         $this->route = new Route(['GET'], 'file/[path=:any]', 'Ctrl', 'act');
 
@@ -64,7 +64,7 @@ class PatternCompilerTest extends AppTestCase
         $this->assertSame(['path' => 'a-b_c'], $this->compiler->getParams());
     }
 
-    public function testPatternCompilerOptionalParamAtEnd()
+    public function testPatternCompilerOptionalParamAtEnd(): void
     {
         $this->route = new Route(['GET'], 'post/[id=:num]?', 'Ctrl', 'act');
 
@@ -77,7 +77,7 @@ class PatternCompilerTest extends AppTestCase
         $this->assertSame(['id' => '7'], $this->compiler->getParams());
     }
 
-    public function testPatternCompilerLengthConstraint()
+    public function testPatternCompilerLengthConstraint(): void
     {
         $this->route = new Route(['GET'], 'code/[id=:num:4]', 'Ctrl', 'act');
 
@@ -88,7 +88,7 @@ class PatternCompilerTest extends AppTestCase
         $this->assertFalse($this->compiler->match($this->route, '/code/123'));
     }
 
-    public function testPatternCompilerMultipleParams()
+    public function testPatternCompilerMultipleParams(): void
     {
         $this->route = new Route(
             ['GET'],
@@ -102,7 +102,7 @@ class PatternCompilerTest extends AppTestCase
         $this->assertSame(['id' => '5', 'slug' => 'hello'], $this->compiler->getParams());
     }
 
-    public function testPatternCompilerOptionalLeadingParam()
+    public function testPatternCompilerOptionalLeadingParam(): void
     {
         $this->route = new Route(
             ['GET'],
@@ -116,7 +116,7 @@ class PatternCompilerTest extends AppTestCase
         $this->assertTrue($this->compiler->match($this->route, '/en/about'));
     }
 
-    public function testPatternCompilerInvalidParamNameThrowsException()
+    public function testPatternCompilerInvalidParamNameThrowsException(): void
     {
         $this->route = new Route(['GET'], '[id1=:num]', 'Ctrl', 'act');
 
@@ -125,7 +125,7 @@ class PatternCompilerTest extends AppTestCase
         $this->compiler->compile($this->route);
     }
 
-    public function testPatternCompilerDuplicateParamNameThrowsException()
+    public function testPatternCompilerDuplicateParamNameThrowsException(): void
     {
         $this->route = new Route(
             ['GET'],
@@ -139,7 +139,7 @@ class PatternCompilerTest extends AppTestCase
         $this->compiler->compile($this->route);
     }
 
-    public function tesPatternCompilertUrlDecodedInput()
+    public function tesPatternCompilertUrlDecodedInput(): void
     {
         $this->route = new Route(['GET'], 'user/[id=:num]', 'Ctrl', 'act');
 
@@ -153,14 +153,14 @@ class PatternCompilerTest extends AppTestCase
         $this->assertSame(['id' => '42'], $this->compiler->getParams());
     }
 
-    public function testPatternCompilerRootPatternMatches()
+    public function testPatternCompilerRootPatternMatches(): void
     {
         $this->route = new Route(['GET'], '/', 'Ctrl', 'act');
 
         $this->assertTrue($this->compiler->match($this->route, '/'));
     }
 
-    public function testPatternCompilerParamsResetAfterFailedMatch()
+    public function testPatternCompilerParamsResetAfterFailedMatch(): void
     {
         $this->route = new Route(['GET'], 'users/[id=:num]', 'Ctrl', 'act');
 

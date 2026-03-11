@@ -17,14 +17,14 @@ class CryptorFactoryTest extends AppTestCase
         parent::setUp();
     }
 
-    public function testCryptorFactoryInstance()
+    public function testCryptorFactoryInstance(): void
     {
         $cryptor = CryptorFactory::get();
 
         $this->assertInstanceOf(Cryptor::class, $cryptor);
     }
 
-    public function testCryptorFactorySymmetricAdapter()
+    public function testCryptorFactorySymmetricAdapter(): void
     {
         $cryptor = CryptorFactory::get();
 
@@ -33,7 +33,7 @@ class CryptorFactoryTest extends AppTestCase
         $this->assertInstanceOf(EncryptionInterface::class, $cryptor->getAdapter());
     }
 
-    public function testCryptorFactoryAsymmetricAdapter()
+    public function testCryptorFactoryAsymmetricAdapter(): void
     {
         $cryptor = CryptorFactory::get(Cryptor::ASYMMETRIC);
 
@@ -42,7 +42,7 @@ class CryptorFactoryTest extends AppTestCase
         $this->assertInstanceOf(EncryptionInterface::class, $cryptor->getAdapter());
     }
 
-    public function testCryptorFactoryInvalidTypeAdapter()
+    public function testCryptorFactoryInvalidTypeAdapter(): void
     {
         $this->expectException(CryptorException::class);
 
@@ -51,7 +51,7 @@ class CryptorFactoryTest extends AppTestCase
         CryptorFactory::get('invalid_type');
     }
 
-    public function testCryptorFactoryReturnsSameInstance()
+    public function testCryptorFactoryReturnsSameInstance(): void
     {
         $cryptor1 = CryptorFactory::get();
         $cryptor2 = CryptorFactory::get();

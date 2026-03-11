@@ -25,10 +25,6 @@ use Quantum\App\Exceptions\BaseException;
  */
 class LoggerException extends BaseException
 {
-    /**
-     * @param string $name
-     * @return LoggerException
-     */
     public static function logPathIsNotDirectory(string $name): self
     {
         return new self(
@@ -37,10 +33,6 @@ class LoggerException extends BaseException
         );
     }
 
-    /**
-     * @param string $name
-     * @return LoggerException
-     */
     public static function logPathIsNotFile(string $name): self
     {
         return new self(

@@ -27,34 +27,19 @@ class MailgunAdapter implements MailerInterface
 {
     use MailerTrait;
 
-    /**
-     * @var string
-     */
-    public $name = 'Mailgun';
-
-    /**
-     * @var HttpClient
-     */
-    protected $httpClient;
+    public string $name = 'Mailgun';
 
     /**
      * @var string
      */
     private $apiKey;
 
-    /**
-     * @var string
-     */
-    private $apiUrl = 'https://api.mailgun.net/v3/';
+    private string $apiUrl = 'https://api.mailgun.net/v3/';
 
-    /**
-     * @var array
-     */
-    private $data = [];
+    private array $data = [];
 
     /**
      * MailgunAdapter constructor
-     * @param array $params
      */
     public function __construct(array $params)
     {
@@ -67,7 +52,7 @@ class MailgunAdapter implements MailerInterface
     /**
      * Prepares the data
      */
-    private function prepare()
+    private function prepare(): void
     {
         $this->data['from'] = $this->from['name'] . ' ' . $this->from['email'];
 
@@ -93,9 +78,6 @@ class MailgunAdapter implements MailerInterface
         }
     }
 
-    /**
-     * @return bool
-     */
     private function sendEmail(): bool
     {
         try {

@@ -7,8 +7,8 @@ use Quantum\Tests\Unit\AppTestCase;
 
 class ZipAdapterTest extends AppTestCase
 {
-    private $zipArchive;
-    private $archiveName;
+    private ZipAdapter $zipArchive;
+    private string $archiveName;
 
     public function setUp(): void
     {
@@ -28,7 +28,7 @@ class ZipAdapterTest extends AppTestCase
         }
     }
 
-    public function testAddEmptyDirToZip()
+    public function testAddEmptyDirToZip(): void
     {
         $this->assertFalse($this->zipArchive->offsetExists('directoryOne'));
 
@@ -37,7 +37,7 @@ class ZipAdapterTest extends AppTestCase
         $this->assertTrue($this->zipArchive->offsetExists('directoryOne'));
     }
 
-    public function testAddFileToZip()
+    public function testAddFileToZip(): void
     {
         $this->assertFalse($this->zipArchive->offsetExists('app.conf'));
 
@@ -51,14 +51,14 @@ class ZipAdapterTest extends AppTestCase
         $this->assertTrue($this->zipArchive->offsetExists('app.conf'));
     }
 
-    public function testAddFromStringToZip()
+    public function testAddFromStringToZip(): void
     {
         $this->assertTrue($this->zipArchive->addFromString('custom.text', 'Just a sample text'));
 
         $this->assertTrue($this->zipArchive->offsetExists('custom.text'));
     }
 
-    public function testAddMultipleFilesToZip()
+    public function testAddMultipleFilesToZip(): void
     {
         $this->assertTrue($this->zipArchive->addMultipleFiles([
             'app.conf' => base_dir() . DS . 'shared' . DS . 'config' . DS . 'app.php',
@@ -70,7 +70,7 @@ class ZipAdapterTest extends AppTestCase
         $this->assertTrue($this->zipArchive->offsetExists('session.conf'));
     }
 
-    public function testZipCount()
+    public function testZipCount(): void
     {
         $this->assertTrue($this->zipArchive->addMultipleFiles([
             'app.conf' => base_dir() . DS . 'shared' . DS . 'config' . DS . 'app.php',
@@ -80,7 +80,7 @@ class ZipAdapterTest extends AppTestCase
         $this->assertEquals(2, $this->zipArchive->count());
     }
 
-    public function testExtractToFromZip()
+    public function testExtractToFromZip(): void
     {
         $content = 'Just a sample text';
 
@@ -95,7 +95,7 @@ class ZipAdapterTest extends AppTestCase
         $this->fs->remove(base_dir() . DS . 'sample.txt');
     }
 
-    public function testDeleteFileFromZip()
+    public function testDeleteFileFromZip(): void
     {
         $this->zipArchive->addMultipleFiles([
             'app.conf' => base_dir() . DS . 'shared' . DS . 'config' . DS . 'app.php',
@@ -115,7 +115,7 @@ class ZipAdapterTest extends AppTestCase
         $this->assertEquals(2, $this->zipArchive->count());
     }
 
-    public function testDeleteMultipleFilesFromZip()
+    public function testDeleteMultipleFilesFromZip(): void
     {
         $this->zipArchive->addMultipleFiles([
             'app.conf' => base_dir() . DS . 'shared' . DS . 'config' . DS . 'app.php',

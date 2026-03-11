@@ -29,14 +29,8 @@ class Translator
 {
     protected string $lang;
 
-    /**
-     * @var Data|null
-     */
     private ?Data $translations = null;
 
-    /**
-     * @param string $lang
-     */
     public function __construct(string $lang)
     {
         $this->lang = $lang;
@@ -82,7 +76,6 @@ class Translator
 
     /**
      * Load translations
-     * @param array $files
      * @throws BaseException
      * @throws ConfigException
      * @throws DiException
@@ -101,9 +94,7 @@ class Translator
 
     /**
      * Get translation by key
-     * @param string $key
      * @param array|string|null $params
-     * @return string
      */
     public function get(string $key, $params = null): string
     {

@@ -8,7 +8,7 @@ use Quantum\Router\Route;
 
 class RouteCollectionTest extends AppTestCase
 {
-    public function testRouteCollectionStartsEmpty()
+    public function testRouteCollectionStartsEmpty(): void
     {
         $collection = new RouteCollection();
 
@@ -17,7 +17,7 @@ class RouteCollectionTest extends AppTestCase
         $this->assertSame(0, $collection->count());
     }
 
-    public function testRouteCollectionAddIncreasesCount()
+    public function testRouteCollectionAddIncreasesCount(): void
     {
         $collection = new RouteCollection();
 
@@ -28,7 +28,7 @@ class RouteCollectionTest extends AppTestCase
         $this->assertSame(2, $collection->count());
     }
 
-    public function testRouteCollectionAllReturnsAddedRoutes()
+    public function testRouteCollectionAllReturnsAddedRoutes(): void
     {
         $collection = new RouteCollection();
 
@@ -44,7 +44,7 @@ class RouteCollectionTest extends AppTestCase
         $this->assertSame([$r1, $r2], $all);
     }
 
-    public function testRouteCollectionInsertionOrderIsPreserved()
+    public function testRouteCollectionInsertionOrderIsPreserved(): void
     {
         $collection = new RouteCollection();
 
@@ -61,7 +61,7 @@ class RouteCollectionTest extends AppTestCase
         $this->assertSame($r2, $all[1]);
     }
 
-    public function testRouteCollectionAllReturnsSameInstances()
+    public function testRouteCollectionAllReturnsSameInstances(): void
     {
         $collection = new RouteCollection();
 

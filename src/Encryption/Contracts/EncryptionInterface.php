@@ -20,15 +20,7 @@ namespace Quantum\Encryption\Contracts;
  */
 interface EncryptionInterface
 {
-    /**
-     * @param string $plain
-     * @return string
-     */
     public function encrypt(string $plain): string;
 
-    /**
-     * @param string $encrypted
-     * @return string
-     */
     public function decrypt(string $encrypted): string;
 }

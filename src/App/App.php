@@ -34,51 +34,31 @@ class App
      */
     public const CONSOLE = 'console';
 
-    /**
-     * @var string
-     */
-    private static $baseDir;
+    private static ?string $baseDir = null;
 
-    /**
-     * @var AppInterface
-     */
-    private $adapter;
+    private AppInterface $adapter;
 
-    /**
-     * @param AppInterface $adapter
-     */
     public function __construct(AppInterface $adapter)
     {
         $this->adapter = $adapter;
     }
 
-    /**
-     * @param string $baseDir
-     */
-    public static function setBaseDir(string $baseDir)
+    public static function setBaseDir(string $baseDir): void
     {
         self::$baseDir = $baseDir;
     }
 
-    /**
-     * @return string
-     */
     public static function getBaseDir(): string
     {
         return self::$baseDir;
     }
 
-    /**
-     * @return AppInterface
-     */
     public function getAdapter(): AppInterface
     {
         return $this->adapter;
     }
 
     /**
-     * @param string $method
-     * @param array|null $arguments
      * @return mixed
      * @throws BaseException
      */

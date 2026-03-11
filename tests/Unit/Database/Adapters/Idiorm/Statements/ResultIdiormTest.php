@@ -7,7 +7,7 @@ use Quantum\Database\Adapters\Idiorm\IdiormDbal;
 
 class ResultIdiormTest extends IdiormDbalTestCase
 {
-    public function testIdiormGet()
+    public function testIdiormGet(): void
     {
         $userProfileModel = new IdiormDbal('profiles');
 
@@ -20,7 +20,7 @@ class ResultIdiormTest extends IdiormDbalTestCase
         $this->assertEquals('Jane', $users[1]->prop('firstname'));
     }
 
-    public function testIdiormFindOne()
+    public function testIdiormFindOne(): void
     {
         $userProfileModel = new IdiormDbal('profiles');
 
@@ -31,7 +31,7 @@ class ResultIdiormTest extends IdiormDbalTestCase
         $this->assertEquals('Doe', $user->prop('lastname'));
     }
 
-    public function testIdiormFindOneBy()
+    public function testIdiormFindOneBy(): void
     {
         $userProfileModel = new IdiormDbal('profiles');
 
@@ -42,7 +42,7 @@ class ResultIdiormTest extends IdiormDbalTestCase
         $this->assertEquals('45', $user->prop('age'));
     }
 
-    public function testIdiormFirst()
+    public function testIdiormFirst(): void
     {
         $userProfileModel = new IdiormDbal('profiles');
 
@@ -63,7 +63,7 @@ class ResultIdiormTest extends IdiormDbalTestCase
         $this->assertEquals('45', $user->prop('age'));
     }
 
-    public function testIdiormCount()
+    public function testIdiormCount(): void
     {
         $userProfileModel = new IdiormDbal('profiles');
 
@@ -74,7 +74,7 @@ class ResultIdiormTest extends IdiormDbalTestCase
         $this->assertEquals(2, $userCount);
     }
 
-    public function testIdiormAsArray()
+    public function testIdiormAsArray(): void
     {
         $userProfileModel = new IdiormDbal('profiles');
 

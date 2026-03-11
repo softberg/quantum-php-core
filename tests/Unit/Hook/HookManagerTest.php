@@ -16,7 +16,7 @@ class HookManagerTest extends AppTestCase
         $this->setPrivateProperty(HookManager::class, 'store', []);
     }
 
-    public function testGetInstanceReturnsSameObject()
+    public function testGetInstanceReturnsSameObject(): void
     {
         $instance1 = HookManager::getInstance();
         $instance2 = HookManager::getInstance();
@@ -25,10 +25,10 @@ class HookManagerTest extends AppTestCase
         $this->assertSame($instance1, $instance2);
     }
 
-    public function testOnAndFireOutputsCorrectly()
+    public function testOnAndFireOutputsCorrectly(): void
     {
         $output = '';
-        hook()->on('SAVE', function () use (&$output) {
+        hook()->on('SAVE', function () use (&$output): void {
             $output .= 'Saved!';
         });
 
@@ -37,12 +37,12 @@ class HookManagerTest extends AppTestCase
         $this->assertSame('Saved!', $output);
     }
 
-    public function testFireWithArguments()
+    public function testFireWithArguments(): void
     {
         config()->set('hooks', ['NOTIFY']);
 
         $output = '';
-        hook()->on('NOTIFY', function ($args) use (&$output) {
+        hook()->on('NOTIFY', function (array $args) use (&$output): void {
             $output .= 'Notified ' . $args['user'];
         });
 
@@ -51,14 +51,14 @@ class HookManagerTest extends AppTestCase
         $this->assertSame('Notified John', $output);
     }
 
-    public function testMultipleListeners()
+    public function testMultipleListeners(): void
     {
         $output = '';
-        hook()->on('SAVE', function () use (&$output) {
+        hook()->on('SAVE', function () use (&$output): void {
             $output .= 'A';
         });
 
-        hook()->on('SAVE', function () use (&$output) {
+        hook()->on('SAVE', function () use (&$output): void {
             $output .= 'B';
         });
 
@@ -67,10 +67,10 @@ class HookManagerTest extends AppTestCase
         $this->assertSame('AB', $output);
     }
 
-    public function testHookIsFiredOnlyOncePerListener()
+    public function testHookIsFiredOnlyOncePerListener(): void
     {
         $output = '';
-        hook()->on('SAVE', function () use (&$output) {
+        hook()->on('SAVE', function () use (&$output): void {
             $output .= 'Once';
         });
 
@@ -80,16 +80,16 @@ class HookManagerTest extends AppTestCase
         $this->assertSame('Once', $output);
     }
 
-    public function testUnregisteredHookThrowsOnOn()
+    public function testUnregisteredHookThrowsOnOn(): void
     {
         $this->expectException(HookException::class);
         $this->expectExceptionMessage('The Hook `INVALID` was not registered.');
 
-        hook()->on('INVALID', function () {
+        hook()->on('INVALID', function (): void {
         });
     }
 
-    public function testUnregisteredHookThrowsOnFire()
+    public function testUnregisteredHookThrowsOnFire(): void
     {
         $this->expectException(HookException::class);
         $this->expectExceptionMessage('The Hook `INVALID` was not registered.');
@@ -97,9 +97,9 @@ class HookManagerTest extends AppTestCase
         hook()->fire('INVALID');
     }
 
-    public function testGetRegisteredReturnsHookStore()
+    public function testGetRegisteredReturnsHookStore(): void
     {
-        hook()->on('SAVE', function () {
+        hook()->on('SAVE', function (): void {
         });
 
         $store = HookManager::getRegistered();

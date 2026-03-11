@@ -61,30 +61,19 @@ class FileSystem
      */
     public const GDRIVE = 'gdrive';
 
-    /**
-     * @var FilesystemAdapterInterface
-     */
-    private $adapter;
+    private FilesystemAdapterInterface $adapter;
 
-    /**
-     * @param FilesystemAdapterInterface $adapter
-     */
     public function __construct(FilesystemAdapterInterface $adapter)
     {
         $this->adapter = $adapter;
     }
 
-    /**
-     * @return FilesystemAdapterInterface
-     */
     public function getAdapter(): FilesystemAdapterInterface
     {
         return $this->adapter;
     }
 
     /**
-     * @param string $method
-     * @param array|null $arguments
      * @return mixed
      * @throws BaseException
      */

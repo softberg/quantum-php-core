@@ -60,14 +60,8 @@ class ErrorHandler
         E_RECOVERABLE_ERROR => 'error',
     ];
 
-    /**
-     * @var Logger
-     */
-    private $logger;
+    private ?Logger $logger = null;
 
-    /**
-     * @var ErrorHandler|null
-     */
     private static ?ErrorHandler $instance = null;
 
     private function __construct()
@@ -80,9 +74,6 @@ class ErrorHandler
         // Prevent cloning
     }
 
-    /**
-     * @return ErrorHandler
-     */
     public static function getInstance(): ErrorHandler
     {
         if (self::$instance === null) {
@@ -92,10 +83,7 @@ class ErrorHandler
         return self::$instance;
     }
 
-    /**
-     * @param Logger $logger
-     */
-    public function setup(Logger $logger)
+    public function setup(Logger $logger): void
     {
         $this->logger = $logger;
 
@@ -104,24 +92,18 @@ class ErrorHandler
     }
 
     /**
-     * @param $severity
-     * @param $message
-     * @param $file
-     * @param $line
      * @throws ErrorException
      */
-    public function handleError($severity, $message, $file, $line)
+    public function handleError(int $severity, string $message, string $file, int $line): bool
     {
         if ((error_reporting() & $severity) === 0) {
-            return;
+            return false;
         }
 
         throw new ErrorException($message, 0, $severity, $file, $line);
     }
 
     /**
-     * @param Throwable $throwable
-     * @return void
      * @throws BaseException
      * @throws ConfigException
      * @throws DiException
@@ -138,10 +120,6 @@ class ErrorHandler
         }
     }
 
-    /**
-     * @param Throwable $throwable
-     * @return void
-     */
     private function handleCliException(Throwable $throwable): void
     {
         $output = new ConsoleOutput();
@@ -149,8 +127,6 @@ class ErrorHandler
     }
 
     /**
-     * @param Throwable $throwable
-     * @return void
      * @throws BaseException
      * @throws ConfigException
      * @throws DiException
@@ -177,11 +153,6 @@ class ErrorHandler
         Response::send();
     }
 
-    /**
-     * @param Throwable $e
-     * @param string $errorType
-     * @return void
-     */
     private function logError(Throwable $e, string $errorType): void
     {
         $logMethod = method_exists($this->logger, $errorType) ? $errorType : 'error';
@@ -191,8 +162,6 @@ class ErrorHandler
 
     /**
      * Composes the stack trace
-     * @param Throwable $e
-     * @return array
      * @throws BaseException
      * @throws ConfigException
      * @throws DiException
@@ -223,10 +192,6 @@ class ErrorHandler
 
     /**
      * Gets the source code where the error happens
-     * @param string $filename
-     * @param int $lineNumber
-     * @param string $className
-     * @return string
      * @throws BaseException
      * @throws ConfigException
      * @throws DiException
@@ -252,18 +217,11 @@ class ErrorHandler
             $code .= $this->formatLineItem($currentLineNumber, $line, $lineNumber, $className);
         }
 
-        $code .= '</ol>';
-
-        return $code;
+        return $code . '</ol>';
     }
 
     /**
      * Formats the line item
-     * @param int $currentLineNumber
-     * @param string $line
-     * @param int $lineNumber
-     * @param string $className
-     * @return string
      */
     private function formatLineItem(int $currentLineNumber, string $line, int $lineNumber, string $className): string
     {
@@ -280,8 +238,6 @@ class ErrorHandler
 
     /**
      * Gets the error type based on the exception class
-     * @param Throwable $e
-     * @return string
      */
     private function getErrorType(Throwable $e): string
     {

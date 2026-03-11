@@ -25,9 +25,6 @@ use Quantum\App\Exceptions\BaseException;
  */
 class ViewException extends BaseException
 {
-    /**
-     * @return ViewException
-     */
     public static function noLayoutSet(): self
     {
         return new self(
@@ -36,9 +33,6 @@ class ViewException extends BaseException
         );
     }
 
-    /**
-     * @return ViewException
-     */
     public static function viewNotRendered(): self
     {
         return new self(

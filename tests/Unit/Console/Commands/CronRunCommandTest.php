@@ -13,8 +13,8 @@ use Quantum\Cron\CronLock;
  */
 class CronRunCommandTest extends AppTestCase
 {
-    private $cronDirectory;
-    private $lockDirectory;
+    private string $cronDirectory;
+    private string $lockDirectory;
 
     public function setUp(): void
     {
@@ -51,12 +51,12 @@ class CronRunCommandTest extends AppTestCase
         $this->cleanupDirectory($this->lockDirectory);
     }
 
-    public function testCommandExecutesSuccessfully()
+    public function testCommandExecutesSuccessfully(): void
     {
         $this->createTaskFile('test-task.php', [
             'name' => 'test-task',
             'expression' => '* * * * *',
-            'callback' => function () {
+            'callback' => function (): void {
             },
         ]);
 
@@ -71,7 +71,7 @@ class CronRunCommandTest extends AppTestCase
         $this->assertStringContainsString('Execution Summary', $output);
     }
 
-    public function testCommandWithNoTasks()
+    public function testCommandWithNoTasks(): void
     {
         $emptyDir = $this->cronDirectory . '-empty';
         $this->cleanupDirectory($emptyDir);
@@ -87,12 +87,12 @@ class CronRunCommandTest extends AppTestCase
         $this->assertStringContainsString('No tasks found', $output);
     }
 
-    public function testCommandWithSpecificTask()
+    public function testCommandWithSpecificTask(): void
     {
         $this->createTaskFile('specific-task.php', [
             'name' => 'specific-task',
             'expression' => '* * * * *',
-            'callback' => function () {
+            'callback' => function (): void {
             },
         ]);
 
@@ -109,12 +109,12 @@ class CronRunCommandTest extends AppTestCase
         $this->assertStringContainsString('Running task: specific-task', $output);
     }
 
-    public function testCommandWithForceOption()
+    public function testCommandWithForceOption(): void
     {
         $this->createTaskFile('force-task.php', [
             'name' => 'force-task',
             'expression' => '* * * * *',
-            'callback' => function () {
+            'callback' => function (): void {
             },
         ]);
 
@@ -129,7 +129,7 @@ class CronRunCommandTest extends AppTestCase
         $this->assertEquals(0, $tester->getStatusCode());
     }
 
-    public function testCommandWithNonExistentTask()
+    public function testCommandWithNonExistentTask(): void
     {
         $command = new CronRunCommand();
         $tester = new CommandTester($command);
@@ -144,19 +144,19 @@ class CronRunCommandTest extends AppTestCase
         $this->assertStringContainsString('not found', $output);
     }
 
-    public function testCommandDisplaysStatistics()
+    public function testCommandDisplaysStatistics(): void
     {
         $this->createTaskFile('task1.php', [
             'name' => 'task-1',
             'expression' => '* * * * *',
-            'callback' => function () {
+            'callback' => function (): void {
             },
         ]);
 
         $this->createTaskFile('task2.php', [
             'name' => 'task-2',
             'expression' => '0 0 1 1 *',
-            'callback' => function () {
+            'callback' => function (): void {
             },
         ]);
 
@@ -172,7 +172,7 @@ class CronRunCommandTest extends AppTestCase
         $this->assertStringContainsString('Skipped:', $output);
     }
 
-    public function testCommandHandlesTaskFailure()
+    public function testCommandHandlesTaskFailure(): void
     {
         $this->createTaskFile('failing-task.php', [
             'name' => 'failing-task',
@@ -190,12 +190,12 @@ class CronRunCommandTest extends AppTestCase
         $this->assertStringContainsString('Failed: 1', $output);
     }
 
-    public function testCommandShortOptions()
+    public function testCommandShortOptions(): void
     {
         $this->createTaskFile('short-option-task.php', [
             'name' => 'short-option-task',
             'expression' => '* * * * *',
-            'callback' => function () {
+            'callback' => function (): void {
             },
         ]);
 
@@ -212,12 +212,12 @@ class CronRunCommandTest extends AppTestCase
         $this->assertStringContainsString('short-option-task', $output);
     }
 
-    public function testCommandUsesConfiguredPath()
+    public function testCommandUsesConfiguredPath(): void
     {
         $this->createTaskFile('config-task.php', [
             'name' => 'config-task',
             'expression' => '* * * * *',
-            'callback' => function () {
+            'callback' => function (): void {
             },
         ]);
 
@@ -237,12 +237,12 @@ class CronRunCommandTest extends AppTestCase
         $this->assertStringContainsString('Execution Summary', $output);
     }
 
-    public function testCommandReportsLockedTasks()
+    public function testCommandReportsLockedTasks(): void
     {
         $this->createTaskFile('locked-task.php', [
             'name' => 'locked-task',
             'expression' => '* * * * *',
-            'callback' => function () {
+            'callback' => function (): void {
             },
         ]);
 
@@ -260,7 +260,7 @@ class CronRunCommandTest extends AppTestCase
         $lock->release();
     }
 
-    public function testCommandHandlesUnexpectedError()
+    public function testCommandHandlesUnexpectedError(): void
     {
         $invalidTask = $this->cronDirectory . DS . 'invalid-task.php';
         file_put_contents($invalidTask, "<?php\nreturn [;\n");

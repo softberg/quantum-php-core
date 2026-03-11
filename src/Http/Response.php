@@ -48,7 +48,6 @@ class Response
 {
     /**
      * @param string $function The function name
-     * @param array $arguments
      * @return mixed
      */
     public function __call(string $function, array $arguments)
@@ -58,7 +57,6 @@ class Response
 
     /**
      * @param string $function The function name
-     * @param array $arguments
      * @return mixed
      */
     public static function __callStatic(string $function, array $arguments)

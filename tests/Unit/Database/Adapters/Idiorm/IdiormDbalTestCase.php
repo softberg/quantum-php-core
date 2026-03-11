@@ -9,7 +9,7 @@ use Quantum\Database\Database;
 
 abstract class IdiormDbalTestCase extends AppTestCase
 {
-    private $tables = [
+    private array $tables = [
         'users',
         'user_professions',
         'events',
@@ -43,7 +43,7 @@ abstract class IdiormDbalTestCase extends AppTestCase
         IdiormDbal::disconnect();
     }
 
-    private function createTables()
+    private function createTables(): void
     {
         $this->createUserTable();
         $this->createProfileTable();
@@ -56,14 +56,14 @@ abstract class IdiormDbalTestCase extends AppTestCase
         $this->createNotesTable();
     }
 
-    private function deleteTables()
+    private function deleteTables(): void
     {
         foreach ($this->tables as $table) {
             IdiormDbal::execute("DROP TABLE IF EXISTS $table");
         }
     }
 
-    private function createUserTable()
+    private function createUserTable(): void
     {
         IdiormDbal::execute('CREATE TABLE IF NOT EXISTS users (
                         id INTEGER PRIMARY KEY,
@@ -72,7 +72,7 @@ abstract class IdiormDbalTestCase extends AppTestCase
                     )');
     }
 
-    private function createProfileTable()
+    private function createProfileTable(): void
     {
         IdiormDbal::execute('CREATE TABLE IF NOT EXISTS profiles (
                         id INTEGER PRIMARY KEY,
@@ -85,7 +85,7 @@ abstract class IdiormDbalTestCase extends AppTestCase
                     )');
     }
 
-    private function createEventsTable()
+    private function createEventsTable(): void
     {
         IdiormDbal::execute('CREATE TABLE IF NOT EXISTS events (
                         id INTEGER PRIMARY KEY,
@@ -95,7 +95,7 @@ abstract class IdiormDbalTestCase extends AppTestCase
                     )');
     }
 
-    private function createUserEventTable()
+    private function createUserEventTable(): void
     {
         IdiormDbal::execute('CREATE TABLE IF NOT EXISTS user_events (
                         id INTEGER PRIMARY KEY,
@@ -106,7 +106,7 @@ abstract class IdiormDbalTestCase extends AppTestCase
                     )');
     }
 
-    private function createUserProfessionTable()
+    private function createUserProfessionTable(): void
     {
         IdiormDbal::execute('CREATE TABLE IF NOT EXISTS user_professions (
                         id INTEGER PRIMARY KEY,
@@ -115,7 +115,7 @@ abstract class IdiormDbalTestCase extends AppTestCase
                     )');
     }
 
-    private function createUserMeetingsTable()
+    private function createUserMeetingsTable(): void
     {
         IdiormDbal::execute('CREATE TABLE IF NOT EXISTS user_meetings (
                         id INTEGER PRIMARY KEY,
@@ -125,7 +125,7 @@ abstract class IdiormDbalTestCase extends AppTestCase
         )');
     }
 
-    private function createTicketsTable()
+    private function createTicketsTable(): void
     {
         IdiormDbal::execute('CREATE TABLE IF NOT EXISTS tickets (
                         id INTEGER PRIMARY KEY,
@@ -135,7 +135,7 @@ abstract class IdiormDbalTestCase extends AppTestCase
         )');
     }
 
-    private function createNotesTable()
+    private function createNotesTable(): void
     {
         IdiormDbal::execute('CREATE TABLE IF NOT EXISTS notes (
                         id INTEGER PRIMARY KEY,

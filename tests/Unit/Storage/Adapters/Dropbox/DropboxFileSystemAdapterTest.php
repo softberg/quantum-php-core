@@ -14,25 +14,13 @@ class DropboxFileSystemAdapterTest extends AppTestCase
      */
     protected $fs;
 
-    /**
-     * @var string
-     */
-    private $dirname = 'common';
+    private string $dirname = 'common';
 
-    /**
-     * @var string
-     */
-    private $filename = 'sample.txt';
+    private string $filename = 'sample.txt';
 
-    /**
-     * @var string
-     */
-    private $content = 'This file was created via dropbox api';
+    private string $content = 'This file was created via dropbox api';
 
-    /**
-     * @var array
-     */
-    private static $response = [];
+    private static array $response = [];
 
     public function setUp(): void
     {
@@ -42,7 +30,7 @@ class DropboxFileSystemAdapterTest extends AppTestCase
 
         $dropboxAppMock
             ->shouldReceive('rpcRequest')
-            ->andReturnUsing(function ($endpoint, $params) {
+            ->andReturnUsing(function ($endpoint, $params): array {
                 self::$response = array_merge(self::$response, $params);
                 return self::$response;
             });
@@ -59,7 +47,7 @@ class DropboxFileSystemAdapterTest extends AppTestCase
 
         $dropboxAppMock
             ->shouldReceive('path')
-            ->andReturnUsing(fn ($path) => ['path' => '/' . trim($path, '/')]);
+            ->andReturnUsing(fn ($path): array => ['path' => '/' . trim($path, '/')]);
 
         $this->fs = new DropboxFileSystemAdapter($dropboxAppMock);
     }
@@ -69,7 +57,7 @@ class DropboxFileSystemAdapterTest extends AppTestCase
         self::$response = [];
     }
 
-    public function testDropboxMakeCheckRemoveDirectory()
+    public function testDropboxMakeCheckRemoveDirectory(): void
     {
         $this->assertFalse($this->fs->isDirectory($this->dirname));
 
@@ -86,7 +74,7 @@ class DropboxFileSystemAdapterTest extends AppTestCase
         $this->assertFalse($this->fs->isDirectory($this->dirname));
     }
 
-    public function testDropboxCreateGetCheckRemoveFile()
+    public function testDropboxCreateGetCheckRemoveFile(): void
     {
         $this->assertFalse($this->fs->isFile($this->filename));
 
@@ -107,7 +95,7 @@ class DropboxFileSystemAdapterTest extends AppTestCase
         $this->assertFalse($this->fs->exists($this->filename));
     }
 
-    public function testDropboxFileAppend()
+    public function testDropboxFileAppend(): void
     {
         self::$response['.tag'] = 'file';
 
@@ -122,7 +110,7 @@ class DropboxFileSystemAdapterTest extends AppTestCase
         $this->assertEquals($this->content . $moreContent, $this->fs->get($this->filename));
     }
 
-    public function testDropboxFileRename()
+    public function testDropboxFileRename(): void
     {
         $this->fs->put($this->filename, $this->content);
 
@@ -139,7 +127,7 @@ class DropboxFileSystemAdapterTest extends AppTestCase
         $this->fs->remove($newFilename);
     }
 
-    public function testDropboxFileCopy()
+    public function testDropboxFileCopy(): void
     {
         $dirName = 'testing';
 
@@ -160,7 +148,7 @@ class DropboxFileSystemAdapterTest extends AppTestCase
         $this->fs->removeDirectory($dirName);
     }
 
-    public function testDropboxFileSize()
+    public function testDropboxFileSize(): void
     {
         $text = 'some bytes';
 
@@ -171,7 +159,7 @@ class DropboxFileSystemAdapterTest extends AppTestCase
         $this->assertEquals(10, $this->fs->size($this->filename));
     }
 
-    public function testDropboxFileLastModified()
+    public function testDropboxFileLastModified(): void
     {
         $modified = '2023-02-12T15:50:38Z';
 
@@ -184,7 +172,7 @@ class DropboxFileSystemAdapterTest extends AppTestCase
         $this->assertEquals(strtotime($modified), $this->fs->lastModified($this->filename));
     }
 
-    public function testDropboxListDirectory()
+    public function testDropboxListDirectory(): void
     {
         self::$response['entries'] = [
             [

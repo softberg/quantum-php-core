@@ -21,12 +21,12 @@ class RouteDispatcherTest extends AppTestCase
         parent::tearDown();
     }
 
-    public function testDispatchExecutesClosureRoute()
+    public function testDispatchExecutesClosureRoute(): void
     {
         $called = false;
         $receivedParam = null;
 
-        $closure = function (string $id) use (&$called, &$receivedParam) {
+        $closure = function (string $id) use (&$called, &$receivedParam): void {
             $called = true;
             $receivedParam = $id;
         };
@@ -41,31 +41,31 @@ class RouteDispatcherTest extends AppTestCase
         $dispatcher = new RouteDispatcher();
 
         $request = Mockery::mock(Request::class);
-        $response = Mockery::mock(Response::class);
+        Mockery::mock(Response::class);
 
-        $dispatcher->dispatch($matched, $request, $response);
+        $dispatcher->dispatch($matched, $request);
 
         $this->assertTrue($called);
         $this->assertSame('123', $receivedParam);
     }
 
-    public function testDispatchThrowsWhenClosureRouteHasNoClosure()
+    public function testDispatchThrowsWhenClosureRouteHasNoClosure(): void
     {
         $this->expectException(RouteException::class);
 
-        $route = new Route(['GET'], '/broken', null, null, null);
+        $route = new Route(['GET'], '/broken', null, null);
 
         $matched = new MatchedRoute($route, []);
 
         $dispatcher = new RouteDispatcher();
 
         $request = Mockery::mock(Request::class);
-        $response = Mockery::mock(Response::class);
+        Mockery::mock(Response::class);
 
-        $dispatcher->dispatch($matched, $request, $response);
+        $dispatcher->dispatch($matched, $request);
     }
 
-    public function testDispatchExecutesControllerActionWithParams()
+    public function testDispatchExecutesControllerActionWithParams(): void
     {
         $controllerClass = new class () {
             public static ?string $received = null;
@@ -76,16 +76,16 @@ class RouteDispatcherTest extends AppTestCase
             }
         };
 
-        $route = new Route(['GET'], '[:alpha:2]?/post/[uuid=:any]', get_class($controllerClass), 'post', null);
+        $route = new Route(['GET'], '[:alpha:2]?/post/[uuid=:any]', get_class($controllerClass), 'post');
 
         $matched = new MatchedRoute($route, ['uuid' => 'abc-123']);
 
         $dispatcher = new RouteDispatcher();
 
         $request = Mockery::mock(Request::class);
-        $response = Mockery::mock(Response::class);
+        Mockery::mock(Response::class);
 
-        $dispatcher->dispatch($matched, $request, $response);
+        $dispatcher->dispatch($matched, $request);
 
         $this->assertSame(
             'abc-123',
@@ -94,7 +94,7 @@ class RouteDispatcherTest extends AppTestCase
         );
     }
 
-    public function testDispatchCallsControllerHooksInCorrectOrder()
+    public function testDispatchCallsControllerHooksInCorrectOrder(): void
     {
         $controllerClass = new class () {
             public static array $calls = [];
@@ -115,7 +115,7 @@ class RouteDispatcherTest extends AppTestCase
             }
         };
 
-        $route = new Route(['GET', 'POST'], '[:alpha:2]?/post/[uuid=:any]', get_class($controllerClass), 'post', null);
+        $route = new Route(['GET', 'POST'], '[:alpha:2]?/post/[uuid=:any]', get_class($controllerClass), 'post');
 
         $matched = new MatchedRoute($route, ['uuid' => 'abc']);
 
@@ -124,9 +124,9 @@ class RouteDispatcherTest extends AppTestCase
         $request = Mockery::mock(Request::class);
         $request->shouldReceive('getMethod')->andReturn('POST');
 
-        $response = Mockery::mock(Response::class);
+        Mockery::mock(Response::class);
 
-        $dispatcher->dispatch($matched, $request, $response);
+        $dispatcher->dispatch($matched, $request);
 
         $this->assertSame(
             [
@@ -139,7 +139,7 @@ class RouteDispatcherTest extends AppTestCase
         );
     }
 
-    public function testDispatchThrowsWhenControllerActionDoesNotExist()
+    public function testDispatchThrowsWhenControllerActionDoesNotExist(): void
     {
         $this->expectException(RouteException::class);
 
@@ -147,19 +147,19 @@ class RouteDispatcherTest extends AppTestCase
             // Intentionally no action method
         };
 
-        $route = new Route(['GET'], '[:alpha:2]?/broken', get_class($controllerClass), 'missingAction', null);
+        $route = new Route(['GET'], '[:alpha:2]?/broken', get_class($controllerClass), 'missingAction');
 
         $matched = new MatchedRoute($route, []);
 
         $dispatcher = new RouteDispatcher();
 
         $request = Mockery::mock(Request::class);
-        $response = Mockery::mock(Response::class);
+        Mockery::mock(Response::class);
 
-        $dispatcher->dispatch($matched, $request, $response);
+        $dispatcher->dispatch($matched, $request);
     }
 
-    public function testDispatchFailsWhenCsrfIsEnabledAndTokenIsMissing()
+    public function testDispatchFailsWhenCsrfIsEnabledAndTokenIsMissing(): void
     {
         $this->expectException(CsrfException::class);
 
@@ -172,7 +172,7 @@ class RouteDispatcherTest extends AppTestCase
             }
         };
 
-        $route = new Route(['POST'], '[:alpha:2]?/submit', get_class($controllerClass), 'submit', null);
+        $route = new Route(['POST'], '[:alpha:2]?/submit', get_class($controllerClass), 'submit');
 
         $matched = new MatchedRoute($route, []);
 
@@ -182,10 +182,10 @@ class RouteDispatcherTest extends AppTestCase
             ->with(Csrf::TOKEN_KEY)
             ->andReturn(false);
 
-        $response = Mockery::mock(Response::class);
+        Mockery::mock(Response::class);
 
         $dispatcher = new RouteDispatcher();
 
-        $dispatcher->dispatch($matched, $request, $response);
+        $dispatcher->dispatch($matched, $request);
     }
 }

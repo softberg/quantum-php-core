@@ -19,7 +19,6 @@ use Quantum\Di\Exceptions\DiException;
 
 /**
  * Gets the current lang
- * @return string|null
  * @throws ConfigException
  * @throws DiException
  * @throws LangException
@@ -32,9 +31,7 @@ function current_lang(): ?string
 
 /**
  * Gets translation
- * @param string $key
  * @param $params
- * @return string|null
  * @throws ConfigException
  * @throws ReflectionException
  * @throws DiException
@@ -47,15 +44,13 @@ function t(string $key, $params = null): ?string
 
 /**
  * Outputs the translation
- * @param string $key
  * @param $params
- * @return void
  * @throws ConfigException
  * @throws DiException
  * @throws LangException
  * @throws ReflectionException
  */
-function _t(string $key, $params = null)
+function _t(string $key, $params = null): void
 {
     echo t($key, $params);
 }

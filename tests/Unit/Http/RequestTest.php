@@ -19,7 +19,7 @@ class RequestTest extends AppTestCase
         HttpRequest::flush();
     }
 
-    public function testSetGetMethod()
+    public function testSetGetMethod(): void
     {
         $request = new Request();
 
@@ -32,7 +32,7 @@ class RequestTest extends AppTestCase
         $this->assertEquals('POST', $request->getMethod());
     }
 
-    public function testIsMethod()
+    public function testIsMethod(): void
     {
         $request = new Request();
 
@@ -51,7 +51,7 @@ class RequestTest extends AppTestCase
         $this->assertTrue($request->isMethod('post'));
     }
 
-    public function testGetCsrfToken()
+    public function testGetCsrfToken(): void
     {
         $request = new Request();
 

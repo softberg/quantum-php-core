@@ -25,9 +25,6 @@ use Quantum\App\Exceptions\BaseException;
  */
 class CryptorException extends BaseException
 {
-    /**
-     * @return CryptorException
-     */
     public static function publicKeyNotProvided(): self
     {
         return new self(
@@ -36,9 +33,6 @@ class CryptorException extends BaseException
         );
     }
 
-    /**
-     * @return CryptorException
-     */
     public static function privateKeyNotProvided(): self
     {
         return new self(
@@ -47,9 +41,6 @@ class CryptorException extends BaseException
         );
     }
 
-    /**
-     * @return CryptorException
-     */
     public static function invalidCipher(): self
     {
         return new self(

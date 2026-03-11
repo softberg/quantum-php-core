@@ -7,7 +7,7 @@ use Quantum\Tests\Unit\AppTestCase;
 
 class FileAdapterTest extends AppTestCase
 {
-    private $fileCache;
+    private FileAdapter $fileCache;
 
     public function setUp(): void
     {
@@ -27,7 +27,7 @@ class FileAdapterTest extends AppTestCase
         $this->fileCache->clear();
     }
 
-    public function testFileAdapterSetGetDelete()
+    public function testFileAdapterSetGetDelete(): void
     {
         $this->assertNull($this->fileCache->get('test'));
 
@@ -46,7 +46,7 @@ class FileAdapterTest extends AppTestCase
         $this->assertNull($this->fileCache->get('test'));
     }
 
-    public function testFileAdapterHas()
+    public function testFileAdapterHas(): void
     {
         $this->assertFalse($this->fileCache->has('test'));
 
@@ -55,7 +55,7 @@ class FileAdapterTest extends AppTestCase
         $this->assertTrue($this->fileCache->has('test'));
     }
 
-    public function testFileAdapterGetMultiple()
+    public function testFileAdapterGetMultiple(): void
     {
         $cacheItems = $this->fileCache->getMultiple(['test1', 'test2']);
 
@@ -76,7 +76,7 @@ class FileAdapterTest extends AppTestCase
         $this->assertEquals('Default value for all', $cacheItems['test1']);
     }
 
-    public function testFileAdapterSetMultiple()
+    public function testFileAdapterSetMultiple(): void
     {
         $this->assertFalse($this->fileCache->has('test1'));
 
@@ -93,7 +93,7 @@ class FileAdapterTest extends AppTestCase
         $this->assertEquals('Test value two', $this->fileCache->get('test2'));
     }
 
-    public function testFileAdapterDeleteMultiple()
+    public function testFileAdapterDeleteMultiple(): void
     {
         $this->fileCache->setMultiple(['test1' => 'Test value one', 'test2' => 'Test value two']);
 
@@ -108,7 +108,7 @@ class FileAdapterTest extends AppTestCase
         $this->assertFalse($this->fileCache->has('test2'));
     }
 
-    public function testFileAdapterClear()
+    public function testFileAdapterClear(): void
     {
         $this->fileCache->setMultiple(['test1' => 'Test value one', 'test2' => 'Test value two']);
 
@@ -123,7 +123,7 @@ class FileAdapterTest extends AppTestCase
         $this->assertFalse($this->fileCache->has('test2'));
     }
 
-    public function testFileAdapterExpired()
+    public function testFileAdapterExpired(): void
     {
         $params = [
             'prefix' => 'test',

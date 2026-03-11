@@ -27,28 +27,23 @@ interface StorageInterface
 
     /**
      * Checks if the storage contains a key
-     * @param string $key
-     * @return bool
      */
     public function has(string $key): bool;
 
     /**
      * Gets the value from the storage by given key
-     * @param string $key
      * @return mixed|null
      */
     public function get(string $key);
 
     /**
      * Sets storage value with the given key
-     * @param string $key
      * @param mixed $value
      */
     public function set(string $key, $value);
 
     /**
      * Deletes the data from the storage by given key
-     * @param string $key
      */
     public function delete(string $key);
 

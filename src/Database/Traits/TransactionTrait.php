@@ -54,7 +54,6 @@ trait TransactionTrait
 
     /**
      * Resolves the transaction method call
-     * @param string $method
      * @return mixed
      * @throws BaseException
      */
@@ -71,7 +70,6 @@ trait TransactionTrait
 
     /**
      * Transaction wrapper using a closure
-     * @param callable $callback
      * @return mixed
      * @throws BaseException
      * @throws DatabaseException

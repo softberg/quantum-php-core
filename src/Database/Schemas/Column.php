@@ -117,80 +117,42 @@ class Column
      */
     public const ATTR_ZEROFILL = 'UNSIGNED ZEROFILL';
 
-    /**
-     * @var string
-     */
-    private $name;
+    private string $name;
 
-    /**
-     * @var string
-     */
-    private $newName;
+    private ?string $newName = null;
 
-    /**
-     * @var string
-     */
-    private $type;
+    private ?string $type = null;
 
     /**
      * @var mixed
      */
     private $constraint;
 
-    /**
-     * @var string
-     */
-    private $attribute = null;
+    private ?string $attribute = null;
 
-    /**
-     * @var string
-     */
-    private $nullable = 'NOT NULL';
+    private string $nullable = 'NOT NULL';
 
     /**
      * @var mixed
      */
     private $default;
 
-    /**
-     * @var bool
-     */
-    private $defaultQuoted = true;
+    private bool $defaultQuoted = true;
 
-    /**
-     * @var string
-     */
-    private $autoincrement = null;
+    private ?string $autoincrement = null;
 
-    /**
-     * @var string
-     */
-    private $indexKey = null;
+    private ?string $indexKey = null;
 
-    /**
-     * @var string
-     */
-    private $indexName = null;
+    private ?string $indexName = null;
 
-    /**
-     * @var string
-     */
-    private $indexDrop = null;
+    private ?string $indexDrop = null;
 
-    /**
-     * @var string
-     */
-    private $comment;
+    private ?string $comment = null;
 
-    /**
-     * @var string
-     */
-    private $afterColumn;
+    private ?string $afterColumn = null;
 
     /**
      * Column constructor.
-     * @param string $name
-     * @param string|null $type
      * @param mixed $constraint
      */
     public function __construct(string $name, ?string $type = null, $constraint = null)
@@ -205,8 +167,6 @@ class Column
 
     /**
      * Renames the column
-     * @param string $newName
-     * @return $this
      */
     public function renameTo(string $newName): Column
     {
@@ -222,8 +182,6 @@ class Column
 
     /**
      * Gets the column property
-     * @param string $property
-     * @param string|null $action
      * @return mixed
      */
     public function get(string $property, ?string $action = null)
@@ -234,7 +192,7 @@ class Column
     /**
      * Makes the column auto incremental
      */
-    public function autoIncrement()
+    public function autoIncrement(): void
     {
         $this->autoincrement = 'AUTO_INCREMENT';
         $this->primary();
@@ -243,16 +201,15 @@ class Column
     /**
      * Adds a primary key the column
      */
-    public function primary()
+    public function primary(): void
     {
         $this->indexKey = Key::PRIMARY;
     }
 
     /**
      * Adds an index key to the column
-     * @param string|null $name
      */
-    public function index(?string $name = null)
+    public function index(?string $name = null): void
     {
         $this->indexKey = Key::INDEX;
 
@@ -263,9 +220,8 @@ class Column
 
     /**
      * Adds unique key to the column
-     * @param string|null $name
      */
-    public function unique(?string $name = null)
+    public function unique(?string $name = null): void
     {
         $this->indexKey = Key::UNIQUE;
 
@@ -276,9 +232,8 @@ class Column
 
     /**
      * Adds a fulltext key the column
-     * @param string|null $name
      */
-    public function fulltext(?string $name = null)
+    public function fulltext(?string $name = null): void
     {
         $this->indexKey = Key::FULLTEXT;
 
@@ -289,9 +244,8 @@ class Column
 
     /**
      * Adds a spatial key the column
-     * @param string|null $name
      */
-    public function spatial(?string $name = null)
+    public function spatial(?string $name = null): void
     {
         $this->indexKey = Key::SPATIAL;
 
@@ -302,9 +256,8 @@ class Column
 
     /**
      * Adds or removes nullable property
-     * @param bool $indeed
      */
-    public function nullable(bool $indeed = true)
+    public function nullable(bool $indeed = true): void
     {
         $this->nullable = ($indeed ? '' : 'NOT ') . 'NULL';
     }
@@ -312,9 +265,8 @@ class Column
     /**
      * Adds default value to the column
      * @param mixed $value
-     * @param bool $quoted
      */
-    public function default($value, bool $quoted = true)
+    public function default($value, bool $quoted = true): void
     {
         $this->default = $value;
         $this->defaultQuoted = $quoted;
@@ -322,34 +274,30 @@ class Column
 
     /**
      * Adds or removes attribute to the column
-     * @param string|null $value
      */
-    public function attribute(?string $value)
+    public function attribute(?string $value): void
     {
         $this->attribute = $value ? strtoupper($value) : null;
     }
 
     /**
      * Adds or removes comment to the column
-     * @param string|null $comment
      */
-    public function comment(?string $comment)
+    public function comment(?string $comment): void
     {
         $this->comment = $comment;
     }
 
     /**
      * Adds column after a given column
-     * @param string $columnName
      */
-    public function after(string $columnName)
+    public function after(string $columnName): void
     {
         $this->afterColumn = $columnName;
     }
 
     /**
      * Adds quotes on default value
-     * @return bool
      */
     public function defaultQuoted(): bool
     {

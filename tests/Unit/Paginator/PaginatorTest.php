@@ -9,10 +9,11 @@ use Quantum\Paginator\Adapters\ArrayPaginator;
 use Quantum\Paginator\Adapters\ModelPaginator;
 use Quantum\Model\Factories\ModelFactory;
 use Quantum\Paginator\Paginator;
+use Quantum\Model\DbModel;
 
 class PaginatorTest extends PaginatorTestCase
 {
-    private $model;
+    private DbModel $model;
 
     public function setUp(): void
     {
@@ -21,7 +22,7 @@ class PaginatorTest extends PaginatorTestCase
         $this->model = ModelFactory::createDynamicModel('posts', TestPostModel::class);
     }
 
-    public function testPaginatorGetAdapter()
+    public function testPaginatorGetAdapter(): void
     {
         $paginator = new Paginator(new ArrayPaginator([], 2, 2));
 
@@ -36,14 +37,14 @@ class PaginatorTest extends PaginatorTestCase
         $this->assertInstanceOf(PaginatorInterface::class, $paginator->getAdapter());
     }
 
-    public function testPaginatorCallingValidMethod()
+    public function testPaginatorCallingValidMethod(): void
     {
         $paginator = new Paginator(new ArrayPaginator([], 2, 2));
 
         $this->assertEquals(0, $paginator->total());
     }
 
-    public function testPaginatorCallingInvalidMethod()
+    public function testPaginatorCallingInvalidMethod(): void
     {
         $paginator = new Paginator(new ArrayPaginator([], 2, 2));
 

@@ -16,7 +16,6 @@ use Ramsey\Uuid\Uuid;
 
 /**
  * Generate a standard v4 UUID (random)
- * @return string
  */
 function uuid_random(): string
 {
@@ -25,7 +24,6 @@ function uuid_random(): string
 
 /**
  * Generate an ordered UUID (time-based)
- * @return string
  */
 function uuid_ordered(): string
 {

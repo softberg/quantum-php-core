@@ -7,12 +7,12 @@ use Quantum\Config\Config;
 
 class ConfigHelperFunctionsTest extends AppTestCase
 {
-    public function testConfigHelper()
+    public function testConfigHelper(): void
     {
         $this->assertInstanceOf(Config::class, config());
     }
 
-    public function testConfigHelperFunctions()
+    public function testConfigHelperFunctions(): void
     {
         $this->assertFalse(config()->has('not-exists'));
 

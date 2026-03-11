@@ -17,8 +17,9 @@ namespace Quantum\Archive\Adapters;
 use Quantum\Archive\Exceptions\ArchiveException;
 use Quantum\Storage\Factories\FileSystemFactory;
 use Quantum\Archive\Contracts\ArchiveInterface;
-use Quantum\Storage\FileSystem;
 use Quantum\App\Exceptions\BaseException;
+use Quantum\Storage\FileSystem;
+use ReflectionException;
 use ZipArchive;
 use Exception;
 
@@ -28,38 +29,23 @@ use Exception;
  */
 class ZipAdapter implements ArchiveInterface
 {
-    /**
-     * @var FileSystem
-     */
-    private $fs;
+    private FileSystem $fs;
+
+    private ?string $archiveName = null;
+
+    private ?ZipArchive $archive = null;
+
+    private bool $requiresReopen = true;
 
     /**
-     * @var string
-     */
-    private $archiveName;
-
-    /**
-     * @var ZipArchive
-     */
-    private $archive = null;
-
-    /**
-     * @var bool
-     */
-    private $requiresReopen = true;
-
-    /**
-     * @throws BaseException
+     * @throws BaseException|ReflectionException
      */
     public function __construct()
     {
         $this->fs = FileSystemFactory::get();
     }
 
-    /**
-     * @param string $archiveName
-     */
-    public function setName(string $archiveName)
+    public function setName(string $archiveName): void
     {
         $this->archiveName = $archiveName;
     }
@@ -215,7 +201,7 @@ class ZipAdapter implements ArchiveInterface
     /**
      * @throws ArchiveException
      */
-    private function openArchive()
+    private function openArchive(): void
     {
         if (empty($this->archiveName)) {
             throw ArchiveException::missingArchiveName();

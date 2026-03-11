@@ -89,33 +89,29 @@ class IdiormDbal implements DbalInterface, RelationalInterface
 
     /**
      * Hidden fields
-     * @var array
      */
-    private $hidden;
+    private array $hidden;
 
     /**
      * Idiorm Patch object
-     * @var IdiormPatch
      */
-    private $ormPatch = null;
+    private ?IdiormPatch $ormPatch = null;
 
     /**
      * ORM Model
-     * @var ORM|null
      */
-    private $ormModel;
+    private ?ORM $ormModel = null;
 
     /**
      * Active connection
-     * @var array|null
      */
-    private static $connection = null;
+    private static ?array $connection = null;
 
     /**
      * Operators map
      * @var array<string, string|null>
      */
-    private $operators = [
+    private array $operators = [
         '=' => 'where_equal',
         '!=' => 'where_not_equal',
         '>' => 'where_gt',
@@ -133,17 +129,9 @@ class IdiormDbal implements DbalInterface, RelationalInterface
 
     /**
      * ORM Class
-     * @var string
      */
-    private static $ormClass = ORM::class;
+    private static string $ormClass = ORM::class;
 
-    /**
-     * @param string $table
-     * @param string|null $modelName
-     * @param string $idColumn
-     * @param array $foreignKeys
-     * @param array $hidden
-     */
     public function __construct(
         string $table,
         ?string $modelName = null,
@@ -161,7 +149,7 @@ class IdiormDbal implements DbalInterface, RelationalInterface
     /**
      * @inheritDoc
      */
-    public static function connect(array $config)
+    public static function connect(array $config): void
     {
         $driver = $config['driver'] ?? '';
         $charset = $config['charset'] ?? self::DEFAULT_CHARSET;
@@ -184,7 +172,7 @@ class IdiormDbal implements DbalInterface, RelationalInterface
     /**
      * @inheritDoc
      */
-    public static function disconnect()
+    public static function disconnect(): void
     {
         self::$connection = null;
         (self::$ormClass)::reset_db();
@@ -200,7 +188,6 @@ class IdiormDbal implements DbalInterface, RelationalInterface
 
     /**
      * Gets the ORM model
-     * @return ORM
      * @throws BaseException
      */
     public function getOrmModel(): ORM
@@ -218,7 +205,6 @@ class IdiormDbal implements DbalInterface, RelationalInterface
 
     /**
      * Gets foreign keys
-     * @return array
      */
     public function getForeignKeys(): array
     {
@@ -227,7 +213,6 @@ class IdiormDbal implements DbalInterface, RelationalInterface
 
     /**
      * Gets the associated model name
-     * @return string
      */
     public function getModelName(): string
     {
@@ -247,19 +232,11 @@ class IdiormDbal implements DbalInterface, RelationalInterface
         }
     }
 
-    /**
-     * @param ORM $ormModel
-     */
     protected function updateOrmModel(ORM $ormModel)
     {
         $this->ormModel = $ormModel;
     }
 
-    /**
-     * @param string $driver
-     * @param array $config
-     * @return array
-     */
     protected static function getBaseConfig(string $driver, array $config): array
     {
         return [
@@ -269,12 +246,6 @@ class IdiormDbal implements DbalInterface, RelationalInterface
         ];
     }
 
-    /**
-     * @param string $driver
-     * @param array $config
-     * @param string $charset
-     * @return array
-     */
     protected static function getDriverConfig(string $driver, array $config, string $charset): array
     {
         if ($driver === self::DRIVER_MYSQL || $driver === self::DRIVER_PGSQL) {
@@ -294,9 +265,6 @@ class IdiormDbal implements DbalInterface, RelationalInterface
 
     /**
      * Builds connection string
-     * @param string $driver
-     * @param array $config
-     * @return string
      */
     protected static function buildConnectionString(string $driver, array $config): string
     {

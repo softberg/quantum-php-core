@@ -19,8 +19,6 @@ use Quantum\Di\Exceptions\DiException;
 use Quantum\Logger\Logger;
 
 /**
- * @param string|null $adapter
- * @return Logger
  * @throws BaseException
  * @throws ConfigException
  * @throws DiException
@@ -34,14 +32,12 @@ function logger(?string $adapter = null): Logger
 /**
  * Reports error
  * @param $var
- * @param array $context
- * @return void
  * @throws ConfigException
  * @throws DiException
  * @throws ReflectionException
  * @throws BaseException
  */
-function error($var, array $context = [])
+function error($var, array $context = []): void
 {
     LoggerFactory::get()->error($var, $context);
 }
@@ -49,14 +45,12 @@ function error($var, array $context = [])
 /**
  * Reports warning
  * @param $var
- * @param array $context
- * @return void
  * @throws BaseException
  * @throws ConfigException
  * @throws DiException
  * @throws ReflectionException
  */
-function warning($var, array $context = [])
+function warning($var, array $context = []): void
 {
     LoggerFactory::get()->warning($var, $context);
 }
@@ -64,14 +58,12 @@ function warning($var, array $context = [])
 /**
  * Reports notice
  * @param $var
- * @param array $context
- * @return void
  * @throws BaseException
  * @throws ConfigException
  * @throws DiException
  * @throws ReflectionException
  */
-function notice($var, array $context = [])
+function notice($var, array $context = []): void
 {
     LoggerFactory::get()->notice($var, $context);
 }
@@ -79,14 +71,12 @@ function notice($var, array $context = [])
 /**
  * Reports info
  * @param $var
- * @param array $context
- * @return void
  * @throws BaseException
  * @throws ConfigException
  * @throws DiException
  * @throws ReflectionException
  */
-function info($var, array $context = [])
+function info($var, array $context = []): void
 {
     LoggerFactory::get()->info($var, $context);
 }
@@ -94,14 +84,12 @@ function info($var, array $context = [])
 /**
  * Reports debug
  * @param $var
- * @param array $context
- * @return void
  * @throws BaseException
  * @throws ConfigException
  * @throws DiException
  * @throws ReflectionException
  */
-function debug($var, array $context = [])
+function debug($var, array $context = []): void
 {
     LoggerFactory::get()->debug($var, $context);
 }

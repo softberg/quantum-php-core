@@ -12,46 +12,46 @@ use Quantum\Cron\CronTask;
  */
 class CronTaskTest extends AppTestCase
 {
-    public function testConstructorWithValidExpression()
+    public function testConstructorWithValidExpression(): void
     {
-        $task = new CronTask('test-task', '* * * * *', function () {
+        $task = new CronTask('test-task', '* * * * *', function (): void {
         });
 
         $this->assertEquals('test-task', $task->getName());
         $this->assertEquals('* * * * *', $task->getExpression());
     }
 
-    public function testConstructorWithInvalidExpression()
+    public function testConstructorWithInvalidExpression(): void
     {
         $this->expectException(CronException::class);
         $this->expectExceptionMessage('Invalid cron expression');
 
-        new CronTask('test-task', 'invalid', function () {
+        new CronTask('test-task', 'invalid', function (): void {
         });
     }
 
-    public function testShouldRunEveryMinute()
+    public function testShouldRunEveryMinute(): void
     {
-        $task = new CronTask('test-task', '* * * * *', function () {
+        $task = new CronTask('test-task', '* * * * *', function (): void {
         });
 
         $this->assertTrue($task->shouldRun());
     }
 
-    public function testShouldNotRunFutureTask()
+    public function testShouldNotRunFutureTask(): void
     {
         // Task scheduled for next year
-        $task = new CronTask('test-task', '0 0 1 1 *', function () {
+        $task = new CronTask('test-task', '0 0 1 1 *', function (): void {
         });
 
         $this->assertFalse($task->shouldRun());
     }
 
-    public function testHandleExecutesCallback()
+    public function testHandleExecutesCallback(): void
     {
         $executed = false;
 
-        $task = new CronTask('test-task', '* * * * *', function () use (&$executed) {
+        $task = new CronTask('test-task', '* * * * *', function () use (&$executed): void {
             $executed = true;
         });
 
@@ -60,11 +60,11 @@ class CronTaskTest extends AppTestCase
         $this->assertTrue($executed);
     }
 
-    public function testHandleWithCallbackArguments()
+    public function testHandleWithCallbackArguments(): void
     {
         $result = null;
 
-        $task = new CronTask('test-task', '* * * * *', function () use (&$result) {
+        $task = new CronTask('test-task', '* * * * *', function () use (&$result): void {
             $result = 'executed';
         });
 
@@ -73,9 +73,9 @@ class CronTaskTest extends AppTestCase
         $this->assertEquals('executed', $result);
     }
 
-    public function testGetNextRunDate()
+    public function testGetNextRunDate(): void
     {
-        $task = new CronTask('test-task', '0 0 * * *', function () {
+        $task = new CronTask('test-task', '0 0 * * *', function (): void {
         });
 
         $nextRun = $task->getNextRunDate();
@@ -84,9 +84,9 @@ class CronTaskTest extends AppTestCase
         $this->assertGreaterThan(new \DateTime(), $nextRun);
     }
 
-    public function testGetPreviousRunDate()
+    public function testGetPreviousRunDate(): void
     {
-        $task = new CronTask('test-task', '0 0 * * *', function () {
+        $task = new CronTask('test-task', '0 0 * * *', function (): void {
         });
 
         $previousRun = $task->getPreviousRunDate();
@@ -95,19 +95,19 @@ class CronTaskTest extends AppTestCase
         $this->assertLessThan(new \DateTime(), $previousRun);
     }
 
-    public function testComplexCronExpression()
+    public function testComplexCronExpression(): void
     {
         // Every 5 minutes
-        $task = new CronTask('test-task', '*/5 * * * *', function () {
+        $task = new CronTask('test-task', '*/5 * * * *', function (): void {
         });
 
         $this->assertEquals('*/5 * * * *', $task->getExpression());
     }
 
-    public function testWeeklyCronExpression()
+    public function testWeeklyCronExpression(): void
     {
         // Every Monday at 9 AM
-        $task = new CronTask('test-task', '0 9 * * 1', function () {
+        $task = new CronTask('test-task', '0 9 * * 1', function (): void {
         });
 
         $this->assertEquals('0 9 * * 1', $task->getExpression());

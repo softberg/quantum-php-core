@@ -8,7 +8,7 @@ use Quantum\Asset\Asset;
 
 class AssetManagerTest extends AppTestCase
 {
-    private $assetManager;
+    private AssetManager $assetManager;
 
     public function setUp(): void
     {
@@ -19,7 +19,7 @@ class AssetManagerTest extends AppTestCase
         $this->assetManager = AssetManager::getInstance();
     }
 
-    public function testRegisterPublishDump()
+    public function testRegisterPublishDump(): void
     {
         $this->assetManager->register([
             new Asset(Asset::CSS, 'css/style.css'),
@@ -69,7 +69,7 @@ class AssetManagerTest extends AppTestCase
         ob_get_clean();
     }
 
-    public function testAssetGetTag()
+    public function testAssetGetTag(): void
     {
         $this->assetManager->registerAsset(new Asset(Asset::JS, 'js/jquery.js', 'jQuery'));
 
@@ -79,7 +79,7 @@ class AssetManagerTest extends AppTestCase
         );
     }
 
-    public function testAssetUrl()
+    public function testAssetUrl(): void
     {
         $this->assertEquals(
             'http://mydomain.com/assets/icons/person.png',

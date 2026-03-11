@@ -31,47 +31,27 @@ use Exception;
  */
 trait CaptchaTrait
 {
-    /**
-     * @var string|null
-     */
     protected ?string $siteKey;
 
-    /**
-     * @var string|null
-     */
     protected ?string $secretKey;
 
-    /**
-     * @var HttpClient
-     */
     protected HttpClient $http;
 
     /**
      * @var mixed|null
      */
-    protected $type = null;
+    protected $type;
 
-    /**
-     * @var array
-     */
     protected array $errorCodes = [];
 
-    /**
-     * @var array
-     */
     protected array $elementAttributes = [];
 
-    /**
-     * @return string|null
-     */
     public function getType(): ?string
     {
         return $this->type;
     }
 
     /**
-     * @param string $type
-     * @return CaptchaInterface
      * @throws Exception
      */
     public function setType(string $type): CaptchaInterface
@@ -84,9 +64,6 @@ trait CaptchaTrait
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;
@@ -94,9 +71,6 @@ trait CaptchaTrait
 
     /**
      * Generates an HTML code block for the captcha
-     * @param string $formIdentifier
-     * @param array $attributes
-     * @return string
      * @throws AssetException
      * @throws Exception
      */
@@ -117,8 +91,6 @@ trait CaptchaTrait
 
     /**
      * Checks the code given by the captcha
-     * @param string $code
-     * @return bool
      * @throws LangException
      * @throws ErrorException
      * @throws BaseException
@@ -170,9 +142,6 @@ trait CaptchaTrait
         return isset($response->success) && $response->success;
     }
 
-    /**
-     * @return string|null
-     */
     public function getErrorMessage(): ?string
     {
         if (!empty($this->errorCodes)) {
@@ -182,10 +151,6 @@ trait CaptchaTrait
         return null;
     }
 
-    /**
-     * @param array $attributes
-     * @return string
-     */
     protected function getVisibleElement(array $attributes = []): string
     {
         $this->extractAttributes($attributes);
@@ -194,8 +159,6 @@ trait CaptchaTrait
     }
 
     /**
-     * @param string $formIdentifier
-     * @return string
      * @throws Exception
      */
     protected function getInvisibleElement(string $formIdentifier): string
@@ -220,7 +183,6 @@ trait CaptchaTrait
 
     /**
      * @param $type
-     * @return bool
      */
     protected function isValidCaptchaType($type): bool
     {
@@ -233,7 +195,6 @@ trait CaptchaTrait
     }
 
     /**
-     * @param array $attributes
      * @return void
      */
     protected function extractAttributes(array $attributes)
@@ -247,10 +208,6 @@ trait CaptchaTrait
         }
     }
 
-    /**
-     * @param string $challengeTs
-     * @return bool
-     */
     protected function detectReplayAttack(string $challengeTs): bool
     {
         return time() - strtotime($challengeTs) > self::MAX_TIME_DIFF;

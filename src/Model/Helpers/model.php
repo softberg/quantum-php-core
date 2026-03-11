@@ -32,12 +32,6 @@ function model(string $modelClass): Model
 
 /**
  * Creates anonymous dynamic model
- * @param string $table
- * @param string $modelName
- * @param string $idColumn
- * @param array $foreignKeys
- * @param array $hidden
- * @return DbModel
  */
 function dynamicModel(
     string $table,
@@ -57,9 +51,6 @@ function dynamicModel(
 
 /**
  * Wraps the orm instance into model
- * @param DbalInterface|null $ormInstance
- * @param string $modelClass
- * @return DbModel|null
  * @throws ModelException
  */
 function wrapToModel(?DbalInterface $ormInstance, string $modelClass): ?DbModel

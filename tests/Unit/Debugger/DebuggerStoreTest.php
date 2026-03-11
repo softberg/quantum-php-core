@@ -7,7 +7,7 @@ use Quantum\Tests\Unit\AppTestCase;
 
 class DebuggerStoreTest extends AppTestCase
 {
-    private $debuggerStore;
+    private DebuggerStore $debuggerStore;
 
     public function setUp(): void
     {
@@ -19,7 +19,7 @@ class DebuggerStoreTest extends AppTestCase
         $this->debuggerStore->flush();
     }
 
-    public function testDebuggerStoreInit()
+    public function testDebuggerStoreInit(): void
     {
         $this->debuggerStore->init(['key1', 'key2']);
 
@@ -29,7 +29,7 @@ class DebuggerStoreTest extends AppTestCase
         $this->assertEmpty($this->debuggerStore->get('key2'));
     }
 
-    public function testDebuggerStoreAll()
+    public function testDebuggerStoreAll(): void
     {
         $this->assertEquals([], $this->debuggerStore->all());
 
@@ -42,7 +42,7 @@ class DebuggerStoreTest extends AppTestCase
         $this->assertArrayHasKey('key1', $all);
     }
 
-    public function testDebuggerStoreHas()
+    public function testDebuggerStoreHas(): void
     {
         $this->debuggerStore->init(['key1']);
 
@@ -50,7 +50,7 @@ class DebuggerStoreTest extends AppTestCase
         $this->assertFalse($this->debuggerStore->has('key2'));
     }
 
-    public function testDebuggerStoreSetAndGet()
+    public function testDebuggerStoreSetAndGet(): void
     {
         $this->debuggerStore->init(['key1']);
         $this->debuggerStore->set('key1', ['level1' => 'data']);
@@ -64,7 +64,7 @@ class DebuggerStoreTest extends AppTestCase
         $this->assertCount(2, $this->debuggerStore->get('key1'));
     }
 
-    public function testDebuggerStoreDelete()
+    public function testDebuggerStoreDelete(): void
     {
         $this->debuggerStore->init(['key1']);
         $this->debuggerStore->set('key1', ['level1' => 'data']);
@@ -75,7 +75,7 @@ class DebuggerStoreTest extends AppTestCase
         $this->assertEmpty($this->debuggerStore->get('key1'));
     }
 
-    public function testFlush()
+    public function testFlush(): void
     {
         $debuggerStore = new DebuggerStore();
         $debuggerStore->init(['key1', 'key2']);

@@ -15,8 +15,8 @@ use Quantum\Di\Di;
 class HttpHelperTest extends AppTestCase
 {
     public $session;
-    private $request;
-    private $response;
+    private Request $request;
+    private Response $response;
 
     public function setUp(): void
     {
@@ -34,7 +34,7 @@ class HttpHelperTest extends AppTestCase
         Request::flush();
     }
 
-    public function testBaseUrlWithoutModulePrefix()
+    public function testBaseUrlWithoutModulePrefix(): void
     {
         config()->set('app.base_url', null);
 
@@ -43,7 +43,7 @@ class HttpHelperTest extends AppTestCase
         $this->assertEquals('https://example.com', base_url());
     }
 
-    public function testBaseUrlWithModulePrefix()
+    public function testBaseUrlWithModulePrefix(): void
     {
         config()->set('app.base_url', null);
 
@@ -53,8 +53,7 @@ class HttpHelperTest extends AppTestCase
             ['GET'],
             '/signin',
             'AdminController',
-            'signin',
-            null
+            'signin'
         );
         $route->module('admin')->prefix('admin');
 
@@ -82,7 +81,7 @@ class HttpHelperTest extends AppTestCase
         $this->assertEquals('https://testdomain.com/admin', $baseUrl);
     }
 
-    public function testCurrentUrl()
+    public function testCurrentUrl(): void
     {
         $this->request->create('GET', 'http://test.com/post/12');
 
@@ -97,7 +96,7 @@ class HttpHelperTest extends AppTestCase
         $this->assertEquals('http://test.com:8080/?firstname=John&lastname=Doe', current_url());
     }
 
-    public function testRedirecting()
+    public function testRedirecting(): void
     {
         $this->assertFalse($this->response->hasHeader('Location'));
 
@@ -112,7 +111,7 @@ class HttpHelperTest extends AppTestCase
         $this->assertEquals('/home', $this->response->getHeader('Location'));
     }
 
-    public function testRedirectWithOldData()
+    public function testRedirectWithOldData(): void
     {
         $this->session = SessionFactory::get();
 

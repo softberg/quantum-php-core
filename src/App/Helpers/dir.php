@@ -16,7 +16,6 @@ use Quantum\App\App;
 
 /**
  * Gets base directory
- * @return string
  */
 function base_dir(): string
 {
@@ -25,7 +24,6 @@ function base_dir(): string
 
 /**
  * Gets the log directory
- * @return string
  */
 function logs_dir(): string
 {
@@ -34,7 +32,6 @@ function logs_dir(): string
 
 /**
  * Gets the framework directory
- * @return string
  */
 function framework_dir(): string
 {
@@ -43,8 +40,6 @@ function framework_dir(): string
 
 /**
  * Gets modules directory
- * @param string|null $moduleDir
- * @return string
  */
 function modules_dir(?string $moduleDir = null): string
 {
@@ -53,7 +48,6 @@ function modules_dir(?string $moduleDir = null): string
 
 /**
  * Gets public directory
- * @return string
  */
 function public_dir(): string
 {
@@ -62,7 +56,6 @@ function public_dir(): string
 
 /**
  * Gets uploads directory
- * @return string
  */
 function uploads_dir(): string
 {
@@ -71,7 +64,6 @@ function uploads_dir(): string
 
 /**
  * Gets assets directory
- * @return string
  */
 function assets_dir(): string
 {
@@ -80,7 +72,6 @@ function assets_dir(): string
 
 /**
  * Gets hooks directory
- * @return string
  */
 function hooks_dir(): string
 {
@@ -89,8 +80,6 @@ function hooks_dir(): string
 
 /**
  * Recursively deletes folder
- * @param string $dir
- * @return bool
  */
 function deleteDirectoryWithFiles(string $dir): bool
 {
@@ -110,8 +99,6 @@ function deleteDirectoryWithFiles(string $dir): bool
 
 /**
  * Gets directory classes
- * @param string $path
- * @return array
  */
 function get_directory_classes(string $path): array
 {

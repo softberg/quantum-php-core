@@ -28,30 +28,23 @@ class JwtToken extends JWT
 {
     /**
      * JWT secret key
-     * @var string
      */
     private string $key;
 
     /**
      * Encryption algorithm
-     * @var string
      */
     private string $algorithm = 'HS256';
 
     /**
      * Payload data
-     * @var array
      */
     private array $payload = [];
 
-    /**
-     * @var object|null
-     */
     private ?object $fetchedPayload = null;
 
     /**
      * JwtToken constructor.
-     * @param string|null $key
      * @throws EnvException
      */
     public function __construct(?string $key = null)
@@ -61,7 +54,6 @@ class JwtToken extends JWT
 
     /**
      * Sets extra leeway time
-     * @return $this
      */
     public function setLeeway($leeway): JwtToken
     {
@@ -71,8 +63,6 @@ class JwtToken extends JWT
 
     /**
      * Sets the encryption algorithm
-     * @param string $algorithm
-     * @return $this
      */
     public function setAlgorithm(string $algorithm): JwtToken
     {
@@ -82,9 +72,7 @@ class JwtToken extends JWT
 
     /**
      * Sets the claim
-     * @param string $key
      * @param mixed $value
-     * @return $this
      */
     public function setClaim(string $key, $value): JwtToken
     {
@@ -94,8 +82,6 @@ class JwtToken extends JWT
 
     /**
      * Set claims
-     * @param array $claims
-     * @return $this
      */
     public function setClaims(array $claims): JwtToken
     {
@@ -108,8 +94,6 @@ class JwtToken extends JWT
 
     /**
      * Sets user data
-     * @param array $data
-     * @return $this
      */
     public function setData(array $data): JwtToken
     {
@@ -119,12 +103,9 @@ class JwtToken extends JWT
 
     /**
      * Composes and signs the JWT
-     * @param mixed|null $keyId
-     * @param array|null $head
-     * @return string
      * @throws JwtException
      */
-    public function compose($keyId = null, ?array $head = null): string
+    public function compose(?string $keyId = null, ?array $head = null): string
     {
         if (empty($this->payload)) {
             throw JwtException::payloadNotFound();
@@ -135,8 +116,6 @@ class JwtToken extends JWT
 
     /**
      * Retrieve and verifies the JWT
-     * @param string $jwt
-     * @return $this
      */
     public function retrieve(string $jwt): JwtToken
     {
@@ -155,7 +134,6 @@ class JwtToken extends JWT
 
     /**
      * Fetches the user data
-     * @return array|null
      */
     public function fetchData(): ?array
     {
@@ -164,7 +142,6 @@ class JwtToken extends JWT
 
     /**
      * Fetches the claim
-     * @param string $key
      * @return mixed|null
      */
     public function fetchClaim(string $key)

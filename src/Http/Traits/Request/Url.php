@@ -22,27 +22,23 @@ trait Url
 {
     /**
      * Scheme
-     * @var string|null
      */
-    private static $__protocol = null;
+    private static ?string $__protocol = null;
 
     /**
      * Host name
-     * @var string|null
      */
-    private static $__host = null;
+    private static ?string $__host = null;
 
     /**
      * Server port
-     * @var string|null
      */
-    private static $__port = null;
+    private static ?string $__port = null;
 
     /**
      * Request URI
-     * @var string|null
      */
-    private static $__uri = null;
+    private static ?string $__uri = null;
 
     /**
      * Gets the protocol
@@ -55,9 +51,8 @@ trait Url
 
     /**
      * Sets the protocol
-     * @param string $protocol
      */
-    public static function setProtocol(string $protocol)
+    public static function setProtocol(string $protocol): void
     {
         self::$__protocol = $protocol;
     }
@@ -73,9 +68,8 @@ trait Url
 
     /**
      * Sets the host name
-     * @param string $host
      */
-    public static function setHost(string $host)
+    public static function setHost(string $host): void
     {
         self::$__host = $host;
     }
@@ -91,16 +85,14 @@ trait Url
 
     /**
      * Sets the port
-     * @param string $port
      */
-    public static function setPort(string $port)
+    public static function setPort(string $port): void
     {
         self::$__port = $port;
     }
 
     /**
      * Gets the URI
-     * @return string|null
      */
     public static function getUri(): ?string
     {
@@ -109,17 +101,14 @@ trait Url
 
     /**
      * Sets the URI
-     * @param string $uri
      */
-    public static function setUri(string $uri)
+    public static function setUri(string $uri): void
     {
         self::$__uri = ltrim($uri, '/');
     }
 
     /**
      * Returns the URI segment at the specified index.
-     * @param int $index
-     * @return string|null
      */
     public static function getSegment(int $index): ?string
     {
@@ -130,7 +119,6 @@ trait Url
 
     /**
      * Gets all URI segments as an array.
-     * @return array
      */
     public static function getAllSegments(): array
     {

@@ -22,14 +22,14 @@ class LoggerFactoryTest extends AppTestCase
         $this->setPrivateProperty(LoggerFactory::class, 'instances', []);
     }
 
-    public function testLoggerFactoryInstance()
+    public function testLoggerFactoryInstance(): void
     {
         $logger = LoggerFactory::get();
 
         $this->assertInstanceOf(Logger::class, $logger);
     }
 
-    public function testLoggerFactoryGetDefaultAdapter()
+    public function testLoggerFactoryGetDefaultAdapter(): void
     {
         $logger = LoggerFactory::get();
 
@@ -38,7 +38,7 @@ class LoggerFactoryTest extends AppTestCase
         $this->assertInstanceOf(ReportableInterface::class, $logger->getAdapter());
     }
 
-    public function testLoggerFactoryGetSingleAdapter()
+    public function testLoggerFactoryGetSingleAdapter(): void
     {
         $logger = LoggerFactory::get(Logger::SINGLE);
 
@@ -47,7 +47,7 @@ class LoggerFactoryTest extends AppTestCase
         $this->assertInstanceOf(ReportableInterface::class, $logger->getAdapter());
     }
 
-    public function testLoggerFactoryGetDailyAdapter()
+    public function testLoggerFactoryGetDailyAdapter(): void
     {
         $logger = LoggerFactory::get(Logger::DAILY);
 
@@ -56,7 +56,7 @@ class LoggerFactoryTest extends AppTestCase
         $this->assertInstanceOf(ReportableInterface::class, $logger->getAdapter());
     }
 
-    public function testLoggerFactoryGetMessageAdapter()
+    public function testLoggerFactoryGetMessageAdapter(): void
     {
         config()->set('app.debug', true);
 
@@ -67,7 +67,7 @@ class LoggerFactoryTest extends AppTestCase
         $this->assertInstanceOf(ReportableInterface::class, $logger->getAdapter());
     }
 
-    public function testLoggerFactoryTryingToGetMessageAdapter()
+    public function testLoggerFactoryTryingToGetMessageAdapter(): void
     {
         $this->expectException(LoggerException::class);
 
@@ -76,7 +76,7 @@ class LoggerFactoryTest extends AppTestCase
         LoggerFactory::get(Logger::MESSAGE);
     }
 
-    public function testLoggerFactoryInvalidTypeAdapter()
+    public function testLoggerFactoryInvalidTypeAdapter(): void
     {
         $this->expectException(LoggerException::class);
 
@@ -85,7 +85,7 @@ class LoggerFactoryTest extends AppTestCase
         LoggerFactory::get('invalid_type');
     }
 
-    public function testLoggerFactoryReturnsSameInstance()
+    public function testLoggerFactoryReturnsSameInstance(): void
     {
         $logger1 = LoggerFactory::get(Logger::SINGLE);
         $logger2 = LoggerFactory::get(Logger::SINGLE);

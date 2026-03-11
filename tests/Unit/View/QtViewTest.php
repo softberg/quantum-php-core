@@ -6,6 +6,7 @@ use Quantum\View\Exceptions\ViewException;
 use Quantum\View\Factories\ViewFactory;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Router\MatchedRoute;
+use Quantum\View\QtView;
 use Quantum\View\RawParam;
 use Quantum\Router\Route;
 use Quantum\Http\Request;
@@ -13,7 +14,7 @@ use Quantum\Di\Di;
 
 class QtViewTest extends AppTestCase
 {
-    private $view;
+    private QtView $view;
 
     public function setUp(): void
     {
@@ -23,8 +24,7 @@ class QtViewTest extends AppTestCase
             ['GET'],
             '/test',
             'SomeController',
-            'test',
-            null
+            'test'
         );
         $route->module('Test');
 
@@ -45,7 +45,7 @@ class QtViewTest extends AppTestCase
         $this->view->flushParams();
     }
 
-    public function testSetGetLayout()
+    public function testSetGetLayout(): void
     {
         $this->assertNull($this->view->getLayout());
 
@@ -56,7 +56,7 @@ class QtViewTest extends AppTestCase
         $this->assertIsString($this->view->getLayout());
     }
 
-    public function testSetGetParams()
+    public function testSetGetParams(): void
     {
         $this->assertEmpty($this->view->getParams());
 
@@ -75,7 +75,7 @@ class QtViewTest extends AppTestCase
         $this->assertNotEmpty($this->view->getParams());
     }
 
-    public function testSetGetRawParams()
+    public function testSetGetRawParams(): void
     {
         $this->assertEmpty($this->view->getParams());
 
@@ -103,7 +103,7 @@ class QtViewTest extends AppTestCase
         $this->assertEquals('<p>Monkey people</p>', $this->view->getParam('chapter_two'));
     }
 
-    public function testRenderWithoutLayout()
+    public function testRenderWithoutLayout(): void
     {
         $this->expectException(ViewException::class);
 
@@ -112,7 +112,7 @@ class QtViewTest extends AppTestCase
         $this->view->render('index');
     }
 
-    public function testRenderWithLayout()
+    public function testRenderWithLayout(): void
     {
         $this->view->setLayout('layout');
 
@@ -123,7 +123,7 @@ class QtViewTest extends AppTestCase
         $this->assertEquals('<html>' . PHP_EOL . '<head></head>' . PHP_EOL . '<body>' . PHP_EOL . '<p>Hello World, this is rendered html view</p></body>' . PHP_EOL . '</html>' . PHP_EOL, $renderedView);
     }
 
-    public function testRenderWithData()
+    public function testRenderWithData(): void
     {
         $this->view->setLayout('layout');
 
@@ -138,7 +138,7 @@ class QtViewTest extends AppTestCase
         $this->assertEquals('<p>Hello dolor sit amet, this is rendered html view</p>', $this->view->getView());
     }
 
-    public function testRenderWithEscapedHtmlData()
+    public function testRenderWithEscapedHtmlData(): void
     {
         $this->view->setLayout('layout');
 
@@ -149,7 +149,7 @@ class QtViewTest extends AppTestCase
         $this->assertEquals('&lt;h1&gt;Hello&lt;/h1&gt;', $this->view->getView());
     }
 
-    public function testRenderWithUnEscapedHtmlData()
+    public function testRenderWithUnEscapedHtmlData(): void
     {
         $this->view->setLayout('layout');
 
@@ -160,7 +160,7 @@ class QtViewTest extends AppTestCase
         $this->assertEquals('<h1>Hello</h1>', $this->view->getView());
     }
 
-    public function testRenderPartial()
+    public function testRenderPartial(): void
     {
         $this->assertIsString($this->view->renderPartial('partial'));
 
