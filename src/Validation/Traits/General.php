@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Quantum PHP Framework
  *
@@ -33,24 +35,25 @@ trait General
     /**
      * Checks Field Required
      */
-    protected function required(string $value): bool
+    protected function required($value): bool
     {
-        return $value !== '' && $value !== '0';
+        return (string) $value !== '' && (string) $value !== '0';
     }
 
     /**
      * Checks Email
      */
-    protected function email(string $value): bool
+    protected function email($value): bool
     {
-        return filter_var($value, FILTER_VALIDATE_EMAIL) !== false;
+        return filter_var((string) $value, FILTER_VALIDATE_EMAIL) !== false;
     }
 
     /**
      * Checks for a valid credit card number
      */
-    protected function creditCard(string $value): bool
+    protected function creditCard($value): bool
     {
+        $value = (string) $value;
         $number = preg_replace('/\D/', '', $value);
         $length = function_exists('mb_strlen') ? mb_strlen($number) : strlen($number);
 
@@ -81,8 +84,9 @@ trait General
     /**
      * Checks for a valid IBAN
      */
-    protected function iban(string $value): bool
+    protected function iban($value): bool
     {
+        $value = (string) $value;
         static $character = [
             'A' => 10, 'C' => 12, 'D' => 13, 'E' => 14, 'F' => 15, 'G' => 16,
             'H' => 17, 'I' => 18, 'J' => 19, 'K' => 20, 'L' => 21, 'M' => 22,
@@ -105,16 +109,17 @@ trait General
     /**
      * Checks for a valid format human name
      */
-    protected function name(string $value): bool
+    protected function name($value): bool
     {
-        return preg_match("/^([a-z \p{L} '-])+$/i", $value) === 1;
+        return preg_match("/^([a-z \p{L} '-])+$/i", (string) $value) === 1;
     }
 
     /**
      * Checks that the provided string is a likely street address.
      */
-    protected function streetAddress(string $value): bool
+    protected function streetAddress($value): bool
     {
+        $value = (string) $value;
         $hasLetter = preg_match('/[a-zA-Z]/', $value);
         $hasDigit = preg_match('/\d/', $value);
         $hasSpace = preg_match('/\s/', $value);
@@ -125,8 +130,9 @@ trait General
     /**
      * Validates the phone number // 555-555-5555 , 5555425555, 555 555 5555, 1(519) 555-4444, 1 (519) 555-4422, +1-555-555-5555
      */
-    protected function phoneNumber(string $value): bool
+    protected function phoneNumber($value): bool
     {
+        $value = (string) $value;
         $regex = '/^(\+*\d[\s-]?)?[\(\[\s-]{0,2}?\d{3}[\)\]\s-]{0,2}?\d{3}[\s-]?\d{4}$/i';
 
         return preg_match($regex, $value) === 1;
@@ -135,8 +141,9 @@ trait General
     /**
      * Determines if the provided input is a valid date
      */
-    protected function date(string $value, ?string $format = null): bool
+    protected function date($value, ?string $format = null): bool
     {
+        $value = (string) $value;
         if (!$format) {
             $cdate1 = date('Y-m-d', strtotime($value));
             $cdate2 = date('Y-m-d H:i:s', strtotime($value));
@@ -152,25 +159,25 @@ trait General
     /**
      * Ensures the value starts with a certain character / set of character
      */
-    protected function starts(string $value, ?string $text = null): bool
+    protected function starts($value, ?string $text = null): bool
     {
-        return strpos($value, (string) $text) === 0;
+        return strpos((string) $value, (string) $text) === 0;
     }
 
     /**
      * Custom regex validator
      */
-    protected function regex(string $value, string $pattern): bool
+    protected function regex($value, string $pattern): bool
     {
-        return preg_match($pattern, $value) === 1;
+        return preg_match($pattern, (string) $value) === 1;
     }
 
     /**
      * Validates JSON string
      */
-    protected function jsonString(string $value): bool
+    protected function jsonString($value): bool
     {
-        $value = htmlspecialchars_decode($value, ENT_QUOTES);
+        $value = htmlspecialchars_decode((string) $value, ENT_QUOTES);
 
         return is_object(json_decode($value));
     }
@@ -178,7 +185,7 @@ trait General
     /**
      * Validates same value for both fields
      */
-    protected function same(string $value, string $otherField): bool
+    protected function same($value, string $otherField): bool
     {
         return $value == $this->data[$otherField];
     }
@@ -222,10 +229,10 @@ trait General
      * @throws DiException
      * @throws ReflectionException
      */
-    protected function captcha(string $value): bool
+    protected function captcha($value): bool
     {
         $captcha = CaptchaFactory::get();
 
-        return $captcha->verify($value);
+        return $captcha->verify((string) $value);
     }
 }

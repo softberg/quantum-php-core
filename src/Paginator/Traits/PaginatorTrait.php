@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Quantum PHP Framework
  *
@@ -290,8 +292,8 @@ trait PaginatorTrait
      */
     protected function calculateStartEndPages(int $currentPage, int $totalPages, int $pageItemsCount): array
     {
-        $startPage = max(1, $currentPage - ceil(($pageItemsCount - Pagination::EDGE_PADDING) / 2));
-        $endPage = min($totalPages, $startPage + $pageItemsCount - Pagination::EDGE_PADDING);
+        $startPage = (int) max(1, $currentPage - ceil(($pageItemsCount - Pagination::EDGE_PADDING) / 2));
+        $endPage = (int) min($totalPages, $startPage + $pageItemsCount - Pagination::EDGE_PADDING);
 
         return [$startPage, $endPage];
     }

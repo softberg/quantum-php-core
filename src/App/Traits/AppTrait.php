@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Quantum PHP Framework
  *
@@ -15,6 +17,7 @@
 namespace Quantum\App\Traits;
 
 use Quantum\Config\Exceptions\ConfigException;
+use Quantum\Loader\Exceptions\LoaderException;
 use Quantum\Logger\Factories\LoggerFactory;
 use Quantum\Lang\Exceptions\LangException;
 use Quantum\App\Exceptions\BaseException;
@@ -107,7 +110,7 @@ trait AppTrait
      * @return void
      * @throws DiException
      * @throws ReflectionException
-     * @throws ConfigException
+     * @throws ConfigException|LoaderException
      */
     protected function loadAppConfig()
     {

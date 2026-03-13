@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Quantum PHP Framework
  *
@@ -71,7 +73,7 @@ class LocalFileSystemAdapter implements LocalFilesystemAdapterInterface
     /**
      * @inheritDoc
      */
-    public function put(string $filename, string $content, ?string $parentId = null)
+    public function put(string $filename, $content, ?string $parentId = null)
     {
         return file_put_contents($filename, $content, LOCK_EX);
     }
@@ -79,7 +81,7 @@ class LocalFileSystemAdapter implements LocalFilesystemAdapterInterface
     /**
      * @inheritDoc
      */
-    public function append(string $filename, string $content)
+    public function append(string $filename, $content)
     {
         return file_put_contents($filename, $content, FILE_APPEND | LOCK_EX);
     }

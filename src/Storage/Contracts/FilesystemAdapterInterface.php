@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Quantum PHP Framework
  *
@@ -40,13 +42,13 @@ interface FilesystemAdapterInterface
      * Puts the content into the file
      * @return int|false
      */
-    public function put(string $filename, string $content, ?string $parentId = null);
+    public function put(string $filename, $content, ?string $parentId = null);
 
     /**
      * Appends the content at the end of the file
      * @return int|false
      */
-    public function append(string $filename, string $content);
+    public function append(string $filename, $content);
 
     /**
      * Renames the file

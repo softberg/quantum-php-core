@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Quantum PHP Framework
  *
@@ -169,7 +171,7 @@ class Environment
             $envFileContent = fs()->get($envFilePath);
             $envFileContent = preg_replace('/^' . preg_quote($row, '/') . '/m', $key . '=' . $value, $envFileContent);
 
-            fs()->put($envFilePath, $envFileContent);
+            fs()->put($envFilePath, (string) $envFileContent);
         } else {
             fs()->append($envFilePath, PHP_EOL . $key . '=' . $value . PHP_EOL);
         }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Quantum PHP Framework
  *
@@ -87,7 +89,7 @@ trait WebAppTrait
     /**
      * @throws ConfigException
      * @throws DiException
-     * @throws ReflectionException
+     * @throws ReflectionException|LoaderException
      */
     private function handleCors(Response $response): void
     {
@@ -96,7 +98,7 @@ trait WebAppTrait
         }
 
         foreach (config()->get('cors') as $key => $value) {
-            $response->setHeader($key, $value);
+            $response->setHeader($key, (string) $value);
         }
     }
 }

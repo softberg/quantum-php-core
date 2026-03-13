@@ -40,7 +40,7 @@ class HttpRequestQueryTest extends AppTestCase
 
         $request->setQueryParam('name', 'John');
 
-        $request->setQueryParam('age', 36);
+        $request->setQueryParam('age', '36');
 
         $this->assertEquals('John', $request->getQueryParam('name'));
 

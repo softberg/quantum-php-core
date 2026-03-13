@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Quantum PHP Framework
  *
@@ -220,7 +222,7 @@ trait Body
 
                 self::composeXML($value, $child);
             } else {
-                $child = $simpleXML->addChild($tag, htmlspecialchars($value));
+                $child = $simpleXML->addChild($tag, htmlspecialchars((string) $value));
 
                 if ($attributes) {
                     foreach ($attributes as $attrKey => $attrVal) {
