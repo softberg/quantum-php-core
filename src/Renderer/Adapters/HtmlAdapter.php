@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Quantum PHP Framework
  *
@@ -48,7 +50,7 @@ class HtmlAdapter implements TemplateRendererInterface
 
     /**
      * Renders the view
-     * @throws BaseException
+     * @throws BaseException|ReflectionException
      */
     public function render(string $view, array $params = []): string
     {
@@ -59,7 +61,7 @@ class HtmlAdapter implements TemplateRendererInterface
         }
 
         ob_start();
-        ob_implicit_flush(0);
+        ob_implicit_flush(PHP_VERSION_ID >= 80000 ? false : 0);
 
         if ($params !== []) {
             extract($params);

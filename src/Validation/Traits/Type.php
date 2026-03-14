@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Quantum PHP Framework
  *
@@ -23,39 +25,39 @@ trait Type
     /**
      * Checks the alpha characters
      */
-    protected function alpha(string $value): bool
+    protected function alpha($value): bool
     {
-        return preg_match('/^([a-zÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÒÓÔÕÖßÙÚÛÜÝàáâãäåçèéêëìíîïðòóôõöùúûüýÿ])+$/i', $value) === 1;
+        return preg_match('/^[\p{L}]+$/u', (string) $value) === 1;
     }
 
     /**
      * Checks the alpha and numeric characters
      */
-    protected function alphaNumeric(string $value): bool
+    protected function alphaNumeric($value): bool
     {
-        return preg_match('/^([a-z0-9ÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÒÓÔÕÖßÙÚÛÜÝàáâãäåçèéêëìíîïðòóôõöùúûüýÿ])+$/i', $value) === 1;
+        return preg_match('/^[\p{L}0-9]+$/u', (string) $value) === 1;
     }
 
     /**
      * Checks the alpha and dash characters
      */
-    protected function alphaDash(string $value): bool
+    protected function alphaDash($value): bool
     {
-        return preg_match('/^([a-zÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÒÓÔÕÖßÙÚÛÜÝàáâãäåçèéêëìíîïðòóôõöùúûüýÿ_-])+$/i', $value) === 1;
+        return preg_match('/^[\p{L}_-]+$/u', (string) $value) === 1;
     }
 
     /**
      * Checks the alphanumeric and space characters
      */
-    protected function alphaSpace(string $value): bool
+    protected function alphaSpace($value): bool
     {
-        return preg_match('/^([a-z0-9ÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÒÓÔÕÖßÙÚÛÜÝàáâãäåçèéêëìíîïðòóôõöùúûüýÿ\s])+$/i', $value) === 1;
+        return preg_match('/^[\p{L}0-9\s]+$/u', (string) $value) === 1;
     }
 
     /**
      * Checks the numeric value
      */
-    protected function numeric(string $value): bool
+    protected function numeric($value): bool
     {
         return is_numeric($value);
     }
@@ -63,7 +65,7 @@ trait Type
     /**
      * Checks the integer value
      */
-    protected function integer(string $value): bool
+    protected function integer($value): bool
     {
         return filter_var($value, FILTER_VALIDATE_INT) !== false;
     }
@@ -71,7 +73,7 @@ trait Type
     /**
      * Checks the float value
      */
-    protected function float(string $value): bool
+    protected function float($value): bool
     {
         return filter_var($value, FILTER_VALIDATE_FLOAT) !== false;
     }
@@ -91,7 +93,7 @@ trait Type
      * Determines if the provided numeric value is lower to a specific value
      * @param $minValue
      */
-    protected function minNumeric(string $value, $minValue): bool
+    protected function minNumeric($value, $minValue): bool
     {
         return is_numeric($value) && is_numeric($minValue) && ($value >= $minValue);
     }
@@ -100,7 +102,7 @@ trait Type
      * Determines if the provided numeric value is higher to a specific value
      * @param $maxValue
      */
-    protected function maxNumeric(string $value, $maxValue): bool
+    protected function maxNumeric($value, $maxValue): bool
     {
         return is_numeric($value) && is_numeric($maxValue) && ($value <= $maxValue);
     }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Quantum PHP Framework
  *
@@ -113,7 +115,13 @@ class Server
 
     public function port(): ?string
     {
-        return $this->get('SERVER_PORT');
+        $port = $this->get('SERVER_PORT');
+
+        if ($port === null) {
+            return null;
+        }
+
+        return (string) $port;
     }
 
     public function contentType(bool $exact = false): ?string

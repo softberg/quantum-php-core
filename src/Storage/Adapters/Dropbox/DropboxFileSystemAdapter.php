@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Quantum PHP Framework
  *
@@ -71,7 +73,7 @@ class DropboxFileSystemAdapter implements FilesystemAdapterInterface
     /**
      * @inheritDoc
      */
-    public function put(string $filename, string $content, ?string $parentId = null)
+    public function put(string $filename, $content, ?string $parentId = null)
     {
         try {
             $response = $this->dropboxApp->contentRequest(
@@ -90,7 +92,7 @@ class DropboxFileSystemAdapter implements FilesystemAdapterInterface
     /**
      * @inheritDoc
      */
-    public function append(string $filename, string $content)
+    public function append(string $filename, $content)
     {
         $fileContent = $this->get($filename);
 

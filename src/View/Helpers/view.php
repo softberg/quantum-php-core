@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Quantum PHP Framework
  *
@@ -101,7 +103,7 @@ function markdown_to_html(string $content, bool $sanitize = false): string
         $purifier = new HTMLPurifier($config);
     }
 
-    $html = $converter->convertToHtml($content);
+    $html = (string) $converter->convertToHtml($content);
 
     if ($purifier instanceof HTMLPurifier) {
         return $purifier->purify($html);

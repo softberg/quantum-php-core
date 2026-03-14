@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Quantum\Cron;
 
 use Quantum\Config\Exceptions\ConfigException;

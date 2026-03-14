@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Quantum PHP Framework
  *
@@ -16,8 +18,8 @@ namespace Quantum\Captcha\Factories;
 
 use Quantum\Captcha\Exceptions\CaptchaException;
 use Quantum\Captcha\Adapters\RecaptchaAdapter;
-use Quantum\Captcha\Adapters\HcaptchaAdapter;
 use Quantum\Config\Exceptions\ConfigException;
+use Quantum\Captcha\Adapters\HcaptchaAdapter;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\HttpClient\HttpClient;
