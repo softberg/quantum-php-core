@@ -6,7 +6,7 @@ build:
           version: 8.1
           ini:
             xdebug.mode: coverage
-          extensions:
+          pecl_extensions:
             - redis
             - memcached
 
@@ -20,10 +20,12 @@ build:
       tests:
         override:
           - php-scrutinizer-run
+
           - command: vendor/bin/phpunit --coverage-clover=coverage.xml
             coverage:
               file: coverage.xml
               format: clover
+
           - command: phpcs-run
             use_website_config: true
 
