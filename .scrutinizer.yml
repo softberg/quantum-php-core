@@ -14,8 +14,6 @@ build:
         before:
           - curl -sS https://getcomposer.org/installer | php -- --install-dir=$HOME --filename=composer --2
           - $HOME/composer install --prefer-dist --no-interaction --no-progress
-          - sudo service redis-server start
-          - sudo service memcached start
 
       tests:
         override:
