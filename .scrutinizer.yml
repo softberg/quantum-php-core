@@ -4,10 +4,33 @@ build:
       environment:
         php:
           version: 8.1
+          ini:
+            xdebug.mode: coverage
+
       dependencies:
         before:
           - curl -sS https://getcomposer.org/installer | php -- --install-dir=$HOME --filename=composer --2
-          - $HOME/composer --version
+          - $HOME/composer install --no-interaction
+
       tests:
         override:
           - php-scrutinizer-run
+          - command: vendor/bin/phpunit --coverage-clover=coverage.xml
+            coverage:
+              file: coverage.xml
+              format: clover
+          - command: phpcs-run
+            use_website_config: true
+
+filter:
+  excluded_paths:
+    - 'tests/*'
+
+checks:
+  php: true
+
+coding_style:
+  php:
+    spaces:
+      around_operators:
+        concatenation: true
