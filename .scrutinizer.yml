@@ -6,11 +6,16 @@ build:
           version: 8.1
           ini:
             xdebug.mode: coverage
+          extensions:
+            - redis
+            - memcached
 
       dependencies:
         before:
           - curl -sS https://getcomposer.org/installer | php -- --install-dir=$HOME --filename=composer --2
-          - $HOME/composer install --no-interaction
+          - $HOME/composer install --prefer-dist --no-interaction --no-progress
+          - sudo service redis-server start
+          - sudo service memcached start
 
       tests:
         override:
@@ -24,7 +29,8 @@ build:
 
 filter:
   excluded_paths:
-    - 'tests/*'
+    - "tests/*"
+    - "vendor/*"
 
 checks:
   php: true
