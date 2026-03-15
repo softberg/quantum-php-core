@@ -122,6 +122,8 @@ class AuthService extends QtService implements AuthServiceInterface
             return null;
         }
 
+        unset($data['id']);
+
         $user->fill($data);
         $user->save();
 
