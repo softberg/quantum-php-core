@@ -176,6 +176,11 @@ class Di
     public static function reset(): void
     {
         self::$dependencies = [];
+        self::resetContainer();
+    }
+
+    public static function resetContainer(): void
+    {
         self::$container = [];
         self::$resolving = [];
     }

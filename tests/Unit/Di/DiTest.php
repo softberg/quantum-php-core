@@ -309,5 +309,26 @@ namespace Quantum\Tests\Unit\Di {
 
             $this->assertEmpty($containerProperty->getValue());
         }
+
+        public function testDiResetContainer(): void
+        {
+            Di::register(DummyService::class);
+
+            Di::get(DummyService::class);
+
+            $this->assertTrue(Di::isRegistered(DummyService::class));
+
+            Di::resetContainer();
+
+            $dependenciesProperty = new ReflectionProperty(Di::class, 'dependencies');
+            $dependenciesProperty->setAccessible(true);
+
+            $containerProperty = new ReflectionProperty(Di::class, 'container');
+            $containerProperty->setAccessible(true);
+
+            $this->assertNotEmpty($dependenciesProperty->getValue());
+
+            $this->assertEmpty($containerProperty->getValue());
+        }
     }
 }
