@@ -64,7 +64,7 @@ class PostController extends BaseController
     {
         $perPage = $request->get('per_page', (string) self::POSTS_PER_PAGE);
         $currentPage = $request->get('page', (string) self::CURRENT_PAGE);
-        $search = trim($request->get('q'));
+        $search = (string) trim($request->get('q'));
 
         $paginatedPosts = $this->postService->getPosts($perPage, $currentPage, $search);
 
