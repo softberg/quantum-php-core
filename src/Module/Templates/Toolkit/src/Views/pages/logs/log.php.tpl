@@ -37,5 +37,5 @@
 <?php endif ?>
 
 <footer class="row s12 container center fixed">
-    <?php echo $pagination->getPagination(1, 5) ?>
+    <?php echo $pagination->getPagination(true, 5) ?>
 </footer>
