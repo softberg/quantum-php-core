@@ -13,7 +13,7 @@
 
     <?php if (!empty($pagination)): ?>
         <div class="center-align">
-	        <?php echo $pagination->getPagination(0, 5) ?>
+	        <?php echo $pagination->getPagination(false, 5) ?>
         </div>
     <?php endif; ?>
     <?php echo partial('post/partials/modal', ['item' => t('common.post')]) ?>
