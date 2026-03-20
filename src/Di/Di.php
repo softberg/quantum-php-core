@@ -159,7 +159,7 @@ class Di
     /**
      * Autowire callable parameters
      * @param array<mixed> $args
-     * @return list<mixed>
+     * @return array<int, mixed>
      * @throws DiException
      * @throws ReflectionException
      */

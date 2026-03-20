@@ -173,26 +173,6 @@ class SmtpAdapter implements MailerInterface
     }
 
     /**
-     * Sets body
-     * @param array<string, mixed>|string|null $message
-     * @return MailerInterface
-     */
-    public function setBody($message): MailerInterface
-    {
-        $this->message = $message;
-        return $this;
-    }
-
-    /**
-     * Gets body
-     * @return array<string, mixed>|string|null
-     */
-    public function getBody()
-    {
-        return $this->message;
-    }
-
-    /**
      * Setups the SMTP
      * @param array<string, mixed> $params
      */

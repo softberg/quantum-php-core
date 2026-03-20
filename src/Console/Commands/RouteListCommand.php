@@ -106,7 +106,7 @@ class RouteListCommand extends QtCommand
 
     /**
      * Composes a table row
-     * @return list<string>
+     * @return array<int, string>
      */
     private function composeTableRow(Route $route, int $maxContentLength = 25): array
     {
@@ -124,7 +124,7 @@ class RouteListCommand extends QtCommand
         }
 
         $middlewares = $route->getMiddlewares();
-        $middlewaresString = $middlewares !== []
+        $middlewaresString = !empty($middlewares)
             ? implode(',', $middlewares)
             : '-';
 

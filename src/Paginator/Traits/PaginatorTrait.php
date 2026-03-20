@@ -153,7 +153,7 @@ trait PaginatorTrait
 
     /**
      * Get all page links
-     * @return list<string|null>
+     * @return array<int, string|null>
      */
     public function links(bool $withBaseUrl = false): array
     {

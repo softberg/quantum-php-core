@@ -115,7 +115,7 @@ class PatternCompiler
      * Build the final named parameter map from regex matches and param metadata.
      *
      * @param array<int|string, string> $matches PCRE match array from preg_match (named captures)
-     * @param list<array{name: string, pattern: string}> $segmentParams
+     * @param array<int, array{name: string, pattern: string}> $segmentParams
      * @return array<string, mixed>
      */
     protected function extractParams(array $matches, array $segmentParams): array
