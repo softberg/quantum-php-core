@@ -24,15 +24,15 @@ use Quantum\App\Exceptions\BaseException;
  * Class Mailer
  * @package Quantum\Mailer
  * @method MailerInterface setFrom(string $email, ?string $name = null)
- * @method array getFrom()
+ * @method array<string, mixed> getFrom()
  * @method MailerInterface setAddress(string $email, ?string $name = null)
- * @method array getAddresses()
+ * @method array<string, mixed> getAddresses()
  * @method MailerInterface setSubject(?string $subject)
  * @method string|null getSubject()
  * @method MailerInterface setTemplate(string $templatePath)
  * @method string|null getTemplate()
  * @method MailerInterface setBody($message)
- * @method string|array getBody()
+ * @method array<string, mixed>|string getBody()
  * @method bool send()
  */
 class Mailer
@@ -75,6 +75,7 @@ class Mailer
     }
 
     /**
+     * @param array<mixed> $arguments
      * @return mixed
      * @throws BaseException
      */

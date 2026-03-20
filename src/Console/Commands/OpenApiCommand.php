@@ -60,7 +60,7 @@ class OpenApiCommand extends QtCommand
 
     /**
      * Command arguments
-     * @var string[][]
+     * @var array<int, array<int|string, mixed>>
      */
     protected array $args = [
         ['module', 'required', 'The module name'],
@@ -83,6 +83,7 @@ class OpenApiCommand extends QtCommand
 
     /**
      * Exclude File Names
+     * @var array<int, string>
      */
     private array $excludeFileNames = ['index.html', 'swagger-initializer.js', 'favicon-16x16.png', 'favicon-32x32.png'];
 

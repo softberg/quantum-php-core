@@ -23,7 +23,7 @@ use Quantum\App\Exceptions\BaseException;
 /**
  * Class Session
  * @package Quantum\Session
- * @method array all()
+ * @method array<string, mixed> all()
  * @method bool has(string $key)
  * @method mixed|null get(string $key)
  * @method void set(string $key, $value)
@@ -59,6 +59,7 @@ class Session
     }
 
     /**
+     * @param array<mixed> $arguments
      * @return mixed
      * @throws BaseException
      */

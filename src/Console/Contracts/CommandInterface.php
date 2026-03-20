@@ -25,6 +25,6 @@ interface CommandInterface
     /**
      * Executes the current command.
      */
-    public function exec();
+    public function exec(): void;
 
 }

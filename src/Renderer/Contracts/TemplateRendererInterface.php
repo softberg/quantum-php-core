@@ -24,6 +24,7 @@ interface TemplateRendererInterface
 {
     /**
      * Renders the template
+     * @param array<string, mixed> $params
      */
     public function render(string $view, array $params = []): string;
 }

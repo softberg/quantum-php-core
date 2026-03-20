@@ -22,10 +22,14 @@ namespace Quantum\Auth;
  */
 class User
 {
+    /**
+     * @var array<string, mixed>
+     */
     private array $data = [];
 
     /**
      * Set Data
+     * @param array<string, mixed> $data
      * @return $this
      */
     public function setData(array $data): self
@@ -36,6 +40,7 @@ class User
 
     /**
      * Get Data
+     * @return array<string, mixed>
      */
     public function getData(): array
     {
@@ -44,6 +49,7 @@ class User
 
     /**
      * Get Fields
+     * @return array<int, string>
      */
     public function getFields(): array
     {
@@ -52,6 +58,7 @@ class User
 
     /**
      * Set Fields
+     * @param array<string, mixed> $schema
      * @return $this
      */
     public function setFields(array $schema): self

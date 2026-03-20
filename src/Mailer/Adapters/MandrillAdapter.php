@@ -36,10 +36,14 @@ class MandrillAdapter implements MailerInterface
 
     private string $apiUrl = 'https://mandrillapp.com/api/1.0/messages/send.json';
 
+    /**
+     * @var array<string, mixed>
+     */
     private array $data = [];
 
     /**
      * MandrillAdapter constructor
+     * @param array<string, mixed> $params
      */
     public function __construct(array $params)
     {

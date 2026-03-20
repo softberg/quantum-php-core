@@ -21,6 +21,7 @@ use Quantum\Di\Di;
 
 /**
  * Gets current route middlewares
+ * @return array<string, mixed>|null
  * @throws DiException|ReflectionException
  */
 function current_middlewares(): ?array
@@ -33,6 +34,7 @@ function current_middlewares(): ?array
 
 /**
  * Gets current route module
+ * @return string|null
  * @throws DiException|ReflectionException
  */
 function current_module(): ?string
@@ -45,6 +47,7 @@ function current_module(): ?string
 
 /**
  * Gets current route controller
+ * @return string|null
  * @throws DiException|ReflectionException
  */
 function current_controller(): ?string
@@ -57,6 +60,7 @@ function current_controller(): ?string
 
 /**
  * Gets current route action
+ * @return string|null
  * @throws DiException|ReflectionException
  */
 function current_action(): ?string
@@ -69,6 +73,7 @@ function current_action(): ?string
 
 /**
  * Gets current route callback
+ * @return Closure|null
  * @throws DiException|ReflectionException
  */
 function route_callback(): ?Closure
@@ -81,6 +86,7 @@ function route_callback(): ?Closure
 
 /**
  * Gets current route DSL pattern
+ * @return string|null
  * @throws DiException|ReflectionException
  */
 function current_route(): ?string
@@ -93,6 +99,7 @@ function current_route(): ?string
 
 /**
  * Gets current route complied pattern
+ * @return string
  * @throws DiException|ReflectionException
  */
 function route_pattern(): string
@@ -104,7 +111,8 @@ function route_pattern(): string
 }
 
 /**
- * Gets current route parameters
+ * Gets current route params
+ * @return array<string, mixed>
  * @throws DiException|ReflectionException
  */
 function route_params(): array
@@ -117,6 +125,7 @@ function route_params(): array
 
 /**
  * Gets route parameter by name
+ * @param string $name
  * @return mixed|null
  * @throws DiException|ReflectionException
  */
@@ -128,6 +137,7 @@ function route_param(string $name)
 
 /**
  * Gets current route method
+ * @return string
  * @throws DiException|ReflectionException
  */
 function route_method(): string
@@ -138,6 +148,7 @@ function route_method(): string
 
 /**
  * Gets the current route uri
+ * @return string|null
  * @throws DiException|ReflectionException
  */
 function route_uri(): ?string
@@ -148,6 +159,7 @@ function route_uri(): ?string
 
 /**
  * Gets the current route cache settings
+ * @return array<string, mixed>|null
  * @throws DiException|ReflectionException
  */
 function route_cache_settings(): ?array

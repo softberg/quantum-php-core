@@ -38,6 +38,9 @@ class Asset
 
     private ?string $name;
 
+    /**
+     * @var array<string>|null
+     */
     private ?array $attributes;
 
     private ?int $position;
@@ -53,6 +56,7 @@ class Asset
 
     /**
      * Asset constructor
+     * @param array<string>|null $attributes
      */
     public function __construct(int $type, string $path, ?string $name = null, ?int $position = -1, ?array $attributes = [])
     {
@@ -97,8 +101,9 @@ class Asset
 
     /**
      * Gets asset attributes
+     * @return array<string>|null
      */
-    public function getAttributes(): array
+    public function getAttributes(): ?array
     {
         return $this->attributes;
     }

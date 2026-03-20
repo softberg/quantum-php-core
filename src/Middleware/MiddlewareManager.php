@@ -29,6 +29,7 @@ class MiddlewareManager
 {
     /**
      * Middlewares queue
+     * @var array<string>
      */
     private array $middlewares = [];
 
@@ -41,12 +42,13 @@ class MiddlewareManager
     {
         $route = $matchedRoute->getRoute();
 
-        $this->middlewares = array_values($route->getMiddlewares());
+        $this->middlewares = array_values($route->getMiddlewares() ?? []);
         $this->module = $route->getModule();
     }
 
     /**
      * Apply Middlewares
+     * @return array{0: Request, 1: Response}
      * @throws MiddlewareException
      */
     public function applyMiddlewares(Request $request, Response $response): array

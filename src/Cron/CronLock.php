@@ -267,7 +267,7 @@ class CronLock
     }
 
     /**
-     * @param $handle
+     * @param resource $handle
      */
     private function writeTimestampToHandle($handle): bool
     {
@@ -293,7 +293,7 @@ class CronLock
     }
 
     /**
-     * @param $handle
+     * @param resource $handle
      */
     private function readTimestampFromHandle($handle): ?int
     {

@@ -23,9 +23,11 @@ namespace Quantum\Logger\Contracts;
 interface ReportableInterface
 {
     /**
-     * Reports the message
-     * @param mixed $message
+     * Reports a message
+     * @param string $message
+     * @param array<string, mixed>|null $context
+     * @return void
      */
-    public function report(string $level, $message, ?array $context = []);
+    public function report(string $level, string $message, ?array $context = []): void;
 
 }

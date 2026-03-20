@@ -56,6 +56,10 @@ class MigrationManager
      */
     public const DRIVERS = ['mysql', 'pgsql', 'sqlite'];
 
+    /**
+     * Migrations
+     * @var array<string, string>
+     */
     private array $migrations = [];
 
     private TableFactory $tableFactory;
@@ -260,6 +264,7 @@ class MigrationManager
 
     /**
      * Gets migration files
+     * @return array<string, string>
      */
     private function getMigrationFiles(): array
     {
@@ -279,6 +284,7 @@ class MigrationManager
 
     /**
      * Gets migrated entries from migrations table
+     * @return array<string, mixed>
      * @throws DatabaseException
      */
     private function getMigratedEntries(): array
@@ -288,6 +294,7 @@ class MigrationManager
 
     /**
      * Adds migrated entries to migrations table
+     * @param array<string> $entries
      * @throws DatabaseException
      */
     private function addMigratedEntries(array $entries): void
@@ -299,6 +306,7 @@ class MigrationManager
 
     /**
      * Removes migrated entries from migrations table
+     * @param array<string> $entries
      * @throws DatabaseException
      */
     private function removeMigratedEntries(array $entries): void

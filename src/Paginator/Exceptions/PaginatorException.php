@@ -26,7 +26,7 @@ use Quantum\App\Exceptions\BaseException;
 class PaginatorException extends BaseException
 {
     /**
-     * @param $missingParam
+     * @param string $missingParam
      */
     public static function missingRequiredParams(string $type, $missingParam): self
     {

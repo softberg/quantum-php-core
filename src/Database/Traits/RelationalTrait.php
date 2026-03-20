@@ -26,6 +26,7 @@ trait RelationalTrait
 {
     /**
      * Raw execute
+     * @param array<mixed> $parameters
      * @throws DatabaseException
      */
     public static function execute(string $query, array $parameters = []): bool
@@ -35,6 +36,8 @@ trait RelationalTrait
 
     /**
      * Raw query
+     * @param array<mixed> $parameters
+     * @return array<mixed>
      * @throws DatabaseException
      */
     public static function query(string $query, array $parameters = []): array
@@ -44,6 +47,8 @@ trait RelationalTrait
 
     /**
      * Fetches table columns
+     * @param array<mixed> $parameters
+     * @return array<mixed>
      * @throws DatabaseException
      */
     public static function fetchColumns(string $query, array $parameters = []): array
@@ -63,6 +68,7 @@ trait RelationalTrait
     /**
      * Get an array containing all the queries
      * run on a specified connection up to now.
+     * @return array<mixed>
      * @throws DatabaseException
      */
     public static function queryLog(): array
@@ -72,6 +78,7 @@ trait RelationalTrait
 
     /**
      * Resolves the requested query
+     * @param array<mixed> $parameters
      * @return mixed
      * @throws DatabaseException
      */

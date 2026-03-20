@@ -33,7 +33,8 @@ interface CloudAppInterface
 
     /**
      * Send request
-     * @param array|string|null $data
+     * @param array<string, mixed>|string|null $data
+     * @param array<string, string> $headers
      * @return mixed
      */
     public function sendRequest(

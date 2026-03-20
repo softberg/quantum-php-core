@@ -54,6 +54,7 @@ class PaginatorFactory
 
     /**
      * Creates a new paginator instance using the selected adapter type.
+     * @param array<string, mixed> $params
      * @throws BaseException
      * @throws PaginatorException
      */
@@ -76,6 +77,8 @@ class PaginatorFactory
 
     /**
      * Validates that all required parameters are present.
+     * @param string $type
+     * @param array<string, mixed> $params
      * @throws PaginatorException
      */
     private static function validateRequiredParams(string $type, array $params): void
@@ -89,6 +92,8 @@ class PaginatorFactory
 
     /**
      * Builds the list of arguments in the correct order for adapter instantiation.
+     * @param array<string, mixed> $params
+     * @return array<mixed>
      */
     private static function buildConstructorArgs(string $type, array $params): array
     {

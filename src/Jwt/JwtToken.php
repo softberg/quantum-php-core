@@ -40,6 +40,7 @@ class JwtToken extends JWT
 
     /**
      * Payload data
+     * @var array<string, mixed>
      */
     private array $payload = [];
 
@@ -56,6 +57,7 @@ class JwtToken extends JWT
 
     /**
      * Sets extra leeway time
+     * @param int $leeway
      */
     public function setLeeway($leeway): JwtToken
     {
@@ -84,6 +86,7 @@ class JwtToken extends JWT
 
     /**
      * Set claims
+     * @param array<string, mixed> $claims
      */
     public function setClaims(array $claims): JwtToken
     {
@@ -96,6 +99,7 @@ class JwtToken extends JWT
 
     /**
      * Sets user data
+     * @param array<string, mixed> $data
      */
     public function setData(array $data): JwtToken
     {
@@ -105,6 +109,7 @@ class JwtToken extends JWT
 
     /**
      * Composes and signs the JWT
+     * @param array<string, mixed>|null $head
      * @throws JwtException
      */
     public function compose(?string $keyId = null, ?array $head = null): string
@@ -136,6 +141,7 @@ class JwtToken extends JWT
 
     /**
      * Fetches the user data
+     * @return array<string, mixed>|null
      */
     public function fetchData(): ?array
     {

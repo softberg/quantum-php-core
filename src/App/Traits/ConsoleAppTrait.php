@@ -38,7 +38,7 @@ trait ConsoleAppTrait
      * @throws EnvException
      * @throws BaseException
      */
-    protected function loadEnvironment()
+    protected function loadEnvironment(): void
     {
         Environment::getInstance()
             ->setMutable(true)

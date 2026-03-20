@@ -153,6 +153,7 @@ trait PaginatorTrait
 
     /**
      * Get all page links
+     * @return array<int, string|null>
      */
     public function links(bool $withBaseUrl = false): array
     {
@@ -274,6 +275,7 @@ trait PaginatorTrait
 
     /**
      * Get items links HTML
+     * @param array<string> $links
      */
     protected function getItemsLinks(int $startPage, int $endPage, int $currentPage, array $links): string
     {
@@ -289,6 +291,7 @@ trait PaginatorTrait
 
     /**
      * Calculate start and end pages
+     * @return array{0: int, 1: int}
      */
     protected function calculateStartEndPages(int $currentPage, int $totalPages, int $pageItemsCount): array
     {
@@ -317,6 +320,7 @@ trait PaginatorTrait
 
     /**
      * Add last page link HTML
+     * @param array<string> $links
      */
     protected function addLastPageLink(int $endPage, int $totalPages, array $links): string
     {

@@ -43,16 +43,18 @@ trait LoggerTrait
 
     /**
      * Reports a log message
-     * @param $message
+     * @param string $message
+     * @param array<string, mixed>|null $context
      */
-    public function report(string $level, $message, ?array $context = []): void
+    public function report(string $level, string $message, ?array $context = []): void
     {
         $this->fs->append($this->logFile, $this->formatMessage($level, $message, $context));
     }
 
     /**
      * Formats the log message
-     * @param $message
+     * @param string|array<string, mixed> $message
+     * @param array<string, mixed>|null $context
      */
     protected function formatMessage(string $level, $message, ?array $context = []): string
     {

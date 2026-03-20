@@ -27,6 +27,7 @@ class Cookie implements CookieStorageInterface
 {
     /**
      * Cookie storage
+     * @var array<string, mixed>
      */
     private static array $storage = [];
 
@@ -44,7 +45,8 @@ class Cookie implements CookieStorageInterface
     }
 
     /**
-     *  Gets the cookie instance
+     * Gets the cookie instance
+     * @param array<string, mixed> $storage
      */
     public static function getInstance(array &$storage): Cookie
     {
@@ -60,6 +62,7 @@ class Cookie implements CookieStorageInterface
     /**
      * @inheritDoc
      * @throws BaseException
+     * @return array<string, mixed>
      */
     public function all(): array
     {

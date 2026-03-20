@@ -24,6 +24,7 @@ trait Type
 {
     /**
      * Checks the alpha characters
+     * @param mixed $value
      */
     protected function alpha($value): bool
     {
@@ -32,6 +33,7 @@ trait Type
 
     /**
      * Checks the alpha and numeric characters
+     * @param mixed $value
      */
     protected function alphaNumeric($value): bool
     {
@@ -40,6 +42,7 @@ trait Type
 
     /**
      * Checks the alpha and dash characters
+     * @param mixed $value
      */
     protected function alphaDash($value): bool
     {
@@ -48,6 +51,7 @@ trait Type
 
     /**
      * Checks the alphanumeric and space characters
+     * @param mixed $value
      */
     protected function alphaSpace($value): bool
     {
@@ -56,6 +60,7 @@ trait Type
 
     /**
      * Checks the numeric value
+     * @param mixed $value
      */
     protected function numeric($value): bool
     {
@@ -64,6 +69,7 @@ trait Type
 
     /**
      * Checks the integer value
+     * @param mixed $value
      */
     protected function integer($value): bool
     {
@@ -72,6 +78,7 @@ trait Type
 
     /**
      * Checks the float value
+     * @param mixed $value
      */
     protected function float($value): bool
     {
@@ -80,7 +87,7 @@ trait Type
 
     /**
      * Checks the boolean value
-     * @param $value
+     * @param mixed $value
      */
     protected function boolean($value): bool
     {
@@ -91,7 +98,8 @@ trait Type
 
     /**
      * Determines if the provided numeric value is lower to a specific value
-     * @param $minValue
+     * @param mixed $value
+     * @param mixed $minValue
      */
     protected function minNumeric($value, $minValue): bool
     {
@@ -100,7 +108,8 @@ trait Type
 
     /**
      * Determines if the provided numeric value is higher to a specific value
-     * @param $maxValue
+     * @param mixed $value
+     * @param mixed $maxValue
      */
     protected function maxNumeric($value, $maxValue): bool
     {

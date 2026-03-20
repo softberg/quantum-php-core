@@ -41,7 +41,7 @@ use Quantum\App\Exceptions\BaseException;
  * @method string extension(string $path)
  * @method bool isReadable(string $filename)
  * @method bool isWritable(string $filename)
- * @method array|false listDirectory(string $dirname)
+ * @method array<string>|false listDirectory(string $dirname)
  * @method glob(string $pattern, int $flags = 0)
  * @method mixed require (string $file, bool $once = false)
  * @method mixed include (string $file, bool $once = false)
@@ -76,6 +76,7 @@ class FileSystem
     }
 
     /**
+     * @param array<mixed> $arguments
      * @return mixed
      * @throws BaseException
      */

@@ -36,6 +36,7 @@ trait Params
 
     /**
      * Gets the GET params.
+     * @return array<string, mixed>
      */
     private static function getParams(): array
     {
@@ -48,6 +49,7 @@ trait Params
 
     /**
      * Gets the POST params.
+     * @return array<string, mixed>
      */
     private static function postParams(): array
     {
@@ -60,6 +62,7 @@ trait Params
 
     /**
      * Parses and returns JSON payload parameters.
+     * @return array<string, mixed>
      */
     private static function jsonPayloadParams(): array
     {
@@ -75,6 +78,7 @@ trait Params
 
     /**
      * Parses and returns URL-encoded parameters.
+     * @return array<string, mixed>
      */
     private static function urlEncodedParams(): array
     {
@@ -92,7 +96,7 @@ trait Params
 
     /**
      * Parses and returns multipart form data parameters.
-     * @return array[]
+     * @return array<string, mixed>
      * @throws BaseException
      * @throws ConfigException
      * @throws DiException

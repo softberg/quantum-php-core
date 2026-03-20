@@ -25,19 +25,26 @@ use Generator;
 /**
  * Class ModelCollection
  * @package Quantum\Model
+ * @template TKey of array-key
+ * @template TValue of Model
+ * @implements IteratorAggregate<TKey, TValue>
  */
 class ModelCollection implements Countable, IteratorAggregate
 {
     /**
-     * @var Model[]
+     * @var array<TKey, TValue>
      */
     private array $models = [];
 
+    /**
+     * @var iterable<TKey, TValue>
+     */
     private iterable $originalModels;
 
     private bool $modelsProcessed = false;
 
     /**
+     * @param iterable<TKey, TValue> $models
      * @throws BaseException
      */
     public function __construct(iterable $models = [])
@@ -51,7 +58,8 @@ class ModelCollection implements Countable, IteratorAggregate
 
     /**
      * Add a model to the collection
-     * @param Model $model
+     * @param TValue $model
+     * @return $this
      * @throws BaseException
      */
     public function add(Model $model): self
@@ -71,7 +79,8 @@ class ModelCollection implements Countable, IteratorAggregate
 
     /**
      * Remove a model from the collection
-     * @param Model $model
+     * @param TValue $model
+     * @return $this
      * @throws BaseException
      */
     public function remove(Model $model): self
@@ -180,7 +189,7 @@ class ModelCollection implements Countable, IteratorAggregate
 
     /**
      * Validate that an item is a Model instance
-     * @param $model
+     * @param mixed $model
      * @throws BaseException
      */
     private function validateModel($model): void

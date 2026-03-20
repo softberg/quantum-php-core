@@ -53,6 +53,7 @@ class Auth
     }
 
     /**
+     * @param array<mixed>|null $arguments
      * @return mixed
      * @throws BaseException
      */

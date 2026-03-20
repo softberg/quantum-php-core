@@ -25,8 +25,14 @@ final class MatchedRoute
 {
     private Route $route;
 
+    /**
+     * @var array<string, mixed>
+     */
     private array $params;
 
+    /**
+     * @param array<string, mixed> $params
+     */
     public function __construct(Route $route, array $params)
     {
         $this->route = $route;
@@ -42,7 +48,8 @@ final class MatchedRoute
     }
 
     /**
-     * Return parameters extracted from the URI at match time.
+     * Return the route's extracted parameters.
+     * @return array<string, mixed>
      */
     public function getParams(): array
     {

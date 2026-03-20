@@ -24,7 +24,7 @@ use Psr\SimpleCache\CacheInterface;
  * Class Cache
  * @package Quantum\Cache
  * @method mixed get($key, $default = null)
- * @method array getMultiple($keys, $default = null)
+ * @method iterable<string, mixed> getMultiple($keys, $default = null)
  * @method has($key): bool
  * @method bool set($key, $value, $ttl = null)
  * @method bool setMultiple($values, $ttl = null)
@@ -73,6 +73,7 @@ class Cache
     }
 
     /**
+     * @param array<mixed>|null $arguments
      * @return mixed
      * @throws BaseException
      */

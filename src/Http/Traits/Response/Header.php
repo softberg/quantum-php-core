@@ -27,6 +27,7 @@ trait Header
 {
     /**
      * Response headers
+     * @var array<string, mixed>
      */
     private static array $__headers = [];
 
@@ -56,6 +57,7 @@ trait Header
 
     /**
      * Get all response headers
+     * @return array<string, mixed>
      */
     public static function allHeaders(): array
     {

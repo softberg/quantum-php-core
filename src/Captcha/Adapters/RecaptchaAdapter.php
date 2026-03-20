@@ -44,6 +44,7 @@ class RecaptchaAdapter implements CaptchaInterface
 
     /**
      * RecaptchaAdapter constructor
+     * @param array<string, mixed> $params
      */
     public function __construct(array $params, HttpClient $httpClient)
     {

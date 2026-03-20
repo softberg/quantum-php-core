@@ -47,6 +47,7 @@ class Di
 
     /**
      * Register dependencies
+     * @param array<string, mixed> $dependencies
      * @throws DiException
      */
     public static function registerDependencies(array $dependencies): void
@@ -125,6 +126,7 @@ class Di
      * Retrieves a shared instance of the given dependency.
      * @template T of object
      * @param class-string<T> $dependency
+     * @param array<mixed> $args
      * @return T
      * @throws DiException|ReflectionException
      */
@@ -141,6 +143,7 @@ class Di
      * Creates new instance of the given dependency.
      * @template T of object
      * @param class-string<T> $dependency
+     * @param array<mixed> $args
      * @return T
      * @throws DiException|ReflectionException
      */
@@ -155,7 +158,8 @@ class Di
 
     /**
      * Autowire callable parameters
-     * @return list<mixed>
+     * @param array<mixed> $args
+     * @return array<int, mixed>
      * @throws DiException
      * @throws ReflectionException
      */
@@ -187,6 +191,7 @@ class Di
 
     /**
      * Resolves the dependency
+     * @param array<mixed> $args
      * @return mixed|object
      * @throws DiException|ReflectionException
      */
@@ -214,6 +219,7 @@ class Di
 
     /**
      * Instantiates the dependency
+     * @param array<mixed> $args
      * @return mixed
      * @throws ReflectionException|DiException
      */
@@ -231,6 +237,9 @@ class Di
 
     /**
      * Resolve parameter list
+     * @param array<ReflectionParameter> $parameters
+     * @param array<mixed> $args
+     * @return array<mixed>
      * @throws DiException
      */
     private static function resolveParameters(array $parameters, array &$args = []): array
@@ -246,6 +255,7 @@ class Di
 
     /**
      * Resolve single parameter
+     * @param array<mixed> $args
      * @return array|mixed|object|null
      * @throws DiException|ReflectionException
      */
@@ -259,11 +269,13 @@ class Di
 
         // prefer registered dependency
         if ($type !== null && isset(self::$dependencies[$type])) {
+            /** @var class-string $type */
             return self::get($type);
         }
 
         // fallback instantiable class
         if ($type !== null && self::instantiable($type)) {
+            /** @var class-string $type */
             return self::create($type);
         }
 

@@ -99,6 +99,7 @@ function deleteDirectoryWithFiles(string $dir): bool
 
 /**
  * Gets directory classes
+ * @return array<string>
  */
 function get_directory_classes(string $path): array
 {

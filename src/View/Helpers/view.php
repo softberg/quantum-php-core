@@ -41,6 +41,7 @@ function view(): ?string
 
 /**
  * Rendered partial
+ * @param array<string, mixed> $args
  * @throws BaseException
  * @throws ConfigException
  * @throws DebugBarException
@@ -68,7 +69,7 @@ function view_param(string $key)
 
 /**
  * Creates a raw param
- * @param $value
+ * @param mixed $value
  */
 function raw_param($value): RawParam
 {

@@ -89,8 +89,10 @@ class InstallToolkitCommand extends QtCommand
     /**
      * Runs an external command
      * @throws ExceptionInterface
+     * @param array<string, mixed> $arguments
+     * @return void
      */
-    protected function runExternalCommand(string $commandName, array $arguments)
+    protected function runExternalCommand(string $commandName, array $arguments): void
     {
         $command = $this->getApplication()->find($commandName);
         $command->run(new ArrayInput($arguments), new NullOutput());

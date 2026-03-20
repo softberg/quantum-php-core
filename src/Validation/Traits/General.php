@@ -34,6 +34,7 @@ trait General
 {
     /**
      * Checks Field Required
+     * @param mixed $value
      */
     protected function required($value): bool
     {
@@ -42,6 +43,7 @@ trait General
 
     /**
      * Checks Email
+     * @param mixed $value
      */
     protected function email($value): bool
     {
@@ -50,6 +52,7 @@ trait General
 
     /**
      * Checks for a valid credit card number
+     * @param mixed $value
      */
     protected function creditCard($value): bool
     {
@@ -83,6 +86,7 @@ trait General
 
     /**
      * Checks for a valid IBAN
+     * @param mixed $value
      */
     protected function iban($value): bool
     {
@@ -108,6 +112,7 @@ trait General
 
     /**
      * Checks for a valid format human name
+     * @param mixed $value
      */
     protected function name($value): bool
     {
@@ -116,6 +121,7 @@ trait General
 
     /**
      * Checks that the provided string is a likely street address.
+     * @param mixed $value
      */
     protected function streetAddress($value): bool
     {
@@ -129,6 +135,7 @@ trait General
 
     /**
      * Validates the phone number // 555-555-5555 , 5555425555, 555 555 5555, 1(519) 555-4444, 1 (519) 555-4422, +1-555-555-5555
+     * @param mixed $value
      */
     protected function phoneNumber($value): bool
     {
@@ -140,6 +147,7 @@ trait General
 
     /**
      * Determines if the provided input is a valid date
+     * @param mixed $value
      */
     protected function date($value, ?string $format = null): bool
     {
@@ -158,6 +166,7 @@ trait General
 
     /**
      * Ensures the value starts with a certain character / set of character
+     * @param mixed $value
      */
     protected function starts($value, ?string $text = null): bool
     {
@@ -166,6 +175,7 @@ trait General
 
     /**
      * Custom regex validator
+     * @param mixed $value
      */
     protected function regex($value, string $pattern): bool
     {
@@ -174,6 +184,7 @@ trait General
 
     /**
      * Validates JSON string
+     * @param mixed $value
      */
     protected function jsonString($value): bool
     {
@@ -184,6 +195,7 @@ trait General
 
     /**
      * Validates same value for both fields
+     * @param mixed $value
      */
     protected function same($value, string $otherField): bool
     {
@@ -192,7 +204,7 @@ trait General
 
     /**
      * Validates uniqueness
-     * @param $value
+     * @param mixed $value
      * @throws BaseException
      * @throws ModelException
      */
@@ -208,7 +220,7 @@ trait General
 
     /**
      * Validates record existence
-     * @param $value
+     * @param mixed $value
      * @throws BaseException
      * @throws ModelException
      */
@@ -224,6 +236,7 @@ trait General
 
     /**
      * Check Captcha
+     * @param mixed $value
      * @throws BaseException
      * @throws ConfigException
      * @throws DiException

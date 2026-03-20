@@ -43,7 +43,7 @@ class MigrationMigrateCommand extends QtCommand
 
     /**
      * Command arguments
-     * @var string[][]
+     * @var array<int, array<int|string, mixed>>
      */
     protected array $args = [
         ['direction', 'optional', '[up] for upgrade, [down] for downgrade'],
@@ -51,7 +51,7 @@ class MigrationMigrateCommand extends QtCommand
 
     /**
      * Command options
-     * @var string[][]
+     * @var array<int, array<int|string, mixed>>
      */
     protected array $options = [
         ['step', 's', 'optional', 'Number of migrations to apply'],

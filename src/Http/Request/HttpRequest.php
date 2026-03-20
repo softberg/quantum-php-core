@@ -121,6 +121,7 @@ abstract class HttpRequest
 
     /**
      * Sets the merged request parameters
+     * @param array<string, mixed> $params
      */
     public static function setRequestParams(array $params): void
     {
@@ -135,6 +136,7 @@ abstract class HttpRequest
 
     /**
      * Sets the uploaded files array merging handled $_FILES and parsed files
+     * @param array<string, mixed> $files
      * @throws BaseException
      * @throws ReflectionException
      */

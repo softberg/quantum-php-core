@@ -40,8 +40,14 @@ final class RouteBuilder
 
     private ?string $currentGroupName = null;
 
+    /**
+     * @var array<string, Route>
+     */
     private array $groupRoutes = [];
 
+    /**
+     * @var array<string, mixed>
+     */
     private array $groupMiddlewares = [];
 
     /**
@@ -58,6 +64,8 @@ final class RouteBuilder
 
     /**
      * Execute DSL and return final RouteCollection
+     * @param array<string, Closure> $moduleRouteClosures
+     * @param array<string, array<string, mixed>> $moduleConfigs
      * @throws RouteException
      */
     public function build(array $moduleRouteClosures, array $moduleConfigs): RouteCollection
@@ -84,7 +92,7 @@ final class RouteBuilder
 
     /**
      * Define a route with multiple HTTP methods.
-     * @param $handler
+     * @param callable|string $handler
      * @param string|null $action
      * @throws RouteException
      */
@@ -100,7 +108,7 @@ final class RouteBuilder
 
     /**
      * Define a GET route.
-     * @param $handler
+     * @param callable|string $handler
      * @param string|null $action
      * @throws RouteException
      */
@@ -111,7 +119,7 @@ final class RouteBuilder
 
     /**
      * Define a POST route.
-     * @param $handler
+     * @param callable|string $handler
      * @param string|null $action
      * @throws RouteException
      */
@@ -122,7 +130,7 @@ final class RouteBuilder
 
     /**
      * Define a PUT route.
-     * @param $handler
+     * @param callable|string $handler
      * @param string|null $action
      * @throws RouteException
      */
@@ -133,7 +141,7 @@ final class RouteBuilder
 
     /**
      * Define a DELETE route.
-     * @param $handler
+     * @param callable|string $handler
      * @param string|null $action
      * @throws RouteException
      */
@@ -178,6 +186,7 @@ final class RouteBuilder
 
     /**
      * Apply middlewares to the current route or group.
+     * @param array<string> $middlewares
      * @return $this
      * @throws RouteException
      */
@@ -269,7 +278,8 @@ final class RouteBuilder
 
     /**
      * Create and register a Route instance.
-     * @param $handler
+     * @param array<string> $methods
+     * @param callable|string $handler
      * @throws RouteException
      */
     private function addRoute(

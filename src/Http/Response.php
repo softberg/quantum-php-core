@@ -29,18 +29,18 @@ use Quantum\Http\Response\HttpResponse;
  * @method static int getStatusCode()
  * @method static string getStatusText()
  * @method static void redirect(string $url, int $code = null)
- * @method static void json(array $data = null, int $code = null)
- * @method static void xml(array $data = null, $root = '<data></data>', int $code = null)
+ * @method static void json(array<string, mixed> $data = null, int $code = null)
+ * @method static void xml(array<string, mixed> $data = null, $root = '<data></data>', int $code = null)
  * @method static void html(string $html, int $code = null)
  * @method static bool has(string $key)
  * @method static mixed get(string $key, string $default = null)
  * @method static void set(string $key, $value)
- * @method static array all()
+ * @method static array<string, mixed> all()
  * @method static void delete(string $key)
  * @method static bool hasHeader(string $key))
  * @method static string|null getHeader(string $key)
  * @method static void setHeader(string $key, string $value)
- * @method static array allHeaders()
+ * @method static array<string, mixed> allHeaders()
  * @method static void deleteHeader(string $key)
  * @method static void setContentType(string $contentType)
  * @method static string|null getContentType()
@@ -50,6 +50,7 @@ class Response
 {
     /**
      * @param string $function The function name
+     * @param array<mixed> $arguments
      * @return mixed
      */
     public function __call(string $function, array $arguments)
@@ -59,6 +60,7 @@ class Response
 
     /**
      * @param string $function The function name
+     * @param array<mixed> $arguments
      * @return mixed
      */
     public static function __callStatic(string $function, array $arguments)

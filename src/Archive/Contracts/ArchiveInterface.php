@@ -44,6 +44,7 @@ interface ArchiveInterface
 
     /**
      * Adds multiple files to the archive
+     * @param array<string, string> $fileNames
      */
     public function addMultipleFiles(array $fileNames): bool;
 
@@ -54,7 +55,7 @@ interface ArchiveInterface
 
     /**
      * Extracts the archive
-     * @param string|array $files
+     * @param string|array<string>|null $files
      */
     public function extractTo(string $pathToExtract, $files = null): bool;
 
@@ -65,6 +66,7 @@ interface ArchiveInterface
 
     /**
      * Delete a multiple files
+     * @param array<string> $fileNames
      */
     public function deleteMultipleFiles(array $fileNames): bool;
 }

@@ -24,11 +24,14 @@ interface RelationalInterface
 {
     /**
      * Raw execute
+     * @param array<mixed> $parameters
      */
     public static function execute(string $query, array $parameters = []): bool;
 
     /**
      * Raw query
+     * @param array<mixed> $parameters
+     * @return array<mixed>
      */
     public static function query(string $query, array $parameters = []): array;
 
@@ -45,26 +48,31 @@ interface RelationalInterface
     /**
      * Get an array containing all the queries
      * run on a specified connection up to now.
+     * @return array<mixed>
      */
     public static function queryLog(): array;
 
     /**
      * Adds a simple JOIN source to the query
+     * @param array<string, mixed> $constraint
      */
     public function join(string $table, array $constraint, ?string $tableAlias = null): DbalInterface;
 
     /**
      * Adds an INNER JOIN source to the query
+     * @param array<string, mixed> $constraint
      */
     public function innerJoin(string $table, array $constraint, ?string $tableAlias = null): DbalInterface;
 
     /**
      * Adds an LEFT JOIN source to the query
+     * @param array<string, mixed> $constraint
      */
     public function leftJoin(string $table, array $constraint, ?string $tableAlias = null): DbalInterface;
 
     /**
      * Adds an RIGHT JOIN source to the query
+     * @param array<string, mixed> $constraint
      */
     public function rightJoin(string $table, array $constraint, ?string $tableAlias = null): DbalInterface;
 

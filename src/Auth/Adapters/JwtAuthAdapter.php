@@ -128,6 +128,7 @@ class JwtAuthAdapter implements AuthenticatableInterface
      * Verify OTP
      * @throws AuthException
      * @throws JwtException
+     * @return array<string, string>
      */
     public function verifyOtp(int $otp, string $otpToken): array
     {
@@ -138,6 +139,7 @@ class JwtAuthAdapter implements AuthenticatableInterface
     /**
      * Get Updated Tokens
      * @throws JwtException
+     * @return array<string, string>
      */
     protected function getUpdatedTokens(User $user): array
     {
@@ -150,6 +152,7 @@ class JwtAuthAdapter implements AuthenticatableInterface
     /**
      * Set Updated Tokens
      * @throws JwtException
+     * @return array<string, string>
      */
     protected function setUpdatedTokens(User $user): array
     {

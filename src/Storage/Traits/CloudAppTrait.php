@@ -28,6 +28,8 @@ trait CloudAppTrait
 {
     /**
      * @inheritDoc
+     * @param array<string, mixed>|string|null $data
+     * @param array<string, string> $headers
      * @throws BaseException
      * @throws HttpException
      * @throws Exception

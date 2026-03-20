@@ -26,6 +26,9 @@ use Closure;
  */
 final class Route
 {
+    /**
+     * @var array<string>
+     */
     protected array $methods;
 
     protected string $pattern;
@@ -36,21 +39,47 @@ final class Route
 
     protected ?Closure $closure;
 
+    /**
+     * @var string|null
+     */
     protected ?string $name = null;
 
+    /**
+     * @var string|null
+     */
     protected ?string $module = null;
 
-    protected array $middlewares = [];
+    /**
+     * @var array<string, mixed>|null
+     */
+    protected ?array $middlewares = null;
 
+    /**
+     * @var string|null
+     */
     protected ?string $group = null;
 
+    /**
+     * @var string|null
+     */
     protected ?string $prefix = null;
 
+    /**
+     * @var array<string, mixed>|null
+     */
     protected ?array $cache = null;
 
+    /**
+     * @var string|null
+     */
     protected ?string $compiledPattern = null;
 
     /**
+     * @param array<string> $methods
+     * @param string $pattern
+     * @param string|null $controller
+     * @param string|null $action
+     * @param Closure|null $closure
      * @throws RouteException
      */
     public function __construct(
@@ -107,6 +136,7 @@ final class Route
 
     /**
      * Return caching configuration for this route.
+     * @return array<string, mixed>|null
      */
     public function getCache(): ?array
     {
@@ -125,6 +155,7 @@ final class Route
 
     /**
      * Return compiled regex pattern if set.
+     * @return string|null
      */
     public function getCompiledPattern(): ?string
     {
@@ -143,6 +174,7 @@ final class Route
 
     /**
      * Return group name.
+     * @return string|null
      */
     public function getGroup(): ?string
     {
@@ -159,6 +191,10 @@ final class Route
         return $this;
     }
 
+    /**
+     * Return URL prefix.
+     * @return string|null
+     */
     public function getPrefix(): ?string
     {
         return $this->prefix;
@@ -176,6 +212,7 @@ final class Route
 
     /**
      * Add middleware(s) with group-aware stacking order.
+     * @param array<string> $middlewares
      * @return $this
      */
     public function addMiddlewares(array $middlewares): self
@@ -213,6 +250,7 @@ final class Route
 
     /**
      * Return allowed HTTP methods.
+     * @return array<string>
      */
     public function getMethods(): array
     {
@@ -253,6 +291,7 @@ final class Route
 
     /**
      * Return route name.
+     * @return string|null
      */
     public function getName(): ?string
     {
@@ -261,8 +300,9 @@ final class Route
 
     /**
      * Return middleware list.
+     * @return array<string, mixed>|null
      */
-    public function getMiddlewares(): array
+    public function getMiddlewares(): ?array
     {
         return $this->middlewares;
     }
@@ -277,6 +317,7 @@ final class Route
 
     /**
      * Export route definition as array.
+     * @return array<string, mixed>
      */
     public function toArray(): array
     {

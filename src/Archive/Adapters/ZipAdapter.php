@@ -116,6 +116,7 @@ class ZipAdapter implements ArchiveInterface
 
     /**
      * @inheritDoc
+     * @param array<string, string> $fileNames
      * @throws ArchiveException
      */
     public function addMultipleFiles(array $fileNames): bool
@@ -146,6 +147,7 @@ class ZipAdapter implements ArchiveInterface
 
     /**
      * @inheritDoc
+     * @param array<string>|null $files
      * @throws ArchiveException
      */
     public function extractTo(string $pathToExtract, $files = null): bool
@@ -175,6 +177,7 @@ class ZipAdapter implements ArchiveInterface
 
     /**
      * @inheritDoc
+     * @param array<string> $fileNames
      * @throws ArchiveException
      */
     public function deleteMultipleFiles(array $fileNames): bool

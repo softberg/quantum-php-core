@@ -26,16 +26,20 @@ interface DbalInterface
 {
     /**
      * Connects to database
+     * @param array<string, mixed> $config
+     * @return void
      */
     public static function connect(array $config);
 
     /**
      * Gets the active connection
+     * @return array<string, mixed>|null
      */
     public static function getConnection(): ?array;
 
     /**
      * Close the database connection
+     * @return void
      */
     public static function disconnect();
 
@@ -74,7 +78,7 @@ interface DbalInterface
 
     /**
      * Adds criteria to query
-     * @param array ...$criterias
+     * @param array<string, mixed> ...$criterias
      */
     public function criterias(...$criterias): DbalInterface;
 
@@ -105,6 +109,7 @@ interface DbalInterface
 
     /**
      * Gets the result set
+     * @return array<mixed>
      */
     public function get(): array;
 
@@ -115,6 +120,7 @@ interface DbalInterface
 
     /**
      * Returns the data as array
+     * @return array<mixed>
      */
     public function asArray(): array;
 

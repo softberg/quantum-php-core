@@ -49,6 +49,7 @@ class ResourceCacheClearCommand extends QtCommand
 
     /**
      * Command options
+     * @var array<int, array<int|string, mixed>>
      */
     protected array $options = [
         ['all', 'all', 'none', ''],
@@ -56,8 +57,14 @@ class ResourceCacheClearCommand extends QtCommand
         ['module', 'm', 'required', ''],
     ];
 
+    /**
+     * @var array<int, string>
+     */
     protected array $types = ['views', 'asserts'];
 
+    /**
+     * @var array<int, string>
+     */
     protected array $modules = [];
 
     protected ?string $type = null;

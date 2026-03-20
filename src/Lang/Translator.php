@@ -78,6 +78,7 @@ class Translator
 
     /**
      * Load translations
+     * @param array<string> $files
      * @throws BaseException
      * @throws ConfigException
      * @throws DiException
@@ -96,7 +97,7 @@ class Translator
 
     /**
      * Get translation by key
-     * @param array|string|null $params
+     * @param array<string, mixed>|string|null $params
      */
     public function get(string $key, $params = null): string
     {

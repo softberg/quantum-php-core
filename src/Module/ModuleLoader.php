@@ -34,8 +34,14 @@ use Closure;
  */
 class ModuleLoader
 {
+    /**
+     * @var array<string, array<string>>
+     */
     private static array $moduleDependencies = [];
 
+    /**
+     * @var array<string, array<string, mixed>>
+     */
     private static array $moduleConfigs = [];
 
     /** @var array<string, Closure> */
@@ -67,6 +73,7 @@ class ModuleLoader
     }
 
     /**
+     * @return array<string, Closure>
      * @throws ModuleException
      * @throws RouteException
      */
@@ -115,6 +122,7 @@ class ModuleLoader
     }
 
     /**
+     * @return array<string, string>
      * @throws ModuleException
      */
     public function loadModulesDependencies(): array
@@ -132,6 +140,9 @@ class ModuleLoader
         return $modulesDependencies;
     }
 
+    /**
+     * @return array<string>
+     */
     public function getModuleDependencies(string $module): array
     {
         if (!isset(self::$moduleDependencies[$module])) {
@@ -164,6 +175,7 @@ class ModuleLoader
     }
 
     /**
+     * @return array<string, array<string, mixed>>
      * @throws ModuleException
      */
     public function getModuleConfigs(): array
@@ -175,6 +187,9 @@ class ModuleLoader
         return self::$moduleConfigs;
     }
 
+    /**
+     * @param array<string, mixed> $options
+     */
     private function isModuleEnabled(array $options): bool
     {
         return (bool) ($options['enabled'] ?? false);

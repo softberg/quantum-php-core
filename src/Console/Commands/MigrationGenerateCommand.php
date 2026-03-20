@@ -39,7 +39,7 @@ class MigrationGenerateCommand extends QtCommand
 
     /**
      * Command arguments
-     * @var string[][]
+     * @var array<int, array<int|string, mixed>>
      */
     protected array $args = [
         ['action', 'required', 'The action to perform. [create] for creating table, [alter] for altering table, [rename] for renaming table, [drop] for dropping table'],

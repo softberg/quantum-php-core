@@ -56,11 +56,13 @@ class QtView
 
     /**
      * Assets to be included
+     * @var array<string, mixed>
      */
     private array $assets = [];
 
     /**
      * View params
+     * @var array<string, mixed>
      */
     private array $params = [];
 
@@ -78,6 +80,7 @@ class QtView
 
     /**
      * Sets a layout
+     * @param array<string, mixed> $assets
      */
     public function setLayout(?string $layoutFile, array $assets = []): void
     {
@@ -106,7 +109,7 @@ class QtView
     }
 
     /**
-     * @param $value
+     * @param mixed $value
      */
     public function setRawParam(string $key, $value): void
     {
@@ -130,6 +133,7 @@ class QtView
 
     /**
      * Sets multiple view parameters
+     * @param array<string, mixed> $params
      */
     public function setParams(array $params): void
     {
@@ -140,6 +144,7 @@ class QtView
 
     /**
      * Gets all view parameters
+     * @return array<string, mixed>
      */
     public function getParams(): array
     {
@@ -156,6 +161,7 @@ class QtView
 
     /**
      * Renders the view.
+     * @param array<string, mixed> $params
      * @throws AssetException
      * @throws BaseException
      * @throws ConfigException
@@ -198,6 +204,7 @@ class QtView
 
     /**
      * Renders partial view.
+     * @param array<string, mixed> $params
      */
     public function renderPartial(string $viewFile, array $params = []): string
     {

@@ -27,7 +27,7 @@ use Curl\Curl;
  * HttpClient Class
  * @package Quantum\HttpClient
  * @uses php-curl-class/php-curl-class
- * @method object addGet(string $url, array $data = [])
+ * @method object addGet(string $url, array<string, mixed> $data = [])
  * @method object addPost(string $url, string $data = '', bool $follow_303_with_post = false)
  * @method setHeader($key, $value)
  * @method setHeaders($headers)
@@ -67,10 +67,20 @@ class HttpClient
      */
     private $data;
 
+    /**
+     * Request headers section
+     * @var array<string, mixed>
+     */
     private array $requestHeaders = [];
 
+    /**
+     * @var array<string, mixed>
+     */
     private array $response = [];
 
+    /**
+     * @var array<string, mixed>
+     */
     private array $errors = [];
 
     /**
@@ -245,6 +255,7 @@ class HttpClient
 
     /**
      * Gets the entire response
+     * @return array<string, mixed>
      */
     public function getResponse(): array
     {
@@ -253,6 +264,7 @@ class HttpClient
 
     /**
      * Returns the errors
+     * @return array<string, mixed>
      */
     public function getErrors(): array
     {
@@ -283,6 +295,7 @@ class HttpClient
     }
 
     /**
+     * @param array<mixed> $arguments
      * @throws BaseException
      * @throws HttpClientException
      */
@@ -337,6 +350,9 @@ class HttpClient
         ];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function formatHeaders(CaseInsensitiveArray $headers): array
     {
         $formatted = [];
@@ -358,6 +374,9 @@ class HttpClient
         }
     }
 
+    /**
+     * @param array<mixed> $arguments
+     */
     private function interceptCall(string $method, array $arguments): void
     {
         switch ($method) {

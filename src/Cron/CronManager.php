@@ -45,6 +45,7 @@ class CronManager
 
     /**
      * Execution statistics
+     * @var array<string, int>
      */
     private array $stats = [
         'total' => 0,
@@ -109,6 +110,7 @@ class CronManager
 
     /**
      * Create a task from array definition
+     * @param array<string, mixed> $definition
      * @throws CronException
      */
     private function createTaskFromArray(array $definition): CronTask
@@ -210,6 +212,7 @@ class CronManager
 
     /**
      * Get execution statistics
+     * @return array<string, int>
      */
     public function getStats(): array
     {
@@ -226,6 +229,7 @@ class CronManager
 
     /**
      * Log a message
+     * @param array<string, mixed> $context
      */
     private function log(string $level, string $message, array $context = []): void
     {

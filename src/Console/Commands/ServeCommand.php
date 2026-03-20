@@ -42,6 +42,11 @@ class ServeCommand extends QtCommand
     public const PLATFORM_MAC = 'Darwin';
 
     /**
+     * Maximum valid TCP/UDP port number
+     */
+    private const MAX_PORT = 65535;
+
+    /**
      * The console command name.
      */
     protected ?string $name = 'serve';
@@ -68,7 +73,7 @@ class ServeCommand extends QtCommand
 
     /**
      * Command arguments
-     * @var array<int, list<string|null>>
+     * @var array<int, array<int|string, mixed>>
      */
     protected array $options = [
         ['host', null, 'optional', 'Host', '127.0.0.1'],
@@ -92,6 +97,7 @@ class ServeCommand extends QtCommand
     /**
      * Start the server on the first available port.
      * @throws RuntimeException
+     * @return array<string, mixed>
      */
     protected function startServerOnAvailablePort(string $host, int $startPort): array
     {
@@ -125,6 +131,7 @@ class ServeCommand extends QtCommand
 
     /**
      * Handle server execution (browser opening and process monitoring).
+     * @param array<string, mixed> $serverData
      */
     protected function handleServerExecution(array $serverData): void
     {
@@ -253,7 +260,7 @@ class ServeCommand extends QtCommand
             2 => STDERR,
         ];
 
-        $proc = proc_open($cmd, $descriptors, $pipes);
+        $proc = proc_open($cmd[0] . ' ' . $cmd[1], $descriptors, $pipes);
         if (is_resource($proc)) {
             proc_close($proc);
         }
@@ -261,6 +268,7 @@ class ServeCommand extends QtCommand
 
     /**
      * Resolve platform-specific browser command.
+     * @return array<int, string>|null
      */
     protected function browserCommand(string $url): ?array
     {
@@ -291,8 +299,8 @@ class ServeCommand extends QtCommand
     {
         $port = (int) ($this->getOption('port') ?: $this->defaultPort);
 
-        if ($port < 1 || $port > 65535) {
-            throw new RuntimeException("Port must be between 1 and 65535, got: {$port}");
+        if ($port < 1 || $port > self::MAX_PORT) {
+            throw new RuntimeException('Port must be between 1 and ' . self::MAX_PORT . ", got: {$port}");
         }
 
         return $port;

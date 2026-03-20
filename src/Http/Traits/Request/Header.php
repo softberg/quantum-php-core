@@ -24,6 +24,7 @@ trait Header
 {
     /**
      * Request headers
+     * @var array<string, mixed>
      */
     private static array $__headers = [];
 
@@ -61,6 +62,7 @@ trait Header
 
     /**
      * Gets all request headers
+     * @return array<string, mixed>
      */
     public static function allHeaders(): array
     {
@@ -95,6 +97,7 @@ trait Header
 
     /**
      * Gets Basic Auth Credentials
+     * @return array<string, string>|null
      */
     public static function getBasicAuthCredentials(): ?array
     {
@@ -139,6 +142,9 @@ trait Header
         return self::$server->referrer();
     }
 
+    /**
+     * @return array<string>
+     */
     private static function normalizeHeaderKey(string $key): array
     {
         $keyWithHyphens = str_replace('_', '-', strtolower($key));

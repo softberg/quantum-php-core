@@ -64,7 +64,8 @@ namespace Quantum\Validation;
 class Rule
 {
     /**
-     * @return array[]
+     * @param array<int, mixed> $params
+     * @return array<string, array<int, mixed>>
      */
     public static function __callStatic(string $name, array $params): array
     {

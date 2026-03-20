@@ -109,6 +109,7 @@ trait Query
     /**
      * Fetches columns of the table
      * @throws DatabaseException
+     * @return array<string>
      */
     public static function fetchColumns(string $table): array
     {

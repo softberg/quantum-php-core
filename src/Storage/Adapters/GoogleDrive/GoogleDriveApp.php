@@ -40,6 +40,7 @@ class GoogleDriveApp implements CloudAppInterface
 
     /**
      * Authorization scope
+     * @var string
      */
     public const AUTH_SCOPE = 'https://www.googleapis.com/auth/drive';
 
@@ -174,6 +175,7 @@ class GoogleDriveApp implements CloudAppInterface
 
     /**
      * Gets file information
+     * @param array<string, mixed> $params
      * @return mixed|null
      * @throws Exception
      */

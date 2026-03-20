@@ -37,15 +37,18 @@ class DatabaseSessionAdapter implements SessionStorageInterface
 
     /**
      * Session params
+     * @var array<string, mixed>|null
      */
     private static ?array $params = [];
 
     /**
      * Session storage
+     * @var array<string, mixed>
      */
     private static array $storage = [];
 
     /**
+     * @param array<string, mixed>|null $params
      * @throws SessionException|ModelException
      */
     public function __construct(?array $params = null)
@@ -54,6 +57,7 @@ class DatabaseSessionAdapter implements SessionStorageInterface
     }
 
     /**
+     * @param array<string, mixed>|null $params
      * @throws SessionException|ModelException
      */
     protected function initializeSession(?array $params = null): void

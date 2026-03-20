@@ -16,8 +16,9 @@ use Quantum\Environment\Exceptions\EnvException;
 use Quantum\Environment\Environment;
 
 /**
- * Gets environment variable
- * @param $default
+ * Gets the value of an environment variable
+ * @param string $var
+ * @param mixed|null $default
  * @return mixed
  * @throws EnvException
  */

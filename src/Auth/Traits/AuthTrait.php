@@ -65,12 +65,12 @@ trait AuthTrait
     protected $otpLength = 6;
 
     /**
-     * @var array
+     * @var array<string, string>
      */
     protected $keyFields = [];
 
     /**
-     * @var array
+     * @var array<string>
      */
     protected $visibleFields = [];
 
@@ -89,6 +89,8 @@ trait AuthTrait
 
     /**
      * Sign Up
+     * @param array<string, mixed> $userData
+     * @param array<string, mixed>|null $customData
      */
     public function signup(array $userData, ?array $customData = null): User
     {
@@ -291,7 +293,8 @@ trait AuthTrait
     }
 
     /**
-     * Filters and gets the visible fields
+     * Filters and gets visible fields
+     * @return array<string, mixed>
      */
     protected function getVisibleFields(User $user): array
     {
@@ -326,8 +329,9 @@ trait AuthTrait
 
     /**
      * Send email
+     * @param array<string, mixed> $body
      */
-    protected function sendMail(User $user, array $body)
+    protected function sendMail(User $user, array $body): void
     {
         $fullName = ($user->hasField('firstname') && $user->hasField('lastname')) ? $user->getFieldValue('firstname') . ' ' . $user->getFieldValue('lastname') : '';
 
@@ -342,9 +346,10 @@ trait AuthTrait
 
     /**
      * Verify user schema
+     * @param array<string, mixed> $schema
      * @throws AuthException
      */
-    protected function verifySchema(array $schema)
+    protected function verifySchema(array $schema): void
     {
         $constants = (new ReflectionClass(AuthKeys::class))->getConstants();
 

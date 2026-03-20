@@ -31,6 +31,11 @@ trait Internal
 {
     /**
      * Creates an internal request for testing purposes
+     * @param string $method
+     * @param string $url
+     * @param array<string, mixed> $params
+     * @param array<string, mixed> $headers
+     * @param array<string, mixed> $files
      * @throws BaseException
      * @throws ReflectionException
      * @throws ConfigException
@@ -98,7 +103,9 @@ trait Internal
 
     /**
      * Detects the content type
-     * @param $server
+     * @param Server $server
+     * @param array<string, mixed>|null $data
+     * @param array<string, mixed>|null $files
      */
     protected static function detectAndSetContentType($server, ?array $data = null, ?array $files = null): void
     {

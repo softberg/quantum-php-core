@@ -80,6 +80,9 @@ abstract class DbModel extends Model
         return $this->ormInstance;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function relations(): array
     {
         return [];
@@ -121,6 +124,7 @@ abstract class DbModel extends Model
 
     /**
      * Fetch multiple results
+     * @return ModelCollection<int|string, Model>
      * @throws BaseException
      */
     public function get(): ModelCollection
@@ -130,7 +134,9 @@ abstract class DbModel extends Model
             $this->getOrmInstance()->get()
         );
 
-        return new ModelCollection($models);
+        /** @var ModelCollection<int|string, Model> $collection */
+        $collection = new ModelCollection($models);
+        return $collection;
     }
 
     /**
@@ -188,6 +194,7 @@ abstract class DbModel extends Model
     }
 
     /**
+     * @param array<string, mixed> $data
      * @return $this
      */
     public function hydrateFromOrm(array $data): self
@@ -197,6 +204,7 @@ abstract class DbModel extends Model
     }
 
     /**
+     * @param array<mixed> $args
      * @return mixed
      * @throws ModelException
      */

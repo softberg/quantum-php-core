@@ -24,8 +24,14 @@ use Quantum\Contracts\StorageInterface;
  */
 class DebuggerStore implements StorageInterface
 {
+    /**
+     * @var array<string, mixed>
+     */
     private static array $store = [];
 
+    /**
+     * @param array<string> $keys
+     */
     public function init(array $keys): void
     {
         foreach ($keys as $key) {
@@ -36,7 +42,7 @@ class DebuggerStore implements StorageInterface
     }
 
     /**
-     * @return array[]
+     * @return array<string, mixed>
      */
     public function all(): array
     {
@@ -48,6 +54,9 @@ class DebuggerStore implements StorageInterface
         return isset(self::$store[$key]);
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function get(string $key): array
     {
         return self::$store[$key] ?? [];

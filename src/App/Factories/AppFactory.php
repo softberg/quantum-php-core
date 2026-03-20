@@ -36,6 +36,9 @@ class AppFactory
         App::CONSOLE => ConsoleAppAdapter::class,
     ];
 
+    /**
+     * @var array<string, App>
+     */
     private static array $instances = [];
 
     /**

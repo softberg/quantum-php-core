@@ -23,7 +23,7 @@ use Quantum\App\Exceptions\BaseException;
 /**
  * Class Renderer
  * @package Quantum\Renderer
- * @method string render(string $view, array $params = [])
+ * @method string render(string $view, array<string, mixed> $params = [])
  */
 class Renderer
 {
@@ -50,6 +50,7 @@ class Renderer
     }
 
     /**
+     * @param array<mixed> $arguments
      * @return mixed
      * @throws BaseException
      */
