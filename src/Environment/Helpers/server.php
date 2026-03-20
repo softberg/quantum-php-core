@@ -36,6 +36,7 @@ if (!function_exists('getallheaders')) {
      * Get all headers
      * Built-in PHP function synonym of apache_request_headers()
      * Declaring here for Nginx server
+     * @return array<string, mixed>
      */
     function getallheaders(): array
     {

@@ -35,6 +35,7 @@ class SmtpAdapter implements MailerInterface
 
     /**
      * SmtpAdapter constructor
+     * @param array<string, mixed> $params
      */
     public function __construct(array $params)
     {
@@ -68,6 +69,7 @@ class SmtpAdapter implements MailerInterface
 
     /**
      * Gets "Reply-To" addresses
+     * @return array<string, mixed>
      */
     public function getReplays(): array
     {
@@ -76,6 +78,9 @@ class SmtpAdapter implements MailerInterface
 
     /**
      * Sets "CC" address
+     * @param string $email
+     * @param string|null $name
+     * @return SmtpAdapter
      */
     public function setCC(string $email, ?string $name = null): SmtpAdapter
     {
@@ -89,6 +94,7 @@ class SmtpAdapter implements MailerInterface
 
     /**
      * Gets "CC" addresses
+     * @return array<string, mixed>
      */
     public function getCCs(): array
     {
@@ -97,6 +103,9 @@ class SmtpAdapter implements MailerInterface
 
     /**
      * Sets "BCC" address
+     * @param string $email
+     * @param string|null $name
+     * @return SmtpAdapter
      */
     public function setBCC(string $email, ?string $name = null): SmtpAdapter
     {
@@ -110,6 +119,7 @@ class SmtpAdapter implements MailerInterface
 
     /**
      * Get "BCC" addresses
+     * @return array<string, mixed>
      */
     public function getBCCs(): array
     {
@@ -118,6 +128,8 @@ class SmtpAdapter implements MailerInterface
 
     /**
      * Sets attachments from the path on the filesystem
+     * @param string $attachment
+     * @return SmtpAdapter
      */
     public function setAttachment(string $attachment): SmtpAdapter
     {
@@ -128,6 +140,7 @@ class SmtpAdapter implements MailerInterface
 
     /**
      * Gets the attachments
+     * @return array<string, mixed>
      */
     public function getAttachments(): array
     {
@@ -136,6 +149,9 @@ class SmtpAdapter implements MailerInterface
 
     /**
      * Sets attachment from the string
+     * @param string $content
+     * @param string $filename
+     * @return SmtpAdapter
      */
     public function setStringAttachment(string $content, string $filename): SmtpAdapter
     {
@@ -149,6 +165,7 @@ class SmtpAdapter implements MailerInterface
 
     /**
      * Gets the string attachments
+     * @return array<string, mixed>
      */
     public function getStringAttachments(): array
     {
@@ -156,7 +173,28 @@ class SmtpAdapter implements MailerInterface
     }
 
     /**
+     * Sets body
+     * @param array<string, mixed>|string|null $message
+     * @return MailerInterface
+     */
+    public function setBody($message): MailerInterface
+    {
+        $this->message = $message;
+        return $this;
+    }
+
+    /**
+     * Gets body
+     * @return array<string, mixed>|string|null
+     */
+    public function getBody()
+    {
+        return $this->message;
+    }
+
+    /**
      * Setups the SMTP
+     * @param array<string, mixed> $params
      */
     private function setupSmtp(array $params): void
     {
@@ -201,6 +239,7 @@ class SmtpAdapter implements MailerInterface
 
     /**
      * Fills the php mailer properties
+     * @param array<string> $fields
      */
     private function fillProperties(string $method, array $fields = []): void
     {

@@ -87,6 +87,7 @@ class AsymmetricEncryptionAdapter implements EncryptionInterface
 
     /**
      * Generate key pairs
+     * @return array<string, string>
      * @throws BaseException
      */
     private function generateKeyPair(): array

@@ -36,6 +36,9 @@ class CryptorFactory
         Cryptor::ASYMMETRIC => AsymmetricEncryptionAdapter::class,
     ];
 
+    /**
+     * @var array<string, Cryptor>
+     */
     private static array $instances = [];
 
     /**

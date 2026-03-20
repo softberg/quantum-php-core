@@ -45,7 +45,7 @@ class Database
 
     /**
      * Database configurations
-     * @var array
+     * @var array<string, mixed>
      */
     private $configs;
 
@@ -100,7 +100,8 @@ class Database
     }
 
     /**
-     * Gets the DB configurations
+     * Gets DB configurations
+     * @return array<string, mixed>|null
      */
     public function getConfigs(): ?array
     {

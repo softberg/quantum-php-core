@@ -17,17 +17,18 @@ declare(strict_types=1);
 namespace Quantum\Asset\Exceptions;
 
 use Quantum\Asset\Enums\ExceptionMessages;
+use Exception;
 
 /**
  * Class AssetException
  * @package Quantum\Asset
  */
-class AssetException extends \Exception
+class AssetException extends Exception
 {
     public static function positionInUse(int $position, string $name): AssetException
     {
         return new self(
-            _message(ExceptionMessages::POSITION_IN_USE, [$position, $name]),
+            _message(ExceptionMessages::POSITION_IN_USE, [(string) $position, $name]),
             E_WARNING
         );
     }
@@ -35,7 +36,7 @@ class AssetException extends \Exception
     public static function nameInUse(?string $name): AssetException
     {
         return new self(
-            _message(ExceptionMessages::NAME_IN_USE, [$name]),
+            _message(ExceptionMessages::NAME_IN_USE, [(string) $name]),
             E_WARNING
         );
     }

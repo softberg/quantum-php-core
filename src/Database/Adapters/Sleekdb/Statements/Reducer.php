@@ -81,6 +81,10 @@ trait Reducer
         return $this;
     }
 
+    /**
+     * @param array<string> $columns
+     * @return array<string, mixed>
+     */
     private function selectPatch(array $columns): array
     {
         foreach ($columns as &$column) {

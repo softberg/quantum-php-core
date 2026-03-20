@@ -44,6 +44,7 @@ class Environment
 
     /**
      * Loaded env content
+     * @var array<string, mixed>
      */
     private array $envContent = [];
 
@@ -193,6 +194,9 @@ class Environment
         return null;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function loadDotenvFile(bool $forceMutableReload = false): array
     {
         $baseDir = App::getBaseDir();

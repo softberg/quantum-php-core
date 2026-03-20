@@ -27,6 +27,7 @@ class CommandDiscovery
 {
     /**
      * @throws ReflectionException
+     * @return list<array<string, mixed>>
      */
     public static function discover(string $directory, string $namespace): array
     {

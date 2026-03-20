@@ -173,6 +173,7 @@ class LocalFileSystemAdapter implements LocalFilesystemAdapterInterface
 
     /**
      * @inheritDoc
+     * @return array<string>|false
      */
     public function glob(string $pattern, int $flags = 0)
     {
@@ -197,6 +198,7 @@ class LocalFileSystemAdapter implements LocalFilesystemAdapterInterface
 
     /**
      * @inheritDoc
+     * @return array<string>
      */
     public function getLines(string $filename, int $offset = 0, ?int $length = null): array
     {

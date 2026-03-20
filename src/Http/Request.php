@@ -21,7 +21,7 @@ use Quantum\Http\Request\HttpRequest;
 /**
  * Class Request
  * @package Quantum\Http
- * @method static void create(string $method, string $url, array $params = [], array $headers = [], array $file = null)
+ * @method static void create(string $method, string $url, array<string, mixed> $params = [], array<string, mixed> $headers = [], array<string, mixed> $file = null)
  * @method static void flush()
  * @method static string|null getMethod()
  * @method static void setMethod(string $method)
@@ -41,20 +41,20 @@ use Quantum\Http\Request\HttpRequest;
  * @method static bool has(string $key)
  * @method static mixed get(string $key, string $default = null, bool $raw = false)
  * @method static void set(string $key, $value)
- * @method static array all()
+ * @method static array<string, mixed> all()
  * @method static void delete(string $key)
  * @method static bool hasFile(string $key)
  * @method static mixed getFile(string $key)
  * @method static bool hasHeader(string $key)
  * @method static string|null getHeader(string $key)
  * @method static void setHeader(string $key, $value)
- * @method static array allHeaders()
+ * @method static array<string, mixed> allHeaders()
  * @method static void deleteHeader(string $key)
  * @method static string|null getSegment(int $number)
- * @method static array getAllSegments()
+ * @method static array<string> getAllSegments()
  * @method static string|null getCsrfToken()
  * @method static string|null getAuthorizationBearer()
- * @method static array|null getBasicAuthCredentials()
+ * @method static array<string, string>|null getBasicAuthCredentials()
  * @method static bool isAjax()
  * @method static string|null getReferrer()
  * @mixin HttpRequest
@@ -63,6 +63,7 @@ class Request
 {
     /**
      * @param string $function The function name
+     * @param array<mixed> $arguments
      * @return mixed
      */
     public function __call(string $function, array $arguments)
@@ -72,6 +73,7 @@ class Request
 
     /**
      * @param string $function The function name
+     * @param array<mixed> $arguments
      * @return mixed
      */
     public static function __callStatic(string $function, array $arguments)

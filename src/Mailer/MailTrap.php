@@ -141,6 +141,7 @@ class MailTrap
 
     /**
      * Gets the parsed 'To' addresses
+     * @return array<string>
      */
     public function getParsedToAddresses(): array
     {
@@ -158,6 +159,7 @@ class MailTrap
 
     /**
      * Gets the parsed 'CC' addresses
+     * @return array<string>
      */
     public function getParsedCcAddresses(): array
     {
@@ -167,6 +169,7 @@ class MailTrap
 
     /**
      * Gets the parsed 'BCC' addresses
+     * @return array<string>
      */
     public function getParsedBccAddresses(): array
     {
@@ -176,6 +179,7 @@ class MailTrap
 
     /**
      * Gets the 'Reply To' addresses
+     * @return array<string>
      */
     public function getParsedReplyToAddresses(): array
     {
@@ -213,6 +217,7 @@ class MailTrap
 
     /**
      * Gets the parsed attachments
+     * @return array<int, array<string, mixed>>|null
      */
     public function getParsedAttachments(): ?array
     {

@@ -26,22 +26,25 @@ abstract class Model
 {
     /**
      * Internal attributes
+     * @var array<string, mixed>
      */
     protected array $attributes = [];
 
     /**
      * Models fillable properties
+     * @var array<string>
      */
     protected array $fillable = [];
 
     /**
      * Models hidden properties
      * Used by DBAL and plain models
+     * @var array<string>
      */
     public array $hidden = [];
 
     /**
-     * @param $value
+     * @param mixed $value
      * @return $this|mixed|null
      */
     public function prop(string $key, $value = null)
@@ -56,6 +59,7 @@ abstract class Model
 
     /**
      * Fill object properties
+     * @param array<string, mixed> $props
      * @return $this
      * @throws ModelException
      */
@@ -74,6 +78,7 @@ abstract class Model
 
     /**
      * Converts to array
+     * @return array<string, mixed>
      */
     public function asArray(): array
     {
@@ -96,7 +101,8 @@ abstract class Model
     }
 
     /**
-     * @return $this|mixed|null
+     * @param string $key
+     * @return mixed
      */
     public function __get(string $key)
     {
@@ -104,13 +110,18 @@ abstract class Model
     }
 
     /**
-     * @param $value
+     * @param string $key
+     * @param mixed $value
      */
     public function __set(string $key, $value): void
     {
         $this->prop($key, $value);
     }
 
+    /**
+     * @param string $key
+     * @return bool
+     */
     public function __isset(string $key): bool
     {
         return isset($this->attributes[$key]);

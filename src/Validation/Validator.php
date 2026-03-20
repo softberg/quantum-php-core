@@ -45,16 +45,19 @@ class Validator
 
     /**
      * Rules
+     * @var array<string, array<string, mixed>>
      */
     private array $rules = [];
 
     /**
      * Validation Errors
+     * @var array<string, array<string, mixed>>
      */
     private array $errors = [];
 
     /**
      * Request data
+     * @var array<string, mixed>
      */
     private array $data = [];
 
@@ -66,7 +69,7 @@ class Validator
 
     /**
      * Add rules for a single field
-     * @param array $rules Format: [['ruleName' => param], ...]
+     * @param array<int, array<string, mixed>> $rules Format: [['ruleName' => param], ...]
      */
     public function setRule(string $field, array $rules): void
     {
@@ -79,7 +82,7 @@ class Validator
 
     /**
      * Add multiple rules for multiple fields
-     * @param array $rules Format: ['field' => [ ['rule' => param], ... ], ...]
+     * @param array<string, array<int, array<string, mixed>>> $rules Format: ['field' => [ ['rule' => param], ... ], ...]
      */
     public function setRules(array $rules): void
     {
@@ -90,7 +93,7 @@ class Validator
 
     /**
      * Update a single rule for a field if exists
-     * @param array $rule Format: ['ruleName' => param]
+     * @param array<string, mixed> $rule Format: ['ruleName' => param]
      */
     public function updateRule(string $field, array $rule): void
     {
@@ -131,6 +134,7 @@ class Validator
 
     /**
      * Validate given data against defined rules
+     * @param array<string, mixed> $data
      * @return bool True if valid, false otherwise
      */
     public function isValid(array $data): bool
@@ -189,6 +193,7 @@ class Validator
 
     /**
      * Gets validation errors with translations
+     * @return array<string, array<int, string|null>>
      * @throws ConfigException
      * @throws DiException
      * @throws LangException
@@ -239,7 +244,7 @@ class Validator
 
     /**
      * Executes user defined rule
-     * @param $value
+     * @param mixed $value
      * @param mixed ...$params
      */
     protected function executeCustomRule(string $rule, $value, ...$params): bool
@@ -254,7 +259,7 @@ class Validator
     }
 
     /**
-     * @param $ruleParam
+     * @param mixed $ruleParam
      */
     private function setOrUpdateRule(string $field, string $ruleName, $ruleParam): void
     {

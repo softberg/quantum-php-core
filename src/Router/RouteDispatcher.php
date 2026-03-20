@@ -64,6 +64,7 @@ final class RouteDispatcher
 
     /**
      * Resolve controller callable from the route definition.
+     * @return array{0: object, 1: string}
      * @throws RouteException
      */
     private function resolveControllerCallable(Route $route): array
@@ -86,6 +87,7 @@ final class RouteDispatcher
 
     /**
      * Invoke a callable with parameters resolved via DI autowiring.
+     * @param array<string, mixed> $params
      * @throws DiException|ReflectionException
      */
     private function invoke(callable $callable, array $params): void
@@ -98,6 +100,7 @@ final class RouteDispatcher
 
     /**
      * Invoke a controller lifecycle hook if it exists.
+     * @param array<string, mixed> $params
      * @throws DiException|ReflectionException
      */
     private function callHook(object $controller, string $hook, array $params): void

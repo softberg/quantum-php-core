@@ -38,10 +38,14 @@ class MailgunAdapter implements MailerInterface
 
     private string $apiUrl = 'https://api.mailgun.net/v3/';
 
+    /**
+     * @var array<string, mixed>
+     */
     private array $data = [];
 
     /**
      * MailgunAdapter constructor
+     * @param array<string, mixed> $params
      */
     public function __construct(array $params)
     {

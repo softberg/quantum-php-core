@@ -106,6 +106,7 @@ class RouteListCommand extends QtCommand
 
     /**
      * Composes a table row
+     * @return list<string>
      */
     private function composeTableRow(Route $route, int $maxContentLength = 25): array
     {

@@ -31,7 +31,8 @@ function current_lang(): ?string
 
 /**
  * Gets translation
- * @param $params
+ * @param string $key
+ * @param array<int|string, mixed>|string|null $params
  * @throws ConfigException
  * @throws ReflectionException
  * @throws DiException
@@ -44,7 +45,7 @@ function t(string $key, $params = null): ?string
 
 /**
  * Outputs the translation
- * @param $params
+ * @param array<int|string, mixed>|string|null $params
  * @throws ConfigException
  * @throws DiException
  * @throws LangException

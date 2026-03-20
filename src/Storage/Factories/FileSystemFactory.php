@@ -57,6 +57,9 @@ class FileSystemFactory
         FileSystem::GDRIVE => GoogleDriveApp::class,
     ];
 
+    /**
+     * @var array<string, CloudAppInterface>
+     */
     private static array $instances = [];
 
     /**
@@ -130,6 +133,9 @@ class FileSystemFactory
     }
 
     /**
+     * Creates token service instance
+     * @param string $adapter
+     * @return TokenServiceInterface
      * @throws BaseException
      * @throws DiException
      * @throws ReflectionException
@@ -137,8 +143,9 @@ class FileSystemFactory
      */
     private static function createTokenService(string $adapter): TokenServiceInterface
     {
-        $serviceClass = config()->get('fs.' . $adapter . '.service');
+        $serviceClass = (string) config()->get('fs.' . $adapter . '.service');
 
+        /** @var class-string<\Quantum\Service\QtService> $serviceClass */
         $tokenService = ServiceFactory::create($serviceClass);
 
         if (!$tokenService instanceof TokenServiceInterface) {

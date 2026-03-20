@@ -32,6 +32,8 @@ function model(string $modelClass): Model
 
 /**
  * Creates anonymous dynamic model
+ * @param array<string> $foreignKeys
+ * @param array<string> $hidden
  */
 function dynamicModel(
     string $table,

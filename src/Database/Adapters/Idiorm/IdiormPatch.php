@@ -52,6 +52,7 @@ class IdiormPatch extends ORM
 
     /**
      * Add an LEFT JOIN source to the query
+     * @param array<string, mixed> $constraint
      */
     public function leftJoin(string $table, array $constraint, ?string $table_alias = null): object
     {
@@ -60,6 +61,7 @@ class IdiormPatch extends ORM
 
     /**
      * Add an RIGHT JOIN source to the query
+     * @param array<string, mixed> $constraint
      */
     public function rightJoin(string $table, array $constraint, ?string $table_alias = null): object
     {
@@ -68,6 +70,7 @@ class IdiormPatch extends ORM
 
     /**
      * Add Join
+     * @param array<string, mixed> $constraint
      */
     public function addJoin(string $operator, string $table, array $constraint, ?string $table_alias = null): object
     {

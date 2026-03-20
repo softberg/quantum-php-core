@@ -46,6 +46,7 @@ class ModelPaginator implements PaginatorInterface
 
     /**
      * @inheritDoc
+     * @return ModelCollection<int|string, Model>
      * @throws BaseException
      */
     public function data(): ModelCollection

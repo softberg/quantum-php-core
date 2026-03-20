@@ -61,6 +61,8 @@ class ModelFactory
 
     /**
      * Creates anonymous dynamic model
+     * @param array<string> $foreignKeys
+     * @param array<string> $hidden
      */
     public static function createDynamicModel(
         string $table,
@@ -84,6 +86,10 @@ class ModelFactory
         return $model;
     }
 
+    /**
+     * @param array<string> $foreignKeys
+     * @param array<string> $hidden
+     */
     protected static function createOrmInstance(
         string $table,
         string $modelName,

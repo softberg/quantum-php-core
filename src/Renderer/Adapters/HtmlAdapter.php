@@ -33,9 +33,13 @@ class HtmlAdapter implements TemplateRendererInterface
 {
     protected FileSystem $fs;
 
+    /**
+     * @var array<string, mixed>|null
+     */
     protected ?array $configs;
 
     /**
+     * @param array<string, mixed>|null $configs
      * @throws BaseException
      * @throws DiException
      * @throws ReflectionException
@@ -50,6 +54,7 @@ class HtmlAdapter implements TemplateRendererInterface
 
     /**
      * Renders the view
+     * @param array<string, mixed> $params
      * @throws BaseException|ReflectionException
      */
     public function render(string $view, array $params = []): string

@@ -41,6 +41,9 @@ class DatabaseAdapter implements CacheInterface
 
     private DbModel $cacheModel;
 
+    /**
+     * @param array<string, mixed> $params
+     */
     public function __construct(array $params)
     {
         $this->ttl = $params['ttl'];
@@ -70,6 +73,8 @@ class DatabaseAdapter implements CacheInterface
     /**
      * @inheritDoc
      * @throws InvalidArgumentException
+     * @param iterable<string> $keys
+     * @return iterable<string, mixed>
      */
     public function getMultiple($keys, $default = null)
     {
@@ -126,6 +131,7 @@ class DatabaseAdapter implements CacheInterface
     /**
      * @inheritDoc
      * @throws InvalidArgumentException
+     * @param iterable<string, mixed> $values
      */
     public function setMultiple($values, $ttl = null): bool
     {
@@ -159,6 +165,7 @@ class DatabaseAdapter implements CacheInterface
     /**
      * @inheritDoc
      * @throws InvalidArgumentException
+     * @param iterable<string> $keys
      */
     public function deleteMultiple($keys): bool
     {

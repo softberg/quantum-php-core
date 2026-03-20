@@ -19,7 +19,7 @@ namespace Quantum\Model\Traits;
 /**
  * Trait HasTimestamps
  *
- * @property array $attributes
+ * @property array<string, mixed> $attributes
  * @property string $idColumn
  */
 trait HasTimestamps

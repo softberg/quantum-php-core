@@ -81,6 +81,7 @@ class Debugger
 
     /**
      * Debugger constructor.
+     * @param array<mixed> $collectors
      * @throws DebugBarException
      */
     public function __construct(DebuggerStore $store, DebugBar $debugBar, array $collectors = [])
@@ -94,6 +95,7 @@ class Debugger
     }
 
     /**
+     * @param array<mixed> $collectors
      * @throws DebugBarException
      */
     public static function getInstance(?DebuggerStore $store = null, ?DebugBar $debugBar = null, ?array $collectors = []): Debugger
@@ -139,6 +141,9 @@ class Debugger
         }
     }
 
+    /**
+     * @return array<mixed>
+     */
     public function getStoreCell(string $cell): array
     {
         return $this->store->get($cell);
@@ -174,9 +179,10 @@ class Debugger
 
     /**
      * Creates a tab
+     * @return void
      * @throws DebugBarException
      */
-    protected function createTab(string $type)
+    protected function createTab(string $type): void
     {
         if (!$this->debugBar->hasCollector($type)) {
             $this->debugBar->addCollector(new MessagesCollector($type));
@@ -201,6 +207,9 @@ class Debugger
             ->addAssets([$this->customCss], []);
     }
 
+    /**
+     * @return array<mixed>
+     */
     protected static function getDefaultCollectors(): array
     {
         return [

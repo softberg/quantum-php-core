@@ -29,6 +29,7 @@ interface MailerInterface
 
     /**
      * Gets the 'From' email and the name
+     * @return array<string, mixed>
      */
     public function getFrom(): array;
 
@@ -39,6 +40,7 @@ interface MailerInterface
 
     /**
      * Gets 'To' addresses
+     * @return array<string, mixed>
      */
     public function getAddresses(): array;
 
@@ -64,13 +66,13 @@ interface MailerInterface
 
     /**
      * Sets the body
-     * @param string|array $message
+     * @param array<string, mixed>|string|null $message
      */
     public function setBody($message): MailerInterface;
 
     /**
      * Gets the body
-     * @return string|array
+     * @return array<string, mixed>|string|null
      */
     public function getBody();
 

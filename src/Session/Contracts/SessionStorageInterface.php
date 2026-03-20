@@ -31,8 +31,9 @@ interface SessionStorageInterface extends StorageInterface
     public function getFlash(string $key);
 
     /**
-     * Sets flash value by given key
+     * Sets the flash message
      * @param mixed $value
+     * @return void
      */
     public function setFlash(string $key, $value);
 

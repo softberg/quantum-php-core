@@ -39,9 +39,13 @@ class TwigAdapter implements TemplateRendererInterface
 {
     protected FileSystem $fs;
 
+    /**
+     * @var array<string, mixed>|null
+     */
     protected ?array $configs;
 
     /**
+     * @param array<string, mixed>|null $configs
      * @throws BaseException
      * @throws DiException
      * @throws ReflectionException
@@ -56,6 +60,7 @@ class TwigAdapter implements TemplateRendererInterface
 
     /**
      * Renders the view
+     * @param array<string, mixed> $params
      * @throws DiException|LoaderError|ReflectionException|RendererException|RuntimeError|SyntaxError
      */
     public function render(string $view, array $params = []): string

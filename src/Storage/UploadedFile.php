@@ -78,10 +78,14 @@ class UploadedFile extends SplFileInfo
     /**
      * ImageResize function arguments
      */
+    /**
+     * @var array<string, mixed>
+     */
     protected array $params = [];
 
     /**
      * Upload error code messages
+     * @var array<int, string>
      */
     protected array $errorMessages = [
         1 => 'The uploaded file exceeds the upload_max_filesize directive in php.ini',
@@ -95,6 +99,7 @@ class UploadedFile extends SplFileInfo
 
     /**
      * Allowed mime types => allowed extensions map
+     * @var array<string, list<string>>
      */
     protected array $allowedMimeTypes = [
         'image/jpeg' => ['jpg', 'jpeg'],
@@ -108,6 +113,7 @@ class UploadedFile extends SplFileInfo
     protected int $errorCode;
 
     /**
+     * @param array<string, mixed> $meta
      * @throws BaseException
      * @throws ConfigException
      * @throws DiException
@@ -136,6 +142,7 @@ class UploadedFile extends SplFileInfo
 
     /**
      * Sets the allowed mime types => extensions map
+     * @param array<string, string> $allowedMimeTypes
      */
     public function setAllowedMimeTypes(array $allowedMimeTypes, bool $merge = true): UploadedFile
     {
@@ -227,6 +234,7 @@ class UploadedFile extends SplFileInfo
 
     /**
      * Get image dimensions
+     * @return array{width: int<0, max>, height: int<0, max>}
      * @throws FileUploadException
      */
     public function getDimensions(): array
@@ -294,6 +302,7 @@ class UploadedFile extends SplFileInfo
 
     /**
      * Sets modification function on image
+     * @param array<mixed> $params
      * @throws BaseException
      * @throws FileUploadException
      * @throws LangException
@@ -340,7 +349,7 @@ class UploadedFile extends SplFileInfo
 
     /**
      * Checks if the given file is image
-     * @param $filePath
+     * @param string $filePath
      */
     public function isImage($filePath): bool
     {
@@ -370,7 +379,7 @@ class UploadedFile extends SplFileInfo
         $mimeType = strtolower($mimeType);
 
         return isset($this->allowedMimeTypes[$mimeType]) &&
-            in_array($extension, $this->allowedMimeTypes[$mimeType], true);
+            in_array($extension, (array) $this->allowedMimeTypes[$mimeType], true);
     }
 
     /**
@@ -407,6 +416,7 @@ class UploadedFile extends SplFileInfo
 
     /**
      * Sets the allowed mime types => extensions map
+     * @param array<string, string> $allowedMimeTypes
      */
     protected function setAllowedMimeTypesMap(array $allowedMimeTypes, bool $merge = true): void
     {
@@ -415,13 +425,14 @@ class UploadedFile extends SplFileInfo
 
     /**
      * Applies modifications on image
-     * @param $filePath
+     * @param string $filePath
+     * @return void
      * @throws ImageResizeException
      */
-    protected function applyModifications($filePath)
+    protected function applyModifications(string $filePath)
     {
         $image = new ImageResize($filePath);
-        call_user_func_array([$image, $this->imageModifierFuncName], $this->params);
+        call_user_func_array([$image, $this->imageModifierFuncName], array_values($this->params));
 
         $image->save($filePath);
     }

@@ -24,7 +24,7 @@ interface LocalFilesystemAdapterInterface extends FilesystemAdapterInterface
 {
     /**
      * Find path names matching a pattern
-     * @return array|false
+     * @return array<string>|false
      */
     public function glob(string $pattern, int $flags = 0);
 
@@ -40,6 +40,7 @@ interface LocalFilesystemAdapterInterface extends FilesystemAdapterInterface
 
     /**
      * Gets the content between given lines
+     * @return array<string>
      */
     public function getLines(string $filename, int $offset = 0, ?int $length = null): array;
 

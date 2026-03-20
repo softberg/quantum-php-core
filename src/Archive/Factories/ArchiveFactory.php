@@ -36,6 +36,9 @@ class ArchiveFactory
         Archive::ZIP => ZipAdapter::class,
     ];
 
+    /**
+     * @var array<string, Archive>
+     */
     private static array $instances = [];
 
     /**

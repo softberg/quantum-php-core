@@ -27,8 +27,14 @@ class ArrayPaginator implements PaginatorInterface
 {
     use PaginatorTrait;
 
+    /**
+     * @var array<mixed>
+     */
     private array $items;
 
+    /**
+     * @param array<mixed> $items
+     */
     public function __construct(array $items, int $perPage, int $page = 1)
     {
         $this->initialize($perPage, $page);
@@ -39,6 +45,7 @@ class ArrayPaginator implements PaginatorInterface
 
     /**
      * @inheritDoc
+     * @return array<mixed>
      */
     public function data(): array
     {

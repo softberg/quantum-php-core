@@ -121,6 +121,7 @@ trait Url
 
     /**
      * Gets all URI segments as an array.
+     * @return array<string>
      */
     public static function getAllSegments(): array
     {

@@ -56,6 +56,7 @@ trait Join
 
     /**
      * Apply the join to query builder
+     * @param array<string, mixed> $nextItem
      * @throws ModelException
      */
     private function applyJoin(QueryBuilder $queryBuilder, SleekDbal $currentItem, array $nextItem, int $level = 1): QueryBuilder
@@ -93,6 +94,7 @@ trait Join
 
     /**
      * Apply join condition for JOINTO type
+     * @param array<string, mixed> $currentItem
      * @throws InvalidArgumentException
      * @throws ModelException
      */
@@ -116,6 +118,8 @@ trait Join
     }
 
     /**
+     * @param array<string, mixed> $currentItem
+     * @param array<string, mixed> $relation
      * @throws InvalidArgumentException
      */
     private function applyHasRelation(QueryBuilder $queryBuilder, array $currentItem, array $relation): void
@@ -128,6 +132,8 @@ trait Join
     }
 
     /**
+     * @param array<string, mixed> $currentItem
+     * @param array<string, mixed> $relation
      * @throws InvalidArgumentException
      * @throws ModelException
      */
@@ -145,6 +151,7 @@ trait Join
     }
 
     /**
+     * @return array<string, mixed>
      * @throws ModelException
      */
     private function getValidatedRelation(SleekDbal $currentModel, DbModel $relatedModel): array

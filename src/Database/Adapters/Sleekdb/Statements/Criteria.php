@@ -92,6 +92,8 @@ trait Criteria
 
     /**
      * Adds one or more OR criteria in brackets
+     * @param array<int, array<string, mixed>> $orCriterias
+     * @return void
      * @throws DatabaseException
      */
     protected function orCriteria(array $orCriterias)
@@ -106,7 +108,7 @@ trait Criteria
     }
 
     /**
-     * @param $value
+     * @param mixed $value
      * @return mixed|string|null
      */
     protected function sanitizeValue($value)

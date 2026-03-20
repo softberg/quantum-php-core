@@ -40,12 +40,14 @@ interface FilesystemAdapterInterface
 
     /**
      * Puts the content into the file
+     * @param mixed $content
      * @return int|false
      */
     public function put(string $filename, $content, ?string $parentId = null);
 
     /**
      * Appends the content at the end of the file
+     * @param mixed $content
      * @return int|false
      */
     public function append(string $filename, $content);
@@ -94,7 +96,7 @@ interface FilesystemAdapterInterface
 
     /**
      * Lists the files inside the directory
-     * @return array|bool
+     * @return array<string>|bool
      */
     public function listDirectory(string $dirname);
 

@@ -24,6 +24,7 @@ interface StorageInterface
 {
     /**
      * Gets whole storage data
+     * @return mixed
      */
     public function all();
 
@@ -41,16 +42,19 @@ interface StorageInterface
     /**
      * Sets storage value with the given key
      * @param mixed $value
+     * @return void
      */
     public function set(string $key, $value);
 
     /**
      * Deletes the data from the storage by given key
+     * @return void
      */
     public function delete(string $key);
 
     /**
      * Deletes whole storage data
+     * @return void
      */
     public function flush();
 }

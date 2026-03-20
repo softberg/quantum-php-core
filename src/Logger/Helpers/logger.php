@@ -31,65 +31,70 @@ function logger(?string $adapter = null): Logger
 
 /**
  * Reports error
- * @param $var
+ * @param string $var
+ * @param array<string, mixed> $context
+ * @throws BaseException
  * @throws ConfigException
  * @throws DiException
  * @throws ReflectionException
- * @throws BaseException
  */
-function error($var, array $context = []): void
+function error(string $var, array $context = []): void
 {
     LoggerFactory::get()->error($var, $context);
 }
 
 /**
  * Reports warning
- * @param $var
+ * @param string $var
+ * @param array<string, mixed> $context
  * @throws BaseException
  * @throws ConfigException
  * @throws DiException
  * @throws ReflectionException
  */
-function warning($var, array $context = []): void
+function warning(string $var, array $context = []): void
 {
     LoggerFactory::get()->warning($var, $context);
 }
 
 /**
  * Reports notice
- * @param $var
+ * @param string $var
+ * @param array<string, mixed> $context
  * @throws BaseException
  * @throws ConfigException
  * @throws DiException
  * @throws ReflectionException
  */
-function notice($var, array $context = []): void
+function notice(string $var, array $context = []): void
 {
     LoggerFactory::get()->notice($var, $context);
 }
 
 /**
  * Reports info
- * @param $var
+ * @param string $var
+ * @param array<string, mixed> $context
  * @throws BaseException
  * @throws ConfigException
  * @throws DiException
  * @throws ReflectionException
  */
-function info($var, array $context = []): void
+function info(string $var, array $context = []): void
 {
     LoggerFactory::get()->info($var, $context);
 }
 
 /**
  * Reports debug
- * @param $var
+ * @param string $var
+ * @param array<string, mixed> $context
  * @throws BaseException
  * @throws ConfigException
  * @throws DiException
  * @throws ReflectionException
  */
-function debug($var, array $context = []): void
+function debug(string $var, array $context = []): void
 {
     LoggerFactory::get()->debug($var, $context);
 }

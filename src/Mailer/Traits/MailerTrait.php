@@ -33,11 +33,13 @@ trait MailerTrait
 {
     /**
      * From address and name
+     * @var array<string, mixed>
      */
     private array $from = [];
 
     /**
      * To addresses
+     * @var array<string, mixed>
      */
     private array $addresses = [];
 
@@ -48,7 +50,7 @@ trait MailerTrait
 
     /**
      * Email body
-     * @var string|array|null
+     * @var array<string, mixed>|string|null
      */
     private $message;
 
@@ -65,26 +67,31 @@ trait MailerTrait
 
     /**
      * Reply To addresses
+     * @var array<string, mixed>
      */
     protected array $replyToAddresses = [];
 
     /**
      * CC addresses
+     * @var array<string, mixed>
      */
     protected array $ccAddresses = [];
 
     /**
      * BCC addresses
+     * @var array<string, mixed>
      */
     protected array $bccAddresses = [];
 
     /**
      * Email attachments
+     * @var array<string, mixed>
      */
     protected array $attachments = [];
 
     /**
      * Email attachments created from string
+     * @var array<string, mixed>
      */
     protected array $stringAttachments = [];
 
@@ -100,6 +107,7 @@ trait MailerTrait
 
     /**
      * Gets 'From' email and the "name"
+     * @return array<string, mixed>
      */
     public function getFrom(): array
     {
@@ -121,6 +129,7 @@ trait MailerTrait
 
     /**
      * Gets 'To' addresses
+     * @return array<string, mixed>
      */
     public function getAddresses(): array
     {
@@ -164,7 +173,7 @@ trait MailerTrait
 
     /**
      * Sets the body
-     * @param string|array $message
+     * @param array<string, mixed>|string|null $message
      */
     public function setBody($message): MailerInterface
     {
@@ -174,7 +183,7 @@ trait MailerTrait
 
     /**
      * Gets the body
-     * @return array|string|null
+     * @return array<string, mixed>|string|null
      */
     public function getBody()
     {
@@ -196,7 +205,7 @@ trait MailerTrait
         $this->resetFields();
 
         if ($this->name !== 'SMTP' && !$sent) {
-            warning($this->httpClient->getErrors(), ['tab' => Debugger::MAILS]);
+            warning(implode(', ', $this->httpClient->getErrors()), ['tab' => Debugger::MAILS]);
         }
 
         return $sent;

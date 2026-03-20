@@ -45,29 +45,38 @@ class SleekDbal implements DbalInterface
 
     protected bool $isNew = false;
 
+    /**
+     * @var array<string, mixed>
+     */
     protected array $data = [];
 
     /**
-     * @var array
+     * @var array<string, mixed>
      */
     protected $modifiedFields = [];
 
+    /**
+     * @var array<int, array<string, mixed>>
+     */
     protected array $criterias = [];
 
+    /**
+     * @var array<int, array<string, mixed>>
+     */
     protected array $havings = [];
 
     /**
-     * @var array
+     * @var array<string>
      */
     protected $selected = [];
 
     /**
-     * @var array
+     * @var array<string>
      */
     protected $grouped = [];
 
     /**
-     * @var array
+     * @var array<string, string>
      */
     protected $ordered = [];
 
@@ -82,7 +91,7 @@ class SleekDbal implements DbalInterface
     protected $limit;
 
     /**
-     * @var array
+     * @var array<int, array<string, mixed>>
      */
     protected $joins = [];
 
@@ -102,13 +111,14 @@ class SleekDbal implements DbalInterface
     private string $idColumn;
 
     /**
-     * Foreign keys
+     * Foreign keys (related class name => relation definition)
+     * @var array<string, array<string, mixed>>
      */
     private array $foreignKeys;
 
     /**
      * Hidden fields
-     * @var array
+     * @var array<string>
      */
     public $hidden = [];
 
@@ -121,6 +131,7 @@ class SleekDbal implements DbalInterface
 
     /**
      * Active connection
+     * @var array<string, mixed>|null
      */
     private static ?array $connection = null;
 
@@ -137,6 +148,10 @@ class SleekDbal implements DbalInterface
         'BETWEEN', 'NOT BETWEEN',
     ];
 
+    /**
+     * @param array<string, array<string, mixed>> $foreignKeys
+     * @param array<string> $hidden
+     */
     public function __construct(
         string $table,
         ?string $modelName = null,
@@ -151,6 +166,9 @@ class SleekDbal implements DbalInterface
         $this->hidden = $hidden;
     }
 
+    /**
+     * @return mixed
+     */
     public function __get(string $key)
     {
         return $this->data[$key] ?? null;
@@ -158,19 +176,23 @@ class SleekDbal implements DbalInterface
 
     /**
      * @inheritDoc
+     * @param array<string, mixed> $config
      */
     public static function connect(array $config): void
     {
         self::$connection = $config;
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function setData(array $data): void
     {
         $this->data = $data;
     }
 
     /**
-     * @param $modifiedFields
+     * @param mixed $modifiedFields
      */
     public function setModifiedFields($modifiedFields): void
     {
@@ -184,6 +206,7 @@ class SleekDbal implements DbalInterface
 
     /**
      * @inheritDoc
+     * @return array<string, mixed>|null
      */
     public static function getConnection(): ?array
     {
@@ -235,6 +258,9 @@ class SleekDbal implements DbalInterface
         return $this->ormModel;
     }
 
+    /**
+     * @param array<string, mixed>|null $modelData
+     */
     public function updateOrmModel(?array $modelData): void
     {
         $this->data = $modelData;
@@ -307,6 +333,7 @@ class SleekDbal implements DbalInterface
 
     /**
      * Gets foreign keys
+     * @return array<string, array<string, mixed>>
      */
     public function getForeignKeys(): array
     {

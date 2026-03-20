@@ -17,7 +17,7 @@ use Symfony\Component\VarExporter\VarExporter;
 
 /**
  * Compose a message
- * @param string|array $params
+ * @param string|array<string> $params
  */
 function _message(string $subject, $params): string
 {
@@ -109,7 +109,7 @@ function get_caller_function(int $index = 2): ?string
 
 /**
  * Exports the variable
- * @param $var
+ * @param mixed $var
  * @throws ExceptionInterface
  */
 function export($var): string

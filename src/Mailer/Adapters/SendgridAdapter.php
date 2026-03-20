@@ -38,10 +38,14 @@ class SendgridAdapter implements MailerInterface
 
     private string $apiUrl = 'https://api.sendgrid.com/v3/mail/send';
 
+    /**
+     * @var array<string, mixed>
+     */
     private array $data = [];
 
     /**
      * SendgridAdapter constructor
+     * @param array<string, mixed> $params
      */
     public function __construct(array $params)
     {

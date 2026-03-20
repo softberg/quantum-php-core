@@ -97,6 +97,7 @@ class DropboxApp implements CloudAppInterface
 
     /**
      * Access token status indicating it needs refresh
+     * @var array<string>
      */
     public const ACCESS_TOKEN_STATUS = ['invalid_access_token', 'expired_access_token'];
 
@@ -194,7 +195,8 @@ class DropboxApp implements CloudAppInterface
 
     /**
      * Sends rpc request
-     * @return mixed|null
+     * @param array<string, mixed>|null $params
+     * @return mixed
      * @throws Exception
      */
     public function rpcRequest(string $endpoint, ?array $params = [])
@@ -209,6 +211,7 @@ class DropboxApp implements CloudAppInterface
 
     /**
      * Sends content request
+     * @param array<string, mixed> $params
      * @return mixed|null
      * @throws Exception
      */
@@ -225,6 +228,7 @@ class DropboxApp implements CloudAppInterface
 
     /**
      * Gets the normalized path
+     * @return array{path: string}
      */
     public function path(string $name): array
     {

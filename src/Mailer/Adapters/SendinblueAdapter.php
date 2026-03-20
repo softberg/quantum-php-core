@@ -38,10 +38,14 @@ class SendinblueAdapter implements MailerInterface
 
     private string $apiUrl = 'https://api.sendinblue.com/v3/smtp/email';
 
+    /**
+     * @var array<string, mixed>
+     */
     private array $data = [];
 
     /**
      * SendinblueAdapter constructor
+     * @param array<string, mixed> $params
      */
     public function __construct(array $params)
     {

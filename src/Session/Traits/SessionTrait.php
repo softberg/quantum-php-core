@@ -27,6 +27,7 @@ trait SessionTrait
 {
     /**
      * @inheritDoc
+     * @return array<string, mixed>
      */
     public function all(): array
     {
@@ -80,6 +81,7 @@ trait SessionTrait
 
     /**
      * @inheritDoc
+     * @return $this
      */
     public function setFlash(string $key, $value)
     {

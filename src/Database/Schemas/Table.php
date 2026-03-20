@@ -68,15 +68,18 @@ class Table
 
     private ?int $action = null;
 
+    /**
+     * @var array<int|string, mixed>
+     */
     private array $columns = [];
 
     /**
-     * @var array
+     * @var array<int|string, mixed>
      */
     private $indexKeys = [];
 
     /**
-     * @var array
+     * @var array<int|string, mixed>
      */
     private $droppedIndexKeys = [];
 
@@ -109,6 +112,7 @@ class Table
 
     /**
      * Sets an action on a table to be performed
+     * @param array<string, mixed> $data
      */
     public function setAction(int $action, ?array $data = null): Table
     {
@@ -242,6 +246,7 @@ class Table
 
     /**
      * Allows to call methods of Column class
+     * @param array<mixed>|null $arguments
      * @return $this
      * @throws BaseException
      */

@@ -36,6 +36,7 @@ class HookManager
 
     /**
      * Registered hooks store
+     * @var array<string, array<int, callable>>
      */
     private static array $store = [];
 
@@ -87,6 +88,7 @@ class HookManager
 
     /**
      * Fires the hook
+     * @param array<mixed>|null $args
      * @throws HookException
      */
     public function fire(string $name, ?array $args = null): void
@@ -103,6 +105,7 @@ class HookManager
 
     /**
      * Gets all registered hooks
+     * @return array<string, array<int, callable>>
      */
     public static function getRegistered(): array
     {
@@ -111,9 +114,10 @@ class HookManager
 
     /**
      * Registers new hook
+     * @return void
      * @throws HookException
      */
-    protected function register(string $name)
+    protected function register(string $name): void
     {
         if ($this->exists($name)) {
             throw HookException::hookDuplicateName($name);

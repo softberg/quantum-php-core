@@ -28,11 +28,11 @@ use Quantum\App\Exceptions\BaseException;
  * @method bool addEmptyDir(string $directory)
  * @method bool addFile(string $filePath, string $entryName)
  * @method bool addFromString(string $entryName, string $content)
- * @method bool addMultipleFiles(array $fileNames)
+ * @method bool addMultipleFiles(array<string, string> $fileNames)
  * @method int count()
  * @method bool extractTo(string $pathToExtract, $files = null)
  * @method bool deleteFile(string $filename)
- * @method bool deleteMultipleFiles(array $fileNames)
+ * @method bool deleteMultipleFiles(array<string> $fileNames)
  */
 class Archive
 {
@@ -59,6 +59,7 @@ class Archive
     }
 
     /**
+     * @param array<mixed>|null $arguments
      * @return mixed
      * @throws BaseException
      */

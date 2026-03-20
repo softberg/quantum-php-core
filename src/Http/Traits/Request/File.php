@@ -29,6 +29,7 @@ trait File
 {
     /**
      * Files
+     * @var array<string, mixed>
      */
     private static array $__files = [];
 
@@ -73,6 +74,7 @@ trait File
 
     /**
      * Handle files
+     * @param array<string, mixed> $files
      * @return array<string, UploadedFile|array<UploadedFile>>
      * @throws BaseException
      * @throws ReflectionException

@@ -124,6 +124,7 @@ class ModuleManager
     }
 
     /**
+     * @return array<string>
      * @throws Exception
      */
     private function copyDirectoryWithTemplates(string $src, string $dst): array
@@ -132,6 +133,7 @@ class ModuleManager
     }
 
     /**
+     * @return array<string>
      * @throws Exception
      */
     private function copyAssets(string $src, string $dst): array
@@ -140,6 +142,8 @@ class ModuleManager
     }
 
     /**
+     * @param array<string> $copiedFiles
+     * @return array<string>
      * @throws Exception
      */
     private function copyDirectory(string $src, string $dst, bool $processTemplates, array $copiedFiles = []): array
@@ -191,6 +195,9 @@ class ModuleManager
         return str_replace(array_keys($placeholders), array_values($placeholders), $content);
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function getModuleOptions(string $module): array
     {
         return [
@@ -200,6 +207,7 @@ class ModuleManager
     }
 
     /**
+     * @param array<string, array<string, mixed>> $moduleConfigs
      * @throws ExceptionInterface
      */
     private function updateModuleConfigFile(array $moduleConfigs): void
@@ -210,6 +218,9 @@ class ModuleManager
         );
     }
 
+    /**
+     * @param array<string> $copiedFiles
+     */
     protected function verifyModuleFilesCreated(array $copiedFiles): bool
     {
         foreach ($copiedFiles as $file) {

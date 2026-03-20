@@ -44,8 +44,14 @@ trait CaptchaTrait
      */
     protected $type;
 
+    /**
+     * @var array<int|string, string>
+     */
     protected array $errorCodes = [];
 
+    /**
+     * @var array<string, string>
+     */
     protected array $elementAttributes = [];
 
     public function getType(): ?string
@@ -75,6 +81,7 @@ trait CaptchaTrait
      * Generates an HTML code block for the captcha
      * @throws AssetException
      * @throws Exception
+     * @param array<string, mixed> $attributes
      */
     public function addToForm(string $formIdentifier = '', array $attributes = []): string
     {
@@ -153,6 +160,9 @@ trait CaptchaTrait
         return null;
     }
 
+    /**
+     * @param array<string, mixed> $attributes
+     */
     protected function getVisibleElement(array $attributes = []): string
     {
         $this->extractAttributes($attributes);
@@ -184,9 +194,9 @@ trait CaptchaTrait
     }
 
     /**
-     * @param $type
+     * @param string $type
      */
-    protected function isValidCaptchaType($type): bool
+    protected function isValidCaptchaType(string $type): bool
     {
         $captchaTypes = [
             self::CAPTCHA_VISIBLE,
@@ -197,9 +207,10 @@ trait CaptchaTrait
     }
 
     /**
+     * @param array<string, mixed> $attributes
      * @return void
      */
-    protected function extractAttributes(array $attributes)
+    protected function extractAttributes(array $attributes): void
     {
         foreach ($attributes as $key => $value) {
             if ($key == 'class') {

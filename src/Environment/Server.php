@@ -22,6 +22,9 @@ namespace Quantum\Environment;
  */
 class Server
 {
+    /**
+     * @var array<string, mixed>
+     */
     private array $server;
 
     private static ?Server $instance = null;
@@ -54,13 +57,16 @@ class Server
         $this->server = [];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function all(): array
     {
         return $this->server;
     }
 
     /**
-     * @param $key
+     * @param string $key
      * @return mixed|null
      */
     public function get($key)
@@ -69,7 +75,7 @@ class Server
     }
 
     /**
-     * @param $key
+     * @param string $key
      */
     public function has($key): bool
     {
@@ -77,8 +83,8 @@ class Server
     }
 
     /**
-     * @param $key
-     * @param $value
+     * @param string $key
+     * @param mixed $value
      */
     public function set($key, $value): void
     {
@@ -152,6 +158,9 @@ class Server
             ?? $this->get('REMOTE_ADDR');
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getAllHeaders(): array
     {
         $data = $this->all();

@@ -48,12 +48,14 @@ abstract class QtCommand extends Command implements CommandInterface
     /**
      * Console command input arguments
      * @example ['name', 'type', 'description']
+     * @var array<int, array<int|string, mixed>>
      */
     protected array $args = [];
 
     /**
      * Console command options
      * @example ['name', 'shortcut', 'type', 'description', 'default']
+     * @var array<int, array<int|string, mixed>>
      */
     protected array $options = [];
 
@@ -149,8 +151,9 @@ abstract class QtCommand extends Command implements CommandInterface
 
     /**
      * Configures the current command.
+     * @return void
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this->setArguments();
         $this->setOptions();

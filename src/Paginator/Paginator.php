@@ -37,7 +37,7 @@ use Quantum\App\Exceptions\BaseException;
  * @method string|null lastPageLink(bool $withBaseUrl = false)
  * @method int perPage()
  * @method int total()
- * @method array links(bool $withBaseUrl = false)
+ * @method list<string|null> links(bool $withBaseUrl = false)
  * @method string|null getPagination(bool $withBaseUrl = false, ?int $pageItemsCount = null)
  */
 class Paginator
@@ -68,6 +68,7 @@ class Paginator
     }
 
     /**
+     * @param array<mixed> $arguments
      * @return mixed
      * @throws BaseException
      */

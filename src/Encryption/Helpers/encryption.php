@@ -18,7 +18,7 @@ use Quantum\Encryption\Cryptor;
 
 /**
  * Encodes the data cryptographically
- * @param $data
+ * @param mixed $data
  * @throws BaseException
  */
 function crypto_encode($data, string $type = Cryptor::SYMMETRIC): string

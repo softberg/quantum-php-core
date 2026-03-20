@@ -27,6 +27,7 @@ trait Body
 {
     /**
      * Request body
+     * @var array<string, mixed>
      */
     private static array $__request = [];
 
@@ -74,6 +75,7 @@ trait Body
 
     /**
      * Gets all request parameters
+     * @return array<string, mixed>
      */
     public static function all(): array
     {

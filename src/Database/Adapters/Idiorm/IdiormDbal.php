@@ -85,12 +85,13 @@ class IdiormDbal implements DbalInterface, RelationalInterface
 
     /**
      * Foreign keys
-     * @var array
+     * @var array<string, array<string, mixed>>
      */
     private $foreignKeys;
 
     /**
      * Hidden fields
+     * @var array<string>
      */
     private array $hidden;
 
@@ -106,6 +107,7 @@ class IdiormDbal implements DbalInterface, RelationalInterface
 
     /**
      * Active connection
+     * @var array<string, mixed>|null
      */
     private static ?array $connection = null;
 
@@ -134,6 +136,10 @@ class IdiormDbal implements DbalInterface, RelationalInterface
      */
     private static string $ormClass = ORM::class;
 
+    /**
+     * @param array<string, array<string, mixed>> $foreignKeys
+     * @param array<string> $hidden
+     */
     public function __construct(
         string $table,
         ?string $modelName = null,
@@ -150,6 +156,7 @@ class IdiormDbal implements DbalInterface, RelationalInterface
 
     /**
      * @inheritDoc
+     * @param array<string, mixed> $config
      */
     public static function connect(array $config): void
     {
@@ -165,6 +172,7 @@ class IdiormDbal implements DbalInterface, RelationalInterface
 
     /**
      * @inheritDoc
+     * @return array<string, mixed>|null
      */
     public static function getConnection(): ?array
     {
@@ -207,6 +215,7 @@ class IdiormDbal implements DbalInterface, RelationalInterface
 
     /**
      * Gets foreign keys
+     * @return array<string, array<string, mixed>>
      */
     public function getForeignKeys(): array
     {
@@ -234,11 +243,18 @@ class IdiormDbal implements DbalInterface, RelationalInterface
         }
     }
 
+    /**
+     * @return void
+     */
     protected function updateOrmModel(ORM $ormModel)
     {
         $this->ormModel = $ormModel;
     }
 
+    /**
+     * @param array<string, mixed> $config
+     * @return array<string, mixed>
+     */
     protected static function getBaseConfig(string $driver, array $config): array
     {
         return [
@@ -248,6 +264,10 @@ class IdiormDbal implements DbalInterface, RelationalInterface
         ];
     }
 
+    /**
+     * @param array<string, mixed> $config
+     * @return array<string, mixed>
+     */
     protected static function getDriverConfig(string $driver, array $config, string $charset): array
     {
         if ($driver === self::DRIVER_MYSQL || $driver === self::DRIVER_PGSQL) {
@@ -267,6 +287,7 @@ class IdiormDbal implements DbalInterface, RelationalInterface
 
     /**
      * Builds connection string
+     * @param array<string, mixed> $config
      */
     protected static function buildConnectionString(string $driver, array $config): string
     {

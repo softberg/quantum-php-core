@@ -56,7 +56,7 @@ trait AppTrait
     /**
      * @throws DiException
      */
-    protected function loadCoreDependencies()
+    protected function loadCoreDependencies(): void
     {
         $file = dirname(__DIR__) . DS . 'Config' . DS . 'dependencies.php';
 

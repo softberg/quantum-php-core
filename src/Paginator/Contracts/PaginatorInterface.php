@@ -97,6 +97,7 @@ interface PaginatorInterface
 
     /**
      * Get all page links
+     * @return list<string|null>
      */
     public function links(bool $withBaseUrl = false): array;
 

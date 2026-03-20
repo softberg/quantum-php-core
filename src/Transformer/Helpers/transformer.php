@@ -19,6 +19,8 @@ use Quantum\Transformer\Transformer;
 
 /**
  * Transforms the data by given transformer signature
+ * @param array<mixed> $data
+ * @return array<mixed>
  */
 function transform(array $data, TransformerInterface $transformer): array
 {

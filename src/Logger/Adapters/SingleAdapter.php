@@ -40,6 +40,10 @@ class SingleAdapter implements ReportableInterface
      * @throws ConfigException
      * @throws ReflectionException
      */
+    /**
+     * SingleAdapter constructor
+     * @param array<string, mixed> $params
+     */
     public function __construct(array $params)
     {
         $this->fs = FileSystemFactory::get();
@@ -47,7 +51,8 @@ class SingleAdapter implements ReportableInterface
     }
 
     /**
-     * Initialize the adapter for Single log file
+     * Initialize the adapter for Single logs
+     * @param array<string, mixed> $params
      * @throws LoggerException
      */
     protected function initialize(array $params): void

@@ -329,8 +329,8 @@ class Schedule
     }
 
     /**
-     * Run the task on specific days
-     * @param int|array $days
+     * Run task on specific days
+     * @param int|array<int, string> $days
      */
     public function days($days): self
     {

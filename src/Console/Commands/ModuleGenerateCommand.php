@@ -39,7 +39,7 @@ class ModuleGenerateCommand extends QtCommand
 
     /**
      * Command arguments
-     * @var string[][]
+     * @var array<int, array<int|string, mixed>>
      */
     protected array $args = [
         ['module', 'required', 'The module name'],

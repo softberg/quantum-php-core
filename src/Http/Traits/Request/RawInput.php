@@ -33,7 +33,7 @@ trait RawInput
 {
     /**
      * Parses raw input data and returns parsed parameters and files
-     * @return array|array[]
+     * @return array<string, mixed>
      * @throws BaseException
      * @throws ConfigException
      * @throws DiException
@@ -70,6 +70,7 @@ trait RawInput
 
     /**
      * Splits raw input into multipart blocks
+     * @return array<string>
      */
     private static function getBlocks(string $boundary, string $rawInput): array
     {
@@ -81,6 +82,8 @@ trait RawInput
 
     /**
      * Processes multipart blocks and extracts parameters and files
+     * @param array<string> $blocks
+     * @return array<string, mixed>
      * @throws BaseException
      * @throws ConfigException
      * @throws DiException
@@ -127,6 +130,7 @@ trait RawInput
 
     /**
      * Adds a parsed file to the files collection
+     * @param array<string, mixed> $files
      */
     private static function addFileToCollection(array &$files, string $nameParam, UploadedFile $file): void
     {
@@ -164,6 +168,7 @@ trait RawInput
 
     /**
      * Gets the parsed param
+     * @return array<string, string>
      */
     private static function getParsedStream(string $block): array
     {
@@ -174,6 +179,7 @@ trait RawInput
 
     /**
      * Gets the parsed file
+     * @return array<int, string|UploadedFile>|null
      * @throws BaseException
      * @throws ConfigException
      * @throws DiException
@@ -236,6 +242,7 @@ trait RawInput
 
     /**
      * Parses a block and extracts normal form parameters
+     * @return array<string, mixed>
      */
     private static function getParsedParameter(string $block): array
     {
@@ -288,7 +295,7 @@ trait RawInput
 
     /**
      * Parses array-like parameter names
-     * @return array|string
+     * @return array<string>|string
      */
     private static function arrayParam(string $parameter)
     {

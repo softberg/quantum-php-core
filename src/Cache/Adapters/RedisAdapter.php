@@ -43,6 +43,7 @@ class RedisAdapter implements CacheInterface
 
     /**
      * @throws RedisException
+     * @param array<string, mixed> $params
      */
     public function __construct(array $params)
     {
@@ -75,6 +76,8 @@ class RedisAdapter implements CacheInterface
     /**
      * @inheritDoc
      * @throws InvalidArgumentException
+     * @param iterable<string> $keys
+     * @return iterable<string, mixed>
      */
     public function getMultiple($keys, $default = null)
     {
@@ -113,6 +116,7 @@ class RedisAdapter implements CacheInterface
      * @inheritDoc
      * @throws RedisException
      * @throws InvalidArgumentException
+     * @param iterable<string, mixed> $values
      */
     public function setMultiple($values, $ttl = null): bool
     {
@@ -140,6 +144,7 @@ class RedisAdapter implements CacheInterface
     /**
      * @inheritDoc
      * @throws InvalidArgumentException
+     * @param iterable<string> $keys
      */
     public function deleteMultiple($keys): bool
     {

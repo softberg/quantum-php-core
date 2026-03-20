@@ -41,7 +41,7 @@ class AssetManager
 
     /**
      * Published assets
-     * @var array[]
+     * @var array<int, array<int, Asset>>
      */
     private array $published = [];
 

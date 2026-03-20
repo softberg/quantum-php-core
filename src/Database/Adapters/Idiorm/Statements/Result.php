@@ -107,7 +107,8 @@ trait Result
     }
 
     /**
-     * @param $result
+     * @param array<string, mixed> $result
+     * @return array<string, mixed>
      */
     public function setHidden($result): array
     {

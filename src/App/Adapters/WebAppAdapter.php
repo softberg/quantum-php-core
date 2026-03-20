@@ -132,7 +132,10 @@ class WebAppAdapter extends AppAdapter
 
             $this->loadLanguage();
 
-            info(HookManager::getInstance()->getRegistered(), ['tab' => Debugger::HOOKS]);
+            $debugger = Debugger::getInstance();
+            if ($debugger->isEnabled()) {
+                $debugger->addToStoreCell(Debugger::HOOKS, 'info', HookManager::getInstance()->getRegistered());
+            }
 
             $middlewareManager = new MiddlewareManager($matchedRoute);
 

@@ -50,6 +50,7 @@ function redirect(string $url, int $code = StatusCode::FOUND): void
 
 /**
  * Redirect with data
+ * @param array<string, mixed> $data
  * @throws BaseException
  * @throws ConfigException
  * @throws DiException

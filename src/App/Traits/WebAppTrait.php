@@ -44,7 +44,7 @@ trait WebAppTrait
      * @throws EnvException
      * @throws BaseException
      */
-    protected function loadEnvironment()
+    protected function loadEnvironment(): void
     {
         Environment::getInstance()->load(new Setup('config', 'env'));
     }

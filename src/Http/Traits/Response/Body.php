@@ -31,6 +31,7 @@ trait Body
 {
     /**
      * Response
+     * @var array<string, mixed>
      */
     private static array $__response = [];
 
@@ -72,6 +73,7 @@ trait Body
 
     /**
      * Gets all response parameters
+     * @return array<string, mixed>
      */
     public static function all(): array
     {
@@ -90,6 +92,7 @@ trait Body
 
     /**
      * Prepares the JSON response
+     * @param array<string, mixed>|null $data
      */
     public static function json(?array $data = null, ?int $code = null): void
     {
@@ -106,6 +109,8 @@ trait Body
 
     /**
      * Prepares the JSONP response
+     * @param string $callback
+     * @param array<string, mixed>|null $data
      */
     public static function jsonp(string $callback, ?array $data = null, ?int $code = null): void
     {
@@ -124,6 +129,7 @@ trait Body
 
     /**
      * Returns response with function
+     * @param array<string, mixed> $data
      */
     public static function getJsonPData(array $data): string
     {
@@ -132,6 +138,8 @@ trait Body
 
     /**
      * Prepares the XML response
+     * @param array<string, mixed>|null $data
+     * @param string $root
      */
     public static function xml(?array $data = null, $root = '<data></data>', ?int $code = null): void
     {
@@ -181,6 +189,7 @@ trait Body
 
     /**
      * Transforms array to XML
+     * @param array<string, mixed> $arr
      * @throws Exception
      */
     private static function arrayToXML(array $arr): string
@@ -196,6 +205,7 @@ trait Body
 
     /**
      * Compose XML
+     * @param array<string, mixed> $arr
      */
     private static function composeXML(array $arr, SimpleXMLElement &$simpleXML): void
     {

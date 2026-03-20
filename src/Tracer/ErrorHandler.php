@@ -164,6 +164,7 @@ class ErrorHandler
 
     /**
      * Composes the stack trace
+     * @return array<int, array{file: string, code: string}>
      * @throws BaseException
      * @throws ConfigException
      * @throws DiException
