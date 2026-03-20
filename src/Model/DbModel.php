@@ -134,7 +134,9 @@ abstract class DbModel extends Model
             $this->getOrmInstance()->get()
         );
 
-        return new ModelCollection($models);
+        /** @var ModelCollection<int|string, Model> $collection */
+        $collection = new ModelCollection($models);
+        return $collection;
     }
 
     /**

@@ -60,7 +60,9 @@ class ModelPaginator implements PaginatorInterface
             $result = array_map(fn ($item): ?DbModel => wrapToModel($item->getOrmInstance(), $this->modelClass), iterator_to_array($result));
         }
 
-        return new ModelCollection($result);
+        /** @var ModelCollection<int|string, Model> $collection */
+        $collection = new ModelCollection($result);
+        return $collection;
     }
 
     /**
