@@ -42,19 +42,16 @@ interface CookieStorageInterface
     /**
      * Sets data by given key
      * @param mixed $value
-     * @return void
      */
     public function set(string $key, $value = '', int $time = 0, string $path = '/', string $domain = '', bool $secure = false, bool $httponly = false): void;
 
     /**
      * Deletes data by given key
-     * @return void
      */
     public function delete(string $key, string $path = '/'): void;
 
     /**
      * Deletes whole storage data
-     * @return void
      */
-    public function flush();
+    public function flush(): void;
 }

@@ -42,21 +42,18 @@ interface SessionStorageInterface
     /**
      * Sets storage value with the given key
      * @param mixed $value
-     * @return void
      */
-    public function set(string $key, $value);
+    public function set(string $key, $value): void;
 
     /**
      * Deletes the data from the storage by given key
-     * @return void
      */
-    public function delete(string $key);
+    public function delete(string $key): void;
 
     /**
      * Deletes whole storage data
-     * @return void
      */
-    public function flush();
+    public function flush(): void;
 
     /**
      * Gets flash value by given key
