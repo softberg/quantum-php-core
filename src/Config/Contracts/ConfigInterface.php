@@ -14,13 +14,15 @@ declare(strict_types=1);
  * @since 3.0.0
  */
 
-namespace Quantum\Cookie\Contracts;
+namespace Quantum\Config\Contracts;
+
+use Quantum\Loader\Setup;
 
 /**
- * Interface CookieStorageInterface
- * @package Quantum\Cookie
+ * Interface ConfigInterface
+ * @package Quantum\Config
  */
-interface CookieStorageInterface
+interface ConfigInterface
 {
     /**
      * Gets whole storage data
@@ -35,23 +37,34 @@ interface CookieStorageInterface
 
     /**
      * Gets the value from the storage by given key
+     * @param mixed $default
      * @return mixed|null
      */
-    public function get(string $key);
+    public function get(string $key, $default = null);
 
     /**
-     * Sets data by given key
+     * Sets storage value with the given key
      * @param mixed $value
      */
-    public function set(string $key, $value = '', int $time = 0, string $path = '/', string $domain = '', bool $secure = false, bool $httponly = false): void;
+    public function set(string $key, $value): void;
 
     /**
-     * Deletes data by given key
+     * Deletes the data from the storage by given key
      */
-    public function delete(string $key, string $path = '/'): void;
+    public function delete(string $key): void;
 
     /**
      * Deletes whole storage data
      */
     public function flush(): void;
+
+    /**
+     * Loads configuration
+     */
+    public function load(Setup $setup): void;
+
+    /**
+     * Imports new config file
+     */
+    public function import(Setup $setup): void;
 }
