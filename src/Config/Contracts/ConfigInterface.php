@@ -14,13 +14,15 @@ declare(strict_types=1);
  * @since 3.0.0
  */
 
-namespace Quantum\Session\Contracts;
+namespace Quantum\Config\Contracts;
+
+use Quantum\Loader\Setup;
 
 /**
- * Interface SessionStorageInterface
- * @package Quantum\Session
+ * Interface ConfigInterface
+ * @package Quantum\Config
  */
-interface SessionStorageInterface
+interface ConfigInterface
 {
     /**
      * Gets whole storage data
@@ -35,49 +37,34 @@ interface SessionStorageInterface
 
     /**
      * Gets the value from the storage by given key
+     * @param mixed $default
      * @return mixed|null
      */
-    public function get(string $key);
+    public function get(string $key, $default = null);
 
     /**
      * Sets storage value with the given key
      * @param mixed $value
-     * @return void
      */
-    public function set(string $key, $value);
+    public function set(string $key, $value): void;
 
     /**
      * Deletes the data from the storage by given key
-     * @return void
      */
-    public function delete(string $key);
+    public function delete(string $key): void;
 
     /**
      * Deletes whole storage data
-     * @return void
      */
-    public function flush();
+    public function flush(): void;
 
     /**
-     * Gets flash value by given key
-     * @return mixed|string|null
+     * Loads configuration
      */
-    public function getFlash(string $key);
+    public function load(Setup $setup): void;
 
     /**
-     * Sets the flash message
-     * @param mixed $value
-     * @return void
+     * Imports new config file
      */
-    public function setFlash(string $key, $value);
-
-    /**
-     * Gets the session ID
-     */
-    public function getId(): ?string;
-
-    /**
-     * Update the current session id with a newly generated one
-     */
-    public function regenerateId(): bool;
+    public function import(Setup $setup): void;
 }

@@ -14,14 +14,19 @@ declare(strict_types=1);
  * @since 3.0.0
  */
 
-namespace Quantum\Contracts;
+namespace Quantum\Debugger\Contracts;
 
 /**
- * Interface StorageInterface
- * @package Quantum\Contracts
+ * Interface DebuggerStoreInterface
+ * @package Quantum\Debugger
  */
-interface StorageInterface
+interface DebuggerStoreInterface
 {
+    /**
+     * @param array<string> $keys
+     */
+    public function init(array $keys): void;
+
     /**
      * Gets whole storage data
      * @return mixed
@@ -42,19 +47,16 @@ interface StorageInterface
     /**
      * Sets storage value with the given key
      * @param mixed $value
-     * @return void
      */
-    public function set(string $key, $value);
+    public function set(string $key, $value): void;
 
     /**
      * Deletes the data from the storage by given key
-     * @return void
      */
-    public function delete(string $key);
+    public function delete(string $key): void;
 
     /**
      * Deletes whole storage data
-     * @return void
      */
-    public function flush();
+    public function flush(): void;
 }

@@ -16,14 +16,29 @@ declare(strict_types=1);
 
 namespace Quantum\Cookie\Contracts;
 
-use Quantum\Contracts\StorageInterface;
-
 /**
  * Interface CookieStorageInterface
  * @package Quantum\Cookie
  */
-interface CookieStorageInterface extends StorageInterface
+interface CookieStorageInterface
 {
+    /**
+     * Gets whole storage data
+     * @return mixed
+     */
+    public function all();
+
+    /**
+     * Checks if the storage contains a key
+     */
+    public function has(string $key): bool;
+
+    /**
+     * Gets the value from the storage by given key
+     * @return mixed|null
+     */
+    public function get(string $key);
+
     /**
      * Sets data by given key
      * @param mixed $value
@@ -36,4 +51,10 @@ interface CookieStorageInterface extends StorageInterface
      * @return void
      */
     public function delete(string $key, string $path = '/'): void;
+
+    /**
+     * Deletes whole storage data
+     * @return void
+     */
+    public function flush();
 }

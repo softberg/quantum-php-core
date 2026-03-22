@@ -16,13 +16,13 @@ declare(strict_types=1);
 
 namespace Quantum\Debugger;
 
-use Quantum\Contracts\StorageInterface;
+use Quantum\Debugger\Contracts\DebuggerStoreInterface;
 
 /**
  * Class DebuggerStore
  * @package Quantum\Debugger
  */
-class DebuggerStore implements StorageInterface
+class DebuggerStore implements DebuggerStoreInterface
 {
     /**
      * @var array<string, mixed>
@@ -30,7 +30,7 @@ class DebuggerStore implements StorageInterface
     private static array $store = [];
 
     /**
-     * @param array<string> $keys
+     * @inheritDoc
      */
     public function init(array $keys): void
     {
@@ -42,6 +42,7 @@ class DebuggerStore implements StorageInterface
     }
 
     /**
+     * @inheritDoc
      * @return array<string, mixed>
      */
     public function all(): array
@@ -49,12 +50,16 @@ class DebuggerStore implements StorageInterface
         return self::$store;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function has(string $key): bool
     {
         return isset(self::$store[$key]);
     }
 
     /**
+     * @inheritDoc
      * @return array<mixed>
      */
     public function get(string $key): array
@@ -63,7 +68,7 @@ class DebuggerStore implements StorageInterface
     }
 
     /**
-     * @param mixed $value
+     * @inheritDoc
      */
     public function set(string $key, $value): void
     {
@@ -74,6 +79,9 @@ class DebuggerStore implements StorageInterface
         }
     }
 
+    /**
+     * @inheritDoc
+     */
     public function delete(string $key): void
     {
         if ($this->has($key)) {
@@ -81,6 +89,9 @@ class DebuggerStore implements StorageInterface
         }
     }
 
+    /**
+     * @inheritDoc
+     */
     public function flush(): void
     {
         self::$store = [];

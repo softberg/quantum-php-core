@@ -18,7 +18,7 @@ namespace Quantum\Config;
 
 use Quantum\Config\Exceptions\ConfigException;
 use Quantum\Loader\Exceptions\LoaderException;
-use Quantum\Contracts\StorageInterface;
+use Quantum\Config\Contracts\ConfigInterface;
 use Quantum\Di\Exceptions\DiException;
 use Dflydev\DotAccessData\Data;
 use Quantum\Loader\Loader;
@@ -30,7 +30,7 @@ use Quantum\Di\Di;
  * Class Config
  * @package Quantum\Config
  */
-class Config implements StorageInterface
+class Config implements ConfigInterface
 {
     private static ?Data $configs = null;
 
@@ -49,10 +49,8 @@ class Config implements StorageInterface
     }
 
     /**
-     * Loads configuration
-     * @throws ConfigException
-     * @throws DiException
-     * @throws ReflectionException
+     * @inheritDoc
+     * @throws DiException|LoaderException|ReflectionException
      */
     public function load(Setup $setup): void
     {
@@ -64,7 +62,7 @@ class Config implements StorageInterface
     }
 
     /**
-     * Imports new config file
+     * @inheritDoc
      * @throws ConfigException
      * @throws DiException
      * @throws ReflectionException|LoaderException
@@ -85,9 +83,7 @@ class Config implements StorageInterface
     }
 
     /**
-     * Gets the config item by given key
-     * @param mixed $default
-     * @return mixed|null
+     * @inheritDoc
      */
     public function get(string $key, $default = null)
     {
@@ -99,7 +95,7 @@ class Config implements StorageInterface
     }
 
     /**
-     * Get all configs
+     * @inheritDoc
      */
     public function all(): ?Data
     {
@@ -107,7 +103,7 @@ class Config implements StorageInterface
     }
 
     /**
-     * Checks config data
+     * @inheritDoc
      */
     public function has(string $key): bool
     {
@@ -115,8 +111,7 @@ class Config implements StorageInterface
     }
 
     /**
-     * Sets new value
-     * @param mixed $value
+     * @inheritDoc
      */
     public function set(string $key, $value): void
     {
@@ -128,7 +123,7 @@ class Config implements StorageInterface
     }
 
     /**
-     * Removes the data from config
+     * @inheritDoc
      */
     public function delete(string $key): void
     {
@@ -136,7 +131,7 @@ class Config implements StorageInterface
     }
 
     /**
-     * Deletes whole config data
+     * @inheritDoc
      */
     public function flush(): void
     {
