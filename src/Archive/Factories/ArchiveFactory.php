@@ -20,6 +20,7 @@ use Quantum\Archive\Exceptions\ArchiveException;
 use Quantum\Archive\Adapters\PharAdapter;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Archive\Adapters\ZipAdapter;
+use Quantum\Archive\Enums\ArchiveType;
 use Quantum\Archive\Archive;
 
 /**
@@ -32,8 +33,8 @@ class ArchiveFactory
      * Supported adapters
      */
     public const ADAPTERS = [
-        Archive::PHAR => PharAdapter::class,
-        Archive::ZIP => ZipAdapter::class,
+        ArchiveType::PHAR => PharAdapter::class,
+        ArchiveType::ZIP => ZipAdapter::class,
     ];
 
     /**
@@ -44,7 +45,7 @@ class ArchiveFactory
     /**
      * @throws BaseException
      */
-    public static function get(string $type = Archive::PHAR): Archive
+    public static function get(string $type = ArchiveType::PHAR): Archive
     {
         if (!isset(self::$instances[$type])) {
             self::$instances[$type] = self::createInstance($type);

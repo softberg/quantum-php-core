@@ -7,6 +7,7 @@ use Quantum\Archive\Contracts\ArchiveInterface;
 use Quantum\Archive\Factories\ArchiveFactory;
 use Quantum\Archive\Adapters\PharAdapter;
 use Quantum\Archive\Adapters\ZipAdapter;
+use Quantum\Archive\Enums\ArchiveType;
 use Quantum\Archive\Archive;
 use Quantum\Tests\Unit\AppTestCase;
 
@@ -35,7 +36,7 @@ class ArchiveFactoryTest extends AppTestCase
 
     public function testArchiveFactoryZipAdapter(): void
     {
-        $archive = ArchiveFactory::get(Archive::ZIP);
+        $archive = ArchiveFactory::get(ArchiveType::ZIP);
 
         $this->assertInstanceOf(ZipAdapter::class, $archive->getAdapter());
 

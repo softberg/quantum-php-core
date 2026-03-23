@@ -32,16 +32,6 @@ use Quantum\App\Exceptions\BaseException;
  */
 class Captcha
 {
-    /**
-     * HCaptcha adapter
-     */
-    public const HCAPTCHA = 'hcaptcha';
-
-    /**
-     * ReCaptcha adapter
-     */
-    public const RECAPTCHA = 'recaptcha';
-
     private CaptchaInterface $adapter;
 
     public function __construct(CaptchaInterface $adapter)

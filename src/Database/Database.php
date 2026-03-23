@@ -23,6 +23,7 @@ use Quantum\Config\Exceptions\ConfigException;
 use Quantum\Database\Traits\TransactionTrait;
 use Quantum\Database\Traits\RelationalTrait;
 use Quantum\App\Exceptions\BaseException;
+use Quantum\Database\Enums\DatabaseType;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Loader\Setup;
 use ReflectionException;
@@ -37,10 +38,10 @@ class Database
     use RelationalTrait;
 
     public const ADAPTERS = [
-        'sleekdb' => SleekDbal::class,
-        'mysql' => IdiormDbal::class,
-        'sqlite' => IdiormDbal::class,
-        'pgsql' => IdiormDbal::class,
+        DatabaseType::SLEEKDB => SleekDbal::class,
+        DatabaseType::MYSQL => IdiormDbal::class,
+        DatabaseType::SQLITE => IdiormDbal::class,
+        DatabaseType::PGSQL => IdiormDbal::class,
     ];
 
     /**

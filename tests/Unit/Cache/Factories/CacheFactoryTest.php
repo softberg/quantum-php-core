@@ -9,6 +9,7 @@ use Quantum\Cache\Factories\CacheFactory;
 use Quantum\Cache\Adapters\RedisAdapter;
 use Quantum\Cache\Adapters\FileAdapter;
 use Quantum\Tests\Unit\AppTestCase;
+use Quantum\Cache\Enums\CacheType;
 use Quantum\Cache\Cache;
 
 class CacheFactoryTest extends AppTestCase
@@ -36,28 +37,28 @@ class CacheFactoryTest extends AppTestCase
 
     public function testCacheFactoryFileAdapter(): void
     {
-        $cache = CacheFactory::get(Cache::FILE);
+        $cache = CacheFactory::get(CacheType::FILE);
 
         $this->assertInstanceOf(FileAdapter::class, $cache->getAdapter());
     }
 
     public function testCacheFactoryDatabaseAdapter(): void
     {
-        $cache = CacheFactory::get(Cache::DATABASE);
+        $cache = CacheFactory::get(CacheType::DATABASE);
 
         $this->assertInstanceOf(DatabaseAdapter::class, $cache->getAdapter());
     }
 
     public function testCacheFactoryMemcachedAdapter(): void
     {
-        $cache = CacheFactory::get(Cache::MEMCACHED);
+        $cache = CacheFactory::get(CacheType::MEMCACHED);
 
         $this->assertInstanceOf(MemcachedAdapter::class, $cache->getAdapter());
     }
 
     public function testCacheFactoryRedisAdapter(): void
     {
-        $cache = CacheFactory::get(Cache::REDIS);
+        $cache = CacheFactory::get(CacheType::REDIS);
 
         $this->assertInstanceOf(RedisAdapter::class, $cache->getAdapter());
     }
@@ -73,8 +74,8 @@ class CacheFactoryTest extends AppTestCase
 
     public function testCacheFactoryReturnsSameInstance(): void
     {
-        $cache1 = CacheFactory::get(Cache::FILE);
-        $cache2 = CacheFactory::get(Cache::FILE);
+        $cache1 = CacheFactory::get(CacheType::FILE);
+        $cache2 = CacheFactory::get(CacheType::FILE);
 
         $this->assertSame($cache1, $cache2);
     }

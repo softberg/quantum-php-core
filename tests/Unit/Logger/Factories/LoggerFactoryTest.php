@@ -8,6 +8,7 @@ use Quantum\Logger\Adapters\MessageAdapter;
 use Quantum\Logger\Factories\LoggerFactory;
 use Quantum\Logger\Adapters\SingleAdapter;
 use Quantum\Logger\Adapters\DailyAdapter;
+use Quantum\Logger\Enums\LoggerType;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Logger\Logger;
 
@@ -40,7 +41,7 @@ class LoggerFactoryTest extends AppTestCase
 
     public function testLoggerFactoryGetSingleAdapter(): void
     {
-        $logger = LoggerFactory::get(Logger::SINGLE);
+        $logger = LoggerFactory::get(LoggerType::SINGLE);
 
         $this->assertInstanceOf(SingleAdapter::class, $logger->getAdapter());
 
@@ -49,7 +50,7 @@ class LoggerFactoryTest extends AppTestCase
 
     public function testLoggerFactoryGetDailyAdapter(): void
     {
-        $logger = LoggerFactory::get(Logger::DAILY);
+        $logger = LoggerFactory::get(LoggerType::DAILY);
 
         $this->assertInstanceOf(DailyAdapter::class, $logger->getAdapter());
 
@@ -73,7 +74,7 @@ class LoggerFactoryTest extends AppTestCase
 
         $this->expectExceptionMessage('The adapter `message` is not supported.');
 
-        LoggerFactory::get(Logger::MESSAGE);
+        LoggerFactory::get(LoggerType::MESSAGE);
     }
 
     public function testLoggerFactoryInvalidTypeAdapter(): void
@@ -87,8 +88,8 @@ class LoggerFactoryTest extends AppTestCase
 
     public function testLoggerFactoryReturnsSameInstance(): void
     {
-        $logger1 = LoggerFactory::get(Logger::SINGLE);
-        $logger2 = LoggerFactory::get(Logger::SINGLE);
+        $logger1 = LoggerFactory::get(LoggerType::SINGLE);
+        $logger2 = LoggerFactory::get(LoggerType::SINGLE);
 
         $this->assertSame($logger1, $logger2);
     }

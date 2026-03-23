@@ -2,7 +2,6 @@
 
 namespace Quantum\Tests\Unit\Paginator\Factories;
 
-use Quantum\Model\DbModel;
 use Quantum\Paginator\Exceptions\PaginatorException;
 use Quantum\Tests\_root\shared\Models\TestPostModel;
 use Quantum\Paginator\Contracts\PaginatorInterface;
@@ -10,8 +9,10 @@ use Quantum\Tests\Unit\Paginator\PaginatorTestCase;
 use Quantum\Paginator\Factories\PaginatorFactory;
 use Quantum\Paginator\Adapters\ModelPaginator;
 use Quantum\Paginator\Adapters\ArrayPaginator;
+use Quantum\Paginator\Enums\PaginatorType;
 use Quantum\Model\Factories\ModelFactory;
 use Quantum\Paginator\Paginator;
+use Quantum\Model\DbModel;
 
 class PaginatorFactoryTest extends PaginatorTestCase
 {
@@ -26,7 +27,7 @@ class PaginatorFactoryTest extends PaginatorTestCase
 
     public function testPaginatorFactoryInstance(): void
     {
-        $paginator = PaginatorFactory::create(Paginator::ARRAY, [
+        $paginator = PaginatorFactory::create(PaginatorType::ARRAY, [
             'items' => [],
             'perPage' => 2,
             'page' => 2,
@@ -37,7 +38,7 @@ class PaginatorFactoryTest extends PaginatorTestCase
 
     public function testPaginatorFactoryArrayAdapter(): void
     {
-        $paginator = PaginatorFactory::create(Paginator::ARRAY, [
+        $paginator = PaginatorFactory::create(PaginatorType::ARRAY, [
             'items' => [],
             'perPage' => 2,
             'page' => 2,
@@ -50,7 +51,7 @@ class PaginatorFactoryTest extends PaginatorTestCase
 
     public function testPaginatorFactoryModelAdapter(): void
     {
-        $paginator = PaginatorFactory::create(Paginator::MODEL, [
+        $paginator = PaginatorFactory::create(PaginatorType::MODEL, [
             'model' => $this->postModel,
             'perPage' => 2,
             'page' => 2,

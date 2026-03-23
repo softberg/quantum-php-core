@@ -14,9 +14,10 @@
 
 namespace Modules\Toolkit\Services;
 
-use Quantum\Storage\Exceptions\FileSystemException;
 use Quantum\Paginator\Exceptions\PaginatorException;
+use Quantum\Storage\Exceptions\FileSystemException;
 use Quantum\Paginator\Factories\PaginatorFactory;
+use Quantum\Paginator\Enums\PaginatorType;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Mailer\MailTrap;
 use Quantum\Paginator\Paginator;
@@ -123,7 +124,7 @@ class EmailService extends QtService
      */
     private function paginate(array $data, int $perPage, int $currentPage): Paginator
     {
-        return PaginatorFactory::create(Paginator::ARRAY, [
+        return PaginatorFactory::create(PaginatorType::ARRAY, [
             "items" => $data,
             "perPage" => $perPage,
             "page" => $currentPage

@@ -42,16 +42,6 @@ use Quantum\App\Exceptions\BaseException;
  */
 class Paginator
 {
-    /**
-     * Array paginator type
-     */
-    public const ARRAY = 'array';
-
-    /**
-     * Model paginator type
-     */
-    public const MODEL = 'model';
-
     private PaginatorInterface $adapter;
 
     public function __construct(PaginatorInterface $adapter)

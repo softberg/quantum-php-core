@@ -1,10 +1,11 @@
 <?php
 
-namespace Libraries\Storage\Helpers;
+namespace Quantum\Tests\Unit\Storage\Helpers;
 
 use Quantum\Storage\Adapters\GoogleDrive\GoogleDriveFileSystemAdapter;
 use Quantum\Storage\Adapters\Dropbox\DropboxFileSystemAdapter;
 use Quantum\Storage\Adapters\Local\LocalFileSystemAdapter;
+use Quantum\Storage\Enums\FileSystemType;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Storage\FileSystem;
 
@@ -19,22 +20,22 @@ class FileSystemHelperFunctionsTest extends AppTestCase
 
     public function testFileSystemHelperGetLocalFileSystem(): void
     {
-        $this->assertInstanceOf(FileSystem::class, fs(FileSystem::LOCAL));
+        $this->assertInstanceOf(FileSystem::class, fs(FileSystemType::LOCAL));
 
-        $this->assertInstanceOf(LocalFileSystemAdapter::class, fs(FileSystem::LOCAL)->getAdapter());
+        $this->assertInstanceOf(LocalFileSystemAdapter::class, fs(FileSystemType::LOCAL)->getAdapter());
     }
 
     public function testFileSystemHelperGetDropboxFileSystem(): void
     {
-        $this->assertInstanceOf(FileSystem::class, fs(FileSystem::DROPBOX));
+        $this->assertInstanceOf(FileSystem::class, fs(FileSystemType::DROPBOX));
 
-        $this->assertInstanceOf(DropboxFileSystemAdapter::class, fs(FileSystem::DROPBOX)->getAdapter());
+        $this->assertInstanceOf(DropboxFileSystemAdapter::class, fs(FileSystemType::DROPBOX)->getAdapter());
     }
 
     public function testFileSystemHelperGetGoogleDriveFileSystem(): void
     {
-        $this->assertInstanceOf(FileSystem::class, fs(FileSystem::GDRIVE));
+        $this->assertInstanceOf(FileSystem::class, fs(FileSystemType::GDRIVE));
 
-        $this->assertInstanceOf(GoogleDriveFileSystemAdapter::class, fs(FileSystem::GDRIVE)->getAdapter());
+        $this->assertInstanceOf(GoogleDriveFileSystemAdapter::class, fs(FileSystemType::GDRIVE)->getAdapter());
     }
 }

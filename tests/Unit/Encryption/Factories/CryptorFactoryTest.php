@@ -7,6 +7,7 @@ use Quantum\Encryption\Adapters\SymmetricEncryptionAdapter;
 use Quantum\Encryption\Contracts\EncryptionInterface;
 use Quantum\Encryption\Exceptions\CryptorException;
 use Quantum\Encryption\Factories\CryptorFactory;
+use Quantum\Encryption\Enums\CryptorType;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Encryption\Cryptor;
 
@@ -35,7 +36,7 @@ class CryptorFactoryTest extends AppTestCase
 
     public function testCryptorFactoryAsymmetricAdapter(): void
     {
-        $cryptor = CryptorFactory::get(Cryptor::ASYMMETRIC);
+        $cryptor = CryptorFactory::get(CryptorType::ASYMMETRIC);
 
         $this->assertInstanceOf(AsymmetricEncryptionAdapter::class, $cryptor->getAdapter());
 

@@ -21,6 +21,7 @@ use Quantum\Config\Exceptions\ConfigException;
 use Quantum\Renderer\Adapters\HtmlAdapter;
 use Quantum\Renderer\Adapters\TwigAdapter;
 use Quantum\App\Exceptions\BaseException;
+use Quantum\Renderer\Enums\RendererType;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Renderer\Renderer;
 use Quantum\Loader\Setup;
@@ -36,8 +37,8 @@ class RendererFactory
      * Supported adapters
      */
     public const ADAPTERS = [
-        Renderer::HTML => HtmlAdapter::class,
-        Renderer::TWIG => TwigAdapter::class,
+        RendererType::HTML => HtmlAdapter::class,
+        RendererType::TWIG => TwigAdapter::class,
     ];
 
     /**

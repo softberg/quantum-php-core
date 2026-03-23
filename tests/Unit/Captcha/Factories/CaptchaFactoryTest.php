@@ -6,6 +6,7 @@ use Quantum\Captcha\Exceptions\CaptchaException;
 use Quantum\Captcha\Adapters\RecaptchaAdapter;
 use Quantum\Captcha\Adapters\HcaptchaAdapter;
 use Quantum\Captcha\Factories\CaptchaFactory;
+use Quantum\Captcha\Enums\CaptchaType;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Captcha\Captcha;
 
@@ -34,14 +35,14 @@ class CaptchaFactoryTest extends AppTestCase
 
     public function testCacheFactoryRecaptchaAdapter(): void
     {
-        $captcha = CaptchaFactory::get(Captcha::RECAPTCHA);
+        $captcha = CaptchaFactory::get(CaptchaType::RECAPTCHA);
 
         $this->assertInstanceOf(RecaptchaAdapter::class, $captcha->getAdapter());
     }
 
     public function testCacheFactoryHcaptchaAdapter(): void
     {
-        $captcha = CaptchaFactory::get(Captcha::HCAPTCHA);
+        $captcha = CaptchaFactory::get(CaptchaType::HCAPTCHA);
 
         $this->assertInstanceOf(HcaptchaAdapter::class, $captcha->getAdapter());
     }
@@ -57,8 +58,8 @@ class CaptchaFactoryTest extends AppTestCase
 
     public function testAuthFactoryReturnsSameInstance(): void
     {
-        $captcha1 = CaptchaFactory::get(Captcha::RECAPTCHA);
-        $captcha2 = CaptchaFactory::get(Captcha::RECAPTCHA);
+        $captcha1 = CaptchaFactory::get(CaptchaType::RECAPTCHA);
+        $captcha2 = CaptchaFactory::get(CaptchaType::RECAPTCHA);
 
         $this->assertSame($captcha1, $captcha2);
     }

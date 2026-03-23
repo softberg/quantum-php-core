@@ -22,6 +22,7 @@ use Quantum\Config\Exceptions\ConfigException;
 use Quantum\Captcha\Adapters\HcaptchaAdapter;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
+use Quantum\Captcha\Enums\CaptchaType;
 use Quantum\HttpClient\HttpClient;
 use Quantum\Captcha\Captcha;
 use Quantum\Loader\Setup;
@@ -37,8 +38,8 @@ class CaptchaFactory
      * Supported adapters
      */
     public const ADAPTERS = [
-        Captcha::HCAPTCHA => HcaptchaAdapter::class,
-        Captcha::RECAPTCHA => RecaptchaAdapter::class,
+        CaptchaType::HCAPTCHA => HcaptchaAdapter::class,
+        CaptchaType::RECAPTCHA => RecaptchaAdapter::class,
     ];
 
     /**

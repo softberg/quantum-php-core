@@ -7,6 +7,7 @@ use Quantum\Auth\Exceptions\AuthException;
 use Quantum\Auth\Adapters\JwtAuthAdapter;
 use Quantum\Auth\Factories\AuthFactory;
 use Quantum\Tests\Unit\AppTestCase;
+use Quantum\Auth\Enums\AuthType;
 use Quantum\Auth\Auth;
 
 class AuthFactoryTest extends AppTestCase
@@ -34,14 +35,14 @@ class AuthFactoryTest extends AppTestCase
 
     public function testAuthFactorySessionAuthAdapter(): void
     {
-        $auth = AuthFactory::get(Auth::SESSION);
+        $auth = AuthFactory::get(AuthType::SESSION);
 
         $this->assertInstanceOf(SessionAuthAdapter::class, $auth->getAdapter());
     }
 
     public function testAuthFactoryJwtAuthAdapter(): void
     {
-        $auth = AuthFactory::get(Auth::JWT);
+        $auth = AuthFactory::get(AuthType::JWT);
 
         $this->assertInstanceOf(JwtAuthAdapter::class, $auth->getAdapter());
     }
@@ -59,8 +60,8 @@ class AuthFactoryTest extends AppTestCase
 
     public function testAuthFactoryReturnsSameInstance(): void
     {
-        $auth1 = AuthFactory::get(Auth::SESSION);
-        $auth2 = AuthFactory::get(Auth::SESSION);
+        $auth1 = AuthFactory::get(AuthType::SESSION);
+        $auth2 = AuthFactory::get(AuthType::SESSION);
 
         $this->assertSame($auth1, $auth2);
     }

@@ -7,6 +7,7 @@ use Quantum\Storage\Adapters\Dropbox\DropboxFileSystemAdapter;
 use Quantum\Storage\Adapters\Local\LocalFileSystemAdapter;
 use Quantum\Storage\Exceptions\FileSystemException;
 use Quantum\Storage\Factories\FileSystemFactory;
+use Quantum\Storage\Enums\FileSystemType;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Storage\FileSystem;
 
@@ -33,21 +34,21 @@ class FileSystemFactoryTest extends AppTestCase
 
     public function testFileSystemFactoryLocalAdapter(): void
     {
-        $fs = FileSystemFactory::get(FileSystem::LOCAL);
+        $fs = FileSystemFactory::get(FileSystemType::LOCAL);
 
         $this->assertInstanceOf(LocalFileSystemAdapter::class, $fs->getAdapter());
     }
 
     public function testFileSystemFactoryDropboxAdapter(): void
     {
-        $fs = FileSystemFactory::get(FileSystem::DROPBOX);
+        $fs = FileSystemFactory::get(FileSystemType::DROPBOX);
 
         $this->assertInstanceOf(DropboxFileSystemAdapter::class, $fs->getAdapter());
     }
 
     public function testFileSystemFactoryGoogleDriveAdapter(): void
     {
-        $fs = FileSystemFactory::get(FileSystem::GDRIVE);
+        $fs = FileSystemFactory::get(FileSystemType::GDRIVE);
 
         $this->assertInstanceOf(GoogleDriveFileSystemAdapter::class, $fs->getAdapter());
     }
@@ -63,8 +64,8 @@ class FileSystemFactoryTest extends AppTestCase
 
     public function testFileSystemFactoryReturnsSameInstance(): void
     {
-        $fs1 = FileSystemFactory::get(FileSystem::LOCAL);
-        $fs2 = FileSystemFactory::get(FileSystem::LOCAL);
+        $fs1 = FileSystemFactory::get(FileSystemType::LOCAL);
+        $fs2 = FileSystemFactory::get(FileSystemType::LOCAL);
 
         $this->assertSame($fs1, $fs2);
     }

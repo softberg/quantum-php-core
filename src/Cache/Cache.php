@@ -34,26 +34,6 @@ use Psr\SimpleCache\CacheInterface;
  */
 class Cache
 {
-    /**
-     * File adapter
-     */
-    public const FILE = 'file';
-
-    /**
-     * Database adapter
-     */
-    public const DATABASE = 'database';
-
-    /**
-     * Memcached adapter
-     */
-    public const MEMCACHED = 'memcached';
-
-    /**
-     * Redis adapter
-     */
-    public const REDIS = 'redis';
-
     private CacheInterface $adapter;
 
     /**

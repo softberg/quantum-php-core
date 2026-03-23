@@ -7,6 +7,7 @@ use Quantum\Cache\Adapters\DatabaseAdapter;
 use Quantum\Cache\Adapters\FileAdapter;
 use Quantum\Cache\Adapters\RedisAdapter;
 use Quantum\Tests\Unit\AppTestCase;
+use Quantum\Cache\Enums\CacheType;
 use Quantum\Cache\Cache;
 
 class CacheHelperFunctionsTest extends AppTestCase
@@ -20,29 +21,29 @@ class CacheHelperFunctionsTest extends AppTestCase
 
     public function testCacheHelperGetFileCache(): void
     {
-        $this->assertInstanceOf(Cache::class, cache(Cache::FILE));
+        $this->assertInstanceOf(Cache::class, cache(CacheType::FILE));
 
-        $this->assertInstanceOf(FileAdapter::class, cache(Cache::FILE)->getAdapter());
+        $this->assertInstanceOf(FileAdapter::class, cache(CacheType::FILE)->getAdapter());
     }
 
     public function testCacheHelperGetDatabaseCache(): void
     {
-        $this->assertInstanceOf(Cache::class, cache(Cache::DATABASE));
+        $this->assertInstanceOf(Cache::class, cache(CacheType::DATABASE));
 
-        $this->assertInstanceOf(DatabaseAdapter::class, cache(Cache::DATABASE)->getAdapter());
+        $this->assertInstanceOf(DatabaseAdapter::class, cache(CacheType::DATABASE)->getAdapter());
     }
 
     public function testCacheHelperGetMemcachedCache(): void
     {
-        $this->assertInstanceOf(Cache::class, cache(Cache::MEMCACHED));
+        $this->assertInstanceOf(Cache::class, cache(CacheType::MEMCACHED));
 
-        $this->assertInstanceOf(MemcachedAdapter::class, cache(Cache::MEMCACHED)->getAdapter());
+        $this->assertInstanceOf(MemcachedAdapter::class, cache(CacheType::MEMCACHED)->getAdapter());
     }
 
     public function testCacheHelperGetRedisCache(): void
     {
-        $this->assertInstanceOf(Cache::class, cache(Cache::REDIS));
+        $this->assertInstanceOf(Cache::class, cache(CacheType::REDIS));
 
-        $this->assertInstanceOf(RedisAdapter::class, cache(Cache::REDIS)->getAdapter());
+        $this->assertInstanceOf(RedisAdapter::class, cache(CacheType::REDIS)->getAdapter());
     }
 }

@@ -20,6 +20,7 @@ use Quantum\App\Adapters\ConsoleAppAdapter;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\App\Exceptions\AppException;
 use Quantum\App\Adapters\WebAppAdapter;
+use Quantum\App\Enums\AppType;
 use Quantum\App\App;
 
 /**
@@ -32,8 +33,8 @@ class AppFactory
      * Supported adapters
      */
     public const ADAPTERS = [
-        App::WEB => WebAppAdapter::class,
-        App::CONSOLE => ConsoleAppAdapter::class,
+        AppType::WEB => WebAppAdapter::class,
+        AppType::CONSOLE => ConsoleAppAdapter::class,
     ];
 
     /**
