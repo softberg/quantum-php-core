@@ -30,7 +30,7 @@ class JwtAuthAdapterTest extends AuthTestCase
                 'exp' => time() + 60,
             ]);
 
-        $this->jwtAuth = new JwtAuthAdapter($this->authService, $this->mailer, new Hasher(), $jwt);
+        $this->jwtAuth = new JwtAuthAdapter($this->authService, $this->mailer, (new Hasher())->setCost(4), $jwt);
 
         $admin = $this->jwtAuth->signup($this->adminUser);
 

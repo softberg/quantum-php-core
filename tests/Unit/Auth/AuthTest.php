@@ -32,18 +32,18 @@ class AuthTest extends AuthTestCase
 
     public function testAuthGetAdapter(): void
     {
-        $auth = new Auth(new SessionAuthAdapter($this->authService, $this->mailer, new Hasher()));
+        $auth = new Auth(new SessionAuthAdapter($this->authService, $this->mailer, (new Hasher())->setCost(4)));
 
         $this->assertInstanceOf(AuthenticatableInterface::class, $auth->getAdapter());
 
-        $auth = new Auth(new JwtAuthAdapter($this->authService, $this->mailer, new Hasher(), $this->jwt));
+        $auth = new Auth(new JwtAuthAdapter($this->authService, $this->mailer, (new Hasher())->setCost(4), $this->jwt));
 
         $this->assertInstanceOf(AuthenticatableInterface::class, $auth->getAdapter());
     }
 
     public function testAuthCallingValidMethod(): void
     {
-        $auth = new Auth(new JwtAuthAdapter($this->authService, $this->mailer, new Hasher(), $this->jwt));
+        $auth = new Auth(new JwtAuthAdapter($this->authService, $this->mailer, (new Hasher())->setCost(4), $this->jwt));
 
         $user = $auth->getAdapter()->signup($this->adminUser);
 
@@ -58,7 +58,7 @@ class AuthTest extends AuthTestCase
 
     public function testAuthCallingInvalidMethod(): void
     {
-        $auth = new Auth(new JwtAuthAdapter($this->authService, $this->mailer, new Hasher(), $this->jwt));
+        $auth = new Auth(new JwtAuthAdapter($this->authService, $this->mailer, (new Hasher())->setCost(4), $this->jwt));
 
         $this->expectException(AuthException::class);
 

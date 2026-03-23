@@ -38,6 +38,8 @@ class HasherTest extends AppTestCase
 
     public function testHashAndCheck(): void
     {
+        $this->hasher->setCost(4);
+
         $hashed = $this->hasher->hash($this->password);
 
         $this->assertTrue($this->hasher->check($this->password, $hashed));
@@ -47,23 +49,25 @@ class HasherTest extends AppTestCase
 
     public function testNeedsRehash(): void
     {
-        $this->hasher->setCost(10);
+        $this->hasher->setCost(4);
 
         $hashed = $this->hasher->hash($this->password);
 
         $this->assertFalse($this->hasher->needsRehash($hashed));
 
-        $this->hasher->setCost(12);
+        $this->hasher->setCost(5);
 
         $this->assertTrue($this->hasher->needsRehash($hashed));
 
-        $this->hasher->setAlgorithm(PASSWORD_DEFAULT)->setCost(11);
+        $this->hasher->setAlgorithm(PASSWORD_DEFAULT)->setCost(6);
 
         $this->assertTrue($this->hasher->needsRehash($hashed));
     }
 
     public function testInfo(): void
     {
+        $this->hasher->setCost(4);
+
         $hashed = $this->hasher->hash($this->password);
 
         $this->assertIsArray($this->hasher->info($hashed));
