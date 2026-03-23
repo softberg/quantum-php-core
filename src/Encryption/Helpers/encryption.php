@@ -13,15 +13,15 @@
  */
 
 use Quantum\Encryption\Factories\CryptorFactory;
+use Quantum\Encryption\Enums\CryptorType;
 use Quantum\App\Exceptions\BaseException;
-use Quantum\Encryption\Cryptor;
 
 /**
  * Encodes the data cryptographically
  * @param mixed $data
  * @throws BaseException
  */
-function crypto_encode($data, string $type = Cryptor::SYMMETRIC): string
+function crypto_encode($data, string $type = CryptorType::SYMMETRIC): string
 {
     $serializedData = serialize($data);
 
@@ -32,7 +32,7 @@ function crypto_encode($data, string $type = Cryptor::SYMMETRIC): string
  * @return mixed|string
  * @throws BaseException
  */
-function crypto_decode(string $encryptedData, string $type = Cryptor::SYMMETRIC)
+function crypto_decode(string $encryptedData, string $type = CryptorType::SYMMETRIC)
 {
     $cryptor = CryptorFactory::get($type);
 

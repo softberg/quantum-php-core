@@ -36,16 +36,6 @@ use Quantum\App\Exceptions\BaseException;
  */
 class Session
 {
-    /**
-     * Native session adapter
-     */
-    public const NATIVE = 'native';
-
-    /**
-     * Database session adapter
-     */
-    public const DATABASE = 'database';
-
     private SessionStorageInterface $adapter;
 
     public function __construct(SessionStorageInterface $adapter)

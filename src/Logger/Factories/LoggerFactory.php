@@ -23,6 +23,7 @@ use Quantum\Logger\Adapters\SingleAdapter;
 use Quantum\Logger\Adapters\DailyAdapter;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
+use Quantum\Logger\Enums\LoggerType;
 use Quantum\Logger\LoggerConfig;
 use Quantum\Logger\Logger;
 use Quantum\Loader\Setup;
@@ -38,9 +39,9 @@ class LoggerFactory
      * Supported adapters
      */
     public const ADAPTERS = [
-        Logger::SINGLE => SingleAdapter::class,
-        Logger::DAILY => DailyAdapter::class,
-        Logger::MESSAGE => MessageAdapter::class,
+        LoggerType::SINGLE => SingleAdapter::class,
+        LoggerType::DAILY => DailyAdapter::class,
+        LoggerType::MESSAGE => MessageAdapter::class,
     ];
 
     /**
@@ -62,11 +63,11 @@ class LoggerFactory
 
         $isDebug = is_debug_mode();
 
-        if (!$isDebug && $adapter === Logger::MESSAGE) {
-            throw LoggerException::adapterNotSupported(Logger::MESSAGE);
+        if (!$isDebug && $adapter === LoggerType::MESSAGE) {
+            throw LoggerException::adapterNotSupported(LoggerType::MESSAGE);
         }
 
-        $adapter = $isDebug ? Logger::MESSAGE : ($adapter ?? config()->get('logging.default'));
+        $adapter = $isDebug ? LoggerType::MESSAGE : ($adapter ?? config()->get('logging.default'));
 
         $adapterClass = self::getAdapterClass($adapter);
 
@@ -83,7 +84,7 @@ class LoggerFactory
 
     private static function createInstance(string $adapterClass, string $adapter): Logger
     {
-        return $adapter === Logger::MESSAGE
+        return $adapter === LoggerType::MESSAGE
             ? new Logger(new MessageAdapter())
             : new Logger(new $adapterClass(config()->get('logging.' . $adapter)));
     }

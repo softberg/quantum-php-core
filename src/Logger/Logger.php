@@ -26,21 +26,6 @@ use Psr\Log\LogLevel;
  */
 class Logger implements LoggerInterface
 {
-    /**
-     * Single logger adapter
-     */
-    public const SINGLE = 'single';
-
-    /**
-     * Daily logger adapter
-     */
-    public const DAILY = 'daily';
-
-    /**
-     * Message logger adapter
-     */
-    public const MESSAGE = 'message';
-
     private ReportableInterface $adapter;
 
     public function __construct(ReportableInterface $adapter)

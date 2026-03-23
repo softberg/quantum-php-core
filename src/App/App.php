@@ -26,16 +26,6 @@ use Quantum\App\Contracts\AppInterface;
  */
 class App
 {
-    /**
-     * Web app adapter
-     */
-    public const WEB = 'web';
-
-    /**
-     * Console app adapter
-     */
-    public const CONSOLE = 'console';
-
     private static ?string $baseDir = null;
 
     private AppInterface $adapter;

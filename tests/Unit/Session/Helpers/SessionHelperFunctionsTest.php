@@ -4,6 +4,7 @@ namespace Quantum\Tests\Unit\Session\Helpers;
 
 use Quantum\Session\Adapters\Database\DatabaseSessionAdapter;
 use Quantum\Session\Adapters\Native\NativeSessionAdapter;
+use Quantum\Session\Enums\SessionType;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Session\Session;
 
@@ -22,7 +23,7 @@ class SessionHelperFunctionsTest extends AppTestCase
 
     public function testSessionHelperGetNativeSessionAdapter(): void
     {
-        $session = session(Session::NATIVE);
+        $session = session(SessionType::NATIVE);
 
         $this->assertInstanceOf(Session::class, $session);
 
@@ -31,7 +32,7 @@ class SessionHelperFunctionsTest extends AppTestCase
 
     public function testSessionHelperGetDatabaseSessionAdapter(): void
     {
-        $session = session(Session::DATABASE);
+        $session = session(SessionType::DATABASE);
 
         $this->assertInstanceOf(Session::class, $session);
 

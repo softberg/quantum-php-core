@@ -19,6 +19,7 @@ namespace Quantum\Paginator\Factories;
 use Quantum\Paginator\Exceptions\PaginatorException;
 use Quantum\Paginator\Adapters\ModelPaginator;
 use Quantum\Paginator\Adapters\ArrayPaginator;
+use Quantum\Paginator\Enums\PaginatorType;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Paginator\Paginator;
 
@@ -32,16 +33,16 @@ class PaginatorFactory
      * Supported adapters
      */
     public const ADAPTERS = [
-        Paginator::ARRAY => ArrayPaginator::class,
-        Paginator::MODEL => ModelPaginator::class,
+        PaginatorType::ARRAY => ArrayPaginator::class,
+        PaginatorType::MODEL => ModelPaginator::class,
     ];
 
     /**
      * Required parameters for each adapter type.
      */
     public const REQUIRED_PARAMS = [
-        Paginator::ARRAY => ['items'],
-        Paginator::MODEL => ['model'],
+        PaginatorType::ARRAY => ['items'],
+        PaginatorType::MODEL => ['model'],
     ];
 
     /**

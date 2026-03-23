@@ -22,7 +22,7 @@ use Quantum\Logger\Factories\LoggerFactory;
 use Quantum\Cron\Exceptions\CronException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
-use Quantum\Logger\Logger;
+use Quantum\Logger\Enums\LoggerType;
 use ReflectionException;
 
 /**
@@ -234,7 +234,7 @@ class CronManager
     private function log(string $level, string $message, array $context = []): void
     {
         try {
-            $logger = LoggerFactory::get(Logger::SINGLE);
+            $logger = LoggerFactory::get(LoggerType::SINGLE);
             $logger->log($level, '[CRON] ' . $message, $context);
         } catch (\Throwable $exception) {
             error_log(sprintf('[CRON] [%s] %s', strtoupper($level), $message));

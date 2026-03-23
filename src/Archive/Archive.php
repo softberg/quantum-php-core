@@ -36,16 +36,6 @@ use Quantum\App\Exceptions\BaseException;
  */
 class Archive
 {
-    /**
-     * Phar
-     */
-    public const PHAR = 'phar';
-
-    /**
-     * Zip
-     */
-    public const ZIP = 'zip';
-
     private ArchiveInterface $adapter;
 
     public function __construct(ArchiveInterface $adapter)

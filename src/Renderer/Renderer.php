@@ -27,16 +27,6 @@ use Quantum\App\Exceptions\BaseException;
  */
 class Renderer
 {
-    /**
-     * HTML adapter
-     */
-    public const HTML = 'html';
-
-    /**
-     * Twig adapter
-     */
-    public const TWIG = 'twig';
-
     private TemplateRendererInterface $adapter;
 
     public function __construct(TemplateRendererInterface $adapter)

@@ -30,16 +30,6 @@ use Quantum\App\Exceptions\BaseException;
  */
 class Auth
 {
-    /**
-     * Web
-     */
-    public const SESSION = 'session';
-
-    /**
-     * Api
-     */
-    public const JWT = 'jwt';
-
     private AuthenticatableInterface $adapter;
 
     public function __construct(AuthenticatableInterface $adapter)

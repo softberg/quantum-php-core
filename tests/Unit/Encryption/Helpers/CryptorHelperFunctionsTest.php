@@ -2,8 +2,8 @@
 
 namespace Quantum\Tests\Unit\Encryption\Helpers;
 
+use Quantum\Encryption\Enums\CryptorType;
 use Quantum\Tests\Unit\AppTestCase;
-use Quantum\Encryption\Cryptor;
 use stdClass;
 
 class CryptorHelperFunctionsTest extends AppTestCase
@@ -53,24 +53,24 @@ class CryptorHelperFunctionsTest extends AppTestCase
     {
         $stringValue = 'simple string';
 
-        $encryptedString = crypto_encode($stringValue, Cryptor::ASYMMETRIC);
+        $encryptedString = crypto_encode($stringValue, CryptorType::ASYMMETRIC);
 
         $this->assertIsString($encryptedString);
         $this->assertNotEmpty($encryptedString);
 
-        $decryptedString = crypto_decode($encryptedString, Cryptor::ASYMMETRIC);
+        $decryptedString = crypto_decode($encryptedString, CryptorType::ASYMMETRIC);
 
         $this->assertIsString($decryptedString);
         $this->assertEquals($stringValue, $decryptedString);
 
         $data = ['key' => 'value'];
 
-        $encryptedData = crypto_encode($data, Cryptor::ASYMMETRIC);
+        $encryptedData = crypto_encode($data, CryptorType::ASYMMETRIC);
 
         $this->assertIsString($encryptedData);
         $this->assertNotEmpty($encryptedData);
 
-        $decryptedData = crypto_decode($encryptedData, Cryptor::ASYMMETRIC);
+        $decryptedData = crypto_decode($encryptedData, CryptorType::ASYMMETRIC);
 
         $this->assertIsArray($decryptedData);
         $this->assertEquals($data, $decryptedData);
@@ -78,12 +78,12 @@ class CryptorHelperFunctionsTest extends AppTestCase
         $objectValue = new stdClass();
         $objectValue->key = 'value';
 
-        $encryptedObject = crypto_encode($objectValue, Cryptor::ASYMMETRIC);
+        $encryptedObject = crypto_encode($objectValue, CryptorType::ASYMMETRIC);
 
         $this->assertIsString($encryptedObject);
         $this->assertNotEmpty($encryptedObject);
 
-        $decryptedObject = crypto_decode($encryptedObject, Cryptor::ASYMMETRIC);
+        $decryptedObject = crypto_decode($encryptedObject, CryptorType::ASYMMETRIC);
 
         $this->assertInstanceOf(stdClass::class, $decryptedObject);
         $this->assertEquals($objectValue, $decryptedObject);

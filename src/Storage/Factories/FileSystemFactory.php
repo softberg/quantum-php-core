@@ -28,6 +28,7 @@ use Quantum\Service\Exceptions\ServiceException;
 use Quantum\Config\Exceptions\ConfigException;
 use Quantum\Service\Factories\ServiceFactory;
 use Quantum\App\Exceptions\BaseException;
+use Quantum\Storage\Enums\FileSystemType;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\HttpClient\HttpClient;
 use Quantum\Storage\FileSystem;
@@ -44,17 +45,17 @@ class FileSystemFactory
      * Supported adapters
      */
     public const ADAPTERS = [
-        FileSystem::LOCAL => LocalFileSystemAdapter::class,
-        FileSystem::DROPBOX => DropboxFileSystemAdapter::class,
-        FileSystem::GDRIVE => GoogleDriveFileSystemAdapter::class,
+        FileSystemType::LOCAL => LocalFileSystemAdapter::class,
+        FileSystemType::DROPBOX => DropboxFileSystemAdapter::class,
+        FileSystemType::GDRIVE => GoogleDriveFileSystemAdapter::class,
     ];
 
     /**
      * Supported apps
      */
     public const APPS = [
-        FileSystem::DROPBOX => DropboxApp::class,
-        FileSystem::GDRIVE => GoogleDriveApp::class,
+        FileSystemType::DROPBOX => DropboxApp::class,
+        FileSystemType::GDRIVE => GoogleDriveApp::class,
     ];
 
     /**
@@ -118,7 +119,7 @@ class FileSystemFactory
      */
     private static function createCloudApp(string $adapter): ?CloudAppInterface
     {
-        if ($adapter === FileSystem::LOCAL || !isset(self::APPS[$adapter])) {
+        if ($adapter === FileSystemType::LOCAL || !isset(self::APPS[$adapter])) {
             return null;
         }
 

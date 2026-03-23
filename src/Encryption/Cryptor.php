@@ -29,16 +29,6 @@ use Quantum\App\Exceptions\BaseException;
  */
 class Cryptor
 {
-    /**
-     * Symmetric
-     */
-    public const SYMMETRIC = 'symmetric';
-
-    /**
-     * Asymmetric
-     */
-    public const ASYMMETRIC = 'asymmetric';
-
     private EncryptionInterface $adapter;
 
     public function __construct(EncryptionInterface $adapter)

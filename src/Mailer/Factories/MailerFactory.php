@@ -25,6 +25,7 @@ use Quantum\Mailer\Adapters\MailgunAdapter;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Mailer\Adapters\SmtpAdapter;
 use Quantum\Di\Exceptions\DiException;
+use Quantum\Mailer\Enums\MailerType;
 use Quantum\Mailer\Mailer;
 use Quantum\Loader\Setup;
 use ReflectionException;
@@ -39,11 +40,11 @@ class MailerFactory
      * Supported adapters
      */
     public const ADAPTERS = [
-        Mailer::SMTP => SmtpAdapter::class,
-        Mailer::MAILGUN => MailgunAdapter::class,
-        Mailer::MANDRILL => MandrillAdapter::class,
-        Mailer::SENDGRID => SendgridAdapter::class,
-        Mailer::SENDINBLUE => SendinblueAdapter::class,
+        MailerType::SMTP => SmtpAdapter::class,
+        MailerType::MAILGUN => MailgunAdapter::class,
+        MailerType::MANDRILL => MandrillAdapter::class,
+        MailerType::SENDGRID => SendgridAdapter::class,
+        MailerType::SENDINBLUE => SendinblueAdapter::class,
     ];
 
     /**

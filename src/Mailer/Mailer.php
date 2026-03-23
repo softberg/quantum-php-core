@@ -37,31 +37,6 @@ use Quantum\App\Exceptions\BaseException;
  */
 class Mailer
 {
-    /**
-     * SMTP adapter
-     */
-    public const SMTP = 'smtp';
-
-    /**
-     * Mailgun adapter
-     */
-    public const MAILGUN = 'mailgun';
-
-    /**
-     * Mandrill adapter
-     */
-    public const MANDRILL = 'mandrill';
-
-    /**
-     * Sendgrid adapter
-     */
-    public const SENDGRID = 'sendgrid';
-
-    /**
-     * Sendinblue adapter
-     */
-    public const SENDINBLUE = 'sendinblue';
-
     private MailerInterface $adapter;
 
     public function __construct(MailerInterface $adapter)

@@ -48,21 +48,6 @@ use Quantum\App\Exceptions\BaseException;
  */
 class FileSystem
 {
-    /**
-     * Local adapter
-     */
-    public const LOCAL = 'local';
-
-    /**
-     * Dropbox adapter
-     */
-    public const DROPBOX = 'dropbox';
-
-    /**
-     * GoogleDrive adapter
-     */
-    public const GDRIVE = 'gdrive';
-
     private FilesystemAdapterInterface $adapter;
 
     public function __construct(FilesystemAdapterInterface $adapter)

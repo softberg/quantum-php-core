@@ -20,6 +20,7 @@ use Quantum\Paginator\Exceptions\PaginatorException;
 use Quantum\Paginator\Factories\PaginatorFactory;
 use Quantum\Database\Contracts\DbalInterface;
 use Quantum\Model\Exceptions\ModelException;
+use Quantum\Paginator\Enums\PaginatorType;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Paginator\Paginator;
 
@@ -146,7 +147,7 @@ abstract class DbModel extends Model
      */
     public function paginate(int $perPage, int $currentPage = 1): Paginator
     {
-        return PaginatorFactory::create(Paginator::MODEL, [
+        return PaginatorFactory::create(PaginatorType::MODEL, [
             'model' => $this,
             'perPage' => $perPage,
             'page' => $currentPage,

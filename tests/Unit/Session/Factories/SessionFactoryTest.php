@@ -9,6 +9,7 @@ use Quantum\Session\Exceptions\SessionException;
 use Quantum\Tests\Unit\Session\TestCaseHelper;
 use Quantum\Session\Factories\SessionFactory;
 use Quantum\Model\Factories\ModelFactory;
+use Quantum\Session\Enums\SessionType;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Session\Session;
 use Quantum\Loader\Setup;
@@ -55,14 +56,14 @@ class SessionFactoryTest extends AppTestCase
 
     public function testSessionFactoryGetNativeSessionAdapter(): void
     {
-        $session = SessionFactory::get(Session::NATIVE);
+        $session = SessionFactory::get(SessionType::NATIVE);
 
         $this->assertInstanceOf(NativeSessionAdapter::class, $session->getAdapter());
     }
 
     public function testSessionFactoryGetDatabaseAdapter(): void
     {
-        $session = SessionFactory::get(Session::DATABASE);
+        $session = SessionFactory::get(SessionType::DATABASE);
 
         $this->assertInstanceOf(DatabaseSessionAdapter::class, $session->getAdapter());
     }
@@ -111,10 +112,10 @@ class SessionFactoryTest extends AppTestCase
         SessionFactory::get('invalid_type');
     }
 
-    public function testMailerFactoryReturnsSameInstance(): void
+    public function testSessionFactoryReturnsSameInstance(): void
     {
-        $session1 = SessionFactory::get(Session::NATIVE);
-        $session2 = SessionFactory::get(Session::NATIVE);
+        $session1 = SessionFactory::get(SessionType::NATIVE);
+        $session2 = SessionFactory::get(SessionType::NATIVE);
 
         $this->assertSame($session1, $session2);
     }

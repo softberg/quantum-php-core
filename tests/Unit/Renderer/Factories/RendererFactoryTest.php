@@ -7,6 +7,7 @@ use Quantum\Renderer\Exceptions\RendererException;
 use Quantum\Renderer\Factories\RendererFactory;
 use Quantum\Renderer\Adapters\HtmlAdapter;
 use Quantum\Renderer\Adapters\TwigAdapter;
+use Quantum\Renderer\Enums\RendererType;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Renderer\Renderer;
 
@@ -37,7 +38,7 @@ class RendererFactoryTest extends AppTestCase
 
     public function testRendererFactoryGetHtmlAdapter(): void
     {
-        $renderer = RendererFactory::get(Renderer::HTML);
+        $renderer = RendererFactory::get(RendererType::HTML);
 
         $this->assertInstanceOf(TemplateRendererInterface::class, $renderer->getAdapter());
 
@@ -46,7 +47,7 @@ class RendererFactoryTest extends AppTestCase
 
     public function testRendererFactoryTwigAdapter(): void
     {
-        $renderer = RendererFactory::get(Renderer::TWIG);
+        $renderer = RendererFactory::get(RendererType::TWIG);
 
         $this->assertInstanceOf(TemplateRendererInterface::class, $renderer->getAdapter());
 
@@ -64,8 +65,8 @@ class RendererFactoryTest extends AppTestCase
 
     public function testRendererFactoryReturnsSameInstance(): void
     {
-        $renderer1 = RendererFactory::get(Renderer::HTML);
-        $renderer2 = RendererFactory::get(Renderer::HTML);
+        $renderer1 = RendererFactory::get(RendererType::HTML);
+        $renderer2 = RendererFactory::get(RendererType::HTML);
 
         $this->assertSame($renderer1, $renderer2);
     }

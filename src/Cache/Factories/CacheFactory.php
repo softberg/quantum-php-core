@@ -24,6 +24,7 @@ use Quantum\App\Exceptions\BaseException;
 use Quantum\Cache\Adapters\RedisAdapter;
 use Quantum\Cache\Adapters\FileAdapter;
 use Quantum\Di\Exceptions\DiException;
+use Quantum\Cache\Enums\CacheType;
 use Quantum\Loader\Setup;
 use ReflectionException;
 use Quantum\Cache\Cache;
@@ -38,10 +39,10 @@ class CacheFactory
      * Supported adapters
      */
     public const ADAPTERS = [
-        Cache::FILE => FileAdapter::class,
-        Cache::DATABASE => DatabaseAdapter::class,
-        Cache::MEMCACHED => MemcachedAdapter::class,
-        Cache::REDIS => RedisAdapter::class,
+        CacheType::FILE => FileAdapter::class,
+        CacheType::DATABASE => DatabaseAdapter::class,
+        CacheType::MEMCACHED => MemcachedAdapter::class,
+        CacheType::REDIS => RedisAdapter::class,
     ];
 
     /**

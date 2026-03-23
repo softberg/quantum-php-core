@@ -8,11 +8,11 @@ use Quantum\Environment\Environment;
 use Quantum\Router\MatchedRoute;
 use PHPUnit\Framework\TestCase;
 use Quantum\Debugger\Debugger;
+use Quantum\App\Enums\AppType;
 use Quantum\Router\Route;
 use Quantum\Http\Request;
 use Quantum\Loader\Setup;
 use ReflectionClass;
-use Quantum\App\App;
 use Quantum\Di\Di;
 
 abstract class AppTestCase extends TestCase
@@ -21,7 +21,7 @@ abstract class AppTestCase extends TestCase
 
     public function setUp(): void
     {
-        AppFactory::create(App::WEB, PROJECT_ROOT);
+        AppFactory::create(AppType::WEB, PROJECT_ROOT);
 
         Environment::getInstance()
             ->setMutable(true)
@@ -35,7 +35,7 @@ abstract class AppTestCase extends TestCase
         Request::setMatchedRoute(null);
         Request::flush();
 
-        AppFactory::destroy(App::WEB);
+        AppFactory::destroy(AppType::WEB);
         config()->flush();
         Debugger::getInstance()->resetStore();
         Di::reset();

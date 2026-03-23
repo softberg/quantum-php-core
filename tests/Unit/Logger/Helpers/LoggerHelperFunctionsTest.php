@@ -6,6 +6,7 @@ use Quantum\Logger\Exceptions\LoggerException;
 use Quantum\Logger\Adapters\MessageAdapter;
 use Quantum\Logger\Adapters\SingleAdapter;
 use Quantum\Logger\Adapters\DailyAdapter;
+use Quantum\Logger\Enums\LoggerType;
 use Quantum\Debugger\DebuggerStore;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Debugger\Debugger;
@@ -48,7 +49,7 @@ class LoggerHelperFunctionsTest extends AppTestCase
     {
         config()->set('app.debug', false);
 
-        $logger = logger(Logger::SINGLE);
+        $logger = logger(LoggerType::SINGLE);
 
         $this->assertInstanceOf(Logger::class, $logger);
 
@@ -59,7 +60,7 @@ class LoggerHelperFunctionsTest extends AppTestCase
     {
         config()->set('app.debug', false);
 
-        $logger = logger(Logger::DAILY);
+        $logger = logger(LoggerType::DAILY);
 
         $this->assertInstanceOf(Logger::class, $logger);
 
@@ -83,7 +84,7 @@ class LoggerHelperFunctionsTest extends AppTestCase
 
         $this->expectExceptionMessage('The adapter `message` is not supported');
 
-        logger(Logger::MESSAGE);
+        logger(LoggerType::MESSAGE);
     }
 
     public function testErrorHelper(): void

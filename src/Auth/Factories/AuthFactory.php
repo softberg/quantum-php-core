@@ -25,6 +25,7 @@ use Quantum\Auth\Exceptions\AuthException;
 use Quantum\Auth\Adapters\JwtAuthAdapter;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
+use Quantum\Auth\Enums\AuthType;
 use Quantum\Service\QtService;
 use Quantum\Hasher\Hasher;
 use Quantum\Jwt\JwtToken;
@@ -42,8 +43,8 @@ class AuthFactory
      * Supported adapters
      */
     public const ADAPTERS = [
-        Auth::SESSION => SessionAuthAdapter::class,
-        Auth::JWT => JwtAuthAdapter::class,
+        AuthType::SESSION => SessionAuthAdapter::class,
+        AuthType::JWT => JwtAuthAdapter::class,
     ];
 
     /**
@@ -128,6 +129,6 @@ class AuthFactory
 
     private static function createJwtInstance(string $adapter): ?JwtToken
     {
-        return $adapter === Auth::JWT ? (new JwtToken())->setLeeway(1)->setClaims((array) config()->get('auth.claims')) : null;
+        return $adapter === AuthType::JWT ? (new JwtToken())->setLeeway(1)->setClaims((array) config()->get('auth.claims')) : null;
     }
 }

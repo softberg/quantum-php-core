@@ -22,6 +22,7 @@ use Quantum\Session\Exceptions\SessionException;
 use Quantum\Config\Exceptions\ConfigException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
+use Quantum\Session\Enums\SessionType;
 use Quantum\Session\Session;
 use Quantum\Loader\Setup;
 use ReflectionException;
@@ -36,8 +37,8 @@ class SessionFactory
      * Supported adapters
      */
     public const ADAPTERS = [
-        Session::NATIVE => NativeSessionAdapter::class,
-        Session::DATABASE => DatabaseSessionAdapter::class,
+        SessionType::NATIVE => NativeSessionAdapter::class,
+        SessionType::DATABASE => DatabaseSessionAdapter::class,
     ];
 
     /**

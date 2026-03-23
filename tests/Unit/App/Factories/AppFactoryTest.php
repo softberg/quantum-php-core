@@ -8,6 +8,7 @@ use Quantum\App\Contracts\AppInterface;
 use Quantum\App\Adapters\WebAppAdapter;
 use Quantum\App\Factories\AppFactory;
 use PHPUnit\Framework\TestCase;
+use Quantum\App\Enums\AppType;
 use Quantum\App\App;
 
 class AppFactoryTest extends TestCase
@@ -19,7 +20,7 @@ class AppFactoryTest extends TestCase
 
     public function testAppFactoryInstance(): void
     {
-        $app = AppFactory::create(App::WEB, PROJECT_ROOT);
+        $app = AppFactory::create(AppType::WEB, PROJECT_ROOT);
 
         $this->assertInstanceOf(App::class, $app);
     }
@@ -31,7 +32,7 @@ class AppFactoryTest extends TestCase
 
     public function testAppFactoryConsoleAdapter(): void
     {
-        $app = AppFactory::create(App::CONSOLE, PROJECT_ROOT);
+        $app = AppFactory::create(AppType::CONSOLE, PROJECT_ROOT);
 
         $this->assertInstanceOf(ConsoleAppAdapter::class, $app->getAdapter());
 
@@ -40,7 +41,7 @@ class AppFactoryTest extends TestCase
 
     public function testAppFactoryWebAdapter(): void
     {
-        $app = AppFactory::create(App::WEB, PROJECT_ROOT);
+        $app = AppFactory::create(AppType::WEB, PROJECT_ROOT);
 
         $this->assertInstanceOf(WebAppAdapter::class, $app->getAdapter());
 
@@ -58,19 +59,19 @@ class AppFactoryTest extends TestCase
 
     public function testAppFactoryReturnsSameInstance(): void
     {
-        $app1 = AppFactory::create(App::WEB, PROJECT_ROOT);
-        $app2 = AppFactory::create(App::WEB, PROJECT_ROOT);
+        $app1 = AppFactory::create(AppType::WEB, PROJECT_ROOT);
+        $app2 = AppFactory::create(AppType::WEB, PROJECT_ROOT);
 
         $this->assertSame($app1, $app2);
     }
 
     public function testAppFactoryDestroy(): void
     {
-        $app1 = AppFactory::create(App::WEB, PROJECT_ROOT);
+        $app1 = AppFactory::create(AppType::WEB, PROJECT_ROOT);
 
-        AppFactory::destroy(App::WEB);
+        AppFactory::destroy(AppType::WEB);
 
-        $app2 = AppFactory::create(App::WEB, PROJECT_ROOT);
+        $app2 = AppFactory::create(AppType::WEB, PROJECT_ROOT);
 
         $this->assertInstanceOf(App::class, $app2);
 

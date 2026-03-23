@@ -20,6 +20,7 @@ use Quantum\Encryption\Adapters\AsymmetricEncryptionAdapter;
 use Quantum\Encryption\Adapters\SymmetricEncryptionAdapter;
 use Quantum\Encryption\Exceptions\CryptorException;
 use Quantum\App\Exceptions\BaseException;
+use Quantum\Encryption\Enums\CryptorType;
 use Quantum\Encryption\Cryptor;
 
 /**
@@ -32,8 +33,8 @@ class CryptorFactory
      * Supported adapters
      */
     public const ADAPTERS = [
-        Cryptor::SYMMETRIC => SymmetricEncryptionAdapter::class,
-        Cryptor::ASYMMETRIC => AsymmetricEncryptionAdapter::class,
+        CryptorType::SYMMETRIC => SymmetricEncryptionAdapter::class,
+        CryptorType::ASYMMETRIC => AsymmetricEncryptionAdapter::class,
     ];
 
     /**
@@ -44,7 +45,7 @@ class CryptorFactory
     /**
      * @throws BaseException
      */
-    public static function get(string $type = Cryptor::SYMMETRIC): Cryptor
+    public static function get(string $type = CryptorType::SYMMETRIC): Cryptor
     {
         if (!isset(self::$instances[$type])) {
             self::$instances[$type] = self::createInstance($type);
