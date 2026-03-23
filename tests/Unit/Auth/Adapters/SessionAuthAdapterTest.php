@@ -19,7 +19,7 @@ class SessionAuthAdapterTest extends AuthTestCase
 
         config()->set('auth.two_fa', false);
 
-        $this->sessionAuth = new SessionAuthAdapter($this->authService, $this->mailer, new Hasher());
+        $this->sessionAuth = new SessionAuthAdapter($this->authService, $this->mailer, (new Hasher())->setCost(4));
 
         $admin = $this->sessionAuth->signup($this->adminUser);
 

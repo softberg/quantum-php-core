@@ -13,10 +13,13 @@ use Quantum\Auth\Auth;
 class AuthTest extends AuthTestCase
 {
     private JwtToken $jwt;
+    private Hasher $hasher;
 
     public function setUp(): void
     {
         parent::setUp();
+
+        $this->hasher = (new Hasher())->setCost(4);
 
         $this->jwt = (new JwtToken())
             ->setLeeway(1)
@@ -32,18 +35,18 @@ class AuthTest extends AuthTestCase
 
     public function testAuthGetAdapter(): void
     {
-        $auth = new Auth(new SessionAuthAdapter($this->authService, $this->mailer, new Hasher()));
+        $auth = new Auth(new SessionAuthAdapter($this->authService, $this->mailer, $this->hasher));
 
         $this->assertInstanceOf(AuthenticatableInterface::class, $auth->getAdapter());
 
-        $auth = new Auth(new JwtAuthAdapter($this->authService, $this->mailer, new Hasher(), $this->jwt));
+        $auth = new Auth(new JwtAuthAdapter($this->authService, $this->mailer, $this->hasher, $this->jwt));
 
         $this->assertInstanceOf(AuthenticatableInterface::class, $auth->getAdapter());
     }
 
     public function testAuthCallingValidMethod(): void
     {
-        $auth = new Auth(new JwtAuthAdapter($this->authService, $this->mailer, new Hasher(), $this->jwt));
+        $auth = new Auth(new JwtAuthAdapter($this->authService, $this->mailer, $this->hasher, $this->jwt));
 
         $user = $auth->getAdapter()->signup($this->adminUser);
 
@@ -58,7 +61,7 @@ class AuthTest extends AuthTestCase
 
     public function testAuthCallingInvalidMethod(): void
     {
-        $auth = new Auth(new JwtAuthAdapter($this->authService, $this->mailer, new Hasher(), $this->jwt));
+        $auth = new Auth(new JwtAuthAdapter($this->authService, $this->mailer, $this->hasher, $this->jwt));
 
         $this->expectException(AuthException::class);
 
