@@ -19,6 +19,7 @@ namespace Quantum\Captcha\Enums;
 /**
  * Class CaptchaType
  * @package Quantum\Captcha
+ * @codeCoverageIgnore
  */
 final class CaptchaType
 {

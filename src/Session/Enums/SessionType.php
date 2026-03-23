@@ -19,6 +19,7 @@ namespace Quantum\Session\Enums;
 /**
  * Class SessionType
  * @package Quantum\Session
+ * @codeCoverageIgnore
  */
 final class SessionType
 {

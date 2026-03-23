@@ -19,6 +19,7 @@ namespace Quantum\Encryption\Enums;
 /**
  * Class CryptorType
  * @package Quantum\Encryption
+ * @codeCoverageIgnore
  */
 final class CryptorType
 {

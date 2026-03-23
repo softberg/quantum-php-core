@@ -19,6 +19,7 @@ namespace Quantum\Logger\Enums;
 /**
  * Class LoggerType
  * @package Quantum\Logger
+ * @codeCoverageIgnore
  */
 final class LoggerType
 {

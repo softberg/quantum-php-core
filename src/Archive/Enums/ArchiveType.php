@@ -19,6 +19,7 @@ namespace Quantum\Archive\Enums;
 /**
  * Class ArchiveType
  * @package Quantum\Archive
+ * @codeCoverageIgnore
  */
 final class ArchiveType
 {

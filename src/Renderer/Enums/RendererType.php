@@ -19,6 +19,7 @@ namespace Quantum\Renderer\Enums;
 /**
  * Class RendererType
  * @package Quantum\Renderer
+ * @codeCoverageIgnore
  */
 final class RendererType
 {

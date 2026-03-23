@@ -19,6 +19,7 @@ namespace Quantum\Storage\Enums;
 /**
  * Class FileSystemType
  * @package Quantum\Storage
+ * @codeCoverageIgnore
  */
 final class FileSystemType
 {

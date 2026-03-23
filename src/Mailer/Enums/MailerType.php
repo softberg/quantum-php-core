@@ -19,6 +19,7 @@ namespace Quantum\Mailer\Enums;
 /**
  * Class MailerType
  * @package Quantum\Mailer
+ * @codeCoverageIgnore
  */
 final class MailerType
 {

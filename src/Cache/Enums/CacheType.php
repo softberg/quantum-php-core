@@ -19,6 +19,7 @@ namespace Quantum\Cache\Enums;
 /**
  * Class CacheType
  * @package Quantum\Cache
+ * @codeCoverageIgnore
  */
 final class CacheType
 {

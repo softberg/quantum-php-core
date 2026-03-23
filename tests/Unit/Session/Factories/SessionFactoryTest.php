@@ -112,7 +112,7 @@ class SessionFactoryTest extends AppTestCase
         SessionFactory::get('invalid_type');
     }
 
-    public function testMailerFactoryReturnsSameInstance(): void
+    public function testSessionFactoryReturnsSameInstance(): void
     {
         $session1 = SessionFactory::get(SessionType::NATIVE);
         $session2 = SessionFactory::get(SessionType::NATIVE);
