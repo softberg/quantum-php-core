@@ -25,6 +25,10 @@ return [
         'api_key' => 'mandrill_api_key',
     ],
 
+    'resend' => [
+        'api_key' => 'resend_api_key',
+    ],
+
     'mailgun' => [
         'api_key' => 'mailgun_api_key',
         'domain' => 'mailgun_domain',

@@ -7,6 +7,7 @@ use Quantum\Mailer\Adapters\SendinblueAdapter;
 use Quantum\Mailer\Adapters\MandrillAdapter;
 use Quantum\Mailer\Adapters\SendgridAdapter;
 use Quantum\Mailer\Adapters\MailgunAdapter;
+use Quantum\Mailer\Adapters\ResendAdapter;
 use Quantum\Mailer\Factories\MailerFactory;
 use Quantum\Mailer\Adapters\SmtpAdapter;
 use Quantum\Mailer\Enums\MailerType;
@@ -74,6 +75,13 @@ class MailerFactoryTest extends AppTestCase
         $mailer = MailerFactory::get(MailerType::SENDINBLUE);
 
         $this->assertInstanceOf(SendinblueAdapter::class, $mailer->getAdapter());
+    }
+
+    public function testMailerFactoryGetResendAdapter(): void
+    {
+        $mailer = MailerFactory::get(MailerType::RESEND);
+
+        $this->assertInstanceOf(ResendAdapter::class, $mailer->getAdapter());
     }
 
     public function testMailerFactoryGetInvalidTypeAdapter(): void

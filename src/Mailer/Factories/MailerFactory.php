@@ -24,6 +24,7 @@ use Quantum\Mailer\Adapters\SendgridAdapter;
 use Quantum\Mailer\Adapters\MailgunAdapter;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Mailer\Adapters\SmtpAdapter;
+use Quantum\Mailer\Adapters\ResendAdapter;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Mailer\Enums\MailerType;
 use Quantum\Mailer\Mailer;
@@ -45,6 +46,7 @@ class MailerFactory
         MailerType::MANDRILL => MandrillAdapter::class,
         MailerType::SENDGRID => SendgridAdapter::class,
         MailerType::SENDINBLUE => SendinblueAdapter::class,
+        MailerType::RESEND => ResendAdapter::class,
     ];
 
     /**
