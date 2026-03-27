@@ -33,6 +33,8 @@ final class MailerType
 
     public const SENDINBLUE = 'sendinblue';
 
+    public const RESEND = 'resend';
+
     private function __construct()
     {
     }
