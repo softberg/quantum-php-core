@@ -107,7 +107,9 @@ class PharAdapter implements ArchiveInterface
         }
 
         try {
-            $this->archive->addFile($filePath, $entryName);
+            $entryName !== null
+                ? $this->archive->addFile($filePath, $entryName)
+                : $this->archive->addFile($filePath);
             return true;
         } catch (Exception $e) {
             return false;
@@ -213,6 +215,8 @@ class PharAdapter implements ArchiveInterface
 
     /**
      * @throws ArchiveException
+     * @phpstan-assert Phar $this->archive
+     * @phpstan-assert string $this->archiveName
      */
     private function ensureArchiveOpen(): void
     {
