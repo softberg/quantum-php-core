@@ -42,7 +42,7 @@ class App
 
     public static function getBaseDir(): string
     {
-        return self::$baseDir;
+        return self::$baseDir ?? '';
     }
 
     public function getAdapter(): AppInterface

@@ -44,7 +44,7 @@ class ConsoleAppAdapter extends AppAdapter
 
     protected ConsoleOutput $output;
 
-    protected ?Application $application = null;
+    protected Application $application;
 
     public function __construct()
     {
@@ -59,6 +59,11 @@ class ConsoleAppAdapter extends AppAdapter
             $this->loadEnvironment();
             $this->loadAppConfig();
         }
+
+        $this->application = $this->createApplication(
+            config()->get('app.name', 'UNKNOWN'),
+            config()->get('app.version', 'UNKNOWN')
+        );
     }
 
     /**
@@ -72,11 +77,6 @@ class ConsoleAppAdapter extends AppAdapter
     public function start(): ?int
     {
         try {
-            $this->application = $this->createApplication(
-                config()->get('app.name', 'UNKNOWN'),
-                config()->get('app.version', 'UNKNOWN')
-            );
-
             $this->loadLanguage();
 
             $this->registerCoreCommands();

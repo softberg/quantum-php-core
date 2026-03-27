@@ -76,7 +76,9 @@ trait AppTrait
 
         $srcDir = dirname(__DIR__, 2);
 
-        foreach (glob($srcDir . DS . '*', GLOB_ONLYDIR) as $componentDir) {
+        $componentDirs = glob($srcDir . DS . '*', GLOB_ONLYDIR);
+
+        foreach (is_array($componentDirs) ? $componentDirs : [] as $componentDir) {
             $helperPath = $componentDir . DS . 'Helpers';
             if (is_dir($helperPath)) {
                 $loader->loadDir($helperPath);
