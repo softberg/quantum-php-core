@@ -39,40 +39,23 @@ use DateTime;
  */
 trait AuthTrait
 {
-    /**
-     * @var Mailer
-     */
-    protected $mailer;
+    protected Mailer $mailer;
 
-    /**
-     * @var Hasher
-     */
-    protected $hasher;
+    protected Hasher $hasher;
 
-    /**
-     * @var JwtToken
-     */
-    protected $jwt;
+    protected AuthServiceInterface $authService;
 
-    /**
-     * @var AuthServiceInterface
-     */
-    protected $authService;
-
-    /**
-     * @var int
-     */
-    protected $otpLength = 6;
+    protected int $otpLength = 6;
 
     /**
      * @var array<string, string>
      */
-    protected $keyFields = [];
+    protected array $keyFields = [];
 
     /**
      * @var array<string>
      */
-    protected $visibleFields = [];
+    protected array $visibleFields = [];
 
     /**
      * @inheritDoc
@@ -214,7 +197,7 @@ trait AuthTrait
             throw AuthException::incorrectCredentials();
         }
 
-        if (!$this->hasher->check($password, $user->getFieldValue($this->keyFields[AuthKeys::PASSWORD]))) {
+        if (!$this->hasher->check($password, $user->getFieldValue($this->keyFields[AuthKeys::PASSWORD]) ?? '')) {
             throw AuthException::incorrectCredentials();
         }
 
@@ -275,7 +258,9 @@ trait AuthTrait
             throw AuthException::incorrectVerificationCode();
         }
 
-        if (new DateTime() >= new DateTime($user->getFieldValue($this->keyFields[AuthKeys::OTP_EXPIRY]))) {
+        $otpExpiry = $user->getFieldValue($this->keyFields[AuthKeys::OTP_EXPIRY]);
+
+        if (!$otpExpiry || new DateTime() >= new DateTime($otpExpiry)) {
             throw AuthException::verificationCodeExpired();
         }
 
@@ -324,7 +309,7 @@ trait AuthTrait
      */
     protected function generateToken(?string $val = null): string
     {
-        return base64_encode($this->hasher->hash($val ?: config()->get('app.key')));
+        return base64_encode($this->hasher->hash($val ?: config()->get('app.key')) ?? '');
     }
 
     /**
@@ -339,7 +324,7 @@ trait AuthTrait
         $appName = config()->get('app.name') ?: '';
 
         $this->mailer->setFrom($appEmail, $appName)
-            ->setAddress($user->getFieldValue($this->keyFields[AuthKeys::USERNAME]), $fullName)
+            ->setAddress($user->getFieldValue($this->keyFields[AuthKeys::USERNAME]) ?? '', $fullName)
             ->setBody($body)
             ->send();
     }

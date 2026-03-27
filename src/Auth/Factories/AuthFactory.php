@@ -16,14 +16,15 @@ declare(strict_types=1);
 
 namespace Quantum\Auth\Factories;
 
+use Quantum\Auth\Contracts\AuthenticatableInterface;
 use Quantum\Auth\Contracts\AuthServiceInterface;
 use Quantum\Service\Exceptions\ServiceException;
 use Quantum\Config\Exceptions\ConfigException;
 use Quantum\Service\Factories\ServiceFactory;
 use Quantum\Auth\Adapters\SessionAuthAdapter;
 use Quantum\Auth\Exceptions\AuthException;
-use Quantum\Auth\Adapters\JwtAuthAdapter;
 use Quantum\App\Exceptions\BaseException;
+use Quantum\Auth\Adapters\JwtAuthAdapter;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Auth\Enums\AuthType;
 use Quantum\Service\QtService;
@@ -87,12 +88,17 @@ class AuthFactory
      */
     private static function createInstance(string $adapterClass, string $adapter): Auth
     {
-        return new Auth(new $adapterClass(
-            self::createAuthService($adapter),
-            mailer(),
-            new Hasher(),
-            self::createJwtInstance($adapter)
-        ));
+        $authService = self::createAuthService($adapter);
+        
+        $adapterInstance = $adapter === AuthType::JWT
+            ? new $adapterClass($authService, mailer(), new Hasher(), self::createJwtInstance())
+            : new $adapterClass($authService, mailer(), new Hasher());
+
+        if (!$adapterInstance instanceof AuthenticatableInterface) {
+            throw AuthException::adapterNotSupported($adapter);
+        }
+
+        return new Auth($adapterInstance);
     }
 
     /**
@@ -127,8 +133,10 @@ class AuthFactory
         return $authService;
     }
 
-    private static function createJwtInstance(string $adapter): ?JwtToken
+    private static function createJwtInstance(): JwtToken
     {
-        return $adapter === AuthType::JWT ? (new JwtToken())->setLeeway(1)->setClaims((array) config()->get('auth.claims')) : null;
+        return (new JwtToken())
+            ->setLeeway(1)
+            ->setClaims((array) config()->get('auth.claims'));
     }
 }
