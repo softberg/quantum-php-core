@@ -89,7 +89,7 @@ class AuthFactory
     private static function createInstance(string $adapterClass, string $adapter): Auth
     {
         $authService = self::createAuthService($adapter);
-        
+
         $adapterInstance = $adapter === AuthType::JWT
             ? new $adapterClass($authService, mailer(), new Hasher(), self::createJwtInstance())
             : new $adapterClass($authService, mailer(), new Hasher());

@@ -25,7 +25,6 @@ use Quantum\Di\Exceptions\DiException;
 use Quantum\Auth\Enums\AuthKeys;
 use Quantum\Mailer\Mailer;
 use Quantum\Hasher\Hasher;
-use Quantum\Jwt\JwtToken;
 use ReflectionException;
 use Quantum\Auth\User;
 use ReflectionClass;
