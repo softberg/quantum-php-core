@@ -59,7 +59,7 @@ class ResendAdapter implements MailerInterface
     private function prepare(): void
     {
         $fromName = $this->from['name'] ?? null;
-		
+
         $this->data['from'] = $fromName
             ? $fromName . ' <' . $this->from['email'] . '>'
             : $this->from['email'];
@@ -100,4 +100,3 @@ class ResendAdapter implements MailerInterface
         }
     }
 }
-

@@ -35,4 +35,3 @@ class ResendAdapterTest extends MailerTestCase
         $this->assertTrue($this->adapter->send());
     }
 }
-
