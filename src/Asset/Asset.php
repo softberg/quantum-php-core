@@ -43,7 +43,7 @@ class Asset
      */
     private ?array $attributes;
 
-    private ?int $position;
+    private int $position;
 
     /**
      * Asset templates
@@ -58,7 +58,7 @@ class Asset
      * Asset constructor
      * @param array<string>|null $attributes
      */
-    public function __construct(int $type, string $path, ?string $name = null, ?int $position = -1, ?array $attributes = [])
+    public function __construct(int $type, string $path, ?string $name = null, int $position = -1, ?array $attributes = [])
     {
         $this->type = $type;
         $this->path = $path;
@@ -76,7 +76,7 @@ class Asset
     }
 
     /**
-     * Gets asset path
+     * Gets an asset path
      */
     public function getPath(): string
     {
@@ -94,7 +94,7 @@ class Asset
     /**
      * Gets asset position
      */
-    public function getPosition(): ?int
+    public function getPosition(): int
     {
         return $this->position;
     }
@@ -127,7 +127,7 @@ class Asset
     {
         return _message(
             $this->templates[$this->type],
-            [$this->url(), implode(' ', $this->attributes)]
+            [$this->url(), implode(' ', $this->attributes ?? [])]
         ) . PHP_EOL;
     }
 }
