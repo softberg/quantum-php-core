@@ -40,7 +40,7 @@ interface MailerInterface
 
     /**
      * Gets 'To' addresses
-     * @return array<string, mixed>
+     * @return array<int|string, mixed>
      */
     public function getAddresses(): array;
 

@@ -38,6 +38,8 @@ class SendgridAdapter implements MailerInterface
 
     private string $apiUrl = 'https://api.sendgrid.com/v3/mail/send';
 
+    private HttpClient $httpClient;
+
     /**
      * @var array<string, mixed>
      */
@@ -57,7 +59,7 @@ class SendgridAdapter implements MailerInterface
     /**
      * Prepares the data
      */
-    public function prepare(): void
+    protected function prepare(): void
     {
         $this->data['from'] = $this->from;
 
@@ -85,7 +87,7 @@ class SendgridAdapter implements MailerInterface
         }
     }
 
-    private function sendEmail(): bool
+    protected function sendEmail(): bool
     {
         try {
             $this->httpClient
@@ -102,5 +104,13 @@ class SendgridAdapter implements MailerInterface
         } catch (Exception $e) {
             return false;
         }
+    }
+
+    /**
+     * @return array<string>
+     */
+    protected function getTransportErrors(): array
+    {
+        return $this->httpClient->getErrors();
     }
 }

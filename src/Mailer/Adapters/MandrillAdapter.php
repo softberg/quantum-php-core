@@ -36,6 +36,8 @@ class MandrillAdapter implements MailerInterface
 
     private string $apiUrl = 'https://mandrillapp.com/api/1.0/messages/send.json';
 
+    private HttpClient $httpClient;
+
     /**
      * @var array<string, mixed>
      */
@@ -55,7 +57,7 @@ class MandrillAdapter implements MailerInterface
     /**
      * Prepares the data
      */
-    private function prepare(): void
+    protected function prepare(): void
     {
         $message = [];
 
@@ -84,7 +86,7 @@ class MandrillAdapter implements MailerInterface
         $this->data['message'] = $message;
     }
 
-    private function sendEmail(): bool
+    protected function sendEmail(): bool
     {
         try {
             $this->httpClient
@@ -97,5 +99,13 @@ class MandrillAdapter implements MailerInterface
         } catch (Exception $e) {
             return false;
         }
+    }
+
+    /**
+     * @return array<string>
+     */
+    protected function getTransportErrors(): array
+    {
+        return $this->httpClient->getErrors();
     }
 }
