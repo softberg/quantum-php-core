@@ -50,7 +50,7 @@ trait CaptchaTrait
     protected array $errorCodes = [];
 
     /**
-     * @var array<string, string>
+     * @var array<int, string>
      */
     protected array $elementAttributes = [];
 

@@ -17,6 +17,7 @@ declare(strict_types=1);
 namespace Quantum\Captcha\Factories;
 
 use Quantum\Captcha\Exceptions\CaptchaException;
+use Quantum\Captcha\Contracts\CaptchaInterface;
 use Quantum\Captcha\Adapters\RecaptchaAdapter;
 use Quantum\Config\Exceptions\ConfigException;
 use Quantum\Captcha\Adapters\HcaptchaAdapter;
@@ -70,9 +71,18 @@ class CaptchaFactory
         return self::$instances[$adapter];
     }
 
+    /**
+     * @throws CaptchaException
+     */
     private static function createInstance(string $adapterClass, string $adapter): Captcha
     {
-        return new Captcha(new $adapterClass(config()->get('captcha.' . $adapter), new HttpClient()));
+        $adapterInstance = new $adapterClass(config()->get('captcha.' . $adapter), new HttpClient());
+
+        if (!$adapterInstance instanceof CaptchaInterface) {
+            throw CaptchaException::adapterNotSupported($adapter);
+        }
+
+        return new Captcha($adapterInstance);
     }
 
     /**
