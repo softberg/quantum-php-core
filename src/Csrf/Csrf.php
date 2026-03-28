@@ -87,7 +87,7 @@ class Csrf
      * Checks the token
      * @throws CsrfException
      */
-    public function checkToken(?Request $request): bool
+    public function checkToken(Request $request): bool
     {
         if (!$request->has(self::TOKEN_KEY)) {
             throw CsrfException::tokenNotFound();
