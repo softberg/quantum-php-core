@@ -170,6 +170,11 @@ class Environment
 
         if ($row) {
             $envFileContent = fs()->get($envFilePath);
+
+            if (!is_string($envFileContent)) {
+                throw EnvException::fileNotFound($this->envFile);
+            }
+
             $envFileContent = preg_replace('/^' . preg_quote($row, '/') . '/m', $key . '=' . $value, $envFileContent);
 
             fs()->put($envFilePath, (string) $envFileContent);
