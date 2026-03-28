@@ -86,6 +86,10 @@ class Translator
      */
     private function loadFiles(array $files): void
     {
+        if ($this->translations === null) {
+            return;
+        }
+
         foreach ($files as $file) {
             $fileName = fs()->fileName($file);
 
@@ -97,7 +101,7 @@ class Translator
 
     /**
      * Get translation by key
-     * @param array<string, mixed>|string|null $params
+     * @param array<int|string, mixed>|string|null $params
      */
     public function get(string $key, $params = null): string
     {
