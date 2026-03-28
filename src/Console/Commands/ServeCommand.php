@@ -229,7 +229,7 @@ class ServeCommand extends QtCommand
      */
     protected function waitForProcess($process): void
     {
-        while (proc_get_status($process)['running']) {
+        while (($status = proc_get_status($process)) !== false && $status['running']) {
             usleep(200_000);
         }
 

@@ -130,7 +130,11 @@ class OpenApiCommand extends QtCommand
         }
 
         if (!route_group_exists('openapi', $module)) {
-            $this->fs->put($routes, str_replace('return function ($route) {', $this->openapiRoutes($module), $this->fs->get($routes)));
+            $routeContent = $this->fs->get($routes);
+
+            if ($routeContent !== false) {
+                $this->fs->put($routes, str_replace('return function ($route) {', $this->openapiRoutes($module), $routeContent));
+            }
         }
 
         if (!$this->fs->isDirectory($modulePath . DS . 'resources' . DS . 'openapi')) {
@@ -168,6 +172,11 @@ class OpenApiCommand extends QtCommand
         $specPath = modules_dir() . DS . $module . DS . 'resources' . DS . 'openapi' . DS . 'spec.json';
 
         $openApi = Generator::scan([$annotationPath]);
+
+        if ($openApi === null) {
+            $this->error('Failed to generate OpenAPI specification.');
+            return;
+        }
 
         $this->fs->put($specPath, $openApi->toJson());
 

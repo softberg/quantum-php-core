@@ -77,6 +77,6 @@ class KeyGenerateCommand extends QtCommand
      */
     private function generateRandomKey(): string
     {
-        return bin2hex(random_bytes((int) $this->getOption('length')));
+        return bin2hex(random_bytes(max(1, (int) $this->getOption('length'))));
     }
 }
