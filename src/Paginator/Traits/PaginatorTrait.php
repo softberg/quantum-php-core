@@ -220,7 +220,7 @@ trait PaginatorTrait
             $url = $this->baseUrl . $routeUrl;
         }
 
-        $delimiter = strpos($url, '?') ? '&' : '?';
+        $delimiter = strpos($url ?? '', '?') !== false ? '&' : '?';
 
         return $url . $delimiter;
     }
@@ -275,7 +275,7 @@ trait PaginatorTrait
 
     /**
      * Get items links HTML
-     * @param array<string> $links
+     * @param array<int, string|null> $links
      */
     protected function getItemsLinks(int $startPage, int $endPage, int $currentPage, array $links): string
     {
@@ -320,7 +320,7 @@ trait PaginatorTrait
 
     /**
      * Add last page link HTML
-     * @param array<string> $links
+     * @param array<int, string|null> $links
      */
     protected function addLastPageLink(int $endPage, int $totalPages, array $links): string
     {
