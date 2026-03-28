@@ -30,6 +30,9 @@ class ModelFactory
 {
     /**
      * Gets the Model
+     * @template T of Model
+     * @param class-string<T> $modelClass
+     * @return T
      * @throws ModelException
      */
     public static function get(string $modelClass): Model
@@ -99,12 +102,18 @@ class ModelFactory
     ): DbalInterface {
         $ormClass = Database::getInstance()->getOrmClass();
 
-        return new $ormClass(
+        $instance = new $ormClass(
             $table,
             $modelName,
             $idColumn,
             $foreignKeys,
             $hidden
         );
+
+        if (!$instance instanceof DbalInterface) {
+            throw ModelException::notInstanceOf($ormClass, DbalInterface::class);
+        }
+
+        return $instance;
     }
 }
