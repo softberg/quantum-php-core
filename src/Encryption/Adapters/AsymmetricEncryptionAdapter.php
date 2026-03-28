@@ -103,7 +103,14 @@ class AsymmetricEncryptionAdapter implements EncryptionInterface
         }
 
         openssl_pkey_export($resource, $privateKey);
-        $publicKey = openssl_pkey_get_details($resource)['key'];
+
+        $details = openssl_pkey_get_details($resource);
+
+        if ($details === false) {
+            throw CryptorException::missingConfig('openssl.cnf');
+        }
+
+        $publicKey = $details['key'];
 
         return [
             'private' => $privateKey,

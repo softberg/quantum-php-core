@@ -60,6 +60,10 @@ class SymmetricEncryptionAdapter implements EncryptionInterface
 
         $encrypted = openssl_encrypt($plain, self::CIPHER_METHOD, $this->appKey, 0, $iv);
 
+        if ($encrypted === false) {
+            throw CryptorException::invalidCipher();
+        }
+
         return base64_encode(base64_encode($encrypted) . '::' . base64_encode($iv));
     }
 
@@ -82,7 +86,13 @@ class SymmetricEncryptionAdapter implements EncryptionInterface
         $encryptedData = base64_decode($data[0]);
         $iv = base64_decode($data[1]);
 
-        return openssl_decrypt($encryptedData, self::CIPHER_METHOD, $this->appKey, 0, $iv);
+        $decrypted = openssl_decrypt($encryptedData, self::CIPHER_METHOD, $this->appKey, 0, $iv);
+
+        if ($decrypted === false) {
+            throw CryptorException::invalidCipher();
+        }
+
+        return $decrypted;
     }
 
     /**
@@ -91,6 +101,17 @@ class SymmetricEncryptionAdapter implements EncryptionInterface
     private function generateIV(): string
     {
         $length = openssl_cipher_iv_length(self::CIPHER_METHOD);
-        return openssl_random_pseudo_bytes($length);
+
+        if ($length === false) {
+            throw CryptorException::invalidCipher();
+        }
+
+        $bytes = openssl_random_pseudo_bytes($length);
+
+        if ($bytes === false) {
+            throw CryptorException::invalidCipher();
+        }
+
+        return $bytes;
     }
 }
