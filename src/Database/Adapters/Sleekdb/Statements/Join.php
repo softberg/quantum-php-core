@@ -23,6 +23,7 @@ use Quantum\Model\Exceptions\ModelException;
 use Quantum\Database\Enums\Relation;
 use Quantum\Model\DbModel;
 use SleekDB\QueryBuilder;
+use RuntimeException;
 
 /**
  * Trait Join
@@ -49,7 +50,7 @@ trait Join
      */
     private function applyJoins(): void
     {
-        if (!empty($this->joins)) {
+        if (!empty($this->joins) && $this->queryBuilder !== null) {
             $this->applyJoin($this->queryBuilder, $this, $this->joins[0]);
         }
     }
@@ -63,6 +64,10 @@ trait Join
     {
         $modelToJoin = unserialize($nextItem['model']);
         $switch = $nextItem['switch'];
+
+        if (!is_object($modelToJoin)) {
+            throw new RuntimeException('Failed to unserialize join model.');
+        }
 
         $queryBuilder->join(function ($item) use ($currentItem, $modelToJoin, $switch, $level) {
 

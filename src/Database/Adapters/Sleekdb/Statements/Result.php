@@ -143,7 +143,7 @@ trait Result
      * @param array<string, mixed> $result
      * @return array<string, mixed>
      */
-    public function setHidden($result): array
+    public function setHidden(array $result): array
     {
         return array_diff_key($result, array_flip($this->hidden));
     }

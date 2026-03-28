@@ -17,6 +17,7 @@ declare(strict_types=1);
 namespace Quantum\Database\Adapters\Idiorm\Statements;
 
 use Quantum\Database\Exceptions\DatabaseException;
+use PDOStatement;
 use PDOException;
 
 /**
@@ -118,8 +119,13 @@ trait Query
         self::query('SELECT * FROM ' . $table);
         $statement = self::lastStatement();
 
-        for ($i = 0; $i < $statement->columnCount(); $i++) {
-            $columns[] = $statement->getColumnMeta($i)['name'];
+        if ($statement instanceof PDOStatement) {
+            for ($i = 0; $i < $statement->columnCount(); $i++) {
+                $meta = $statement->getColumnMeta($i);
+                if (is_array($meta)) {
+                    $columns[] = $meta['name'];
+                }
+            }
         }
 
         return $columns;

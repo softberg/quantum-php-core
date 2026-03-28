@@ -32,11 +32,14 @@ trait Result
      */
     public function get(): array
     {
+        $results = $this->getOrmModel()->find_many();
+        $items = is_array($results) ? $results : iterator_to_array($results);
+
         return array_map(function ($element): object {
             $item = clone $this;
             $item->updateOrmModel($element);
             return $item;
-        }, $this->getOrmModel()->find_many());
+        }, $items);
     }
 
     /**
@@ -110,7 +113,7 @@ trait Result
      * @param array<string, mixed> $result
      * @return array<string, mixed>
      */
-    public function setHidden($result): array
+    public function setHidden(array $result): array
     {
         return array_diff_key($result, array_flip($this->hidden));
     }

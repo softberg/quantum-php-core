@@ -100,6 +100,7 @@ trait Model
      */
     public function deleteMany(): bool
     {
-        return $this->getBuilder()->getQuery()->delete();
+        $result = $this->getBuilder()->getQuery()->delete();
+        return is_bool($result) ? $result : $result !== 0;
     }
 }

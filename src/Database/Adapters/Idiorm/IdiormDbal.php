@@ -67,7 +67,7 @@ class IdiormDbal implements DbalInterface, RelationalInterface
 
     /**
      * Associated model name
-     * @var string
+     * @var string|null
      */
     private $modelName;
 
@@ -202,15 +202,18 @@ class IdiormDbal implements DbalInterface, RelationalInterface
      */
     public function getOrmModel(): ORM
     {
-        if (!$this->ormModel) {
+        $model = $this->ormModel;
+
+        if (!$model) {
             if (!self::getConnection()) {
                 throw DatabaseException::missingConfig('database');
             }
 
-            $this->ormModel = (self::$ormClass)::for_table($this->table)->use_id_column($this->idColumn);
+            $model = (self::$ormClass)::for_table($this->table)->use_id_column($this->idColumn);
+            $this->ormModel = $model;
         }
 
-        return $this->ormModel;
+        return $model;
     }
 
     /**
@@ -227,7 +230,7 @@ class IdiormDbal implements DbalInterface, RelationalInterface
      */
     public function getModelName(): string
     {
-        return $this->modelName;
+        return $this->modelName ?? '';
     }
 
     /**
