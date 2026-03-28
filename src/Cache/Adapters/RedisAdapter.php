@@ -17,6 +17,7 @@ declare(strict_types=1);
 namespace Quantum\Cache\Adapters;
 
 use Quantum\Cache\Enums\ExceptionMessages;
+use Quantum\Cache\Traits\CacheTrait;
 use Psr\SimpleCache\CacheInterface;
 use InvalidArgumentException;
 use RedisException;
@@ -29,15 +30,7 @@ use Redis;
  */
 class RedisAdapter implements CacheInterface
 {
-    /**
-     * @var int
-     */
-    private $ttl;
-
-    /**
-     * @var string
-     */
-    private $prefix;
+    use CacheTrait;
 
     private Redis $redis;
 
@@ -82,7 +75,10 @@ class RedisAdapter implements CacheInterface
     public function getMultiple($keys, $default = null)
     {
         if (!is_array($keys)) {
-            throw new InvalidArgumentException(_message(ExceptionMessages::ARGUMENT_NOT_ITERABLE, '$values'), E_WARNING);
+            throw new InvalidArgumentException(
+                _message(ExceptionMessages::ARGUMENT_NOT_ITERABLE, '$keys'),
+                E_WARNING
+            );
         }
 
         $result = [];
@@ -107,9 +103,13 @@ class RedisAdapter implements CacheInterface
      * @inheritDoc
      * @throws RedisException
      */
-    public function set($key, $value, $ttl = null)
+    public function set($key, $value, $ttl = null): bool
     {
-        return $this->redis->set($this->keyHash($key), serialize($value), $this->ttl);
+        return (bool) $this->redis->set(
+            $this->keyHash($key),
+            serialize($value),
+            $this->normalizeTtl($ttl)
+        );
     }
 
     /**
@@ -121,7 +121,10 @@ class RedisAdapter implements CacheInterface
     public function setMultiple($values, $ttl = null): bool
     {
         if (!is_array($values)) {
-            throw new InvalidArgumentException(_message(ExceptionMessages::ARGUMENT_NOT_ITERABLE, '$values'), E_WARNING);
+            throw new InvalidArgumentException(
+                _message(ExceptionMessages::ARGUMENT_NOT_ITERABLE, '$values'),
+                E_WARNING
+            );
         }
 
         $results = [];
@@ -149,7 +152,10 @@ class RedisAdapter implements CacheInterface
     public function deleteMultiple($keys): bool
     {
         if (!is_array($keys)) {
-            throw new InvalidArgumentException(_message(ExceptionMessages::ARGUMENT_NOT_ITERABLE, '$values'), E_WARNING);
+            throw new InvalidArgumentException(
+                _message(ExceptionMessages::ARGUMENT_NOT_ITERABLE, '$keys'),
+                E_WARNING
+            );
         }
 
         $results = [];
@@ -165,16 +171,8 @@ class RedisAdapter implements CacheInterface
      * @inheritDoc
      * @throws RedisException
      */
-    public function clear()
+    public function clear(): bool
     {
-        return $this->redis->flushdb();
-    }
-
-    /**
-     * Gets the hashed key
-     */
-    private function keyHash(string $key): string
-    {
-        return sha1($this->prefix . $key);
+        return (bool) $this->redis->flushdb();
     }
 }

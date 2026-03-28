@@ -22,6 +22,7 @@ use Quantum\Cache\Enums\ExceptionMessages;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
 use Psr\SimpleCache\CacheInterface;
+use Quantum\Cache\Traits\CacheTrait;
 use Quantum\Storage\FileSystem;
 use InvalidArgumentException;
 use ReflectionException;
@@ -32,17 +33,9 @@ use ReflectionException;
  */
 class FileAdapter implements CacheInterface
 {
+    use CacheTrait;
+
     private FileSystem $fs;
-
-    /**
-     * @var int
-     */
-    private $ttl;
-
-    /**
-     * @var string
-     */
-    private $prefix;
 
     /**
      * @var string
@@ -119,7 +112,7 @@ class FileAdapter implements CacheInterface
             return false;
         }
 
-        if (time() - $this->fs->lastModified($path) > $this->ttl) {
+        if (time() >= $this->fs->lastModified($path)) {
             $this->delete($key);
             return false;
         }
@@ -130,9 +123,16 @@ class FileAdapter implements CacheInterface
     /**
      * @inheritDoc
      */
-    public function set($key, $value, $ttl = null)
+    public function set($key, $value, $ttl = null): bool
     {
-        return $this->fs->put($this->getPath($key), serialize($value));
+        $path = $this->getPath($key);
+        $result = $this->fs->put($path, serialize($value)) !== false;
+
+        if ($result) {
+            touch($path, time() + $this->normalizeTtl($ttl));
+        }
+
+        return $result;
     }
 
     /**
@@ -158,7 +158,7 @@ class FileAdapter implements CacheInterface
     /**
      * @inheritDoc
      */
-    public function delete($key)
+    public function delete($key): bool
     {
         $path = $this->getPath($key);
 
@@ -216,6 +216,6 @@ class FileAdapter implements CacheInterface
      */
     private function getPath(string $key): string
     {
-        return $this->cacheDir . DS . sha1($this->prefix . $key);
+        return $this->cacheDir . DS . $this->keyHash($key);
     }
 }

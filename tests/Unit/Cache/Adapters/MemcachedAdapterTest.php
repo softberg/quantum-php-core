@@ -4,6 +4,7 @@ namespace Quantum\Tests\Unit\Cache\Adapters;
 
 use Quantum\Cache\Adapters\MemcachedAdapter;
 use Quantum\Tests\Unit\AppTestCase;
+use DateInterval;
 
 class MemcachedAdapterTest extends AppTestCase
 {
@@ -151,6 +152,33 @@ class MemcachedAdapterTest extends AppTestCase
         sleep(2);
 
         $this->assertNull($memCached->get('test'));
+    }
+
+    public function testMemcachedAdapterSetWithCustomTtl(): void
+    {
+        $this->memCached->set('test', 'Test value', 120);
+
+        $this->assertTrue($this->memCached->has('test'));
+
+        $this->assertEquals('Test value', $this->memCached->get('test'));
+    }
+
+    public function testMemcachedAdapterSetWithDateIntervalTtl(): void
+    {
+        $this->memCached->set('test', 'Test value', new DateInterval('PT60S'));
+
+        $this->assertTrue($this->memCached->has('test'));
+
+        $this->assertEquals('Test value', $this->memCached->get('test'));
+    }
+
+    public function testMemcachedAdapterExpiredWithCustomTtl(): void
+    {
+        $this->memCached->set('test', 'Test value', 1);
+
+        sleep(2);
+
+        $this->assertNull($this->memCached->get('test'));
     }
 
 }

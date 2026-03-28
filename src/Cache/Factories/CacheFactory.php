@@ -24,6 +24,7 @@ use Quantum\App\Exceptions\BaseException;
 use Quantum\Cache\Adapters\RedisAdapter;
 use Quantum\Cache\Adapters\FileAdapter;
 use Quantum\Di\Exceptions\DiException;
+use Psr\SimpleCache\CacheInterface;
 use Quantum\Cache\Enums\CacheType;
 use Quantum\Loader\Setup;
 use ReflectionException;
@@ -73,9 +74,18 @@ class CacheFactory
         return self::$instances[$adapter];
     }
 
+    /**
+     * @throws CacheException
+     */
     private static function createInstance(string $adapterClass, string $adapter): Cache
     {
-        return new Cache(new $adapterClass(config()->get('cache.' . $adapter)));
+        $cacheAdapter = new $adapterClass(config()->get('cache.' . $adapter));
+
+        if (!$cacheAdapter instanceof CacheInterface) {
+            throw CacheException::adapterNotSupported($adapter);
+        }
+
+        return new Cache($cacheAdapter);
     }
 
     /**

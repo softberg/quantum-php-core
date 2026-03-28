@@ -4,6 +4,7 @@ namespace Quantum\Tests\Unit\Cache\Adapters;
 
 use Quantum\Cache\Adapters\FileAdapter;
 use Quantum\Tests\Unit\AppTestCase;
+use DateInterval;
 
 class FileAdapterTest extends AppTestCase
 {
@@ -136,6 +137,44 @@ class FileAdapterTest extends AppTestCase
         $fileCache->set('test', 'Test value');
 
         $this->assertNull($fileCache->get('test'));
+    }
+
+    public function testFileAdapterSetWithCustomTtl(): void
+    {
+        $this->fileCache->set('test', 'Test value', 120);
+
+        $this->assertTrue($this->fileCache->has('test'));
+
+        $this->assertEquals('Test value', $this->fileCache->get('test'));
+    }
+
+    public function testFileAdapterSetWithDateIntervalTtl(): void
+    {
+        $this->fileCache->set('test', 'Test value', new DateInterval('PT60S'));
+
+        $this->assertTrue($this->fileCache->has('test'));
+
+        $this->assertEquals('Test value', $this->fileCache->get('test'));
+    }
+
+    public function testFileAdapterExpiredWithCustomTtl(): void
+    {
+        $this->fileCache->set('test', 'Test value', -1);
+
+        $this->assertNull($this->fileCache->get('test'));
+    }
+
+    public function testFileAdapterPerKeyTtlIndependence(): void
+    {
+        $this->fileCache->set('short', 'Short TTL', -1);
+
+        $this->fileCache->set('long', 'Long TTL', 120);
+
+        $this->assertFalse($this->fileCache->has('short'));
+
+        $this->assertTrue($this->fileCache->has('long'));
+
+        $this->assertEquals('Long TTL', $this->fileCache->get('long'));
     }
 
 }
