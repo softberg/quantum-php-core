@@ -16,6 +16,7 @@ declare(strict_types=1);
 
 namespace Quantum\Logger\Factories;
 
+use Quantum\Logger\Contracts\ReportableInterface;
 use Quantum\Logger\Exceptions\LoggerException;
 use Quantum\Config\Exceptions\ConfigException;
 use Quantum\Logger\Adapters\MessageAdapter;
@@ -84,9 +85,17 @@ class LoggerFactory
 
     private static function createInstance(string $adapterClass, string $adapter): Logger
     {
-        return $adapter === LoggerType::MESSAGE
-            ? new Logger(new MessageAdapter())
-            : new Logger(new $adapterClass(config()->get('logging.' . $adapter)));
+        if ($adapter === LoggerType::MESSAGE) {
+            return new Logger(new MessageAdapter());
+        }
+
+        $adapterInstance = new $adapterClass(config()->get('logging.' . $adapter));
+
+        if (!$adapterInstance instanceof ReportableInterface) {
+            throw LoggerException::adapterNotSupported($adapter);
+        }
+
+        return new Logger($adapterInstance);
     }
 
     /**
