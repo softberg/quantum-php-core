@@ -16,6 +16,7 @@ declare(strict_types=1);
 
 namespace Quantum\Renderer\Factories;
 
+use Quantum\Renderer\Contracts\TemplateRendererInterface;
 use Quantum\Renderer\Exceptions\RendererException;
 use Quantum\Config\Exceptions\ConfigException;
 use Quantum\Renderer\Adapters\HtmlAdapter;
@@ -69,9 +70,18 @@ class RendererFactory
         return self::$instances[$adapter];
     }
 
+    /**
+     * @throws RendererException
+     */
     private static function createInstance(string $adapterClass, string $adapter): Renderer
     {
-        return new Renderer(new $adapterClass(config()->get('view.' . $adapter)));
+        $adapterInstance = new $adapterClass(config()->get('view.' . $adapter));
+
+        if (!$adapterInstance instanceof TemplateRendererInterface) {
+            throw RendererException::adapterNotSupported($adapter);
+        }
+
+        return new Renderer($adapterInstance);
     }
 
     /**
