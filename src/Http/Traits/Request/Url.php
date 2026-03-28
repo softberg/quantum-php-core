@@ -129,7 +129,8 @@ trait Url
             return ['zero_segment'];
         }
 
-        $segments = explode('/', trim(parse_url(self::$__uri)['path'], '/'));
+        $parsed = parse_url(self::$__uri);
+        $segments = explode('/', trim(is_array($parsed) ? ($parsed['path'] ?? '') : '', '/'));
         array_unshift($segments, 'zero_segment');
         return $segments;
     }

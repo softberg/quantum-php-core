@@ -75,6 +75,11 @@ trait RawInput
     private static function getBlocks(string $boundary, string $rawInput): array
     {
         $result = preg_split("/-+$boundary/", $rawInput);
+
+        if ($result === false) {
+            return [];
+        }
+
         array_pop($result);
 
         return $result;
@@ -105,11 +110,13 @@ trait RawInput
 
             switch ($type) {
                 case 'file':
-                    [$nameParam, $file] = self::getParsedFile($block);
+                    $parsed = self::getParsedFile($block);
 
-                    if (!$file) {
+                    if ($parsed === null) {
                         continue 2;
                     }
+
+                    [$nameParam, $file] = $parsed;
 
                     self::addFileToCollection($files, $nameParam, $file);
                     break;
@@ -174,12 +181,12 @@ trait RawInput
     {
         preg_match('/name=\"([^\"]*)\".*stream[\n|\r]+([^\n\r].*)?$/s', $block, $match);
 
-        return [$match[1] => $match[2] ?? ''];
+        return [($match[1] ?? '') => $match[2] ?? ''];
     }
 
     /**
      * Gets the parsed file
-     * @return array<int, string|UploadedFile>|null
+     * @return array{string, UploadedFile}|null
      * @throws BaseException
      * @throws ConfigException
      * @throws DiException
@@ -271,7 +278,7 @@ trait RawInput
         $filename = '-unknown-';
         $contentType = ContentType::OCTET_STREAM;
 
-        $rawHeaders = preg_replace("/\r\n|\r|\n/", "\n", $rawHeaders);
+        $rawHeaders = preg_replace("/\r\n|\r|\n/", "\n", $rawHeaders) ?? $rawHeaders;
         $lines = explode("\n", $rawHeaders);
 
         foreach ($lines as $line) {

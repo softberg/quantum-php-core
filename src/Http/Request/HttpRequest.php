@@ -174,7 +174,7 @@ abstract class HttpRequest
      */
     public static function isMethod(string $method): bool
     {
-        return strcasecmp($method, self::$__method) === 0;
+        return strcasecmp($method, self::$__method ?? '') === 0;
     }
 
     /**

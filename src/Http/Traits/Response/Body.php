@@ -198,9 +198,15 @@ trait Body
         self::composeXML($arr, $simpleXML);
 
         $dom = new DOMDocument();
-        $dom->loadXML($simpleXML->asXML());
+        $xml = $simpleXML->asXML();
+
+        if ($xml === false) {
+            return '';
+        }
+
+        $dom->loadXML($xml);
         $dom->formatOutput = true;
-        return $dom->saveXML();
+        return $dom->saveXML() ?: '';
     }
 
     /**
@@ -248,7 +254,7 @@ trait Body
      */
     private static function formatJson(): string
     {
-        return json_encode(self::all(), JSON_UNESCAPED_UNICODE);
+        return json_encode(self::all(), JSON_UNESCAPED_UNICODE) ?: '';
     }
 
     /**
