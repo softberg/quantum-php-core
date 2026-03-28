@@ -68,7 +68,7 @@ class DiException extends BaseException
     public static function invalidCallable(?string $entry = null): DiException
     {
         return new self(
-            _message(ExceptionMessages::INVALID_CALLABLE, [$entry]),
+            _message(ExceptionMessages::INVALID_CALLABLE, [$entry ?? '']),
             E_ERROR
         );
     }

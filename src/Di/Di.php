@@ -31,17 +31,17 @@ use Closure;
 class Di
 {
     /**
-     * @var array<class-string, class-string>
+     * @var array<string, class-string>
      */
     private static array $dependencies = [];
 
     /**
-     * @var array<class-string, object>
+     * @var array<string, object>
      */
     private static array $container = [];
 
     /**
-     * @var array<class-string, bool>
+     * @var array<string, bool>
      */
     private static array $resolving = [];
 
@@ -219,6 +219,7 @@ class Di
 
     /**
      * Instantiates the dependency
+     * @param class-string $concrete
      * @param array<mixed> $args
      * @return mixed
      * @throws ReflectionException|DiException
