@@ -158,6 +158,10 @@ class ModuleManager
 
         $dir = $this->fs->listDirectory($src);
 
+        if (!is_array($dir)) {
+            return $copiedFiles;
+        }
+
         foreach ($dir as $file) {
             $srcPath = $file;
             $dstPath = str_replace($src, $dst, $file);
@@ -181,6 +185,11 @@ class ModuleManager
     {
         $dstPath = str_replace('.php.tpl', '.php', $dstPath);
         $content = $this->fs->get($srcPath);
+
+        if (!is_string($content)) {
+            return;
+        }
+
         $processedContent = $this->replacePlaceholders($content);
         $this->fs->put($dstPath, $processedContent);
     }
