@@ -29,7 +29,7 @@ class CronTask implements CronTaskInterface
     /**
      * Cron expression instance
      */
-    private ?CronExpression $cronExpression = null;
+    private CronExpression $cronExpression;
 
     /**
      * Task name
@@ -63,7 +63,7 @@ class CronTask implements CronTaskInterface
      */
     public function getExpression(): string
     {
-        return $this->cronExpression->getExpression();
+        return $this->cronExpression->getExpression() ?? '';
     }
 
     /**

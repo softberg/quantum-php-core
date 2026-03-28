@@ -350,7 +350,7 @@ class Schedule
         $minute = (int) $minute;
 
         // Replace hour and minute in existing expression
-        $parts = explode(' ', $this->expression);
+        $parts = explode(' ', $this->expression ?? '');
         $parts[0] = (string) $minute;
         $parts[1] = (string) $hour;
         $this->expression = implode(' ', $parts);

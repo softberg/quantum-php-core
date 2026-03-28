@@ -53,12 +53,14 @@ class CronLock
 
     public function acquire(): bool
     {
-        $this->lockHandle = fopen($this->lockFile, 'c+');
-        if ($this->lockHandle === false) {
+        $handle = fopen($this->lockFile, 'c+');
+        if ($handle === false) {
             $this->lockHandle = null;
             $this->ownsLock = false;
             return false;
         }
+
+        $this->lockHandle = $handle;
 
         if (!flock($this->lockHandle, LOCK_EX | LOCK_NB)) {
             fclose($this->lockHandle);
