@@ -160,7 +160,11 @@ class LocalFileSystemAdapter implements LocalFilesystemAdapterInterface
         try {
             foreach (scandir($dirname) as $item) {
                 if ($item !== '.' && $item !== '..') {
-                    $entries[] = realpath($dirname . DS . $item);
+                    $resolved = realpath($dirname . DS . $item);
+
+                    if ($resolved !== false) {
+                        $entries[] = $resolved;
+                    }
                 }
             }
 

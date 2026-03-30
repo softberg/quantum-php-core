@@ -60,10 +60,13 @@ trait CloudAppTrait
 
                 $prevHeaders['Authorization'] = 'Bearer ' . $accessToken;
 
-                $responseBody = $this->sendRequest($prevUrl, $prevData, $prevHeaders);
+                $responseBody = $this->sendRequest($prevUrl ?? '', $prevData, $prevHeaders);
 
             } else {
-                throw new Exception(json_encode($responseBody ?? $errors), E_ERROR);
+                throw new Exception(
+                    json_encode($responseBody ?? $errors) ?: '',
+                    E_ERROR
+                );
             }
         }
 
