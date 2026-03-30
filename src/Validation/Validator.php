@@ -74,7 +74,7 @@ class Validator
     public function setRule(string $field, array $rules): void
     {
         foreach ($rules as $rule) {
-            $ruleName = key($rule);
+            $ruleName = (string) key($rule);
             $ruleParam = current($rule);
             $this->setOrUpdateRule($field, $ruleName, $ruleParam);
         }
@@ -97,7 +97,7 @@ class Validator
      */
     public function updateRule(string $field, array $rule): void
     {
-        $ruleName = key($rule);
+        $ruleName = (string) key($rule);
         $ruleParam = current($rule);
         $this->setOrUpdateRule($field, $ruleName, $ruleParam);
     }
