@@ -113,7 +113,9 @@ trait SessionTrait
      */
     public function getId(): ?string
     {
-        return session_id();
+        $id = session_id();
+
+        return $id !== false ? $id : null;
     }
 
     /**

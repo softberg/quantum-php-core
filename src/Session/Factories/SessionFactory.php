@@ -18,6 +18,7 @@ namespace Quantum\Session\Factories;
 
 use Quantum\Session\Adapters\Database\DatabaseSessionAdapter;
 use Quantum\Session\Adapters\Native\NativeSessionAdapter;
+use Quantum\Session\Contracts\SessionStorageInterface;
 use Quantum\Session\Exceptions\SessionException;
 use Quantum\Config\Exceptions\ConfigException;
 use Quantum\App\Exceptions\BaseException;
@@ -71,7 +72,13 @@ class SessionFactory
 
     private static function createInstance(string $adapterClass, string $adapter): Session
     {
-        return new Session(new $adapterClass(config()->get('session.' . $adapter)));
+        $adapterInstance = new $adapterClass(config()->get('session.' . $adapter));
+
+        if (!$adapterInstance instanceof SessionStorageInterface) {
+            throw SessionException::adapterNotSupported($adapter);
+        }
+
+        return new Session($adapterInstance);
     }
 
     /**
