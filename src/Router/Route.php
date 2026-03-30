@@ -50,7 +50,7 @@ final class Route
     protected ?string $module = null;
 
     /**
-     * @var array<string, mixed>|null
+     * @var array<int|string, mixed>|null
      */
     protected ?array $middlewares = null;
 
@@ -187,7 +187,7 @@ final class Route
      */
     public function prefix(?string $prefix): self
     {
-        $this->prefix = $prefix !== '' ? trim($prefix, '/') : null;
+        $this->prefix = ($prefix !== null && $prefix !== '') ? trim($prefix, '/') : null;
         return $this;
     }
 
@@ -300,7 +300,7 @@ final class Route
 
     /**
      * Return middleware list.
-     * @return array<string, mixed>|null
+     * @return array<int|string, mixed>|null
      */
     public function getMiddlewares(): ?array
     {

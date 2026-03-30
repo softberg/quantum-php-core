@@ -57,6 +57,7 @@ final class RouteDispatcher
 
         $this->callHook($controller, '__before', $params);
 
+        /** @phpstan-ignore argument.type */
         $this->invoke($callable, $params);
 
         $this->callHook($controller, '__after', $params);
@@ -106,6 +107,7 @@ final class RouteDispatcher
     private function callHook(object $controller, string $hook, array $params): void
     {
         if (method_exists($controller, $hook)) {
+            /** @phpstan-ignore argument.type */
             $this->invoke([$controller, $hook], $params);
         }
     }
