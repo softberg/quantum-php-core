@@ -65,7 +65,7 @@ trait Join
         $modelToJoin = unserialize($nextItem['model']);
         $switch = $nextItem['switch'];
 
-        if (!is_object($modelToJoin)) {
+        if (!$modelToJoin instanceof DbModel) {
             throw new RuntimeException('Failed to unserialize join model.');
         }
 

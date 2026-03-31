@@ -56,12 +56,12 @@ class SleekDbal implements DbalInterface
     protected $modifiedFields = [];
 
     /**
-     * @var array<int, array<string, mixed>>
+     * @var array<int, array<int|string, mixed>|string>
      */
     protected array $criterias = [];
 
     /**
-     * @var array<int, array<string, mixed>>
+     * @var array<int, array<int|string, mixed>>
      */
     protected array $havings = [];
 
