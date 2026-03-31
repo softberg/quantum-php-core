@@ -30,19 +30,22 @@ class EnvCommandTest extends AppTestCase
     public function testExecShowsErrorWhenEnvExampleMissing(): void
     {
         $envExample = base_dir() . DS . '.env.example';
+        $backup = $envExample . '.' . uniqid('bak', true);
         $existed = file_exists($envExample);
 
         if ($existed) {
-            rename($envExample, $envExample . '.bak');
+            rename($envExample, $backup);
         }
 
-        $this->tester->execute([]);
+        try {
+            $this->tester->execute([]);
 
-        $output = $this->tester->getDisplay();
-        $this->assertStringContainsString('.env.example file not found', $output);
-
-        if ($existed) {
-            rename($envExample . '.bak', $envExample);
+            $output = $this->tester->getDisplay();
+            $this->assertStringContainsString('.env.example file not found', $output);
+        } finally {
+            if ($existed && file_exists($backup)) {
+                rename($backup, $envExample);
+            }
         }
     }
 }

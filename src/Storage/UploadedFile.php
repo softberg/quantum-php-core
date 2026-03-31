@@ -217,8 +217,18 @@ class UploadedFile extends SplFileInfo
         if (!$this->mimetype) {
             $fileInfo = new finfo(FILEINFO_MIME);
             $mimetype = $fileInfo->file($this->getPathname());
-            $mimetypeParts = is_string($mimetype) ? preg_split('/\s*[;,]\s*/', $mimetype) : false;
-            $this->mimetype = strtolower(is_array($mimetypeParts) ? $mimetypeParts[0] : '');
+
+            if (!is_string($mimetype)) {
+                throw new RuntimeException('Failed to determine MIME type for: ' . $this->getPathname());
+            }
+
+            $mimetypeParts = preg_split('/\s*[;,]\s*/', $mimetype);
+
+            if (!is_array($mimetypeParts) || empty($mimetypeParts[0])) {
+                throw new RuntimeException('Failed to parse MIME type: ' . $mimetype);
+            }
+
+            $this->mimetype = strtolower($mimetypeParts[0]);
             unset($fileInfo);
         }
 

@@ -19,6 +19,7 @@ namespace Quantum\App;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\App\Exceptions\AppException;
 use Quantum\App\Contracts\AppInterface;
+use RuntimeException;
 
 /**
  * Class App
@@ -42,7 +43,11 @@ class App
 
     public static function getBaseDir(): string
     {
-        return self::$baseDir ?? '';
+        if (self::$baseDir === null || self::$baseDir === '') {
+            throw new RuntimeException('Base directory is not initialized.');
+        }
+
+        return self::$baseDir;
     }
 
     public function getAdapter(): AppInterface

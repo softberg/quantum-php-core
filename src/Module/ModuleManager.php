@@ -159,7 +159,7 @@ class ModuleManager
         $dir = $this->fs->listDirectory($src);
 
         if (!is_array($dir)) {
-            return $copiedFiles;
+            throw ModuleException::directoryListingFailed($src);
         }
 
         foreach ($dir as $file) {

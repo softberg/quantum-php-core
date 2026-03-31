@@ -178,7 +178,7 @@ class SmtpAdapter implements MailerInterface
      */
     protected function resolveMessageId(): string
     {
-        preg_match('/<(.*?)@/', preg_quote($this->mailer->getLastMessageID()), $matches);
+        preg_match('/<(.*?)@/', $this->mailer->getLastMessageID(), $matches);
         return $matches[1] ?? bin2hex(random_bytes(16));
     }
 

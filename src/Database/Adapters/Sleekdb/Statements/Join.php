@@ -50,7 +50,11 @@ trait Join
      */
     private function applyJoins(): void
     {
-        if (!empty($this->joins) && $this->queryBuilder !== null) {
+        if (!empty($this->joins)) {
+            if ($this->queryBuilder === null) {
+                throw new RuntimeException('Cannot apply joins without an initialized query builder.');
+            }
+
             $this->applyJoin($this->queryBuilder, $this, $this->joins[0]);
         }
     }

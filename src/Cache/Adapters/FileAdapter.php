@@ -128,8 +128,9 @@ class FileAdapter implements CacheInterface
         $path = $this->getPath($key);
         $result = $this->fs->put($path, serialize($value)) !== false;
 
-        if ($result) {
-            touch($path, time() + $this->normalizeTtl($ttl));
+        if ($result && !touch($path, time() + $this->normalizeTtl($ttl))) {
+            $this->fs->remove($path);
+            return false;
         }
 
         return $result;

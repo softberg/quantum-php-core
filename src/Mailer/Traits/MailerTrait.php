@@ -323,7 +323,12 @@ trait MailerTrait
 
         $message .= 'Content-Type: text/html; charset=UTF-8' . PHP_EOL . PHP_EOL;
 
-        $body = is_string($this->message) ? $this->message : '';
+        if ($this->templatePath) {
+            $body = $this->createFromTemplate();
+        } else {
+            $body = is_string($this->message) ? $this->message : '';
+        }
+
         return $message . ($body . PHP_EOL);
     }
 

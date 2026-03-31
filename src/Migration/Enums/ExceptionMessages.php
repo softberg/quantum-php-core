@@ -29,4 +29,6 @@ final class ExceptionMessages extends BaseExceptionMessages
     public const NOT_SUPPORTED_ACTION = 'The action `{%1}`, is not supported';
 
     public const NOTHING_TO_MIGRATE = 'Nothing to migrate';
+
+    public const INVALID_MIGRATION_CLASS = 'Migration class `{%1}` must extend QtMigration';
 }

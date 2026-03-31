@@ -137,6 +137,6 @@ class AuthFactory
     {
         return (new JwtToken())
             ->setLeeway(1)
-            ->setClaims((array) config()->get('auth.claims'));
+            ->setClaims((array) config()->get('auth.' . AuthType::JWT . '.claims'));
     }
 }

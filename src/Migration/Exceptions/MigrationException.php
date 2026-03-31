@@ -50,4 +50,12 @@ class MigrationException extends BaseException
             E_NOTICE
         );
     }
+
+    public static function invalidMigrationClass(string $className): self
+    {
+        return new self(
+            _message(ExceptionMessages::INVALID_MIGRATION_CLASS, [$className]),
+            E_ERROR
+        );
+    }
 }

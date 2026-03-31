@@ -29,7 +29,6 @@ use Quantum\Di\Exceptions\DiException;
 use Quantum\Storage\FileSystem;
 use Quantum\Database\Database;
 use ReflectionException;
-use RuntimeException;
 
 /**
  * Class MigrationManager
@@ -170,7 +169,7 @@ class MigrationManager
             $migration = new $migrationClassName();
 
             if (!$migration instanceof QtMigration) {
-                throw new RuntimeException("Migration class $migrationClassName must extend QtMigration.");
+                throw MigrationException::invalidMigrationClass($migrationClassName);
             }
 
             $migration->up($this->tableFactory);
@@ -208,7 +207,7 @@ class MigrationManager
             $migration = new $migrationClassName();
 
             if (!$migration instanceof QtMigration) {
-                throw new RuntimeException("Migration class $migrationClassName must extend QtMigration.");
+                throw MigrationException::invalidMigrationClass($migrationClassName);
             }
 
             $migration->down($this->tableFactory);
