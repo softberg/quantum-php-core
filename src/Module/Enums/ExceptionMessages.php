@@ -35,4 +35,6 @@ final class ExceptionMessages extends BaseExceptionMessages
     public const MISSING_MODULE_DIRECTORY = 'Module directory does not exist, skipping config update.';
 
     public const MODULE_ALREADY_EXISTS = 'A module or prefix named `{%1}` already exists';
+
+    public const DIRECTORY_LISTING_FAILED = 'Failed to list directory `{%1}`';
 }

@@ -169,7 +169,7 @@ class AssetManager
             $position = $asset->getPosition();
             $type = $asset->getType();
 
-            if ($position != -1) {
+            if ($position !== -1) {
                 if (isset($this->published[$type][$position])) {
                     throw AssetException::positionInUse($position, $asset->getPath());
                 }
@@ -185,7 +185,7 @@ class AssetManager
     private function setRegularAssets(): void
     {
         foreach ($this->store as $asset) {
-            if ($asset->getPosition() == -1) {
+            if ($asset->getPosition() === -1) {
                 $this->setPosition($asset, 0);
             }
         }

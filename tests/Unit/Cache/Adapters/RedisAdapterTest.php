@@ -4,6 +4,7 @@ namespace Quantum\Tests\Unit\Cache\Adapters;
 
 use Quantum\Cache\Adapters\RedisAdapter;
 use Quantum\Tests\Unit\AppTestCase;
+use DateInterval;
 
 class RedisAdapterTest extends AppTestCase
 {
@@ -151,6 +152,33 @@ class RedisAdapterTest extends AppTestCase
         sleep(2);
 
         $this->assertNull($redis->get('test'));
+    }
+
+    public function testRedisAdapterSetWithCustomTtl(): void
+    {
+        $this->redis->set('test', 'Test value', 120);
+
+        $this->assertTrue($this->redis->has('test'));
+
+        $this->assertEquals('Test value', $this->redis->get('test'));
+    }
+
+    public function testRedisAdapterSetWithDateIntervalTtl(): void
+    {
+        $this->redis->set('test', 'Test value', new DateInterval('PT60S'));
+
+        $this->assertTrue($this->redis->has('test'));
+
+        $this->assertEquals('Test value', $this->redis->get('test'));
+    }
+
+    public function testRedisAdapterExpiredWithCustomTtl(): void
+    {
+        $this->redis->set('test', 'Test value', 1);
+
+        sleep(2);
+
+        $this->assertNull($this->redis->get('test'));
     }
 
 }

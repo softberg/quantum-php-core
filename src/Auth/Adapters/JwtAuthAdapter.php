@@ -38,10 +38,12 @@ class JwtAuthAdapter implements AuthenticatableInterface
 {
     use AuthTrait;
 
+    protected JwtToken $jwt;
+
     /**
      * @throws AuthException
      */
-    public function __construct(AuthServiceInterface $authService, Mailer $mailer, Hasher $hasher, ?JwtToken $jwt = null)
+    public function __construct(AuthServiceInterface $authService, Mailer $mailer, Hasher $hasher, JwtToken $jwt)
     {
         $this->authService = $authService;
         $this->mailer = $mailer;
@@ -138,11 +140,12 @@ class JwtAuthAdapter implements AuthenticatableInterface
 
     /**
      * Get Updated Tokens
-     * @throws JwtException
      * @return array<string, string>
+     * @throws JwtException
      */
     protected function getUpdatedTokens(User $user): array
     {
+
         return [
             $this->keyFields[AuthKeys::REFRESH_TOKEN] => $this->generateToken(),
             $this->keyFields[AuthKeys::ACCESS_TOKEN] => base64_encode($this->jwt->setData($this->getVisibleFields($user))->compose()),
@@ -151,8 +154,8 @@ class JwtAuthAdapter implements AuthenticatableInterface
 
     /**
      * Set Updated Tokens
-     * @throws JwtException
      * @return array<string, string>
+     * @throws JwtException
      */
     protected function setUpdatedTokens(User $user): array
     {

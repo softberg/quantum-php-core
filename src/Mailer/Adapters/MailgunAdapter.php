@@ -38,6 +38,8 @@ class MailgunAdapter implements MailerInterface
 
     private string $apiUrl = 'https://api.mailgun.net/v3/';
 
+    private HttpClient $httpClient;
+
     /**
      * @var array<string, mixed>
      */
@@ -58,7 +60,7 @@ class MailgunAdapter implements MailerInterface
     /**
      * Prepares the data
      */
-    private function prepare(): void
+    protected function prepare(): void
     {
         $this->data['from'] = $this->from['name'] . ' ' . $this->from['email'];
 
@@ -84,7 +86,7 @@ class MailgunAdapter implements MailerInterface
         }
     }
 
-    private function sendEmail(): bool
+    protected function sendEmail(): bool
     {
         try {
             $this->httpClient
@@ -102,4 +104,13 @@ class MailgunAdapter implements MailerInterface
             return false;
         }
     }
+
+    /**
+     * @return array<string>
+     */
+    protected function getTransportErrors(): array
+    {
+        return $this->httpClient->getErrors();
+    }
+
 }

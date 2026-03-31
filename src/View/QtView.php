@@ -173,7 +173,9 @@ class QtView
      */
     public function render(string $viewFile, array $params = []): ?string
     {
-        if (!$this->layoutFile) {
+        $layoutFile = $this->layoutFile;
+
+        if (!$layoutFile) {
             throw ViewException::noLayoutSet();
         }
 
@@ -191,12 +193,15 @@ class QtView
             $this->updateDebugger($viewFile);
         }
 
-        $layoutContent = $this->renderFile($this->layoutFile);
+        $layoutContent = $this->renderFile($layoutFile);
 
         if ($this->viewCache->isEnabled()) {
-            $layoutContent = $this->viewCache
-                ->set(route_uri(), $layoutContent)
-                ->get(route_uri());
+            $uri = route_uri();
+            if ($uri !== null) {
+                $layoutContent = $this->viewCache
+                    ->set($uri, $layoutContent)
+                    ->get($uri);
+            }
         }
 
         return $layoutContent;
@@ -277,6 +282,10 @@ class QtView
         return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
     }
 
+    /**
+     * @throws ReflectionException
+     * @throws DiException
+     */
     private function updateDebugger(string $viewFile): void
     {
         $routesCell = $this->debugger->getStoreCell(Debugger::ROUTES);

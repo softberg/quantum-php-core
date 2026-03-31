@@ -195,7 +195,10 @@ class ModelCollection implements Countable, IteratorAggregate
     private function validateModel($model): void
     {
         if (!$model instanceof Model) {
-            throw ModelException::notInstanceOf(get_class($model), Model::class);
+            throw ModelException::notInstanceOf(
+                is_object($model) ? get_class($model) : gettype($model),
+                Model::class
+            );
         }
     }
 }

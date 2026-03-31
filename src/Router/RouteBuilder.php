@@ -41,7 +41,7 @@ final class RouteBuilder
     private ?string $currentGroupName = null;
 
     /**
-     * @var array<string, Route>
+     * @var array<int, Route>
      */
     private array $groupRoutes = [];
 

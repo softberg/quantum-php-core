@@ -71,4 +71,12 @@ class ModuleException extends \Exception
             E_ERROR
         );
     }
+
+    public static function directoryListingFailed(string $directory): self
+    {
+        return new self(
+            _message(ExceptionMessages::DIRECTORY_LISTING_FAILED, [$directory]),
+            E_ERROR
+        );
+    }
 }

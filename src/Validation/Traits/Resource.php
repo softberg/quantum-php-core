@@ -46,7 +46,8 @@ trait Resource
         }
 
         if (function_exists('checkdnsrr') && function_exists('idn_to_ascii')) {
-            return checkdnsrr(idn_to_ascii($host, 0, INTL_IDNA_VARIANT_UTS46), 'A');
+            $ascii = idn_to_ascii($host, 0, INTL_IDNA_VARIANT_UTS46);
+            return $ascii !== false && checkdnsrr($ascii, 'A');
         } else {
             return gethostbyname($host) !== $host;
         }

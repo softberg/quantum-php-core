@@ -18,8 +18,6 @@ namespace Quantum\Mailer\Traits;
 
 use Quantum\Mailer\Contracts\MailerInterface;
 use Quantum\Di\Exceptions\DiException;
-use Quantum\HttpClient\HttpClient;
-use PHPMailer\PHPMailer\PHPMailer;
 use Quantum\Debugger\Debugger;
 use Quantum\Mailer\MailTrap;
 use ReflectionException;
@@ -39,7 +37,7 @@ trait MailerTrait
 
     /**
      * To addresses
-     * @var array<string, mixed>
+     * @var array<int|string, mixed>
      */
     private array $addresses = [];
 
@@ -61,39 +59,65 @@ trait MailerTrait
      */
     private ?string $templatePath = null;
 
-    protected ?HttpClient $httpClient = null;
-
-    protected ?PHPMailer $mailer = null;
-
     /**
      * Reply To addresses
-     * @var array<string, mixed>
+     * @var array<int|string, mixed>
      */
     protected array $replyToAddresses = [];
 
     /**
      * CC addresses
-     * @var array<string, mixed>
+     * @var array<int|string, mixed>
      */
     protected array $ccAddresses = [];
 
     /**
      * BCC addresses
-     * @var array<string, mixed>
+     * @var array<int|string, mixed>
      */
     protected array $bccAddresses = [];
 
     /**
      * Email attachments
-     * @var array<string, mixed>
+     * @var array<int|string, mixed>
      */
     protected array $attachments = [];
 
     /**
      * Email attachments created from string
-     * @var array<string, mixed>
+     * @var array<int|string, mixed>
      */
     protected array $stringAttachments = [];
+
+    abstract protected function prepare(): void;
+
+    abstract protected function sendEmail(): bool;
+
+    /**
+     * @return array<string>
+     */
+    abstract protected function getTransportErrors(): array;
+
+    /**
+     * @throws Exception
+     */
+    protected function resolveMessageId(): string
+    {
+        return bin2hex(random_bytes(16));
+    }
+
+    protected function getRenderedMessage(): ?string
+    {
+        return null;
+    }
+
+    protected function beforeSave(): void
+    {
+    }
+
+    protected function resetTransportState(): void
+    {
+    }
 
     /**
      * Sets the 'From' email and the name
@@ -129,7 +153,7 @@ trait MailerTrait
 
     /**
      * Gets 'To' addresses
-     * @return array<string, mixed>
+     * @return array<int|string, mixed>
      */
     public function getAddresses(): array
     {
@@ -204,8 +228,11 @@ trait MailerTrait
 
         $this->resetFields();
 
-        if ($this->name !== 'SMTP' && !$sent) {
-            warning(implode(', ', $this->httpClient->getErrors()), ['tab' => Debugger::MAILS]);
+        if (!$sent) {
+            $errors = $this->getTransportErrors();
+            if (!empty($errors)) {
+                warning(implode(', ', $errors), ['tab' => Debugger::MAILS]);
+            }
         }
 
         return $sent;
@@ -221,12 +248,7 @@ trait MailerTrait
             return self::$messageId;
         }
 
-        if ($this->name == 'SMTP') {
-            preg_match('/<(.*?)@/', preg_quote($this->mailer->getLastMessageID()), $matches);
-            self::$messageId = $matches[1] ?? null;
-        } else {
-            self::$messageId = bin2hex(random_bytes(16));
-        }
+        self::$messageId = $this->resolveMessageId();
 
         return self::$messageId;
     }
@@ -237,11 +259,14 @@ trait MailerTrait
      */
     private function saveEmail(): bool
     {
-        if ($this->name == 'SMTP') {
-            $this->mailer->preSend();
+        $this->beforeSave();
+
+        $messageId = $this->getMessageId();
+        if ($messageId === null) {
+            return false;
         }
 
-        return MailTrap::getInstance()->saveMessage($this->getMessageId(), $this->getMessageContent());
+        return MailTrap::getInstance()->saveMessage($messageId, $this->getMessageContent());
     }
 
     /**
@@ -250,6 +275,7 @@ trait MailerTrait
     private function createFromTemplate(): string
     {
         ob_start();
+        /** @phpstan-ignore argument.type */
         ob_implicit_flush(PHP_VERSION_ID >= 80000 ? false : 0);
 
         if (is_array($this->message)) {
@@ -258,7 +284,8 @@ trait MailerTrait
 
         require $this->templatePath . '.php';
 
-        return ob_get_clean();
+        $content = ob_get_clean();
+        return $content !== false ? $content : '';
     }
 
     /**
@@ -267,11 +294,7 @@ trait MailerTrait
      */
     private function getMessageContent(): string
     {
-        if ($this->name == 'SMTP') {
-            return $this->mailer->getSentMIMEMessage();
-        }
-
-        return $this->generateMessage();
+        return $this->getRenderedMessage() ?? $this->generateMessage();
     }
 
     /**
@@ -300,7 +323,13 @@ trait MailerTrait
 
         $message .= 'Content-Type: text/html; charset=UTF-8' . PHP_EOL . PHP_EOL;
 
-        return $message . ($this->message . PHP_EOL);
+        if ($this->templatePath) {
+            $body = $this->createFromTemplate();
+        } else {
+            $body = is_string($this->message) ? $this->message : '';
+        }
+
+        return $message . ($body . PHP_EOL);
     }
 
     /**
@@ -314,20 +343,6 @@ trait MailerTrait
         $this->message = null;
         $this->templatePath = null;
 
-        if ($this->name == 'SMTP') {
-            $this->replyToAddresses = [];
-            $this->ccAddresses = [];
-            $this->bccAddresses = [];
-            $this->attachments = [];
-            $this->stringAttachments = [];
-
-            $this->mailer->clearAddresses();
-            $this->mailer->clearCCs();
-            $this->mailer->clearBCCs();
-            $this->mailer->clearReplyTos();
-            $this->mailer->clearAllRecipients();
-            $this->mailer->clearAttachments();
-            $this->mailer->clearCustomHeaders();
-        }
+        $this->resetTransportState();
     }
 }

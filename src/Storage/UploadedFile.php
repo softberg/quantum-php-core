@@ -30,6 +30,7 @@ use Quantum\Loader\Loader;
 use Quantum\Loader\Setup;
 use ReflectionException;
 use Gumlet\ImageResize;
+use RuntimeException;
 use Quantum\Di\Di;
 use SplFileInfo;
 use finfo;
@@ -156,7 +157,7 @@ class UploadedFile extends SplFileInfo
     public function getName(): string
     {
         if (!$this->name) {
-            $this->name = $this->localFileSystem->fileName($this->originalName);
+            $this->name = $this->localFileSystem->fileName($this->originalName ?? '');
         }
 
         return $this->name;
@@ -194,7 +195,7 @@ class UploadedFile extends SplFileInfo
     public function getExtension(): string
     {
         if (!$this->extension) {
-            $this->extension = strtolower($this->localFileSystem->extension($this->originalName));
+            $this->extension = strtolower($this->localFileSystem->extension($this->originalName ?? ''));
         }
 
         return $this->extension;
@@ -216,7 +217,17 @@ class UploadedFile extends SplFileInfo
         if (!$this->mimetype) {
             $fileInfo = new finfo(FILEINFO_MIME);
             $mimetype = $fileInfo->file($this->getPathname());
+
+            if (!is_string($mimetype)) {
+                throw new RuntimeException('Failed to determine MIME type for: ' . $this->getPathname());
+            }
+
             $mimetypeParts = preg_split('/\s*[;,]\s*/', $mimetype);
+
+            if (!is_array($mimetypeParts) || empty($mimetypeParts[0])) {
+                throw new RuntimeException('Failed to parse MIME type: ' . $mimetype);
+            }
+
             $this->mimetype = strtolower($mimetypeParts[0]);
             unset($fileInfo);
         }
@@ -229,7 +240,7 @@ class UploadedFile extends SplFileInfo
      */
     public function getMd5(): string
     {
-        return md5_file($this->getPathname());
+        return md5_file($this->getPathname()) ?: '';
     }
 
     /**
@@ -243,11 +254,15 @@ class UploadedFile extends SplFileInfo
             throw FileUploadException::fileTypeNotAllowed($this->getExtension());
         }
 
-        [$width, $height] = getimagesize($this->getPathname());
+        $size = getimagesize($this->getPathname());
+
+        if ($size === false) {
+            throw FileUploadException::fileTypeNotAllowed($this->getExtension());
+        }
 
         return [
-            'width' => $width,
-            'height' => $height,
+            'width' => $size[0],
+            'height' => $size[1],
         ];
     }
 
@@ -432,7 +447,13 @@ class UploadedFile extends SplFileInfo
     protected function applyModifications(string $filePath)
     {
         $image = new ImageResize($filePath);
-        call_user_func_array([$image, $this->imageModifierFuncName], array_values($this->params));
+        $callable = [$image, $this->imageModifierFuncName ?? ''];
+
+        if (!is_callable($callable)) {
+            throw new RuntimeException('Invalid image modifier: ' . ($this->imageModifierFuncName ?? 'null'));
+        }
+
+        call_user_func_array($callable, array_values($this->params));
 
         $image->save($filePath);
     }

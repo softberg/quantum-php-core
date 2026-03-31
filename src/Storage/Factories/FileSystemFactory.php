@@ -19,6 +19,7 @@ namespace Quantum\Storage\Factories;
 use Quantum\Storage\Adapters\GoogleDrive\GoogleDriveFileSystemAdapter;
 use Quantum\Storage\Adapters\Dropbox\DropboxFileSystemAdapter;
 use Quantum\Storage\Adapters\Local\LocalFileSystemAdapter;
+use Quantum\Storage\Contracts\FilesystemAdapterInterface;
 use Quantum\Storage\Adapters\GoogleDrive\GoogleDriveApp;
 use Quantum\Storage\Contracts\TokenServiceInterface;
 use Quantum\Storage\Exceptions\FileSystemException;
@@ -59,7 +60,7 @@ class FileSystemFactory
     ];
 
     /**
-     * @var array<string, CloudAppInterface>
+     * @var array<string, FileSystem>
      */
     private static array $instances = [];
 
@@ -94,9 +95,13 @@ class FileSystemFactory
      */
     private static function createInstance(string $adapterClass, string $adapter): FileSystem
     {
-        return new FileSystem(new $adapterClass(
-            self::createCloudApp($adapter)
-        ));
+        $fsAdapter = new $adapterClass(self::createCloudApp($adapter));
+
+        if (!$fsAdapter instanceof FilesystemAdapterInterface) {
+            throw FileSystemException::adapterNotSupported($adapter);
+        }
+
+        return new FileSystem($fsAdapter);
     }
 
     /**

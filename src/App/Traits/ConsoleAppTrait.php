@@ -17,6 +17,7 @@ declare(strict_types=1);
 namespace Quantum\App\Traits;
 
 use Quantum\Environment\Exceptions\EnvException;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Application;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
@@ -80,7 +81,10 @@ trait ConsoleAppTrait
         $commands = CommandDiscovery::discover($directory, $namespace);
 
         foreach ($commands as $command) {
-            $this->application->add(new $command['class']());
+            $instance = new $command['class']();
+            if ($instance instanceof Command) {
+                $this->application->add($instance);
+            }
         }
     }
 
@@ -91,7 +95,7 @@ trait ConsoleAppTrait
     {
         $commandName = $this->input->getFirstArgument();
 
-        if (!$this->application->has($commandName)) {
+        if ($commandName === null || !$this->application->has($commandName)) {
             throw new Exception("Command `$commandName` is not defined");
         }
     }

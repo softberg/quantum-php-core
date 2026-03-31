@@ -103,8 +103,11 @@ class ViewCache
     public function serveCachedView(string $uri, Response $response): bool
     {
         if ($this->isEnabled() && $this->exists($uri)) {
-            $response->html($this->get($uri));
-            return true;
+            $cachedContent = $this->get($uri);
+            if ($cachedContent !== null) {
+                $response->html($cachedContent);
+                return true;
+            }
         }
 
         return false;
@@ -141,7 +144,9 @@ class ViewCache
             return null;
         }
 
-        return $this->fs->get($this->getCacheFile($key));
+        $content = $this->fs->get($this->getCacheFile($key));
+
+        return is_string($content) ? $content : null;
     }
 
     /**

@@ -18,9 +18,7 @@ namespace Quantum\Console\Commands;
 
 use Quantum\Storage\Exceptions\FileSystemException;
 use Quantum\Storage\Factories\FileSystemFactory;
-use Quantum\Config\Exceptions\ConfigException;
 use Quantum\App\Exceptions\BaseException;
-use Quantum\Di\Exceptions\DiException;
 use Quantum\Storage\FileSystem;
 use Quantum\Console\QtCommand;
 use ReflectionException;
@@ -34,7 +32,7 @@ class DebugBarCommand extends QtCommand
     /**
      * File System
      */
-    protected ?FileSystem $fs = null;
+    protected FileSystem $fs;
 
     /**
      * Command name
@@ -62,16 +60,20 @@ class DebugBarCommand extends QtCommand
     private string $vendorDebugBarFolderPath = 'vendor/php-debugbar/php-debugbar/src/DebugBar/Resources';
 
     /**
+     * @throws BaseException|ReflectionException
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        $this->fs = FileSystemFactory::get();
+    }
+
+    /**
      * Executes the command and publishes the debug bar assets
-     * @throws BaseException
-     * @throws FileSystemException
-     * @throws ConfigException
-     * @throws DiException
-     * @throws ReflectionException
+     * @throws FileSystemException|BaseException
      */
     public function exec(): void
     {
-        $this->fs = FileSystemFactory::get();
 
         if ($this->fs->exists(assets_dir() . DS . 'DebugBar' . DS . 'Resources' . DS . 'debugbar.css')) {
             $this->error('The debug ber already installed');

@@ -19,12 +19,13 @@ namespace Quantum\Mailer\Factories;
 use Quantum\Mailer\Adapters\SendinblueAdapter;
 use Quantum\Mailer\Exceptions\MailerException;
 use Quantum\Config\Exceptions\ConfigException;
+use Quantum\Mailer\Contracts\MailerInterface;
 use Quantum\Mailer\Adapters\MandrillAdapter;
 use Quantum\Mailer\Adapters\SendgridAdapter;
 use Quantum\Mailer\Adapters\MailgunAdapter;
+use Quantum\Mailer\Adapters\ResendAdapter;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Mailer\Adapters\SmtpAdapter;
-use Quantum\Mailer\Adapters\ResendAdapter;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Mailer\Enums\MailerType;
 use Quantum\Mailer\Mailer;
@@ -77,9 +78,18 @@ class MailerFactory
         return self::$instances[$adapter];
     }
 
+    /**
+     * @throws MailerException
+     */
     private static function createInstance(string $adapterClass, string $adapter): Mailer
     {
-        return new Mailer(new $adapterClass(config()->get('mailer.' . $adapter)));
+        $adapterInstance = new $adapterClass(config()->get('mailer.' . $adapter));
+
+        if (!$adapterInstance instanceof MailerInterface) {
+            throw MailerException::adapterNotSupported($adapter);
+        }
+
+        return new Mailer($adapterInstance);
     }
 
     /**

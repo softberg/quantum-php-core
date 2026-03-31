@@ -81,7 +81,7 @@ class Lang
 
     /**
      * Get translation by key
-     * @param array<string, mixed>|null $params
+     * @param array<int|string, mixed>|string|null $params
      */
     public function getTranslation(string $key, $params = null): ?string
     {

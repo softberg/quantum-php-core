@@ -49,7 +49,7 @@ class PatternCompiler
     {
         [$pattern, $segmentParams] = $this->compile($route);
 
-        $requestUri = urldecode(parse_url($uri, PHP_URL_PATH) ?? '');
+        $requestUri = urldecode(parse_url($uri, PHP_URL_PATH) ?: '');
 
         if (!preg_match('/^' . $this->escape($pattern) . '$/u', $requestUri, $matches)) {
             $this->params = [];
@@ -115,7 +115,7 @@ class PatternCompiler
      * Build the final named parameter map from regex matches and param metadata.
      *
      * @param array<int|string, string> $matches PCRE match array from preg_match (named captures)
-     * @param array<int, array{name: string, pattern: string}> $segmentParams
+     * @param list<array<string, mixed>> $segmentParams
      * @return array<string, mixed>
      */
     protected function extractParams(array $matches, array $segmentParams): array
@@ -156,7 +156,7 @@ class PatternCompiler
     /**
      * Generate the regex pattern and name for a matched parameter segment.
      * @param array<string> $match
-     * @return array<string, mixed>
+     * @return array{name: string, pattern: string}
      * @throws RouteException
      */
     protected function getParamPattern(array $match, string $expr, int $index, int $lastIndex): array
@@ -212,7 +212,7 @@ class PatternCompiler
      * @param array<string, mixed>|list<array<string, mixed>> $params
      * @throws RouteException
      */
-    protected function checkParamName($params, string $name): void
+    protected function checkParamName(array $params, string $name): void
     {
         foreach ($params as $param) {
             if ($param['name'] === $name) {

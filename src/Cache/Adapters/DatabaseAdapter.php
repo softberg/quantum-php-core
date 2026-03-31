@@ -17,7 +17,9 @@ declare(strict_types=1);
 namespace Quantum\Cache\Adapters;
 
 use Quantum\Cache\Enums\ExceptionMessages;
+use Quantum\App\Exceptions\BaseException;
 use Quantum\Model\Factories\ModelFactory;
+use Quantum\Cache\Traits\CacheTrait;
 use Psr\SimpleCache\CacheInterface;
 use InvalidArgumentException;
 use Quantum\Model\DbModel;
@@ -29,15 +31,7 @@ use Exception;
  */
 class DatabaseAdapter implements CacheInterface
 {
-    /**
-     * @var int
-     */
-    private $ttl;
-
-    /**
-     * @var string
-     */
-    private $prefix;
+    use CacheTrait;
 
     private DbModel $cacheModel;
 
@@ -53,11 +47,16 @@ class DatabaseAdapter implements CacheInterface
 
     /**
      * @inheritDoc
+     * @throws BaseException
      */
     public function get($key, $default = null)
     {
         if ($this->has($key)) {
             $cacheItem = $this->cacheModel->findOneBy('key', $this->keyHash($key));
+
+            if ($cacheItem === null) {
+                return $default;
+            }
 
             try {
                 return unserialize($cacheItem->prop('value'));
@@ -72,14 +71,17 @@ class DatabaseAdapter implements CacheInterface
 
     /**
      * @inheritDoc
-     * @throws InvalidArgumentException
      * @param iterable<string> $keys
      * @return iterable<string, mixed>
+     * @throws InvalidArgumentException|BaseException
      */
     public function getMultiple($keys, $default = null)
     {
         if (!is_array($keys)) {
-            throw new InvalidArgumentException(_message(ExceptionMessages::ARGUMENT_NOT_ITERABLE, '$keys'), E_WARNING);
+            throw new InvalidArgumentException(
+                _message(ExceptionMessages::ARGUMENT_NOT_ITERABLE, '$keys'),
+                E_WARNING
+            );
         }
 
         $result = [];
@@ -98,11 +100,11 @@ class DatabaseAdapter implements CacheInterface
     {
         $cacheItem = $this->cacheModel->findOneBy('key', $this->keyHash($key));
 
-        if (empty($cacheItem->asArray())) {
+        if ($cacheItem === null || empty($cacheItem->asArray())) {
             return false;
         }
 
-        if (time() - $cacheItem->prop('ttl') > $this->ttl) {
+        if (time() >= $cacheItem->prop('ttl')) {
             $this->delete($key);
             return false;
         }
@@ -117,13 +119,13 @@ class DatabaseAdapter implements CacheInterface
     {
         $cacheItem = $this->cacheModel->findOneBy('key', $this->keyHash($key));
 
-        if (empty($cacheItem->asArray())) {
+        if ($cacheItem === null || empty($cacheItem->asArray())) {
             $cacheItem = $this->cacheModel->create();
         }
 
         $cacheItem->prop('key', $this->keyHash($key));
         $cacheItem->prop('value', serialize($value));
-        $cacheItem->prop('ttl', time());
+        $cacheItem->prop('ttl', time() + $this->normalizeTtl($ttl));
 
         return $cacheItem->save();
     }
@@ -136,7 +138,10 @@ class DatabaseAdapter implements CacheInterface
     public function setMultiple($values, $ttl = null): bool
     {
         if (!is_array($values)) {
-            throw new InvalidArgumentException(_message(ExceptionMessages::ARGUMENT_NOT_ITERABLE, '$values'), E_WARNING);
+            throw new InvalidArgumentException(
+                _message(ExceptionMessages::ARGUMENT_NOT_ITERABLE, '$values'),
+                E_WARNING
+            );
         }
 
         $results = [];
@@ -155,7 +160,7 @@ class DatabaseAdapter implements CacheInterface
     {
         $cacheItem = $this->cacheModel->findOneBy('key', $this->keyHash($key));
 
-        if (!empty($cacheItem->asArray())) {
+        if ($cacheItem !== null && !empty($cacheItem->asArray())) {
             return $cacheItem->delete();
         }
 
@@ -170,7 +175,10 @@ class DatabaseAdapter implements CacheInterface
     public function deleteMultiple($keys): bool
     {
         if (!is_array($keys)) {
-            throw new InvalidArgumentException(_message(ExceptionMessages::ARGUMENT_NOT_ITERABLE, '$keys'), E_WARNING);
+            throw new InvalidArgumentException(
+                _message(ExceptionMessages::ARGUMENT_NOT_ITERABLE, '$keys'),
+                E_WARNING
+            );
         }
 
         $results = [];
@@ -190,11 +198,4 @@ class DatabaseAdapter implements CacheInterface
         return $this->cacheModel->deleteMany();
     }
 
-    /**
-     * Gets the hashed key
-     */
-    private function keyHash(string $key): string
-    {
-        return sha1($this->prefix . $key);
-    }
 }

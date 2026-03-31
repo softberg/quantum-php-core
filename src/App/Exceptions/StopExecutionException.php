@@ -28,7 +28,7 @@ class StopExecutionException extends BaseException
     {
         return new self(
             ExceptionMessages::EXECUTION_TERMINATED,
-            $code
+            $code ?? 0
         );
     }
 }

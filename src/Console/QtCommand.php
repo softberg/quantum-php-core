@@ -23,6 +23,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Quantum\Console\Contracts\CommandInterface;
 use Symfony\Component\Console\Command\Command;
+use RuntimeException;
 
 /**
  * Class QtCommand
@@ -85,7 +86,7 @@ abstract class QtCommand extends Command implements CommandInterface
      */
     public function getArgument(?string $key = null)
     {
-        return $this->input->getArgument($key) ?? '';
+        return $this->resolveInput()->getArgument($key ?? '') ?? '';
     }
 
     /**
@@ -94,7 +95,7 @@ abstract class QtCommand extends Command implements CommandInterface
      */
     public function getOption(?string $key = null)
     {
-        return $this->input->getOption($key) ?? '';
+        return $this->resolveInput()->getOption($key ?? '') ?? '';
     }
 
     /**
@@ -102,7 +103,7 @@ abstract class QtCommand extends Command implements CommandInterface
      */
     public function output(string $message): void
     {
-        $this->output->writeln($message);
+        $this->resolveOutput()->writeln($message);
     }
 
     /**
@@ -110,7 +111,7 @@ abstract class QtCommand extends Command implements CommandInterface
      */
     public function info(string $message): void
     {
-        $this->output->writeln("<info>$message</info>");
+        $this->resolveOutput()->writeln("<info>$message</info>");
     }
 
     /**
@@ -118,7 +119,7 @@ abstract class QtCommand extends Command implements CommandInterface
      */
     public function comment(string $message): void
     {
-        $this->output->writeln("<comment>$message</comment>");
+        $this->resolveOutput()->writeln("<comment>$message</comment>");
     }
 
     /**
@@ -126,7 +127,7 @@ abstract class QtCommand extends Command implements CommandInterface
      */
     public function question(string $message): void
     {
-        $this->output->writeln("<question>$message</question>");
+        $this->resolveOutput()->writeln("<question>$message</question>");
     }
 
     /**
@@ -138,7 +139,7 @@ abstract class QtCommand extends Command implements CommandInterface
 
         $question = new ConfirmationQuestion($message . ' [y/N] ', false);
 
-        return (bool) $helper->ask($this->input, $this->output, $question);
+        return (bool) $helper->ask($this->resolveInput(), $this->resolveOutput(), $question);
     }
 
     /**
@@ -146,7 +147,25 @@ abstract class QtCommand extends Command implements CommandInterface
      */
     public function error(string $message): void
     {
-        $this->output->writeln("<error>$message</error>");
+        $this->resolveOutput()->writeln("<error>$message</error>");
+    }
+
+    protected function resolveInput(): InputInterface
+    {
+        if ($this->input === null) {
+            throw new RuntimeException('Input is not set.');
+        }
+
+        return $this->input;
+    }
+
+    protected function resolveOutput(): OutputInterface
+    {
+        if ($this->output === null) {
+            throw new RuntimeException('Output is not set.');
+        }
+
+        return $this->output;
     }
 
     /**

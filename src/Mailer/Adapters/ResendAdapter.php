@@ -31,6 +31,8 @@ class ResendAdapter implements MailerInterface
 
     public string $name = 'Resend';
 
+    private HttpClient $httpClient;
+
     /**
      * @var string|null
      */
@@ -56,7 +58,7 @@ class ResendAdapter implements MailerInterface
     /**
      * Prepares the data
      */
-    private function prepare(): void
+    protected function prepare(): void
     {
         $fromName = $this->from['name'] ?? null;
 
@@ -81,7 +83,7 @@ class ResendAdapter implements MailerInterface
         }
     }
 
-    private function sendEmail(): bool
+    protected function sendEmail(): bool
     {
         try {
             $this->httpClient
@@ -98,5 +100,13 @@ class ResendAdapter implements MailerInterface
         } catch (Exception $e) {
             return false;
         }
+    }
+
+    /**
+     * @return array<string>
+     */
+    protected function getTransportErrors(): array
+    {
+        return $this->httpClient->getErrors();
     }
 }

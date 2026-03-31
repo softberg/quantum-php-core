@@ -115,15 +115,14 @@ class MigrationManager
     /**
      * Applies migrations
      * @throws BaseException
-     * @throws ConfigException
      * @throws DatabaseException
-     * @throws DiException
      * @throws LangException
      * @throws MigrationException
      */
     public function applyMigrations(string $direction, ?int $step = null): ?int
     {
-        $databaseDriver = $this->db->getConfigs()['driver'];
+        $configs = $this->db->getConfigs();
+        $databaseDriver = $configs['driver'] ?? '';
 
         if (!in_array($databaseDriver, self::DRIVERS)) {
             throw MigrationException::driverNotSupported($databaseDriver);
@@ -146,7 +145,6 @@ class MigrationManager
     /**
      * Runs up migrations
      * @throws DatabaseException
-     * @throws LangException
      * @throws MigrationException
      */
     private function upgrade(): int
@@ -155,10 +153,13 @@ class MigrationManager
             $migrationTable = new MigrationTable();
             $migrationTable->up($this->tableFactory);
         }
+
         $this->prepareUpMigrations();
+
         if (empty($this->migrations)) {
             throw MigrationException::nothingToMigrate();
         }
+
         $migratedEntries = [];
         foreach ($this->migrations as $migrationFile) {
             $this->fs->require($migrationFile, true);
@@ -166,6 +167,10 @@ class MigrationManager
             $migrationClassName = pathinfo($migrationFile, PATHINFO_FILENAME);
 
             $migration = new $migrationClassName();
+
+            if (!$migration instanceof QtMigration) {
+                throw MigrationException::invalidMigrationClass($migrationClassName);
+            }
 
             $migration->up($this->tableFactory);
 
@@ -178,7 +183,6 @@ class MigrationManager
     /**
      * Runs down migrations
      * @throws DatabaseException
-     * @throws LangException
      * @throws MigrationException
      */
     private function downgrade(?int $step): int
@@ -202,6 +206,10 @@ class MigrationManager
 
             $migration = new $migrationClassName();
 
+            if (!$migration instanceof QtMigration) {
+                throw MigrationException::invalidMigrationClass($migrationClassName);
+            }
+
             $migration->down($this->tableFactory);
 
             $migratedEntries[] = $migrationClassName;
@@ -222,9 +230,11 @@ class MigrationManager
     {
         $migratedEntries = $this->getMigratedEntries();
         $migrationFiles = $this->getMigrationFiles();
+
         if ($migratedEntries === [] && $migrationFiles === []) {
             throw MigrationException::nothingToMigrate();
         }
+
         foreach ($migrationFiles as $timestamp => $migrationFile) {
             foreach ($migratedEntries as $migratedEntry) {
                 if (pathinfo($migrationFile, PATHINFO_FILENAME) == $migratedEntry['migration']) {

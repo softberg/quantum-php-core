@@ -24,9 +24,9 @@ function _message(string $subject, $params): string
     if (is_array($params)) {
         return preg_replace_callback('/{%\d+}/', function () use (&$params) {
             return array_shift($params);
-        }, $subject);
+        }, $subject) ?? $subject;
     } else {
-        return preg_replace('/{%\d+}/', $params, $subject);
+        return preg_replace('/{%\d+}/', $params, $subject) ?? $subject;
     }
 }
 
@@ -62,8 +62,8 @@ function random_number(int $length = 10): int
 function slugify(string $text): string
 {
     $text = trim($text, ' ');
-    $text = preg_replace('/[^\p{L}\p{N}]/u', ' ', $text);
-    $text = preg_replace('/\s+/', '-', $text);
+    $text = preg_replace('/[^\p{L}\p{N}]/u', ' ', $text) ?? $text;
+    $text = preg_replace('/\s+/', '-', $text) ?? $text;
     $text = trim($text, '-');
     $text = mb_strtolower($text);
 

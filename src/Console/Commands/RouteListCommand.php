@@ -93,7 +93,7 @@ class RouteListCommand extends QtCommand
                 $rows[] = $this->composeTableRow($route, 50);
             }
 
-            $table = new Table($this->output);
+            $table = new Table($this->resolveOutput());
 
             $table->setHeaderTitle('Routes')
                 ->setHeaders(['MODULE', 'METHOD', 'URI', 'ACTION', 'MIDDLEWARE'])

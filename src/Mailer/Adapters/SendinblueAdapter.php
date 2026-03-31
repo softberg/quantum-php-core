@@ -38,6 +38,8 @@ class SendinblueAdapter implements MailerInterface
 
     private string $apiUrl = 'https://api.sendinblue.com/v3/smtp/email';
 
+    private HttpClient $httpClient;
+
     /**
      * @var array<string, mixed>
      */
@@ -57,7 +59,7 @@ class SendinblueAdapter implements MailerInterface
     /**
      * Prepares the data
      */
-    private function prepare(): void
+    protected function prepare(): void
     {
         $this->data['sender'] = $this->from;
         $this->data['to'] = $this->addresses;
@@ -77,7 +79,7 @@ class SendinblueAdapter implements MailerInterface
         }
     }
 
-    private function sendEmail(): bool
+    protected function sendEmail(): bool
     {
         try {
             $this->httpClient
@@ -95,5 +97,13 @@ class SendinblueAdapter implements MailerInterface
         } catch (Exception $e) {
             return false;
         }
+    }
+
+    /**
+     * @return array<string>
+     */
+    protected function getTransportErrors(): array
+    {
+        return $this->httpClient->getErrors();
     }
 }

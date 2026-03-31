@@ -25,7 +25,7 @@ use RuntimeException;
  */
 class IdiormPatch extends ORM
 {
-    private ?object $ormModel = null;
+    private ?ORM $ormModel = null;
 
     private static ?IdiormPatch $instance = null;
 
@@ -44,7 +44,7 @@ class IdiormPatch extends ORM
     /**
      * Set ORM Object
      */
-    public function use(object $ormModel): IdiormPatch
+    public function use(ORM $ormModel): IdiormPatch
     {
         $this->ormModel = $ormModel;
         return $this;

@@ -41,8 +41,8 @@ final class RouteFinder
      */
     public function find(Request $request): ?MatchedRoute
     {
-        $method = $request->getMethod();
-        $uri = $request->getUri();
+        $method = $request->getMethod() ?? '';
+        $uri = $request->getUri() ?? '';
 
         foreach ($this->routes->all() as $route) {
             if (!$route->allowsMethod($method)) {

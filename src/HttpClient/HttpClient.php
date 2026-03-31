@@ -163,6 +163,8 @@ class HttpClient
 
     /**
      * Checks if the request is multi cURL
+     * @phpstan-assert-if-true MultiCurl $this->client
+     * @phpstan-assert-if-false Curl $this->client
      */
     public function isMultiRequest(): bool
     {
@@ -317,10 +319,12 @@ class HttpClient
     }
 
     /**
-     * @throws ErrorException
+     * @throws ErrorException|BaseException
      */
     private function startSingleRequest(): void
     {
+        $this->ensureSingleRequest();
+
         $this->client->setOpt(CURLOPT_CUSTOMREQUEST, $this->method);
 
         if ($this->data) {
@@ -366,6 +370,7 @@ class HttpClient
 
     /**
      * @throws BaseException
+     * @phpstan-assert Curl $this->client
      */
     private function ensureSingleRequest(): void
     {

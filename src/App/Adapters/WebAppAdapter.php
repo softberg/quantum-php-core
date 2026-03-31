@@ -146,7 +146,7 @@ class WebAppAdapter extends AppAdapter
 
             $viewCache = $this->setupViewCache();
 
-            if ($viewCache->serveCachedView(route_uri(), $this->response)) {
+            if ($viewCache->serveCachedView(route_uri() ?? '', $this->response)) {
                 stop();
             }
 

@@ -32,7 +32,7 @@ trait Params
      * Request content type
      * @var string|null
      */
-    private static $__contentType;
+    private static ?string $__contentType;
 
     /**
      * Gets the GET params.
@@ -57,7 +57,7 @@ trait Params
             return [];
         }
 
-        return filter_input_array(INPUT_POST) ?? [];
+        return filter_input_array(INPUT_POST) ?: [];
     }
 
     /**
@@ -91,7 +91,7 @@ trait Params
 
         parse_str(urldecode(self::getRawInput()), $result);
 
-        return $result;
+        return $result; /** @phpstan-ignore return.type */
     }
 
     /**
@@ -119,6 +119,6 @@ trait Params
      */
     private static function getRawInput(): string
     {
-        return file_get_contents('php://input');
+        return file_get_contents('php://input') ?: '';
     }
 }

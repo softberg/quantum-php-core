@@ -21,7 +21,7 @@ use Quantum\Di\Di;
 
 /**
  * Gets current route middlewares
- * @return array<string, mixed>|null
+ * @return array<int|string, mixed>|null
  * @throws DiException|ReflectionException
  */
 function current_middlewares(): ?array
@@ -107,7 +107,7 @@ function route_pattern(): string
     $request = Di::get(Request::class);
     $matchedRoute = $request->getMatchedRoute();
 
-    return $matchedRoute ? $matchedRoute->getRoute()->getCompiledPattern() : '';
+    return $matchedRoute ? ($matchedRoute->getRoute()->getCompiledPattern() ?? '') : '';
 }
 
 /**
@@ -143,7 +143,7 @@ function route_param(string $name)
 function route_method(): string
 {
     $request = Di::get(Request::class);
-    return $request->getMethod();
+    return $request->getMethod() ?? '';
 }
 
 /**

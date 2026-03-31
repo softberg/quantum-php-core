@@ -57,7 +57,7 @@ trait General
     protected function creditCard($value): bool
     {
         $value = (string) $value;
-        $number = preg_replace('/\D/', '', $value);
+        $number = preg_replace('/\D/', '', $value) ?? '';
         $length = function_exists('mb_strlen') ? mb_strlen($number) : strlen($number);
 
         if ($length == 0) {
@@ -153,8 +153,14 @@ trait General
     {
         $value = (string) $value;
         if (!$format) {
-            $cdate1 = date('Y-m-d', strtotime($value));
-            $cdate2 = date('Y-m-d H:i:s', strtotime($value));
+            $timestamp = strtotime($value);
+
+            if ($timestamp === false) {
+                return false;
+            }
+
+            $cdate1 = date('Y-m-d', $timestamp);
+            $cdate2 = date('Y-m-d H:i:s', $timestamp);
 
             return $cdate1 === $value || $cdate2 === $value;
         }
@@ -211,11 +217,11 @@ trait General
     protected function unique($value, string $className, string $columnName): bool
     {
         /** @var DbModel $model */
-        $model = ModelFactory::get(ucfirst($className));
+        $model = ModelFactory::get(ucfirst($className)); /** @phpstan-ignore argument.type, argument.templateType */
 
         $record = $model->findOneBy($columnName, $value);
 
-        return $record->isEmpty();
+        return $record === null || $record->isEmpty();
     }
 
     /**
@@ -227,11 +233,11 @@ trait General
     protected function exists($value, string $className, string $columnName): bool
     {
         /** @var DbModel $model */
-        $model = ModelFactory::get(ucfirst($className));
+        $model = ModelFactory::get(ucfirst($className)); /** @phpstan-ignore argument.type, argument.templateType */
 
         $record = $model->findOneBy($columnName, $value);
 
-        return !$record->isEmpty();
+        return $record !== null && !$record->isEmpty();
     }
 
     /**

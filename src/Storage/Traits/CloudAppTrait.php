@@ -51,6 +51,11 @@ trait CloudAppTrait
 
             if ($this->accessTokenNeedsRefresh($code, $responseBody)) {
                 $prevUrl = $this->httpClient->url();
+
+                if (empty($prevUrl)) {
+                    throw new Exception('Cannot retry request: original URL is not available.', E_ERROR);
+                }
+
                 $prevData = $this->httpClient->getData();
                 $prevHeaders = $this->httpClient->getRequestHeaders();
 
@@ -63,7 +68,10 @@ trait CloudAppTrait
                 $responseBody = $this->sendRequest($prevUrl, $prevData, $prevHeaders);
 
             } else {
-                throw new Exception(json_encode($responseBody ?? $errors), E_ERROR);
+                throw new Exception(
+                    json_encode($responseBody ?? $errors) ?: '',
+                    E_ERROR
+                );
             }
         }
 

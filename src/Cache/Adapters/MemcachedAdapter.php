@@ -19,6 +19,7 @@ namespace Quantum\Cache\Adapters;
 use Quantum\Cache\Exceptions\CacheException;
 use Quantum\Cache\Enums\ExceptionMessages;
 use Quantum\App\Exceptions\BaseException;
+use Quantum\Cache\Traits\CacheTrait;
 use Psr\SimpleCache\CacheInterface;
 use InvalidArgumentException;
 use Memcached;
@@ -30,15 +31,7 @@ use Exception;
  */
 class MemcachedAdapter implements CacheInterface
 {
-    /**
-     * @var int
-     */
-    private $ttl;
-
-    /**
-     * @var string
-     */
-    private $prefix;
+    use CacheTrait;
 
     private Memcached $memcached;
 
@@ -87,7 +80,10 @@ class MemcachedAdapter implements CacheInterface
     public function getMultiple($keys, $default = null)
     {
         if (!is_array($keys)) {
-            throw new InvalidArgumentException(_message(ExceptionMessages::ARGUMENT_NOT_ITERABLE, '$values'), E_WARNING);
+            throw new InvalidArgumentException(
+                _message(ExceptionMessages::ARGUMENT_NOT_ITERABLE, '$keys'),
+                E_WARNING
+            );
         }
 
         $result = [];
@@ -113,7 +109,7 @@ class MemcachedAdapter implements CacheInterface
      */
     public function set($key, $value, $ttl = null): bool
     {
-        return $this->memcached->set($this->keyHash($key), serialize($value), $this->ttl);
+        return $this->memcached->set($this->keyHash($key), serialize($value), $this->normalizeTtl($ttl));
     }
 
     /**
@@ -124,7 +120,10 @@ class MemcachedAdapter implements CacheInterface
     public function setMultiple($values, $ttl = null): bool
     {
         if (!is_array($values)) {
-            throw new InvalidArgumentException(_message(ExceptionMessages::ARGUMENT_NOT_ITERABLE, '$values'), E_WARNING);
+            throw new InvalidArgumentException(
+                _message(ExceptionMessages::ARGUMENT_NOT_ITERABLE, '$values'),
+                E_WARNING
+            );
         }
 
         $results = [];
@@ -152,7 +151,10 @@ class MemcachedAdapter implements CacheInterface
     public function deleteMultiple($keys): bool
     {
         if (!is_array($keys)) {
-            throw new InvalidArgumentException(_message(ExceptionMessages::ARGUMENT_NOT_ITERABLE, '$values'), E_WARNING);
+            throw new InvalidArgumentException(
+                _message(ExceptionMessages::ARGUMENT_NOT_ITERABLE, '$keys'),
+                E_WARNING
+            );
         }
 
         $results = [];
@@ -172,11 +174,4 @@ class MemcachedAdapter implements CacheInterface
         return $this->memcached->flush();
     }
 
-    /**
-     * Gets the hashed key
-     */
-    private function keyHash(string $key): string
-    {
-        return sha1($this->prefix . $key);
-    }
 }

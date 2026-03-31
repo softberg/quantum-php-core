@@ -79,7 +79,13 @@ class Loader
      */
     public function loadDir(string $dir): void
     {
-        foreach (glob($dir . DS . '*.php') as $filename) {
+        $files = glob($dir . DS . '*.php');
+
+        if (!is_array($files)) {
+            return;
+        }
+
+        foreach ($files as $filename) {
             require_once $filename;
         }
     }
@@ -106,7 +112,7 @@ class Loader
         }
 
         if ($this->hierarchical) {
-            $filePath = App::getBaseDir() . DS . 'shared' . DS . strtolower($this->pathPrefix) . DS . $this->fileName . '.php';
+            $filePath = App::getBaseDir() . DS . 'shared' . DS . strtolower($this->pathPrefix ?? '') . DS . $this->fileName . '.php';
             return file_exists($filePath);
         }
 
@@ -123,13 +129,13 @@ class Loader
 
         if (!file_exists($filePath)) {
             if ($this->hierarchical) {
-                $filePath = App::getBaseDir() . DS . 'shared' . DS . strtolower($this->pathPrefix) . DS . $this->fileName . '.php';
+                $filePath = App::getBaseDir() . DS . 'shared' . DS . strtolower($this->pathPrefix ?? '') . DS . $this->fileName . '.php';
 
                 if (!file_exists($filePath)) {
-                    throw new LoaderException(_message($this->exceptionMessage, $this->fileName));
+                    throw new LoaderException(_message($this->exceptionMessage, $this->fileName ?? ''));
                 }
             } else {
-                throw new LoaderException(_message($this->exceptionMessage, $this->fileName));
+                throw new LoaderException(_message($this->exceptionMessage, $this->fileName ?? ''));
             }
         }
 

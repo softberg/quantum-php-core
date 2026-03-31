@@ -33,6 +33,8 @@ class SmtpAdapter implements MailerInterface
 
     public string $name = 'SMTP';
 
+    private PHPMailer $mailer;
+
     /**
      * SmtpAdapter constructor
      * @param array<string, mixed> $params
@@ -69,7 +71,7 @@ class SmtpAdapter implements MailerInterface
 
     /**
      * Gets "Reply-To" addresses
-     * @return array<string, mixed>
+     * @return array<int|string, mixed>
      */
     public function getReplays(): array
     {
@@ -94,7 +96,7 @@ class SmtpAdapter implements MailerInterface
 
     /**
      * Gets "CC" addresses
-     * @return array<string, mixed>
+     * @return array<int|string, mixed>
      */
     public function getCCs(): array
     {
@@ -119,7 +121,7 @@ class SmtpAdapter implements MailerInterface
 
     /**
      * Get "BCC" addresses
-     * @return array<string, mixed>
+     * @return array<int|string, mixed>
      */
     public function getBCCs(): array
     {
@@ -134,13 +136,12 @@ class SmtpAdapter implements MailerInterface
     public function setAttachment(string $attachment): SmtpAdapter
     {
         $this->attachments[] = $attachment;
-        ;
         return $this;
     }
 
     /**
      * Gets the attachments
-     * @return array<string, mixed>
+     * @return array<int|string, mixed>
      */
     public function getAttachments(): array
     {
@@ -165,11 +166,59 @@ class SmtpAdapter implements MailerInterface
 
     /**
      * Gets the string attachments
-     * @return array<string, mixed>
+     * @return array<int|string, mixed>
      */
     public function getStringAttachments(): array
     {
         return $this->stringAttachments;
+    }
+
+    /**
+     * @throws Exception
+     */
+    protected function resolveMessageId(): string
+    {
+        preg_match('/<(.*?)@/', $this->mailer->getLastMessageID(), $matches);
+        return $matches[1] ?? bin2hex(random_bytes(16));
+    }
+
+    protected function getRenderedMessage(): ?string
+    {
+        return $this->mailer->getSentMIMEMessage();
+    }
+
+    /**
+     * @throws \PHPMailer\PHPMailer\Exception
+     */
+    protected function beforeSave(): void
+    {
+        $this->mailer->preSend();
+    }
+
+    /**
+     * @return array<string>
+     */
+    protected function getTransportErrors(): array
+    {
+        $error = $this->mailer->ErrorInfo;
+        return $error !== '' ? [$error] : [];
+    }
+
+    protected function resetTransportState(): void
+    {
+        $this->replyToAddresses = [];
+        $this->ccAddresses = [];
+        $this->bccAddresses = [];
+        $this->attachments = [];
+        $this->stringAttachments = [];
+
+        $this->mailer->clearAddresses();
+        $this->mailer->clearCCs();
+        $this->mailer->clearBCCs();
+        $this->mailer->clearReplyTos();
+        $this->mailer->clearAllRecipients();
+        $this->mailer->clearAttachments();
+        $this->mailer->clearCustomHeaders();
     }
 
     /**
@@ -191,7 +240,7 @@ class SmtpAdapter implements MailerInterface
      * Prepares the data
      * @throws Exception
      */
-    private function prepare(): void
+    protected function prepare(): void
     {
         $this->mailer->setFrom($this->from['email'], $this->from['name']);
 
@@ -239,7 +288,7 @@ class SmtpAdapter implements MailerInterface
     /**
      * @throws \PHPMailer\PHPMailer\Exception
      */
-    private function sendEmail(): bool
+    protected function sendEmail(): bool
     {
         return $this->mailer->send();
     }

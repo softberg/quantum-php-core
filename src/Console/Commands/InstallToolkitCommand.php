@@ -22,6 +22,7 @@ use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Input\ArrayInput;
 use Quantum\Environment\Environment;
 use Quantum\Console\QtCommand;
+use RuntimeException;
 
 /**
  * Class InstallToolkitCommand
@@ -88,13 +89,18 @@ class InstallToolkitCommand extends QtCommand
 
     /**
      * Runs an external command
-     * @throws ExceptionInterface
      * @param array<string, mixed> $arguments
-     * @return void
+     * @throws ExceptionInterface
      */
     protected function runExternalCommand(string $commandName, array $arguments): void
     {
-        $command = $this->getApplication()->find($commandName);
+        $application = $this->getApplication();
+
+        if ($application === null) {
+            throw new RuntimeException('Application is not set.');
+        }
+
+        $command = $application->find($commandName);
         $command->run(new ArrayInput($arguments), new NullOutput());
     }
 }

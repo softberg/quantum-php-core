@@ -94,7 +94,9 @@ class ZipAdapter implements ArchiveInterface
             throw ArchiveException::fileNotFound($filePath);
         }
 
-        $result = $this->archive->addFile($filePath, $entryName);
+        $result = $entryName !== null
+            ? $this->archive->addFile($filePath, $entryName)
+            : $this->archive->addFile($filePath);
         $this->requiresReopen = true;
 
         return $result;
@@ -195,6 +197,7 @@ class ZipAdapter implements ArchiveInterface
 
     /**
      * @throws ArchiveException
+     * @phpstan-assert ZipArchive $this->archive
      */
     private function ensureArchiveOpen(): void
     {

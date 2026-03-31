@@ -6,6 +6,7 @@ use Quantum\Database\Adapters\Sleekdb\SleekDbal;
 use Quantum\Cache\Adapters\DatabaseAdapter;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Loader\Setup;
+use DateInterval;
 
 class DatabaseAdapterTest extends AppTestCase
 {
@@ -159,6 +160,44 @@ class DatabaseAdapterTest extends AppTestCase
         $databaseCache->set('test', 'Test value');
 
         $this->assertNull($databaseCache->get('test'));
+    }
+
+    public function testDatabaseAdapterSetWithCustomTtl(): void
+    {
+        $this->databaseCache->set('test', 'Test value', 120);
+
+        $this->assertTrue($this->databaseCache->has('test'));
+
+        $this->assertEquals('Test value', $this->databaseCache->get('test'));
+    }
+
+    public function testDatabaseAdapterSetWithDateIntervalTtl(): void
+    {
+        $this->databaseCache->set('test', 'Test value', new DateInterval('PT60S'));
+
+        $this->assertTrue($this->databaseCache->has('test'));
+
+        $this->assertEquals('Test value', $this->databaseCache->get('test'));
+    }
+
+    public function testDatabaseAdapterExpiredWithCustomTtl(): void
+    {
+        $this->databaseCache->set('test', 'Test value', -1);
+
+        $this->assertNull($this->databaseCache->get('test'));
+    }
+
+    public function testDatabaseAdapterPerKeyTtlIndependence(): void
+    {
+        $this->databaseCache->set('short', 'Short TTL', -1);
+
+        $this->databaseCache->set('long', 'Long TTL', 120);
+
+        $this->assertFalse($this->databaseCache->has('short'));
+
+        $this->assertTrue($this->databaseCache->has('long'));
+
+        $this->assertEquals('Long TTL', $this->databaseCache->get('long'));
     }
 
 }

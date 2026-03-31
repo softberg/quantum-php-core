@@ -56,12 +56,12 @@ class SleekDbal implements DbalInterface
     protected $modifiedFields = [];
 
     /**
-     * @var array<int, array<string, mixed>>
+     * @var array<int, array<int|string, mixed>|string>
      */
     protected array $criterias = [];
 
     /**
-     * @var array<int, array<string, mixed>>
+     * @var array<int, array<int|string, mixed>>
      */
     protected array $havings = [];
 
@@ -263,8 +263,8 @@ class SleekDbal implements DbalInterface
      */
     public function updateOrmModel(?array $modelData): void
     {
-        $this->data = $modelData;
-        $this->modifiedFields = $modelData;
+        $this->data = $modelData ?? [];
+        $this->modifiedFields = $modelData ?? [];
         $this->isNew = false;
     }
 
@@ -292,12 +292,15 @@ class SleekDbal implements DbalInterface
      */
     public function getBuilder(): QueryBuilder
     {
-        if (!$this->queryBuilder) {
-            $this->queryBuilder = $this->getOrmModel()->createQueryBuilder();
+        $builder = $this->queryBuilder;
+
+        if (!$builder) {
+            $builder = $this->getOrmModel()->createQueryBuilder();
+            $this->queryBuilder = $builder;
         }
 
         if ($this->selected !== []) {
-            $this->queryBuilder->select($this->selected);
+            $builder->select($this->selected);
         }
 
         if ($this->joins !== []) {
@@ -305,30 +308,30 @@ class SleekDbal implements DbalInterface
         }
 
         if ($this->criterias !== []) {
-            $this->queryBuilder->where($this->criterias);
+            $builder->where($this->criterias);
         }
 
         if ($this->havings !== []) {
-            $this->queryBuilder->having($this->havings);
+            $builder->having($this->havings);
         }
 
         if ($this->grouped !== []) {
-            $this->queryBuilder->groupBy($this->grouped);
+            $builder->groupBy($this->grouped);
         }
 
         if ($this->ordered !== []) {
-            $this->queryBuilder->orderBy($this->ordered);
+            $builder->orderBy($this->ordered);
         }
 
         if ($this->offset) {
-            $this->queryBuilder->skip($this->offset);
+            $builder->skip($this->offset);
         }
 
         if ($this->limit) {
-            $this->queryBuilder->limit($this->limit);
+            $builder->limit($this->limit);
         }
 
-        return $this->queryBuilder;
+        return $builder;
     }
 
     /**
@@ -345,7 +348,7 @@ class SleekDbal implements DbalInterface
      */
     public function getModelName(): string
     {
-        return $this->modelName;
+        return $this->modelName ?? '';
     }
 
     /**

@@ -157,6 +157,10 @@ class ErrorHandler
 
     private function logError(Throwable $e, string $errorType): void
     {
+        if ($this->logger === null) {
+            return;
+        }
+
         $logMethod = method_exists($this->logger, $errorType) ? $errorType : 'error';
 
         $this->logger->$logMethod($e->getMessage(), ['trace' => $e->getTraceAsString()]);
@@ -204,7 +208,8 @@ class ErrorHandler
     {
         $lineNumber--;
 
-        $start = max($lineNumber - floor(self::NUM_LINES / 2), 1);
+        $halfLines = intdiv(self::NUM_LINES, 2);
+        $start = max($lineNumber - $halfLines, 1);
 
         $adapter = fs()->getAdapter();
 

@@ -219,7 +219,7 @@ class DropboxApp implements CloudAppInterface
     {
         $headers = [
             'Authorization' => 'Bearer ' . $this->tokenService->getAccessToken(),
-            'Dropbox-API-Arg' => json_encode($params),
+            'Dropbox-API-Arg' => json_encode($params) ?: '',
             'Content-Type' => 'application/octet-stream',
         ];
 

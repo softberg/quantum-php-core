@@ -130,10 +130,14 @@ abstract class DbModel extends Model
      */
     public function get(): ModelCollection
     {
-        $models = array_map(
-            fn (?DbalInterface $item): ?DbModel => wrapToModel($item, static::class),
-            $this->getOrmInstance()->get()
-        );
+        $models = [];
+
+        foreach ($this->getOrmInstance()->get() as $item) {
+            $model = wrapToModel($item, static::class);
+            if ($model !== null) {
+                $models[] = $model;
+            }
+        }
 
         /** @var ModelCollection<int|string, Model> $collection */
         $collection = new ModelCollection($models);
