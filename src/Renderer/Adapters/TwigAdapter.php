@@ -67,7 +67,7 @@ class TwigAdapter implements TemplateRendererInterface
     {
         $loader = $this->getLoader($view);
 
-        $twig = new Environment($loader, $this->configs);
+        $twig = new Environment($loader, $this->configs ?? []);
 
         $this->addFunctionsToTwig($twig);
 
