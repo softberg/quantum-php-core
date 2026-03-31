@@ -2,12 +2,18 @@
 
 namespace Quantum\Tests\Unit\Mailer;
 
+use Quantum\Mailer\Adapters\SendinblueAdapter;
+use Quantum\Mailer\Adapters\MandrillAdapter;
+use Quantum\Mailer\Adapters\SendgridAdapter;
+use Quantum\Mailer\Adapters\MailgunAdapter;
+use Quantum\Mailer\Adapters\ResendAdapter;
 use Quantum\Mailer\Exceptions\MailerException;
 use Quantum\Mailer\Contracts\MailerInterface;
 use Quantum\Mailer\Adapters\SmtpAdapter;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Mailer\Mailer;
 use Quantum\Loader\Setup;
+use ReflectionMethod;
 
 class MailerTest extends AppTestCase
 {
@@ -47,5 +53,38 @@ class MailerTest extends AppTestCase
         $this->expectExceptionMessage('The method `callingInvalidMethod` is not supported for `' . SmtpAdapter::class . '`');
 
         $mailer->callingInvalidMethod();
+    }
+
+    /**
+     * @dataProvider httpAdapterProvider
+     */
+    public function testHttpAdapterGetTransportErrorsReturnsArray(string $adapterClass, array $params): void
+    {
+        $adapter = new $adapterClass($params);
+
+        $httpClient = $this->getPrivateProperty($adapter, 'httpClient');
+        $httpClient->createRequest('http://localhost');
+
+        $method = new ReflectionMethod($adapter, 'getTransportErrors');
+        $method->setAccessible(true);
+
+        $errors = $method->invoke($adapter);
+
+        $this->assertIsArray($errors);
+        $this->assertEmpty($errors);
+    }
+
+    /**
+     * @return array<string, array{0: class-string, 1: array<string, mixed>}>
+     */
+    public function httpAdapterProvider(): array
+    {
+        return [
+            'mailgun' => [MailgunAdapter::class, ['api_key' => 'test', 'domain' => 'test.com']],
+            'mandrill' => [MandrillAdapter::class, ['api_key' => 'test']],
+            'resend' => [ResendAdapter::class, ['api_key' => 'test']],
+            'sendgrid' => [SendgridAdapter::class, ['api_key' => 'test']],
+            'sendinblue' => [SendinblueAdapter::class, ['api_key' => 'test']],
+        ];
     }
 }

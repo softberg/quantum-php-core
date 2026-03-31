@@ -7,6 +7,7 @@ use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\Console\Helper\HelperSet;
 use Quantum\Tests\Unit\AppTestCase;
+use RuntimeException;
 
 class QtCommandTest extends AppTestCase
 {
@@ -96,5 +97,25 @@ class QtCommandTest extends AppTestCase
         $this->tester->execute([]);
 
         $this->assertTrue($this->command->confirm('Confirm action'));
+    }
+
+    public function testResolveInputThrowsWhenNotSet(): void
+    {
+        $command = new TestCommand();
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Input is not set.');
+
+        $command->getArgument('uuid');
+    }
+
+    public function testResolveOutputThrowsWhenNotSet(): void
+    {
+        $command = new TestCommand();
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Output is not set.');
+
+        $command->output('test');
     }
 }
