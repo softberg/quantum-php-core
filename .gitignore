@@ -16,6 +16,7 @@ Thumbs.db
 # Test & Runtime artifacts
 # =========================
 /tests/_root/shared/store/*
+/tests/_root/cron-tests/
 /coverage/
 *.log
 
