@@ -16,6 +16,7 @@ namespace {{MODULE_NAMESPACE}}\Controllers;
 
 use Quantum\Auth\Exceptions\AuthException;
 use Quantum\Http\Enums\StatusCode;
+use {{MODULE_NAMESPACE}}\DTOs\UserDTO;
 use {{MODULE_NAMESPACE}}\Enums\Role;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
@@ -93,12 +94,9 @@ class AuthController extends BaseController
      */
     public function signup(Request $request, Response $response)
     {
-        $userData = $request->all();
+        $userDto = UserDTO::fromRequest($request, Role::EDITOR, uuid_ordered());
 
-        $userData['uuid'] =  uuid_ordered();
-        $userData['role'] = Role::EDITOR;
-
-        auth()->signup($userData);
+        auth()->signup($userDto->toArray());
 
         $response->json([
             'status' => self::STATUS_SUCCESS,

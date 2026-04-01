@@ -15,6 +15,7 @@
 namespace {{MODULE_NAMESPACE}}\Controllers;
 
 use {{MODULE_NAMESPACE}}\Services\PostService;
+use {{MODULE_NAMESPACE}}\DTOs\PostDTO;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 
@@ -82,12 +83,7 @@ class PostManagementController extends BaseController
      */
     public function create(Request $request)
     {
-        $postData = [
-            'user_uuid' => auth()->user()->uuid,
-            'title' => $request->get('title', null, true),
-            'content' => $request->get('content', null, true),
-            'image' => '',
-        ];
+        $imageName = '';
 
         if ($request->hasFile('image')) {
             $imageName = $this->postService->saveImage(
@@ -95,11 +91,11 @@ class PostManagementController extends BaseController
                 auth()->user()->uuid,
                 slugify($request->get('title'))
             );
-
-            $postData['image'] = $imageName;
         }
 
-        $this->postService->addPost($postData);
+        $postDto = PostDTO::fromRequest($request, auth()->user()->uuid, $imageName);
+
+        $this->postService->addPost($postDto);
 
         redirect(base_url(true) . '/' . current_lang() . '/my-posts');
     }
@@ -134,12 +130,9 @@ class PostManagementController extends BaseController
      */
     public function amend(Request $request, ?string $lang, string $postUuid)
     {
-        $postData = [
-            'title' => $request->get('title', null, true),
-            'content' => $request->get('content', null, true),
-        ];
-
         $post = $this->postService->getPost($postUuid);
+
+        $imageName = null;
 
         if ($request->hasFile('image')) {
             if ($post->image) {
@@ -151,11 +144,11 @@ class PostManagementController extends BaseController
                 auth()->user()->uuid,
                 slugify($request->get('title'))
             );
-
-            $postData['image'] = $imageName;
         }
 
-        $this->postService->updatePost($postUuid, $postData);
+        $postDto = PostDTO::fromRequest($request, null, $imageName);
+
+        $this->postService->updatePost($postUuid, $postDto);
 
         redirect(base_url(true) . '/' . current_lang() . '/my-posts');
     }
@@ -191,11 +184,14 @@ class PostManagementController extends BaseController
             $this->postService->deleteImage(auth()->user()->uuid . DS . $post->image);
         }
 
-        $this->postService->updatePost($postUuid, [
-            'title' => $post->title,
-            'content' => $post->content,
-            'image' => '',
-        ]);
+        $postDto = new PostDTO(
+            $post->title,
+            $post->content,
+            null,
+            ''
+        );
+
+        $this->postService->updatePost($postUuid, $postDto);
 
         redirect(base_url(true) . '/' . current_lang() . '/my-posts');
     }

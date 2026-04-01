@@ -15,6 +15,7 @@
 namespace {{MODULE_NAMESPACE}}\Controllers;
 
 use {{MODULE_NAMESPACE}}\Services\CommentService;
+use {{MODULE_NAMESPACE}}\DTOs\CommentDTO;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 
@@ -44,11 +45,9 @@ class CommentController extends BaseController
      */
     public function create(Request $request, Response $response, ?string $lang, string $uuid)
     {
-        $comment = $this->commentService->addComment([
-            'post_uuid' => $uuid,
-            'user_uuid' => auth()->user()->uuid,
-            'content' => trim($request->get('content')),
-        ]);
+        $commentDto = CommentDTO::fromRequest($request, $uuid, auth()->user()->uuid);
+
+        $comment = $this->commentService->addComment($commentDto);
 
         $response->json([
             'status' => 'success',
