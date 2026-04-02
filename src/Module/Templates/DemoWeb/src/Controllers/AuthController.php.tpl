@@ -15,6 +15,7 @@
 namespace {{MODULE_NAMESPACE}}\Controllers;
 
 use Quantum\Auth\Exceptions\AuthException;
+use {{MODULE_NAMESPACE}}\DTOs\UserDTO;
 use {{MODULE_NAMESPACE}}\Enums\Role;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
@@ -102,12 +103,9 @@ class AuthController extends BaseController
     public function signup(Request $request, Response $response)
     {
         if ($request->isMethod('post')) {
-            $userData = $request->all();
+            $userDto = UserDTO::fromRequest($request, Role::EDITOR, uuid_ordered());
 
-            $userData['uuid'] = uuid_ordered();
-            $userData['role'] = Role::EDITOR;
-
-            auth()->signup($userData);
+            auth()->signup($userDto->toArray());
 
             session()->setFlash('success', t('common.check_email_signup'));
             redirect(base_url(true) . '/' . current_lang() . '/signup');

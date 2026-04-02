@@ -17,6 +17,7 @@ namespace {{MODULE_NAMESPACE}}\Controllers;
 use Quantum\Service\Exceptions\ServiceException;
 use Quantum\App\Exceptions\BaseException;
 use {{MODULE_NAMESPACE}}\Services\PostService;
+use {{MODULE_NAMESPACE}}\DTOs\PostDTO;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
@@ -60,12 +61,7 @@ class PostManagementController extends BaseController
      */
     public function create(Request $request, Response $response)
     {
-        $postData = [
-            'user_uuid' => auth()->user()->uuid,
-            'title' => $request->get('title', null, true),
-            'content' => $request->get('content', null, true),
-            'image' => '',
-        ];
+        $imageName = '';
 
         if ($request->hasFile('image')) {
             $imageName = $this->postService->saveImage(
@@ -73,11 +69,11 @@ class PostManagementController extends BaseController
                 auth()->user()->uuid,
                 slugify($request->get('title'))
             );
-
-            $postData['image'] = $imageName;
         }
 
-        $post = $this->postService->addPost($postData);
+        $postDto = PostDTO::fromRequest($request, auth()->user()->uuid, $imageName);
+
+        $post = $this->postService->addPost($postDto);
 
         $response->json([
             'status' => 'success',
@@ -95,12 +91,9 @@ class PostManagementController extends BaseController
      */
     public function amend(Request $request, Response $response, ?string $lang, string $postUuid)
     {
-        $postData = [
-            'title' => $request->get('title', null, true),
-            'content' => $request->get('content', null, true),
-        ];
-
         $post = $this->postService->getPost($postUuid);
+
+        $imageName = null;
 
         if ($request->hasFile('image')) {
             if ($post->image) {
@@ -112,11 +105,11 @@ class PostManagementController extends BaseController
                 auth()->user()->uuid,
                 slugify($request->get('title'))
             );
-
-            $postData['image'] = $imageName;
         }
 
-        $post = $this->postService->updatePost($postUuid, $postData);
+        $postDto = PostDTO::fromRequest($request, null, $imageName);
+
+        $post = $this->postService->updatePost($postUuid, $postDto);
 
         $response->json([
             'status' => 'success',
@@ -161,11 +154,14 @@ class PostManagementController extends BaseController
             $this->postService->deleteImage(auth()->user()->uuid . DS . $post->image);
         }
 
-        $this->postService->updatePost($postUuid, [
-            'title' => $post->title,
-            'content' => $post->content,
-            'image' => '',
-        ]);
+        $postDto = new PostDTO(
+            $post->title,
+            $post->content,
+            null,
+            ''
+        );
+
+        $this->postService->updatePost($postUuid, $postDto);
 
         $response->json([
             'status' => 'success',

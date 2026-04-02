@@ -20,8 +20,9 @@ use Quantum\Environment\Exceptions\EnvException;
 use Quantum\Config\Exceptions\ConfigException;
 use {{MODULE_NAMESPACE}}\Transformers\PostTransformer;
 use Quantum\Model\Exceptions\ModelException;
-use Quantum\Storage\UploadedFile;
 use Quantum\App\Exceptions\BaseException;
+use Quantum\Storage\UploadedFile;
+use {{MODULE_NAMESPACE}}\DTOs\PostDTO;
 use {{MODULE_NAMESPACE}}\Models\User;
 use {{MODULE_NAMESPACE}}\Models\Post;
 use Quantum\Di\Exceptions\DiException;
@@ -150,34 +151,34 @@ class PostService extends QtService
 
     /**
      * Add post
-     * @param array $data
+     * @param PostDTO $postDto
      * @return Post
      * @throws BaseException
      * @throws ModelException
      */
-    public function addPost(array $data): Post
+    public function addPost(PostDTO $postDto): Post
     {
-        $data['uuid'] = $data['uuid'] ?? uuid_ordered();
+        $uuid = uuid_ordered();
 
         $post = $this->model->create();
-        $post->fill($data);
+        $post->fill(array_merge(['uuid' => $uuid], $postDto->toArray()));
         $post->save();
 
-        return $this->getPost($post->uuid);
+        return $this->getPost($uuid);
     }
 
     /**
      * Update post
      * @param string $uuid
-     * @param array $data
+     * @param PostDTO $postDto
      * @return Post
      * @throws BaseException
      * @throws ModelException
      */
-    public function updatePost(string $uuid, array $data): Post
+    public function updatePost(string $uuid, PostDTO $postDto): Post
     {
         $post = $this->model->findOneBy('uuid', $uuid);
-        $post->fill($data);
+        $post->fill($postDto->toArray());
         $post->save();
 
         return $this->getPost($post->uuid);
