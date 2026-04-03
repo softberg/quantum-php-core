@@ -80,6 +80,8 @@
     "scripts": {
         "cs:check": "vendor/bin/php-cs-fixer check",
         "cs:fix": "vendor/bin/php-cs-fixer fix",
+        "rector:check": "vendor/bin/rector process --dry-run",
+        "rector:fix": "vendor/bin/rector process",
         "phpstan": "vendor/bin/phpstan analyse --memory-limit=-1 --error-format=github",
         "test": "vendor/bin/phpunit --stderr --testdox --coverage-clover coverage.xml"
     },
