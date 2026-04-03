@@ -69,7 +69,7 @@ class Server
      * @param string $key
      * @return mixed|null
      */
-    public function get($key)
+    public function get(string $key)
     {
         return $this->server[$key] ?? null;
     }
@@ -86,7 +86,7 @@ class Server
      * @param string $key
      * @param mixed $value
      */
-    public function set($key, $value): void
+    public function set(string $key, $value): void
     {
         $this->server[$key] = $value;
     }

@@ -50,7 +50,7 @@ class SmtpAdapter implements MailerInterface
         if (config()->get('debug')) {
             $this->mailer->SMTPDebug = SMTP::DEBUG_SERVER;
 
-            $this->mailer->Debugoutput = function ($message): void {
+            $this->mailer->Debugoutput = function (string $message): void {
                 warning($message, ['tab' => Debugger::MAILS]);
             };
         }

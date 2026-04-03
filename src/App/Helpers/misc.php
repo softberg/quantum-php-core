@@ -22,8 +22,8 @@ use Symfony\Component\VarExporter\VarExporter;
 function _message(string $subject, $params): string
 {
     if (is_array($params)) {
-        return preg_replace_callback('/{%\d+}/', function () use (&$params) {
-            return array_shift($params);
+        return preg_replace_callback('/{%\d+}/', function (array $matches) use (&$params): string {
+            return array_shift($params) ?? '';
         }, $subject) ?? $subject;
     } else {
         return preg_replace('/{%\d+}/', $params, $subject) ?? $subject;
