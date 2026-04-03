@@ -24,6 +24,8 @@ use RuntimeException;
 /**
  * Class App
  * @package Quantum\App
+ *
+ * @method ?int start()
  */
 class App
 {
