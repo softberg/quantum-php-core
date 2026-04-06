@@ -19,11 +19,21 @@ class SessionAuthAdapterTest extends AuthTestCase
 
         config()->set('auth.two_fa', false);
 
-        $this->sessionAuth = new SessionAuthAdapter($this->authService, $this->mailer, (new Hasher())->setCost(4));
+        $this->sessionAuth = $this->createSessionAuth();
 
         $admin = $this->sessionAuth->signup($this->adminUser);
 
         $this->sessionAuth->activate($admin->getFieldValue('activation_token'));
+    }
+
+    private function createSessionAuth(): SessionAuthAdapter
+    {
+        return new SessionAuthAdapter(
+            $this->authService,
+            $this->mailer,
+            (new Hasher())->setCost(4),
+            (array) config()->get('auth')
+        );
     }
 
     public function tearDown(): void
@@ -157,8 +167,8 @@ class SessionAuthAdapterTest extends AuthTestCase
     public function testWebVerifyOtp(): void
     {
         config()->set('auth.two_fa', true);
-
         config()->set('auth.otp_expires', 2);
+        $this->sessionAuth = $this->createSessionAuth();
 
         $otp_token = $this->sessionAuth->signin('admin@qt.com', 'qwerty');
 
@@ -168,8 +178,8 @@ class SessionAuthAdapterTest extends AuthTestCase
     public function testWebSigninWithoutVerification(): void
     {
         config()->set('auth.two_fa', false);
-
         config()->set('auth.otp_expires', 2);
+        $this->sessionAuth = $this->createSessionAuth();
 
         $this->assertTrue($this->sessionAuth->signin('admin@qt.com', 'qwerty'));
     }
@@ -177,8 +187,8 @@ class SessionAuthAdapterTest extends AuthTestCase
     public function testWebSigninWithVerification(): void
     {
         config()->set('auth.two_fa', true);
-
         config()->set('auth.otp_expires', 2);
+        $this->sessionAuth = $this->createSessionAuth();
 
         $this->assertIsString($this->sessionAuth->signin('admin@qt.com', 'qwerty'));
     }
@@ -186,8 +196,8 @@ class SessionAuthAdapterTest extends AuthTestCase
     public function testWebResendOtp(): void
     {
         config()->set('auth.two_fa', true);
-
         config()->set('auth.otp_expires', 2);
+        $this->sessionAuth = $this->createSessionAuth();
 
         $otp_token = $this->sessionAuth->signin('admin@qt.com', 'qwerty');
 
@@ -218,5 +228,15 @@ class SessionAuthAdapterTest extends AuthTestCase
         $this->assertEquals('Super', $refreshedUser->firstname);
 
         $this->assertEquals('Human', $refreshedUser->lastname);
+    }
+
+    public function testWebRememberTokenLifetimeIsConfigurable(): void
+    {
+        config()->set('auth.session.remember_lifetime', 86400);
+        $this->sessionAuth = $this->createSessionAuth();
+
+        $this->sessionAuth->signin('admin@qt.com', 'qwerty', true);
+
+        $this->assertTrue(cookie()->has('remember_token'));
     }
 }
