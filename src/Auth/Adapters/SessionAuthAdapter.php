@@ -46,7 +46,7 @@ class SessionAuthAdapter implements AuthenticatableInterface
      * @param array<string, mixed> $config
      * @throws AuthException
      */
-    public function __construct(AuthServiceInterface $authService, Mailer $mailer, Hasher $hasher, array $config)
+    public function __construct(AuthServiceInterface $authService, Mailer $mailer, Hasher $hasher, array $config = [])
     {
         $this->authService = $authService;
         $this->mailer = $mailer;
