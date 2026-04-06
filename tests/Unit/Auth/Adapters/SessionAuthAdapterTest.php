@@ -63,6 +63,34 @@ class SessionAuthAdapterTest extends AuthTestCase
         $this->assertTrue($this->sessionAuth->check());
     }
 
+    public function testWebSigninWithRememberSetsCookie(): void
+    {
+        $this->assertFalse(cookie()->has('remember_token'));
+
+        $this->sessionAuth->signin('admin@qt.com', 'qwerty', true);
+
+        $this->assertTrue(cookie()->has('remember_token'));
+        $this->assertNotEmpty(cookie()->get('remember_token'));
+    }
+
+    public function testWebSigninWithoutRememberDoesNotSetCookie(): void
+    {
+        $this->sessionAuth->signin('admin@qt.com', 'qwerty');
+
+        $this->assertFalse(cookie()->has('remember_token'));
+    }
+
+    public function testWebSignoutRemovesRememberCookie(): void
+    {
+        $this->sessionAuth->signin('admin@qt.com', 'qwerty', true);
+
+        $this->assertTrue(cookie()->has('remember_token'));
+
+        $this->sessionAuth->signout();
+
+        $this->assertFalse(cookie()->has('remember_token'));
+    }
+
     public function testWebSignout(): void
     {
         $this->assertFalse($this->sessionAuth->check());

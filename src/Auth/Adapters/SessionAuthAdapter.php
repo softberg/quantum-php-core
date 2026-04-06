@@ -40,6 +40,8 @@ class SessionAuthAdapter implements AuthenticatableInterface
 {
     use AuthTrait;
 
+    private const REMEMBER_TOKEN_LIFETIME = 2592000;
+
     /**
      * @throws AuthException
      */
@@ -201,7 +203,15 @@ class SessionAuthAdapter implements AuthenticatableInterface
             [$this->keyFields[AuthKeys::REMEMBER_TOKEN] => $rememberToken]
         );
 
-        cookie()->set($this->keyFields[AuthKeys::REMEMBER_TOKEN], $rememberToken);
+        cookie()->set(
+            $this->keyFields[AuthKeys::REMEMBER_TOKEN],
+            $rememberToken,
+            self::REMEMBER_TOKEN_LIFETIME,
+            '/',
+            '',
+            true,
+            true
+        );
     }
 
     /**
