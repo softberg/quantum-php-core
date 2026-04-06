@@ -5,6 +5,7 @@ return [
 
     'session' => [
         'service' => Quantum\Tests\_root\modules\Test\Services\AuthService::class,
+        'remember_lifetime' => env('REMEMBER_LIFETIME', 2592000),
     ],
 
     'jwt' => [

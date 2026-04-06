@@ -89,10 +89,11 @@ class AuthFactory
     private static function createInstance(string $adapterClass, string $adapter): Auth
     {
         $authService = self::createAuthService($adapter);
+        $authConfig = (array) config()->get('auth');
 
         $adapterInstance = $adapter === AuthType::JWT
-            ? new $adapterClass($authService, mailer(), new Hasher(), self::createJwtInstance())
-            : new $adapterClass($authService, mailer(), new Hasher());
+            ? new $adapterClass($authService, mailer(), new Hasher(), self::createJwtInstance(), $authConfig)
+            : new $adapterClass($authService, mailer(), new Hasher(), $authConfig);
 
         if (!$adapterInstance instanceof AuthenticatableInterface) {
             throw AuthException::adapterNotSupported($adapter);

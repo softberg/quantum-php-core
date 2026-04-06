@@ -41,14 +41,16 @@ class JwtAuthAdapter implements AuthenticatableInterface
     protected JwtToken $jwt;
 
     /**
+     * @param array<string, mixed> $config
      * @throws AuthException
      */
-    public function __construct(AuthServiceInterface $authService, Mailer $mailer, Hasher $hasher, JwtToken $jwt)
+    public function __construct(AuthServiceInterface $authService, Mailer $mailer, Hasher $hasher, JwtToken $jwt, array $config = [])
     {
         $this->authService = $authService;
         $this->mailer = $mailer;
         $this->hasher = $hasher;
         $this->jwt = $jwt;
+        $this->config = $config;
 
         $this->verifySchema($this->authService->userSchema());
     }

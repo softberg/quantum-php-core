@@ -35,18 +35,20 @@ class AuthTest extends AuthTestCase
 
     public function testAuthGetAdapter(): void
     {
-        $auth = new Auth(new SessionAuthAdapter($this->authService, $this->mailer, $this->hasher));
+        $authConfig = (array) config()->get('auth');
+
+        $auth = new Auth(new SessionAuthAdapter($this->authService, $this->mailer, $this->hasher, $authConfig));
 
         $this->assertInstanceOf(AuthenticatableInterface::class, $auth->getAdapter());
 
-        $auth = new Auth(new JwtAuthAdapter($this->authService, $this->mailer, $this->hasher, $this->jwt));
+        $auth = new Auth(new JwtAuthAdapter($this->authService, $this->mailer, $this->hasher, $this->jwt, $authConfig));
 
         $this->assertInstanceOf(AuthenticatableInterface::class, $auth->getAdapter());
     }
 
     public function testAuthCallingValidMethod(): void
     {
-        $auth = new Auth(new JwtAuthAdapter($this->authService, $this->mailer, $this->hasher, $this->jwt));
+        $auth = new Auth(new JwtAuthAdapter($this->authService, $this->mailer, $this->hasher, $this->jwt, (array) config()->get('auth')));
 
         $user = $auth->getAdapter()->signup($this->adminUser);
 
@@ -61,7 +63,7 @@ class AuthTest extends AuthTestCase
 
     public function testAuthCallingInvalidMethod(): void
     {
-        $auth = new Auth(new JwtAuthAdapter($this->authService, $this->mailer, $this->hasher, $this->jwt));
+        $auth = new Auth(new JwtAuthAdapter($this->authService, $this->mailer, $this->hasher, $this->jwt, (array) config()->get('auth')));
 
         $this->expectException(AuthException::class);
 

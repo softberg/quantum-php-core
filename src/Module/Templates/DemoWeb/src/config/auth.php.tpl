@@ -10,6 +10,7 @@ return [
 
     'session' => [
         'service' => {{MODULE_NAMESPACE}}\Services\AuthService::class,
+        'remember_lifetime' => env('REMEMBER_LIFETIME', 2592000),
     ],
 
     'jwt' => [

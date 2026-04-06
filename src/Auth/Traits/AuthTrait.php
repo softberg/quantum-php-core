@@ -47,6 +47,11 @@ trait AuthTrait
     protected int $otpLength = 6;
 
     /**
+     * @var array<string, mixed>
+     */
+    protected array $config = [];
+
+    /**
      * @var array<string, string>
      */
     protected array $keyFields = [];
@@ -219,7 +224,7 @@ trait AuthTrait
 
         $time = new DateTime();
 
-        $time->add(new DateInterval('PT' . config()->get('auth.otp_expires') . 'M'));
+        $time->add(new DateInterval('PT' . ($this->config['otp_expires'] ?? 2) . 'M'));
 
         $this->authService->update(
             $this->keyFields[AuthKeys::USERNAME],
@@ -354,6 +359,6 @@ trait AuthTrait
 
     protected function isTwoFactorEnabled(): bool
     {
-        return filter_var(config()->get('auth.two_fa'), FILTER_VALIDATE_BOOLEAN);
+        return filter_var($this->config['two_fa'] ?? false, FILTER_VALIDATE_BOOLEAN);
     }
 }
