@@ -13,11 +13,12 @@
  */
 
 use Quantum\Config\Config;
+use Quantum\Di\Di;
 
 /**
  * Config facade
  */
 function config(): Config
 {
-    return Config::getInstance();
+    return Di::get(Config::class);
 }

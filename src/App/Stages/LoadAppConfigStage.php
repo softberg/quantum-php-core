@@ -18,7 +18,6 @@ namespace Quantum\App\Stages;
 
 use Quantum\App\Contracts\BootStageInterface;
 use Quantum\App\AppContext;
-use Quantum\Config\Config;
 use Quantum\Loader\Setup;
 
 /**
@@ -30,7 +29,7 @@ class LoadAppConfigStage implements BootStageInterface
     public function process(AppContext $context): void
     {
         if (!config()->has('app')) {
-            Config::getInstance()->import(new Setup('config', 'app'));
+            config()->import(new Setup('config', 'app'));
         }
     }
 }

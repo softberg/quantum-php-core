@@ -11,39 +11,39 @@ use Quantum\Loader\Setup;
 
 class ConfigTest extends AppTestCase
 {
+    private Config $config;
+
     public function setUp(): void
     {
         parent::setUp();
 
         config()->flush();
+
+        $this->config = new Config();
     }
 
     public function testConfigLoad(): void
     {
-        $config = Config::getInstance();
+        $this->assertEmpty($this->config->all());
 
-        $this->assertEmpty($config->all());
+        $this->config->load(new Setup('config', 'app'));
 
-        $config->load(new Setup('config', 'app'));
+        $this->assertNotEmpty($this->config->all());
 
-        $this->assertNotEmpty($config->all());
-
-        $this->assertInstanceOf(Data::class, $config->all());
+        $this->assertInstanceOf(Data::class, $this->config->all());
     }
 
     public function testConfigImport(): void
     {
-        $config = Config::getInstance();
+        $this->config->load(new Setup('config', 'app'));
 
-        $config->load(new Setup('config', 'app'));
+        $this->assertNull($this->config->get('database.default'));
 
-        $this->assertNull($config->get('database.default'));
+        $this->config->import(new Setup('config', 'database'));
 
-        $config->import(new Setup('config', 'database'));
+        $this->assertNotNull($this->config->get('database.default'));
 
-        $this->assertNotNull($config->get('database.default'));
-
-        $this->assertEquals('sqlite', $config->get('database.default'));
+        $this->assertEquals('sqlite', $this->config->get('database.default'));
     }
 
     public function testImportingNonExistingConfigFile(): void
@@ -52,92 +52,80 @@ class ConfigTest extends AppTestCase
 
         $this->expectExceptionMessage('File `config' . DS . 'somefile` not found!');
 
-        Config::getInstance()->import(new Setup('config', 'somefile'));
+        $this->config->import(new Setup('config', 'somefile'));
     }
 
     public function testCollisionAtImporting(): void
     {
-        $config = Config::getInstance();
-
-        $config->import(new Setup('config', 'app'));
+        $this->config->import(new Setup('config', 'app'));
 
         $this->expectException(ConfigException::class);
 
         $this->expectExceptionMessage('Config key `app` is already in use');
 
-        $config->import(new Setup('config', 'app'));
+        $this->config->import(new Setup('config', 'app'));
     }
 
     public function testConfigHas(): void
     {
-        $config = Config::getInstance();
+        $this->config->import(new Setup('config', 'app'));
 
-        $config->import(new Setup('config', 'app'));
+        $this->assertTrue($this->config->has('app.debug'));
 
-        $this->assertTrue($config->has('app.debug'));
+        $this->assertTrue($this->config->has('app.test'));
 
-        $this->assertTrue($config->has('app.test'));
-
-        $this->assertFalse($config->has('app.none'));
+        $this->assertFalse($this->config->has('app.none'));
     }
 
     public function testConfigGet(): void
     {
-        $config = Config::getInstance();
+        $this->config->import(new Setup('config', 'lang'));
 
-        $config->import(new Setup('config', 'lang'));
+        $this->assertIsArray($this->config->get('lang.supported'));
 
-        $this->assertIsArray($config->get('lang.supported'));
+        $this->assertEquals('Default Value', $this->config->get('not-exists', 'Default Value'));
 
-        $this->assertEquals('Default Value', $config->get('not-exists', 'Default Value'));
-
-        $this->assertNull($config->get('not-exists'));
+        $this->assertNull($this->config->get('not-exists'));
     }
 
     public function testConfigSet(): void
     {
-        $config = Config::getInstance();
+        $this->assertFalse($this->config->has('new-value'));
 
-        $this->assertFalse($config->has('new-value'));
+        $this->config->set('new-value', 'New Value');
 
-        $config->set('new-value', 'New Value');
+        $this->assertTrue($this->config->has('new-value'));
 
-        $this->assertTrue($config->has('new-value'));
+        $this->assertEquals('New Value', $this->config->get('new-value'));
 
-        $this->assertEquals('New Value', $config->get('new-value'));
+        $this->config->set('other.nested', 'Nested Value');
 
-        $config->set('other.nested', 'Nested Value');
+        $this->assertTrue($this->config->has('other.nested'));
 
-        $this->assertTrue($config->has('other.nested'));
-
-        $this->assertEquals('Nested Value', $config->get('other.nested'));
+        $this->assertEquals('Nested Value', $this->config->get('other.nested'));
     }
 
     public function testConfigDelete(): void
     {
-        $config = Config::getInstance();
+        $this->config->import(new Setup('config', 'app'));
 
-        $config->import(new Setup('config', 'app'));
+        $this->assertNotNull($this->config->get('app.test'));
 
-        $this->assertNotNull($config->get('app.test'));
+        $this->config->delete('app.test');
 
-        $config->delete('app.test');
+        $this->assertFalse($this->config->has('app.test'));
 
-        $this->assertFalse($config->has('app.test'));
-
-        $this->assertNull($config->get('app.test'));
+        $this->assertNull($this->config->get('app.test'));
     }
 
     public function testConfigFlush(): void
     {
-        $config = Config::getInstance();
+        $this->config->import(new Setup('config', 'app'));
 
-        $config->import(new Setup('config', 'app'));
+        $this->assertNotEmpty($this->config->all());
 
-        $this->assertNotEmpty($config->all());
+        $this->config->flush();
 
-        $config->flush();
-
-        $this->assertEmpty($config->all());
+        $this->assertEmpty($this->config->all());
     }
 }

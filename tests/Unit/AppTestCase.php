@@ -9,6 +9,7 @@ use Quantum\Router\MatchedRoute;
 use PHPUnit\Framework\TestCase;
 use Quantum\Debugger\Debugger;
 use Quantum\App\Enums\AppType;
+use Quantum\Config\Config;
 use Quantum\Router\Route;
 use Quantum\Http\Request;
 use Quantum\Loader\Setup;
@@ -36,7 +37,10 @@ abstract class AppTestCase extends TestCase
         Request::flush();
 
         AppFactory::destroy(AppType::WEB);
-        config()->flush();
+
+        if (Di::isRegistered(Config::class)) {
+            config()->flush();
+        }
         Debugger::getInstance()->resetStore();
         Di::reset();
     }
