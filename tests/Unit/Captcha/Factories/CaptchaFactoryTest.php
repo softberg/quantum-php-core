@@ -9,6 +9,7 @@ use Quantum\Captcha\Factories\CaptchaFactory;
 use Quantum\Captcha\Enums\CaptchaType;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Captcha\Captcha;
+use Quantum\Di\Di;
 
 class CaptchaFactoryTest extends AppTestCase
 {
@@ -16,7 +17,7 @@ class CaptchaFactoryTest extends AppTestCase
     {
         parent::setUp();
 
-        $this->setPrivateProperty(CaptchaFactory::class, 'instances', []);
+        $this->resetCaptchaFactory();
     }
 
     public function testCaptchaFactoryInstance(): void
@@ -62,5 +63,11 @@ class CaptchaFactoryTest extends AppTestCase
         $captcha2 = CaptchaFactory::get(CaptchaType::RECAPTCHA);
 
         $this->assertSame($captcha1, $captcha2);
+    }
+
+    private function resetCaptchaFactory(): void
+    {
+        $factory = Di::get(CaptchaFactory::class);
+        $this->setPrivateProperty($factory, 'instances', []);
     }
 }
