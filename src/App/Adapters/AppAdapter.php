@@ -16,11 +16,9 @@ declare(strict_types=1);
 
 namespace Quantum\App\Adapters;
 
-use Quantum\App\Exceptions\BaseException;
 use Quantum\App\Contracts\AppInterface;
-use Quantum\Di\Exceptions\DiException;
 use Quantum\App\Traits\AppTrait;
-use ReflectionException;
+use Quantum\App\AppContext;
 
 /**
  * Class AppAdapter
@@ -32,16 +30,10 @@ abstract class AppAdapter implements AppInterface
 
     private static string $baseDir;
 
-    /**
-     * @throws BaseException
-     * @throws DiException
-     * @throws ReflectionException
-     */
-    public function __construct()
+    protected AppContext $context;
+
+    public function __construct(string $mode)
     {
-        $this->loadCoreDependencies();
-        $this->loadComponentHelperFunctions();
-        $this->loadAppHelperFunctions();
-        $this->loadModuleHelperFunctions();
+        $this->context = new AppContext($mode);
     }
 }

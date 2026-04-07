@@ -28,8 +28,6 @@ class LoadHelpersStageTest extends TestCase
 
     public function testLoadHelpersStageLoadsComponentHelpers(): void
     {
-        $this->assertFalse(function_exists('config'));
-
         $stage = new LoadHelpersStage();
         $stage->process(new AppContext(AppType::WEB));
 

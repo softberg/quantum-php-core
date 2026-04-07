@@ -17,18 +17,23 @@ declare(strict_types=1);
 namespace Quantum\App\Adapters;
 
 use Quantum\Middleware\Exceptions\MiddlewareException;
+use Quantum\App\Stages\RegisterCoreDependenciesStage;
 use Quantum\Database\Exceptions\DatabaseException;
 use Quantum\App\Exceptions\StopExecutionException;
 use Quantum\Session\Exceptions\SessionException;
-use Quantum\Environment\Exceptions\EnvException;
 use Quantum\Module\Exceptions\ModuleException;
 use Quantum\Config\Exceptions\ConfigException;
+use Quantum\App\Stages\SetupErrorHandlerStage;
 use Quantum\Router\Exceptions\RouteException;
+use Quantum\App\Stages\LoadEnvironmentStage;
 use Quantum\Http\Exceptions\HttpException;
 use Quantum\Csrf\Exceptions\CsrfException;
 use Quantum\Lang\Exceptions\LangException;
+use Quantum\App\Stages\LoadAppConfigStage;
 use Quantum\Middleware\MiddlewareManager;
+use Quantum\App\Stages\LoadLanguageStage;
 use Quantum\App\Exceptions\BaseException;
+use Quantum\App\Stages\LoadHelpersStage;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\App\Traits\WebAppTrait;
 use Quantum\Router\RouteCollection;
@@ -38,6 +43,8 @@ use Quantum\Module\ModuleLoader;
 use DebugBar\DebugBarException;
 use Quantum\Router\RouteFinder;
 use Quantum\Debugger\Debugger;
+use Quantum\App\Enums\AppType;
+use Quantum\App\BootPipeline;
 use Quantum\Hook\HookManager;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
@@ -64,17 +71,21 @@ class WebAppAdapter extends AppAdapter
 
     /**
      * @throws BaseException
-     * @throws ConfigException
      * @throws DiException
-     * @throws EnvException
      * @throws ReflectionException
      */
     public function __construct()
     {
-        parent::__construct();
+        parent::__construct(AppType::WEB);
 
-        $this->loadEnvironment();
-        $this->loadAppConfig();
+        $pipeline = new BootPipeline([
+            new RegisterCoreDependenciesStage(),
+            new LoadHelpersStage(),
+            new LoadEnvironmentStage(),
+            new LoadAppConfigStage(),
+        ]);
+
+        $pipeline->run($this->context);
 
         $this->request = Di::get(Request::class);
         $this->response = Di::get(Response::class);
@@ -105,7 +116,7 @@ class WebAppAdapter extends AppAdapter
                 stop();
             }
 
-            $this->setupErrorHandler();
+            (new SetupErrorHandlerStage())->process($this->context);
             $this->initializeDebugger();
 
             $moduleLoader = ModuleLoader::getInstance();
@@ -130,7 +141,7 @@ class WebAppAdapter extends AppAdapter
 
             $this->request->setMatchedRoute($matchedRoute);
 
-            $this->loadLanguage();
+            (new LoadLanguageStage())->process($this->context);
 
             $debugger = Debugger::getInstance();
             if ($debugger->isEnabled()) {

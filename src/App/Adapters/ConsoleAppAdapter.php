@@ -16,16 +16,19 @@ declare(strict_types=1);
 
 namespace Quantum\App\Adapters;
 
+use Quantum\App\Stages\RegisterCoreDependenciesStage;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Quantum\App\Exceptions\StopExecutionException;
-use Quantum\Environment\Exceptions\EnvException;
 use Symfony\Component\Console\Input\ArgvInput;
-use Quantum\Config\Exceptions\ConfigException;
+use Quantum\App\Stages\SetupErrorHandlerStage;
+use Quantum\App\Stages\LoadEnvironmentStage;
 use Symfony\Component\Console\Application;
-use Quantum\Lang\Exceptions\LangException;
-use Quantum\App\Exceptions\BaseException;
+use Quantum\App\Stages\LoadAppConfigStage;
+use Quantum\App\Stages\LoadLanguageStage;
+use Quantum\App\Stages\LoadHelpersStage;
 use Quantum\App\Traits\ConsoleAppTrait;
-use Quantum\Di\Exceptions\DiException;
+use Quantum\App\Enums\AppType;
+use Quantum\App\BootPipeline;
 use ReflectionException;
 
 if (!defined('DS')) {
@@ -48,17 +51,25 @@ class ConsoleAppAdapter extends AppAdapter
 
     public function __construct()
     {
-        parent::__construct();
+        parent::__construct(AppType::CONSOLE);
 
         $this->input = new ArgvInput();
         $this->output = new ConsoleOutput();
 
         $commandName = $this->input->getFirstArgument();
 
+        $stages = [
+            new RegisterCoreDependenciesStage(),
+            new LoadHelpersStage(),
+        ];
+
         if ($commandName !== 'core:env') {
-            $this->loadEnvironment();
-            $this->loadAppConfig();
+            $stages[] = new LoadEnvironmentStage();
+            $stages[] = new LoadAppConfigStage();
         }
+
+        $pipeline = new BootPipeline($stages);
+        $pipeline->run($this->context);
 
         $this->application = $this->createApplication(
             config()->get('app.name', 'UNKNOWN'),
@@ -67,22 +78,17 @@ class ConsoleAppAdapter extends AppAdapter
     }
 
     /**
-     * @throws DiException
-     * @throws EnvException
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws LangException
      * @throws ReflectionException
      */
     public function start(): ?int
     {
         try {
-            $this->loadLanguage();
+            (new LoadLanguageStage())->process($this->context);
 
             $this->registerCoreCommands();
             $this->registerAppCommands();
 
-            $this->setupErrorHandler();
+            (new SetupErrorHandlerStage())->process($this->context);
 
             $this->validateCommand();
 
