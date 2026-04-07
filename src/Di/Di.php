@@ -91,6 +91,14 @@ class Di
     }
 
     /**
+     * Checks if an instance exists in the container
+     */
+    public static function has(string $abstract): bool
+    {
+        return isset(self::$container[$abstract]);
+    }
+
+    /**
      * Sets an instance into container
      * @template T of object
      * @param class-string<T> $abstract

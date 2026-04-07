@@ -112,6 +112,57 @@ namespace Quantum\Tests\Unit\Di {
             $this->assertTrue(Di::isRegistered(DummyService::class));
         }
 
+        public function testDiHasReturnsFalseBeforeResolve(): void
+        {
+            Di::register(DummyService::class);
+
+            $this->assertFalse(Di::has(DummyService::class));
+        }
+
+        public function testDiHasReturnsTrueAfterGet(): void
+        {
+            Di::register(DummyService::class);
+
+            Di::get(DummyService::class);
+
+            $this->assertTrue(Di::has(DummyService::class));
+        }
+
+        public function testDiHasReturnsTrueAfterSet(): void
+        {
+            $instance = new DummyService();
+
+            Di::set(DummyServiceInterface::class, $instance);
+
+            $this->assertTrue(Di::has(DummyServiceInterface::class));
+        }
+
+        public function testDiHasReturnsFalseAfterResetContainer(): void
+        {
+            Di::register(DummyService::class);
+
+            Di::get(DummyService::class);
+
+            $this->assertTrue(Di::has(DummyService::class));
+
+            Di::resetContainer();
+
+            $this->assertFalse(Di::has(DummyService::class));
+        }
+
+        public function testDiHasReturnsFalseAfterReset(): void
+        {
+            Di::register(DummyService::class);
+
+            Di::get(DummyService::class);
+
+            $this->assertTrue(Di::has(DummyService::class));
+
+            Di::reset();
+
+            $this->assertFalse(Di::has(DummyService::class));
+        }
+
         public function testDiAbstractToConcreteBinding(): void
         {
             Di::register(DummyService::class, DummyServiceInterface::class);
