@@ -27,6 +27,7 @@ use Quantum\Session\Enums\SessionType;
 use Quantum\Session\Session;
 use Quantum\Loader\Setup;
 use ReflectionException;
+use Quantum\Di\Di;
 
 /**
  * Class SessionFactory
@@ -34,9 +35,6 @@ use ReflectionException;
  */
 class SessionFactory
 {
-    /**
-     * Supported adapters
-     */
     public const ADAPTERS = [
         SessionType::NATIVE => NativeSessionAdapter::class,
         SessionType::DATABASE => DatabaseSessionAdapter::class,
@@ -45,7 +43,7 @@ class SessionFactory
     /**
      * @var array<string, Session>
      */
-    private static array $instances = [];
+    private array $instances = [];
 
     /**
      * @throws BaseException
@@ -55,22 +53,36 @@ class SessionFactory
      */
     public static function get(?string $adapter = null): Session
     {
+        return Di::get(self::class)->resolve($adapter);
+    }
+
+    /**
+     * @throws BaseException
+     * @throws ConfigException
+     * @throws DiException
+     * @throws ReflectionException
+     */
+    public function resolve(?string $adapter = null): Session
+    {
         if (!config()->has('session')) {
             config()->import(new Setup('config', 'session'));
         }
 
         $adapter ??= config()->get('session.default');
 
-        $adapterClass = self::getAdapterClass($adapter);
+        $adapterClass = $this->getAdapterClass($adapter);
 
-        if (!isset(self::$instances[$adapter])) {
-            self::$instances[$adapter] = self::createInstance($adapterClass, $adapter);
+        if (!isset($this->instances[$adapter])) {
+            $this->instances[$adapter] = $this->createInstance($adapterClass, $adapter);
         }
 
-        return self::$instances[$adapter];
+        return $this->instances[$adapter];
     }
 
-    private static function createInstance(string $adapterClass, string $adapter): Session
+    /**
+     * @throws SessionException
+     */
+    private function createInstance(string $adapterClass, string $adapter): Session
     {
         $adapterInstance = new $adapterClass(config()->get('session.' . $adapter));
 
@@ -84,7 +96,7 @@ class SessionFactory
     /**
      * @throws BaseException
      */
-    private static function getAdapterClass(string $adapter): string
+    private function getAdapterClass(string $adapter): string
     {
         if (!array_key_exists($adapter, self::ADAPTERS)) {
             throw SessionException::adapterNotSupported($adapter);

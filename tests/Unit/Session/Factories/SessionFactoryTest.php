@@ -13,6 +13,7 @@ use Quantum\Session\Enums\SessionType;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Session\Session;
 use Quantum\Loader\Setup;
+use Quantum\Di\Di;
 
 class SessionFactoryTest extends AppTestCase
 {
@@ -22,7 +23,7 @@ class SessionFactoryTest extends AppTestCase
     {
         parent::setUp();
 
-        $this->setPrivateProperty(SessionFactory::class, 'instances', []);
+        $this->resetSessionFactory();
 
         IdiormDbal::connect(['driver' => 'sqlite', 'database' => ':memory:']);
 
@@ -118,5 +119,11 @@ class SessionFactoryTest extends AppTestCase
         $session2 = SessionFactory::get(SessionType::NATIVE);
 
         $this->assertSame($session1, $session2);
+    }
+
+    private function resetSessionFactory(): void
+    {
+        $factory = Di::get(SessionFactory::class);
+        $this->setPrivateProperty($factory, 'instances', []);
     }
 }
