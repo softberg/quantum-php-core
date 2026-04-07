@@ -9,6 +9,7 @@ use Quantum\Auth\Factories\AuthFactory;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Auth\Enums\AuthType;
 use Quantum\Auth\Auth;
+use Quantum\Di\Di;
 
 class AuthFactoryTest extends AppTestCase
 {
@@ -16,7 +17,7 @@ class AuthFactoryTest extends AppTestCase
     {
         parent::setUp();
 
-        $this->setPrivateProperty(AuthFactory::class, 'instances', []);
+        $this->resetAuthFactory();
     }
 
     public function testAuthFactoryInstance(): void
@@ -64,5 +65,11 @@ class AuthFactoryTest extends AppTestCase
         $auth2 = AuthFactory::get(AuthType::SESSION);
 
         $this->assertSame($auth1, $auth2);
+    }
+
+    private function resetAuthFactory(): void
+    {
+        $factory = Di::get(AuthFactory::class);
+        $this->setPrivateProperty($factory, 'instances', []);
     }
 }
