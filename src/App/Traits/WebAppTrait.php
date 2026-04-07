@@ -16,14 +16,12 @@ declare(strict_types=1);
 
 namespace Quantum\App\Traits;
 
-use Quantum\Environment\Exceptions\EnvException;
 use Quantum\Config\Exceptions\ConfigException;
 use Quantum\Loader\Exceptions\LoaderException;
 use Quantum\Http\Exceptions\HttpException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\ResourceCache\ViewCache;
-use Quantum\Environment\Environment;
 use DebugBar\DebugBarException;
 use Quantum\Environment\Server;
 use Quantum\Debugger\Debugger;
@@ -38,17 +36,6 @@ use ReflectionException;
  */
 trait WebAppTrait
 {
-    /**
-     * @throws DiException
-     * @throws ReflectionException
-     * @throws EnvException
-     * @throws BaseException
-     */
-    protected function loadEnvironment(): void
-    {
-        Environment::getInstance()->load(new Setup('config', 'env'));
-    }
-
     /**
      * @throws BaseException
      * @throws DiException

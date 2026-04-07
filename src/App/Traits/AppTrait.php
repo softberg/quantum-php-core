@@ -16,21 +16,6 @@ declare(strict_types=1);
 
 namespace Quantum\App\Traits;
 
-use Quantum\Config\Exceptions\ConfigException;
-use Quantum\Loader\Exceptions\LoaderException;
-use Quantum\Logger\Factories\LoggerFactory;
-use Quantum\Lang\Exceptions\LangException;
-use Quantum\App\Exceptions\BaseException;
-use Quantum\Lang\Factories\LangFactory;
-use Quantum\Di\Exceptions\DiException;
-use Quantum\Tracer\ErrorHandler;
-use Quantum\Loader\Loader;
-use Quantum\Config\Config;
-use Quantum\Loader\Setup;
-use ReflectionException;
-use Quantum\App\App;
-use Quantum\Di\Di;
-
 /**
  * Class AppTrait
  * @package Quantum\App
@@ -51,101 +36,5 @@ trait AppTrait
     public static function getBaseDir(): string
     {
         return self::$baseDir;
-    }
-
-    /**
-     * @throws DiException
-     */
-    protected function loadCoreDependencies(): void
-    {
-        $file = dirname(__DIR__) . DS . 'Config' . DS . 'dependencies.php';
-
-        $coreDependencies = (is_file($file) && is_array($deps = require $file)) ? $deps : [];
-
-        Di::registerDependencies($coreDependencies);
-    }
-
-    /**
-     * Loads component helper functions
-     * @throws DiException
-     * @throws ReflectionException
-     */
-    protected function loadComponentHelperFunctions(): void
-    {
-        $loader = Di::get(Loader::class);
-
-        $srcDir = dirname(__DIR__, 2);
-
-        $componentDirs = glob($srcDir . DS . '*', GLOB_ONLYDIR);
-
-        foreach (is_array($componentDirs) ? $componentDirs : [] as $componentDir) {
-            $helperPath = $componentDir . DS . 'Helpers';
-            if (is_dir($helperPath)) {
-                $loader->loadDir($helperPath);
-            }
-        }
-    }
-
-    /**
-     * Loads app helper functions
-     * @throws DiException
-     * @throws ReflectionException
-     */
-    protected function loadAppHelperFunctions(): void
-    {
-        $loader = Di::get(Loader::class);
-        $loader->loadDir(App::getBaseDir() . DS . 'helpers');
-    }
-
-    /**
-     * Loads module helper functions
-     * @throws DiException
-     * @throws ReflectionException
-     */
-    protected function loadModuleHelperFunctions(): void
-    {
-        $loader = Di::get(Loader::class);
-        $loader->loadDir(App::getBaseDir() . DS . 'modules' . DS . '*' . DS . 'helpers');
-    }
-
-    /**
-     * @return void
-     * @throws DiException
-     * @throws ReflectionException
-     * @throws ConfigException|LoaderException
-     */
-    protected function loadAppConfig()
-    {
-        if (!config()->has('app')) {
-            Config::getInstance()->import(new Setup('config', 'app'));
-        }
-    }
-
-    /**
-     * @return void
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws DiException
-     * @throws ReflectionException
-     */
-    protected function setupErrorHandler()
-    {
-        ErrorHandler::getInstance()->setup(LoggerFactory::get());
-    }
-
-    /**
-     * @return void
-     * @throws BaseException
-     * @throws DiException
-     * @throws ReflectionException
-     * @throws LangException
-     */
-    protected function loadLanguage()
-    {
-        $lang = LangFactory::get();
-
-        if ($lang->isEnabled()) {
-            $lang->load();
-        }
     }
 }
