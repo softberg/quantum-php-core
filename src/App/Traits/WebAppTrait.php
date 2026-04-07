@@ -23,7 +23,6 @@ use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\ResourceCache\ViewCache;
 use DebugBar\DebugBarException;
-use Quantum\Environment\Server;
 use Quantum\Debugger\Debugger;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
@@ -44,7 +43,7 @@ trait WebAppTrait
      */
     private function initializeRequestResponse(Request $request, Response $response): void
     {
-        $request->init(Server::getInstance());
+        $request->init(server());
         $response->init();
     }
 
