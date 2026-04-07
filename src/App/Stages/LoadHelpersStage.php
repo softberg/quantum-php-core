@@ -1,0 +1,63 @@
+<?php
+
+declare(strict_types=1);
+
+/**
+ * Quantum PHP Framework
+ *
+ * An open source software development framework for PHP
+ *
+ * @package Quantum
+ * @author Arman Ag. <arman.ag@softberg.org>
+ * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
+ * @link http://quantum.softberg.org/
+ * @since 3.0.0
+ */
+
+namespace Quantum\App\Stages;
+
+use Quantum\App\Contracts\BootStageInterface;
+use Quantum\App\AppContext;
+use Quantum\Loader\Loader;
+use Quantum\App\App;
+use Quantum\Di\Di;
+
+/**
+ * Class LoadHelpersStage
+ * @package Quantum\App
+ */
+class LoadHelpersStage implements BootStageInterface
+{
+    public function process(AppContext $context): void
+    {
+        $loader = Di::get(Loader::class);
+
+        $this->loadComponentHelpers($loader);
+        $this->loadAppHelpers($loader);
+        $this->loadModuleHelpers($loader);
+    }
+
+    private function loadComponentHelpers(Loader $loader): void
+    {
+        $srcDir = dirname(__DIR__, 2);
+
+        $componentDirs = glob($srcDir . DS . '*', GLOB_ONLYDIR);
+
+        foreach (is_array($componentDirs) ? $componentDirs : [] as $componentDir) {
+            $helperPath = $componentDir . DS . 'Helpers';
+            if (is_dir($helperPath)) {
+                $loader->loadDir($helperPath);
+            }
+        }
+    }
+
+    private function loadAppHelpers(Loader $loader): void
+    {
+        $loader->loadDir(App::getBaseDir() . DS . 'helpers');
+    }
+
+    private function loadModuleHelpers(Loader $loader): void
+    {
+        $loader->loadDir(App::getBaseDir() . DS . 'modules' . DS . '*' . DS . 'helpers');
+    }
+}
