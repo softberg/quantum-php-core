@@ -253,15 +253,23 @@ namespace Quantum\Tests\Unit\Di {
             $this->assertInstanceOf(Response::class, Di::get(Response::class));
         }
 
-        public function testDiAttemptingToGetNotRegisteredDependency(): void
+        public function testDiGetAutoRegistersInstantiableClass(): void
         {
-            $this->assertInstanceOf(Loader::class, Di::get(Loader::class));
+            $this->assertFalse(Di::isRegistered(DiException::class));
 
+            $instance = Di::get(DiException::class);
+
+            $this->assertInstanceOf(DiException::class, $instance);
+            $this->assertTrue(Di::isRegistered(DiException::class));
+        }
+
+        public function testDiGetThrowsForNonInstantiableClass(): void
+        {
             $this->expectException(DiException::class);
 
-            $this->expectExceptionMessage('The dependency `Quantum\Di\Exceptions\DiException` is not registered.');
+            $this->expectExceptionMessage('The dependency `Quantum\Service\DummyServiceInterface` is not registered.');
 
-            Di::get(DiException::class);
+            Di::get(DummyServiceInterface::class);
         }
 
         public function testDiCircularDependencyDetectedAtResolve(): void

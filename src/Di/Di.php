@@ -141,7 +141,10 @@ class Di
     public static function get(string $dependency, array $args = [])
     {
         if (!self::isRegistered($dependency)) {
-            throw DiException::dependencyNotRegistered($dependency);
+            if (!self::instantiable($dependency)) {
+                throw DiException::dependencyNotRegistered($dependency);
+            }
+            self::register($dependency);
         }
 
         return self::resolve($dependency, $args, true);
