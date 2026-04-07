@@ -24,6 +24,7 @@ use Quantum\Http\Request;
 use Quantum\Loader\Setup;
 use ReflectionException;
 use Quantum\Lang\Lang;
+use Quantum\Di\Di;
 
 /**
  * Class LangFactory
@@ -31,10 +32,7 @@ use Quantum\Lang\Lang;
  */
 class LangFactory
 {
-    /**
-     * @var Lang|null Cached Lang instance
-     */
-    private static ?Lang $instance = null;
+    private ?Lang $instance = null;
 
     /**
      * @throws ConfigException
@@ -44,18 +42,28 @@ class LangFactory
      */
     public static function get(): Lang
     {
-        if (self::$instance !== null) {
-            return self::$instance;
+        return Di::get(self::class)->resolve();
+    }
+
+    /**
+     * @throws ConfigException
+     * @throws LangException
+     * @throws DiException
+     * @throws ReflectionException
+     */
+    public function resolve(): Lang
+    {
+        if ($this->instance !== null) {
+            return $this->instance;
         }
 
-        [$isEnabled, $supported, $default] = self::loadLangConfig();
+        [$isEnabled, $supported, $default] = $this->loadLangConfig();
 
-        $lang = self::detectLanguage($supported, $default);
+        $lang = $this->detectLanguage($supported, $default);
 
         $translator = new Translator($lang);
 
-        return self::$instance = new Lang($lang, $isEnabled, $translator);
-
+        return $this->instance = new Lang($lang, $isEnabled, $translator);
     }
 
     /**
@@ -64,7 +72,7 @@ class LangFactory
      * @throws DiException
      * @throws ReflectionException
      */
-    private static function loadLangConfig(): array
+    private function loadLangConfig(): array
     {
         if (!config()->has('lang')) {
             config()->import(new Setup('config', 'lang'));
@@ -81,16 +89,16 @@ class LangFactory
      * @param array<string> $supported
      * @throws LangException
      */
-    private static function detectLanguage(array $supported, ?string $default): string
+    private function detectLanguage(array $supported, ?string $default): string
     {
-        $lang = self::getLangFromQuery($supported);
+        $lang = $this->getLangFromQuery($supported);
 
         if (in_array($lang, [null, '', '0'], true)) {
-            $lang = self::getLangFromUrlSegment($supported);
+            $lang = $this->getLangFromUrlSegment($supported);
         }
 
         if (in_array($lang, [null, '', '0'], true)) {
-            $lang = self::getLangFromHeader($supported);
+            $lang = $this->getLangFromHeader($supported);
         }
 
         if (in_array($lang, [null, '', '0'], true)) {
@@ -107,7 +115,7 @@ class LangFactory
     /**
      * @param array<string> $supported
      */
-    private static function getLangFromQuery(array $supported): ?string
+    private function getLangFromQuery(array $supported): ?string
     {
         $queryLang = Request::getQueryParam('lang');
 
@@ -117,7 +125,7 @@ class LangFactory
     /**
      * @param array<string> $supported
      */
-    private static function getLangFromUrlSegment(array $supported): ?string
+    private function getLangFromUrlSegment(array $supported): ?string
     {
         $segmentIndex = (int) config()->get('lang.url_segment');
 
@@ -133,7 +141,7 @@ class LangFactory
     /**
      * @param array<string> $supported
      */
-    private static function getLangFromHeader(array $supported): ?string
+    private function getLangFromHeader(array $supported): ?string
     {
         $acceptedLang = server()->acceptedLang();
 

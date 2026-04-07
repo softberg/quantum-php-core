@@ -6,6 +6,7 @@ use Quantum\Lang\Exceptions\LangException;
 use Quantum\Lang\Factories\LangFactory;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Lang\Lang;
+use Quantum\Di\Di;
 
 class LangFactoryTest extends AppTestCase
 {
@@ -13,7 +14,7 @@ class LangFactoryTest extends AppTestCase
     {
         parent::setUp();
 
-        $this->setPrivateProperty(LangFactory::class, 'instance', null);
+        $this->resetLangFactory();
     }
 
     public function testLangFactoryGetLangInstance(): void
@@ -87,7 +88,7 @@ class LangFactoryTest extends AppTestCase
 
         $this->assertEquals('en', $lang->getLang());
 
-        $this->setPrivateProperty(LangFactory::class, 'instance', null);
+        $this->resetLangFactory();
 
         $this->testRequest('http://127.0.0.1/api/rest?lang=fr');
 
@@ -95,7 +96,7 @@ class LangFactoryTest extends AppTestCase
 
         $this->assertEquals('en', $lang->getLang());
 
-        $this->setPrivateProperty(LangFactory::class, 'instance', null);
+        $this->resetLangFactory();
 
         $this->testRequest('http://127.0.0.1/api/rest', 'GET', [], ['Accept-Language' => 'fr, en;q=0.8, fr;q=0.6']);
 
@@ -120,5 +121,11 @@ class LangFactoryTest extends AppTestCase
         $this->expectExceptionMessage('Misconfigured lang default config');
 
         LangFactory::get();
+    }
+
+    private function resetLangFactory(): void
+    {
+        $factory = Di::get(LangFactory::class);
+        $this->setPrivateProperty($factory, 'instance', null);
     }
 }
