@@ -10,6 +10,7 @@ use Quantum\Renderer\Adapters\TwigAdapter;
 use Quantum\Renderer\Enums\RendererType;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Renderer\Renderer;
+use Quantum\Di\Di;
 
 class RendererFactoryTest extends AppTestCase
 {
@@ -17,7 +18,7 @@ class RendererFactoryTest extends AppTestCase
     {
         parent::setUp();
 
-        $this->setPrivateProperty(RendererFactory::class, 'instances', []);
+        $this->resetRendererFactory();
     }
 
     public function testRendererFactoryInstance(): void
@@ -69,5 +70,11 @@ class RendererFactoryTest extends AppTestCase
         $renderer2 = RendererFactory::get(RendererType::HTML);
 
         $this->assertSame($renderer1, $renderer2);
+    }
+
+    private function resetRendererFactory(): void
+    {
+        $factory = Di::get(RendererFactory::class);
+        $this->setPrivateProperty($factory, 'instances', []);
     }
 }
