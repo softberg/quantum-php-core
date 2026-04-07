@@ -17,15 +17,16 @@ declare(strict_types=1);
 namespace Quantum\View\Factories;
 
 use Quantum\Renderer\Factories\RendererFactory;
-use Quantum\ResourceCache\ViewCache;
 use Quantum\Config\Exceptions\ConfigException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
+use Quantum\ResourceCache\ViewCache;
 use DebugBar\DebugBarException;
 use Quantum\Asset\AssetManager;
 use Quantum\Debugger\Debugger;
 use Quantum\View\QtView;
 use ReflectionException;
+use Quantum\Di\Di;
 
 /**
  * Class ViewFactory
@@ -34,13 +35,9 @@ use ReflectionException;
  */
 class ViewFactory
 {
-    /**
-     * Instance of QtView
-     */
-    private static ?QtView $instance = null;
+    private ?QtView $instance = null;
 
     /**
-     * QtView instance
      * @throws DebugBarException
      * @throws DiException
      * @throws BaseException
@@ -49,8 +46,20 @@ class ViewFactory
      */
     public static function get(): QtView
     {
-        if (self::$instance === null) {
-            self::$instance = new QtView(
+        return Di::get(self::class)->resolve();
+    }
+
+    /**
+     * @throws DebugBarException
+     * @throws DiException
+     * @throws BaseException
+     * @throws ConfigException
+     * @throws ReflectionException
+     */
+    public function resolve(): QtView
+    {
+        if ($this->instance === null) {
+            $this->instance = new QtView(
                 RendererFactory::get(),
                 AssetManager::getInstance(),
                 Debugger::getInstance(),
@@ -58,6 +67,6 @@ class ViewFactory
             );
         }
 
-        return self::$instance;
+        return $this->instance;
     }
 }
