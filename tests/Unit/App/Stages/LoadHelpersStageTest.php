@@ -2,7 +2,6 @@
 
 namespace Quantum\Tests\Unit\App\Stages;
 
-use Quantum\App\Stages\RegisterCoreDependenciesStage;
 use Quantum\App\Stages\LoadHelpersStage;
 use Quantum\App\Enums\AppType;
 use Quantum\App\AppContext;
@@ -16,9 +15,6 @@ class LoadHelpersStageTest extends TestCase
     {
         Di::reset();
         App::setBaseDir(PROJECT_ROOT);
-
-        $depsStage = new RegisterCoreDependenciesStage();
-        $depsStage->process(new AppContext(AppType::WEB));
     }
 
     public function tearDown(): void

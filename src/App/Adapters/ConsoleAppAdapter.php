@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace Quantum\App\Adapters;
 
-use Quantum\App\Stages\RegisterCoreDependenciesStage;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Quantum\App\Exceptions\StopExecutionException;
 use Symfony\Component\Console\Input\ArgvInput;
@@ -59,7 +58,6 @@ class ConsoleAppAdapter extends AppAdapter
         $commandName = $this->input->getFirstArgument();
 
         $stages = [
-            new RegisterCoreDependenciesStage(),
             new LoadHelpersStage(),
         ];
 

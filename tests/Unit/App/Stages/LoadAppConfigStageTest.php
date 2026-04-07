@@ -2,7 +2,6 @@
 
 namespace Quantum\Tests\Unit\App\Stages;
 
-use Quantum\App\Stages\RegisterCoreDependenciesStage;
 use Quantum\App\Stages\LoadEnvironmentStage;
 use Quantum\App\Stages\LoadAppConfigStage;
 use Quantum\App\Stages\LoadHelpersStage;
@@ -21,7 +20,6 @@ class LoadAppConfigStageTest extends TestCase
 
         $context = new AppContext(AppType::WEB);
 
-        (new RegisterCoreDependenciesStage())->process($context);
         (new LoadHelpersStage())->process($context);
         (new LoadEnvironmentStage())->process($context);
     }

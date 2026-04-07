@@ -17,7 +17,6 @@ declare(strict_types=1);
 namespace Quantum\App\Adapters;
 
 use Quantum\Middleware\Exceptions\MiddlewareException;
-use Quantum\App\Stages\RegisterCoreDependenciesStage;
 use Quantum\Database\Exceptions\DatabaseException;
 use Quantum\App\Exceptions\StopExecutionException;
 use Quantum\Session\Exceptions\SessionException;
@@ -79,7 +78,6 @@ class WebAppAdapter extends AppAdapter
         parent::__construct(AppType::WEB);
 
         $pipeline = new BootPipeline([
-            new RegisterCoreDependenciesStage(),
             new LoadHelpersStage(),
             new LoadEnvironmentStage(),
             new LoadAppConfigStage(),
