@@ -22,6 +22,7 @@ use Quantum\App\Exceptions\AppException;
 use Quantum\App\Adapters\WebAppAdapter;
 use Quantum\App\Enums\AppType;
 use Quantum\App\App;
+use Quantum\Di\Di;
 
 /**
  * Class AppFactory
@@ -68,6 +69,8 @@ class AppFactory
         if (!isset(self::ADAPTERS[$type])) {
             throw AppException::adapterNotSupported($type);
         }
+
+        Di::reset();
 
         $adapterClass = self::ADAPTERS[$type];
 
