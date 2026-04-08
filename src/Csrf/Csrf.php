@@ -41,8 +41,6 @@ class Csrf
      */
     public const TOKEN_KEY = 'csrf-token';
 
-    private static ?Csrf $instance = null;
-
     private Session $storage;
 
     private Hasher $hasher;
@@ -53,22 +51,10 @@ class Csrf
      * @throws ReflectionException
      * @throws BaseException
      */
-    private function __construct()
+    public function __construct()
     {
         $this->storage = session();
         $this->hasher = new Hasher();
-    }
-
-    /**
-     * Csrf instance
-     */
-    public static function getInstance(): Csrf
-    {
-        if (self::$instance === null) {
-            self::$instance = new self();
-        }
-
-        return self::$instance;
     }
 
     /**
