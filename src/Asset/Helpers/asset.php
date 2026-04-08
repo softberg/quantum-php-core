@@ -14,22 +14,23 @@
 
 use Quantum\Asset\Exceptions\AssetException;
 use Quantum\Lang\Exceptions\LangException;
+use Quantum\Di\Exceptions\DiException;
 use Quantum\Asset\AssetManager;
+use Quantum\Di\Di;
 
 /**
- * Gets the AssetFactory instance
+ * Gets the AssetManager instance
  */
 function asset(): AssetManager
 {
-    return AssetManager::getInstance();
+    return Di::get(AssetManager::class);
 }
 
 /**
  * Dumps the assets
- * @throws AssetException
- * @throws LangException
+ * @throws AssetException|DiException|ReflectionException
  */
 function assets(string $type): void
 {
-    AssetManager::getInstance()->dump(AssetManager::STORES[$type]);
+    Di::get(AssetManager::class)->dump(AssetManager::STORES[$type]);
 }
