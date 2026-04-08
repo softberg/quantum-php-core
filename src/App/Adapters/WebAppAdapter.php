@@ -141,7 +141,7 @@ class WebAppAdapter extends AppAdapter
 
             (new LoadLanguageStage())->process($this->context);
 
-            $debugger = Debugger::getInstance();
+            $debugger = Di::get(Debugger::class);
             if ($debugger->isEnabled()) {
                 $debugger->addToStoreCell(Debugger::HOOKS, 'info', HookManager::getInstance()->getRegistered());
             }

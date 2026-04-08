@@ -16,9 +16,12 @@ declare(strict_types=1);
 
 namespace Quantum\Logger\Adapters;
 
+use Quantum\Di\Exceptions\DiException;
 use Quantum\Logger\Contracts\ReportableInterface;
 use DebugBar\DebugBarException;
 use Quantum\Debugger\Debugger;
+use Quantum\Di\Di;
+use ReflectionException;
 
 /**
  * Class MessageAdapter
@@ -30,11 +33,15 @@ class MessageAdapter implements ReportableInterface
      * @param array<string, mixed>|null $context
      * @throws DebugBarException
      */
+
+    /**
+     * @throws DiException|ReflectionException
+     */
     public function report(string $level, string $message, ?array $context = []): void
     {
         $tab = $context['tab'] ?? Debugger::MESSAGES;
 
-        $debugger = Debugger::getInstance();
+        $debugger = Di::get(Debugger::class);
 
         if ($debugger->isEnabled()) {
             $debugger->addToStoreCell($tab, $level, $message);

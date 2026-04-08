@@ -23,6 +23,7 @@ use Quantum\View\Factories\ViewFactory;
 use Quantum\Di\Exceptions\DiException;
 use DebugBar\DebugBarException;
 use Quantum\Debugger\Debugger;
+use Quantum\Di\Di;
 use Quantum\View\RawParam;
 
 /**
@@ -82,7 +83,7 @@ function raw_param($value): RawParam
  */
 function debugbar(): ?string
 {
-    $debugger = Debugger::getInstance();
+    $debugger = Di::get(Debugger::class);
 
     if ($debugger->isEnabled()) {
         return $debugger->render();

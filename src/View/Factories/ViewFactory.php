@@ -61,7 +61,7 @@ class ViewFactory
             $this->instance = new QtView(
                 RendererFactory::get(),
                 asset(),
-                Debugger::getInstance(),
+                Di::get(Debugger::class),
                 ViewCache::getInstance()
             );
         }

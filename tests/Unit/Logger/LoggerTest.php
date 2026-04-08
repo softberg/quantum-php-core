@@ -4,10 +4,10 @@ namespace Quantum\Tests\Unit\Logger;
 
 use Quantum\Logger\Contracts\ReportableInterface;
 use Quantum\Logger\Adapters\MessageAdapter;
-use Quantum\Debugger\DebuggerStore;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Debugger\Debugger;
 use Quantum\Logger\Logger;
+use Quantum\Di\Di;
 
 class LoggerTest extends AppTestCase
 {
@@ -19,9 +19,7 @@ class LoggerTest extends AppTestCase
     {
         parent::setUp();
 
-        $store = new DebuggerStore();
-
-        $this->debugger = Debugger::getInstance($store);
+        $this->debugger = Di::get(Debugger::class);
 
         $this->debugger->initStore();
 
