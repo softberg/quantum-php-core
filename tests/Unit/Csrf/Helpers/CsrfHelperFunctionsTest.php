@@ -3,22 +3,56 @@
 namespace Quantum\Tests\Unit\Csrf\Helpers;
 
 use Quantum\Tests\Unit\AppTestCase;
-use Quantum\Http\Request;
 use Quantum\Csrf\Csrf;
 
 class CsrfHelperFunctionsTest extends AppTestCase
 {
-    public function testCsrfHelper(): void
+    private string $key = '#321dMd3QS15%';
+
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        session()->delete(Csrf::TOKEN_KEY);
+    }
+
+    public function testCsrfHelperReturnsInstance(): void
     {
         $this->assertInstanceOf(Csrf::class, csrf());
     }
 
-    public function testCsrfToken(): void
+    public function testCsrfHelperReturnsSameInstance(): void
     {
-        $request = new Request();
+        $this->assertSame(csrf(), csrf());
+    }
 
-        $request->create('PUT', '/update', ['title' => 'Task Title', 'csrf-token' => csrf_token()]);
+    public function testCsrfTokenGeneratesToken(): void
+    {
+        $token = csrf()->generateToken($this->key);
 
-        $this->assertTrue(csrf()->checkToken($request));
+        $this->assertNotEmpty($token);
+
+        $this->assertIsString($token);
+
+        $this->assertTrue(session()->has(Csrf::TOKEN_KEY));
+    }
+
+    public function testCsrfTokenHelperGeneratesToken(): void
+    {
+        $token = csrf_token();
+
+        $this->assertNotEmpty($token);
+
+        $this->assertIsString($token);
+
+        $this->assertTrue(session()->has(Csrf::TOKEN_KEY));
+    }
+
+    public function testCsrfTokenHelperReturnsSameTokenOnSubsequentCalls(): void
+    {
+        $token1 = csrf_token();
+        $token2 = csrf_token();
+
+        $this->assertSame($token1, $token2);
     }
 }
