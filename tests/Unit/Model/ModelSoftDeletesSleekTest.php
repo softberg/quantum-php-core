@@ -2,15 +2,14 @@
 
 namespace Quantum\Tests\Unit\Model;
 
-use Quantum\Model\Model;
 use Quantum\Tests\_root\shared\Models\TestProductsModel;
 use Quantum\Database\Adapters\Sleekdb\SleekDbal;
 use Quantum\Model\Factories\ModelFactory;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Model\ModelCollection;
 use Quantum\Paginator\Paginator;
-use Quantum\Database\Database;
 use Quantum\Loader\Setup;
+use Quantum\Model\Model;
 
 class ModelSoftDeletesSleekTest extends AppTestCase
 {
@@ -19,8 +18,6 @@ class ModelSoftDeletesSleekTest extends AppTestCase
     public function setUp(): void
     {
         parent::setUp();
-
-        $this->setPrivateProperty(Database::class, 'instance', null);
 
         if (!config()->has('database')) {
             config()->import(new Setup('config', 'database'));
@@ -38,6 +35,8 @@ class ModelSoftDeletesSleekTest extends AppTestCase
     public function tearDown(): void
     {
         ModelFactory::get(TestProductsModel::class)->truncate();
+
+        parent::tearDown();
     }
 
     public function testSleekDeleteSetsDeletedAt(): void

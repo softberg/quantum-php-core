@@ -50,11 +50,6 @@ class Database
      */
     private $configs;
 
-    /**
-     * Database instance
-     */
-    private static ?Database $instance = null;
-
     private string $ormClass;
 
     /**
@@ -63,7 +58,7 @@ class Database
      * @throws DiException
      * @throws ReflectionException
      */
-    private function __construct()
+    public function __construct()
     {
         if (!config()->has('database')) {
             config()->import(new Setup('config', 'database'));
@@ -78,18 +73,6 @@ class Database
         if (!$this->ormClass::getConnection()) {
             $this->ormClass::connect($this->configs);
         }
-    }
-
-    /**
-     * Get Instance
-     */
-    public static function getInstance(): Database
-    {
-        if (self::$instance === null) {
-            self::$instance = new self();
-        }
-
-        return self::$instance;
     }
 
     /**

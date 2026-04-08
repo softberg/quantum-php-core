@@ -21,6 +21,7 @@ use Quantum\Model\Exceptions\ModelException;
 use Quantum\Database\Database;
 use Quantum\Model\DbModel;
 use Quantum\Model\Model;
+use Quantum\Di\Di;
 
 /**
  * Class ModelFactory
@@ -100,7 +101,7 @@ class ModelFactory
         array  $foreignKeys = [],
         array  $hidden = []
     ): DbalInterface {
-        $ormClass = Database::getInstance()->getOrmClass();
+        $ormClass = Di::get(Database::class)->getOrmClass();
 
         $instance = new $ormClass(
             $table,

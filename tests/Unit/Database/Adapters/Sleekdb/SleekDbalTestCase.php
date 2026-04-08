@@ -5,7 +5,6 @@ namespace Quantum\Tests\Unit\Database\Adapters\Sleekdb;
 use Quantum\Tests\Unit\Database\Adapters\DatabaseSeeder;
 use Quantum\Database\Adapters\Sleekdb\SleekDbal;
 use Quantum\Tests\Unit\AppTestCase;
-use Quantum\Database\Database;
 use Quantum\Loader\Setup;
 
 abstract class SleekDbalTestCase extends AppTestCase
@@ -25,8 +24,6 @@ abstract class SleekDbalTestCase extends AppTestCase
     {
         parent::setUp();
 
-        $this->setPrivateProperty(Database::class, 'instance', null);
-
         if (!config()->has('database')) {
             config()->import(new Setup('config', 'database'));
         }
@@ -45,6 +42,8 @@ abstract class SleekDbalTestCase extends AppTestCase
         $this->deleteTables();
 
         SleekDbal::disconnect();
+
+        parent::tearDown();
     }
 
     public function deleteTables(): void
