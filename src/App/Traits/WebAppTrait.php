@@ -60,7 +60,7 @@ trait WebAppTrait
      */
     private function setupViewCache(): ViewCache
     {
-        $viewCache = ViewCache::getInstance();
+        $viewCache = Di::get(ViewCache::class);
 
         if ($viewCache->isEnabled()) {
             $viewCache->setup();
