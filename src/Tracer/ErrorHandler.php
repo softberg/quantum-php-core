@@ -64,25 +64,9 @@ class ErrorHandler
 
     private ?Logger $logger = null;
 
-    private static ?ErrorHandler $instance = null;
-
-    private function __construct()
-    {
-        // Prevent direct instantiation
-    }
-
     private function __clone()
     {
         // Prevent cloning
-    }
-
-    public static function getInstance(): ErrorHandler
-    {
-        if (self::$instance === null) {
-            self::$instance = new self();
-        }
-
-        return self::$instance;
     }
 
     public function setup(Logger $logger): void
