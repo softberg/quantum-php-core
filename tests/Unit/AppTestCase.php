@@ -41,7 +41,9 @@ abstract class AppTestCase extends TestCase
         if (Di::isRegistered(Config::class)) {
             config()->flush();
         }
-        Debugger::getInstance()->resetStore();
+        if (Di::isRegistered(Debugger::class)) {
+            Di::get(Debugger::class)->resetStore();
+        }
         Di::reset();
     }
 

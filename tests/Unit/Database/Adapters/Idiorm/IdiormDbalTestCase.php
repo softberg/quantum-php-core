@@ -5,7 +5,6 @@ namespace Quantum\Tests\Unit\Database\Adapters\Idiorm;
 use Quantum\Tests\Unit\Database\Adapters\DatabaseSeeder;
 use Quantum\Database\Adapters\Idiorm\IdiormDbal;
 use Quantum\Tests\Unit\AppTestCase;
-use Quantum\Database\Database;
 
 abstract class IdiormDbalTestCase extends AppTestCase
 {
@@ -23,8 +22,6 @@ abstract class IdiormDbalTestCase extends AppTestCase
     {
         parent::setUp();
 
-        $this->setPrivateProperty(Database::class, 'instance', null);
-
         config()->set('app.debug', true);
 
         IdiormDbal::connect(['driver' => 'sqlite', 'database' => ':memory:']);
@@ -41,6 +38,8 @@ abstract class IdiormDbalTestCase extends AppTestCase
         $this->deleteTables();
 
         IdiormDbal::disconnect();
+
+        parent::tearDown();
     }
 
     private function createTables(): void

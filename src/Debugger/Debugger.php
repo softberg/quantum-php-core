@@ -62,8 +62,6 @@ class Debugger
      */
     private DebuggerStore $store;
 
-    private static ?Debugger $instance = null;
-
     /**
      * DebugBar instance
      */
@@ -80,35 +78,19 @@ class Debugger
     private string $customCss = 'custom_debugbar.css';
 
     /**
-     * Debugger constructor.
      * @param array<mixed> $collectors
      * @throws DebugBarException
      */
-    public function __construct(DebuggerStore $store, DebugBar $debugBar, array $collectors = [])
+    public function __construct(?DebuggerStore $store = null, ?DebugBar $debugBar = null, array $collectors = [])
     {
-        $this->store = $store;
-        $this->debugBar = $debugBar;
+        $this->store = $store ?? new DebuggerStore();
+        $this->debugBar = $debugBar ?? new DebugBar();
+
+        $collectors = $collectors ?: self::getDefaultCollectors();
 
         foreach ($collectors as $collector) {
             $this->debugBar->addCollector($collector);
         }
-    }
-
-    /**
-     * @param array<mixed> $collectors
-     * @throws DebugBarException
-     */
-    public static function getInstance(?DebuggerStore $store = null, ?DebugBar $debugBar = null, ?array $collectors = []): Debugger
-    {
-        if (self::$instance === null) {
-            $debugBar ??= new DebugBar();
-            $store ??= new DebuggerStore();
-            $collectors = $collectors ?: self::getDefaultCollectors();
-
-            self::$instance = new self($store, $debugBar, $collectors);
-        }
-
-        return self::$instance;
     }
 
     /**
@@ -179,7 +161,6 @@ class Debugger
 
     /**
      * Creates a tab
-     * @return void
      * @throws DebugBarException
      */
     protected function createTab(string $type): void

@@ -50,7 +50,7 @@ trait Internal
     ): void {
         $parsed = parse_url($url);
 
-        $server = Server::getInstance();
+        $server = server();
 
         $server->flush();
 
@@ -103,11 +103,10 @@ trait Internal
 
     /**
      * Detects the content type
-     * @param Server $server
      * @param array<string, mixed>|null $data
      * @param array<string, mixed>|null $files
      */
-    protected static function detectAndSetContentType($server, ?array $data = null, ?array $files = null): void
+    protected static function detectAndSetContentType(Server $server, ?array $data = null, ?array $files = null): void
     {
         if ($files && count($files) > 0) {
             $server->set('CONTENT_TYPE', ContentType::FORM_DATA);

@@ -24,6 +24,7 @@ use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Storage\FileSystem;
 use ReflectionException;
+use Quantum\Di\Di;
 use Exception;
 
 /**
@@ -90,7 +91,7 @@ class ModuleManager
             throw ModuleException::missingModuleDirectory();
         }
 
-        $moduleConfigs = ModuleLoader::getInstance()->getModuleConfigs();
+        $moduleConfigs = Di::get(ModuleLoader::class)->getModuleConfigs();
 
         foreach ($moduleConfigs as $module => $options) {
             if ($module == $this->moduleName || $options['prefix'] == strtolower($this->moduleName)) {

@@ -3,7 +3,6 @@
 namespace Quantum\Tests\Unit\Http\Traits\Request;
 
 use Quantum\Tests\Unit\AppTestCase;
-use Quantum\Environment\Server;
 use Quantum\Http\Request;
 
 class HttpRequestHeaderTest extends AppTestCase
@@ -12,14 +11,14 @@ class HttpRequestHeaderTest extends AppTestCase
     {
         parent::setUp();
 
-        Request::init(Server::getInstance());
+        Request::init(server());
     }
 
     public function tearDown(): void
     {
         Request::flush();
 
-        Server::getInstance()->flush();
+        server()->flush();
     }
 
     public function testRequestHeaderSetHasGetDelete(): void
@@ -71,7 +70,7 @@ class HttpRequestHeaderTest extends AppTestCase
     {
         $request = new Request();
 
-        $server = Server::getInstance();
+        $server = server();
 
         $credentials = [
             'username' => 'testGlobalUsername',
@@ -133,7 +132,7 @@ class HttpRequestHeaderTest extends AppTestCase
 
         $this->assertFalse($request->isAjax());
 
-        Server::getInstance()->set('HTTP_X_REQUESTED_WITH', 'XMLHttpRequest');
+        server()->set('HTTP_X_REQUESTED_WITH', 'XMLHttpRequest');
 
         $this->assertTrue($request->isAjax());
     }
@@ -144,7 +143,7 @@ class HttpRequestHeaderTest extends AppTestCase
 
         $referrer = 'https://example.com/page';
 
-        Server::getInstance()->set('HTTP_REFERER', $referrer);
+        server()->set('HTTP_REFERER', $referrer);
 
         $this->assertEquals($referrer, Request::getReferrer());
     }

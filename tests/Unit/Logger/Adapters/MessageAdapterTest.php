@@ -3,9 +3,9 @@
 namespace Quantum\Tests\Unit\Logger\Adapters;
 
 use Quantum\Logger\Adapters\MessageAdapter;
-use Quantum\Debugger\DebuggerStore;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Debugger\Debugger;
+use Quantum\Di\Di;
 
 class MessageAdapterTest extends AppTestCase
 {
@@ -16,9 +16,7 @@ class MessageAdapterTest extends AppTestCase
     {
         parent::setUp();
 
-        $store = new DebuggerStore();
-
-        $this->debugger = Debugger::getInstance($store);
+        $this->debugger = Di::get(Debugger::class);
 
         $this->debugger->initStore();
 

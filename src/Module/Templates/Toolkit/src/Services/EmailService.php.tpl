@@ -19,10 +19,11 @@ use Quantum\Storage\Exceptions\FileSystemException;
 use Quantum\Paginator\Factories\PaginatorFactory;
 use Quantum\Paginator\Enums\PaginatorType;
 use Quantum\App\Exceptions\BaseException;
-use Quantum\Mailer\MailTrap;
 use Quantum\Paginator\Paginator;
 use Quantum\Service\QtService;
+use Quantum\Mailer\MailTrap;
 use ReflectionException;
+use Quantum\Di\Di;
 
 /**
  * Class EmailService
@@ -50,7 +51,7 @@ class EmailService extends QtService
      */
     public function getEmails(int $perPage, int $currentPage): Paginator
     {
-        $mailTrap = MailTrap::getInstance();
+        $mailTrap = Di::get(MailTrap::class);
 
         $emailFiles = fs()->listDirectory($this->emailsDirectory);
 
@@ -87,7 +88,7 @@ class EmailService extends QtService
      */
     public function getEmail(string $emailId): MailTrap
     {
-        $mailTrap = MailTrap::getInstance();
+        $mailTrap = Di::get(MailTrap::class);
 
         return $mailTrap->parseMessage($emailId);
     }

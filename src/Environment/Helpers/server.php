@@ -13,33 +13,25 @@
  */
 
 use Quantum\Environment\Server;
+use Quantum\Di\Di;
 
-/**
- * Gets Server instance
- */
 function server(): Server
 {
-    return Server::getInstance();
+    return Di::get(Server::class);
 }
 
-/**
- * Gets user IP
- */
 function get_user_ip(): ?string
 {
-    return Server::getInstance()->ip();
+    return Di::get(Server::class)->ip();
 }
 
 if (!function_exists('getallheaders')) {
 
     /**
-     * Get all headers
-     * Built-in PHP function synonym of apache_request_headers()
-     * Declaring here for Nginx server
      * @return array<string, mixed>
      */
     function getallheaders(): array
     {
-        return Server::getInstance()->getAllHeaders();
+        return Di::get(Server::class)->getAllHeaders();
     }
 }

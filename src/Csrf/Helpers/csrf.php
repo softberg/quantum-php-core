@@ -15,13 +15,14 @@
 use Quantum\App\Exceptions\BaseException;
 use Quantum\App\Exceptions\AppException;
 use Quantum\Csrf\Csrf;
+use Quantum\Di\Di;
 
 /**
  * Gets the Csrf instance
  */
 function csrf(): Csrf
 {
-    return Csrf::getInstance();
+    return Di::get(Csrf::class);
 }
 
 /**

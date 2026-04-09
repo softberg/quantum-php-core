@@ -12,7 +12,7 @@ class AssetHelperFunctionsTest extends AppTestCase
     {
         parent::setUp();
 
-        $this->setPrivateProperty(AssetManager::class, 'instance', null);
+        asset()->flush();
     }
 
     public function testAssetHelper(): void

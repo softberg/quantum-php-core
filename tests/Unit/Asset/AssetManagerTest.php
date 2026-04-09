@@ -16,7 +16,7 @@ class AssetManagerTest extends AppTestCase
 
         config()->set('app.base_url', 'http://mydomain.com');
 
-        $this->assetManager = AssetManager::getInstance();
+        $this->assetManager = asset();
     }
 
     public function testRegisterPublishDump(): void

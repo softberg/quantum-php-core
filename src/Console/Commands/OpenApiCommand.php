@@ -97,7 +97,7 @@ class OpenApiCommand extends QtCommand
      */
     public function exec(): void
     {
-        $moduleLoader = ModuleLoader::getInstance();
+        $moduleLoader = Di::get(ModuleLoader::class);
 
         $builder = new RouteBuilder();
 

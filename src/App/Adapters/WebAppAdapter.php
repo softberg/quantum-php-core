@@ -44,7 +44,6 @@ use Quantum\Router\RouteFinder;
 use Quantum\Debugger\Debugger;
 use Quantum\App\Enums\AppType;
 use Quantum\App\BootPipeline;
-use Quantum\Hook\HookManager;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 use ReflectionException;
@@ -117,7 +116,7 @@ class WebAppAdapter extends AppAdapter
             (new SetupErrorHandlerStage())->process($this->context);
             $this->initializeDebugger();
 
-            $moduleLoader = ModuleLoader::getInstance();
+            $moduleLoader = Di::get(ModuleLoader::class);
 
             $builder = new RouteBuilder();
 
@@ -141,9 +140,9 @@ class WebAppAdapter extends AppAdapter
 
             (new LoadLanguageStage())->process($this->context);
 
-            $debugger = Debugger::getInstance();
+            $debugger = Di::get(Debugger::class);
             if ($debugger->isEnabled()) {
-                $debugger->addToStoreCell(Debugger::HOOKS, 'info', HookManager::getInstance()->getRegistered());
+                $debugger->addToStoreCell(Debugger::HOOKS, 'info', hook()->getRegistered());
             }
 
             $middlewareManager = new MiddlewareManager($matchedRoute);

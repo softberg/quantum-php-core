@@ -20,6 +20,7 @@ use Quantum\App\Contracts\BootStageInterface;
 use Quantum\Logger\Factories\LoggerFactory;
 use Quantum\Tracer\ErrorHandler;
 use Quantum\App\AppContext;
+use Quantum\Di\Di;
 
 /**
  * Class SetupErrorHandlerStage
@@ -29,6 +30,6 @@ class SetupErrorHandlerStage implements BootStageInterface
 {
     public function process(AppContext $context): void
     {
-        ErrorHandler::getInstance()->setup(LoggerFactory::get());
+        Di::get(ErrorHandler::class)->setup(LoggerFactory::get());
     }
 }

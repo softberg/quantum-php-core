@@ -21,8 +21,6 @@ use Quantum\Config\Exceptions\ConfigException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\ResourceCache\ViewCache;
-use DebugBar\DebugBarException;
-use Quantum\Asset\AssetManager;
 use Quantum\Debugger\Debugger;
 use Quantum\View\QtView;
 use ReflectionException;
@@ -38,11 +36,7 @@ class ViewFactory
     private ?QtView $instance = null;
 
     /**
-     * @throws DebugBarException
-     * @throws DiException
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws ReflectionException
+     * @throws ConfigException|BaseException|DiException|ReflectionException
      */
     public static function get(): QtView
     {
@@ -50,20 +44,16 @@ class ViewFactory
     }
 
     /**
-     * @throws DebugBarException
-     * @throws DiException
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws ReflectionException
+     * @throws ConfigException|BaseException|DiException|ReflectionException
      */
     public function resolve(): QtView
     {
         if ($this->instance === null) {
             $this->instance = new QtView(
                 RendererFactory::get(),
-                AssetManager::getInstance(),
-                Debugger::getInstance(),
-                ViewCache::getInstance()
+                asset(),
+                Di::get(Debugger::class),
+                Di::get(ViewCache::class)
             );
         }
 

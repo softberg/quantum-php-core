@@ -27,6 +27,8 @@ class DbModelTimestampsTest extends AppTestCase
     {
         IdiormDbal::execute('DROP TABLE posts');
         IdiormDbal::execute('DROP TABLE posts_custom');
+
+        parent::tearDown();
     }
 
     public function testTimestampsAreNotAppliedWhenTraitIsNotUsed(): void

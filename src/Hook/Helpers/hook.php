@@ -13,11 +13,12 @@
  */
 
 use Quantum\Hook\HookManager;
+use Quantum\Di\Di;
 
 /**
  * Gets the HookManager instance
  */
 function hook(): HookManager
 {
-    return HookManager::getInstance();
+    return Di::get(HookManager::class);
 }

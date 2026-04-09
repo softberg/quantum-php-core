@@ -37,19 +37,17 @@ class ModuleLoader
     /**
      * @var array<string, array<string>>
      */
-    private static array $moduleDependencies = [];
+    private array $moduleDependencies = [];
 
     /**
      * @var array<string, array<string, mixed>>
      */
-    private static array $moduleConfigs = [];
+    private array $moduleConfigs = [];
 
     /** @var array<string, Closure> */
-    private static array $moduleRouteClosures = [];
+    private array $moduleRouteClosures = [];
 
     private FileSystem $fs;
-
-    private static ?ModuleLoader $instance = null;
 
     /**
      * @throws BaseException
@@ -57,19 +55,10 @@ class ModuleLoader
      * @throws ConfigException
      * @throws ReflectionException|ModuleException
      */
-    private function __construct()
+    public function __construct()
     {
         $this->fs = FileSystemFactory::get();
         Di::registerDependencies($this->loadModulesDependencies());
-    }
-
-    public static function getInstance(): ModuleLoader
-    {
-        if (self::$instance === null) {
-            self::$instance = new self();
-        }
-
-        return self::$instance;
     }
 
     /**
@@ -79,13 +68,13 @@ class ModuleLoader
      */
     public function loadModulesRoutes(): array
     {
-        if (empty(self::$moduleConfigs)) {
+        if (empty($this->moduleConfigs)) {
             $this->loadModuleConfig();
         }
 
         $modulesRoutes = [];
 
-        foreach (self::$moduleConfigs as $module => $options) {
+        foreach ($this->moduleConfigs as $module => $options) {
             if (!$this->isModuleEnabled($options)) {
                 continue;
             }
@@ -102,8 +91,8 @@ class ModuleLoader
      */
     private function getModuleRouteDefinitions(string $module): Closure
     {
-        if (isset(self::$moduleRouteClosures[$module])) {
-            return self::$moduleRouteClosures[$module];
+        if (isset($this->moduleRouteClosures[$module])) {
+            return $this->moduleRouteClosures[$module];
         }
 
         $moduleRoutesPath = modules_dir() . DS . $module . DS . 'routes' . DS . 'routes.php';
@@ -112,13 +101,13 @@ class ModuleLoader
             throw ModuleException::moduleRoutesNotFound($module);
         }
 
-        $closure = $this->fs->require($moduleRoutesPath, true);
+        $closure = $this->fs->require($moduleRoutesPath);
 
         if (!$closure instanceof Closure) {
             throw RouteException::notClosure();
         }
 
-        return self::$moduleRouteClosures[$module] = $closure;
+        return $this->moduleRouteClosures[$module] = $closure;
     }
 
     /**
@@ -127,13 +116,13 @@ class ModuleLoader
      */
     public function loadModulesDependencies(): array
     {
-        if (empty(self::$moduleConfigs)) {
+        if (empty($this->moduleConfigs)) {
             $this->loadModuleConfig();
         }
 
         $modulesDependencies = [];
 
-        foreach (self::$moduleConfigs as $module => $options) {
+        foreach ($this->moduleConfigs as $module => $options) {
             $modulesDependencies = array_merge($modulesDependencies, $this->getModuleDependencies($module));
         }
 
@@ -145,19 +134,19 @@ class ModuleLoader
      */
     public function getModuleDependencies(string $module): array
     {
-        if (!isset(self::$moduleDependencies[$module])) {
+        if (!isset($this->moduleDependencies[$module])) {
             $file = modules_dir() . DS . $module . DS . 'config' . DS . 'dependencies.php';
 
             if ($this->fs->exists($file)) {
                 $deps = $this->fs->require($file);
 
-                self::$moduleDependencies[$module] = is_array($deps) ? $deps : [];
+                $this->moduleDependencies[$module] = is_array($deps) ? $deps : [];
             } else {
-                self::$moduleDependencies[$module] = [];
+                $this->moduleDependencies[$module] = [];
             }
         }
 
-        return self::$moduleDependencies[$module];
+        return $this->moduleDependencies[$module];
     }
 
     /**
@@ -171,7 +160,7 @@ class ModuleLoader
             throw ModuleException::moduleConfigNotFound();
         }
 
-        self::$moduleConfigs = $this->fs->require($configPath);
+        $this->moduleConfigs = $this->fs->require($configPath);
     }
 
     /**
@@ -180,11 +169,11 @@ class ModuleLoader
      */
     public function getModuleConfigs(): array
     {
-        if (empty(self::$moduleConfigs)) {
+        if (empty($this->moduleConfigs)) {
             $this->loadModuleConfig();
         }
 
-        return self::$moduleConfigs;
+        return $this->moduleConfigs;
     }
 
     /**

@@ -22,7 +22,6 @@ use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Http\Enums\ContentType;
 use Quantum\Storage\UploadedFile;
-use Quantum\Environment\Server;
 use ReflectionException;
 
 /**
@@ -57,7 +56,7 @@ trait RawInput
      */
     private static function getBoundary(): ?string
     {
-        $contentType = Server::getInstance()->contentType();
+        $contentType = server()->contentType();
 
         if (!$contentType) {
             return null;

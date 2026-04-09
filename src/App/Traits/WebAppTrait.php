@@ -22,13 +22,12 @@ use Quantum\Http\Exceptions\HttpException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\ResourceCache\ViewCache;
-use DebugBar\DebugBarException;
-use Quantum\Environment\Server;
 use Quantum\Debugger\Debugger;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 use Quantum\Loader\Setup;
 use ReflectionException;
+use Quantum\Di\Di;
 
 /**
  * Trait WebAppTrait
@@ -37,23 +36,20 @@ use ReflectionException;
 trait WebAppTrait
 {
     /**
-     * @throws BaseException
-     * @throws DiException
-     * @throws ReflectionException
-     * @throws HttpException
+     * @throws BaseException|HttpException|DiException|ReflectionException
      */
     private function initializeRequestResponse(Request $request, Response $response): void
     {
-        $request->init(Server::getInstance());
+        $request->init(server());
         $response->init();
     }
 
     /**
-     * @throws DebugBarException
+     * @throws DiException|ReflectionException
      */
     private function initializeDebugger(): void
     {
-        $debugger = Debugger::getInstance();
+        $debugger = Di::get(Debugger::class);
         $debugger->initStore();
     }
 
@@ -64,7 +60,7 @@ trait WebAppTrait
      */
     private function setupViewCache(): ViewCache
     {
-        $viewCache = ViewCache::getInstance();
+        $viewCache = Di::get(ViewCache::class);
 
         if ($viewCache->isEnabled()) {
             $viewCache->setup();
@@ -74,9 +70,7 @@ trait WebAppTrait
     }
 
     /**
-     * @throws ConfigException
-     * @throws DiException
-     * @throws ReflectionException|LoaderException
+     * @throws ConfigException|LoaderException|DiException|ReflectionException
      */
     private function handleCors(Response $response): void
     {

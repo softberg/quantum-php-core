@@ -17,6 +17,8 @@ declare(strict_types=1);
 namespace Quantum\Database\Traits;
 
 use Quantum\Database\Exceptions\DatabaseException;
+use Quantum\Database\Database;
+use Quantum\Di\Di;
 
 /**
  * Trait RelationalTrait
@@ -84,6 +86,6 @@ trait RelationalTrait
      */
     protected static function resolveQuery(string $method, string $query = '', array $parameters = [])
     {
-        return self::getInstance()->getOrmClass()::$method($query, $parameters);
+        return Di::get(Database::class)->getOrmClass()::$method($query, $parameters);
     }
 }

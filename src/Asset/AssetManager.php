@@ -17,7 +17,6 @@ declare(strict_types=1);
 namespace Quantum\Asset;
 
 use Quantum\Asset\Exceptions\AssetException;
-use Quantum\Lang\Exceptions\LangException;
 
 /**
  * Class AssetFactory
@@ -45,28 +44,11 @@ class AssetManager
      */
     private array $published = [];
 
-    /**
-     * Asset instance
-     */
-    private static ?AssetManager $instance = null;
-
-    private function __construct()
+    public function __construct()
     {
         foreach (self::STORES as $type) {
             $this->published[$type] = [];
         }
-    }
-
-    /**
-     * AssetManager instance
-     */
-    public static function getInstance(): AssetManager
-    {
-        if (self::$instance == null) {
-            self::$instance = new self();
-        }
-
-        return self::$instance;
     }
 
     /**
@@ -129,7 +111,6 @@ class AssetManager
     /**
      * Dumps the assets
      * @throws AssetException
-     * @throws LangException
      */
     public function dump(int $type): void
     {

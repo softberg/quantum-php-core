@@ -8,21 +8,9 @@ use Quantum\Hook\HookManager;
 
 class HookManagerTest extends AppTestCase
 {
-    public function setUp(): void
+    public function testHookHelperReturnsInstance(): void
     {
-        parent::setUp();
-
-        $this->setPrivateProperty(HookManager::class, 'instance', null);
-        $this->setPrivateProperty(HookManager::class, 'store', []);
-    }
-
-    public function testGetInstanceReturnsSameObject(): void
-    {
-        $instance1 = HookManager::getInstance();
-        $instance2 = HookManager::getInstance();
-
-        $this->assertInstanceOf(HookManager::class, $instance1);
-        $this->assertSame($instance1, $instance2);
+        $this->assertInstanceOf(HookManager::class, hook());
     }
 
     public function testOnAndFireOutputsCorrectly(): void
@@ -102,7 +90,7 @@ class HookManagerTest extends AppTestCase
         hook()->on('SAVE', function (): void {
         });
 
-        $store = HookManager::getRegistered();
+        $store = hook()->getRegistered();
 
         $this->assertArrayHasKey('SAVE', $store);
         $this->assertCount(1, $store['SAVE']);

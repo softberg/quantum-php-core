@@ -24,12 +24,12 @@ use Quantum\Di\Exceptions\DiException;
 use DebugBar\DebugBarException;
 use Quantum\Debugger\Debugger;
 use Quantum\View\RawParam;
+use Quantum\Di\Di;
 
 /**
  * Rendered view
  * @throws BaseException
  * @throws ConfigException
- * @throws DebugBarException
  * @throws DiException
  * @throws ReflectionException
  * @throws ViewException
@@ -44,7 +44,6 @@ function view(): ?string
  * @param array<string, mixed> $args
  * @throws BaseException
  * @throws ConfigException
- * @throws DebugBarException
  * @throws DiException
  * @throws ReflectionException
  */
@@ -58,7 +57,6 @@ function partial(string $partial, array $args = []): string
  * @return mixed|null
  * @throws BaseException
  * @throws ConfigException
- * @throws DebugBarException
  * @throws DiException
  * @throws ReflectionException
  */
@@ -78,11 +76,11 @@ function raw_param($value): RawParam
 
 /**
  * Rendered debug bar
- * @throws DebugBarException
+ * @throws DebugBarException|DiException|ReflectionException
  */
 function debugbar(): ?string
 {
-    $debugger = Debugger::getInstance();
+    $debugger = Di::get(Debugger::class);
 
     if ($debugger->isEnabled()) {
         return $debugger->render();

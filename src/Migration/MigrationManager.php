@@ -23,12 +23,12 @@ use Quantum\Database\Exceptions\DatabaseException;
 use Quantum\Storage\Factories\FileSystemFactory;
 use Quantum\Config\Exceptions\ConfigException;
 use Quantum\Database\Factories\TableFactory;
-use Quantum\Lang\Exceptions\LangException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Storage\FileSystem;
 use Quantum\Database\Database;
 use ReflectionException;
+use Quantum\Di\Di;
 
 /**
  * Class MigrationManager
@@ -71,17 +71,13 @@ class MigrationManager
     private Database $db;
 
     /**
-     * @throws BaseException
-     * @throws DiException
-     * @throws FileSystemException
-     * @throws ConfigException
-     * @throws ReflectionException
+     * @throws BaseException|ConfigException|DiException|FileSystemException|ReflectionException
      */
     public function __construct()
     {
         $this->fs = FileSystemFactory::get();
 
-        $this->db = Database::getInstance();
+        $this->db = Di::get(Database::class);
 
         $this->tableFactory = new TableFactory();
 
@@ -95,7 +91,6 @@ class MigrationManager
     /**
      * Generates new migration file
      * @throws MigrationException
-     * @throws LangException
      */
     public function generateMigration(string $table, string $action): string
     {
@@ -114,10 +109,7 @@ class MigrationManager
 
     /**
      * Applies migrations
-     * @throws BaseException
-     * @throws DatabaseException
-     * @throws LangException
-     * @throws MigrationException
+     * @throws MigrationException|DatabaseException
      */
     public function applyMigrations(string $direction, ?int $step = null): ?int
     {
@@ -144,8 +136,7 @@ class MigrationManager
 
     /**
      * Runs up migrations
-     * @throws DatabaseException
-     * @throws MigrationException
+     * @throws MigrationException|DatabaseException
      */
     private function upgrade(): int
     {
@@ -182,8 +173,7 @@ class MigrationManager
 
     /**
      * Runs down migrations
-     * @throws DatabaseException
-     * @throws MigrationException
+     * @throws MigrationException|DatabaseException
      */
     private function downgrade(?int $step): int
     {
@@ -222,9 +212,7 @@ class MigrationManager
 
     /**
      * Prepares up migrations
-     * @throws MigrationException
-     * @throws DatabaseException
-     *
+     * @throws MigrationException|DatabaseException
      */
     private function prepareUpMigrations(): void
     {
@@ -249,8 +237,7 @@ class MigrationManager
 
     /**
      * Prepares down migrations
-     * @throws DatabaseException
-     * @throws MigrationException
+     * @throws MigrationException|DatabaseException
      */
     private function prepareDownMigrations(?int $step = null): void
     {

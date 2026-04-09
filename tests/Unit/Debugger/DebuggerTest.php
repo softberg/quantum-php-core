@@ -40,9 +40,7 @@ class DebuggerTest extends AppTestCase
                 ->with($collector);
         }
 
-        $this->setPrivateProperty(Debugger::class, 'instance', null);
-
-        $this->debugger = Debugger::getInstance($this->debuggerStore, $this->debugBarMock, $collectors);
+        $this->debugger = new Debugger($this->debuggerStore, $this->debugBarMock, $collectors);
     }
 
     public function testDebuggerIsEnabled(): void

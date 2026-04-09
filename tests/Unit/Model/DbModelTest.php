@@ -2,7 +2,6 @@
 
 namespace Quantum\Tests\Unit\Model;
 
-use Quantum\Model\Model;
 use Quantum\Tests\_root\shared\Models\TestProfileModel;
 use Quantum\Database\Adapters\Idiorm\IdiormDbal;
 use Quantum\Model\Exceptions\ModelException;
@@ -11,6 +10,7 @@ use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Model\ModelCollection;
 use Quantum\Paginator\Paginator;
 use Quantum\Model\DbModel;
+use Quantum\Model\Model;
 
 class DbModelTest extends AppTestCase
 {
@@ -32,6 +32,8 @@ class DbModelTest extends AppTestCase
     public function tearDown(): void
     {
         IdiormDbal::execute('DROP TABLE profiles');
+
+        parent::tearDown();
     }
 
     public function testDbModelInstance(): void
