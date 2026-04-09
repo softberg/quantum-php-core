@@ -15,12 +15,13 @@ class CookieTest extends AppTestCase
     {
         parent::setUp();
 
-        $this->cookie = Cookie::getInstance($this->storage);
+        $this->cookie = new Cookie($this->storage);
     }
 
     public function tearDown(): void
     {
         $this->cookie->flush();
+        parent::tearDown();
     }
 
     public function testCookieConstructor(): void

@@ -13,11 +13,16 @@
  */
 
 use Quantum\Cookie\Cookie;
+use Quantum\Di\Di;
 
 /**
  * Gets cookie handler
  */
 function cookie(): Cookie
 {
-    return Cookie::getInstance($_COOKIE);
+    if (!Di::has(Cookie::class)) {
+        Di::set(Cookie::class, new Cookie($_COOKIE));
+    }
+
+    return Di::get(Cookie::class);
 }
