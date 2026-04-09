@@ -94,7 +94,7 @@ class Environment
 
         $this->envFile = '.env' . ($appEnv !== Env::PRODUCTION ? ".$appEnv" : '');
 
-        if (!fs()->exists($this->getEnvFilePath())) {
+        if (!file_exists($this->getEnvFilePath())) {
             throw EnvException::fileNotFound($this->envFile);
         }
 
