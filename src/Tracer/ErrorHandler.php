@@ -90,12 +90,7 @@ class ErrorHandler
     }
 
     /**
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws DiException
-     * @throws ReflectionException
-     * @throws RendererException
-     * @throws DebugBarException
+     * @throws ConfigException|RendererException|DebugBarException|DiException|BaseException|ReflectionException
      */
     public function handleException(Throwable $throwable): void
     {
@@ -113,11 +108,7 @@ class ErrorHandler
     }
 
     /**
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws DiException
-     * @throws ReflectionException
-     * @throws DebugBarException
+     * @throws ConfigException|RendererException|DiException|BaseException|ReflectionException
      */
     private function handleWebException(Throwable $throwable): void
     {
@@ -153,10 +144,7 @@ class ErrorHandler
     /**
      * Composes the stack trace
      * @return array<int, array{file: string, code: string}>
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws DiException
-     * @throws ReflectionException
+     * @throws ConfigException|RendererException|DiException|BaseException|ReflectionException
      */
     private function composeStackTrace(Throwable $e): array
     {
@@ -183,10 +171,7 @@ class ErrorHandler
 
     /**
      * Gets the source code where the error happens
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws DiException
-     * @throws ReflectionException
+     * @throws ConfigException|RendererException|DiException|BaseException|ReflectionException
      */
     private function getSourceCode(string $filename, int $lineNumber, string $className): string
     {

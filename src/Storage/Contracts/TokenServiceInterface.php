@@ -27,5 +27,4 @@ interface TokenServiceInterface
     public function getRefreshToken(): string;
 
     public function saveTokens(string $accessToken, ?string $refreshToken = null): bool;
-
 }

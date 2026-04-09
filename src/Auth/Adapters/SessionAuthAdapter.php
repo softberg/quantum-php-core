@@ -172,6 +172,7 @@ class SessionAuthAdapter implements AuthenticatableInterface
     /**
      * Check Remember Token
      * @return User|false
+     * @throws BaseException
      */
     private function checkRememberToken()
     {

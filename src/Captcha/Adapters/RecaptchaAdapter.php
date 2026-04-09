@@ -32,10 +32,7 @@ class RecaptchaAdapter implements CaptchaInterface
 
     public const CLIENT_API = 'https://www.google.com/recaptcha/api.js';
 
-    /**
-     * @var string
-     */
-    protected $name = 'g-recaptcha';
+    protected string $name = 'g-recaptcha';
 
     /**
      * @var string[]

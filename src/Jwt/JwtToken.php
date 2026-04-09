@@ -57,9 +57,8 @@ class JwtToken extends JWT
 
     /**
      * Sets extra leeway time
-     * @param int $leeway
      */
-    public function setLeeway($leeway): JwtToken
+    public function setLeeway(int $leeway): JwtToken
     {
         parent::$leeway = $leeway;
         return $this;

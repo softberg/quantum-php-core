@@ -136,10 +136,7 @@ class ViewCache
     }
 
     /**
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws DiException
-     * @throws ReflectionException
+     * @throws ConfigException|DiException|BaseException|ReflectionException
      */
     public function exists(string $key): bool
     {
@@ -194,10 +191,7 @@ class ViewCache
     }
 
     /**
-     * @throws ConfigException
-     * @throws DiException
-     * @throws ReflectionException
-     * @throws BaseException
+     * @throws ConfigException|DiException|BaseException|ReflectionException
      */
     private function getCacheFile(string $key): string
     {

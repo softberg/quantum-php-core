@@ -16,9 +16,14 @@ declare(strict_types=1);
 
 namespace Quantum\App\Stages;
 
+use Quantum\Config\Exceptions\ConfigException;
 use Quantum\App\Contracts\BootStageInterface;
+use Quantum\Lang\Exceptions\LangException;
+use Quantum\App\Exceptions\BaseException;
 use Quantum\Lang\Factories\LangFactory;
+use Quantum\Di\Exceptions\DiException;
 use Quantum\App\AppContext;
+use ReflectionException;
 
 /**
  * Class LoadLanguageStage
@@ -26,6 +31,9 @@ use Quantum\App\AppContext;
  */
 class LoadLanguageStage implements BootStageInterface
 {
+    /**
+     * @throws LangException|ConfigException|DiException|BaseException|ReflectionException
+     */
     public function process(AppContext $context): void
     {
         $lang = LangFactory::get();

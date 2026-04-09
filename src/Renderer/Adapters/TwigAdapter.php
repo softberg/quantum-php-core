@@ -46,10 +46,7 @@ class TwigAdapter implements TemplateRendererInterface
 
     /**
      * @param array<string, mixed>|null $configs
-     * @throws BaseException
-     * @throws DiException
-     * @throws ReflectionException
-     * @throws ConfigException
+     * @throws ConfigException|DiException|BaseException|ReflectionException
      */
     public function __construct(?array $configs = [])
     {
@@ -61,7 +58,7 @@ class TwigAdapter implements TemplateRendererInterface
     /**
      * Renders the view
      * @param array<string, mixed> $params
-     * @throws DiException|LoaderError|ReflectionException|RendererException|RuntimeError|SyntaxError
+     * @throws RendererException|LoaderError|DiException|BaseException|ReflectionException|RuntimeError|SyntaxError
      */
     public function render(string $view, array $params = []): string
     {
@@ -75,7 +72,7 @@ class TwigAdapter implements TemplateRendererInterface
     }
 
     /**
-     * @throws RendererException|DiException|ReflectionException
+     * @throws RendererException|DiException|BaseException|ReflectionException
      */
     private function getLoader(string $view): FilesystemLoader
     {

@@ -33,10 +33,7 @@ trait RawInput
     /**
      * Parses raw input data and returns parsed parameters and files
      * @return array<string, mixed>
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws DiException
-     * @throws ReflectionException
+     * @throws ConfigException|DiException|BaseException|ReflectionException
      */
     public static function parse(string $rawInput): array
     {
@@ -88,10 +85,7 @@ trait RawInput
      * Processes multipart blocks and extracts parameters and files
      * @param array<string> $blocks
      * @return array<string, mixed>
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws DiException
-     * @throws ReflectionException
+     * @throws ConfigException|DiException|BaseException|ReflectionException
      */
     private static function processBlocks(array $blocks): array
     {
@@ -186,10 +180,7 @@ trait RawInput
     /**
      * Gets the parsed file
      * @return array{string, UploadedFile}|null
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws DiException
-     * @throws ReflectionException
+     * @throws ConfigException|DiException|BaseException|ReflectionException
      */
     private static function getParsedFile(string $block): ?array
     {

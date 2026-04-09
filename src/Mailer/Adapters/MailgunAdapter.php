@@ -31,10 +31,7 @@ class MailgunAdapter implements MailerInterface
 
     public string $name = 'Mailgun';
 
-    /**
-     * @var string
-     */
-    private $apiKey;
+    private string $apiKey;
 
     private string $apiUrl = 'https://api.mailgun.net/v3/';
 

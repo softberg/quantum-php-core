@@ -20,6 +20,7 @@ use Quantum\Encryption\Contracts\EncryptionInterface;
 use Quantum\Encryption\Exceptions\CryptorException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\App\Exceptions\AppException;
+use ReflectionException;
 
 /**
  * Class SymmetricEncryptionAdapter
@@ -32,13 +33,10 @@ class SymmetricEncryptionAdapter implements EncryptionInterface
      */
     public const CIPHER_METHOD = 'aes-256-cbc';
 
-    /**
-     * @var string
-     */
-    private $appKey;
+    private string $appKey;
 
     /**
-     * @throws BaseException
+     * @throws BaseException|ReflectionException
      */
     public function __construct()
     {
@@ -53,6 +51,7 @@ class SymmetricEncryptionAdapter implements EncryptionInterface
 
     /**
      * Encrypts the string
+     * @throws CryptorException
      */
     public function encrypt(string $plain): string
     {
@@ -97,6 +96,7 @@ class SymmetricEncryptionAdapter implements EncryptionInterface
 
     /**
      * Generates initialization vector
+     * @throws CryptorException
      */
     private function generateIV(): string
     {

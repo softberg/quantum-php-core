@@ -18,7 +18,6 @@ use Quantum\Di\Exceptions\DiException;
 use Quantum\App\Enums\ReservedKeys;
 use Quantum\Http\Enums\ContentType;
 use Quantum\Http\Enums\StatusCode;
-use DebugBar\DebugBarException;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 
@@ -51,10 +50,7 @@ function redirect(string $url, int $code = StatusCode::FOUND): void
 /**
  * Redirect with data
  * @param array<string, mixed> $data
- * @throws BaseException
- * @throws ConfigException
- * @throws DiException
- * @throws ReflectionException
+ * @throws ConfigException|DiException|BaseException|ReflectionException
  */
 function redirectWith(string $url, array $data, int $code = StatusCode::FOUND): void
 {
@@ -65,10 +61,7 @@ function redirectWith(string $url, array $data, int $code = StatusCode::FOUND): 
 /**
  * Gets old input values after redirect
  * @return mixed|null
- * @throws ConfigException
- * @throws DiException
- * @throws ReflectionException
- * @throws BaseException
+ * @throws ConfigException|DiException|BaseException|ReflectionException
  */
 function old(string $key)
 {
@@ -100,11 +93,7 @@ function get_referrer(): ?string
 
 /**
  * Handles page not found
- * @throws BaseException
- * @throws ConfigException
- * @throws DiException
- * @throws ReflectionException
- * @throws DebugBarException
+ * @throws ConfigException|DiException|BaseException|ReflectionException
  */
 function page_not_found(): void
 {

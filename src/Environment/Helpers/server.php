@@ -12,9 +12,13 @@
  * @since 3.0.0
  */
 
+use Quantum\Di\Exceptions\DiException;
 use Quantum\Environment\Server;
 use Quantum\Di\Di;
 
+/**
+ * @throws DiException|ReflectionException
+ */
 function server(): Server
 {
     return Di::get(Server::class);
@@ -29,6 +33,7 @@ if (!function_exists('getallheaders')) {
 
     /**
      * @return array<string, mixed>
+     * @throws DiException|ReflectionException
      */
     function getallheaders(): array
     {

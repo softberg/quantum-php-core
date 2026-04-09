@@ -22,6 +22,7 @@ use Quantum\Encryption\Exceptions\CryptorException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Encryption\Enums\CryptorType;
 use Quantum\Encryption\Cryptor;
+use ReflectionException;
 use Quantum\Di\Di;
 
 /**
@@ -41,7 +42,7 @@ class CryptorFactory
     private array $instances = [];
 
     /**
-     * @throws BaseException
+     * @throws BaseException|ReflectionException
      */
     public static function get(string $type = CryptorType::SYMMETRIC): Cryptor
     {

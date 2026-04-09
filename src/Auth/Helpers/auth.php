@@ -22,12 +22,7 @@ use Quantum\Auth\Auth;
 
 /**
  * Gets the Auth handler
- * @throws AuthException
- * @throws BaseException
- * @throws ConfigException
- * @throws DiException
- * @throws ReflectionException
- * @throws ServiceException
+ * @throws AuthException|ConfigException|ServiceException|BaseException|DiException|ReflectionException
  */
 function auth(?string $adapter = null): Auth
 {

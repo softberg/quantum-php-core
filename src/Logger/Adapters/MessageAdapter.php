@@ -16,12 +16,12 @@ declare(strict_types=1);
 
 namespace Quantum\Logger\Adapters;
 
-use Quantum\Di\Exceptions\DiException;
 use Quantum\Logger\Contracts\ReportableInterface;
+use Quantum\Di\Exceptions\DiException;
 use DebugBar\DebugBarException;
 use Quantum\Debugger\Debugger;
-use Quantum\Di\Di;
 use ReflectionException;
+use Quantum\Di\Di;
 
 /**
  * Class MessageAdapter

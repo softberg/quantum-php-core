@@ -50,10 +50,7 @@ class CacheFactory
     private array $instances = [];
 
     /**
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws DiException
-     * @throws ReflectionException
+     * @throws ConfigException|BaseException|DiException|ReflectionException
      */
     public static function get(?string $adapter = null): Cache
     {
@@ -61,10 +58,7 @@ class CacheFactory
     }
 
     /**
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws DiException
-     * @throws ReflectionException
+     * @throws ConfigException|BaseException|DiException|ReflectionException
      */
     public function resolve(?string $adapter = null): Cache
     {
@@ -84,7 +78,7 @@ class CacheFactory
     }
 
     /**
-     * @throws CacheException
+     * @throws CacheException|BaseException
      */
     private function createInstance(string $adapterClass, string $adapter): Cache
     {

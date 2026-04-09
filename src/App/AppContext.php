@@ -17,6 +17,7 @@ declare(strict_types=1);
 namespace Quantum\App;
 
 use Quantum\App\Enums\AppType;
+use InvalidArgumentException;
 
 /**
  * Class AppContext
@@ -29,7 +30,7 @@ class AppContext
     public function __construct(string $mode)
     {
         if (!in_array($mode, [AppType::WEB, AppType::CONSOLE], true)) {
-            throw new \InvalidArgumentException("Invalid app mode: $mode");
+            throw new InvalidArgumentException("Invalid app mode: $mode");
         }
 
         $this->mode = $mode;

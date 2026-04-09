@@ -50,10 +50,7 @@ class ModuleLoader
     private FileSystem $fs;
 
     /**
-     * @throws BaseException
-     * @throws DiException
-     * @throws ConfigException
-     * @throws ReflectionException|ModuleException
+     * @throws ModuleException|ConfigException|DiException|BaseException|ReflectionException
      */
     public function __construct()
     {
@@ -63,8 +60,7 @@ class ModuleLoader
 
     /**
      * @return array<string, Closure>
-     * @throws ModuleException
-     * @throws RouteException
+     * @throws ModuleException|RouteException
      */
     public function loadModulesRoutes(): array
     {
@@ -86,8 +82,7 @@ class ModuleLoader
     }
 
     /**
-     * @throws ModuleException
-     * @throws RouteException
+     * @throws ModuleException|RouteException
      */
     private function getModuleRouteDefinitions(string $module): Closure
     {

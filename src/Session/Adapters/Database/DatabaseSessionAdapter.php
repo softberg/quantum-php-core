@@ -16,11 +16,14 @@ declare(strict_types=1);
 
 namespace Quantum\Session\Adapters\Database;
 
-use Quantum\Model\Exceptions\ModelException;
 use Quantum\Session\Contracts\SessionStorageInterface;
 use Quantum\Session\Exceptions\SessionException;
+use Quantum\Model\Exceptions\ModelException;
 use Quantum\Model\Factories\ModelFactory;
+use Quantum\App\Exceptions\BaseException;
 use Quantum\Session\Traits\SessionTrait;
+use Quantum\Di\Exceptions\DiException;
+use ReflectionException;
 
 /**
  * Class Session
@@ -49,7 +52,7 @@ class DatabaseSessionAdapter implements SessionStorageInterface
 
     /**
      * @param array<string, mixed>|null $params
-     * @throws SessionException|ModelException
+     * @throws SessionException|ModelException|BaseException|DiException|ReflectionException
      */
     public function __construct(?array $params = null)
     {
@@ -58,7 +61,7 @@ class DatabaseSessionAdapter implements SessionStorageInterface
 
     /**
      * @param array<string, mixed>|null $params
-     * @throws SessionException|ModelException
+     * @throws SessionException|ModelException|BaseException|DiException|ReflectionException
      */
     protected function initializeSession(?array $params = null): void
     {

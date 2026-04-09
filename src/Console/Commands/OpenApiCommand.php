@@ -89,11 +89,7 @@ class OpenApiCommand extends QtCommand
 
     /**
      * Executes the command and generate Open API specifications
-     * @throws BaseException
-     * @throws ModuleException
-     * @throws RouteException
-     * @throws DiException
-     * @throws ReflectionException
+     * @throws ModuleException|RouteException|DiException|BaseException|ReflectionException
      */
     public function exec(): void
     {

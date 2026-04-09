@@ -22,6 +22,7 @@ use Quantum\App\Exceptions\BaseException;
 use Quantum\Archive\Adapters\ZipAdapter;
 use Quantum\Archive\Enums\ArchiveType;
 use Quantum\Archive\Archive;
+use ReflectionException;
 use Quantum\Di\Di;
 
 /**
@@ -41,7 +42,7 @@ class ArchiveFactory
     private array $instances = [];
 
     /**
-     * @throws BaseException
+     * @throws BaseException|ReflectionException
      */
     public static function get(string $type = ArchiveType::PHAR): Archive
     {

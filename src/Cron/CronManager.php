@@ -24,6 +24,7 @@ use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Logger\Enums\LoggerType;
 use ReflectionException;
+use Throwable;
 
 /**
  * Class CronManager
@@ -56,8 +57,8 @@ class CronManager
     ];
 
     /**
-     * CronManager constructor
-     */
+     * @throws DiException|ReflectionException
+    */
     public function __construct(?string $cronDirectory = null)
     {
         $configuredPath = $cronDirectory ?? cron_config('path');
@@ -66,10 +67,6 @@ class CronManager
 
     /**
      * Load tasks from the cron directory
-     * @return void
-     * @throws CronException
-     */
-    /**
      * @throws CronException|BaseException|ConfigException|DiException|ReflectionException
      */
     public function loadTasks(): void
@@ -133,7 +130,7 @@ class CronManager
      */
     /**
      * @return array|int[]
-     * @throws BaseException|ConfigException|CronException|DiException|ReflectionException
+     * @throws CronException|ConfigException|DiException|BaseException|ReflectionException
      */
     public function runDueTasks(bool $force = false): array
     {
@@ -152,7 +149,7 @@ class CronManager
 
     /**
      * Run a specific task by name
-     * @throws BaseException|ConfigException|CronException|DiException|ReflectionException
+     * @throws CronException|ConfigException|DiException|BaseException|ReflectionException
      */
     public function runTaskByName(string $taskName, bool $force = false): void
     {
@@ -167,7 +164,7 @@ class CronManager
 
     /**
      * Run a single task
-     * @throws BaseException|ConfigException|CronException|DiException|ReflectionException
+     * @throws CronException|ConfigException|DiException|BaseException|ReflectionException
      */
     private function runTask(CronTaskInterface $task, bool $force = false): void
     {
@@ -187,7 +184,7 @@ class CronManager
             $duration = round(microtime(true) - $startTime, 2);
             $this->stats['executed']++;
             $this->log('info', "Task \"{$task->getName()}\" completed in {$duration}s");
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $this->stats['failed']++;
             $this->log('error', "Task \"{$task->getName()}\" failed: " . $e->getMessage(), [
                 'exception' => get_class($e),
@@ -236,7 +233,7 @@ class CronManager
         try {
             $logger = LoggerFactory::get(LoggerType::SINGLE);
             $logger->log($level, '[CRON] ' . $message, $context);
-        } catch (\Throwable $exception) {
+        } catch (Throwable $exception) {
             error_log(sprintf('[CRON] [%s] %s', strtoupper($level), $message));
         }
     }

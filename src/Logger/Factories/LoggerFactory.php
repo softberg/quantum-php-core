@@ -49,10 +49,7 @@ class LoggerFactory
     private array $instances = [];
 
     /**
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws DiException
-     * @throws ReflectionException
+     * @throws ConfigException|DiException|BaseException|ReflectionException
      */
     public static function get(?string $adapter = null): Logger
     {
@@ -60,10 +57,7 @@ class LoggerFactory
     }
 
     /**
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws DiException
-     * @throws ReflectionException
+     * @throws ConfigException|DiException|BaseException|ReflectionException
      */
     public function resolve(?string $adapter = null): Logger
     {
@@ -92,6 +86,9 @@ class LoggerFactory
         return $this->instances[$adapter];
     }
 
+    /**
+     * @throws DiException|BaseException|ReflectionException
+     */
     private function createInstance(string $adapterClass, string $adapter): Logger
     {
         if ($adapter === LoggerType::MESSAGE) {

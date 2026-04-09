@@ -65,12 +65,7 @@ class AuthFactory
     }
 
     /**
-     * @throws AuthException
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws DiException
-     * @throws ReflectionException
-     * @throws ServiceException
+     * @throws AuthException|ConfigException|ServiceException|BaseException|DiException|ReflectionException
      */
     public function resolve(?string $adapter = null): Auth
     {
@@ -90,12 +85,7 @@ class AuthFactory
     }
 
     /**
-     * @throws AuthException
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws DiException
-     * @throws ReflectionException
-     * @throws ServiceException
+     * @throws AuthException|ConfigException|ServiceException|BaseException|DiException|ReflectionException
      */
     private function createInstance(string $adapterClass, string $adapter): Auth
     {
@@ -126,10 +116,7 @@ class AuthFactory
     }
 
     /**
-     * @throws BaseException
-     * @throws DiException
-     * @throws ReflectionException
-     * @throws ServiceException
+     * @throws ServiceException|BaseException|DiException|ReflectionException
      */
     private function createAuthService(string $adapter): AuthServiceInterface
     {

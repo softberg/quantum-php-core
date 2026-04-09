@@ -120,7 +120,7 @@ class SleekDbal implements DbalInterface
      * Hidden fields
      * @var array<string>
      */
-    public $hidden = [];
+    public array $hidden = [];
 
     /**
      * ORM Model

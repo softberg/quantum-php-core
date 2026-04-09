@@ -25,6 +25,7 @@ use Quantum\Router\RouteBuilder;
 use Quantum\Module\ModuleLoader;
 use Quantum\Console\QtCommand;
 use Quantum\Router\Route;
+use ReflectionException;
 use Quantum\Di\Di;
 
 /**
@@ -53,7 +54,7 @@ class RouteListCommand extends QtCommand
 
     /**
      * Executes the command
-     * @throws DiException
+     * @throws DiException|ReflectionException
      */
     public function exec(): void
     {

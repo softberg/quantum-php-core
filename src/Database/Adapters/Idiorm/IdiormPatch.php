@@ -16,8 +16,8 @@ declare(strict_types=1);
 
 namespace Quantum\Database\Adapters\Idiorm;
 
-use ORM;
 use RuntimeException;
+use ORM;
 
 /**
  * Class IdiormPatch

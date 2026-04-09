@@ -109,7 +109,7 @@ class MigrationManager
 
     /**
      * Applies migrations
-     * @throws MigrationException|DatabaseException
+     * @throws MigrationException|DatabaseException|BaseException|DiException|ReflectionException
      */
     public function applyMigrations(string $direction, ?int $step = null): ?int
     {
@@ -136,7 +136,7 @@ class MigrationManager
 
     /**
      * Runs up migrations
-     * @throws MigrationException|DatabaseException
+     * @throws MigrationException|DatabaseException|DiException|ReflectionException
      */
     private function upgrade(): int
     {
@@ -173,7 +173,7 @@ class MigrationManager
 
     /**
      * Runs down migrations
-     * @throws MigrationException|DatabaseException
+     * @throws MigrationException|DatabaseException|DiException|ReflectionException
      */
     private function downgrade(?int $step): int
     {
@@ -212,7 +212,7 @@ class MigrationManager
 
     /**
      * Prepares up migrations
-     * @throws MigrationException|DatabaseException
+     * @throws MigrationException|DiException|ReflectionException
      */
     private function prepareUpMigrations(): void
     {
@@ -237,7 +237,7 @@ class MigrationManager
 
     /**
      * Prepares down migrations
-     * @throws MigrationException|DatabaseException
+     * @throws MigrationException|DiException|ReflectionException
      */
     private function prepareDownMigrations(?int $step = null): void
     {
@@ -282,7 +282,7 @@ class MigrationManager
     /**
      * Gets migrated entries from migrations table
      * @return array<string, mixed>
-     * @throws DatabaseException
+     * @throws DiException|ReflectionException
      */
     private function getMigratedEntries(): array
     {
@@ -292,7 +292,7 @@ class MigrationManager
     /**
      * Adds migrated entries to migrations table
      * @param array<string> $entries
-     * @throws DatabaseException
+     * @throws DiException|ReflectionException
      */
     private function addMigratedEntries(array $entries): void
     {
@@ -304,7 +304,7 @@ class MigrationManager
     /**
      * Removes migrated entries from migrations table
      * @param array<string> $entries
-     * @throws DatabaseException
+     * @throws DiException|ReflectionException
      */
     private function removeMigratedEntries(array $entries): void
     {

@@ -20,7 +20,6 @@ use Quantum\Captcha\Contracts\CaptchaInterface;
 use Quantum\Asset\Exceptions\AssetException;
 use Quantum\Lang\Exceptions\LangException;
 use Quantum\Http\Exceptions\HttpException;
-use Quantum\App\Exceptions\BaseException;
 use Quantum\HttpClient\HttpClient;
 use Quantum\Asset\Asset;
 use ErrorException;
@@ -99,11 +98,7 @@ trait CaptchaTrait
 
     /**
      * Checks the code given by the captcha
-     * @throws LangException
-     * @throws ErrorException
-     * @throws BaseException
-     * @throws HttpException
-     * @throws Exception
+     * @throws LangException|HttpException|ErrorException|Exception
      */
     public function verify(string $code): bool
     {
@@ -192,9 +187,6 @@ trait CaptchaTrait
             </script>';
     }
 
-    /**
-     * @param string $type
-     */
     protected function isValidCaptchaType(string $type): bool
     {
         $captchaTypes = [

@@ -97,10 +97,7 @@ trait Params
     /**
      * Parses and returns multipart form data parameters.
      * @return array<string, mixed>
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws DiException
-     * @throws ReflectionException
+     * @throws ConfigException|DiException|BaseException|ReflectionException
      */
     private static function getRawInputParams(): array
     {

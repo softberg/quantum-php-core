@@ -171,8 +171,7 @@ class Di
      * Autowire callable parameters
      * @param array<mixed> $args
      * @return array<int, mixed>
-     * @throws DiException
-     * @throws ReflectionException
+     * @throws DiException|ReflectionException
      */
     public static function autowire(callable $entry, array $args = []): array
     {
@@ -252,7 +251,7 @@ class Di
      * @param array<ReflectionParameter> $parameters
      * @param array<mixed> $args
      * @return array<mixed>
-     * @throws DiException
+     * @throws DiException|ReflectionException
      */
     private static function resolveParameters(array $parameters, array &$args = []): array
     {

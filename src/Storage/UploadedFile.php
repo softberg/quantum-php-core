@@ -20,7 +20,7 @@ use Quantum\Storage\Contracts\LocalFilesystemAdapterInterface;
 use Quantum\Storage\Contracts\FilesystemAdapterInterface;
 use Quantum\Storage\Exceptions\FileSystemException;
 use Quantum\Storage\Exceptions\FileUploadException;
-use Quantum\Environment\Exceptions\EnvException;
+use Quantum\Loader\Exceptions\LoaderException;
 use Quantum\Config\Exceptions\ConfigException;
 use Quantum\Lang\Exceptions\LangException;
 use Quantum\App\Exceptions\BaseException;
@@ -115,10 +115,7 @@ class UploadedFile extends SplFileInfo
 
     /**
      * @param array<string, mixed> $meta
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws DiException
-     * @throws ReflectionException
+     * @throws ConfigException|DiException|BaseException|ReflectionException
      */
     public function __construct(array $meta)
     {
@@ -268,11 +265,10 @@ class UploadedFile extends SplFileInfo
 
     /**
      * Save the uploaded file
-     * @throws BaseException
-     * @throws FileSystemException
-     * @throws FileUploadException
-     * @throws ImageResizeException
-     * @throws EnvException
+     * @param string $dest
+     * @param bool $overwrite
+     * @return bool
+     * @throws FileUploadException|FileSystemException|ImageResizeException|BaseException
      */
     public function save(string $dest, bool $overwrite = false): bool
     {
@@ -318,9 +314,7 @@ class UploadedFile extends SplFileInfo
     /**
      * Sets modification function on image
      * @param array<mixed> $params
-     * @throws BaseException
-     * @throws FileUploadException
-     * @throws LangException
+     * @throws FileUploadException|LangException|BaseException
      */
     public function modify(string $funcName, array $params): UploadedFile
     {
@@ -364,9 +358,8 @@ class UploadedFile extends SplFileInfo
 
     /**
      * Checks if the given file is image
-     * @param string $filePath
      */
-    public function isImage($filePath): bool
+    public function isImage(string $filePath): bool
     {
         return (bool) getimagesize($filePath);
     }
@@ -399,10 +392,7 @@ class UploadedFile extends SplFileInfo
 
     /**
      * Loads allowed mime types from config (shared/config/uploads.php) if present.
-     * @throws ConfigException
-     * @throws DiException
-     * @throws FileUploadException
-     * @throws ReflectionException
+     * @throws FileUploadException|LoaderException|ConfigException|DiException|ReflectionException
      */
     protected function loadAllowedMimeTypesFromConfig(): void
     {

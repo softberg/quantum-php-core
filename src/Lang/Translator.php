@@ -17,6 +17,7 @@ declare(strict_types=1);
 namespace Quantum\Lang;
 
 use Quantum\Config\Exceptions\ConfigException;
+use Quantum\Loader\Exceptions\LoaderException;
 use Quantum\Lang\Exceptions\LangException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
@@ -40,11 +41,7 @@ class Translator
 
     /**
      * Load translation files
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws DiException
-     * @throws LangException
-     * @throws ReflectionException
+     * @throws LangException|LoaderException|ConfigException|DiException|BaseException|ReflectionException
      */
     public function loadTranslations(): void
     {
@@ -79,10 +76,7 @@ class Translator
     /**
      * Load translations
      * @param array<string> $files
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws DiException
-     * @throws ReflectionException
+     * @throws ConfigException|DiException|BaseException|ReflectionException
      */
     private function loadFiles(array $files): void
     {

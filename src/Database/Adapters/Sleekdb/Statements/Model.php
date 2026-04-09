@@ -82,7 +82,7 @@ trait Model
      * @throws DatabaseException
      * @throws IOException
      * @throws InvalidArgumentException
-     * @throws InvalidConfigurationException
+     * @throws InvalidConfigurationException|BaseException
      */
     public function delete(): bool
     {
@@ -96,7 +96,7 @@ trait Model
      * @throws IOException
      * @throws InvalidArgumentException
      * @throws InvalidConfigurationException
-     * @throws ModelException
+     * @throws ModelException|BaseException
      */
     public function deleteMany(): bool
     {

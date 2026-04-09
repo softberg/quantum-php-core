@@ -38,13 +38,13 @@ abstract class HttpResponse
      * XML root element
      * @var string
      */
-    private static $xmlRoot = '<data></data>';
+    private static string $xmlRoot = '<data></data>';
 
     /**
      * Callback function
      * @var string
      */
-    private static $callbackFunction = '';
+    private static string $callbackFunction = '';
 
     private static bool $initialized = false;
 

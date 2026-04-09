@@ -28,11 +28,7 @@ use Quantum\Di\Di;
 
 /**
  * Rendered view
- * @throws BaseException
- * @throws ConfigException
- * @throws DiException
- * @throws ReflectionException
- * @throws ViewException
+ * @throws ViewException|ConfigException|DiException|BaseException|ReflectionException
  */
 function view(): ?string
 {
@@ -42,10 +38,7 @@ function view(): ?string
 /**
  * Rendered partial
  * @param array<string, mixed> $args
- * @throws BaseException
- * @throws ConfigException
- * @throws DiException
- * @throws ReflectionException
+ * @throws ConfigException|DiException|BaseException|ReflectionException
  */
 function partial(string $partial, array $args = []): string
 {

@@ -80,7 +80,7 @@ class RendererFactory
     }
 
     /**
-     * @throws RendererException
+     * @throws RendererException|BaseException|ReflectionException
      */
     private function createInstance(string $adapterClass, string $adapter): Renderer
     {

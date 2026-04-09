@@ -30,10 +30,7 @@ abstract class BaseException extends Exception
         parent::__construct($message, $code);
     }
 
-    /**
-     * @return static
-     */
-    public static function methodNotSupported(string $methodName, string $className)
+    public static function methodNotSupported(string $methodName, string $className): BaseException
     {
         return new static(
             _message(ExceptionMessages::METHOD_NOT_SUPPORTED, [$methodName, $className]),
@@ -41,10 +38,7 @@ abstract class BaseException extends Exception
         );
     }
 
-    /**
-     * @return static
-     */
-    public static function adapterNotSupported(string $name)
+    public static function adapterNotSupported(string $name): BaseException
     {
         return new static(
             _message(ExceptionMessages::ADAPTER_NOT_SUPPORTED, [$name]),
@@ -52,10 +46,7 @@ abstract class BaseException extends Exception
         );
     }
 
-    /**
-     * @return static
-     */
-    public static function driverNotSupported(string $name)
+    public static function driverNotSupported(string $name): BaseException
     {
         return new static(
             _message(ExceptionMessages::DRIVER_NOT_SUPPORTED, [$name]),
@@ -63,10 +54,7 @@ abstract class BaseException extends Exception
         );
     }
 
-    /**
-     * @return static
-     */
-    public static function fileNotFound(string $name)
+    public static function fileNotFound(string $name): BaseException
     {
         return new static(
             _message(ExceptionMessages::FILE_NOT_FOUND, [$name]),
@@ -74,10 +62,7 @@ abstract class BaseException extends Exception
         );
     }
 
-    /**
-     * @return static
-     */
-    public static function notFound(string $subject, string $name)
+    public static function notFound(string $subject, string $name): BaseException
     {
         return new static(
             _message(ExceptionMessages::NOT_FOUND, [$subject, $name]),
@@ -85,10 +70,7 @@ abstract class BaseException extends Exception
         );
     }
 
-    /**
-     * @return static
-     */
-    public static function notInstanceOf(string $instance, string $name)
+    public static function notInstanceOf(string $instance, string $name): BaseException
     {
         return new static(
             _message(ExceptionMessages::NOT_INSTANCE_OF, [$instance, $name]),
@@ -96,10 +78,7 @@ abstract class BaseException extends Exception
         );
     }
 
-    /**
-     * @return static
-     */
-    public static function cantConnect(string $name)
+    public static function cantConnect(string $name): BaseException
     {
         return new static(
             _message(ExceptionMessages::CANT_CONNECT, [$name]),
@@ -107,10 +86,7 @@ abstract class BaseException extends Exception
         );
     }
 
-    /**
-     * @return static
-     */
-    public static function missingConfig(string $name)
+    public static function missingConfig(string $name): BaseException
     {
         return new static(
             _message(ExceptionMessages::MISSING_CONFIG, $name),
@@ -118,10 +94,7 @@ abstract class BaseException extends Exception
         );
     }
 
-    /**
-     * @return static
-     */
-    public static function requestMethodNotAvailable(string $name)
+    public static function requestMethodNotAvailable(string $name): BaseException
     {
         return new static(
             _message(ExceptionMessages::UNAVAILABLE_REQUEST_METHOD, [$name]),

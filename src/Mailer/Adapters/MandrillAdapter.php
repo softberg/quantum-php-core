@@ -29,10 +29,7 @@ class MandrillAdapter implements MailerInterface
 {
     use MailerTrait;
 
-    /**
-     * @var string
-     */
-    public $name = 'Mandrill';
+    public string $name = 'Mandrill';
 
     private string $apiUrl = 'https://mandrillapp.com/api/1.0/messages/send.json';
 

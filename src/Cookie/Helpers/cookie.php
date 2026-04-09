@@ -12,11 +12,13 @@
  * @since 3.0.0
  */
 
+use Quantum\Di\Exceptions\DiException;
 use Quantum\Cookie\Cookie;
 use Quantum\Di\Di;
 
 /**
  * Gets cookie handler
+ * @throws DiException|ReflectionException
  */
 function cookie(): Cookie
 {

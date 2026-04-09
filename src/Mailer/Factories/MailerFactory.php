@@ -54,10 +54,7 @@ class MailerFactory
     private array $instances = [];
 
     /**
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws DiException
-     * @throws ReflectionException
+     * @throws ConfigException|DiException|BaseException|ReflectionException
      */
     public static function get(?string $adapter = null): Mailer
     {
@@ -65,10 +62,7 @@ class MailerFactory
     }
 
     /**
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws DiException
-     * @throws ReflectionException
+     * @throws ConfigException|DiException|BaseException|ReflectionException
      */
     public function resolve(?string $adapter = null): Mailer
     {
@@ -88,7 +82,7 @@ class MailerFactory
     }
 
     /**
-     * @throws MailerException
+     * @throws DiException|BaseException|ReflectionException
      */
     private function createInstance(string $adapterClass, string $adapter): Mailer
     {

@@ -21,8 +21,10 @@ use DebugBar\DataCollector\TimeDataCollector;
 use DebugBar\DataCollector\MessagesCollector;
 use DebugBar\DataCollector\PhpInfoCollector;
 use DebugBar\DataCollector\MemoryCollector;
+use Quantum\Di\Exceptions\DiException;
 use DebugBar\JavascriptRenderer;
 use DebugBar\DebugBarException;
+use ReflectionException;
 use DebugBar\DebugBar;
 
 /**
@@ -95,6 +97,7 @@ class Debugger
 
     /**
      * Checks if debug bar enabled
+     * @throws DiException|ReflectionException
      */
     public function isEnabled(): bool
     {

@@ -13,13 +13,13 @@
  */
 
 use Quantum\Asset\Exceptions\AssetException;
-use Quantum\Lang\Exceptions\LangException;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Asset\AssetManager;
 use Quantum\Di\Di;
 
 /**
  * Gets the AssetManager instance
+ * @throws DiException|ReflectionException
  */
 function asset(): AssetManager
 {

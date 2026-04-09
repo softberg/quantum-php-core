@@ -38,7 +38,7 @@ class CronLock
     private const DEFAULT_MAX_LOCK_AGE = 86400;
 
     /**
-     * @throws BaseException|ConfigException|CronException|DiException|ReflectionException
+     * @throws CronException|ConfigException|DiException|BaseException|ReflectionException
      */
     public function __construct(string $taskName, ?string $lockDirectory = null, ?int $maxLockAge = null)
     {
@@ -104,10 +104,7 @@ class CronLock
     }
 
     /**
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws DiException
-     * @throws ReflectionException
+     * @throws ConfigException|DiException|BaseException|ReflectionException
      */
     public function release(): bool
     {
@@ -131,10 +128,7 @@ class CronLock
 
     /**
      * Check if another process currently holds the lock.
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws DiException
-     * @throws ReflectionException
+     * @throws ConfigException|DiException|BaseException|ReflectionException
      */
     public function isLocked(): bool
     {
@@ -184,11 +178,7 @@ class CronLock
     }
 
     /**
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws CronException
-     * @throws DiException
-     * @throws ReflectionException
+     * @throws CronException|ConfigException|DiException|BaseException|ReflectionException
      */
     private function ensureLockDirectoryExists(): void
     {
@@ -204,11 +194,7 @@ class CronLock
     }
 
     /**
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws CronException
-     * @throws DiException
-     * @throws ReflectionException
+     * @throws CronException|ConfigException|DiException|BaseException|ReflectionException
      */
     private function createDirectory(string $directory): void
     {
@@ -228,10 +214,7 @@ class CronLock
     }
 
     /**
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws DiException
-     * @throws ReflectionException
+     * @throws ConfigException|DiException|BaseException|ReflectionException
      */
     private function cleanupStaleLocks(): void
     {

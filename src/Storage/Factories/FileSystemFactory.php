@@ -60,10 +60,7 @@ class FileSystemFactory
     private array $instances = [];
 
     /**
-     * @throws BaseException
-     * @throws DiException
-     * @throws ReflectionException
-     * @throws ConfigException
+     * @throws ConfigException|DiException|BaseException|ReflectionException
      */
     public static function get(?string $adapter = null): FileSystem
     {
@@ -71,10 +68,7 @@ class FileSystemFactory
     }
 
     /**
-     * @throws BaseException
-     * @throws DiException
-     * @throws ReflectionException
-     * @throws ConfigException
+     * @throws ConfigException|DiException|BaseException|ReflectionException
      */
     public function resolve(?string $adapter = null): FileSystem
     {
@@ -94,10 +88,7 @@ class FileSystemFactory
     }
 
     /**
-     * @throws BaseException
-     * @throws DiException
-     * @throws ReflectionException
-     * @throws ServiceException
+     * @throws ConfigException|DiException|BaseException|ReflectionException
      */
     private function createInstance(string $adapterClass, string $adapter): FileSystem
     {
@@ -123,10 +114,7 @@ class FileSystemFactory
     }
 
     /**
-     * @throws BaseException
-     * @throws DiException
-     * @throws ReflectionException
-     * @throws ServiceException
+     * @throws ConfigException|DiException|BaseException|ReflectionException
      */
     private function createCloudApp(string $adapter): ?CloudAppInterface
     {
@@ -145,10 +133,7 @@ class FileSystemFactory
     }
 
     /**
-     * @throws BaseException
-     * @throws DiException
-     * @throws ReflectionException
-     * @throws ServiceException
+     * @throws ServiceException|DiException|BaseException|ReflectionException
      */
     private function createTokenService(string $adapter): TokenServiceInterface
     {

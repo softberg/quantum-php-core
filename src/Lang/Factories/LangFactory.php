@@ -17,6 +17,7 @@ declare(strict_types=1);
 namespace Quantum\Lang\Factories;
 
 use Quantum\Config\Exceptions\ConfigException;
+use Quantum\Loader\Exceptions\LoaderException;
 use Quantum\Lang\Exceptions\LangException;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Lang\Translator;
@@ -35,10 +36,7 @@ class LangFactory
     private ?Lang $instance = null;
 
     /**
-     * @throws ConfigException
-     * @throws LangException
-     * @throws DiException
-     * @throws ReflectionException
+     * @throws LangException|ConfigException|LoaderException|DiException|ReflectionException
      */
     public static function get(): Lang
     {
@@ -46,10 +44,7 @@ class LangFactory
     }
 
     /**
-     * @throws ConfigException
-     * @throws LangException
-     * @throws DiException
-     * @throws ReflectionException
+     * @throws LangException|ConfigException|DiException|ReflectionException|LoaderException
      */
     public function resolve(): Lang
     {
@@ -68,9 +63,7 @@ class LangFactory
 
     /**
      * @return array{0: bool, 1: array<string>, 2: string}
-     * @throws ConfigException
-     * @throws DiException
-     * @throws ReflectionException
+     * @throws LoaderException|ConfigException|DiException|ReflectionException
      */
     private function loadLangConfig(): array
     {
@@ -87,7 +80,7 @@ class LangFactory
 
     /**
      * @param array<string> $supported
-     * @throws LangException
+     * @throws LangException|DiException|ReflectionException
      */
     private function detectLanguage(array $supported, ?string $default): string
     {
@@ -124,6 +117,7 @@ class LangFactory
 
     /**
      * @param array<string> $supported
+     * @throws DiException|ReflectionException
      */
     private function getLangFromUrlSegment(array $supported): ?string
     {
@@ -140,6 +134,7 @@ class LangFactory
 
     /**
      * @param array<string> $supported
+     * @throws DiException|ReflectionException
      */
     private function getLangFromHeader(array $supported): ?string
     {

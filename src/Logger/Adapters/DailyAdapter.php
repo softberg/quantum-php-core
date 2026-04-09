@@ -36,11 +36,7 @@ class DailyAdapter implements ReportableInterface
     /**
      * DailyAdapter constructor
      * @param array<string, mixed> $params
-     * @throws BaseException
-     * @throws LoggerException
-     * @throws DiException
-     * @throws ConfigException
-     * @throws ReflectionException
+     * @throws LoggerException|ConfigException|DiException|BaseException|ReflectionException
      */
     public function __construct(array $params)
     {

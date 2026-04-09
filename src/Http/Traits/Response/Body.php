@@ -109,7 +109,6 @@ trait Body
 
     /**
      * Prepares the JSONP response
-     * @param string $callback
      * @param array<string, mixed>|null $data
      */
     public static function jsonp(string $callback, ?array $data = null, ?int $code = null): void

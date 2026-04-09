@@ -58,10 +58,7 @@ class CaptchaFactory
     }
 
     /**
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws DiException
-     * @throws ReflectionException
+     * @throws ConfigException|BaseException|DiException|ReflectionException
      */
     public function resolve(?string $adapter = null): Captcha
     {
@@ -81,7 +78,7 @@ class CaptchaFactory
     }
 
     /**
-     * @throws CaptchaException
+     * @throws CaptchaException|BaseException
      */
     private function createInstance(string $adapterClass, string $adapter): Captcha
     {

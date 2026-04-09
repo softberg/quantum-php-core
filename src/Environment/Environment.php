@@ -77,10 +77,7 @@ class Environment
 
     /**
      * Loads environment variables from file
-     * @throws BaseException
-     * @throws EnvException
-     * @throws DiException
-     * @throws ReflectionException
+     * @throws EnvException|DiException|BaseException|ReflectionException
      */
     public function load(Setup $setup): void
     {
@@ -149,11 +146,7 @@ class Environment
 
     /**
      * Creates or updates the row in .env
-     * @throws BaseException
-     * @throws DiException
-     * @throws EnvException
-     * @throws ReflectionException
-     * @throws ConfigException
+     * @throws EnvException|ConfigException|DiException|BaseException|ReflectionException
      */
     public function updateRow(string $key, ?string $value): void
     {

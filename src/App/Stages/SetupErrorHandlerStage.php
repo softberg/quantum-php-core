@@ -16,10 +16,14 @@ declare(strict_types=1);
 
 namespace Quantum\App\Stages;
 
+use Quantum\Config\Exceptions\ConfigException;
 use Quantum\App\Contracts\BootStageInterface;
 use Quantum\Logger\Factories\LoggerFactory;
+use Quantum\App\Exceptions\BaseException;
+use Quantum\Di\Exceptions\DiException;
 use Quantum\Tracer\ErrorHandler;
 use Quantum\App\AppContext;
+use ReflectionException;
 use Quantum\Di\Di;
 
 /**
@@ -28,6 +32,9 @@ use Quantum\Di\Di;
  */
 class SetupErrorHandlerStage implements BootStageInterface
 {
+    /**
+     * @throws ConfigException|DiException|BaseException|ReflectionException
+     */
     public function process(AppContext $context): void
     {
         Di::get(ErrorHandler::class)->setup(LoggerFactory::get());

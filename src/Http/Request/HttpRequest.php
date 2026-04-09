@@ -75,10 +75,7 @@ abstract class HttpRequest
 
     /**
      * Initializes the request static properties using the server instance.
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws DiException
-     * @throws ReflectionException
+     * @throws ConfigException|DiException|BaseException|ReflectionException
      */
     public static function init(Server $server): void
     {
@@ -259,6 +256,7 @@ abstract class HttpRequest
 
     /**
      * Sets request headers, normalizing keys to lowercase.
+     * @throws DiException|ReflectionException
      */
     private static function setRequestHeaders(): void
     {

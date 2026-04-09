@@ -54,10 +54,7 @@ class ModuleManager
     private string $modulesConfigPath;
 
     /**
-     * @throws BaseException
-     * @throws DiException
-     * @throws ConfigException
-     * @throws ReflectionException
+     * @throws ConfigException|DiException|BaseException|ReflectionException
      */
     public function __construct(string $moduleName, string $template, bool $enabled, bool $withAssets = false)
     {
@@ -81,9 +78,7 @@ class ModuleManager
     }
 
     /**
-     * @throws ModuleException
-     * @throws ExceptionInterface
-     * @throws Exception
+     * @throws ModuleException|ExceptionInterface|Exception
      */
     public function addModuleConfig(): void
     {

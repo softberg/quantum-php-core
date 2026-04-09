@@ -17,8 +17,10 @@ declare(strict_types=1);
 namespace Quantum\App\Stages;
 
 use Quantum\App\Contracts\BootStageInterface;
+use Quantum\Di\Exceptions\DiException;
 use Quantum\App\AppContext;
 use Quantum\Loader\Loader;
+use ReflectionException;
 use Quantum\App\App;
 use Quantum\Di\Di;
 
@@ -28,6 +30,9 @@ use Quantum\Di\Di;
  */
 class LoadHelpersStage implements BootStageInterface
 {
+    /**
+     * @throws DiException|ReflectionException
+     */
     public function process(AppContext $context): void
     {
         $loader = Di::get(Loader::class);

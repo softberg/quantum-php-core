@@ -33,10 +33,7 @@ class ResendAdapter implements MailerInterface
 
     private HttpClient $httpClient;
 
-    /**
-     * @var string|null
-     */
-    private $apiKey;
+    private string $apiKey;
 
     private string $apiUrl = 'https://api.resend.com/emails';
 

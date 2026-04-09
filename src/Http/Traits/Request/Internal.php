@@ -36,10 +36,7 @@ trait Internal
      * @param array<string, mixed> $params
      * @param array<string, mixed> $headers
      * @param array<string, mixed> $files
-     * @throws BaseException
-     * @throws ReflectionException
-     * @throws ConfigException
-     * @throws DiException
+     * @throws ConfigException|DiException|BaseException|ReflectionException
      */
     public static function create(
         string $method,

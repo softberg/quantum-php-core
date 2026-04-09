@@ -19,7 +19,7 @@ use Quantum\App\Exceptions\BaseException;
 /**
  * Encodes the data cryptographically
  * @param mixed $data
- * @throws BaseException
+ * @throws BaseException|ReflectionException
  */
 function crypto_encode($data, string $type = CryptorType::SYMMETRIC): string
 {
@@ -30,7 +30,7 @@ function crypto_encode($data, string $type = CryptorType::SYMMETRIC): string
 
 /**
  * @return mixed|string
- * @throws BaseException
+ * @throws BaseException|ReflectionException
  */
 function crypto_decode(string $encryptedData, string $type = CryptorType::SYMMETRIC)
 {

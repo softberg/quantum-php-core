@@ -31,10 +31,7 @@ class SendinblueAdapter implements MailerInterface
 
     public string $name = 'Sendinblue';
 
-    /**
-     * @var string
-     */
-    private $apiKey;
+    private string $apiKey;
 
     private string $apiUrl = 'https://api.sendinblue.com/v3/smtp/email';
 

@@ -16,8 +16,11 @@ declare(strict_types=1);
 
 namespace Quantum\Session\Traits;
 
+use Quantum\App\Exceptions\BaseException;
+use Quantum\Di\Exceptions\DiException;
 use Quantum\Session\Exceptions\SessionException;
 use Quantum\Model\Exceptions\ModelException;
+use ReflectionException;
 
 /**
  * Traits SessionTrait
@@ -28,6 +31,7 @@ trait SessionTrait
     /**
      * @inheritDoc
      * @return array<string, mixed>
+     * @throws BaseException|ReflectionException
      */
     public function all(): array
     {
@@ -120,7 +124,7 @@ trait SessionTrait
 
     /**
      * @inheritDoc
-     * @throws SessionException|ModelException
+     * @throws SessionException|ModelException|DiException|BaseException|ReflectionException
      */
     public function regenerateId(): bool
     {

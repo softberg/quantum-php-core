@@ -16,9 +16,14 @@ declare(strict_types=1);
 
 namespace Quantum\Console\Commands;
 
+use Quantum\Config\Exceptions\ConfigException;
 use Quantum\Cron\Exceptions\CronException;
+use Quantum\App\Exceptions\BaseException;
+use Quantum\Di\Exceptions\DiException;
 use Quantum\Console\QtCommand;
 use Quantum\Cron\CronManager;
+use ReflectionException;
+use Throwable;
 
 /**
  * Class CronRunCommand
@@ -70,13 +75,14 @@ class CronRunCommand extends QtCommand
             }
         } catch (CronException $e) {
             $this->error($e->getMessage());
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $this->error('Unexpected error: ' . $e->getMessage());
         }
     }
 
     /**
      * Run all due tasks
+     * @throws CronException|ConfigException|DiException|BaseException|ReflectionException
      */
     private function runAllDueTasks(CronManager $manager, bool $force): void
     {
@@ -111,7 +117,7 @@ class CronRunCommand extends QtCommand
 
     /**
      * Run a specific task
-     * @throws CronException
+     * @throws CronException|ConfigException|DiException|BaseException|ReflectionException
      */
     private function runSpecificTask(CronManager $manager, string $taskName, bool $force): void
     {

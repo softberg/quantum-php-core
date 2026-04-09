@@ -132,8 +132,8 @@ trait SoftDeletes
 
     /**
      * Find one record by column and value, excluding soft deleted unless withTrashed() is called.
-     * @param $value
-     * @throws BaseException
+     * @param mixed $value
+     * @throws ModelException|BaseException
      */
     public function findOneBy(string $column, $value): ?DbModel
     {

@@ -17,8 +17,12 @@ declare(strict_types=1);
 namespace Quantum\App\Stages;
 
 use Quantum\App\Contracts\BootStageInterface;
+use Quantum\Config\Exceptions\ConfigException;
+use Quantum\Loader\Exceptions\LoaderException;
+use Quantum\Di\Exceptions\DiException;
 use Quantum\App\AppContext;
 use Quantum\Loader\Setup;
+use ReflectionException;
 
 /**
  * Class LoadAppConfigStage
@@ -26,6 +30,9 @@ use Quantum\Loader\Setup;
  */
 class LoadAppConfigStage implements BootStageInterface
 {
+    /**
+     * @throws LoaderException|ConfigException|DiException|ReflectionException
+     */
     public function process(AppContext $context): void
     {
         if (!config()->has('app')) {

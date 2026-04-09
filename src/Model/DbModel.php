@@ -214,7 +214,7 @@ abstract class DbModel extends Model
     /**
      * @param array<mixed> $args
      * @return mixed
-     * @throws ModelException
+     * @throws ModelException|BaseException
      */
     public function __call(string $method, array $args = [])
     {

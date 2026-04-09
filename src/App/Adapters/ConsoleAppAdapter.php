@@ -28,7 +28,7 @@ use Quantum\App\Stages\LoadHelpersStage;
 use Quantum\App\Traits\ConsoleAppTrait;
 use Quantum\App\Enums\AppType;
 use Quantum\App\BootPipeline;
-use ReflectionException;
+use Exception;
 
 if (!defined('DS')) {
     define('DS', DIRECTORY_SEPARATOR);
@@ -76,8 +76,8 @@ class ConsoleAppAdapter extends AppAdapter
     }
 
     /**
-     * @throws ReflectionException
-     */
+    * @throws Exception
+    */
     public function start(): ?int
     {
         try {

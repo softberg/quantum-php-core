@@ -174,7 +174,7 @@ class HttpClient
     /**
      * Starts the request
      * @throws ErrorException
-     * @throws HttpClientException
+     * @throws HttpClientException|BaseException
      */
     public function start(): HttpClient
     {

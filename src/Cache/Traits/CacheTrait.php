@@ -25,15 +25,9 @@ use DateInterval;
  */
 trait CacheTrait
 {
-    /**
-     * @var int
-     */
-    protected $ttl;
+    protected int $ttl;
 
-    /**
-     * @var string
-     */
-    protected $prefix;
+    protected string $prefix;
 
     /**
      * Gets the hashed key

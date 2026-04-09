@@ -41,10 +41,7 @@ class HookManager
     private array $store = [];
 
     /**
-     * @throws HookException
-     * @throws ConfigException
-     * @throws DiException
-     * @throws ReflectionException|LoaderException
+     * @throws HookException|ConfigException|DiException|LoaderException|ReflectionException
      */
     public function __construct()
     {
@@ -100,7 +97,6 @@ class HookManager
 
     /**
      * Registers new hook
-     * @return void
      * @throws HookException
      */
     protected function register(string $name): void

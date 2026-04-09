@@ -17,6 +17,8 @@ declare(strict_types=1);
 namespace Quantum\Lang;
 
 use Quantum\Config\Exceptions\ConfigException;
+use Quantum\Loader\Exceptions\LoaderException;
+use Quantum\Lang\Exceptions\LangException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
 use ReflectionException;
@@ -68,11 +70,7 @@ class Lang
 
     /**
      * Load translations
-     * @throws Exceptions\LangException
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws DiException
-     * @throws ReflectionException
+     * @throws LangException|LoaderException|ConfigException|DiException|BaseException|ReflectionException
      */
     public function load(): void
     {

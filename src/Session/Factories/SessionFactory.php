@@ -46,10 +46,7 @@ class SessionFactory
     private array $instances = [];
 
     /**
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws DiException
-     * @throws ReflectionException
+     * @throws ConfigException|DiException|BaseException|ReflectionException
      */
     public static function get(?string $adapter = null): Session
     {
@@ -57,10 +54,7 @@ class SessionFactory
     }
 
     /**
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws DiException
-     * @throws ReflectionException
+     * @throws ConfigException|DiException|BaseException|ReflectionException
      */
     public function resolve(?string $adapter = null): Session
     {
@@ -80,7 +74,7 @@ class SessionFactory
     }
 
     /**
-     * @throws SessionException
+     * @throws BaseException|DiException|ReflectionException
      */
     private function createInstance(string $adapterClass, string $adapter): Session
     {
