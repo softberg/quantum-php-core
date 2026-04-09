@@ -80,6 +80,7 @@ class WebAppAdapter extends AppAdapter
             new LoadHelpersStage(),
             new LoadEnvironmentStage(),
             new LoadAppConfigStage(),
+            new SetupErrorHandlerStage(),
         ]);
 
         $pipeline->run($this->context);
@@ -113,7 +114,6 @@ class WebAppAdapter extends AppAdapter
                 stop();
             }
 
-            (new SetupErrorHandlerStage())->process($this->context);
             $this->initializeDebugger();
 
             $moduleLoader = Di::get(ModuleLoader::class);

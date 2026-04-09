@@ -64,6 +64,7 @@ class ConsoleAppAdapter extends AppAdapter
         if ($commandName !== 'core:env') {
             $stages[] = new LoadEnvironmentStage();
             $stages[] = new LoadAppConfigStage();
+            $stages[] = new SetupErrorHandlerStage();
         }
 
         $pipeline = new BootPipeline($stages);
@@ -85,8 +86,6 @@ class ConsoleAppAdapter extends AppAdapter
 
             $this->registerCoreCommands();
             $this->registerAppCommands();
-
-            (new SetupErrorHandlerStage())->process($this->context);
 
             $this->validateCommand();
 
