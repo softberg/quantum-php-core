@@ -116,7 +116,7 @@ class WebAppAdapter extends AppAdapter
             (new SetupErrorHandlerStage())->process($this->context);
             $this->initializeDebugger();
 
-            $moduleLoader = ModuleLoader::getInstance();
+            $moduleLoader = Di::get(ModuleLoader::class);
 
             $builder = new RouteBuilder();
 
