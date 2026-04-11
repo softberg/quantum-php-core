@@ -2,7 +2,6 @@
 
 namespace Quantum\Tests\Unit\Http;
 
-use Quantum\Http\Request\HttpRequest;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Http\Request;
 
@@ -16,7 +15,7 @@ class RequestTest extends AppTestCase
 
     public function tearDown(): void
     {
-        HttpRequest::flush();
+        Request::flush();
     }
 
     public function testSetGetMethod(): void

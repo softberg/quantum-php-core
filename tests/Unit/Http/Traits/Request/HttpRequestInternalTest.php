@@ -2,7 +2,6 @@
 
 namespace Quantum\Tests\Unit\Http\Traits\Request;
 
-use Quantum\Http\Request\HttpRequest;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Storage\UploadedFile;
 use Quantum\Http\Request;
@@ -67,7 +66,7 @@ class HttpRequestInternalTest extends AppTestCase
 
         Request::create('POST', 'http://localhost/submit', $data);
 
-        $this->assertEquals('bar', HttpRequest::get('foo'));
+        $this->assertEquals('bar', Request::get('foo'));
     }
 
     public function testUploadedFilesAreSet(): void

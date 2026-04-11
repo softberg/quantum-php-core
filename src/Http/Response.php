@@ -16,55 +16,83 @@ declare(strict_types=1);
 
 namespace Quantum\Http;
 
-use Quantum\Http\Response\HttpResponse;
+use Quantum\Http\Traits\Response\Header;
+use Quantum\Http\Traits\Response\Status;
+use Quantum\Http\Traits\Response\Body;
+use Quantum\Environment\Environment;
+use Quantum\Environment\Enums\Env;
+use Quantum\Http\Enums\StatusCode;
+use Exception;
 
 /**
  * Class Response
  * @package Quantum\Http
- * @method static void init()
- * @method static void flush()
- * @method static void send()
- * @method static string getContent()
- * @method static void setStatusCode(int $code)
- * @method static int getStatusCode()
- * @method static string getStatusText()
- * @method static void redirect(string $url, int $code = null)
- * @method static void json(array<string, mixed> $data = null, int $code = null)
- * @method static void xml(array<string, mixed> $data = null, $root = '<data></data>', int $code = null)
- * @method static void html(string $html, int $code = null)
- * @method static bool has(string $key)
- * @method static mixed get(string $key, string $default = null)
- * @method static void set(string $key, $value)
- * @method static array<string, mixed> all()
- * @method static void delete(string $key)
- * @method static bool hasHeader(string $key))
- * @method static string|null getHeader(string $key)
- * @method static void setHeader(string $key, string $value)
- * @method static array<string, mixed> allHeaders()
- * @method static void deleteHeader(string $key)
- * @method static void setContentType(string $contentType)
- * @method static string|null getContentType()
- * @mixin HttpResponse
  */
 class Response
 {
+    use Header;
+    use Body;
+    use Status;
+
     /**
-     * @param string $function The function name
-     * @param array<mixed> $arguments
-     * @return mixed
+     * XML root element
+     * @var string
      */
-    public function __call(string $function, array $arguments)
+    private static string $xmlRoot = '<data></data>';
+
+    /**
+     * Callback function
+     * @var string
+     */
+    private static string $callbackFunction = '';
+
+    private static bool $initialized = false;
+
+    /**
+     * Initialize the Response
+     */
+    public static function init(): void
     {
-        return HttpResponse::$function(...$arguments);
+        if (self::$initialized) {
+            return;
+        }
+
+        self::flush();
+
+        self::$initialized = true;
     }
 
     /**
-     * @param string $function The function name
-     * @param array<mixed> $arguments
-     * @return mixed
+     * Flushes the response header and body
      */
-    public static function __callStatic(string $function, array $arguments)
+    public static function flush(): void
     {
-        return HttpResponse::$function(...$arguments);
+        self::$__statusCode = StatusCode::OK;
+        self::$__headers = [];
+        self::$__response = [];
+        self::$xmlRoot = '<data></data>';
+        self::$callbackFunction = '';
+        self::$initialized = false;
+    }
+
+    /**
+     * Sends all response data to the client and finishes the request.
+     * @throws Exception
+     */
+    public static function send(): void
+    {
+        if (Environment::getInstance()->getAppEnv() !== Env::TESTING) {
+            while (ob_get_level() > 0) {
+                ob_end_clean();
+            }
+        }
+
+        foreach (self::$__headers as $key => $value) {
+            header($key . ': ' . $value);
+        }
+
+        http_response_code(self::getStatusCode());
+
+        echo self::getContent();
     }
 }
