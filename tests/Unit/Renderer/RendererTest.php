@@ -10,8 +10,6 @@ use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Router\MatchedRoute;
 use Quantum\Renderer\Renderer;
 use Quantum\Router\Route;
-use Quantum\Http\Request;
-use Quantum\Di\Di;
 
 class RendererTest extends AppTestCase
 {
@@ -28,13 +26,9 @@ class RendererTest extends AppTestCase
         $route->module('Test');
 
         $matchedRoute = new MatchedRoute($route, []);
-        Request::setMatchedRoute($matchedRoute);
 
-        if (!Di::isRegistered(Request::class)) {
-            $request = new Request();
-            $request->create('GET', '/test');
-            Di::set(Request::class, $request);
-        }
+        request()->create('GET', '/test');
+        request()->setMatchedRoute($matchedRoute);
     }
 
     public function testRendererGetHtmlAdapter(): void

@@ -5,7 +5,6 @@ namespace Quantum\Tests\Unit\ResourceCache;
 use Quantum\ResourceCache\Exceptions\ResourceCacheException;
 use Quantum\ResourceCache\ViewCache;
 use Quantum\Tests\Unit\AppTestCase;
-use Quantum\Http\Response;
 use Quantum\Di\Di;
 
 class ViewCacheDouble extends ViewCache
@@ -61,7 +60,7 @@ HEREDOC;
 
         $this->viewCache->set($this->route, $this->content);
 
-        $response = new Response();
+        $response = response();
 
         $result = $this->viewCache->serveCachedView($this->route, $response);
 

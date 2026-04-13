@@ -6,7 +6,6 @@ use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Router\RouteCollection;
 use Quantum\Router\MatchedRoute;
 use Quantum\Router\RouteFinder;
-use Quantum\Http\Request;
 use Quantum\Router\Route;
 
 class RouteFinderTest extends AppTestCase
@@ -27,7 +26,7 @@ class RouteFinderTest extends AppTestCase
         $route = new Route(['GET'], 'users', 'Ctrl', 'act');
         $this->collection->add($route);
 
-        $req = new Request();
+        $req = request();
         $req->create('GET', '/users');
 
         $result = $this->finder->find($req);
@@ -42,7 +41,7 @@ class RouteFinderTest extends AppTestCase
         $route = new Route(['GET'], 'users', 'Ctrl', 'act');
         $this->collection->add($route);
 
-        $req = new Request();
+        $req = request();
         $req->create('GET', '/posts');
 
         $this->assertNull($this->finder->find($req));
@@ -53,7 +52,7 @@ class RouteFinderTest extends AppTestCase
         $route = new Route(['POST'], 'users', 'Ctrl', 'act');
         $this->collection->add($route);
 
-        $req = new Request();
+        $req = request();
         $req->create('GET', '/users');
 
         $this->assertNull($this->finder->find($req));
@@ -67,7 +66,7 @@ class RouteFinderTest extends AppTestCase
         $this->collection->add($r1);
         $this->collection->add($r2);
 
-        $req = new Request();
+        $req = request();
         $req->create('GET', '/users');
 
         $result = $this->finder->find($req);
@@ -80,7 +79,7 @@ class RouteFinderTest extends AppTestCase
         $route = new Route(['GET'], 'users/[id=:num]', 'Ctrl', 'act');
         $this->collection->add($route);
 
-        $req = new Request();
+        $req = request();
         $req->create('GET', '/users/42');
 
         $result = $this->finder->find($req);
@@ -96,7 +95,7 @@ class RouteFinderTest extends AppTestCase
         $r2 = new Route(['GET'], 'users', 'C', 'a');
         $this->collection->add($r2);
 
-        $req = new Request();
+        $req = request();
         $req->create('GET', '/users');
 
         $result = $this->finder->find($req);

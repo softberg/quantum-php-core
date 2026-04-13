@@ -22,16 +22,25 @@ class HttpHelperTest extends AppTestCase
     {
         parent::setUp();
 
-        $this->request = new Request();
-
-        Response::init();
-
-        $this->response = new Response();
+        $this->request = request();
+        $this->response = response();
     }
 
     public function tearDown(): void
     {
-        Request::flush();
+        request()->flush();
+    }
+
+    public function testRequestHelperReturnsDiInstance(): void
+    {
+        $this->assertInstanceOf(Request::class, request());
+        $this->assertSame(request(), request());
+    }
+
+    public function testResponseHelperReturnsDiInstance(): void
+    {
+        $this->assertInstanceOf(Response::class, response());
+        $this->assertSame(response(), response());
     }
 
     public function testBaseUrlWithoutModulePrefix(): void
@@ -67,14 +76,9 @@ class HttpHelperTest extends AppTestCase
 
         $this->request->create('GET', 'https://testdomain.com/signin');
 
-        // Register request in DI for route finding (only if not already registered)
-        if (!Di::isRegistered(Request::class)) {
-            Di::set(Request::class, $this->request);
-        }
-
         $matchedRoute = $router->find($this->request);
 
-        Request::setMatchedRoute($matchedRoute);
+        request()->setMatchedRoute($matchedRoute);
 
         $baseUrl = base_url(true);
 

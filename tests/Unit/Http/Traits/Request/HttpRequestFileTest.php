@@ -5,7 +5,6 @@ namespace Quantum\Tests\Unit\Http\Traits\Request;
 use Quantum\Storage\Exceptions\FileUploadException;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Storage\UploadedFile;
-use Quantum\Http\Request;
 
 class HttpRequestFileTest extends AppTestCase
 {
@@ -16,12 +15,12 @@ class HttpRequestFileTest extends AppTestCase
 
     public function tearDown(): void
     {
-        Request::flush();
+        request()->flush();
     }
 
     public function testHasGetFile(): void
     {
-        $request = new Request();
+        $request = request();
 
         $file = [
             'image' => [
@@ -62,7 +61,7 @@ class HttpRequestFileTest extends AppTestCase
 
     public function testGetMultipleFiles(): void
     {
-        $request = new Request();
+        $request = request();
 
         $this->assertFalse($request->hasFile('image'));
 

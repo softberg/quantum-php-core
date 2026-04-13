@@ -3,7 +3,6 @@
 namespace Quantum\Tests\Unit\Http\Traits\Request;
 
 use Quantum\Tests\Unit\AppTestCase;
-use Quantum\Http\Request;
 
 class HttpRequestUrlTest extends AppTestCase
 {
@@ -14,12 +13,12 @@ class HttpRequestUrlTest extends AppTestCase
 
     public function tearDown(): void
     {
-        Request::flush();
+        request()->flush();
     }
 
     public function testSetGetProtocol(): void
     {
-        $request = new Request();
+        $request = request();
 
         $request->create('GET', 'https://test.com');
 
@@ -32,7 +31,7 @@ class HttpRequestUrlTest extends AppTestCase
 
     public function testSetGetHost(): void
     {
-        $request = new Request();
+        $request = request();
 
         $request->create('GET', 'https://test.com/dashboard');
 
@@ -45,7 +44,7 @@ class HttpRequestUrlTest extends AppTestCase
 
     public function testSetGetPort(): void
     {
-        $request = new Request();
+        $request = request();
 
         $request->create('GET', 'https://test.com:8080/dashboard');
 
@@ -58,7 +57,7 @@ class HttpRequestUrlTest extends AppTestCase
 
     public function testSetGetUri(): void
     {
-        $request = new Request();
+        $request = request();
 
         $request->create('GET', 'http://test.com/post/12');
 
@@ -71,7 +70,7 @@ class HttpRequestUrlTest extends AppTestCase
 
     public function testGetSegments(): void
     {
-        $request = new Request();
+        $request = request();
 
         $request->create('GET', 'post/12/notes');
 

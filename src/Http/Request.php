@@ -67,66 +67,61 @@ class Request
     /**
      * Request method
      */
-    private static ?string $__method = null;
+    private ?string $__method = null;
 
-    protected static Server $server;
-
-    private static bool $initialized = false;
+    protected Server $server;
 
     /**
-     * Initializes the request properties using the server instance.
      * @throws ConfigException|DiException|BaseException|ReflectionException
      */
-    public static function init(Server $server): void
+    public function __construct(?Server $server = null)
     {
-        if (self::$initialized) {
-            return;
-        }
-
-        self::flush();
-
-        self::$server = $server;
-
-        self::setServerInfo();
-        self::setContentType();
-        self::setRequestHeaders();
-
-        ['params' => $rawInputParams, 'files' => $rawInputFiles] = self::getRawInputParams();
-
-        self::setRequestParams($rawInputParams);
-        self::setUploadedFiles($rawInputFiles);
-
-        self::$initialized = true;
+        $this->server = $server ?? server();
+        $this->populateFromServer();
     }
 
     /**
      * Flushes the request header, body and files
      */
-    public static function flush(): void
+    public function flush(): void
     {
-        self::$__headers = [];
-        self::$__request = [];
-        self::$__files = [];
-        self::$__protocol = null;
-        self::$__host = null;
-        self::$__port = null;
-        self::$__uri = null;
-        self::$__query = null;
+        $this->__headers = [];
+        $this->__request = [];
+        $this->__files = [];
+        $this->__protocol = null;
+        $this->__host = null;
+        $this->__port = null;
+        $this->__uri = null;
+        $this->__query = null;
+    }
 
-        self::$initialized = false;
+    /**
+     * Re-reads method, headers, params and files from the current server state.
+     * @throws ConfigException|DiException|BaseException|ReflectionException
+     */
+    protected function populateFromServer(): void
+    {
+        $this->setServerInfo();
+        $this->setContentType();
+        $this->setRequestHeaders();
+
+        ['params' => $rawInputParams, 'files' => $rawInputFiles] = $this->getRawInputParams();
+
+        $this->setRequestParams($rawInputParams);
+        $this->setUploadedFiles($rawInputFiles);
     }
 
     /**
      * Sets the merged request parameters
      * @param array<string, mixed> $params
      */
-    public static function setRequestParams(array $params): void
+    public function setRequestParams(array $params): void
     {
-        self::$__request = array_merge(
-            self::getParams(),
-            self::postParams(),
-            self::jsonPayloadParams(),
-            self::urlEncodedParams(),
+        $this->__request = array_merge(
+            $this->getParams(),
+            $this->postParams(),
+            $this->jsonPayloadParams(),
+            $this->urlEncodedParams(),
             $params
         );
     }
@@ -137,10 +132,10 @@ class Request
      * @throws BaseException
      * @throws ReflectionException
      */
-    public static function setUploadedFiles(array $files): void
+    public function setUploadedFiles(array $files): void
     {
-        self::$__files = array_merge(
-            self::handleFiles($_FILES),
+        $this->__files = array_merge(
+            $this->handleFiles($_FILES),
             $files
         );
     }
@@ -148,43 +143,43 @@ class Request
     /**
      * Gets the request method
      */
-    public static function getMethod(): ?string
+    public function getMethod(): ?string
     {
-        return self::$__method;
+        return $this->__method;
     }
 
     /**
      * Sets the request method
      * @throws BaseException
      */
-    public static function setMethod(string $method): void
+    public function setMethod(string $method): void
     {
         if (!in_array(strtoupper($method), self::METHODS)) {
             throw HttpException::requestMethodNotAvailable($method);
         }
 
-        self::$__method = $method;
+        $this->__method = $method;
     }
 
     /**
      * Checks if the current method matches the given method
      */
-    public static function isMethod(string $method): bool
+    public function isMethod(string $method): bool
     {
-        return strcasecmp($method, self::$__method ?? '') === 0;
+        return strcasecmp($method, $this->__method ?? '') === 0;
     }
 
     /**
      * Gets Cross Site Request Forgery Token
      */
-    public static function getCsrfToken(): ?string
+    public function getCsrfToken(): ?string
     {
         $csrfToken = null;
 
-        if (self::has(Csrf::TOKEN_KEY)) {
-            $csrfToken = (string) self::get(Csrf::TOKEN_KEY);
-        } elseif (self::hasHeader('X-' . Csrf::TOKEN_KEY)) {
-            $csrfToken = self::getHeader('X-' . Csrf::TOKEN_KEY);
+        if ($this->has(Csrf::TOKEN_KEY)) {
+            $csrfToken = (string) $this->get(Csrf::TOKEN_KEY);
+        } elseif ($this->hasHeader('X-' . Csrf::TOKEN_KEY)) {
+            $csrfToken = $this->getHeader('X-' . Csrf::TOKEN_KEY);
         }
 
         return $csrfToken;
@@ -194,7 +189,7 @@ class Request
      * Gets the base url
      * @throws DiException|ReflectionException
      */
-    public static function getBaseUrl(bool $withModulePrefix = false): string
+    public function getBaseUrl(bool $withModulePrefix = false): string
     {
         $baseUrl = config()->get('app.base_url');
 
@@ -205,29 +200,29 @@ class Request
             return $baseUrl . $modulePrefix;
         }
 
-        return self::getHostPrefix() . $modulePrefix;
+        return $this->getHostPrefix() . $modulePrefix;
     }
 
     /**
      * Gets the current url
      */
-    public static function getCurrentUrl(): string
+    public function getCurrentUrl(): string
     {
-        $uri = self::getUri();
-        $query = self::getQuery();
+        $uri = $this->getUri();
+        $query = $this->getQuery();
         $queryPart = $query ? '?' . $query : '';
 
-        return self::getHostPrefix() . '/' . $uri . $queryPart;
+        return $this->getHostPrefix() . '/' . $uri . $queryPart;
     }
 
     /**
      * Gets the protocol, host, and optional port part of the URL.
      */
-    private static function getHostPrefix(): string
+    private function getHostPrefix(): string
     {
-        $protocol = self::getProtocol();
-        $host = self::getHost();
-        $port = self::getPort();
+        $protocol = $this->getProtocol();
+        $host = $this->getHost();
+        $port = $this->getPort();
 
         $defaultPort = $protocol === 'https' ? self::DEFAULT_HTTPS_PORT : self::DEFAULT_HTTP_PORT;
 
@@ -239,27 +234,27 @@ class Request
     /**
      * Sets server data (method, protocol, host, port, uri, query).
      */
-    private static function setServerInfo(): void
+    private function setServerInfo(): void
     {
         foreach (['method', 'protocol', 'host', 'port', 'uri', 'query'] as $name) {
-            self::${"__{$name}"} = self::$server->$name();
+            $this->{"__{$name}"} = $this->server->$name();
         }
     }
 
     /**
      * Sets the normalized request content type.
      */
-    private static function setContentType(): void
+    private function setContentType(): void
     {
-        self::$__contentType = self::$server->contentType(true);
+        $this->__contentType = $this->server->contentType(true);
     }
 
     /**
      * Sets request headers, normalizing keys to lowercase.
      * @throws DiException|ReflectionException
      */
-    private static function setRequestHeaders(): void
+    private function setRequestHeaders(): void
     {
-        self::$__headers = array_change_key_case(getallheaders());
+        $this->__headers = array_change_key_case(getallheaders());
     }
 }

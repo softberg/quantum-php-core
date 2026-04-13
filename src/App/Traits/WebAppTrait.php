@@ -18,13 +18,10 @@ namespace Quantum\App\Traits;
 
 use Quantum\Config\Exceptions\ConfigException;
 use Quantum\Loader\Exceptions\LoaderException;
-use Quantum\Http\Exceptions\HttpException;
-use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\ResourceCache\ViewCache;
 use Quantum\Debugger\Debugger;
 use Quantum\Http\Response;
-use Quantum\Http\Request;
 use Quantum\Loader\Setup;
 use ReflectionException;
 use Quantum\Di\Di;
@@ -35,15 +32,6 @@ use Quantum\Di\Di;
  */
 trait WebAppTrait
 {
-    /**
-     * @throws BaseException|HttpException|DiException|ReflectionException
-     */
-    private function initializeRequestResponse(Request $request, Response $response): void
-    {
-        $request->init(server());
-        $response->init();
-    }
-
     /**
      * @throws DiException|ReflectionException
      */

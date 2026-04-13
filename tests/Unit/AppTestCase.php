@@ -11,7 +11,6 @@ use Quantum\Debugger\Debugger;
 use Quantum\App\Enums\AppType;
 use Quantum\Config\Config;
 use Quantum\Router\Route;
-use Quantum\Http\Request;
 use Quantum\Loader\Setup;
 use ReflectionClass;
 use Quantum\Di\Di;
@@ -33,8 +32,8 @@ abstract class AppTestCase extends TestCase
 
     public function tearDown(): void
     {
-        Request::setMatchedRoute(null);
-        Request::flush();
+        request()->setMatchedRoute(null);
+        request()->flush();
 
         AppFactory::destroy(AppType::WEB);
 
@@ -81,9 +80,7 @@ abstract class AppTestCase extends TestCase
         array $body = [],
         array $headers = []
     ) {
-        $request = new Request();
-
-        $request->create($method, $uri, $body, $headers);
+        request()->create($method, $uri, $body, $headers);
 
         $route = new Route(
             [$method],
@@ -94,10 +91,6 @@ abstract class AppTestCase extends TestCase
         $route->module('Test');
 
         $matchedRoute = new MatchedRoute($route, []);
-        Request::setMatchedRoute($matchedRoute);
-
-        if (!Di::isRegistered(Request::class)) {
-            Di::set(Request::class, $request);
-        }
+        request()->setMatchedRoute($matchedRoute);
     }
 }

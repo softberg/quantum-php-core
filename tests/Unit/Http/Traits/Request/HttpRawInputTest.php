@@ -4,7 +4,6 @@ namespace Quantum\Tests\Unit\Http\Traits\Request;
 
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Storage\UploadedFile;
-use Quantum\Http\Request;
 
 class HttpRawInputTest extends AppTestCase
 {
@@ -22,7 +21,8 @@ class HttpRawInputTest extends AppTestCase
     {
         server()->set('CONTENT_TYPE', null);
 
-        $result = Request::parse('irrelevant-body');
+        $request = request();
+        $result = $request->parse('irrelevant-body');
 
         $this->assertEquals(['params' => [], 'files' => []], $result);
     }
@@ -38,7 +38,8 @@ class HttpRawInputTest extends AppTestCase
 
         server()->set('CONTENT_TYPE', "multipart/form-data; boundary=$boundary");
 
-        $result = Request::parse($rawInput);
+        $request = request();
+        $result = $request->parse($rawInput);
 
         $this->assertArrayHasKey('params', $result);
 
@@ -58,7 +59,8 @@ class HttpRawInputTest extends AppTestCase
 
         server()->set('CONTENT_TYPE', "multipart/form-data; boundary=$boundary");
 
-        $result = Request::parse($rawInput);
+        $request = request();
+        $result = $request->parse($rawInput);
 
         $this->assertArrayHasKey('params', $result);
 
@@ -81,7 +83,8 @@ class HttpRawInputTest extends AppTestCase
 
         server()->set('CONTENT_TYPE', "multipart/form-data; boundary=$boundary");
 
-        $result = Request::parse($rawInput);
+        $request = request();
+        $result = $request->parse($rawInput);
 
         $this->assertArrayHasKey('files', $result);
 

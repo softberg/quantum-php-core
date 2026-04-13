@@ -4,7 +4,6 @@ namespace Quantum\Tests\Unit\Http\Traits\Request;
 
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Storage\UploadedFile;
-use Quantum\Http\Request;
 
 class HttpRequestInternalTest extends AppTestCase
 {
@@ -15,7 +14,8 @@ class HttpRequestInternalTest extends AppTestCase
 
     public function testCreateRequestSetsBasicServerParams(): void
     {
-        Request::create('GET', 'https://example.com/test/path?foo=bar');
+        $request = request();
+        $request->create('GET', 'https://example.com/test/path?foo=bar');
 
         $server = server();
 
@@ -41,21 +41,24 @@ class HttpRequestInternalTest extends AppTestCase
             ],
         ];
 
-        Request::create('POST', 'http://localhost/upload', [], [], $files);
+        $request = request();
+        $request->create('POST', 'http://localhost/upload', [], [], $files);
 
         $this->assertEquals('multipart/form-data', server()->get('CONTENT_TYPE'));
     }
 
     public function testContentTypeIsFormUrlencodedWhenDataProvided(): void
     {
-        Request::create('POST', 'http://localhost/form', ['key' => 'value']);
+        $request = request();
+        $request->create('POST', 'http://localhost/form', ['key' => 'value']);
 
         $this->assertEquals('application/x-www-form-urlencoded', server()->get('CONTENT_TYPE'));
     }
 
     public function testContentTypeIsTextHtmlWhenNoDataOrFiles(): void
     {
-        Request::create('GET', 'http://localhost');
+        $request = request();
+        $request->create('GET', 'http://localhost');
 
         $this->assertEquals('text/html', server()->get('CONTENT_TYPE'));
     }
@@ -64,9 +67,10 @@ class HttpRequestInternalTest extends AppTestCase
     {
         $data = ['foo' => 'bar'];
 
-        Request::create('POST', 'http://localhost/submit', $data);
+        $request = request();
+        $request->create('POST', 'http://localhost/submit', $data);
 
-        $this->assertEquals('bar', Request::get('foo'));
+        $this->assertEquals('bar', $request->get('foo'));
     }
 
     public function testUploadedFilesAreSet(): void
@@ -81,7 +85,7 @@ class HttpRequestInternalTest extends AppTestCase
             ],
         ];
 
-        $request = new Request();
+        $request = request();
 
         $request->create('POST', 'http://localhost/upload', [], [], $files);
 

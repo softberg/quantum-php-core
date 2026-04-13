@@ -16,7 +16,7 @@ class FileRuleTest extends AppTestCase
     {
         parent::setUp();
 
-        $this->request = new Request();
+        $this->request = request();
 
         $this->validator = new Validator();
 

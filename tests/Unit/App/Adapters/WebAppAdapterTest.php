@@ -4,7 +4,6 @@ namespace Quantum\Tests\Unit\App\Adapters;
 
 use Quantum\App\Adapters\WebAppAdapter;
 use PHPUnit\Framework\TestCase;
-use Quantum\Http\Request;
 use Quantum\App\App;
 use Quantum\Di\Di;
 
@@ -27,8 +26,7 @@ class WebAppAdapterTest extends TestCase
 
     public function testWebAppAdapterStartSuccessfully(): void
     {
-        $request = Di::get(Request::class);
-        $request->create('GET', '/test/am/tests');
+        request()->create('GET', '/test/am/tests');
 
         ob_start();
         $result = $this->webAppAdapter->start();
@@ -39,8 +37,7 @@ class WebAppAdapterTest extends TestCase
 
     public function testWebAppAdapterStartFails(): void
     {
-        $request = Di::get(Request::class);
-        $request->create('POST', '');
+        request()->create('POST', '');
 
         ob_start();
         $result = $this->webAppAdapter->start();
@@ -51,8 +48,7 @@ class WebAppAdapterTest extends TestCase
 
     public function testWebAppAdapterHandlesPageNotFoundGracefully(): void
     {
-        $request = Di::get(Request::class);
-        $request->create('GET', '/non-existing-uri');
+        request()->create('GET', '/non-existing-uri');
 
         ob_start();
         $result = $this->webAppAdapter->start();

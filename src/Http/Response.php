@@ -38,48 +38,31 @@ class Response
      * XML root element
      * @var string
      */
-    private static string $xmlRoot = '<data></data>';
+    private string $xmlRoot = '<data></data>';
 
     /**
      * Callback function
      * @var string
      */
-    private static string $callbackFunction = '';
-
-    private static bool $initialized = false;
-
-    /**
-     * Initialize the Response
-     */
-    public static function init(): void
-    {
-        if (self::$initialized) {
-            return;
-        }
-
-        self::flush();
-
-        self::$initialized = true;
-    }
+    private string $callbackFunction = '';
 
     /**
      * Flushes the response header and body
      */
-    public static function flush(): void
+    public function flush(): void
     {
-        self::$__statusCode = StatusCode::OK;
-        self::$__headers = [];
-        self::$__response = [];
-        self::$xmlRoot = '<data></data>';
-        self::$callbackFunction = '';
-        self::$initialized = false;
+        $this->__statusCode = StatusCode::OK;
+        $this->__headers = [];
+        $this->__response = [];
+        $this->xmlRoot = '<data></data>';
+        $this->callbackFunction = '';
     }
 
     /**
      * Sends all response data to the client and finishes the request.
      * @throws Exception
      */
-    public static function send(): void
+    public function send(): void
     {
         if (Environment::getInstance()->getAppEnv() !== Env::TESTING) {
             while (ob_get_level() > 0) {
@@ -87,12 +70,12 @@ class Response
             }
         }
 
-        foreach (self::$__headers as $key => $value) {
+        foreach ($this->__headers as $key => $value) {
             header($key . ': ' . $value);
         }
 
-        http_response_code(self::getStatusCode());
+        http_response_code($this->getStatusCode());
 
-        echo self::getContent();
+        echo $this->getContent();
     }
 }

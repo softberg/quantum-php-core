@@ -4,29 +4,21 @@ namespace Quantum\Tests\Unit\Http\Traits\Request;
 
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Router\MatchedRoute;
-use Quantum\Http\Request;
 use Quantum\Router\Route;
-use Quantum\Di\Di;
 
 class HttpRequestRouteTest extends AppTestCase
 {
     public function tearDown(): void
     {
-        Request::setMatchedRoute(null);
-        Request::flush();
-
-        if (Di::isRegistered(Request::class)) {
-            $diRequest = Di::get(Request::class);
-            $diRequest->setMatchedRoute(null);
-            $diRequest->flush();
-        }
+        request()->setMatchedRoute(null);
+        request()->flush();
 
         parent::tearDown();
     }
 
     public function testGetMatchedRouteReturnsNullByDefault(): void
     {
-        $this->assertNull(Request::getMatchedRoute());
+        $this->assertNull(request()->getMatchedRoute());
     }
 
     public function testSetAndGetMatchedRoute(): void
@@ -40,9 +32,9 @@ class HttpRequestRouteTest extends AppTestCase
 
         $matched = new MatchedRoute($route, ['id' => 1]);
 
-        Request::setMatchedRoute($matched);
+        request()->setMatchedRoute($matched);
 
-        $this->assertSame($matched, Request::getMatchedRoute());
+        $this->assertSame($matched, request()->getMatchedRoute());
     }
 
     public function testSetMatchedRouteToNullResetsState(): void
@@ -56,10 +48,10 @@ class HttpRequestRouteTest extends AppTestCase
 
         $matched = new MatchedRoute($route, []);
 
-        Request::setMatchedRoute($matched);
-        $this->assertNotNull(Request::getMatchedRoute());
+        request()->setMatchedRoute($matched);
+        $this->assertNotNull(request()->getMatchedRoute());
 
-        Request::setMatchedRoute(null);
-        $this->assertNull(Request::getMatchedRoute());
+        request()->setMatchedRoute(null);
+        $this->assertNull(request()->getMatchedRoute());
     }
 }

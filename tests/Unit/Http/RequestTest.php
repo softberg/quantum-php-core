@@ -3,7 +3,6 @@
 namespace Quantum\Tests\Unit\Http;
 
 use Quantum\Tests\Unit\AppTestCase;
-use Quantum\Http\Request;
 
 class RequestTest extends AppTestCase
 {
@@ -15,12 +14,12 @@ class RequestTest extends AppTestCase
 
     public function tearDown(): void
     {
-        Request::flush();
+        request()->flush();
     }
 
     public function testSetGetMethod(): void
     {
-        $request = new Request();
+        $request = request();
 
         $request->create('GET', '/');
 
@@ -33,7 +32,7 @@ class RequestTest extends AppTestCase
 
     public function testIsMethod(): void
     {
-        $request = new Request();
+        $request = request();
 
         $request->create('GET', '/');
 
@@ -52,7 +51,7 @@ class RequestTest extends AppTestCase
 
     public function testGetCsrfToken(): void
     {
-        $request = new Request();
+        $request = request();
 
         $this->assertNull($request->getCsrfToken());
 

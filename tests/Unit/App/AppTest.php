@@ -7,7 +7,6 @@ use Quantum\App\Exceptions\AppException;
 use Quantum\App\Adapters\WebAppAdapter;
 use Quantum\App\Contracts\AppInterface;
 use PHPUnit\Framework\TestCase;
-use Quantum\Http\Request;
 use Quantum\App\App;
 use Quantum\Di\Di;
 
@@ -52,8 +51,7 @@ class AppTest extends TestCase
     {
         $app = new App(new WebAppAdapter());
 
-        $request = Di::get(Request::class);
-        $request->create('GET', '/test/am/tests');
+        request()->create('GET', '/test/am/tests');
 
         ob_start();
         $this->assertEquals(0, $app->start());

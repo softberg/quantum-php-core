@@ -33,12 +33,12 @@ trait Body
      * Response
      * @var array<string, mixed>
      */
-    private static array $__response = [];
+    private array $__response = [];
 
     /**
      * @var string[]
      */
-    private static array $formatters = [
+    private array $formatters = [
         ContentType::HTML => 'formatHtml',
         ContentType::XML => 'formatXml',
         ContentType::JSON => 'formatJson',
@@ -48,45 +48,45 @@ trait Body
     /**
      * Checks if response contains a data by given key
      */
-    public static function has(string $key): bool
+    public function has(string $key): bool
     {
-        return isset(self::$__response[$key]);
+        return isset($this->__response[$key]);
     }
 
     /**
      * Gets the data from response by given key
      * @return mixed
      */
-    public static function get(string $key, ?string $default = null)
+    public function get(string $key, ?string $default = null)
     {
-        return self::has($key) ? self::$__response[$key] : $default;
+        return $this->has($key) ? $this->__response[$key] : $default;
     }
 
     /**
      * Sets new key/value pair into response
      * @param mixed $value
      */
-    public static function set(string $key, $value): void
+    public function set(string $key, $value): void
     {
-        self::$__response[$key] = $value;
+        $this->__response[$key] = $value;
     }
 
     /**
      * Gets all response parameters
      * @return array<string, mixed>
      */
-    public static function all(): array
+    public function all(): array
     {
-        return self::$__response;
+        return $this->__response;
     }
 
     /**
      * Deletes the element from response by given key
      */
-    public static function delete(string $key): void
+    public function delete(string $key): void
     {
-        if (self::has($key)) {
-            unset(self::$__response[$key]);
+        if ($this->has($key)) {
+            unset($this->__response[$key]);
         }
     }
 
@@ -94,16 +94,16 @@ trait Body
      * Prepares the JSON response
      * @param array<string, mixed>|null $data
      */
-    public static function json(?array $data = null, ?int $code = null): void
+    public function json(?array $data = null, ?int $code = null): void
     {
-        self::setContentType(ContentType::JSON);
+        $this->setContentType(ContentType::JSON);
 
         if (!is_null($code)) {
-            self::setStatusCode($code);
+            $this->setStatusCode($code);
         }
 
         if ($data) {
-            self::$__response = array_merge(self::$__response, $data);
+            $this->__response = array_merge($this->__response, $data);
         }
     }
 
@@ -111,18 +111,18 @@ trait Body
      * Prepares the JSONP response
      * @param array<string, mixed>|null $data
      */
-    public static function jsonp(string $callback, ?array $data = null, ?int $code = null): void
+    public function jsonp(string $callback, ?array $data = null, ?int $code = null): void
     {
-        self::setContentType(ContentType::JSONP);
+        $this->setContentType(ContentType::JSONP);
 
-        self::$callbackFunction = $callback;
+        $this->callbackFunction = $callback;
 
         if (!is_null($code)) {
-            self::setStatusCode($code);
+            $this->setStatusCode($code);
         }
 
         if ($data) {
-            self::$__response = array_merge(self::$__response, $data);
+            $this->__response = array_merge($this->__response, $data);
         }
     }
 
@@ -130,9 +130,9 @@ trait Body
      * Returns response with function
      * @param array<string, mixed> $data
      */
-    public static function getJsonPData(array $data): string
+    public function getJsonPData(array $data): string
     {
-        return self::$callbackFunction . '(' . json_encode($data) . ')';
+        return $this->callbackFunction . '(' . json_encode($data) . ')';
     }
 
     /**
@@ -140,50 +140,50 @@ trait Body
      * @param array<string, mixed>|null $data
      * @param string $root
      */
-    public static function xml(?array $data = null, $root = '<data></data>', ?int $code = null): void
+    public function xml(?array $data = null, $root = '<data></data>', ?int $code = null): void
     {
-        self::setContentType(ContentType::XML);
+        $this->setContentType(ContentType::XML);
 
         if (!is_null($code)) {
-            self::setStatusCode($code);
+            $this->setStatusCode($code);
         }
 
-        self::$xmlRoot = $root;
+        $this->xmlRoot = $root;
 
         if ($data) {
-            self::$__response = array_merge(self::$__response, $data);
+            $this->__response = array_merge($this->__response, $data);
         }
     }
 
     /**
      * Prepares the HTML content
      */
-    public static function html(string $html, ?int $code = null): void
+    public function html(string $html, ?int $code = null): void
     {
-        self::setContentType(ContentType::HTML);
+        $this->setContentType(ContentType::HTML);
 
         if (!is_null($code)) {
-            self::setStatusCode($code);
+            $this->setStatusCode($code);
         }
 
-        self::$__response[ReservedKeys::RENDERED_VIEW] = $html;
+        $this->__response[ReservedKeys::RENDERED_VIEW] = $html;
     }
 
     /**
      * Gets the response content
      * @throws HttpException
      */
-    public static function getContent(): string
+    public function getContent(): string
     {
-        $contentType = self::getContentType();
+        $contentType = $this->getContentType();
 
-        if (!isset(self::$formatters[$contentType])) {
+        if (!isset($this->formatters[$contentType])) {
             throw new HttpException("Unsupported content type: {$contentType}");
         }
 
-        $formatterMethod = self::$formatters[$contentType];
+        $formatterMethod = $this->formatters[$contentType];
 
-        return self::$formatterMethod();
+        return $this->$formatterMethod();
     }
 
     /**
@@ -191,10 +191,10 @@ trait Body
      * @param array<string, mixed> $arr
      * @throws Exception
      */
-    private static function arrayToXML(array $arr): string
+    private function arrayToXML(array $arr): string
     {
-        $simpleXML = new SimpleXMLElement(self::$xmlRoot);
-        self::composeXML($arr, $simpleXML);
+        $simpleXML = new SimpleXMLElement($this->xmlRoot);
+        $this->composeXML($arr, $simpleXML);
 
         $dom = new DOMDocument();
         $xml = $simpleXML->asXML();
@@ -212,7 +212,7 @@ trait Body
      * Compose XML
      * @param array<string, mixed> $arr
      */
-    private static function composeXML(array $arr, SimpleXMLElement &$simpleXML): void
+    private function composeXML(array $arr, SimpleXMLElement &$simpleXML): void
     {
         foreach ($arr as $key => $value) {
             if (is_numeric($key)) {
@@ -235,7 +235,7 @@ trait Body
                     }
                 }
 
-                self::composeXML($value, $child);
+                $this->composeXML($value, $child);
             } else {
                 $child = $simpleXML->addChild($tag, htmlspecialchars((string) $value));
 
@@ -251,33 +251,33 @@ trait Body
     /**
      * Formats data as JSON
      */
-    private static function formatJson(): string
+    private function formatJson(): string
     {
-        return json_encode(self::all(), JSON_UNESCAPED_UNICODE) ?: '';
+        return json_encode($this->all(), JSON_UNESCAPED_UNICODE) ?: '';
     }
 
     /**
      * Formats data as XML
      * @throws Exception
      */
-    private static function formatXml(): string
+    private function formatXml(): string
     {
-        return self::arrayToXml(self::all());
+        return $this->arrayToXML($this->all());
     }
 
     /**
      * Formats data as HTML
      */
-    private static function formatHtml(): string
+    private function formatHtml(): string
     {
-        return self::get(ReservedKeys::RENDERED_VIEW) ?? '';
+        return $this->get(ReservedKeys::RENDERED_VIEW) ?? '';
     }
 
     /**
      * Formats data as JSONP
      */
-    private static function formatJsonp(): string
+    private function formatJsonp(): string
     {
-        return self::getJsonPData(self::all());
+        return $this->getJsonPData($this->all());
     }
 }

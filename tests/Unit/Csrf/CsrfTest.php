@@ -18,7 +18,7 @@ class CsrfTest extends AppTestCase
     {
         parent::setUp();
 
-        $this->request = new Request();
+        $this->request = request();
 
         $this->csrf = csrf();
     }

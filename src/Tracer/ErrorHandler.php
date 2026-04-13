@@ -16,6 +16,7 @@ declare(strict_types=1);
 
 namespace Quantum\Tracer;
 
+use Exception;
 use Quantum\Storage\Contracts\LocalFilesystemAdapterInterface;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Quantum\Renderer\Exceptions\RendererException;
@@ -25,7 +26,6 @@ use Quantum\View\Factories\ViewFactory;
 use Quantum\Di\Exceptions\DiException;
 use DebugBar\DebugBarException;
 use Quantum\Logger\Logger;
-use Quantum\Http\Response;
 use ReflectionException;
 use Psr\Log\LogLevel;
 use ErrorException;
@@ -108,7 +108,7 @@ class ErrorHandler
     }
 
     /**
-     * @throws ConfigException|RendererException|DiException|BaseException|ReflectionException
+     * @throws ConfigException|RendererException|DiException|BaseException|ReflectionException|Exception
      */
     private function handleWebException(Throwable $throwable): void
     {
@@ -126,8 +126,8 @@ class ErrorHandler
             $this->logError($throwable, $errorType);
         }
 
-        Response::html($errorPage);
-        Response::send();
+        response()->html($errorPage);
+        response()->send();
     }
 
     private function logError(Throwable $e, string $errorType): void

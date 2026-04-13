@@ -9,7 +9,6 @@ use Quantum\Router\MatchedRoute;
 use Quantum\View\QtView;
 use Quantum\View\RawParam;
 use Quantum\Router\Route;
-use Quantum\Http\Request;
 use Quantum\Di\Di;
 
 class QtViewTest extends AppTestCase
@@ -29,11 +28,9 @@ class QtViewTest extends AppTestCase
         $route->module('Test');
 
         $matchedRoute = new MatchedRoute($route, []);
-        Request::setMatchedRoute($matchedRoute);
 
-        $request = Di::get(Request::class);
-        $request->create('GET', '/test');
-        Request::setMatchedRoute($matchedRoute);
+        request()->create('GET', '/test');
+        request()->setMatchedRoute($matchedRoute);
 
         $this->view = ViewFactory::get();
     }

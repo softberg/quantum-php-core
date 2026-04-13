@@ -3,27 +3,24 @@
 namespace Quantum\Tests\Unit\Http\Traits\Request;
 
 use Quantum\Tests\Unit\AppTestCase;
-use Quantum\Http\Request;
 
 class HttpRequestHeaderTest extends AppTestCase
 {
     public function setUp(): void
     {
         parent::setUp();
-
-        Request::init(server());
     }
 
     public function tearDown(): void
     {
-        Request::flush();
+        request()->flush();
 
         server()->flush();
     }
 
     public function testRequestHeaderSetHasGetDelete(): void
     {
-        $request = new Request();
+        $request = request();
 
         $this->assertFalse($request->hasHeader('name'));
 
@@ -40,7 +37,7 @@ class HttpRequestHeaderTest extends AppTestCase
 
     public function testRequestHeaderAll(): void
     {
-        $request = new Request();
+        $request = request();
 
         $this->assertEmpty($request->allHeaders());
 
@@ -53,7 +50,7 @@ class HttpRequestHeaderTest extends AppTestCase
 
     public function testGetAuthorizationBearer(): void
     {
-        $request = new Request();
+        $request = request();
 
         $bearerToken = md5('random');
 
@@ -68,7 +65,7 @@ class HttpRequestHeaderTest extends AppTestCase
 
     public function testGetBasicAuthCredentialsFromServer(): void
     {
-        $request = new Request();
+        $request = request();
 
         $server = server();
 
@@ -94,7 +91,7 @@ class HttpRequestHeaderTest extends AppTestCase
 
     public function testGetBasicAuthCredentialsFromHeader(): void
     {
-        $request = new Request();
+        $request = request();
 
         $username = 'testHeaderName';
 
@@ -117,7 +114,7 @@ class HttpRequestHeaderTest extends AppTestCase
 
     public function testIsAjaxReturnsTrueWhenHeaderIsSet(): void
     {
-        $request = new Request();
+        $request = request();
 
         $this->assertFalse($request->isAjax());
 
@@ -128,7 +125,7 @@ class HttpRequestHeaderTest extends AppTestCase
 
     public function testIsAjaxReturnsTrueFromServerWhenHeaderIsMissing(): void
     {
-        $request = new Request();
+        $request = request();
 
         $this->assertFalse($request->isAjax());
 
@@ -139,12 +136,12 @@ class HttpRequestHeaderTest extends AppTestCase
 
     public function testGetReferrer(): void
     {
-        $this->assertNull(Request::getReferrer());
+        $this->assertNull(request()->getReferrer());
 
         $referrer = 'https://example.com/page';
 
         server()->set('HTTP_REFERER', $referrer);
 
-        $this->assertEquals($referrer, Request::getReferrer());
+        $this->assertEquals($referrer, request()->getReferrer());
     }
 }

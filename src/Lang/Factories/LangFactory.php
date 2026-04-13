@@ -21,7 +21,6 @@ use Quantum\Loader\Exceptions\LoaderException;
 use Quantum\Lang\Exceptions\LangException;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Lang\Translator;
-use Quantum\Http\Request;
 use Quantum\Loader\Setup;
 use ReflectionException;
 use Quantum\Lang\Lang;
@@ -110,7 +109,7 @@ class LangFactory
      */
     private function getLangFromQuery(array $supported): ?string
     {
-        $queryLang = Request::getQueryParam('lang');
+        $queryLang = request()->getQueryParam('lang');
 
         return $queryLang && in_array($queryLang, $supported) ? $queryLang : null;
     }
@@ -127,7 +126,7 @@ class LangFactory
             $segmentIndex++;
         }
 
-        $segmentLang = Request::getSegment($segmentIndex);
+        $segmentLang = request()->getSegment($segmentIndex);
 
         return $segmentLang && in_array($segmentLang, $supported) ? $segmentLang : null;
     }

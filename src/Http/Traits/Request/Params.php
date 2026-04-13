@@ -32,13 +32,13 @@ trait Params
      * Request content type
      * @var string|null
      */
-    private static ?string $__contentType;
+    private ?string $__contentType = null;
 
     /**
      * Gets the GET params.
      * @return array<string, mixed>
      */
-    private static function getParams(): array
+    private function getParams(): array
     {
         if ($_GET === []) {
             return [];
@@ -51,7 +51,7 @@ trait Params
      * Gets the POST params.
      * @return array<string, mixed>
      */
-    private static function postParams(): array
+    private function postParams(): array
     {
         if ($_POST === []) {
             return [];
@@ -64,32 +64,32 @@ trait Params
      * Parses and returns JSON payload parameters.
      * @return array<string, mixed>
      */
-    private static function jsonPayloadParams(): array
+    private function jsonPayloadParams(): array
     {
         if (
-            !in_array(self::$__method, ['PUT', 'PATCH', 'POST'], true) ||
-            self::$__contentType !== ContentType::JSON
+            !in_array($this->__method, ['PUT', 'PATCH', 'POST'], true) ||
+            $this->__contentType !== ContentType::JSON
         ) {
             return [];
         }
 
-        return json_decode(self::getRawInput(), true) ?: [];
+        return json_decode($this->getRawInput(), true) ?: [];
     }
 
     /**
      * Parses and returns URL-encoded parameters.
      * @return array<string, mixed>
      */
-    private static function urlEncodedParams(): array
+    private function urlEncodedParams(): array
     {
         if (
-            !in_array(self::$__method, ['PUT', 'PATCH', 'POST'], true) ||
-            self::$__contentType !== ContentType::URL_ENCODED
+            !in_array($this->__method, ['PUT', 'PATCH', 'POST'], true) ||
+            $this->__contentType !== ContentType::URL_ENCODED
         ) {
             return [];
         }
 
-        parse_str(urldecode(self::getRawInput()), $result);
+        parse_str(urldecode($this->getRawInput()), $result);
 
         return $result; /** @phpstan-ignore return.type */
     }
@@ -99,22 +99,22 @@ trait Params
      * @return array<string, mixed>
      * @throws ConfigException|DiException|BaseException|ReflectionException
      */
-    private static function getRawInputParams(): array
+    private function getRawInputParams(): array
     {
         if (
-            !in_array(self::$__method, ['PUT', 'PATCH', 'POST'], true) ||
-            self::$__contentType !== ContentType::FORM_DATA
+            !in_array($this->__method, ['PUT', 'PATCH', 'POST'], true) ||
+            $this->__contentType !== ContentType::FORM_DATA
         ) {
             return ['params' => [], 'files' => []];
         }
 
-        return self::parse(self::getRawInput());
+        return $this->parse($this->getRawInput());
     }
 
     /**
      * Retrieves the raw HTTP request body as a string.
      */
-    private static function getRawInput(): string
+    private function getRawInput(): string
     {
         return file_get_contents('php://input') ?: '';
     }

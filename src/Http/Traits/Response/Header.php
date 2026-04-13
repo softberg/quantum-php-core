@@ -29,75 +29,75 @@ trait Header
      * Response headers
      * @var array<string, mixed>
      */
-    private static array $__headers = [];
+    private array $__headers = [];
 
     /**
      * Checks the response header existence by given key
      */
-    public static function hasHeader(string $key): bool
+    public function hasHeader(string $key): bool
     {
-        return isset(self::$__headers[$key]);
+        return isset($this->__headers[$key]);
     }
 
     /**
      * Gets the response header by given key
      */
-    public static function getHeader(string $key): ?string
+    public function getHeader(string $key): ?string
     {
-        return self::hasHeader($key) ? self::$__headers[$key] : null;
+        return $this->hasHeader($key) ? $this->__headers[$key] : null;
     }
 
     /**
      * Sets the response header
      */
-    public static function setHeader(string $key, string $value): void
+    public function setHeader(string $key, string $value): void
     {
-        self::$__headers[$key] = $value;
+        $this->__headers[$key] = $value;
     }
 
     /**
      * Get all response headers
      * @return array<string, mixed>
      */
-    public static function allHeaders(): array
+    public function allHeaders(): array
     {
-        return self::$__headers;
+        return $this->__headers;
     }
 
     /**
      * Deletes the header by given key
      */
-    public static function deleteHeader(string $key): void
+    public function deleteHeader(string $key): void
     {
-        if (self::hasHeader($key)) {
-            unset(self::$__headers[$key]);
+        if ($this->hasHeader($key)) {
+            unset($this->__headers[$key]);
         }
     }
 
     /**
      * Sets the content type
      */
-    public static function setContentType(string $contentType): void
+    public function setContentType(string $contentType): void
     {
-        self::setHeader('Content-Type', $contentType);
+        $this->setHeader('Content-Type', $contentType);
     }
 
     /**
      * Gets the content type
      */
-    public static function getContentType(): string
+    public function getContentType(): string
     {
-        return self::getHeader('Content-Type') ?? ContentType::HTML;
+        return $this->getHeader('Content-Type') ?? ContentType::HTML;
     }
 
     /**
      * Redirect
      * @throws StopExecutionException
      */
-    public static function redirect(string $url, int $code = 302): void
+    public function redirect(string $url, int $code = 302): void
     {
-        self::setStatusCode($code);
-        self::setHeader('Location', $url);
+        $this->setStatusCode($code);
+        $this->setHeader('Location', $url);
         stop();
     }
 }

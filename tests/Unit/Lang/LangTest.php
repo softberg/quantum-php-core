@@ -6,9 +6,7 @@ use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Router\MatchedRoute;
 use Quantum\Lang\Translator;
 use Quantum\Router\Route;
-use Quantum\Http\Request;
 use Quantum\Lang\Lang;
-use Quantum\Di\Di;
 
 class LangTest extends AppTestCase
 {
@@ -30,13 +28,9 @@ class LangTest extends AppTestCase
         $route->module('Test');
 
         $matchedRoute = new MatchedRoute($route, []);
-        Request::setMatchedRoute($matchedRoute);
 
-        if (!Di::isRegistered(Request::class)) {
-            $request = new Request();
-            $request->create('POST', '/api-signin');
-            Di::set(Request::class, $request);
-        }
+        request()->create('POST', '/api-signin');
+        request()->setMatchedRoute($matchedRoute);
     }
 
     public function testLangGetSet(): void

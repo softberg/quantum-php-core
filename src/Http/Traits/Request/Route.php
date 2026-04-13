@@ -24,16 +24,16 @@ use Quantum\Router\MatchedRoute;
  */
 trait Route
 {
-    private static ?MatchedRoute $route = null;
+    private ?MatchedRoute $route = null;
 
-    public static function setMatchedRoute(?MatchedRoute $route): void
+    public function setMatchedRoute(?MatchedRoute $route): void
     {
-        self::$route = $route;
+        $this->route = $route;
     }
 
-    public static function getMatchedRoute(): ?MatchedRoute
+    public function getMatchedRoute(): ?MatchedRoute
     {
-        return self::$route;
+        return $this->route;
     }
 
 }

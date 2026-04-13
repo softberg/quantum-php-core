@@ -20,13 +20,13 @@ use Quantum\Auth\Contracts\AuthenticatableInterface;
 use Quantum\Auth\Contracts\AuthServiceInterface;
 use Quantum\Auth\Exceptions\AuthException;
 use Quantum\Jwt\Exceptions\JwtException;
+use Quantum\Di\Exceptions\DiException;
 use Quantum\Auth\Traits\AuthTrait;
 use Quantum\Auth\Enums\AuthKeys;
 use Quantum\Mailer\Mailer;
 use Quantum\Hasher\Hasher;
-use Quantum\Http\Response;
-use Quantum\Http\Request;
 use Quantum\Jwt\JwtToken;
+use ReflectionException;
 use Quantum\Auth\User;
 use Exception;
 
@@ -57,9 +57,7 @@ class JwtAuthAdapter implements AuthenticatableInterface
 
     /**
      * @inheritDoc
-     * @throws AuthException
-     * @throws JwtException
-     * @throws Exception
+     * @throws AuthException|DiException|JwtException|ReflectionException|Exception
      */
     public function signin(string $username, string $password)
     {
@@ -74,10 +72,11 @@ class JwtAuthAdapter implements AuthenticatableInterface
 
     /**
      * @inheritDoc
+     * @throws DiException|ReflectionException
      */
     public function signout(): bool
     {
-        $refreshToken = Request::getHeader($this->keyFields[AuthKeys::REFRESH_TOKEN]);
+        $refreshToken = request()->getHeader($this->keyFields[AuthKeys::REFRESH_TOKEN]);
 
         $user = $this->authService->get($this->keyFields[AuthKeys::REFRESH_TOKEN], $refreshToken);
 
@@ -88,9 +87,9 @@ class JwtAuthAdapter implements AuthenticatableInterface
                 array_merge($this->getVisibleFields($user), [$this->keyFields[AuthKeys::REFRESH_TOKEN] => ''])
             );
 
-            Request::deleteHeader($this->keyFields[AuthKeys::REFRESH_TOKEN]);
-            Request::deleteHeader('Authorization');
-            Response::delete('tokens');
+            request()->deleteHeader($this->keyFields[AuthKeys::REFRESH_TOKEN]);
+            request()->deleteHeader('Authorization');
+            response()->delete('tokens');
 
             return true;
         }
@@ -100,7 +99,7 @@ class JwtAuthAdapter implements AuthenticatableInterface
 
     /**
      * @inheritDoc
-     * @throws JwtException
+     * @throws JwtException|DiException|ReflectionException
      */
     public function user(): ?User
     {
@@ -113,7 +112,7 @@ class JwtAuthAdapter implements AuthenticatableInterface
 
     /**
      * Refresh user data
-     * @throws JwtException
+     * @throws JwtException|DiException|ReflectionException
      */
     public function refreshUser(string $uuid): bool
     {
@@ -130,9 +129,8 @@ class JwtAuthAdapter implements AuthenticatableInterface
 
     /**
      * Verify OTP
-     * @throws AuthException
-     * @throws JwtException
      * @return array<string, string>
+     * @throws AuthException|JwtException|DiException|ReflectionException
      */
     public function verifyOtp(int $otp, string $otpToken): array
     {
@@ -157,7 +155,7 @@ class JwtAuthAdapter implements AuthenticatableInterface
     /**
      * Set Updated Tokens
      * @return array<string, string>
-     * @throws JwtException
+     * @throws JwtException|DiException|ReflectionException
      */
     protected function setUpdatedTokens(User $user): array
     {
@@ -169,9 +167,9 @@ class JwtAuthAdapter implements AuthenticatableInterface
             array_merge($this->getVisibleFields($user), [$this->keyFields[AuthKeys::REFRESH_TOKEN] => $tokens[$this->keyFields[AuthKeys::REFRESH_TOKEN]]])
         );
 
-        Request::setHeader($this->keyFields[AuthKeys::REFRESH_TOKEN], $tokens[$this->keyFields[AuthKeys::REFRESH_TOKEN]]);
-        Request::setHeader('Authorization', 'Bearer ' . $tokens[$this->keyFields[AuthKeys::ACCESS_TOKEN]]);
-        Response::set('tokens', $tokens);
+        request()->setHeader($this->keyFields[AuthKeys::REFRESH_TOKEN], $tokens[$this->keyFields[AuthKeys::REFRESH_TOKEN]]);
+        request()->setHeader('Authorization', 'Bearer ' . $tokens[$this->keyFields[AuthKeys::ACCESS_TOKEN]]);
+        response()->set('tokens', $tokens);
 
         return $tokens;
     }
@@ -183,13 +181,16 @@ class JwtAuthAdapter implements AuthenticatableInterface
     {
         return $this->authService->get(
             $this->keyFields[AuthKeys::REFRESH_TOKEN],
-            Request::getHeader($this->keyFields[AuthKeys::REFRESH_TOKEN])
+            request()->getHeader($this->keyFields[AuthKeys::REFRESH_TOKEN])
         );
     }
 
+    /**
+     * @throws DiException|ReflectionException
+     */
     private function getUserFromAccessToken(): ?User
     {
-        $authorizationBearer = Request::getAuthorizationBearer();
+        $authorizationBearer = request()->getAuthorizationBearer();
 
         if (!$authorizationBearer) {
             return null;
@@ -203,11 +204,11 @@ class JwtAuthAdapter implements AuthenticatableInterface
     }
 
     /**
-     * @throws JwtException
+     * @throws JwtException|DiException|ReflectionException
      */
     private function getUserFromRefreshToken(): ?User
     {
-        if (!Request::hasHeader($this->keyFields[AuthKeys::REFRESH_TOKEN])) {
+        if (!request()->hasHeader($this->keyFields[AuthKeys::REFRESH_TOKEN])) {
             return null;
         }
 

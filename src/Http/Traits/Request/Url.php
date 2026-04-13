@@ -25,96 +25,96 @@ trait Url
     /**
      * Scheme
      */
-    private static ?string $__protocol = null;
+    private ?string $__protocol = null;
 
     /**
      * Host name
      */
-    private static ?string $__host = null;
+    private ?string $__host = null;
 
     /**
      * Server port
      */
-    private static ?string $__port = null;
+    private ?string $__port = null;
 
     /**
      * Request URI
      */
-    private static ?string $__uri = null;
+    private ?string $__uri = null;
 
     /**
      * Gets the protocol
      * @return string
      */
-    public static function getProtocol(): ?string
+    public function getProtocol(): ?string
     {
-        return self::$__protocol;
+        return $this->__protocol;
     }
 
     /**
      * Sets the protocol
      */
-    public static function setProtocol(string $protocol): void
+    public function setProtocol(string $protocol): void
     {
-        self::$__protocol = $protocol;
+        $this->__protocol = $protocol;
     }
 
     /**
      * Gets the host name
      * @return string
      */
-    public static function getHost(): ?string
+    public function getHost(): ?string
     {
-        return self::$__host;
+        return $this->__host;
     }
 
     /**
      * Sets the host name
      */
-    public static function setHost(string $host): void
+    public function setHost(string $host): void
     {
-        self::$__host = $host;
+        $this->__host = $host;
     }
 
     /**
      * Gets the port
      * @return string
      */
-    public static function getPort(): ?string
+    public function getPort(): ?string
     {
-        return self::$__port;
+        return $this->__port;
     }
 
     /**
      * Sets the port
      */
-    public static function setPort(string $port): void
+    public function setPort(string $port): void
     {
-        self::$__port = $port;
+        $this->__port = $port;
     }
 
     /**
      * Gets the URI
      */
-    public static function getUri(): ?string
+    public function getUri(): ?string
     {
-        return self::$__uri;
+        return $this->__uri;
     }
 
     /**
      * Sets the URI
      */
-    public static function setUri(string $uri): void
+    public function setUri(string $uri): void
     {
-        self::$__uri = ltrim($uri, '/');
+        $this->__uri = ltrim($uri, '/');
     }
 
     /**
      * Returns the URI segment at the specified index.
      */
-    public static function getSegment(int $index): ?string
+    public function getSegment(int $index): ?string
     {
-        $segments = self::getAllSegments();
+        $segments = $this->getAllSegments();
 
         return $segments[$index] ?? null;
     }
@@ -123,13 +123,13 @@ trait Url
      * Gets all URI segments as an array.
      * @return array<string>
      */
-    public static function getAllSegments(): array
+    public function getAllSegments(): array
     {
-        if (self::$__uri === null) {
+        if ($this->__uri === null) {
             return ['zero_segment'];
         }
 
-        $parsed = parse_url(self::$__uri);
+        $parsed = parse_url($this->__uri);
         $segments = explode('/', trim(is_array($parsed) ? ($parsed['path'] ?? '') : '', '/'));
         array_unshift($segments, 'zero_segment');
         return $segments;

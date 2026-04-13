@@ -26,26 +26,26 @@ trait Header
      * Request headers
      * @var array<string, mixed>
      */
-    private static array $__headers = [];
+    private array $__headers = [];
 
     /**
      * Checks the request header existence by given key
      */
-    public static function hasHeader(string $key): bool
+    public function hasHeader(string $key): bool
     {
-        [$keyWithHyphens, $keyWithUnderscores] = self::normalizeHeaderKey($key);
+        [$keyWithHyphens, $keyWithUnderscores] = $this->normalizeHeaderKey($key);
 
-        return isset(self::$__headers[$keyWithHyphens]) || isset(self::$__headers[$keyWithUnderscores]);
+        return isset($this->__headers[$keyWithHyphens]) || isset($this->__headers[$keyWithUnderscores]);
     }
 
     /**
      * Gets the request header by given key
      */
-    public static function getHeader(string $key): ?string
+    public function getHeader(string $key): ?string
     {
-        if (self::hasHeader($key)) {
-            [$keyWithHyphens, $keyWithUnderscores] = self::normalizeHeaderKey($key);
-            return self::$__headers[$keyWithHyphens] ?? self::$__headers[$keyWithUnderscores];
+        if ($this->hasHeader($key)) {
+            [$keyWithHyphens, $keyWithUnderscores] = $this->normalizeHeaderKey($key);
+            return $this->__headers[$keyWithHyphens] ?? $this->__headers[$keyWithUnderscores];
         }
 
         return null;
@@ -55,40 +55,40 @@ trait Header
      * Sets the request header
      * @param mixed $value
      */
-    public static function setHeader(string $key, $value): void
+    public function setHeader(string $key, $value): void
     {
-        self::$__headers[strtolower($key)] = $value;
+        $this->__headers[strtolower($key)] = $value;
     }
 
     /**
      * Gets all request headers
      * @return array<string, mixed>
      */
-    public static function allHeaders(): array
+    public function allHeaders(): array
     {
-        return self::$__headers;
+        return $this->__headers;
     }
 
     /**
      * Deletes the header by given key
      */
-    public static function deleteHeader(string $key): void
+    public function deleteHeader(string $key): void
     {
-        if (self::hasHeader($key)) {
-            unset(self::$__headers[strtolower($key)]);
+        if ($this->hasHeader($key)) {
+            unset($this->__headers[strtolower($key)]);
         }
     }
 
     /**
      * Gets Authorization Bearer token
      */
-    public static function getAuthorizationBearer(): ?string
+    public function getAuthorizationBearer(): ?string
     {
         $bearerToken = null;
 
-        $authorization = (string) self::getHeader('Authorization');
+        $authorization = (string) $this->getHeader('Authorization');
 
-        if (self::hasHeader('Authorization') && preg_match('/Bearer\s(\S+)/', $authorization, $matches)) {
+        if ($this->hasHeader('Authorization') && preg_match('/Bearer\s(\S+)/', $authorization, $matches)) {
             $bearerToken = $matches[1];
         }
 
@@ -99,20 +99,20 @@ trait Header
      * Gets Basic Auth Credentials
      * @return array<string, string>|null
      */
-    public static function getBasicAuthCredentials(): ?array
+    public function getBasicAuthCredentials(): ?array
     {
-        if (self::$server->has('PHP_AUTH_USER') && static::$server->has('PHP_AUTH_PW')) {
+        if ($this->server->has('PHP_AUTH_USER') && $this->server->has('PHP_AUTH_PW')) {
             return [
-                'username' => self::$server->get('PHP_AUTH_USER'),
-                'password' => self::$server->get('PHP_AUTH_PW'),
+                'username' => $this->server->get('PHP_AUTH_USER'),
+                'password' => $this->server->get('PHP_AUTH_PW'),
             ];
         }
 
-        if (!self::hasHeader('Authorization')) {
+        if (!$this->hasHeader('Authorization')) {
             return null;
         }
 
-        $authorization = (string) self::getHeader('Authorization');
+        $authorization = (string) $this->getHeader('Authorization');
 
         if (preg_match('/Basic\s(\S+)/', $authorization, $matches)) {
             $decoded = base64_decode($matches[1], true);
@@ -129,23 +129,23 @@ trait Header
     /**
      * Checks to see if request was AJAX request
      */
-    public static function isAjax(): bool
+    public function isAjax(): bool
     {
-        return self::hasHeader('X-REQUESTED-WITH') || self::$server->ajax();
+        return $this->hasHeader('X-REQUESTED-WITH') || $this->server->ajax();
     }
 
     /**
      * Gets the referrer
      */
-    public static function getReferrer(): ?string
+    public function getReferrer(): ?string
     {
-        return self::$server->referrer();
+        return $this->server->referrer();
     }
 
     /**
      * @return array<string>
      */
-    private static function normalizeHeaderKey(string $key): array
+    private function normalizeHeaderKey(string $key): array
     {
         $keyWithHyphens = str_replace('_', '-', strtolower($key));
         $keyWithUnderscores = str_replace('-', '_', $key);

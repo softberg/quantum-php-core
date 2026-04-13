@@ -3,7 +3,6 @@
 namespace Quantum\Tests\Unit\Http\Traits\Request;
 
 use Quantum\Tests\Unit\AppTestCase;
-use Quantum\Http\Request;
 
 class HttpRequestQueryTest extends AppTestCase
 {
@@ -14,12 +13,12 @@ class HttpRequestQueryTest extends AppTestCase
 
     public function tearDown(): void
     {
-        Request::flush();
+        request()->flush();
     }
 
     public function testSetGetQuery(): void
     {
-        $request = new Request();
+        $request = request();
 
         $request->create('GET', 'http://test.com:8080/user?firstname=john&lastname=doe');
 
@@ -36,7 +35,7 @@ class HttpRequestQueryTest extends AppTestCase
 
     public function testSetGetQueryParam(): void
     {
-        $request = new Request();
+        $request = request();
 
         $request->setQueryParam('name', 'John');
 

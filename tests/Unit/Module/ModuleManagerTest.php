@@ -4,7 +4,6 @@ namespace Quantum\Tests\Unit\Module;
 
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Module\ModuleManager;
-use Quantum\Http\Response;
 use Quantum\App\App;
 use Exception;
 use Mockery;
@@ -38,7 +37,7 @@ class ModuleManagerTest extends AppTestCase
 
         $mainController = new \Quantum\Tests\_root\modules\Api\Controllers\MainController();
 
-        $response = new Response();
+        $response = response();
 
         $mainController->index($response);
 

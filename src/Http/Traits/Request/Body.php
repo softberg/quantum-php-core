@@ -29,27 +29,27 @@ trait Body
      * Request body
      * @var array<string, mixed>
      */
-    private static array $__request = [];
+    private array $__request = [];
 
     /**
      * Checks if request contains a data by given key
      */
-    public static function has(string $key): bool
+    public function has(string $key): bool
     {
-        return isset(self::$__request[$key]);
+        return isset($this->__request[$key]);
     }
 
     /**
      * Retrieves data from request by given key
      * @return mixed
      */
-    public static function get(string $key, ?string $default = null, bool $raw = false)
+    public function get(string $key, ?string $default = null, bool $raw = false)
     {
-        if (!self::has($key)) {
+        if (!$this->has($key)) {
             return $default;
         }
 
-        $value = self::$__request[$key];
+        $value = $this->__request[$key];
 
         if ($raw) {
             return $value;
@@ -64,31 +64,31 @@ trait Body
      * Sets new key/value pair into request
      * @param mixed $value
      */
-    public static function set(string $key, $value): void
+    public function set(string $key, $value): void
     {
         if ($key === ReservedKeys::RENDERED_VIEW) {
             throw new InvalidArgumentException("Cannot set reserved key: `$key`");
         }
 
-        self::$__request[$key] = $value;
+        $this->__request[$key] = $value;
     }
 
     /**
      * Gets all request parameters
      * @return array<string, mixed>
      */
-    public static function all(): array
+    public function all(): array
     {
-        return array_merge(self::$__request, self::$__files);
+        return array_merge($this->__request, $this->__files);
     }
 
     /**
      * Deletes the element from request by given key
      */
-    public static function delete(string $key): void
+    public function delete(string $key): void
     {
-        if (self::has($key)) {
-            unset(self::$__request[$key]);
+        if ($this->has($key)) {
+            unset($this->__request[$key]);
         }
     }
 }
