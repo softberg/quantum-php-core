@@ -26,6 +26,15 @@ use ReflectionException;
  * Preserves the existing static API for full backward compatibility.
  *
  * @package Quantum/Di
+ * @method static void registerDependencies(array<string, mixed> $dependencies)
+ * @method static void register(string $concrete, ?string $abstract = null)
+ * @method static bool isRegistered(string $abstract)
+ * @method static bool has(string $abstract)
+ * @method static void set(string $abstract, object $instance, bool $override = true)
+ * @method static mixed get(string $dependency, array<mixed> $args = [])
+ * @method static mixed create(string $dependency, array<mixed> $args = [])
+ * @method static array<int, mixed> autowire(callable $entry, array<mixed> $args = [])
+ * @method static void resetContainer()
  */
 class Di
 {
@@ -55,90 +64,6 @@ class Di
     }
 
     /**
-     * Register dependencies
-     * @param array<string, mixed> $dependencies
-     * @throws DiException
-     */
-    public static function registerDependencies(array $dependencies): void
-    {
-        self::getCurrent()->registerDependencies($dependencies);
-    }
-
-    /**
-     * Registers new dependency
-     * @throws DiException
-     */
-    public static function register(string $concrete, ?string $abstract = null): void
-    {
-        self::getCurrent()->register($concrete, $abstract);
-    }
-
-    /**
-     * Checks if a dependency registered
-     */
-    public static function isRegistered(string $abstract): bool
-    {
-        return self::getCurrent()->isRegistered($abstract);
-    }
-
-    /**
-     * Checks if an instance exists in the container
-     */
-    public static function has(string $abstract): bool
-    {
-        return self::getCurrent()->has($abstract);
-    }
-
-    /**
-     * Sets an instance into container
-     * @template T of object
-     * @param class-string<T> $abstract
-     * @param T $instance
-     * @throws DiException
-     */
-    public static function set(string $abstract, object $instance, bool $override = true): void
-    {
-        self::getCurrent()->set($abstract, $instance, $override);
-    }
-
-    /**
-     * Retrieves a shared instance of the given dependency.
-     * @template T of object
-     * @param class-string<T> $dependency
-     * @param array<mixed> $args
-     * @return T
-     * @throws DiException|ReflectionException
-     */
-    public static function get(string $dependency, array $args = [])
-    {
-        return self::getCurrent()->get($dependency, $args);
-    }
-
-    /**
-     * Creates new instance of the given dependency.
-     * @template T of object
-     * @param class-string<T> $dependency
-     * @param array<mixed> $args
-     * @return T
-     * @throws DiException|ReflectionException
-     */
-    public static function create(string $dependency, array $args = [])
-    {
-        return self::getCurrent()->create($dependency, $args);
-    }
-
-    /**
-     * Autowire callable parameters
-     * @param array<mixed> $args
-     * @return array<int, mixed>
-     * @throws DiException|ReflectionException
-     */
-    public static function autowire(callable $entry, array $args = []): array
-    {
-        return self::getCurrent()->autowire($entry, $args);
-    }
-
-    /**
      * Resets the current container by replacing it with a fresh instance
      */
     public static function reset(): void
@@ -147,10 +72,16 @@ class Di
     }
 
     /**
-     * Resets only the resolved instances, keeping dependency registrations
+     * @param array<mixed> $arguments
+     * @return mixed
+     * @throws DiException|ReflectionException
      */
-    public static function resetContainer(): void
+    public static function __callStatic(string $method, array $arguments)
     {
-        self::getCurrent()->resetContainer();
+        if (!method_exists(self::getCurrent(), $method)) {
+            throw DiException::invalidCallable($method);
+        }
+
+        return self::getCurrent()->$method(...$arguments);
     }
 }
