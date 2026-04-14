@@ -7,18 +7,21 @@ use Quantum\App\Stages\LoadEnvironmentStage;
 use Quantum\App\Stages\LoadAppConfigStage;
 use Quantum\App\Stages\LoadHelpersStage;
 use Quantum\Tests\Unit\AppTestCase;
+use Quantum\App\AppContext;
 use Quantum\Di\Di;
 
 class SetupErrorHandlerStageTest extends AppTestCase
 {
+    private AppContext $context;
+
     public function setUp(): void
     {
         Di::reset();
-        $context = $this->createContext();
+        $this->context = $this->createContext();
 
-        (new LoadHelpersStage())->process($context);
-        (new LoadEnvironmentStage())->process($context);
-        (new LoadAppConfigStage())->process($context);
+        (new LoadHelpersStage())->process($this->context);
+        (new LoadEnvironmentStage())->process($this->context);
+        (new LoadAppConfigStage())->process($this->context);
     }
 
     public function tearDown(): void
@@ -32,7 +35,7 @@ class SetupErrorHandlerStageTest extends AppTestCase
     public function testSetupErrorHandlerStageRegistersHandlers(): void
     {
         $stage = new SetupErrorHandlerStage();
-        $stage->process($this->createContext());
+        $stage->process($this->context);
 
         $errorHandler = set_error_handler(function () {
         });

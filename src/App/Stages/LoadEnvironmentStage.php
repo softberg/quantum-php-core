@@ -24,6 +24,7 @@ use Quantum\Environment\Environment;
 use Quantum\App\AppContext;
 use Quantum\Loader\Setup;
 use ReflectionException;
+use Quantum\Di\Di;
 
 /**
  * Class LoadEnvironmentStage
@@ -36,12 +37,14 @@ class LoadEnvironmentStage implements BootStageInterface
      */
     public function process(AppContext $context): void
     {
-        $environment = Environment::getInstance();
+        $environment = new Environment();
 
         if ($context->isConsoleMode()) {
             $environment->setMutable(true);
         }
 
         $environment->load(new Setup('config', 'env'));
+
+        Di::set(Environment::class, $environment);
     }
 }

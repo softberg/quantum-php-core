@@ -27,6 +27,7 @@ use Quantum\Environment\Environment;
 use Quantum\Console\QtCommand;
 use ReflectionException;
 use RuntimeException;
+use Quantum\Di\Di;
 
 /**
  * Class InstallToolkitCommand
@@ -72,7 +73,7 @@ class InstallToolkitCommand extends QtCommand
 
         $password = $this->getArgument('password');
 
-        $env = Environment::getInstance();
+        $env = Di::get(Environment::class);
 
         $env->setMutable(true);
 

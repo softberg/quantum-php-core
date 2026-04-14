@@ -16,14 +16,8 @@ declare(strict_types=1);
 
 namespace Quantum\Console\Commands;
 
-use Quantum\Environment\Exceptions\EnvException;
-use Quantum\App\Exceptions\BaseException;
-use Quantum\Di\Exceptions\DiException;
-use Quantum\Environment\Environment;
 use Quantum\Console\QtCommand;
 use Povils\Figlet\Figlet;
-use Quantum\Loader\Setup;
-use ReflectionException;
 
 /**
  * Class VersionCommand
@@ -48,24 +42,20 @@ class VersionCommand extends QtCommand
 
     /**
      * Executes the command and prints greetings into the terminal
-     * @throws DiException
-     * @throws EnvException
-     * @throws BaseException
-     * @throws ReflectionException
      */
     public function exec(): void
     {
-        Environment::getInstance()->load(new Setup('config', 'env'));
+        $version = config()->get('app.version', 'UNKNOWN');
 
         $figlet = new Figlet();
 
         $renderedFiglet = $figlet
             ->setFontDir(assets_dir() . DS . 'shared' . DS . 'fonts' . DS . 'figlet' . DS)
             ->setFont('slant')
-            ->render('QUANTUM PHP ' . env('APP_VERSION'));
+            ->render('QUANTUM PHP ' . $version);
 
         $this->info($renderedFiglet);
 
-        $this->info('- - - Q U A N T U M   P H P   F R A M E W O R K  ' . env('APP_VERSION') . '  I N S T A L L E D - - -');
+        $this->info('- - - Q U A N T U M   P H P   F R A M E W O R K  ' . $version . '  I N S T A L L E D - - -');
     }
 }

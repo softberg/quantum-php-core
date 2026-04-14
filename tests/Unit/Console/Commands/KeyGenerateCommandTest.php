@@ -9,6 +9,7 @@ use Quantum\Console\Commands\KeyGenerateCommand;
 use Quantum\Environment\Environment;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\App\App;
+use Quantum\Di\Di;
 
 class KeyGenerateCommandTest extends AppTestCase
 {
@@ -29,7 +30,7 @@ class KeyGenerateCommandTest extends AppTestCase
 
         $this->envFilePath = App::getBaseDir() . DS . '.env.testing';
         $this->originalFileContent = (string) $this->fs->get($this->envFilePath);
-        $this->originalEnvData = $this->getPrivateProperty(Environment::getInstance(), 'envContent');
+        $this->originalEnvData = $this->getPrivateProperty(Di::get(Environment::class), 'envContent');
 
         $this->command = new KeyGenerateCommand();
         $this->command->setHelperSet(new HelperSet(['question' => new QuestionHelper()]));
@@ -39,7 +40,7 @@ class KeyGenerateCommandTest extends AppTestCase
     public function tearDown(): void
     {
         $this->fs->put($this->envFilePath, $this->originalFileContent);
-        $this->setPrivateProperty(Environment::getInstance(), 'envContent', $this->originalEnvData);
+        $this->setPrivateProperty(Di::get(Environment::class), 'envContent', $this->originalEnvData);
 
         parent::tearDown();
     }

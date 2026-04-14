@@ -13,7 +13,6 @@ use Quantum\Di\DiContainer;
 use Quantum\App\AppContext;
 use Quantum\Config\Config;
 use Quantum\Router\Route;
-use Quantum\Loader\Setup;
 use ReflectionClass;
 use Quantum\App\App;
 use Quantum\Di\Di;
@@ -26,9 +25,7 @@ abstract class AppTestCase extends TestCase
     {
         AppFactory::create(AppType::WEB, PROJECT_ROOT);
 
-        Environment::getInstance()
-            ->setMutable(true)
-            ->load(new Setup('config', 'env'));
+        Di::get(Environment::class)->setMutable(true);
 
         $this->fs = FileSystemFactory::get();
     }

@@ -5,6 +5,7 @@ namespace Quantum\Tests\Unit\Environment;
 use Quantum\Environment\Environment;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\App\App;
+use Quantum\Di\Di;
 
 class EnvironmentTest extends AppTestCase
 {
@@ -14,7 +15,7 @@ class EnvironmentTest extends AppTestCase
     {
         parent::setUp();
 
-        $this->env = Environment::getInstance();
+        $this->env = Di::get(Environment::class);
     }
 
     public function testEnvironmentGetAppEnv(): void

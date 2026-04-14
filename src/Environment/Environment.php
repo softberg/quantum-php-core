@@ -89,6 +89,10 @@ class Environment
 
         $appEnv = $envConfig['app_env'] ?? Env::PRODUCTION;
 
+        if (in_array($appEnv, [Env::TESTING, Env::LOCAL, Env::DEVELOPMENT], true)) {
+            $this->isMutable = true;
+        }
+
         $this->envFile = '.env' . ($appEnv !== Env::PRODUCTION ? ".$appEnv" : '');
 
         if (!file_exists($this->getEnvFilePath())) {
@@ -195,11 +199,11 @@ class Environment
     /**
      * @return array<string, mixed>
      */
-    private function loadDotenvFile(bool $forceMutableReload = false): array
+    private function loadDotenvFile(): array
     {
         $baseDir = App::getBaseDir();
 
-        $dotenv = ($forceMutableReload || $this->isMutable)
+        $dotenv = $this->isMutable
             ? Dotenv::createMutable($baseDir, $this->envFile)
             : Dotenv::createImmutable($baseDir, $this->envFile);
 

@@ -7,18 +7,21 @@ use Quantum\App\Stages\LoadAppConfigStage;
 use Quantum\App\Stages\LoadLanguageStage;
 use Quantum\App\Stages\LoadHelpersStage;
 use Quantum\Tests\Unit\AppTestCase;
+use Quantum\App\AppContext;
 use Quantum\Di\Di;
 
 class LoadLanguageStageTest extends AppTestCase
 {
+    private AppContext $context;
+
     public function setUp(): void
     {
         Di::reset();
-        $context = $this->createContext();
+        $this->context = $this->createContext();
 
-        (new LoadHelpersStage())->process($context);
-        (new LoadEnvironmentStage())->process($context);
-        (new LoadAppConfigStage())->process($context);
+        (new LoadHelpersStage())->process($this->context);
+        (new LoadEnvironmentStage())->process($this->context);
+        (new LoadAppConfigStage())->process($this->context);
     }
 
     public function tearDown(): void
@@ -30,7 +33,7 @@ class LoadLanguageStageTest extends AppTestCase
     public function testLoadLanguageStageRunsWithoutError(): void
     {
         $stage = new LoadLanguageStage();
-        $stage->process($this->createContext());
+        $stage->process($this->context);
 
         $this->assertTrue(true);
     }

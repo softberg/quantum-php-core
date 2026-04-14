@@ -23,6 +23,7 @@ use Quantum\Environment\Environment;
 use Quantum\Environment\Enums\Env;
 use Quantum\Http\Enums\StatusCode;
 use Exception;
+use Quantum\Di\Di;
 
 /**
  * Class Response
@@ -64,7 +65,7 @@ class Response
      */
     public function send(): void
     {
-        if (Environment::getInstance()->getAppEnv() !== Env::TESTING) {
+        if (Di::get(Environment::class)->getAppEnv() !== Env::TESTING) {
             while (ob_get_level() > 0) {
                 ob_end_clean();
             }

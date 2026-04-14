@@ -20,6 +20,7 @@ use Quantum\Environment\Exceptions\EnvException;
 use Quantum\Environment\Environment;
 use Quantum\Console\QtCommand;
 use Exception;
+use Quantum\Di\Di;
 
 /**
  * Class KeyGenerateCommand
@@ -57,14 +58,16 @@ class KeyGenerateCommand extends QtCommand
      */
     public function exec(): void
     {
-        if (Environment::getInstance()->hasKey('APP_KEY') && env('APP_KEY') !== '' && !$this->getOption('yes')) {
+        $environment = Di::get(Environment::class);
+
+        if ($environment->hasKey('APP_KEY') && env('APP_KEY') !== '' && !$this->getOption('yes')) {
             if (!$this->confirm('The operation will remove the existing key and will create new one. Continue?')) {
                 $this->info('Operation was canceled!');
                 return;
             }
         }
 
-        Environment::getInstance()
+        $environment
             ->setMutable(true)
             ->updateRow('APP_KEY', $this->generateRandomKey());
 

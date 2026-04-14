@@ -11,7 +11,6 @@ namespace Quantum\Auth\Traits {
 namespace Quantum\Tests\Unit\Auth {
 
     use Quantum\Database\Adapters\Sleekdb\SleekDbal;
-    use Quantum\Environment\Environment;
     use Quantum\Tests\Unit\AppTestCase;
     use Quantum\Mailer\Mailer;
     use Quantum\Loader\Setup;
@@ -83,8 +82,6 @@ namespace Quantum\Tests\Unit\Auth {
             config()->set('database.default', 'sleekdb');
 
             SleekDbal::connect(config()->get('database.sleekdb'));
-
-            Environment::getInstance()->load(new Setup('config', 'env'));
 
             $this->authService = Mockery::mock(\Quantum\Auth\Contracts\AuthServiceInterface::class);
 

@@ -13,16 +13,18 @@
  */
 
 use Quantum\Environment\Exceptions\EnvException;
+use Quantum\Di\Exceptions\DiException;
 use Quantum\Environment\Environment;
+use Quantum\Di\Di;
 
 /**
  * Gets the value of an environment variable
  * @param string $var
  * @param mixed|null $default
  * @return mixed
- * @throws EnvException
+ * @throws EnvException|DiException|\ReflectionException
  */
 function env(string $var, $default = null)
 {
-    return Environment::getInstance()->getValue($var, $default);
+    return Di::get(Environment::class)->getValue($var, $default);
 }

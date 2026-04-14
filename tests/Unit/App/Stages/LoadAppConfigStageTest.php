@@ -6,17 +6,20 @@ use Quantum\App\Stages\LoadEnvironmentStage;
 use Quantum\App\Stages\LoadAppConfigStage;
 use Quantum\App\Stages\LoadHelpersStage;
 use Quantum\Tests\Unit\AppTestCase;
+use Quantum\App\AppContext;
 use Quantum\Di\Di;
 
 class LoadAppConfigStageTest extends AppTestCase
 {
+    private AppContext $context;
+
     public function setUp(): void
     {
         Di::reset();
-        $context = $this->createContext();
+        $this->context = $this->createContext();
 
-        (new LoadHelpersStage())->process($context);
-        (new LoadEnvironmentStage())->process($context);
+        (new LoadHelpersStage())->process($this->context);
+        (new LoadEnvironmentStage())->process($this->context);
     }
 
     public function tearDown(): void
@@ -30,7 +33,7 @@ class LoadAppConfigStageTest extends AppTestCase
         $this->assertFalse(config()->has('app'));
 
         $stage = new LoadAppConfigStage();
-        $stage->process($this->createContext());
+        $stage->process($this->context);
 
         $this->assertTrue(config()->has('app'));
     }
@@ -38,13 +41,12 @@ class LoadAppConfigStageTest extends AppTestCase
     public function testLoadAppConfigStageSkipsIfAlreadyLoaded(): void
     {
         $stage = new LoadAppConfigStage();
-        $context = $this->createContext();
 
-        $stage->process($context);
+        $stage->process($this->context);
 
         $this->assertTrue(config()->has('app'));
 
-        $stage->process($context);
+        $stage->process($this->context);
 
         $this->assertTrue(config()->has('app'));
     }

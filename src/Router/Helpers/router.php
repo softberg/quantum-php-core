@@ -235,7 +235,7 @@ function route_group_exists(string $name, string $module): bool
  */
 function module_base_namespace(): string
 {
-    return Environment::getInstance()->getAppEnv() === 'testing'
+    return Di::get(Environment::class)->getAppEnv() === 'testing'
         ? 'Quantum\\Tests\\_root\\modules'
         : 'Modules';
 }
