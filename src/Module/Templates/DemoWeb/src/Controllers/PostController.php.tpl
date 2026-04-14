@@ -72,7 +72,7 @@ class PostController extends BaseController
             'title' => t('common.posts') . ' | ' . config()->get('app.name'),
             'posts' => $this->postService->transformData($paginatedPosts->data()->all()),
             'pagination' => $paginatedPosts,
-            'referer' => nav_ref_encode(Request::getQuery())
+            'referer' => nav_ref_encode(request()->getQuery())
         ]);
 
         $response->html($this->view->render('post/post'));
