@@ -13,7 +13,6 @@
  */
 
 use Quantum\Di\Exceptions\DiException;
-use Quantum\Environment\Environment;
 use Quantum\Router\RouteCollection;
 use Quantum\Router\Route;
 use Quantum\Di\Di;
@@ -235,7 +234,7 @@ function route_group_exists(string $name, string $module): bool
  */
 function module_base_namespace(): string
 {
-    return Di::get(Environment::class)->getAppEnv() === 'testing'
+    return environment()->isTesting()
         ? 'Quantum\\Tests\\_root\\modules'
         : 'Modules';
 }

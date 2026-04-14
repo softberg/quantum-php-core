@@ -92,6 +92,31 @@ class Environment
         return $this->appEnv;
     }
 
+    public function isProduction(): bool
+    {
+        return $this->appEnv === Env::PRODUCTION;
+    }
+
+    public function isStaging(): bool
+    {
+        return $this->appEnv === Env::STAGING;
+    }
+
+    public function isDevelopment(): bool
+    {
+        return $this->appEnv === Env::DEVELOPMENT;
+    }
+
+    public function isTesting(): bool
+    {
+        return $this->appEnv === Env::TESTING;
+    }
+
+    public function isLocal(): bool
+    {
+        return $this->appEnv === Env::LOCAL;
+    }
+
     /**
      * Gets the environment variable value
      * @param null|mixed $default

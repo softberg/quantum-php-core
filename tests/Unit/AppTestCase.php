@@ -4,7 +4,6 @@ namespace Quantum\Tests\Unit;
 
 use Quantum\Storage\Factories\FileSystemFactory;
 use Quantum\App\Factories\AppFactory;
-use Quantum\Environment\Environment;
 use Quantum\Router\MatchedRoute;
 use Quantum\Storage\FileSystem;
 use PHPUnit\Framework\TestCase;
@@ -29,7 +28,7 @@ abstract class AppTestCase extends TestCase
     {
         AppFactory::create(AppType::WEB, PROJECT_ROOT);
 
-        Di::get(Environment::class)->setMutable(true);
+        environment()->setMutable(true);
 
         $this->fs = FileSystemFactory::get();
     }

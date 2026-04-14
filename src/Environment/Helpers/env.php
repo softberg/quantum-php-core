@@ -18,6 +18,15 @@ use Quantum\Environment\Environment;
 use Quantum\Di\Di;
 
 /**
+ * Gets the Environment instance from DI
+ * @throws DiException|\ReflectionException
+ */
+function environment(): Environment
+{
+    return Di::get(Environment::class);
+}
+
+/**
  * Gets the value of an environment variable
  * @param string $var
  * @param mixed|null $default
@@ -26,5 +35,5 @@ use Quantum\Di\Di;
  */
 function env(string $var, $default = null)
 {
-    return Di::get(Environment::class)->getValue($var, $default);
+    return environment()->getValue($var, $default);
 }

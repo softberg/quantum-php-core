@@ -5,7 +5,6 @@ namespace Quantum\Tests\Unit\Environment;
 use Quantum\Environment\Environment;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\App\App;
-use Quantum\Di\Di;
 
 class EnvironmentTest extends AppTestCase
 {
@@ -15,7 +14,7 @@ class EnvironmentTest extends AppTestCase
     {
         parent::setUp();
 
-        $this->env = Di::get(Environment::class);
+        $this->env = environment();
     }
 
     public function testEnvironmentGetAppEnv(): void
@@ -46,6 +45,36 @@ class EnvironmentTest extends AppTestCase
         $this->assertNull($this->env->getRow('NON_EXISTING_KEY'));
 
         $this->assertEquals('APP_KEY=XYZ1234567890ABCDEFG123456789HIGKLMNOPQRSTUVWXYZ0123456789abcdefgh', $this->env->getRow('APP_KEY'));
+    }
+
+    public function testEnvironmentIsTestingInTestEnv(): void
+    {
+        $this->assertTrue($this->env->isTesting());
+        $this->assertFalse($this->env->isProduction());
+        $this->assertFalse($this->env->isStaging());
+        $this->assertFalse($this->env->isDevelopment());
+        $this->assertFalse($this->env->isLocal());
+    }
+
+    public function testEnvironmentCheckMethodsWithDifferentEnvs(): void
+    {
+        $this->setPrivateProperty($this->env, 'appEnv', 'production');
+        $this->assertTrue($this->env->isProduction());
+        $this->assertFalse($this->env->isTesting());
+
+        $this->setPrivateProperty($this->env, 'appEnv', 'staging');
+        $this->assertTrue($this->env->isStaging());
+        $this->assertFalse($this->env->isProduction());
+
+        $this->setPrivateProperty($this->env, 'appEnv', 'development');
+        $this->assertTrue($this->env->isDevelopment());
+        $this->assertFalse($this->env->isProduction());
+
+        $this->setPrivateProperty($this->env, 'appEnv', 'local');
+        $this->assertTrue($this->env->isLocal());
+        $this->assertFalse($this->env->isProduction());
+
+        $this->setPrivateProperty($this->env, 'appEnv', 'testing');
     }
 
     public function testEnvironmentAddAndUpdateRow(): void

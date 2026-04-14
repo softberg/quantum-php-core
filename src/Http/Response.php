@@ -19,10 +19,7 @@ namespace Quantum\Http;
 use Quantum\Http\Traits\Response\Header;
 use Quantum\Http\Traits\Response\Status;
 use Quantum\Http\Traits\Response\Body;
-use Quantum\Environment\Environment;
-use Quantum\Environment\Enums\Env;
 use Quantum\Http\Enums\StatusCode;
-use Quantum\Di\Di;
 use Exception;
 
 /**
@@ -65,7 +62,7 @@ class Response
      */
     public function send(): void
     {
-        if (Di::get(Environment::class)->getAppEnv() !== Env::TESTING) {
+        if (!environment()->isTesting()) {
             while (ob_get_level() > 0) {
                 ob_end_clean();
             }
