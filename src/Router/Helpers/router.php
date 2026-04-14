@@ -15,6 +15,7 @@
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Router\RouteCollection;
 use Quantum\Router\Route;
+use Quantum\Http\Request;
 use Quantum\Di\Di;
 
 /**
@@ -36,6 +37,10 @@ function current_middlewares(): ?array
  */
 function current_module(): ?string
 {
+    if (!Di::has(Request::class)) {
+        return null;
+    }
+
     $matchedRoute = request()->getMatchedRoute();
 
     return $matchedRoute ? $matchedRoute->getRoute()->getModule() : null;
