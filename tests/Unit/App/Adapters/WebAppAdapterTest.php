@@ -4,6 +4,9 @@ namespace Quantum\Tests\Unit\App\Adapters;
 
 use Quantum\App\Adapters\WebAppAdapter;
 use PHPUnit\Framework\TestCase;
+use Quantum\App\Enums\AppType;
+use Quantum\Di\DiContainer;
+use Quantum\App\AppContext;
 use Quantum\App\App;
 use Quantum\Di\Di;
 
@@ -11,11 +14,19 @@ class WebAppAdapterTest extends TestCase
 {
     private WebAppAdapter $webAppAdapter;
 
+    private function createContext(string $mode = AppType::WEB): AppContext
+    {
+        $container = new DiContainer();
+        Di::setCurrent($container);
+
+        return new AppContext($mode, PROJECT_ROOT, $container);
+    }
+
     public function setUp(): void
     {
         App::setBaseDir(PROJECT_ROOT);
 
-        $this->webAppAdapter = new WebAppAdapter();
+        $this->webAppAdapter = new WebAppAdapter($this->createContext());
     }
 
     public function tearDown(): void

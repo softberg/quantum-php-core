@@ -17,7 +17,6 @@ declare(strict_types=1);
 namespace Quantum\App\Adapters;
 
 use Quantum\App\Contracts\AppInterface;
-use Quantum\App\Traits\AppTrait;
 use Quantum\App\AppContext;
 
 /**
@@ -26,14 +25,10 @@ use Quantum\App\AppContext;
  */
 abstract class AppAdapter implements AppInterface
 {
-    use AppTrait;
-
-    private static string $baseDir;
-
     protected AppContext $context;
 
-    public function __construct(string $mode)
+    public function __construct(AppContext $context)
     {
-        $this->context = new AppContext($mode);
+        $this->context = $context;
     }
 }

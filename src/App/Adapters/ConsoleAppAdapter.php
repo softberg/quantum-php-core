@@ -26,8 +26,8 @@ use Quantum\App\Stages\LoadAppConfigStage;
 use Quantum\App\Stages\LoadLanguageStage;
 use Quantum\App\Stages\LoadHelpersStage;
 use Quantum\App\Traits\ConsoleAppTrait;
-use Quantum\App\Enums\AppType;
 use Quantum\App\BootPipeline;
+use Quantum\App\AppContext;
 use Exception;
 
 if (!defined('DS')) {
@@ -48,9 +48,9 @@ class ConsoleAppAdapter extends AppAdapter
 
     protected Application $application;
 
-    public function __construct()
+    public function __construct(AppContext $context)
     {
-        parent::__construct(AppType::CONSOLE);
+        parent::__construct($context);
 
         $this->input = new ArgvInput();
         $this->output = new ConsoleOutput();

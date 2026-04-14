@@ -5,13 +5,25 @@ namespace Quantum\Tests\Unit\App\Adapters;
 use Quantum\App\Adapters\ConsoleAppAdapter;
 use Symfony\Component\Console\Application;
 use PHPUnit\Framework\TestCase;
+use Quantum\App\Enums\AppType;
+use Quantum\Di\DiContainer;
+use Quantum\App\AppContext;
 use Quantum\App\App;
+use Quantum\Di\Di;
 use Exception;
 use Mockery;
 
 class ConsoleAppAdapterTest extends TestCase
 {
     private $consoleAppAdapter;
+
+    private function createContext(): AppContext
+    {
+        $container = new DiContainer();
+        Di::setCurrent($container);
+
+        return new AppContext(AppType::CONSOLE, PROJECT_ROOT, $container);
+    }
 
     public function setUp(): void
     {
@@ -33,13 +45,14 @@ class ConsoleAppAdapterTest extends TestCase
     public function tearDown(): void
     {
         config()->flush();
+        Di::reset();
     }
 
     public function testConsoleAppAdapterStartSuccessfully(): void
     {
         $_SERVER['argv'] = ['qt', 'list', '--quiet'];
 
-        $this->consoleAppAdapter->__construct();
+        $this->consoleAppAdapter->__construct($this->createContext());
 
         $result = $this->consoleAppAdapter->start();
 
@@ -50,7 +63,7 @@ class ConsoleAppAdapterTest extends TestCase
     {
         $_SERVER['argv'] = ['qt', 'unknown', '--quiet'];
 
-        $this->consoleAppAdapter->__construct();
+        $this->consoleAppAdapter->__construct($this->createContext());
 
         $this->expectException(Exception::class);
 
