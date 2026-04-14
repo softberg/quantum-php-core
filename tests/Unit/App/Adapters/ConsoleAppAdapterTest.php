@@ -4,19 +4,18 @@ namespace Quantum\Tests\Unit\App\Adapters;
 
 use Quantum\App\Adapters\ConsoleAppAdapter;
 use Symfony\Component\Console\Application;
-use PHPUnit\Framework\TestCase;
-use Quantum\App\App;
+use Quantum\Tests\Unit\AppTestCase;
+use Quantum\App\Enums\AppType;
+use Quantum\Di\Di;
 use Exception;
 use Mockery;
 
-class ConsoleAppAdapterTest extends TestCase
+class ConsoleAppAdapterTest extends AppTestCase
 {
     private $consoleAppAdapter;
 
     public function setUp(): void
     {
-        App::setBaseDir(PROJECT_ROOT);
-
         $applicationMock = Mockery::mock(Application::class)->makePartial();
         $applicationMock->shouldReceive('getName')->andReturn('Qt Console Application');
         $applicationMock->shouldReceive('run')->andReturn(0);
@@ -33,13 +32,14 @@ class ConsoleAppAdapterTest extends TestCase
     public function tearDown(): void
     {
         config()->flush();
+        Di::reset();
     }
 
     public function testConsoleAppAdapterStartSuccessfully(): void
     {
         $_SERVER['argv'] = ['qt', 'list', '--quiet'];
 
-        $this->consoleAppAdapter->__construct();
+        $this->consoleAppAdapter->__construct($this->createContext(AppType::CONSOLE));
 
         $result = $this->consoleAppAdapter->start();
 
@@ -50,7 +50,7 @@ class ConsoleAppAdapterTest extends TestCase
     {
         $_SERVER['argv'] = ['qt', 'unknown', '--quiet'];
 
-        $this->consoleAppAdapter->__construct();
+        $this->consoleAppAdapter->__construct($this->createContext(AppType::CONSOLE));
 
         $this->expectException(Exception::class);
 

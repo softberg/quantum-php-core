@@ -4,28 +4,31 @@ namespace Quantum\Tests\Unit;
 
 use Quantum\Storage\Factories\FileSystemFactory;
 use Quantum\App\Factories\AppFactory;
-use Quantum\Environment\Environment;
 use Quantum\Router\MatchedRoute;
+use Quantum\Storage\FileSystem;
 use PHPUnit\Framework\TestCase;
 use Quantum\Debugger\Debugger;
 use Quantum\App\Enums\AppType;
+use Quantum\Di\DiContainer;
+use Quantum\App\AppContext;
 use Quantum\Config\Config;
 use Quantum\Router\Route;
-use Quantum\Loader\Setup;
 use ReflectionClass;
+use Quantum\App\App;
 use Quantum\Di\Di;
 
 abstract class AppTestCase extends TestCase
 {
+    protected AppContext $context;
+
+    /** @var FileSystem */
     protected $fs;
 
     public function setUp(): void
     {
         AppFactory::create(AppType::WEB, PROJECT_ROOT);
 
-        Environment::getInstance()
-            ->setMutable(true)
-            ->load(new Setup('config', 'env'));
+        environment()->setMutable(true);
 
         $this->fs = FileSystemFactory::get();
     }
@@ -44,6 +47,17 @@ abstract class AppTestCase extends TestCase
             Di::get(Debugger::class)->resetStore();
         }
         Di::reset();
+    }
+
+    protected function createContext(string $mode = AppType::WEB): AppContext
+    {
+        $container = new DiContainer();
+        Di::setCurrent($container);
+
+        $context = new AppContext($mode, PROJECT_ROOT, $container);
+        App::setContext($context);
+
+        return $context;
     }
 
     protected function setPrivateProperty($object, $property, $value): void

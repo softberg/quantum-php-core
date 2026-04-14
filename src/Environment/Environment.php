@@ -50,24 +50,7 @@ class Environment
 
     private bool $loaded = false;
 
-    private static string $appEnv = Env::PRODUCTION;
-
-    /**
-     * Instance of Environment
-     */
-    private static ?Environment $instance = null;
-
-    /**
-     * GetInstance
-     */
-    public static function getInstance(): Environment
-    {
-        if (self::$instance === null) {
-            self::$instance = new self();
-        }
-
-        return self::$instance;
-    }
+    private string $appEnv = Env::PRODUCTION;
 
     public function setMutable(bool $isMutable): Environment
     {
@@ -98,7 +81,7 @@ class Environment
         $this->envContent = $this->loadDotenvFile();
 
         $this->loaded = true;
-        self::$appEnv = $appEnv;
+        $this->appEnv = $appEnv;
     }
 
     /**
@@ -106,7 +89,32 @@ class Environment
      */
     public function getAppEnv(): string
     {
-        return self::$appEnv;
+        return $this->appEnv;
+    }
+
+    public function isProduction(): bool
+    {
+        return $this->appEnv === Env::PRODUCTION;
+    }
+
+    public function isStaging(): bool
+    {
+        return $this->appEnv === Env::STAGING;
+    }
+
+    public function isDevelopment(): bool
+    {
+        return $this->appEnv === Env::DEVELOPMENT;
+    }
+
+    public function isTesting(): bool
+    {
+        return $this->appEnv === Env::TESTING;
+    }
+
+    public function isLocal(): bool
+    {
+        return $this->appEnv === Env::LOCAL;
     }
 
     /**
@@ -133,7 +141,7 @@ class Environment
      */
     public function hasKey(string $key): bool
     {
-        return $this->findKeyRow($key) !== null;
+        return array_key_exists($key, $this->envContent);
     }
 
     /**
@@ -141,7 +149,11 @@ class Environment
      */
     public function getRow(string $key): ?string
     {
-        return $this->findKeyRow($key);
+        if (!array_key_exists($key, $this->envContent)) {
+            return null;
+        }
+
+        return $key . '=' . $this->envContent[$key];
     }
 
     /**
@@ -159,16 +171,16 @@ class Environment
         }
 
         $envFilePath = $this->getEnvFilePath();
-        $row = $this->getRow($key);
 
-        if ($row) {
+        if (array_key_exists($key, $this->envContent)) {
             $envFileContent = fs()->get($envFilePath);
 
             if (!is_string($envFileContent)) {
                 throw EnvException::fileNotFound($this->envFile);
             }
 
-            $envFileContent = preg_replace('/^' . preg_quote($row, '/') . '/m', $key . '=' . $value, $envFileContent);
+            $pattern = '/^' . preg_quote($key . '=' . $this->envContent[$key], '/') . '/m';
+            $envFileContent = preg_replace($pattern, $key . '=' . $value, $envFileContent);
 
             fs()->put($envFilePath, (string) $envFileContent);
         } else {
@@ -179,31 +191,11 @@ class Environment
     }
 
     /**
-     * Finds the row by provided key
-     */
-    private function findKeyRow(string $key): ?string
-    {
-        foreach ($this->envContent as $index => $row) {
-            if (preg_match('/^' . $key . '/', $index)) {
-                return $key . '=' . preg_quote($row, '/');
-            }
-        }
-
-        return null;
-    }
-
-    /**
      * @return array<string, mixed>
      */
-    private function loadDotenvFile(bool $forceMutableReload = false): array
+    private function loadDotenvFile(): array
     {
-        $baseDir = App::getBaseDir();
-
-        $dotenv = ($forceMutableReload || $this->isMutable)
-            ? Dotenv::createMutable($baseDir, $this->envFile)
-            : Dotenv::createImmutable($baseDir, $this->envFile);
-
-        $loadedVars = $dotenv->load();
+        $loadedVars = Dotenv::createArrayBacked(App::getBaseDir(), $this->envFile)->load();
 
         return is_array($loadedVars) ? $loadedVars : [];
     }

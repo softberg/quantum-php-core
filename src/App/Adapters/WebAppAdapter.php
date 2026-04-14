@@ -40,8 +40,8 @@ use Quantum\Router\RouteBuilder;
 use Quantum\Module\ModuleLoader;
 use Quantum\Router\RouteFinder;
 use Quantum\Debugger\Debugger;
-use Quantum\App\Enums\AppType;
 use Quantum\App\BootPipeline;
+use Quantum\App\AppContext;
 use ReflectionException;
 use Quantum\Di\Di;
 
@@ -53,9 +53,9 @@ class WebAppAdapter extends AppAdapter
 {
     use WebAppTrait;
 
-    public function __construct()
+    public function __construct(AppContext $context)
     {
-        parent::__construct(AppType::WEB);
+        parent::__construct($context);
 
         $pipeline = new BootPipeline([
             new LoadHelpersStage(),

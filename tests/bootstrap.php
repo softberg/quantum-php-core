@@ -14,8 +14,10 @@ require_once dirname(__DIR__) . DS . 'vendor' . DS . 'autoload.php';
 
 require_once __DIR__ . DS . 'Helpers' . DS . 'functions.php';
 
-createEnvFile();
+$envFileCreated = createEnvFile();
 
-register_shutdown_function(function (): void {
-    removeEnvFile();
-});
+if ($envFileCreated) {
+    register_shutdown_function(function (): void {
+        removeEnvFile();
+    });
+}

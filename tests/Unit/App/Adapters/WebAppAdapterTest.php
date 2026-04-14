@@ -3,19 +3,16 @@
 namespace Quantum\Tests\Unit\App\Adapters;
 
 use Quantum\App\Adapters\WebAppAdapter;
-use PHPUnit\Framework\TestCase;
-use Quantum\App\App;
+use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Di\Di;
 
-class WebAppAdapterTest extends TestCase
+class WebAppAdapterTest extends AppTestCase
 {
     private WebAppAdapter $webAppAdapter;
 
     public function setUp(): void
     {
-        App::setBaseDir(PROJECT_ROOT);
-
-        $this->webAppAdapter = new WebAppAdapter();
+        $this->webAppAdapter = new WebAppAdapter($this->createContext());
     }
 
     public function tearDown(): void
