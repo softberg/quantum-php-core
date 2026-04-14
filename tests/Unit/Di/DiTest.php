@@ -56,6 +56,7 @@ namespace Quantum\Tests\Unit\Di {
     use Quantum\Di\Exceptions\DiException;
     use Quantum\Tests\Unit\AppTestCase;
     use Quantum\Service\DummyService;
+    use Quantum\Di\DiContainer;
     use Quantum\Loader\Loader;
     use Quantum\Http\Response;
     use Quantum\Http\Request;
@@ -358,15 +359,8 @@ namespace Quantum\Tests\Unit\Di {
 
             Di::reset();
 
-            $dependenciesProperty = new ReflectionProperty(Di::class, 'dependencies');
-            $dependenciesProperty->setAccessible(true);
-
-            $containerProperty = new ReflectionProperty(Di::class, 'container');
-            $containerProperty->setAccessible(true);
-
-            $this->assertEmpty($dependenciesProperty->getValue());
-
-            $this->assertEmpty($containerProperty->getValue());
+            $this->assertFalse(Di::isRegistered(DummyService::class));
+            $this->assertFalse(Di::has(DummyService::class));
         }
 
         public function testDiResetContainer(): void
@@ -376,18 +370,99 @@ namespace Quantum\Tests\Unit\Di {
             Di::get(DummyService::class);
 
             $this->assertTrue(Di::isRegistered(DummyService::class));
+            $this->assertTrue(Di::has(DummyService::class));
 
             Di::resetContainer();
 
-            $dependenciesProperty = new ReflectionProperty(Di::class, 'dependencies');
-            $dependenciesProperty->setAccessible(true);
+            $this->assertTrue(Di::isRegistered(DummyService::class));
+            $this->assertFalse(Di::has(DummyService::class));
+        }
 
-            $containerProperty = new ReflectionProperty(Di::class, 'container');
-            $containerProperty->setAccessible(true);
+        public function testDiSetAndGetCurrent(): void
+        {
+            $container = new DiContainer();
+            Di::setCurrent($container);
 
-            $this->assertNotEmpty($dependenciesProperty->getValue());
+            $this->assertSame($container, Di::getCurrent());
+        }
 
-            $this->assertEmpty($containerProperty->getValue());
+        public function testDiGetCurrentCreatesDefaultContainer(): void
+        {
+            $currentProp = new ReflectionProperty(Di::class, 'current');
+            $currentProp->setAccessible(true);
+            $currentProp->setValue(null, null);
+
+            $container = Di::getCurrent();
+
+            $this->assertInstanceOf(DiContainer::class, $container);
+        }
+
+        public function testDiResetCreatesNewContainer(): void
+        {
+            $containerBefore = Di::getCurrent();
+
+            Di::reset();
+
+            $containerAfter = Di::getCurrent();
+
+            $this->assertNotSame($containerBefore, $containerAfter);
+        }
+
+        public function testDiContainerIsolation(): void
+        {
+            $container1 = new DiContainer();
+            $container1->register(DummyService::class);
+            $container1->get(DummyService::class);
+
+            $container2 = new DiContainer();
+
+            $this->assertTrue($container1->isRegistered(DummyService::class));
+            $this->assertTrue($container1->has(DummyService::class));
+
+            $this->assertFalse($container2->isRegistered(DummyService::class));
+            $this->assertFalse($container2->has(DummyService::class));
+        }
+
+        public function testDiContainerInstanceMethods(): void
+        {
+            $container = new DiContainer();
+
+            $container->register(DummyService::class);
+
+            $this->assertTrue($container->isRegistered(DummyService::class));
+            $this->assertFalse($container->has(DummyService::class));
+
+            $instance = $container->get(DummyService::class);
+
+            $this->assertInstanceOf(DummyService::class, $instance);
+            $this->assertTrue($container->has(DummyService::class));
+            $this->assertSame($instance, $container->get(DummyService::class));
+        }
+
+        public function testDiContainerResetClearsAll(): void
+        {
+            $container = new DiContainer();
+
+            $container->register(DummyService::class);
+            $container->get(DummyService::class);
+
+            $container->reset();
+
+            $this->assertFalse($container->isRegistered(DummyService::class));
+            $this->assertFalse($container->has(DummyService::class));
+        }
+
+        public function testDiContainerResetContainerKeepsDependencies(): void
+        {
+            $container = new DiContainer();
+
+            $container->register(DummyService::class);
+            $container->get(DummyService::class);
+
+            $container->resetContainer();
+
+            $this->assertTrue($container->isRegistered(DummyService::class));
+            $this->assertFalse($container->has(DummyService::class));
         }
     }
 }
