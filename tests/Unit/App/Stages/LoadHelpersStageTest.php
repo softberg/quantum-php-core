@@ -4,13 +4,10 @@ namespace Quantum\Tests\Unit\App\Stages;
 
 use Quantum\App\Stages\LoadHelpersStage;
 use Quantum\Tests\Unit\AppTestCase;
-use Quantum\App\AppContext;
 use Quantum\Di\Di;
 
 class LoadHelpersStageTest extends AppTestCase
 {
-    private AppContext $context;
-
     public function setUp(): void
     {
         Di::reset();

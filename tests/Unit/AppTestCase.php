@@ -6,6 +6,7 @@ use Quantum\Storage\Factories\FileSystemFactory;
 use Quantum\App\Factories\AppFactory;
 use Quantum\Environment\Environment;
 use Quantum\Router\MatchedRoute;
+use Quantum\Storage\FileSystem;
 use PHPUnit\Framework\TestCase;
 use Quantum\Debugger\Debugger;
 use Quantum\App\Enums\AppType;
@@ -19,6 +20,9 @@ use Quantum\Di\Di;
 
 abstract class AppTestCase extends TestCase
 {
+    protected AppContext $context;
+
+    /** @var FileSystem */
     protected $fs;
 
     public function setUp(): void

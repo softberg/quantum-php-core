@@ -22,8 +22,8 @@ use Quantum\Http\Traits\Response\Body;
 use Quantum\Environment\Environment;
 use Quantum\Environment\Enums\Env;
 use Quantum\Http\Enums\StatusCode;
-use Exception;
 use Quantum\Di\Di;
+use Exception;
 
 /**
  * Class Response

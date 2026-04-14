@@ -7,13 +7,10 @@ use Quantum\App\Stages\LoadAppConfigStage;
 use Quantum\App\Stages\LoadLanguageStage;
 use Quantum\App\Stages\LoadHelpersStage;
 use Quantum\Tests\Unit\AppTestCase;
-use Quantum\App\AppContext;
 use Quantum\Di\Di;
 
 class LoadLanguageStageTest extends AppTestCase
 {
-    private AppContext $context;
-
     public function setUp(): void
     {
         Di::reset();
