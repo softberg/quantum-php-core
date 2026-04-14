@@ -50,24 +50,7 @@ class Environment
 
     private bool $loaded = false;
 
-    private static string $appEnv = Env::PRODUCTION;
-
-    /**
-     * Instance of Environment
-     */
-    private static ?Environment $instance = null;
-
-    /**
-     * GetInstance
-     */
-    public static function getInstance(): Environment
-    {
-        if (self::$instance === null) {
-            self::$instance = new self();
-        }
-
-        return self::$instance;
-    }
+    private string $appEnv = Env::PRODUCTION;
 
     public function setMutable(bool $isMutable): Environment
     {
@@ -102,7 +85,7 @@ class Environment
         $this->envContent = $this->loadDotenvFile();
 
         $this->loaded = true;
-        self::$appEnv = $appEnv;
+        $this->appEnv = $appEnv;
     }
 
     /**
@@ -110,7 +93,7 @@ class Environment
      */
     public function getAppEnv(): string
     {
-        return self::$appEnv;
+        return $this->appEnv;
     }
 
     /**
