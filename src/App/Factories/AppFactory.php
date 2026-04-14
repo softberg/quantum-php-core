@@ -21,6 +21,7 @@ use Quantum\App\Exceptions\BaseException;
 use Quantum\App\Exceptions\AppException;
 use Quantum\App\Adapters\WebAppAdapter;
 use Quantum\App\Enums\AppType;
+use Quantum\Di\DiContainer;
 use Quantum\App\App;
 use Quantum\Di\Di;
 
@@ -70,7 +71,8 @@ class AppFactory
             throw AppException::adapterNotSupported($type);
         }
 
-        Di::reset();
+        $container = new DiContainer();
+        Di::setCurrent($container);
 
         $adapterClass = self::ADAPTERS[$type];
 
