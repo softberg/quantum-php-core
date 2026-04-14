@@ -29,7 +29,7 @@ use RuntimeException;
  */
 class App
 {
-    private static ?string $baseDir = null;
+    private static ?AppContext $context = null;
 
     private AppInterface $adapter;
 
@@ -38,18 +38,23 @@ class App
         $this->adapter = $adapter;
     }
 
-    public static function setBaseDir(string $baseDir): void
+    public static function setContext(AppContext $context): void
     {
-        self::$baseDir = $baseDir;
+        self::$context = $context;
+    }
+
+    public static function getContext(): AppContext
+    {
+        if (self::$context === null) {
+            throw new RuntimeException('AppContext is not initialized.');
+        }
+
+        return self::$context;
     }
 
     public static function getBaseDir(): string
     {
-        if (self::$baseDir === null || self::$baseDir === '') {
-            throw new RuntimeException('Base directory is not initialized.');
-        }
-
-        return self::$baseDir;
+        return self::getContext()->getBaseDir();
     }
 
     public function getAdapter(): AppInterface

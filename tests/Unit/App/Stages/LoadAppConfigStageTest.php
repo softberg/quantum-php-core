@@ -5,20 +5,15 @@ namespace Quantum\Tests\Unit\App\Stages;
 use Quantum\App\Stages\LoadEnvironmentStage;
 use Quantum\App\Stages\LoadAppConfigStage;
 use Quantum\App\Stages\LoadHelpersStage;
-use PHPUnit\Framework\TestCase;
-use Quantum\App\Enums\AppType;
-use Quantum\App\AppContext;
-use Quantum\App\App;
+use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Di\Di;
 
-class LoadAppConfigStageTest extends TestCase
+class LoadAppConfigStageTest extends AppTestCase
 {
     public function setUp(): void
     {
         Di::reset();
-        App::setBaseDir(PROJECT_ROOT);
-
-        $context = new AppContext(AppType::WEB);
+        $context = $this->createContext();
 
         (new LoadHelpersStage())->process($context);
         (new LoadEnvironmentStage())->process($context);
@@ -35,7 +30,7 @@ class LoadAppConfigStageTest extends TestCase
         $this->assertFalse(config()->has('app'));
 
         $stage = new LoadAppConfigStage();
-        $stage->process(new AppContext(AppType::WEB));
+        $stage->process($this->createContext());
 
         $this->assertTrue(config()->has('app'));
     }
@@ -43,7 +38,7 @@ class LoadAppConfigStageTest extends TestCase
     public function testLoadAppConfigStageSkipsIfAlreadyLoaded(): void
     {
         $stage = new LoadAppConfigStage();
-        $context = new AppContext(AppType::WEB);
+        $context = $this->createContext();
 
         $stage->process($context);
 

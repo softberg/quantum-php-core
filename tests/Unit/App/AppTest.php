@@ -6,10 +6,8 @@ use Quantum\App\Adapters\ConsoleAppAdapter;
 use Quantum\App\Exceptions\AppException;
 use Quantum\App\Adapters\WebAppAdapter;
 use Quantum\App\Contracts\AppInterface;
-use PHPUnit\Framework\TestCase;
+use Quantum\Tests\Unit\AppTestCase;
 use Quantum\App\Enums\AppType;
-use Quantum\Di\DiContainer;
-use Quantum\App\AppContext;
 use Quantum\App\App;
 use Quantum\Di\Di;
 
@@ -17,23 +15,13 @@ use Quantum\Di\Di;
  * @runInSeparateProcess
  * @preserveGlobalState disabled
  */
-class AppTest extends TestCase
+class AppTest extends AppTestCase
 {
-    private function createContext(string $mode = AppType::WEB): AppContext
-    {
-        $container = new DiContainer();
-        Di::setCurrent($container);
-
-        return new AppContext($mode, PROJECT_ROOT, $container);
-    }
-
     public function setUp(): void
     {
         parent::setUp();
 
         Di::reset();
-
-        App::setBaseDir(PROJECT_ROOT);
     }
 
     public function tearDown(): void
@@ -52,8 +40,6 @@ class AppTest extends TestCase
 
         config()->flush();
         Di::reset();
-
-        App::setBaseDir(PROJECT_ROOT);
 
         $app = new App(new ConsoleAppAdapter($this->createContext(AppType::CONSOLE)));
 

@@ -76,10 +76,9 @@ class AppFactory
         Di::setCurrent($container);
 
         $context = new AppContext($type, $baseDir, $container);
+        App::setContext($context);
 
         $adapterClass = self::ADAPTERS[$type];
-
-        App::setBaseDir($baseDir);
 
         return new App(new $adapterClass($context));
     }

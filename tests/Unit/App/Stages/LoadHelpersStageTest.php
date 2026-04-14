@@ -3,18 +3,15 @@
 namespace Quantum\Tests\Unit\App\Stages;
 
 use Quantum\App\Stages\LoadHelpersStage;
-use Quantum\App\Enums\AppType;
-use Quantum\App\AppContext;
-use Quantum\App\App;
-use PHPUnit\Framework\TestCase;
+use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Di\Di;
 
-class LoadHelpersStageTest extends TestCase
+class LoadHelpersStageTest extends AppTestCase
 {
     public function setUp(): void
     {
         Di::reset();
-        App::setBaseDir(PROJECT_ROOT);
+        $this->createContext();
     }
 
     public function tearDown(): void
@@ -25,7 +22,7 @@ class LoadHelpersStageTest extends TestCase
     public function testLoadHelpersStageLoadsComponentHelpers(): void
     {
         $stage = new LoadHelpersStage();
-        $stage->process(new AppContext(AppType::WEB));
+        $stage->process($this->createContext());
 
         $this->assertTrue(function_exists('config'));
         $this->assertTrue(function_exists('env'));

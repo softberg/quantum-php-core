@@ -4,20 +4,16 @@ namespace Quantum\Tests\Unit\App\Stages;
 
 use Quantum\App\Stages\LoadEnvironmentStage;
 use Quantum\App\Stages\LoadHelpersStage;
-use PHPUnit\Framework\TestCase;
+use Quantum\Tests\Unit\AppTestCase;
 use Quantum\App\Enums\AppType;
-use Quantum\App\AppContext;
-use Quantum\App\App;
 use Quantum\Di\Di;
 
-class LoadEnvironmentStageTest extends TestCase
+class LoadEnvironmentStageTest extends AppTestCase
 {
     public function setUp(): void
     {
         Di::reset();
-        App::setBaseDir(PROJECT_ROOT);
-
-        $context = new AppContext(AppType::WEB);
+        $context = $this->createContext();
 
         (new LoadHelpersStage())->process($context);
     }
@@ -30,7 +26,7 @@ class LoadEnvironmentStageTest extends TestCase
     public function testLoadEnvironmentStageLoadsEnvVars(): void
     {
         $stage = new LoadEnvironmentStage();
-        $stage->process(new AppContext(AppType::WEB));
+        $stage->process($this->createContext());
 
         $this->assertNotEmpty(env('APP_KEY'));
     }
@@ -38,7 +34,7 @@ class LoadEnvironmentStageTest extends TestCase
     public function testLoadEnvironmentStageSetsMutableForConsole(): void
     {
         $stage = new LoadEnvironmentStage();
-        $stage->process(new AppContext(AppType::CONSOLE));
+        $stage->process($this->createContext(AppType::CONSOLE));
 
         $this->assertNotEmpty(env('APP_KEY'));
     }
