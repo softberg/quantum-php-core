@@ -18,32 +18,41 @@ namespace Quantum\Di;
 
 use Quantum\Di\Exceptions\DiException;
 use ReflectionException;
-use ReflectionParameter;
-use ReflectionFunction;
-use ReflectionMethod;
-use ReflectionClass;
-use Closure;
 
 /**
  * Di Class
+ *
+ * Static facade that delegates all calls to the current DiContainer instance.
+ * Preserves the existing static API for full backward compatibility.
+ *
  * @package Quantum/Di
  */
 class Di
 {
     /**
-     * @var array<string, class-string>
+     * @var DiContainer|null
      */
-    private static array $dependencies = [];
+    private static ?DiContainer $current = null;
 
     /**
-     * @var array<string, object>
+     * Sets the current container instance
      */
-    private static array $container = [];
+    public static function setCurrent(DiContainer $container): void
+    {
+        self::$current = $container;
+    }
 
     /**
-     * @var array<string, bool>
+     * Gets the current container instance, lazily creating one if needed
      */
-    private static array $resolving = [];
+    public static function getCurrent(): DiContainer
+    {
+        if (self::$current === null) {
+            self::$current = new DiContainer();
+        }
+
+        return self::$current;
+    }
 
     /**
      * Register dependencies
@@ -52,11 +61,7 @@ class Di
      */
     public static function registerDependencies(array $dependencies): void
     {
-        foreach ($dependencies as $abstract => $concrete) {
-            if (!self::isRegistered($abstract)) {
-                self::register($concrete, $abstract);
-            }
-        }
+        self::getCurrent()->registerDependencies($dependencies);
     }
 
     /**
@@ -65,21 +70,7 @@ class Di
      */
     public static function register(string $concrete, ?string $abstract = null): void
     {
-        $key = $abstract ?? $concrete;
-
-        if (isset(self::$dependencies[$key])) {
-            throw DiException::dependencyAlreadyRegistered($key);
-        }
-
-        if (!class_exists($concrete)) {
-            throw DiException::dependencyNotInstantiable($concrete);
-        }
-
-        if ($abstract !== null && !class_exists($abstract) && !interface_exists($abstract)) {
-            throw DiException::invalidAbstractDependency($abstract);
-        }
-
-        self::$dependencies[$key] = $concrete;
+        self::getCurrent()->register($concrete, $abstract);
     }
 
     /**
@@ -87,7 +78,7 @@ class Di
      */
     public static function isRegistered(string $abstract): bool
     {
-        return isset(self::$dependencies[$abstract]);
+        return self::getCurrent()->isRegistered($abstract);
     }
 
     /**
@@ -95,7 +86,7 @@ class Di
      */
     public static function has(string $abstract): bool
     {
-        return isset(self::$container[$abstract]);
+        return self::getCurrent()->has($abstract);
     }
 
     /**
@@ -107,27 +98,7 @@ class Di
      */
     public static function set(string $abstract, object $instance, bool $override = true): void
     {
-        if (!class_exists($abstract) && !interface_exists($abstract)) {
-            throw DiException::invalidAbstractDependency($abstract);
-        }
-
-        if (!is_a($instance, $abstract)) {
-            throw DiException::invalidAbstractDependency($abstract);
-        }
-
-        if (isset(self::$container[$abstract])) {
-            throw DiException::dependencyAlreadyRegistered($abstract);
-        }
-
-        if (!$override && isset(self::$dependencies[$abstract])) {
-            throw DiException::dependencyAlreadyRegistered($abstract);
-        }
-
-        if (!isset(self::$dependencies[$abstract])) {
-            self::$dependencies[$abstract] = get_class($instance);
-        }
-
-        self::$container[$abstract] = $instance;
+        self::getCurrent()->set($abstract, $instance, $override);
     }
 
     /**
@@ -140,14 +111,7 @@ class Di
      */
     public static function get(string $dependency, array $args = [])
     {
-        if (!self::isRegistered($dependency)) {
-            if (!self::instantiable($dependency)) {
-                throw DiException::dependencyNotRegistered($dependency);
-            }
-            self::register($dependency);
-        }
-
-        return self::resolve($dependency, $args, true);
+        return self::getCurrent()->get($dependency, $args);
     }
 
     /**
@@ -160,11 +124,7 @@ class Di
      */
     public static function create(string $dependency, array $args = [])
     {
-        if (!self::isRegistered($dependency)) {
-            self::register($dependency);
-        }
-
-        return self::resolve($dependency, $args, false);
+        return self::getCurrent()->create($dependency, $args);
     }
 
     /**
@@ -175,153 +135,22 @@ class Di
      */
     public static function autowire(callable $entry, array $args = []): array
     {
-        if ($entry instanceof Closure) {
-            $reflection = new ReflectionFunction($entry);
-        } elseif (is_array($entry)) {
-            [$target, $method] = $entry;
-            $reflection = new ReflectionMethod($target, $method);
-        } else {
-            throw DiException::invalidCallable();
-        }
-
-        return self::resolveParameters($reflection->getParameters(), $args);
+        return self::getCurrent()->autowire($entry, $args);
     }
 
+    /**
+     * Resets the current container by replacing it with a fresh instance
+     */
     public static function reset(): void
     {
-        self::$dependencies = [];
-        self::resetContainer();
+        self::$current = new DiContainer();
     }
 
+    /**
+     * Resets only the resolved instances, keeping dependency registrations
+     */
     public static function resetContainer(): void
     {
-        self::$container = [];
-        self::$resolving = [];
-    }
-
-    /**
-     * Resolves the dependency
-     * @param array<mixed> $args
-     * @return mixed|object
-     * @throws DiException|ReflectionException
-     */
-    private static function resolve(string $abstract, array $args = [], bool $singleton = true)
-    {
-        self::checkCircularDependency($abstract);
-        self::$resolving[$abstract] = true;
-
-        try {
-            $concrete = self::$dependencies[$abstract];
-
-            if ($singleton) {
-                if (!isset(self::$container[$abstract])) {
-                    self::$container[$abstract] = self::instantiate($concrete, $args);
-                }
-                return self::$container[$abstract];
-            }
-
-            return self::instantiate($concrete, $args);
-
-        } finally {
-            unset(self::$resolving[$abstract]);
-        }
-    }
-
-    /**
-     * Instantiates the dependency
-     * @param class-string $concrete
-     * @param array<mixed> $args
-     * @return mixed
-     * @throws ReflectionException|DiException
-     */
-    private static function instantiate(string $concrete, array $args = [])
-    {
-        $class = new ReflectionClass($concrete);
-        $constructor = $class->getConstructor();
-
-        $params = $constructor
-            ? self::resolveParameters($constructor->getParameters(), $args)
-            : [];
-
-        return new $concrete(...$params);
-    }
-
-    /**
-     * Resolve parameter list
-     * @param array<ReflectionParameter> $parameters
-     * @param array<mixed> $args
-     * @return array<mixed>
-     * @throws DiException|ReflectionException
-     */
-    private static function resolveParameters(array $parameters, array &$args = []): array
-    {
-        $resolved = [];
-
-        foreach ($parameters as $param) {
-            $resolved[] = self::resolveParameter($param, $args);
-        }
-
-        return $resolved;
-    }
-
-    /**
-     * Resolve single parameter
-     * @param array<mixed> $args
-     * @return array|mixed|object|null
-     * @throws DiException|ReflectionException
-     */
-    private static function resolveParameter(ReflectionParameter $param, array &$args = [])
-    {
-        $type = null;
-
-        if ($param->getType() instanceof \ReflectionNamedType) {
-            $type = $param->getType()->getName();
-        }
-
-        // prefer registered dependency
-        if ($type !== null && isset(self::$dependencies[$type])) {
-            /** @var class-string $type */
-            return self::get($type);
-        }
-
-        // fallback instantiable class
-        if ($type !== null && self::instantiable($type)) {
-            /** @var class-string $type */
-            return self::create($type);
-        }
-
-        // array param receives remaining args
-        if ($type === 'array') {
-            return $args;
-        }
-
-        // positional args fallback
-        if ($args !== []) {
-            return array_shift($args);
-        }
-
-        return $param->isDefaultValueAvailable()
-            ? $param->getDefaultValue()
-            : null;
-    }
-
-    /**
-     * Checks if the class is instantiable
-     */
-    protected static function instantiable(string $class): bool
-    {
-        return class_exists($class)
-            && (new ReflectionClass($class))->isInstantiable();
-    }
-
-    /**
-     * @throws DiException
-     */
-    private static function checkCircularDependency(string $abstract): void
-    {
-        if (isset(self::$resolving[$abstract])) {
-            $chain = implode(' -> ', array_keys(self::$resolving)) . ' -> ' . $abstract;
-            throw DiException::circularDependency($chain);
-        }
+        self::getCurrent()->resetContainer();
     }
 }
