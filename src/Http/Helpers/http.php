@@ -29,6 +29,10 @@ use Quantum\Di\Di;
  */
 function request(): Request
 {
+    if (!Di::isRegistered(Request::class)) {
+        Di::register(Request::class);
+    }
+
     return Di::get(Request::class);
 }
 
@@ -38,6 +42,10 @@ function request(): Request
  */
 function response(): Response
 {
+    if (!Di::isRegistered(Response::class)) {
+        Di::register(Response::class);
+    }
+
     return Di::get(Response::class);
 }
 

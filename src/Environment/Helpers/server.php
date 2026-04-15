@@ -21,12 +21,16 @@ use Quantum\Di\Di;
  */
 function server(): Server
 {
+    if (!Di::isRegistered(Server::class)) {
+        Di::register(Server::class);
+    }
+
     return Di::get(Server::class);
 }
 
 function get_user_ip(): ?string
 {
-    return Di::get(Server::class)->ip();
+    return server()->ip();
 }
 
 if (!function_exists('getallheaders')) {
@@ -37,6 +41,6 @@ if (!function_exists('getallheaders')) {
      */
     function getallheaders(): array
     {
-        return Di::get(Server::class)->getAllHeaders();
+        return server()->getAllHeaders();
     }
 }

@@ -73,6 +73,10 @@ function raw_param($value): RawParam
  */
 function debugbar(): ?string
 {
+    if (!Di::isRegistered(Debugger::class)) {
+        Di::register(Debugger::class);
+    }
+
     $debugger = Di::get(Debugger::class);
 
     if ($debugger->isEnabled()) {

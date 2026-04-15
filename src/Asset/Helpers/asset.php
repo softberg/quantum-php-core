@@ -23,6 +23,10 @@ use Quantum\Di\Di;
  */
 function asset(): AssetManager
 {
+    if (!Di::isRegistered(AssetManager::class)) {
+        Di::register(AssetManager::class);
+    }
+
     return Di::get(AssetManager::class);
 }
 
@@ -32,5 +36,5 @@ function asset(): AssetManager
  */
 function assets(string $type): void
 {
-    Di::get(AssetManager::class)->dump(AssetManager::STORES[$type]);
+    asset()->dump(AssetManager::STORES[$type]);
 }

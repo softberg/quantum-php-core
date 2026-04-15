@@ -22,5 +22,9 @@ use Quantum\Di\Di;
  */
 function hook(): HookManager
 {
+    if (!Di::isRegistered(HookManager::class)) {
+        Di::register(HookManager::class);
+    }
+
     return Di::get(HookManager::class);
 }

@@ -23,6 +23,10 @@ use Quantum\Di\Di;
  */
 function environment(): Environment
 {
+    if (!Di::isRegistered(Environment::class)) {
+        Di::register(Environment::class);
+    }
+
     return Di::get(Environment::class);
 }
 

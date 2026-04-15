@@ -22,5 +22,9 @@ use Quantum\Di\Exceptions\DiException;
  */
 function config(): Config
 {
+    if (!Di::isRegistered(Config::class)) {
+        Di::register(Config::class);
+    }
+
     return Di::get(Config::class);
 }

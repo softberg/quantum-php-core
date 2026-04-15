@@ -22,6 +22,10 @@ use Quantum\Di\Di;
  */
 function csrf(): Csrf
 {
+    if (!Di::isRegistered(Csrf::class)) {
+        Di::register(Csrf::class);
+    }
+
     return Di::get(Csrf::class);
 }
 
