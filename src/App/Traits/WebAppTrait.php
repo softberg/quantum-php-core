@@ -20,7 +20,6 @@ use Quantum\Config\Exceptions\ConfigException;
 use Quantum\Loader\Exceptions\LoaderException;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\ResourceCache\ViewCache;
-use Quantum\Debugger\Debugger;
 use Quantum\Http\Response;
 use Quantum\Loader\Setup;
 use ReflectionException;
@@ -32,19 +31,6 @@ use Quantum\Di\Di;
  */
 trait WebAppTrait
 {
-    /**
-     * @throws DiException|ReflectionException
-     */
-    private function initializeDebugger(): void
-    {
-        if (!Di::isRegistered(Debugger::class)) {
-            Di::register(Debugger::class);
-        }
-
-        $debugger = Di::get(Debugger::class);
-        $debugger->initStore();
-    }
-
     /**
      * @throws ConfigException
      * @throws DiException

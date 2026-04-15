@@ -31,6 +31,7 @@ use Quantum\Middleware\MiddlewareManager;
 use Quantum\App\Stages\LoadLanguageStage;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\App\Stages\LoadHelpersStage;
+use Quantum\App\Stages\InitDebuggerStage;
 use Quantum\App\Stages\InitHttpStage;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\App\Traits\WebAppTrait;
@@ -63,6 +64,7 @@ class WebAppAdapter extends AppAdapter
             new LoadAppConfigStage(),
             new SetupErrorHandlerStage(),
             new InitHttpStage(),
+            new InitDebuggerStage(),
         ]);
 
         $pipeline->run($this->context);
@@ -78,8 +80,6 @@ class WebAppAdapter extends AppAdapter
             if (request()->isMethod('OPTIONS')) {
                 stop();
             }
-
-            $this->initializeDebugger();
 
             if (!Di::isRegistered(ModuleLoader::class)) {
                 Di::register(ModuleLoader::class);
@@ -108,10 +108,6 @@ class WebAppAdapter extends AppAdapter
             request()->setMatchedRoute($matchedRoute);
 
             (new LoadLanguageStage())->process($this->context);
-
-            if (!Di::isRegistered(Debugger::class)) {
-                Di::register(Debugger::class);
-            }
 
             $debugger = Di::get(Debugger::class);
             if ($debugger->isEnabled()) {
