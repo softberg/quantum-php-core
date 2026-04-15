@@ -69,6 +69,10 @@ class AuthFactoryTest extends AppTestCase
 
     private function resetAuthFactory(): void
     {
+        if (!Di::isRegistered(AuthFactory::class)) {
+            Di::register(AuthFactory::class);
+        }
+
         $factory = Di::get(AuthFactory::class);
         $this->setPrivateProperty($factory, 'instances', []);
     }

@@ -67,6 +67,10 @@ class CaptchaFactoryTest extends AppTestCase
 
     private function resetCaptchaFactory(): void
     {
+        if (!Di::isRegistered(CaptchaFactory::class)) {
+            Di::register(CaptchaFactory::class);
+        }
+
         $factory = Di::get(CaptchaFactory::class);
         $this->setPrivateProperty($factory, 'instances', []);
     }

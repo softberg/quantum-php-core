@@ -193,14 +193,14 @@ class DiContainerTest extends AppTestCase
         $this->assertSame($instance, $resolved);
     }
 
-    public function testGetAutoRegistersInstantiableClass(): void
+    public function testGetThrowsForUnregisteredInstantiableClass(): void
     {
         $this->assertFalse($this->container->isRegistered(DiException::class));
 
-        $instance = $this->container->get(DiException::class);
+        $this->expectException(DiException::class);
+        $this->expectExceptionMessage('The dependency `Quantum\Di\Exceptions\DiException` is not registered.');
 
-        $this->assertInstanceOf(DiException::class, $instance);
-        $this->assertTrue($this->container->isRegistered(DiException::class));
+        $this->container->get(DiException::class);
     }
 
     public function testGetThrowsForNonInstantiableClass(): void

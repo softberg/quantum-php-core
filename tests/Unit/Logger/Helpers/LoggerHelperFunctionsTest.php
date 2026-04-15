@@ -22,6 +22,10 @@ class LoggerHelperFunctionsTest extends AppTestCase
 
         config()->set('app.debug', true);
 
+        if (!Di::isRegistered(Debugger::class)) {
+            Di::register(Debugger::class);
+        }
+
         $this->debugger = Di::get(Debugger::class);
 
         $this->debugger->resetStore();

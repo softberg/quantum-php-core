@@ -16,6 +16,11 @@ class ViewFactoryTest extends AppTestCase
         parent::setUp();
 
         $this->resetViewFactory();
+
+        if (!Di::isRegistered(ViewFactory::class)) {
+            Di::register(ViewFactory::class);
+        }
+
         $this->viewFactory = Di::get(ViewFactory::class);
     }
 
@@ -43,6 +48,10 @@ class ViewFactoryTest extends AppTestCase
 
     private function resetViewFactory(): void
     {
+        if (!Di::isRegistered(ViewFactory::class)) {
+            Di::register(ViewFactory::class);
+        }
+
         $factory = Di::get(ViewFactory::class);
         $this->setPrivateProperty($factory, 'instance', null);
     }

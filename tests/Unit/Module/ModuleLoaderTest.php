@@ -14,6 +14,10 @@ class ModuleLoaderTest extends AppTestCase
     {
         parent::setUp();
 
+        if (!Di::isRegistered(ModuleLoader::class)) {
+            Di::register(ModuleLoader::class);
+        }
+
         $this->moduleLoader = Di::get(ModuleLoader::class);
     }
 

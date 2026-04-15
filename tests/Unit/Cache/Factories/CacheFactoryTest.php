@@ -83,6 +83,10 @@ class CacheFactoryTest extends AppTestCase
 
     private function resetCacheFactory(): void
     {
+        if (!Di::isRegistered(CacheFactory::class)) {
+            Di::register(CacheFactory::class);
+        }
+
         $factory = Di::get(CacheFactory::class);
         $this->setPrivateProperty($factory, 'instances', []);
     }

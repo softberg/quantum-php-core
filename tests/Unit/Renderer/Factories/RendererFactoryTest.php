@@ -74,6 +74,10 @@ class RendererFactoryTest extends AppTestCase
 
     private function resetRendererFactory(): void
     {
+        if (!Di::isRegistered(RendererFactory::class)) {
+            Di::register(RendererFactory::class);
+        }
+
         $factory = Di::get(RendererFactory::class);
         $this->setPrivateProperty($factory, 'instances', []);
     }

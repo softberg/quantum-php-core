@@ -125,6 +125,10 @@ class LangFactoryTest extends AppTestCase
 
     private function resetLangFactory(): void
     {
+        if (!Di::isRegistered(LangFactory::class)) {
+            Di::register(LangFactory::class);
+        }
+
         $factory = Di::get(LangFactory::class);
         $this->setPrivateProperty($factory, 'instance', null);
     }

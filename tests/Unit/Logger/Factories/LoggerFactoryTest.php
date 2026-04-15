@@ -97,6 +97,10 @@ class LoggerFactoryTest extends AppTestCase
 
     private function resetLoggerFactory(): void
     {
+        if (!Di::isRegistered(LoggerFactory::class)) {
+            Di::register(LoggerFactory::class);
+        }
+
         $factory = Di::get(LoggerFactory::class);
         $this->setPrivateProperty($factory, 'instances', []);
     }

@@ -20,6 +20,10 @@ class MailTrapTest extends AppTestCase
     {
         parent::setUp();
 
+        if (!Di::isRegistered(MailTrap::class)) {
+            Di::register(MailTrap::class);
+        }
+
         $this->mailTrap = Di::get(MailTrap::class);
 
         $this->filename = '2YILSA4zZk61tDdYEfGMw7lNznlhAQakjwNGr0QCq44';

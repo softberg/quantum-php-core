@@ -43,6 +43,10 @@ HEREDOC;
     {
         parent::setUp();
 
+        if (!Di::isRegistered(ViewCache::class)) {
+            Di::register(ViewCache::class);
+        }
+
         $this->viewCache = Di::get(ViewCache::class);
         $this->viewCache->setup();
     }

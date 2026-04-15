@@ -123,6 +123,10 @@ class SessionFactoryTest extends AppTestCase
 
     private function resetSessionFactory(): void
     {
+        if (!Di::isRegistered(SessionFactory::class)) {
+            Di::register(SessionFactory::class);
+        }
+
         $factory = Di::get(SessionFactory::class);
         $this->setPrivateProperty($factory, 'instances', []);
     }

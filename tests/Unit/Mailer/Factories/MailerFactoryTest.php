@@ -104,6 +104,10 @@ class MailerFactoryTest extends AppTestCase
 
     private function resetMailerFactory(): void
     {
+        if (!Di::isRegistered(MailerFactory::class)) {
+            Di::register(MailerFactory::class);
+        }
+
         $factory = Di::get(MailerFactory::class);
         $this->setPrivateProperty($factory, 'instances', []);
     }

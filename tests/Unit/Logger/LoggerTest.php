@@ -19,6 +19,10 @@ class LoggerTest extends AppTestCase
     {
         parent::setUp();
 
+        if (!Di::isRegistered(Debugger::class)) {
+            Di::register(Debugger::class);
+        }
+
         $this->debugger = Di::get(Debugger::class);
 
         $this->debugger->initStore();
