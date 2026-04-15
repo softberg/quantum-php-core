@@ -35,6 +35,14 @@ class InitHttpStage implements BootStageInterface
      */
     public function process(AppContext $context): void
     {
+        if (!Di::isRegistered(Request::class)) {
+            Di::register(Request::class);
+        }
+
+        if (!Di::isRegistered(Response::class)) {
+            Di::register(Response::class);
+        }
+
         Di::get(Request::class);
         Di::get(Response::class);
     }

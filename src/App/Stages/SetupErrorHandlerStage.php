@@ -37,6 +37,10 @@ class SetupErrorHandlerStage implements BootStageInterface
      */
     public function process(AppContext $context): void
     {
+        if (!Di::isRegistered(ErrorHandler::class)) {
+            Di::register(ErrorHandler::class);
+        }
+
         Di::get(ErrorHandler::class)->setup(LoggerFactory::get());
     }
 }

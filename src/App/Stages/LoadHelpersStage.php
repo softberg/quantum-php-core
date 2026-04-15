@@ -35,6 +35,10 @@ class LoadHelpersStage implements BootStageInterface
      */
     public function process(AppContext $context): void
     {
+        if (!Di::isRegistered(Loader::class)) {
+            Di::register(Loader::class);
+        }
+
         $loader = Di::get(Loader::class);
 
         $this->loadComponentHelpers($loader);
