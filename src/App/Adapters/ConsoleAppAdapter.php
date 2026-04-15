@@ -23,7 +23,6 @@ use Quantum\App\Stages\SetupErrorHandlerStage;
 use Quantum\App\Stages\LoadEnvironmentStage;
 use Symfony\Component\Console\Application;
 use Quantum\App\Stages\LoadAppConfigStage;
-use Quantum\App\Stages\LoadLanguageStage;
 use Quantum\App\Stages\LoadHelpersStage;
 use Quantum\App\Traits\ConsoleAppTrait;
 use Quantum\App\BootPipeline;
@@ -82,8 +81,6 @@ class ConsoleAppAdapter extends AppAdapter
     public function start(): ?int
     {
         try {
-            (new LoadLanguageStage())->process($this->context);
-
             $this->registerCoreCommands();
             $this->registerAppCommands();
 

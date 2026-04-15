@@ -27,23 +27,17 @@ use Quantum\App\Stages\LoadEnvironmentStage;
 use Quantum\Csrf\Exceptions\CsrfException;
 use Quantum\Lang\Exceptions\LangException;
 use Quantum\App\Stages\LoadAppConfigStage;
-use Quantum\Middleware\MiddlewareManager;
-use Quantum\App\Stages\LoadLanguageStage;
-use Quantum\App\Stages\LoadModulesStage;
 use Quantum\App\Exceptions\BaseException;
-use Quantum\App\Stages\LoadHelpersStage;
 use Quantum\App\Stages\InitDebuggerStage;
+use Quantum\Middleware\MiddlewareManager;
+use Quantum\App\Stages\LoadHelpersStage;
 use Quantum\App\Stages\InitHttpStage;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\App\Traits\WebAppTrait;
-use Quantum\Router\RouteCollection;
 use Quantum\Router\RouteDispatcher;
-use Quantum\Router\RouteFinder;
-use Quantum\Debugger\Debugger;
 use Quantum\App\BootPipeline;
 use Quantum\App\AppContext;
 use ReflectionException;
-use Quantum\Di\Di;
 
 /**
  * Class WebAppAdapter
@@ -80,42 +74,24 @@ class WebAppAdapter extends AppAdapter
                 stop();
             }
 
-            (new LoadModulesStage())->process($this->context);
+            $this->loadModules();
 
-            $routeFinder = new RouteFinder(Di::get(RouteCollection::class));
+            $matchedRoute = $this->resolveRoute();
 
-            $matchedRoute = $routeFinder->find(request());
+            $this->loadLanguage();
 
-            if ($matchedRoute === null) {
-                page_not_found();
+            $this->logDebugInfo();
+
+            [$request, $response] = (new MiddlewareManager($matchedRoute))->applyMiddlewares(request(), response());
+
+            if ($this->setupViewCache()->serveCachedView(route_uri() ?? '', $response)) {
                 stop();
             }
 
-            request()->setMatchedRoute($matchedRoute);
-
-            (new LoadLanguageStage())->process($this->context);
-
-            $debugger = Di::get(Debugger::class);
-            if ($debugger->isEnabled()) {
-                $debugger->addToStoreCell(Debugger::HOOKS, 'info', hook()->getRegistered());
-            }
-
-            $middlewareManager = new MiddlewareManager($matchedRoute);
-
-            [$request, $response] = $middlewareManager->applyMiddlewares(request(), response());
-
-            $viewCache = $this->setupViewCache();
-
-            if ($viewCache->serveCachedView(route_uri() ?? '', $response)) {
-                stop();
-            }
-
-            $dispatcher = new RouteDispatcher();
-            $dispatcher->dispatch($matchedRoute, $request);
+            (new RouteDispatcher())->dispatch($matchedRoute, $request);
             stop();
         } catch (StopExecutionException $exception) {
-            $this->handleCors(response());
-            response()->send();
+            $this->sendResponse();
 
             return $exception->getCode();
         }
