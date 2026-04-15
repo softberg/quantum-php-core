@@ -29,6 +29,7 @@ use Quantum\Lang\Exceptions\LangException;
 use Quantum\App\Stages\LoadAppConfigStage;
 use Quantum\Middleware\MiddlewareManager;
 use Quantum\App\Stages\LoadLanguageStage;
+use Quantum\App\Stages\LoadModulesStage;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\App\Stages\LoadHelpersStage;
 use Quantum\App\Stages\InitDebuggerStage;
@@ -37,8 +38,6 @@ use Quantum\Di\Exceptions\DiException;
 use Quantum\App\Traits\WebAppTrait;
 use Quantum\Router\RouteCollection;
 use Quantum\Router\RouteDispatcher;
-use Quantum\Router\RouteBuilder;
-use Quantum\Module\ModuleLoader;
 use Quantum\Router\RouteFinder;
 use Quantum\Debugger\Debugger;
 use Quantum\App\BootPipeline;
@@ -81,22 +80,9 @@ class WebAppAdapter extends AppAdapter
                 stop();
             }
 
-            if (!Di::isRegistered(ModuleLoader::class)) {
-                Di::register(ModuleLoader::class);
-            }
+            (new LoadModulesStage())->process($this->context);
 
-            $moduleLoader = Di::get(ModuleLoader::class);
-
-            $builder = new RouteBuilder();
-
-            $collection = $builder->build(
-                $moduleLoader->loadModulesRoutes(),
-                $moduleLoader->getModuleConfigs()
-            );
-
-            Di::set(RouteCollection::class, $collection);
-
-            $routeFinder = new RouteFinder($collection);
+            $routeFinder = new RouteFinder(Di::get(RouteCollection::class));
 
             $matchedRoute = $routeFinder->find(request());
 
