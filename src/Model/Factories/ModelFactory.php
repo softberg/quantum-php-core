@@ -116,6 +116,10 @@ class ModelFactory
         array  $foreignKeys = [],
         array  $hidden = []
     ): DbalInterface {
+        if (!Di::isRegistered(Database::class)) {
+            Di::register(Database::class);
+        }
+
         $ormClass = Di::get(Database::class)->getOrmClass();
 
         $instance = new $ormClass(

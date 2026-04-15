@@ -87,6 +87,10 @@ trait RelationalTrait
      */
     protected static function resolveQuery(string $method, string $query = '', array $parameters = [])
     {
+        if (!Di::isRegistered(Database::class)) {
+            Di::register(Database::class);
+        }
+
         return Di::get(Database::class)->getOrmClass()::$method($query, $parameters);
     }
 }

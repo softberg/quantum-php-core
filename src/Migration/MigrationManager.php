@@ -77,6 +77,10 @@ class MigrationManager
     {
         $this->fs = FileSystemFactory::get();
 
+        if (!Di::isRegistered(Database::class)) {
+            Di::register(Database::class);
+        }
+
         $this->db = Di::get(Database::class);
 
         $this->tableFactory = new TableFactory();

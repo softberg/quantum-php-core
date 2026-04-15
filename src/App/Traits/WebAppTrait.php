@@ -37,6 +37,10 @@ trait WebAppTrait
      */
     private function initializeDebugger(): void
     {
+        if (!Di::isRegistered(Debugger::class)) {
+            Di::register(Debugger::class);
+        }
+
         $debugger = Di::get(Debugger::class);
         $debugger->initStore();
     }
@@ -48,6 +52,10 @@ trait WebAppTrait
      */
     private function setupViewCache(): ViewCache
     {
+        if (!Di::isRegistered(ViewCache::class)) {
+            Di::register(ViewCache::class);
+        }
+
         $viewCache = Di::get(ViewCache::class);
 
         if ($viewCache->isEnabled()) {

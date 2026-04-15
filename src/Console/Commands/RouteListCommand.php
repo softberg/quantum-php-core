@@ -59,6 +59,10 @@ class RouteListCommand extends QtCommand
     public function exec(): void
     {
         try {
+            if (!Di::isRegistered(ModuleLoader::class)) {
+                Di::register(ModuleLoader::class);
+            }
+
             $moduleLoader = Di::get(ModuleLoader::class);
 
             $builder = new RouteBuilder();

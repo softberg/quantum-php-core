@@ -64,6 +64,10 @@ trait TransactionTrait
      */
     protected static function resolveTransaction(string $method)
     {
+        if (!Di::isRegistered(Database::class)) {
+            Di::register(Database::class);
+        }
+
         $db = Di::get(Database::class)->getOrmClass();
 
         if (!method_exists($db, $method)) {

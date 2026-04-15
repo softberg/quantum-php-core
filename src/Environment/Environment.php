@@ -68,6 +68,10 @@ class Environment
             return;
         }
 
+        if (!Di::isRegistered(Loader::class)) {
+            Di::register(Loader::class);
+        }
+
         $envConfig = Di::get(Loader::class)->setup($setup)->load();
 
         $appEnv = $envConfig['app_env'] ?? Env::PRODUCTION;

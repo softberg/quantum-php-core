@@ -267,6 +267,10 @@ trait MailerTrait
             return false;
         }
 
+        if (!Di::isRegistered(MailTrap::class)) {
+            Di::register(MailTrap::class);
+        }
+
         return Di::get(MailTrap::class)->saveMessage($messageId, $this->getMessageContent());
     }
 

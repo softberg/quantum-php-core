@@ -81,6 +81,10 @@ class WebAppAdapter extends AppAdapter
 
             $this->initializeDebugger();
 
+            if (!Di::isRegistered(ModuleLoader::class)) {
+                Di::register(ModuleLoader::class);
+            }
+
             $moduleLoader = Di::get(ModuleLoader::class);
 
             $builder = new RouteBuilder();
@@ -104,6 +108,10 @@ class WebAppAdapter extends AppAdapter
             request()->setMatchedRoute($matchedRoute);
 
             (new LoadLanguageStage())->process($this->context);
+
+            if (!Di::isRegistered(Debugger::class)) {
+                Di::register(Debugger::class);
+            }
 
             $debugger = Di::get(Debugger::class);
             if ($debugger->isEnabled()) {

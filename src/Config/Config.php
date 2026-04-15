@@ -44,6 +44,10 @@ class Config implements ConfigInterface
             return;
         }
 
+        if (!Di::isRegistered(Loader::class)) {
+            Di::register(Loader::class);
+        }
+
         $this->configs = new Data(Di::get(Loader::class)->setup($setup)->load());
     }
 
@@ -59,6 +63,10 @@ class Config implements ConfigInterface
 
         if ($fileName && $this->has($fileName)) {
             throw ConfigException::configCollision($fileName);
+        }
+
+        if (!Di::isRegistered(Loader::class)) {
+            Di::register(Loader::class);
         }
 
         if (!$this->configs) {

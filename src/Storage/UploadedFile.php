@@ -397,6 +397,10 @@ class UploadedFile extends SplFileInfo
     protected function loadAllowedMimeTypesFromConfig(): void
     {
         if (!config()->has('uploads')) {
+            if (!Di::isRegistered(Loader::class)) {
+                Di::register(Loader::class);
+            }
+
             $loader = Di::get(Loader::class);
             $setup = new Setup('config', 'uploads');
             $loader->setup($setup);

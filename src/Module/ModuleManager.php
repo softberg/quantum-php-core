@@ -86,6 +86,10 @@ class ModuleManager
             throw ModuleException::missingModuleDirectory();
         }
 
+        if (!Di::isRegistered(ModuleLoader::class)) {
+            Di::register(ModuleLoader::class);
+        }
+
         $moduleConfigs = Di::get(ModuleLoader::class)->getModuleConfigs();
 
         foreach ($moduleConfigs as $module => $options) {

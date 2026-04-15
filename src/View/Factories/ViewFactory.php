@@ -53,6 +53,14 @@ class ViewFactory
     public function resolve(): QtView
     {
         if ($this->instance === null) {
+            if (!Di::isRegistered(Debugger::class)) {
+                Di::register(Debugger::class);
+            }
+
+            if (!Di::isRegistered(ViewCache::class)) {
+                Di::register(ViewCache::class);
+            }
+
             $this->instance = new QtView(
                 RendererFactory::get(),
                 asset(),

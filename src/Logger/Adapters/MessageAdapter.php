@@ -41,6 +41,10 @@ class MessageAdapter implements ReportableInterface
     {
         $tab = $context['tab'] ?? Debugger::MESSAGES;
 
+        if (!Di::isRegistered(Debugger::class)) {
+            Di::register(Debugger::class);
+        }
+
         $debugger = Di::get(Debugger::class);
 
         if ($debugger->isEnabled()) {
