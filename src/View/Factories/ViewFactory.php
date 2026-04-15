@@ -40,6 +40,10 @@ class ViewFactory
      */
     public static function get(): QtView
     {
+        if (!Di::isRegistered(self::class)) {
+            Di::register(self::class);
+        }
+
         return Di::get(self::class)->resolve();
     }
 

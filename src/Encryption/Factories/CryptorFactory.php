@@ -46,6 +46,10 @@ class CryptorFactory
      */
     public static function get(string $type = CryptorType::SYMMETRIC): Cryptor
     {
+        if (!Di::isRegistered(self::class)) {
+            Di::register(self::class);
+        }
+
         return Di::get(self::class)->resolve($type);
     }
 

@@ -39,6 +39,10 @@ class LangFactory
      */
     public static function get(): Lang
     {
+        if (!Di::isRegistered(self::class)) {
+            Di::register(self::class);
+        }
+
         return Di::get(self::class)->resolve();
     }
 

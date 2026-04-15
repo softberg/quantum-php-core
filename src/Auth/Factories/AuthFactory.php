@@ -61,6 +61,10 @@ class AuthFactory
      */
     public static function get(?string $adapter = null): Auth
     {
+        if (!Di::isRegistered(self::class)) {
+            Di::register(self::class);
+        }
+
         return Di::get(self::class)->resolve($adapter);
     }
 

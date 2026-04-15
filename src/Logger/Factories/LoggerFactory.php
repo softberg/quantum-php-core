@@ -53,6 +53,10 @@ class LoggerFactory
      */
     public static function get(?string $adapter = null): Logger
     {
+        if (!Di::isRegistered(self::class)) {
+            Di::register(self::class);
+        }
+
         return Di::get(self::class)->resolve($adapter);
     }
 

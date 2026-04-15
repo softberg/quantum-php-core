@@ -46,6 +46,10 @@ class ArchiveFactory
      */
     public static function get(string $type = ArchiveType::PHAR): Archive
     {
+        if (!Di::isRegistered(self::class)) {
+            Di::register(self::class);
+        }
+
         return Di::get(self::class)->resolve($type);
     }
 

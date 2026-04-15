@@ -58,6 +58,10 @@ class MailerFactory
      */
     public static function get(?string $adapter = null): Mailer
     {
+        if (!Di::isRegistered(self::class)) {
+            Di::register(self::class);
+        }
+
         return Di::get(self::class)->resolve($adapter);
     }
 
