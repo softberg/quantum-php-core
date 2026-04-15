@@ -145,10 +145,7 @@ class DiContainer
     public function get(string $dependency, array $args = [])
     {
         if (!$this->isRegistered($dependency)) {
-            if (!$this->instantiable($dependency)) {
-                throw DiException::dependencyNotRegistered($dependency);
-            }
-            $this->register($dependency);
+            throw DiException::dependencyNotRegistered($dependency);
         }
 
         return $this->resolve($dependency, $args, true);
