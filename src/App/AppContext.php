@@ -16,15 +16,14 @@ declare(strict_types=1);
 
 namespace Quantum\App;
 
-use Quantum\Di\Exceptions\DiException;
 use Quantum\Environment\Environment;
+use Quantum\Router\RouteCollection;
 use Quantum\App\Enums\AppType;
+use InvalidArgumentException;
 use Quantum\Di\DiContainer;
 use Quantum\Config\Config;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
-use InvalidArgumentException;
-use ReflectionException;
 use RuntimeException;
 
 /**
@@ -75,43 +74,35 @@ class AppContext
         return $this->mode === AppType::CONSOLE;
     }
 
-    /**
-     * @throws DiException|ReflectionException
-     */
     public function getEnvironment(): Environment
     {
         return $this->resolveFromContainer(Environment::class);
     }
 
-    /**
-     * @throws DiException|ReflectionException
-     */
     public function getConfig(): Config
     {
         return $this->resolveFromContainer(Config::class);
     }
 
-    /**
-     * @throws DiException|ReflectionException
-     */
     public function getRequest(): Request
     {
         return $this->resolveFromContainer(Request::class);
     }
 
-    /**
-     * @throws DiException|ReflectionException
-     */
     public function getResponse(): Response
     {
         return $this->resolveFromContainer(Response::class);
+    }
+
+    public function getRoutes(): RouteCollection
+    {
+        return $this->resolveFromContainer(RouteCollection::class);
     }
 
     /**
      * @template T of object
      * @param class-string<T> $class
      * @return T
-     * @throws DiException|ReflectionException
      */
     private function resolveFromContainer(string $class)
     {
