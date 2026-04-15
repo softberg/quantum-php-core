@@ -65,7 +65,12 @@ abstract class AppTestCase extends TestCase
         $reflection = new ReflectionClass($object);
         $property = $reflection->getProperty($property);
         $property->setAccessible(true);
-        $property->setValue($object, $value);
+
+        if (is_string($object)) {
+            $property->setValue(null, $value);
+        } else {
+            $property->setValue($object, $value);
+        }
     }
 
     protected function getPrivateProperty($object, $property)
