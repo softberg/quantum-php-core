@@ -17,13 +17,15 @@ declare(strict_types=1);
 namespace Quantum\Di;
 
 use Quantum\Di\Exceptions\DiException;
+use Quantum\App\App;
 use ReflectionException;
 
 /**
  * Di Class
  *
- * Static facade that delegates all calls to the current DiContainer instance.
- * Preserves the existing static API for full backward compatibility.
+ * Static facade that delegates all calls to the DiContainer
+ * owned by AppContext. Preserves the existing static API
+ * for full backward compatibility.
  *
  * @package Quantum/Di
  * @method static void registerDependencies(array<string, mixed> $dependencies)
@@ -39,36 +41,11 @@ use ReflectionException;
 class Di
 {
     /**
-     * @var DiContainer|null
-     */
-    private static ?DiContainer $current = null;
-
-    /**
-     * Sets the current container instance
-     */
-    public static function setCurrent(DiContainer $container): void
-    {
-        self::$current = $container;
-    }
-
-    /**
-     * Gets the current container instance, lazily creating one if needed
+     * Gets the current container instance from AppContext
      */
     public static function getCurrent(): DiContainer
     {
-        if (self::$current === null) {
-            self::$current = new DiContainer();
-        }
-
-        return self::$current;
-    }
-
-    /**
-     * Resets the current container by replacing it with a fresh instance
-     */
-    public static function reset(): void
-    {
-        self::$current = new DiContainer();
+        return App::getContext()->getContainer();
     }
 
     /**

@@ -16,6 +16,7 @@ use Quantum\Router\Route;
 use ReflectionClass;
 use Quantum\App\App;
 use Quantum\Di\Di;
+use ReflectionProperty;
 
 abstract class AppTestCase extends TestCase
 {
@@ -46,18 +47,23 @@ abstract class AppTestCase extends TestCase
         if (Di::isRegistered(Debugger::class)) {
             Di::get(Debugger::class)->resetStore();
         }
-        Di::reset();
+
+        $this->clearAppContext();
     }
 
     protected function createContext(string $mode = AppType::WEB): AppContext
     {
-        $container = new DiContainer();
-        Di::setCurrent($container);
-
-        $context = new AppContext($mode, PROJECT_ROOT, $container);
+        $context = new AppContext($mode, PROJECT_ROOT, new DiContainer());
         App::setContext($context);
 
         return $context;
+    }
+
+    protected function clearAppContext(): void
+    {
+        $prop = new ReflectionProperty(App::class, 'context');
+        $prop->setAccessible(true);
+        $prop->setValue(null, null);
     }
 
     protected function setPrivateProperty($object, $property, $value): void

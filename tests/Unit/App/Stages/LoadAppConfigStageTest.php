@@ -6,13 +6,11 @@ use Quantum\App\Stages\LoadEnvironmentStage;
 use Quantum\App\Stages\LoadAppConfigStage;
 use Quantum\App\Stages\LoadHelpersStage;
 use Quantum\Tests\Unit\AppTestCase;
-use Quantum\Di\Di;
 
 class LoadAppConfigStageTest extends AppTestCase
 {
     public function setUp(): void
     {
-        Di::reset();
         $this->context = $this->createContext();
 
         (new LoadHelpersStage())->process($this->context);
@@ -22,7 +20,7 @@ class LoadAppConfigStageTest extends AppTestCase
     public function tearDown(): void
     {
         config()->flush();
-        Di::reset();
+        $this->clearAppContext();
     }
 
     public function testLoadAppConfigStageImportsAppConfig(): void

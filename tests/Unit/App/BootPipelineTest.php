@@ -6,6 +6,7 @@ use Quantum\App\Contracts\BootStageInterface;
 use Quantum\App\BootPipeline;
 use Quantum\App\AppContext;
 use Quantum\App\Enums\AppType;
+use Quantum\Di\DiContainer;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
 use RuntimeException;
@@ -29,7 +30,7 @@ class BootPipelineTest extends TestCase
         });
 
         $pipeline = new BootPipeline([$stage1, $stage2, $stage3]);
-        $pipeline->run(new AppContext(AppType::WEB));
+        $pipeline->run(new AppContext(AppType::WEB, '', new DiContainer()));
 
         $this->assertSame(['first', 'second', 'third'], $log);
     }
@@ -37,7 +38,7 @@ class BootPipelineTest extends TestCase
     public function testEmptyPipelineRunsWithoutError(): void
     {
         $pipeline = new BootPipeline([]);
-        $pipeline->run(new AppContext(AppType::WEB));
+        $pipeline->run(new AppContext(AppType::WEB, '', new DiContainer()));
 
         $this->assertTrue(true);
     }
@@ -51,7 +52,7 @@ class BootPipelineTest extends TestCase
         });
 
         $pipeline = new BootPipeline([$stage]);
-        $pipeline->run(new AppContext(AppType::CONSOLE));
+        $pipeline->run(new AppContext(AppType::CONSOLE, '', new DiContainer()));
 
         $this->assertSame(AppType::CONSOLE, $receivedMode);
     }
@@ -66,7 +67,7 @@ class BootPipelineTest extends TestCase
         $this->expectExceptionMessage('Stage failed');
 
         $pipeline = new BootPipeline([$stage]);
-        $pipeline->run(new AppContext(AppType::WEB));
+        $pipeline->run(new AppContext(AppType::WEB, '', new DiContainer()));
     }
 
     public function testPipelineRejectsInvalidStage(): void

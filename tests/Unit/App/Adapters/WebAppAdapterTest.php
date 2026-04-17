@@ -4,7 +4,6 @@ namespace Quantum\Tests\Unit\App\Adapters;
 
 use Quantum\App\Adapters\WebAppAdapter;
 use Quantum\Tests\Unit\AppTestCase;
-use Quantum\Di\Di;
 
 class WebAppAdapterTest extends AppTestCase
 {
@@ -18,7 +17,7 @@ class WebAppAdapterTest extends AppTestCase
     public function tearDown(): void
     {
         config()->flush();
-        Di::reset();
+        $this->clearAppContext();
     }
 
     public function testWebAppAdapterStartSuccessfully(): void

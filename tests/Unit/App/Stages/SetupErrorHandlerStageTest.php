@@ -7,13 +7,11 @@ use Quantum\App\Stages\LoadEnvironmentStage;
 use Quantum\App\Stages\LoadAppConfigStage;
 use Quantum\App\Stages\LoadHelpersStage;
 use Quantum\Tests\Unit\AppTestCase;
-use Quantum\Di\Di;
 
 class SetupErrorHandlerStageTest extends AppTestCase
 {
     public function setUp(): void
     {
-        Di::reset();
         $this->context = $this->createContext();
 
         (new LoadHelpersStage())->process($this->context);
@@ -26,7 +24,7 @@ class SetupErrorHandlerStageTest extends AppTestCase
         restore_error_handler();
         restore_exception_handler();
         config()->flush();
-        Di::reset();
+        $this->clearAppContext();
     }
 
     public function testSetupErrorHandlerStageRegistersHandlers(): void

@@ -6,7 +6,6 @@ use Quantum\App\Adapters\ConsoleAppAdapter;
 use Symfony\Component\Console\Application;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\App\Enums\AppType;
-use Quantum\Di\Di;
 use Exception;
 use Mockery;
 
@@ -32,7 +31,7 @@ class ConsoleAppAdapterTest extends AppTestCase
     public function tearDown(): void
     {
         config()->flush();
-        Di::reset();
+        $this->clearAppContext();
     }
 
     public function testConsoleAppAdapterStartSuccessfully(): void

@@ -4,19 +4,17 @@ namespace Quantum\Tests\Unit\App\Stages;
 
 use Quantum\App\Stages\LoadHelpersStage;
 use Quantum\Tests\Unit\AppTestCase;
-use Quantum\Di\Di;
 
 class LoadHelpersStageTest extends AppTestCase
 {
     public function setUp(): void
     {
-        Di::reset();
         $this->context = $this->createContext();
     }
 
     public function tearDown(): void
     {
-        Di::reset();
+        $this->clearAppContext();
     }
 
     public function testLoadHelpersStageLoadsComponentHelpers(): void

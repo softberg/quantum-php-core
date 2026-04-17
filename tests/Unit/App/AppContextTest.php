@@ -12,14 +12,13 @@ use Quantum\App\AppContext;
 use Quantum\Config\Config;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
-use RuntimeException;
 use Mockery;
 
 class AppContextTest extends TestCase
 {
     public function testAppContextWebMode(): void
     {
-        $context = new AppContext(AppType::WEB);
+        $context = new AppContext(AppType::WEB, '', new DiContainer());
 
         $this->assertSame(AppType::WEB, $context->getMode());
         $this->assertTrue($context->isWebMode());
@@ -28,7 +27,7 @@ class AppContextTest extends TestCase
 
     public function testAppContextConsoleMode(): void
     {
-        $context = new AppContext(AppType::CONSOLE);
+        $context = new AppContext(AppType::CONSOLE, '', new DiContainer());
 
         $this->assertSame(AppType::CONSOLE, $context->getMode());
         $this->assertFalse($context->isWebMode());
@@ -40,21 +39,14 @@ class AppContextTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid app mode: invalid');
 
-        new AppContext('invalid');
+        new AppContext('invalid', '', new DiContainer());
     }
 
     public function testAppContextBaseDir(): void
     {
-        $context = new AppContext(AppType::WEB, '/my/base/dir');
+        $context = new AppContext(AppType::WEB, '/my/base/dir', new DiContainer());
 
         $this->assertSame('/my/base/dir', $context->getBaseDir());
-    }
-
-    public function testAppContextBaseDirDefaultsToEmpty(): void
-    {
-        $context = new AppContext(AppType::WEB);
-
-        $this->assertSame('', $context->getBaseDir());
     }
 
     public function testAppContextContainer(): void
@@ -63,13 +55,6 @@ class AppContextTest extends TestCase
         $context = new AppContext(AppType::WEB, '/tmp', $container);
 
         $this->assertSame($container, $context->getContainer());
-    }
-
-    public function testAppContextContainerDefaultsToNull(): void
-    {
-        $context = new AppContext(AppType::WEB);
-
-        $this->assertNull($context->getContainer());
     }
 
     public function testAppContextGetEnvironment(): void
@@ -125,15 +110,5 @@ class AppContextTest extends TestCase
         $context = new AppContext(AppType::WEB, '/tmp', $container);
 
         $this->assertSame($routes, $context->getRoutes());
-    }
-
-    public function testAppContextAccessorThrowsWhenContainerIsNull(): void
-    {
-        $context = new AppContext(AppType::WEB);
-
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('DiContainer is not set on AppContext.');
-
-        $context->getEnvironment();
     }
 }

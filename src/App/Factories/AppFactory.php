@@ -24,7 +24,6 @@ use Quantum\App\Enums\AppType;
 use Quantum\App\AppContext;
 use Quantum\Di\DiContainer;
 use Quantum\App\App;
-use Quantum\Di\Di;
 
 /**
  * Class AppFactory
@@ -73,7 +72,6 @@ class AppFactory
         }
 
         $container = new DiContainer();
-        Di::setCurrent($container);
 
         $context = new AppContext($type, $baseDir, $container);
         App::setContext($context);

@@ -85,8 +85,6 @@ class ModuleManagerTest extends AppTestCase
 
     public function tearDown(): void
     {
-        parent::tearDown();
-
         $moduleConfigs = $this->fs->require($this->modulesConfigPath);
 
         $apiModulePath = App::getBaseDir() . DS . 'modules' . DS . 'Api';
@@ -103,5 +101,7 @@ class ModuleManagerTest extends AppTestCase
         if ($this->fs->isDirectory($apiModulePath)) {
             deleteDirectoryWithFiles($apiModulePath);
         }
+
+        parent::tearDown();
     }
 }

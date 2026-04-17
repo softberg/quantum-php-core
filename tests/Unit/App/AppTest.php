@@ -9,7 +9,6 @@ use Quantum\App\Contracts\AppInterface;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\App\Enums\AppType;
 use Quantum\App\App;
-use Quantum\Di\Di;
 
 /**
  * @runInSeparateProcess
@@ -19,15 +18,13 @@ class AppTest extends AppTestCase
 {
     public function setUp(): void
     {
-        parent::setUp();
-
-        Di::reset();
+        $this->createContext();
     }
 
     public function tearDown(): void
     {
         config()->flush();
-        Di::reset();
+        $this->clearAppContext();
     }
 
     public function testAppGetAdapter(): void
@@ -39,7 +36,6 @@ class AppTest extends AppTestCase
         $this->assertInstanceOf(AppInterface::class, $app->getAdapter());
 
         config()->flush();
-        Di::reset();
 
         $app = new App(new ConsoleAppAdapter($this->createContext(AppType::CONSOLE)));
 

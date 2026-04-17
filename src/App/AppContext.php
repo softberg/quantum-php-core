@@ -24,7 +24,6 @@ use Quantum\Di\DiContainer;
 use Quantum\Config\Config;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
-use RuntimeException;
 
 /**
  * Class AppContext
@@ -36,9 +35,9 @@ class AppContext
 
     private string $baseDir;
 
-    private ?DiContainer $container;
+    private DiContainer $container;
 
-    public function __construct(string $mode, string $baseDir = '', ?DiContainer $container = null)
+    public function __construct(string $mode, string $baseDir, DiContainer $container)
     {
         if (!in_array($mode, [AppType::WEB, AppType::CONSOLE], true)) {
             throw new InvalidArgumentException("Invalid app mode: $mode");
@@ -59,7 +58,7 @@ class AppContext
         return $this->baseDir;
     }
 
-    public function getContainer(): ?DiContainer
+    public function getContainer(): DiContainer
     {
         return $this->container;
     }
@@ -106,10 +105,6 @@ class AppContext
      */
     private function resolveFromContainer(string $class)
     {
-        if ($this->container === null) {
-            throw new RuntimeException('DiContainer is not set on AppContext.');
-        }
-
         return $this->container->get($class);
     }
 }

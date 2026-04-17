@@ -6,13 +6,11 @@ use Quantum\App\Stages\LoadEnvironmentStage;
 use Quantum\App\Stages\LoadHelpersStage;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\App\Enums\AppType;
-use Quantum\Di\Di;
 
 class LoadEnvironmentStageTest extends AppTestCase
 {
     public function setUp(): void
     {
-        Di::reset();
         $this->context = $this->createContext();
 
         (new LoadHelpersStage())->process($this->context);
@@ -20,7 +18,7 @@ class LoadEnvironmentStageTest extends AppTestCase
 
     public function tearDown(): void
     {
-        Di::reset();
+        $this->clearAppContext();
     }
 
     public function testLoadEnvironmentStageLoadsEnvVars(): void
@@ -33,7 +31,6 @@ class LoadEnvironmentStageTest extends AppTestCase
 
     public function testLoadEnvironmentStageSetsMutableForConsole(): void
     {
-        Di::reset();
         $consoleContext = $this->createContext(AppType::CONSOLE);
 
         (new LoadHelpersStage())->process($consoleContext);
