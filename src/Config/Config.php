@@ -44,11 +44,7 @@ class Config implements ConfigInterface
             return;
         }
 
-        if (!Di::isRegistered(Loader::class)) {
-            Di::register(Loader::class);
-        }
-
-        $this->configs = new Data(Di::get(Loader::class)->setup($setup)->load());
+        $this->configs = new Data($this->loadConfig($setup));
     }
 
     /**
@@ -65,14 +61,12 @@ class Config implements ConfigInterface
             throw ConfigException::configCollision($fileName);
         }
 
-        if (!Di::isRegistered(Loader::class)) {
-            Di::register(Loader::class);
-        }
+        $data = $this->loadConfig($setup);
 
         if (!$this->configs) {
-            $this->configs = new Data([$fileName => Di::get(Loader::class)->setup($setup)->load()]);
+            $this->configs = new Data([$fileName => $data]);
         } else {
-            $this->configs->import([$fileName => Di::get(Loader::class)->setup($setup)->load()]);
+            $this->configs->import([$fileName => $data]);
         }
     }
 
@@ -130,5 +124,18 @@ class Config implements ConfigInterface
     public function flush(): void
     {
         $this->configs = null;
+    }
+
+    /**
+     * @return array<string, mixed>
+     * @throws DiException|LoaderException|ReflectionException
+     */
+    private function loadConfig(Setup $setup): array
+    {
+        if (!Di::isRegistered(Loader::class)) {
+            Di::register(Loader::class);
+        }
+
+        return Di::get(Loader::class)->setup($setup)->load();
     }
 }
