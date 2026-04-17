@@ -70,18 +70,8 @@ class ModelFactory
      * Creates anonymous dynamic model
      * @param array<string> $foreignKeys
      * @param array<string> $hidden
-     * @return DbModel|BaseException
-     */
-
-    /**
-     * @param string $table
-     * @param string $modelName
-     * @param string $idColumn
-     * @param array<string> $foreignKeys
-     * @param array<string> $hidden
-     * @return DbModel
      * @throws DiException|BaseException|ReflectionException
- */
+     */
     public static function createDynamicModel(
         string $table,
         string $modelName = '@anonymous',

@@ -16,14 +16,14 @@ declare(strict_types=1);
 
 namespace Quantum\Mailer\Adapters;
 
-use Quantum\Di\Exceptions\DiException;
 use Quantum\Mailer\Contracts\MailerInterface;
+use Quantum\Di\Exceptions\DiException;
 use Quantum\Mailer\Traits\MailerTrait;
 use PHPMailer\PHPMailer\PHPMailer;
 use Quantum\Debugger\Debugger;
 use PHPMailer\PHPMailer\SMTP;
-use Exception;
 use ReflectionException;
+use Exception;
 
 /**
  * class SmtpAdapter

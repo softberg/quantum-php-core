@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace Quantum\Tracer;
 
-use Exception;
 use Quantum\Storage\Contracts\LocalFilesystemAdapterInterface;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Quantum\Renderer\Exceptions\RendererException;
@@ -31,6 +30,7 @@ use Psr\Log\LogLevel;
 use ErrorException;
 use ParseError;
 use Throwable;
+use Exception;
 
 /**
  * Class ErrorHandler

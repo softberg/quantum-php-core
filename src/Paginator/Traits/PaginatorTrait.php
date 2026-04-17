@@ -17,8 +17,8 @@ declare(strict_types=1);
 namespace Quantum\Paginator\Traits;
 
 use Quantum\Config\Exceptions\ConfigException;
-use Quantum\Lang\Exceptions\LangException;
 use Quantum\Loader\Exceptions\LoaderException;
+use Quantum\Lang\Exceptions\LangException;
 use Quantum\Paginator\Enums\Pagination;
 use Quantum\Di\Exceptions\DiException;
 use ReflectionException;

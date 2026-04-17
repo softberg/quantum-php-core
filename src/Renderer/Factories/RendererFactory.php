@@ -46,10 +46,7 @@ class RendererFactory
     private array $instances = [];
 
     /**
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws DiException
-     * @throws ReflectionException
+     * @throws ConfigException|BaseException|DiException|ReflectionException
      */
     public static function get(?string $adapter = null): Renderer
     {
@@ -61,10 +58,7 @@ class RendererFactory
     }
 
     /**
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws DiException
-     * @throws ReflectionException
+     * @throws ConfigException|BaseException|DiException|ReflectionException
      */
     public function resolve(?string $adapter = null): Renderer
     {

@@ -16,10 +16,10 @@ declare(strict_types=1);
 
 namespace Quantum\Paginator\Adapters;
 
-use Quantum\Di\Exceptions\DiException;
 use Quantum\Paginator\Contracts\PaginatorInterface;
 use Quantum\Paginator\Traits\PaginatorTrait;
 use Quantum\App\Exceptions\BaseException;
+use Quantum\Di\Exceptions\DiException;
 use Quantum\Model\ModelCollection;
 use Quantum\Model\DbModel;
 use Quantum\Model\Model;
