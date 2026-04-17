@@ -5,7 +5,6 @@ namespace Quantum\Tests\Unit\App\Adapters;
 use Quantum\App\Adapters\ConsoleAppAdapter;
 use Symfony\Component\Console\Application;
 use Quantum\Tests\Unit\AppTestCase;
-use Quantum\App\Enums\AppType;
 use Exception;
 use Mockery;
 
@@ -38,7 +37,7 @@ class ConsoleAppAdapterTest extends AppTestCase
     {
         $_SERVER['argv'] = ['qt', 'list', '--quiet'];
 
-        $this->consoleAppAdapter->__construct($this->createContext(AppType::CONSOLE));
+        $this->consoleAppAdapter->__construct($this->createContext());
 
         $result = $this->consoleAppAdapter->start();
 
@@ -49,7 +48,7 @@ class ConsoleAppAdapterTest extends AppTestCase
     {
         $_SERVER['argv'] = ['qt', 'unknown', '--quiet'];
 
-        $this->consoleAppAdapter->__construct($this->createContext(AppType::CONSOLE));
+        $this->consoleAppAdapter->__construct($this->createContext());
 
         $this->expectException(Exception::class);
 

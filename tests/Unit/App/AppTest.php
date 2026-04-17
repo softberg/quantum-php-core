@@ -7,7 +7,6 @@ use Quantum\App\Exceptions\AppException;
 use Quantum\App\Adapters\WebAppAdapter;
 use Quantum\App\Contracts\AppInterface;
 use Quantum\Tests\Unit\AppTestCase;
-use Quantum\App\Enums\AppType;
 use Quantum\App\App;
 
 /**
@@ -37,7 +36,7 @@ class AppTest extends AppTestCase
 
         config()->flush();
 
-        $app = new App(new ConsoleAppAdapter($this->createContext(AppType::CONSOLE)));
+        $app = new App(new ConsoleAppAdapter($this->createContext()));
 
         $this->assertInstanceOf(ConsoleAppAdapter::class, $app->getAdapter());
 

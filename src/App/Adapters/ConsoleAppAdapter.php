@@ -69,6 +69,10 @@ class ConsoleAppAdapter extends AppAdapter
         $pipeline = new BootPipeline($stages);
         $pipeline->run($this->context);
 
+        if ($commandName !== 'core:env') {
+            environment()->setMutable(true);
+        }
+
         $this->application = $this->createApplication(
             config()->get('app.name', 'UNKNOWN'),
             config()->get('app.version', 'UNKNOWN')

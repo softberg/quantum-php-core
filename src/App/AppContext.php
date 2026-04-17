@@ -18,8 +18,6 @@ namespace Quantum\App;
 
 use Quantum\Environment\Environment;
 use Quantum\Router\RouteCollection;
-use Quantum\App\Enums\AppType;
-use InvalidArgumentException;
 use Quantum\Di\DiContainer;
 use Quantum\Config\Config;
 use Quantum\Http\Response;
@@ -31,26 +29,14 @@ use Quantum\Http\Request;
  */
 class AppContext
 {
-    private string $mode;
-
     private string $baseDir;
 
     private DiContainer $container;
 
-    public function __construct(string $mode, string $baseDir, DiContainer $container)
+    public function __construct(string $baseDir, DiContainer $container)
     {
-        if (!in_array($mode, [AppType::WEB, AppType::CONSOLE], true)) {
-            throw new InvalidArgumentException("Invalid app mode: $mode");
-        }
-
-        $this->mode = $mode;
         $this->baseDir = $baseDir;
         $this->container = $container;
-    }
-
-    public function getMode(): string
-    {
-        return $this->mode;
     }
 
     public function getBaseDir(): string
@@ -61,16 +47,6 @@ class AppContext
     public function getContainer(): DiContainer
     {
         return $this->container;
-    }
-
-    public function isWebMode(): bool
-    {
-        return $this->mode === AppType::WEB;
-    }
-
-    public function isConsoleMode(): bool
-    {
-        return $this->mode === AppType::CONSOLE;
     }
 
     public function getEnvironment(): Environment

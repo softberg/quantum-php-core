@@ -5,7 +5,6 @@ namespace Quantum\Tests\Unit\App;
 use Quantum\App\Contracts\BootStageInterface;
 use Quantum\App\BootPipeline;
 use Quantum\App\AppContext;
-use Quantum\App\Enums\AppType;
 use Quantum\Di\DiContainer;
 use PHPUnit\Framework\TestCase;
 use InvalidArgumentException;
@@ -30,7 +29,7 @@ class BootPipelineTest extends TestCase
         });
 
         $pipeline = new BootPipeline([$stage1, $stage2, $stage3]);
-        $pipeline->run(new AppContext(AppType::WEB, '', new DiContainer()));
+        $pipeline->run(new AppContext('', new DiContainer()));
 
         $this->assertSame(['first', 'second', 'third'], $log);
     }
@@ -38,23 +37,23 @@ class BootPipelineTest extends TestCase
     public function testEmptyPipelineRunsWithoutError(): void
     {
         $pipeline = new BootPipeline([]);
-        $pipeline->run(new AppContext(AppType::WEB, '', new DiContainer()));
+        $pipeline->run(new AppContext('', new DiContainer()));
 
         $this->assertTrue(true);
     }
 
     public function testPipelinePassesContextToStages(): void
     {
-        $receivedMode = null;
+        $receivedBaseDir = null;
 
-        $stage = $this->createStage(function (AppContext $context) use (&$receivedMode) {
-            $receivedMode = $context->getMode();
+        $stage = $this->createStage(function (AppContext $context) use (&$receivedBaseDir) {
+            $receivedBaseDir = $context->getBaseDir();
         });
 
         $pipeline = new BootPipeline([$stage]);
-        $pipeline->run(new AppContext(AppType::CONSOLE, '', new DiContainer()));
+        $pipeline->run(new AppContext('/test/dir', new DiContainer()));
 
-        $this->assertSame(AppType::CONSOLE, $receivedMode);
+        $this->assertSame('/test/dir', $receivedBaseDir);
     }
 
     public function testPipelinePropagatesException(): void
@@ -67,7 +66,7 @@ class BootPipelineTest extends TestCase
         $this->expectExceptionMessage('Stage failed');
 
         $pipeline = new BootPipeline([$stage]);
-        $pipeline->run(new AppContext(AppType::WEB, '', new DiContainer()));
+        $pipeline->run(new AppContext('', new DiContainer()));
     }
 
     public function testPipelineRejectsInvalidStage(): void

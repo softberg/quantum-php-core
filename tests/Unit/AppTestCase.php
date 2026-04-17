@@ -51,9 +51,9 @@ abstract class AppTestCase extends TestCase
         $this->clearAppContext();
     }
 
-    protected function createContext(string $mode = AppType::WEB): AppContext
+    protected function createContext(): AppContext
     {
-        $context = new AppContext($mode, PROJECT_ROOT, new DiContainer());
+        $context = new AppContext(PROJECT_ROOT, new DiContainer());
         App::setContext($context);
 
         return $context;

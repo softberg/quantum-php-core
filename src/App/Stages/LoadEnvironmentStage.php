@@ -39,10 +39,6 @@ class LoadEnvironmentStage implements BootStageInterface
     {
         $environment = new Environment();
 
-        if ($context->isConsoleMode()) {
-            $environment->setMutable(true);
-        }
-
         $environment->load(new Setup('config', 'env'));
 
         Di::set(Environment::class, $environment);
