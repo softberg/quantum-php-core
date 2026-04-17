@@ -42,8 +42,5 @@ class InitHttpStage implements BootStageInterface
         if (!Di::isRegistered(Response::class)) {
             Di::register(Response::class);
         }
-
-        Di::get(Request::class);
-        Di::get(Response::class);
     }
 }
