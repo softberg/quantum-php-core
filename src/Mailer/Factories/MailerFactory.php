@@ -31,6 +31,7 @@ use Quantum\Mailer\Enums\MailerType;
 use Quantum\Mailer\Mailer;
 use Quantum\Loader\Setup;
 use ReflectionException;
+use Quantum\Di\Di;
 
 /**
  * class MailerFactory
@@ -38,9 +39,6 @@ use ReflectionException;
  */
 class MailerFactory
 {
-    /**
-     * Supported adapters
-     */
     public const ADAPTERS = [
         MailerType::SMTP => SmtpAdapter::class,
         MailerType::MAILGUN => MailgunAdapter::class,
@@ -53,15 +51,24 @@ class MailerFactory
     /**
      * @var array<string, Mailer>
      */
-    private static array $instances = [];
+    private array $instances = [];
 
     /**
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws DiException
-     * @throws ReflectionException
+     * @throws ConfigException|DiException|BaseException|ReflectionException
      */
     public static function get(?string $adapter = null): Mailer
+    {
+        if (!Di::isRegistered(self::class)) {
+            Di::register(self::class);
+        }
+
+        return Di::get(self::class)->resolve($adapter);
+    }
+
+    /**
+     * @throws ConfigException|DiException|BaseException|ReflectionException
+     */
+    public function resolve(?string $adapter = null): Mailer
     {
         if (!config()->has('mailer')) {
             config()->import(new Setup('config', 'mailer'));
@@ -69,19 +76,19 @@ class MailerFactory
 
         $adapter ??= config()->get('mailer.default');
 
-        $adapterClass = self::getAdapterClass($adapter);
+        $adapterClass = $this->getAdapterClass($adapter);
 
-        if (!isset(self::$instances[$adapter])) {
-            self::$instances[$adapter] = self::createInstance($adapterClass, $adapter);
+        if (!isset($this->instances[$adapter])) {
+            $this->instances[$adapter] = $this->createInstance($adapterClass, $adapter);
         }
 
-        return self::$instances[$adapter];
+        return $this->instances[$adapter];
     }
 
     /**
-     * @throws MailerException
+     * @throws DiException|BaseException|ReflectionException
      */
-    private static function createInstance(string $adapterClass, string $adapter): Mailer
+    private function createInstance(string $adapterClass, string $adapter): Mailer
     {
         $adapterInstance = new $adapterClass(config()->get('mailer.' . $adapter));
 
@@ -95,7 +102,7 @@ class MailerFactory
     /**
      * @throws BaseException
      */
-    private static function getAdapterClass(string $adapter): string
+    private function getAdapterClass(string $adapter): string
     {
         if (!array_key_exists($adapter, self::ADAPTERS)) {
             throw MailerException::adapterNotSupported($adapter);

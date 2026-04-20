@@ -13,11 +13,18 @@
  */
 
 use Quantum\Config\Config;
+use Quantum\Di\Di;
+use Quantum\Di\Exceptions\DiException;
 
 /**
  * Config facade
+ * @throws DiException|ReflectionException
  */
 function config(): Config
 {
-    return Config::getInstance();
+    if (!Di::isRegistered(Config::class)) {
+        Di::register(Config::class);
+    }
+
+    return Di::get(Config::class);
 }

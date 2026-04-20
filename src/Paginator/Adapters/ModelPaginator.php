@@ -19,9 +19,11 @@ namespace Quantum\Paginator\Adapters;
 use Quantum\Paginator\Contracts\PaginatorInterface;
 use Quantum\Paginator\Traits\PaginatorTrait;
 use Quantum\App\Exceptions\BaseException;
+use Quantum\Di\Exceptions\DiException;
 use Quantum\Model\ModelCollection;
 use Quantum\Model\DbModel;
 use Quantum\Model\Model;
+use ReflectionException;
 
 /**
  * Class ModelPaginator
@@ -35,6 +37,9 @@ class ModelPaginator implements PaginatorInterface
 
     private DbModel $model;
 
+    /**
+     * @throws DiException|ReflectionException
+     */
     public function __construct(DbModel $model, int $perPage, int $page = 1)
     {
         $this->initialize($perPage, $page);

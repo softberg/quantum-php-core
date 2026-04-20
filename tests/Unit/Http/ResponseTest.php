@@ -4,7 +4,6 @@ namespace Quantum\Tests\Unit\Http;
 
 use Quantum\Http\Enums\ContentType;
 use Quantum\Tests\Unit\AppTestCase;
-use Quantum\Http\Response;
 use Throwable;
 
 class ResponseTest extends AppTestCase
@@ -12,18 +11,16 @@ class ResponseTest extends AppTestCase
     public function setUp(): void
     {
         parent::setUp();
-
-        Response::init();
     }
 
     public function tearDown(): void
     {
-        Response::flush();
+        response()->flush();
     }
 
     public function testResponseContentType(): void
     {
-        $response = new Response();
+        $response = response();
 
         $this->assertEquals(ContentType::HTML, $response->getContentType());
 
@@ -34,7 +31,7 @@ class ResponseTest extends AppTestCase
 
     public function testResponseRedirect(): void
     {
-        $response = new Response();
+        $response = response();
 
         $this->assertFalse($response->hasHeader('Location'));
 

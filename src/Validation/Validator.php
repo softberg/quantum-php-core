@@ -18,6 +18,7 @@ namespace Quantum\Validation;
 
 use Quantum\Config\Exceptions\ConfigException;
 use Quantum\Lang\Exceptions\LangException;
+use Quantum\Loader\Exceptions\LoaderException;
 use Quantum\Validation\Traits\Resource;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Validation\Traits\General;
@@ -194,10 +195,7 @@ class Validator
     /**
      * Gets validation errors with translations
      * @return array<string, array<int, string|null>>
-     * @throws ConfigException
-     * @throws DiException
-     * @throws LangException
-     * @throws ReflectionException
+     * @throws ConfigException|LoaderException|LangException|DiException|ReflectionException
      */
     public function getErrors(): array
     {

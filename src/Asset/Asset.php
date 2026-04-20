@@ -16,6 +16,9 @@ declare(strict_types=1);
 
 namespace Quantum\Asset;
 
+use Quantum\Di\Exceptions\DiException;
+use ReflectionException;
+
 /**
  * Class Asset
  * @package Quantum\Asset
@@ -110,6 +113,7 @@ class Asset
 
     /**
      * Gets asset url
+     * @throws DiException|ReflectionException
      */
     public function url(): string
     {
@@ -122,6 +126,7 @@ class Asset
 
     /**
      * Renders asset tag
+     * @throws DiException|ReflectionException
      */
     public function tag(): string
     {

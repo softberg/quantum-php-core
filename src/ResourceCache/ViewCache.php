@@ -16,11 +16,9 @@ declare(strict_types=1);
 
 namespace Quantum\ResourceCache;
 
-use Quantum\Loader\Exceptions\LoaderException;
 use Quantum\ResourceCache\Exceptions\ResourceCacheException;
-use Quantum\Database\Exceptions\DatabaseException;
-use Quantum\Session\Exceptions\SessionException;
 use Quantum\Storage\Factories\FileSystemFactory;
+use Quantum\Loader\Exceptions\LoaderException;
 use Quantum\Config\Exceptions\ConfigException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
@@ -39,27 +37,13 @@ class ViewCache
 {
     private ?string $cacheDir = null;
 
-    /**
-     * @var int
-     */
-    private $ttl = 300;
+    private int $ttl = 300;
 
     private bool $isEnabled;
 
     private bool $minification = false;
 
     private FileSystem $fs;
-
-    private static ?ViewCache $instance = null;
-
-    public static function getInstance(): ViewCache
-    {
-        if (self::$instance === null) {
-            self::$instance = new self();
-        }
-
-        return self::$instance;
-    }
 
     /**
      * @throws DiException
@@ -83,7 +67,7 @@ class ViewCache
 
         $this->cacheDir = $this->getCacheDir();
 
-        $this->ttl = config()->get('view_cache.ttl', $this->ttl);
+        $this->ttl = (int) config()->get('view_cache.ttl', $this->ttl);
 
         $this->minification = filter_var(config()->get('view_cache.minify', $this->minification), FILTER_VALIDATE_BOOLEAN);
 
@@ -93,12 +77,7 @@ class ViewCache
     }
 
     /**
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws DatabaseException
-     * @throws DiException
-     * @throws ReflectionException
-     * @throws SessionException
+     * @throws ConfigException|DiException|BaseException|ReflectionException
      */
     public function serveCachedView(string $uri, Response $response): bool
     {
@@ -114,10 +93,7 @@ class ViewCache
     }
 
     /**
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws DiException
-     * @throws ReflectionException
+     * @throws ConfigException|DiException|BaseException|ReflectionException
      */
     public function set(string $key, string $content): ViewCache
     {
@@ -131,12 +107,7 @@ class ViewCache
     }
 
     /**
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws DatabaseException
-     * @throws DiException
-     * @throws ReflectionException
-     * @throws SessionException
+     * @throws ConfigException|DiException|BaseException|ReflectionException
      */
     public function get(string $key): ?string
     {
@@ -165,10 +136,7 @@ class ViewCache
     }
 
     /**
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws DiException
-     * @throws ReflectionException
+     * @throws ConfigException|DiException|BaseException|ReflectionException
      */
     public function exists(string $key): bool
     {
@@ -196,9 +164,6 @@ class ViewCache
         $this->minification = $state;
     }
 
-    /**
-     * @param $cacheFile
-     */
     private function isExpired(string $cacheFile): bool
     {
         if (time() > ($this->fs->lastModified($cacheFile) + $this->ttl)) {
@@ -209,6 +174,9 @@ class ViewCache
         return false;
     }
 
+    /**
+     * @throws DiException|ReflectionException
+     */
     private function getCacheDir(): string
     {
         $configCacheDir = config()->get('view_cache.cache_dir', 'cache');
@@ -223,10 +191,7 @@ class ViewCache
     }
 
     /**
-     * @throws ConfigException
-     * @throws DiException
-     * @throws ReflectionException
-     * @throws BaseException
+     * @throws ConfigException|DiException|BaseException|ReflectionException
      */
     private function getCacheFile(string $key): string
     {

@@ -4,6 +4,7 @@ namespace Quantum\Tests\Unit\Environment;
 
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Environment\Server;
+use Quantum\Di\Di;
 
 class ServerTest extends AppTestCase
 {
@@ -11,20 +12,20 @@ class ServerTest extends AppTestCase
     {
         parent::setUp();
 
-        $this->setPrivateProperty(Server::class, 'instance', null);
+        server()->flush();
     }
 
-    public function testServerGetInstance(): void
+    public function testServerDiReturnsSameInstance(): void
     {
-        $server1 = Server::getInstance();
-        $server2 = Server::getInstance();
+        $server1 = Di::get(Server::class);
+        $server2 = Di::get(Server::class);
 
         $this->assertSame($server1, $server2);
     }
 
     public function testServerAll(): void
     {
-        $server = Server::getInstance();
+        $server = server();
         $server->set('REQUEST_METHOD', 'GET');
         $server->set('REQUEST_URI', '/test');
 
@@ -39,7 +40,7 @@ class ServerTest extends AppTestCase
 
     public function testServerSetAndGet(): void
     {
-        $server = Server::getInstance();
+        $server = server();
 
         $server->set('REQUEST_METHOD', 'POST');
 
@@ -54,7 +55,7 @@ class ServerTest extends AppTestCase
 
     public function testServerUri(): void
     {
-        $server = Server::getInstance();
+        $server = server();
         $server->set('REQUEST_URI', '/test/uri');
 
         $this->assertEquals('/test/uri', $server->uri());
@@ -62,7 +63,7 @@ class ServerTest extends AppTestCase
 
     public function testServerQuery(): void
     {
-        $server = Server::getInstance();
+        $server = server();
         $server->set('QUERY_STRING', 'foo=bar');
 
         $this->assertEquals('foo=bar', $server->query());
@@ -70,7 +71,7 @@ class ServerTest extends AppTestCase
 
     public function testServerMethod(): void
     {
-        $server = Server::getInstance();
+        $server = server();
         $server->set('REQUEST_METHOD', 'PUT');
 
         $this->assertEquals('PUT', $server->method());
@@ -78,7 +79,7 @@ class ServerTest extends AppTestCase
 
     public function testServerProtocol(): void
     {
-        $server = Server::getInstance();
+        $server = server();
         $server->set('HTTPS', 'on');
         $server->set('SERVER_PORT', 443);
 
@@ -92,7 +93,7 @@ class ServerTest extends AppTestCase
 
     public function testServerHost(): void
     {
-        $server = Server::getInstance();
+        $server = server();
         $server->set('SERVER_NAME', 'localhost');
 
         $this->assertEquals('localhost', $server->host());
@@ -100,7 +101,7 @@ class ServerTest extends AppTestCase
 
     public function testServerPort(): void
     {
-        $server = Server::getInstance();
+        $server = server();
         $server->set('SERVER_PORT', '9000');
 
         $this->assertEquals('9000', $server->port());
@@ -108,7 +109,7 @@ class ServerTest extends AppTestCase
 
     public function testServerContentType(): void
     {
-        $server = Server::getInstance();
+        $server = server();
         $server->set('CONTENT_TYPE', 'application/json; charset=utf-8');
 
         $this->assertEquals('application/json; charset=utf-8', $server->contentType());
@@ -117,7 +118,7 @@ class ServerTest extends AppTestCase
 
     public function testServerReferrer(): void
     {
-        $server = Server::getInstance();
+        $server = server();
         $server->set('HTTP_REFERER', 'http://example.com');
 
         $this->assertEquals('http://example.com', $server->referrer());
@@ -125,7 +126,7 @@ class ServerTest extends AppTestCase
 
     public function testServerAjax(): void
     {
-        $server = Server::getInstance();
+        $server = server();
         $server->set('HTTP_X_REQUESTED_WITH', 'XMLHttpRequest');
 
         $this->assertTrue($server->ajax());
@@ -137,7 +138,7 @@ class ServerTest extends AppTestCase
 
     public function testServerGetUserIpFromRemoteAddr(): void
     {
-        $server = Server::getInstance();
+        $server = server();
 
         $server->set('HTTP_CLIENT_IP', '192.168.1.1');
         $server->set('HTTP_X_FORWARDED_FOR', null);
@@ -162,7 +163,7 @@ class ServerTest extends AppTestCase
 
     public function testServerGetAllHeadersFromServerClass(): void
     {
-        $server = Server::getInstance();
+        $server = server();
 
         $server->set('HTTP_USER_AGENT', 'Mozilla/5.0');
         $server->set('HTTP_ACCEPT', 'text/html');
@@ -184,7 +185,7 @@ class ServerTest extends AppTestCase
 
     public function testServerAcceptedLang(): void
     {
-        $server = Server::getInstance();
+        $server = server();
 
         $server->set('HTTP_ACCEPT_LANGUAGE', null);
         $this->assertNull($server->acceptedLang());

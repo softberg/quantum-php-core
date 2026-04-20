@@ -35,6 +35,7 @@ use Quantum\HttpClient\HttpClient;
 use Quantum\Storage\FileSystem;
 use Quantum\Loader\Setup;
 use ReflectionException;
+use Quantum\Di\Di;
 
 /**
  * Class FileSystemFactory
@@ -42,18 +43,12 @@ use ReflectionException;
  */
 class FileSystemFactory
 {
-    /**
-     * Supported adapters
-     */
     public const ADAPTERS = [
         FileSystemType::LOCAL => LocalFileSystemAdapter::class,
         FileSystemType::DROPBOX => DropboxFileSystemAdapter::class,
         FileSystemType::GDRIVE => GoogleDriveFileSystemAdapter::class,
     ];
 
-    /**
-     * Supported apps
-     */
     public const APPS = [
         FileSystemType::DROPBOX => DropboxApp::class,
         FileSystemType::GDRIVE => GoogleDriveApp::class,
@@ -62,15 +57,24 @@ class FileSystemFactory
     /**
      * @var array<string, FileSystem>
      */
-    private static array $instances = [];
+    private array $instances = [];
 
     /**
-     * @throws BaseException
-     * @throws DiException
-     * @throws ReflectionException
-     * @throws ConfigException
+     * @throws ConfigException|DiException|BaseException|ReflectionException
      */
     public static function get(?string $adapter = null): FileSystem
+    {
+        if (!Di::isRegistered(self::class)) {
+            Di::register(self::class);
+        }
+
+        return Di::get(self::class)->resolve($adapter);
+    }
+
+    /**
+     * @throws ConfigException|DiException|BaseException|ReflectionException
+     */
+    public function resolve(?string $adapter = null): FileSystem
     {
         if (!config()->has('fs')) {
             config()->import(new Setup('config', 'fs'));
@@ -78,24 +82,21 @@ class FileSystemFactory
 
         $adapter ??= config()->get('fs.default');
 
-        $adapterClass = self::getAdapterClass($adapter);
+        $adapterClass = $this->getAdapterClass($adapter);
 
-        if (!isset(self::$instances[$adapter])) {
-            self::$instances[$adapter] = self::createInstance($adapterClass, $adapter);
+        if (!isset($this->instances[$adapter])) {
+            $this->instances[$adapter] = $this->createInstance($adapterClass, $adapter);
         }
 
-        return self::$instances[$adapter];
+        return $this->instances[$adapter];
     }
 
     /**
-     * @throws BaseException
-     * @throws DiException
-     * @throws ReflectionException
-     * @throws ServiceException
+     * @throws ConfigException|DiException|BaseException|ReflectionException
      */
-    private static function createInstance(string $adapterClass, string $adapter): FileSystem
+    private function createInstance(string $adapterClass, string $adapter): FileSystem
     {
-        $fsAdapter = new $adapterClass(self::createCloudApp($adapter));
+        $fsAdapter = new $adapterClass($this->createCloudApp($adapter));
 
         if (!$fsAdapter instanceof FilesystemAdapterInterface) {
             throw FileSystemException::adapterNotSupported($adapter);
@@ -107,7 +108,7 @@ class FileSystemFactory
     /**
      * @throws BaseException
      */
-    private static function getAdapterClass(string $adapter): string
+    private function getAdapterClass(string $adapter): string
     {
         if (!array_key_exists($adapter, self::ADAPTERS)) {
             throw FileSystemException::adapterNotSupported($adapter);
@@ -117,12 +118,9 @@ class FileSystemFactory
     }
 
     /**
-     * @throws BaseException
-     * @throws DiException
-     * @throws ReflectionException
-     * @throws ServiceException
+     * @throws ConfigException|DiException|BaseException|ReflectionException
      */
-    private static function createCloudApp(string $adapter): ?CloudAppInterface
+    private function createCloudApp(string $adapter): ?CloudAppInterface
     {
         if ($adapter === FileSystemType::LOCAL || !isset(self::APPS[$adapter])) {
             return null;
@@ -133,21 +131,15 @@ class FileSystemFactory
         return new $cloudAppClass(
             config()->get('fs.' . $adapter . '.params.app_key'),
             config()->get('fs.' . $adapter . '.params.app_secret'),
-            self::createTokenService($adapter),
+            $this->createTokenService($adapter),
             new HttpClient()
         );
     }
 
     /**
-     * Creates token service instance
-     * @param string $adapter
-     * @return TokenServiceInterface
-     * @throws BaseException
-     * @throws DiException
-     * @throws ReflectionException
-     * @throws ServiceException
+     * @throws ServiceException|DiException|BaseException|ReflectionException
      */
-    private static function createTokenService(string $adapter): TokenServiceInterface
+    private function createTokenService(string $adapter): TokenServiceInterface
     {
         $serviceClass = (string) config()->get('fs.' . $adapter . '.service');
 

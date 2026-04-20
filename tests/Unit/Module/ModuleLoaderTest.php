@@ -4,6 +4,7 @@ namespace Quantum\Tests\Unit\Module;
 
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Module\ModuleLoader;
+use Quantum\Di\Di;
 use Closure;
 
 class ModuleLoaderTest extends AppTestCase
@@ -13,9 +14,11 @@ class ModuleLoaderTest extends AppTestCase
     {
         parent::setUp();
 
-        $this->setPrivateProperty(ModuleLoader::class, 'instance', null);
+        if (!Di::isRegistered(ModuleLoader::class)) {
+            Di::register(ModuleLoader::class);
+        }
 
-        $this->moduleLoader = ModuleLoader::getInstance();
+        $this->moduleLoader = Di::get(ModuleLoader::class);
     }
 
     public function tearDown(): void

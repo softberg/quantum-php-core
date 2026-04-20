@@ -33,6 +33,7 @@ use Quantum\Jwt\JwtToken;
 use Quantum\Loader\Setup;
 use ReflectionException;
 use Quantum\Auth\Auth;
+use Quantum\Di\Di;
 
 /**
  * Class AuthFactory
@@ -40,9 +41,6 @@ use Quantum\Auth\Auth;
  */
 class AuthFactory
 {
-    /**
-     * Supported adapters
-     */
     public const ADAPTERS = [
         AuthType::SESSION => SessionAuthAdapter::class,
         AuthType::JWT => JwtAuthAdapter::class,
@@ -51,7 +49,7 @@ class AuthFactory
     /**
      * @var array<string, Auth>
      */
-    private static array $instances = [];
+    private array $instances = [];
 
     /**
      * @throws AuthException
@@ -63,36 +61,43 @@ class AuthFactory
      */
     public static function get(?string $adapter = null): Auth
     {
+        if (!Di::isRegistered(self::class)) {
+            Di::register(self::class);
+        }
+
+        return Di::get(self::class)->resolve($adapter);
+    }
+
+    /**
+     * @throws AuthException|ConfigException|ServiceException|BaseException|DiException|ReflectionException
+     */
+    public function resolve(?string $adapter = null): Auth
+    {
         if (!config()->has('auth')) {
             config()->import(new Setup('config', 'auth'));
         }
 
         $adapter ??= config()->get('auth.default');
 
-        $adapterClass = self::getAdapterClass($adapter);
+        $adapterClass = $this->getAdapterClass($adapter);
 
-        if (!isset(self::$instances[$adapter])) {
-            self::$instances[$adapter] = self::createInstance($adapterClass, $adapter);
+        if (!isset($this->instances[$adapter])) {
+            $this->instances[$adapter] = $this->createInstance($adapterClass, $adapter);
         }
 
-        return self::$instances[$adapter];
+        return $this->instances[$adapter];
     }
 
     /**
-     * @throws AuthException
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws DiException
-     * @throws ReflectionException
-     * @throws ServiceException
+     * @throws AuthException|ConfigException|ServiceException|BaseException|DiException|ReflectionException
      */
-    private static function createInstance(string $adapterClass, string $adapter): Auth
+    private function createInstance(string $adapterClass, string $adapter): Auth
     {
-        $authService = self::createAuthService($adapter);
+        $authService = $this->createAuthService($adapter);
         $authConfig = (array) config()->get('auth');
 
         $adapterInstance = $adapter === AuthType::JWT
-            ? new $adapterClass($authService, mailer(), new Hasher(), self::createJwtInstance(), $authConfig)
+            ? new $adapterClass($authService, mailer(), new Hasher(), $this->createJwtInstance(), $authConfig)
             : new $adapterClass($authService, mailer(), new Hasher(), $authConfig);
 
         if (!$adapterInstance instanceof AuthenticatableInterface) {
@@ -105,7 +110,7 @@ class AuthFactory
     /**
      * @throws BaseException
      */
-    private static function getAdapterClass(string $adapter): string
+    private function getAdapterClass(string $adapter): string
     {
         if (!array_key_exists($adapter, self::ADAPTERS)) {
             throw AuthException::adapterNotSupported($adapter);
@@ -115,12 +120,9 @@ class AuthFactory
     }
 
     /**
-     * @throws BaseException
-     * @throws DiException
-     * @throws ReflectionException
-     * @throws ServiceException
+     * @throws ServiceException|BaseException|DiException|ReflectionException
      */
-    private static function createAuthService(string $adapter): AuthServiceInterface
+    private function createAuthService(string $adapter): AuthServiceInterface
     {
         $authServiceClass = config()->get('auth.' . $adapter . '.service');
 
@@ -134,7 +136,7 @@ class AuthFactory
         return $authService;
     }
 
-    private static function createJwtInstance(): JwtToken
+    private function createJwtInstance(): JwtToken
     {
         return (new JwtToken())
             ->setLeeway(1)

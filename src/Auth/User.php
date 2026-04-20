@@ -106,5 +106,4 @@ class User
     {
         return $this->getFieldValue($property);
     }
-
 }

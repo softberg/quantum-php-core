@@ -17,10 +17,12 @@ declare(strict_types=1);
 namespace Quantum\Mailer\Adapters;
 
 use Quantum\Mailer\Contracts\MailerInterface;
+use Quantum\Di\Exceptions\DiException;
 use Quantum\Mailer\Traits\MailerTrait;
 use PHPMailer\PHPMailer\PHPMailer;
 use Quantum\Debugger\Debugger;
 use PHPMailer\PHPMailer\SMTP;
+use ReflectionException;
 use Exception;
 
 /**
@@ -38,6 +40,7 @@ class SmtpAdapter implements MailerInterface
     /**
      * SmtpAdapter constructor
      * @param array<string, mixed> $params
+     * @throws DiException|ReflectionException
      */
     public function __construct(array $params)
     {

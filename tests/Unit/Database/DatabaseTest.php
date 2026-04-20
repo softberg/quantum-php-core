@@ -6,6 +6,7 @@ use Quantum\Database\Adapters\Idiorm\IdiormDbal;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Database\Database;
 use Quantum\Loader\Setup;
+use Quantum\Di\Di;
 
 class DatabaseTest extends AppTestCase
 {
@@ -21,8 +22,6 @@ class DatabaseTest extends AppTestCase
 
         config()->set('debug', true);
 
-        $this->setPrivateProperty(Database::class, 'instance', null);
-
         Database::execute('CREATE TABLE IF NOT EXISTS profiles (
                         id INTEGER PRIMARY KEY,
                         firstname VARCHAR(255),
@@ -36,13 +35,15 @@ class DatabaseTest extends AppTestCase
     public function tearDown(): void
     {
         Database::execute('DROP TABLE IF EXISTS profiles');
+
+        parent::tearDown();
     }
 
-    public function testDatabaseInstance(): void
+    public function testDatabaseDiReturnsSameInstance(): void
     {
-        $db1 = Database::getInstance();
+        $db1 = Di::get(Database::class);
 
-        $db2 = Database::getInstance();
+        $db2 = Di::get(Database::class);
 
         $this->assertInstanceOf(Database::class, $db1);
 
@@ -51,12 +52,12 @@ class DatabaseTest extends AppTestCase
 
     public function testDatabaseGetConfigs(): void
     {
-        $this->assertEquals(config()->get('database.sqlite'), Database::getInstance()->getConfigs());
+        $this->assertEquals(config()->get('database.sqlite'), Di::get(Database::class)->getConfigs());
     }
 
     public function testDatabaseGetOrmClass(): void
     {
-        $this->assertEquals(IdiormDbal::class, Database::getInstance()->getOrmClass());
+        $this->assertEquals(IdiormDbal::class, Di::get(Database::class)->getOrmClass());
     }
 
     public function testDatabaseRawQueries(): void

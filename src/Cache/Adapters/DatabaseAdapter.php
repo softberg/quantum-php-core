@@ -16,6 +16,7 @@ declare(strict_types=1);
 
 namespace Quantum\Cache\Adapters;
 
+use Quantum\Model\Exceptions\ModelException;
 use Quantum\Cache\Enums\ExceptionMessages;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Model\Factories\ModelFactory;
@@ -155,22 +156,8 @@ class DatabaseAdapter implements CacheInterface
 
     /**
      * @inheritDoc
-     */
-    public function delete($key): bool
-    {
-        $cacheItem = $this->cacheModel->findOneBy('key', $this->keyHash($key));
-
-        if ($cacheItem !== null && !empty($cacheItem->asArray())) {
-            return $cacheItem->delete();
-        }
-
-        return false;
-    }
-
-    /**
-     * @inheritDoc
-     * @throws InvalidArgumentException
      * @param iterable<string> $keys
+     * @throws ModelException|BaseException|InvalidArgumentException
      */
     public function deleteMultiple($keys): bool
     {
@@ -192,10 +179,24 @@ class DatabaseAdapter implements CacheInterface
 
     /**
      * @inheritDoc
+     * @throws ModelException|BaseException
+     */
+    public function delete($key): bool
+    {
+        $cacheItem = $this->cacheModel->findOneBy('key', $this->keyHash($key));
+
+        if ($cacheItem !== null && !empty($cacheItem->asArray())) {
+            return $cacheItem->delete();
+        }
+
+        return false;
+    }
+
+    /**
+     * @inheritDoc
      */
     public function clear(): bool
     {
         return $this->cacheModel->deleteMany();
     }
-
 }

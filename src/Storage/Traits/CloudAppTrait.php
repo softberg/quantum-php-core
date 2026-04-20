@@ -30,9 +30,7 @@ trait CloudAppTrait
      * @inheritDoc
      * @param array<string, mixed>|string|null $data
      * @param array<string, string> $headers
-     * @throws BaseException
-     * @throws HttpException
-     * @throws Exception
+     * @throws HttpException|BaseException|Exception
      */
     public function sendRequest(string $uri, $data = null, array $headers = [], string $method = 'POST')
     {

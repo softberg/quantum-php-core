@@ -16,7 +16,6 @@ namespace {{MODULE_NAMESPACE}}\Controllers;
 
 use Quantum\View\Factories\ViewFactory;
 use Quantum\Asset\Asset;
-use Quantum\Http\Request;
 use Quantum\View\QtView;
 
 /**
@@ -33,7 +32,7 @@ abstract class BaseController
 
     public function __before()
     {
-        if (Request::isMethod('get')) {
+        if (request()->isMethod('get')) {
             $this->view = ViewFactory::get();
 
             $this->view->setLayout(static::LAYOUT, [

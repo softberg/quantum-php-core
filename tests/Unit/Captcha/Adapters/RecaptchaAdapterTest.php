@@ -6,7 +6,6 @@ use Quantum\Captcha\Contracts\CaptchaInterface;
 use Quantum\Captcha\Adapters\RecaptchaAdapter;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\HttpClient\HttpClient;
-use Quantum\Asset\AssetManager;
 use Exception;
 use Mockery;
 
@@ -32,7 +31,7 @@ class RecaptchaAdapterTest extends AppTestCase
 
     public function tearDown(): void
     {
-        AssetManager::getInstance()->flush();
+        asset()->flush();
         Mockery::close();
     }
 

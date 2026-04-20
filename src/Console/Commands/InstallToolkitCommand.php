@@ -20,8 +20,11 @@ use Symfony\Component\Console\Exception\ExceptionInterface;
 use Quantum\Environment\Exceptions\EnvException;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Input\ArrayInput;
-use Quantum\Environment\Environment;
+use Quantum\Config\Exceptions\ConfigException;
+use Quantum\App\Exceptions\BaseException;
+use Quantum\Di\Exceptions\DiException;
 use Quantum\Console\QtCommand;
+use ReflectionException;
 use RuntimeException;
 
 /**
@@ -60,8 +63,7 @@ class InstallToolkitCommand extends QtCommand
 
     /**
      * Executes the command
-     * @throws ExceptionInterface
-     * @throws EnvException
+     * @throws EnvException|ConfigException|BaseException|DiException|ExceptionInterface|ReflectionException
      */
     public function exec(): void
     {
@@ -69,7 +71,7 @@ class InstallToolkitCommand extends QtCommand
 
         $password = $this->getArgument('password');
 
-        $env = Environment::getInstance();
+        $env = environment();
 
         $env->setMutable(true);
 

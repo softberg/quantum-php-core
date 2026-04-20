@@ -28,6 +28,7 @@ use Quantum\HttpClient\HttpClient;
 use Quantum\Captcha\Captcha;
 use Quantum\Loader\Setup;
 use ReflectionException;
+use Quantum\Di\Di;
 
 /**
  * Class CaptchaFactory
@@ -35,9 +36,6 @@ use ReflectionException;
  */
 class CaptchaFactory
 {
-    /**
-     * Supported adapters
-     */
     public const ADAPTERS = [
         CaptchaType::HCAPTCHA => HcaptchaAdapter::class,
         CaptchaType::RECAPTCHA => RecaptchaAdapter::class,
@@ -46,7 +44,7 @@ class CaptchaFactory
     /**
      * @var array<string, Captcha>
      */
-    private static array $instances = [];
+    private array $instances = [];
 
     /**
      * @throws BaseException
@@ -56,25 +54,37 @@ class CaptchaFactory
      */
     public static function get(?string $adapter = null): Captcha
     {
+        if (!Di::isRegistered(self::class)) {
+            Di::register(self::class);
+        }
+
+        return Di::get(self::class)->resolve($adapter);
+    }
+
+    /**
+     * @throws ConfigException|BaseException|DiException|ReflectionException
+     */
+    public function resolve(?string $adapter = null): Captcha
+    {
         if (!config()->has('captcha')) {
             config()->import(new Setup('config', 'captcha'));
         }
 
         $adapter ??= config()->get('captcha.default');
 
-        $adapterClass = self::getAdapterClass($adapter);
+        $adapterClass = $this->getAdapterClass($adapter);
 
-        if (!isset(self::$instances[$adapter])) {
-            self::$instances[$adapter] = self::createInstance($adapterClass, $adapter);
+        if (!isset($this->instances[$adapter])) {
+            $this->instances[$adapter] = $this->createInstance($adapterClass, $adapter);
         }
 
-        return self::$instances[$adapter];
+        return $this->instances[$adapter];
     }
 
     /**
-     * @throws CaptchaException
+     * @throws CaptchaException|BaseException
      */
-    private static function createInstance(string $adapterClass, string $adapter): Captcha
+    private function createInstance(string $adapterClass, string $adapter): Captcha
     {
         $adapterInstance = new $adapterClass(config()->get('captcha.' . $adapter), new HttpClient());
 
@@ -88,7 +98,7 @@ class CaptchaFactory
     /**
      * @throws BaseException
      */
-    private static function getAdapterClass(string $adapter): string
+    private function getAdapterClass(string $adapter): string
     {
         if (!array_key_exists($adapter, self::ADAPTERS)) {
             throw CaptchaException::adapterNotSupported($adapter);

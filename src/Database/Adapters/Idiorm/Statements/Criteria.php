@@ -18,6 +18,7 @@ namespace Quantum\Database\Adapters\Idiorm\Statements;
 
 use Quantum\Database\Exceptions\DatabaseException;
 use Quantum\Database\Contracts\DbalInterface;
+use Quantum\App\Exceptions\BaseException;
 
 /**
  * Trait Criteria
@@ -27,7 +28,7 @@ trait Criteria
 {
     /**
      * @inheritDoc
-     * @throws DatabaseException
+     * @throws DatabaseException|BaseException
      */
     public function criteria(string $column, string $operator, $value = null): DbalInterface
     {
@@ -41,7 +42,7 @@ trait Criteria
 
     /**
      * @inheritDoc
-     * @throws DatabaseException
+     * @throws DatabaseException|BaseException
      */
     public function criterias(...$criterias): DbalInterface
     {
@@ -58,7 +59,7 @@ trait Criteria
 
     /**
      * @inheritDoc
-     * @throws DatabaseException
+     * @throws DatabaseException|BaseException
      */
     public function having(string $column, string $operator, ?string $value = null): DbalInterface
     {
@@ -73,7 +74,7 @@ trait Criteria
 
     /**
      * @inheritDoc
-     * @throws DatabaseException
+     * @throws DatabaseException|BaseException
      */
     public function isNull(string $column): DbalInterface
     {
@@ -83,7 +84,7 @@ trait Criteria
 
     /**
      * @inheritDoc
-     * @throws DatabaseException
+     * @throws DatabaseException|BaseException
      */
     public function isNotNull(string $column): DbalInterface
     {
@@ -94,8 +95,8 @@ trait Criteria
     /**
      * Adds Criteria
      * @param mixed $value
-     * @throws DatabaseException
      * @return void
+     * @throws DatabaseException|BaseException
      */
     protected function addCriteria(string $column, string $operator, $value, ?string $func = null)
     {
@@ -111,8 +112,8 @@ trait Criteria
     /**
      * Adds one or more OR criteria in brackets
      * @param array<int, array{0: string, 1: string, 2: mixed}> $orCriterias
-     * @throws DatabaseException
      * @return void
+     * @throws DatabaseException|BaseException
      */
     protected function orCriteria(array $orCriterias)
     {

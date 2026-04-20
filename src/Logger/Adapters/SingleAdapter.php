@@ -34,15 +34,9 @@ class SingleAdapter implements ReportableInterface
     use LoggerTrait;
 
     /**
-     * @throws BaseException
-     * @throws LoggerException
-     * @throws DiException
-     * @throws ConfigException
-     * @throws ReflectionException
-     */
-    /**
      * SingleAdapter constructor
      * @param array<string, mixed> $params
+     * @throws LoggerException|ConfigException|DiException|BaseException|ReflectionException
      */
     public function __construct(array $params)
     {

@@ -16,21 +16,27 @@ declare(strict_types=1);
 
 namespace Quantum\App\Traits;
 
-use Quantum\Environment\Exceptions\EnvException;
+use Quantum\App\Exceptions\StopExecutionException;
+use Quantum\Module\Exceptions\ModuleException;
 use Quantum\Config\Exceptions\ConfigException;
 use Quantum\Loader\Exceptions\LoaderException;
-use Quantum\Http\Exceptions\HttpException;
+use Quantum\Router\Exceptions\RouteException;
+use Quantum\Lang\Exceptions\LangException;
 use Quantum\App\Exceptions\BaseException;
+use Quantum\Lang\Factories\LangFactory;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\ResourceCache\ViewCache;
-use Quantum\Environment\Environment;
-use DebugBar\DebugBarException;
-use Quantum\Environment\Server;
+use Quantum\Router\RouteCollection;
+use Quantum\Router\RouteBuilder;
+use Quantum\Module\ModuleLoader;
+use Quantum\Router\MatchedRoute;
+use Quantum\Router\RouteFinder;
 use Quantum\Debugger\Debugger;
 use Quantum\Http\Response;
-use Quantum\Http\Request;
 use Quantum\Loader\Setup;
 use ReflectionException;
+use Quantum\Di\Di;
+use Exception;
 
 /**
  * Trait WebAppTrait
@@ -39,45 +45,78 @@ use ReflectionException;
 trait WebAppTrait
 {
     /**
-     * @throws DiException
-     * @throws ReflectionException
-     * @throws EnvException
-     * @throws BaseException
+     * @throws ModuleException|RouteException|DiException|ReflectionException
      */
-    protected function loadEnvironment(): void
+    private function loadModules(): void
     {
-        Environment::getInstance()->load(new Setup('config', 'env'));
+        if (!Di::isRegistered(ModuleLoader::class)) {
+            Di::register(ModuleLoader::class);
+        }
+
+        $moduleLoader = Di::get(ModuleLoader::class);
+
+        $collection = (new RouteBuilder())->build(
+            $moduleLoader->loadModulesRoutes(),
+            $moduleLoader->getModuleConfigs()
+        );
+
+        Di::set(RouteCollection::class, $collection);
     }
 
     /**
-     * @throws BaseException
-     * @throws DiException
-     * @throws ReflectionException
-     * @throws HttpException
+     * @return MatchedRoute
+     * @throws RouteException|StopExecutionException|ConfigException|BaseException|DiException|ReflectionException
      */
-    private function initializeRequestResponse(Request $request, Response $response): void
+    private function resolveRoute(): MatchedRoute
     {
-        $request->init(Server::getInstance());
-        $response->init();
+        $routeFinder = new RouteFinder(Di::get(RouteCollection::class));
+
+        $matchedRoute = $routeFinder->find(request());
+
+        if ($matchedRoute === null) {
+            page_not_found();
+            stop();
+        }
+
+        request()->setMatchedRoute($matchedRoute);
+
+        return $matchedRoute;
     }
 
     /**
-     * @throws DebugBarException
+     * @throws LangException|ConfigException|DiException|BaseException|ReflectionException
      */
-    private function initializeDebugger(): void
+    private function loadLanguage(): void
     {
-        $debugger = Debugger::getInstance();
-        $debugger->initStore();
+        $lang = LangFactory::get();
+
+        if ($lang->isEnabled()) {
+            $lang->load();
+        }
     }
 
     /**
-     * @throws ConfigException
-     * @throws DiException
-     * @throws ReflectionException|LoaderException
+     * @throws DiException|ReflectionException
+     */
+    private function logDebugInfo(): void
+    {
+        $debugger = Di::get(Debugger::class);
+
+        if ($debugger->isEnabled()) {
+            $debugger->addToStoreCell(Debugger::HOOKS, 'info', hook()->getRegistered());
+        }
+    }
+
+    /**
+     * @throws ConfigException|DiException|ReflectionException|LoaderException
      */
     private function setupViewCache(): ViewCache
     {
-        $viewCache = ViewCache::getInstance();
+        if (!Di::isRegistered(ViewCache::class)) {
+            Di::register(ViewCache::class);
+        }
+
+        $viewCache = Di::get(ViewCache::class);
 
         if ($viewCache->isEnabled()) {
             $viewCache->setup();
@@ -87,9 +126,7 @@ trait WebAppTrait
     }
 
     /**
-     * @throws ConfigException
-     * @throws DiException
-     * @throws ReflectionException|LoaderException
+     * @throws ConfigException|LoaderException|DiException|ReflectionException
      */
     private function handleCors(Response $response): void
     {
@@ -100,5 +137,14 @@ trait WebAppTrait
         foreach (config()->get('cors') as $key => $value) {
             $response->setHeader($key, (string) $value);
         }
+    }
+
+    /**
+     * @throws ConfigException|LoaderException|DiException|ReflectionException|Exception
+     */
+    private function sendResponse(): void
+    {
+        $this->handleCors(response());
+        response()->send();
     }
 }

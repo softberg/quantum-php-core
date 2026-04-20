@@ -17,7 +17,6 @@ declare(strict_types=1);
 namespace Quantum\Console\Commands;
 
 use Quantum\Migration\Exceptions\MigrationException;
-use Quantum\Lang\Exceptions\LangException;
 use Quantum\Migration\MigrationManager;
 use Quantum\Console\QtCommand;
 
@@ -48,7 +47,6 @@ class MigrationGenerateCommand extends QtCommand
 
     /**
      * Executes the command
-     * @throws LangException
      * @throws MigrationException
      */
     public function exec(): void

@@ -25,15 +25,9 @@ use Quantum\Storage\FileSystem;
  */
 trait LoggerTrait
 {
-    /**
-     * @var FileSystem
-     */
-    protected $fs;
+    protected FileSystem $fs;
 
-    /**
-     * @var string
-     */
-    protected $logFile;
+    protected string $logFile;
 
     /**
      * Initialize the logger
@@ -43,7 +37,6 @@ trait LoggerTrait
 
     /**
      * Reports a log message
-     * @param string $message
      * @param array<string, mixed>|null $context
      */
     public function report(string $level, string $message, ?array $context = []): void

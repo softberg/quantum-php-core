@@ -23,12 +23,12 @@ use Quantum\Database\Exceptions\DatabaseException;
 use Quantum\Storage\Factories\FileSystemFactory;
 use Quantum\Config\Exceptions\ConfigException;
 use Quantum\Database\Factories\TableFactory;
-use Quantum\Lang\Exceptions\LangException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Storage\FileSystem;
 use Quantum\Database\Database;
 use ReflectionException;
+use Quantum\Di\Di;
 
 /**
  * Class MigrationManager
@@ -71,17 +71,17 @@ class MigrationManager
     private Database $db;
 
     /**
-     * @throws BaseException
-     * @throws DiException
-     * @throws FileSystemException
-     * @throws ConfigException
-     * @throws ReflectionException
+     * @throws BaseException|ConfigException|DiException|FileSystemException|ReflectionException
      */
     public function __construct()
     {
         $this->fs = FileSystemFactory::get();
 
-        $this->db = Database::getInstance();
+        if (!Di::isRegistered(Database::class)) {
+            Di::register(Database::class);
+        }
+
+        $this->db = Di::get(Database::class);
 
         $this->tableFactory = new TableFactory();
 
@@ -95,7 +95,6 @@ class MigrationManager
     /**
      * Generates new migration file
      * @throws MigrationException
-     * @throws LangException
      */
     public function generateMigration(string $table, string $action): string
     {
@@ -114,10 +113,7 @@ class MigrationManager
 
     /**
      * Applies migrations
-     * @throws BaseException
-     * @throws DatabaseException
-     * @throws LangException
-     * @throws MigrationException
+     * @throws MigrationException|DatabaseException|BaseException|DiException|ReflectionException
      */
     public function applyMigrations(string $direction, ?int $step = null): ?int
     {
@@ -144,8 +140,7 @@ class MigrationManager
 
     /**
      * Runs up migrations
-     * @throws DatabaseException
-     * @throws MigrationException
+     * @throws MigrationException|DatabaseException|DiException|ReflectionException
      */
     private function upgrade(): int
     {
@@ -182,8 +177,7 @@ class MigrationManager
 
     /**
      * Runs down migrations
-     * @throws DatabaseException
-     * @throws MigrationException
+     * @throws MigrationException|DatabaseException|DiException|ReflectionException
      */
     private function downgrade(?int $step): int
     {
@@ -222,9 +216,7 @@ class MigrationManager
 
     /**
      * Prepares up migrations
-     * @throws MigrationException
-     * @throws DatabaseException
-     *
+     * @throws MigrationException|DiException|ReflectionException
      */
     private function prepareUpMigrations(): void
     {
@@ -249,8 +241,7 @@ class MigrationManager
 
     /**
      * Prepares down migrations
-     * @throws DatabaseException
-     * @throws MigrationException
+     * @throws MigrationException|DiException|ReflectionException
      */
     private function prepareDownMigrations(?int $step = null): void
     {
@@ -295,7 +286,7 @@ class MigrationManager
     /**
      * Gets migrated entries from migrations table
      * @return array<string, mixed>
-     * @throws DatabaseException
+     * @throws DiException|ReflectionException
      */
     private function getMigratedEntries(): array
     {
@@ -305,7 +296,7 @@ class MigrationManager
     /**
      * Adds migrated entries to migrations table
      * @param array<string> $entries
-     * @throws DatabaseException
+     * @throws DiException|ReflectionException
      */
     private function addMigratedEntries(array $entries): void
     {
@@ -317,7 +308,7 @@ class MigrationManager
     /**
      * Removes migrated entries from migrations table
      * @param array<string> $entries
-     * @throws DatabaseException
+     * @throws DiException|ReflectionException
      */
     private function removeMigratedEntries(array $entries): void
     {

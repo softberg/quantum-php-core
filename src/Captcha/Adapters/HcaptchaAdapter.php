@@ -32,10 +32,7 @@ class HcaptchaAdapter implements CaptchaInterface
 
     public const CLIENT_API = 'https://hcaptcha.com/1/api.js?onload=onLoadCallback&recaptchacompat=off';
 
-    /**
-     * @var string
-     */
-    protected $name = 'h-captcha';
+    protected string $name = 'h-captcha';
 
     /**
      * @var string[]

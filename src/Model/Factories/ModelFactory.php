@@ -18,9 +18,13 @@ namespace Quantum\Model\Factories;
 
 use Quantum\Database\Contracts\DbalInterface;
 use Quantum\Model\Exceptions\ModelException;
+use Quantum\App\Exceptions\BaseException;
+use Quantum\Di\Exceptions\DiException;
 use Quantum\Database\Database;
 use Quantum\Model\DbModel;
 use Quantum\Model\Model;
+use ReflectionException;
+use Quantum\Di\Di;
 
 /**
  * Class ModelFactory
@@ -33,7 +37,7 @@ class ModelFactory
      * @template T of Model
      * @param class-string<T> $modelClass
      * @return T
-     * @throws ModelException
+     * @throws ModelException|BaseException|ReflectionException
      */
     public static function get(string $modelClass): Model
     {
@@ -66,6 +70,7 @@ class ModelFactory
      * Creates anonymous dynamic model
      * @param array<string> $foreignKeys
      * @param array<string> $hidden
+     * @throws DiException|BaseException|ReflectionException
      */
     public static function createDynamicModel(
         string $table,
@@ -92,6 +97,7 @@ class ModelFactory
     /**
      * @param array<string> $foreignKeys
      * @param array<string> $hidden
+     * @throws DiException|BaseException|ReflectionException
      */
     protected static function createOrmInstance(
         string $table,
@@ -100,7 +106,11 @@ class ModelFactory
         array  $foreignKeys = [],
         array  $hidden = []
     ): DbalInterface {
-        $ormClass = Database::getInstance()->getOrmClass();
+        if (!Di::isRegistered(Database::class)) {
+            Di::register(Database::class);
+        }
+
+        $ormClass = Di::get(Database::class)->getOrmClass();
 
         $instance = new $ormClass(
             $table,

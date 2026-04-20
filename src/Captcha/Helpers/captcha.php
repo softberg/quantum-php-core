@@ -19,10 +19,7 @@ use Quantum\Di\Exceptions\DiException;
 use Quantum\Captcha\Captcha;
 
 /**
- * @throws BaseException
- * @throws ConfigException
- * @throws DiException
- * @throws ReflectionException
+ * @throws ConfigException|BaseException|DiException|ReflectionException
  */
 function captcha(?string $adapter = null): Captcha
 {

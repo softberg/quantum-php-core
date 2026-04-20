@@ -7,10 +7,10 @@ use Quantum\Logger\Adapters\MessageAdapter;
 use Quantum\Logger\Adapters\SingleAdapter;
 use Quantum\Logger\Adapters\DailyAdapter;
 use Quantum\Logger\Enums\LoggerType;
-use Quantum\Debugger\DebuggerStore;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Debugger\Debugger;
 use Quantum\Logger\Logger;
+use Quantum\Di\Di;
 
 class LoggerHelperFunctionsTest extends AppTestCase
 {
@@ -22,9 +22,11 @@ class LoggerHelperFunctionsTest extends AppTestCase
 
         config()->set('app.debug', true);
 
-        $store = new DebuggerStore();
+        if (!Di::isRegistered(Debugger::class)) {
+            Di::register(Debugger::class);
+        }
 
-        $this->debugger = Debugger::getInstance($store);
+        $this->debugger = Di::get(Debugger::class);
 
         $this->debugger->resetStore();
     }
@@ -32,6 +34,7 @@ class LoggerHelperFunctionsTest extends AppTestCase
     public function tearDown(): void
     {
         $this->debugger->resetStore();
+        parent::tearDown();
     }
 
     public function testLoggerHelperGetDefaultLoggerAdapter(): void

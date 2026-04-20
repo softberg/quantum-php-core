@@ -38,17 +38,12 @@ class HookManager
      * Registered hooks store
      * @var array<string, array<int, callable>>
      */
-    private static array $store = [];
-
-    private static ?HookManager $instance = null;
+    private array $store = [];
 
     /**
-     * @throws HookException
-     * @throws ConfigException
-     * @throws DiException
-     * @throws ReflectionException|LoaderException
+     * @throws HookException|ConfigException|DiException|LoaderException|ReflectionException
      */
-    private function __construct()
+    public function __construct()
     {
         if (!config()->has('hooks')) {
             config()->import(new Setup('config', 'hooks'));
@@ -62,18 +57,6 @@ class HookManager
     }
 
     /**
-     * HookManager instance
-     */
-    public static function getInstance(): HookManager
-    {
-        if (self::$instance == null) {
-            self::$instance = new self();
-        }
-
-        return self::$instance;
-    }
-
-    /**
      * Adds a new listener for a given hook
      * @throws HookException
      */
@@ -83,7 +66,7 @@ class HookManager
             throw HookException::unregisteredHookName($name);
         }
 
-        self::$store[$name][] = $function;
+        $this->store[$name][] = $function;
     }
 
     /**
@@ -97,8 +80,8 @@ class HookManager
             throw HookException::unregisteredHookName($name);
         }
 
-        foreach (self::$store[$name] as $index => $fn) {
-            unset(self::$store[$name][$index]);
+        foreach ($this->store[$name] as $index => $fn) {
+            unset($this->store[$name][$index]);
             $fn($args);
         }
     }
@@ -107,14 +90,13 @@ class HookManager
      * Gets all registered hooks
      * @return array<string, array<int, callable>>
      */
-    public static function getRegistered(): array
+    public function getRegistered(): array
     {
-        return self::$store;
+        return $this->store;
     }
 
     /**
      * Registers new hook
-     * @return void
      * @throws HookException
      */
     protected function register(string $name): void
@@ -123,7 +105,7 @@ class HookManager
             throw HookException::hookDuplicateName($name);
         }
 
-        self::$store[$name] = [];
+        $this->store[$name] = [];
     }
 
     /**
@@ -131,6 +113,6 @@ class HookManager
      */
     protected function exists(string $name): bool
     {
-        return array_key_exists($name, self::$store);
+        return array_key_exists($name, $this->store);
     }
 }

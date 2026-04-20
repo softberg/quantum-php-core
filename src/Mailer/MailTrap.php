@@ -42,8 +42,6 @@ class MailTrap
      */
     private $message;
 
-    private static ?MailTrap $instance = null;
-
     private string $emailsDirectory;
 
     /**
@@ -52,23 +50,11 @@ class MailTrap
      * @throws DiException
      * @throws ReflectionException
      */
-    private function __construct()
+    public function __construct()
     {
         $this->fs = FileSystemFactory::get();
         $this->parser = new MessageParser();
         $this->emailsDirectory = base_dir() . DS . 'shared' . DS . 'emails';
-    }
-
-    /**
-     * Get Instance
-     */
-    public static function getInstance(): MailTrap
-    {
-        if (self::$instance === null) {
-            self::$instance = new self();
-        }
-
-        return self::$instance;
     }
 
     /**

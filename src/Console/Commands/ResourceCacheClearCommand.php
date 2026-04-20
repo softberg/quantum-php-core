@@ -85,9 +85,6 @@ class ResourceCacheClearCommand extends QtCommand
         $this->fs = FileSystemFactory::get();
     }
 
-    /**
-     * @throws BaseException|ReflectionException
-     */
     public function exec(): void
     {
         try {
@@ -133,9 +130,7 @@ class ResourceCacheClearCommand extends QtCommand
     }
 
     /**
-     * @throws ConfigException
-     * @throws DiException
-     * @throws ReflectionException|LoaderException
+     * @throws LoaderException|ConfigException|DiException|ReflectionException
      */
     private function importConfig(): void
     {

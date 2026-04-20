@@ -24,9 +24,7 @@ interface ReportableInterface
 {
     /**
      * Reports a message
-     * @param string $message
      * @param array<string, mixed>|null $context
-     * @return void
      */
     public function report(string $level, string $message, ?array $context = []): void;
 

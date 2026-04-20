@@ -11,6 +11,7 @@ use Quantum\Logger\Adapters\DailyAdapter;
 use Quantum\Logger\Enums\LoggerType;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Logger\Logger;
+use Quantum\Di\Di;
 
 class LoggerFactoryTest extends AppTestCase
 {
@@ -20,7 +21,7 @@ class LoggerFactoryTest extends AppTestCase
 
         config()->set('app.debug', false);
 
-        $this->setPrivateProperty(LoggerFactory::class, 'instances', []);
+        $this->resetLoggerFactory();
     }
 
     public function testLoggerFactoryInstance(): void
@@ -92,5 +93,15 @@ class LoggerFactoryTest extends AppTestCase
         $logger2 = LoggerFactory::get(LoggerType::SINGLE);
 
         $this->assertSame($logger1, $logger2);
+    }
+
+    private function resetLoggerFactory(): void
+    {
+        if (!Di::isRegistered(LoggerFactory::class)) {
+            Di::register(LoggerFactory::class);
+        }
+
+        $factory = Di::get(LoggerFactory::class);
+        $this->setPrivateProperty($factory, 'instances', []);
     }
 }

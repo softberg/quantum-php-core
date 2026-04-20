@@ -11,6 +11,7 @@ use Quantum\Cache\Adapters\FileAdapter;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Cache\Enums\CacheType;
 use Quantum\Cache\Cache;
+use Quantum\Di\Di;
 
 class CacheFactoryTest extends AppTestCase
 {
@@ -18,7 +19,7 @@ class CacheFactoryTest extends AppTestCase
     {
         parent::setUp();
 
-        $this->setPrivateProperty(CacheFactory::class, 'instances', []);
+        $this->resetCacheFactory();
     }
 
     public function testCacheFactoryInstance(): void
@@ -78,5 +79,15 @@ class CacheFactoryTest extends AppTestCase
         $cache2 = CacheFactory::get(CacheType::FILE);
 
         $this->assertSame($cache1, $cache2);
+    }
+
+    private function resetCacheFactory(): void
+    {
+        if (!Di::isRegistered(CacheFactory::class)) {
+            Di::register(CacheFactory::class);
+        }
+
+        $factory = Di::get(CacheFactory::class);
+        $this->setPrivateProperty($factory, 'instances', []);
     }
 }

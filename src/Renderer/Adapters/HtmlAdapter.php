@@ -40,10 +40,7 @@ class HtmlAdapter implements TemplateRendererInterface
 
     /**
      * @param array<string, mixed>|null $configs
-     * @throws BaseException
-     * @throws DiException
-     * @throws ReflectionException
-     * @throws ConfigException
+     * @throws ConfigException|DiException|BaseException|ReflectionException
      */
     public function __construct(?array $configs = [])
     {

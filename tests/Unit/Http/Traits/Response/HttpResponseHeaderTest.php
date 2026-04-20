@@ -3,7 +3,6 @@
 namespace Quantum\Tests\Unit\Http\Traits\Response;
 
 use Quantum\Tests\Unit\AppTestCase;
-use Quantum\Http\Response;
 
 class HttpResponseHeaderTest extends AppTestCase
 {
@@ -15,7 +14,7 @@ class HttpResponseHeaderTest extends AppTestCase
 
     public function testResponseHeaderSetHasGetAllDelete(): void
     {
-        $response = new Response();
+        $response = response();
 
         $this->assertEmpty($response->allHeaders());
 

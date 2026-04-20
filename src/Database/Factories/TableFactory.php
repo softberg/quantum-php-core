@@ -19,6 +19,7 @@ namespace Quantum\Database\Factories;
 use Quantum\Database\Exceptions\DatabaseException;
 use Quantum\Database\Schemas\Table;
 use Quantum\Database\Database;
+use Exception;
 
 /**
  * Class TableFactory
@@ -87,7 +88,7 @@ class TableFactory
     {
         try {
             Database::query('SELECT 1 FROM ' . $name);
-        } catch (DatabaseException $e) {
+        } catch (Exception $e) {
             return false;
         }
 

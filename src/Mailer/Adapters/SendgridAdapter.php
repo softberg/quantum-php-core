@@ -31,10 +31,7 @@ class SendgridAdapter implements MailerInterface
 
     public string $name = 'Sendgrid';
 
-    /**
-     * @var string
-     */
-    private $apiKey;
+    private string $apiKey;
 
     private string $apiUrl = 'https://api.sendgrid.com/v3/mail/send';
 

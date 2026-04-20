@@ -3,7 +3,6 @@
 namespace Quantum\Tests\Unit\Http\Traits\Response;
 
 use Quantum\Tests\Unit\AppTestCase;
-use Quantum\Http\Response;
 
 class HttpResponseBodyTest extends AppTestCase
 {
@@ -14,12 +13,12 @@ class HttpResponseBodyTest extends AppTestCase
 
     public function tearDown(): void
     {
-        Response::flush();
+        response()->flush();
     }
 
     public function testResponseSetHasGetAllDelete(): void
     {
-        $response = new Response();
+        $response = response();
 
         $this->assertEmpty($response->all());
 
@@ -44,7 +43,7 @@ class HttpResponseBodyTest extends AppTestCase
 
     public function testResponseJsonContent(): void
     {
-        $response = new Response();
+        $response = response();
 
         $response->set('firstname', 'John');
 
@@ -70,7 +69,7 @@ class HttpResponseBodyTest extends AppTestCase
 
     public function testResponseJsonP(): void
     {
-        $response = new Response();
+        $response = response();
 
         $response->set('firstname', 'John');
 
@@ -83,7 +82,7 @@ class HttpResponseBodyTest extends AppTestCase
 
     public function testResponseXmlContent(): void
     {
-        $response = new Response();
+        $response = response();
 
         $response->set('firstname', 'John');
 
@@ -129,7 +128,7 @@ class HttpResponseBodyTest extends AppTestCase
 
     public function testResponseXmlWithNestedArray(): void
     {
-        $response = new Response();
+        $response = response();
 
         $response->xml([
             'article' => [
@@ -151,7 +150,7 @@ class HttpResponseBodyTest extends AppTestCase
 
     public function testResponseXmlWithArguments(): void
     {
-        $response = new Response();
+        $response = response();
 
         $response->xml([
             'article@{"type":"post"}' => [
@@ -173,7 +172,7 @@ class HttpResponseBodyTest extends AppTestCase
 
     public function testResponseXmlWithCustomRoot(): void
     {
-        $response = new Response();
+        $response = response();
 
         $response->xml([
             'article@{"type":"post"}' => [
@@ -195,7 +194,7 @@ class HttpResponseBodyTest extends AppTestCase
 
     public function testResponseHtmlContent(): void
     {
-        $response = new Response();
+        $response = response();
 
         $response->html('<div>John Doe</div>');
 

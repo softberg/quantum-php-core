@@ -211,8 +211,7 @@ trait General
     /**
      * Validates uniqueness
      * @param mixed $value
-     * @throws BaseException
-     * @throws ModelException
+     * @throws ModelException|BaseException|ReflectionException
      */
     protected function unique($value, string $className, string $columnName): bool
     {
@@ -227,8 +226,7 @@ trait General
     /**
      * Validates record existence
      * @param mixed $value
-     * @throws BaseException
-     * @throws ModelException
+     * @throws ModelException|BaseException|ReflectionException
      */
     protected function exists($value, string $className, string $columnName): bool
     {
@@ -243,10 +241,7 @@ trait General
     /**
      * Check Captcha
      * @param mixed $value
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws DiException
-     * @throws ReflectionException
+     * @throws ConfigException|DiException|BaseException|ReflectionException
      */
     protected function captcha($value): bool
     {

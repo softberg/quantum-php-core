@@ -14,8 +14,6 @@ class LangHelperFunctionsTest extends AppTestCase
     {
         parent::setUp();
 
-        $this->setPrivateProperty(LangFactory::class, 'instance', null);
-
         $this->lang = LangFactory::get();
 
         $this->lang->load();

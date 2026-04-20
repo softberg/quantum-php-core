@@ -6,21 +6,14 @@ use Quantum\Router\RouteCollection;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Router\MatchedRoute;
 use Quantum\Router\Route;
-use Quantum\Http\Request;
 use Quantum\Di\Di;
 
 class RouteHelpersTest extends AppTestCase
 {
     public function tearDown(): void
     {
-        Request::setMatchedRoute(null);
-        Request::flush();
-
-        if (Di::isRegistered(Request::class)) {
-            $diRequest = Di::get(Request::class);
-            $diRequest->setMatchedRoute(null);
-            $diRequest->flush();
-        }
+        request()->setMatchedRoute(null);
+        request()->flush();
 
         parent::tearDown();
     }
@@ -64,7 +57,7 @@ class RouteHelpersTest extends AppTestCase
             ['uuid' => 'abc-123']
         );
 
-        Request::setMatchedRoute($matched);
+        request()->setMatchedRoute($matched);
 
         $this->assertSame(['Auth', 'Editor'], current_middlewares());
         $this->assertSame('Web', current_module());
@@ -94,7 +87,7 @@ class RouteHelpersTest extends AppTestCase
 
         $matched = new MatchedRoute($route, []);
 
-        Request::setMatchedRoute($matched);
+        request()->setMatchedRoute($matched);
 
         $this->assertSame($closure, route_callback());
         $this->assertNull(current_controller());
@@ -146,8 +139,7 @@ class RouteHelpersTest extends AppTestCase
 
     public function testRouteMethodAndUri(): void
     {
-        $request = new Request();
-        $request->create('POST', 'http://example.com/api/test');
+        request()->create('POST', 'http://example.com/api/test');
 
         $this->assertSame('POST', route_method());
 

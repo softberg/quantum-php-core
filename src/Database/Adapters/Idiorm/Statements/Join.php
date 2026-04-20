@@ -77,8 +77,7 @@ trait Join
 
     /**
      * @inheritDoc
-     * @throws BaseException
-     * @throws ModelException
+     * @throws ModelException|BaseException
      */
     public function joinTo(DbModel $relatedModel, bool $switch = true): DbalInterface
     {

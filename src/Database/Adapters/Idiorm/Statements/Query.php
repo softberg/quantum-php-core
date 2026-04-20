@@ -17,6 +17,7 @@ declare(strict_types=1);
 namespace Quantum\Database\Adapters\Idiorm\Statements;
 
 use Quantum\Database\Exceptions\DatabaseException;
+use Quantum\App\Exceptions\BaseException;
 use PDOStatement;
 use PDOException;
 
@@ -28,7 +29,7 @@ trait Query
 {
     /**
      * @inheritDoc
-     * @throws DatabaseException
+     * @throws DatabaseException|BaseException
      */
     public static function execute(string $query, array $parameters = []): bool
     {
@@ -48,7 +49,7 @@ trait Query
 
     /**
      * @inheritDoc
-     * @throws DatabaseException
+     * @throws DatabaseException|BaseException
      */
     public static function query(string $query, array $parameters = []): array
     {
@@ -70,7 +71,7 @@ trait Query
 
     /**
      * @inheritDoc
-     * @throws DatabaseException
+     * @throws DatabaseException|BaseException
      */
     public static function lastQuery(): ?string
     {
@@ -83,7 +84,7 @@ trait Query
 
     /**
      * @inheritDoc
-     * @throws DatabaseException
+     * @throws DatabaseException|BaseException
      */
     public static function lastStatement(): object
     {
@@ -96,7 +97,7 @@ trait Query
 
     /**
      * @inheritDoc
-     * @throws DatabaseException
+     * @throws DatabaseException|BaseException
      */
     public static function queryLog(): array
     {
@@ -109,8 +110,8 @@ trait Query
 
     /**
      * Fetches columns of the table
-     * @throws DatabaseException
      * @return array<string>
+     * @throws DatabaseException|BaseException
      */
     public static function fetchColumns(string $table): array
     {

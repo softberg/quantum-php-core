@@ -19,10 +19,7 @@ use Quantum\Di\Exceptions\DiException;
 use Quantum\Logger\Logger;
 
 /**
- * @throws BaseException
- * @throws ConfigException
- * @throws DiException
- * @throws ReflectionException
+ * @throws ConfigException|DiException|BaseException|ReflectionException
  */
 function logger(?string $adapter = null): Logger
 {
@@ -31,12 +28,8 @@ function logger(?string $adapter = null): Logger
 
 /**
  * Reports error
- * @param string $var
  * @param array<string, mixed> $context
- * @throws BaseException
- * @throws ConfigException
- * @throws DiException
- * @throws ReflectionException
+ * @throws ConfigException|DiException|BaseException|ReflectionException
  */
 function error(string $var, array $context = []): void
 {
@@ -45,12 +38,8 @@ function error(string $var, array $context = []): void
 
 /**
  * Reports warning
- * @param string $var
  * @param array<string, mixed> $context
- * @throws BaseException
- * @throws ConfigException
- * @throws DiException
- * @throws ReflectionException
+ * @throws ConfigException|DiException|BaseException|ReflectionException
  */
 function warning(string $var, array $context = []): void
 {
@@ -59,12 +48,8 @@ function warning(string $var, array $context = []): void
 
 /**
  * Reports notice
- * @param string $var
  * @param array<string, mixed> $context
- * @throws BaseException
- * @throws ConfigException
- * @throws DiException
- * @throws ReflectionException
+ * @throws ConfigException|DiException|BaseException|ReflectionException
  */
 function notice(string $var, array $context = []): void
 {
@@ -73,12 +58,8 @@ function notice(string $var, array $context = []): void
 
 /**
  * Reports info
- * @param string $var
  * @param array<string, mixed> $context
- * @throws BaseException
- * @throws ConfigException
- * @throws DiException
- * @throws ReflectionException
+ * @throws ConfigException|DiException|BaseException|ReflectionException
  */
 function info(string $var, array $context = []): void
 {
@@ -87,12 +68,8 @@ function info(string $var, array $context = []): void
 
 /**
  * Reports debug
- * @param string $var
  * @param array<string, mixed> $context
- * @throws BaseException
- * @throws ConfigException
- * @throws DiException
- * @throws ReflectionException
+ * @throws ConfigException|DiException|BaseException|ReflectionException
  */
 function debug(string $var, array $context = []): void
 {

@@ -17,13 +17,14 @@ declare(strict_types=1);
 namespace Quantum\Lang\Factories;
 
 use Quantum\Config\Exceptions\ConfigException;
+use Quantum\Loader\Exceptions\LoaderException;
 use Quantum\Lang\Exceptions\LangException;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Lang\Translator;
-use Quantum\Http\Request;
 use Quantum\Loader\Setup;
 use ReflectionException;
 use Quantum\Lang\Lang;
+use Quantum\Di\Di;
 
 /**
  * Class LangFactory
@@ -31,40 +32,43 @@ use Quantum\Lang\Lang;
  */
 class LangFactory
 {
-    /**
-     * @var Lang|null Cached Lang instance
-     */
-    private static ?Lang $instance = null;
+    private ?Lang $instance = null;
 
     /**
-     * @throws ConfigException
-     * @throws LangException
-     * @throws DiException
-     * @throws ReflectionException
+     * @throws LangException|ConfigException|LoaderException|DiException|ReflectionException
      */
     public static function get(): Lang
     {
-        if (self::$instance !== null) {
-            return self::$instance;
+        if (!Di::isRegistered(self::class)) {
+            Di::register(self::class);
         }
 
-        [$isEnabled, $supported, $default] = self::loadLangConfig();
+        return Di::get(self::class)->resolve();
+    }
 
-        $lang = self::detectLanguage($supported, $default);
+    /**
+     * @throws LangException|ConfigException|DiException|ReflectionException|LoaderException
+     */
+    public function resolve(): Lang
+    {
+        if ($this->instance !== null) {
+            return $this->instance;
+        }
+
+        [$isEnabled, $supported, $default] = $this->loadLangConfig();
+
+        $lang = $this->detectLanguage($supported, $default);
 
         $translator = new Translator($lang);
 
-        return self::$instance = new Lang($lang, $isEnabled, $translator);
-
+        return $this->instance = new Lang($lang, $isEnabled, $translator);
     }
 
     /**
      * @return array{0: bool, 1: array<string>, 2: string}
-     * @throws ConfigException
-     * @throws DiException
-     * @throws ReflectionException
+     * @throws LoaderException|ConfigException|DiException|ReflectionException
      */
-    private static function loadLangConfig(): array
+    private function loadLangConfig(): array
     {
         if (!config()->has('lang')) {
             config()->import(new Setup('config', 'lang'));
@@ -79,18 +83,18 @@ class LangFactory
 
     /**
      * @param array<string> $supported
-     * @throws LangException
+     * @throws LangException|DiException|ReflectionException
      */
-    private static function detectLanguage(array $supported, ?string $default): string
+    private function detectLanguage(array $supported, ?string $default): string
     {
-        $lang = self::getLangFromQuery($supported);
+        $lang = $this->getLangFromQuery($supported);
 
         if (in_array($lang, [null, '', '0'], true)) {
-            $lang = self::getLangFromUrlSegment($supported);
+            $lang = $this->getLangFromUrlSegment($supported);
         }
 
         if (in_array($lang, [null, '', '0'], true)) {
-            $lang = self::getLangFromHeader($supported);
+            $lang = $this->getLangFromHeader($supported);
         }
 
         if (in_array($lang, [null, '', '0'], true)) {
@@ -107,17 +111,18 @@ class LangFactory
     /**
      * @param array<string> $supported
      */
-    private static function getLangFromQuery(array $supported): ?string
+    private function getLangFromQuery(array $supported): ?string
     {
-        $queryLang = Request::getQueryParam('lang');
+        $queryLang = request()->getQueryParam('lang');
 
         return $queryLang && in_array($queryLang, $supported) ? $queryLang : null;
     }
 
     /**
      * @param array<string> $supported
+     * @throws DiException|ReflectionException
      */
-    private static function getLangFromUrlSegment(array $supported): ?string
+    private function getLangFromUrlSegment(array $supported): ?string
     {
         $segmentIndex = (int) config()->get('lang.url_segment');
 
@@ -125,15 +130,16 @@ class LangFactory
             $segmentIndex++;
         }
 
-        $segmentLang = Request::getSegment($segmentIndex);
+        $segmentLang = request()->getSegment($segmentIndex);
 
         return $segmentLang && in_array($segmentLang, $supported) ? $segmentLang : null;
     }
 
     /**
      * @param array<string> $supported
+     * @throws DiException|ReflectionException
      */
-    private static function getLangFromHeader(array $supported): ?string
+    private function getLangFromHeader(array $supported): ?string
     {
         $acceptedLang = server()->acceptedLang();
 

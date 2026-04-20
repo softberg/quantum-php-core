@@ -12,34 +12,35 @@
  * @since 3.0.0
  */
 
+use Quantum\Di\Exceptions\DiException;
 use Quantum\Environment\Server;
+use Quantum\Di\Di;
 
 /**
- * Gets Server instance
+ * @throws DiException|ReflectionException
  */
 function server(): Server
 {
-    return Server::getInstance();
+    if (!Di::isRegistered(Server::class)) {
+        Di::register(Server::class);
+    }
+
+    return Di::get(Server::class);
 }
 
-/**
- * Gets user IP
- */
 function get_user_ip(): ?string
 {
-    return Server::getInstance()->ip();
+    return server()->ip();
 }
 
 if (!function_exists('getallheaders')) {
 
     /**
-     * Get all headers
-     * Built-in PHP function synonym of apache_request_headers()
-     * Declaring here for Nginx server
      * @return array<string, mixed>
+     * @throws DiException|ReflectionException
      */
     function getallheaders(): array
     {
-        return Server::getInstance()->getAllHeaders();
+        return server()->getAllHeaders();
     }
 }

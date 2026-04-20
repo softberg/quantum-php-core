@@ -27,6 +27,7 @@ use Quantum\Di\Exceptions\DiException;
 use Quantum\Renderer\Renderer;
 use Quantum\Loader\Setup;
 use ReflectionException;
+use Quantum\Di\Di;
 
 /**
  * Class RendererFactory
@@ -34,9 +35,6 @@ use ReflectionException;
  */
 class RendererFactory
 {
-    /**
-     * Supported adapters
-     */
     public const ADAPTERS = [
         RendererType::HTML => HtmlAdapter::class,
         RendererType::TWIG => TwigAdapter::class,
@@ -45,15 +43,24 @@ class RendererFactory
     /**
      * @var array<string, Renderer>
      */
-    private static array $instances = [];
+    private array $instances = [];
 
     /**
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws DiException
-     * @throws ReflectionException
+     * @throws ConfigException|BaseException|DiException|ReflectionException
      */
     public static function get(?string $adapter = null): Renderer
+    {
+        if (!Di::isRegistered(self::class)) {
+            Di::register(self::class);
+        }
+
+        return Di::get(self::class)->resolve($adapter);
+    }
+
+    /**
+     * @throws ConfigException|BaseException|DiException|ReflectionException
+     */
+    public function resolve(?string $adapter = null): Renderer
     {
         if (!config()->has('view')) {
             config()->import(new Setup('config', 'view'));
@@ -61,19 +68,19 @@ class RendererFactory
 
         $adapter ??= config()->get('view.default');
 
-        $adapterClass = self::getAdapterClass($adapter);
+        $adapterClass = $this->getAdapterClass($adapter);
 
-        if (!isset(self::$instances[$adapter])) {
-            self::$instances[$adapter] = self::createInstance($adapterClass, $adapter);
+        if (!isset($this->instances[$adapter])) {
+            $this->instances[$adapter] = $this->createInstance($adapterClass, $adapter);
         }
 
-        return self::$instances[$adapter];
+        return $this->instances[$adapter];
     }
 
     /**
-     * @throws RendererException
+     * @throws RendererException|BaseException|ReflectionException
      */
-    private static function createInstance(string $adapterClass, string $adapter): Renderer
+    private function createInstance(string $adapterClass, string $adapter): Renderer
     {
         $adapterInstance = new $adapterClass(config()->get('view.' . $adapter));
 
@@ -87,7 +94,7 @@ class RendererFactory
     /**
      * @throws BaseException
      */
-    private static function getAdapterClass(string $adapter): string
+    private function getAdapterClass(string $adapter): string
     {
         if (!array_key_exists($adapter, self::ADAPTERS)) {
             throw RendererException::adapterNotSupported($adapter);

@@ -31,23 +31,23 @@ trait File
      * Files
      * @var array<string, mixed>
      */
-    private static array $__files = [];
+    private array $__files = [];
 
     /**
      * Checks to see if request contains file
      */
-    public static function hasFile(string $key): bool
+    public function hasFile(string $key): bool
     {
-        if (!isset(self::$__files[$key])) {
+        if (!isset($this->__files[$key])) {
             return false;
         }
 
-        if (!is_array(self::$__files[$key]) && self::$__files[$key]->getErrorCode() != UPLOAD_ERR_OK) {
+        if (!is_array($this->__files[$key]) && $this->__files[$key]->getErrorCode() != UPLOAD_ERR_OK) {
             return false;
         }
 
-        if (is_array(self::$__files[$key])) {
-            foreach (self::$__files[$key] as $file) {
+        if (is_array($this->__files[$key])) {
+            foreach ($this->__files[$key] as $file) {
                 if ($file->getErrorCode() != UPLOAD_ERR_OK) {
                     return false;
                 }
@@ -63,13 +63,13 @@ trait File
      * @return mixed
      * @throws BaseException
      */
-    public static function getFile(string $key)
+    public function getFile(string $key)
     {
-        if (!self::hasFile($key)) {
+        if (!$this->hasFile($key)) {
             throw FileUploadException::fileNotFound($key);
         }
 
-        return self::$__files[$key];
+        return $this->__files[$key];
     }
 
     /**
@@ -79,7 +79,7 @@ trait File
      * @throws BaseException
      * @throws ReflectionException
      */
-    public static function handleFiles(array $files): array
+    public function handleFiles(array $files): array
     {
         if (!count($files)) {
             return [];

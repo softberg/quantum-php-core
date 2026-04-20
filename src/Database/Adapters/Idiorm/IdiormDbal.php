@@ -30,6 +30,8 @@ use Quantum\App\Exceptions\BaseException;
 use InvalidArgumentException;
 use ORM;
 use PDO;
+use Quantum\Di\Exceptions\DiException;
+use ReflectionException;
 
 /**
  * Class IdiormDbal
@@ -257,6 +259,7 @@ class IdiormDbal implements DbalInterface, RelationalInterface
     /**
      * @param array<string, mixed> $config
      * @return array<string, mixed>
+     * @throws DiException|ReflectionException
      */
     protected static function getBaseConfig(string $driver, array $config): array
     {

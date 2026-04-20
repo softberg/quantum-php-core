@@ -3,7 +3,6 @@
 namespace Quantum\Tests\Unit\Http\Traits\Response;
 
 use Quantum\Tests\Unit\AppTestCase;
-use Quantum\Http\Response;
 
 class HttpResponseStatusTest extends AppTestCase
 {
@@ -14,7 +13,7 @@ class HttpResponseStatusTest extends AppTestCase
 
     public function testResponseStatus(): void
     {
-        $response = new Response();
+        $response = response();
 
         $this->assertEquals(200, $response->getStatusCode());
 
@@ -27,7 +26,7 @@ class HttpResponseStatusTest extends AppTestCase
 
     public function testHttpStatusGetText(): void
     {
-        $response = new Response();
+        $response = response();
 
         $this->assertEquals('OK', $response->getText(200));
 

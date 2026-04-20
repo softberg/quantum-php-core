@@ -22,6 +22,8 @@ use Quantum\Encryption\Exceptions\CryptorException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Encryption\Enums\CryptorType;
 use Quantum\Encryption\Cryptor;
+use ReflectionException;
+use Quantum\Di\Di;
 
 /**
  * Class Cryptor
@@ -29,9 +31,6 @@ use Quantum\Encryption\Cryptor;
  */
 class CryptorFactory
 {
-    /**
-     * Supported adapters
-     */
     public const ADAPTERS = [
         CryptorType::SYMMETRIC => SymmetricEncryptionAdapter::class,
         CryptorType::ASYMMETRIC => AsymmetricEncryptionAdapter::class,
@@ -40,24 +39,36 @@ class CryptorFactory
     /**
      * @var array<string, Cryptor>
      */
-    private static array $instances = [];
+    private array $instances = [];
 
     /**
-     * @throws BaseException
+     * @throws BaseException|ReflectionException
      */
     public static function get(string $type = CryptorType::SYMMETRIC): Cryptor
     {
-        if (!isset(self::$instances[$type])) {
-            self::$instances[$type] = self::createInstance($type);
+        if (!Di::isRegistered(self::class)) {
+            Di::register(self::class);
         }
 
-        return self::$instances[$type];
+        return Di::get(self::class)->resolve($type);
     }
 
     /**
      * @throws BaseException
      */
-    private static function createInstance(string $type): Cryptor
+    public function resolve(string $type = CryptorType::SYMMETRIC): Cryptor
+    {
+        if (!isset($this->instances[$type])) {
+            $this->instances[$type] = $this->createInstance($type);
+        }
+
+        return $this->instances[$type];
+    }
+
+    /**
+     * @throws BaseException
+     */
+    private function createInstance(string $type): Cryptor
     {
         if (!isset(self::ADAPTERS[$type])) {
             throw CryptorException::adapterNotSupported($type);

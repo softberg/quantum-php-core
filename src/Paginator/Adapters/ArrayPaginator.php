@@ -18,6 +18,8 @@ namespace Quantum\Paginator\Adapters;
 
 use Quantum\Paginator\Contracts\PaginatorInterface;
 use Quantum\Paginator\Traits\PaginatorTrait;
+use Quantum\Di\Exceptions\DiException;
+use ReflectionException;
 
 /**
  * Class ArrayPaginator
@@ -34,6 +36,7 @@ class ArrayPaginator implements PaginatorInterface
 
     /**
      * @param array<mixed> $items
+     * @throws DiException|ReflectionException
      */
     public function __construct(array $items, int $perPage, int $page = 1)
     {

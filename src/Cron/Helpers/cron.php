@@ -12,6 +12,8 @@
  * @since 3.0.0
  */
 
+use Quantum\Cron\Exceptions\CronException;
+use Quantum\Di\Exceptions\DiException;
 use Quantum\Cron\CronManager;
 use Quantum\Cron\CronTask;
 use Quantum\Cron\Schedule;
@@ -21,7 +23,8 @@ if (!function_exists('cron_config')) {
     /**
      * Resolve cron configuration value
      * @param mixed $default
-     * @return mixed|null
+     * @return mixed
+     * @throws DiException|ReflectionException
      */
     function cron_config(string $key, $default = null)
     {
@@ -32,7 +35,7 @@ if (!function_exists('cron_config')) {
                 if (!config()->has('cron')) {
                     config()->import(new Setup('config', 'cron'));
                 }
-            } catch (\Throwable $exception) {
+            } catch (Throwable $exception) {
                 // Ignore missing cron config file and rely on defaults
             }
 
@@ -56,7 +59,7 @@ if (!function_exists('cron_manager')) {
 if (!function_exists('cron_task')) {
     /**
      * Create a new cron task
-     * @throws \Quantum\Cron\Exceptions\CronException
+     * @throws CronException
      */
     function cron_task(string $name, string $expression, callable $callback): CronTask
     {

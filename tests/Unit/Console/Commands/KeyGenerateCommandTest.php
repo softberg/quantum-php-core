@@ -6,7 +6,6 @@ use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\Console\Helper\HelperSet;
 use Quantum\Console\Commands\KeyGenerateCommand;
-use Quantum\Environment\Environment;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\App\App;
 
@@ -29,7 +28,7 @@ class KeyGenerateCommandTest extends AppTestCase
 
         $this->envFilePath = App::getBaseDir() . DS . '.env.testing';
         $this->originalFileContent = (string) $this->fs->get($this->envFilePath);
-        $this->originalEnvData = $this->getPrivateProperty(Environment::getInstance(), 'envContent');
+        $this->originalEnvData = $this->getPrivateProperty(environment(), 'envContent');
 
         $this->command = new KeyGenerateCommand();
         $this->command->setHelperSet(new HelperSet(['question' => new QuestionHelper()]));
@@ -39,7 +38,7 @@ class KeyGenerateCommandTest extends AppTestCase
     public function tearDown(): void
     {
         $this->fs->put($this->envFilePath, $this->originalFileContent);
-        $this->setPrivateProperty(Environment::getInstance(), 'envContent', $this->originalEnvData);
+        $this->setPrivateProperty(environment(), 'envContent', $this->originalEnvData);
 
         parent::tearDown();
     }

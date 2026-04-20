@@ -1,6 +1,25 @@
 ## [3.0.0] - TBD
 
 ### Changed
+- **BREAKING:** Refactored app bootstrapping and DI ownership model (#373):
+  - Introduced `AppContext` as the central execution state holder (mode, baseDir, DiContainer, Environment, Config, Request, Response, Routes)
+  - Split `Di` into a static facade delegating to an instance-based `DiContainer`, one container per application execution
+  - Added `Di::set()`, `Di::has()`, and `Di::isRegistered()` for explicit service management
+  - `Di::get()` now enforces a strict contract: throws if the dependency is not explicitly registered (no more implicit auto-registration)
+  - Introduced `BootPipeline` and `BootStageInterface` for explicit, ordered boot sequences
+  - Extracted boot stages: `LoadHelpersStage`, `LoadEnvironmentStage`, `LoadAppConfigStage`, `SetupErrorHandlerStage`, `InitHttpStage`, `InitDebuggerStage`
+  - Removed `AppTrait`; all adapter boot logic moved to pipeline stages and focused private methods in `WebAppTrait`/`ConsoleAppTrait`
+- **BREAKING:** Converted `Request` and `Response` from static facades to instance-based classes (#454):
+  - Merged `HttpRequest`/`HttpResponse` wrapper layer directly into `Request`/`Response`
+  - All request/response access now goes through `request()` and `response()` helper functions
+- **BREAKING:** Removed all static singleton patterns from core services (#381, #382):
+  - Migrated all 12 first-party factories (Auth, Archive, Cache, Captcha, Cryptor, FileSystem, Lang, Logger, Mailer, Renderer, Session, View) from static instance caches to DI-managed lifetimes
+  - Migrated service singletons to DI ownership: Cookie, Config, Environment, Server, AssetManager, Csrf, Database, MailTrap, Debugger, ViewCache, ErrorHandler, HookManager, ModuleLoader
+- **BREAKING:** `Environment` class is no longer a static singleton (#456):
+  - Uses `Dotenv::createArrayBacked()` for isolated, deterministic env loading
+  - New `environment()` helper function and shorthand check methods: `isProduction()`, `isTesting()`, `isStaging()`, `isDevelopment()`, `isLocal()`
+  - `env()` helper now delegates through `environment()->getValue()`
+
 - **BREAKING:** Minimum PHP version requirement raised from 7.3 to 7.4
 - Modernized codebase with PHP 7.4+ syntax using Rector:
   - Array destructuring: `list()` → `[]`
@@ -48,6 +67,11 @@
 - Fixed cURL error message assertions for cross-version compatibility
 
 ### Added
+- `AppContext` class representing the runtime identity of a single application execution
+- `DiContainer` instance-based dependency injection container, isolated per execution
+- `BootPipeline` and `BootStageInterface` for declarative, ordered boot sequences
+- `environment()` global helper and `Environment` shorthand methods (`isProduction()`, `isTesting()`, etc.)
+- Lazy registration guards (`Di::register()` + `Di::isRegistered()`) at all DI call sites for explicit dependency management
 - Rector as dev dependency for automated code refactoring
 - Additional PHP extensions required in CI: `bcmath`, `gd`, `zip`
 - PHPUnit strict testing flags: `--fail-on-warning`, `--fail-on-risky`
@@ -75,3 +99,9 @@
 ### Removed
 - Support for PHP 7.3 and earlier versions
 - Legacy routing static state and implicit controller resolution via `RouteController`
+- `AppTrait` — replaced by boot pipeline stages and adapter-specific traits
+- Static singleton patterns from all core services and factories
+- `Environment::getInstance()` static singleton accessor
+- `HttpRequest`/`HttpResponse` static facade wrapper classes (merged into `Request`/`Response`)
+- Implicit auto-registration in `Di::get()` — all dependencies must be explicitly registered
+- `RegisterCoreDependenciesStage` and `dependencies.php` — replaced by lazy registration at call sites

@@ -5,8 +5,6 @@ namespace Quantum\Tests\Unit\View\Helpers;
 use Quantum\View\Factories\ViewFactory;
 use Quantum\Router\MatchedRoute;
 use Quantum\Router\Route;
-use Quantum\Http\Request;
-use Quantum\Di\Di;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\View\QtView;
 
@@ -27,11 +25,9 @@ class ViewHelperTest extends AppTestCase
         $route->module('Test');
 
         $matchedRoute = new MatchedRoute($route, []);
-        Request::setMatchedRoute($matchedRoute);
 
-        $request = Di::get(Request::class);
-        $request->create('POST', '/test');
-        Request::setMatchedRoute($matchedRoute);
+        request()->create('POST', '/test');
+        request()->setMatchedRoute($matchedRoute);
 
         $this->view = ViewFactory::get();
     }

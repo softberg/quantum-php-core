@@ -28,13 +28,13 @@ trait Status
     /**
      * Status code
      */
-    private static int $__statusCode = StatusCode::OK;
+    private int $__statusCode = StatusCode::OK;
 
     /**
      * Status texts
      * @var string[]
      */
-    private static array $texts = [
+    private array $texts = [
         StatusCode::CONTINUE => 'Continue',
         StatusCode::SWITCHING_PROTOCOLS => 'Switching Protocols',
         StatusCode::PROCESSING => 'Processing',
@@ -106,40 +106,40 @@ trait Status
     /**
      * Gets the reason phrase for a given HTTP status code.
      */
-    public static function getText(int $code): string
+    public function getText(int $code): string
     {
-        if (!isset(self::$texts[$code])) {
+        if (!isset($this->texts[$code])) {
             throw new InvalidArgumentException("Unknown HTTP status code: {$code}");
         }
 
-        return self::$texts[$code];
+        return $this->texts[$code];
     }
 
     /**
      * Sets the status code
      */
-    public static function setStatusCode(int $code): void
+    public function setStatusCode(int $code): void
     {
-        if (!isset(self::$texts[$code])) {
+        if (!isset($this->texts[$code])) {
             throw new InvalidArgumentException(sprintf('The HTTP status code "%s" is not valid.', $code));
         }
 
-        self::$__statusCode = $code;
+        $this->__statusCode = $code;
     }
 
     /**
      * Gets the status code
      */
-    public static function getStatusCode(): int
+    public function getStatusCode(): int
     {
-        return self::$__statusCode;
+        return $this->__statusCode;
     }
 
     /**
      * Gets the status text
      */
-    public static function getStatusText(): string
+    public function getStatusText(): string
     {
-        return self::getText(self::$__statusCode);
+        return $this->getText($this->__statusCode);
     }
 }

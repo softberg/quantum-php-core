@@ -29,6 +29,7 @@ use Quantum\Logger\LoggerConfig;
 use Quantum\Logger\Logger;
 use Quantum\Loader\Setup;
 use ReflectionException;
+use Quantum\Di\Di;
 
 /**
  * Class LoggerFactory
@@ -36,9 +37,6 @@ use ReflectionException;
  */
 class LoggerFactory
 {
-    /**
-     * Supported adapters
-     */
     public const ADAPTERS = [
         LoggerType::SINGLE => SingleAdapter::class,
         LoggerType::DAILY => DailyAdapter::class,
@@ -48,15 +46,24 @@ class LoggerFactory
     /**
      * @var array<string, Logger>
      */
-    private static array $instances = [];
+    private array $instances = [];
 
     /**
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws DiException
-     * @throws ReflectionException
+     * @throws ConfigException|DiException|BaseException|ReflectionException
      */
     public static function get(?string $adapter = null): Logger
+    {
+        if (!Di::isRegistered(self::class)) {
+            Di::register(self::class);
+        }
+
+        return Di::get(self::class)->resolve($adapter);
+    }
+
+    /**
+     * @throws ConfigException|DiException|BaseException|ReflectionException
+     */
+    public function resolve(?string $adapter = null): Logger
     {
         if (!config()->has('logging')) {
             config()->import(new Setup('config', 'logging'));
@@ -70,20 +77,23 @@ class LoggerFactory
 
         $adapter = $isDebug ? LoggerType::MESSAGE : ($adapter ?? config()->get('logging.default'));
 
-        $adapterClass = self::getAdapterClass($adapter);
+        $adapterClass = $this->getAdapterClass($adapter);
 
         $logLevel = config()->get('logging.' . $adapter . '.level', 'error');
 
         LoggerConfig::setAppLogLevel($logLevel);
 
-        if (!isset(self::$instances[$adapter])) {
-            self::$instances[$adapter] = self::createInstance($adapterClass, $adapter);
+        if (!isset($this->instances[$adapter])) {
+            $this->instances[$adapter] = $this->createInstance($adapterClass, $adapter);
         }
 
-        return self::$instances[$adapter];
+        return $this->instances[$adapter];
     }
 
-    private static function createInstance(string $adapterClass, string $adapter): Logger
+    /**
+     * @throws DiException|BaseException|ReflectionException
+     */
+    private function createInstance(string $adapterClass, string $adapter): Logger
     {
         if ($adapter === LoggerType::MESSAGE) {
             return new Logger(new MessageAdapter());
@@ -101,7 +111,7 @@ class LoggerFactory
     /**
      * @throws BaseException
      */
-    private static function getAdapterClass(string $adapter): string
+    private function getAdapterClass(string $adapter): string
     {
         if (!array_key_exists($adapter, self::ADAPTERS)) {
             throw LoggerException::adapterNotSupported($adapter);

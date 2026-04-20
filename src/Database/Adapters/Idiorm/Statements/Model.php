@@ -16,6 +16,7 @@ declare(strict_types=1);
 
 namespace Quantum\Database\Adapters\Idiorm\Statements;
 
+use Quantum\App\Exceptions\BaseException;
 use Quantum\Database\Exceptions\DatabaseException;
 use Quantum\Database\Contracts\DbalInterface;
 
@@ -27,7 +28,7 @@ trait Model
 {
     /**
      * @inheritDoc
-     * @throws DatabaseException
+     * @throws DatabaseException|BaseException
      */
     public function create(): DbalInterface
     {

@@ -3,7 +3,6 @@
 namespace Quantum\Tests\Unit\Environment\Helpers;
 
 use Quantum\Tests\Unit\AppTestCase;
-use Quantum\Environment\Server;
 
 class ServerHelperTest extends AppTestCase
 {
@@ -11,42 +10,36 @@ class ServerHelperTest extends AppTestCase
     {
         parent::setUp();
 
-        $this->setPrivateProperty(Server::class, 'instance', null);
+        server()->flush();
     }
 
     public function testGetUserIpFromClientIp(): void
     {
-        $_SERVER['HTTP_CLIENT_IP'] = '192.168.1.1';
-        $_SERVER['HTTP_X_FORWARDED_FOR'] = null;
-        $_SERVER['REMOTE_ADDR'] = null;
+        server()->set('HTTP_CLIENT_IP', '192.168.1.1');
 
         $this->assertEquals('192.168.1.1', get_user_ip());
     }
 
     public function testGetUserIpFromXForwardedFor(): void
     {
-        $_SERVER['HTTP_CLIENT_IP'] = null;
-        $_SERVER['HTTP_X_FORWARDED_FOR'] = '203.0.113.5';
-        $_SERVER['REMOTE_ADDR'] = null;
+        server()->set('HTTP_X_FORWARDED_FOR', '203.0.113.5');
 
         $this->assertEquals('203.0.113.5', get_user_ip());
     }
 
     public function testGetUserIpFromRemoteAddr(): void
     {
-        $_SERVER['HTTP_CLIENT_IP'] = null;
-        $_SERVER['HTTP_X_FORWARDED_FOR'] = null;
-        $_SERVER['REMOTE_ADDR'] = '198.51.100.1';
+        server()->set('REMOTE_ADDR', '198.51.100.1');
 
         $this->assertEquals('198.51.100.1', get_user_ip());
     }
 
     public function testGetAllHeaders(): void
     {
-        $_SERVER['HTTP_USER_AGENT'] = 'Mozilla/5.0';
-        $_SERVER['HTTP_ACCEPT'] = 'text/html';
-        $_SERVER['HTTP_X_CUSTOM_HEADER'] = 'CustomValue';
-        $_SERVER['SERVER_NAME'] = 'example.com';
+        server()->set('HTTP_USER_AGENT', 'Mozilla/5.0');
+        server()->set('HTTP_ACCEPT', 'text/html');
+        server()->set('HTTP_X_CUSTOM_HEADER', 'CustomValue');
+        server()->set('SERVER_NAME', 'example.com');
 
         $headers = getallheaders();
 

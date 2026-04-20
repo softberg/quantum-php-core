@@ -17,6 +17,7 @@ declare(strict_types=1);
 namespace Quantum\Middleware;
 
 use Quantum\Middleware\Exceptions\MiddlewareException;
+use Quantum\App\Exceptions\BaseException;
 use Quantum\Router\MatchedRoute;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
@@ -49,7 +50,7 @@ class MiddlewareManager
     /**
      * Apply Middlewares
      * @return array{0: Request, 1: Response}
-     * @throws MiddlewareException
+     * @throws MiddlewareException|BaseException
      */
     public function applyMiddlewares(Request $request, Response $response): array
     {
@@ -69,7 +70,7 @@ class MiddlewareManager
 
     /**
      * Loads and gets the current middleware instance
-     * @throws MiddlewareException
+     * @throws MiddlewareException|BaseException
      */
     private function getMiddleware(Request $request, Response $response): QtMiddleware
     {

@@ -22,7 +22,6 @@ use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Http\Enums\ContentType;
 use Quantum\Storage\UploadedFile;
-use Quantum\Environment\Server;
 use ReflectionException;
 
 /**
@@ -34,30 +33,27 @@ trait RawInput
     /**
      * Parses raw input data and returns parsed parameters and files
      * @return array<string, mixed>
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws DiException
-     * @throws ReflectionException
+     * @throws ConfigException|DiException|BaseException|ReflectionException
      */
-    public static function parse(string $rawInput): array
+    public function parse(string $rawInput): array
     {
-        $boundary = self::getBoundary();
+        $boundary = $this->getBoundary();
 
         if (!$boundary) {
             return ['params' => [], 'files' => []];
         }
 
-        $blocks = self::getBlocks($boundary, $rawInput);
+        $blocks = $this->getBlocks($boundary, $rawInput);
 
-        return self::processBlocks($blocks);
+        return $this->processBlocks($blocks);
     }
 
     /**
      * Extracts boundary string from Content-Type header
      */
-    private static function getBoundary(): ?string
+    private function getBoundary(): ?string
     {
-        $contentType = Server::getInstance()->contentType();
+        $contentType = server()->contentType();
 
         if (!$contentType) {
             return null;
@@ -72,7 +68,7 @@ trait RawInput
      * Splits raw input into multipart blocks
      * @return array<string>
      */
-    private static function getBlocks(string $boundary, string $rawInput): array
+    private function getBlocks(string $boundary, string $rawInput): array
     {
         $result = preg_split("/-+$boundary/", $rawInput);
 
@@ -89,12 +85,9 @@ trait RawInput
      * Processes multipart blocks and extracts parameters and files
      * @param array<string> $blocks
      * @return array<string, mixed>
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws DiException
-     * @throws ReflectionException
+     * @throws ConfigException|DiException|BaseException|ReflectionException
      */
-    private static function processBlocks(array $blocks): array
+    private function processBlocks(array $blocks): array
     {
         $params = [];
         $files = [];
@@ -106,11 +99,11 @@ trait RawInput
                 continue;
             }
 
-            $type = self::detectBlockType($block);
+            $type = $this->detectBlockType($block);
 
             switch ($type) {
                 case 'file':
-                    $parsed = self::getParsedFile($block);
+                    $parsed = $this->getParsedFile($block);
 
                     if ($parsed === null) {
                         continue 2;
@@ -118,16 +111,16 @@ trait RawInput
 
                     [$nameParam, $file] = $parsed;
 
-                    self::addFileToCollection($files, $nameParam, $file);
+                    $this->addFileToCollection($files, $nameParam, $file);
                     break;
 
                 case 'stream':
-                    $params += self::getParsedStream($block);
+                    $params += $this->getParsedStream($block);
                     break;
 
                 case 'param':
                 default:
-                    $params += self::getParsedParameter($block);
+                    $params += $this->getParsedParameter($block);
                     break;
             }
         }
@@ -139,9 +132,9 @@ trait RawInput
      * Adds a parsed file to the files collection
      * @param array<string, mixed> $files
      */
-    private static function addFileToCollection(array &$files, string $nameParam, UploadedFile $file): void
+    private function addFileToCollection(array &$files, string $nameParam, UploadedFile $file): void
     {
-        $arrayParam = self::arrayParam($nameParam);
+        $arrayParam = $this->arrayParam($nameParam);
 
         if (is_array($arrayParam)) {
             [$name, $key] = $arrayParam;
@@ -160,7 +153,7 @@ trait RawInput
      * Detects the block type as a string identifier.
      * @return string One of 'file', 'stream', 'param'
      */
-    private static function detectBlockType(string $block): string
+    private function detectBlockType(string $block): string
     {
         if (strpos($block, 'filename') !== false) {
             return 'file';
@@ -177,7 +170,7 @@ trait RawInput
      * Gets the parsed param
      * @return array<string, string>
      */
-    private static function getParsedStream(string $block): array
+    private function getParsedStream(string $block): array
     {
         preg_match('/name=\"([^\"]*)\".*stream[\n|\r]+([^\n\r].*)?$/s', $block, $match);
 
@@ -187,14 +180,11 @@ trait RawInput
     /**
      * Gets the parsed file
      * @return array{string, UploadedFile}|null
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws DiException
-     * @throws ReflectionException
+     * @throws ConfigException|DiException|BaseException|ReflectionException
      */
-    private static function getParsedFile(string $block): ?array
+    private function getParsedFile(string $block): ?array
     {
-        [$name, $filename, $type, $content] = self::parseFileData($block);
+        [$name, $filename, $type, $content] = $this->parseFileData($block);
 
         if (!$content) {
             return null;
@@ -223,7 +213,7 @@ trait RawInput
      * Parses a file block into metadata and binary content
      * @return array{string, string, string, string}
      */
-    private static function parseFileData(string $block): array
+    private function parseFileData(string $block): array
     {
         $block = ltrim($block, "\r\n");
 
@@ -235,7 +225,7 @@ trait RawInput
 
         [$rawHeaders, $content] = $parts;
 
-        [$name, $filename, $contentType] = self::parseHeaders($rawHeaders);
+        [$name, $filename, $contentType] = $this->parseHeaders($rawHeaders);
 
         $content = substr($content, 0, strlen($content) - 2);
 
@@ -251,7 +241,7 @@ trait RawInput
      * Parses a block and extracts normal form parameters
      * @return array<string, mixed>
      */
-    private static function getParsedParameter(string $block): array
+    private function getParsedParameter(string $block): array
     {
         $data = [];
 
@@ -272,7 +262,7 @@ trait RawInput
      * Extracts name, filename, and content type from header lines
      * @return array{string, string, string}
      */
-    private static function parseHeaders(string $rawHeaders): array
+    private function parseHeaders(string $rawHeaders): array
     {
         $name = '-unknown-';
         $filename = '-unknown-';
@@ -304,7 +294,7 @@ trait RawInput
      * Parses array-like parameter names
      * @return array<string>|string
      */
-    private static function arrayParam(string $parameter)
+    private function arrayParam(string $parameter)
     {
         if (strpos($parameter, '[') !== false && preg_match('/^([^[]*)\[([^]]*)\](.*)$/', $parameter, $match)) {
             return [$match[1], $match[2]];

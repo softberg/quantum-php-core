@@ -19,10 +19,7 @@ use Quantum\Di\Exceptions\DiException;
 use Quantum\Cache\Cache;
 
 /**
- * @throws BaseException
- * @throws ConfigException
- * @throws DiException
- * @throws ReflectionException
+ * @throws ConfigException|BaseException|DiException|ReflectionException
  */
 function cache(?string $adapter = null): Cache
 {

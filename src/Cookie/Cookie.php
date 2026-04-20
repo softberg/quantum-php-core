@@ -29,34 +29,14 @@ class Cookie implements CookieStorageInterface
      * Cookie storage
      * @var array<string, mixed>
      */
-    private static array $storage = [];
+    private array $storage;
 
     /**
-     * Cookie instance
-     */
-    private static ?Cookie $instance = null;
-
-    /**
-     * Cookie constructor.
-     */
-    private function __construct()
-    {
-        // Preventing to create a new object through constructor
-    }
-
-    /**
-     * Gets the cookie instance
      * @param array<string, mixed> $storage
      */
-    public static function getInstance(array &$storage): Cookie
+    public function __construct(array &$storage)
     {
-        self::$storage = &$storage;
-
-        if (self::$instance === null) {
-            self::$instance = new self();
-        }
-
-        return self::$instance;
+        $this->storage = &$storage;
     }
 
     /**
@@ -68,7 +48,7 @@ class Cookie implements CookieStorageInterface
     {
         $allCookies = [];
 
-        foreach (self::$storage as $key => $value) {
+        foreach ($this->storage as $key => $value) {
             $allCookies[$key] = crypto_decode($value);
         }
 
@@ -80,7 +60,7 @@ class Cookie implements CookieStorageInterface
      */
     public function has(string $key): bool
     {
-        return isset(self::$storage[$key]) && !empty(self::$storage[$key]);
+        return isset($this->storage[$key]) && !empty($this->storage[$key]);
     }
 
     /**
@@ -89,7 +69,7 @@ class Cookie implements CookieStorageInterface
      */
     public function get(string $key)
     {
-        return $this->has($key) ? crypto_decode(self::$storage[$key]) : null;
+        return $this->has($key) ? crypto_decode($this->storage[$key]) : null;
     }
 
     /**
@@ -98,7 +78,7 @@ class Cookie implements CookieStorageInterface
      */
     public function set(string $key, $value = '', int $time = 0, string $path = '/', string $domain = '', bool $secure = false, bool $httponly = false): void
     {
-        self::$storage[$key] = crypto_encode($value);
+        $this->storage[$key] = crypto_encode($value);
         setcookie($key, crypto_encode($value), ['expires' => $time !== 0 ? time() + $time : $time, 'path' => $path, 'domain' => $domain, 'secure' => $secure, 'httponly' => $httponly]);
     }
 
@@ -108,7 +88,7 @@ class Cookie implements CookieStorageInterface
     public function delete(string $key, string $path = '/'): void
     {
         if ($this->has($key)) {
-            unset(self::$storage[$key]);
+            unset($this->storage[$key]);
             setcookie($key, '', ['expires' => time() - 3600, 'path' => $path]);
         }
     }
@@ -118,8 +98,8 @@ class Cookie implements CookieStorageInterface
      */
     public function flush(): void
     {
-        if (count(self::$storage)) {
-            foreach (array_keys(self::$storage) as $key) {
+        if (count($this->storage)) {
+            foreach (array_keys($this->storage) as $key) {
                 $this->delete($key, '/');
             }
         }

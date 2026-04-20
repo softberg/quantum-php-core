@@ -25,12 +25,12 @@ use Quantum\View\Factories\ViewFactory;
 use Quantum\Di\Exceptions\DiException;
 use DebugBar\DebugBarException;
 use Quantum\Logger\Logger;
-use Quantum\Http\Response;
 use ReflectionException;
 use Psr\Log\LogLevel;
 use ErrorException;
 use ParseError;
 use Throwable;
+use Exception;
 
 /**
  * Class ErrorHandler
@@ -64,25 +64,9 @@ class ErrorHandler
 
     private ?Logger $logger = null;
 
-    private static ?ErrorHandler $instance = null;
-
-    private function __construct()
-    {
-        // Prevent direct instantiation
-    }
-
     private function __clone()
     {
         // Prevent cloning
-    }
-
-    public static function getInstance(): ErrorHandler
-    {
-        if (self::$instance === null) {
-            self::$instance = new self();
-        }
-
-        return self::$instance;
     }
 
     public function setup(Logger $logger): void
@@ -106,12 +90,7 @@ class ErrorHandler
     }
 
     /**
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws DiException
-     * @throws ReflectionException
-     * @throws RendererException
-     * @throws DebugBarException
+     * @throws ConfigException|RendererException|DebugBarException|DiException|BaseException|ReflectionException
      */
     public function handleException(Throwable $throwable): void
     {
@@ -129,11 +108,7 @@ class ErrorHandler
     }
 
     /**
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws DiException
-     * @throws ReflectionException
-     * @throws DebugBarException
+     * @throws ConfigException|RendererException|DiException|BaseException|ReflectionException|Exception
      */
     private function handleWebException(Throwable $throwable): void
     {
@@ -151,8 +126,8 @@ class ErrorHandler
             $this->logError($throwable, $errorType);
         }
 
-        Response::html($errorPage);
-        Response::send();
+        response()->html($errorPage);
+        response()->send();
     }
 
     private function logError(Throwable $e, string $errorType): void
@@ -169,10 +144,7 @@ class ErrorHandler
     /**
      * Composes the stack trace
      * @return array<int, array{file: string, code: string}>
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws DiException
-     * @throws ReflectionException
+     * @throws ConfigException|RendererException|DiException|BaseException|ReflectionException
      */
     private function composeStackTrace(Throwable $e): array
     {
@@ -199,10 +171,7 @@ class ErrorHandler
 
     /**
      * Gets the source code where the error happens
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws DiException
-     * @throws ReflectionException
+     * @throws ConfigException|RendererException|DiException|BaseException|ReflectionException
      */
     private function getSourceCode(string $filename, int $lineNumber, string $className): string
     {

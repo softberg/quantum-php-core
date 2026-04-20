@@ -22,16 +22,15 @@ use Quantum\App\Exceptions\BaseException;
 use Quantum\Archive\Adapters\ZipAdapter;
 use Quantum\Archive\Enums\ArchiveType;
 use Quantum\Archive\Archive;
+use ReflectionException;
+use Quantum\Di\Di;
 
 /**
- * Class Cryptor
- * @package Quantum\Encryption
+ * Class ArchiveFactory
+ * @package Quantum\Archive
  */
 class ArchiveFactory
 {
-    /**
-     * Supported adapters
-     */
     public const ADAPTERS = [
         ArchiveType::PHAR => PharAdapter::class,
         ArchiveType::ZIP => ZipAdapter::class,
@@ -40,24 +39,36 @@ class ArchiveFactory
     /**
      * @var array<string, Archive>
      */
-    private static array $instances = [];
+    private array $instances = [];
 
     /**
-     * @throws BaseException
+     * @throws BaseException|ReflectionException
      */
     public static function get(string $type = ArchiveType::PHAR): Archive
     {
-        if (!isset(self::$instances[$type])) {
-            self::$instances[$type] = self::createInstance($type);
+        if (!Di::isRegistered(self::class)) {
+            Di::register(self::class);
         }
 
-        return self::$instances[$type];
+        return Di::get(self::class)->resolve($type);
     }
 
     /**
      * @throws BaseException
      */
-    private static function createInstance(string $type): Archive
+    public function resolve(string $type = ArchiveType::PHAR): Archive
+    {
+        if (!isset($this->instances[$type])) {
+            $this->instances[$type] = $this->createInstance($type);
+        }
+
+        return $this->instances[$type];
+    }
+
+    /**
+     * @throws BaseException
+     */
+    private function createInstance(string $type): Archive
     {
         if (!isset(self::ADAPTERS[$type])) {
             throw ArchiveException::adapterNotSupported($type);

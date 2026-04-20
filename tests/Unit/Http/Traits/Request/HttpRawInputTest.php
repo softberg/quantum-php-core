@@ -4,8 +4,6 @@ namespace Quantum\Tests\Unit\Http\Traits\Request;
 
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Storage\UploadedFile;
-use Quantum\Environment\Server;
-use Quantum\Http\Request;
 
 class HttpRawInputTest extends AppTestCase
 {
@@ -21,9 +19,10 @@ class HttpRawInputTest extends AppTestCase
 
     public function testParseReturnsEmptyWhenNoBoundary(): void
     {
-        Server::getInstance()->set('CONTENT_TYPE', null);
+        server()->set('CONTENT_TYPE', null);
 
-        $result = Request::parse('irrelevant-body');
+        $request = request();
+        $result = $request->parse('irrelevant-body');
 
         $this->assertEquals(['params' => [], 'files' => []], $result);
     }
@@ -37,9 +36,10 @@ class HttpRawInputTest extends AppTestCase
             . "JohnDoe\r\n"
             . "--$boundary--\r\n";
 
-        Server::getInstance()->set('CONTENT_TYPE', "multipart/form-data; boundary=$boundary");
+        server()->set('CONTENT_TYPE', "multipart/form-data; boundary=$boundary");
 
-        $result = Request::parse($rawInput);
+        $request = request();
+        $result = $request->parse($rawInput);
 
         $this->assertArrayHasKey('params', $result);
 
@@ -57,9 +57,10 @@ class HttpRawInputTest extends AppTestCase
             . "stream-data\r\n"
             . "--$boundary--\r\n";
 
-        Server::getInstance()->set('CONTENT_TYPE', "multipart/form-data; boundary=$boundary");
+        server()->set('CONTENT_TYPE', "multipart/form-data; boundary=$boundary");
 
-        $result = Request::parse($rawInput);
+        $request = request();
+        $result = $request->parse($rawInput);
 
         $this->assertArrayHasKey('params', $result);
 
@@ -80,9 +81,10 @@ class HttpRawInputTest extends AppTestCase
             . "$fileContent\r\n"
             . "--$boundary--\r\n";
 
-        Server::getInstance()->set('CONTENT_TYPE', "multipart/form-data; boundary=$boundary");
+        server()->set('CONTENT_TYPE', "multipart/form-data; boundary=$boundary");
 
-        $result = Request::parse($rawInput);
+        $request = request();
+        $result = $request->parse($rawInput);
 
         $this->assertArrayHasKey('files', $result);
 

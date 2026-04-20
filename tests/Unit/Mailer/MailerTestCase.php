@@ -10,8 +10,6 @@ abstract class MailerTestCase extends AppTestCase
     protected $adapter;
     public function tearDown(): void
     {
-        parent::tearDown();
-
         $coreDependencies = [
             \Quantum\Loader\Loader::class => \Quantum\Loader\Loader::class,
             \Quantum\Http\Request::class => \Quantum\Http\Request::class,
@@ -26,6 +24,6 @@ abstract class MailerTestCase extends AppTestCase
             $this->fs->remove($emailFile);
         }
 
-        Di::reset();
+        parent::tearDown();
     }
 }

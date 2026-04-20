@@ -48,19 +48,13 @@ namespace Quantum\Service {
 
 namespace Quantum\Tests\Unit\Di {
 
-    use Quantum\Service\DummyServiceInterface;
-    use Quantum\Controllers\TestDiController;
-    use Quantum\Service\CircularDependencyA;
-    use Quantum\Service\CircularDependencyB;
-    use Quantum\View\Factories\ViewFactory;
     use Quantum\Di\Exceptions\DiException;
     use Quantum\Tests\Unit\AppTestCase;
     use Quantum\Service\DummyService;
-    use Quantum\Loader\Loader;
     use Quantum\Http\Response;
     use Quantum\Http\Request;
     use Quantum\Loader\Setup;
-    use ReflectionProperty;
+    use Quantum\App\App;
     use Quantum\Di\Di;
 
     class DiTest extends AppTestCase
@@ -70,265 +64,96 @@ namespace Quantum\Tests\Unit\Di {
             parent::setUp();
         }
 
-        public function testDiRegisterDependency(): void
+        public function testFacadeDelegatesToAppContextContainer(): void
+        {
+            $container = App::getContext()->getContainer();
+
+            Di::register(DummyService::class);
+
+            $this->assertTrue($container->isRegistered(DummyService::class));
+
+            $instance = Di::get(DummyService::class);
+
+            $this->assertInstanceOf(DummyService::class, $instance);
+            $this->assertSame($instance, $container->get(DummyService::class));
+        }
+
+        public function testGetCurrentReturnsAppContextContainer(): void
+        {
+            $container = App::getContext()->getContainer();
+
+            $this->assertSame($container, Di::getCurrent());
+        }
+
+        public function testNewContextGivesCleanContainer(): void
+        {
+            Di::register(DummyService::class);
+            Di::get(DummyService::class);
+
+            $this->assertTrue(Di::isRegistered(DummyService::class));
+            $this->assertTrue(Di::has(DummyService::class));
+
+            $this->createContext();
+
+            $this->assertFalse(Di::isRegistered(DummyService::class));
+            $this->assertFalse(Di::has(DummyService::class));
+        }
+
+        public function testResetContainerKeepsRegistrations(): void
+        {
+            Di::register(DummyService::class);
+            Di::get(DummyService::class);
+
+            $this->assertTrue(Di::isRegistered(DummyService::class));
+            $this->assertTrue(Di::has(DummyService::class));
+
+            Di::resetContainer();
+
+            $this->assertTrue(Di::isRegistered(DummyService::class));
+            $this->assertFalse(Di::has(DummyService::class));
+        }
+
+        public function testFacadeRegisterAndGet(): void
         {
             Di::register(Setup::class);
 
             $this->assertInstanceOf(Setup::class, Di::get(Setup::class));
         }
 
-        public function testDiAttemptingToRegisterAlreadyRegisteredDependency(): void
-        {
-            $this->expectException(DiException::class);
-
-            $this->expectExceptionMessage('The dependency `Quantum\Loader\Setup` is already registered.');
-
-            Di::register(Setup::class);
-            Di::register(Setup::class);
-        }
-
-        public function testDiAttemptingToRegisterNonExistentClass(): void
-        {
-            $this->expectException(DiException::class);
-            $this->expectExceptionMessage('The dependency `NonExistentClass` is not instantiable.');
-
-            Di::register('NonExistentClass');
-        }
-
-        public function testDiAttemptingToRegisterNonExistentAbstract(): void
-        {
-            $this->expectException(DiException::class);
-            $this->expectExceptionMessage('The dependency `NonExistentInterface` is not valid abstract class.');
-
-            Di::register(DummyService::class, 'NonExistentInterface');
-        }
-
-        public function testDiIsRegistered(): void
-        {
-            $this->assertFalse(Di::isRegistered(DummyService::class));
-
-            Di::register(DummyService::class);
-
-            $this->assertTrue(Di::isRegistered(DummyService::class));
-        }
-
-        public function testDiAbstractToConcreteBinding(): void
-        {
-            Di::register(DummyService::class, DummyServiceInterface::class);
-
-            $instance = Di::get(DummyServiceInterface::class);
-
-            $this->assertInstanceOf(DummyService::class, $instance);
-        }
-
-        public function testDiSetBindsInstanceToAbstract(): void
+        public function testFacadeSet(): void
         {
             $instance = new DummyService();
 
-            Di::set(DummyServiceInterface::class, $instance);
+            Di::set(DummyService::class, $instance);
 
-            $resolved = Di::get(DummyServiceInterface::class);
-
-            $this->assertSame($instance, $resolved);
-            $this->assertInstanceOf(DummyService::class, $resolved);
+            $this->assertSame($instance, Di::get(DummyService::class));
         }
 
-        public function testDiSetWorksWithoutPriorRegister(): void
+        public function testFacadeCreate(): void
         {
-            $instance = new DummyService();
-
-            $this->assertFalse(Di::isRegistered(DummyServiceInterface::class));
-
-            Di::set(DummyServiceInterface::class, $instance);
-
-            $this->assertTrue(Di::isRegistered(DummyServiceInterface::class));
-
-            $this->assertSame($instance, Di::get(DummyServiceInterface::class));
-        }
-
-        public function testDiSetRejectsWrongInstanceType(): void
-        {
-            $this->expectException(DiException::class);
-            $this->expectExceptionMessage(
-                'The dependency `' . DummyServiceInterface::class . '` is not valid abstract class.'
-            );
-
-            Di::set(DummyServiceInterface::class, new \stdClass());
-        }
-
-        public function testDiSetRejectsInvalidAbstract(): void
-        {
-            $this->expectException(DiException::class);
-            $this->expectExceptionMessage(
-                'The dependency `NonExistentInterface` is not valid abstract class.'
-            );
-
-            Di::set('NonExistentInterface', new DummyService());
-        }
-
-        public function testDiSetRejectsWhenAlreadyResolved(): void
-        {
-            Di::register(DummyService::class);
-
-            Di::get(DummyService::class);
-
-            $this->expectException(DiException::class);
-            $this->expectExceptionMessage(
-                'The dependency `' . DummyService::class . '` is already registered.'
-            );
-
-            Di::set(DummyService::class, new DummyService());
-        }
-
-        public function testDiSetOverridesRegisteredButNotResolved(): void
-        {
-            Di::register(DummyService::class, DummyServiceInterface::class);
-
-            $instance = new DummyService();
-
-            Di::set(DummyServiceInterface::class, $instance);
-
-            $resolved = Di::get(DummyServiceInterface::class);
-
-            $this->assertSame($instance, $resolved);
-        }
-
-        public function testDiGetCoreDependencies(): void
-        {
-            $this->assertInstanceOf(Loader::class, Di::get(Loader::class));
-
-            $this->assertInstanceOf(Request::class, Di::get(Request::class));
-
-            $this->assertInstanceOf(Response::class, Di::get(Response::class));
-        }
-
-        public function testDiAttemptingToGetNotRegisteredDependency(): void
-        {
-            $this->assertInstanceOf(Loader::class, Di::get(Loader::class));
-
-            $this->expectException(DiException::class);
-
-            $this->expectExceptionMessage('The dependency `Quantum\Di\Exceptions\DiException` is not registered.');
-
-            Di::get(DiException::class);
-        }
-
-        public function testDiCircularDependencyDetectedAtResolve(): void
-        {
-            $this->expectException(DiException::class);
-
-            $this->expectExceptionMessage(
-                'Circular dependency detected: `' . CircularDependencyA::class .
-                ' -> ' . CircularDependencyB::class .
-                ' -> ' . CircularDependencyA::class . '`'
-            );
-
-            Di::register(CircularDependencyA::class);
-            Di::register(CircularDependencyB::class);
-
-            Di::create(CircularDependencyA::class);
-        }
-
-        public function testDiGetReturnsSingleton(): void
-        {
-            Di::register(DummyService::class);
-
-            $instance1 = Di::get(DummyService::class);
-
-            $instance2 = Di::get(DummyService::class);
-
-            $this->assertInstanceOf(DummyService::class, $instance1);
-
-            $this->assertSame($instance1, $instance2);
-        }
-
-        public function testDiCreateReturnsNewInstance(): void
-        {
-            Di::register(DummyService::class);
-
             $instance1 = Di::create(DummyService::class);
-
             $instance2 = Di::create(DummyService::class);
 
             $this->assertInstanceOf(DummyService::class, $instance1);
-
             $this->assertNotSame($instance1, $instance2);
         }
 
-        public function testDiAutowire(): void
+        public function testFacadeAutowire(): void
         {
-            $params = Di::autowire([new TestDiController(), 'index']);
-
-            $this->assertInstanceOf(Request::class, $params[0]);
-
-            $this->assertInstanceOf(Response::class, $params[1]);
-
-            $this->assertInstanceOf(ViewFactory::class, $params[2]);
-
             $callback = function (Request $request, Response $response): void {
-                // function body
             };
 
             $params = Di::autowire($callback);
 
             $this->assertInstanceOf(Request::class, $params[0]);
-
             $this->assertInstanceOf(Response::class, $params[1]);
         }
 
-        public function testDiAutowireWithAbstract(): void
+        public function testCallStaticThrowsForInvalidMethod(): void
         {
-            Di::register(DummyService::class, DummyServiceInterface::class);
+            $this->expectException(DiException::class);
 
-            $controller = new TestDiController();
-
-            $params = Di::autowire([$controller, 'handleService']);
-
-            $this->assertInstanceOf(DummyServiceInterface::class, $params[0]);
-
-            $this->assertInstanceOf(DummyService::class, $params[0]);
-        }
-
-        public function testDiReset(): void
-        {
-            Di::register(DummyService::class);
-
-            Di::get(DummyService::class);
-
-            $this->assertTrue(Di::isRegistered(DummyService::class));
-
-            Di::reset();
-
-            $dependenciesProperty = new ReflectionProperty(Di::class, 'dependencies');
-            $dependenciesProperty->setAccessible(true);
-
-            $containerProperty = new ReflectionProperty(Di::class, 'container');
-            $containerProperty->setAccessible(true);
-
-            $this->assertEmpty($dependenciesProperty->getValue());
-
-            $this->assertEmpty($containerProperty->getValue());
-        }
-
-        public function testDiResetContainer(): void
-        {
-            Di::register(DummyService::class);
-
-            Di::get(DummyService::class);
-
-            $this->assertTrue(Di::isRegistered(DummyService::class));
-
-            Di::resetContainer();
-
-            $dependenciesProperty = new ReflectionProperty(Di::class, 'dependencies');
-            $dependenciesProperty->setAccessible(true);
-
-            $containerProperty = new ReflectionProperty(Di::class, 'container');
-            $containerProperty->setAccessible(true);
-
-            $this->assertNotEmpty($dependenciesProperty->getValue());
-
-            $this->assertEmpty($containerProperty->getValue());
+            Di::nonExistentMethod();
         }
     }
 }

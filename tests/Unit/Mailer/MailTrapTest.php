@@ -2,8 +2,9 @@
 
 namespace Quantum\Tests\Unit\Mailer;
 
-use Quantum\Mailer\MailTrap;
 use Quantum\Tests\Unit\AppTestCase;
+use Quantum\Mailer\MailTrap;
+use Quantum\Di\Di;
 
 class MailTrapTest extends AppTestCase
 {
@@ -19,7 +20,11 @@ class MailTrapTest extends AppTestCase
     {
         parent::setUp();
 
-        $this->mailTrap = MailTrap::getInstance();
+        if (!Di::isRegistered(MailTrap::class)) {
+            Di::register(MailTrap::class);
+        }
+
+        $this->mailTrap = Di::get(MailTrap::class);
 
         $this->filename = '2YILSA4zZk61tDdYEfGMw7lNznlhAQakjwNGr0QCq44';
 
@@ -62,6 +67,8 @@ Y29udGVudCBvZiB0aGUgZG9jdW1lbnQ=
     public function tearDown(): void
     {
         $this->fs->remove($this->path . DS . $this->filename . '.eml');
+
+        parent::tearDown();
     }
 
     public function testMailTrapInstance(): void

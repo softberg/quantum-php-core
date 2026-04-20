@@ -12,12 +12,19 @@
  * @since 3.0.0
  */
 
+use Quantum\Di\Exceptions\DiException;
 use Quantum\Hook\HookManager;
+use Quantum\Di\Di;
 
 /**
  * Gets the HookManager instance
+ * @throws DiException|ReflectionException
  */
 function hook(): HookManager
 {
-    return HookManager::getInstance();
+    if (!Di::isRegistered(HookManager::class)) {
+        Di::register(HookManager::class);
+    }
+
+    return Di::get(HookManager::class);
 }

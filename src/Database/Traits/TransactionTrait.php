@@ -18,6 +18,9 @@ namespace Quantum\Database\Traits;
 
 use Quantum\Database\Exceptions\DatabaseException;
 use Quantum\App\Exceptions\BaseException;
+use Quantum\Database\Database;
+use ReflectionException;
+use Quantum\Di\Di;
 use Throwable;
 
 /**
@@ -28,7 +31,7 @@ trait TransactionTrait
 {
     /**
      * Begins a transaction
-     * @throws BaseException
+     * @throws BaseException|ReflectionException
      */
     public static function beginTransaction(): void
     {
@@ -47,7 +50,7 @@ trait TransactionTrait
 
     /**
      * Rolls back a transaction
-     * @throws BaseException
+     * @throws BaseException|ReflectionException
      */
     public static function rollback(): void
     {
@@ -57,11 +60,15 @@ trait TransactionTrait
     /**
      * Resolves the transaction method call
      * @return mixed
-     * @throws BaseException
+     * @throws BaseException|ReflectionException
      */
     protected static function resolveTransaction(string $method)
     {
-        $db = self::getInstance()->getOrmClass();
+        if (!Di::isRegistered(Database::class)) {
+            Di::register(Database::class);
+        }
+
+        $db = Di::get(Database::class)->getOrmClass();
 
         if (!method_exists($db, $method)) {
             throw DatabaseException::methodNotSupported($method, self::class);

@@ -283,8 +283,7 @@ class QtView
     }
 
     /**
-     * @throws ReflectionException
-     * @throws DiException
+     * @throws ReflectionException|DiException
      */
     private function updateDebugger(string $viewFile): void
     {

@@ -17,32 +17,27 @@ declare(strict_types=1);
 namespace Quantum\App\Adapters;
 
 use Quantum\Middleware\Exceptions\MiddlewareException;
-use Quantum\Database\Exceptions\DatabaseException;
 use Quantum\App\Exceptions\StopExecutionException;
-use Quantum\Session\Exceptions\SessionException;
-use Quantum\Environment\Exceptions\EnvException;
+use Quantum\Loader\Exceptions\LoaderException;
 use Quantum\Module\Exceptions\ModuleException;
 use Quantum\Config\Exceptions\ConfigException;
+use Quantum\App\Stages\SetupErrorHandlerStage;
 use Quantum\Router\Exceptions\RouteException;
-use Quantum\Http\Exceptions\HttpException;
+use Quantum\App\Stages\LoadEnvironmentStage;
 use Quantum\Csrf\Exceptions\CsrfException;
 use Quantum\Lang\Exceptions\LangException;
-use Quantum\Middleware\MiddlewareManager;
+use Quantum\App\Stages\LoadAppConfigStage;
 use Quantum\App\Exceptions\BaseException;
+use Quantum\App\Stages\InitDebuggerStage;
+use Quantum\Middleware\MiddlewareManager;
+use Quantum\App\Stages\LoadHelpersStage;
+use Quantum\App\Stages\InitHttpStage;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\App\Traits\WebAppTrait;
-use Quantum\Router\RouteCollection;
 use Quantum\Router\RouteDispatcher;
-use Quantum\Router\RouteBuilder;
-use Quantum\Module\ModuleLoader;
-use DebugBar\DebugBarException;
-use Quantum\Router\RouteFinder;
-use Quantum\Debugger\Debugger;
-use Quantum\Hook\HookManager;
-use Quantum\Http\Response;
-use Quantum\Http\Request;
+use Quantum\App\BootPipeline;
+use Quantum\App\AppContext;
 use ReflectionException;
-use Quantum\Di\Di;
 
 /**
  * Class WebAppAdapter
@@ -52,110 +47,51 @@ class WebAppAdapter extends AppAdapter
 {
     use WebAppTrait;
 
-    /**
-     * @var Request
-     */
-    private $request;
-
-    /**
-     * @var Response
-     */
-    private $response;
-
-    /**
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws DiException
-     * @throws EnvException
-     * @throws ReflectionException
-     */
-    public function __construct()
+    public function __construct(AppContext $context)
     {
-        parent::__construct();
+        parent::__construct($context);
 
-        $this->loadEnvironment();
-        $this->loadAppConfig();
+        $pipeline = new BootPipeline([
+            new LoadHelpersStage(),
+            new LoadEnvironmentStage(),
+            new LoadAppConfigStage(),
+            new SetupErrorHandlerStage(),
+            new InitHttpStage(),
+            new InitDebuggerStage(),
+        ]);
 
-        $this->request = Di::get(Request::class);
-        $this->response = Di::get(Response::class);
+        $pipeline->run($this->context);
     }
 
     /**
      * Starts the web app
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws CsrfException
-     * @throws DatabaseException
-     * @throws DebugBarException
-     * @throws DiException
-     * @throws HttpException
-     * @throws LangException
-     * @throws ModuleException
-     * @throws ReflectionException
-     * @throws RouteException
-     * @throws SessionException
-     * @throws MiddlewareException
+     * @throws ModuleException|MiddlewareException|LangException|RouteException|CsrfException|ConfigException|DiException|BaseException|LoaderException|ReflectionException
      */
     public function start(): ?int
     {
         try {
-            $this->initializeRequestResponse($this->request, $this->response);
-
-            if ($this->request->isMethod('OPTIONS')) {
+            if (request()->isMethod('OPTIONS')) {
                 stop();
             }
 
-            $this->setupErrorHandler();
-            $this->initializeDebugger();
+            $this->loadModules();
 
-            $moduleLoader = ModuleLoader::getInstance();
-
-            $builder = new RouteBuilder();
-
-            $collection = $builder->build(
-                $moduleLoader->loadModulesRoutes(),
-                $moduleLoader->getModuleConfigs()
-            );
-
-            Di::set(RouteCollection::class, $collection);
-
-            $routeFinder = new RouteFinder($collection);
-
-            $matchedRoute = $routeFinder->find($this->request);
-
-            if ($matchedRoute === null) {
-                page_not_found();
-                stop();
-            }
-
-            $this->request->setMatchedRoute($matchedRoute);
+            $matchedRoute = $this->resolveRoute();
 
             $this->loadLanguage();
 
-            $debugger = Debugger::getInstance();
-            if ($debugger->isEnabled()) {
-                $debugger->addToStoreCell(Debugger::HOOKS, 'info', HookManager::getInstance()->getRegistered());
-            }
+            $this->logDebugInfo();
 
-            $middlewareManager = new MiddlewareManager($matchedRoute);
+            [$request, $response] = (new MiddlewareManager($matchedRoute))->applyMiddlewares(request(), response());
 
-            [$this->request, $this->response] = $middlewareManager->applyMiddlewares(
-                $this->request,
-                $this->response
-            );
-
-            $viewCache = $this->setupViewCache();
-
-            if ($viewCache->serveCachedView(route_uri() ?? '', $this->response)) {
+            if ($this->setupViewCache()->serveCachedView(route_uri() ?? '', $response)) {
                 stop();
             }
 
-            $dispatcher = new RouteDispatcher();
-            $dispatcher->dispatch($matchedRoute, $this->request);
+            (new RouteDispatcher())->dispatch($matchedRoute, $request);
             stop();
         } catch (StopExecutionException $exception) {
-            $this->handleCors($this->response);
-            $this->response->send();
+            $this->sendResponse();
 
             return $exception->getCode();
         }

@@ -20,10 +20,7 @@ use Quantum\Storage\FileSystem;
 
 /**
  * Gets the FileSystem handler
- * @throws BaseException
- * @throws ConfigException
- * @throws DiException
- * @throws ReflectionException
+ * @throws ConfigException|DiException|BaseException|ReflectionException
  */
 function fs(?string $adapter = null): FileSystem
 {

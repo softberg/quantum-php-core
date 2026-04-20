@@ -16,7 +16,10 @@ declare(strict_types=1);
 
 namespace Quantum\Database\Traits;
 
-use Quantum\Database\Exceptions\DatabaseException;
+use Quantum\Database\Database;
+use Quantum\Di\Di;
+use Quantum\Di\Exceptions\DiException;
+use ReflectionException;
 
 /**
  * Trait RelationalTrait
@@ -27,7 +30,7 @@ trait RelationalTrait
     /**
      * Raw execute
      * @param array<mixed> $parameters
-     * @throws DatabaseException
+     * @throws DiException|ReflectionException
      */
     public static function execute(string $query, array $parameters = []): bool
     {
@@ -38,7 +41,7 @@ trait RelationalTrait
      * Raw query
      * @param array<mixed> $parameters
      * @return array<mixed>
-     * @throws DatabaseException
+     * @throws DiException|ReflectionException
      */
     public static function query(string $query, array $parameters = []): array
     {
@@ -49,7 +52,7 @@ trait RelationalTrait
      * Fetches table columns
      * @param array<mixed> $parameters
      * @return array<mixed>
-     * @throws DatabaseException
+     * @throws DiException|ReflectionException
      */
     public static function fetchColumns(string $query, array $parameters = []): array
     {
@@ -58,7 +61,7 @@ trait RelationalTrait
 
     /**
      * Gets the last query executed
-     * @throws DatabaseException
+     * @throws DiException|ReflectionException
      */
     public static function lastQuery(): ?string
     {
@@ -69,7 +72,7 @@ trait RelationalTrait
      * Get an array containing all the queries
      * run on a specified connection up to now.
      * @return array<mixed>
-     * @throws DatabaseException
+     * @throws DiException|ReflectionException
      */
     public static function queryLog(): array
     {
@@ -80,10 +83,14 @@ trait RelationalTrait
      * Resolves the requested query
      * @param array<mixed> $parameters
      * @return mixed
-     * @throws DatabaseException
+     * @throws DiException|ReflectionException
      */
     protected static function resolveQuery(string $method, string $query = '', array $parameters = [])
     {
-        return self::getInstance()->getOrmClass()::$method($query, $parameters);
+        if (!Di::isRegistered(Database::class)) {
+            Di::register(Database::class);
+        }
+
+        return Di::get(Database::class)->getOrmClass()::$method($query, $parameters);
     }
 }

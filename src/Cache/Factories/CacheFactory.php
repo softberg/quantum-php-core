@@ -29,6 +29,7 @@ use Quantum\Cache\Enums\CacheType;
 use Quantum\Loader\Setup;
 use ReflectionException;
 use Quantum\Cache\Cache;
+use Quantum\Di\Di;
 
 /**
  * Class CacheFactory
@@ -36,9 +37,6 @@ use Quantum\Cache\Cache;
  */
 class CacheFactory
 {
-    /**
-     * Supported adapters
-     */
     public const ADAPTERS = [
         CacheType::FILE => FileAdapter::class,
         CacheType::DATABASE => DatabaseAdapter::class,
@@ -49,15 +47,24 @@ class CacheFactory
     /**
      * @var array<string, Cache>
      */
-    private static array $instances = [];
+    private array $instances = [];
 
     /**
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws DiException
-     * @throws ReflectionException
+     * @throws ConfigException|BaseException|DiException|ReflectionException
      */
     public static function get(?string $adapter = null): Cache
+    {
+        if (!Di::isRegistered(self::class)) {
+            Di::register(self::class);
+        }
+
+        return Di::get(self::class)->resolve($adapter);
+    }
+
+    /**
+     * @throws ConfigException|BaseException|DiException|ReflectionException
+     */
+    public function resolve(?string $adapter = null): Cache
     {
         if (!config()->has('cache')) {
             config()->import(new Setup('config', 'cache'));
@@ -65,19 +72,19 @@ class CacheFactory
 
         $adapter ??= config()->get('cache.default');
 
-        $adapterClass = self::getAdapterClass($adapter);
+        $adapterClass = $this->getAdapterClass($adapter);
 
-        if (!isset(self::$instances[$adapter])) {
-            self::$instances[$adapter] = self::createInstance($adapterClass, $adapter);
+        if (!isset($this->instances[$adapter])) {
+            $this->instances[$adapter] = $this->createInstance($adapterClass, $adapter);
         }
 
-        return self::$instances[$adapter];
+        return $this->instances[$adapter];
     }
 
     /**
-     * @throws CacheException
+     * @throws CacheException|BaseException
      */
-    private static function createInstance(string $adapterClass, string $adapter): Cache
+    private function createInstance(string $adapterClass, string $adapter): Cache
     {
         $cacheAdapter = new $adapterClass(config()->get('cache.' . $adapter));
 
@@ -91,7 +98,7 @@ class CacheFactory
     /**
      * @throws BaseException
      */
-    private static function getAdapterClass(string $adapter): string
+    private function getAdapterClass(string $adapter): string
     {
         if (!array_key_exists($adapter, self::ADAPTERS)) {
             throw CacheException::adapterNotSupported($adapter);

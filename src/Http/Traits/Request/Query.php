@@ -25,34 +25,34 @@ trait Query
     /**
      * Query string
      */
-    private static ?string $__query = null;
+    private ?string $__query = null;
 
     /**
      * Gets the query string
      */
-    public static function getQuery(): ?string
+    public function getQuery(): ?string
     {
-        return self::$__query;
+        return $this->__query;
     }
 
     /**
      * Sets the query string
      */
-    public static function setQuery(string $query): void
+    public function setQuery(string $query): void
     {
-        self::$__query = $query;
+        $this->__query = $query;
     }
 
     /**
      * Gets the query param
      */
-    public static function getQueryParam(string $key): ?string
+    public function getQueryParam(string $key): ?string
     {
-        if (self::$__query === null) {
+        if ($this->__query === null) {
             return null;
         }
 
-        $query = explode('&', self::$__query);
+        $query = explode('&', $this->__query);
 
         foreach ($query as $items) {
             $item = explode('=', $items);
@@ -67,10 +67,10 @@ trait Query
     /**
      * Sets the query param
      */
-    public static function setQueryParam(string $key, string $value): void
+    public function setQueryParam(string $key, string $value): void
     {
-        $queryParams = self::$__query ? explode('&', self::$__query) : [];
+        $queryParams = $this->__query ? explode('&', $this->__query) : [];
         $queryParams[] = $key . '=' . $value;
-        self::$__query = implode('&', $queryParams);
+        $this->__query = implode('&', $queryParams);
     }
 }

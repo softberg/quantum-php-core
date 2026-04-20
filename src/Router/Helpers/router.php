@@ -13,7 +13,6 @@
  */
 
 use Quantum\Di\Exceptions\DiException;
-use Quantum\Environment\Environment;
 use Quantum\Router\RouteCollection;
 use Quantum\Router\Route;
 use Quantum\Http\Request;
@@ -26,8 +25,7 @@ use Quantum\Di\Di;
  */
 function current_middlewares(): ?array
 {
-    $request = Di::get(Request::class);
-    $matchedRoute = $request->getMatchedRoute();
+    $matchedRoute = request()->getMatchedRoute();
 
     return $matchedRoute ? $matchedRoute->getRoute()->getMiddlewares() : null;
 }
@@ -39,8 +37,11 @@ function current_middlewares(): ?array
  */
 function current_module(): ?string
 {
-    $request = Di::get(Request::class);
-    $matchedRoute = $request->getMatchedRoute();
+    if (!Di::has(Request::class)) {
+        return null;
+    }
+
+    $matchedRoute = request()->getMatchedRoute();
 
     return $matchedRoute ? $matchedRoute->getRoute()->getModule() : null;
 }
@@ -52,8 +53,7 @@ function current_module(): ?string
  */
 function current_controller(): ?string
 {
-    $request = Di::get(Request::class);
-    $matchedRoute = $request->getMatchedRoute();
+    $matchedRoute = request()->getMatchedRoute();
 
     return $matchedRoute ? $matchedRoute->getRoute()->getController() : null;
 }
@@ -65,8 +65,7 @@ function current_controller(): ?string
  */
 function current_action(): ?string
 {
-    $request = Di::get(Request::class);
-    $matchedRoute = $request->getMatchedRoute();
+    $matchedRoute = request()->getMatchedRoute();
 
     return $matchedRoute ? $matchedRoute->getRoute()->getAction() : null;
 }
@@ -78,8 +77,7 @@ function current_action(): ?string
  */
 function route_callback(): ?Closure
 {
-    $request = Di::get(Request::class);
-    $matchedRoute = $request->getMatchedRoute();
+    $matchedRoute = request()->getMatchedRoute();
 
     return $matchedRoute ? $matchedRoute->getRoute()->getClosure() : null;
 }
@@ -91,8 +89,7 @@ function route_callback(): ?Closure
  */
 function current_route(): ?string
 {
-    $request = Di::get(Request::class);
-    $matchedRoute = $request->getMatchedRoute();
+    $matchedRoute = request()->getMatchedRoute();
 
     return $matchedRoute ? $matchedRoute->getRoute()->getPattern() : null;
 }
@@ -104,8 +101,7 @@ function current_route(): ?string
  */
 function route_pattern(): string
 {
-    $request = Di::get(Request::class);
-    $matchedRoute = $request->getMatchedRoute();
+    $matchedRoute = request()->getMatchedRoute();
 
     return $matchedRoute ? ($matchedRoute->getRoute()->getCompiledPattern() ?? '') : '';
 }
@@ -117,8 +113,7 @@ function route_pattern(): string
  */
 function route_params(): array
 {
-    $request = Di::get(Request::class);
-    $matchedRoute = $request->getMatchedRoute();
+    $matchedRoute = request()->getMatchedRoute();
 
     return $matchedRoute ? $matchedRoute->getParams() : [];
 }
@@ -142,8 +137,7 @@ function route_param(string $name)
  */
 function route_method(): string
 {
-    $request = Di::get(Request::class);
-    return $request->getMethod() ?? '';
+    return request()->getMethod() ?? '';
 }
 
 /**
@@ -153,8 +147,7 @@ function route_method(): string
  */
 function route_uri(): ?string
 {
-    $request = Di::get(Request::class);
-    return $request->getUri();
+    return request()->getUri();
 }
 
 /**
@@ -164,8 +157,7 @@ function route_uri(): ?string
  */
 function route_cache_settings(): ?array
 {
-    $request = Di::get(Request::class);
-    $matchedRoute = $request->getMatchedRoute();
+    $matchedRoute = request()->getMatchedRoute();
 
     return $matchedRoute ? $matchedRoute->getRoute()->getCache() : null;
 }
@@ -176,8 +168,7 @@ function route_cache_settings(): ?array
  */
 function route_name(): ?string
 {
-    $request = Di::get(Request::class);
-    $matchedRoute = $request->getMatchedRoute();
+    $matchedRoute = request()->getMatchedRoute();
 
     return $matchedRoute ? $matchedRoute->getRoute()->getName() : null;
 }
@@ -188,8 +179,7 @@ function route_name(): ?string
  */
 function route_prefix(): ?string
 {
-    $request = Di::get(Request::class);
-    $matchedRoute = $request->getMatchedRoute();
+    $matchedRoute = request()->getMatchedRoute();
 
     return $matchedRoute ? $matchedRoute->getRoute()->getPrefix() : null;
 }
@@ -249,7 +239,7 @@ function route_group_exists(string $name, string $module): bool
  */
 function module_base_namespace(): string
 {
-    return Environment::getInstance()->getAppEnv() === 'testing'
+    return environment()->isTesting()
         ? 'Quantum\\Tests\\_root\\modules'
         : 'Modules';
 }

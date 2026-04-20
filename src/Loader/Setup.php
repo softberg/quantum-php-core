@@ -36,7 +36,6 @@ class Setup
     protected string $exceptionMessage;
 
     /**
-     * Setup constructor.
      * @throws DiException|ReflectionException
      */
     public function __construct(?string $pathPrefix = null, ?string $fileName = null, bool $hierarchical = true, ?string $module = null, ?string $exceptionMessage = null)

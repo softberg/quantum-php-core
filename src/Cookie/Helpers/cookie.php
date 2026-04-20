@@ -12,12 +12,19 @@
  * @since 3.0.0
  */
 
+use Quantum\Di\Exceptions\DiException;
 use Quantum\Cookie\Cookie;
+use Quantum\Di\Di;
 
 /**
  * Gets cookie handler
+ * @throws DiException|ReflectionException
  */
 function cookie(): Cookie
 {
-    return Cookie::getInstance($_COOKIE);
+    if (!Di::has(Cookie::class)) {
+        Di::set(Cookie::class, new Cookie($_COOKIE));
+    }
+
+    return Di::get(Cookie::class);
 }

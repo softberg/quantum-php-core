@@ -12,15 +12,42 @@
  * @since 3.0.0
  */
 
+use Quantum\App\Exceptions\StopExecutionException;
 use Quantum\Config\Exceptions\ConfigException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\App\Enums\ReservedKeys;
 use Quantum\Http\Enums\ContentType;
 use Quantum\Http\Enums\StatusCode;
-use DebugBar\DebugBarException;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
+use Quantum\Di\Di;
+
+/**
+ * Gets the Request instance from DI
+ * @throws DiException|ReflectionException
+ */
+function request(): Request
+{
+    if (!Di::isRegistered(Request::class)) {
+        Di::register(Request::class);
+    }
+
+    return Di::get(Request::class);
+}
+
+/**
+ * Gets the Response instance from DI
+ * @throws DiException|ReflectionException
+ */
+function response(): Response
+{
+    if (!Di::isRegistered(Response::class)) {
+        Di::register(Response::class);
+    }
+
+    return Di::get(Response::class);
+}
 
 /**
  * Gets the base url
@@ -29,46 +56,42 @@ use Quantum\Http\Request;
  */
 function base_url(bool $withModulePrefix = false): string
 {
-    return Request::getBaseUrl($withModulePrefix);
+    return request()->getBaseUrl($withModulePrefix);
 }
 
 /**
  * Gets the current url
+ * @throws DiException|ReflectionException
  */
 function current_url(): string
 {
-    return Request::getCurrentUrl();
+    return request()->getCurrentUrl();
 }
 
 /**
  * Redirect
+ * @throws StopExecutionException|DiException|ReflectionException
  */
 function redirect(string $url, int $code = StatusCode::FOUND): void
 {
-    Response::redirect($url, $code);
+    response()->redirect($url, $code);
 }
 
 /**
  * Redirect with data
  * @param array<string, mixed> $data
- * @throws BaseException
- * @throws ConfigException
- * @throws DiException
- * @throws ReflectionException
+ * @throws ConfigException|DiException|BaseException|ReflectionException
  */
 function redirectWith(string $url, array $data, int $code = StatusCode::FOUND): void
 {
     session()->set(ReservedKeys::PREV_REQUEST, $data);
-    Response::redirect($url, $code);
+    response()->redirect($url, $code);
 }
 
 /**
  * Gets old input values after redirect
  * @return mixed|null
- * @throws ConfigException
- * @throws DiException
- * @throws ReflectionException
- * @throws BaseException
+ * @throws ConfigException|DiException|BaseException|ReflectionException
  */
 function old(string $key)
 {
@@ -92,33 +115,30 @@ function old(string $key)
 
 /**
  * Gets the referrer
+ * @throws DiException|ReflectionException
  */
 function get_referrer(): ?string
 {
-    return Request::getReferrer();
+    return request()->getReferrer();
 }
 
 /**
  * Handles page not found
- * @throws BaseException
- * @throws ConfigException
- * @throws DiException
- * @throws ReflectionException
- * @throws DebugBarException
+ * @throws ConfigException|DiException|BaseException|ReflectionException
  */
 function page_not_found(): void
 {
-    $acceptHeader = Response::getHeader('Accept');
+    $acceptHeader = response()->getHeader('Accept');
 
     $isJson = $acceptHeader === ContentType::JSON;
 
     if ($isJson) {
-        Response::json(
+        response()->json(
             ['status' => 'error', 'message' => 'Page not found',],
             StatusCode::NOT_FOUND
         );
     } else {
-        Response::html(
+        response()->html(
             partial('errors' . DS . StatusCode::NOT_FOUND),
             StatusCode::NOT_FOUND
         );

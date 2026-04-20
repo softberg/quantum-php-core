@@ -32,21 +32,7 @@ use Quantum\Di\Di;
  */
 class Config implements ConfigInterface
 {
-    private static ?Data $configs = null;
-
-    private static ?Config $instance = null;
-
-    /**
-     * GetInstance
-     */
-    public static function getInstance(): Config
-    {
-        if (self::$instance === null) {
-            self::$instance = new self();
-        }
-
-        return self::$instance;
-    }
+    private ?Data $configs = null;
 
     /**
      * @inheritDoc
@@ -54,11 +40,11 @@ class Config implements ConfigInterface
      */
     public function load(Setup $setup): void
     {
-        if (self::$configs !== null) {
+        if ($this->configs !== null) {
             return;
         }
 
-        self::$configs = new Data(Di::get(Loader::class)->setup($setup)->load());
+        $this->configs = new Data($this->loadConfig($setup));
     }
 
     /**
@@ -75,10 +61,12 @@ class Config implements ConfigInterface
             throw ConfigException::configCollision($fileName);
         }
 
-        if (!self::$configs) {
-            self::$configs = new Data([$fileName => Di::get(Loader::class)->setup($setup)->load()]);
+        $data = $this->loadConfig($setup);
+
+        if (!$this->configs) {
+            $this->configs = new Data([$fileName => $data]);
         } else {
-            self::$configs->import([$fileName => Di::get(Loader::class)->setup($setup)->load()]);
+            $this->configs->import([$fileName => $data]);
         }
     }
 
@@ -87,8 +75,8 @@ class Config implements ConfigInterface
      */
     public function get(string $key, $default = null)
     {
-        if (self::$configs && self::$configs->has($key)) {
-            return self::$configs->get($key);
+        if ($this->configs && $this->configs->has($key)) {
+            return $this->configs->get($key);
         }
 
         return $default;
@@ -99,7 +87,7 @@ class Config implements ConfigInterface
      */
     public function all(): ?Data
     {
-        return self::$configs;
+        return $this->configs;
     }
 
     /**
@@ -107,7 +95,7 @@ class Config implements ConfigInterface
      */
     public function has(string $key): bool
     {
-        return self::$configs && !empty(self::$configs->has($key));
+        return $this->configs && !empty($this->configs->has($key));
     }
 
     /**
@@ -115,10 +103,10 @@ class Config implements ConfigInterface
      */
     public function set(string $key, $value): void
     {
-        if (!self::$configs) {
-            self::$configs = new Data([$key => $value]);
+        if (!$this->configs) {
+            $this->configs = new Data([$key => $value]);
         } else {
-            self::$configs->set($key, $value);
+            $this->configs->set($key, $value);
         }
     }
 
@@ -127,7 +115,7 @@ class Config implements ConfigInterface
      */
     public function delete(string $key): void
     {
-        self::$configs && self::$configs->remove($key);
+        $this->configs && $this->configs->remove($key);
     }
 
     /**
@@ -135,6 +123,19 @@ class Config implements ConfigInterface
      */
     public function flush(): void
     {
-        self::$configs = null;
+        $this->configs = null;
+    }
+
+    /**
+     * @return array<string, mixed>
+     * @throws DiException|LoaderException|ReflectionException
+     */
+    private function loadConfig(Setup $setup): array
+    {
+        if (!Di::isRegistered(Loader::class)) {
+            Di::register(Loader::class);
+        }
+
+        return Di::get(Loader::class)->setup($setup)->load();
     }
 }

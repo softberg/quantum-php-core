@@ -19,10 +19,7 @@ use Quantum\Di\Exceptions\DiException;
 use Quantum\Session\Session;
 
 /**
- * @throws BaseException
- * @throws ConfigException
- * @throws DiException
- * @throws ReflectionException
+ * @throws ConfigException|BaseException|DiException|ReflectionException
  */
 function session(?string $adapter = null): Session
 {

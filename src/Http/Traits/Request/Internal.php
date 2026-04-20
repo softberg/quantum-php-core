@@ -36,12 +36,9 @@ trait Internal
      * @param array<string, mixed> $params
      * @param array<string, mixed> $headers
      * @param array<string, mixed> $files
-     * @throws BaseException
-     * @throws ReflectionException
-     * @throws ConfigException
-     * @throws DiException
+     * @throws ConfigException|DiException|BaseException|ReflectionException
      */
-    public static function create(
+    public function create(
         string $method,
         string $url,
         array  $params = [],
@@ -50,7 +47,7 @@ trait Internal
     ): void {
         $parsed = parse_url($url);
 
-        $server = Server::getInstance();
+        $server = server();
 
         $server->flush();
 
@@ -82,32 +79,32 @@ trait Internal
             $server->set('QUERY_STRING', '');
         }
 
-        self::detectAndSetContentType($server, $params, $files);
+        $this->detectAndSetContentType($server, $params, $files);
 
         foreach ($headers as $name => $value) {
             $server->set('HTTP_' . strtoupper(str_replace('-', '_', $name)), $value);
         }
 
-        self::flush();
+        $this->flush();
 
-        self::init($server);
+        $this->server = $server;
+        $this->populateFromServer();
 
         if ($params !== []) {
-            self::setRequestParams($params);
+            $this->setRequestParams($params);
         }
 
         if ($files !== []) {
-            self::setUploadedFiles(self::handleFiles($files));
+            $this->setUploadedFiles($this->handleFiles($files));
         }
     }
 
     /**
      * Detects the content type
-     * @param Server $server
      * @param array<string, mixed>|null $data
      * @param array<string, mixed>|null $files
      */
-    protected static function detectAndSetContentType($server, ?array $data = null, ?array $files = null): void
+    protected function detectAndSetContentType(Server $server, ?array $data = null, ?array $files = null): void
     {
         if ($files && count($files) > 0) {
             $server->set('CONTENT_TYPE', ContentType::FORM_DATA);

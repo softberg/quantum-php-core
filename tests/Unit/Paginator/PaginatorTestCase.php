@@ -4,15 +4,12 @@ namespace Quantum\Tests\Unit\Paginator;
 
 use Quantum\Database\Adapters\Idiorm\IdiormDbal;
 use Quantum\Tests\Unit\AppTestCase;
-use Quantum\Database\Database;
 
 class PaginatorTestCase extends AppTestCase
 {
     public function setUp(): void
     {
         parent::setUp();
-
-        $this->setPrivateProperty(Database::class, 'instance', null);
 
         IdiormDbal::connect(['driver' => 'sqlite', 'database' => ':memory:']);
 
@@ -22,6 +19,8 @@ class PaginatorTestCase extends AppTestCase
     public function tearDown(): void
     {
         IdiormDbal::execute('DROP TABLE IF EXISTS posts');
+
+        parent::tearDown();
     }
 
     private function _createPostTableWithData(): void

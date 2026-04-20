@@ -2,13 +2,13 @@
 
 namespace Quantum\Tests\Unit\Model;
 
-use Quantum\Model\Model;
 use Quantum\Tests\_root\shared\Models\TestProductsModel;
 use Quantum\Database\Adapters\Idiorm\IdiormDbal;
 use Quantum\Model\Factories\ModelFactory;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Model\ModelCollection;
 use Quantum\Paginator\Paginator;
+use Quantum\Model\Model;
 
 class ModelSoftDeletesIdiOrmTest extends AppTestCase
 {
@@ -30,6 +30,8 @@ class ModelSoftDeletesIdiOrmTest extends AppTestCase
     public function tearDown(): void
     {
         IdiormDbal::execute('DROP TABLE products ');
+
+        parent::tearDown();
     }
 
     public function testDeleteSetsDeletedAt(): void

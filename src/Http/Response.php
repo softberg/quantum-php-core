@@ -16,55 +16,64 @@ declare(strict_types=1);
 
 namespace Quantum\Http;
 
-use Quantum\Http\Response\HttpResponse;
+use Quantum\Http\Traits\Response\Header;
+use Quantum\Http\Traits\Response\Status;
+use Quantum\Http\Traits\Response\Body;
+use Quantum\Http\Enums\StatusCode;
+use Exception;
 
 /**
  * Class Response
  * @package Quantum\Http
- * @method static void init()
- * @method static void flush()
- * @method static void send()
- * @method static string getContent()
- * @method static void setStatusCode(int $code)
- * @method static int getStatusCode()
- * @method static string getStatusText()
- * @method static void redirect(string $url, int $code = null)
- * @method static void json(array<string, mixed> $data = null, int $code = null)
- * @method static void xml(array<string, mixed> $data = null, $root = '<data></data>', int $code = null)
- * @method static void html(string $html, int $code = null)
- * @method static bool has(string $key)
- * @method static mixed get(string $key, string $default = null)
- * @method static void set(string $key, $value)
- * @method static array<string, mixed> all()
- * @method static void delete(string $key)
- * @method static bool hasHeader(string $key))
- * @method static string|null getHeader(string $key)
- * @method static void setHeader(string $key, string $value)
- * @method static array<string, mixed> allHeaders()
- * @method static void deleteHeader(string $key)
- * @method static void setContentType(string $contentType)
- * @method static string|null getContentType()
- * @mixin HttpResponse
  */
 class Response
 {
+    use Header;
+    use Body;
+    use Status;
+
     /**
-     * @param string $function The function name
-     * @param array<mixed> $arguments
-     * @return mixed
+     * XML root element
+     * @var string
      */
-    public function __call(string $function, array $arguments)
+    private string $xmlRoot = '<data></data>';
+
+    /**
+     * Callback function
+     * @var string
+     */
+    private string $callbackFunction = '';
+
+    /**
+     * Flushes the response header and body
+     */
+    public function flush(): void
     {
-        return HttpResponse::$function(...$arguments);
+        $this->__statusCode = StatusCode::OK;
+        $this->__headers = [];
+        $this->__response = [];
+        $this->xmlRoot = '<data></data>';
+        $this->callbackFunction = '';
     }
 
     /**
-     * @param string $function The function name
-     * @param array<mixed> $arguments
-     * @return mixed
+     * Sends all response data to the client and finishes the request.
+     * @throws Exception
      */
-    public static function __callStatic(string $function, array $arguments)
+    public function send(): void
     {
-        return HttpResponse::$function(...$arguments);
+        if (!environment()->isTesting()) {
+            while (ob_get_level() > 0) {
+                ob_end_clean();
+            }
+        }
+
+        foreach ($this->__headers as $key => $value) {
+            header($key . ': ' . $value);
+        }
+
+        http_response_code($this->getStatusCode());
+
+        echo $this->getContent();
     }
 }

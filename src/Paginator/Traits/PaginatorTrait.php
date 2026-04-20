@@ -17,6 +17,7 @@ declare(strict_types=1);
 namespace Quantum\Paginator\Traits;
 
 use Quantum\Config\Exceptions\ConfigException;
+use Quantum\Loader\Exceptions\LoaderException;
 use Quantum\Lang\Exceptions\LangException;
 use Quantum\Paginator\Enums\Pagination;
 use Quantum\Di\Exceptions\DiException;
@@ -105,6 +106,7 @@ trait PaginatorTrait
 
     /**
      * Get the current page link
+     * @throws DiException|ReflectionException
      */
     public function currentPageLink(bool $withBaseUrl = false): ?string
     {
@@ -113,6 +115,7 @@ trait PaginatorTrait
 
     /**
      * Get first page link
+     * @throws DiException|ReflectionException
      */
     public function firstPageLink(bool $withBaseUrl = false): ?string
     {
@@ -121,6 +124,7 @@ trait PaginatorTrait
 
     /**
      * Get previous page link
+     * @throws DiException|ReflectionException
      */
     public function previousPageLink(bool $withBaseUrl = false): ?string
     {
@@ -129,6 +133,7 @@ trait PaginatorTrait
 
     /**
      * Get next page link
+     * @throws DiException|ReflectionException
      */
     public function nextPageLink(bool $withBaseUrl = false): ?string
     {
@@ -137,6 +142,7 @@ trait PaginatorTrait
 
     /**
      * Get last page link
+     * @throws DiException|ReflectionException
      */
     public function lastPageLink(bool $withBaseUrl = false): ?string
     {
@@ -154,6 +160,7 @@ trait PaginatorTrait
     /**
      * Get all page links
      * @return array<int, string|null>
+     * @throws DiException|ReflectionException
      */
     public function links(bool $withBaseUrl = false): array
     {
@@ -240,7 +247,7 @@ trait PaginatorTrait
 
     /**
      * Get next page item HTML
-     * @throws DiException|ReflectionException|ConfigException|LangException
+     * @throws LoaderException|ConfigException|DiException|ReflectionException|LangException
      */
     protected function getNextPageItem(?string $nextPageLink): string
     {
@@ -260,7 +267,7 @@ trait PaginatorTrait
      */
     /**
      * Get previous page item HTML
-     * @throws ConfigException|DiException|LangException|ReflectionException
+     * @throws LoaderException|ConfigException|DiException|LangException|ReflectionException
      */
     protected function getPreviousPageItem(?string $previousPageLink): string
     {

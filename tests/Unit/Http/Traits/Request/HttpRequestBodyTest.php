@@ -3,7 +3,6 @@
 namespace Quantum\Tests\Unit\Http\Traits\Request;
 
 use Quantum\Tests\Unit\AppTestCase;
-use Quantum\Http\Request;
 
 class HttpRequestBodyTest extends AppTestCase
 {
@@ -14,12 +13,12 @@ class HttpRequestBodyTest extends AppTestCase
 
     public function tearDown(): void
     {
-        Request::flush();
+        request()->flush();
     }
 
     public function testRequestSetHasGetDelete(): void
     {
-        $request = new Request();
+        $request = request();
 
         $this->assertFalse($request->has('name'));
 
@@ -52,7 +51,7 @@ class HttpRequestBodyTest extends AppTestCase
 
     public function testRequestAll(): void
     {
-        $request = new Request();
+        $request = request();
 
         $this->assertEmpty($request->all());
 

@@ -36,15 +36,9 @@ class AsymmetricEncryptionAdapter implements EncryptionInterface
      */
     public const KEY_BITS = 1024;
 
-    /**
-     * @var string
-     */
-    private $publicKey;
+    private ?string $publicKey = null;
 
-    /**
-     * @var string
-     */
-    private $privateKey;
+    private ?string $privateKey = null;
 
     /**
      * @throws BaseException

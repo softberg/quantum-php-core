@@ -10,6 +10,7 @@ use Quantum\App\Factories\AppFactory;
 use PHPUnit\Framework\TestCase;
 use Quantum\App\Enums\AppType;
 use Quantum\App\App;
+use Quantum\Di\Di;
 
 class AppFactoryTest extends TestCase
 {
@@ -76,5 +77,18 @@ class AppFactoryTest extends TestCase
         $this->assertInstanceOf(App::class, $app2);
 
         $this->assertNotSame($app1, $app2);
+    }
+
+    public function testAppFactoryResetsContainerOnCreate(): void
+    {
+        AppFactory::destroy(AppType::WEB);
+
+        Di::register(\stdClass::class);
+
+        $this->assertTrue(Di::isRegistered(\stdClass::class));
+
+        AppFactory::create(AppType::WEB, PROJECT_ROOT);
+
+        $this->assertFalse(Di::isRegistered(\stdClass::class));
     }
 }

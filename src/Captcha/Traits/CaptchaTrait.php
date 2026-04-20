@@ -20,9 +20,7 @@ use Quantum\Captcha\Contracts\CaptchaInterface;
 use Quantum\Asset\Exceptions\AssetException;
 use Quantum\Lang\Exceptions\LangException;
 use Quantum\Http\Exceptions\HttpException;
-use Quantum\App\Exceptions\BaseException;
 use Quantum\HttpClient\HttpClient;
-use Quantum\Asset\AssetManager;
 use Quantum\Asset\Asset;
 use ErrorException;
 use Exception;
@@ -89,7 +87,7 @@ trait CaptchaTrait
             throw new Exception('Captcha type is not set');
         }
 
-        AssetManager::getInstance()->registerAsset(new Asset(Asset::JS, static::CLIENT_API, 'captcha', -1, ['async', 'defer']));
+        asset()->registerAsset(new Asset(Asset::JS, static::CLIENT_API, 'captcha', -1, ['async', 'defer']));
 
         if (strtolower($this->type) == self::CAPTCHA_INVISIBLE) {
             return $this->getInvisibleElement($formIdentifier);
@@ -100,11 +98,7 @@ trait CaptchaTrait
 
     /**
      * Checks the code given by the captcha
-     * @throws LangException
-     * @throws ErrorException
-     * @throws BaseException
-     * @throws HttpException
-     * @throws Exception
+     * @throws LangException|HttpException|ErrorException|Exception
      */
     public function verify(string $code): bool
     {
@@ -193,9 +187,6 @@ trait CaptchaTrait
             </script>';
     }
 
-    /**
-     * @param string $type
-     */
     protected function isValidCaptchaType(string $type): bool
     {
         $captchaTypes = [

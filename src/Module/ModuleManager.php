@@ -24,6 +24,7 @@ use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Storage\FileSystem;
 use ReflectionException;
+use Quantum\Di\Di;
 use Exception;
 
 /**
@@ -53,10 +54,7 @@ class ModuleManager
     private string $modulesConfigPath;
 
     /**
-     * @throws BaseException
-     * @throws DiException
-     * @throws ConfigException
-     * @throws ReflectionException
+     * @throws ConfigException|DiException|BaseException|ReflectionException
      */
     public function __construct(string $moduleName, string $template, bool $enabled, bool $withAssets = false)
     {
@@ -80,9 +78,7 @@ class ModuleManager
     }
 
     /**
-     * @throws ModuleException
-     * @throws ExceptionInterface
-     * @throws Exception
+     * @throws ModuleException|ExceptionInterface|Exception
      */
     public function addModuleConfig(): void
     {
@@ -90,7 +86,11 @@ class ModuleManager
             throw ModuleException::missingModuleDirectory();
         }
 
-        $moduleConfigs = ModuleLoader::getInstance()->getModuleConfigs();
+        if (!Di::isRegistered(ModuleLoader::class)) {
+            Di::register(ModuleLoader::class);
+        }
+
+        $moduleConfigs = Di::get(ModuleLoader::class)->getModuleConfigs();
 
         foreach ($moduleConfigs as $module => $options) {
             if ($module == $this->moduleName || $options['prefix'] == strtolower($this->moduleName)) {

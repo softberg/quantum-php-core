@@ -19,6 +19,7 @@ namespace Quantum\Cron;
 use Quantum\Cron\Contracts\CronTaskInterface;
 use Quantum\Cron\Exceptions\CronException;
 use Cron\CronExpression;
+use Exception;
 
 /**
  * Class CronTask
@@ -53,7 +54,7 @@ class CronTask implements CronTaskInterface
 
         try {
             $this->cronExpression = new CronExpression($expression);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw CronException::invalidExpression($expression);
         }
     }
@@ -100,6 +101,7 @@ class CronTask implements CronTaskInterface
 
     /**
      * Get the previous run date
+     * @throws Exception
      */
     public function getPreviousRunDate(): \DateTime
     {

@@ -17,15 +17,14 @@ declare(strict_types=1);
 namespace Quantum\View\Factories;
 
 use Quantum\Renderer\Factories\RendererFactory;
-use Quantum\ResourceCache\ViewCache;
 use Quantum\Config\Exceptions\ConfigException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
-use DebugBar\DebugBarException;
-use Quantum\Asset\AssetManager;
+use Quantum\ResourceCache\ViewCache;
 use Quantum\Debugger\Debugger;
 use Quantum\View\QtView;
 use ReflectionException;
+use Quantum\Di\Di;
 
 /**
  * Class ViewFactory
@@ -34,30 +33,38 @@ use ReflectionException;
  */
 class ViewFactory
 {
-    /**
-     * Instance of QtView
-     */
-    private static ?QtView $instance = null;
+    private ?QtView $instance = null;
 
     /**
-     * QtView instance
-     * @throws DebugBarException
-     * @throws DiException
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws ReflectionException
+     * @throws ConfigException|BaseException|DiException|ReflectionException
      */
     public static function get(): QtView
     {
-        if (self::$instance === null) {
-            self::$instance = new QtView(
+        if (!Di::isRegistered(self::class)) {
+            Di::register(self::class);
+        }
+
+        return Di::get(self::class)->resolve();
+    }
+
+    /**
+     * @throws ConfigException|BaseException|DiException|ReflectionException
+     */
+    public function resolve(): QtView
+    {
+        if ($this->instance === null) {
+            if (!Di::isRegistered(ViewCache::class)) {
+                Di::register(ViewCache::class);
+            }
+
+            $this->instance = new QtView(
                 RendererFactory::get(),
-                AssetManager::getInstance(),
-                Debugger::getInstance(),
-                ViewCache::getInstance()
+                asset(),
+                Di::get(Debugger::class),
+                Di::get(ViewCache::class)
             );
         }
 
-        return self::$instance;
+        return $this->instance;
     }
 }

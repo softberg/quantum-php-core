@@ -14,6 +14,7 @@
 
 use Quantum\Database\Contracts\DbalInterface;
 use Quantum\Model\Exceptions\ModelException;
+use Quantum\App\Exceptions\BaseException;
 use Quantum\Model\Factories\ModelFactory;
 use Quantum\Model\DbModel;
 use Quantum\Model\Model;
@@ -22,7 +23,7 @@ use Quantum\Model\Model;
  * Gets the model instance
  * @param class-string<T> $modelClass
  * @return T
- * @throws ModelException
+ * @throws ModelException|BaseException|ReflectionException
  * @template T of Model
  */
 function model(string $modelClass): Model
@@ -53,7 +54,7 @@ function dynamicModel(
 
 /**
  * Wraps the orm instance into model
- * @throws ModelException
+ * @throws ModelException|BaseException
  */
 function wrapToModel(?DbalInterface $ormInstance, string $modelClass): ?DbModel
 {

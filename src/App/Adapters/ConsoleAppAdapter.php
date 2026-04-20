@@ -18,15 +18,16 @@ namespace Quantum\App\Adapters;
 
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Quantum\App\Exceptions\StopExecutionException;
-use Quantum\Environment\Exceptions\EnvException;
 use Symfony\Component\Console\Input\ArgvInput;
-use Quantum\Config\Exceptions\ConfigException;
+use Quantum\App\Stages\SetupErrorHandlerStage;
+use Quantum\App\Stages\LoadEnvironmentStage;
 use Symfony\Component\Console\Application;
-use Quantum\Lang\Exceptions\LangException;
-use Quantum\App\Exceptions\BaseException;
+use Quantum\App\Stages\LoadAppConfigStage;
+use Quantum\App\Stages\LoadHelpersStage;
 use Quantum\App\Traits\ConsoleAppTrait;
-use Quantum\Di\Exceptions\DiException;
-use ReflectionException;
+use Quantum\App\BootPipeline;
+use Quantum\App\AppContext;
+use Exception;
 
 if (!defined('DS')) {
     define('DS', DIRECTORY_SEPARATOR);
@@ -46,18 +47,30 @@ class ConsoleAppAdapter extends AppAdapter
 
     protected Application $application;
 
-    public function __construct()
+    public function __construct(AppContext $context)
     {
-        parent::__construct();
+        parent::__construct($context);
 
         $this->input = new ArgvInput();
         $this->output = new ConsoleOutput();
 
         $commandName = $this->input->getFirstArgument();
 
+        $stages = [
+            new LoadHelpersStage(),
+        ];
+
         if ($commandName !== 'core:env') {
-            $this->loadEnvironment();
-            $this->loadAppConfig();
+            $stages[] = new LoadEnvironmentStage();
+            $stages[] = new LoadAppConfigStage();
+            $stages[] = new SetupErrorHandlerStage();
+        }
+
+        $pipeline = new BootPipeline($stages);
+        $pipeline->run($this->context);
+
+        if ($commandName !== 'core:env') {
+            environment()->setMutable(true);
         }
 
         $this->application = $this->createApplication(
@@ -67,22 +80,13 @@ class ConsoleAppAdapter extends AppAdapter
     }
 
     /**
-     * @throws DiException
-     * @throws EnvException
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws LangException
-     * @throws ReflectionException
-     */
+    * @throws Exception
+    */
     public function start(): ?int
     {
         try {
-            $this->loadLanguage();
-
             $this->registerCoreCommands();
             $this->registerAppCommands();
-
-            $this->setupErrorHandler();
 
             $this->validateCommand();
 

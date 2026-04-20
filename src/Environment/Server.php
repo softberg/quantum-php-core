@@ -27,26 +27,9 @@ class Server
      */
     private array $server;
 
-    private static ?Server $instance = null;
-
-    /**
-     * Server constructor.
-     */
-    private function __construct()
+    public function __construct()
     {
         $this->server = $_SERVER;
-    }
-
-    /**
-     * Get Instance
-     */
-    public static function getInstance(): Server
-    {
-        if (self::$instance === null) {
-            self::$instance = new self();
-        }
-
-        return self::$instance;
     }
 
     /**
@@ -74,10 +57,7 @@ class Server
         return $this->server[$key] ?? null;
     }
 
-    /**
-     * @param string $key
-     */
-    public function has($key): bool
+    public function has(string $key): bool
     {
         return array_key_exists($key, $this->server);
     }

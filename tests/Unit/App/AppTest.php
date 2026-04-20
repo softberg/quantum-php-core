@@ -6,34 +6,29 @@ use Quantum\App\Adapters\ConsoleAppAdapter;
 use Quantum\App\Exceptions\AppException;
 use Quantum\App\Adapters\WebAppAdapter;
 use Quantum\App\Contracts\AppInterface;
-use PHPUnit\Framework\TestCase;
-use Quantum\Http\Request;
+use Quantum\Tests\Unit\AppTestCase;
 use Quantum\App\App;
-use Quantum\Di\Di;
 
 /**
  * @runInSeparateProcess
  * @preserveGlobalState disabled
  */
-class AppTest extends TestCase
+class AppTest extends AppTestCase
 {
     public function setUp(): void
     {
-        parent::setUp();
-
-        Di::reset();
-
-        App::setBaseDir(PROJECT_ROOT);
+        $this->createContext();
     }
 
     public function tearDown(): void
     {
         config()->flush();
+        $this->clearAppContext();
     }
 
     public function testAppGetAdapter(): void
     {
-        $app = new App(new WebAppAdapter());
+        $app = new App(new WebAppAdapter($this->createContext()));
 
         $this->assertInstanceOf(WebAppAdapter::class, $app->getAdapter());
 
@@ -41,7 +36,7 @@ class AppTest extends TestCase
 
         config()->flush();
 
-        $app = new App(new ConsoleAppAdapter());
+        $app = new App(new ConsoleAppAdapter($this->createContext()));
 
         $this->assertInstanceOf(ConsoleAppAdapter::class, $app->getAdapter());
 
@@ -50,10 +45,9 @@ class AppTest extends TestCase
 
     public function testAppCallingValidMethod(): void
     {
-        $app = new App(new WebAppAdapter());
+        $app = new App(new WebAppAdapter($this->createContext()));
 
-        $request = Di::get(Request::class);
-        $request->create('GET', '/test/am/tests');
+        request()->create('GET', '/test/am/tests');
 
         ob_start();
         $this->assertEquals(0, $app->start());
@@ -62,7 +56,7 @@ class AppTest extends TestCase
 
     public function testAppCallingInvalidMethod(): void
     {
-        $app = new App(new WebAppAdapter());
+        $app = new App(new WebAppAdapter($this->createContext()));
 
         $this->expectException(AppException::class);
 

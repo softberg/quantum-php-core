@@ -18,9 +18,9 @@ class CsrfTest extends AppTestCase
     {
         parent::setUp();
 
-        $this->request = new Request();
+        $this->request = request();
 
-        $this->csrf = Csrf::getInstance();
+        $this->csrf = csrf();
     }
 
     public function testGenerateToken(): void

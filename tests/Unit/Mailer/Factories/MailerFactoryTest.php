@@ -14,6 +14,7 @@ use Quantum\Mailer\Enums\MailerType;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Mailer\Mailer;
 use Quantum\Loader\Setup;
+use Quantum\Di\Di;
 
 class MailerFactoryTest extends AppTestCase
 {
@@ -21,7 +22,7 @@ class MailerFactoryTest extends AppTestCase
     {
         parent::setUp();
 
-        $this->setPrivateProperty(MailerFactory::class, 'instances', []);
+        $this->resetMailerFactory();
 
         if (!config()->has('mailer')) {
             config()->import(new Setup('config', 'mailer'));
@@ -99,5 +100,15 @@ class MailerFactoryTest extends AppTestCase
         $mailer2 = MailerFactory::get(MailerType::SMTP);
 
         $this->assertSame($mailer1, $mailer2);
+    }
+
+    private function resetMailerFactory(): void
+    {
+        if (!Di::isRegistered(MailerFactory::class)) {
+            Di::register(MailerFactory::class);
+        }
+
+        $factory = Di::get(MailerFactory::class);
+        $this->setPrivateProperty($factory, 'instances', []);
     }
 }

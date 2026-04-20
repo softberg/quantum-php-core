@@ -21,6 +21,7 @@ use Quantum\Di\Exceptions\DiException;
 use Quantum\Debugger\Debugger;
 use Quantum\Mailer\MailTrap;
 use ReflectionException;
+use Quantum\Di\Di;
 use Exception;
 
 /**
@@ -266,7 +267,11 @@ trait MailerTrait
             return false;
         }
 
-        return MailTrap::getInstance()->saveMessage($messageId, $this->getMessageContent());
+        if (!Di::isRegistered(MailTrap::class)) {
+            Di::register(MailTrap::class);
+        }
+
+        return Di::get(MailTrap::class)->saveMessage($messageId, $this->getMessageContent());
     }
 
     /**
