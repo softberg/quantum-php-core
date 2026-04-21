@@ -20,11 +20,9 @@ use Quantum\Database\Contracts\DbalInterface;
 use Quantum\Model\Exceptions\ModelException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
-use Quantum\Database\Database;
 use Quantum\Model\DbModel;
 use Quantum\Model\Model;
 use ReflectionException;
-use Quantum\Di\Di;
 
 /**
  * Class ModelFactory
@@ -106,11 +104,7 @@ class ModelFactory
         array  $foreignKeys = [],
         array  $hidden = []
     ): DbalInterface {
-        if (!Di::isRegistered(Database::class)) {
-            Di::register(Database::class);
-        }
-
-        $ormClass = Di::get(Database::class)->getOrmClass();
+        $ormClass = db()->getOrmClass();
 
         $instance = new $ormClass(
             $table,

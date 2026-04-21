@@ -117,6 +117,8 @@ class ViewTest extends AppTestCase
 
         $this->assertIsString($renderedView);
 
+        $renderedView = str_replace("\n", PHP_EOL, $renderedView);
+
         $this->assertEquals('<html>' . PHP_EOL . '<head></head>' . PHP_EOL . '<body>' . PHP_EOL . '<p>Hello World, this is rendered html view</p></body>' . PHP_EOL . '</html>' . PHP_EOL, $renderedView);
     }
 

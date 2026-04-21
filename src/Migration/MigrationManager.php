@@ -28,7 +28,6 @@ use Quantum\Di\Exceptions\DiException;
 use Quantum\Storage\FileSystem;
 use Quantum\Database\Database;
 use ReflectionException;
-use Quantum\Di\Di;
 
 /**
  * Class MigrationManager
@@ -77,11 +76,7 @@ class MigrationManager
     {
         $this->fs = FileSystemFactory::get();
 
-        if (!Di::isRegistered(Database::class)) {
-            Di::register(Database::class);
-        }
-
-        $this->db = Di::get(Database::class);
+        $this->db = db();
 
         $this->tableFactory = new TableFactory();
 
