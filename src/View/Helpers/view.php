@@ -16,20 +16,20 @@ declare(strict_types=1);
 
 use League\CommonMark\Exception\CommonMarkException;
 use Quantum\Config\Exceptions\ConfigException;
-use Quantum\View\Exceptions\ViewException;
 use League\CommonMark\CommonMarkConverter;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\View\Factories\ViewFactory;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\View\RawParam;
+use Quantum\View\View;
 
 /**
- * Rendered view
- * @throws ViewException|ConfigException|DiException|BaseException|ReflectionException
+ * Gets the View instance
+ * @throws ConfigException|DiException|BaseException|ReflectionException
  */
-function view(): ?string
+function view(): View
 {
-    return ViewFactory::get()->getView();
+    return ViewFactory::get();
 }
 
 /**
@@ -39,7 +39,7 @@ function view(): ?string
  */
 function partial(string $partial, array $args = []): string
 {
-    return ViewFactory::get()->renderPartial($partial, $args);
+    return view()->renderPartial($partial, $args);
 }
 
 /**
@@ -52,7 +52,7 @@ function partial(string $partial, array $args = []): string
  */
 function view_param(string $key)
 {
-    return ViewFactory::get()->getParam($key);
+    return view()->getParam($key);
 }
 
 /**

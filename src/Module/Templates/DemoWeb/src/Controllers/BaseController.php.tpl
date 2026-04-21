@@ -16,7 +16,7 @@ namespace {{MODULE_NAMESPACE}}\Controllers;
 
 use Quantum\View\Factories\ViewFactory;
 use Quantum\Asset\Asset;
-use Quantum\View\QtView;
+use Quantum\View\View;
 
 /**
  * Class BaseController
@@ -26,9 +26,9 @@ abstract class BaseController
 {
 
     /**
-    * @var QtView
+    * @var View
     */
-    protected QtView $view;
+    protected View $view;
 
     public function __before()
     {

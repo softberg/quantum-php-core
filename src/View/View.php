@@ -31,10 +31,10 @@ use ReflectionException;
 use Psr\Log\LogLevel;
 
 /**
- * Class QtView
+ * Class View
  * @package Quantum\View
  */
-class QtView
+class View
 {
     private Renderer $renderer;
 
@@ -221,10 +221,10 @@ class QtView
     }
 
     /**
-     * Gets the rendered view.
+     * Gets the rendered view content.
      * @throws ViewException
      */
-    public function getView(): ?string
+    public function getContent(): ?string
     {
         if ($this->viewContent === null) {
             throw ViewException::viewNotRendered();

@@ -16,7 +16,7 @@ namespace Modules\Toolkit\Controllers;
 
 use Quantum\View\Factories\ViewFactory;
 use Quantum\Asset\Asset;
-use Quantum\View\QtView;
+use Quantum\View\View;
 
 /**
  * Class BaseController
@@ -40,9 +40,9 @@ class BaseController
     protected const CURRENT_PAGE = 1;
 
     /**
-     * @var QtView
+     * @var View
      */
-    protected QtView $view;
+    protected View $view;
 
     /**
      * Works before an action

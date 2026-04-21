@@ -17,7 +17,7 @@
 <body>
 
 <main>
-    <?php echo view() ?>
+    <?= view()->getContent() ?>
 </main>
 
 <?php assets("js") ?>

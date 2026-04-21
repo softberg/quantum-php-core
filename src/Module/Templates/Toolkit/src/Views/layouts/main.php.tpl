@@ -29,7 +29,7 @@
 
 <main>
     <div id="toolkit-content">
-        <?php echo view() ?>
+        <?= view()->getContent() ?>
     </div>
 </main>
 

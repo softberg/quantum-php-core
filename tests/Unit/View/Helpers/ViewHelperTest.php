@@ -6,11 +6,11 @@ use Quantum\View\Factories\ViewFactory;
 use Quantum\Router\MatchedRoute;
 use Quantum\Router\Route;
 use Quantum\Tests\Unit\AppTestCase;
-use Quantum\View\QtView;
+use Quantum\View\View;
 
 class ViewHelperTest extends AppTestCase
 {
-    private QtView $view;
+    private View $view;
 
     public function setUp(): void
     {
@@ -36,13 +36,18 @@ class ViewHelperTest extends AppTestCase
         $this->view->setLayout(null);
     }
 
-    public function testView(): void
+    public function testViewReturnsInstance(): void
+    {
+        $this->assertInstanceOf(View::class, view());
+    }
+
+    public function testViewGetContent(): void
     {
         $this->view->setLayout('layout');
 
         $this->view->render('index');
 
-        $this->assertEquals('<p>Hello World, this is rendered html view</p>', view());
+        $this->assertEquals('<p>Hello World, this is rendered html view</p>', view()->getContent());
     }
 
     public function testPartial(): void

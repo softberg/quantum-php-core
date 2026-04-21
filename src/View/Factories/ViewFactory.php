@@ -21,24 +21,23 @@ use Quantum\Config\Exceptions\ConfigException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\ResourceCache\ViewCache;
-use Quantum\Debugger\Debugger;
-use Quantum\View\QtView;
 use ReflectionException;
+use Quantum\View\View;
 use Quantum\Di\Di;
 
 /**
  * Class ViewFactory
  * @package Quantum\View
- * @mixin QtView
+ * @mixin View
  */
 class ViewFactory
 {
-    private ?QtView $instance = null;
+    private ?View $instance = null;
 
     /**
      * @throws ConfigException|BaseException|DiException|ReflectionException
      */
-    public static function get(): QtView
+    public static function get(): View
     {
         if (!Di::isRegistered(self::class)) {
             Di::register(self::class);
@@ -50,17 +49,17 @@ class ViewFactory
     /**
      * @throws ConfigException|BaseException|DiException|ReflectionException
      */
-    public function resolve(): QtView
+    public function resolve(): View
     {
         if ($this->instance === null) {
             if (!Di::isRegistered(ViewCache::class)) {
                 Di::register(ViewCache::class);
             }
 
-            $this->instance = new QtView(
+            $this->instance = new View(
                 RendererFactory::get(),
                 asset(),
-                Di::get(Debugger::class),
+                debugbar(),
                 Di::get(ViewCache::class)
             );
         }
