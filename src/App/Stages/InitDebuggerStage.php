@@ -17,11 +17,7 @@ declare(strict_types=1);
 namespace Quantum\App\Stages;
 
 use Quantum\App\Contracts\BootStageInterface;
-use Quantum\Di\Exceptions\DiException;
-use Quantum\Debugger\Debugger;
 use Quantum\App\AppContext;
-use ReflectionException;
-use Quantum\Di\Di;
 
 /**
  * Class InitDebuggerStage
@@ -29,15 +25,8 @@ use Quantum\Di\Di;
  */
 class InitDebuggerStage implements BootStageInterface
 {
-    /**
-     * @throws DiException|ReflectionException
-     */
     public function process(AppContext $context): void
     {
-        if (!Di::isRegistered(Debugger::class)) {
-            Di::register(Debugger::class);
-        }
-
-        Di::get(Debugger::class)->initStore();
+        debugbar()->initStore();
     }
 }

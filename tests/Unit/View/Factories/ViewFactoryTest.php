@@ -4,7 +4,7 @@ namespace Quantum\Tests\Unit\View\Factories;
 
 use Quantum\View\Factories\ViewFactory;
 use Quantum\Tests\Unit\AppTestCase;
-use Quantum\View\QtView;
+use Quantum\View\View;
 use Quantum\Di\Di;
 
 class ViewFactoryTest extends AppTestCase
@@ -26,7 +26,7 @@ class ViewFactoryTest extends AppTestCase
 
     public function testGetInstance(): void
     {
-        $this->assertInstanceOf(QtView::class, ViewFactory::get());
+        $this->assertInstanceOf(View::class, ViewFactory::get());
     }
 
     public function testResolveReturnsSameInstance(): void

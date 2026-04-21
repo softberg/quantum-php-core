@@ -1,6 +1,6 @@
 <html>
 <head></head>
 <body>
-{{ view() }}
+{{ view().getContent() }}
 </body>
 </html>

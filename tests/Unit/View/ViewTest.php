@@ -6,14 +6,14 @@ use Quantum\View\Exceptions\ViewException;
 use Quantum\View\Factories\ViewFactory;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Router\MatchedRoute;
-use Quantum\View\QtView;
 use Quantum\View\RawParam;
 use Quantum\Router\Route;
+use Quantum\View\View;
 use Quantum\Di\Di;
 
-class QtViewTest extends AppTestCase
+class ViewTest extends AppTestCase
 {
-    private QtView $view;
+    private View $view;
 
     public function setUp(): void
     {
@@ -126,13 +126,13 @@ class QtViewTest extends AppTestCase
 
         $this->view->render('index', ['name' => 'Lorem Ipsum']);
 
-        $this->assertEquals('<p>Hello Lorem Ipsum, this is rendered html view</p>', $this->view->getView());
+        $this->assertEquals('<p>Hello Lorem Ipsum, this is rendered html view</p>', $this->view->getContent());
 
         $this->view->setParam('name', 'dolor sit amet');
 
         $this->view->render('index');
 
-        $this->assertEquals('<p>Hello dolor sit amet, this is rendered html view</p>', $this->view->getView());
+        $this->assertEquals('<p>Hello dolor sit amet, this is rendered html view</p>', $this->view->getContent());
     }
 
     public function testRenderWithEscapedHtmlData(): void
@@ -143,7 +143,7 @@ class QtViewTest extends AppTestCase
 
         $this->view->render('post');
 
-        $this->assertEquals('&lt;h1&gt;Hello&lt;/h1&gt;', $this->view->getView());
+        $this->assertEquals('&lt;h1&gt;Hello&lt;/h1&gt;', $this->view->getContent());
     }
 
     public function testRenderWithUnEscapedHtmlData(): void
@@ -154,7 +154,7 @@ class QtViewTest extends AppTestCase
 
         $this->view->render('post');
 
-        $this->assertEquals('<h1>Hello</h1>', $this->view->getView());
+        $this->assertEquals('<h1>Hello</h1>', $this->view->getContent());
     }
 
     public function testRenderPartial(): void

@@ -12,7 +12,7 @@
     <body>
         <header><?php echo partial('partials/navbar') ?></header>
         
-        <main><?php echo view() ?></main>
+        <main><?= view()->getContent() ?></main>
         
         <footer class="page-footer"><?php echo partial('partials/footer') ?></footer>
         

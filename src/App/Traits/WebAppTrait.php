@@ -100,10 +100,8 @@ trait WebAppTrait
      */
     private function logDebugInfo(): void
     {
-        $debugger = Di::get(Debugger::class);
-
-        if ($debugger->isEnabled()) {
-            $debugger->addToStoreCell(Debugger::HOOKS, 'info', hook()->getRegistered());
+        if (debugbar()->isEnabled()) {
+            debugbar()->addToStoreCell(Debugger::HOOKS, 'info', hook()->getRegistered());
         }
     }
 

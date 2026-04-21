@@ -12,7 +12,7 @@
     </head>
     <body>
 
-        <main><?php echo view() ?></main>
+        <main><?= view()->getContent() ?></main>
 
         <?= debugbar()->render() ?>
 
