@@ -76,7 +76,7 @@ class TwigAdapter implements TemplateRendererInterface
      */
     private function getLoader(string $view): FilesystemLoader
     {
-        $moduleViewPath = modules_dir() . DS . current_module() . DS . 'Views' . DS . $view . '.php';
+        $moduleViewPath = modules_dir() . DS . request()->getCurrentModule() . DS . 'Views' . DS . $view . '.php';
         $sharedViewPath = base_dir() . DS . 'shared' . DS . 'views' . DS . $view . '.php';
 
         if ($this->fs->exists($moduleViewPath)) {

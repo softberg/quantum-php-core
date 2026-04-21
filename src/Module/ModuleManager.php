@@ -181,6 +181,9 @@ class ModuleManager
         return $copiedFiles;
     }
 
+    /**
+     * @throws DiException|ReflectionException
+     */
     private function processTemplates(string $srcPath, string &$dstPath): void
     {
         $dstPath = str_replace('.php.tpl', '.php', $dstPath);
@@ -194,10 +197,13 @@ class ModuleManager
         $this->fs->put($dstPath, $processedContent);
     }
 
+    /**
+     * @throws DiException|ReflectionException
+     */
     private function replacePlaceholders(string $content): string
     {
         $placeholders = [
-            '{{MODULE_NAMESPACE}}' => module_base_namespace() . '\\' . $this->getModuleName(),
+            '{{MODULE_NAMESPACE}}' => request()->getModuleBaseNamespace() . '\\' . $this->getModuleName(),
             '{{MODULE_NAME}}' => $this->getModuleName(),
         ];
 

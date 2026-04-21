@@ -126,7 +126,7 @@ class LangFactory
     {
         $segmentIndex = (int) config()->get('lang.url_segment');
 
-        if (!in_array(route_prefix(), [null, '', '0'], true) && $segmentIndex === 1) {
+        if (!in_array(request()->getRoutePrefix(), [null, '', '0'], true) && $segmentIndex === 1) {
             $segmentIndex++;
         }
 

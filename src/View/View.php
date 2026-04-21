@@ -162,14 +162,7 @@ class View
     /**
      * Renders the view.
      * @param array<string, mixed> $params
-     * @throws AssetException
-     * @throws BaseException
-     * @throws ConfigException
-     * @throws DatabaseException
-     * @throws DiException
-     * @throws ReflectionException
-     * @throws SessionException
-     * @throws ViewException
+     * @throws ViewException|AssetException|SessionException|DatabaseException|ConfigException|BaseException|DiException|ReflectionException
      */
     public function render(string $viewFile, array $params = []): ?string
     {
@@ -196,7 +189,7 @@ class View
         $layoutContent = $this->renderFile($layoutFile);
 
         if ($this->viewCache->isEnabled()) {
-            $uri = route_uri();
+            $uri = request()->getUri();
             if ($uri !== null) {
                 $layoutContent = $this->viewCache
                     ->set($uri, $layoutContent)
@@ -289,7 +282,7 @@ class View
     {
         $routesCell = $this->debugger->getStoreCell(Debugger::ROUTES);
         $currentData = current($routesCell)[LogLevel::INFO] ?? [];
-        $additionalData = ['View' => current_module() . '/Views/' . $viewFile];
+        $additionalData = ['View' => request()->getCurrentModule() . '/Views/' . $viewFile];
         $mergedData = array_merge($currentData, $additionalData);
         $this->debugger->clearStoreCell(Debugger::ROUTES);
         $this->debugger->addToStoreCell(Debugger::ROUTES, LogLevel::INFO, $mergedData);

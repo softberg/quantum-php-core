@@ -17,6 +17,8 @@ declare(strict_types=1);
 namespace Quantum\Router;
 
 use Quantum\Router\Exceptions\RouteException;
+use Quantum\Di\Exceptions\DiException;
+use ReflectionException;
 use Closure;
 
 /**
@@ -94,7 +96,7 @@ final class RouteBuilder
      * Define a route with multiple HTTP methods.
      * @param callable|string $handler
      * @param string|null $action
-     * @throws RouteException
+     * @throws RouteException|DiException|ReflectionException
      */
     public function add(string $path, string $methods, $handler, string $action = null): self
     {
@@ -110,7 +112,7 @@ final class RouteBuilder
      * Define a GET route.
      * @param callable|string $handler
      * @param string|null $action
-     * @throws RouteException
+     * @throws RouteException|DiException|ReflectionException
      */
     public function get(string $path, $handler, string $action = null): self
     {
@@ -121,7 +123,7 @@ final class RouteBuilder
      * Define a POST route.
      * @param callable|string $handler
      * @param string|null $action
-     * @throws RouteException
+     * @throws RouteException|DiException|ReflectionException
      */
     public function post(string $path, $handler, string $action = null): self
     {
@@ -132,7 +134,7 @@ final class RouteBuilder
      * Define a PUT route.
      * @param callable|string $handler
      * @param string|null $action
-     * @throws RouteException
+     * @throws RouteException|DiException|ReflectionException
      */
     public function put(string $path, $handler, string $action = null): self
     {
@@ -142,8 +144,7 @@ final class RouteBuilder
     /**
      * Define a DELETE route.
      * @param callable|string $handler
-     * @param string|null $action
-     * @throws RouteException
+     * @throws RouteException|DiException|ReflectionException
      */
     public function delete(string $path, $handler, string $action = null): self
     {
@@ -280,7 +281,7 @@ final class RouteBuilder
      * Create and register a Route instance.
      * @param array<string> $methods
      * @param callable|string $handler
-     * @throws RouteException
+     * @throws RouteException|DiException|ReflectionException
      */
     private function addRoute(
         array $methods,
@@ -313,7 +314,7 @@ final class RouteBuilder
                 }
 
                 $handler =
-                    module_base_namespace()
+                    request()->getModuleBaseNamespace()
                     . '\\'
                     . $this->currentModule
                     . '\\Controllers\\'
