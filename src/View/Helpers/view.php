@@ -21,10 +21,7 @@ use League\CommonMark\CommonMarkConverter;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\View\Factories\ViewFactory;
 use Quantum\Di\Exceptions\DiException;
-use DebugBar\DebugBarException;
-use Quantum\Debugger\Debugger;
 use Quantum\View\RawParam;
-use Quantum\Di\Di;
 
 /**
  * Rendered view
@@ -65,25 +62,6 @@ function view_param(string $key)
 function raw_param($value): RawParam
 {
     return new RawParam($value);
-}
-
-/**
- * Rendered debug bar
- * @throws DebugBarException|DiException|ReflectionException
- */
-function debugbar(): ?string
-{
-    if (!Di::isRegistered(Debugger::class)) {
-        Di::register(Debugger::class);
-    }
-
-    $debugger = Di::get(Debugger::class);
-
-    if ($debugger->isEnabled()) {
-        return $debugger->render();
-    }
-
-    return null;
 }
 
 /**

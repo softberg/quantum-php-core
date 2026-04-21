@@ -16,7 +16,7 @@
         
         <footer class="page-footer"><?php echo partial('partials/footer') ?></footer>
         
-        <?php echo debugbar() ?>
+        <?= debugbar()->render() ?>
         
         <?php assets("js") ?>
     </body>

@@ -33,7 +33,7 @@
     </div>
 </main>
 
-<?php echo debugbar() ?>
+<?= debugbar()->render() ?>
 
 <?php assets("js") ?>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/10.1.2/jsoneditor.min.js"></script>

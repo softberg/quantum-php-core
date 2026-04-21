@@ -149,10 +149,14 @@ class Debugger
 
     /**
      * Renders the debug bar
-     * @throws DebugBarException
+     * @throws DebugBarException|DiException|ReflectionException
      */
     public function render(): string
     {
+        if (!$this->isEnabled()) {
+            return '';
+        }
+
         foreach ([self::MESSAGES, self::QUERIES, self::ROUTES, self::HOOKS, self::MAILS] as $tab) {
             $this->createTab($tab);
         }
