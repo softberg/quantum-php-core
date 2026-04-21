@@ -104,6 +104,8 @@ class DebuggerTest extends AppTestCase
 
     public function testDebugbarRender(): void
     {
+        config()->set('app.debug', true);
+
         $this->debugger->initStore();
 
         $rendererMock = Mockery::mock('alias:' . JavascriptRenderer::class);
@@ -120,5 +122,14 @@ class DebuggerTest extends AppTestCase
 
         $this->assertStringContainsString('<head></head>', $output);
         $this->assertStringContainsString('<div>Debug Bar</div>', $output);
+    }
+
+    public function testDebugbarRenderReturnsEmptyWhenDisabled(): void
+    {
+        config()->set('app.debug', false);
+
+        $output = $this->debugger->render();
+
+        $this->assertEmpty($output);
     }
 }

@@ -14,7 +14,7 @@
 
         <main><?php echo view() ?></main>
 
-        <?php echo debugbar() ?>
+        <?= debugbar()->render() ?>
 
         <?php assets("js") ?>
     </body>
