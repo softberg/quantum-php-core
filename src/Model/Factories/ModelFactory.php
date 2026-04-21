@@ -95,7 +95,7 @@ class ModelFactory
     /**
      * @param array<string> $foreignKeys
      * @param array<string> $hidden
-     * @throws DiException|BaseException
+     * @throws DiException|BaseException|ReflectionException
      */
     protected static function createOrmInstance(
         string $table,
