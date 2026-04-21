@@ -18,9 +18,7 @@ namespace Quantum\Database\Traits;
 
 use Quantum\Database\Exceptions\DatabaseException;
 use Quantum\App\Exceptions\BaseException;
-use Quantum\Database\Database;
 use ReflectionException;
-use Quantum\Di\Di;
 use Throwable;
 
 /**
@@ -64,11 +62,7 @@ trait TransactionTrait
      */
     protected static function resolveTransaction(string $method)
     {
-        if (!Di::isRegistered(Database::class)) {
-            Di::register(Database::class);
-        }
-
-        $db = Di::get(Database::class)->getOrmClass();
+        $db = db()->getOrmClass();
 
         if (!method_exists($db, $method)) {
             throw DatabaseException::methodNotSupported($method, self::class);
