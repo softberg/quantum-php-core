@@ -2,7 +2,11 @@
 
 namespace Quantum\Tests\Unit\Http;
 
+use Quantum\Router\RouteCollection;
 use Quantum\Tests\Unit\AppTestCase;
+use Quantum\Router\MatchedRoute;
+use Quantum\Router\Route;
+use Quantum\Di\Di;
 
 class RequestTest extends AppTestCase
 {
@@ -59,5 +63,57 @@ class RequestTest extends AppTestCase
 
         $this->assertNotNull($request->getCsrfToken());
 
+    }
+
+    public function testRouteMetadataProxyMethods(): void
+    {
+        $route = new Route(['GET'], 'post/[uuid=:any]', 'PostController', 'show');
+        $route
+            ->module('Web')
+            ->prefix('api')
+            ->group('content')
+            ->name('post.show')
+            ->addMiddlewares(['Auth'])
+            ->cache(true, 60)
+            ->setCompiledPattern('compiled-pattern');
+
+        request()->setMatchedRoute(new MatchedRoute($route, ['uuid' => 'abc-123']));
+
+        $this->assertSame(['Auth'], request()->getCurrentMiddlewares());
+        $this->assertSame('Web', request()->getCurrentModule());
+        $this->assertSame('PostController', request()->getCurrentController());
+        $this->assertSame('show', request()->getCurrentAction());
+        $this->assertSame('post/[uuid=:any]', request()->getCurrentRoutePattern());
+        $this->assertSame('compiled-pattern', request()->getCompiledRoutePattern());
+        $this->assertSame(['uuid' => 'abc-123'], request()->getRouteParams());
+        $this->assertSame('abc-123', request()->getRouteParam('uuid'));
+        $this->assertSame(['enabled' => true, 'ttl' => 60], request()->getRouteCacheSettings());
+        $this->assertSame('post.show', request()->getRouteName());
+        $this->assertSame('api', request()->getRoutePrefix());
+    }
+
+    public function testCompiledRoutePatternReturnsNullWhenNoRouteMatched(): void
+    {
+        request()->setMatchedRoute(null);
+        $this->assertNull(request()->getCompiledRoutePattern());
+    }
+
+    public function testRouteCollectionProxyMethods(): void
+    {
+        $route = new Route(['GET'], 'dashboard', 'DashboardController', 'index');
+        $route->name('dashboard')->group('auth')->module('web');
+
+        $collection = Di::isRegistered(RouteCollection::class)
+            ? Di::get(RouteCollection::class)
+            : new RouteCollection();
+        $collection->add($route);
+
+        if (!Di::isRegistered(RouteCollection::class)) {
+            Di::set(RouteCollection::class, $collection);
+        }
+
+        $this->assertInstanceOf(Route::class, request()->findRouteByName('dashboard', 'web'));
+        $this->assertTrue(request()->routeGroupExists('auth', 'web'));
+        $this->assertFalse(request()->routeGroupExists('guest', 'web'));
     }
 }

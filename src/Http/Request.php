@@ -193,7 +193,7 @@ class Request
     {
         $baseUrl = config()->get('app.base_url');
 
-        $prefix = route_prefix();
+        $prefix = $this->getRoutePrefix();
         $modulePrefix = ($withModulePrefix && !in_array($prefix, [null, '', '0'], true)) ? '/' . $prefix : '';
 
         if ($baseUrl) {

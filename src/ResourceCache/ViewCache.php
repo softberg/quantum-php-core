@@ -183,7 +183,7 @@ class ViewCache
 
         $viewCacheDir = base_dir() . DS . $configCacheDir . DS . 'views';
 
-        if ($module = current_module()) {
+        if ($module = request()->getCurrentModule()) {
             $viewCacheDir = base_dir() . DS . $configCacheDir . DS . 'views' . DS . strtolower($module);
         }
 

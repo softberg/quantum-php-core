@@ -83,7 +83,7 @@ class HtmlAdapter implements TemplateRendererInterface
      */
     private function getViewFilePath(string $view): string
     {
-        $moduleViewPath = modules_dir() . DS . current_module() . DS . 'Views' . DS . $view . '.php';
+        $moduleViewPath = modules_dir() . DS . request()->getCurrentModule() . DS . 'Views' . DS . $view . '.php';
         $sharedViewPath = base_dir() . DS . 'shared' . DS . 'views' . DS . $view . '.php';
 
         return $this->fs->exists($moduleViewPath) ? $moduleViewPath : $sharedViewPath;

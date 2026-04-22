@@ -84,7 +84,7 @@ class WebAppAdapter extends AppAdapter
 
             [$request, $response] = (new MiddlewareManager($matchedRoute))->applyMiddlewares(request(), response());
 
-            if ($this->setupViewCache()->serveCachedView(route_uri() ?? '', $response)) {
+            if ($this->setupViewCache()->serveCachedView(request()->getUri() ?? '', $response)) {
                 stop();
             }
 
