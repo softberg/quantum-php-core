@@ -124,12 +124,12 @@ class OpenApiCommand extends QtCommand
             return;
         }
 
-        if (route_group_exists('openapi', $module) && $this->fs->exists($modulePath . DS . 'resources' . DS . 'openApi' . DS . 'spec.json')) {
+        if (request()->routeGroupExists('openapi', $module) && $this->fs->exists($modulePath . DS . 'resources' . DS . 'openApi' . DS . 'spec.json')) {
             $this->error('The Open API specifications already installed for `' . ucfirst($module) . '` module');
             return;
         }
 
-        if (!route_group_exists('openapi', $module)) {
+        if (!request()->routeGroupExists('openapi', $module)) {
             $routeContent = $this->fs->get($routes);
 
             if ($routeContent !== false) {

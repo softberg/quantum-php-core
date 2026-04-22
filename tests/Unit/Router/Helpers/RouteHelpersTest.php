@@ -26,7 +26,7 @@ class RouteHelpersTest extends AppTestCase
         $this->assertNull(current_action());
         $this->assertNull(route_callback());
         $this->assertNull(current_route());
-        $this->assertSame('', route_pattern());
+        $this->assertNull(route_pattern());
         $this->assertSame([], route_params());
         $this->assertNull(route_param('id'));
         $this->assertNull(route_cache_settings());

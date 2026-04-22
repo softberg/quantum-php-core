@@ -13,7 +13,6 @@
  */
 
 use Quantum\Di\Exceptions\DiException;
-use Quantum\Router\RouteCollection;
 use Quantum\Router\Route;
 use Quantum\Http\Request;
 use Quantum\Di\Di;
@@ -25,14 +24,11 @@ use Quantum\Di\Di;
  */
 function current_middlewares(): ?array
 {
-    $matchedRoute = request()->getMatchedRoute();
-
-    return $matchedRoute ? $matchedRoute->getRoute()->getMiddlewares() : null;
+    return request()->getCurrentMiddlewares();
 }
 
 /**
  * Gets current route module
- * @return string|null
  * @throws DiException|ReflectionException
  */
 function current_module(): ?string
@@ -41,45 +37,34 @@ function current_module(): ?string
         return null;
     }
 
-    $matchedRoute = request()->getMatchedRoute();
-
-    return $matchedRoute ? $matchedRoute->getRoute()->getModule() : null;
+    return request()->getCurrentModule();
 }
 
 /**
  * Gets current route controller
- * @return string|null
  * @throws DiException|ReflectionException
  */
 function current_controller(): ?string
 {
-    $matchedRoute = request()->getMatchedRoute();
-
-    return $matchedRoute ? $matchedRoute->getRoute()->getController() : null;
+    return request()->getCurrentController();
 }
 
 /**
  * Gets current route action
- * @return string|null
  * @throws DiException|ReflectionException
  */
 function current_action(): ?string
 {
-    $matchedRoute = request()->getMatchedRoute();
-
-    return $matchedRoute ? $matchedRoute->getRoute()->getAction() : null;
+    return request()->getCurrentAction();
 }
 
 /**
  * Gets current route callback
- * @return Closure|null
  * @throws DiException|ReflectionException
  */
 function route_callback(): ?Closure
 {
-    $matchedRoute = request()->getMatchedRoute();
-
-    return $matchedRoute ? $matchedRoute->getRoute()->getClosure() : null;
+    return request()->getRouteCallback();
 }
 
 /**
@@ -89,21 +74,16 @@ function route_callback(): ?Closure
  */
 function current_route(): ?string
 {
-    $matchedRoute = request()->getMatchedRoute();
-
-    return $matchedRoute ? $matchedRoute->getRoute()->getPattern() : null;
+    return request()->getCurrentRoutePattern();
 }
 
 /**
- * Gets current route complied pattern
- * @return string
+ * Gets current route compiled pattern
  * @throws DiException|ReflectionException
  */
-function route_pattern(): string
+function route_pattern(): ?string
 {
-    $matchedRoute = request()->getMatchedRoute();
-
-    return $matchedRoute ? ($matchedRoute->getRoute()->getCompiledPattern() ?? '') : '';
+    return request()->getCompiledRoutePattern();
 }
 
 /**
@@ -113,9 +93,7 @@ function route_pattern(): string
  */
 function route_params(): array
 {
-    $matchedRoute = request()->getMatchedRoute();
-
-    return $matchedRoute ? $matchedRoute->getParams() : [];
+    return request()->getRouteParams();
 }
 
 /**
@@ -126,8 +104,7 @@ function route_params(): array
  */
 function route_param(string $name)
 {
-    $params = route_params();
-    return $params[$name] ?? null;
+    return request()->getRouteParam($name);
 }
 
 /**
@@ -157,9 +134,7 @@ function route_uri(): ?string
  */
 function route_cache_settings(): ?array
 {
-    $matchedRoute = request()->getMatchedRoute();
-
-    return $matchedRoute ? $matchedRoute->getRoute()->getCache() : null;
+    return request()->getRouteCacheSettings();
 }
 
 /**
@@ -168,9 +143,7 @@ function route_cache_settings(): ?array
  */
 function route_name(): ?string
 {
-    $matchedRoute = request()->getMatchedRoute();
-
-    return $matchedRoute ? $matchedRoute->getRoute()->getName() : null;
+    return request()->getRouteName();
 }
 
 /**
@@ -179,9 +152,7 @@ function route_name(): ?string
  */
 function route_prefix(): ?string
 {
-    $matchedRoute = request()->getMatchedRoute();
-
-    return $matchedRoute ? $matchedRoute->getRoute()->getPrefix() : null;
+    return request()->getRoutePrefix();
 }
 
 /**
@@ -190,23 +161,7 @@ function route_prefix(): ?string
  */
 function find_route_by_name(string $name, string $module): ?Route
 {
-    if (!Di::isRegistered(RouteCollection::class)) {
-        return null;
-    }
-
-    $collection = Di::get(RouteCollection::class);
-
-    foreach ($collection->all() as $route) {
-        if (
-            $route->getName() !== null &&
-            strcasecmp($route->getName(), $name) === 0 &&
-            strcasecmp((string) $route->getModule(), $module) === 0
-        ) {
-            return $route;
-        }
-    }
-
-    return null;
+    return request()->findRouteByName($name, $module);
 }
 
 /**
@@ -215,31 +170,14 @@ function find_route_by_name(string $name, string $module): ?Route
  */
 function route_group_exists(string $name, string $module): bool
 {
-    if (!Di::isRegistered(RouteCollection::class)) {
-        return false;
-    }
-
-    $collection = Di::get(RouteCollection::class);
-
-    foreach ($collection->all() as $route) {
-        if (
-            $route->getGroup() !== null &&
-            strcasecmp($route->getGroup(), $name) === 0 &&
-            strcasecmp((string) $route->getModule(), $module) === 0
-        ) {
-            return true;
-        }
-    }
-
-    return false;
+    return request()->routeGroupExists($name, $module);
 }
 
 /**
  * Gets the module base namespace depending on env
+ * @throws DiException|ReflectionException
  */
 function module_base_namespace(): string
 {
-    return environment()->isTesting()
-        ? 'Quantum\\Tests\\_root\\modules'
-        : 'Modules';
+    return request()->getModuleBaseNamespace();
 }

@@ -60,7 +60,7 @@ class Translator
             $loaded = true;
         }
 
-        $moduleDir = modules_dir() . DS . current_module() . DS . 'resources' . DS . 'lang' . DS . $this->lang;
+        $moduleDir = modules_dir() . DS . request()->getCurrentModule() . DS . 'resources' . DS . 'lang' . DS . $this->lang;
         $moduleFiles = fs()->glob($moduleDir . DS . '*.php');
 
         if (is_array($moduleFiles) && count($moduleFiles)) {

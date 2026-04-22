@@ -219,7 +219,7 @@ trait PaginatorTrait
      */
     protected function getUri(bool $withBaseUrl = false): string
     {
-        $routeUrl = preg_replace('/([?&](page|per_page)=\d+)/', '', route_uri() ?? '');
+        $routeUrl = preg_replace('/([?&](page|per_page)=\d+)/', '', request()->getUri() ?? '');
         $routeUrl = preg_replace('/&/', '?', $routeUrl ?? '', 1);
         $url = $routeUrl;
 

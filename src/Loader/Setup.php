@@ -43,7 +43,7 @@ class Setup
         $this->pathPrefix = $pathPrefix;
         $this->fileName = $fileName;
         $this->hierarchical = $hierarchical;
-        $this->module = $module ?: current_module();
+        $this->module = $module ?: request()->getCurrentModule();
         $this->exceptionMessage = $exceptionMessage ?: 'File `' . $pathPrefix . DS . $fileName . '` not found!';
     }
 

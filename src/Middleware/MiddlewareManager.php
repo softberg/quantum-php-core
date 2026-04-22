@@ -21,6 +21,7 @@ use Quantum\App\Exceptions\BaseException;
 use Quantum\Router\MatchedRoute;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
+use ReflectionException;
 
 /**
  * Class MiddlewareManager
@@ -50,7 +51,7 @@ class MiddlewareManager
     /**
      * Apply Middlewares
      * @return array{0: Request, 1: Response}
-     * @throws MiddlewareException|BaseException
+     * @throws MiddlewareException|BaseException|ReflectionException
      */
     public function applyMiddlewares(Request $request, Response $response): array
     {
@@ -70,11 +71,11 @@ class MiddlewareManager
 
     /**
      * Loads and gets the current middleware instance
-     * @throws MiddlewareException|BaseException
+     * @throws MiddlewareException|BaseException|ReflectionException
      */
     private function getMiddleware(Request $request, Response $response): QtMiddleware
     {
-        $middlewareClass = module_base_namespace() . '\\' . $this->module . '\\Middlewares\\' . current($this->middlewares);
+        $middlewareClass = request()->getModuleBaseNamespace() . '\\' . $this->module . '\\Middlewares\\' . current($this->middlewares);
 
         if (!class_exists($middlewareClass)) {
             throw MiddlewareException::middlewareNotFound($middlewareClass);

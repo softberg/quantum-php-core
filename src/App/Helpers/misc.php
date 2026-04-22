@@ -83,31 +83,6 @@ function is_debug_mode(): bool
 }
 
 /**
- * Gets the caller class
- */
-function get_caller_class(int $index = 2): ?string
-{
-    $caller = debug_backtrace();
-    $caller = $caller[$index];
-
-    return $caller['class'] ?? null;
-}
-
-/**
- * Gets the caller function
- */
-function get_caller_function(int $index = 2): ?string
-{
-    $trace = debug_backtrace();
-
-    if (!isset($trace[$index])) {
-        return null;
-    }
-
-    return $trace[$index]['function'];
-}
-
-/**
  * Exports the variable
  * @param mixed $var
  * @throws ExceptionInterface
