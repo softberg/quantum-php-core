@@ -17,6 +17,7 @@ declare(strict_types=1);
 namespace Quantum\Di;
 
 use Quantum\Di\Exceptions\DiException;
+use ReflectionClass;
 
 /**
  * DiRegistry Class
@@ -59,6 +60,10 @@ class DiRegistry
         }
 
         if (!class_exists($concrete)) {
+            throw DiException::dependencyNotInstantiable($concrete);
+        }
+
+        if (!(new ReflectionClass($concrete))->isInstantiable()) {
             throw DiException::dependencyNotInstantiable($concrete);
         }
 

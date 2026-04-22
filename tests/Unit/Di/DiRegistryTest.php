@@ -54,6 +54,14 @@ class DiRegistryTest extends AppTestCase
         $this->registry->register('NonExistentClass');
     }
 
+    public function testAttemptingToRegisterAbstractClass(): void
+    {
+        $this->expectException(DiException::class);
+        $this->expectExceptionMessage('The dependency `Quantum\\App\\Exceptions\\BaseException` is not instantiable.');
+
+        $this->registry->register(\Quantum\App\Exceptions\BaseException::class);
+    }
+
     public function testAttemptingToRegisterNonExistentAbstract(): void
     {
         $this->expectException(DiException::class);
