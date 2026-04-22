@@ -92,6 +92,12 @@ class RequestTest extends AppTestCase
         $this->assertSame('api', request()->getRoutePrefix());
     }
 
+    public function testCompiledRoutePatternReturnsNullWhenNoRouteMatched(): void
+    {
+        request()->setMatchedRoute(null);
+        $this->assertNull(request()->getCompiledRoutePattern());
+    }
+
     public function testRouteCollectionProxyMethods(): void
     {
         $route = new Route(['GET'], 'dashboard', 'DashboardController', 'index');

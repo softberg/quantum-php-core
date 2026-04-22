@@ -73,9 +73,9 @@ trait Route
         return $this->route ? $this->route->getRoute()->getPattern() : null;
     }
 
-    public function getCompiledRoutePattern(): string
+    public function getCompiledRoutePattern(): ?string
     {
-        return $this->route ? ($this->route->getRoute()->getCompiledPattern() ?? '') : '';
+        return $this->route ? $this->route->getRoute()->getCompiledPattern() : null;
     }
 
     /**
