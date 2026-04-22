@@ -34,10 +34,7 @@ use Closure;
  */
 class DiContainer
 {
-    /**
-     * @var array<string, class-string>
-     */
-    private array $dependencies = [];
+    private DiRegistry $registry;
 
     /**
      * @var array<string, object>
@@ -49,6 +46,11 @@ class DiContainer
      */
     private array $resolving = [];
 
+    public function __construct(?DiRegistry $registry = null)
+    {
+        $this->registry = $registry ?? new DiRegistry();
+    }
+
     /**
      * Register dependencies
      * @param array<string, mixed> $dependencies
@@ -56,11 +58,7 @@ class DiContainer
      */
     public function registerDependencies(array $dependencies): void
     {
-        foreach ($dependencies as $abstract => $concrete) {
-            if (!$this->isRegistered($abstract)) {
-                $this->register($concrete, $abstract);
-            }
-        }
+        $this->registry->registerDependencies($dependencies);
     }
 
     /**
@@ -69,21 +67,7 @@ class DiContainer
      */
     public function register(string $concrete, ?string $abstract = null): void
     {
-        $key = $abstract ?? $concrete;
-
-        if (isset($this->dependencies[$key])) {
-            throw DiException::dependencyAlreadyRegistered($key);
-        }
-
-        if (!class_exists($concrete)) {
-            throw DiException::dependencyNotInstantiable($concrete);
-        }
-
-        if ($abstract !== null && !class_exists($abstract) && !interface_exists($abstract)) {
-            throw DiException::invalidAbstractDependency($abstract);
-        }
-
-        $this->dependencies[$key] = $concrete;
+        $this->registry->register($concrete, $abstract);
     }
 
     /**
@@ -91,7 +75,7 @@ class DiContainer
      */
     public function isRegistered(string $abstract): bool
     {
-        return isset($this->dependencies[$abstract]);
+        return $this->registry->isRegistered($abstract);
     }
 
     /**
@@ -123,12 +107,12 @@ class DiContainer
             throw DiException::dependencyAlreadyRegistered($abstract);
         }
 
-        if (!$override && isset($this->dependencies[$abstract])) {
+        if (!$override && $this->registry->isRegistered($abstract)) {
             throw DiException::dependencyAlreadyRegistered($abstract);
         }
 
-        if (!isset($this->dependencies[$abstract])) {
-            $this->dependencies[$abstract] = get_class($instance);
+        if (!$this->registry->isRegistered($abstract)) {
+            $this->registry->register(get_class($instance), $abstract);
         }
 
         $this->container[$abstract] = $instance;
@@ -190,7 +174,7 @@ class DiContainer
 
     public function reset(): void
     {
-        $this->dependencies = [];
+        $this->registry->reset();
         $this->resetContainer();
     }
 
@@ -212,7 +196,7 @@ class DiContainer
         $this->resolving[$abstract] = true;
 
         try {
-            $concrete = $this->dependencies[$abstract];
+            $concrete = $this->registry->getConcrete($abstract);
 
             if ($singleton) {
                 if (!isset($this->container[$abstract])) {
@@ -279,7 +263,7 @@ class DiContainer
             $type = $param->getType()->getName();
         }
 
-        if ($type !== null && isset($this->dependencies[$type])) {
+        if ($type !== null && $this->registry->isRegistered($type)) {
             /** @var class-string $type */
             return $this->get($type);
         }
