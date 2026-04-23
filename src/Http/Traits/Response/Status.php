@@ -118,13 +118,15 @@ trait Status
     /**
      * Sets the status code
      */
-    public function setStatusCode(int $code): void
+    public function setStatusCode(int $code): self
     {
         if (!isset($this->texts[$code])) {
             throw new InvalidArgumentException(sprintf('The HTTP status code "%s" is not valid.', $code));
         }
 
         $this->__statusCode = $code;
+
+        return $this;
     }
 
     /**

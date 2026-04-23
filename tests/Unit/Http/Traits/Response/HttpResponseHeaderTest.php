@@ -20,7 +20,9 @@ class HttpResponseHeaderTest extends AppTestCase
 
         $this->assertFalse($response->hasHeader('X-Frame-Options'));
 
-        $response->setHeader('X-Frame-Options', 'deny');
+        $returned = $response->setHeader('X-Frame-Options', 'deny');
+
+        $this->assertSame($response, $returned);
 
         $this->assertTrue($response->hasHeader('X-Frame-Options'));
 

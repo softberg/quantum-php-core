@@ -24,7 +24,9 @@ class HttpResponseBodyTest extends AppTestCase
 
         $this->assertFalse($response->has('name'));
 
-        $response->set('name', 'John');
+        $returned = $response->set('name', 'John');
+
+        $this->assertSame($response, $returned);
 
         $this->assertTrue($response->has('name'));
 
@@ -49,7 +51,7 @@ class HttpResponseBodyTest extends AppTestCase
 
         $response->set('lastname', 'Doe');
 
-        $response->json();
+        $this->assertSame($response, $response->json());
 
         $this->assertEquals('{"firstname":"John","lastname":"Doe"}', $response->getContent());
 
@@ -75,7 +77,7 @@ class HttpResponseBodyTest extends AppTestCase
 
         $response->set('lastname', 'Doe');
 
-        $response->jsonp('myfunc');
+        $this->assertSame($response, $response->jsonp('myfunc'));
 
         $this->assertEquals('myfunc({"firstname":"John","lastname":"Doe"})', $response->getContent());
     }
@@ -88,7 +90,7 @@ class HttpResponseBodyTest extends AppTestCase
 
         $response->set('lastname', 'Doe');
 
-        $response->xml();
+        $this->assertSame($response, $response->xml());
 
         $xml = "<?xml version=\"1.0\"?>\n" .
             "<data>\n" .
@@ -196,7 +198,7 @@ class HttpResponseBodyTest extends AppTestCase
     {
         $response = response();
 
-        $response->html('<div>John Doe</div>');
+        $this->assertSame($response, $response->html('<div>John Doe</div>'));
 
         $this->assertEquals('<div>John Doe</div>', $response->getContent());
 

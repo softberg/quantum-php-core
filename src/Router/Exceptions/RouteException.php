@@ -116,6 +116,17 @@ class RouteException extends BaseException
         );
     }
 
+    public static function invalidHandlerResponse(string $handler, string $expectedType): self
+    {
+        return new self(
+            _message(
+                ExceptionMessages::INVALID_HANDLER_RESPONSE,
+                [$handler, $expectedType]
+            ),
+            E_ERROR
+        );
+    }
+
     public static function notClosure(): self
     {
         return new self(

@@ -46,6 +46,8 @@ final class ExceptionMessages extends BaseExceptionMessages
 
     public const ACTION_NOT_FOUND_ON_CONTROLLER = 'Action `{%1}` not found on controller `{%2}`';
 
+    public const INVALID_HANDLER_RESPONSE = 'Route handler `{%1}` must return `{%2}`';
+
     public const ROUTE_NOT_CLOSURE = 'Route is not a closure';
 
     public const NAME_BEFORE_ROUTE_DEFINITION = 'Names can not be set before route definition';
