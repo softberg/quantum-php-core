@@ -50,9 +50,10 @@ trait Header
     /**
      * Sets the response header
      */
-    public function setHeader(string $key, string $value): void
+    public function setHeader(string $key, string $value): self
     {
         $this->__headers[$key] = $value;
+        return $this;
     }
 
     /**
@@ -77,9 +78,9 @@ trait Header
     /**
      * Sets the content type
      */
-    public function setContentType(string $contentType): void
+    public function setContentType(string $contentType): self
     {
-        $this->setHeader('Content-Type', $contentType);
+        return $this->setHeader('Content-Type', $contentType);
     }
 
     /**

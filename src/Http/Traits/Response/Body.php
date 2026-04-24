@@ -66,9 +66,10 @@ trait Body
      * Sets new key/value pair into response
      * @param mixed $value
      */
-    public function set(string $key, $value): void
+    public function set(string $key, $value): self
     {
         $this->__response[$key] = $value;
+        return $this;
     }
 
     /**
@@ -94,7 +95,7 @@ trait Body
      * Prepares the JSON response
      * @param array<string, mixed>|null $data
      */
-    public function json(?array $data = null, ?int $code = null): void
+    public function json(?array $data = null, ?int $code = null): self
     {
         $this->setContentType(ContentType::JSON);
 
@@ -105,13 +106,15 @@ trait Body
         if ($data) {
             $this->__response = array_merge($this->__response, $data);
         }
+
+        return $this;
     }
 
     /**
      * Prepares the JSONP response
      * @param array<string, mixed>|null $data
      */
-    public function jsonp(string $callback, ?array $data = null, ?int $code = null): void
+    public function jsonp(string $callback, ?array $data = null, ?int $code = null): self
     {
         $this->setContentType(ContentType::JSONP);
 
@@ -124,6 +127,8 @@ trait Body
         if ($data) {
             $this->__response = array_merge($this->__response, $data);
         }
+
+        return $this;
     }
 
     /**
@@ -140,7 +145,7 @@ trait Body
      * @param array<string, mixed>|null $data
      * @param string $root
      */
-    public function xml(?array $data = null, $root = '<data></data>', ?int $code = null): void
+    public function xml(?array $data = null, $root = '<data></data>', ?int $code = null): self
     {
         $this->setContentType(ContentType::XML);
 
@@ -153,12 +158,14 @@ trait Body
         if ($data) {
             $this->__response = array_merge($this->__response, $data);
         }
+
+        return $this;
     }
 
     /**
      * Prepares the HTML content
      */
-    public function html(string $html, ?int $code = null): void
+    public function html(string $html, ?int $code = null): self
     {
         $this->setContentType(ContentType::HTML);
 
@@ -167,6 +174,8 @@ trait Body
         }
 
         $this->__response[ReservedKeys::RENDERED_VIEW] = $html;
+
+        return $this;
     }
 
     /**

@@ -19,10 +19,12 @@ namespace Quantum\Router;
 use Quantum\Router\Exceptions\RouteException;
 use Quantum\Csrf\Exceptions\CsrfException;
 use Quantum\Di\Exceptions\DiException;
+use Quantum\Http\Response;
 use Quantum\Http\Request;
 use ReflectionException;
 use Quantum\Csrf\Csrf;
 use Quantum\Di\Di;
+use Closure;
 
 /**
  * Class RouteDispatcher
@@ -34,7 +36,7 @@ final class RouteDispatcher
      * Dispatch a matched route.
      * @throws ReflectionException|CsrfException|DiException|RouteException
      */
-    public function dispatch(MatchedRoute $matched, Request $request): void
+    public function dispatch(MatchedRoute $matched, Request $request): Response
     {
         $route = $matched->getRoute();
         $params = $matched->getParams();
@@ -46,8 +48,10 @@ final class RouteDispatcher
                 throw RouteException::closureHandlerMissing();
             }
 
-            $this->invoke($closure, $params);
-            return;
+            return $this->requireResponse(
+                $this->invoke($closure, $params),
+                'closure route'
+            );
         }
 
         $callable = $this->resolveControllerCallable($route);
@@ -57,10 +61,14 @@ final class RouteDispatcher
 
         $this->callHook($controller, '__before', $params);
 
-        /** @phpstan-ignore argument.type */
-        $this->invoke($callable, $params);
+        $response = $this->requireResponse(
+            $this->invoke($callable, $params),
+            $route->getController() . '::' . $route->getAction()
+        );
 
         $this->callHook($controller, '__after', $params);
+
+        return $response;
     }
 
     /**
@@ -88,15 +96,30 @@ final class RouteDispatcher
 
     /**
      * Invoke a callable with parameters resolved via DI autowiring.
+     * @param callable|array{0: object, 1: string} $callable
      * @param array<string, mixed> $params
-     * @throws DiException|ReflectionException
+     * @return mixed
      */
-    private function invoke(callable $callable, array $params): void
+    private function invoke($callable, array $params)
     {
-        call_user_func_array(
-            $callable,
-            Di::autowire($callable, $params)
-        );
+        /** @var callable $callable */
+        $closure = Closure::fromCallable($callable);
+
+        return $closure(...Di::autowire($closure, $params));
+    }
+
+    /**
+     * Enforce a Response return contract for route handlers.
+     * @param mixed $result
+     * @throws RouteException
+     */
+    private function requireResponse($result, string $handler): Response
+    {
+        if (!$result instanceof Response) {
+            throw RouteException::invalidHandlerResponse($handler, Response::class);
+        }
+
+        return $result;
     }
 
     /**
@@ -107,7 +130,6 @@ final class RouteDispatcher
     private function callHook(object $controller, string $hook, array $params): void
     {
         if (method_exists($controller, $hook)) {
-            /** @phpstan-ignore argument.type */
             $this->invoke([$controller, $hook], $params);
         }
     }

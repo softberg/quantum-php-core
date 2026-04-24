@@ -17,7 +17,9 @@ class HttpResponseStatusTest extends AppTestCase
 
         $this->assertEquals(200, $response->getStatusCode());
 
-        $response->setStatusCode(301);
+        $returned = $response->setStatusCode(301);
+
+        $this->assertSame($response, $returned);
 
         $this->assertEquals(301, $response->getStatusCode());
 
