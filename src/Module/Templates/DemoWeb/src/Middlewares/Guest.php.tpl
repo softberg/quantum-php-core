@@ -30,9 +30,9 @@ class Guest extends QtMiddleware
      * @param Request $request
      * @param Response $response
      * @param Closure $next
-     * @return mixed
+     * @return Response
      */
-    public function apply(Request $request, Response $response, Closure $next)
+    public function apply(Request $request, Response $response, Closure $next): Response
     {
         if (auth()->check()) {
             redirect(get_referrer() ?? base_url(true) . '/' . current_lang());

@@ -49,7 +49,7 @@ class CommentController extends BaseController
      * @param string|null $lang
      * @param string $uuid
      */
-    public function create(Request $request, ?string $lang, string $uuid)
+    public function create(Request $request, ?string $lang, string $uuid): Response
     {
         $commentDto = CommentDTO::fromRequest($request, $uuid, auth()->user()->uuid);
 
@@ -64,7 +64,7 @@ class CommentController extends BaseController
      * @param string|null $lang
      * @param string $uuid
      */
-    public function delete(?string $lang, string $uuid)
+    public function delete(?string $lang, string $uuid): Response
     {
         $this->commentService->deleteComment($uuid);
 

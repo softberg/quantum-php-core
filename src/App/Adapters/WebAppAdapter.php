@@ -82,7 +82,8 @@ class WebAppAdapter extends AppAdapter
 
             $this->logDebugInfo();
 
-            [$request, $response] = (new MiddlewareManager($matchedRoute))->applyMiddlewares(request(), response());
+            $response = (new MiddlewareManager($matchedRoute))->applyMiddlewares(request(), response());
+            $request = request();
 
             if ($this->setupViewCache()->serveCachedView(request()->getUri() ?? '', $response)) {
                 stop();

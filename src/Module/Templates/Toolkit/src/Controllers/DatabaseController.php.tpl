@@ -43,7 +43,7 @@ class DatabaseController extends BaseController
     /**
      * @param Response $response
      */
-    public function list(Response $response)
+    public function list(Response $response): Response
     {
         $tables = $this->databaseService->getTables();
 
@@ -52,7 +52,7 @@ class DatabaseController extends BaseController
             'tables' => $tables,
         ]);
 
-        $response->html($this->view->render('pages/database/index'));
+        return $response->html($this->view->render('pages/database/index'));
     }
 
     /**
@@ -60,7 +60,7 @@ class DatabaseController extends BaseController
      * @param Response $response
      * @throws DatabaseException
      */
-    public function single(Request $request, Response $response)
+    public function single(Request $request, Response $response): Response
     {
         $tableName = $request->get('table');
         $perPage = $request->get('per_page', self::ITEMS_PER_PAGE);
@@ -78,13 +78,13 @@ class DatabaseController extends BaseController
             'pagination' => $tableData['pagination'],
         ]);
 
-        $response->html($this->view->render('pages/database/table'));
+        return $response->html($this->view->render('pages/database/table'));
     }
 
     /**
      * @param Request $request
      */
-    public function create(Request $request)
+    public function create(Request $request): Response
     {
         $tableName = $request->get('table');
 
@@ -98,7 +98,7 @@ class DatabaseController extends BaseController
     /**
      * @param Request $request
      */
-    public function update(Request $request)
+    public function update(Request $request): Response
     {
         $tableName = $request->get('table');
         $id = $request->get('rowId');
@@ -112,7 +112,7 @@ class DatabaseController extends BaseController
     /**
      * @param Request $request
      */
-    public function delete(Request $request)
+    public function delete(Request $request): Response
     {
         $tableName = $request->get('tableName');
         $id = $request->get('id');

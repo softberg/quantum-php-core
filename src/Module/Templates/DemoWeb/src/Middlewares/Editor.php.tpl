@@ -45,9 +45,9 @@ class Editor extends BaseMiddleware
      * @param Request $request
      * @param Response $response
      * @param Closure $next
-     * @return mixed
+     * @return Response
      */
-    public function apply(Request $request, Response $response, Closure $next)
+    public function apply(Request $request, Response $response, Closure $next): Response
     {
         if (!in_array(auth()->user()->role, self::ROLES)) {
             redirect(base_url(true) . '/' . current_lang());

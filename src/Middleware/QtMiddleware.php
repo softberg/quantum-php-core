@@ -27,12 +27,8 @@ use Closure;
 abstract class QtMiddleware
 {
     /**
-     * Apply
-     *
      * Applies the middleware
-     *
-     * @return mixed
      */
-    abstract public function apply(Request $request, Response $response, Closure $next);
+    abstract public function apply(Request $request, Response $response, Closure $next): Response;
 
 }

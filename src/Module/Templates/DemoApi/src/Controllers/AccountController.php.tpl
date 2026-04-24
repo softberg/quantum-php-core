@@ -46,7 +46,7 @@ class AccountController extends BaseController
      * @param Request $request
      * @param Response $response
      */
-    public function update(Request $request, Response $response)
+    public function update(Request $request, Response $response): Response
     {
         try {
             $firstname = $request->get('firstname');
@@ -59,11 +59,11 @@ class AccountController extends BaseController
 
             auth()->refreshUser(auth()->user()->uuid);
 
-            $response->json([
+            return $response->json([
                 'status' => self::STATUS_SUCCESS,
                 'message' => t('common.updated_successfully')
             ]);
-        } catch (AuthException $e) {
+    } catch (AuthException $e) {
             $response->json([
                 'status' => self::STATUS_ERROR,
                 'message' => $e->getMessage()
@@ -76,7 +76,7 @@ class AccountController extends BaseController
      * @param Request $request
      * @param Response $response
      */
-    public function updatePassword(Request $request, Response $response)
+    public function updatePassword(Request $request, Response $response): Response
     {
         try {
             $hasher = new Hasher();
@@ -87,11 +87,11 @@ class AccountController extends BaseController
                 'password' => $hasher->hash($newPassword)
             ]);
 
-            $response->json([
+            return $response->json([
                 'status' => self::STATUS_SUCCESS,
                 'message' => t('common.updated_successfully')
             ]);
-        } catch (AuthException $e) {
+    } catch (AuthException $e) {
             $response->json([
                 'status' => self::STATUS_ERROR,
                 'message' => $e->getMessage()

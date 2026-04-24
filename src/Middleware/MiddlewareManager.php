@@ -50,23 +50,23 @@ class MiddlewareManager
 
     /**
      * Apply Middlewares
-     * @return array{0: Request, 1: Response}
+     * @return Response
      * @throws MiddlewareException|BaseException|ReflectionException
      */
-    public function applyMiddlewares(Request $request, Response $response): array
+    public function applyMiddlewares(Request $request, Response $response): Response
     {
-        if (!current($this->middlewares)) {
-            return [$request, $response];
+        $middleware = current($this->middlewares);
+
+        if (!$middleware) {
+            return $response;
         }
 
         $currentMiddleware = $this->getMiddleware($request, $response);
 
-        [$request, $response] = $currentMiddleware->apply($request, $response, function ($request, $response): array {
+        return $currentMiddleware->apply($request, $response, function (Request $request, Response $response): Response {
             next($this->middlewares);
-            return [$request, $response];
+            return $this->applyMiddlewares($request, $response);
         });
-
-        return $this->applyMiddlewares($request, $response);
     }
 
     /**

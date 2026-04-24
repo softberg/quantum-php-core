@@ -46,6 +46,6 @@ abstract class BaseController
             ]);
 
             $this->view->setParam('langs', config()->get('lang.supported'));
-        }
+    }
     }
 }

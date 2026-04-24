@@ -48,7 +48,7 @@ class PostManagementController extends BaseController
      * @param Request $request
      * @param Response $response
      */
-    public function myPosts(Request $request, Response $response)
+    public function myPosts(Request $request, Response $response): Response
     {
         $myPosts = $this->postService->getMyPosts(auth()->user()->uuid);
 
@@ -57,7 +57,7 @@ class PostManagementController extends BaseController
             'posts' => $this->postService->transformData($myPosts->all())
         ]);
 
-        $response->html($this->view->render('post/my-posts'));
+        return $response->html($this->view->render('post/my-posts'));
     }
 
     /**
@@ -65,7 +65,7 @@ class PostManagementController extends BaseController
      * @param Request $request
      * @param Response $response
      */
-    public function createFrom(Request $request, Response $response)
+    public function createFrom(Request $request, Response $response): Response
     {
         $ref = $request->get('ref', 'posts');
 
@@ -74,14 +74,14 @@ class PostManagementController extends BaseController
             'referer' => $ref
         ]);
 
-        $response->html($this->view->render('post/form'));
+        return $response->html($this->view->render('post/form'));
     }
 
     /**
      * Action - create post
      * @param Request $request
      */
-    public function create(Request $request)
+    public function create(Request $request): Response
     {
         $imageName = '';
 
@@ -91,7 +91,7 @@ class PostManagementController extends BaseController
                 auth()->user()->uuid,
                 slugify($request->get('title'))
             );
-        }
+    }
 
         $postDto = PostDTO::fromRequest($request, auth()->user()->uuid, $imageName);
 
@@ -107,7 +107,7 @@ class PostManagementController extends BaseController
      * @param string|null $lang
      * @param string $postUuid
      */
-    public function amendForm(Request $request, Response $response, ?string $lang, string $postUuid)
+    public function amendForm(Request $request, Response $response, ?string $lang, string $postUuid): Response
     {
         $ref = $request->get('ref', 'posts');
 
@@ -119,7 +119,7 @@ class PostManagementController extends BaseController
             'referer' => nav_ref_decode($ref)
         ]);
 
-        $response->html($this->view->render('post/form'));
+        return $response->html($this->view->render('post/form'));
     }
 
     /**
@@ -128,7 +128,7 @@ class PostManagementController extends BaseController
      * @param string|null $lang
      * @param string $postUuid
      */
-    public function amend(Request $request, ?string $lang, string $postUuid)
+    public function amend(Request $request, ?string $lang, string $postUuid): Response
     {
         $post = $this->postService->getPost($postUuid);
 
@@ -137,7 +137,7 @@ class PostManagementController extends BaseController
         if ($request->hasFile('image')) {
             if ($post->image) {
                 $this->postService->deleteImage(auth()->user()->uuid . DS .  $post->image);
-            }
+    }
 
             $imageName = $this->postService->saveImage(
                 $request->getFile('image'),
@@ -158,13 +158,13 @@ class PostManagementController extends BaseController
      * @param string|null $lang
      * @param string $postUuid
      */
-    public function delete(?string $lang, string $postUuid)
+    public function delete(?string $lang, string $postUuid): Response
     {
         $post = $this->postService->getPost($postUuid);
 
         if ($post->image) {
             $this->postService->deleteImage(auth()->user()->uuid . DS . $post->image);
-        }
+    }
 
         $this->postService->deletePost($postUuid);
 
@@ -176,13 +176,13 @@ class PostManagementController extends BaseController
      * @param string|null $lang
      * @param string $postUuid
      */
-    public function deleteImage(?string $lang, string $postUuid)
+    public function deleteImage(?string $lang, string $postUuid): Response
     {
         $post = $this->postService->getPost($postUuid);
 
         if ($post->image) {
             $this->postService->deleteImage(auth()->user()->uuid . DS . $post->image);
-        }
+    }
 
         $postDto = new PostDTO(
             $post->title,

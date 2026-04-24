@@ -44,11 +44,11 @@ class PostManagementController extends BaseController
      * Action - get my posts
      * @param Response $response
      */
-    public function myPosts(Response $response)
+    public function myPosts(Response $response): Response
     {
         $myPosts = $this->postService->getMyPosts(auth()->user()->uuid);
         
-        $response->json([
+        return $response->json([
             'status' => 'success',
             'data' => $this->postService->transformData($myPosts->all())
         ]);
@@ -59,7 +59,7 @@ class PostManagementController extends BaseController
      * @param Request $request 
      * @param Response $response
      */
-    public function create(Request $request, Response $response)
+    public function create(Request $request, Response $response): Response
     {
         $imageName = '';
 
@@ -69,7 +69,7 @@ class PostManagementController extends BaseController
                 auth()->user()->uuid,
                 slugify($request->get('title'))
             );
-        }
+    }
 
         $postDto = PostDTO::fromRequest($request, auth()->user()->uuid, $imageName);
 
@@ -89,7 +89,7 @@ class PostManagementController extends BaseController
      * @param string|null $lang
      * @param string $postUuid
      */
-    public function amend(Request $request, Response $response, ?string $lang, string $postUuid)
+    public function amend(Request $request, Response $response, ?string $lang, string $postUuid): Response
     {
         $post = $this->postService->getPost($postUuid);
 
@@ -98,7 +98,7 @@ class PostManagementController extends BaseController
         if ($request->hasFile('image')) {
             if ($post->image) {
                 $this->postService->deleteImage(auth()->user()->uuid . DS . $post->image);
-            }
+    }
 
             $imageName = $this->postService->saveImage(
                 $request->getFile('image'),
@@ -124,13 +124,13 @@ class PostManagementController extends BaseController
      * @param string|null $lang
      * @param string $postUuid
      */
-    public function delete(Response $response, ?string $lang, string $postUuid)
+    public function delete(Response $response, ?string $lang, string $postUuid): Response
     {
         $post = $this->postService->getPost($postUuid);
 
         if ($post->image) {
             $this->postService->deleteImage(auth()->user()->uuid . DS . $post->image);
-        }
+    }
 
         $this->postService->deletePost($postUuid);
 
@@ -146,13 +146,13 @@ class PostManagementController extends BaseController
      * @param string|null $lang 
      * @param string $postUuid
      */
-    public function deleteImage(Response $response, ?string $lang, string $postUuid)
+    public function deleteImage(Response $response, ?string $lang, string $postUuid): Response
     {
         $post = $this->postService->getPost($postUuid);
 
         if ($post->image) {
             $this->postService->deleteImage(auth()->user()->uuid . DS . $post->image);
-        }
+    }
 
         $postDto = new PostDTO(
             $post->title,
