@@ -55,16 +55,14 @@ class MiddlewareManager
      */
     public function applyMiddlewares(Request $request, Response $response): Response
     {
-        $middleware = current($this->middlewares);
-
-        if (!$middleware) {
+        if (!current($this->middlewares)) {
             return $response;
         }
 
         $currentMiddleware = $this->getMiddleware($request, $response);
+        next($this->middlewares);
 
         return $currentMiddleware->apply($request, $response, function (Request $request, Response $response): Response {
-            next($this->middlewares);
             return $this->applyMiddlewares($request, $response);
         });
     }
