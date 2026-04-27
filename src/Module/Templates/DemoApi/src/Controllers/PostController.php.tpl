@@ -54,6 +54,7 @@ class PostController extends BaseController
      * Action - get posts list
      * @param Request $request
      * @param Response $response
+     * @return Response
      */
     public function posts(Request $request, Response $response): Response
     {
@@ -80,6 +81,7 @@ class PostController extends BaseController
      * @param Response $response
      * @param string|null $lang
      * @param string $postUuid
+     * @return Response
      */
     public function post(Response $response, ?string $lang, string $postUuid): Response
     {
@@ -90,8 +92,6 @@ class PostController extends BaseController
                 'status' => 'error',
                 'message' => t('common.post_not_found')
             ], StatusCode::NOT_FOUND);
-
-            stop();
         }
 
         $postData = current($this->postService->transformData([$post]));

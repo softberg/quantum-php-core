@@ -43,6 +43,7 @@ class PostManagementController extends BaseController
     /**
      * Action - get my posts
      * @param Response $response
+     * @return Response
      */
     public function myPosts(Response $response): Response
     {
@@ -58,6 +59,7 @@ class PostManagementController extends BaseController
      * Action - create post
      * @param Request $request 
      * @param Response $response
+     * @return Response
      */
     public function create(Request $request, Response $response): Response
     {
@@ -88,6 +90,7 @@ class PostManagementController extends BaseController
      * @param Response $response
      * @param string|null $lang
      * @param string $postUuid
+     * @return Response
      */
     public function amend(Request $request, Response $response, ?string $lang, string $postUuid): Response
     {
@@ -123,6 +126,7 @@ class PostManagementController extends BaseController
      * @param Response $response
      * @param string|null $lang
      * @param string $postUuid
+     * @return Response
      */
     public function delete(Response $response, ?string $lang, string $postUuid): Response
     {
@@ -145,6 +149,7 @@ class PostManagementController extends BaseController
      * @param Response $response
      * @param string|null $lang 
      * @param string $postUuid
+     * @return Response
      */
     public function deleteImage(Response $response, ?string $lang, string $postUuid): Response
     {

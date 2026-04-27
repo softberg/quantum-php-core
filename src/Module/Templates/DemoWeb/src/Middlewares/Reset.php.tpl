@@ -40,7 +40,9 @@ class Reset extends BaseMiddleware
 
         $request->set('token', $token);
 
-        $this->validateRequest($request, $response);
+        if ($errorResponse = $this->validateRequest($request, $response)) {
+            return $errorResponse;
+        }
 
         $request->set('reset_token', $token);
 
@@ -77,13 +79,13 @@ class Reset extends BaseMiddleware
     /**
      * @inheritDoc
      */
-    protected function respondWithError(Request $request, Response $response, $message)
+    protected function respondWithError(Request $request, Response $response, $message): Response
     {
         if ($request->isMethod('get') && isset($message['token'])) {
             return $response->html(partial('errors/404'), StatusCode::NOT_FOUND);
         }
 
         session()->setFlash('error', $message);
-        redirect(get_referrer());
+        return redirect(get_referrer());
     }
 }

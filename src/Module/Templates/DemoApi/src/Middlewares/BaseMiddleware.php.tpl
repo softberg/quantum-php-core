@@ -57,12 +57,15 @@ abstract class BaseMiddleware extends QtMiddleware
      * Validate the request and respond with error if invalid.
      * @param Request $request
      * @param Response $response
+     * @return Response|null
      */
-    protected function validateRequest(Request $request, Response $response)
+    protected function validateRequest(Request $request, Response $response): ?Response
     {
         if (!$this->validator->isValid($request->all())) {
-            $this->respondWithError($request, $response, $this->validator->getErrors());
+            return $this->respondWithError($request, $response, $this->validator->getErrors());
         }
+
+        return null;
     }
 
     /**
@@ -71,13 +74,14 @@ abstract class BaseMiddleware extends QtMiddleware
      * @param Response $response
      * @param mixed $message
      * @param int $status
+     * @return Response
      */
     protected function respondWithError(
         Request $request,
         Response $response,
         $message,
         int $status = StatusCode::UNPROCESSABLE_ENTITY
-    )
+    ): Response
     {
         return $response->json([
             'status' => 'error',

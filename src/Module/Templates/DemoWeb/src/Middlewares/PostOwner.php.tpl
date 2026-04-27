@@ -41,7 +41,9 @@ class PostOwner extends BaseMiddleware
 
         $request->set('uuid', $uuid);
 
-        $this->validateRequest($request, $response);
+        if ($errorResponse = $this->validateRequest($request, $response)) {
+            return $errorResponse;
+        }
 
         return $next($request, $response);
     }
@@ -64,7 +66,7 @@ class PostOwner extends BaseMiddleware
     /**
      * @inheritDoc
      */
-    protected function respondWithError(Request $request, Response $response, $message = null)
+    protected function respondWithError(Request $request, Response $response, $message = null): Response
     {
         return $response->html(partial('errors/404'),  StatusCode::NOT_FOUND);
     }

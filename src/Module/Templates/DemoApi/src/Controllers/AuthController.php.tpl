@@ -32,6 +32,7 @@ class AuthController extends BaseController
      * Action - sign in
      * @param Request $request
      * @param Response $response
+     * @return Response
      */
     public function signin(Request $request, Response $response): Response
     {
@@ -56,6 +57,7 @@ class AuthController extends BaseController
     /**
      * Action - me
      * @param Response $response
+     * @return Response
      */
     public function me(Response $response): Response
     {
@@ -72,6 +74,7 @@ class AuthController extends BaseController
     /**
      * Action - sign out
      * @param Response $response
+     * @return Response
      */
     public function signout(Response $response): Response
     {
@@ -91,6 +94,7 @@ class AuthController extends BaseController
      *  Action - sign up
      * @param Request $request
      * @param Response $response
+     * @return Response
      */
     public function signup(Request $request, Response $response): Response
     {
@@ -108,6 +112,7 @@ class AuthController extends BaseController
      * Action - activate
      * @param Request $request
      * @param Response $response
+     * @return Response
      */
     public function activate(Request $request, Response $response): Response
     {
@@ -123,6 +128,7 @@ class AuthController extends BaseController
      * Action - forget
      * @param Request $request
      * @param Response $response
+     * @return Response
      */
     public function forget(Request $request, Response $response): Response
     {
@@ -138,6 +144,7 @@ class AuthController extends BaseController
      * Action - reset
      * @param Request $request
      * @param Response $response
+     * @return Response
      */
     public function reset(Request $request, Response $response): Response
     {
@@ -152,6 +159,7 @@ class AuthController extends BaseController
      * Action - Verify OTP
      * @param Request $request
      * @param Response $response
+     * @return Response
      */
     public function verify(Request $request, Response $response): Response
     {
@@ -172,6 +180,7 @@ class AuthController extends BaseController
     /**
      *  Action - Resend OTP
      * @param Response $response
+     * @return Response
      */
     public function resend(Response $response): Response
     {
