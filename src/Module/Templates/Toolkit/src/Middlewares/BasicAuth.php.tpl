@@ -37,7 +37,7 @@ class BasicAuth extends QtMiddleware
         $userCredentials = $request->getBasicAuthCredentials();
 
         if (!$userCredentials || !$this->isValidCredentials($userCredentials)) {
-            $this->unauthorizedResponse($response);
+            return $this->unauthorizedResponse($response);
         }
 
         return $next($request, $response);
@@ -61,11 +61,11 @@ class BasicAuth extends QtMiddleware
 
     /**
      * @param Response $response
+     * @return Response
      */
-    private function unauthorizedResponse(Response $response): void
+    private function unauthorizedResponse(Response $response): Response
     {
         $response->setHeader('WWW-Authenticate', 'Basic realm="Quantum Toolkit"');
-        $response->html(partial('errors' . DS . '401'), 401);
-        stop();
+        return $response->html(partial('errors' . DS . '401'), 401);
     }
 }

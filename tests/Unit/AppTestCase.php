@@ -13,6 +13,7 @@ use Quantum\Di\DiContainer;
 use Quantum\App\AppContext;
 use Quantum\Config\Config;
 use Quantum\Router\Route;
+use Quantum\Http\Response;
 use ReflectionClass;
 use Quantum\App\App;
 use Quantum\Di\Di;
@@ -40,6 +41,10 @@ abstract class AppTestCase extends TestCase
         request()->flush();
 
         AppFactory::destroy(AppType::WEB);
+
+        if (Di::isRegistered(Response::class)) {
+            response()->flush();
+        }
 
         if (Di::isRegistered(Config::class)) {
             config()->flush();

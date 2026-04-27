@@ -93,8 +93,7 @@ class PostController extends BaseController
         
         if ($post->isEmpty()) {
             return $response->html(partial('errors/404'), StatusCode::NOT_FOUND);
-            stop();
-    }
+        }
 
         $commentService = service(CommentService::class);
 
@@ -109,6 +108,6 @@ class PostController extends BaseController
             'referer' => nav_ref_decode($ref),
         ]);
 
-        $response->html($this->view->render('post/single'));
+        return $response->html($this->view->render('post/single'));
     }
 }

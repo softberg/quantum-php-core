@@ -79,11 +79,9 @@ abstract class BaseMiddleware extends QtMiddleware
         int $status = StatusCode::UNPROCESSABLE_ENTITY
     )
     {
-        $response->json([
+        return $response->json([
             'status' => 'error',
             'message' => $message,
         ], $status);
-
-        stop();
     }
 }

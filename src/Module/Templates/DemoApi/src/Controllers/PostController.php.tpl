@@ -92,7 +92,7 @@ class PostController extends BaseController
             ], StatusCode::NOT_FOUND);
 
             stop();
-    }
+        }
 
         $postData = current($this->postService->transformData([$post]));
 
@@ -104,7 +104,7 @@ class PostController extends BaseController
 
         $postData['comments'] = $commentsData;
 
-        $response->json([
+        return $response->json([
             'status' => 'success',
             'data' => $postData,
         ]);

@@ -69,13 +69,13 @@ class PostManagementController extends BaseController
                 auth()->user()->uuid,
                 slugify($request->get('title'))
             );
-    }
+        }
 
         $postDto = PostDTO::fromRequest($request, auth()->user()->uuid, $imageName);
 
         $post = $this->postService->addPost($postDto);
 
-        $response->json([
+        return $response->json([
             'status' => 'success',
             'message' => t('common.created_successfully'),
             'data' => current($this->postService->transformData([$post]))
@@ -98,7 +98,7 @@ class PostManagementController extends BaseController
         if ($request->hasFile('image')) {
             if ($post->image) {
                 $this->postService->deleteImage(auth()->user()->uuid . DS . $post->image);
-    }
+            }
 
             $imageName = $this->postService->saveImage(
                 $request->getFile('image'),
@@ -111,7 +111,7 @@ class PostManagementController extends BaseController
 
         $post = $this->postService->updatePost($postUuid, $postDto);
 
-        $response->json([
+        return $response->json([
             'status' => 'success',
             'message' => t('common.updated_successfully'),
             'data' => current($this->postService->transformData([$post]))
@@ -130,11 +130,11 @@ class PostManagementController extends BaseController
 
         if ($post->image) {
             $this->postService->deleteImage(auth()->user()->uuid . DS . $post->image);
-    }
+        }
 
         $this->postService->deletePost($postUuid);
 
-        $response->json([
+        return $response->json([
             'status' => 'success',
             'message' => t('common.deleted_successfully')
         ]);
@@ -152,7 +152,7 @@ class PostManagementController extends BaseController
 
         if ($post->image) {
             $this->postService->deleteImage(auth()->user()->uuid . DS . $post->image);
-    }
+        }
 
         $postDto = new PostDTO(
             $post->title,
@@ -163,7 +163,7 @@ class PostManagementController extends BaseController
 
         $this->postService->updatePost($postUuid, $postDto);
 
-        $response->json([
+        return $response->json([
             'status' => 'success',
             'message' => t('common.deleted_successfully')
         ]);

@@ -70,7 +70,7 @@ class AuthController extends BaseController
 
                 if (filter_var(config()->get('auth.two_fa'), FILTER_VALIDATE_BOOLEAN)) {
                     redirect(base_url(true) . '/' . current_lang() . '/verify/' . $code);
-    } else {
+                } else {
                     redirect(base_url(true) . '/' . current_lang());
                 }
             } catch (AuthException $e) {
@@ -82,7 +82,7 @@ class AuthController extends BaseController
                 'title' => t('common.signin') . ' | ' . config()->get('app.name'),
             ]);
 
-            $response->html($this->view->render(self::VIEW_SIGNIN));
+            return $response->html($this->view->render(self::VIEW_SIGNIN));
         }
     }
 
@@ -109,13 +109,13 @@ class AuthController extends BaseController
 
             session()->setFlash('success', t('common.check_email_signup'));
             redirect(base_url(true) . '/' . current_lang() . '/signup');
-    } else {
+        } else {
             $this->view->setParams([
 //                'captcha' => captcha(),
                 'title' => t('common.signup') . ' | ' . config()->get('app.name'),
             ]);
 
-            $response->html($this->view->render(self::VIEW_SIGNUP));
+            return $response->html($this->view->render(self::VIEW_SIGNUP));
         }
     }
 
@@ -140,12 +140,12 @@ class AuthController extends BaseController
             auth()->forget($request->get('email'));
             session()->setFlash('success', t('common.check_email'));
             redirect(base_url(true) . '/' . current_lang() . '/forget');
-    } else {
+        } else {
             $this->view->setParams([
                 'title' => t('common.forget_password') . ' | ' . config()->get('app.name'),
             ]);
 
-            $response->html($this->view->render(self::VIEW_FORGET));
+            return $response->html($this->view->render(self::VIEW_FORGET));
         }
     }
 
@@ -159,13 +159,13 @@ class AuthController extends BaseController
         if ($request->isMethod('post')) {
             auth()->reset($request->get('reset_token'), $request->get('password'));
             redirect(base_url(true) . '/' . current_lang() . '/signin');
-    } else {
+        } else {
             $this->view->setParams([
                 'title' => t('common.reset_password') . ' | ' . config()->get('app.name'),
                 'reset_token' => $request->get('reset_token')
             ]);
 
-            $response->html($this->view->render(self::VIEW_RESET));
+            return $response->html($this->view->render(self::VIEW_RESET));
         }
     }
 
@@ -180,7 +180,7 @@ class AuthController extends BaseController
             try {
                 auth()->verifyOtp((int)$request->get('otp'), $request->get('code'));
                 redirect(base_url(true) . '/' . current_lang());
-    } catch (AuthException $e) {
+            } catch (AuthException $e) {
                 session()->setFlash('error', $e->getMessage());
                 redirect(base_url(true) . '/' . current_lang() . '/verify/' . $request->get('code'));
             }
@@ -190,7 +190,7 @@ class AuthController extends BaseController
                 'code' => route_param('code')
             ]);
 
-            $response->html($this->view->render(self::VIEW_VERIFY));
+            return $response->html($this->view->render(self::VIEW_VERIFY));
         }
     }
 
@@ -202,7 +202,7 @@ class AuthController extends BaseController
         try {
             $otpToken = auth()->resendOtp(route_param('code'));
             redirect(base_url(true) . '/' . current_lang() . '/verify/' . $otpToken);
-    } catch (AuthException $e) {
+        } catch (AuthException $e) {
             redirect(base_url(true) . '/' . current_lang() . '/signin');
         }
     }

@@ -40,13 +40,13 @@ class AuthController extends BaseController
 
             if (filter_var(config()->get('auth.two_fa'), FILTER_VALIDATE_BOOLEAN)) {
                 $response->set('code', $code);
-    }
+            }
 
-            $response->json([
+            return $response->json([
                 'status' => self::STATUS_SUCCESS
             ]);
         } catch (AuthException $e) {
-            $response->json([
+            return $response->json([
                 'status' => self::STATUS_ERROR,
                 'message' => $e->getMessage()
             ], StatusCode::UNPROCESSABLE_ENTITY);
@@ -79,8 +79,8 @@ class AuthController extends BaseController
             return $response->json([
                 'status' => self::STATUS_SUCCESS
             ]);
-    } else {
-            $response->json([
+        } else {
+            return $response->json([
                 'status' => self::STATUS_ERROR,
                 'message' => t('validation.unauthorizedRequest')
             ], StatusCode::UNAUTHORIZED);
@@ -161,8 +161,8 @@ class AuthController extends BaseController
             return $response->json([
                 'status' => self::STATUS_SUCCESS
             ]);
-    } catch (AuthException $e) {
-            $response->json([
+        } catch (AuthException $e) {
+            return $response->json([
                 'status' => self::STATUS_ERROR,
                 'message' => $e->getMessage()
             ], StatusCode::UNAUTHORIZED);
@@ -180,8 +180,8 @@ class AuthController extends BaseController
                 'status' => self::STATUS_SUCCESS,
                 'code' => auth()->resendOtp(route_param('code'))
             ]);
-    } catch (AuthException $e) {
-            $response->json([
+        } catch (AuthException $e) {
+            return $response->json([
                 'status' => self::STATUS_ERROR,
                 'message' => $e->getMessage()
             ], StatusCode::UNAUTHORIZED);

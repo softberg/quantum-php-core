@@ -65,7 +65,6 @@ class Activate extends BaseMiddleware
      */
     protected function respondWithError(Request $request, Response $response, $message)
     {
-        $response->html(partial('errors/404'), StatusCode::NOT_FOUND);
-        stop();
+        return $response->html(partial('errors/404'), StatusCode::NOT_FOUND);
     }
 }

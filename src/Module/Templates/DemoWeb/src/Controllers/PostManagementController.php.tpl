@@ -91,7 +91,7 @@ class PostManagementController extends BaseController
                 auth()->user()->uuid,
                 slugify($request->get('title'))
             );
-    }
+        }
 
         $postDto = PostDTO::fromRequest($request, auth()->user()->uuid, $imageName);
 
@@ -137,7 +137,7 @@ class PostManagementController extends BaseController
         if ($request->hasFile('image')) {
             if ($post->image) {
                 $this->postService->deleteImage(auth()->user()->uuid . DS .  $post->image);
-    }
+            }
 
             $imageName = $this->postService->saveImage(
                 $request->getFile('image'),
@@ -164,7 +164,7 @@ class PostManagementController extends BaseController
 
         if ($post->image) {
             $this->postService->deleteImage(auth()->user()->uuid . DS . $post->image);
-    }
+        }
 
         $this->postService->deletePost($postUuid);
 
@@ -182,7 +182,7 @@ class PostManagementController extends BaseController
 
         if ($post->image) {
             $this->postService->deleteImage(auth()->user()->uuid . DS . $post->image);
-    }
+        }
 
         $postDto = new PostDTO(
             $post->title,
