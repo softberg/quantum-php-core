@@ -47,6 +47,7 @@ class PostManagementController extends BaseController
      * Action - get my posts
      * @param Request $request
      * @param Response $response
+     * @return Response
      */
     public function myPosts(Request $request, Response $response): Response
     {
@@ -64,6 +65,7 @@ class PostManagementController extends BaseController
      * Action - display form for creating a post
      * @param Request $request
      * @param Response $response
+     * @return Response
      */
     public function createFrom(Request $request, Response $response): Response
     {
@@ -80,6 +82,7 @@ class PostManagementController extends BaseController
     /**
      * Action - create post
      * @param Request $request
+     * @return Response
      */
     public function create(Request $request): Response
     {
@@ -97,7 +100,7 @@ class PostManagementController extends BaseController
 
         $this->postService->addPost($postDto);
 
-        redirect(base_url(true) . '/' . current_lang() . '/my-posts');
+        return redirect(base_url(true) . '/' . current_lang() . '/my-posts');
     }
 
     /**
@@ -106,6 +109,7 @@ class PostManagementController extends BaseController
      * @param Response $response
      * @param string|null $lang
      * @param string $postUuid
+     * @return Response
      */
     public function amendForm(Request $request, Response $response, ?string $lang, string $postUuid): Response
     {
@@ -127,6 +131,7 @@ class PostManagementController extends BaseController
      * @param Request $request
      * @param string|null $lang
      * @param string $postUuid
+     * @return Response
      */
     public function amend(Request $request, ?string $lang, string $postUuid): Response
     {
@@ -150,13 +155,14 @@ class PostManagementController extends BaseController
 
         $this->postService->updatePost($postUuid, $postDto);
 
-        redirect(base_url(true) . '/' . current_lang() . '/my-posts');
+        return redirect(base_url(true) . '/' . current_lang() . '/my-posts');
     }
 
     /**
      * Action - delete post
      * @param string|null $lang
      * @param string $postUuid
+     * @return Response
      */
     public function delete(?string $lang, string $postUuid): Response
     {
@@ -168,13 +174,14 @@ class PostManagementController extends BaseController
 
         $this->postService->deletePost($postUuid);
 
-        redirect(base_url(true) . '/' . current_lang() . '/my-posts');
+        return redirect(base_url(true) . '/' . current_lang() . '/my-posts');
     }
 
     /**
      * Action - delete image of the post
      * @param string|null $lang
      * @param string $postUuid
+     * @return Response
      */
     public function deleteImage(?string $lang, string $postUuid): Response
     {
@@ -193,6 +200,6 @@ class PostManagementController extends BaseController
 
         $this->postService->updatePost($postUuid, $postDto);
 
-        redirect(base_url(true) . '/' . current_lang() . '/my-posts');
+        return redirect(base_url(true) . '/' . current_lang() . '/my-posts');
     }
 }

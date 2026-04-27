@@ -48,6 +48,7 @@ class CommentController extends BaseController
      * @param Request $request
      * @param string|null $lang
      * @param string $uuid
+     * @return Response
      */
     public function create(Request $request, ?string $lang, string $uuid): Response
     {
@@ -56,19 +57,20 @@ class CommentController extends BaseController
         $this->commentService->addComment($commentDto);
 
         session()->setFlash('success', t('common.comment_added'));
-        redirect(get_referrer());
+        return redirect(get_referrer() ?? base_url());
     }
 
     /**
      * Action - delete comment
      * @param string|null $lang
      * @param string $uuid
+     * @return Response
      */
     public function delete(?string $lang, string $uuid): Response
     {
         $this->commentService->deleteComment($uuid);
 
         session()->setFlash('success', t('common.comment_deleted'));
-        redirect(get_referrer());
+        return redirect(get_referrer() ?? base_url());
     }
 }

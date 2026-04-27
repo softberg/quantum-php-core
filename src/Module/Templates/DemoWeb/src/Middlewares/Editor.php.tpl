@@ -50,11 +50,13 @@ class Editor extends BaseMiddleware
     public function apply(Request $request, Response $response, Closure $next): Response
     {
         if (!in_array(auth()->user()->role, self::ROLES)) {
-            redirect(base_url(true) . '/' . current_lang());
+            return redirect(base_url(true) . '/' . current_lang());
         }
 
         if ($request->isMethod('post') || $request->isMethod('put')) {
-            $this->validateRequest($request, $response);
+            if ($errorResponse = $this->validateRequest($request, $response)) {
+                return $errorResponse;
+            }
         }
 
         return $next($request, $response);
@@ -91,13 +93,13 @@ class Editor extends BaseMiddleware
     /**
      * @inheritDoc
      */
-    protected function respondWithError(Request $request, Response $response, $message)
+    protected function respondWithError(Request $request, Response $response, $message): Response
     {
         $data = $request->all();
 
         unset($data['image']);
 
         session()->setFlash('error', $this->validator->getErrors());
-        redirectWith(get_referrer(), $data);
+        return redirectWith(get_referrer() ?? base_url(), $data);
     }
 }

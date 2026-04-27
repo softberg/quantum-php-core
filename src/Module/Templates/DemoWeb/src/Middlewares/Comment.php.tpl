@@ -33,7 +33,10 @@ class Comment extends BaseMiddleware
      */
     public function apply(Request $request, Response $response, Closure $next): Response
     {
-        $this->validateRequest($request, $response);
+        if ($errorResponse = $this->validateRequest($request, $response)) {
+            return $errorResponse;
+        }
+
         return $next($request, $response);
     }
 
@@ -58,11 +61,11 @@ class Comment extends BaseMiddleware
         Request $request,
         Response $response,
         $message
-    )
+    ): Response
     {
         $data = $request->all();
 
         session()->setFlash('error', $this->validator->getErrors());
-        redirectWith(get_referrer(), $data);
+        return redirectWith(get_referrer() ?? base_url(), $data);
     }
 }

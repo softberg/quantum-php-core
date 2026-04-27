@@ -43,7 +43,9 @@ class Signup extends BaseMiddleware
                 $request->delete($captchaName . '-response');
             }
 
-            $this->validateRequest($request, $response);
+            if ($errorResponse = $this->validateRequest($request, $response)) {
+                return $errorResponse;
+            }
 
             $request->delete('captcha');
         }
@@ -82,9 +84,9 @@ class Signup extends BaseMiddleware
     /**
      * @inheritDoc
      */
-    protected function respondWithError(Request $request, Response $response, $message)
+    protected function respondWithError(Request $request, Response $response, $message): Response
     {
         session()->setFlash('error', $message);
-        redirectWith(base_url(true) . '/' . current_lang() . '/signup', $request->all());
+        return redirectWith(base_url(true) . '/' . current_lang() . '/signup', $request->all());
     }
 }

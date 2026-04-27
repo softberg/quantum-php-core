@@ -36,7 +36,9 @@ class Signup extends BaseMiddleware
      */
     public function apply(Request $request, Response $response, Closure $next): Response
     {
-        $this->validateRequest($request, $response);
+        if ($errorResponse = $this->validateRequest($request, $response)) {
+            return $errorResponse;
+        }
 
         return $next($request, $response);
     }

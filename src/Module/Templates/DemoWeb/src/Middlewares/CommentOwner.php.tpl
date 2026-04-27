@@ -39,7 +39,9 @@ class CommentOwner extends BaseMiddleware
 
         $request->set('uuid', $uuid);
 
-        $this->validateRequest($request, $response);
+        if ($errorResponse = $this->validateRequest($request, $response)) {
+            return $errorResponse;
+        }
 
         return $next($request, $response);
     }

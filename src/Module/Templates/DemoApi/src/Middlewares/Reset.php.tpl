@@ -39,7 +39,9 @@ class Reset extends BaseMiddleware
 
         $request->set('token', $token);
 
-        $this->validateRequest($request, $response);
+        if ($errorResponse = $this->validateRequest($request, $response)) {
+            return $errorResponse;
+        }
 
         $request->set('reset_token', $token);
 

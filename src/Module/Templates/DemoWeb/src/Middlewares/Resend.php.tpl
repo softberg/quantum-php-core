@@ -39,7 +39,9 @@ class Resend extends BaseMiddleware
 
         $request->set('code', $code);
 
-        $this->validateRequest($request, $response);
+        if ($errorResponse = $this->validateRequest($request, $response)) {
+            return $errorResponse;
+        }
 
         return $next($request, $response);
     }
@@ -63,8 +65,8 @@ class Resend extends BaseMiddleware
         Request $request,
         Response $response,
         $message,
-    ): void {
+    ): Response {
         session()->setFlash('error', $message);
-        redirect(base_url(true) . '/' . current_lang() . '/signin');
+        return redirect(base_url(true) . '/' . current_lang() . '/signin');
     }
 }

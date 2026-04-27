@@ -40,7 +40,9 @@ class Verify extends BaseMiddleware
 
         $request->set('code', $code);
 
-        $this->validateRequest($request, $response);
+        if ($errorResponse = $this->validateRequest($request, $response)) {
+            return $errorResponse;
+        }
 
         return $next($request, $response);
     }
@@ -64,13 +66,13 @@ class Verify extends BaseMiddleware
     /**
      * @inheritDoc
      */
-    protected function respondWithError(Request $request, Response $response, $message)
+    protected function respondWithError(Request $request, Response $response, $message): Response
     {
         if ($request->isMethod('get') && isset($message['code'])) {
             return $response->html(partial('errors/404'), StatusCode::NOT_FOUND);
         }
 
         session()->setFlash('error', $message);
-        redirectWith(base_url(true) . '/' . current_lang() . '/verify', $request->all());
+        return redirectWith(base_url(true) . '/' . current_lang() . '/verify', $request->all());
     }
 }

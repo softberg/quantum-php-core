@@ -45,6 +45,7 @@ class AccountController extends BaseController
     /**
      * Action - show user info
      * @param Response $response
+     * @return Response
      */
     public function form(Response $response): Response
     {
@@ -57,7 +58,8 @@ class AccountController extends BaseController
 
     /**
      * Action - update user info
-     * @param Request $request 
+     * @param Request $request
+     * @return Response
      */
     public function update(Request $request): Response
     {
@@ -71,12 +73,13 @@ class AccountController extends BaseController
 
         auth()->refreshUser(auth()->user()->uuid);
 
-        redirect(base_url(true) . '/' . current_lang() . '/account-settings#account_profile');
+        return redirect(base_url(true) . '/' . current_lang() . '/account-settings#account_profile');
     }
 
     /**
      * Action - update password
-     * @param Request $request 
+     * @param Request $request
+     * @return Response
      */
     public function updatePassword(Request $request): Response
     {
@@ -88,6 +91,6 @@ class AccountController extends BaseController
             'password' => $hasher->hash($newPassword)
         ]);
 
-        redirect(base_url(true) . '/' . current_lang() . '/account-settings#account_password');
+        return redirect(base_url(true) . '/' . current_lang() . '/account-settings#account_password');
     }
 }

@@ -42,6 +42,7 @@ class DatabaseController extends BaseController
 
     /**
      * @param Response $response
+     * @return Response
      */
     public function list(Response $response): Response
     {
@@ -83,6 +84,7 @@ class DatabaseController extends BaseController
 
     /**
      * @param Request $request
+     * @return Response
      */
     public function create(Request $request): Response
     {
@@ -92,11 +94,12 @@ class DatabaseController extends BaseController
 
         $this->databaseService->createTableRow($tableName, $newData);
 
-        redirect(get_referrer());
+        return redirect(get_referrer() ?? base_url());
     }
 
     /**
      * @param Request $request
+     * @return Response
      */
     public function update(Request $request): Response
     {
@@ -106,11 +109,12 @@ class DatabaseController extends BaseController
 
         $this->databaseService->updateTable($tableName, (int)$id, $updatedData);
 
-        redirect(base_url(true) . '/database/view?table=' . $tableName);
+        return redirect(base_url(true) . '/database/view?table=' . $tableName);
     }
 
     /**
      * @param Request $request
+     * @return Response
      */
     public function delete(Request $request): Response
     {
@@ -119,6 +123,6 @@ class DatabaseController extends BaseController
 
         $this->databaseService->deleteTableRow($tableName, $id);
 
-        redirect(base_url(true) . '/database/view?table=' . $tableName);
+        return redirect(base_url(true) . '/database/view?table=' . $tableName);
     }
 }

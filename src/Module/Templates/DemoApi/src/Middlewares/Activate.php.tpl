@@ -39,7 +39,9 @@ class Activate extends BaseMiddleware
 
         $request->set('token', $token);
 
-        $this->validateRequest($request, $response);
+        if ($errorResponse = $this->validateRequest($request, $response)) {
+            return $errorResponse;
+        }
 
         $request->set('activation_token', $token);
 
