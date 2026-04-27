@@ -32,12 +32,14 @@ class Forget extends BaseMiddleware
      * @param Request $request
      * @param Response $response
      * @param Closure $next
-     * @return mixed
+     * @return Response
      */
-    public function apply(Request $request, Response $response, Closure $next)
+    public function apply(Request $request, Response $response, Closure $next): Response
     {
         if ($request->isMethod('post')) {
-            $this->validateRequest($request, $response);
+            if ($errorResponse = $this->validateRequest($request, $response)) {
+                return $errorResponse;
+            }
         }
 
         return $next($request, $response);
@@ -65,13 +67,13 @@ class Forget extends BaseMiddleware
         Request $request,
         Response $response,
         $message
-    )
+    ): Response
     {
         $data = $request->all();
 
         unset($data['image']);
 
         session()->setFlash('error', $message);
-        redirectWith(base_url(true) . '/' . current_lang() . '/forget', $data);
+        return redirectWith(base_url(true) . '/' . current_lang() . '/forget', $data);
     }
 }

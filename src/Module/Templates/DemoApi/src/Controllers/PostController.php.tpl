@@ -54,8 +54,9 @@ class PostController extends BaseController
      * Action - get posts list
      * @param Request $request
      * @param Response $response
+     * @return Response
      */
-    public function posts(Request $request, Response $response)
+    public function posts(Request $request, Response $response): Response
     {
         $perPage = $request->get('per_page', (string) self::POSTS_PER_PAGE);
         $currentPage = $request->get('page', (string) self::CURRENT_PAGE);
@@ -63,7 +64,7 @@ class PostController extends BaseController
 
         $paginatedPosts = $this->postService->getPosts($perPage, $currentPage, $search);
 
-        $response->json([
+        return $response->json([
             'status' => 'success',
             'data' => $this->postService->transformData($paginatedPosts->data()->all()),
             'pagination' => [
@@ -80,18 +81,17 @@ class PostController extends BaseController
      * @param Response $response
      * @param string|null $lang
      * @param string $postUuid
+     * @return Response
      */
-    public function post(Response $response, ?string $lang, string $postUuid)
+    public function post(Response $response, ?string $lang, string $postUuid): Response
     {
         $post = $this->postService->getPost($postUuid);
 
         if ($post->isEmpty()) {
-            $response->json([
+            return $response->json([
                 'status' => 'error',
                 'message' => t('common.post_not_found')
             ], StatusCode::NOT_FOUND);
-
-            stop();
         }
 
         $postData = current($this->postService->transformData([$post]));
@@ -104,7 +104,7 @@ class PostController extends BaseController
 
         $postData['comments'] = $commentsData;
 
-        $response->json([
+        return $response->json([
             'status' => 'success',
             'data' => $postData,
         ]);

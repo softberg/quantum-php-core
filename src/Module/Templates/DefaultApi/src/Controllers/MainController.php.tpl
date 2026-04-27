@@ -42,9 +42,9 @@ class MainController
      * Action - success response
      * @param Response $response
      */
-    public function index(Response $response)
+    public function index(Response $response): Response
     {
-        $response->json([
+        return $response->json([
             'status' => 'success',
             'message' => '{{MODULE_NAME}} module.'
         ]);

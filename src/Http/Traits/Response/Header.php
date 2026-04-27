@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace Quantum\Http\Traits\Response;
 
-use Quantum\App\Exceptions\StopExecutionException;
 use Quantum\Http\Enums\ContentType;
 
 /**
@@ -93,12 +92,12 @@ trait Header
 
     /**
      * Redirect
-     * @throws StopExecutionException
+     * @return self
      */
-    public function redirect(string $url, int $code = 302): void
+    public function redirect(string $url, int $code = 302): self
     {
         $this->setStatusCode($code);
         $this->setHeader('Location', $url);
-        stop();
+        return $this;
     }
 }

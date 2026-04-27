@@ -32,12 +32,14 @@ class Verify extends BaseMiddleware
      * @param Request $request
      * @param Response $response
      * @param Closure $next
-     * @return mixed
+     * @return Response
      */
-    public function apply(Request $request, Response $response, Closure $next)
+    public function apply(Request $request, Response $response, Closure $next): Response
     {
         if ($request->isMethod('post')) {
-            $this->validateRequest($request, $response);
+            if ($errorResponse = $this->validateRequest($request, $response)) {
+                return $errorResponse;
+            }
         }
 
         return $next($request, $response);

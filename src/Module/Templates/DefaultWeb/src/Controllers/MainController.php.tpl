@@ -47,12 +47,12 @@ class MainController
      * @param Response $response
      * @param ViewFactory $view
      */
-    public function index(Response $response, ViewFactory $view)
+    public function index(Response $response, ViewFactory $view): Response
     {   
         $view->setParams([
             'title' => config()->get('app.name'),
         ]);
         
-        $response->html($view->render('index'));
+        return $response->html($view->render('index'));
     }
 }

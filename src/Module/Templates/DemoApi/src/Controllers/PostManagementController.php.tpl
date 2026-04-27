@@ -43,12 +43,13 @@ class PostManagementController extends BaseController
     /**
      * Action - get my posts
      * @param Response $response
+     * @return Response
      */
-    public function myPosts(Response $response)
+    public function myPosts(Response $response): Response
     {
         $myPosts = $this->postService->getMyPosts(auth()->user()->uuid);
         
-        $response->json([
+        return $response->json([
             'status' => 'success',
             'data' => $this->postService->transformData($myPosts->all())
         ]);
@@ -58,8 +59,9 @@ class PostManagementController extends BaseController
      * Action - create post
      * @param Request $request 
      * @param Response $response
+     * @return Response
      */
-    public function create(Request $request, Response $response)
+    public function create(Request $request, Response $response): Response
     {
         $imageName = '';
 
@@ -75,7 +77,7 @@ class PostManagementController extends BaseController
 
         $post = $this->postService->addPost($postDto);
 
-        $response->json([
+        return $response->json([
             'status' => 'success',
             'message' => t('common.created_successfully'),
             'data' => current($this->postService->transformData([$post]))
@@ -88,8 +90,9 @@ class PostManagementController extends BaseController
      * @param Response $response
      * @param string|null $lang
      * @param string $postUuid
+     * @return Response
      */
-    public function amend(Request $request, Response $response, ?string $lang, string $postUuid)
+    public function amend(Request $request, Response $response, ?string $lang, string $postUuid): Response
     {
         $post = $this->postService->getPost($postUuid);
 
@@ -111,7 +114,7 @@ class PostManagementController extends BaseController
 
         $post = $this->postService->updatePost($postUuid, $postDto);
 
-        $response->json([
+        return $response->json([
             'status' => 'success',
             'message' => t('common.updated_successfully'),
             'data' => current($this->postService->transformData([$post]))
@@ -123,8 +126,9 @@ class PostManagementController extends BaseController
      * @param Response $response
      * @param string|null $lang
      * @param string $postUuid
+     * @return Response
      */
-    public function delete(Response $response, ?string $lang, string $postUuid)
+    public function delete(Response $response, ?string $lang, string $postUuid): Response
     {
         $post = $this->postService->getPost($postUuid);
 
@@ -134,7 +138,7 @@ class PostManagementController extends BaseController
 
         $this->postService->deletePost($postUuid);
 
-        $response->json([
+        return $response->json([
             'status' => 'success',
             'message' => t('common.deleted_successfully')
         ]);
@@ -145,8 +149,9 @@ class PostManagementController extends BaseController
      * @param Response $response
      * @param string|null $lang 
      * @param string $postUuid
+     * @return Response
      */
-    public function deleteImage(Response $response, ?string $lang, string $postUuid)
+    public function deleteImage(Response $response, ?string $lang, string $postUuid): Response
     {
         $post = $this->postService->getPost($postUuid);
 
@@ -163,7 +168,7 @@ class PostManagementController extends BaseController
 
         $this->postService->updatePost($postUuid, $postDto);
 
-        $response->json([
+        return $response->json([
             'status' => 'success',
             'message' => t('common.deleted_successfully')
         ]);

@@ -12,7 +12,6 @@
  * @since 3.0.0
  */
 
-use Quantum\App\Exceptions\StopExecutionException;
 use Quantum\Config\Exceptions\ConfigException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
@@ -25,7 +24,6 @@ use Quantum\Di\Di;
 
 /**
  * Gets the Request instance from DI
- * @throws DiException|ReflectionException
  */
 function request(): Request
 {
@@ -38,7 +36,6 @@ function request(): Request
 
 /**
  * Gets the Response instance from DI
- * @throws DiException|ReflectionException
  */
 function response(): Response
 {
@@ -70,11 +67,11 @@ function current_url(): string
 
 /**
  * Redirect
- * @throws StopExecutionException|DiException|ReflectionException
+ * @throws DiException|ReflectionException
  */
-function redirect(string $url, int $code = StatusCode::FOUND): void
+function redirect(string $url, int $code = StatusCode::FOUND): Response
 {
-    response()->redirect($url, $code);
+    return response()->redirect($url, $code);
 }
 
 /**
@@ -82,10 +79,10 @@ function redirect(string $url, int $code = StatusCode::FOUND): void
  * @param array<string, mixed> $data
  * @throws ConfigException|DiException|BaseException|ReflectionException
  */
-function redirectWith(string $url, array $data, int $code = StatusCode::FOUND): void
+function redirectWith(string $url, array $data, int $code = StatusCode::FOUND): Response
 {
     session()->set(ReservedKeys::PREV_REQUEST, $data);
-    response()->redirect($url, $code);
+    return response()->redirect($url, $code);
 }
 
 /**

@@ -32,10 +32,12 @@ class Update extends BaseMiddleware
      * @param Response $response
      * @param Closure $next
      */
-    public function apply(Request $request, Response $response, Closure $next)
+    public function apply(Request $request, Response $response, Closure $next): Response
     {
         if ($request->isMethod('post')) {
-            $this->validateRequest($request, $response);
+            if ($errorResponse = $this->validateRequest($request, $response)) {
+                return $errorResponse;
+            }
         }
 
         return $next($request, $response);
@@ -63,9 +65,9 @@ class Update extends BaseMiddleware
         Request $request,
         Response $response,
         $message
-    )
+    ): Response
     {
         session()->setFlash('error', $message);
-        redirectWith(base_url(true) . '/' . current_lang() . '/account-settings#account_profile', $request->all());
+        return redirectWith(base_url(true) . '/' . current_lang() . '/account-settings#account_profile', $request->all());
     }
 }

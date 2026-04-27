@@ -31,15 +31,17 @@ class Reset extends BaseMiddleware
      * @param Request $request
      * @param Response $response
      * @param Closure $next
-     * @return mixed
+     * @return Response
      */
-    public function apply(Request $request, Response $response, Closure $next)
+    public function apply(Request $request, Response $response, Closure $next): Response
     {
         $token = (string) route_param('token');
 
         $request->set('token', $token);
 
-        $this->validateRequest($request, $response);
+        if ($errorResponse = $this->validateRequest($request, $response)) {
+            return $errorResponse;
+        }
 
         $request->set('reset_token', $token);
 

@@ -32,15 +32,17 @@ class Verify extends BaseMiddleware
      * @param Request $request
      * @param Response $response
      * @param Closure $next
-     * @return mixed
+     * @return Response
      */
-    public function apply(Request $request, Response $response, Closure $next)
+    public function apply(Request $request, Response $response, Closure $next): Response
     {
         $code = (string) route_param('code');
 
         $request->set('code', $code);
 
-        $this->validateRequest($request, $response);
+        if ($errorResponse = $this->validateRequest($request, $response)) {
+            return $errorResponse;
+        }
 
         return $next($request, $response);
     }
@@ -64,14 +66,13 @@ class Verify extends BaseMiddleware
     /**
      * @inheritDoc
      */
-    protected function respondWithError(Request $request, Response $response, $message)
+    protected function respondWithError(Request $request, Response $response, $message): Response
     {
         if ($request->isMethod('get') && isset($message['code'])) {
-            $response->html(partial('errors/404'), StatusCode::NOT_FOUND);
-            stop();
+            return $response->html(partial('errors/404'), StatusCode::NOT_FOUND);
         }
 
         session()->setFlash('error', $message);
-        redirectWith(base_url(true) . '/' . current_lang() . '/verify', $request->all());
+        return redirectWith(base_url(true) . '/' . current_lang() . '/verify', $request->all());
     }
 }

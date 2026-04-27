@@ -31,11 +31,13 @@ class CreateTable extends BaseMiddleware
      * @param Request $request
      * @param Response $response
      * @param Closure $next
-     * @return mixed
+     * @return Response
      */
-    public function apply(Request $request, Response $response, Closure $next)
+    public function apply(Request $request, Response $response, Closure $next): Response
     {
-        $this->validateRequest($request, $response);
+        if ($errorResponse = $this->validateRequest($request, $response)) {
+            return $errorResponse;
+        }
 
         return $next($request, $response);
     }
@@ -65,10 +67,10 @@ class CreateTable extends BaseMiddleware
     /**
      * @inheritDoc
      */
-    protected function respondWithError(Request $request, Response $response, $message)
+    protected function respondWithError(Request $request, Response $response, $message): Response
     {
         session()->setFlash('error', $message);
-        redirect(get_referrer());
+        return redirect(get_referrer() ?? base_url());
     }
 
     /**

@@ -46,7 +46,7 @@ class LogsController extends BaseController
     /**
      * @param Response $response
      */
-    public function list(Response $response)
+    public function list(Response $response): Response
     {
         $filteredLogFiles = $this->logsService->getLogFiles();
 
@@ -55,14 +55,14 @@ class LogsController extends BaseController
             'logFiles' => $filteredLogFiles,
         ]);
 
-        $response->html($this->view->render('pages/logs/index'));
+        return $response->html($this->view->render('pages/logs/index'));
     }
 
     /**
      * @param Request $request
      * @param Response $response
      */
-    public function single(Request $request, Response $response)
+    public function single(Request $request, Response $response): Response
     {
         $logFile = $request->get('logFile');
         $perPage = $request->get('per_page', self::ITEMS_PER_PAGE);
@@ -78,6 +78,6 @@ class LogsController extends BaseController
             'pagination' => $parsedLogs,
         ]);
 
-        $response->html($this->view->render('pages/logs/log'));
+        return $response->html($this->view->render('pages/logs/log'));
     }
 }

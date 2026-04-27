@@ -45,21 +45,23 @@ class AccountController extends BaseController
     /**
      * Action - show user info
      * @param Response $response
+     * @return Response
      */
-    public function form(Response $response)
+    public function form(Response $response): Response
     {
         $this->view->setParams([
             'title' => t('common.account_settings') . ' | ' . config()->get('app.name'),
         ]);
 
-        $response->html($this->view->render('account/form'));
+        return $response->html($this->view->render('account/form'));
     }
 
     /**
      * Action - update user info
-     * @param Request $request 
+     * @param Request $request
+     * @return Response
      */
-    public function update(Request $request)
+    public function update(Request $request): Response
     {
         $firstname = $request->get('firstname');
         $lastname = $request->get('lastname');
@@ -71,14 +73,15 @@ class AccountController extends BaseController
 
         auth()->refreshUser(auth()->user()->uuid);
 
-        redirect(base_url(true) . '/' . current_lang() . '/account-settings#account_profile');
+        return redirect(base_url(true) . '/' . current_lang() . '/account-settings#account_profile');
     }
 
     /**
      * Action - update password
-     * @param Request $request 
+     * @param Request $request
+     * @return Response
      */
-    public function updatePassword(Request $request)
+    public function updatePassword(Request $request): Response
     {
         $hasher = new Hasher();
 
@@ -88,6 +91,6 @@ class AccountController extends BaseController
             'password' => $hasher->hash($newPassword)
         ]);
 
-        redirect(base_url(true) . '/' . current_lang() . '/account-settings#account_password');
+        return redirect(base_url(true) . '/' . current_lang() . '/account-settings#account_password');
     }
 }
