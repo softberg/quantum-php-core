@@ -141,12 +141,3 @@ function page_not_found_response(): Response
         StatusCode::NOT_FOUND
     );
 }
-
-/**
- * Handles page not found
- * @throws ConfigException|DiException|BaseException|ReflectionException
- */
-function page_not_found(): void
-{
-    page_not_found_response();
-}
