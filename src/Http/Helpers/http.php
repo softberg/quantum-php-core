@@ -125,7 +125,7 @@ function get_referrer(): ?string
  */
 function page_not_found_response(): Response
 {
-    $acceptHeader = response()->getHeader('Accept');
+    $acceptHeader = request()->getHeader('Accept');
 
     $isJson = $acceptHeader === ContentType::JSON;
 
