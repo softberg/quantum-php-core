@@ -58,19 +58,16 @@ HEREDOC;
         parent::tearDown();
     }
 
-    public function testServeCachedView(): void
+    public function testGetCachedResponse(): void
     {
         $this->viewCache->enableCaching(true);
 
         $this->viewCache->set($this->route, $this->content);
 
-        $response = response();
+        $result = $this->viewCache->getCachedResponse($this->route);
 
-        $result = $this->viewCache->serveCachedView($this->route, $response);
-
-        $this->assertTrue($result);
-
-        $this->assertEquals($this->content, $response->getContent());
+        $this->assertSame(response(), $result);
+        $this->assertEquals($this->content, $result->getContent());
     }
 
     public function testSetAndGetViewCache(): void

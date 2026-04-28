@@ -123,21 +123,30 @@ function get_referrer(): ?string
  * Handles page not found
  * @throws ConfigException|DiException|BaseException|ReflectionException
  */
-function page_not_found(): void
+function page_not_found_response(): Response
 {
     $acceptHeader = response()->getHeader('Accept');
 
     $isJson = $acceptHeader === ContentType::JSON;
 
     if ($isJson) {
-        response()->json(
+        return response()->json(
             ['status' => 'error', 'message' => 'Page not found',],
             StatusCode::NOT_FOUND
         );
-    } else {
-        response()->html(
-            partial('errors' . DS . StatusCode::NOT_FOUND),
-            StatusCode::NOT_FOUND
-        );
     }
+
+    return response()->html(
+        partial('errors' . DS . StatusCode::NOT_FOUND),
+        StatusCode::NOT_FOUND
+    );
+}
+
+/**
+ * Handles page not found
+ * @throws ConfigException|DiException|BaseException|ReflectionException
+ */
+function page_not_found(): void
+{
+    page_not_found_response();
 }

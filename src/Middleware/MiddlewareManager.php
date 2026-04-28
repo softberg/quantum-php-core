@@ -22,6 +22,7 @@ use Quantum\Router\MatchedRoute;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 use ReflectionException;
+use Closure;
 
 /**
  * Class MiddlewareManager
@@ -49,29 +50,26 @@ class MiddlewareManager
     }
 
     /**
-     * Apply Middlewares
-     * @return Response
+     * Apply Middlewares.
      * @throws MiddlewareException|BaseException|ReflectionException
      */
-    public function applyMiddlewares(Request $request, Response $response): Response
+    public function applyMiddlewares(Request $request, Closure $terminal): Response
     {
         if (!current($this->middlewares)) {
-            return $response;
+            return $terminal($request);
         }
 
-        $currentMiddleware = $this->getMiddleware($request, $response);
+        $currentMiddleware = $this->getMiddleware($request);
         next($this->middlewares);
 
-        return $currentMiddleware->apply($request, $response, function (Request $request, Response $response): Response {
-            return $this->applyMiddlewares($request, $response);
-        });
+        return $currentMiddleware->apply($request, fn (Request $request): Response => $this->applyMiddlewares($request, $terminal));
     }
 
     /**
      * Loads and gets the current middleware instance
      * @throws MiddlewareException|BaseException|ReflectionException
      */
-    private function getMiddleware(Request $request, Response $response): QtMiddleware
+    private function getMiddleware(Request $request): QtMiddleware
     {
         $middlewareClass = request()->getModuleBaseNamespace() . '\\' . $this->module . '\\Middlewares\\' . current($this->middlewares);
 
@@ -79,7 +77,7 @@ class MiddlewareManager
             throw MiddlewareException::middlewareNotFound($middlewareClass);
         }
 
-        $middleware = new $middlewareClass($request, $response);
+        $middleware = new $middlewareClass($request);
 
         if (!$middleware instanceof QtMiddleware) {
             throw MiddlewareException::notInstanceOf($middlewareClass, QtMiddleware::class);
@@ -87,4 +85,5 @@ class MiddlewareManager
 
         return $middleware;
     }
+
 }

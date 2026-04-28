@@ -25,6 +25,7 @@ use Symfony\Component\Console\Application;
 use Quantum\App\Stages\LoadAppConfigStage;
 use Quantum\App\Stages\LoadHelpersStage;
 use Quantum\App\Traits\ConsoleAppTrait;
+use Quantum\App\Enums\ExitCode;
 use Quantum\App\BootPipeline;
 use Quantum\App\AppContext;
 use Exception;
@@ -94,7 +95,7 @@ class ConsoleAppAdapter extends AppAdapter
 
             stop(null, $exitCode);
         } catch (StopExecutionException $exception) {
-            return $exception->getCode();
+            return $exception->getCode() ?: ExitCode::SUCCESS;
         }
     }
 }
