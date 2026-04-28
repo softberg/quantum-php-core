@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 /**
  * Quantum PHP Framework
@@ -34,13 +34,14 @@ class Password extends BaseMiddleware
      * @param Response $response
      * @param Closure $next
      */
-    public function apply(Request $request, Response $response, Closure $next): Response
+    public function apply(Request $request, Closure $next): Response
     {
+        $response = response();
         if ($request->isMethod('post')) {
             $this->validateRequest($request, $response);
         }
 
-        return $next($request, $response);
+        return $next($request);
     }
 
     /**
@@ -86,3 +87,5 @@ class Password extends BaseMiddleware
         });
     }
 }
+
+

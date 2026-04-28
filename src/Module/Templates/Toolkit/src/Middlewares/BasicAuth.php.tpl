@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 /**
  * Quantum PHP Framework
@@ -32,15 +32,16 @@ class BasicAuth extends QtMiddleware
      * @param Closure $next
      * @return Response
      */
-    public function apply(Request $request, Response $response, Closure $next): Response
+    public function apply(Request $request, Closure $next): Response
     {
+        $response = response();
         $userCredentials = $request->getBasicAuthCredentials();
 
         if (!$userCredentials || !$this->isValidCredentials($userCredentials)) {
             return $this->unauthorizedResponse($response);
         }
 
-        return $next($request, $response);
+        return $next($request);
     }
 
     /**
@@ -69,3 +70,6 @@ class BasicAuth extends QtMiddleware
         return $response->html(partial('errors' . DS . '401'), 401);
     }
 }
+
+
+

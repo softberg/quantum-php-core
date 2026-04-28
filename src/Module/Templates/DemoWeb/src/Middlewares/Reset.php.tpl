@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 /**
  * Quantum PHP Framework
@@ -34,8 +34,9 @@ class Reset extends BaseMiddleware
      * @param Closure $next
      * @return Response
      */
-    public function apply(Request $request, Response $response, Closure $next): Response
+    public function apply(Request $request, Closure $next): Response
     {
+        $response = response();
         $token = (string) route_param('token');
 
         $request->set('token', $token);
@@ -46,7 +47,7 @@ class Reset extends BaseMiddleware
 
         $request->set('reset_token', $token);
 
-        return $next($request, $response);
+        return $next($request);
     }
 
     /**
@@ -89,3 +90,5 @@ class Reset extends BaseMiddleware
         return redirect(get_referrer() ?? base_url());
     }
 }
+
+

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 /**
  * Quantum PHP Framework
@@ -32,15 +32,16 @@ class Update extends BaseMiddleware
      * @param Response $response
      * @param Closure $next
      */
-    public function apply(Request $request, Response $response, Closure $next): Response
+    public function apply(Request $request, Closure $next): Response
     {
+        $response = response();
         if ($request->isMethod('post')) {
             if ($errorResponse = $this->validateRequest($request, $response)) {
                 return $errorResponse;
             }
         }
 
-        return $next($request, $response);
+        return $next($request);
     }
 
     /**
@@ -71,3 +72,5 @@ class Update extends BaseMiddleware
         return redirectWith(base_url(true) . '/' . current_lang() . '/account-settings#account_profile', $request->all());
     }
 }
+
+

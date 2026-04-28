@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 /**
  * Quantum PHP Framework
@@ -31,8 +31,9 @@ class Signout extends BaseMiddleware
      * @param Closure $next
      * @return Response
      */
-    public function apply(Request $request, Response $response, Closure $next): Response
+    public function apply(Request $request, Closure $next): Response
     {
+        $response = response();
         if (!$request->hasHeader('refresh_token')) {
             $this->respondWithError(
                 $request,
@@ -41,6 +42,8 @@ class Signout extends BaseMiddleware
             );
         }
 
-        return $next($request, $response);
+        return $next($request);
     }
 }
+
+

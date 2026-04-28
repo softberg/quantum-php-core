@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 /**
  * Quantum PHP Framework
@@ -32,12 +32,13 @@ class Guest extends QtMiddleware
      * @param Closure $next
      * @return Response
      */
-    public function apply(Request $request, Response $response, Closure $next): Response
+    public function apply(Request $request, Closure $next): Response
     {
         if (auth()->check()) {
             return redirect(get_referrer() ?? base_url(true) . '/' . current_lang());
         }
 
-        return $next($request, $response);
+        return $next($request);
     }
 }
+

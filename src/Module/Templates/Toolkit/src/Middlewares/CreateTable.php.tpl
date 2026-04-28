@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 /**
  * Quantum PHP Framework
@@ -33,13 +33,14 @@ class CreateTable extends BaseMiddleware
      * @param Closure $next
      * @return Response
      */
-    public function apply(Request $request, Response $response, Closure $next): Response
+    public function apply(Request $request, Closure $next): Response
     {
+        $response = response();
         if ($errorResponse = $this->validateRequest($request, $response)) {
             return $errorResponse;
         }
 
-        return $next($request, $response);
+        return $next($request);
     }
 
     /**
@@ -89,3 +90,6 @@ class CreateTable extends BaseMiddleware
         });
     }
 }
+
+
+

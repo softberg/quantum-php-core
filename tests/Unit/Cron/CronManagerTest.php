@@ -242,7 +242,7 @@ class CronManagerTest extends AppTestCase
         $this->createTaskFile('failing-task.php', [
             'name' => 'failing-task',
             'expression' => '* * * * *',
-            'body' => 'throw new \Exception("Execution failed");',
+            'body' => "throw new \\Exception('Execution failed');",
         ]);
 
         $manager = new CronManager($this->cronDirectory);
@@ -261,7 +261,7 @@ class CronManagerTest extends AppTestCase
         $content .= "    'expression' => '{$definition['expression']}',\n";
         $content .= "    'callback' => function () {\n";
         $content .= "        {$body}\n";
-        $content .= "    }\n";
+        $content .= "    },\n";
         $content .= "];\n";
 
         file_put_contents($directory . DS . $filename, $content);
