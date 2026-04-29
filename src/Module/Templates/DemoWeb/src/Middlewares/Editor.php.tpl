@@ -47,8 +47,9 @@ class Editor extends BaseMiddleware
      * @param Closure $next
      * @return Response
      */
-    public function apply(Request $request, Response $response, Closure $next): Response
+    public function apply(Request $request, Closure $next): Response
     {
+        $response = response();
         if (!in_array(auth()->user()->role, self::ROLES)) {
             return redirect(base_url(true) . '/' . current_lang());
         }
@@ -59,7 +60,7 @@ class Editor extends BaseMiddleware
             }
         }
 
-        return $next($request, $response);
+        return $next($request);
     }
 
     /**

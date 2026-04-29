@@ -8,6 +8,7 @@
 *.sh    text eol=lf
 *.js    text eol=lf
 *.css   text eol=lf
+*.tpl   text eol=lf
 
 # Export ignore - exclude development and test files
 tests/ export-ignore

@@ -18,4 +18,4 @@
             <iframe src="<?php echo base_url(true) . '/email/' . $email["id"] ?>" class="email-iframe"></iframe>
         </div>
     </div>
-</li> 
+</li>

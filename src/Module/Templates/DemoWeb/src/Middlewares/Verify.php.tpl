@@ -34,8 +34,9 @@ class Verify extends BaseMiddleware
      * @param Closure $next
      * @return Response
      */
-    public function apply(Request $request, Response $response, Closure $next): Response
+    public function apply(Request $request, Closure $next): Response
     {
+        $response = response();
         $code = (string) route_param('code');
 
         $request->set('code', $code);
@@ -44,7 +45,7 @@ class Verify extends BaseMiddleware
             return $errorResponse;
         }
 
-        return $next($request, $response);
+        return $next($request);
     }
 
     /**

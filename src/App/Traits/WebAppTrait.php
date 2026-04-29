@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace Quantum\App\Traits;
 
-use Quantum\App\Exceptions\StopExecutionException;
 use Quantum\Module\Exceptions\ModuleException;
 use Quantum\Config\Exceptions\ConfigException;
 use Quantum\Loader\Exceptions\LoaderException;
@@ -64,18 +63,16 @@ trait WebAppTrait
     }
 
     /**
-     * @return MatchedRoute
-     * @throws RouteException|StopExecutionException|ConfigException|BaseException|DiException|ReflectionException
+     * @throws RouteException|BaseException|DiException|ReflectionException
      */
-    private function resolveRoute(): MatchedRoute
+    private function resolveRoute(): ?MatchedRoute
     {
         $routeFinder = new RouteFinder(Di::get(RouteCollection::class));
 
         $matchedRoute = $routeFinder->find(request());
 
         if ($matchedRoute === null) {
-            page_not_found();
-            stop();
+            return null;
         }
 
         request()->setMatchedRoute($matchedRoute);
@@ -142,9 +139,9 @@ trait WebAppTrait
     /**
      * @throws ConfigException|LoaderException|DiException|ReflectionException|Exception
      */
-    private function sendResponse(): void
+    private function sendResponse(Response $response): void
     {
-        $this->handleCors(response());
-        response()->send();
+        $this->handleCors($response);
+        $response->send();
     }
 }

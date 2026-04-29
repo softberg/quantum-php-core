@@ -7,4 +7,4 @@
         <a href="#" class="modal-close waves-effect waves-green btn-flat">Cancel</a>
         <a href="#" id="confirmDelete" class="waves-effect waves-red btn-flat">Delete</a>
     </div>
-</div> 
+</div>

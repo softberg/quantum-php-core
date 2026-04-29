@@ -33,8 +33,9 @@ class CommentOwner extends BaseMiddleware
      * @param Closure $next
      * @return Response
      */
-    public function apply(Request $request, Response $response, Closure $next): Response
+    public function apply(Request $request, Closure $next): Response
     {
+        $response = response();
         $uuid = (string)route_param('uuid');
 
         $request->set('uuid', $uuid);
@@ -43,7 +44,7 @@ class CommentOwner extends BaseMiddleware
             return $errorResponse;
         }
 
-        return $next($request, $response);
+        return $next($request);
     }
 
     /**

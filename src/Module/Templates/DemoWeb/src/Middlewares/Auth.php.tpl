@@ -32,12 +32,12 @@ class Auth extends QtMiddleware
      * @param Closure $next
      * @return Response
      */
-    public function apply(Request $request, Response $response, Closure $next): Response
+    public function apply(Request $request, Closure $next): Response
     {
         if (!auth()->check()) {
             redirect(base_url(true) . '/' . current_lang() . '/signin');
         }
 
-        return $next($request, $response);
+        return $next($request);
     }
 }

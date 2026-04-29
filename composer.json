@@ -83,7 +83,7 @@
         "rector:check": "vendor/bin/rector process --dry-run",
         "rector:fix": "vendor/bin/rector process",
         "phpstan": "vendor/bin/phpstan analyse --memory-limit=-1 --error-format=github",
-        "test": "vendor/bin/phpunit --stderr --testdox --coverage-clover coverage.xml"
+        "test": "vendor/bin/phpunit --stderr --coverage-clover coverage.xml"
     },
     "minimum-stability": "stable",
     "prefer-stable": true,

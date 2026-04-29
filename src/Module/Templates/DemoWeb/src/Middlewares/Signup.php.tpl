@@ -33,8 +33,9 @@ class Signup extends BaseMiddleware
      * @param Closure $next
      * @return Response
      */
-    public function apply(Request $request, Response $response, Closure $next): Response
+    public function apply(Request $request, Closure $next): Response
     {
+        $response = response();
         if ($request->isMethod('post')) {
             $captchaName = captcha()->getName();
 
@@ -50,7 +51,7 @@ class Signup extends BaseMiddleware
             $request->delete('captcha');
         }
 
-        return $next($request, $response);
+        return $next($request);
     }
 
     /**

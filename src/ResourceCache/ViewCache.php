@@ -79,17 +79,16 @@ class ViewCache
     /**
      * @throws ConfigException|DiException|BaseException|ReflectionException
      */
-    public function serveCachedView(string $uri, Response $response): bool
+    public function getCachedResponse(string $uri): ?Response
     {
         if ($this->isEnabled() && $this->exists($uri)) {
             $cachedContent = $this->get($uri);
             if ($cachedContent !== null) {
-                $response->html($cachedContent);
-                return true;
+                return response()->html($cachedContent);
             }
         }
 
-        return false;
+        return null;
     }
 
     /**

@@ -16,8 +16,8 @@ declare(strict_types=1);
 
 namespace Quantum\Middleware;
 
-use Quantum\Http\Request;
 use Quantum\Http\Response;
+use Quantum\Http\Request;
 use Closure;
 
 /**
@@ -29,6 +29,6 @@ abstract class QtMiddleware
     /**
      * Applies the middleware
      */
-    abstract public function apply(Request $request, Response $response, Closure $next): Response;
+    abstract public function apply(Request $request, Closure $next): Response;
 
 }

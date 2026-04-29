@@ -32,8 +32,9 @@ class Auth extends BaseMiddleware
      * @param Closure $next
      * @return Response
      */
-    public function apply(Request $request, Response $response, Closure $next): Response
+    public function apply(Request $request, Closure $next): Response
     {
+        $response = response();
         if (!auth()->check()) {
             $this->respondWithError(
                 $request,
@@ -43,6 +44,6 @@ class Auth extends BaseMiddleware
             );
         }
 
-        return $next($request, $response);
+        return $next($request);
     }
 }

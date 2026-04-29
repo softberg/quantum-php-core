@@ -10,37 +10,39 @@ namespace Quantum\Tests\_root\modules\Test\Middlewares {
     {
         public static array $calls = [];
 
-        public function apply(Request $request, Response $response, Closure $next): Response
+        public function apply(Request $request, Closure $next): Response
         {
             self::$calls[] = 'TestMwOne';
-            return $next($request, $response);
+            return $next($request);
         }
     }
 
     class TestMwTwo extends QtMiddleware
     {
-        public function apply(Request $request, Response $response, Closure $next): Response
+        public function apply(Request $request, Closure $next): Response
         {
             TestMwOne::$calls[] = 'TestMwTwo';
+            $response = response();
             $response->setHeader('X-Test', 'Passed');
-            return $next($request, $response);
+            return $next($request);
         }
     }
 
     class TestMwBlocker extends QtMiddleware
     {
-        public function apply(Request $request, Response $response, Closure $next): Response
+        public function apply(Request $request, Closure $next): Response
         {
             TestMwOne::$calls[] = 'TestMwBlocker';
+            $response = response();
             return $response->json(['status' => 'blocked']);
         }
     }
 
     class InvalidMw
     {
-        public function apply(Request $request, Response $response, Closure $next)
+        public function apply(Request $request, Closure $next)
         {
-            return $next($request, $response);
+            return $next($request);
         }
     }
 }
@@ -52,6 +54,8 @@ namespace Quantum\Tests\Unit\Middleware {
     use Quantum\Middleware\Exceptions\MiddlewareException;
     use Quantum\Router\MatchedRoute;
     use Quantum\Router\Route;
+    use Quantum\Http\Request;
+    use Quantum\Http\Response;
     use Mockery;
     use Quantum\Tests\_root\modules\Test\Middlewares\TestMwOne;
 
@@ -74,14 +78,13 @@ namespace Quantum\Tests\Unit\Middleware {
             $matchedRoute = new MatchedRoute($route, []);
 
             $request = request();
-            $response = response();
-
             $manager = new MiddlewareManager($matchedRoute);
-            $result = $manager->applyMiddlewares($request, $response);
+            $result = $manager->applyMiddlewares($request, fn (Request $request): Response => response()->json(['status' => 'terminal']));
 
-            $this->assertSame($response, $result);
+            $this->assertSame(response(), $result);
             $this->assertEquals(['TestMwOne', 'TestMwTwo'], TestMwOne::$calls);
             $this->assertEquals('Passed', $result->getHeader('X-Test'));
+            $this->assertEquals('{"status":"terminal"}', $result->getContent());
         }
 
         public function testMiddlewareManagerCanShortCircuit(): void
@@ -95,12 +98,10 @@ namespace Quantum\Tests\Unit\Middleware {
             $matchedRoute = new MatchedRoute($route, []);
 
             $request = request();
-            $response = response();
-
             $manager = new MiddlewareManager($matchedRoute);
-            $result = $manager->applyMiddlewares($request, $response);
+            $result = $manager->applyMiddlewares($request, fn (Request $request): Response => response()->json(['status' => 'terminal']));
 
-            $this->assertSame($response, $result);
+            $this->assertSame(response(), $result);
             $this->assertEquals(['TestMwOne', 'TestMwBlocker'], TestMwOne::$calls);
             $this->assertEquals('{"status":"blocked"}', $result->getContent());
             $this->assertNull($result->getHeader('X-Test'));
@@ -117,7 +118,7 @@ namespace Quantum\Tests\Unit\Middleware {
             $matchedRoute = new MatchedRoute($route, []);
 
             $manager = new MiddlewareManager($matchedRoute);
-            $manager->applyMiddlewares(request(), response());
+            $manager->applyMiddlewares(request(), fn (Request $request): Response => response()->json([]));
         }
 
         public function testMiddlewareManagerThrowsWhenNotInstanceOfQtMiddleware(): void
@@ -131,7 +132,7 @@ namespace Quantum\Tests\Unit\Middleware {
             $matchedRoute = new MatchedRoute($route, []);
 
             $manager = new MiddlewareManager($matchedRoute);
-            $manager->applyMiddlewares(request(), response());
+            $manager->applyMiddlewares(request(), fn (Request $request): Response => response()->json([]));
         }
     }
 }

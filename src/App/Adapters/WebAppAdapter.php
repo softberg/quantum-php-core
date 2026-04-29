@@ -17,7 +17,6 @@ declare(strict_types=1);
 namespace Quantum\App\Adapters;
 
 use Quantum\Middleware\Exceptions\MiddlewareException;
-use Quantum\App\Exceptions\StopExecutionException;
 use Quantum\Loader\Exceptions\LoaderException;
 use Quantum\Module\Exceptions\ModuleException;
 use Quantum\Config\Exceptions\ConfigException;
@@ -31,10 +30,12 @@ use Quantum\App\Exceptions\BaseException;
 use Quantum\App\Stages\InitDebuggerStage;
 use Quantum\Middleware\MiddlewareManager;
 use Quantum\App\Stages\LoadHelpersStage;
-use Quantum\App\Stages\InitHttpStage;
 use Quantum\Di\Exceptions\DiException;
+use Quantum\App\Stages\InitHttpStage;
 use Quantum\App\Traits\WebAppTrait;
 use Quantum\Router\RouteDispatcher;
+use Quantum\Http\Enums\StatusCode;
+use Quantum\App\Enums\ExitCode;
 use Quantum\App\BootPipeline;
 use Quantum\App\AppContext;
 use ReflectionException;
@@ -69,32 +70,34 @@ class WebAppAdapter extends AppAdapter
      */
     public function start(): ?int
     {
-        try {
-            if (request()->isMethod('OPTIONS')) {
-                stop();
-            }
-
-            $this->loadModules();
-
-            $matchedRoute = $this->resolveRoute();
-
-            $this->loadLanguage();
-
-            $this->logDebugInfo();
-
-            $response = (new MiddlewareManager($matchedRoute))->applyMiddlewares(request(), response());
-            $request = request();
-
-            if ($this->setupViewCache()->serveCachedView(request()->getUri() ?? '', $response)) {
-                stop();
-            }
-
-            (new RouteDispatcher())->dispatch($matchedRoute, $request);
-            stop();
-        } catch (StopExecutionException $exception) {
-            $this->sendResponse();
-
-            return $exception->getCode();
+        if (request()->isMethod('OPTIONS')) {
+            $this->sendResponse(response()->setStatusCode(StatusCode::NO_CONTENT));
+            return ExitCode::SUCCESS;
         }
+
+        $this->loadModules();
+
+        $matchedRoute = $this->resolveRoute();
+
+        if ($matchedRoute === null) {
+            $this->sendResponse(page_not_found_response());
+
+            return ExitCode::SUCCESS;
+        }
+
+        $this->loadLanguage();
+
+        $this->logDebugInfo();
+
+        $viewCache = $this->setupViewCache();
+
+        $terminal = fn ($request) => $viewCache->getCachedResponse($request->getUri() ?? '')
+            ?? (new RouteDispatcher())->dispatch($matchedRoute, $request);
+
+        $response = (new MiddlewareManager($matchedRoute))->applyMiddlewares(request(), $terminal);
+
+        $this->sendResponse($response);
+
+        return ExitCode::SUCCESS;
     }
 }
