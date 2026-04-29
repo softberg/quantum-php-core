@@ -1,0 +1,28 @@
+<?php
+
+namespace Quantum\Tests\Unit\Lang\Exceptions;
+
+use Quantum\Lang\Exceptions\LangException;
+use Quantum\Tests\Unit\AppTestCase;
+
+class LangExceptionTest extends AppTestCase
+{
+    public function testTranslationsNotFound(): void
+    {
+        $exception = LangException::translationsNotFound();
+
+        $this->assertInstanceOf(LangException::class, $exception);
+        $this->assertSame('Translation files not found.', $exception->getMessage());
+        $this->assertSame(E_WARNING, $exception->getCode());
+    }
+
+    public function testMisconfiguredDefaultConfig(): void
+    {
+        $exception = LangException::misconfiguredDefaultConfig();
+
+        $this->assertInstanceOf(LangException::class, $exception);
+        $this->assertSame('Misconfigured lang default config.', $exception->getMessage());
+        $this->assertSame(E_WARNING, $exception->getCode());
+    }
+}
+
