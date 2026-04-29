@@ -49,4 +49,3 @@ class DiExceptionTest extends AppTestCase
         $this->assertSame(E_ERROR, $withoutEntry->getCode());
     }
 }
-

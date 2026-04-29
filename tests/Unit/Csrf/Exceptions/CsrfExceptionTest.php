@@ -25,4 +25,3 @@ class CsrfExceptionTest extends AppTestCase
         $this->assertSame(E_WARNING, $exception->getCode());
     }
 }
-

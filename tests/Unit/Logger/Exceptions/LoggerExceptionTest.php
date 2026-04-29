@@ -25,4 +25,3 @@ class LoggerExceptionTest extends AppTestCase
         $this->assertSame(E_ERROR, $exception->getCode());
     }
 }
-

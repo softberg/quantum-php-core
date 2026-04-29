@@ -56,4 +56,3 @@ class ModelExceptionTest extends AppTestCase
         $this->assertSame(E_ERROR, $e->getCode());
     }
 }
-

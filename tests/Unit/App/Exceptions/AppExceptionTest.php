@@ -16,4 +16,3 @@ class AppExceptionTest extends AppTestCase
         $this->assertSame(E_ERROR, $exception->getCode());
     }
 }
-

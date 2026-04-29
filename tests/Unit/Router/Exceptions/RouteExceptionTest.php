@@ -33,4 +33,3 @@ class RouteExceptionTest extends AppTestCase
         $this->assertSame('Route param name `id` already in use', RouteException::paramNameNotAvailable('id')->getMessage());
     }
 }
-

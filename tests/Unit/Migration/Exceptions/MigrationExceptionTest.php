@@ -43,4 +43,3 @@ class MigrationExceptionTest extends AppTestCase
         $this->assertSame(E_ERROR, $exception->getCode());
     }
 }
-

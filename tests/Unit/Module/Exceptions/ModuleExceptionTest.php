@@ -56,4 +56,3 @@ class ModuleExceptionTest extends AppTestCase
         $this->assertSame(E_ERROR, $e->getCode());
     }
 }
-

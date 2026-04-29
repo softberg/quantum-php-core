@@ -25,4 +25,3 @@ class EnvExceptionTest extends AppTestCase
         $this->assertSame(E_ERROR, $exception->getCode());
     }
 }
-

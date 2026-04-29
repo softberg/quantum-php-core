@@ -25,4 +25,3 @@ class LangExceptionTest extends AppTestCase
         $this->assertSame(E_WARNING, $exception->getCode());
     }
 }
-

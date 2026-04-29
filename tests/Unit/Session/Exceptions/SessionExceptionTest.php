@@ -25,4 +25,3 @@ class SessionExceptionTest extends AppTestCase
         $this->assertSame(E_WARNING, $exception->getCode());
     }
 }
-

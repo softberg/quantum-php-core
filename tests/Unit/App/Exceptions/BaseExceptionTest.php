@@ -59,4 +59,3 @@ class BaseExceptionTest extends AppTestCase
         $this->assertSame(E_WARNING, $methodException->getCode());
     }
 }
-

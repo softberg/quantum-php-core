@@ -34,4 +34,3 @@ class CryptorExceptionTest extends AppTestCase
         $this->assertSame(E_WARNING, $exception->getCode());
     }
 }
-
