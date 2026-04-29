@@ -1,6 +1,6 @@
 <?php
 
-namespace Quantum\Tests\Unit\Config;
+namespace Quantum\Tests\Unit\Config\Exceptions;
 
 use Quantum\Config\Exceptions\ConfigException;
 use Quantum\Tests\Unit\AppTestCase;
@@ -16,4 +16,3 @@ class ConfigExceptionTest extends AppTestCase
         $this->assertSame(E_WARNING, $exception->getCode());
     }
 }
-

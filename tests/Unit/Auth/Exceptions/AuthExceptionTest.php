@@ -1,6 +1,6 @@
 <?php
 
-namespace Quantum\Tests\Unit\Auth;
+namespace Quantum\Tests\Unit\Auth\Exceptions;
 
 use Quantum\Auth\Exceptions\AuthException;
 use Quantum\Tests\Unit\AppTestCase;
@@ -42,4 +42,3 @@ class AuthExceptionTest extends AppTestCase
         $this->assertSame(E_ERROR, $exception->getCode());
     }
 }
-

@@ -1,6 +1,6 @@
 <?php
 
-namespace Quantum\Tests\Unit\Archive;
+namespace Quantum\Tests\Unit\Archive\Exceptions;
 
 use Quantum\Archive\Exceptions\ArchiveException;
 use Quantum\Tests\Unit\AppTestCase;
@@ -25,4 +25,3 @@ class ArchiveExceptionTest extends AppTestCase
         $this->assertSame(E_WARNING, $exception->getCode());
     }
 }
-

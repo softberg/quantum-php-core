@@ -1,6 +1,6 @@
 <?php
 
-namespace Quantum\Tests\Unit\Asset;
+namespace Quantum\Tests\Unit\Asset\Exceptions;
 
 use Quantum\Asset\Exceptions\AssetException;
 use Quantum\Tests\Unit\AppTestCase;
@@ -25,4 +25,3 @@ class AssetExceptionTest extends AppTestCase
         $this->assertSame(E_WARNING, $exception->getCode());
     }
 }
-
