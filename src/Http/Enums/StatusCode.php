@@ -19,6 +19,7 @@ namespace Quantum\Http\Enums;
 /**
  * Class StatusCode
  * @package Quantum\Http
+ * @codeCoverageIgnore
  */
 final class StatusCode
 {
@@ -88,4 +89,8 @@ final class StatusCode
     public const LOOP_DETECTED = 508;
     public const NOT_EXTENDED = 510;
     public const NETWORK_AUTHENTICATION_REQUIRED = 511;
+
+    private function __construct()
+    {
+    }
 }

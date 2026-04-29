@@ -21,6 +21,7 @@ use Quantum\App\Exceptions\BaseException;
 /**
  * Class CacheException
  * @package Quantum\Cache
+ * @codeCoverageIgnore
  */
 class CacheException extends BaseException
 {

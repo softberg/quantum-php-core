@@ -21,6 +21,7 @@ use Quantum\App\Exceptions\BaseException;
 /**
  * Class RendererException
  * @package Quantum\Renderer
+ * @codeCoverageIgnore
  */
 class RendererException extends BaseException
 {

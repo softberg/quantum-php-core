@@ -21,6 +21,7 @@ use Quantum\App\Exceptions\BaseException;
 /**
  * Class ServiceException
  * @package Quantum\Service
+ * @codeCoverageIgnore
  */
 class ServiceException extends BaseException
 {

@@ -19,8 +19,9 @@ namespace Quantum\Paginator\Enums;
 /**
  * Class Pagination
  * @package Quantum\Paginator
+ * @codeCoverageIgnore
  */
-class Pagination
+final class Pagination
 {
     /**
      * Pagination class name
@@ -56,4 +57,8 @@ class Pagination
      * Edge padding
      */
     public const EDGE_PADDING = 3;
+
+    private function __construct()
+    {
+    }
 }

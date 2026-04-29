@@ -19,8 +19,9 @@ namespace Quantum\Captcha\Exceptions;
 use Quantum\App\Exceptions\BaseException;
 
 /**
- * Class CacheException
+ * Class CaptchaException
  * @package Quantum\Captcha
+ * @codeCoverageIgnore
  */
 class CaptchaException extends BaseException
 {
