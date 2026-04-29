@@ -103,7 +103,9 @@ class HttpHelperTest extends AppTestCase
     {
         $this->assertFalse($this->response->hasHeader('Location'));
 
-        redirect('/home');
+        $redirectResponse = redirect('/home');
+
+        $this->assertSame($this->response, $redirectResponse);
 
         $this->assertTrue($this->response->hasHeader('Location'));
 
@@ -116,7 +118,9 @@ class HttpHelperTest extends AppTestCase
 
         $this->request->create('POST', '/', ['firstname' => 'Josh', 'lastname' => 'Doe']);
 
-        redirectWith('/signup', $this->request->all());
+        $redirectResponse = redirectWith('/signup', $this->request->all());
+
+        $this->assertSame($this->response, $redirectResponse);
 
         $this->assertTrue($this->response->hasHeader('Location'));
 
