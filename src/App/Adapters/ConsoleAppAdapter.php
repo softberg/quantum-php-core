@@ -17,7 +17,6 @@ declare(strict_types=1);
 namespace Quantum\App\Adapters;
 
 use Symfony\Component\Console\Output\ConsoleOutput;
-use Quantum\App\Exceptions\StopExecutionException;
 use Symfony\Component\Console\Input\ArgvInput;
 use Quantum\App\Stages\SetupErrorHandlerStage;
 use Quantum\App\Stages\LoadEnvironmentStage;
@@ -85,17 +84,13 @@ class ConsoleAppAdapter extends AppAdapter
     */
     public function start(): ?int
     {
-        try {
-            $this->registerCoreCommands();
-            $this->registerAppCommands();
+        $this->registerCoreCommands();
+        $this->registerAppCommands();
 
-            $this->validateCommand();
+        $this->validateCommand();
 
-            $exitCode = $this->application->run($this->input, $this->output);
+        $exitCode = $this->application->run($this->input, $this->output);
 
-            stop(null, $exitCode);
-        } catch (StopExecutionException $exception) {
-            return $exception->getCode() ?: ExitCode::SUCCESS;
-        }
+        return $exitCode ?: ExitCode::SUCCESS;
     }
 }

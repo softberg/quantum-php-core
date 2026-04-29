@@ -44,6 +44,29 @@ class ConsoleAppAdapterTest extends AppTestCase
         $this->assertEquals(0, $result);
     }
 
+    public function testConsoleAppAdapterReturnsNonZeroExitCode(): void
+    {
+        $_SERVER['argv'] = ['qt', 'list', '--quiet'];
+
+        $applicationMock = Mockery::mock(Application::class)->makePartial();
+        $applicationMock->shouldReceive('getName')->andReturn('Qt Console Application');
+        $applicationMock->shouldReceive('run')->andReturn(2);
+
+        $consoleAppAdapter = Mockery::mock(ConsoleAppAdapter::class)
+            ->shouldAllowMockingProtectedMethods()
+            ->makePartial();
+
+        $consoleAppAdapter
+            ->shouldReceive('createApplication')
+            ->andReturn($applicationMock);
+
+        $consoleAppAdapter->__construct($this->createContext());
+
+        $result = $consoleAppAdapter->start();
+
+        $this->assertEquals(2, $result);
+    }
+
     public function testConsoleAppAdapterStartFails(): void
     {
         $_SERVER['argv'] = ['qt', 'unknown', '--quiet'];
