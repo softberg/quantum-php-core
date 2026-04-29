@@ -2,9 +2,10 @@
 
 namespace Quantum\Tests\Unit\Console\Commands;
 
+use Symfony\Component\Console\Tester\CommandTester;
 use Quantum\Console\Commands\OpenApiCommand;
-use Quantum\Storage\FileSystem;
 use Quantum\Tests\Unit\AppTestCase;
+use Quantum\Storage\FileSystem;
 
 class OpenApiCommandTest extends AppTestCase
 {
@@ -36,5 +37,24 @@ class OpenApiCommandTest extends AppTestCase
     {
         $fs = $this->getPrivateProperty($this->command, 'fs');
         $this->assertInstanceOf(FileSystem::class, $fs);
+    }
+
+    public function testExecShowsErrorWhenModuleIsMissing(): void
+    {
+        $openApiAssets = assets_dir() . DS . 'OpenApiUi';
+        if (!$this->fs->isDirectory($openApiAssets)) {
+            mkdir($openApiAssets, 0777, true);
+        }
+        file_put_contents($openApiAssets . DS . 'index.css', '/* stub */');
+
+        $tester = new CommandTester($this->command);
+        $tester->execute([
+            'module' => 'MissingModule',
+        ]);
+
+        $this->assertStringContainsString('The module `MissingModule` not found', $tester->getDisplay());
+
+        @unlink($openApiAssets . DS . 'index.css');
+        @rmdir($openApiAssets);
     }
 }
