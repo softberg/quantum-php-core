@@ -50,7 +50,7 @@ class ServeCommandTest extends AppTestCase
 
     public function testExecUsesResolvedHostAndPortFlow(): void
     {
-        $command = new class extends ServeCommand {
+        $command = new class () extends ServeCommand {
             public string $receivedHost = '';
             public int $receivedPort = 0;
 

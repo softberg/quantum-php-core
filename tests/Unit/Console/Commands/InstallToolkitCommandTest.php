@@ -36,7 +36,7 @@ class InstallToolkitCommandTest extends AppTestCase
 
     public function testExecUpdatesEnvAndRunsModuleGeneration(): void
     {
-        $command = new class extends InstallToolkitCommand {
+        $command = new class () extends InstallToolkitCommand {
             public string $calledCommand = '';
 
             /** @var array<string, mixed> */
