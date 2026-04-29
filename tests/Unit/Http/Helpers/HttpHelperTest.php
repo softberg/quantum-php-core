@@ -2,7 +2,6 @@
 
 namespace Quantum\Tests\Unit\Http\Helpers;
 
-use Quantum\App\Exceptions\StopExecutionException;
 use Quantum\Session\Factories\SessionFactory;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Router\RouteCollection;
@@ -104,11 +103,9 @@ class HttpHelperTest extends AppTestCase
     {
         $this->assertFalse($this->response->hasHeader('Location'));
 
-        try {
-            redirect('/home');
-        } catch (StopExecutionException $e) {
+        $redirectResponse = redirect('/home');
 
-        }
+        $this->assertSame($this->response, $redirectResponse);
 
         $this->assertTrue($this->response->hasHeader('Location'));
 
@@ -121,11 +118,9 @@ class HttpHelperTest extends AppTestCase
 
         $this->request->create('POST', '/', ['firstname' => 'Josh', 'lastname' => 'Doe']);
 
-        try {
-            redirectWith('/signup', $this->request->all());
-        } catch (StopExecutionException $e) {
+        $redirectResponse = redirectWith('/signup', $this->request->all());
 
-        }
+        $this->assertSame($this->response, $redirectResponse);
 
         $this->assertTrue($this->response->hasHeader('Location'));
 
