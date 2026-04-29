@@ -14,4 +14,4 @@
             <i class="material-icons">delete</i>
         </button>
     </td>
-</tr> 
+</tr>

@@ -77,5 +77,3 @@ class Verify extends BaseMiddleware
         return redirectWith(base_url(true) . '/' . current_lang() . '/verify', $request->all());
     }
 }
-
-

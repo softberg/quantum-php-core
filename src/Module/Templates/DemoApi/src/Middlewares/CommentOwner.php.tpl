@@ -73,5 +73,3 @@ class CommentOwner extends BaseMiddleware
         });
     }
 }
-
-

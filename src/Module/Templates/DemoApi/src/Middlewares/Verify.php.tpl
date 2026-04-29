@@ -61,5 +61,3 @@ class Verify extends BaseMiddleware
         ]);
     }
 }
-
-

@@ -70,6 +70,3 @@ class BasicAuth extends QtMiddleware
         return $response->html(partial('errors' . DS . '401'), 401);
     }
 }
-
-
-

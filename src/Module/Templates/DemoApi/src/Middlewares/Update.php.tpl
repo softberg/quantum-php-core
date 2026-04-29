@@ -59,5 +59,3 @@ class Update extends BaseMiddleware
         ]);
     }
 }
-
-

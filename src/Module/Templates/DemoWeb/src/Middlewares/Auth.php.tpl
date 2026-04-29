@@ -41,4 +41,3 @@ class Auth extends QtMiddleware
         return $next($request);
     }
 }
-

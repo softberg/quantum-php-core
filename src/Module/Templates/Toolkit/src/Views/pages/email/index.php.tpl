@@ -30,5 +30,3 @@ echo partial('partials/delete-modal', [
     'message' => 'Are you sure you want to delete this email?',
 ]);
 ?>
-
-

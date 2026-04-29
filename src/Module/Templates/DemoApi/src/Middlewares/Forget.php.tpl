@@ -60,5 +60,3 @@ class Forget extends BaseMiddleware
         ]);
     }
 }
-
-

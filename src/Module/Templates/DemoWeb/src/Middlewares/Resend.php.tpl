@@ -71,5 +71,3 @@ class Resend extends BaseMiddleware
         return redirect(base_url(true) . '/' . current_lang() . '/signin');
     }
 }
-
-

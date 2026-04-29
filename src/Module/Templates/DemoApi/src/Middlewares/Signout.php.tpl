@@ -45,5 +45,3 @@ class Signout extends BaseMiddleware
         return $next($request);
     }
 }
-
-

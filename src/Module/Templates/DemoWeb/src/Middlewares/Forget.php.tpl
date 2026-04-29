@@ -78,5 +78,3 @@ class Forget extends BaseMiddleware
         return redirectWith(base_url(true) . '/' . current_lang() . '/forget', $data);
     }
 }
-
-

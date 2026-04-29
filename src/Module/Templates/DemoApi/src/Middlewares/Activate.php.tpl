@@ -62,5 +62,3 @@ class Activate extends BaseMiddleware
         ]);
     }
 }
-
-

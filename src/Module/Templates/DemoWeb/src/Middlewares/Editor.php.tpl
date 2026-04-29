@@ -104,5 +104,3 @@ class Editor extends BaseMiddleware
         return redirectWith(get_referrer() ?? base_url(), $data);
     }
 }
-
-

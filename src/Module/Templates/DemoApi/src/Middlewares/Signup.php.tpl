@@ -68,5 +68,3 @@ class Signup extends BaseMiddleware
         ]);
     }
 }
-
-

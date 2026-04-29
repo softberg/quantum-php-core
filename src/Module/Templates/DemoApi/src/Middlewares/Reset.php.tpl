@@ -71,5 +71,3 @@ class Reset extends BaseMiddleware
         ]);
     }
 }
-
-

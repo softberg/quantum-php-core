@@ -97,5 +97,3 @@ class Editor extends BaseMiddleware
         ]);
     }
 }
-
-

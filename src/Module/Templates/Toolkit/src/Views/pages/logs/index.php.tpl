@@ -18,4 +18,3 @@
         <h5>No log found.</h5>
     <?php endif ?>
 </div>
-

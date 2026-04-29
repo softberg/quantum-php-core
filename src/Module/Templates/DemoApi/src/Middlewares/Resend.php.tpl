@@ -59,5 +59,3 @@ class Resend extends BaseMiddleware
         ]);
     }
 }
-
-

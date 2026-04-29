@@ -90,5 +90,3 @@ class Reset extends BaseMiddleware
         return redirect(get_referrer() ?? base_url());
     }
 }
-
-

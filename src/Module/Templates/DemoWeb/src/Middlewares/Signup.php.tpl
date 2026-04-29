@@ -91,5 +91,3 @@ class Signup extends BaseMiddleware
         return redirectWith(base_url(true) . '/' . current_lang() . '/signup', $request->all());
     }
 }
-
-

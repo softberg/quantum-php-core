@@ -71,5 +71,3 @@ class Activate extends BaseMiddleware
         return $response->html(partial('errors/404'), StatusCode::NOT_FOUND);
     }
 }
-
-

@@ -47,5 +47,3 @@ class Auth extends BaseMiddleware
         return $next($request);
     }
 }
-
-
