@@ -19,8 +19,9 @@ namespace Quantum\Database\Enums;
 /**
  * Class Key
  * @package Quantum\Database
+ * @codeCoverageIgnore
  */
-class Key
+final class Key
 {
     /**
      * Primary key definition
@@ -47,4 +48,7 @@ class Key
      */
     public const SPATIAL = 'spatial';
 
+    private function __construct()
+    {
+    }
 }

@@ -19,8 +19,9 @@ namespace Quantum\Auth\Enums;
 /**
  * Class AuthKeys
  * @package Quantum\Auth
+ * @codeCoverageIgnore
  */
-class AuthKeys
+final class AuthKeys
 {
     /**
      * One time password key
@@ -71,4 +72,8 @@ class AuthKeys
      * Remember token key
      */
     public const REMEMBER_TOKEN = 'rememberToken';
+
+    private function __construct()
+    {
+    }
 }

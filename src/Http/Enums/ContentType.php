@@ -19,6 +19,7 @@ namespace Quantum\Http\Enums;
 /**
  * Class ContentType
  * @package Quantum\Http
+ * @codeCoverageIgnore
  */
 final class ContentType
 {
@@ -56,4 +57,8 @@ final class ContentType
      * Default content type for binary streams
      */
     public const OCTET_STREAM = 'application/octet-stream';
+
+    private function __construct()
+    {
+    }
 }

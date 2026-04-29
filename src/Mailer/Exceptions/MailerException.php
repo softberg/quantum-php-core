@@ -21,6 +21,7 @@ use Quantum\App\Exceptions\BaseException;
 /**
  * Class MailerException
  * @package Quantum\Mailer
+ * @codeCoverageIgnore
  */
 class MailerException extends BaseException
 {

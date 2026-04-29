@@ -19,6 +19,7 @@ namespace Quantum\Cron\Enums;
 /**
  * Enum ExceptionMessages
  * @package Quantum\Cron
+ * @codeCoverageIgnore
  */
 final class ExceptionMessages
 {
@@ -29,4 +30,8 @@ final class ExceptionMessages
     public const INVALID_TASK_FILE = 'Invalid task file "%s": must return array or CronTask instance';
     public const CRON_DIRECTORY_NOT_FOUND = 'Cron directory not found: %s';
     public const LOCK_DIRECTORY_NOT_WRITABLE = 'Lock directory is not writable: %s';
+
+    private function __construct()
+    {
+    }
 }

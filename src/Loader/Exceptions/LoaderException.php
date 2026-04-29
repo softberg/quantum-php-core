@@ -23,6 +23,7 @@ use Quantum\App\Exceptions\BaseException;
  *
  * @package Quantum
  * @category Exceptions
+ * @codeCoverageIgnore
  */
 class LoaderException extends BaseException
 {

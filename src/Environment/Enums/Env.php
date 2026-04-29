@@ -19,6 +19,7 @@ namespace Quantum\Environment\Enums;
 /**
  * Class Env
  * @package Quantum\Environment
+ * @codeCoverageIgnore
  */
 final class Env
 {
@@ -46,4 +47,8 @@ final class Env
      * Local environment - developer's local machine environment.
      */
     public const LOCAL = 'local';
+
+    private function __construct()
+    {
+    }
 }

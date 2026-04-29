@@ -19,8 +19,9 @@ namespace Quantum\Database\Enums;
 /**
  * Class Type
  * @package Quantum\Database
+ * @codeCoverageIgnore
  */
-class Type
+final class Type
 {
     /**
      * Type integer
@@ -107,4 +108,7 @@ class Type
      */
     public const GEOMETRY = 'geometry';
 
+    private function __construct()
+    {
+    }
 }

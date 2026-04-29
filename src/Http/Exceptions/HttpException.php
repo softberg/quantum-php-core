@@ -21,6 +21,7 @@ use Quantum\App\Exceptions\BaseException;
 /**
  * Class HttpException
  * @package Quantum\Http
+ * @codeCoverageIgnore
  */
 class HttpException extends BaseException
 {
