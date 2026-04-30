@@ -2,6 +2,7 @@
 
 namespace Quantum\Tests\Unit\Console\Commands;
 
+use Symfony\Component\Console\Tester\CommandTester;
 use Quantum\Console\Commands\ServeCommand;
 use Quantum\Tests\Unit\AppTestCase;
 
@@ -45,5 +46,43 @@ class ServeCommandTest extends AppTestCase
         } else {
             $this->assertNull($result);
         }
+    }
+
+    public function testExecUsesResolvedHostAndPortFlow(): void
+    {
+        $command = new class () extends ServeCommand {
+            public string $receivedHost = '';
+            public int $receivedPort = 0;
+
+            /** @var array<string, mixed> */
+            public array $receivedServerData = [];
+
+            protected function startServerOnAvailablePort(string $host, int $startPort): array
+            {
+                $this->receivedHost = $host;
+                $this->receivedPort = $startPort;
+
+                return [
+                    'process' => fopen('php://memory', 'r'),
+                    'port' => $startPort,
+                    'url' => "http://{$host}:{$startPort}",
+                ];
+            }
+
+            protected function handleServerExecution(array $serverData): void
+            {
+                $this->receivedServerData = $serverData;
+            }
+        };
+
+        $tester = new CommandTester($command);
+        $tester->execute([
+            '--host' => '127.0.0.1',
+            '--port' => '8011',
+        ]);
+
+        $this->assertSame('127.0.0.1', $command->receivedHost);
+        $this->assertSame(8011, $command->receivedPort);
+        $this->assertSame('http://127.0.0.1:8011', $command->receivedServerData['url']);
     }
 }

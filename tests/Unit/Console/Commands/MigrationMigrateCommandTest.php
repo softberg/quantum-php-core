@@ -3,6 +3,9 @@
 namespace Quantum\Tests\Unit\Console\Commands;
 
 use Quantum\Console\Commands\MigrationMigrateCommand;
+use Symfony\Component\Console\Helper\QuestionHelper;
+use Symfony\Component\Console\Tester\CommandTester;
+use Symfony\Component\Console\Helper\HelperSet;
 use Quantum\Tests\Unit\AppTestCase;
 
 class MigrationMigrateCommandTest extends AppTestCase
@@ -14,6 +17,7 @@ class MigrationMigrateCommandTest extends AppTestCase
         parent::setUp();
 
         $this->command = new MigrationMigrateCommand();
+        $this->command->setHelperSet(new HelperSet(['question' => new QuestionHelper()]));
     }
 
     public function testCommandMetadata(): void
@@ -30,5 +34,18 @@ class MigrationMigrateCommandTest extends AppTestCase
         $this->assertFalse($definition->getArgument('direction')->isRequired());
 
         $this->assertTrue($definition->hasOption('step'));
+    }
+
+    public function testExecCancelsDownDirectionWhenNotConfirmed(): void
+    {
+        $tester = new CommandTester($this->command);
+
+        $tester->setInputs(['n']);
+        $tester->execute([
+            'direction' => 'down',
+        ]);
+
+        $output = $tester->getDisplay();
+        $this->assertStringContainsString('Operation was canceled!', $output);
     }
 }
