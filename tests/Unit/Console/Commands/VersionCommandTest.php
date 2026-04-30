@@ -26,16 +26,18 @@ class VersionCommandTest extends AppTestCase
 
     public function testExecPrintsFrameworkVersion(): void
     {
-        config()->set('app', ['version' => '9.9.9-test']);
+        config()->set('app', ['version' => '3.0.0']);
 
         $tester = new CommandTester($this->command);
+        $fontPath = assets_dir() . DS . 'shared' . DS . 'fonts' . DS . 'figlet' . DS . 'slant.flf';
 
-        try {
-            $tester->execute([]);
-            $output = $tester->getDisplay();
-            $this->assertStringContainsString('9.9.9-test', $output);
-        } catch (\Exception $e) {
-            $this->assertStringContainsString('slant.flf', $e->getMessage());
+        if (!is_file($fontPath)) {
+            $this->expectException(\Exception::class);
+            $this->expectExceptionMessage('slant.flf');
         }
+
+        $tester->execute([]);
+        $output = $tester->getDisplay();
+        $this->assertStringContainsString('3.0.0', $output);
     }
 }
