@@ -42,19 +42,40 @@ class OpenApiCommandTest extends AppTestCase
     public function testExecShowsErrorWhenModuleIsMissing(): void
     {
         $openApiAssets = assets_dir() . DS . 'OpenApiUi';
+        $indexCssPath = $openApiAssets . DS . 'index.css';
+        $assetsDirCreatedByTest = false;
+        $indexCssExisted = false;
+        $indexCssBackup = '';
+
         if (!$this->fs->isDirectory($openApiAssets)) {
             mkdir($openApiAssets, 0777, true);
+            $assetsDirCreatedByTest = true;
         }
-        file_put_contents($openApiAssets . DS . 'index.css', '/* stub */');
 
-        $tester = new CommandTester($this->command);
-        $tester->execute([
-            'module' => 'MissingModule',
-        ]);
+        if ($this->fs->exists($indexCssPath)) {
+            $indexCssExisted = true;
+            $indexCssBackup = (string) $this->fs->get($indexCssPath);
+        }
 
-        $this->assertStringContainsString('The module `MissingModule` not found', $tester->getDisplay());
+        $this->fs->put($indexCssPath, '/* stub */');
 
-        @unlink($openApiAssets . DS . 'index.css');
-        @rmdir($openApiAssets);
+        try {
+            $tester = new CommandTester($this->command);
+            $tester->execute([
+                'module' => 'MissingModule',
+            ]);
+
+            $this->assertStringContainsString('The module `MissingModule` not found', $tester->getDisplay());
+        } finally {
+            if ($indexCssExisted) {
+                $this->fs->put($indexCssPath, $indexCssBackup);
+            } elseif ($this->fs->exists($indexCssPath)) {
+                $this->fs->remove($indexCssPath);
+            }
+
+            if ($assetsDirCreatedByTest && $this->fs->isDirectory($openApiAssets)) {
+                @rmdir($openApiAssets);
+            }
+        }
     }
 }
