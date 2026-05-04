@@ -64,6 +64,6 @@ class EmailsController extends BaseController
     {
         $this->emailService->deleteEmail($emailId);
 
-        redirect(base_url(true) . '/emails');
+        return redirect(base_url(true) . '/emails');
     }
 }
