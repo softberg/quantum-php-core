@@ -16,6 +16,7 @@ namespace {{MODULE_NAMESPACE}}\Controllers;
 
 use {{MODULE_NAMESPACE}}\Services\CommentService;
 use {{MODULE_NAMESPACE}}\DTOs\CommentDTO;
+use Quantum\Http\Response;
 use Quantum\Http\Request;
 
 /**
