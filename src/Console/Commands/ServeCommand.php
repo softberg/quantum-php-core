@@ -16,7 +16,7 @@ declare(strict_types=1);
 
 namespace Quantum\Console\Commands;
 
-use Quantum\Console\QtCommand;
+use Quantum\Console\CliCommand;
 use RuntimeException;
 use Throwable;
 
@@ -24,7 +24,7 @@ use Throwable;
  * Class ServeCommand
  * @package Quantum\Console
  */
-class ServeCommand extends QtCommand
+class ServeCommand extends CliCommand
 {
     /**
      * Platform Windows

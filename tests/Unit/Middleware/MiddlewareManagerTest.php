@@ -1,12 +1,12 @@
 <?php
 
 namespace Quantum\Tests\_root\modules\Test\Middlewares {
-    use Quantum\Middleware\QtMiddleware;
+    use Quantum\Middleware\Middleware;
     use Quantum\Http\Request;
     use Quantum\Http\Response;
     use Closure;
 
-    class TestMwOne extends QtMiddleware
+    class TestMwOne extends Middleware
     {
         public static array $calls = [];
 
@@ -17,7 +17,7 @@ namespace Quantum\Tests\_root\modules\Test\Middlewares {
         }
     }
 
-    class TestMwTwo extends QtMiddleware
+    class TestMwTwo extends Middleware
     {
         public function apply(Request $request, Closure $next): Response
         {
@@ -28,7 +28,7 @@ namespace Quantum\Tests\_root\modules\Test\Middlewares {
         }
     }
 
-    class TestMwBlocker extends QtMiddleware
+    class TestMwBlocker extends Middleware
     {
         public function apply(Request $request, Closure $next): Response
         {
@@ -121,7 +121,7 @@ namespace Quantum\Tests\Unit\Middleware {
             $manager->applyMiddlewares(request(), fn (Request $request): Response => response()->json([]));
         }
 
-        public function testMiddlewareManagerThrowsWhenNotInstanceOfQtMiddleware(): void
+        public function testMiddlewareManagerThrowsWhenNotInstanceOfMiddleware(): void
         {
             $this->expectException(MiddlewareException::class);
 

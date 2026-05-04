@@ -14,7 +14,7 @@
 
 namespace {{MODULE_NAMESPACE}}\Middlewares;
 
-use Quantum\Middleware\QtMiddleware;
+use Quantum\Middleware\Middleware;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 use Closure;
@@ -23,7 +23,7 @@ use Closure;
  * Class Auth
  * @package Modules\{{MODULE_NAME}}
  */
-class Auth extends QtMiddleware
+class Auth extends Middleware
 {
     public function apply(Request $request, Closure $next): Response
     {

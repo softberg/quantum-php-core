@@ -9,7 +9,7 @@ use Symfony\Component\Console\Helper\HelperSet;
 use Quantum\Tests\Unit\AppTestCase;
 use RuntimeException;
 
-class QtCommandTest extends AppTestCase
+class CliCommandTest extends AppTestCase
 {
     private TestCommand $command;
 
@@ -27,7 +27,7 @@ class QtCommandTest extends AppTestCase
         $this->tester = new CommandTester($this->command);
     }
 
-    public function testQtCommandMetadataIsConfigured(): void
+    public function testCliCommandMetadataIsConfigured(): void
     {
         $this->assertSame('test:dummy', $this->command->getName());
 
@@ -36,7 +36,7 @@ class QtCommandTest extends AppTestCase
         $this->assertSame('Used only for core command discovery tests', $this->command->getHelp());
     }
 
-    public function testQtCommandArgumentsAndOptionsAreRegistered(): void
+    public function testCliCommandArgumentsAndOptionsAreRegistered(): void
     {
         $definition = $this->command->getDefinition();
 

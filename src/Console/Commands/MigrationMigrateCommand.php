@@ -20,13 +20,13 @@ use Quantum\Migration\Exceptions\MigrationException;
 use Quantum\Database\Exceptions\DatabaseException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Migration\MigrationManager;
-use Quantum\Console\QtCommand;
+use Quantum\Console\CliCommand;
 
 /**
  * Class MigrationMigrateCommand
  * @package Quantum\Console
  */
-class MigrationMigrateCommand extends QtCommand
+class MigrationMigrateCommand extends CliCommand
 {
     /**
      * The console command name.

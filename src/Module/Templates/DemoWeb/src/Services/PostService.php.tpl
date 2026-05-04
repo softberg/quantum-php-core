@@ -28,13 +28,13 @@ use {{MODULE_NAMESPACE}}\Models\Post;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Model\ModelCollection;
 use Gumlet\ImageResizeException;
-use Quantum\Service\QtService;
+use Quantum\Service\Service;
 
 /**
  * Class PostService
  * @package Modules\{{MODULE_NAME}}
  */
-class PostService extends QtService
+class PostService extends Service
 {
 
     /**

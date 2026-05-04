@@ -18,7 +18,7 @@ use {{MODULE_NAMESPACE}}\Transformers\CommentTransformer;
 use Quantum\Model\Exceptions\ModelException;
 use Quantum\App\Exceptions\BaseException;
 use {{MODULE_NAMESPACE}}\DTOs\CommentDTO;
-use Quantum\Service\QtService;
+use Quantum\Service\Service;
 use {{MODULE_NAMESPACE}}\Models\Comment;
 use {{MODULE_NAMESPACE}}\Models\User;
 
@@ -26,7 +26,7 @@ use {{MODULE_NAMESPACE}}\Models\User;
  * Class CommentService
  * @package Modules\{{MODULE_NAME}}
  */
-class CommentService extends QtService
+class CommentService extends Service
 {
 
     /**

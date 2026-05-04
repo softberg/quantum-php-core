@@ -16,14 +16,14 @@ declare(strict_types=1);
 
 namespace Quantum\Console\Commands;
 
-use Quantum\Console\QtCommand;
+use Quantum\Console\CliCommand;
 use Povils\Figlet\Figlet;
 
 /**
  * Class VersionCommand
  * @package Quantum\Console
  */
-class VersionCommand extends QtCommand
+class VersionCommand extends CliCommand
 {
     /**
      * Command name

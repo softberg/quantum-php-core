@@ -20,7 +20,7 @@ use Quantum\Config\Exceptions\ConfigException;
 use Quantum\Cron\Exceptions\CronException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
-use Quantum\Console\QtCommand;
+use Quantum\Console\CliCommand;
 use Quantum\Cron\CronManager;
 use ReflectionException;
 use Throwable;
@@ -29,7 +29,7 @@ use Throwable;
  * Class CronRunCommand
  * @package Quantum\Console
  */
-class CronRunCommand extends QtCommand
+class CronRunCommand extends CliCommand
 {
     /**
      * The console command name.

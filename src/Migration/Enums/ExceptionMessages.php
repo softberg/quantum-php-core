@@ -30,5 +30,5 @@ final class ExceptionMessages extends BaseExceptionMessages
 
     public const NOTHING_TO_MIGRATE = 'Nothing to migrate';
 
-    public const INVALID_MIGRATION_CLASS = 'Migration class `{%1}` must extend QtMigration';
+    public const INVALID_MIGRATION_CLASS = 'Migration class `{%1}` must extend Migration';
 }

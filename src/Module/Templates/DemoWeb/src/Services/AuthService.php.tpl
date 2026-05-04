@@ -17,18 +17,18 @@ namespace {{MODULE_NAMESPACE}}\Services;
 use Quantum\Auth\Contracts\AuthServiceInterface;
 use Quantum\Config\Exceptions\ConfigException;
 use Quantum\Model\Exceptions\ModelException;
-use Quantum\Auth\User as AuthUser;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Model\ModelCollection;
-use Quantum\Service\QtService;
+use Quantum\Auth\User as AuthUser;
+use Quantum\Service\Service;
 use {{MODULE_NAMESPACE}}\Models\User;
 
 /**
  * Class AuthService
  * @package Modules\{{MODULE_NAME}}
  */
-class AuthService extends QtService implements AuthServiceInterface
+class AuthService extends Service implements AuthServiceInterface
 {
 
     /**

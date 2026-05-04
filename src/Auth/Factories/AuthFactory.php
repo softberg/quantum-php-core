@@ -27,7 +27,7 @@ use Quantum\App\Exceptions\BaseException;
 use Quantum\Auth\Adapters\JwtAuthAdapter;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Auth\Enums\AuthType;
-use Quantum\Service\QtService;
+use Quantum\Service\Service;
 use Quantum\Hasher\Hasher;
 use Quantum\Jwt\JwtToken;
 use Quantum\Loader\Setup;
@@ -126,7 +126,7 @@ class AuthFactory
     {
         $authServiceClass = config()->get('auth.' . $adapter . '.service');
 
-        /** @var class-string<QtService> $authServiceClass */
+        /** @var class-string<Service> $authServiceClass */
         $authService = ServiceFactory::create($authServiceClass);
 
         if (!$authService instanceof AuthServiceInterface) {

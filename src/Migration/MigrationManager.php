@@ -158,7 +158,7 @@ class MigrationManager
 
             $migration = new $migrationClassName();
 
-            if (!$migration instanceof QtMigration) {
+            if (!$migration instanceof Migration) {
                 throw MigrationException::invalidMigrationClass($migrationClassName);
             }
 
@@ -195,7 +195,7 @@ class MigrationManager
 
             $migration = new $migrationClassName();
 
-            if (!$migration instanceof QtMigration) {
+            if (!$migration instanceof Migration) {
                 throw MigrationException::invalidMigrationClass($migrationClassName);
             }
 

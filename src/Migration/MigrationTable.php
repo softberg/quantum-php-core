@@ -24,7 +24,7 @@ use Quantum\Database\Enums\Type;
  * Class MigrationTable
  * @package Quantum\Migration
  */
-class MigrationTable extends QtMigration
+class MigrationTable extends Migration
 {
     /**
      * Migrations table name

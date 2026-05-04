@@ -20,14 +20,14 @@ use Quantum\Storage\Exceptions\FileSystemException;
 use Quantum\Storage\Factories\FileSystemFactory;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Storage\FileSystem;
-use Quantum\Console\QtCommand;
+use Quantum\Console\CliCommand;
 use ReflectionException;
 
 /**
  * Class DebugBarAssetsCommand
  * @package Quantum\Console
  */
-class DebugBarCommand extends QtCommand
+class DebugBarCommand extends CliCommand
 {
     /**
      * File System

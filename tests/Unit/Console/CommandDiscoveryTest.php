@@ -4,7 +4,7 @@ namespace Quantum\Tests\Unit\Console;
 
 use Quantum\Console\CommandDiscovery;
 use Quantum\Tests\Unit\AppTestCase;
-use Quantum\Console\QtCommand;
+use Quantum\Console\CliCommand;
 
 class CommandDiscoveryTest extends AppTestCase
 {
@@ -36,7 +36,7 @@ class CommandDiscoveryTest extends AppTestCase
 
         $instance = new $command['class']();
 
-        $this->assertInstanceOf(QtCommand::class, $instance);
+        $this->assertInstanceOf(CliCommand::class, $instance);
 
         $this->assertNotEmpty($instance->getName());
     }

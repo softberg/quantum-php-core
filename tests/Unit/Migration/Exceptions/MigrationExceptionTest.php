@@ -39,7 +39,7 @@ class MigrationExceptionTest extends AppTestCase
         $exception = MigrationException::invalidMigrationClass('FooMigration');
 
         $this->assertInstanceOf(MigrationException::class, $exception);
-        $this->assertSame('Migration class `FooMigration` must extend QtMigration', $exception->getMessage());
+        $this->assertSame('Migration class `FooMigration` must extend Migration', $exception->getMessage());
         $this->assertSame(E_ERROR, $exception->getCode());
     }
 }

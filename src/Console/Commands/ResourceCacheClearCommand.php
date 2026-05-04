@@ -22,7 +22,7 @@ use Quantum\Config\Exceptions\ConfigException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Storage\FileSystem;
-use Quantum\Console\QtCommand;
+use Quantum\Console\CliCommand;
 use Quantum\Loader\Setup;
 use ReflectionException;
 use Exception;
@@ -31,7 +31,7 @@ use Exception;
  * Class ResourceCacheClearCommand
  * @package Quantum\Console
  */
-class ResourceCacheClearCommand extends QtCommand
+class ResourceCacheClearCommand extends CliCommand
 {
     /**
      * Command name

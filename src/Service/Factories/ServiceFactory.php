@@ -19,7 +19,7 @@ namespace Quantum\Service\Factories;
 use Quantum\Service\Exceptions\ServiceException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
-use Quantum\Service\QtService;
+use Quantum\Service\Service;
 use ReflectionException;
 use Quantum\Di\Di;
 
@@ -31,7 +31,7 @@ class ServiceFactory
 {
     /**
      * Creates and initiates the service once
-     * @template T of QtService
+     * @template T of Service
      * @param class-string<T> $serviceClass
      * @param array<mixed> $args
      * @return T
@@ -40,7 +40,7 @@ class ServiceFactory
      * @throws ReflectionException
      * @throws ServiceException
      */
-    public static function get(string $serviceClass, array $args = []): QtService
+    public static function get(string $serviceClass, array $args = []): Service
     {
         self::validate($serviceClass);
 
@@ -53,7 +53,7 @@ class ServiceFactory
 
     /**
      * Creates new service instance
-     * @template T of QtService
+     * @template T of Service
      * @param class-string<T> $serviceClass
      * @param array<mixed> $args
      * @return T
@@ -62,7 +62,7 @@ class ServiceFactory
      * @throws ReflectionException
      * @throws ServiceException
      */
-    public static function create(string $serviceClass, array $args = []): QtService
+    public static function create(string $serviceClass, array $args = []): Service
     {
         self::validate($serviceClass);
 
@@ -80,8 +80,8 @@ class ServiceFactory
             throw ServiceException::notFound('Service', $serviceClass);
         }
 
-        if (!is_subclass_of($serviceClass, QtService::class)) {
-            throw ServiceException::notInstanceOf($serviceClass, QtService::class);
+        if (!is_subclass_of($serviceClass, Service::class)) {
+            throw ServiceException::notInstanceOf($serviceClass, Service::class);
         }
     }
 }

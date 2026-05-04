@@ -27,7 +27,7 @@ namespace Quantum\Service {
     {
     }
 
-    class DummyService extends QtService implements DummyServiceInterface
+    class DummyService extends Service implements DummyServiceInterface
     {
     }
 

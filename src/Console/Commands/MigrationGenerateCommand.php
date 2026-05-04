@@ -18,13 +18,13 @@ namespace Quantum\Console\Commands;
 
 use Quantum\Migration\Exceptions\MigrationException;
 use Quantum\Migration\MigrationManager;
-use Quantum\Console\QtCommand;
+use Quantum\Console\CliCommand;
 
 /**
  * Class MigrationGenerateCommand
  * @package Quantum\Console
  */
-class MigrationGenerateCommand extends QtCommand
+class MigrationGenerateCommand extends CliCommand
 {
     /**
      * The console command name.

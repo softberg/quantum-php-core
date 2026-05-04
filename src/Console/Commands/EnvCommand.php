@@ -20,7 +20,7 @@ use Quantum\Storage\Factories\FileSystemFactory;
 use Quantum\Config\Exceptions\ConfigException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
-use Quantum\Console\QtCommand;
+use Quantum\Console\CliCommand;
 use ReflectionException;
 use Quantum\App\App;
 
@@ -28,7 +28,7 @@ use Quantum\App\App;
  * Class EnvCommand
  * @package Quantum\Console
  */
-class EnvCommand extends QtCommand
+class EnvCommand extends CliCommand
 {
     /**
      * Command name

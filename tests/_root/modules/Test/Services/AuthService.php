@@ -3,10 +3,10 @@
 namespace Quantum\Tests\_root\modules\Test\Services;
 
 use Quantum\Auth\Contracts\AuthServiceInterface;
-use Quantum\Service\QtService;
+use Quantum\Service\Service;
 use Quantum\Auth\User;
 
-class AuthService extends QtService implements AuthServiceInterface
+class AuthService extends Service implements AuthServiceInterface
 {
     public function get(string $field, ?string $value): ?User
     {

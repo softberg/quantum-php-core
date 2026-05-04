@@ -3,9 +3,9 @@
 namespace Quantum\Tests\_root\shared\Services;
 
 use Quantum\Storage\Contracts\TokenServiceInterface;
-use Quantum\Service\QtService;
+use Quantum\Service\Service;
 
-class TokenService extends QtService implements TokenServiceInterface
+class TokenService extends Service implements TokenServiceInterface
 {
     public function getAccessToken(): string
     {
