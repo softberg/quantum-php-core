@@ -26,10 +26,10 @@ use Symfony\Component\Console\Command\Command;
 use RuntimeException;
 
 /**
- * Class QtCommand
+ * Class CliCommand
  * @package Quantum\Console
  */
-abstract class QtCommand extends Command implements CommandInterface
+abstract class CliCommand extends Command implements CommandInterface
 {
     /**
      * Console command name
@@ -65,7 +65,7 @@ abstract class QtCommand extends Command implements CommandInterface
     protected ?OutputInterface $output = null;
 
     /**
-     * QtCommand constructor.
+     * CliCommand constructor.
      */
     public function __construct()
     {

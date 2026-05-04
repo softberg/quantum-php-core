@@ -2,9 +2,9 @@
 
 namespace Quantum\Tests\_root\shared\Commands;
 
-use Quantum\Console\QtCommand;
+use Quantum\Console\CliCommand;
 
-class TestCommand extends QtCommand
+class TestCommand extends CliCommand
 {
     protected ?string $name = 'test:dummy';
     protected ?string $description = 'Dummy test command';

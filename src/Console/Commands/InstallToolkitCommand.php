@@ -23,7 +23,7 @@ use Symfony\Component\Console\Input\ArrayInput;
 use Quantum\Config\Exceptions\ConfigException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
-use Quantum\Console\QtCommand;
+use Quantum\Console\CliCommand;
 use ReflectionException;
 use RuntimeException;
 
@@ -31,7 +31,7 @@ use RuntimeException;
  * Class InstallToolkitCommand
  * @package Quantum\Console
  */
-class InstallToolkitCommand extends QtCommand
+class InstallToolkitCommand extends CliCommand
 {
     /**
      * Command name

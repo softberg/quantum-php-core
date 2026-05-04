@@ -22,6 +22,7 @@
 - **BREAKING:** Renamed `Quantum\\Service\\QtService` to `Quantum\\Service\\Service` (#500)
 - **BREAKING:** Renamed `Quantum\\Middleware\\QtMiddleware` to `Quantum\\Middleware\\Middleware` (#500)
 - **BREAKING:** Renamed `Quantum\\Migration\\QtMigration` to `Quantum\\Migration\\Migration` (#500)
+- **BREAKING:** Renamed `Quantum\\Console\\QtCommand` to `Quantum\\Console\\CliCommand` (#500)
 
 - **BREAKING:** Minimum PHP version requirement raised from 7.3 to 7.4
 - Modernized codebase with PHP 7.4+ syntax using Rector:

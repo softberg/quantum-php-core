@@ -25,7 +25,7 @@ use Quantum\Router\RouteCollection;
 use Quantum\Module\ModuleLoader;
 use Quantum\Router\RouteBuilder;
 use Quantum\Storage\FileSystem;
-use Quantum\Console\QtCommand;
+use Quantum\Console\CliCommand;
 use ReflectionException;
 use OpenApi\Generator;
 use Quantum\Di\Di;
@@ -34,7 +34,7 @@ use Quantum\Di\Di;
  * Class OpenApiUiAssetsCommand
  * @package Quantum\Console
  */
-class OpenApiCommand extends QtCommand
+class OpenApiCommand extends CliCommand
 {
     /**
      * File System

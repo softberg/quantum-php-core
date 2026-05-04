@@ -17,14 +17,14 @@ declare(strict_types=1);
 namespace Quantum\Console\Commands;
 
 use Quantum\Environment\Exceptions\EnvException;
-use Quantum\Console\QtCommand;
+use Quantum\Console\CliCommand;
 use Exception;
 
 /**
  * Class KeyGenerateCommand
  * @package Quantum\Console
  */
-class KeyGenerateCommand extends QtCommand
+class KeyGenerateCommand extends CliCommand
 {
     /**
      * Command name

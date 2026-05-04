@@ -42,7 +42,7 @@ class CommandDiscovery
 
             $commandReflection = new ReflectionClass($commandClass);
 
-            if (!$commandReflection->isInstantiable() || !$commandReflection->isSubclassOf(QtCommand::class)) {
+            if (!$commandReflection->isInstantiable() || !$commandReflection->isSubclassOf(CliCommand::class)) {
                 continue;
             }
 

@@ -18,14 +18,14 @@ namespace Quantum\Console\Commands;
 
 use Symfony\Component\VarExporter\Exception\ExceptionInterface;
 use Quantum\Module\ModuleManager;
-use Quantum\Console\QtCommand;
+use Quantum\Console\CliCommand;
 use Exception;
 
 /**
  * Class ModuleGenerateCommand
  * @package Quantum\Console\Commands
  */
-class ModuleGenerateCommand extends QtCommand
+class ModuleGenerateCommand extends CliCommand
 {
     /**
      * Command name

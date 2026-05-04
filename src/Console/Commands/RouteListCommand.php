@@ -23,7 +23,7 @@ use Quantum\Di\Exceptions\DiException;
 use Quantum\Router\RouteCollection;
 use Quantum\Router\RouteBuilder;
 use Quantum\Module\ModuleLoader;
-use Quantum\Console\QtCommand;
+use Quantum\Console\CliCommand;
 use Quantum\Router\Route;
 use ReflectionException;
 use Quantum\Di\Di;
@@ -32,7 +32,7 @@ use Quantum\Di\Di;
  * Class RouteListCommand
  * @package Quantum\Console
  */
-class RouteListCommand extends QtCommand
+class RouteListCommand extends CliCommand
 {
     /**
      * The console command name.
