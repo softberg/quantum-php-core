@@ -14,7 +14,7 @@
 
 namespace {{MODULE_NAMESPACE}}\Middlewares;
 
-use Quantum\Middleware\QtMiddleware;
+use Quantum\Middleware\Middleware;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 use Closure;
@@ -23,7 +23,7 @@ use Closure;
  * Class Guest
  * @package Modules\{{MODULE_NAME}}
  */
-class Guest extends QtMiddleware
+class Guest extends Middleware
 {
     public function apply(Request $request, Closure $next): Response
     {

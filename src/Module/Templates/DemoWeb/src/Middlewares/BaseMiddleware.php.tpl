@@ -15,7 +15,7 @@
 namespace {{MODULE_NAMESPACE}}\Middlewares;
 
 use Quantum\Validation\Validator;
-use Quantum\Middleware\QtMiddleware;
+use Quantum\Middleware\Middleware;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 
@@ -23,7 +23,7 @@ use Quantum\Http\Request;
  * Class BaseMiddleware
  * @package Modules\{{MODULE_NAME}}
  */
-abstract class BaseMiddleware extends QtMiddleware
+abstract class BaseMiddleware extends Middleware
 {
     protected $validator;
 

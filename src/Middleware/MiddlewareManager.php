@@ -67,9 +67,9 @@ class MiddlewareManager
 
     /**
      * Loads and gets the current middleware instance
-     * @throws MiddlewareException|BaseException|ReflectionException
+     * @throws MiddlewareException|BaseException
      */
-    private function getMiddleware(Request $request): QtMiddleware
+    private function getMiddleware(Request $request): Middleware
     {
         $middlewareClass = request()->getModuleBaseNamespace() . '\\' . $this->module . '\\Middlewares\\' . current($this->middlewares);
 
@@ -79,8 +79,8 @@ class MiddlewareManager
 
         $middleware = new $middlewareClass($request);
 
-        if (!$middleware instanceof QtMiddleware) {
-            throw MiddlewareException::notInstanceOf($middlewareClass, QtMiddleware::class);
+        if (!$middleware instanceof Middleware) {
+            throw MiddlewareException::notInstanceOf($middlewareClass, Middleware::class);
         }
 
         return $middleware;

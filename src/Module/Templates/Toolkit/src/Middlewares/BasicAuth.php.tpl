@@ -14,7 +14,7 @@
 
 namespace Modules\Toolkit\Middlewares;
 
-use Quantum\Middleware\QtMiddleware;
+use Quantum\Middleware\Middleware;
 use Quantum\Loader\Setup;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
@@ -24,7 +24,7 @@ use Closure;
  * Class BasicAuth
  * @package Modules\Toolkit
  */
-class BasicAuth extends QtMiddleware
+class BasicAuth extends Middleware
 {
     public function apply(Request $request, Closure $next): Response
     {

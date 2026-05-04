@@ -21,10 +21,10 @@ use Quantum\Http\Request;
 use Closure;
 
 /**
- * Class QtMiddleware
+ * Class Middleware
  * @package Quantum\Middleware
  */
-abstract class QtMiddleware
+abstract class Middleware
 {
     /**
      * Applies the middleware
