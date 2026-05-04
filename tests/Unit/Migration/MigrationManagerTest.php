@@ -179,7 +179,7 @@ class MigrationManagerTest extends AppTestCase
         $manager = new MigrationManager();
 
         $this->expectException(MigrationException::class);
-        $this->expectExceptionMessage('Migration class `create_table_gamma_table_1003` must extend QtMigration');
+        $this->expectExceptionMessage('Migration class `create_table_gamma_table_1003` must extend Migration');
 
         $manager->applyMigrations(MigrationManager::UPGRADE);
     }
@@ -211,7 +211,7 @@ class MigrationManagerTest extends AppTestCase
     private function createValidMigrationFile(string $className, string $tableName): void
     {
         $content = "<?php\n"
-            . 'class ' . $className . " extends \\Quantum\\Migration\\QtMigration\n"
+            . 'class ' . $className . " extends \\Quantum\\Migration\\Migration\n"
             . "{\n"
             . "    public function up(\\Quantum\\Database\\Factories\\TableFactory \$tableFactory): void\n"
             . "    {\n"

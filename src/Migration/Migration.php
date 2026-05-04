@@ -19,10 +19,10 @@ namespace Quantum\Migration;
 use Quantum\Database\Factories\TableFactory;
 
 /**
- * Class QtMigration
+ * Class Migration
  * @package Quantum\Migration
  */
-abstract class QtMigration
+abstract class Migration
 {
     /**
      * Upgrades with the specified migration class
