@@ -143,7 +143,7 @@ class FileSystemFactory
     {
         $serviceClass = (string) config()->get('fs.' . $adapter . '.service');
 
-        /** @var class-string<\Quantum\Service\QtService> $serviceClass */
+        /** @var class-string<\Quantum\Service\Service> $serviceClass */
         $tokenService = ServiceFactory::create($serviceClass);
 
         if (!$tokenService instanceof TokenServiceInterface) {

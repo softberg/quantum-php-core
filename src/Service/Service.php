@@ -20,10 +20,10 @@ use Quantum\Service\Exceptions\ServiceException;
 use Quantum\App\Exceptions\BaseException;
 
 /**
- * Class QtService
+ * Class Service
  * @package Quantum\Service
  */
-class QtService
+abstract class Service
 {
     /**
      * Handles the missing methods of the service
@@ -33,6 +33,6 @@ class QtService
      */
     public function __call(string $method, array $arguments)
     {
-        throw ServiceException::methodNotSupported($method, QtService::class);
+        throw ServiceException::methodNotSupported($method, Service::class);
     }
 }

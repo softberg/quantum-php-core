@@ -16,13 +16,13 @@
 namespace {{MODULE_NAMESPACE}}\Services;
 
 use Quantum\Console\CommandDiscovery;
-use Quantum\Service\QtService;
+use Quantum\Service\Service;
 
 /**
  * Class CommandService
  * @package Modules\{{MODULE_NAME}}
  */
-class CommandService extends QtService
+class CommandService extends Service
 {
 
     /**

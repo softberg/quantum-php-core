@@ -19,14 +19,14 @@ use Quantum\Config\Exceptions\ConfigException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Paginator\Paginator;
-use Quantum\Service\QtService;
+use Quantum\Service\Service;
 use ReflectionException;
 
 /**
  * Class DatabaseService
  * @package Modules\Toolkit
  */
-class DatabaseService extends QtService
+class DatabaseService extends Service
 {
     /**
      * @var string

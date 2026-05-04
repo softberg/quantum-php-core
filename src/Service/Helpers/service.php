@@ -16,7 +16,7 @@ use Quantum\Service\Exceptions\ServiceException;
 use Quantum\Service\Factories\ServiceFactory;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
-use Quantum\Service\QtService;
+use Quantum\Service\Service;
 
 /**
  * Gets or creates service instance
@@ -26,9 +26,9 @@ use Quantum\Service\QtService;
  * @throws DiException
  * @throws ReflectionException
  * @throws ServiceException
- * @template T of QtService
+ * @template T of Service
  */
-function service(string $serviceClass, bool $singleton = false): QtService
+function service(string $serviceClass, bool $singleton = false): Service
 {
     return $singleton ? ServiceFactory::get($serviceClass) : ServiceFactory::create($serviceClass);
 }

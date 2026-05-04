@@ -2,10 +2,10 @@
 
 namespace Quantum\Services {
 
-    use Quantum\Service\QtService;
+    use Quantum\Service\Service;
     use Quantum\Models\TestModel;
 
-    class TestService extends QtService
+    class TestService extends Service
     {
         public static $count = 0;
 
@@ -43,7 +43,7 @@ namespace Quantum\Tests\Unit\Service\Factories {
     use Quantum\Service\Factories\ServiceFactory;
     use Quantum\Tests\Unit\AppTestCase;
     use Quantum\Services\TestService;
-    use Quantum\Service\QtService;
+    use Quantum\Service\Service;
     use Quantum\Model\DbModel;
 
     class ServiceFactoryTest extends AppTestCase
@@ -62,7 +62,7 @@ namespace Quantum\Tests\Unit\Service\Factories {
         {
             $service = ServiceFactory::get(TestService::class);
 
-            $this->assertInstanceOf(QtService::class, $service);
+            $this->assertInstanceOf(Service::class, $service);
 
             $this->assertInstanceOf(TestService::class, $service);
         }
@@ -84,7 +84,7 @@ namespace Quantum\Tests\Unit\Service\Factories {
         {
             $service = ServiceFactory::create(TestService::class);
 
-            $this->assertInstanceOf(QtService::class, $service);
+            $this->assertInstanceOf(Service::class, $service);
 
             $this->assertInstanceOf(TestService::class, $service);
         }

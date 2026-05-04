@@ -14,13 +14,13 @@
 
 namespace Modules\Toolkit\Services;
 
-use Quantum\Service\QtService;
+use Quantum\Service\Service;
 
 /**
  * Class DashboardService
  * @package Modules\Toolkit
  */
-class DashboardService extends QtService
+class DashboardService extends Service
 {
     public function __construct()
     {

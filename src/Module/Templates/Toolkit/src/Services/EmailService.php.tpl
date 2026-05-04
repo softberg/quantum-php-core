@@ -20,7 +20,7 @@ use Quantum\Paginator\Factories\PaginatorFactory;
 use Quantum\Paginator\Enums\PaginatorType;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Paginator\Paginator;
-use Quantum\Service\QtService;
+use Quantum\Service\Service;
 use Quantum\Mailer\MailTrap;
 use ReflectionException;
 use Quantum\Di\Di;
@@ -29,7 +29,7 @@ use Quantum\Di\Di;
  * Class EmailService
  * @package Modules\Toolkit
  */
-class EmailService extends QtService
+class EmailService extends Service
 {
     /**
      * @var string

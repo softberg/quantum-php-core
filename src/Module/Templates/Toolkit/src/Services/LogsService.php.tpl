@@ -21,14 +21,14 @@ use Quantum\Paginator\Enums\PaginatorType;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Paginator\Paginator;
-use Quantum\Service\QtService;
+use Quantum\Service\Service;
 use ReflectionException;
 
 /**
  * Class LogsService
  * @package Modules\Toolkit
  */
-class LogsService extends QtService
+class LogsService extends Service
 {
     /**
      * Retrieves a list of available log file names from the logs directory.
