@@ -143,5 +143,16 @@ trait WebAppTrait
     {
         $this->handleCors($response);
         $response->send();
+        $this->cleanupRequestContext();
+    }
+
+    /**
+     * Clears request-scoped state after the response has been sent.
+     */
+    private function cleanupRequestContext(): void
+    {
+        request()->setMatchedRoute(null);
+        request()->flush();
+        response()->flush();
     }
 }

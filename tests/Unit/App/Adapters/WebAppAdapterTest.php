@@ -29,6 +29,11 @@ class WebAppAdapterTest extends AppTestCase
         ob_end_clean();
 
         $this->assertEquals(0, $result);
+        $this->assertNull(request()->getMatchedRoute());
+        $this->assertNull(request()->getUri());
+        $this->assertSame([], response()->all());
+        $this->assertSame([], response()->allHeaders());
+        $this->assertSame(200, response()->getStatusCode());
     }
 
     public function testWebAppAdapterStartFails(): void
@@ -40,6 +45,11 @@ class WebAppAdapterTest extends AppTestCase
         ob_end_clean();
 
         $this->assertSame(0, $result);
+        $this->assertNull(request()->getMatchedRoute());
+        $this->assertNull(request()->getUri());
+        $this->assertSame([], response()->all());
+        $this->assertSame([], response()->allHeaders());
+        $this->assertSame(200, response()->getStatusCode());
     }
 
     public function testWebAppAdapterHandlesPageNotFoundGracefully(): void
@@ -51,5 +61,10 @@ class WebAppAdapterTest extends AppTestCase
         ob_end_clean();
 
         $this->assertSame(0, $result);
+        $this->assertNull(request()->getMatchedRoute());
+        $this->assertNull(request()->getUri());
+        $this->assertSame([], response()->all());
+        $this->assertSame([], response()->allHeaders());
+        $this->assertSame(200, response()->getStatusCode());
     }
 }
