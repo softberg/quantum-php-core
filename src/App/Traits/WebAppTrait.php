@@ -141,9 +141,12 @@ trait WebAppTrait
      */
     private function sendResponse(Response $response): void
     {
-        $this->handleCors($response);
-        $response->send();
-        $this->cleanupRequestContext();
+        try {
+            $this->handleCors($response);
+            $response->send();
+        } finally {
+            $this->cleanupRequestContext();
+        }
     }
 
     /**
