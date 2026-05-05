@@ -28,7 +28,7 @@ class Auth extends BaseMiddleware
     public function apply(Request $request, Closure $next): Response
     {
         if (!auth()->check()) {
-            $this->respondWithError($request,
+            return $this->respondWithError($request,
                 t('validation.unauthorizedRequest'),
                 StatusCode::UNAUTHORIZED
             );
