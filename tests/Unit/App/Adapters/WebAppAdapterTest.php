@@ -2,8 +2,11 @@
 
 namespace Quantum\Tests\Unit\App\Adapters;
 
+use Quantum\Http\Exceptions\HttpException;
 use Quantum\App\Adapters\WebAppAdapter;
 use Quantum\Tests\Unit\AppTestCase;
+use Quantum\Router\Route;
+use Throwable;
 
 class WebAppAdapterTest extends AppTestCase
 {
@@ -29,6 +32,11 @@ class WebAppAdapterTest extends AppTestCase
         ob_end_clean();
 
         $this->assertEquals(0, $result);
+        $this->assertNull(request()->getMatchedRoute());
+        $this->assertNull(request()->getUri());
+        $this->assertSame([], response()->all());
+        $this->assertSame([], response()->allHeaders());
+        $this->assertSame(200, response()->getStatusCode());
     }
 
     public function testWebAppAdapterStartFails(): void
@@ -40,6 +48,11 @@ class WebAppAdapterTest extends AppTestCase
         ob_end_clean();
 
         $this->assertSame(0, $result);
+        $this->assertNull(request()->getMatchedRoute());
+        $this->assertNull(request()->getUri());
+        $this->assertSame([], response()->all());
+        $this->assertSame([], response()->allHeaders());
+        $this->assertSame(200, response()->getStatusCode());
     }
 
     public function testWebAppAdapterHandlesPageNotFoundGracefully(): void
@@ -51,5 +64,42 @@ class WebAppAdapterTest extends AppTestCase
         ob_end_clean();
 
         $this->assertSame(0, $result);
+        $this->assertNull(request()->getMatchedRoute());
+        $this->assertNull(request()->getUri());
+        $this->assertSame([], response()->all());
+        $this->assertSame([], response()->allHeaders());
+        $this->assertSame(200, response()->getStatusCode());
+    }
+
+    public function testWebAppAdapterCleansUpOnException(): void
+    {
+        request()->create('GET', '/test/am/tests');
+        request()->setMatchedRoute(null);
+        request()->setMatchedRoute(new \Quantum\Router\MatchedRoute(
+            new Route(['GET'], '/test/am/tests', 'TestController', 'tests'),
+            []
+        ));
+        response()->setHeader('X-Test', '1');
+        response()->json(['foo' => 'bar']);
+
+        $throwingResponse = new class () extends \Quantum\Http\Response {
+            public function send(): void
+            {
+                throw new HttpException('boom');
+            }
+        };
+
+        try {
+            $this->invokePrivateMethod($this->webAppAdapter, 'sendResponse', [$throwingResponse]);
+            $this->fail('Expected response sending to fail.');
+        } catch (Throwable $exception) {
+            $this->assertInstanceOf(HttpException::class, $exception);
+        }
+
+        $this->assertNull(request()->getMatchedRoute());
+        $this->assertNull(request()->getUri());
+        $this->assertSame([], response()->all());
+        $this->assertSame([], response()->allHeaders());
+        $this->assertSame(200, response()->getStatusCode());
     }
 }

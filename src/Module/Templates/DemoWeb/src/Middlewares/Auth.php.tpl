@@ -28,7 +28,7 @@ class Auth extends Middleware
     public function apply(Request $request, Closure $next): Response
     {
         if (!auth()->check()) {
-            redirect(base_url(true) . '/' . current_lang() . '/signin');
+            return redirect(base_url(true) . '/' . current_lang() . '/signin');
         }
 
         return $next($request);
