@@ -49,6 +49,8 @@ class LoadModulesStage implements BootStageInterface
             $moduleLoader->getModuleConfigs()
         );
 
-        Di::set(RouteCollection::class, $collection);
+        if (!Di::has(RouteCollection::class)) {
+            Di::set(RouteCollection::class, $collection);
+        }
     }
 }
