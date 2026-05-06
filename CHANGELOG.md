@@ -12,6 +12,14 @@
 - **BREAKING:** Converted `Request` and `Response` from static facades to instance-based classes (#454):
   - Merged `HttpRequest`/`HttpResponse` wrapper layer directly into `Request`/`Response`
   - All request/response access now goes through `request()` and `response()` helper functions
+- **BREAKING:** Refactored request/response execution flow to explicit `Response` returns (#470, #471, #472, #473):
+  - Route handlers (controller actions and closure routes) must now return `Quantum\Http\Response`; non-`Response` returns now fail fast
+  - Response builder methods are now fluent and return `Response`/`self` (`json()`, `html()`, `xml()`, `jsonp()`, `set()`, `setHeader()`, `setStatusCode()`, `redirect()`)
+  - Redirect helpers now return `Response` (`redirect()`, `redirectWith()`) instead of terminating execution implicitly
+  - Middleware pipeline is now terminal/return-driven: middleware `apply()` must return `Response`, and middleware chaining no longer returns `[Request, Response]`
+  - Web adapter flow no longer relies on `stop()` for normal control flow (`OPTIONS`, 404, cache-hit, route dispatch) and now sends a returned `Response`
+  - Cached view lookup now returns `?Response` directly (`ViewCache::getCachedResponse()`)
+  - Console adapter normal termination no longer relies on `StopExecutionException`; `start()` now returns explicit exit codes
 - **BREAKING:** Removed all static singleton patterns from core services (#381, #382):
   - Migrated all 12 first-party factories (Auth, Archive, Cache, Captcha, Cryptor, FileSystem, Lang, Logger, Mailer, Renderer, Session, View) from static instance caches to DI-managed lifetimes
   - Migrated service singletons to DI ownership: Cookie, Config, Environment, Server, AssetManager, Csrf, Database, MailTrap, Debugger, ViewCache, ErrorHandler, HookManager, ModuleLoader
