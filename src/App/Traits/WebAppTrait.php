@@ -16,7 +16,6 @@ declare(strict_types=1);
 
 namespace Quantum\App\Traits;
 
-use Quantum\Module\Exceptions\ModuleException;
 use Quantum\Config\Exceptions\ConfigException;
 use Quantum\Loader\Exceptions\LoaderException;
 use Quantum\Router\Exceptions\RouteException;
@@ -26,8 +25,6 @@ use Quantum\Lang\Factories\LangFactory;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\ResourceCache\ViewCache;
 use Quantum\Router\RouteCollection;
-use Quantum\Router\RouteBuilder;
-use Quantum\Module\ModuleLoader;
 use Quantum\Router\MatchedRoute;
 use Quantum\Router\RouteFinder;
 use Quantum\Debugger\Debugger;
@@ -44,26 +41,7 @@ use Exception;
 trait WebAppTrait
 {
     /**
-     * @throws ModuleException|RouteException|DiException|ReflectionException
-     */
-    private function loadModules(): void
-    {
-        if (!Di::isRegistered(ModuleLoader::class)) {
-            Di::register(ModuleLoader::class);
-        }
-
-        $moduleLoader = Di::get(ModuleLoader::class);
-
-        $collection = (new RouteBuilder())->build(
-            $moduleLoader->loadModulesRoutes(),
-            $moduleLoader->getModuleConfigs()
-        );
-
-        Di::set(RouteCollection::class, $collection);
-    }
-
-    /**
-     * @throws RouteException|BaseException|DiException|ReflectionException
+     * @throws RouteException|BaseException
      */
     private function resolveRoute(): ?MatchedRoute
     {
@@ -156,6 +134,5 @@ trait WebAppTrait
     {
         request()->setMatchedRoute(null);
         request()->flush();
-        response()->flush();
     }
 }

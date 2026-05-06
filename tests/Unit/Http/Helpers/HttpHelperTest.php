@@ -55,8 +55,6 @@ class HttpHelperTest extends AppTestCase
     {
         config()->set('app.base_url', null);
 
-        $routeCollection = new RouteCollection();
-
         $route = new Route(
             ['GET'],
             '/signin',
@@ -65,10 +63,11 @@ class HttpHelperTest extends AppTestCase
         );
         $route->module('admin')->prefix('admin');
 
-        $routeCollection->add($route);
+        $routeCollection = Di::has(RouteCollection::class)
+            ? Di::get(RouteCollection::class)
+            : new RouteCollection();
 
-        // Register route collection in DI
-        Di::set(RouteCollection::class, $routeCollection);
+        $routeCollection->add($route);
 
         // Create route finder and find the route
         $router = new RouteFinder($routeCollection);

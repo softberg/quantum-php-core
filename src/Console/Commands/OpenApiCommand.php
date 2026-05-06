@@ -99,14 +99,16 @@ class OpenApiCommand extends CliCommand
 
         $moduleLoader = Di::get(ModuleLoader::class);
 
-        $builder = new RouteBuilder();
+        if (!Di::has(RouteCollection::class)) {
+            $builder = new RouteBuilder();
 
-        $routeCollection = $builder->build(
-            $moduleLoader->loadModulesRoutes(),
-            $moduleLoader->getModuleConfigs()
-        );
+            $routeCollection = $builder->build(
+                $moduleLoader->loadModulesRoutes(),
+                $moduleLoader->getModuleConfigs()
+            );
 
-        Di::set(RouteCollection::class, $routeCollection);
+            Di::set(RouteCollection::class, $routeCollection);
+        }
 
         $module = $this->getArgument('module');
 

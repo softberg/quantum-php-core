@@ -29,6 +29,7 @@ use Quantum\App\Stages\LoadAppConfigStage;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\App\Stages\InitDebuggerStage;
 use Quantum\Middleware\MiddlewareManager;
+use Quantum\App\Stages\LoadModulesStage;
 use Quantum\App\Stages\LoadHelpersStage;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\App\Stages\InitHttpStage;
@@ -59,6 +60,7 @@ class WebAppAdapter extends AppAdapter
             new SetupErrorHandlerStage(),
             new InitHttpStage(),
             new InitDebuggerStage(),
+            new LoadModulesStage(),
         ]);
 
         $pipeline->run($this->context);
@@ -74,8 +76,6 @@ class WebAppAdapter extends AppAdapter
             $this->sendResponse(response()->setStatusCode(StatusCode::NO_CONTENT));
             return ExitCode::SUCCESS;
         }
-
-        $this->loadModules();
 
         $matchedRoute = $this->resolveRoute();
 
