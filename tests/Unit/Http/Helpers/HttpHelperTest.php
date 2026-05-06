@@ -9,7 +9,6 @@ use Quantum\Router\RouteFinder;
 use Quantum\Router\Route;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
-use Quantum\Di\Di;
 
 class HttpHelperTest extends AppTestCase
 {
@@ -23,11 +22,6 @@ class HttpHelperTest extends AppTestCase
 
         $this->request = request();
         $this->response = response();
-    }
-
-    public function tearDown(): void
-    {
-        request()->flush();
     }
 
     public function testRequestHelperReturnsDiInstance(): void
@@ -55,8 +49,6 @@ class HttpHelperTest extends AppTestCase
     {
         config()->set('app.base_url', null);
 
-        $routeCollection = new RouteCollection();
-
         $route = new Route(
             ['GET'],
             '/signin',
@@ -65,10 +57,9 @@ class HttpHelperTest extends AppTestCase
         );
         $route->module('admin')->prefix('admin');
 
-        $routeCollection->add($route);
+        $routeCollection = new RouteCollection();
 
-        // Register route collection in DI
-        Di::set(RouteCollection::class, $routeCollection);
+        $routeCollection->add($route);
 
         // Create route finder and find the route
         $router = new RouteFinder($routeCollection);

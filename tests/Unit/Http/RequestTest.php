@@ -10,17 +10,6 @@ use Quantum\Di\Di;
 
 class RequestTest extends AppTestCase
 {
-    public function setUp(): void
-    {
-        parent::setUp();
-
-    }
-
-    public function tearDown(): void
-    {
-        request()->flush();
-    }
-
     public function testSetGetMethod(): void
     {
         $request = request();

@@ -6,16 +6,6 @@ use Quantum\Tests\Unit\AppTestCase;
 
 class HttpRequestUrlTest extends AppTestCase
 {
-    public function setUp(): void
-    {
-        parent::setUp();
-    }
-
-    public function tearDown(): void
-    {
-        request()->flush();
-    }
-
     public function testSetGetProtocol(): void
     {
         $request = request();

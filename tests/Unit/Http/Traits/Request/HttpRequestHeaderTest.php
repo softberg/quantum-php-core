@@ -9,13 +9,15 @@ class HttpRequestHeaderTest extends AppTestCase
     public function setUp(): void
     {
         parent::setUp();
+
+        request()->create('GET', 'http://example.com');
     }
 
     public function tearDown(): void
     {
-        request()->flush();
-
         server()->flush();
+
+        parent::tearDown();
     }
 
     public function testRequestHeaderSetHasGetDelete(): void
@@ -39,7 +41,7 @@ class HttpRequestHeaderTest extends AppTestCase
     {
         $request = request();
 
-        $this->assertEmpty($request->allHeaders());
+        $this->assertFalse($request->hasHeader('X-CUSTOM'));
 
         $request->setHeader('X-CUSTOM', 'Custom');
 

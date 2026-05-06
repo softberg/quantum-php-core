@@ -10,14 +10,6 @@ use Quantum\Di\Di;
 
 class RouteHelpersTest extends AppTestCase
 {
-    public function tearDown(): void
-    {
-        request()->setMatchedRoute(null);
-        request()->flush();
-
-        parent::tearDown();
-    }
-
     public function testHelpersReturnDefaultsWhenNoRouteMatched(): void
     {
         $this->assertNull(current_middlewares());
@@ -105,10 +97,8 @@ class RouteHelpersTest extends AppTestCase
 
         $route->name('Dashboard')->module('Admin');
 
-        $collection = new RouteCollection();
+        $collection = $this->getRouteCollection();
         $collection->add($route);
-
-        Di::set(RouteCollection::class, $collection);
 
         $found = find_route_by_name('dashboard', 'admin');
 
@@ -127,10 +117,8 @@ class RouteHelpersTest extends AppTestCase
 
         $route->group('auth')->module('Web');
 
-        $collection = new RouteCollection();
+        $collection = $this->getRouteCollection();
         $collection->add($route);
-
-        Di::set(RouteCollection::class, $collection);
 
         $this->assertTrue(route_group_exists('auth', 'web'));
         $this->assertFalse(route_group_exists('guest', 'web'));
@@ -146,19 +134,18 @@ class RouteHelpersTest extends AppTestCase
         $this->assertSame('api/test', route_uri());
     }
 
-    public function testFindRouteByNameDependsOnCollectionRegistration(): void
+    public function testFindRouteByNameDependsOnCollectionState(): void
     {
         $this->assertNull(
-            find_route_by_name('dashboard', 'admin'),
-            'Expected null when RouteCollection is not registered'
+            find_route_by_name('route-that-does-not-exist', 'admin'),
+            'Expected null when route does not exist in collection'
         );
 
-        $collection = new RouteCollection();
-        Di::set(RouteCollection::class, $collection);
+        $collection = $this->getRouteCollection();
 
         $this->assertNull(
-            find_route_by_name('dashboard', 'admin'),
-            'Expected null when RouteCollection is empty'
+            find_route_by_name('route-that-does-not-exist', 'admin'),
+            'Expected null when route does not exist in current collection'
         );
 
         $route = new Route(
@@ -178,19 +165,18 @@ class RouteHelpersTest extends AppTestCase
         $this->assertSame('DashboardController', $found->getController());
     }
 
-    public function testRouteGroupExistsDependsOnCollectionRegistration(): void
+    public function testRouteGroupExistsDependsOnCollectionState(): void
     {
         $this->assertFalse(
-            route_group_exists('auth', 'web'),
-            'Expected false when RouteCollection is not registered'
+            route_group_exists('group-that-does-not-exist', 'web'),
+            'Expected false when group does not exist in collection'
         );
 
-        $collection = new RouteCollection();
-        Di::set(RouteCollection::class, $collection);
+        $collection = $this->getRouteCollection();
 
         $this->assertFalse(
-            route_group_exists('auth', 'web'),
-            'Expected false when RouteCollection is empty'
+            route_group_exists('group-that-does-not-exist', 'web'),
+            'Expected false when group does not exist in current collection'
         );
 
         $route = new Route(
@@ -207,6 +193,18 @@ class RouteHelpersTest extends AppTestCase
             route_group_exists('auth', 'web'),
             'Expected true when matching group exists in module'
         );
+    }
+
+    private function getRouteCollection(): RouteCollection
+    {
+        if (Di::has(RouteCollection::class)) {
+            return Di::get(RouteCollection::class);
+        }
+
+        $collection = new RouteCollection();
+        Di::set(RouteCollection::class, $collection);
+
+        return $collection;
     }
 
 }

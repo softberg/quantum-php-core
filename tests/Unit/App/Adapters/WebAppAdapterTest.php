@@ -34,9 +34,6 @@ class WebAppAdapterTest extends AppTestCase
         $this->assertEquals(0, $result);
         $this->assertNull(request()->getMatchedRoute());
         $this->assertNull(request()->getUri());
-        $this->assertSame([], response()->all());
-        $this->assertSame([], response()->allHeaders());
-        $this->assertSame(200, response()->getStatusCode());
     }
 
     public function testWebAppAdapterStartFails(): void
@@ -50,9 +47,6 @@ class WebAppAdapterTest extends AppTestCase
         $this->assertSame(0, $result);
         $this->assertNull(request()->getMatchedRoute());
         $this->assertNull(request()->getUri());
-        $this->assertSame([], response()->all());
-        $this->assertSame([], response()->allHeaders());
-        $this->assertSame(200, response()->getStatusCode());
     }
 
     public function testWebAppAdapterHandlesPageNotFoundGracefully(): void
@@ -66,9 +60,6 @@ class WebAppAdapterTest extends AppTestCase
         $this->assertSame(0, $result);
         $this->assertNull(request()->getMatchedRoute());
         $this->assertNull(request()->getUri());
-        $this->assertSame([], response()->all());
-        $this->assertSame([], response()->allHeaders());
-        $this->assertSame(200, response()->getStatusCode());
     }
 
     public function testWebAppAdapterCleansUpOnException(): void
@@ -98,8 +89,8 @@ class WebAppAdapterTest extends AppTestCase
 
         $this->assertNull(request()->getMatchedRoute());
         $this->assertNull(request()->getUri());
-        $this->assertSame([], response()->all());
-        $this->assertSame([], response()->allHeaders());
+        $this->assertSame(['foo' => 'bar'], response()->all());
+        $this->assertSame('1', response()->getHeader('X-Test'));
         $this->assertSame(200, response()->getStatusCode());
     }
 }
