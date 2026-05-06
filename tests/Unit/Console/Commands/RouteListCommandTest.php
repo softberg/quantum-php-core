@@ -5,6 +5,8 @@ namespace Quantum\Tests\Unit\Console\Commands;
 use Symfony\Component\Console\Tester\CommandTester;
 use Quantum\Console\Commands\RouteListCommand;
 use Quantum\Tests\Unit\AppTestCase;
+use Quantum\Router\RouteCollection;
+use Quantum\Di\Di;
 
 class RouteListCommandTest extends AppTestCase
 {
@@ -50,5 +52,19 @@ class RouteListCommandTest extends AppTestCase
         ]);
 
         $this->assertStringContainsString('The module is not found', $tester->getDisplay());
+    }
+
+    public function testExecUsesPreBoundRouteCollection(): void
+    {
+        if (!Di::has(RouteCollection::class)) {
+            Di::set(RouteCollection::class, new RouteCollection());
+        }
+
+        $tester = new CommandTester($this->command);
+        $tester->execute([]);
+
+        $output = $tester->getDisplay();
+        $this->assertStringContainsString('Routes', $output);
+        $this->assertStringContainsString('MODULE', $output);
     }
 }
