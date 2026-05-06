@@ -25,11 +25,6 @@ class HttpHelperTest extends AppTestCase
         $this->response = response();
     }
 
-    public function tearDown(): void
-    {
-        request()->flush();
-    }
-
     public function testRequestHelperReturnsDiInstance(): void
     {
         $this->assertInstanceOf(Request::class, request());

@@ -6,16 +6,11 @@ use Quantum\Tests\Unit\AppTestCase;
 
 class HttpRequestHeaderTest extends AppTestCase
 {
-    public function setUp(): void
-    {
-        parent::setUp();
-    }
-
     public function tearDown(): void
     {
-        request()->flush();
-
         server()->flush();
+
+        parent::tearDown();
     }
 
     public function testRequestHeaderSetHasGetDelete(): void

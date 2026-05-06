@@ -10,9 +10,6 @@ class HttpRequestRouteTest extends AppTestCase
 {
     public function tearDown(): void
     {
-        request()->setMatchedRoute(null);
-        request()->flush();
-
         parent::tearDown();
     }
 

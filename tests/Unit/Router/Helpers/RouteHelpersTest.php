@@ -10,15 +10,6 @@ use Quantum\Di\Di;
 
 class RouteHelpersTest extends AppTestCase
 {
-
-    public function tearDown(): void
-    {
-        request()->setMatchedRoute(null);
-        request()->flush();
-
-        parent::tearDown();
-    }
-
     public function testHelpersReturnDefaultsWhenNoRouteMatched(): void
     {
         $this->assertNull(current_middlewares());

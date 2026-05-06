@@ -6,16 +6,6 @@ use Quantum\Tests\Unit\AppTestCase;
 
 class HttpRequestBodyTest extends AppTestCase
 {
-    public function setUp(): void
-    {
-        parent::setUp();
-    }
-
-    public function tearDown(): void
-    {
-        request()->flush();
-    }
-
     public function testRequestSetHasGetDelete(): void
     {
         $request = request();

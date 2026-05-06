@@ -8,16 +8,6 @@ use Quantum\Storage\UploadedFile;
 
 class HttpRequestFileTest extends AppTestCase
 {
-    public function setUp(): void
-    {
-        parent::setUp();
-    }
-
-    public function tearDown(): void
-    {
-        request()->flush();
-    }
-
     public function testHasGetFile(): void
     {
         $request = request();
