@@ -9,7 +9,6 @@ use Quantum\Router\RouteFinder;
 use Quantum\Router\Route;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
-use Quantum\Di\Di;
 
 class HttpHelperTest extends AppTestCase
 {
@@ -58,9 +57,7 @@ class HttpHelperTest extends AppTestCase
         );
         $route->module('admin')->prefix('admin');
 
-        $routeCollection = Di::has(RouteCollection::class)
-            ? Di::get(RouteCollection::class)
-            : new RouteCollection();
+        $routeCollection = new RouteCollection();
 
         $routeCollection->add($route);
 
