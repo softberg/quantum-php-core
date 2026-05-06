@@ -58,27 +58,45 @@ git checkout -b feature/your-feature-name
 3. Run tests:
 
 ```bash
-vendor/bin/phpunit --stderr
+vendor/bin/phpunit
 ```
 
 4. Run Static Analysis:
 
 ```bash
-vendor/bin/phpstan analyse --memory-limit=-1 
+composer phpstan
 ```
 
 5. Run Code Style Checks
 
 ```bash
-vendor/bin/php-cs-fixer check
+composer cs:check
 ```
 
 6. Commit and push your branch:
 
 ```bash
-git commit -m "Add: SoftDeletes trait for models"
+git commit -m "[#123] Add SoftDeletes trait for models"
 git push origin feature/your-feature-name
 ```
+
+### Commit Message Style
+
+Use commit subjects that match the repository history:
+
+- Preferred format: `[#<issue-number>] <imperative summary>`
+- Keep the summary concise and scoped to one change
+- Use imperative mood (`Add`, `Fix`, `Refactor`, `Remove`, `Rename`, etc.)
+
+Examples:
+
+- `[#504] Refactor module route loading into boot stage`
+- `[#502] Add post-response request-context cleanup`
+- `[#500] Rename QtCommand to CliCommand across framework and templates`
+
+Notes:
+
+- If your change affects behavior, public APIs, or compatibility (especially breaking changes), update `CHANGELOG.md` in the same branch/PR.
 
 7. Open a Pull Request from your fork → `softberg/quantum-php-core`. Describe **what** you changed, **why**, and **how** to test it. Reference any related issues. Always work in a branch, never directly on `main` of your fork.
 
