@@ -3,16 +3,39 @@
 namespace Quantum\Tests\Unit\RateLimit\Adapters;
 
 use Quantum\RateLimit\Adapters\FileRateLimitAdapter;
-use Quantum\Tests\Helpers\InMemoryPsrCache;
 use Quantum\Tests\Unit\AppTestCase;
-use Quantum\Cache\Cache;
 
 class FileRateLimitAdapterTest extends AppTestCase
 {
+    private string $rateLimitDir;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->rateLimitDir = base_dir() . DS . 'cache' . DS . 'rate_limit_tests';
+        if (!fs()->isDirectory($this->rateLimitDir)) {
+            fs()->makeDirectory($this->rateLimitDir);
+        }
+    }
+
+    public function tearDown(): void
+    {
+        $files = fs()->glob($this->rateLimitDir . DS . '*') ?: [];
+        foreach ($files as $file) {
+            fs()->remove($file);
+        }
+        if (fs()->isDirectory($this->rateLimitDir)) {
+            fs()->removeDirectory($this->rateLimitDir);
+        }
+    }
+
     public function testFileAdapterHitAndResetFlow(): void
     {
-        $cache = new Cache(new InMemoryPsrCache());
-        $adapter = new FileRateLimitAdapter($cache, 30);
+        $adapter = new FileRateLimitAdapter([
+            'ttl' => 30,
+            'prefix' => 'test',
+            'path' => $this->rateLimitDir,
+        ]);
 
         $this->assertTrue($adapter->hit('k1', 2, 60));
         $this->assertTrue($adapter->hit('k1', 2, 60));
@@ -20,5 +43,20 @@ class FileRateLimitAdapterTest extends AppTestCase
 
         $adapter->reset('k1');
         $this->assertTrue($adapter->hit('k1', 2, 60));
+    }
+
+    public function testFileAdapterRepeatedHitsRespectExactLimitBoundary(): void
+    {
+        $adapter = new FileRateLimitAdapter([
+            'ttl' => 30,
+            'prefix' => 'test',
+            'path' => $this->rateLimitDir,
+        ]);
+
+        for ($i = 0; $i < 100; $i++) {
+            $this->assertTrue($adapter->hit('boundary', 100, 60));
+        }
+
+        $this->assertFalse($adapter->hit('boundary', 100, 60));
     }
 }

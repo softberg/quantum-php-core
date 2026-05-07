@@ -130,7 +130,7 @@ class RateLimiterTest extends AppTestCase
 
     public function testRateLimiterDelegatesRetryAfterToAdapter(): void
     {
-        $adapter = new class implements RateLimitAdapterInterface {
+        $adapter = new class () implements RateLimitAdapterInterface {
             public function hit(string $key, int $limit, int $interval): bool
             {
                 return true;

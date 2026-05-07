@@ -16,67 +16,143 @@ declare(strict_types=1);
 
 namespace Quantum\RateLimit\Adapters;
 
+use Quantum\App\Exceptions\BaseException;
+use Quantum\Config\Exceptions\ConfigException;
+use Quantum\Di\Exceptions\DiException;
 use Quantum\RateLimit\Contracts\RateLimitAdapterInterface;
-use Quantum\Cache\Cache;
+use Quantum\Storage\FileSystem;
+use ReflectionException;
 
 class FileRateLimitAdapter implements RateLimitAdapterInterface
 {
-    private Cache $cache;
+    private FileSystem $fs;
 
     private int $resetInterval;
 
-    public function __construct(?Cache $cache = null, int $resetInterval = 60)
+    private string $path;
+
+    private string $prefix;
+
+    /**
+     * @param array<string, mixed> $params
+     * @throws ConfigException|DiException|BaseException|ReflectionException
+     */
+    public function __construct(array $params)
     {
-        $this->cache = $cache ?? cache('file');
-        $this->resetInterval = $resetInterval;
+        $this->resetInterval = $params['ttl'];
+        $this->path = $params['path'];
+        $this->prefix = $params['prefix'];
+        $this->fs = fs();
+
+        if (!$this->fs->isDirectory($this->path)) {
+            $this->fs->makeDirectory($this->path);
+        }
     }
 
     public function hit(string $key, int $limit, int $interval): bool
     {
         $now = time();
-        $data = $this->cache->get($key);
+        $statePath = $this->getStatePath($key);
+        $lockPath = $this->getLockPath($key);
+        $lockHandle = fopen($lockPath, 'c+');
 
-        if (!is_array($data) || !isset($data['count'], $data['reset_at']) || $now >= (int) $data['reset_at']) {
-            $count = 0;
-            $resetAt = $now + $interval;
-        } else {
-            $count = (int) $data['count'];
-            $resetAt = (int) $data['reset_at'];
+        if ($lockHandle === false) {
+            return false;
         }
 
-        $count++;
+        if (!flock($lockHandle, LOCK_EX)) {
+            fclose($lockHandle);
+            return false;
+        }
 
-        $ttl = max(1, $resetAt - $now);
+        try {
+            $data = $this->readState($statePath);
 
-        $this->cache->set($key, [
-            'count' => $count,
-            'reset_at' => $resetAt,
-        ], $ttl);
+            if (!is_array($data) || !isset($data['count'], $data['reset_at']) || $now >= (int) $data['reset_at']) {
+                $count = 0;
+                $resetAt = $now + $interval;
+            } else {
+                $count = $data['count'];
+                $resetAt = $data['reset_at'];
+            }
+
+            $count++;
+
+            $this->writeState($statePath, [
+                'count' => $count,
+                'reset_at' => $resetAt,
+            ]);
+        } finally {
+            flock($lockHandle, LOCK_UN);
+            fclose($lockHandle);
+        }
 
         return $count <= $limit;
     }
 
     public function reset(string $key, int $count = 0): void
     {
+        $statePath = $this->getStatePath($key);
+
         if ($count <= 0) {
-            $this->cache->delete($key);
+            if ($this->fs->exists($statePath)) {
+                $this->fs->remove($statePath);
+            }
             return;
         }
 
-        $this->cache->set($key, [
+        $this->writeState($statePath, [
             'count' => $count,
             'reset_at' => time() + $this->resetInterval,
-        ], $this->resetInterval);
+        ]);
     }
 
     public function retryAfter(string $key): int
     {
-        $data = $this->cache->get($key);
+        $data = $this->readState($this->getStatePath($key));
 
         if (!is_array($data) || !isset($data['reset_at'])) {
             return 0;
         }
 
         return max(0, (int) $data['reset_at'] - time());
+    }
+
+    private function getStatePath(string $key): string
+    {
+        return $this->path . DS . md5($this->prefix . $key) . '.rate';
+    }
+
+    private function getLockPath(string $key): string
+    {
+        return $this->path . DS . md5($this->prefix . $key) . '.lock';
+    }
+
+    /**
+     * @return array<string, int>|null
+     */
+    private function readState(string $statePath): ?array
+    {
+        if (!$this->fs->exists($statePath)) {
+            return null;
+        }
+
+        $raw = $this->fs->get($statePath);
+
+        if (!is_string($raw) || $raw === '') {
+            return null;
+        }
+
+        $data = json_decode($raw, true);
+
+        return is_array($data) ? $data : null;
+    }
+
+    /**
+     * @param array<string, int> $state
+     */
+    private function writeState(string $statePath, array $state): void
+    {
+        $this->fs->put($statePath, (string) json_encode($state));
     }
 }

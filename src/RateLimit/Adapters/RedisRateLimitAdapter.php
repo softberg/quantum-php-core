@@ -17,41 +17,34 @@ declare(strict_types=1);
 namespace Quantum\RateLimit\Adapters;
 
 use Quantum\RateLimit\Contracts\RateLimitAdapterInterface;
-use Quantum\Cache\Cache;
+use RedisException;
+use Redis;
 
 class RedisRateLimitAdapter implements RateLimitAdapterInterface
 {
-    private Cache $cache;
+    private Redis $redis;
 
     private int $resetInterval;
 
-    public function __construct(?Cache $cache = null, int $resetInterval = 60)
+    /**
+     * @param array<string, mixed> $params
+     * @throws RedisException
+     */
+    public function __construct(array $params)
     {
-        $this->cache = $cache ?? cache('redis');
-        $this->resetInterval = $resetInterval;
+        $this->resetInterval = $params['ttl'];
+
+        $this->redis = new Redis();
+        $this->redis->connect($params['host'], $params['port']);
     }
 
     public function hit(string $key, int $limit, int $interval): bool
     {
-        $now = time();
-        $data = $this->cache->get($key);
+        $count = (int) $this->redis->incr($key);
 
-        if (!is_array($data) || !isset($data['count'], $data['reset_at']) || $now >= (int) $data['reset_at']) {
-            $count = 0;
-            $resetAt = $now + $interval;
-        } else {
-            $count = (int) $data['count'];
-            $resetAt = (int) $data['reset_at'];
+        if ($count === 1) {
+            $this->redis->expire($key, $interval);
         }
-
-        $count++;
-
-        $ttl = max(1, $resetAt - $now);
-
-        $this->cache->set($key, [
-            'count' => $count,
-            'reset_at' => $resetAt,
-        ], $ttl);
 
         return $count <= $limit;
     }
@@ -59,24 +52,16 @@ class RedisRateLimitAdapter implements RateLimitAdapterInterface
     public function reset(string $key, int $count = 0): void
     {
         if ($count <= 0) {
-            $this->cache->delete($key);
+            $this->redis->del($key);
             return;
         }
 
-        $this->cache->set($key, [
-            'count' => $count,
-            'reset_at' => time() + $this->resetInterval,
-        ], $this->resetInterval);
+        $this->redis->setex($key, $this->resetInterval, (string) $count);
     }
 
     public function retryAfter(string $key): int
     {
-        $data = $this->cache->get($key);
-
-        if (!is_array($data) || !isset($data['reset_at'])) {
-            return 0;
-        }
-
-        return max(0, (int) $data['reset_at'] - time());
+        $ttl = (int) $this->redis->ttl($key);
+        return $ttl > 0 ? $ttl : 0;
     }
 }

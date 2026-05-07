@@ -62,12 +62,15 @@ class RateLimiterFactory
             config()->import(new Setup('config', 'rate_limit'));
         }
 
+        if (!config()->has('cache')) {
+            config()->import(new Setup('config', 'cache'));
+        }
+
         $adapter ??= (string) config()->get('rate_limit.default', RateLimitType::FILE);
+        $adapterClass = $this->getAdapterClass($adapter);
 
         if (!isset($this->instances[$adapter])) {
-            $this->instances[$adapter] = new RateLimiter(
-                $this->createAdapter($adapter)
-            );
+            $this->instances[$adapter] = $this->createInstance($adapterClass, $adapter);
         }
 
         return $this->instances[$adapter];
@@ -76,7 +79,7 @@ class RateLimiterFactory
     /**
      * @throws BaseException
      */
-    private function createAdapter(string $adapter): RateLimitAdapterInterface
+    private function getAdapterClass(string $adapter): string
     {
         $class = self::ADAPTERS[$adapter] ?? null;
 
@@ -84,6 +87,16 @@ class RateLimiterFactory
             throw RateLimitException::adapterNotSupported($adapter);
         }
 
-        return new $class();
+        return $class;
+    }
+
+    private function createInstance(string $adapterClass, string $adapter): RateLimiter
+    {
+        $params = (array) config()->get('cache.' . $adapter, []);
+
+        /** @var RateLimitAdapterInterface $adapterInstance */
+        $adapterInstance = new $adapterClass($params);
+
+        return new RateLimiter($adapterInstance);
     }
 }
