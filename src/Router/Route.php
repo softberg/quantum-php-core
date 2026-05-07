@@ -17,6 +17,7 @@ declare(strict_types=1);
 namespace Quantum\Router;
 
 use Quantum\Router\Exceptions\RouteException;
+use InvalidArgumentException;
 use Closure;
 
 /**
@@ -154,6 +155,14 @@ final class Route
      */
     public function rateLimit(int $limit, int $interval): self
     {
+        if ($limit <= 0) {
+            throw new InvalidArgumentException('Invalid parameter $limit: must be greater than 0.');
+        }
+
+        if ($interval <= 0) {
+            throw new InvalidArgumentException('Invalid parameter $interval: must be greater than 0.');
+        }
+
         $this->rateLimit = [
             'limit' => $limit,
             'interval' => $interval,

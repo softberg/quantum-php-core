@@ -5,6 +5,7 @@ namespace Quantum\Tests\Unit\Router;
 use Quantum\Router\Exceptions\RouteException;
 use Quantum\Tests\Unit\AppTestCase;
 use Quantum\Router\Route;
+use InvalidArgumentException;
 
 class RouteTest extends AppTestCase
 {
@@ -202,5 +203,35 @@ class RouteTest extends AppTestCase
         $data = $route->toArray();
 
         $this->assertSame(['limit' => 50, 'interval' => 30], $data['rateLimit']);
+    }
+
+    public function testRouteRateLimitRejectsNonPositiveLimit(): void
+    {
+        $route = new Route(
+            ['GET'],
+            'posts',
+            'PostController',
+            'indexAction'
+        );
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid parameter $limit: must be greater than 0.');
+
+        $route->rateLimit(0, 60);
+    }
+
+    public function testRouteRateLimitRejectsNonPositiveInterval(): void
+    {
+        $route = new Route(
+            ['GET'],
+            'posts',
+            'PostController',
+            'indexAction'
+        );
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid parameter $interval: must be greater than 0.');
+
+        $route->rateLimit(100, 0);
     }
 }
