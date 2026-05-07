@@ -56,6 +56,41 @@ class RateLimitMiddlewareTest extends AppTestCase
         $this->assertSame('7', $second->getHeader('Retry-After'));
         $this->assertSame('{"message":"Too Many Requests"}', $second->getContent());
     }
+
+    public function testRateLimitMiddlewarePassesThroughWhenRouteHasNoRateLimit(): void
+    {
+        $route = new Route(['GET'], '/posts', 'PostController', 'index');
+        $middleware = new RateLimitMiddleware($route);
+
+        $response = $middleware->apply(
+            request(),
+            fn (Request $request): Response => response()->json(['status' => 'ok'])
+        );
+
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertNull($response->getHeader('X-RateLimit-Limit'));
+    }
+
+    public function testRateLimitMiddlewareFallsBackToIntervalWhenRetryAfterIsZero(): void
+    {
+        $factory = Di::get(RateLimiterFactory::class);
+        $this->setPrivateProperty($factory, 'instances', [
+            'file' => new RateLimiter(new RetryAfterZeroAdapter()),
+        ]);
+
+        $route = new Route(['GET'], '/posts', 'PostController', 'index');
+        $route->rateLimit(1, 60);
+
+        $middleware = new RateLimitMiddleware($route);
+
+        $response = $middleware->apply(
+            request(),
+            fn (Request $request): Response => response()->json(['status' => 'ok'])
+        );
+
+        $this->assertSame(429, $response->getStatusCode());
+        $this->assertSame('60', $response->getHeader('Retry-After'));
+    }
 }
 
 class ToggleAdapter implements RateLimitAdapterInterface
@@ -75,5 +110,22 @@ class ToggleAdapter implements RateLimitAdapterInterface
     public function retryAfter(string $key): int
     {
         return 7;
+    }
+}
+
+class RetryAfterZeroAdapter implements RateLimitAdapterInterface
+{
+    public function hit(string $key, int $limit, int $interval): bool
+    {
+        return false;
+    }
+
+    public function reset(string $key, int $count = 0): void
+    {
+    }
+
+    public function retryAfter(string $key): int
+    {
+        return 0;
     }
 }

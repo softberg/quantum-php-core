@@ -33,4 +33,10 @@ class RedisRateLimitAdapterTest extends AppTestCase
         $this->adapter->reset('k2', 1);
         $this->assertFalse($this->adapter->hit('k2', 1, 60));
     }
+
+    public function testRedisAdapterRetryAfterReturnsZeroForMissingKey(): void
+    {
+        $this->adapter->reset('missing-key');
+        $this->assertSame(0, $this->adapter->retryAfter('missing-key'));
+    }
 }

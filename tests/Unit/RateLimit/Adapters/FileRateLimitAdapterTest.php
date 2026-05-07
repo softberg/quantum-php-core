@@ -59,4 +59,39 @@ class FileRateLimitAdapterTest extends AppTestCase
 
         $this->assertFalse($adapter->hit('boundary', 100, 60));
     }
+
+    public function testFileAdapterCreatesStorageDirectoryWhenMissing(): void
+    {
+        $path = base_dir() . DS . 'cache' . DS . 'rate_limit_tests_missing';
+
+        if (fs()->isDirectory($path)) {
+            fs()->removeDirectory($path);
+        }
+
+        new FileRateLimitAdapter([
+            'ttl' => 30,
+            'prefix' => 'test',
+            'path' => $path,
+        ]);
+
+        $this->assertTrue(fs()->isDirectory($path));
+
+        fs()->removeDirectory($path);
+    }
+
+    public function testFileAdapterRetryAfterReturnsZeroForMissingOrInvalidState(): void
+    {
+        $adapter = new FileRateLimitAdapter([
+            'ttl' => 30,
+            'prefix' => 'test',
+            'path' => $this->rateLimitDir,
+        ]);
+
+        $this->assertSame(0, $adapter->retryAfter('missing-key'));
+
+        $statePath = $this->rateLimitDir . DS . md5('test' . 'broken') . '.rate';
+        fs()->put($statePath, '{invalid-json');
+
+        $this->assertSame(0, $adapter->retryAfter('broken'));
+    }
 }
