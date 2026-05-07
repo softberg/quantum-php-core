@@ -419,6 +419,30 @@ class RouteBuilderTest extends AppTestCase
         }
     }
 
+    public function testRouteBuilderRateLimitAppliedInsideActiveGroupCallback(): void
+    {
+        $builder = new RouteBuilder();
+
+        $routes = $builder->build(
+            [
+                'Web' => function (RouteBuilder $route): void {
+                    $route->group('api', function (RouteBuilder $route): void {
+                        $route->get('a', 'AController', 'a');
+                        $route->get('b', 'BController', 'b');
+                        $route->rateLimit(25, 15);
+                    });
+                },
+            ],
+            []
+        );
+
+        foreach ($routes->all() as $item) {
+            $rateLimit = $item->getRateLimit();
+            $this->assertSame(25, $rateLimit['limit']);
+            $this->assertSame(15, $rateLimit['interval']);
+        }
+    }
+
     public function testRouteBuilderAddRouteRequiresControllerAndAction(): void
     {
         $this->expectException(RouteException::class);
