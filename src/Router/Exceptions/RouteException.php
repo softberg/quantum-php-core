@@ -97,6 +97,14 @@ class RouteException extends BaseException
         );
     }
 
+    public static function rateLimitOutsideRoute(): self
+    {
+        return new self(
+            ExceptionMessages::RATE_LIMIT_OUTSIDE_ROUTE,
+            E_WARNING
+        );
+    }
+
     public static function closureHandlerMissing(): self
     {
         return new self(

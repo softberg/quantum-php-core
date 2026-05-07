@@ -70,6 +70,11 @@ final class Route
     protected ?array $cache = null;
 
     /**
+     * @var array<string, int>|null
+     */
+    protected ?array $rateLimit = null;
+
+    /**
      * @var string|null
      */
     protected ?string $compiledPattern = null;
@@ -141,6 +146,29 @@ final class Route
     public function getCache(): ?array
     {
         return $this->cache;
+    }
+
+    /**
+     * Configure rate limiting settings for this route.
+     * @return $this
+     */
+    public function rateLimit(int $limit, int $interval): self
+    {
+        $this->rateLimit = [
+            'limit' => $limit,
+            'interval' => $interval,
+        ];
+
+        return $this;
+    }
+
+    /**
+     * Return rate limit configuration for this route.
+     * @return array<string, int>|null
+     */
+    public function getRateLimit(): ?array
+    {
+        return $this->rateLimit;
     }
 
     /**
@@ -332,6 +360,7 @@ final class Route
             'group' => $this->group,
             'prefix' => $this->prefix,
             'cache' => $this->cache,
+            'rateLimit' => $this->rateLimit,
         ];
     }
 }

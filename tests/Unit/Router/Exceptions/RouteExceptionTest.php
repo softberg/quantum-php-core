@@ -23,6 +23,8 @@ class RouteExceptionTest extends AppTestCase
         $this->assertSame(E_ERROR, RouteException::controllerWithoutModule()->getCode());
         $this->assertSame('cacheable() must be called inside a group or after a route definition', RouteException::cacheableOutsideRoute()->getMessage());
         $this->assertSame(E_WARNING, RouteException::cacheableOutsideRoute()->getCode());
+        $this->assertSame('rateLimit() must be called inside a group or after a route definition', RouteException::rateLimitOutsideRoute()->getMessage());
+        $this->assertSame(E_WARNING, RouteException::rateLimitOutsideRoute()->getCode());
         $this->assertSame('Closure route is missing its closure handler', RouteException::closureHandlerMissing()->getMessage());
         $this->assertSame(E_ERROR, RouteException::closureHandlerMissing()->getCode());
         $this->assertSame('Route is not a closure', RouteException::notClosure()->getMessage());

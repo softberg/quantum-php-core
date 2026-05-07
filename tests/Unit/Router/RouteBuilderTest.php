@@ -376,6 +376,49 @@ class RouteBuilderTest extends AppTestCase
         }
     }
 
+    public function testRouteBuilderRateLimitAppliesToSingleRoute(): void
+    {
+        $builder = new RouteBuilder();
+
+        $routes = $builder->build(
+            [
+                'Web' => function (RouteBuilder $route): void {
+                    $route->get('api/posts', 'PostController', 'index')
+                        ->rateLimit(100, 60);
+                },
+            ],
+            []
+        );
+
+        $rateLimit = $routes->all()[0]->getRateLimit();
+
+        $this->assertSame(100, $rateLimit['limit']);
+        $this->assertSame(60, $rateLimit['interval']);
+    }
+
+    public function testRouteBuilderRateLimitAppliesToGroupRoutes(): void
+    {
+        $builder = new RouteBuilder();
+
+        $routes = $builder->build(
+            [
+                'Web' => function (RouteBuilder $route): void {
+                    $route->group('api', function (RouteBuilder $route): void {
+                        $route->get('a', 'AController', 'a');
+                        $route->get('b', 'BController', 'b');
+                    })->rateLimit(50, 30);
+                },
+            ],
+            []
+        );
+
+        foreach ($routes->all() as $item) {
+            $rateLimit = $item->getRateLimit();
+            $this->assertSame(50, $rateLimit['limit']);
+            $this->assertSame(30, $rateLimit['interval']);
+        }
+    }
+
     public function testRouteBuilderAddRouteRequiresControllerAndAction(): void
     {
         $this->expectException(RouteException::class);
@@ -486,6 +529,17 @@ class RouteBuilderTest extends AppTestCase
         (new RouteBuilder())->build([
             'Web' => function (RouteBuilder $route): void {
                 $route->cacheable(true);
+            },
+        ], []);
+    }
+
+    public function testRouteBuilderRateLimitMustFollowRouteOrGroup(): void
+    {
+        $this->expectException(RouteException::class);
+
+        (new RouteBuilder())->build([
+            'Web' => function (RouteBuilder $route): void {
+                $route->rateLimit(100, 60);
             },
         ], []);
     }

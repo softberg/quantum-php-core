@@ -125,6 +125,23 @@ class RouteTest extends AppTestCase
         $this->assertSame('^users$', $route->getCompiledPattern());
     }
 
+    public function testRouteRateLimitConfigurationIsStored(): void
+    {
+        $route = new Route(
+            ['GET'],
+            'posts',
+            'PostController',
+            'indexAction'
+        );
+
+        $route->rateLimit(100, 60);
+
+        $this->assertSame(
+            ['limit' => 100, 'interval' => 60],
+            $route->getRateLimit()
+        );
+    }
+
     public function testRouteMiddlewareStackingOrder(): void
     {
         $route = new Route(
@@ -167,5 +184,23 @@ class RouteTest extends AppTestCase
         $this->assertSame('listAction', $data['action']);
 
         $this->assertSame(['enabled' => true, 'ttl' => 60], $data['cache']);
+
+        $this->assertNull($data['rateLimit']);
+    }
+
+    public function testRouteToArrayIncludesRateLimit(): void
+    {
+        $route = new Route(
+            ['GET'],
+            'posts',
+            'PostController',
+            'indexAction'
+        );
+
+        $route->rateLimit(50, 30);
+
+        $data = $route->toArray();
+
+        $this->assertSame(['limit' => 50, 'interval' => 30], $data['rateLimit']);
     }
 }

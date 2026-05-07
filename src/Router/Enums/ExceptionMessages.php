@@ -42,6 +42,8 @@ final class ExceptionMessages extends BaseExceptionMessages
 
     public const CACHEABLE_OUTSIDE_ROUTE = 'cacheable() must be called inside a group or after a route definition';
 
+    public const RATE_LIMIT_OUTSIDE_ROUTE = 'rateLimit() must be called inside a group or after a route definition';
+
     public const CLOSURE_ROUTE_MISSING_HANDLER = 'Closure route is missing its closure handler';
 
     public const ACTION_NOT_FOUND_ON_CONTROLLER = 'Action `{%1}` not found on controller `{%2}`';

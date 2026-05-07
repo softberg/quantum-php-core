@@ -17,8 +17,6 @@ declare(strict_types=1);
 namespace Quantum\Router;
 
 use Quantum\Router\Exceptions\RouteException;
-use Quantum\Di\Exceptions\DiException;
-use ReflectionException;
 use Closure;
 
 /**
@@ -96,7 +94,7 @@ final class RouteBuilder
      * Define a route with multiple HTTP methods.
      * @param callable|string $handler
      * @param string|null $action
-     * @throws RouteException|DiException|ReflectionException
+     * @throws RouteException
      */
     public function add(string $path, string $methods, $handler, string $action = null): self
     {
@@ -112,7 +110,7 @@ final class RouteBuilder
      * Define a GET route.
      * @param callable|string $handler
      * @param string|null $action
-     * @throws RouteException|DiException|ReflectionException
+     * @throws RouteException
      */
     public function get(string $path, $handler, string $action = null): self
     {
@@ -123,7 +121,7 @@ final class RouteBuilder
      * Define a POST route.
      * @param callable|string $handler
      * @param string|null $action
-     * @throws RouteException|DiException|ReflectionException
+     * @throws RouteException
      */
     public function post(string $path, $handler, string $action = null): self
     {
@@ -134,7 +132,7 @@ final class RouteBuilder
      * Define a PUT route.
      * @param callable|string $handler
      * @param string|null $action
-     * @throws RouteException|DiException|ReflectionException
+     * @throws RouteException
      */
     public function put(string $path, $handler, string $action = null): self
     {
@@ -144,7 +142,7 @@ final class RouteBuilder
     /**
      * Define a DELETE route.
      * @param callable|string $handler
-     * @throws RouteException|DiException|ReflectionException
+     * @throws RouteException
      */
     public function delete(string $path, $handler, string $action = null): self
     {
@@ -278,10 +276,42 @@ final class RouteBuilder
     }
 
     /**
+     * Configure rate limiting for the current route or group.
+     * @return $this
+     * @throws RouteException
+     */
+    public function rateLimit(int $limit, int $interval): self
+    {
+        if ($this->inGroup) {
+            foreach ($this->groupRoutes as $route) {
+                $route->rateLimit($limit, $interval);
+            }
+
+            return $this;
+        }
+
+        if ($this->lastGroupRoutes !== null) {
+            foreach ($this->lastGroupRoutes as $route) {
+                $route->rateLimit($limit, $interval);
+            }
+
+            $this->lastGroupRoutes = null;
+            return $this;
+        }
+
+        if ($this->currentRoute !== null) {
+            $this->currentRoute->rateLimit($limit, $interval);
+            return $this;
+        }
+
+        throw RouteException::rateLimitOutsideRoute();
+    }
+
+    /**
      * Create and register a Route instance.
      * @param array<string> $methods
      * @param callable|string $handler
-     * @throws RouteException|DiException|ReflectionException
+     * @throws RouteException
      */
     private function addRoute(
         array $methods,
