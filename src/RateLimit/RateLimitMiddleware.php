@@ -56,10 +56,15 @@ class RateLimitMiddleware extends Middleware
         $allowed = $limiter->hit($method, $pattern, $ip, $limit, $interval);
 
         if (!$allowed) {
+            $retryAfter = $limiter->retryAfter($method, $pattern, $ip);
+            if ($retryAfter <= 0) {
+                $retryAfter = $interval;
+            }
+
             return response()
                 ->setHeader('X-RateLimit-Limit', (string) $limit)
                 ->setHeader('X-RateLimit-Remaining', '0')
-                ->setHeader('Retry-After', (string) $interval)
+                ->setHeader('Retry-After', (string) $retryAfter)
                 ->json(['message' => 'Too Many Requests'], StatusCode::TOO_MANY_REQUESTS);
         }
 

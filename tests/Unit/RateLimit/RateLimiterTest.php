@@ -19,6 +19,11 @@ class RateLimiterTest extends AppTestCase
             public function reset(string $key, int $count = 0): void
             {
             }
+
+            public function retryAfter(string $key): int
+            {
+                return 0;
+            }
         };
 
         $limiter = new RateLimiter($adapter);
@@ -39,6 +44,11 @@ class RateLimiterTest extends AppTestCase
 
             public function reset(string $key, int $count = 0): void
             {
+            }
+
+            public function retryAfter(string $key): int
+            {
+                return 0;
             }
         };
 
@@ -67,6 +77,11 @@ class RateLimiterTest extends AppTestCase
 
             public function reset(string $key, int $count = 0): void
             {
+            }
+
+            public function retryAfter(string $key): int
+            {
+                return 0;
             }
         };
 
@@ -99,6 +114,11 @@ class RateLimiterTest extends AppTestCase
             {
                 $this->calls[] = [$key, $count];
             }
+
+            public function retryAfter(string $key): int
+            {
+                return 0;
+            }
         };
 
         $limiter = new RateLimiter($adapter);
@@ -106,5 +126,28 @@ class RateLimiterTest extends AppTestCase
         $limiter->reset('post', '/api/posts', '10.0.0.2', 3);
 
         $this->assertSame([['POST:/api/posts:10.0.0.2', 3]], $calls);
+    }
+
+    public function testRateLimiterDelegatesRetryAfterToAdapter(): void
+    {
+        $adapter = new class implements RateLimitAdapterInterface {
+            public function hit(string $key, int $limit, int $interval): bool
+            {
+                return true;
+            }
+
+            public function reset(string $key, int $count = 0): void
+            {
+            }
+
+            public function retryAfter(string $key): int
+            {
+                return $key === 'GET:/status:10.0.0.1' ? 7 : 0;
+            }
+        };
+
+        $limiter = new RateLimiter($adapter);
+
+        $this->assertSame(7, $limiter->retryAfter('get', '/status', '10.0.0.1'));
     }
 }

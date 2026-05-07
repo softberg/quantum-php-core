@@ -21,4 +21,6 @@ interface RateLimitAdapterInterface
     public function hit(string $key, int $limit, int $interval): bool;
 
     public function reset(string $key, int $count = 0): void;
+
+    public function retryAfter(string $key): int;
 }

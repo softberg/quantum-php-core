@@ -51,6 +51,13 @@ class RateLimiter
         $this->adapter->reset($this->buildKey($method, $routePattern, $ip), $count);
     }
 
+    public function retryAfter(string $method, string $routePattern, ?string $ip): int
+    {
+        return $this->adapter->retryAfter(
+            $this->buildKey($method, $routePattern, $ip)
+        );
+    }
+
     public function buildKey(string $method, string $routePattern, ?string $ip): string
     {
         $normalizedMethod = strtoupper(trim($method));

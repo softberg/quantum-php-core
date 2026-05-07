@@ -53,7 +53,7 @@ class RateLimitMiddlewareTest extends AppTestCase
         $this->assertSame(429, $second->getStatusCode());
         $this->assertSame('1', $second->getHeader('X-RateLimit-Limit'));
         $this->assertSame('0', $second->getHeader('X-RateLimit-Remaining'));
-        $this->assertSame('60', $second->getHeader('Retry-After'));
+        $this->assertSame('7', $second->getHeader('Retry-After'));
         $this->assertSame('{"message":"Too Many Requests"}', $second->getContent());
     }
 }
@@ -70,5 +70,10 @@ class ToggleAdapter implements RateLimitAdapterInterface
 
     public function reset(string $key, int $count = 0): void
     {
+    }
+
+    public function retryAfter(string $key): int
+    {
+        return 7;
     }
 }

@@ -68,4 +68,15 @@ class FileRateLimitAdapter implements RateLimitAdapterInterface
             'reset_at' => time() + $this->resetInterval,
         ], $this->resetInterval);
     }
+
+    public function retryAfter(string $key): int
+    {
+        $data = $this->cache->get($key);
+
+        if (!is_array($data) || !isset($data['reset_at'])) {
+            return 0;
+        }
+
+        return max(0, (int) $data['reset_at'] - time());
+    }
 }
