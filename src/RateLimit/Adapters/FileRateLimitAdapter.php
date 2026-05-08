@@ -16,13 +16,17 @@ declare(strict_types=1);
 
 namespace Quantum\RateLimit\Adapters;
 
-use Quantum\App\Exceptions\BaseException;
-use Quantum\Config\Exceptions\ConfigException;
-use Quantum\Di\Exceptions\DiException;
 use Quantum\RateLimit\Contracts\RateLimitAdapterInterface;
+use Quantum\Config\Exceptions\ConfigException;
+use Quantum\App\Exceptions\BaseException;
+use Quantum\Di\Exceptions\DiException;
 use Quantum\Storage\FileSystem;
 use ReflectionException;
 
+/**
+ * Class FileRateLimitAdapter
+ * @package Quantum\RateLimit
+ */
 class FileRateLimitAdapter implements RateLimitAdapterInterface
 {
     private FileSystem $fs;
@@ -41,7 +45,7 @@ class FileRateLimitAdapter implements RateLimitAdapterInterface
     {
         $this->resetInterval = $params['ttl'];
         $this->path = $params['path'];
-        $this->prefix = $params['prefix'];
+        $this->prefix = (string) ($params['prefix'] ?? '');
         $this->fs = fs();
 
         if (!$this->fs->isDirectory($this->path)) {

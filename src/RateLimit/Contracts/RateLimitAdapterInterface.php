@@ -16,6 +16,10 @@ declare(strict_types=1);
 
 namespace Quantum\RateLimit\Contracts;
 
+/**
+ * Interface RateLimitAdapterInterface
+ * @package Quantum\RateLimit
+ */
 interface RateLimitAdapterInterface
 {
     public function hit(string $key, int $limit, int $interval): bool;

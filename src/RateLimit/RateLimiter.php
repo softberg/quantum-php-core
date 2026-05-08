@@ -18,6 +18,10 @@ namespace Quantum\RateLimit;
 
 use Quantum\RateLimit\Contracts\RateLimitAdapterInterface;
 
+/**
+ * Class RateLimiter
+ * @package Quantum\RateLimit
+ */
 class RateLimiter
 {
     private RateLimitAdapterInterface $adapter;

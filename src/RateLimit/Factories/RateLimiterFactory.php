@@ -29,6 +29,10 @@ use Quantum\Loader\Setup;
 use ReflectionException;
 use Quantum\Di\Di;
 
+/**
+ * Class RateLimiterFactory
+ * @package Quantum\RateLimit
+ */
 class RateLimiterFactory
 {
     public const ADAPTERS = [
@@ -62,10 +66,6 @@ class RateLimiterFactory
             config()->import(new Setup('config', 'rate_limit'));
         }
 
-        if (!config()->has('cache')) {
-            config()->import(new Setup('config', 'cache'));
-        }
-
         $adapter ??= (string) config()->get('rate_limit.default', RateLimitType::FILE);
         $adapterClass = $this->getAdapterClass($adapter);
 
@@ -92,7 +92,7 @@ class RateLimiterFactory
 
     private function createInstance(string $adapterClass, string $adapter): RateLimiter
     {
-        $params = (array) config()->get('cache.' . $adapter, []);
+        $params = (array) config()->get('rate_limit.' . $adapter, []);
 
         /** @var RateLimitAdapterInterface $adapterInstance */
         $adapterInstance = new $adapterClass($params);

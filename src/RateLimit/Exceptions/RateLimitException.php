@@ -19,6 +19,10 @@ namespace Quantum\RateLimit\Exceptions;
 use Quantum\RateLimit\Enums\ExceptionMessages;
 use Quantum\App\Exceptions\BaseException;
 
+/**
+ * Class RateLimitException
+ * @package Quantum\RateLimit
+ */
 class RateLimitException extends BaseException
 {
     public static function adapterNotSupported(string $adapter): self

@@ -18,6 +18,10 @@ namespace Quantum\RateLimit\Enums;
 
 use Quantum\App\Enums\ExceptionMessages as BaseExceptionMessages;
 
+/**
+ * Class ExceptionMessages
+ * @package Quantum\RateLimit
+ */
 final class ExceptionMessages extends BaseExceptionMessages
 {
     public const ADAPTER_NOT_SUPPORTED = 'Rate limit adapter `{%1}` is not supported.';

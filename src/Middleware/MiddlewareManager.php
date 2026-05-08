@@ -48,12 +48,10 @@ class MiddlewareManager
 
     public function __construct(MatchedRoute $matchedRoute)
     {
-        $route = $matchedRoute->getRoute();
-        $this->route = $route;
-
-        $this->middlewares = array_values($route->getMiddlewares() ?? []);
-        $this->module = $route->getModule();
-        $this->hasRateLimit = $route->getRateLimit() !== null;
+        $this->route = $matchedRoute->getRoute();
+        $this->middlewares = array_values($this->route->getMiddlewares() ?? []);
+        $this->module = $this->route->getModule();
+        $this->hasRateLimit = $this->route->getRateLimit() !== null;
     }
 
     /**

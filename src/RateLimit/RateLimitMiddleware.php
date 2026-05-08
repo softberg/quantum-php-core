@@ -24,6 +24,10 @@ use Quantum\Http\Response;
 use Quantum\Http\Request;
 use Closure;
 
+/**
+ * Class RateLimitMiddleware
+ * @package Quantum\RateLimit
+ */
 class RateLimitMiddleware extends Middleware
 {
     private Route $route;
