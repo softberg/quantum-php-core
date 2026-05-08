@@ -68,15 +68,19 @@ class FileRateLimitAdapterTest extends AppTestCase
             fs()->removeDirectory($path);
         }
 
-        new FileRateLimitAdapter([
-            'ttl' => 30,
-            'prefix' => 'test',
-            'path' => $path,
-        ]);
+        try {
+            new FileRateLimitAdapter([
+                'ttl' => 30,
+                'prefix' => 'test',
+                'path' => $path,
+            ]);
 
-        $this->assertTrue(fs()->isDirectory($path));
-
-        fs()->removeDirectory($path);
+            $this->assertTrue(fs()->isDirectory($path));
+        } finally {
+            if (fs()->isDirectory($path)) {
+                fs()->removeDirectory($path);
+            }
+        }
     }
 
     public function testFileAdapterRetryAfterReturnsZeroForMissingOrInvalidState(): void
@@ -89,8 +93,11 @@ class FileRateLimitAdapterTest extends AppTestCase
 
         $this->assertSame(0, $adapter->retryAfter('missing-key'));
 
-        $statePath = $this->rateLimitDir . DS . md5('test' . 'broken') . '.rate';
-        fs()->put($statePath, '{invalid-json');
+        $adapter->hit('broken', 1, 60);
+        $stateFiles = fs()->glob($this->rateLimitDir . DS . '*.rate') ?: [];
+        $this->assertCount(1, $stateFiles);
+
+        fs()->put((string) current($stateFiles), '{invalid-json');
 
         $this->assertSame(0, $adapter->retryAfter('broken'));
     }
