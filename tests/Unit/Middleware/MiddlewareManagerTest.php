@@ -134,5 +134,25 @@ namespace Quantum\Tests\Unit\Middleware {
             $manager = new MiddlewareManager($matchedRoute);
             $manager->applyMiddlewares(request(), fn (Request $request): Response => response()->json([]));
         }
+
+        public function testMiddlewareManagerPrependsFrameworkRateLimitMiddleware(): void
+        {
+            $route = new Route(['GET'], '/test-route', 'TestController', 'index');
+            $route->module('Test');
+            $route->rateLimit(100, 60);
+
+            $matchedRoute = new MatchedRoute($route, []);
+
+            $manager = new MiddlewareManager($matchedRoute);
+            $result = $manager->applyMiddlewares(
+                request(),
+                fn (Request $request): Response => response()->json(['status' => 'terminal'])
+            );
+
+            $this->assertSame(response(), $result);
+            $this->assertSame('100', $result->getHeader('X-RateLimit-Limit'));
+            $this->assertSame('{"status":"terminal"}', $result->getContent());
+        }
+
     }
 }

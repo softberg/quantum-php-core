@@ -70,6 +70,8 @@
   - Models are hydrated only on fetch operations, not implicitly via getters
 - `DbModel::save()` now automatically applies timestamps when the model uses the `HasTimestamps` trait
 - `SoftDeletes` now uses model timestamp format when available (datetime/unix) for `deleted_at`
+- Routing DSL now supports first-class route rate limiting via `->rateLimit(int $limit, int $interval)`.
+- Middleware execution pipeline now includes a framework-level middleware stage before module middleware resolution, used for route rate limit enforcement.
 
 ### Fixed
 - PHP 8.1 compatibility: Fixed null parameter deprecations in `explode()`, `parse_url()`, and `str_replace()`
@@ -107,6 +109,13 @@
   - Automatically sets `updated_at` on insert and update
   - Supports custom timestamp column names via model constants (`CREATED_AT`, `UPDATED_AT`)
   - Supports datetime and unix timestamp formats via `TIMESTAMP_TYPE`
+- **Rate Limiting**:
+  - Added `RateLimit` package with contract-first architecture (`RateLimitAdapterInterface`, `RateLimiter`, `RateLimiterFactory`)
+  - Added file and redis rate limit adapters
+  - Added `RateLimitMiddleware` for centralized `429 Too Many Requests` enforcement
+  - Added rate limit response headers (`X-RateLimit-Limit`, `X-RateLimit-Remaining`, `Retry-After`)
+  - Added route-level metadata support on `Route` and `RouteBuilder` for rate limiting
+  - Added unit test coverage for router integration, middleware flow, adapters, factory resolution, and exception behavior
 
 ### Removed
 - Support for PHP 7.3 and earlier versions
