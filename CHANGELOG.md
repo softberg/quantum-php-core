@@ -79,6 +79,7 @@
 - PHP 8.4 forward compatibility: Added missing type hint to `SleekDbal::__get()` magic method
 - Fixed deprecated `E_STRICT` constant usage in test bootstrap
 - Fixed cURL error message assertions for cross-version compatibility
+- SleekDB adapter now supports related-model criteria path filtering across join depths while preserving DBAL public API (#508)
 
 ### Added
 - `AppContext` class representing the runtime identity of a single application execution

@@ -28,7 +28,9 @@ use Quantum\Database\Contracts\DbalInterface;
 use Quantum\Model\Exceptions\ModelException;
 use Quantum\App\Exceptions\BaseException;
 use SleekDB\Exceptions\IOException;
+use Quantum\Model\DbModel;
 use SleekDB\QueryBuilder;
+use RuntimeException;
 use SleekDB\Store;
 
 /**
@@ -94,6 +96,23 @@ class SleekDbal implements DbalInterface
      * @var array<int, array<string, mixed>>
      */
     protected $joins = [];
+
+    /**
+     * @var array<int, array<int|string, mixed>|string>
+     */
+    protected array $rootCriterias = [];
+
+    /**
+     * @var array<string, array<int, array{0:string,1:string,2:mixed}>>
+     */
+    protected array $relatedCriteriasByPath = [];
+
+    /**
+     * @var array<int, string>
+     */
+    protected array $requiredRelatedPaths = [];
+
+    protected bool $criteriaPrepared = false;
 
     /**
      * Associated model name
@@ -299,6 +318,10 @@ class SleekDbal implements DbalInterface
             $this->queryBuilder = $builder;
         }
 
+        if (!$this->criteriaPrepared) {
+            $this->prepareCriteriaScopes();
+        }
+
         if ($this->selected !== []) {
             $builder->select($this->selected);
         }
@@ -307,8 +330,8 @@ class SleekDbal implements DbalInterface
             $this->applyJoins();
         }
 
-        if ($this->criterias !== []) {
-            $builder->where($this->criterias);
+        if ($this->rootCriterias !== []) {
+            $builder->where($this->rootCriterias);
         }
 
         if ($this->havings !== []) {
@@ -357,6 +380,10 @@ class SleekDbal implements DbalInterface
     protected function resetBuilderState(): void
     {
         $this->criterias = [];
+        $this->rootCriterias = [];
+        $this->relatedCriteriasByPath = [];
+        $this->requiredRelatedPaths = [];
+        $this->criteriaPrepared = false;
         $this->havings = [];
         $this->selected = [];
         $this->grouped = [];
@@ -365,5 +392,243 @@ class SleekDbal implements DbalInterface
         $this->limit = null;
         $this->joins = [];
         $this->queryBuilder = null;
+    }
+
+    /**
+     * Splits collected criteria into root-store and related-join scopes.
+     * Related path criteria are mapped to join paths and excluded from root where.
+     */
+    protected function prepareCriteriaScopes(): void
+    {
+        $this->rootCriterias = $this->criterias;
+        $this->relatedCriteriasByPath = [];
+        $this->requiredRelatedPaths = [];
+        $this->criteriaPrepared = true;
+
+        if ($this->joins === [] || $this->criterias === []) {
+            return;
+        }
+
+        $joinPaths = $this->collectJoinPaths();
+
+        if ($joinPaths === []) {
+            return;
+        }
+
+        $rootCriterias = [];
+        $foundRelated = false;
+        $hasOr = false;
+
+        foreach ($this->criterias as $criteria) {
+            if (is_string($criteria)) {
+                $hasOr = $hasOr || strtoupper($criteria) === 'OR';
+                $rootCriterias[] = $criteria;
+                continue;
+            }
+
+            if (!is_array($criteria) || !isset($criteria[0]) || !is_string($criteria[0])) {
+                $rootCriterias[] = $criteria;
+                continue;
+            }
+
+            $column = $criteria[0];
+            $relatedMatch = $this->matchRelatedPath($column, $joinPaths);
+
+            if ($relatedMatch === null) {
+                $rootCriterias[] = $criteria;
+                continue;
+            }
+
+            $foundRelated = true;
+            $path = $relatedMatch['path'];
+            $localColumn = $relatedMatch['column'];
+
+            $this->relatedCriteriasByPath[$path][] = [$localColumn, $criteria[1], $criteria[2] ?? null];
+            $this->requiredRelatedPaths[] = $path;
+        }
+
+        if ($foundRelated && $hasOr) {
+            throw new RuntimeException(
+                'SleekDB related-model criterias do not support OR combinations with root/related scopes yet.'
+            );
+        }
+
+        $this->requiredRelatedPaths = array_values(array_unique($this->requiredRelatedPaths));
+        $this->rootCriterias = $rootCriterias;
+    }
+
+    /**
+     * Builds all accessible join paths (including nested ones) from current join chain.
+     * @return array<int, string>
+     */
+    protected function collectJoinPaths(): array
+    {
+        $paths = [];
+        $this->collectJoinPathsRecursive($this->joins, 0, '', $paths);
+        usort($paths, static fn (string $a, string $b): int => substr_count($b, '.') <=> substr_count($a, '.'));
+        return array_values(array_unique($paths));
+    }
+
+    /**
+     * Recursively resolves join paths while respecting switch mode for same-level joins.
+     * @param array<int, array<string, mixed>> $joins
+     * @param array<int, string> $paths
+     */
+    protected function collectJoinPathsRecursive(array $joins, int $level, string $currentPath, array &$paths): void
+    {
+        if (!isset($joins[$level])) {
+            return;
+        }
+
+        $nextItem = $joins[$level];
+        $model = unserialize($nextItem['model']);
+
+        if (!$model instanceof DbModel) {
+            return;
+        }
+
+        $joinPath = $this->buildJoinPath($currentPath, $model->table);
+        $paths[] = $joinPath;
+
+        $switch = (bool) ($nextItem['switch'] ?? true);
+
+        if ($switch) {
+            $this->collectJoinPathsRecursive($joins, $level + 1, $joinPath, $paths);
+            return;
+        }
+
+        $this->collectJoinPathsRecursive($joins, $level + 1, $currentPath, $paths);
+    }
+
+    /**
+     * Matches a dotted criteria column to the deepest known join path.
+     * @param array<int, string> $joinPaths
+     * @return array{path:string,column:string}|null
+     */
+    protected function matchRelatedPath(string $column, array $joinPaths): ?array
+    {
+        $parts = explode('.', $column);
+
+        if (count($parts) <= 1) {
+            return null;
+        }
+
+        if ($parts[0] === $this->table) {
+            return null;
+        }
+
+        foreach ($joinPaths as $path) {
+            $pathParts = explode('.', $path);
+
+            if (count($parts) <= count($pathParts)) {
+                continue;
+            }
+
+            if (array_slice($parts, 0, count($pathParts)) !== $pathParts) {
+                continue;
+            }
+
+            $localColumn = implode('.', array_slice($parts, count($pathParts)));
+
+            return [
+                'path' => $path,
+                'column' => $localColumn,
+            ];
+        }
+
+        return null;
+    }
+
+    /**
+     * Removes parent rows that do not contain data on required related paths.
+     * @param array<int, array<string, mixed>> $results
+     * @return array<int, array<string, mixed>>
+     */
+    public function applyRelatedCriteriaPostFilter(array $results): array
+    {
+        if ($this->requiredRelatedPaths === []) {
+            return $results;
+        }
+
+        return array_values(array_filter($results, function (array $row): bool {
+            foreach ($this->requiredRelatedPaths as $path) {
+                if (!$this->pathHasData($row, explode('.', $path))) {
+                    return false;
+                }
+            }
+
+            return true;
+        }));
+    }
+
+    /**
+     * Checks whether a nested relation path exists and contains at least one result.
+     * @param array<string, mixed> $row
+     * @param array<int, string> $segments
+     */
+    protected function pathHasData(array $row, array $segments): bool
+    {
+        $nodes = [$row];
+
+        foreach ($segments as $segment) {
+            $nextNodes = [];
+
+            foreach ($nodes as $node) {
+                if (!array_key_exists($segment, $node)) {
+                    continue;
+                }
+
+                $value = $node[$segment];
+
+                if (!is_array($value) || $value === []) {
+                    continue;
+                }
+
+                if ($this->isList($value)) {
+                    foreach ($value as $item) {
+                        if (is_array($item)) {
+                            $nextNodes[] = $item;
+                        }
+                    }
+                    continue;
+                }
+
+                $nextNodes[] = $value;
+            }
+
+            if ($nextNodes === []) {
+                return false;
+            }
+
+            $nodes = $nextNodes;
+        }
+
+        return true;
+    }
+
+    /**
+     * Determines whether the given array has sequential integer keys from zero.
+     * @param array<mixed> $value
+     */
+    protected function isList(array $value): bool
+    {
+        $index = 0;
+
+        foreach ($value as $key => $_) {
+            if ($key !== $index) {
+                return false;
+            }
+            $index++;
+        }
+
+        return true;
+    }
+
+    /**
+     * Builds a dot-notated join path from current path and next relation table.
+     */
+    protected function buildJoinPath(string $currentPath, string $table): string
+    {
+        return $currentPath !== '' ? $currentPath . '.' . $table : $table;
     }
 }

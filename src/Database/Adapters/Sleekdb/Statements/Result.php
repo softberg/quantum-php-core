@@ -38,11 +38,13 @@ trait Result
     public function get(): array
     {
         try {
+            $results = $this->fetchFilteredResults();
+
             return array_map(function ($element): object {
                 $item = clone $this;
                 $item->updateOrmModel($element);
                 return $item;
-            }, $this->getBuilder()->getQuery()->fetch());
+            }, $results);
         } finally {
             $this->resetBuilderState();
         }
@@ -60,7 +62,9 @@ trait Result
     public function findOne(int $id): DbalInterface
     {
         try {
-            $result = $this->getBuilder()->where(['id', '=', $id])->getQuery()->first();
+            $this->getBuilder()->where(['id', '=', $id]);
+            $results = $this->fetchFilteredResults();
+            $result = $results[0] ?? [];
             $this->updateOrmModel($result);
         } finally {
             $this->resetBuilderState();
@@ -81,7 +85,9 @@ trait Result
     public function findOneBy(string $column, $value): DbalInterface
     {
         try {
-            $result = $this->getBuilder()->where([$column, '=', $value])->getQuery()->first();
+            $this->getBuilder()->where([$column, '=', $value]);
+            $results = $this->fetchFilteredResults();
+            $result = $results[0] ?? [];
             $this->updateOrmModel($result);
         } finally {
             $this->resetBuilderState();
@@ -92,17 +98,13 @@ trait Result
 
     /**
      * @inheritDoc
-     * @throws BaseException
-     * @throws DatabaseException
-     * @throws IOException
-     * @throws InvalidArgumentException
-     * @throws InvalidConfigurationException
-     * @throws ModelException
+     * @throws ModelException|DatabaseException|BaseException|IOException|InvalidArgumentException|InvalidConfigurationException
      */
     public function first(): DbalInterface
     {
         try {
-            $result = $this->getBuilder()->getQuery()->first();
+            $results = $this->fetchFilteredResults();
+            $result = $results[0] ?? [];
             $this->updateOrmModel($result);
         } finally {
             $this->resetBuilderState();
@@ -113,16 +115,15 @@ trait Result
 
     /**
      * @inheritDoc
-     * @throws DatabaseException
-     * @throws IOException
-     * @throws InvalidArgumentException
-     * @throws InvalidConfigurationException
-     * @throws ModelException
-     * @throws BaseException
      */
     public function count(): int
     {
-        return count($this->getBuilder()->getQuery()->fetch());
+        try {
+            $results = $this->fetchFilteredResults();
+            return count($results);
+        } finally {
+            $this->resetBuilderState();
+        }
     }
 
     /**
@@ -146,5 +147,25 @@ trait Result
     public function setHidden(array $result): array
     {
         return array_diff_key($result, array_flip($this->hidden));
+    }
+
+    /**
+     * Applies adapter-specific post-fetch filters when available (SleekDB only).
+     * @param array<int, array<string, mixed>> $results
+     * @return array<int, array<string, mixed>>
+     */
+    protected function applyPostFetchFilters(array $results): array
+    {
+        return $this->applyRelatedCriteriaPostFilter($results);
+    }
+
+    /**
+     * Fetches current query results and applies post-fetch filters.
+     * @return array<int, array<string, mixed>>
+     * @throws ModelException|DatabaseException|BaseException|IOException|InvalidArgumentException|InvalidConfigurationException
+     */
+    protected function fetchFilteredResults(): array
+    {
+        return $this->applyPostFetchFilters($this->getBuilder()->getQuery()->fetch());
     }
 }

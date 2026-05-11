@@ -55,7 +55,7 @@ trait Join
                 throw new RuntimeException('Cannot apply joins without an initialized query builder.');
             }
 
-            $this->applyJoin($this->queryBuilder, $this, $this->joins[0]);
+            $this->applyJoin($this->queryBuilder, $this, $this->joins[0], 1, '');
         }
     }
 
@@ -64,8 +64,13 @@ trait Join
      * @param array<string, mixed> $nextItem
      * @throws ModelException
      */
-    private function applyJoin(QueryBuilder $queryBuilder, SleekDbal $currentItem, array $nextItem, int $level = 1): QueryBuilder
-    {
+    private function applyJoin(
+        QueryBuilder $queryBuilder,
+        SleekDbal $currentItem,
+        array $nextItem,
+        int $level = 1,
+        string $currentPath = ''
+    ): QueryBuilder {
         $modelToJoin = unserialize($nextItem['model']);
         $switch = $nextItem['switch'];
 
@@ -73,7 +78,9 @@ trait Join
             throw new RuntimeException('Failed to unserialize join model.');
         }
 
-        $queryBuilder->join(function ($item) use ($currentItem, $modelToJoin, $switch, $level) {
+        $joinPath = $this->buildJoinPath($currentPath, $modelToJoin->table);
+
+        $queryBuilder->join(function ($item) use ($currentItem, $modelToJoin, $switch, $level, $joinPath) {
 
             $sleekModel = new self(
                 $modelToJoin->table,
@@ -85,9 +92,10 @@ trait Join
             $newQueryBuilder = $sleekModel->getOrmModel()->createQueryBuilder();
 
             $this->applyJoinTo($newQueryBuilder, $modelToJoin, $currentItem, $item);
+            $this->applyRelatedCriteriaToJoin($newQueryBuilder, $joinPath);
 
             if ($switch && isset($this->joins[$level])) {
-                $this->applyJoin($newQueryBuilder, $sleekModel, $this->joins[$level], $level + 1);
+                $this->applyJoin($newQueryBuilder, $sleekModel, $this->joins[$level], $level + 1, $joinPath);
             }
 
             return $newQueryBuilder;
@@ -95,10 +103,24 @@ trait Join
         }, $modelToJoin->table);
 
         if (!$switch && isset($this->joins[$level])) {
-            $this->applyJoin($queryBuilder, $currentItem, $this->joins[$level], $level + 1);
+            $this->applyJoin($queryBuilder, $currentItem, $this->joins[$level], $level + 1, $currentPath);
         }
 
         return $queryBuilder;
+    }
+
+    /**
+     * Applies criteria assigned to a specific join path on that join subquery.
+     */
+    private function applyRelatedCriteriaToJoin(QueryBuilder $queryBuilder, string $joinPath): void
+    {
+        if (!isset($this->relatedCriteriasByPath[$joinPath])) {
+            return;
+        }
+
+        foreach ($this->relatedCriteriasByPath[$joinPath] as $criteria) {
+            $queryBuilder->where($criteria);
+        }
     }
 
     /**
