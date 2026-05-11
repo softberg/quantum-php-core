@@ -23,6 +23,7 @@ use Quantum\Database\Contracts\DbalInterface;
 use Quantum\Model\Exceptions\ModelException;
 use Quantum\App\Exceptions\BaseException;
 use SleekDB\Exceptions\IOException;
+use SleekDB\QueryBuilder;
 
 /**
  * Trait Result
@@ -38,7 +39,7 @@ trait Result
     public function get(): array
     {
         try {
-            $results = $this->fetchFilteredResults();
+            $results = $this->fetchFilteredResultsFromBuilder($this->getBuilder());
 
             return array_map(function ($element): object {
                 $item = clone $this;
@@ -62,8 +63,9 @@ trait Result
     public function findOne(int $id): DbalInterface
     {
         try {
-            $this->getBuilder()->where(['id', '=', $id]);
-            $results = $this->fetchFilteredResults();
+            $builder = $this->getBuilder();
+            $builder->where(['id', '=', $id]);
+            $results = $this->fetchFilteredResultsFromBuilder($builder);
             $result = $results[0] ?? [];
             $this->updateOrmModel($result);
         } finally {
@@ -85,8 +87,9 @@ trait Result
     public function findOneBy(string $column, $value): DbalInterface
     {
         try {
-            $this->getBuilder()->where([$column, '=', $value]);
-            $results = $this->fetchFilteredResults();
+            $builder = $this->getBuilder();
+            $builder->where([$column, '=', $value]);
+            $results = $this->fetchFilteredResultsFromBuilder($builder);
             $result = $results[0] ?? [];
             $this->updateOrmModel($result);
         } finally {
@@ -103,7 +106,7 @@ trait Result
     public function first(): DbalInterface
     {
         try {
-            $results = $this->fetchFilteredResults();
+            $results = $this->fetchFilteredResultsFromBuilder($this->getBuilder());
             $result = $results[0] ?? [];
             $this->updateOrmModel($result);
         } finally {
@@ -119,7 +122,7 @@ trait Result
     public function count(): int
     {
         try {
-            $results = $this->fetchFilteredResults();
+            $results = $this->fetchFilteredResultsFromBuilder($this->getBuilder());
             return count($results);
         } finally {
             $this->resetBuilderState();
@@ -150,22 +153,12 @@ trait Result
     }
 
     /**
-     * Applies adapter-specific post-fetch filters when available (SleekDB only).
-     * @param array<int, array<string, mixed>> $results
+     * Fetches results from given builder and applies post-fetch filters.
+     * @param QueryBuilder $builder
      * @return array<int, array<string, mixed>>
      */
-    protected function applyPostFetchFilters(array $results): array
+    protected function fetchFilteredResultsFromBuilder(QueryBuilder $builder): array
     {
-        return $this->applyRelatedCriteriaPostFilter($results);
-    }
-
-    /**
-     * Fetches current query results and applies post-fetch filters.
-     * @return array<int, array<string, mixed>>
-     * @throws ModelException|DatabaseException|BaseException|IOException|InvalidArgumentException|InvalidConfigurationException
-     */
-    protected function fetchFilteredResults(): array
-    {
-        return $this->applyPostFetchFilters($this->getBuilder()->getQuery()->fetch());
+        return $this->applyRelatedCriteriaPostFilter($builder->getQuery()->fetch());
     }
 }
