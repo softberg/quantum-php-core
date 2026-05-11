@@ -79,7 +79,6 @@
 - PHP 8.4 forward compatibility: Added missing type hint to `SleekDbal::__get()` magic method
 - Fixed deprecated `E_STRICT` constant usage in test bootstrap
 - Fixed cURL error message assertions for cross-version compatibility
-- SleekDB adapter now supports related-model criteria path filtering across join depths while preserving DBAL public API (#508)
 
 ### Added
 - `AppContext` class representing the runtime identity of a single application execution
@@ -117,6 +116,7 @@
   - Added rate limit response headers (`X-RateLimit-Limit`, `X-RateLimit-Remaining`, `Retry-After`)
   - Added route-level metadata support on `Route` and `RouteBuilder` for rate limiting
   - Added unit test coverage for router integration, middleware flow, adapters, factory resolution, and exception behavior
+- SleekDB adapter now supports related-model criteria path filtering across join depths while preserving DBAL public API (#508)
 
 ### Removed
 - Support for PHP 7.3 and earlier versions

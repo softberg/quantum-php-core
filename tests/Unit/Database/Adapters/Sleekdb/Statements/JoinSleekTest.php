@@ -368,6 +368,9 @@ class JoinSleekTest extends SleekDbalTestCase
 
         $this->assertInstanceOf(ModelCollection::class, $users);
         $this->assertCount(0, $users);
+
+        $usersWithoutBadCriterion = ModelFactory::get(TestUserModel::class)->get();
+        $this->assertGreaterThan(0, $usersWithoutBadCriterion->count());
     }
 
     public function testSleekRelatedCriteriaWithRootSelectKeepsMatchedRow(): void

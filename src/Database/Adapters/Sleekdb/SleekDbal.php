@@ -409,15 +409,16 @@ class SleekDbal implements DbalInterface
         $this->rootCriterias = $this->criterias;
         $this->relatedCriteriasByPath = [];
         $this->requiredRelatedPaths = [];
-        $this->criteriaPrepared = true;
 
         if ($this->joins === [] || $this->criterias === []) {
+            $this->criteriaPrepared = true;
             return;
         }
 
         $joinPaths = $this->collectJoinPaths();
 
         if ($joinPaths === []) {
+            $this->criteriaPrepared = true;
             return;
         }
 
@@ -461,6 +462,7 @@ class SleekDbal implements DbalInterface
 
         $this->requiredRelatedPaths = array_values(array_unique($this->requiredRelatedPaths));
         $this->rootCriterias = $rootCriterias;
+        $this->criteriaPrepared = true;
     }
 
     /**
