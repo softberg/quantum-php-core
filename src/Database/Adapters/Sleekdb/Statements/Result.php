@@ -34,6 +34,12 @@ trait Result
     abstract protected function resetBuilderState(): void;
 
     /**
+     * @param array<int, array<string, mixed>> $results
+     * @return array<int, array<string, mixed>>
+     */
+    abstract protected function applyRelatedCriteriaPostFilter(array $results): array;
+
+    /**
      * @inheritDoc
      */
     public function get(): array

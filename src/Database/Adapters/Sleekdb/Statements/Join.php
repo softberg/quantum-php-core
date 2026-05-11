@@ -31,6 +31,8 @@ use RuntimeException;
  */
 trait Join
 {
+    abstract protected function buildJoinPath(string $currentPath, string $table): string;
+
     /**
      * @inheritDoc
      */
