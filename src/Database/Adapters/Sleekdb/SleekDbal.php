@@ -115,6 +115,11 @@ class SleekDbal implements DbalInterface
     protected bool $criteriaPrepared = false;
 
     /**
+     * @var array<int, string>
+     */
+    protected array $autoSelectedRelatedRoots = [];
+
+    /**
      * Associated model name
      */
     private ?string $modelName;
@@ -323,7 +328,7 @@ class SleekDbal implements DbalInterface
         }
 
         if ($this->selected !== []) {
-            $builder->select($this->selected);
+            $builder->select($this->buildSelectForQuery());
         }
 
         if ($this->joins !== []) {
@@ -384,6 +389,7 @@ class SleekDbal implements DbalInterface
         $this->relatedCriteriasByPath = [];
         $this->requiredRelatedPaths = [];
         $this->criteriaPrepared = false;
+        $this->autoSelectedRelatedRoots = [];
         $this->havings = [];
         $this->selected = [];
         $this->grouped = [];
@@ -550,7 +556,7 @@ class SleekDbal implements DbalInterface
             return $results;
         }
 
-        return array_values(array_filter($results, function (array $row): bool {
+        $results = array_values(array_filter($results, function (array $row): bool {
             foreach ($this->requiredRelatedPaths as $path) {
                 if (!$this->pathHasData($row, explode('.', $path))) {
                     return false;
@@ -559,6 +565,12 @@ class SleekDbal implements DbalInterface
 
             return true;
         }));
+
+        if ($this->autoSelectedRelatedRoots !== []) {
+            $results = $this->removeAutoSelectedRelatedRoots($results);
+        }
+
+        return $results;
     }
 
     /**
@@ -630,5 +642,68 @@ class SleekDbal implements DbalInterface
     protected function buildJoinPath(string $currentPath, string $table): string
     {
         return $currentPath !== '' ? $currentPath . '.' . $table : $table;
+    }
+
+    /**
+     * Adds related roots required for post-filtering to query selection only.
+     * @return array<string, mixed>
+     */
+    protected function buildSelectForQuery(): array
+    {
+        $selected = $this->selected;
+        $this->autoSelectedRelatedRoots = [];
+
+        if ($this->requiredRelatedPaths === []) {
+            return $selected;
+        }
+
+        foreach ($this->requiredRelatedPaths as $path) {
+            $relatedRoot = explode('.', $path)[0];
+
+            if ($this->selectReferencesRoot($selected, $relatedRoot)) {
+                continue;
+            }
+
+            $selected[] = $relatedRoot;
+            $this->autoSelectedRelatedRoots[] = $relatedRoot;
+        }
+
+        return $selected;
+    }
+
+    /**
+     * Checks whether current selection already references the given relation root.
+     * @param array<string, mixed> $selected
+     */
+    protected function selectReferencesRoot(array $selected, string $root): bool
+    {
+        foreach ($selected as $column) {
+            if (!is_string($column)) {
+                continue;
+            }
+
+            if ($column === $root || strpos($column, $root . '.') === 0) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Removes relation roots auto-selected only for post-filter evaluation.
+     * @param array<int, array<string, mixed>> $results
+     * @return array<int, array<string, mixed>>
+     */
+    protected function removeAutoSelectedRelatedRoots(array $results): array
+    {
+        foreach ($results as &$row) {
+            foreach ($this->autoSelectedRelatedRoots as $root) {
+                unset($row[$root]);
+            }
+        }
+        unset($row);
+
+        return $results;
     }
 }

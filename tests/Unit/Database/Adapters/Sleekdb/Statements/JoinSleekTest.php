@@ -369,4 +369,36 @@ class JoinSleekTest extends SleekDbalTestCase
         $this->assertInstanceOf(ModelCollection::class, $users);
         $this->assertCount(0, $users);
     }
+
+    public function testSleekRelatedCriteriaWithRootSelectKeepsMatchedRow(): void
+    {
+        $userModel = ModelFactory::get(TestUserModel::class);
+        $profileModel = ModelFactory::get(TestProfileModel::class);
+
+        $users = $userModel
+            ->joinTo($profileModel)
+            ->criteria('profiles.firstname', '=', 'Jane')
+            ->select('email')
+            ->get();
+
+        $this->assertGreaterThan(0, $users->count());
+        $this->assertIsString($users->first()->email);
+        $this->assertNull($users->first()->prop('profiles'));
+    }
+
+    public function testSleekRelatedCriteriaWithAliasedSelectKeepsMatchedRow(): void
+    {
+        $userModel = ModelFactory::get(TestUserModel::class);
+        $profileModel = ModelFactory::get(TestProfileModel::class);
+
+        $users = $userModel
+            ->joinTo($profileModel)
+            ->criteria('profiles.firstname', '=', 'Jane')
+            ->select(['email' => 'user_email'])
+            ->get();
+
+        $this->assertGreaterThan(0, $users->count());
+        $this->assertIsString($users->first()->user_email);
+        $this->assertNull($users->first()->prop('profiles'));
+    }
 }
