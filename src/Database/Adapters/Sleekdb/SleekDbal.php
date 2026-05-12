@@ -16,6 +16,7 @@ declare(strict_types=1);
 
 namespace Quantum\Database\Adapters\Sleekdb;
 
+use Quantum\Database\Adapters\Sleekdb\Statements\RelatedCriteria;
 use Quantum\Database\Adapters\Sleekdb\Statements\Criteria;
 use Quantum\Database\Adapters\Sleekdb\Statements\Reducer;
 use Quantum\Database\Adapters\Sleekdb\Statements\Result;
@@ -40,6 +41,7 @@ class SleekDbal implements DbalInterface
     use Model;
     use Result;
     use Criteria;
+    use RelatedCriteria;
     use Reducer;
     use Join;
 
@@ -96,6 +98,28 @@ class SleekDbal implements DbalInterface
     protected $joins = [];
 
     /**
+     * @var array<int, array<int|string, mixed>|string>
+     */
+    protected array $rootCriterias = [];
+
+    /**
+     * @var array<string, array<int, array{0:string,1:string,2:mixed}>>
+     */
+    protected array $relatedCriteriasByPath = [];
+
+    /**
+     * @var array<int, string>
+     */
+    protected array $requiredRelatedPaths = [];
+
+    protected bool $criteriaPrepared = false;
+
+    /**
+     * @var array<int, string>
+     */
+    protected array $autoSelectedRelatedRoots = [];
+
+    /**
      * Associated model name
      */
     private ?string $modelName;
@@ -122,12 +146,11 @@ class SleekDbal implements DbalInterface
      */
     public array $hidden = [];
 
-    /**
-     * ORM Model
-     */
     private ?Store $ormModel = null;
 
     private ?QueryBuilder $queryBuilder = null;
+
+    private bool $builderPrepared = false;
 
     /**
      * Active connection
@@ -231,11 +254,7 @@ class SleekDbal implements DbalInterface
 
     /**
      * Gets the ORM model
-     * @throws DatabaseException
-     * @throws IOException
-     * @throws InvalidArgumentException
-     * @throws InvalidConfigurationException
-     * @throws BaseException
+     * @throws DatabaseException|BaseException|IOException|InvalidArgumentException|InvalidConfigurationException
      */
     public function getOrmModel(): Store
     {
@@ -283,54 +302,16 @@ class SleekDbal implements DbalInterface
 
     /**
      * Gets the query builder object
-     * @throws BaseException
-     * @throws DatabaseException
-     * @throws IOException
-     * @throws InvalidArgumentException
-     * @throws InvalidConfigurationException
-     * @throws ModelException
+     * @throws ModelException|DatabaseException|BaseException|IOException|InvalidArgumentException|InvalidConfigurationException
      */
     public function getBuilder(): QueryBuilder
     {
-        $builder = $this->queryBuilder;
-
-        if (!$builder) {
-            $builder = $this->getOrmModel()->createQueryBuilder();
-            $this->queryBuilder = $builder;
+        $builder = $this->getQueryBuilder();
+        if (!$this->builderPrepared) {
+            $this->prepareCriteriaScopesIfNeeded();
+            $this->applyBuilderModifiers($builder);
+            $this->builderPrepared = true;
         }
-
-        if ($this->selected !== []) {
-            $builder->select($this->selected);
-        }
-
-        if ($this->joins !== []) {
-            $this->applyJoins();
-        }
-
-        if ($this->criterias !== []) {
-            $builder->where($this->criterias);
-        }
-
-        if ($this->havings !== []) {
-            $builder->having($this->havings);
-        }
-
-        if ($this->grouped !== []) {
-            $builder->groupBy($this->grouped);
-        }
-
-        if ($this->ordered !== []) {
-            $builder->orderBy($this->ordered);
-        }
-
-        if ($this->offset) {
-            $builder->skip($this->offset);
-        }
-
-        if ($this->limit) {
-            $builder->limit($this->limit);
-        }
-
         return $builder;
     }
 
@@ -357,6 +338,11 @@ class SleekDbal implements DbalInterface
     protected function resetBuilderState(): void
     {
         $this->criterias = [];
+        $this->rootCriterias = [];
+        $this->relatedCriteriasByPath = [];
+        $this->requiredRelatedPaths = [];
+        $this->criteriaPrepared = false;
+        $this->autoSelectedRelatedRoots = [];
         $this->havings = [];
         $this->selected = [];
         $this->grouped = [];
@@ -365,5 +351,126 @@ class SleekDbal implements DbalInterface
         $this->limit = null;
         $this->joins = [];
         $this->queryBuilder = null;
+        $this->builderPrepared = false;
     }
+
+    /**
+     * Builds a dot-notated join path from current path and next relation table.
+     */
+    protected function buildJoinPath(string $currentPath, string $table): string
+    {
+        return $currentPath !== '' ? $currentPath . '.' . $table : $table;
+    }
+
+    /**
+     * Ensures a reusable query builder instance exists for current adapter state.
+     * @return QueryBuilder
+     * @throws BaseException
+     * @throws DatabaseException
+     * @throws IOException
+     * @throws InvalidArgumentException
+     * @throws InvalidConfigurationException
+     */
+    protected function getQueryBuilder(): QueryBuilder
+    {
+        if ($this->queryBuilder === null) {
+            $this->queryBuilder = $this->getOrmModel()->createQueryBuilder();
+        }
+
+        return $this->queryBuilder;
+    }
+
+    /**
+     * Prepares root/related criteria scopes once per builder lifecycle.
+     */
+    protected function prepareCriteriaScopesIfNeeded(): void
+    {
+        if (!$this->criteriaPrepared) {
+            $this->prepareCriteriaScopes();
+        }
+    }
+
+    /**
+     * Applies all collected query modifiers on the given builder.
+     * @throws ModelException|InvalidArgumentException
+     */
+    protected function applyBuilderModifiers(QueryBuilder $builder): void
+    {
+        $this->applySelectModifier($builder);
+        $this->applyJoinModifier();
+        $this->applyWhereModifier($builder);
+        $this->applyHavingModifier($builder);
+        $this->applyGroupModifier($builder);
+        $this->applyOrderModifier($builder);
+        $this->applyPaginationModifier($builder);
+    }
+
+    protected function applySelectModifier(QueryBuilder $builder): void
+    {
+        if ($this->selected !== []) {
+            $builder->select($this->buildSelectForQuery());
+        }
+    }
+
+    /**
+     * @throws ModelException
+     */
+    protected function applyJoinModifier(): void
+    {
+        if ($this->joins !== []) {
+            $this->applyJoins();
+        }
+    }
+
+    /**
+     * @throws InvalidArgumentException
+     */
+    protected function applyWhereModifier(QueryBuilder $builder): void
+    {
+        if ($this->rootCriterias !== []) {
+            $builder->where($this->rootCriterias);
+        }
+    }
+
+    /**
+     * @throws InvalidArgumentException
+     */
+    protected function applyHavingModifier(QueryBuilder $builder): void
+    {
+        if ($this->havings !== []) {
+            $builder->having($this->havings);
+        }
+    }
+
+    protected function applyGroupModifier(QueryBuilder $builder): void
+    {
+        if ($this->grouped !== []) {
+            $builder->groupBy($this->grouped);
+        }
+    }
+
+    /**
+     * @throws InvalidArgumentException
+     */
+    protected function applyOrderModifier(QueryBuilder $builder): void
+    {
+        if ($this->ordered !== []) {
+            $builder->orderBy($this->ordered);
+        }
+    }
+
+    /**
+     * @throws InvalidArgumentException
+     */
+    protected function applyPaginationModifier(QueryBuilder $builder): void
+    {
+        if ($this->offset) {
+            $builder->skip($this->offset);
+        }
+
+        if ($this->limit) {
+            $builder->limit($this->limit);
+        }
+    }
+
 }

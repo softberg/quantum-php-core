@@ -23,6 +23,7 @@ use Quantum\Database\Contracts\DbalInterface;
 use Quantum\Model\Exceptions\ModelException;
 use Quantum\App\Exceptions\BaseException;
 use SleekDB\Exceptions\IOException;
+use SleekDB\QueryBuilder;
 
 /**
  * Trait Result
@@ -33,16 +34,25 @@ trait Result
     abstract protected function resetBuilderState(): void;
 
     /**
+     * @param array<int, array<string, mixed>> $results
+     * @return array<int, array<string, mixed>>
+     */
+    abstract protected function applyRelatedCriteriaPostFilter(array $results): array;
+
+    /**
      * @inheritDoc
      */
     public function get(): array
     {
         try {
+            $results = $this->fetchFilteredResultsFromBuilder($this->getBuilder());
+
             return array_map(function ($element): object {
                 $item = clone $this;
+                $item->resetBuilderState();
                 $item->updateOrmModel($element);
                 return $item;
-            }, $this->getBuilder()->getQuery()->fetch());
+            }, $results);
         } finally {
             $this->resetBuilderState();
         }
@@ -60,7 +70,10 @@ trait Result
     public function findOne(int $id): DbalInterface
     {
         try {
-            $result = $this->getBuilder()->where(['id', '=', $id])->getQuery()->first();
+            $builder = $this->getBuilder();
+            $builder->where(['id', '=', $id]);
+            $results = $this->fetchFilteredResultsFromBuilder($builder);
+            $result = $results[0] ?? [];
             $this->updateOrmModel($result);
         } finally {
             $this->resetBuilderState();
@@ -81,7 +94,10 @@ trait Result
     public function findOneBy(string $column, $value): DbalInterface
     {
         try {
-            $result = $this->getBuilder()->where([$column, '=', $value])->getQuery()->first();
+            $builder = $this->getBuilder();
+            $builder->where([$column, '=', $value]);
+            $results = $this->fetchFilteredResultsFromBuilder($builder);
+            $result = $results[0] ?? [];
             $this->updateOrmModel($result);
         } finally {
             $this->resetBuilderState();
@@ -92,17 +108,13 @@ trait Result
 
     /**
      * @inheritDoc
-     * @throws BaseException
-     * @throws DatabaseException
-     * @throws IOException
-     * @throws InvalidArgumentException
-     * @throws InvalidConfigurationException
-     * @throws ModelException
+     * @throws ModelException|DatabaseException|BaseException|IOException|InvalidArgumentException|InvalidConfigurationException
      */
     public function first(): DbalInterface
     {
         try {
-            $result = $this->getBuilder()->getQuery()->first();
+            $results = $this->fetchFilteredResultsFromBuilder($this->getBuilder());
+            $result = $results[0] ?? [];
             $this->updateOrmModel($result);
         } finally {
             $this->resetBuilderState();
@@ -113,16 +125,15 @@ trait Result
 
     /**
      * @inheritDoc
-     * @throws DatabaseException
-     * @throws IOException
-     * @throws InvalidArgumentException
-     * @throws InvalidConfigurationException
-     * @throws ModelException
-     * @throws BaseException
      */
     public function count(): int
     {
-        return count($this->getBuilder()->getQuery()->fetch());
+        try {
+            $results = $this->fetchFilteredResultsFromBuilder($this->getBuilder());
+            return count($results);
+        } finally {
+            $this->resetBuilderState();
+        }
     }
 
     /**
@@ -146,5 +157,15 @@ trait Result
     public function setHidden(array $result): array
     {
         return array_diff_key($result, array_flip($this->hidden));
+    }
+
+    /**
+     * Fetches results from given builder and applies post-fetch filters.
+     * @param QueryBuilder $builder
+     * @return array<int, array<string, mixed>>
+     */
+    protected function fetchFilteredResultsFromBuilder(QueryBuilder $builder): array
+    {
+        return $this->applyRelatedCriteriaPostFilter($builder->getQuery()->fetch());
     }
 }

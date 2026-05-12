@@ -292,4 +292,116 @@ class JoinSleekTest extends SleekDbalTestCase
             ->joinTo(ModelFactory::get(TestUserModel::class))
             ->get();
     }
+
+    public function testSleekRelatedCriteriaFiltersJoinedLevel(): void
+    {
+        $userModel = ModelFactory::get(TestUserModel::class);
+        $profileModel = ModelFactory::get(TestProfileModel::class);
+
+        $users = $userModel
+            ->joinTo($profileModel)
+            ->criteria('profiles.firstname', '=', 'Jane')
+            ->get();
+
+        $this->assertCount(1, $users);
+        $this->assertEquals('jane@test.com', $users->first()->email);
+        $this->assertEquals('Jane', $users->first()->prop('profiles')[0]['firstname']);
+    }
+
+    public function testSleekDeepRelatedCriteriaFiltersNestedJoinLevel(): void
+    {
+        $userModel = ModelFactory::get(TestUserModel::class);
+        $meetingModel = ModelFactory::get(TestUserMeetingModel::class);
+        $ticketModel = ModelFactory::get(TestTicketModel::class);
+
+        $users = $userModel
+            ->joinTo($meetingModel)
+            ->joinTo($ticketModel)
+            ->criteria('user_meetings.tickets.type', '=', 'regular')
+            ->get();
+
+        $this->assertCount(1, $users);
+        $this->assertEquals('john@test.com', $users->first()->email);
+    }
+
+    public function testSleekRootAndRelatedCriteriaWithAnd(): void
+    {
+        $userModel = ModelFactory::get(TestUserModel::class);
+        $profileModel = ModelFactory::get(TestProfileModel::class);
+
+        $users = $userModel
+            ->joinTo($profileModel)
+            ->criteria('email', 'LIKE', '%jane%')
+            ->criteria('profiles.country', '=', 'England')
+            ->get();
+
+        $this->assertCount(1, $users);
+        $this->assertEquals('jane@test.com', $users->first()->email);
+    }
+
+    public function testSleekRelatedCriteriaRejectsOrCombination(): void
+    {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('SleekDB related-model criterias do not support OR combinations');
+
+        $userModel = ModelFactory::get(TestUserModel::class);
+        $profileModel = ModelFactory::get(TestProfileModel::class);
+
+        $userModel
+            ->joinTo($profileModel)
+            ->criterias(
+                ['profiles.firstname', '=', 'Jane'],
+                [['email', 'LIKE', '%john%'], ['email', 'LIKE', '%jane%']]
+            )
+            ->get();
+    }
+
+    public function testSleekInvalidRelatedCriteriaPathReturnsNoMatches(): void
+    {
+        $userModel = ModelFactory::get(TestUserModel::class);
+        $profileModel = ModelFactory::get(TestProfileModel::class);
+
+        $users = $userModel
+            ->joinTo($profileModel)
+            ->criteria('unknown_relation.firstname', '=', 'Jane')
+            ->get();
+
+        $this->assertInstanceOf(ModelCollection::class, $users);
+        $this->assertCount(0, $users);
+
+        $usersWithoutBadCriterion = ModelFactory::get(TestUserModel::class)->get();
+        $this->assertGreaterThan(0, $usersWithoutBadCriterion->count());
+    }
+
+    public function testSleekRelatedCriteriaWithRootSelectKeepsMatchedRow(): void
+    {
+        $userModel = ModelFactory::get(TestUserModel::class);
+        $profileModel = ModelFactory::get(TestProfileModel::class);
+
+        $users = $userModel
+            ->joinTo($profileModel)
+            ->criteria('profiles.firstname', '=', 'Jane')
+            ->select('email')
+            ->get();
+
+        $this->assertGreaterThan(0, $users->count());
+        $this->assertIsString($users->first()->email);
+        $this->assertNull($users->first()->prop('profiles'));
+    }
+
+    public function testSleekRelatedCriteriaWithAliasedSelectKeepsMatchedRow(): void
+    {
+        $userModel = ModelFactory::get(TestUserModel::class);
+        $profileModel = ModelFactory::get(TestProfileModel::class);
+
+        $users = $userModel
+            ->joinTo($profileModel)
+            ->criteria('profiles.firstname', '=', 'Jane')
+            ->select(['email' => 'user_email'])
+            ->get();
+
+        $this->assertGreaterThan(0, $users->count());
+        $this->assertIsString($users->first()->user_email);
+        $this->assertNull($users->first()->prop('profiles'));
+    }
 }
