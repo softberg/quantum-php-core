@@ -14,7 +14,7 @@ return [
      * ---------------------------------------------------------
      */
     'file' => [
-        'path' => cache_dir(),
+        'path' => base_dir() . DS . 'cache' . DS . 'data',
         'ttl' => 60,
         'prefix' => 'api-rate-limit:',
     ],
