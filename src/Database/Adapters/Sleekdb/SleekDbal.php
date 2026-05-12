@@ -146,12 +146,11 @@ class SleekDbal implements DbalInterface
      */
     public array $hidden = [];
 
-    /**
-     * ORM Model
-     */
     private ?Store $ormModel = null;
 
     private ?QueryBuilder $queryBuilder = null;
+
+    private bool $builderPrepared = false;
 
     /**
      * Active connection
@@ -308,8 +307,11 @@ class SleekDbal implements DbalInterface
     public function getBuilder(): QueryBuilder
     {
         $builder = $this->getQueryBuilder();
-        $this->prepareCriteriaScopesIfNeeded();
-        $this->applyBuilderModifiers($builder);
+        if (!$this->builderPrepared) {
+            $this->prepareCriteriaScopesIfNeeded();
+            $this->applyBuilderModifiers($builder);
+            $this->builderPrepared = true;
+        }
         return $builder;
     }
 
@@ -349,6 +351,7 @@ class SleekDbal implements DbalInterface
         $this->limit = null;
         $this->joins = [];
         $this->queryBuilder = null;
+        $this->builderPrepared = false;
     }
 
     /**

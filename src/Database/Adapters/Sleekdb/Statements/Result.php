@@ -49,6 +49,7 @@ trait Result
 
             return array_map(function ($element): object {
                 $item = clone $this;
+                $item->resetBuilderState();
                 $item->updateOrmModel($element);
                 return $item;
             }, $results);
