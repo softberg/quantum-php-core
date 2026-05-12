@@ -49,7 +49,6 @@ abstract class BaseMiddleware extends Middleware
 
     /**
      * Validate the request and respond with error if invalid.
-     * @return Response|null
      */
     protected function validateRequest(Request $request): ?Response
     {

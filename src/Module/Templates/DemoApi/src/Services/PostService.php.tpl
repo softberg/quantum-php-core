@@ -37,19 +37,11 @@ use Quantum\Model\DbModel;
  */
 class PostService extends Service
 {
-
-    /**
-     * @var Post
-     */
     private Post $model;
 
-    /**
-     * @var PostTransformer
-     */
     private PostTransformer $transformer;
 
     /**
-     * @param PostTransformer $transformer
      * @throws ModelException
      */
     public function __construct(PostTransformer $transformer)
@@ -61,10 +53,6 @@ class PostService extends Service
 
     /**
      * Get posts
-     * @param int|null $perPage
-     * @param int|null $currentPage
-     * @param string|null $search
-     * @return mixed
      * @throws BaseException
      * @throws ModelException
      */
@@ -100,8 +88,6 @@ class PostService extends Service
 
     /**
      * Get post
-     * @param string $uuid
-     * @return Post|null
      * @throws BaseException
      * @throws ModelException
      */
@@ -126,8 +112,6 @@ class PostService extends Service
 
     /**
      * Get my posts
-     * @param string $userUuid
-     * @return ModelCollection|null
      * @throws BaseException
      * @throws ModelException
      */
@@ -151,8 +135,6 @@ class PostService extends Service
 
     /**
      * Add post
-     * @param PostDTO $postDto
-     * @return Post
      * @throws BaseException
      * @throws ModelException
      */
@@ -169,9 +151,6 @@ class PostService extends Service
 
     /**
      * Update post
-     * @param string $uuid
-     * @param PostDTO $postDto
-     * @return Post
      * @throws BaseException
      * @throws ModelException
      */
@@ -186,8 +165,6 @@ class PostService extends Service
 
     /**
      * Deletes post
-     * @param string $uuid
-     * @return bool
      */
     public function deletePost(string $uuid): bool
     {
@@ -205,10 +182,6 @@ class PostService extends Service
 
     /**
      * Saves the post images
-     * @param UploadedFile $uploadedFile
-     * @param string $imageDirectory
-     * @param string $imageName
-     * @return string
      * @throws EnvException
      * @throws FileSystemException
      * @throws FileUploadException
@@ -225,7 +198,6 @@ class PostService extends Service
 
     /**
      * Deletes the post image
-     * @param string $imagePath
      * @throws BaseException
      * @throws DiException
      * @throws ReflectionException
@@ -241,8 +213,6 @@ class PostService extends Service
 
     /**
      * Transforms the data
-     * @param array $posts
-     * @return array
      */
     public function transformData(array $posts): array
     {

@@ -22,50 +22,20 @@ use Quantum\Http\Request;
  */
 class UserDTO
 {
-    /**
-     * @var string
-     */
     private string $email;
 
-    /**
-     * @var string
-     */
     private string $password;
 
-    /**
-     * @var string
-     */
     private string $firstname;
 
-    /**
-     * @var string
-     */
     private string $lastname;
 
-    /**
-     * @var string
-     */
     private string $role;
 
-    /**
-     * @var string|null
-     */
     private ?string $uuid;
 
-    /**
-     * @var string
-     */
     private string $image;
 
-    /**
-     * @param string $email
-     * @param string $password
-     * @param string $firstname
-     * @param string $lastname
-     * @param string $role
-     * @param string|null $uuid
-     * @param string $image
-     */
     public function __construct(
         string $email,
         string $password,
@@ -84,12 +54,6 @@ class UserDTO
         $this->image = $image;
     }
 
-    /**
-     * @param Request $request
-     * @param string $role
-     * @param string|null $uuid
-     * @return self
-     */
     public static function fromRequest(Request $request, string $role, ?string $uuid = null): self
     {
         return new self(
@@ -139,7 +103,6 @@ class UserDTO
 
     /**
      * Converts DTO to array for framework interface compatibility
-     * @return array
      */
     public function toArray(): array
     {

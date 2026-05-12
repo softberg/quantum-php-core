@@ -27,7 +27,6 @@ class CommandService extends Service
 
     /**
      * Get all available commands (core + app)
-     * @return array
      * @throws ReflectionException
      */
     public function getAllCommands(): array

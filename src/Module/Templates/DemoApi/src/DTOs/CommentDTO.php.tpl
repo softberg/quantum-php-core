@@ -22,26 +22,12 @@ use Quantum\Http\Request;
  */
 class CommentDTO
 {
-    /**
-     * @var string
-     */
     private string $postUuid;
 
-    /**
-     * @var string
-     */
     private string $userUuid;
 
-    /**
-     * @var string
-     */
     private string $content;
 
-    /**
-     * @param string $postUuid
-     * @param string $userUuid
-     * @param string $content
-     */
     public function __construct(
         string $postUuid,
         string $userUuid,
@@ -52,12 +38,6 @@ class CommentDTO
         $this->content = $content;
     }
 
-    /**
-     * @param Request $request
-     * @param string $postUuid
-     * @param string $userUuid
-     * @return self
-     */
     public static function fromRequest(Request $request, string $postUuid, string $userUuid): self
     {
         return new self($postUuid, $userUuid, trim((string)$request->get('content')));
@@ -78,9 +58,6 @@ class CommentDTO
         return $this->content;
     }
 
-    /**
-     * @return array
-     */
     public function toArray(): array
     {
         return [

@@ -31,9 +31,6 @@ use Quantum\Di\Di;
  */
 class EmailService extends Service
 {
-    /**
-     * @var string
-     */
     private string $emailsDirectory;
 
 
@@ -43,9 +40,6 @@ class EmailService extends Service
     }
 
     /**
-     * @param int $perPage
-     * @param int $currentPage
-     * @return Paginator
      * @throws BaseException
      * @throws ReflectionException
      */
@@ -82,8 +76,6 @@ class EmailService extends Service
     }
 
     /**
-     * @param string $emailId
-     * @return MailTrap
      * @throws BaseException
      */
     public function getEmail(string $emailId): MailTrap
@@ -94,8 +86,6 @@ class EmailService extends Service
     }
 
     /**
-     * @param string $emailId
-     * @return bool
      * @throws BaseException
      * @throws ReflectionException
      */
@@ -103,11 +93,6 @@ class EmailService extends Service
     {
         return fs()->remove($this->emailsDirectory . DS . $emailId . '.eml');
     }
-
-    /**
-     * @param string $messageId
-     * @return string
-     */
     private function getEmailId(string $messageId): string
     {
         preg_match('/<(.*?)@/', preg_quote($messageId), $matches);
@@ -116,10 +101,6 @@ class EmailService extends Service
     }
 
     /**
-     * @param array $data
-     * @param int $perPage
-     * @param int $currentPage
-     * @return Paginator
      * @throws BaseException
      * @throws PaginatorException
      */

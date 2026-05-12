@@ -31,19 +31,16 @@ class Post extends DbModel
 
     /**
      * ID column of table
-     * @var string
      */
     public string $idColumn = 'id';
 
     /**
      * The table name
-     * @var string
      */
     public string $table = 'posts';
 
     /**
      * Fillable properties
-     * @var array
      */
     public array $fillable = [
         'uuid',
@@ -55,7 +52,6 @@ class Post extends DbModel
 
     /**
      * Model relations configuration
-     * @return array[]
      */
     public function relations(): array
     {

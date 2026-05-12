@@ -37,9 +37,6 @@ abstract class BaseMiddleware extends Middleware
         $this->defineValidationRules($request);
     }
 
-    /**
-     * @return Response|null
-     */
     protected function validateRequest(Request $request): ?Response
     {
         if (!$this->validator->isValid($request->all())) {
