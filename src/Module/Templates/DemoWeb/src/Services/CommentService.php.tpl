@@ -28,19 +28,11 @@ use {{MODULE_NAMESPACE}}\Models\User;
  */
 class CommentService extends Service
 {
-
-    /**
-     * @var Comment
-     */
     private Comment $model;
 
-    /**
-     * @var CommentTransformer
-     */
     private CommentTransformer $transformer;
 
     /**
-     * @param CommentTransformer $transformer
      * @throws ModelException
      */
     public function __construct(CommentTransformer $transformer)
@@ -51,8 +43,6 @@ class CommentService extends Service
 
     /**
      * Get comments by post
-     * @param string $postUuid
-     * @return mixed
      * @throws BaseException
      * @throws ModelException
      */
@@ -77,8 +67,6 @@ class CommentService extends Service
 
     /**
      * Get comment
-     * @param string $uuid
-     * @return Comment
      * @throws BaseException
      */
     public function getComment(string $uuid): Comment
@@ -88,8 +76,6 @@ class CommentService extends Service
 
     /**
      * Add a new comment
-     * @param CommentDTO $commentDto
-     * @return array
      * @throws ModelException
      */
     public function addComment(CommentDTO $commentDto): array
@@ -105,8 +91,6 @@ class CommentService extends Service
 
     /**
      * Delete a comment
-     * @param string $uuid
-     * @return bool
      * @throws BaseException
      * @throws ModelException
      */
@@ -126,8 +110,6 @@ class CommentService extends Service
 
     /**
      * Transform data
-     * @param array $comments
-     * @return array
      */
     public function transformData(array $comments): array
     {

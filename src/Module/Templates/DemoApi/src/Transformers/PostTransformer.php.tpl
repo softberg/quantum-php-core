@@ -22,11 +22,8 @@ use Quantum\Transformer\Contracts\TransformerInterface;
  */
 class PostTransformer implements TransformerInterface
 {
-
     /**
      * Transforms the post data
-     * @param $item
-     * @return mixed
      */
     public function transform($item): array
     {

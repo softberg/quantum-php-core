@@ -116,6 +116,7 @@
   - Added rate limit response headers (`X-RateLimit-Limit`, `X-RateLimit-Remaining`, `Retry-After`)
   - Added route-level metadata support on `Route` and `RouteBuilder` for rate limiting
   - Added unit test coverage for router integration, middleware flow, adapters, factory resolution, and exception behavior
+  - Updated `DemoApi` module templates to include default API route throttling and generated `config/rate_limit.php` (#510)
 - SleekDB adapter now supports related-model criteria path filtering across join depths while preserving DBAL public API (#508)
 
 ### Removed

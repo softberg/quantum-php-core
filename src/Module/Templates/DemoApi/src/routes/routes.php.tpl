@@ -1,16 +1,23 @@
 <?php
 
 return function ($route) {
-    $route->get('[:alpha:2]?/posts', 'PostController', 'posts')->name('posts');
-    $route->get('[:alpha:2]?/post/[uuid=:any]', 'PostController', 'post');
+    $route->group('public-content', function ($route) {
+        $route->get('[:alpha:2]?/posts', 'PostController', 'posts')->name('posts');
+        $route->get('[:alpha:2]?/post/[uuid=:any]', 'PostController', 'post');
+    })->rateLimit(120, 60);
 
-    $route->post('[:alpha:2]?/signin', 'AuthController', 'signin');
-    $route->post('[:alpha:2]?/signup', 'AuthController', 'signup')->middlewares(['Signup']);
-    $route->post('[:alpha:2]?/forget', 'AuthController', 'forget')->middlewares(['Forget']);
-    $route->get('[:alpha:2]?/activate/[token=:any]', 'AuthController', 'activate')->middlewares(['Activate']);
-    $route->post('[:alpha:2]?/reset/[token=:any]', 'AuthController', 'reset')->middlewares(['Reset']);
-    $route->get('[:alpha:2]?/resend/[code=:any]', 'AuthController', 'resend')->middlewares(['Resend']);
-    $route->post('[:alpha:2]?/verify', 'AuthController', 'verify')->middlewares(['Verify']);
+    $route->group('auth-signin-verify', function ($route) {
+        $route->post('[:alpha:2]?/signin', 'AuthController', 'signin');
+        $route->get('[:alpha:2]?/resend/[code=:any]', 'AuthController', 'resend')->middlewares(['Resend']);
+        $route->post('[:alpha:2]?/verify', 'AuthController', 'verify')->middlewares(['Verify']);
+        $route->get('[:alpha:2]?/activate/[token=:any]', 'AuthController', 'activate')->middlewares(['Activate']);
+    })->rateLimit(10, 60);
+
+    $route->group('auth-signup-recovery', function ($route) {
+        $route->post('[:alpha:2]?/signup', 'AuthController', 'signup')->middlewares(['Signup']);
+        $route->post('[:alpha:2]?/forget', 'AuthController', 'forget')->middlewares(['Forget']);
+        $route->post('[:alpha:2]?/reset/[token=:any]', 'AuthController', 'reset')->middlewares(['Reset']);
+    })->rateLimit(5, 60);
 
     $route->group('auth', function ($route) {
         $route->get('[:alpha:2]?/my-posts', 'PostManagementController', 'myPosts')->middlewares(['Editor']);
@@ -26,5 +33,5 @@ return function ($route) {
         $route->put('[:alpha:2]?/account-settings/update-password', 'AccountController', 'updatePassword')->middlewares(['Password']);
         $route->get('[:alpha:2]?/signout', 'AuthController', 'signout')->middlewares(['Signout']);
         $route->get('[:alpha:2]?/me', 'AuthController', 'me');
-    })->middlewares(['Auth']);
+    })->middlewares(['Auth'])->rateLimit(60, 60);
 };

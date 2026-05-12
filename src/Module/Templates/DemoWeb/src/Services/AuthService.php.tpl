@@ -30,10 +30,6 @@ use {{MODULE_NAMESPACE}}\Models\User;
  */
 class AuthService extends Service implements AuthServiceInterface
 {
-
-    /**
-     * @var User
-     */
     private User $model;
 
     /**
@@ -46,7 +42,6 @@ class AuthService extends Service implements AuthServiceInterface
 
     /**
      * Get users
-     * @return ModelCollection
      * @throws BaseException
      */
     public function getAll(): ModelCollection
@@ -56,8 +51,6 @@ class AuthService extends Service implements AuthServiceInterface
 
     /**
      * Get user
-     * @param string $uuid
-     * @return User|null
      * @throws BaseException
      */
     public function getUserByUuid(string $uuid): ?User
@@ -67,9 +60,6 @@ class AuthService extends Service implements AuthServiceInterface
 
     /**
      * Get user
-     * @param string $field
-     * @param $value
-     * @return AuthUser|null
      * @throws BaseException
      */
     public function get(string $field, $value): ?AuthUser
@@ -85,8 +75,6 @@ class AuthService extends Service implements AuthServiceInterface
 
     /**
      * Add user
-     * @param array $data
-     * @return AuthUser
      * @throws BaseException
      * @throws ConfigException
      * @throws DiException
@@ -107,10 +95,6 @@ class AuthService extends Service implements AuthServiceInterface
 
     /**
      * Update user
-     * @param string $field
-     * @param string|null $value
-     * @param array $data
-     * @return AuthUser|null
      * @throws BaseException
      * @throws ModelException
      */
@@ -140,7 +124,6 @@ class AuthService extends Service implements AuthServiceInterface
 
     /**
      * User Schema
-     * @return array
      */
     public function userSchema(): array
     {
@@ -166,7 +149,6 @@ class AuthService extends Service implements AuthServiceInterface
 
     /**
      * Creates user directory
-     * @param string $uuid
      * @throws DiException
      * @throws ReflectionException
      * @throws BaseException

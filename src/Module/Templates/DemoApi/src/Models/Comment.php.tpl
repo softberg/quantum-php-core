@@ -31,19 +31,16 @@ class Comment extends DbModel
 
     /**
      * ID column of table
-     * @var string
      */
     public string $idColumn = 'id';
 
     /**
      * The table name
-     * @var string
      */
     public string $table = 'comments';
 
     /**
      * Fillable properties
-     * @var array
      */
     public array $fillable = [
         'uuid',
@@ -54,7 +51,6 @@ class Comment extends DbModel
 
     /**
      * Model relations configuration
-     * @return array[]
      */
     public function relations(): array
     {

@@ -32,7 +32,6 @@ class LogsService extends Service
 {
     /**
      * Retrieves a list of available log file names from the logs directory.
-     * @return array
      * @throws BaseException
      * @throws ReflectionException
      */
@@ -53,10 +52,6 @@ class LogsService extends Service
 
     /**
      * Parses a specific log file and returns paginated log entries.
-     * @param string $logFile
-     * @param int $perPage
-     * @param int $currentPage
-     * @return Paginator
      * @throws BaseException
      * @throws PaginatorException
      * @throws ReflectionException
@@ -89,10 +84,6 @@ class LogsService extends Service
 
     /**
      * Paginates an array of data.
-     * @param array $data
-     * @param int $perPage
-     * @param int $currentPage
-     * @return Paginator
      * @throws BaseException
      * @throws PaginatorException
      */

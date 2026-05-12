@@ -28,9 +28,6 @@ use ReflectionException;
  */
 class DatabaseService extends Service
 {
-    /**
-     * @var string
-     */
     protected string $storeDirectory;
 
     public function __construct()
@@ -40,7 +37,6 @@ class DatabaseService extends Service
 
     /**
      * Get tables
-     * @return array
      * @throws BaseException
      * @throws ReflectionException
      */
@@ -65,9 +61,6 @@ class DatabaseService extends Service
 
     /**
      * Check table existence
-     * @param string $tableName
-     * @param string|null $except
-     * @return bool
      * @throws BaseException
      * @throws ConfigException
      * @throws DiException
@@ -84,10 +77,6 @@ class DatabaseService extends Service
 
     /**
      * Get table data
-     * @param string $tableName
-     * @param int $perPage
-     * @param int $currentPage
-     * @return array
      */
     public function getTableData(string $tableName, int $perPage, int $currentPage): array
     {
@@ -104,9 +93,6 @@ class DatabaseService extends Service
 
     /**
      * Create table row
-     * @param string $tableName
-     * @param array $data
-     * @return void
      */
     public function createTableRow(string $tableName, array $data): void
     {
@@ -123,10 +109,6 @@ class DatabaseService extends Service
 
     /**
      * Update table row
-     * @param string $tableName
-     * @param int $id
-     * @param array $data
-     * @return void
      */
     public function updateTable(string $tableName, int $id, array $data): void
     {
@@ -143,9 +125,6 @@ class DatabaseService extends Service
 
     /**
      * Delete table row
-     * @param string $tableName
-     * @param int $id
-     * @return void
      */
     public function deleteTableRow(string $tableName, int $id): void
     {
@@ -154,8 +133,6 @@ class DatabaseService extends Service
 
     /**
      * Extract columns
-     * @param Paginator $paginator
-     * @return array
      */
     private function extractColumns(Paginator $paginator): array
     {

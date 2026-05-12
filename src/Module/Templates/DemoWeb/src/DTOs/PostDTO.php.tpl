@@ -22,32 +22,14 @@ use Quantum\Http\Request;
  */
 class PostDTO
 {
-    /**
-     * @var string
-     */
     private string $title;
 
-    /**
-     * @var string
-     */
     private string $content;
 
-    /**
-     * @var string|null
-     */
     private ?string $userUuid;
 
-    /**
-     * @var string|null
-     */
     private ?string $image;
 
-    /**
-     * @param string $title
-     * @param string $content
-     * @param string|null $userUuid
-     * @param string|null $image
-     */
     public function __construct(
         string $title,
         string $content,
@@ -60,12 +42,6 @@ class PostDTO
         $this->image = $image;
     }
 
-    /**
-     * @param Request $request
-     * @param string|null $userUuid
-     * @param string|null $image
-     * @return self
-     */
     public static function fromRequest(Request $request, ?string $userUuid = null, ?string $image = null): self
     {
         return new self(
@@ -96,9 +72,6 @@ class PostDTO
         return $this->image;
     }
 
-    /**
-     * @return array
-     */
     public function toArray(): array
     {
         return array_filter([
