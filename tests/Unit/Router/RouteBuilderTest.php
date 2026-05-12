@@ -611,4 +611,58 @@ class RouteBuilderTest extends AppTestCase
         $this->assertSame('g', $routes->all()[0]->getGroup());
         $this->assertSame('g', $routes->all()[1]->getGroup());
     }
+
+    public function testRouteBuilderPostGroupMiddlewaresThenRateLimitCanBeChained(): void
+    {
+        $routes = (new RouteBuilder())->build([
+            'Web' => function (RouteBuilder $route): void {
+                $route->group('g', function (RouteBuilder $route): void {
+                    $route->get('a', 'AController', 'a');
+                    $route->get('b', 'BController', 'b');
+                })->middlewares(['Auth'])->rateLimit(10, 60);
+            },
+        ], []);
+
+        foreach ($routes->all() as $route) {
+            $this->assertSame(['Auth'], $route->getMiddlewares());
+            $this->assertSame(['limit' => 10, 'interval' => 60], $route->getRateLimit());
+        }
+    }
+
+    public function testRouteBuilderPostGroupRateLimitThenMiddlewaresCanBeChained(): void
+    {
+        $routes = (new RouteBuilder())->build([
+            'Web' => function (RouteBuilder $route): void {
+                $route->group('g', function (RouteBuilder $route): void {
+                    $route->get('a', 'AController', 'a');
+                    $route->get('b', 'BController', 'b');
+                })->rateLimit(20, 30)->middlewares(['Auth']);
+            },
+        ], []);
+
+        foreach ($routes->all() as $route) {
+            $this->assertSame(['Auth'], $route->getMiddlewares());
+            $this->assertSame(['limit' => 20, 'interval' => 30], $route->getRateLimit());
+        }
+    }
+
+    public function testRouteBuilderPostGroupCacheableAndOtherModifiersCanBeChained(): void
+    {
+        $routes = (new RouteBuilder())->build([
+            'Web' => function (RouteBuilder $route): void {
+                $route->group('g', function (RouteBuilder $route): void {
+                    $route->get('a', 'AController', 'a');
+                    $route->get('b', 'BController', 'b');
+                })->cacheable(true, 120)->rateLimit(50, 60)->middlewares(['Auth']);
+            },
+        ], []);
+
+        foreach ($routes->all() as $route) {
+            $cache = $route->getCache();
+            $this->assertSame(true, $cache['enabled']);
+            $this->assertSame(120, $cache['ttl']);
+            $this->assertSame(['limit' => 50, 'interval' => 60], $route->getRateLimit());
+            $this->assertSame(['Auth'], $route->getMiddlewares());
+        }
+    }
 }

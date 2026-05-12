@@ -85,6 +85,7 @@ final class RouteBuilder
             $this->currentModule = null;
             $this->currentPrefix = null;
             $this->currentRoute = null;
+            $this->lastGroupRoutes = null;
         }
 
         return $this->collection;
@@ -160,6 +161,7 @@ final class RouteBuilder
             throw RouteException::nestedGroups();
         }
 
+        $this->lastGroupRoutes = null;
         $this->currentGroupName = $name;
         $this->inGroup = true;
         $this->groupRoutes = [];
@@ -210,7 +212,6 @@ final class RouteBuilder
                 $route->addMiddlewares($middlewares);
             }
 
-            $this->lastGroupRoutes = null;
             return $this;
         }
 
@@ -263,7 +264,6 @@ final class RouteBuilder
                 $route->cache($enabled, $ttl);
             }
 
-            $this->lastGroupRoutes = null;
             return $this;
         }
 
@@ -295,7 +295,6 @@ final class RouteBuilder
                 $route->rateLimit($limit, $interval);
             }
 
-            $this->lastGroupRoutes = null;
             return $this;
         }
 
@@ -323,6 +322,7 @@ final class RouteBuilder
             throw RouteException::noHttpMethods();
         }
 
+        $this->lastGroupRoutes = null;
         $pattern = $this->resolvePath($path);
 
         if ($handler instanceof Closure) {
