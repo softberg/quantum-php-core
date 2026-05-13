@@ -79,6 +79,7 @@
 - PHP 8.4 forward compatibility: Added missing type hint to `SleekDbal::__get()` magic method
 - Fixed deprecated `E_STRICT` constant usage in test bootstrap
 - Fixed cURL error message assertions for cross-version compatibility
+- Fixed SleekDB paginator query-state regression where `count()` could clear criteria before paginated data fetch on the same model instance (#514)
 
 ### Added
 - `AppContext` class representing the runtime identity of a single application execution

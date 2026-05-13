@@ -128,12 +128,11 @@ trait Result
      */
     public function count(): int
     {
-        try {
-            $results = $this->fetchFilteredResultsFromBuilder($this->getBuilder());
-            return count($results);
-        } finally {
-            $this->resetBuilderState();
-        }
+        $counter = clone $this;
+        $counter->queryBuilder = null;
+        $counter->builderPrepared = false;
+
+        return count($counter->fetchFilteredResultsFromBuilder($counter->getBuilder()));
     }
 
     /**

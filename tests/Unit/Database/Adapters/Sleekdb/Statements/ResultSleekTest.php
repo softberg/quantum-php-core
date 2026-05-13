@@ -3,6 +3,7 @@
 namespace Quantum\Tests\Unit\Database\Adapters\Sleekdb\Statements;
 
 use Quantum\Tests\Unit\Database\Adapters\Sleekdb\SleekDbalTestCase;
+use Quantum\Tests\_root\shared\Models\TestEventModel;
 use Quantum\Database\Adapters\Sleekdb\SleekDbal;
 
 class ResultSleekTest extends SleekDbalTestCase
@@ -84,5 +85,36 @@ class ResultSleekTest extends SleekDbalTestCase
         $this->assertIsObject($user);
 
         $this->assertIsArray($user->asArray());
+    }
+
+    public function testSleekCountDoesNotResetCriteriaState(): void
+    {
+        $eventsModel = new SleekDbal('events');
+
+        $eventsModel->criteria('country', '=', 'Ireland');
+
+        $this->assertEquals(3, $eventsModel->count());
+
+        $events = $eventsModel
+            ->orderBy('title', 'asc')
+            ->get();
+
+        $this->assertCount(3, $events);
+        $this->assertEquals('Design', $events[0]->prop('title'));
+    }
+
+    public function testSleekPaginateRetainsCriteriaAfterCount(): void
+    {
+        $eventModel = model(TestEventModel::class);
+
+        $page = $eventModel
+            ->criteria('country', '=', 'Ireland')
+            ->orderBy('title', 'asc')
+            ->paginate(2, 1)
+            ->data();
+
+        $this->assertCount(2, $page);
+        $this->assertEquals('Design', $page->first()->title);
+        $this->assertEquals('Film', $page->last()->title);
     }
 }
