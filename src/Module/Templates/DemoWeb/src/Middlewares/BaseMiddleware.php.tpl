@@ -49,7 +49,7 @@ abstract class BaseMiddleware extends Middleware
     /**
      * Define validation rules specific to middleware.
      */
-    protected function defineValidationRules(Request $request)
+    protected function defineValidationRules(Request $request): void
     {
         // default no-op: subclasses override if needed
     }

@@ -80,6 +80,7 @@
 - Fixed deprecated `E_STRICT` constant usage in test bootstrap
 - Fixed cURL error message assertions for cross-version compatibility
 - Fixed SleekDB paginator query-state regression where `count()` could clear criteria before paginated data fetch on the same model instance (#514)
+- Standardized `defineValidationRules(Request $request): void` across DemoWeb and DemoApi middleware templates
 
 ### Added
 - `AppContext` class representing the runtime identity of a single application execution

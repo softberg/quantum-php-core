@@ -39,7 +39,7 @@ class Update extends BaseMiddleware
     /**
      * @inheritDoc
      */
-    protected function defineValidationRules(Request $request)
+    protected function defineValidationRules(Request $request): void
     {
         $this->validator->setRules([
             'firstname' => [
@@ -54,9 +54,7 @@ class Update extends BaseMiddleware
     /**
      * @inheritDoc
      */
-    protected function respondWithError(Request $request,
-        $message
-    ): Response
+    protected function respondWithError(Request $request, $message): Response
     {
         session()->setFlash('error', $message);
         return redirectWith(base_url(true) . '/' . current_lang() . '/account-settings#account_profile', $request->all());

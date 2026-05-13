@@ -38,7 +38,7 @@ class Signup extends BaseMiddleware
     /**
      * @inheritDoc
      */
-    protected function defineValidationRules(Request $request)
+    protected function defineValidationRules(Request $request): void
     {
         $this->validator->setRules([
             'email' => [
