@@ -3,6 +3,7 @@
 namespace Quantum\Tests\Unit\Database\Adapters\Sleekdb\Statements;
 
 use Quantum\Tests\Unit\Database\Adapters\Sleekdb\SleekDbalTestCase;
+use Quantum\Tests\_root\shared\Models\TestEventModel;
 use Quantum\Database\Adapters\Sleekdb\SleekDbal;
 
 class ResultSleekTest extends SleekDbalTestCase
@@ -84,5 +85,70 @@ class ResultSleekTest extends SleekDbalTestCase
         $this->assertIsObject($user);
 
         $this->assertIsArray($user->asArray());
+    }
+
+    public function testSleekCountResetsCriteriaState(): void
+    {
+        $eventsModel = new SleekDbal('events');
+
+        $eventsModel->criteria('country', '=', 'Ireland');
+
+        $this->assertEquals(3, $eventsModel->count());
+
+        $events = $eventsModel
+            ->orderBy('title', 'asc')
+            ->get();
+
+        $this->assertCount(7, $events);
+        $this->assertEquals('Art', $events[0]->prop('title'));
+    }
+
+    public function testSleekPaginateRetainsCriteriaAfterCount(): void
+    {
+        $eventModel = model(TestEventModel::class);
+
+        $page = $eventModel
+            ->criteria('country', '=', 'Ireland')
+            ->orderBy('title', 'asc')
+            ->paginate(2, 1)
+            ->data();
+
+        $this->assertCount(2, $page);
+        $this->assertEquals('Design', $page->first()->title);
+        $this->assertEquals('Film', $page->last()->title);
+    }
+
+    public function testSleekGroupedCriteriasPersistAcrossPaginateCountAndData(): void
+    {
+        $baseline = model(TestEventModel::class)
+            ->criterias(
+                [
+                    ['title', '=', 'Dance'],
+                    ['title', '=', 'Art'],
+                ],
+                ['country', '=', 'Ireland']
+            )
+            ->orderBy('title', 'asc')
+            ->get();
+
+        $paginator = model(TestEventModel::class)
+            ->criterias(
+                [
+                    ['title', '=', 'Dance'],
+                    ['title', '=', 'Art'],
+                ],
+                ['country', '=', 'Ireland']
+            )
+            ->orderBy('title', 'asc')
+            ->paginate(10, 1);
+
+        $page = $paginator->data();
+
+        $baselineTitles = array_map(fn ($event) => $event->title, iterator_to_array($baseline));
+        $pageTitles = array_map(fn ($event) => $event->title, iterator_to_array($page));
+
+        $this->assertSame(count($baseline), $paginator->total());
+        $this->assertCount(count($baseline), $page);
+        $this->assertSame($baselineTitles, $pageTitles);
     }
 }

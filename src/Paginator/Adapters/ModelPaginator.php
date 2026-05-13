@@ -19,6 +19,7 @@ namespace Quantum\Paginator\Adapters;
 use Quantum\Paginator\Contracts\PaginatorInterface;
 use Quantum\Paginator\Traits\PaginatorTrait;
 use Quantum\App\Exceptions\BaseException;
+use Quantum\Model\Exceptions\ModelException;
 use Quantum\Di\Exceptions\DiException;
 use Quantum\Model\ModelCollection;
 use Quantum\Model\DbModel;
@@ -38,7 +39,7 @@ class ModelPaginator implements PaginatorInterface
     private DbModel $model;
 
     /**
-     * @throws DiException|ReflectionException
+     * @throws DiException|ReflectionException|ModelException|BaseException
      */
     public function __construct(DbModel $model, int $perPage, int $page = 1)
     {
@@ -46,7 +47,7 @@ class ModelPaginator implements PaginatorInterface
 
         $this->model = $model;
         $this->modelClass = $model->getModelName();
-        $this->total = $model->count();
+        $this->total = $this->getCountFromClonedModel($model);
     }
 
     /**
@@ -98,5 +99,18 @@ class ModelPaginator implements PaginatorInterface
         }
 
         return $data->last();
+    }
+
+    /**
+     * Counts results on an isolated model/ORM clone so total calculation cannot mutate
+     * the live model query state later used by paginator data().
+     * @throws ModelException|BaseException
+     */
+    private function getCountFromClonedModel(DbModel $model): int
+    {
+        $countModel = clone $model;
+        $countModel->setOrmInstance(clone $model->getOrmInstance());
+
+        return $countModel->count();
     }
 }
