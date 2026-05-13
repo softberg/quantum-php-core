@@ -40,7 +40,7 @@ class Forget extends BaseMiddleware
     /**
      * Define validation rules
      */
-    protected function defineValidationRules(Request $request)
+    protected function defineValidationRules(Request $request): void
     {
         $this->validator->setRules([
             'email' => [
@@ -54,9 +54,7 @@ class Forget extends BaseMiddleware
     /**
      * @inheritDoc
      */
-    protected function respondWithError(Request $request,
-        $message
-    ): Response
+    protected function respondWithError(Request $request, $message): Response
     {
         $data = $request->all();
 

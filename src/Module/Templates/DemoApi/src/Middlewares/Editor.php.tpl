@@ -63,7 +63,7 @@ class Editor extends BaseMiddleware
     /**
      * @inheritDoc
      */
-    protected function defineValidationRules(Request $request)
+    protected function defineValidationRules(Request $request): void
     {
         if ($request->hasFile('image')) {
             $this->validator->setRules([

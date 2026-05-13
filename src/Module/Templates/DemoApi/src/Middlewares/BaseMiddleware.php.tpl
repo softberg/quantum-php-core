@@ -14,9 +14,9 @@
 
 namespace {{MODULE_NAMESPACE}}\Middlewares;
 
-use Quantum\Validation\Validator;
 use Quantum\Http\Enums\StatusCode;
 use Quantum\Middleware\Middleware;
+use Quantum\Validation\Validator;
 use Quantum\Http\Response;
 use Quantum\Http\Request;
 use Closure;
@@ -42,7 +42,7 @@ abstract class BaseMiddleware extends Middleware
     /**
      * Define validation rules specific to middleware.
      */
-    protected function defineValidationRules(Request $request)
+    protected function defineValidationRules(Request $request): void
     {
         // default no-op: subclasses override if needed
     }
@@ -62,10 +62,7 @@ abstract class BaseMiddleware extends Middleware
     /**
      * Handles error response logic.
      */
-    protected function respondWithError(Request $request,
-        $message,
-        int $status = StatusCode::UNPROCESSABLE_ENTITY
-    ): Response
+    protected function respondWithError(Request $request, $message, int $status = StatusCode::UNPROCESSABLE_ENTITY): Response
     {
         return response()->json([
             'status' => 'error',

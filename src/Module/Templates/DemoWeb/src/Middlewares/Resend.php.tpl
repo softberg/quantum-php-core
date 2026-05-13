@@ -53,9 +53,8 @@ class Resend extends BaseMiddleware
     /**
      * @inheritDoc
      */
-    protected function respondWithError(Request $request,
-        $message,
-    ): Response {
+    protected function respondWithError(Request $request, $message): Response
+    {
         session()->setFlash('error', $message);
         return redirect(base_url(true) . '/' . current_lang() . '/signin');
     }
