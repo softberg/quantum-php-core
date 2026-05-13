@@ -39,7 +39,7 @@ class CreateTable extends BaseMiddleware
     /**
      * @inheritDoc
      */
-    protected function defineValidationRules(Request $request)
+    protected function defineValidationRules(Request $request): void
     {
         $this->registerCustomRules();
 
