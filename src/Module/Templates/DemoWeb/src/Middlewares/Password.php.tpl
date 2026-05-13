@@ -64,10 +64,10 @@ class Password extends BaseMiddleware
     /**
      * @inheritDoc
      */
-    protected function respondWithError(Request $request, $message)
+    protected function respondWithError(Request $request, $message): Response
     {
         session()->setFlash('error', $message);
-        redirectWith(base_url(true) . '/' . current_lang() . '/account-settings#account_password', $request->all());
+        return redirectWith(base_url(true) . '/' . current_lang() . '/account-settings#account_password', $request->all());
     }
 
     /**
