@@ -81,6 +81,7 @@
 - Fixed cURL error message assertions for cross-version compatibility
 - Fixed SleekDB paginator query-state regression where `count()` could clear criteria before paginated data fetch on the same model instance (#514)
 - Standardized `defineValidationRules(Request $request): void` across DemoWeb and DemoApi middleware templates
+- Fixed OpenAPI installer route generation to return `Response` objects via `response()->...` helpers and avoid undefined response-variable usage (#520)
 - Standardized `defineValidationRules(Request $request): void` in Toolkit middleware templates
 
 ### Added
