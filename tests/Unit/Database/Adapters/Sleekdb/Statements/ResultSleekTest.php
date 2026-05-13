@@ -87,7 +87,7 @@ class ResultSleekTest extends SleekDbalTestCase
         $this->assertIsArray($user->asArray());
     }
 
-    public function testSleekCountDoesNotResetCriteriaState(): void
+    public function testSleekCountResetsCriteriaState(): void
     {
         $eventsModel = new SleekDbal('events');
 
@@ -99,8 +99,8 @@ class ResultSleekTest extends SleekDbalTestCase
             ->orderBy('title', 'asc')
             ->get();
 
-        $this->assertCount(3, $events);
-        $this->assertEquals('Design', $events[0]->prop('title'));
+        $this->assertCount(7, $events);
+        $this->assertEquals('Art', $events[0]->prop('title'));
     }
 
     public function testSleekPaginateRetainsCriteriaAfterCount(): void
