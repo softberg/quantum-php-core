@@ -117,4 +117,38 @@ class ResultSleekTest extends SleekDbalTestCase
         $this->assertEquals('Design', $page->first()->title);
         $this->assertEquals('Film', $page->last()->title);
     }
+
+    public function testSleekGroupedCriteriasPersistAcrossPaginateCountAndData(): void
+    {
+        $baseline = model(TestEventModel::class)
+            ->criterias(
+                [
+                    ['title', '=', 'Dance'],
+                    ['title', '=', 'Art'],
+                ],
+                ['country', '=', 'Ireland']
+            )
+            ->orderBy('title', 'asc')
+            ->get();
+
+        $paginator = model(TestEventModel::class)
+            ->criterias(
+                [
+                    ['title', '=', 'Dance'],
+                    ['title', '=', 'Art'],
+                ],
+                ['country', '=', 'Ireland']
+            )
+            ->orderBy('title', 'asc')
+            ->paginate(10, 1);
+
+        $page = $paginator->data();
+
+        $baselineTitles = array_map(fn ($event) => $event->title, iterator_to_array($baseline));
+        $pageTitles = array_map(fn ($event) => $event->title, iterator_to_array($page));
+
+        $this->assertSame(count($baseline), $paginator->total());
+        $this->assertCount(count($baseline), $page);
+        $this->assertSame($baselineTitles, $pageTitles);
+    }
 }
