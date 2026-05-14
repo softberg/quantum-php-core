@@ -220,9 +220,10 @@ abstract class OpenApiAuthController extends OpenApiController
      *      @OA\MediaType(
      *        mediaType="application/json",
      *        @OA\Schema(
-     *          required={"password"},
+     *          required={"password", "repeat_password"},
      *          @OA\Property(property="password", type="string"),
-     *          example={"password": "password"}
+     *          @OA\Property(property="repeat_password", type="string"),
+     *          example={"password": "password", "repeat_password": "password"}
      *        )
      *      )
      *    ),
@@ -303,6 +304,5 @@ abstract class OpenApiAuthController extends OpenApiController
      */
     abstract public function resend();
 }
-
 
 

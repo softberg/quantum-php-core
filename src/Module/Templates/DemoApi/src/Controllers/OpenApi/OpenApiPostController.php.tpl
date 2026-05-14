@@ -105,7 +105,7 @@ abstract class OpenApiPostController extends OpenApiController
      *    @OA\Response(response=500, description="Internal Server Error")
      *  )
      */
-    abstract public function post(?string $lang, string $postId);
+    abstract public function post(?string $lang, string $uuid);
 
     /**
      * Get my posts action
@@ -234,7 +234,7 @@ abstract class OpenApiPostController extends OpenApiController
      *    @OA\Response(response=500, description="Internal Server Error")
      *  )
      */
-    abstract public function amend(Request $request, ?string $lang, string $postId);
+    abstract public function amend(Request $request, ?string $lang, string $uuid);
 
     /**
      * Delete post action
@@ -258,7 +258,7 @@ abstract class OpenApiPostController extends OpenApiController
      *    @OA\Response(response=500, description="Internal Server Error")
      *  )
      */
-    abstract public function delete(?string $lang, string $postId);
+    abstract public function delete(?string $lang, string $uuid);
 
     /**
      * Delete post image action
@@ -282,8 +282,7 @@ abstract class OpenApiPostController extends OpenApiController
      *    @OA\Response(response=500, description="Internal Server Error")
      *  )
      */
-    abstract public function deleteImage(?string $lang, string $postId);
+    abstract public function deleteImage(?string $lang, string $uuid);
 }
-
 
 

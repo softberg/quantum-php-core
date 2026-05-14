@@ -70,11 +70,11 @@ abstract class OpenApiAccountController extends OpenApiController
      *      @OA\MediaType(
      *        mediaType="application/json",
      *        @OA\Schema(
-     *          required={"current_password", "new_password", "repeat_password"},
+     *          required={"current_password", "new_password", "confirm_password"},
      *          @OA\Property(property="current_password", type="string"),
      *          @OA\Property(property="new_password", type="string"),
-     *          @OA\Property(property="repeat_password", type="string"),
-     *          example={"current_password": "oldPassword", "new_password": "newPassword", "repeat_password": "newPassword"}
+     *          @OA\Property(property="confirm_password", type="string"),
+     *          example={"current_password": "oldPassword", "new_password": "newPassword", "confirm_password": "newPassword"}
      *        )
      *      )
      *    ),
@@ -93,6 +93,5 @@ abstract class OpenApiAccountController extends OpenApiController
      */
     abstract public function updatePassword(Request $request);
 }
-
 
 
