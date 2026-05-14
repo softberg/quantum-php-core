@@ -14,7 +14,6 @@
 
 namespace {{MODULE_NAMESPACE}}\Controllers\OpenApi;
 
-use Quantum\Http\Response;
 use Quantum\Http\Request;
 
 /**
@@ -23,7 +22,6 @@ use Quantum\Http\Request;
  */
 abstract class OpenApiAuthController extends OpenApiController
 {
-
     /**
      * Sign in action
      * @OA\Post(
@@ -32,36 +30,20 @@ abstract class OpenApiAuthController extends OpenApiController
      *    summary="Sign in action",
      *    operationId="userSignIn",
      *    @OA\RequestBody(
+     *      required=true,
      *      @OA\MediaType(
-     *      mediaType="application/json",
+     *        mediaType="application/json",
      *        @OA\Schema(
-     *          @OA\Property(
-     *            property="email",
-     *            type="string"
-     *          ),
-     *          @OA\Property(
-     *            property="password",
-     *            type="string"
-     *          ),
-     *          example={"email": "rgaylord@gmail.com", "password": "password"}
+     *          required={"email", "password"},
+     *          @OA\Property(property="email", type="string"),
+     *          @OA\Property(property="password", type="string"),
+     *          example={"email": "mail@example.com", "password": "password"}
      *        )
      *      )
      *    ),
-     *    @OA\Response(
-     *      response=200,
-     *      description="Success",
-     *      @OA\MediaType(
-     *        mediaType="application/json",
-     *      )
-     *    ),
-     *    @OA\Response(
-     *      response=422,
-     *      description="Unprocessable Entity"
-     *    ),
-     *    @OA\Response(
-     *      response=500,
-     *      description="Internal Server Error"
-     *    )
+     *    @OA\Response(response=200, description="Success"),
+     *    @OA\Response(response=422, description="Unprocessable Entity"),
+     *    @OA\Response(response=500, description="Internal Server Error")
      *  )
      */
     abstract public function signin(Request $request);
@@ -69,28 +51,14 @@ abstract class OpenApiAuthController extends OpenApiController
     /**
      * Gets the logged-in user data
      * @OA\Get(
-     *     path="/api/me",
-     *     tags={"User"},
-     *     summary="Gets the logged-in user data",
-     *     operationId="me",
-     *     security={
-     *       {"bearer_token": {}}
-     *     },
-     *    @OA\Response(
-     *      response=200,
-     *      description="Success",
-     *      @OA\MediaType(
-     *        mediaType="application/json",
-     *      )
-     *    ),
-     *    @OA\Response(
-     *      response=401,
-     *      description="Unauthorized Request"
-     *    ),
-     *    @OA\Response(
-     *      response=500,
-     *      description="Internal Server Error"
-     *    )
+     *    path="/api/me",
+     *    tags={"User"},
+     *    summary="Gets the logged-in user data",
+     *    operationId="me",
+     *    security={{"bearer_token": {}}},
+     *    @OA\Response(response=200, description="Success"),
+     *    @OA\Response(response=401, description="Unauthorized Request"),
+     *    @OA\Response(response=500, description="Internal Server Error")
      *  )
      */
     abstract public function me();
@@ -102,34 +70,12 @@ abstract class OpenApiAuthController extends OpenApiController
      *    tags={"Authentication"},
      *    summary="Sign out action",
      *    operationId="signout",
-     *    @OA\Parameter(
-     *      name="refresh_token",
-     *      description="Refresh token",
-     *      required=true,
-     *      in="header",
-     *      @OA\Schema(
-     *        type="string"
-     *      )
-     *    ),
-     *    @OA\Response(
-     *      response=200,
-     *      description="Success",
-     *      @OA\MediaType(
-     *        mediaType="application/json",
-     *      )
-     *    ),
-     *    @OA\Response(
-     *      response=422,
-     *      description="Unprocessable Entity"
-     *    ),
-     *    @OA\Response(
-     *      response=401,
-     *      description="Unauthorized Request"
-     *    ),
-     *    @OA\Response(
-     *      response=500,
-     *      description="Internal Server Error"
-     *    )
+     *    @OA\Parameter(name="refresh_token", description="Refresh token", required=true, in="header", @OA\Schema(type="string")),
+     *    security={{"bearer_token": {}}},
+     *    @OA\Response(response=200, description="Success"),
+     *    @OA\Response(response=401, description="Unauthorized Request"),
+     *    @OA\Response(response=422, description="Unprocessable Entity"),
+     *    @OA\Response(response=500, description="Internal Server Error")
      *  )
      */
     abstract public function signout();
@@ -137,49 +83,27 @@ abstract class OpenApiAuthController extends OpenApiController
     /**
      * Sign up action
      * @OA\Post(
-     *  path="/api/signup",
+     *    path="/api/signup",
      *    tags={"Authentication"},
      *    summary="Sign up action",
      *    operationId="signUpApi",
      *    @OA\RequestBody(
+     *      required=true,
      *      @OA\MediaType(
      *        mediaType="application/json",
      *        @OA\Schema(
-     *          @OA\Property(
-     *            property="email",
-     *            type="string",
-     *          ),
-     *          @OA\Property(
-     *            property="password",
-     *            type="string"
-     *          ),
-     *          @OA\Property(
-     *            property="firstname",
-     *            type="string",
-     *          ),
-     *          @OA\Property(
-     *            property="lastname",
-     *            type="string",
-     *          ),
-     *          example={"email": "mail@example.com", "password": "password",  "firstname": "Jon", "lastname": "Smit"}
+     *          required={"email", "password", "firstname", "lastname"},
+     *          @OA\Property(property="email", type="string"),
+     *          @OA\Property(property="password", type="string"),
+     *          @OA\Property(property="firstname", type="string"),
+     *          @OA\Property(property="lastname", type="string"),
+     *          example={"email": "mail@example.com", "password": "password", "firstname": "Jon", "lastname": "Smit"}
      *        )
      *      )
      *    ),
-     *    @OA\Response(
-     *      response=200,
-     *      description="Success",
-     *      @OA\MediaType(
-     *        mediaType="application/json",
-     *      )
-     *    ),
-     *    @OA\Response(
-     *      response=422,
-     *      description="Unprocessable Entity"
-     *    ),
-     *    @OA\Response(
-     *      response=500,
-     *      description="Internal Server Error"
-     *    )
+     *    @OA\Response(response=200, description="Success"),
+     *    @OA\Response(response=422, description="Unprocessable Entity"),
+     *    @OA\Response(response=500, description="Internal Server Error")
      *  )
      */
     abstract public function signup(Request $request);
@@ -187,34 +111,14 @@ abstract class OpenApiAuthController extends OpenApiController
     /**
      * Activate action
      * @OA\Get(
-     *  path="/api/activate/{activate_token}",
+     *    path="/api/activate/{token}",
      *    tags={"Authentication"},
      *    summary="Activate action",
      *    operationId="activateProfile",
-     *    @OA\Parameter(
-     *      name="activate_token",
-     *      description="Activate token",
-     *      required=true,
-     *      in="path",
-     *      @OA\Schema(
-     *        type="string"
-     *      )
-     *    ),
-     *    @OA\Response(
-     *      response=200,
-     *      description="Success",
-     *      @OA\MediaType(
-     *        mediaType="application/json",
-     *      )
-     *    ),
-     *    @OA\Response(
-     *      response=422,
-     *      description="Unprocessable Entity"
-     *    ),
-     *    @OA\Response(
-     *      response=500,
-     *      description="Internal Server Error"
-     *    )
+     *    @OA\Parameter(name="token", description="Activate token", required=true, in="path", @OA\Schema(type="string")),
+     *    @OA\Response(response=200, description="Success"),
+     *    @OA\Response(response=422, description="Unprocessable Entity"),
+     *    @OA\Response(response=500, description="Internal Server Error")
      *  )
      */
     abstract public function activate(Request $request);
@@ -222,37 +126,24 @@ abstract class OpenApiAuthController extends OpenApiController
     /**
      * Forget action
      * @OA\Post(
-     *  path="/api/forget",
+     *    path="/api/forget",
      *    tags={"Authentication"},
      *    summary="Forget action",
      *    operationId="forgetPassword",
      *    @OA\RequestBody(
+     *      required=true,
      *      @OA\MediaType(
-     *      mediaType="application/json",
+     *        mediaType="application/json",
      *        @OA\Schema(
-     *          @OA\Property(
-     *            property="username",
-     *            type="string"
-     *          ),
+     *          required={"email"},
+     *          @OA\Property(property="email", type="string"),
      *          example={"email": "mail@example.com"}
      *        )
      *      )
      *    ),
-     *    @OA\Response(
-     *      response=200,
-     *      description="Success",
-     *      @OA\MediaType(
-     *        mediaType="application/json",
-     *      )
-     *    ),
-     *    @OA\Response(
-     *      response=422,
-     *      description="Unprocessable Entity"
-     *    ),
-     *    @OA\Response(
-     *      response=500,
-     *      description="Internal Server Error"
-     *    )
+     *    @OA\Response(response=200, description="Success"),
+     *    @OA\Response(response=422, description="Unprocessable Entity"),
+     *    @OA\Response(response=500, description="Internal Server Error")
      *  )
      */
     abstract public function forget(Request $request);
@@ -260,50 +151,25 @@ abstract class OpenApiAuthController extends OpenApiController
     /**
      * Reset action
      * @OA\Post(
-     *  path="/api/reset/{reset_token}",
+     *    path="/api/reset/{token}",
      *    tags={"Authentication"},
      *    summary="Reset action",
      *    operationId="resetPassword",
-     *    @OA\Parameter(
-     *      name="reset_token",
-     *      description="Reset token",
-     *      required=true,
-     *      in="path",
-     *      @OA\Schema(
-     *        type="string"
-     *      )
-     *    ),
+     *    @OA\Parameter(name="token", description="Reset token", required=true, in="path", @OA\Schema(type="string")),
      *    @OA\RequestBody(
+     *      required=true,
      *      @OA\MediaType(
      *        mediaType="application/json",
      *        @OA\Schema(
-     *          @OA\Property(
-     *            property="password",
-     *            type="string"
-     *          ),
-     *          @OA\Property(
-     *            property="repeat_password",
-     *            type="string"
-     *          ),
-     *          example={"password": "password", "repeat_password": "password"}
+     *          required={"password"},
+     *          @OA\Property(property="password", type="string"),
+     *          example={"password": "password"}
      *        )
      *      )
      *    ),
-     *    @OA\Response(
-     *      response=200,
-     *      description="Success",
-     *      @OA\MediaType(
-     *        mediaType="application/json",
-     *      )
-     *    ),
-     *    @OA\Response(
-     *      response=422,
-     *      description="Unprocessable Entity"
-     *    ),
-     *    @OA\Response(
-     *      response=500,
-     *      description="Internal Server Error"
-     *    )
+     *    @OA\Response(response=200, description="Success"),
+     *    @OA\Response(response=422, description="Unprocessable Entity"),
+     *    @OA\Response(response=500, description="Internal Server Error")
      *  )
      */
     abstract public function reset(Request $request);
@@ -311,37 +177,26 @@ abstract class OpenApiAuthController extends OpenApiController
     /**
      * Verify action
      * @OA\Post(
-     *  path="/api/verify",
+     *    path="/api/verify",
      *    tags={"Authentication"},
      *    summary="Verify action",
      *    operationId="accountVerify",
      *    @OA\RequestBody(
+     *      required=true,
      *      @OA\MediaType(
-     *      mediaType="application/json",
+     *        mediaType="application/json",
      *        @OA\Schema(
-     *          @OA\Property(
-     *            property="otp_code",
-     *            type="string"
-     *          ),
-     *          example={"otp": "123456", "code": "otp_token"}
+     *          required={"otp", "code"},
+     *          @OA\Property(property="otp", type="integer"),
+     *          @OA\Property(property="code", type="string"),
+     *          example={"otp": 123456, "code": "otp_token"}
      *        )
      *      )
      *    ),
-     *    @OA\Response(
-     *      response=200,
-     *      description="Success",
-     *      @OA\MediaType(
-     *        mediaType="application/json",
-     *      )
-     *    ),
-     *    @OA\Response(
-     *      response=422,
-     *      description="Unprocessable Entity"
-     *    ),
-     *    @OA\Response(
-     *      response=500,
-     *      description="Internal Server Error"
-     *    )
+     *    @OA\Response(response=200, description="Success"),
+     *    @OA\Response(response=401, description="Unauthorized Request"),
+     *    @OA\Response(response=422, description="Unprocessable Entity"),
+     *    @OA\Response(response=500, description="Internal Server Error")
      *  )
      */
     abstract public function verify(Request $request);
@@ -349,34 +204,14 @@ abstract class OpenApiAuthController extends OpenApiController
     /**
      * Resend action
      * @OA\Get(
-     *  path="/api/resend/{otp_token}",
+     *    path="/api/resend/{code}",
      *    tags={"Authentication"},
      *    summary="Resend action",
      *    operationId="resendOTP",
-     *    @OA\Parameter(
-     *      name="otp_token",
-     *      description="OTP token",
-     *      required=true,
-     *      in="path",
-     *      @OA\Schema(
-     *        type="string"
-     *      )
-     *    ),
-     *    @OA\Response(
-     *      response=200,
-     *      description="Success",
-     *      @OA\MediaType(
-     *        mediaType="application/json",
-     *      )
-     *    ),
-     *    @OA\Response(
-     *      response=422,
-     *      description="Unprocessable Entity"
-     *    ),
-     *    @OA\Response(
-     *      response=500,
-     *      description="Internal Server Error"
-     *    )
+     *    @OA\Parameter(name="code", description="OTP code", required=true, in="path", @OA\Schema(type="string")),
+     *    @OA\Response(response=200, description="Success"),
+     *    @OA\Response(response=422, description="Unprocessable Entity"),
+     *    @OA\Response(response=500, description="Internal Server Error")
      *  )
      */
     abstract public function resend();

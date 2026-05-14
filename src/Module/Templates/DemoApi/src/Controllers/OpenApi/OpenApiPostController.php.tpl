@@ -14,7 +14,6 @@
 
 namespace {{MODULE_NAMESPACE}}\Controllers\OpenApi;
 
-use Quantum\Http\Response;
 use Quantum\Http\Request;
 
 /**
@@ -23,7 +22,6 @@ use Quantum\Http\Request;
  */
 abstract class OpenApiPostController extends OpenApiController
 {
-
     /**
      * Get posts action
      * @OA\Get(
@@ -31,17 +29,11 @@ abstract class OpenApiPostController extends OpenApiController
      *    tags={"Posts"},
      *    summary="Get posts action",
      *    operationId="posts",
-     *    @OA\Response(
-     *      response=200,
-     *      description="Success",
-     *      @OA\MediaType(
-     *        mediaType="application/json",
-     *      )
-     *    ),
-     *    @OA\Response(
-     *      response=500,
-     *      description="Internal Server Error"
-     *    )
+     *    @OA\Parameter(name="per_page", in="query", required=false, @OA\Schema(type="integer", default=8)),
+     *    @OA\Parameter(name="page", in="query", required=false, @OA\Schema(type="integer", default=1)),
+     *    @OA\Parameter(name="q", in="query", required=false, @OA\Schema(type="string")),
+     *    @OA\Response(response=200, description="Success"),
+     *    @OA\Response(response=500, description="Internal Server Error")
      *  )
      */
     abstract public function posts(Request $request);
@@ -49,34 +41,14 @@ abstract class OpenApiPostController extends OpenApiController
     /**
      * Get post action
      * @OA\Get(
-     *    path="/api/post/{id}",
+     *    path="/api/post/{uuid}",
      *    tags={"Posts"},
      *    summary="Get post action",
      *    operationId="post",
-     *    @OA\Parameter(
-     *      name="id",
-     *      description="Post Id",
-     *      required=true,
-     *      in="path",
-     *      @OA\Schema(
-     *        type="string"
-     *      )
-     *    ),
-     *    @OA\Response(
-     *      response=200,
-     *      description="Success",
-     *      @OA\MediaType(
-     *        mediaType="application/json",
-     *      )
-     *    ),
-     *    @OA\Response(
-     *      response=404,
-     *      description="Not Found"
-     *    ),
-     *    @OA\Response(
-     *      response=500,
-     *      description="Internal Server Error"
-     *    )
+     *    @OA\Parameter(name="uuid", description="Post UUID", required=true, in="path", @OA\Schema(type="string")),
+     *    @OA\Response(response=200, description="Success"),
+     *    @OA\Response(response=404, description="Not Found"),
+     *    @OA\Response(response=500, description="Internal Server Error")
      *  )
      */
     abstract public function post(?string $lang, string $postId);
@@ -88,24 +60,10 @@ abstract class OpenApiPostController extends OpenApiController
      *    tags={"Posts"},
      *    summary="Get my posts action",
      *    operationId="myPosts",
-     *    security={
-     *      {"bearer_token": {}}
-     *    },
-     *    @OA\Response(
-     *      response=200,
-     *      description="Success",
-     *      @OA\MediaType(
-     *        mediaType="application/json",
-     *      )
-     *    ),
-     *    @OA\Response(
-     *      response=401,
-     *      description="Unauthorized Request"
-     *    ),
-     *    @OA\Response(
-     *      response=500,
-     *      description="Internal Server Error"
-     *    )
+     *    security={{"bearer_token": {}}},
+     *    @OA\Response(response=200, description="Success"),
+     *    @OA\Response(response=401, description="Unauthorized Request"),
+     *    @OA\Response(response=500, description="Internal Server Error")
      *  )
      */
     abstract public function myPosts();
@@ -113,53 +71,28 @@ abstract class OpenApiPostController extends OpenApiController
     /**
      * Create post action
      * @OA\Post(
-     *  path="/api/my-posts/create",
+     *    path="/api/my-posts/create",
      *    tags={"Posts"},
      *    summary="Create post action",
      *    operationId="create",
-     *    security={
-     *      {"bearer_token": {}
-     *    }},
+     *    security={{"bearer_token": {}}},
      *    @OA\RequestBody(
+     *      required=true,
      *      @OA\MediaType(
      *        mediaType="multipart/form-data",
-     *          @OA\Schema(
-     *            type="object",
-     *            required={"title", "content"},
-     *            @OA\Property(
-     *              property="title",
-     *              type="string",
-     *            ),
-     *            @OA\Property(
-     *              property="content",
-     *              type="string",
-     *            ),
-     *            @OA\Property(
-     *              property="image",
-     *              type="file",
-     *            )
-     *          )
+     *        @OA\Schema(
+     *          type="object",
+     *          required={"title", "content"},
+     *          @OA\Property(property="title", type="string"),
+     *          @OA\Property(property="content", type="string"),
+     *          @OA\Property(property="image", type="string", format="binary")
      *        )
-     *    ),
-     *    @OA\Response(
-     *      response=200,
-     *      description="Success",
-     *      @OA\MediaType(
-     *        mediaType="application/json",
      *      )
      *    ),
-     *    @OA\Response(
-     *      response=401,
-     *      description="Unauthorized Request"
-     *    ),
-     *    @OA\Response(
-     *      response=422,
-     *      description="Unprocessable Entity"
-     *    ),
-     *    @OA\Response(
-     *      response=500,
-     *      description="Internal Server Error"
-     *    )
+     *    @OA\Response(response=200, description="Success"),
+     *    @OA\Response(response=401, description="Unauthorized Request"),
+     *    @OA\Response(response=422, description="Unprocessable Entity"),
+     *    @OA\Response(response=500, description="Internal Server Error")
      *  )
      */
     abstract public function create(Request $request);
@@ -167,62 +100,29 @@ abstract class OpenApiPostController extends OpenApiController
     /**
      * Amend post action
      * @OA\Put(
-     *  path="/api/my-posts/amend/{id}",
+     *    path="/api/my-posts/amend/{uuid}",
      *    tags={"Posts"},
      *    summary="Amend post action",
      *    operationId="amend",
-     *    security={
-     *      {"bearer_token": {}
-     *    }},
-     *    @OA\Parameter(
-     *      name="id",
-     *      description="Post id",
-     *      required=true,
-     *      in="path",
-     *      @OA\Schema(
-     *        type="string"
-     *      )
-     *    ),
+     *    security={{"bearer_token": {}}},
+     *    @OA\Parameter(name="uuid", description="Post UUID", required=true, in="path", @OA\Schema(type="string")),
      *    @OA\RequestBody(
+     *      required=true,
      *      @OA\MediaType(
      *        mediaType="multipart/form-data",
      *        @OA\Schema(
      *          type="object",
      *          required={"title", "content"},
-     *            @OA\Property(
-     *              property="title",
-     *              type="string",
-     *            ),
-     *            @OA\Property(
-     *              property="content",
-     *              type="string",
-     *            ),
-     *            @OA\Property(
-     *              property="image",
-     *              type="file",
-     *            )
-     *         )
+     *          @OA\Property(property="title", type="string"),
+     *          @OA\Property(property="content", type="string"),
+     *          @OA\Property(property="image", type="string", format="binary")
+     *        )
      *      )
      *    ),
-     *    @OA\Response(
-     *      response=200,
-     *      description="Success",
-     *      @OA\MediaType(
-     *         mediaType="application/json",
-     *      )
-     *    ),
-     *    @OA\Response(
-     *      response=401,
-     *      description="Unauthorized Request"
-     *    ),
-     *    @OA\Response(
-     *      response=422,
-     *      description="Unprocessable Entity"
-     *    ),
-     *    @OA\Response(
-     *      response=500,
-     *      description="Internal Server Error"
-     *    )
+     *    @OA\Response(response=200, description="Success"),
+     *    @OA\Response(response=401, description="Unauthorized Request"),
+     *    @OA\Response(response=422, description="Unprocessable Entity"),
+     *    @OA\Response(response=500, description="Internal Server Error")
      *  )
      */
     abstract public function amend(Request $request, ?string $lang, string $postId);
@@ -230,41 +130,16 @@ abstract class OpenApiPostController extends OpenApiController
     /**
      * Delete post action
      * @OA\Delete(
-     *    path="/api/my-posts/delete/{id}",
+     *    path="/api/my-posts/delete/{uuid}",
      *    tags={"Posts"},
      *    summary="Delete post action",
      *    operationId="delete",
-     *    security={
-     *      {"bearer_token": {}}
-     *    },
-     *    @OA\Parameter(
-     *      name="id",
-     *      description="Post id",
-     *      required=true,
-     *      in="path",
-     *      @OA\Schema(
-     *        type="string"
-     *      )
-     *    ),
-     *    @OA\Response(
-     *      response=200,
-     *      description="Success",
-     *      @OA\MediaType(
-     *        mediaType="application/json",
-     *      )
-     *    ),
-     *    @OA\Response(
-     *      response=401,
-     *      description="Unauthorized Request"
-     *    ),
-     *    @OA\Response(
-     *      response=422,
-     *      description="Unprocessable Entity"
-     *    ),
-     *    @OA\Response(
-     *      response=500,
-     *      description="Internal Server Error"
-     *    )
+     *    security={{"bearer_token": {}}},
+     *    @OA\Parameter(name="uuid", description="Post UUID", required=true, in="path", @OA\Schema(type="string")),
+     *    @OA\Response(response=200, description="Success"),
+     *    @OA\Response(response=401, description="Unauthorized Request"),
+     *    @OA\Response(response=422, description="Unprocessable Entity"),
+     *    @OA\Response(response=500, description="Internal Server Error")
      *  )
      */
     abstract public function delete(?string $lang, string $postId);
@@ -272,43 +147,17 @@ abstract class OpenApiPostController extends OpenApiController
     /**
      * Delete post image action
      * @OA\Delete(
-     *    path="/api/my-posts/delete-image/{id}",
+     *    path="/api/my-posts/delete-image/{uuid}",
      *    tags={"Posts"},
      *    summary="Delete post image action",
      *    operationId="deleteImage",
-     *    security={
-     *      {"bearer_token": {}
-     *    }},
-     *    @OA\Parameter(
-     *      name="id",
-     *      description="Post id",
-     *      required=true,
-     *      in="path",
-     *      @OA\Schema(
-     *        type="string"
-     *      )
-     *    ),
-     *    @OA\Response(
-     *      response=200,
-     *      description="Success",
-     *      @OA\MediaType(
-     *        mediaType="application/json",
-     *      )
-     *    ),
-     *    @OA\Response(
-     *      response=401,
-     *      description="Unauthorized Request"
-     *    ),
-     *    @OA\Response(
-     *      response=422,
-     *      description="Unprocessable Entity"
-     *    ),
-     *    @OA\Response(
-     *      response=500,
-     *      description="Internal Server Error"
-     *    )
+     *    security={{"bearer_token": {}}},
+     *    @OA\Parameter(name="uuid", description="Post UUID", required=true, in="path", @OA\Schema(type="string")),
+     *    @OA\Response(response=200, description="Success"),
+     *    @OA\Response(response=401, description="Unauthorized Request"),
+     *    @OA\Response(response=422, description="Unprocessable Entity"),
+     *    @OA\Response(response=500, description="Internal Server Error")
      *  )
      */
     abstract public function deleteImage(?string $lang, string $postId);
-
 }
