@@ -41,7 +41,13 @@ abstract class OpenApiAuthController extends OpenApiController
      *        )
      *      )
      *    ),
-     *    @OA\Response(response=200, description="Success"),
+     *    @OA\Response(
+     *      response=200,
+     *      description="Success",
+     *      @OA\JsonContent(
+     *        example={"status": "success"}
+     *      )
+     *    ),
      *    @OA\Response(response=422, description="Unprocessable Entity"),
      *    @OA\Response(response=500, description="Internal Server Error")
      *  )
@@ -56,7 +62,13 @@ abstract class OpenApiAuthController extends OpenApiController
      *    summary="Gets the logged-in user data",
      *    operationId="me",
      *    security={{"bearer_token": {}}},
-     *    @OA\Response(response=200, description="Success"),
+     *    @OA\Response(
+     *      response=200,
+     *      description="Success",
+     *      @OA\JsonContent(
+     *        example={"status": "success", "data": {"firstname": "Jon", "lastname": "Smit", "email": "mail@example.com"}}
+     *      )
+     *    ),
      *    @OA\Response(response=401, description="Unauthorized Request"),
      *    @OA\Response(response=500, description="Internal Server Error")
      *  )
@@ -72,7 +84,13 @@ abstract class OpenApiAuthController extends OpenApiController
      *    operationId="signout",
      *    @OA\Parameter(name="refresh_token", description="Refresh token", required=true, in="header", @OA\Schema(type="string")),
      *    security={{"bearer_token": {}}},
-     *    @OA\Response(response=200, description="Success"),
+     *    @OA\Response(
+     *      response=200,
+     *      description="Success",
+     *      @OA\JsonContent(
+     *        example={"status": "success"}
+     *      )
+     *    ),
      *    @OA\Response(response=401, description="Unauthorized Request"),
      *    @OA\Response(response=422, description="Unprocessable Entity"),
      *    @OA\Response(response=500, description="Internal Server Error")
@@ -101,7 +119,13 @@ abstract class OpenApiAuthController extends OpenApiController
      *        )
      *      )
      *    ),
-     *    @OA\Response(response=200, description="Success"),
+     *    @OA\Response(
+     *      response=200,
+     *      description="Success",
+     *      @OA\JsonContent(
+     *        example={"status": "success", "message": "Successfully signed up"}
+     *      )
+     *    ),
      *    @OA\Response(response=422, description="Unprocessable Entity"),
      *    @OA\Response(response=500, description="Internal Server Error")
      *  )
@@ -116,7 +140,13 @@ abstract class OpenApiAuthController extends OpenApiController
      *    summary="Activate action",
      *    operationId="activateProfile",
      *    @OA\Parameter(name="token", description="Activate token", required=true, in="path", @OA\Schema(type="string")),
-     *    @OA\Response(response=200, description="Success"),
+     *    @OA\Response(
+     *      response=200,
+     *      description="Success",
+     *      @OA\JsonContent(
+     *        example={"status": "success", "message": "Account activated"}
+     *      )
+     *    ),
      *    @OA\Response(response=422, description="Unprocessable Entity"),
      *    @OA\Response(response=500, description="Internal Server Error")
      *  )
@@ -141,7 +171,13 @@ abstract class OpenApiAuthController extends OpenApiController
      *        )
      *      )
      *    ),
-     *    @OA\Response(response=200, description="Success"),
+     *    @OA\Response(
+     *      response=200,
+     *      description="Success",
+     *      @OA\JsonContent(
+     *        example={"status": "success", "message": "Check your email"}
+     *      )
+     *    ),
      *    @OA\Response(response=422, description="Unprocessable Entity"),
      *    @OA\Response(response=500, description="Internal Server Error")
      *  )
@@ -167,7 +203,13 @@ abstract class OpenApiAuthController extends OpenApiController
      *        )
      *      )
      *    ),
-     *    @OA\Response(response=200, description="Success"),
+     *    @OA\Response(
+     *      response=200,
+     *      description="Success",
+     *      @OA\JsonContent(
+     *        example={"status": "success"}
+     *      )
+     *    ),
      *    @OA\Response(response=422, description="Unprocessable Entity"),
      *    @OA\Response(response=500, description="Internal Server Error")
      *  )
@@ -193,7 +235,13 @@ abstract class OpenApiAuthController extends OpenApiController
      *        )
      *      )
      *    ),
-     *    @OA\Response(response=200, description="Success"),
+     *    @OA\Response(
+     *      response=200,
+     *      description="Success",
+     *      @OA\JsonContent(
+     *        example={"status": "success"}
+     *      )
+     *    ),
      *    @OA\Response(response=401, description="Unauthorized Request"),
      *    @OA\Response(response=422, description="Unprocessable Entity"),
      *    @OA\Response(response=500, description="Internal Server Error")
@@ -209,10 +257,17 @@ abstract class OpenApiAuthController extends OpenApiController
      *    summary="Resend action",
      *    operationId="resendOTP",
      *    @OA\Parameter(name="code", description="OTP code", required=true, in="path", @OA\Schema(type="string")),
-     *    @OA\Response(response=200, description="Success"),
+     *    @OA\Response(
+     *      response=200,
+     *      description="Success",
+     *      @OA\JsonContent(
+     *        example={"status": "success", "code": "otp_token"}
+     *      )
+     *    ),
      *    @OA\Response(response=422, description="Unprocessable Entity"),
      *    @OA\Response(response=500, description="Internal Server Error")
      *  )
      */
     abstract public function resend();
 }
+

@@ -42,7 +42,13 @@ abstract class OpenApiAccountController extends OpenApiController
      *        )
      *      )
      *    ),
-     *    @OA\Response(response=200, description="Success"),
+     *    @OA\Response(
+     *      response=200,
+     *      description="Success",
+     *      @OA\JsonContent(
+     *        example={"status": "success", "message": "Updated successfully"}
+     *      )
+     *    ),
      *    @OA\Response(response=401, description="Unauthorized Request"),
      *    @OA\Response(response=422, description="Unprocessable Entity"),
      *    @OA\Response(response=500, description="Internal Server Error")
@@ -71,7 +77,13 @@ abstract class OpenApiAccountController extends OpenApiController
      *        )
      *      )
      *    ),
-     *    @OA\Response(response=200, description="Success"),
+     *    @OA\Response(
+     *      response=200,
+     *      description="Success",
+     *      @OA\JsonContent(
+     *        example={"status": "success", "message": "Updated successfully"}
+     *      )
+     *    ),
      *    @OA\Response(response=401, description="Unauthorized Request"),
      *    @OA\Response(response=422, description="Unprocessable Entity"),
      *    @OA\Response(response=500, description="Internal Server Error")
@@ -79,3 +91,4 @@ abstract class OpenApiAccountController extends OpenApiController
      */
     abstract public function updatePassword(Request $request);
 }
+
