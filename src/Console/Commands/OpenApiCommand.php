@@ -126,7 +126,7 @@ class OpenApiCommand extends CliCommand
             return;
         }
 
-        if (request()->routeGroupExists('openapi', $module) && $this->fs->exists($modulePath . DS . 'resources' . DS . 'openApi' . DS . 'spec.json')) {
+        if (request()->routeGroupExists('openapi', $module) && $this->fs->exists($modulePath . DS . 'resources' . DS . 'openapi' . DS . 'spec.json')) {
             $this->error('The Open API specifications already installed for `' . ucfirst($module) . '` module');
             return;
         }
@@ -198,7 +198,7 @@ class OpenApiCommand extends CliCommand
 
         $route->get("spec", function (): Quantum\Http\Response {
             $fs = Quantum\Storage\Factories\FileSystemFactory::get();
-            return response()->json($fs->getJson(modules_dir() . "' . DS . $module . DS . 'resources' . DS . 'openapi' . DS . 'spec.json"));
+            return response()->json($fs->getJson(modules_dir() . DS . "' . $module . '" . DS . "resources" . DS . "openapi" . DS . "spec.json"));
         });
     });' . PHP_EOL;
     }
