@@ -60,6 +60,7 @@ abstract class OpenApiCommentController extends OpenApiController
      *    ),
      *    @OA\Response(response=401, description="Unauthorized Request"),
      *    @OA\Response(response=422, description="Unprocessable Entity"),
+     *    @OA\Response(response=429, description="Too Many Requests"),
      *    @OA\Response(response=500, description="Internal Server Error")
      *  )
      */
@@ -83,9 +84,12 @@ abstract class OpenApiCommentController extends OpenApiController
      *    ),
      *    @OA\Response(response=401, description="Unauthorized Request"),
      *    @OA\Response(response=422, description="Unprocessable Entity"),
+     *    @OA\Response(response=429, description="Too Many Requests"),
      *    @OA\Response(response=500, description="Internal Server Error")
      *  )
      */
     abstract public function delete(?string $lang, string $uuid);
 }
+
+
 
