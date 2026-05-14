@@ -45,7 +45,18 @@ abstract class OpenApiAuthController extends OpenApiController
      *      response=200,
      *      description="Success",
      *      @OA\JsonContent(
-     *        example={"status": "success"}
+     *        oneOf={
+     *          @OA\Schema(
+     *            example={
+     *              "status": "success",
+     *              "tokens": {
+     *                "access_token": "base64-jwt-token",
+     *                "refresh_token": "refresh-token"
+     *              }
+     *            }
+     *          ),
+     *          @OA\Schema(example={"status": "success", "code": "otp_token"})
+     *        }
      *      )
      *    ),
      *    @OA\Response(response=422, description="Unprocessable Entity"),
@@ -90,7 +101,13 @@ abstract class OpenApiAuthController extends OpenApiController
      *      response=200,
      *      description="Success",
      *      @OA\JsonContent(
-     *        example={"status": "success"}
+     *        example={
+     *          "status": "success",
+     *          "tokens": {
+     *            "access_token": "base64-jwt-token",
+     *            "refresh_token": "refresh-token"
+     *          }
+     *        }
      *      )
      *    ),
      *    @OA\Response(response=401, description="Unauthorized Request"),
@@ -213,7 +230,13 @@ abstract class OpenApiAuthController extends OpenApiController
      *      response=200,
      *      description="Success",
      *      @OA\JsonContent(
-     *        example={"status": "success"}
+     *        example={
+     *          "status": "success",
+     *          "tokens": {
+     *            "access_token": "base64-jwt-token",
+     *            "refresh_token": "refresh-token"
+     *          }
+     *        }
      *      )
      *    ),
      *    @OA\Response(response=422, description="Unprocessable Entity"),
