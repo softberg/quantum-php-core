@@ -198,7 +198,7 @@ class OpenApiCommand extends CliCommand
 
         $route->get("spec", function (): Quantum\Http\Response {
             $fs = Quantum\Storage\Factories\FileSystemFactory::get();
-            return response()->json($fs->getJson(modules_dir() . "' . DS . $module . DS . 'resources' . DS . 'openapi' . DS . 'spec.json"));
+            return response()->json($fs->getJson(modules_dir() . DS . "' . $module . '" . DS . "resources" . DS . "openapi" . DS . "spec.json"));
         });
     });' . PHP_EOL;
     }
