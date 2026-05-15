@@ -18,7 +18,6 @@ namespace Quantum\App\Adapters;
 
 use Quantum\Middleware\Exceptions\MiddlewareException;
 use Quantum\Loader\Exceptions\LoaderException;
-use Quantum\Module\Exceptions\ModuleException;
 use Quantum\Config\Exceptions\ConfigException;
 use Quantum\App\Stages\SetupErrorHandlerStage;
 use Quantum\Router\Exceptions\RouteException;
@@ -39,6 +38,8 @@ use Quantum\Http\Enums\StatusCode;
 use Quantum\App\Enums\ExitCode;
 use Quantum\App\BootPipeline;
 use Quantum\App\AppContext;
+use Quantum\Http\Response;
+use Quantum\Http\Request;
 use ReflectionException;
 
 /**
@@ -68,7 +69,7 @@ class WebAppAdapter extends AppAdapter
 
     /**
      * Starts the web app
-     * @throws ModuleException|MiddlewareException|LangException|RouteException|CsrfException|ConfigException|DiException|BaseException|LoaderException|ReflectionException
+     * @throws MiddlewareException|LangException|RouteException|CsrfException|ConfigException|DiException|BaseException|LoaderException|ReflectionException
      */
     public function start(): ?int
     {
@@ -91,7 +92,7 @@ class WebAppAdapter extends AppAdapter
 
         $viewCache = $this->setupViewCache();
 
-        $terminal = fn ($request) => $viewCache->getCachedResponse($request->getUri() ?? '')
+        $terminal = fn (Request $request): Response => $viewCache->getCachedResponse($request->getUri() ?? '')
             ?? (new RouteDispatcher())->dispatch($matchedRoute, $request);
 
         $response = (new MiddlewareManager($matchedRoute))->applyMiddlewares(request(), $terminal);
