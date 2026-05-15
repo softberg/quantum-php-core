@@ -1,5 +1,7 @@
 ## [3.0.0] - TBD
 
+Upgrade guide: https://github.com/softberg/quantum-php-docs/blob/master/v3.0/upgrade-guide.md
+
 ### Changed
 - **BREAKING:** Refactored app bootstrapping and DI ownership model (#373):
   - Introduced `AppContext` as the central execution state holder (mode, baseDir, DiContainer, Environment, Config, Request, Response, Routes)
@@ -53,7 +55,6 @@
   - Routing is executed once per request; matched route is stored on the `Request`
   - Global route helper functions (`current_*`, `route_*`) now rely on `MatchedRoute` instead of legacy static route state
   - Middleware ordering is strictly prepend-based (later middleware wraps earlier)
-  - Nested route groups are no longer supported
   - Route name uniqueness is now enforced at build time
 
 - **BREAKING:** Controller resolution behavior changed:
