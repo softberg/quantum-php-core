@@ -8,6 +8,6 @@
  * @package Quantum
  * @author Arman Ag. <arman@quantumphp.io>
  * @copyright Copyright (c) 2018 Softberg LLC (https://softberg.org)
- * @link http://quantum.softberg.org/
+ * @link https://quantumphp.io/
  * @since 3.0.0
  */
