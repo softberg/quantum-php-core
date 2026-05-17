@@ -19,7 +19,6 @@ namespace Quantum\Http\Traits\Request;
 use Quantum\Storage\Exceptions\FileUploadException;
 use Quantum\App\Exceptions\BaseException;
 use Quantum\Storage\UploadedFile;
-use ReflectionException;
 
 /**
  * Trait File
@@ -76,37 +75,60 @@ trait File
      * Handle files
      * @param array<string, mixed> $files
      * @return array<string, UploadedFile|array<UploadedFile>>
-     * @throws BaseException
-     * @throws ReflectionException
      */
     public function handleFiles(array $files): array
     {
-        if (!count($files)) {
-            return [];
-        }
+        $formatted = [];
 
-        $key = key($files);
+        foreach ($files as $key => $file) {
+            if (!is_array($file) || !isset($file['name'])) {
+                continue;
+            }
 
-        if (!$key) {
-            return [];
-        }
+            if (!is_array($file['name'])) {
+                $formatted[$key] = new UploadedFile($file);
+                continue;
+            }
 
-        if (!is_array($files[$key]['name'])) {
-            return [$key => new UploadedFile($files[$key])];
-        } else {
-            $formatted = [];
+            if (!$this->isMultiFilePayload($file)) {
+                continue;
+            }
 
-            foreach ($files[$key]['name'] as $index => $name) {
-                $formatted[$key][$index] = new UploadedFile([
+            $types = $file['type'];
+            $tmpNames = $file['tmp_name'];
+            $errors = $file['error'];
+            $sizes = $file['size'];
+            $multiFiles = [];
+
+            foreach ($file['name'] as $index => $name) {
+                if (!isset($types[$index], $tmpNames[$index], $errors[$index], $sizes[$index])) {
+                    continue;
+                }
+
+                $multiFiles[$index] = new UploadedFile([
                     'name' => $name,
-                    'type' => $files[$key]['type'][$index],
-                    'tmp_name' => $files[$key]['tmp_name'][$index],
-                    'error' => $files[$key]['error'][$index],
-                    'size' => $files[$key]['size'][$index],
+                    'type' => $types[$index],
+                    'tmp_name' => $tmpNames[$index],
+                    'error' => $errors[$index],
+                    'size' => $sizes[$index],
                 ]);
             }
 
-            return $formatted;
+            $formatted[$key] = $multiFiles;
         }
+
+        return $formatted;
+    }
+
+    /**
+     * @param array<string, mixed> $file
+     */
+    private function isMultiFilePayload(array $file): bool
+    {
+        return isset($file['type'], $file['tmp_name'], $file['error'], $file['size'])
+            && is_array($file['type'])
+            && is_array($file['tmp_name'])
+            && is_array($file['error'])
+            && is_array($file['size']);
     }
 }
