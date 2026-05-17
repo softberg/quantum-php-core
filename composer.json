@@ -15,7 +15,7 @@
     "authors": [
         {
             "name": "Arman Ag",
-            "email": "arman.ag@softberg.org"
+            "email": "arman@quantumphp.io"
         }
     ],
     "require": {
