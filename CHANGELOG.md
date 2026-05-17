@@ -45,6 +45,7 @@ Upgrade guide: https://github.com/softberg/quantum-php-docs/blob/master/v3.0/upg
 - Updated CI pipeline to test against PHP 7.4, 8.0, and 8.1
 - CI now fails on PHP warnings and deprecations for stricter quality control
 - Added `declare(strict_types=1)` to all Exception classes for improved type safety
+- Static analysis baseline is now PHPStan level 7
 
 - **BREAKING:** Refactored routing system internals:
   - Routes are now represented as first-class objects (`Route`, `RouteCollection`, `MatchedRoute`)
@@ -84,6 +85,7 @@ Upgrade guide: https://github.com/softberg/quantum-php-docs/blob/master/v3.0/upg
 - Standardized `defineValidationRules(Request $request): void` across DemoWeb and DemoApi middleware templates
 - Fixed OpenAPI installer route generation to return `Response` objects via `response()->...` helpers and avoid undefined response-variable usage (#520)
 - Standardized `defineValidationRules(Request $request): void` in Toolkit middleware templates
+- Fixed request uploaded-file parsing to preserve multiple top-level multipart file fields in both real and internal request flows (#526)
 
 ### Added
 - `AppContext` class representing the runtime identity of a single application execution

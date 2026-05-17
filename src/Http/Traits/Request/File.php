@@ -76,8 +76,6 @@ trait File
      * Handle files
      * @param array<string, mixed> $files
      * @return array<string, UploadedFile|array<UploadedFile>>
-     * @throws BaseException
-     * @throws ReflectionException
      */
     public function handleFiles(array $files): array
     {
@@ -85,28 +83,26 @@ trait File
             return [];
         }
 
-        $key = key($files);
+        $formatted = [];
 
-        if (!$key) {
-            return [];
-        }
+        foreach ($files as $key => $file) {
+            if (!is_array($file['name'])) {
+                $formatted[$key] = new UploadedFile($file);
 
-        if (!is_array($files[$key]['name'])) {
-            return [$key => new UploadedFile($files[$key])];
-        } else {
-            $formatted = [];
-
-            foreach ($files[$key]['name'] as $index => $name) {
-                $formatted[$key][$index] = new UploadedFile([
-                    'name' => $name,
-                    'type' => $files[$key]['type'][$index],
-                    'tmp_name' => $files[$key]['tmp_name'][$index],
-                    'error' => $files[$key]['error'][$index],
-                    'size' => $files[$key]['size'][$index],
-                ]);
+                continue;
             }
 
-            return $formatted;
+            foreach ($file['name'] as $index => $name) {
+                $formatted[$key][$index] = new UploadedFile([
+                    'name' => $name,
+                    'type' => $file['type'][$index],
+                    'tmp_name' => $file['tmp_name'][$index],
+                    'error' => $file['error'][$index],
+                    'size' => $file['size'][$index],
+                ]);
+            }
         }
+
+        return $formatted;
     }
 }

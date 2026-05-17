@@ -79,4 +79,34 @@ class HttpRequestFileTest extends AppTestCase
 
         $this->assertEquals('bar.png', $image[1]->getNameWithExtension());
     }
+
+    public function testCreateWithMultipleTopLevelFileFields(): void
+    {
+        $request = request();
+
+        $files = [
+            'avatar' => [
+                'size' => 500,
+                'name' => 'avatar.jpg',
+                'tmp_name' => '/tmp/php8fe2.tmp',
+                'type' => 'image/jpg',
+                'error' => 0,
+            ],
+            'resume' => [
+                'size' => 300,
+                'name' => 'resume.pdf',
+                'tmp_name' => '/tmp/php8fe3.tmp',
+                'type' => 'application/pdf',
+                'error' => 0,
+            ],
+        ];
+
+        $request->create('POST', '/upload', [], [], $files);
+
+        $this->assertTrue($request->hasFile('avatar'));
+        $this->assertTrue($request->hasFile('resume'));
+
+        $this->assertInstanceOf(UploadedFile::class, $request->getFile('avatar'));
+        $this->assertInstanceOf(UploadedFile::class, $request->getFile('resume'));
+    }
 }
