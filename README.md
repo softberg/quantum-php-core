@@ -60,6 +60,7 @@ php qt serve
 <h2>Contributing</h2>
 
 We welcome contributions! Please read our [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on how to contribute to Quantum PHP, including setup instructions, coding standards, and the development workflow.
+Please also review our [Code of Conduct](CODE_OF_CONDUCT.md).
 
 <h2>License</h2>
 
